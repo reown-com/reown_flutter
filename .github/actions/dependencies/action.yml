@@ -11,31 +11,55 @@ runs:
         flutter-version: '3.19.5'
 
     # Get package dependencies and generate files
-    - name: Get package dependencies and generate files
-      shell: bash
-      run: |
-        flutter pub get
-        flutter pub run build_runner build --delete-conflicting-outputs
+    # - name: Get package dependencies and generate files
+    #   shell: bash
+    #   run: |
+    #     flutter pub get
+    #     flutter pub run build_runner build --delete-conflicting-outputs
 
     # Get example app dependencies and generate files
     - name: Get example app dependencies and generate files
       shell: bash
-      working-directory: example/wallet
+      working-directory: packages/reown_core
       run: |
         flutter pub get
         flutter pub run build_runner build --delete-conflicting-outputs
+        dart format --output=none --set-exit-if-changed .
+        flutter analyze
 
     # Get example app dependencies and generate files
     - name: Get example app dependencies and generate files
       shell: bash
-      working-directory: example/dapp
+      working-directory: packages/reown_sign
       run: |
         flutter pub get
         flutter pub run build_runner build --delete-conflicting-outputs
+        dart format --output=none --set-exit-if-changed .
+        flutter analyze
 
-    - name: Verify formatting and analyze project source
+    # Get example app dependencies and generate files
+    - name: Get example app dependencies and generate files
       shell: bash
-      run: dart format --output=none --set-exit-if-changed .
+      working-directory: packages/reown_walletkit
+      run: |
+        flutter pub get
+        flutter pub run build_runner build --delete-conflicting-outputs
+        dart format --output=none --set-exit-if-changed .
+        flutter analyze
+
+    # Get example app dependencies and generate files
+    - name: Get example app dependencies and generate files
+      shell: bash
+      working-directory: packages/reown_appkit
+      run: |
+        flutter pub get
+        flutter pub run build_runner build --delete-conflicting-outputs
+        dart format --output=none --set-exit-if-changed .
+        flutter analyze
+
+    # - name: Verify formatting and analyze project source
+    #   shell: bash
+    #   run: dart format --output=none --set-exit-if-changed .
 
     # - name: Analyze project source
     #   shell: bash
