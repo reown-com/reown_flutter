@@ -22,7 +22,7 @@ class KeyService extends IKeyService {
     final prefs = await SharedPreferences.getInstance();
     final keys = prefs.getKeys();
     for (var key in keys) {
-      if (key.startsWith('w3w_')) {
+      if (key.startsWith('rwkt_')) {
         await prefs.remove(key);
       }
     }
@@ -33,7 +33,7 @@ class KeyService extends IKeyService {
     // ⚠️ WARNING: SharedPreferences is not the best way to store your keys! This is just for example purposes!
     final prefs = await SharedPreferences.getInstance();
     try {
-      final savedKeys = prefs.getStringList('w3w_chain_keys')!;
+      final savedKeys = prefs.getStringList('rwkt_chain_keys')!;
       final chainKeys = savedKeys.map((e) => ChainKey.fromJson(jsonDecode(e)));
       _keys = List<ChainKey>.from(chainKeys.toList());
       //
@@ -77,22 +77,21 @@ class KeyService extends IKeyService {
   @override
   Future<String> getMnemonic() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('w3w_mnemonic') ?? '';
+    return prefs.getString('rwkt_mnemonic') ?? '';
   }
 
   // ** bip39/bip32 - EIP155 **
 
   @override
   Future<void> loadDefaultWallet() async {
-    const mnemonic =
-        'spoil video deputy round immense setup wasp secret maze slight bag what';
+    const mnemonic = DartDefines.ethereumSecretKey;
     await restoreWalletFromSeed(mnemonic: mnemonic);
   }
 
   @override
   Future<void> createAddressFromSeed() async {
     final prefs = await SharedPreferences.getInstance();
-    final mnemonic = prefs.getString('w3w_mnemonic')!;
+    final mnemonic = prefs.getString('rwkt_mnemonic')!;
 
     final chainKeys = getKeysForChain('eip155');
     final index = chainKeys.length;
@@ -109,8 +108,8 @@ class KeyService extends IKeyService {
   Future<void> restoreWalletFromSeed({required String mnemonic}) async {
     // ⚠️ WARNING: SharedPreferences is not the best way to store your keys! This is just for example purposes!
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('w3w_chain_keys');
-    await prefs.setString('w3w_mnemonic', mnemonic);
+    await prefs.remove('rwkt_chain_keys');
+    await prefs.setString('rwkt_mnemonic', mnemonic);
 
     final keyPair = _keyPairFromMnemonic(mnemonic);
     final chainKey = _eip155ChainKey(keyPair);
@@ -127,7 +126,7 @@ class KeyService extends IKeyService {
         .where((k) => k.namespace == 'eip155')
         .map((e) => jsonEncode(e.toJson()))
         .toList();
-    await prefs.setStringList('w3w_chain_keys', chainKeys);
+    await prefs.setStringList('rwkt_chain_keys', chainKeys);
   }
 
   CryptoKeyPair _keyPairFromMnemonic(String mnemonic, {int index = 0}) {

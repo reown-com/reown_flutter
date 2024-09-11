@@ -30,10 +30,13 @@ class UIConstants {
 
 class StorageConstants {
   // Storage
-  static const String recentWalletId = 'w3m_recentWallet';
-  static const String connectedWalletData = 'w3m_walletData';
-  static const String selectedChainId = 'w3m_selectedChainId';
-  static const String modalSession = 'w3m_session';
+  static const String recentWalletId =
+      '${CoreConstants.X_SDK_TYPE}_recentWallet';
+  static const String connectedWalletData =
+      '${CoreConstants.X_SDK_TYPE}_walletData';
+  static const String selectedChainId =
+      '${CoreConstants.X_SDK_TYPE}_selectedChainId';
+  static const String modalSession = '${CoreConstants.X_SDK_TYPE}_session';
 }
 
 class UrlConstants {
