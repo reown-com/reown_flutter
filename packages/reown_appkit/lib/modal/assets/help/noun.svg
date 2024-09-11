@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;">
+    <path d="M60,3C60,1.344 58.656,0 57,0L3,0C1.344,0 0,1.344 0,3L0,57C0,58.656 1.344,60 3,60L57,60C58.656,60 60,58.656 60,57L60,3Z" style="fill:rgb(121,76,255);"/>
+    <path d="M33,26.5L33,21.5L16,21.5L16,26.5L8.5,26.5L8.5,36L13,36L13,31L16,31L16,38.5L33,38.5L33,31L34,31L34,38.5L51,38.5L51,21.5L34,21.5L34,26.5L33,26.5Z" style="fill:rgb(152,125,232);fill-rule:nonzero;stroke:white;stroke-width:2px;"/>
+    <rect x="37.5" y="25" width="10" height="10" style="fill:white;fill-rule:nonzero;"/>
+    <rect x="42.5" y="25" width="5" height="10" style="fill:rgb(64,25,178);fill-rule:nonzero;"/>
+    <rect x="19.5" y="25" width="10" height="10" style="fill:white;fill-rule:nonzero;"/>
+    <rect x="24.5" y="25" width="5" height="10" style="fill:rgb(64,25,178);fill-rule:nonzero;"/>
+    <rect x="12" y="30.5" width="4" height="6.5" style="fill:white;fill-rule:nonzero;"/>
+    <path d="M59.5,3C59.5,1.62 58.38,0.5 57,0.5L3,0.5C1.62,0.5 0.5,1.62 0.5,3L0.5,57C0.5,58.38 1.62,59.5 3,59.5L57,59.5C58.38,59.5 59.5,58.38 59.5,57L59.5,3Z" style="fill:none;"/>
+</svg>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_275_34610)">
+<rect width="60" height="60" rx="30" fill="#00ACE6"/>
+<path d="M59 72.9995C59 89.0158 46.0163 102 30 102C13.9837 102 1 89.0158 1 72.9995C1 56.9833 12 43.9995 30 43.9995C48 43.9995 59 56.9833 59 72.9995Z" fill="#1AC6FF" stroke="white" stroke-width="2"/>
+<path d="M18.6905 19.9017C19.6266 15.3289 23.3467 11.8447 27.971 11.2099C29.3233 11.0242 30.6752 11.024 32.029 11.2099C36.6533 11.8447 40.3734 15.3289 41.3095 19.9017C41.4869 20.7683 41.631 21.6511 41.7493 22.5273C41.8813 23.5043 41.8813 24.4947 41.7493 25.4717C41.631 26.3479 41.4869 27.2307 41.3095 28.0973C40.3734 32.6701 36.6533 36.1543 32.029 36.7891C30.6773 36.9747 29.3218 36.9746 27.971 36.7891C23.3467 36.1543 19.6266 32.6701 18.6905 28.0973C18.5131 27.2307 18.369 26.3479 18.2507 25.4717C18.1187 24.4947 18.1187 23.5043 18.2507 22.5273C18.369 21.6511 18.5131 20.7683 18.6905 19.9017Z" fill="#1AC6FF" stroke="white" stroke-width="2"/>
+<circle cx="24.5" cy="23.4995" r="1.5" fill="white"/>
+<circle cx="35.5" cy="23.4995" r="1.5" fill="white"/>
+<path d="M31 19.9995L28 27.9995H32" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<rect x="0.5" y="0.5" width="59" height="59" rx="29.5" stroke="#141414" stroke-opacity="0.1"/>
+<defs>
+<clipPath id="clip0_275_34610">
+<rect width="60" height="60" rx="30" fill="white"/>
+</clipPath>
+</defs>
+</svg>
