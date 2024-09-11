@@ -55,5 +55,5 @@ app.*.map.json
 **/*.keystore
 
 # Run scripts
-*.sh
+run_tests.sh
 *.env.secret
