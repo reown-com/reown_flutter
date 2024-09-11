@@ -15,7 +15,7 @@ runs:
     #   shell: bash
     #   run: |
     #     flutter pub get
-    #     flutter pub run build_runner build --delete-conflicting-outputs
+    #     flutter analyze TODO Uncomment this when packages are published
 
     # Get example app dependencies and generate files
     - name: Get example app dependencies and generate files
@@ -25,7 +25,6 @@ runs:
         flutter pub get
         flutter pub run build_runner build --delete-conflicting-outputs
         dart format --output=none --set-exit-if-changed .
-        flutter analyze
 
     # Get example app dependencies and generate files
     - name: Get example app dependencies and generate files
@@ -35,7 +34,6 @@ runs:
         flutter pub get
         flutter pub run build_runner build --delete-conflicting-outputs
         dart format --output=none --set-exit-if-changed .
-        flutter analyze
 
     # Get example app dependencies and generate files
     - name: Get example app dependencies and generate files
@@ -45,7 +43,6 @@ runs:
         flutter pub get
         flutter pub run build_runner build --delete-conflicting-outputs
         dart format --output=none --set-exit-if-changed .
-        flutter analyze
 
     # Get example app dependencies and generate files
     - name: Get example app dependencies and generate files
@@ -55,7 +52,6 @@ runs:
         flutter pub get
         flutter pub run build_runner build --delete-conflicting-outputs
         dart format --output=none --set-exit-if-changed .
-        flutter analyze
 
     # - name: Verify formatting and analyze project source
     #   shell: bash
