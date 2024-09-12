@@ -74,7 +74,7 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final isCustom = AppKitModalTheme.isCustomTheme(context);
+    final isCustom = ReownAppKitModalTheme.isCustomTheme(context);
     return SafeArea(
       child: Column(
         children: [
@@ -84,11 +84,13 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                 ListTile(
                   leading: Icon(
                     Icons.logo_dev_rounded,
-                    color: AppKitModalTheme.colorsOf(context).foreground100,
+                    color:
+                        ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
                   title: const Text('Analytics view'),
                   titleTextStyle: TextStyle(
-                    color: AppKitModalTheme.colorsOf(context).foreground100,
+                    color:
+                        ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
                   onTap: () {
                     widget.toggleOverlay();
@@ -98,51 +100,56 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                   leading: isCustom
                       ? Icon(
                           Icons.yard,
-                          color:
-                              AppKitModalTheme.colorsOf(context).foreground100,
+                          color: ReownAppKitModalTheme.colorsOf(context)
+                              .foreground100,
                         )
                       : Icon(
                           Icons.yard_outlined,
-                          color:
-                              AppKitModalTheme.colorsOf(context).foreground100,
+                          color: ReownAppKitModalTheme.colorsOf(context)
+                              .foreground100,
                         ),
                   title: isCustom
                       ? const Text('Custom theme')
                       : const Text('Default theme'),
                   titleTextStyle: TextStyle(
-                    color: AppKitModalTheme.colorsOf(context).foreground100,
+                    color:
+                        ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
                   trailing: Switch(
                     value: isCustom,
-                    activeColor: AppKitModalTheme.colorsOf(context).accent100,
+                    activeColor:
+                        ReownAppKitModalTheme.colorsOf(context).accent100,
                     onChanged: (value) {
                       widget.toggleTheme();
                     },
                   ),
                 ),
                 ListTile(
-                  leading: AppKitModalTheme.maybeOf(context)?.isDarkMode ??
+                  leading: ReownAppKitModalTheme.maybeOf(context)?.isDarkMode ??
                           false
                       ? Icon(
                           Icons.dark_mode_outlined,
-                          color:
-                              AppKitModalTheme.colorsOf(context).foreground100,
+                          color: ReownAppKitModalTheme.colorsOf(context)
+                              .foreground100,
                         )
                       : Icon(
                           Icons.light_mode_outlined,
-                          color:
-                              AppKitModalTheme.colorsOf(context).foreground100,
+                          color: ReownAppKitModalTheme.colorsOf(context)
+                              .foreground100,
                         ),
-                  title: AppKitModalTheme.maybeOf(context)?.isDarkMode ?? false
+                  title: ReownAppKitModalTheme.maybeOf(context)?.isDarkMode ??
+                          false
                       ? const Text('Dark theme')
                       : const Text('Light theme'),
                   titleTextStyle: TextStyle(
-                    color: AppKitModalTheme.colorsOf(context).foreground100,
+                    color:
+                        ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
                   trailing: Switch(
-                    value:
-                        AppKitModalTheme.maybeOf(context)?.isDarkMode ?? false,
-                    activeColor: AppKitModalTheme.colorsOf(context).accent100,
+                    value: ReownAppKitModalTheme.maybeOf(context)?.isDarkMode ??
+                        false,
+                    activeColor:
+                        ReownAppKitModalTheme.colorsOf(context).accent100,
                     onChanged: (value) {
                       widget.toggleBrightness();
                     },
@@ -155,7 +162,8 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                   child: Text(
                     'Will require app to restart',
                     style: TextStyle(
-                      color: AppKitModalTheme.colorsOf(context).foreground100,
+                      color:
+                          ReownAppKitModalTheme.colorsOf(context).foreground100,
                     ),
                   ),
                 ),
@@ -163,15 +171,18 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                 ListTile(
                   leading: Icon(
                     Icons.speaker_notes_rounded,
-                    color: AppKitModalTheme.colorsOf(context).foreground100,
+                    color:
+                        ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
                   title: const Text('Analytics On'),
                   titleTextStyle: TextStyle(
-                    color: AppKitModalTheme.colorsOf(context).foreground100,
+                    color:
+                        ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
                   trailing: Switch(
                     value: _analyticsValue,
-                    activeColor: AppKitModalTheme.colorsOf(context).accent100,
+                    activeColor:
+                        ReownAppKitModalTheme.colorsOf(context).accent100,
                     onChanged: (value) {
                       _analyticsValue = value;
                       _updateValue('appkit_analytics', value);
@@ -181,15 +192,18 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                 ListTile(
                   leading: Icon(
                     Icons.email_rounded,
-                    color: AppKitModalTheme.colorsOf(context).foreground100,
+                    color:
+                        ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
                   title: const Text('Email Wallet On'),
                   titleTextStyle: TextStyle(
-                    color: AppKitModalTheme.colorsOf(context).foreground100,
+                    color:
+                        ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
                   trailing: Switch(
                     value: _emailWalletValue,
-                    activeColor: AppKitModalTheme.colorsOf(context).accent100,
+                    activeColor:
+                        ReownAppKitModalTheme.colorsOf(context).accent100,
                     onChanged: (value) {
                       _emailWalletValue = value;
                       _updateValue('appkit_email_wallet', value);
@@ -199,15 +213,18 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                 ListTile(
                   leading: Icon(
                     Icons.account_balance_wallet,
-                    color: AppKitModalTheme.colorsOf(context).foreground100,
+                    color:
+                        ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
                   title: const Text('1-CA + SIWE On'),
                   titleTextStyle: TextStyle(
-                    color: AppKitModalTheme.colorsOf(context).foreground100,
+                    color:
+                        ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
                   trailing: Switch(
                     value: _siweAuthValue,
-                    activeColor: AppKitModalTheme.colorsOf(context).accent100,
+                    activeColor:
+                        ReownAppKitModalTheme.colorsOf(context).accent100,
                     onChanged: (value) {
                       _siweAuthValue = value;
                       _updateValue('appkit_siwe_auth', value);
@@ -237,7 +254,8 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                   'Core v$packageVersion',
                   style: TextStyle(
                     fontSize: 12.0,
-                    color: AppKitModalTheme.colorsOf(context).foreground100,
+                    color:
+                        ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
                 ),
               );
@@ -248,11 +266,11 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
           ListTile(
             leading: Icon(
               Icons.close,
-              color: AppKitModalTheme.colorsOf(context).foreground100,
+              color: ReownAppKitModalTheme.colorsOf(context).foreground100,
             ),
             title: const Text('Close'),
             titleTextStyle: TextStyle(
-              color: AppKitModalTheme.colorsOf(context).foreground100,
+              color: ReownAppKitModalTheme.colorsOf(context).foreground100,
             ),
             onTap: () {
               if (_hasUpdates) {

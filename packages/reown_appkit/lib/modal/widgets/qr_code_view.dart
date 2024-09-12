@@ -18,10 +18,11 @@ class QRCodeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final responsiveData = ResponsiveData.of(context);
     final isPortrait = ResponsiveData.isPortrait(context);
-    final isDarkMode = AppKitModalTheme.maybeOf(context)?.isDarkMode ?? false;
+    final isDarkMode =
+        ReownAppKitModalTheme.maybeOf(context)?.isDarkMode ?? false;
     final imageSize = isPortrait ? 80.0 : 60.0;
     final maxRadius = min(radiuses.radiusL, 36.0);
     return Container(

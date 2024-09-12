@@ -14,15 +14,16 @@ import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
 import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 
-class AppKitModalQRCodePage extends StatefulWidget {
-  const AppKitModalQRCodePage() : super(key: KeyConstants.qrCodePageKey);
+class ReownAppKitModalQRCodePage extends StatefulWidget {
+  const ReownAppKitModalQRCodePage() : super(key: KeyConstants.qrCodePageKey);
 
   @override
-  State<AppKitModalQRCodePage> createState() => _AppKitModalQRCodePageState();
+  State<ReownAppKitModalQRCodePage> createState() =>
+      _AppKitModalQRCodePageState();
 }
 
-class _AppKitModalQRCodePageState extends State<AppKitModalQRCodePage> {
-  IAppKitModal? _service;
+class _AppKitModalQRCodePageState extends State<ReownAppKitModalQRCodePage> {
+  IReownAppKitModal? _service;
   Widget? _qrQodeWidget;
   //
 
@@ -75,9 +76,9 @@ class _AppKitModalQRCodePageState extends State<AppKitModalQRCodePage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = AppKitModalTheme.getDataOf(context);
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final isPortrait = ResponsiveData.isPortrait(context);
 
     return ModalNavbar(

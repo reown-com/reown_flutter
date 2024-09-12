@@ -57,8 +57,8 @@ class _ModalContainerState extends State<ModalContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final bottomSheet = PlatformUtils.isBottomSheet();
     final isTabletSize = PlatformUtils.isTablet(context);
     final maxRadius = min(radiuses.radiusM, 36.0);

@@ -48,7 +48,7 @@ import 'package:reown_appkit/modal/services/toast_service/toast_service_singleto
 
 /// Either a [projectId] and [metadata] must be provided or an already created [appKit].
 /// optionalNamespaces is mostly not needed, if you use it, the values set here will override every optionalNamespaces set in evey chain
-class AppKitModal with ChangeNotifier implements IAppKitModal {
+class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   String _projectId = '';
 
   Map<String, RequiredNamespace> _requiredNamespaces = {};
@@ -56,15 +56,15 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
   String? _lastChainEmitted;
   bool _supportsOneClickAuth = false;
 
-  AppKitModalStatus _status = AppKitModalStatus.idle;
+  ReownAppKitModalStatus _status = ReownAppKitModalStatus.idle;
   @override
-  AppKitModalStatus get status => _status;
+  ReownAppKitModalStatus get status => _status;
 
   String? _currentSelectedChainId;
   @override
-  AppKitModalNetworkInfo? get selectedChain {
+  ReownAppKitModalNetworkInfo? get selectedChain {
     if (_currentSelectedChainId != null) {
-      return AppKitModalNetworks.getNetworkById(
+      return ReownAppKitModalNetworks.getNetworkById(
         CoreConstants.namespace,
         _currentSelectedChainId!,
       );
@@ -72,9 +72,9 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
     return null;
   }
 
-  AppKitModalWalletInfo? _selectedWallet;
+  ReownAppKitModalWalletInfo? _selectedWallet;
   @override
-  AppKitModalWalletInfo? get selectedWallet => _selectedWallet;
+  ReownAppKitModalWalletInfo? get selectedWallet => _selectedWallet;
 
   @override
   bool get hasNamespaces =>
@@ -109,9 +109,9 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
   @override
   bool get isConnected => _isConnected;
 
-  AppKitModalSession? _currentSession;
+  ReownAppKitModalSession? _currentSession;
   @override
-  AppKitModalSession? get session => _currentSession;
+  ReownAppKitModalSession? get session => _currentSession;
 
   Logger get _logger => _appKit.core.logger;
 
@@ -129,7 +129,8 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
   }
 
   /// `context` is required if SIWEConfig is passed.
-  AppKitModal({
+  // TODO change to ReownAppKitModal
+  ReownAppKitModal({
     required BuildContext context,
     IReownAppKit? appKit,
     String? projectId,
@@ -142,23 +143,23 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
     Set<String>? excludedWalletIds,
     bool? enableAnalytics,
     bool enableEmail = false,
-    List<AppKitModalNetworkInfo> blockchains = const [],
+    List<ReownAppKitModalNetworkInfo> blockchains = const [],
     LogLevel logLevel = LogLevel.nothing,
   }) {
     if (appKit == null) {
       if (projectId == null) {
-        throw AppKitModalException(
+        throw ReownAppKitModalException(
           'Either a `projectId` and `metadata` must be provided or an already created `appKit`',
         );
       }
       if (metadata == null) {
-        throw AppKitModalException(
+        throw ReownAppKitModalException(
           '`metadata:` parameter is required when using `projectId:`',
         );
       }
     }
     // if (siweConfig?.enabled == true && context == null) {
-    //   throw AppKitModalException(
+    //   throw ReownAppKitModalException(
     //     '`context:` parameter is required if using `siweConfig:`. Also, `context:` parameter will be enforced in future versions.',
     //   );
     // }
@@ -231,11 +232,11 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
       );
       return;
     }
-    if (_status == AppKitModalStatus.initializing ||
-        _status == AppKitModalStatus.initialized) {
+    if (_status == ReownAppKitModalStatus.initializing ||
+        _status == ReownAppKitModalStatus.initialized) {
       return;
     }
-    _status = AppKitModalStatus.initializing;
+    _status = ReownAppKitModalStatus.initializing;
     _notify();
 
     _registerListeners();
@@ -266,7 +267,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
     final wcSessions = _appKit.sessions.getAll();
 
     // Loop through all the chain data
-    final allNetworks = AppKitModalNetworks.getNetworks(
+    final allNetworks = ReownAppKitModalNetworks.getNetworks(
       CoreConstants.namespace,
     );
     for (final chain in allNetworks) {
@@ -280,7 +281,8 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
 
     // There's a session stored
     if (wcSessions.isNotEmpty) {
-      await _storeSession(AppKitModalSession(sessionData: wcSessions.first));
+      await _storeSession(
+          ReownAppKitModalSession(sessionData: wcSessions.first));
       // session should not outlive the pairing
       if (wcPairings.isEmpty) {
         await disconnect();
@@ -313,8 +315,9 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
 
     final connected = _appKit.core.relayClient.isConnected;
     _serviceInitialized = connected;
-    _status =
-        connected ? AppKitModalStatus.initialized : AppKitModalStatus.error;
+    _status = connected
+        ? ReownAppKitModalStatus.initialized
+        : ReownAppKitModalStatus.error;
     _logger.i('[$runtimeType] initialized');
     _notify();
   }
@@ -338,7 +341,8 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
     }
   }
 
-  Future<void> _setSesionAndChainData(AppKitModalSession modalSession) async {
+  Future<void> _setSesionAndChainData(
+      ReownAppKitModalSession modalSession) async {
     try {
       await _storeSession(modalSession);
       _currentSelectedChainId = _currentSelectedChainId ?? modalSession.chainId;
@@ -351,12 +355,12 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
     }
   }
 
-  Future<AppKitModalSession?> _getStoredSession() async {
+  Future<ReownAppKitModalSession?> _getStoredSession() async {
     try {
       if (_storage.has(StorageConstants.modalSession)) {
         final storedSession = _storage.get(StorageConstants.modalSession);
         if (storedSession != null) {
-          return AppKitModalSession.fromMap(storedSession);
+          return ReownAppKitModalSession.fromMap(storedSession);
         }
       }
     } catch (e) {
@@ -365,7 +369,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
     return null;
   }
 
-  Future<void> _storeSession(AppKitModalSession modalSession) async {
+  Future<void> _storeSession(ReownAppKitModalSession modalSession) async {
     _currentSession = modalSession;
     try {
       await _storage.set(
@@ -383,7 +387,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
     if (_currentSession != null) {
       final chainId = _getStoredChainId(null);
       if (chainId != null) {
-        final chain = AppKitModalNetworks.getNetworkById(
+        final chain = ReownAppKitModalNetworks.getNetworkById(
           CoreConstants.namespace,
           chainId,
         );
@@ -398,7 +402,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
 
   @override
   Future<void> selectChain(
-    AppKitModalNetworkInfo? chainInfo, {
+    ReownAppKitModalNetworkInfo? chainInfo, {
     bool switchChain = false,
     bool logEvent = true,
   }) async {
@@ -511,7 +515,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
   @override
   Future<void> openNetworksView() {
     return _showModalView(
-      startWidget: AppKitModalSelectNetworkPage(
+      startWidget: ReownAppKitModalSelectNetworkPage(
         onTapNetwork: (info) {
           selectChain(info);
           widgetStack.instance.addDefault();
@@ -574,7 +578,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
     if (_context == null) {
       _logger.e(
         'No context was found. '
-        'Try adding `context:` parameter in AppKitModal class',
+        'Try adding `context:` parameter in ReownAppKitModal class',
       );
       return;
     }
@@ -588,9 +592,9 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
     widgetStack.instance.clear();
 
     final isBottomSheet = PlatformUtils.isBottomSheet();
-    final theme = AppKitModalTheme.maybeOf(_context!);
+    final theme = ReownAppKitModalTheme.maybeOf(_context!);
     await magicService.instance.syncTheme(theme);
-    final themeData = theme?.themeData ?? const AppKitModalThemeData();
+    final themeData = theme?.themeData ?? const ReownAppKitModalThemeData();
 
     Widget? showWidget = startWidget;
     if (_isConnected && showWidget == null) {
@@ -598,7 +602,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
     }
 
     final childWidget = theme == null
-        ? AppKitModalTheme(
+        ? ReownAppKitModalTheme(
             themeData: themeData,
             child: ModalContainer(startWidget: showWidget),
           )
@@ -637,12 +641,13 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
         anchorPoint: Offset(0, 0),
         context: _context!,
         builder: (_) {
-          final radiuses = AppKitModalTheme.radiusesOf(_context!);
+          final radiuses = ReownAppKitModalTheme.radiusesOf(_context!);
           final maxRadius = min(radiuses.radiusM, 36.0);
           final borderRadius = BorderRadius.all(Radius.circular(maxRadius));
           final constraints = BoxConstraints(maxWidth: 360, maxHeight: 600);
           return Dialog(
-            backgroundColor: AppKitModalTheme.colorsOf(_context!).background125,
+            backgroundColor:
+                ReownAppKitModalTheme.colorsOf(_context!).background125,
             shape: RoundedRectangleBorder(borderRadius: borderRadius),
             clipBehavior: Clip.hardEdge,
             child: ConstrainedBox(
@@ -689,7 +694,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
     );
 
     if (walletRedirect == null) {
-      throw AppKitModalException(
+      throw ReownAppKitModalException(
         'You didn\'t select a wallet or walletInfo argument is null',
       );
     }
@@ -767,7 +772,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
           final nonce = await siweService.instance!.getNonce();
           final p1 = await siweService.instance!.config!.getMessageParams();
           final chains =
-              AppKitModalNetworks.getNetworks(CoreConstants.namespace)
+              ReownAppKitModalNetworks.getNetworks(CoreConstants.namespace)
                   .map((e) => '${CoreConstants.namespace}:${e.chainId}')
                   .toList();
           final methods = p1.methods ?? MethodsConstants.allMethods;
@@ -925,14 +930,14 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
   Future<void> disconnect({bool disconnectAllSessions = true}) async {
     _checkInitialized();
 
-    _status = AppKitModalStatus.initializing;
+    _status = ReownAppKitModalStatus.initializing;
     _notify();
 
     if (_currentSession?.sessionService.isCoinbase == true) {
       try {
         await coinbaseService.instance.resetSession();
       } catch (_) {
-        _status = AppKitModalStatus.initialized;
+        _status = ReownAppKitModalStatus.initialized;
         _notify();
         return;
       }
@@ -941,7 +946,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
       await Future.delayed(Duration(milliseconds: 300));
       final disconnected = await magicService.instance.disconnect();
       if (!disconnected) {
-        _status = AppKitModalStatus.initialized;
+        _status = ReownAppKitModalStatus.initialized;
         _notify();
         return;
       }
@@ -974,7 +979,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
       return;
     } catch (e) {
       analyticsService.instance.sendEvent(DisconnectErrorEvent());
-      _status = AppKitModalStatus.initialized;
+      _status = ReownAppKitModalStatus.initialized;
       _notify();
     }
   }
@@ -1016,7 +1021,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
   }
 
   @override
-  void selectWallet(AppKitModalWalletInfo? walletInfo) {
+  void selectWallet(ReownAppKitModalWalletInfo? walletInfo) {
     _selectedWallet = walletInfo;
   }
 
@@ -1043,7 +1048,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
     List parameters = const [],
   }) async {
     if (_currentSession == null) {
-      throw AppKitModalException('Session is null');
+      throw ReownAppKitModalException('Session is null');
     }
     String reqChainId = chainId;
     final isValidChainId = NamespaceUtils.isValidChainId(chainId);
@@ -1060,14 +1065,14 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
     //
     _logger.d('[$runtimeType] requestWriteContract, chainId: $reqChainId');
 
-    final networkInfo = AppKitModalNetworks.getNetworkById(
+    final networkInfo = ReownAppKitModalNetworks.getNetworkById(
       reqChainId.split(':').first,
       reqChainId.split(':').last,
     )!;
 
     try {
       if (selectedChain == null) {
-        throw AppKitModalException(
+        throw ReownAppKitModalException(
           'You must select a chain before reading a contract',
         );
       }
@@ -1094,7 +1099,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
     String? method,
   }) async {
     if (_currentSession == null) {
-      throw AppKitModalException('Session is null');
+      throw ReownAppKitModalException('Session is null');
     }
     String reqChainId = chainId;
     final isValidChainId = NamespaceUtils.isValidChainId(chainId);
@@ -1134,7 +1139,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
     String? switchToChainId,
   }) async {
     if (_currentSession == null) {
-      throw AppKitModalException('Session is null');
+      throw ReownAppKitModalException('Session is null');
     }
     String reqChainId = chainId;
     final isValidChainId = NamespaceUtils.isValidChainId(chainId);
@@ -1185,7 +1190,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
           // If the error is due to no session on Coinbase Wallet we disconnnect the session on Modal.
           // This is the only way to detect a missing session since Coinbase Wallet is not sending any event.
           // disconnect();
-          throw AppKitModalException('Coinbase Wallet Error');
+          throw ReownAppKitModalException('Coinbase Wallet Error');
         }
         rethrow;
       }
@@ -1194,11 +1199,11 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
 
   @override
   Future<void> dispose() async {
-    if (_status == AppKitModalStatus.initialized) {
+    if (_status == ReownAppKitModalStatus.initialized) {
       await disconnect();
       await expirePreviousInactivePairings();
       _unregisterListeners();
-      _status = AppKitModalStatus.idle;
+      _status = ReownAppKitModalStatus.idle;
       _logger.d('[$runtimeType] dispose');
     }
     super.dispose();
@@ -1249,7 +1254,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
 
   void _setRequiredNamespaces(Map<String, RequiredNamespace>? requiredNSpaces) {
     if (requiredNSpaces != null) {
-      // Set the required namespaces declared by the user on AppKitModal object
+      // Set the required namespaces declared by the user on ReownAppKitModal object
       _requiredNamespaces = requiredNSpaces.map(
         (key, value) => MapEntry(
           key,
@@ -1269,7 +1274,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
       (k) => k != CoreConstants.namespace,
     );
     if (wrongNamespace != null) {
-      throw AppKitModalException('Only eip155 blockains are supported');
+      throw ReownAppKitModalException('Only eip155 blockains are supported');
     }
 
     _logger.d('[$runtimeType] _requiredNamespaces $_requiredNamespaces');
@@ -1277,7 +1282,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
 
   void _setOptionalNamespaces(Map<String, RequiredNamespace>? optionalNSpaces) {
     if (optionalNSpaces != null) {
-      // Set the optional namespaces declared by the user on AppKitModal object
+      // Set the optional namespaces declared by the user on ReownAppKitModal object
       _optionalNamespaces = optionalNSpaces.map(
         (key, value) => MapEntry(
           key,
@@ -1290,9 +1295,9 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
       );
     } else {
       // Set the optional namespaces to everything in our chain presets
-      final namespaces = AppKitModalNetworks.supported.keys;
+      final namespaces = ReownAppKitModalNetworks.supported.keys;
       for (var ns in namespaces) {
-        final chains = AppKitModalNetworks.supported[ns] ?? [];
+        final chains = ReownAppKitModalNetworks.supported[ns] ?? [];
         _optionalNamespaces[ns] = RequiredNamespace(
           chains: chains.map((e) => '$ns:${e.chainId}').toList(),
           methods: MethodsConstants.allMethods.toSet().toList(),
@@ -1305,7 +1310,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
       (k) => k != CoreConstants.namespace,
     );
     if (wrongNamespace != null) {
-      throw AppKitModalException(
+      throw ReownAppKitModalException(
         'Only ${CoreConstants.namespace} networks are supported',
       );
     }
@@ -1349,7 +1354,8 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
   }
 
   @override
-  Future<void> requestSwitchToChain(AppKitModalNetworkInfo newChain) async {
+  Future<void> requestSwitchToChain(
+      ReownAppKitModalNetworkInfo newChain) async {
     if (_currentSession?.sessionService.isMagic == true) {
       await selectChain(newChain);
       return;
@@ -1391,7 +1397,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
   }
 
   @override
-  Future<void> requestAddChain(AppKitModalNetworkInfo newChain) async {
+  Future<void> requestAddChain(ReownAppKitModalNetworkInfo newChain) async {
     final topic = _currentSession?.topic ?? '';
     final chainId = '${CoreConstants.namespace}:$_currentSelectedChainId';
     final newChainId = '${CoreConstants.namespace}:${newChain.chainId}';
@@ -1464,15 +1470,15 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
     _currentSession = null;
     _lastChainEmitted = null;
     _supportsOneClickAuth = false;
-    _status = AppKitModalStatus.initialized;
+    _status = ReownAppKitModalStatus.initialized;
     _notify();
   }
 
   void _checkInitialized() {
-    if (_status != AppKitModalStatus.initialized &&
-        _status != AppKitModalStatus.initializing) {
-      throw AppKitModalException(
-        'AppKitModal must be initialized before calling this method.',
+    if (_status != ReownAppKitModalStatus.initialized &&
+        _status != ReownAppKitModalStatus.initializing) {
+      throw ReownAppKitModalException(
+        'ReownAppKitModal must be initialized before calling this method.',
       );
     }
   }
@@ -1573,7 +1579,7 @@ class AppKitModal with ChangeNotifier implements IAppKitModal {
   }
 }
 
-extension _EmailConnectorExtension on AppKitModal {
+extension _EmailConnectorExtension on ReownAppKitModal {
   // Login event should be treated like Connect event for regular wallets
   Future<void> _onMagicLoginEvent(MagicLoginEvent? args) async {
     final debugString = jsonEncode(args?.data?.toJson());
@@ -1583,7 +1589,7 @@ extension _EmailConnectorExtension on AppKitModal {
       _currentSelectedChainId = newChainId;
       //
       final magicData = args.data?.copytWith(chainId: int.tryParse(newChainId));
-      final session = AppKitModalSession(magicData: magicData);
+      final session = ReownAppKitModalSession(magicData: magicData);
       await _setSesionAndChainData(session);
       onModalConnect.broadcast(ModalConnect(session));
       if (_selectedWallet == null) {
@@ -1597,7 +1603,7 @@ extension _EmailConnectorExtension on AppKitModal {
           onModalUpdate.broadcast(ModalConnect(_currentSession!));
         } else {
           _disconnectOnClose = true;
-          final theme = AppKitModalTheme.maybeOf(_context!);
+          final theme = ReownAppKitModalTheme.maybeOf(_context!);
           await magicService.instance.syncTheme(theme);
           widgetStack.instance.push(ApproveSIWEPage(
             onSiweFinish: _oneSIWEFinish,
@@ -1672,7 +1678,7 @@ extension _EmailConnectorExtension on AppKitModal {
   }
 }
 
-extension _CoinbaseConnectorExtension on AppKitModal {
+extension _CoinbaseConnectorExtension on ReownAppKitModal {
   void _onCoinbaseConnectEvent(CoinbaseConnectEvent? args) async {
     final debugString = jsonEncode(args?.data?.toJson());
     _logger.i('[$runtimeType] _onCoinbaseConnectEvent: $debugString');
@@ -1680,7 +1686,7 @@ extension _CoinbaseConnectorExtension on AppKitModal {
       final newChainId = _getStoredChainId('${args!.data!.chainId}')!;
       _currentSelectedChainId = newChainId;
       //
-      final session = AppKitModalSession(coinbaseData: args.data!);
+      final session = ReownAppKitModalSession(coinbaseData: args.data!);
       await _setSesionAndChainData(session);
       onModalConnect.broadcast(ModalConnect(session));
       //
@@ -1705,7 +1711,7 @@ extension _CoinbaseConnectorExtension on AppKitModal {
         final chainId = args.chainId ?? _currentSession!.chainId;
         _currentSelectedChainId = chainId;
         //
-        final chain = AppKitModalNetworks.getNetworkById(
+        final chain = ReownAppKitModalNetworks.getNetworkById(
           CoreConstants.namespace,
           chainId,
         );
@@ -1741,7 +1747,7 @@ extension _CoinbaseConnectorExtension on AppKitModal {
   }
 }
 
-extension _AppKitModalExtension on AppKitModal {
+extension _AppKitModalExtension on ReownAppKitModal {
   void _onSessionAuthResponse(SessionAuthResponse? args) async {
     final debugString = jsonEncode(args?.toJson());
     dev.log('[$runtimeType] _onSessionAuthResponse: $debugString');
@@ -1804,7 +1810,8 @@ extension _AppKitModalExtension on AppKitModal {
   }
 
   // HAS TO BE CALLED JUST ONCE ON CONNECTION
-  Future<AppKitModalSession> _settleSession(SessionData sessionData) async {
+  Future<ReownAppKitModalSession> _settleSession(
+      SessionData sessionData) async {
     if (_currentSelectedChainId == null) {
       final chains = NamespaceUtils.getChainIdsFromNamespaces(
         namespaces: sessionData.namespaces,
@@ -1812,7 +1819,7 @@ extension _AppKitModalExtension on AppKitModal {
       final chainId = chains.first.split(':').last.toString();
       _currentSelectedChainId = chainId;
     }
-    final session = AppKitModalSession(sessionData: sessionData);
+    final session = ReownAppKitModalSession(sessionData: sessionData);
     await _setSesionAndChainData(session);
     if (_selectedWallet == null) {
       analyticsService.instance.sendEvent(ConnectSuccessEvent(
@@ -1832,7 +1839,7 @@ extension _AppKitModalExtension on AppKitModal {
     return session;
   }
 
-  void _oneSIWEFinish(AppKitModalSession updatedSession) async {
+  void _oneSIWEFinish(ReownAppKitModalSession updatedSession) async {
     await _storeSession(updatedSession);
     try {
       await _storage.set(
@@ -1873,7 +1880,7 @@ extension _AppKitModalExtension on AppKitModal {
       if (wcSessions.isEmpty) return;
       //
       final session = _appKit.sessions.get(args.topic);
-      final updatedSession = AppKitModalSession(
+      final updatedSession = ReownAppKitModalSession(
         sessionData: session!.copyWith(
           namespaces: args.namespaces,
         ),
@@ -1896,27 +1903,30 @@ extension _AppKitModalExtension on AppKitModal {
 
   void _onRelayClientConnect(EventArgs? args) {
     _logger.i('[$runtimeType] relay client connected');
-    final service = _currentSession?.sessionService ?? AppKitModalConnector.wc;
+    final service =
+        _currentSession?.sessionService ?? ReownAppKitModalConnector.wc;
     if (service.isWC && _serviceInitialized) {
-      _status = AppKitModalStatus.initialized;
+      _status = ReownAppKitModalStatus.initialized;
       _notify();
     }
   }
 
   void _onRelayClientDisconnect(EventArgs? args) {
     _logger.i('[$runtimeType] relay client disconnected');
-    final service = _currentSession?.sessionService ?? AppKitModalConnector.wc;
+    final service =
+        _currentSession?.sessionService ?? ReownAppKitModalConnector.wc;
     if (service.isWC && _serviceInitialized) {
-      _status = AppKitModalStatus.idle;
+      _status = ReownAppKitModalStatus.idle;
       _notify();
     }
   }
 
   void _onRelayClientError(ErrorEvent? args) {
     _logger.i('[$runtimeType] relay client error: ${args?.error}');
-    final service = _currentSession?.sessionService ?? AppKitModalConnector.wc;
+    final service =
+        _currentSession?.sessionService ?? ReownAppKitModalConnector.wc;
     if (service.isWC) {
-      _status = AppKitModalStatus.error;
+      _status = ReownAppKitModalStatus.error;
       _notify();
     }
   }

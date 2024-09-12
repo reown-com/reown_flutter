@@ -21,8 +21,8 @@ class BaseListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     return FilledButton(
       onPressed: onTap,
       style: ButtonStyle(

@@ -24,7 +24,7 @@ import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class ApproveSIWEPage extends StatefulWidget {
-  final Function(AppKitModalSession session) onSiweFinish;
+  final Function(ReownAppKitModalSession session) onSiweFinish;
   const ApproveSIWEPage({
     required this.onSiweFinish,
   }) : super(key: KeyConstants.approveSiwePageKey);
@@ -34,7 +34,7 @@ class ApproveSIWEPage extends StatefulWidget {
 }
 
 class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
-  IAppKitModal? _appKitModal;
+  IReownAppKitModal? _appKitModal;
   double _position = 0.0;
   static const _duration = Duration(milliseconds: 1500);
 
@@ -101,7 +101,7 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
       //
     } on JsonRpcError catch (e) {
       _handleError(e.message);
-    } on AppKitModalException catch (e) {
+    } on ReownAppKitModalException catch (e) {
       _handleError(e.message);
     } catch (e) {
       _handleError(e.toString());
@@ -128,9 +128,9 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
   Widget build(BuildContext context) {
     if (_appKitModal == null) return ContentLoading();
 
-    final themeData = AppKitModalTheme.getDataOf(context);
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     String peerIcon;
     try {
       peerIcon = _appKitModal?.session?.peer?.metadata.icons.first ?? '';

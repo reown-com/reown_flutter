@@ -17,8 +17,8 @@ class WalletsGrid extends StatelessWidget {
     this.scrollController,
     this.paddingTop = 0.0,
   });
-  final List<GridItem<AppKitModalWalletInfo>> itemList;
-  final Function(AppKitModalWalletInfo walletInfo)? onTapWallet;
+  final List<GridItem<ReownAppKitModalWalletInfo>> itemList;
+  final Function(ReownAppKitModalWalletInfo walletInfo)? onTapWallet;
   final bool showLoading;
   final int loadingCount;
   final ScrollController? scrollController;
@@ -26,7 +26,7 @@ class WalletsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final List<Widget> children = itemList
         .map(
           (info) => SizedBox(

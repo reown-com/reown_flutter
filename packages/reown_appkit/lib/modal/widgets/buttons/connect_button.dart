@@ -20,23 +20,23 @@ class ConnectButton extends StatelessWidget {
     super.key,
     this.size = BaseButtonSize.regular,
     this.state = ConnectButtonState.idle,
-    this.serviceStatus = AppKitModalStatus.idle,
+    this.serviceStatus = ReownAppKitModalStatus.idle,
     this.titleOverride,
     this.onTap,
   });
   final BaseButtonSize size;
   final ConnectButtonState state;
-  final AppKitModalStatus serviceStatus;
+  final ReownAppKitModalStatus serviceStatus;
   final String? titleOverride;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final connecting = state == ConnectButtonState.connecting;
     final disabled = state == ConnectButtonState.disabled;
     final connected = state == ConnectButtonState.connected;
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final borderRadius = radiuses.isSquare() ? 0.0 : size.height / 2;
     final showLoading = connecting || serviceStatus.isLoading;
     return BaseButton(

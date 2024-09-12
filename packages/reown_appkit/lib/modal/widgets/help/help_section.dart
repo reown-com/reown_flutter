@@ -15,8 +15,8 @@ class HelpSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = AppKitModalTheme.getDataOf(context);
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return Container(
       padding: const EdgeInsets.all(kPadding12),
       child: Column(

@@ -23,7 +23,7 @@ class GetWalletPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final isPortrait = ResponsiveData.isPortrait(context);
     final maxHeight = isPortrait
         ? (kListItemHeight * 7)
@@ -39,7 +39,7 @@ class GetWalletPage extends StatelessWidget {
             }
 
             final notInstalledItems = items
-                .where((GridItem<AppKitModalWalletInfo> w) =>
+                .where((GridItem<ReownAppKitModalWalletInfo> w) =>
                     !w.data.installed && !w.data.recent)
                 .toList();
             final itemsToShow = notInstalledItems

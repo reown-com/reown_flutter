@@ -25,7 +25,7 @@ class AppKitModalAccountButton extends StatefulWidget {
     this.custom,
   });
 
-  final IAppKitModal service;
+  final IReownAppKitModal service;
   final BaseButtonSize size;
   final String? avatar;
   final BuildContext? context;
@@ -47,7 +47,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
     super.initState();
     _modalNotifyListener();
     widget.service.addListener(_modalNotifyListener);
-    // TODO [AppKitModalAccountButton] this should go in AppKitModal but for that, init() method of AppKitModal should receive a BuildContext, which would be a breaking change
+    // TODO [AppKitModalAccountButton] this should go in ReownAppKitModal but for that, init() method of ReownAppKitModal should receive a BuildContext, which would be a breaking change
     magicService.instance.onMagicRpcRequest.subscribe(_approveSign);
     magicService.instance.onMagicLoginRequest.subscribe(_loginRequested);
   }
@@ -64,7 +64,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
     setState(() {
       _address = widget.service.session?.address ?? '';
       final chainId = widget.service.selectedChain?.chainId ?? '';
-      final imageId = AppKitModalNetworks.getNetworkIconId(chainId);
+      final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
       _tokenImage = explorerService.instance.getAssetImageUrl(imageId);
       _balance = widget.service.chainBalance;
       _tokenName = widget.service.selectedChain?.currency;
@@ -98,8 +98,8 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
     if (widget.custom != null) {
       return widget.custom!;
     }
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final borderRadius = radiuses.isSquare() ? 0.0 : widget.size.height / 2;
     final enabled = _address.isNotEmpty && widget.service.status.isInitialized;
     // TODO [AppKitModalAccountButton] this button should be able to be disable by passing a null onTap action
@@ -173,19 +173,19 @@ class _AddressButton extends StatelessWidget {
   final BaseButtonSize buttonSize;
   final VoidCallback? onTap;
   final String address;
-  final IAppKitModal service;
+  final IReownAppKitModal service;
 
   @override
   Widget build(BuildContext context) {
     if (address.isEmpty) {
       return SizedBox.shrink();
     }
-    final themeData = AppKitModalTheme.getDataOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
     final textStyle = buttonSize == BaseButtonSize.small
         ? themeData.textStyles.small600
         : themeData.textStyles.paragraph600;
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final innerBorderRadius =
         radiuses.isSquare() ? 0.0 : BaseButtonSize.small.height / 2;
     return Padding(
@@ -289,8 +289,8 @@ class _BalanceButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final themeData = AppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
     final textStyle = buttonSize == BaseButtonSize.small
         ? themeData.textStyles.small600
         : themeData.textStyles.paragraph600;

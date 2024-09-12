@@ -18,7 +18,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   bool _isDarkMode = false;
-  AppKitModalThemeData? _themeData;
+  ReownAppKitModalThemeData? _themeData;
 
   @override
   void initState() {
@@ -62,7 +62,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return AppKitModalTheme(
+    return ReownAppKitModalTheme(
       isDarkMode: _isDarkMode,
       themeData: _themeData,
       child: MaterialApp(
@@ -96,8 +96,8 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         _isDarkMode = !_isDarkMode;
       });
 
-  AppKitModalThemeData get _customTheme => AppKitModalThemeData(
-        lightColors: AppKitModalColors.lightMode.copyWith(
+  ReownAppKitModalThemeData get _customTheme => ReownAppKitModalThemeData(
+        lightColors: ReownAppKitModalColors.lightMode.copyWith(
           accent100: const Color.fromARGB(255, 30, 59, 236),
           background100: const Color.fromARGB(255, 161, 183, 231),
           // Main Modal's background color
@@ -110,7 +110,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           // Secondary Modal's text
           foreground150: const Color.fromARGB(255, 22, 18, 19),
         ),
-        darkColors: AppKitModalColors.darkMode.copyWith(
+        darkColors: ReownAppKitModalColors.darkMode.copyWith(
           accent100: const Color.fromARGB(255, 161, 183, 231),
           background100: const Color.fromARGB(255, 30, 59, 236),
           // Main Modal's background color
@@ -123,6 +123,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
           // Secondary Modal's text
           foreground150: const Color.fromARGB(255, 233, 237, 236),
         ),
-        radiuses: AppKitModalRadiuses.square,
+        radiuses: ReownAppKitModalRadiuses.square,
       );
 }

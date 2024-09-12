@@ -1,11 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:reown_appkit/modal/models/public/appkit_network_info.dart';
 
-class AppKitModalNetworks {
+class ReownAppKitModalNetworks {
   // https://github.com/WalletConnect/blockchain-api/blob/master/SUPPORTED_CHAINS.md
-  static Map<String, List<AppKitModalNetworkInfo>> supported = {
+  static Map<String, List<ReownAppKitModalNetworkInfo>> supported = {
     'eip155': [
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Ethereum',
         chainId: '1',
         chainIcon: chainImagesId['1'],
@@ -13,7 +13,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://ethereum-rpc.publicnode.com',
         explorerUrl: 'https://etherscan.io',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Optimism',
         chainId: '10',
         chainIcon: chainImagesId['10'],
@@ -21,7 +21,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://mainnet.optimism.io/',
         explorerUrl: 'https://optimistic.etherscan.io',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Binance Smart Chain',
         chainId: '56',
         chainIcon: chainImagesId['56'],
@@ -29,7 +29,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://bsc-dataseed.binance.org/',
         explorerUrl: 'https://bscscan.com',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Gnosis Chain',
         chainId: '100',
         chainIcon: chainImagesId['100'],
@@ -37,7 +37,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://rpc.gnosischain.com',
         explorerUrl: 'https://gnosis.blockscout.com',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Polygon',
         chainId: '137',
         chainIcon: chainImagesId['137'],
@@ -45,7 +45,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://polygon.drpc.org',
         explorerUrl: 'https://polygonscan.com',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'zkSync Era',
         chainId: '324',
         chainIcon: chainImagesId['324'],
@@ -53,7 +53,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://mainnet.era.zksync.io',
         explorerUrl: 'https://explorer.zksync.io',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Polygon zkEVM',
         chainId: '1101',
         chainIcon: chainImagesId['1101'],
@@ -61,7 +61,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://rpc-mainnet.matic.network',
         explorerUrl: 'https://explorer-evm.polygon.technology',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Mantle',
         chainId: '5000',
         chainIcon: chainImagesId['5000'],
@@ -69,7 +69,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://rpc.mantlenetwork.io',
         explorerUrl: 'https://explorer.mantlenetwork.io',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Klaytn Mainnet',
         chainId: '8217',
         chainIcon: chainImagesId['8217'],
@@ -77,7 +77,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://public-node-api.klaytnapi.com/v1/cypress',
         explorerUrl: 'https://scope.klaytn.com',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Base',
         chainId: '8453',
         chainIcon: chainImagesId['8453'],
@@ -85,7 +85,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://mainnet.base.org',
         explorerUrl: 'https://basescan.org',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Arbitrum',
         chainId: '42161',
         chainIcon: chainImagesId['42161'],
@@ -93,7 +93,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://arbitrum.blockpi.network/v1/rpc/public',
         explorerUrl: 'https://arbiscan.io/',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Celo',
         chainId: '42220',
         chainIcon: chainImagesId['42220'],
@@ -101,7 +101,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://forno.celo.org',
         explorerUrl: 'https://explorer.celo.org/mainnet',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Avalanche',
         chainId: '43114',
         chainIcon: chainImagesId['43114'],
@@ -109,7 +109,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
         explorerUrl: 'https://snowtrace.io',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Linea',
         chainId: '59144',
         chainIcon: chainImagesId['59144'],
@@ -117,7 +117,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://rpc.linea.build',
         explorerUrl: 'https://explorer.linea.build',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Zora',
         chainId: '7777777',
         chainIcon: chainImagesId['7777777'],
@@ -125,7 +125,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://rpc.zora.energy',
         explorerUrl: 'https://explorer.zora.energy',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Aurora',
         chainId: '1313161554',
         chainIcon: chainImagesId['1313161554'],
@@ -136,9 +136,9 @@ class AppKitModalNetworks {
     ],
   };
 
-  static Map<String, List<AppKitModalNetworkInfo>> extra = {
+  static Map<String, List<ReownAppKitModalNetworkInfo>> extra = {
     'eip155': [
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Fantom',
         chainId: '250',
         chainIcon: chainImagesId['250'],
@@ -146,7 +146,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://rpc.ftm.tools/',
         explorerUrl: 'https://ftmscan.com',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'EVMos',
         chainId: '9001',
         chainIcon: chainImagesId['9001'],
@@ -154,7 +154,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://evmos-evm.publicnode.com',
         explorerUrl: '',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Iotx',
         chainId: '4689',
         chainIcon: chainImagesId['4689'],
@@ -162,7 +162,7 @@ class AppKitModalNetworks {
         rpcUrl: 'https://rpc.ankr.com/iotex',
         explorerUrl: 'https://iotexscan.io',
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Metis',
         chainId: '1088',
         chainIcon: chainImagesId['1088'],
@@ -173,9 +173,9 @@ class AppKitModalNetworks {
     ]
   };
 
-  static Map<String, List<AppKitModalNetworkInfo>> test = {
+  static Map<String, List<ReownAppKitModalNetworkInfo>> test = {
     'eip155': [
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Sepolia',
         chainId: '11155111',
         currency: 'SEP',
@@ -183,7 +183,7 @@ class AppKitModalNetworks {
         explorerUrl: 'https://sepolia.etherscan.io/',
         isTestNetwork: true,
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Holesky',
         chainId: '17000',
         chainIcon: chainImagesId['17000'],
@@ -192,7 +192,7 @@ class AppKitModalNetworks {
         explorerUrl: 'https://explorer.holesky.test',
         isTestNetwork: true,
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Mumbai',
         chainId: '80001',
         currency: 'MATIC',
@@ -205,7 +205,7 @@ class AppKitModalNetworks {
         explorerUrl: 'https://mumbai.polygonscan.com',
         isTestNetwork: true,
       ),
-      AppKitModalNetworkInfo(
+      ReownAppKitModalNetworkInfo(
         name: 'Amoy',
         chainId: '80002',
         currency: 'MATIC',
@@ -266,14 +266,14 @@ class AppKitModalNetworks {
     '1313161554': '3ff73439-a619-4894-9262-4470c773a100',
   };
 
-  static AppKitModalNetworkInfo? getNetworkById(
+  static ReownAppKitModalNetworkInfo? getNetworkById(
     String namespace,
     String chainId,
   ) {
     return supported[namespace]?.firstWhere((e) => e.chainId == chainId);
   }
 
-  static List<AppKitModalNetworkInfo> getNetworks(String namespace) {
+  static List<ReownAppKitModalNetworkInfo> getNetworks(String namespace) {
     return supported[namespace] ?? [];
   }
 

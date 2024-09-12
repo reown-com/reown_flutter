@@ -32,7 +32,7 @@ class ConnectWalletPage extends StatefulWidget {
 
 class _ConnectWalletPageState extends State<ConnectWalletPage>
     with WidgetsBindingObserver {
-  IAppKitModal? _service;
+  IReownAppKitModal? _service;
   SegmentOption _selectedSegment = SegmentOption.mobile;
   ModalError? errorEvent;
 
@@ -79,8 +79,8 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
     if (_service == null) {
       return ContentLoading();
     }
-    final themeData = AppKitModalTheme.getDataOf(context);
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final isPortrait = ResponsiveData.isPortrait(context);
     final maxWidth = isPortrait
         ? ResponsiveData.maxWidthOf(context)
@@ -312,7 +312,7 @@ class _WalletAvatar extends StatelessWidget {
 
   final String imageUrl;
   final bool errorConnection;
-  final AppKitModalColors themeColors;
+  final ReownAppKitModalColors themeColors;
 
   @override
   Widget build(BuildContext context) {

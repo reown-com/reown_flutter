@@ -10,7 +10,7 @@ enum ChainType {
 class ChainMetadata {
   final Color color;
   final ChainType type;
-  final AppKitModalNetworkInfo appKitNetworkInfo;
+  final ReownAppKitModalNetworkInfo appKitNetworkInfo;
 
   const ChainMetadata({
     required this.color,

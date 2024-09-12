@@ -28,7 +28,7 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> with WidgetsBindingObserver {
-  IAppKitModal? _service;
+  IReownAppKitModal? _service;
 
   @override
   void initState() {
@@ -80,15 +80,15 @@ class _AccountPageState extends State<AccountPage> with WidgetsBindingObserver {
 }
 
 class _DefaultAccountView extends StatelessWidget {
-  const _DefaultAccountView({required IAppKitModal service})
+  const _DefaultAccountView({required IReownAppKitModal service})
       : _service = service;
-  final IAppKitModal _service;
+  final IReownAppKitModal _service;
 
   @override
   Widget build(BuildContext context) {
-    final themeData = AppKitModalTheme.getDataOf(context);
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final isEmailLogin = _service.session?.sessionService.isMagic ?? false;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -205,12 +205,12 @@ class _SelectNetworkButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final service = ModalProvider.of(context).service;
-    final themeData = AppKitModalTheme.getDataOf(context);
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final chainId = service.selectedChain?.chainId ?? '';
-    final imageId = AppKitModalNetworks.getNetworkIconId(chainId);
+    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
     final tokenImage = explorerService.instance.getAssetImageUrl(imageId);
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     return AccountListItem(
       iconWidget: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -232,7 +232,7 @@ class _SelectNetworkButton extends StatelessWidget {
       ),
       onTap: () {
         widgetStack.instance.push(
-          AppKitModalSelectNetworkPage(),
+          ReownAppKitModalSelectNetworkPage(),
           event: ClickNetworksEvent(),
         );
       },

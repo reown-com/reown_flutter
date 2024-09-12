@@ -15,7 +15,7 @@ import 'package:reown_appkit_example/widgets/method_dialog.dart';
 class SessionWidget extends StatefulWidget {
   const SessionWidget({super.key, required this.appKit});
 
-  final AppKitModal appKit;
+  final ReownAppKitModal appKit;
 
   @override
   SessionWidgetState createState() => SessionWidgetState();
@@ -49,12 +49,12 @@ class SessionWidgetState extends State<SessionWidget> {
                 Expanded(
                   child: Text(
                     session.connectedWalletName ?? '',
-                    style: AppKitModalTheme.getDataOf(context)
+                    style: ReownAppKitModalTheme.getDataOf(context)
                         .textStyles
                         .paragraph600
                         .copyWith(
-                          color:
-                              AppKitModalTheme.colorsOf(context).foreground100,
+                          color: ReownAppKitModalTheme.colorsOf(context)
+                              .foreground100,
                         ),
                   ),
                 ),
@@ -80,20 +80,22 @@ class SessionWidgetState extends State<SessionWidget> {
           children: [
             Text(
               StringConstants.sessionTopic,
-              style: AppKitModalTheme.getDataOf(context)
+              style: ReownAppKitModalTheme.getDataOf(context)
                   .textStyles
                   .small600
                   .copyWith(
-                    color: AppKitModalTheme.colorsOf(context).foreground100,
+                    color:
+                        ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
             ),
             Text(
               '${session.topic}',
-              style: AppKitModalTheme.getDataOf(context)
+              style: ReownAppKitModalTheme.getDataOf(context)
                   .textStyles
                   .small400
                   .copyWith(
-                    color: AppKitModalTheme.colorsOf(context).foreground100,
+                    color:
+                        ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
             ),
           ],
@@ -108,7 +110,7 @@ class SessionWidgetState extends State<SessionWidget> {
     // Get current active account
     final accounts = session.getAccounts() ?? [];
     final chainId = widget.appKit.selectedChain?.chainId ?? '';
-    final namespace = AppKitModalNetworks.getNamespaceForChainId(chainId);
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
     final chainsNamespaces = NamespaceUtils.getChainsFromAccounts(accounts);
     if (chainsNamespaces.contains('$namespace:$chainId')) {
       final account = accounts.firstWhere(
@@ -122,11 +124,11 @@ class SessionWidgetState extends State<SessionWidget> {
           const SizedBox.square(dimension: 8.0),
           Text(
             'Stored session:',
-            style: AppKitModalTheme.getDataOf(context)
+            style: ReownAppKitModalTheme.getDataOf(context)
                 .textStyles
                 .small600
                 .copyWith(
-                  color: AppKitModalTheme.colorsOf(context).foreground100,
+                  color: ReownAppKitModalTheme.colorsOf(context).foreground100,
                 ),
           ),
           InkWell(
@@ -143,11 +145,12 @@ class SessionWidgetState extends State<SessionWidget> {
             child: Text(
               const JsonEncoder.withIndent('     ')
                   .convert(widget.appKit.session?.toMap()),
-              style: AppKitModalTheme.getDataOf(context)
+              style: ReownAppKitModalTheme.getDataOf(context)
                   .textStyles
                   .small400
                   .copyWith(
-                    color: AppKitModalTheme.colorsOf(context).foreground100,
+                    color:
+                        ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
             ),
           ),
@@ -172,15 +175,21 @@ class SessionWidgetState extends State<SessionWidget> {
       Text(
         // chainMetadata.appKitNetworkInfo.name,
         widget.appKit.selectedChain?.name ?? 'Unsupported chain',
-        style: AppKitModalTheme.getDataOf(context).textStyles.title600.copyWith(
-              color: AppKitModalTheme.colorsOf(context).foreground100,
+        style: ReownAppKitModalTheme.getDataOf(context)
+            .textStyles
+            .title600
+            .copyWith(
+              color: ReownAppKitModalTheme.colorsOf(context).foreground100,
             ),
       ),
       const SizedBox(height: StyleConstants.linear8),
       Text(
         NamespaceUtils.getAccount(account),
-        style: AppKitModalTheme.getDataOf(context).textStyles.small400.copyWith(
-              color: AppKitModalTheme.colorsOf(context).foreground100,
+        style: ReownAppKitModalTheme.getDataOf(context)
+            .textStyles
+            .small400
+            .copyWith(
+              color: ReownAppKitModalTheme.colorsOf(context).foreground100,
             ),
       ),
     ];
@@ -189,11 +198,11 @@ class SessionWidgetState extends State<SessionWidget> {
       const SizedBox(height: StyleConstants.linear8),
       Text(
         StringConstants.methods,
-        style: AppKitModalTheme.getDataOf(context)
+        style: ReownAppKitModalTheme.getDataOf(context)
             .textStyles
             .paragraph600
             .copyWith(
-              color: AppKitModalTheme.colorsOf(context).foreground100,
+              color: ReownAppKitModalTheme.colorsOf(context).foreground100,
             ),
       ),
     ]);
@@ -203,11 +212,11 @@ class SessionWidgetState extends State<SessionWidget> {
       const SizedBox(height: StyleConstants.linear8),
       Text(
         StringConstants.events,
-        style: AppKitModalTheme.getDataOf(context)
+        style: ReownAppKitModalTheme.getDataOf(context)
             .textStyles
             .paragraph600
             .copyWith(
-              color: AppKitModalTheme.colorsOf(context).foreground100,
+              color: ReownAppKitModalTheme.colorsOf(context).foreground100,
             ),
       ),
     ]);
@@ -217,7 +226,8 @@ class SessionWidgetState extends State<SessionWidget> {
       padding: const EdgeInsets.all(StyleConstants.linear8),
       margin: const EdgeInsets.symmetric(vertical: StyleConstants.linear8),
       decoration: BoxDecoration(
-        border: Border.all(color: AppKitModalTheme.colorsOf(context).accent100),
+        border: Border.all(
+            color: ReownAppKitModalTheme.colorsOf(context).accent100),
         borderRadius: const BorderRadius.all(
           Radius.circular(StyleConstants.linear8),
         ),
@@ -238,10 +248,12 @@ class SessionWidgetState extends State<SessionWidget> {
       return [
         Text(
           'No methods approved',
-          style:
-              AppKitModalTheme.getDataOf(context).textStyles.small400.copyWith(
-                    color: AppKitModalTheme.colorsOf(context).foreground100,
-                  ),
+          style: ReownAppKitModalTheme.getDataOf(context)
+              .textStyles
+              .small400
+              .copyWith(
+                color: ReownAppKitModalTheme.colorsOf(context).foreground100,
+              ),
         )
       ];
     }
@@ -374,10 +386,12 @@ class SessionWidgetState extends State<SessionWidget> {
         const SizedBox(height: StyleConstants.linear8),
         Text(
           'Session chains:',
-          style:
-              AppKitModalTheme.getDataOf(context).textStyles.small600.copyWith(
-                    color: AppKitModalTheme.colorsOf(context).foreground100,
-                  ),
+          style: ReownAppKitModalTheme.getDataOf(context)
+              .textStyles
+              .small600
+              .copyWith(
+                color: ReownAppKitModalTheme.colorsOf(context).foreground100,
+              ),
         ),
       ],
     );
@@ -385,8 +399,11 @@ class SessionWidgetState extends State<SessionWidget> {
     children.add(
       Text(
         approvedChains.join(', '),
-        style: AppKitModalTheme.getDataOf(context).textStyles.small400.copyWith(
-              color: AppKitModalTheme.colorsOf(context).foreground100,
+        style: ReownAppKitModalTheme.getDataOf(context)
+            .textStyles
+            .small400
+            .copyWith(
+              color: ReownAppKitModalTheme.colorsOf(context).foreground100,
             ),
       ),
     );
@@ -399,8 +416,11 @@ class SessionWidgetState extends State<SessionWidget> {
     if (approvedEvents.isEmpty) {
       return Text(
         'No events approved',
-        style: AppKitModalTheme.getDataOf(context).textStyles.small400.copyWith(
-              color: AppKitModalTheme.colorsOf(context).foreground100,
+        style: ReownAppKitModalTheme.getDataOf(context)
+            .textStyles
+            .small400
+            .copyWith(
+              color: ReownAppKitModalTheme.colorsOf(context).foreground100,
             ),
       );
     }
@@ -415,17 +435,17 @@ class SessionWidgetState extends State<SessionWidget> {
           padding: const EdgeInsets.all(StyleConstants.linear8),
           decoration: BoxDecoration(
             border: Border.all(
-              color: AppKitModalTheme.colorsOf(context).accent100,
+              color: ReownAppKitModalTheme.colorsOf(context).accent100,
             ),
             borderRadius: borderRadius(context),
           ),
           child: Text(
             event,
-            style: AppKitModalTheme.getDataOf(context)
+            style: ReownAppKitModalTheme.getDataOf(context)
                 .textStyles
                 .small400
                 .copyWith(
-                  color: AppKitModalTheme.colorsOf(context).foreground100,
+                  color: ReownAppKitModalTheme.colorsOf(context).foreground100,
                 ),
           ),
         ),

@@ -1,7 +1,7 @@
 import 'package:reown_appkit/reown_appkit.dart';
 
 class ModalConnect extends EventArgs {
-  final AppKitModalSession session;
+  final ReownAppKitModalSession session;
   ModalConnect(this.session);
 
   @override

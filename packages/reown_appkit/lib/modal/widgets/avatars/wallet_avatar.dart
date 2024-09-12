@@ -22,8 +22,8 @@ class ListAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final radius = borderRadius ?? radiuses.radiusM;
     final projectId = explorerService.instance.projectId;
     return Stack(

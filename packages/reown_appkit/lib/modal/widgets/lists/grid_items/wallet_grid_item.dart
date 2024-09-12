@@ -26,9 +26,9 @@ class WalletGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = AppKitModalTheme.getDataOf(context);
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     return BaseGridItem(
       onTap: onTap,
       isSelected: isSelected,

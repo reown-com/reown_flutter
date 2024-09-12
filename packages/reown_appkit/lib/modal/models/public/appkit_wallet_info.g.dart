@@ -6,16 +6,16 @@ part of 'appkit_wallet_info.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$AppKitWalletInfoImpl _$$AppKitWalletInfoImplFromJson(
+_$ReownAppKitModalWalletInfoImpl _$$ReownAppKitModalWalletInfoImplFromJson(
         Map<String, dynamic> json) =>
-    _$AppKitWalletInfoImpl(
+    _$ReownAppKitModalWalletInfoImpl(
       listing: Listing.fromJson(json['listing']),
       installed: json['installed'] as bool,
       recent: json['recent'] as bool,
     );
 
-Map<String, dynamic> _$$AppKitWalletInfoImplToJson(
-        _$AppKitWalletInfoImpl instance) =>
+Map<String, dynamic> _$$ReownAppKitModalWalletInfoImplToJson(
+        _$ReownAppKitModalWalletInfoImpl instance) =>
     <String, dynamic>{
       'listing': instance.listing.toJson(),
       'installed': instance.installed,

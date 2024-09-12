@@ -14,37 +14,38 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-AppKitModalWalletInfo _$AppKitModalWalletInfoFromJson(
+ReownAppKitModalWalletInfo _$ReownAppKitModalWalletInfoFromJson(
     Map<String, dynamic> json) {
-  return _AppKitWalletInfo.fromJson(json);
+  return _ReownAppKitModalWalletInfo.fromJson(json);
 }
 
 /// @nodoc
-mixin _$AppKitModalWalletInfo {
+mixin _$ReownAppKitModalWalletInfo {
   Listing get listing => throw _privateConstructorUsedError;
   bool get installed => throw _privateConstructorUsedError;
   bool get recent => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $AppKitModalWalletInfoCopyWith<AppKitModalWalletInfo> get copyWith =>
-      throw _privateConstructorUsedError;
+  $ReownAppKitModalWalletInfoCopyWith<ReownAppKitModalWalletInfo>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $AppKitModalWalletInfoCopyWith<$Res> {
-  factory $AppKitModalWalletInfoCopyWith(AppKitModalWalletInfo value,
-          $Res Function(AppKitModalWalletInfo) then) =
-      _$AppKitModalWalletInfoCopyWithImpl<$Res, AppKitModalWalletInfo>;
+abstract class $ReownAppKitModalWalletInfoCopyWith<$Res> {
+  factory $ReownAppKitModalWalletInfoCopyWith(ReownAppKitModalWalletInfo value,
+          $Res Function(ReownAppKitModalWalletInfo) then) =
+      _$ReownAppKitModalWalletInfoCopyWithImpl<$Res,
+          ReownAppKitModalWalletInfo>;
   @useResult
   $Res call({Listing listing, bool installed, bool recent});
 }
 
 /// @nodoc
-class _$AppKitModalWalletInfoCopyWithImpl<$Res,
-        $Val extends AppKitModalWalletInfo>
-    implements $AppKitModalWalletInfoCopyWith<$Res> {
-  _$AppKitModalWalletInfoCopyWithImpl(this._value, this._then);
+class _$ReownAppKitModalWalletInfoCopyWithImpl<$Res,
+        $Val extends ReownAppKitModalWalletInfo>
+    implements $ReownAppKitModalWalletInfoCopyWith<$Res> {
+  _$ReownAppKitModalWalletInfoCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -76,22 +77,25 @@ class _$AppKitModalWalletInfoCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$AppKitWalletInfoImplCopyWith<$Res>
-    implements $AppKitModalWalletInfoCopyWith<$Res> {
-  factory _$$AppKitWalletInfoImplCopyWith(_$AppKitWalletInfoImpl value,
-          $Res Function(_$AppKitWalletInfoImpl) then) =
-      __$$AppKitWalletInfoImplCopyWithImpl<$Res>;
+abstract class _$$ReownAppKitModalWalletInfoImplCopyWith<$Res>
+    implements $ReownAppKitModalWalletInfoCopyWith<$Res> {
+  factory _$$ReownAppKitModalWalletInfoImplCopyWith(
+          _$ReownAppKitModalWalletInfoImpl value,
+          $Res Function(_$ReownAppKitModalWalletInfoImpl) then) =
+      __$$ReownAppKitModalWalletInfoImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({Listing listing, bool installed, bool recent});
 }
 
 /// @nodoc
-class __$$AppKitWalletInfoImplCopyWithImpl<$Res>
-    extends _$AppKitModalWalletInfoCopyWithImpl<$Res, _$AppKitWalletInfoImpl>
-    implements _$$AppKitWalletInfoImplCopyWith<$Res> {
-  __$$AppKitWalletInfoImplCopyWithImpl(_$AppKitWalletInfoImpl _value,
-      $Res Function(_$AppKitWalletInfoImpl) _then)
+class __$$ReownAppKitModalWalletInfoImplCopyWithImpl<$Res>
+    extends _$ReownAppKitModalWalletInfoCopyWithImpl<$Res,
+        _$ReownAppKitModalWalletInfoImpl>
+    implements _$$ReownAppKitModalWalletInfoImplCopyWith<$Res> {
+  __$$ReownAppKitModalWalletInfoImplCopyWithImpl(
+      _$ReownAppKitModalWalletInfoImpl _value,
+      $Res Function(_$ReownAppKitModalWalletInfoImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -101,7 +105,7 @@ class __$$AppKitWalletInfoImplCopyWithImpl<$Res>
     Object? installed = null,
     Object? recent = null,
   }) {
-    return _then(_$AppKitWalletInfoImpl(
+    return _then(_$ReownAppKitModalWalletInfoImpl(
       listing: null == listing
           ? _value.listing
           : listing // ignore: cast_nullable_to_non_nullable
@@ -120,12 +124,13 @@ class __$$AppKitWalletInfoImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$AppKitWalletInfoImpl implements _AppKitWalletInfo {
-  const _$AppKitWalletInfoImpl(
+class _$ReownAppKitModalWalletInfoImpl implements _ReownAppKitModalWalletInfo {
+  const _$ReownAppKitModalWalletInfoImpl(
       {required this.listing, required this.installed, required this.recent});
 
-  factory _$AppKitWalletInfoImpl.fromJson(Map<String, dynamic> json) =>
-      _$$AppKitWalletInfoImplFromJson(json);
+  factory _$ReownAppKitModalWalletInfoImpl.fromJson(
+          Map<String, dynamic> json) =>
+      _$$ReownAppKitModalWalletInfoImplFromJson(json);
 
   @override
   final Listing listing;
@@ -136,14 +141,14 @@ class _$AppKitWalletInfoImpl implements _AppKitWalletInfo {
 
   @override
   String toString() {
-    return 'AppKitModalWalletInfo(listing: $listing, installed: $installed, recent: $recent)';
+    return 'ReownAppKitModalWalletInfo(listing: $listing, installed: $installed, recent: $recent)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$AppKitWalletInfoImpl &&
+            other is _$ReownAppKitModalWalletInfoImpl &&
             (identical(other.listing, listing) || other.listing == listing) &&
             (identical(other.installed, installed) ||
                 other.installed == installed) &&
@@ -157,26 +162,27 @@ class _$AppKitWalletInfoImpl implements _AppKitWalletInfo {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$AppKitWalletInfoImplCopyWith<_$AppKitWalletInfoImpl> get copyWith =>
-      __$$AppKitWalletInfoImplCopyWithImpl<_$AppKitWalletInfoImpl>(
-          this, _$identity);
+  _$$ReownAppKitModalWalletInfoImplCopyWith<_$ReownAppKitModalWalletInfoImpl>
+      get copyWith => __$$ReownAppKitModalWalletInfoImplCopyWithImpl<
+          _$ReownAppKitModalWalletInfoImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$AppKitWalletInfoImplToJson(
+    return _$$ReownAppKitModalWalletInfoImplToJson(
       this,
     );
   }
 }
 
-abstract class _AppKitWalletInfo implements AppKitModalWalletInfo {
-  const factory _AppKitWalletInfo(
+abstract class _ReownAppKitModalWalletInfo
+    implements ReownAppKitModalWalletInfo {
+  const factory _ReownAppKitModalWalletInfo(
       {required final Listing listing,
       required final bool installed,
-      required final bool recent}) = _$AppKitWalletInfoImpl;
+      required final bool recent}) = _$ReownAppKitModalWalletInfoImpl;
 
-  factory _AppKitWalletInfo.fromJson(Map<String, dynamic> json) =
-      _$AppKitWalletInfoImpl.fromJson;
+  factory _ReownAppKitModalWalletInfo.fromJson(Map<String, dynamic> json) =
+      _$ReownAppKitModalWalletInfoImpl.fromJson;
 
   @override
   Listing get listing;
@@ -186,6 +192,6 @@ abstract class _AppKitWalletInfo implements AppKitModalWalletInfo {
   bool get recent;
   @override
   @JsonKey(ignore: true)
-  _$$AppKitWalletInfoImplCopyWith<_$AppKitWalletInfoImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$ReownAppKitModalWalletInfoImplCopyWith<_$ReownAppKitModalWalletInfoImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }

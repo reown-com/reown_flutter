@@ -16,15 +16,15 @@ import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
-class AppKitModalSelectNetworkPage extends StatelessWidget {
-  const AppKitModalSelectNetworkPage({
+class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
+  const ReownAppKitModalSelectNetworkPage({
     this.onTapNetwork,
   }) : super(key: KeyConstants.selectNetworkPage);
 
-  final Function(AppKitModalNetworkInfo)? onTapNetwork;
+  final Function(ReownAppKitModalNetworkInfo)? onTapNetwork;
 
   void _onSelectNetwork(
-      BuildContext context, AppKitModalNetworkInfo chainInfo) async {
+      BuildContext context, ReownAppKitModalNetworkInfo chainInfo) async {
     final service = ModalProvider.of(context).service;
     if (service.isConnected) {
       final approvedChains = service.session!.getApprovedChains() ?? [];
@@ -45,8 +45,8 @@ class AppKitModalSelectNetworkPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = AppKitModalTheme.getDataOf(context);
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final service = ModalProvider.of(context).service;
     final isSwitch = service.selectedChain != null;
     final isPortrait = ResponsiveData.isPortrait(context);

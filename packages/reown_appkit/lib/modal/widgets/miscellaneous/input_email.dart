@@ -64,7 +64,7 @@ class _InputEmailWidgetState extends State<InputEmailWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return ModalSearchBar(
       enabled: !_timedOut && _ready && !_submitted,
       controller: _controller,

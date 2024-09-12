@@ -9,7 +9,7 @@ class Orb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final service = ModalProvider.of(context).service;
     return Container(
       width: size,

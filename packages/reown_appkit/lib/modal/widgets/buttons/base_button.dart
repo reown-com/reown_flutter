@@ -46,7 +46,7 @@ class BaseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = AppKitModalTheme.getDataOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
     final textStyle = size == BaseButtonSize.small
         ? themeData.textStyles.small600
         : themeData.textStyles.paragraph600;

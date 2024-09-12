@@ -14,16 +14,17 @@ import 'package:reown_appkit/modal/widgets/value_listenable_builders/explorer_se
 import 'package:reown_appkit/modal/widgets/miscellaneous/all_wallets_header.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 
-class AppKitModalAllWalletsPage extends StatefulWidget {
-  const AppKitModalAllWalletsPage()
+class ReownAppKitModalAllWalletsPage extends StatefulWidget {
+  const ReownAppKitModalAllWalletsPage()
       : super(key: KeyConstants.walletListLongPageKey);
 
   @override
-  State<AppKitModalAllWalletsPage> createState() =>
+  State<ReownAppKitModalAllWalletsPage> createState() =>
       _AppKitModalAllWalletsPageState();
 }
 
-class _AppKitModalAllWalletsPageState extends State<AppKitModalAllWalletsPage> {
+class _AppKitModalAllWalletsPageState
+    extends State<ReownAppKitModalAllWalletsPage> {
   bool _paginating = false;
   final _controller = ScrollController();
 

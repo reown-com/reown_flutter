@@ -13,7 +13,7 @@ class ExplorerServiceItemsListener extends StatefulWidget {
   final Function(
     BuildContext context,
     bool initialised,
-    List<GridItem<AppKitModalWalletInfo>> items,
+    List<GridItem<ReownAppKitModalWalletInfo>> items,
     bool searching,
   ) builder;
   final bool listen;
@@ -25,7 +25,7 @@ class ExplorerServiceItemsListener extends StatefulWidget {
 
 class _ExplorerServiceItemsListenerState
     extends State<ExplorerServiceItemsListener> {
-  List<GridItem<AppKitModalWalletInfo>> _items = [];
+  List<GridItem<ReownAppKitModalWalletInfo>> _items = [];
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class _ExplorerServiceItemsListenerState
             if (searching) {
               return widget.builder(context, initialised, _items, searching);
             }
-            return ValueListenableBuilder<List<AppKitModalWalletInfo>>(
+            return ValueListenableBuilder<List<ReownAppKitModalWalletInfo>>(
               valueListenable: explorerService.instance.listings,
               builder: (context, items, _) {
                 if (widget.listen) {
@@ -57,12 +57,12 @@ class _ExplorerServiceItemsListenerState
   }
 }
 
-extension on List<AppKitModalWalletInfo> {
-  List<GridItem<AppKitModalWalletInfo>> toGridItems() {
-    List<GridItem<AppKitModalWalletInfo>> gridItems = [];
-    for (AppKitModalWalletInfo item in this) {
+extension on List<ReownAppKitModalWalletInfo> {
+  List<GridItem<ReownAppKitModalWalletInfo>> toGridItems() {
+    List<GridItem<ReownAppKitModalWalletInfo>> gridItems = [];
+    for (ReownAppKitModalWalletInfo item in this) {
       gridItems.add(
-        GridItem<AppKitModalWalletInfo>(
+        GridItem<ReownAppKitModalWalletInfo>(
           title: item.listing.name,
           id: item.listing.id,
           image: explorerService.instance.getWalletImageUrl(

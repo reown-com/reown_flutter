@@ -37,7 +37,7 @@ class AllWalletsHeader extends StatelessWidget {
             iconPath: 'lib/modal/assets/icons/code.svg',
             onPressed: () {
               widgetStack.instance.push(
-                const AppKitModalQRCodePage(),
+                const ReownAppKitModalQRCodePage(),
                 event: SelectWalletEvent(
                   name: 'WalletConnect',
                   platform: AnalyticsPlatform.qrcode,

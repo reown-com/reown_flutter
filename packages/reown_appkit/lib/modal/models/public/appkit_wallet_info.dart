@@ -6,18 +6,18 @@ part 'appkit_wallet_info.freezed.dart';
 part 'appkit_wallet_info.g.dart';
 
 @freezed
-class AppKitModalWalletInfo with _$AppKitModalWalletInfo {
-  const factory AppKitModalWalletInfo({
+class ReownAppKitModalWalletInfo with _$ReownAppKitModalWalletInfo {
+  const factory ReownAppKitModalWalletInfo({
     required Listing listing,
     required bool installed,
     required bool recent,
-  }) = _AppKitWalletInfo;
+  }) = _ReownAppKitModalWalletInfo;
 
-  factory AppKitModalWalletInfo.fromJson(Map<String, dynamic> json) =>
-      _$AppKitModalWalletInfoFromJson(json);
+  factory ReownAppKitModalWalletInfo.fromJson(Map<String, dynamic> json) =>
+      _$ReownAppKitModalWalletInfoFromJson(json);
 }
 
-extension AppKitWalletInfoExtension on AppKitModalWalletInfo {
+extension ReownAppKitWalletInfoExtension on ReownAppKitModalWalletInfo {
   bool get isCoinbase =>
       listing.id ==
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa';

@@ -32,7 +32,7 @@ class MagicService implements IMagicService {
     'wallet_switchEthereumChain',
     'wallet_addEthereumChain',
   ];
-  static const defaultWalletData = AppKitModalWalletInfo(
+  static const defaultWalletData = ReownAppKitModalWalletInfo(
     listing: Listing(
       id: '',
       name: 'Email Wallet',
@@ -247,7 +247,7 @@ class MagicService implements IMagicService {
   }
 
   @override
-  Future<void> syncTheme(AppKitModalTheme? theme) async {
+  Future<void> syncTheme(ReownAppKitModalTheme? theme) async {
     if (!isEnabled.value || !isReady.value) return;
     final message = SyncTheme(theme: theme).toString();
     await _webViewController.runJavaScript('sendMessage($message)');

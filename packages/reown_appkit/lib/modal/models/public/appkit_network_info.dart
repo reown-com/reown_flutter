@@ -3,8 +3,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'appkit_network_info.freezed.dart';
 
 @freezed
-class AppKitModalNetworkInfo with _$AppKitModalNetworkInfo {
-  factory AppKitModalNetworkInfo({
+class ReownAppKitModalNetworkInfo with _$ReownAppKitModalNetworkInfo {
+  factory ReownAppKitModalNetworkInfo({
     required String name,
     required String chainId,
     required String currency,
@@ -16,7 +16,7 @@ class AppKitModalNetworkInfo with _$AppKitModalNetworkInfo {
   }) = _AppKitNetworkInfo;
 }
 
-extension AppKitNetworkInfoExtension on AppKitModalNetworkInfo {
+extension AppKitNetworkInfoExtension on ReownAppKitModalNetworkInfo {
   String get chainHexId => '0x${int.parse(chainId).toRadixString(16)}';
 
   Map<String, dynamic> toJson() {

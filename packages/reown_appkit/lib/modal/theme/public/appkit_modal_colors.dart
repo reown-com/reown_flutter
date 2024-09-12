@@ -4,8 +4,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'appkit_modal_colors.freezed.dart';
 
 @freezed
-class AppKitModalColors with _$AppKitModalColors {
-  const factory AppKitModalColors({
+class ReownAppKitModalColors with _$ReownAppKitModalColors {
+  const factory ReownAppKitModalColors({
     required Color accent100,
     required Color accent090,
     required Color accent080,
@@ -44,7 +44,7 @@ class AppKitModalColors with _$AppKitModalColors {
     required Color yellow100,
   }) = _AppKitModalColors;
 
-  static const darkMode = AppKitModalColors(
+  static const darkMode = ReownAppKitModalColors(
     accent100: Color(0xFF667DFF),
     accent090: Color(0xFF7388FD),
     accent080: Color(0xFF7F92FA),
@@ -83,7 +83,7 @@ class AppKitModalColors with _$AppKitModalColors {
     yellow100: Color(0xFFFAFF00),
   );
 
-  static const lightMode = AppKitModalColors(
+  static const lightMode = ReownAppKitModalColors(
     accent100: Color(0xFF5570FF),
     accent090: Color(0xFF4F67E7),
     accent080: Color(0xFF485ED0),
@@ -123,7 +123,7 @@ class AppKitModalColors with _$AppKitModalColors {
   );
 }
 
-extension AppKitColorsExtension on AppKitModalColors {
+extension AppKitColorsExtension on ReownAppKitModalColors {
   Color get accenGlass090 => accent100.withOpacity(0.9);
   Color get accenGlass080 => accent100.withOpacity(0.8);
   Color get accenGlass020 => accent100.withOpacity(0.2);

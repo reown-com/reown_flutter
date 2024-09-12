@@ -37,9 +37,9 @@ class ExplorerService implements IExplorerService {
   @override
   ValueNotifier<int> totalListings = ValueNotifier(0);
 
-  List<AppKitModalWalletInfo> _listings = [];
+  List<ReownAppKitModalWalletInfo> _listings = [];
   @override
-  ValueNotifier<List<AppKitModalWalletInfo>> listings = ValueNotifier([]);
+  ValueNotifier<List<ReownAppKitModalWalletInfo>> listings = ValueNotifier([]);
 
   final _debouncer = Debouncer(milliseconds: 300);
 
@@ -136,10 +136,10 @@ class ExplorerService implements IExplorerService {
     await _getRecentWalletAndOrder();
   }
 
-  Future<List<AppKitModalWalletInfo>> _loadWCSampleWallets() async {
+  Future<List<ReownAppKitModalWalletInfo>> _loadWCSampleWallets() async {
     // final platform = platformUtils.instance.getPlatformExact().name;
     // final platformName = platform.toString().toLowerCase();
-    List<AppKitModalWalletInfo> sampleWallets = [];
+    List<ReownAppKitModalWalletInfo> sampleWallets = [];
     for (var sampleWallet in WCSampleWallets.getSampleWallets()) {
       // final data = WCSampleWallets.nativeData[sampleWallet.listing.id];
       // final schema = (data?[platformName]! as NativeAppData).schema ?? '';
@@ -155,13 +155,13 @@ class ExplorerService implements IExplorerService {
   }
 
   Future<void> _getRecentWalletAndOrder() async {
-    AppKitModalWalletInfo? walletInfo;
+    ReownAppKitModalWalletInfo? walletInfo;
     if (_core.storage.has(StorageConstants.connectedWalletData)) {
       final walletData = _core.storage.get(
         StorageConstants.connectedWalletData,
       );
       if (walletData != null) {
-        walletInfo = AppKitModalWalletInfo.fromJson(walletData);
+        walletInfo = ReownAppKitModalWalletInfo.fromJson(walletData);
         if (!walletInfo.installed) {
           walletInfo = null;
         }
@@ -224,7 +224,7 @@ class ExplorerService implements IExplorerService {
     }
   }
 
-  Future<List<AppKitModalWalletInfo>> _fetchInstalledListings() async {
+  Future<List<ReownAppKitModalWalletInfo>> _fetchInstalledListings() async {
     final pType = PlatformUtils.getPlatformType();
     if (pType != PlatformType.mobile) {
       return [];
@@ -248,7 +248,7 @@ class ExplorerService implements IExplorerService {
     return installedWallets.setInstalledFlag();
   }
 
-  Future<List<AppKitModalWalletInfo>> _fetchFeaturedListings() async {
+  Future<List<ReownAppKitModalWalletInfo>> _fetchFeaturedListings() async {
     if ((_featuredWalletsParam ?? '').isEmpty) {
       return [];
     }
@@ -261,7 +261,7 @@ class ExplorerService implements IExplorerService {
     return await _fetchListings(params: params);
   }
 
-  Future<List<AppKitModalWalletInfo>> _fetchOtherListings() async {
+  Future<List<ReownAppKitModalWalletInfo>> _fetchOtherListings() async {
     _requestParams = RequestParams(
       page: 1,
       entries: _defaultEntriesCount,
@@ -272,7 +272,7 @@ class ExplorerService implements IExplorerService {
     return await _fetchListings(params: _requestParams);
   }
 
-  Future<List<AppKitModalWalletInfo>> _fetchListings({
+  Future<List<ReownAppKitModalWalletInfo>> _fetchListings({
     RequestParams? params,
     bool updateCount = true,
   }) async {
@@ -302,7 +302,7 @@ class ExplorerService implements IExplorerService {
           'headers: $headers\n'
           'queryParams $queryParams',
         );
-        return <AppKitModalWalletInfo>[];
+        return <ReownAppKitModalWalletInfo>[];
       }
     } catch (e) {
       _core.logger.d(
@@ -314,7 +314,8 @@ class ExplorerService implements IExplorerService {
   }
 
   @override
-  Future<void> storeConnectedWallet(AppKitModalWalletInfo? walletInfo) async {
+  Future<void> storeConnectedWallet(
+      ReownAppKitModalWalletInfo? walletInfo) async {
     if (walletInfo == null) return;
     await _core.storage.set(
       StorageConstants.connectedWalletData,
@@ -333,14 +334,14 @@ class ExplorerService implements IExplorerService {
   }
 
   @override
-  AppKitModalWalletInfo? getConnectedWallet() {
+  ReownAppKitModalWalletInfo? getConnectedWallet() {
     try {
       if (_core.storage.has(StorageConstants.connectedWalletData)) {
         final walletData = _core.storage.get(
           StorageConstants.connectedWalletData,
         );
         if (walletData != null) {
-          return AppKitModalWalletInfo.fromJson(walletData);
+          return ReownAppKitModalWalletInfo.fromJson(walletData);
         }
       }
     } catch (e, s) {
@@ -354,14 +355,14 @@ class ExplorerService implements IExplorerService {
   }
 
   Future<void> _updateRecentWalletId(
-    AppKitModalWalletInfo? walletInfo, {
+    ReownAppKitModalWalletInfo? walletInfo, {
     String? walletId,
   }) async {
     try {
       final recentId = walletInfo?.listing.id ?? walletId;
       await storeRecentWalletId(recentId);
 
-      final currentListings = List<AppKitModalWalletInfo>.from(
+      final currentListings = List<ReownAppKitModalWalletInfo>.from(
         _listings.map((e) => e.copyWith(recent: false)).toList(),
       );
       final recentWallet = currentListings.firstWhereOrNull(
@@ -419,7 +420,7 @@ class ExplorerService implements IExplorerService {
   }
 
   @override
-  Future<AppKitModalWalletInfo?> getCoinbaseWalletObject() async {
+  Future<ReownAppKitModalWalletInfo?> getCoinbaseWalletObject() async {
     final results = await _fetchListings(
       params: RequestParams(
         page: 1,
@@ -431,7 +432,8 @@ class ExplorerService implements IExplorerService {
     );
 
     if (results.isNotEmpty) {
-      final wallet = AppKitModalWalletInfo.fromJson(results.first.toJson());
+      final wallet =
+          ReownAppKitModalWalletInfo.fromJson(results.first.toJson());
       final mobileLink = CoinbaseService.defaultWalletData.listing.mobileLink;
       bool installed = await uriService.instance.isInstalled(mobileLink);
       return wallet.copyWith(
@@ -465,7 +467,7 @@ class ExplorerService implements IExplorerService {
   }
 
   @override
-  WalletRedirect? getWalletRedirect(AppKitModalWalletInfo? walletInfo) {
+  WalletRedirect? getWalletRedirect(ReownAppKitModalWalletInfo? walletInfo) {
     if (walletInfo == null) return null;
     if (walletInfo.listing.id == CoinbaseService.defaultWalletData.listing.id) {
       return WalletRedirect(
@@ -500,9 +502,9 @@ class ExplorerService implements IExplorerService {
 }
 
 extension on List<Listing> {
-  List<AppKitModalWalletInfo> toAppKitWalletInfo() {
+  List<ReownAppKitModalWalletInfo> toAppKitWalletInfo() {
     return map(
-      (item) => AppKitModalWalletInfo(
+      (item) => ReownAppKitModalWalletInfo(
         listing: item,
         installed: false,
         recent: false,
@@ -511,11 +513,11 @@ extension on List<Listing> {
   }
 }
 
-extension on List<AppKitModalWalletInfo> {
-  List<AppKitModalWalletInfo> sortByFeaturedIds(
+extension on List<ReownAppKitModalWalletInfo> {
+  List<ReownAppKitModalWalletInfo> sortByFeaturedIds(
       Set<String>? featuredWalletIds) {
     Map<String, dynamic> sortedMap = {};
-    final auxList = List<AppKitModalWalletInfo>.from(this);
+    final auxList = List<ReownAppKitModalWalletInfo>.from(this);
 
     for (var id in featuredWalletIds ?? <String>{}) {
       final featured = auxList.firstWhereOrNull((e) => e.listing.id == id);
@@ -528,7 +530,7 @@ extension on List<AppKitModalWalletInfo> {
     return [...sortedMap.values, ...auxList];
   }
 
-  List<AppKitModalWalletInfo> setInstalledFlag() {
+  List<ReownAppKitModalWalletInfo> setInstalledFlag() {
     return map((e) => e.copyWith(installed: true)).toList();
   }
 }

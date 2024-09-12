@@ -4,8 +4,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'appkit_modal_text_styles.freezed.dart';
 
 @freezed
-class AppKitModalTextStyles with _$AppKitModalTextStyles {
-  const factory AppKitModalTextStyles({
+class ReownAppKitModalTextStyles with _$ReownAppKitModalTextStyles {
+  const factory ReownAppKitModalTextStyles({
     required String fontFamily,
     required TextStyle title400,
     required TextStyle title500,
@@ -24,11 +24,11 @@ class AppKitModalTextStyles with _$AppKitModalTextStyles {
     required TextStyle tiny600,
     required TextStyle micro600,
     required TextStyle micro700,
-  }) = _AppKitModalTextStyles;
+  }) = _ReownAppKitModalTextStyles;
 
   static const _ff = '.SF Pro Text';
 
-  static const textStyle = AppKitModalTextStyles(
+  static const textStyle = ReownAppKitModalTextStyles(
     fontFamily: _ff,
     title400: TextStyle(
       fontFamily: _ff,

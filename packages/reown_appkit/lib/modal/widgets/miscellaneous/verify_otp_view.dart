@@ -112,8 +112,8 @@ class _VerifyOtpViewState extends State<VerifyOtpView>
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final textStyles = AppKitModalTheme.getDataOf(context).textStyles;
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final textStyles = ReownAppKitModalTheme.getDataOf(context).textStyles;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [

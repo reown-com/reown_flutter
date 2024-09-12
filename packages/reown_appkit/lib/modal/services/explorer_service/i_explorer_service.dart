@@ -10,7 +10,7 @@ abstract class IExplorerService {
 
   ValueNotifier<int> totalListings = ValueNotifier(0);
 
-  ValueNotifier<List<AppKitModalWalletInfo>> listings = ValueNotifier([]);
+  ValueNotifier<List<ReownAppKitModalWalletInfo>> listings = ValueNotifier([]);
 
   /// If featuredWalletIds is set wallets from this list are going to be prioritized in the results
   Set<String>? featuredWalletIds;
@@ -37,15 +37,15 @@ abstract class IExplorerService {
   String get searchValue;
 
   /// update the recently used position to the top list
-  Future<void> storeConnectedWallet(AppKitModalWalletInfo? walletInfo);
+  Future<void> storeConnectedWallet(ReownAppKitModalWalletInfo? walletInfo);
 
   Future<void> storeRecentWalletId(String? walletId);
 
   /// Get connected wallet data from local storage
-  AppKitModalWalletInfo? getConnectedWallet();
+  ReownAppKitModalWalletInfo? getConnectedWallet();
 
   /// Gets the WalletRedirect object from a wallet info data
-  WalletRedirect? getWalletRedirect(AppKitModalWalletInfo? walletInfo);
+  WalletRedirect? getWalletRedirect(ReownAppKitModalWalletInfo? walletInfo);
 
   /// Given an imageId it return the wallet app icon from our services
   String getWalletImageUrl(String imageId);
@@ -53,5 +53,5 @@ abstract class IExplorerService {
   /// Given an imageId it return the chain icon from our services
   String getAssetImageUrl(String imageId);
 
-  Future<AppKitModalWalletInfo?> getCoinbaseWalletObject();
+  Future<ReownAppKitModalWalletInfo?> getCoinbaseWalletObject();
 }

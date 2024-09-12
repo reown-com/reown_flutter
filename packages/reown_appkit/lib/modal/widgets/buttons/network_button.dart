@@ -15,31 +15,32 @@ class NetworkButton extends StatelessWidget {
   const NetworkButton({
     super.key,
     this.size = BaseButtonSize.regular,
-    this.serviceStatus = AppKitModalStatus.idle,
+    this.serviceStatus = ReownAppKitModalStatus.idle,
     this.chainInfo,
     this.onTap,
   });
-  final AppKitModalNetworkInfo? chainInfo;
+  final ReownAppKitModalNetworkInfo? chainInfo;
   final BaseButtonSize size;
-  final AppKitModalStatus serviceStatus;
+  final ReownAppKitModalStatus serviceStatus;
   final VoidCallback? onTap;
 
-  String _getImageUrl(AppKitModalNetworkInfo chainInfo) {
+  String _getImageUrl(ReownAppKitModalNetworkInfo chainInfo) {
     if (chainInfo.chainIcon != null && chainInfo.chainIcon!.contains('http')) {
       return chainInfo.chainIcon!;
     }
-    final imageId = AppKitModalNetworks.getNetworkIconId(chainInfo.chainId);
+    final imageId =
+        ReownAppKitModalNetworks.getNetworkIconId(chainInfo.chainId);
     return explorerService.instance.getAssetImageUrl(imageId);
   }
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     String imageUrl = '';
     if (chainInfo != null && (chainInfo!.chainIcon ?? '').isNotEmpty) {
       imageUrl = _getImageUrl(chainInfo!);
     }
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final borderRadius = radiuses.isSquare() ? 0.0 : size.height / 2;
     return BaseButton(
       size: size,

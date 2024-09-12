@@ -14,7 +14,7 @@ class CircularLoader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return Container(
       padding: padding ?? const EdgeInsets.all(0.0),
       width: size,

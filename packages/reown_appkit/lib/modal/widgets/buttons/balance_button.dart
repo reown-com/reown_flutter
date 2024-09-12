@@ -17,7 +17,7 @@ class BalanceButton extends StatefulWidget {
     this.onTap,
   });
 
-  final IAppKitModal service;
+  final IReownAppKitModal service;
   final BaseButtonSize size;
   final VoidCallback? onTap;
 
@@ -46,7 +46,7 @@ class _BalanceButtonState extends State<BalanceButton> {
   void _modalNotifyListener() {
     setState(() {
       final chainId = widget.service.selectedChain?.chainId ?? '1';
-      final imageId = AppKitModalNetworks.getNetworkIconId(chainId);
+      final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
       _tokenImage = explorerService.instance.getAssetImageUrl(imageId);
       _balance = widget.service.chainBalance;
       _tokenName = widget.service.selectedChain?.currency;
@@ -55,7 +55,7 @@ class _BalanceButtonState extends State<BalanceButton> {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return BaseButton(
       size: widget.size,
       onTap: widget.onTap,

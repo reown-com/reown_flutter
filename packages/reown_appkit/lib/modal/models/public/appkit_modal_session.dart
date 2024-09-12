@@ -5,26 +5,26 @@ import 'package:reown_appkit/modal/services/magic_service/magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_data.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
-// TODO AppKitModal this should be hidden
-enum AppKitModalConnector {
+// TODO ReownAppKitModal this should be hidden
+enum ReownAppKitModalConnector {
   wc,
   coinbase,
   magic,
   none;
 
-  bool get isWC => this == AppKitModalConnector.wc;
-  bool get isCoinbase => this == AppKitModalConnector.coinbase;
-  bool get isMagic => this == AppKitModalConnector.magic;
-  bool get noSession => this == AppKitModalConnector.none;
+  bool get isWC => this == ReownAppKitModalConnector.wc;
+  bool get isCoinbase => this == ReownAppKitModalConnector.coinbase;
+  bool get isMagic => this == ReownAppKitModalConnector.magic;
+  bool get noSession => this == ReownAppKitModalConnector.none;
 }
 
-class AppKitModalSession {
+class ReownAppKitModalSession {
   SessionData? _sessionData;
   CoinbaseData? _coinbaseData;
   MagicData? _magicData;
   SIWESession? _siweSession;
 
-  AppKitModalSession({
+  ReownAppKitModalSession({
     SessionData? sessionData,
     CoinbaseData? coinbaseData,
     MagicData? magicData,
@@ -35,12 +35,12 @@ class AppKitModalSession {
         _siweSession = siweSession;
 
   /// USED TO READ THE SESSION FROM LOCAL STORAGE
-  factory AppKitModalSession.fromMap(Map<String, dynamic> map) {
+  factory ReownAppKitModalSession.fromMap(Map<String, dynamic> map) {
     final sessionDataString = map['sessionData'];
     final coinbaseDataString = map['coinbaseData'];
     final magicDataString = map['magicData'];
     final siweSession = map['siweSession'];
-    return AppKitModalSession(
+    return ReownAppKitModalSession(
       sessionData: sessionDataString != null
           ? SessionData.fromJson(sessionDataString)
           : null,
@@ -54,13 +54,13 @@ class AppKitModalSession {
     );
   }
 
-  AppKitModalSession copyWith({
+  ReownAppKitModalSession copyWith({
     SessionData? sessionData,
     CoinbaseData? coinbaseData,
     MagicData? magicData,
     SIWESession? siweSession,
   }) {
-    return AppKitModalSession(
+    return ReownAppKitModalSession(
       sessionData: sessionData ?? _sessionData,
       coinbaseData: coinbaseData ?? _coinbaseData,
       magicData: magicData ?? _magicData,
@@ -68,18 +68,18 @@ class AppKitModalSession {
     );
   }
 
-  AppKitModalConnector get sessionService {
+  ReownAppKitModalConnector get sessionService {
     if (_sessionData != null) {
-      return AppKitModalConnector.wc;
+      return ReownAppKitModalConnector.wc;
     }
     if (_coinbaseData != null) {
-      return AppKitModalConnector.coinbase;
+      return ReownAppKitModalConnector.coinbase;
     }
     if (_magicData != null) {
-      return AppKitModalConnector.magic;
+      return ReownAppKitModalConnector.magic;
     }
 
-    return AppKitModalConnector.none;
+    return ReownAppKitModalConnector.none;
   }
 
   bool hasSwitchMethod() {
@@ -168,7 +168,7 @@ class AppKitModalSession {
     return _sessionData?.peer.metadata.redirect;
   }
 
-  // toJson() would convert AppKitModalSession to a SessionData kind of map
+  // toJson() would convert ReownAppKitModalSession to a SessionData kind of map
   // no matter if Coinbase Wallet or Email Wallet is connected
   Map<String, dynamic> toJson() => {
         if (topic != null) 'topic': topic,
@@ -187,7 +187,7 @@ class AppKitModalSession {
       };
 }
 
-extension AppKitModalSessionExtension on AppKitModalSession {
+extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
   String? get topic => _sessionData?.topic;
   String? get pairingTopic => _sessionData?.pairingTopic;
   Relay? get relay => _sessionData?.relay;

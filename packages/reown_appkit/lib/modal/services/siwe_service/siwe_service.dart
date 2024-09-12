@@ -73,12 +73,12 @@ class SiweService implements ISiweService {
   @override
   Future<String> signMessageRequest(
     String message, {
-    required AppKitModalSession session,
+    required ReownAppKitModalSession session,
   }) async {
     if (!enabled) throw Exception('siweConfig not enabled');
     //
     final chainId = AuthSignature.getChainIdFromMessage(message);
-    final chainInfo = AppKitModalNetworks.getNetworkById(
+    final chainInfo = ReownAppKitModalNetworks.getNetworkById(
       CoreConstants.namespace,
       chainId,
     )!;
@@ -132,7 +132,7 @@ class SiweService implements ISiweService {
     );
     final isValid = await _siweConfig!.verifyMessage(verifyArgs);
     if (!isValid) {
-      throw AppKitModalException('Error verifying SIWE signature');
+      throw ReownAppKitModalException('Error verifying SIWE signature');
     }
     return true;
   }
@@ -144,7 +144,7 @@ class SiweService implements ISiweService {
     try {
       final siweSession = await _siweConfig!.getSession();
       if (siweSession == null) {
-        throw AppKitModalException('Error getting SIWE session');
+        throw ReownAppKitModalException('Error getting SIWE session');
       }
       _siweConfig!.onSignIn?.call(siweSession);
 
@@ -160,7 +160,7 @@ class SiweService implements ISiweService {
 
     final success = await _siweConfig!.signOut();
     if (!success) {
-      throw AppKitModalException('signOut() from siweConfig failed');
+      throw ReownAppKitModalException('signOut() from siweConfig failed');
     }
     _siweConfig!.onSignOut?.call();
   }

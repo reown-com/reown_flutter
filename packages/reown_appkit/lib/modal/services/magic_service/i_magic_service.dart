@@ -16,7 +16,7 @@ abstract class IMagicService {
   Future<void> updateEmailSecondaryOtp({required String otp});
   Future<void> connectOtp({required String otp});
   Future<void> getChainId();
-  Future<void> syncTheme(AppKitModalTheme? theme);
+  Future<void> syncTheme(ReownAppKitModalTheme? theme);
   Future<void> getUser({String? chainId});
   Future<void> switchNetwork({required String chainId});
   Future<dynamic> request({

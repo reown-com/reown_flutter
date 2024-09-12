@@ -24,7 +24,7 @@ class RoundedIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final projectId = explorerService.instance.projectId;
     final radius = borderRadius ?? size;
     return Container(

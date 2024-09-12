@@ -14,7 +14,7 @@ class NetworkServiceItemsListener extends StatelessWidget {
   final Function(
     BuildContext context,
     bool initialised,
-    List<GridItem<AppKitModalNetworkInfo>> items,
+    List<GridItem<ReownAppKitModalNetworkInfo>> items,
   ) builder;
 
   @override

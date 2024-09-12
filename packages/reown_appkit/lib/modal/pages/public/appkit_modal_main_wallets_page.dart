@@ -24,17 +24,17 @@ import 'package:reown_appkit/modal/widgets/value_listenable_builders/explorer_se
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
-class AppKitModalMainWalletsPage extends StatefulWidget {
-  const AppKitModalMainWalletsPage()
+class ReownAppKitModalMainWalletsPage extends StatefulWidget {
+  const ReownAppKitModalMainWalletsPage()
       : super(key: KeyConstants.walletListShortPageKey);
 
   @override
-  State<AppKitModalMainWalletsPage> createState() =>
+  State<ReownAppKitModalMainWalletsPage> createState() =>
       _AppKitModalMainWalletsPageState();
 }
 
 class _AppKitModalMainWalletsPageState
-    extends State<AppKitModalMainWalletsPage> {
+    extends State<ReownAppKitModalMainWalletsPage> {
   @override
   void initState() {
     super.initState();
@@ -114,7 +114,7 @@ class _AppKitModalMainWalletsPageState
                   onTap: () {
                     if (items.length <= kShortWalletListCount) {
                       widgetStack.instance.push(
-                        const AppKitModalQRCodePage(),
+                        const ReownAppKitModalQRCodePage(),
                         event: SelectWalletEvent(
                           name: 'WalletConnect',
                           platform: AnalyticsPlatform.qrcode,
@@ -122,7 +122,7 @@ class _AppKitModalMainWalletsPageState
                       );
                     } else {
                       widgetStack.instance.push(
-                        const AppKitModalAllWalletsPage(),
+                        const ReownAppKitModalAllWalletsPage(),
                         event: ClickAllWalletsEvent(),
                       );
                     }
@@ -140,8 +140,8 @@ class _AppKitModalMainWalletsPageState
 class _LoginDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final themeData = AppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
     return Row(
       children: [
         Expanded(

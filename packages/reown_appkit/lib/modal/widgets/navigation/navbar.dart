@@ -30,8 +30,8 @@ class ModalNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = AppKitModalTheme.getDataOf(context);
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final keyboardOpened = ResponsiveData.isKeyboardShown(context);
     final paddingBottom =
         keyboardOpened ? ResponsiveData.paddingBottomOf(context) : 0.0;

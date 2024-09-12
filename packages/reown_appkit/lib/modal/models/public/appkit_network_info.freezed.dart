@@ -15,7 +15,7 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$AppKitModalNetworkInfo {
+mixin _$ReownAppKitModalNetworkInfo {
   String get name => throw _privateConstructorUsedError;
   String get chainId => throw _privateConstructorUsedError;
   String get currency => throw _privateConstructorUsedError;
@@ -26,15 +26,17 @@ mixin _$AppKitModalNetworkInfo {
   String? get chainIcon => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $AppKitModalNetworkInfoCopyWith<AppKitModalNetworkInfo> get copyWith =>
-      throw _privateConstructorUsedError;
+  $ReownAppKitModalNetworkInfoCopyWith<ReownAppKitModalNetworkInfo>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $AppKitModalNetworkInfoCopyWith<$Res> {
-  factory $AppKitModalNetworkInfoCopyWith(AppKitModalNetworkInfo value,
-          $Res Function(AppKitModalNetworkInfo) then) =
-      _$AppKitModalNetworkInfoCopyWithImpl<$Res, AppKitModalNetworkInfo>;
+abstract class $ReownAppKitModalNetworkInfoCopyWith<$Res> {
+  factory $ReownAppKitModalNetworkInfoCopyWith(
+          ReownAppKitModalNetworkInfo value,
+          $Res Function(ReownAppKitModalNetworkInfo) then) =
+      _$ReownAppKitModalNetworkInfoCopyWithImpl<$Res,
+          ReownAppKitModalNetworkInfo>;
   @useResult
   $Res call(
       {String name,
@@ -48,10 +50,10 @@ abstract class $AppKitModalNetworkInfoCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$AppKitModalNetworkInfoCopyWithImpl<$Res,
-        $Val extends AppKitModalNetworkInfo>
-    implements $AppKitModalNetworkInfoCopyWith<$Res> {
-  _$AppKitModalNetworkInfoCopyWithImpl(this._value, this._then);
+class _$ReownAppKitModalNetworkInfoCopyWithImpl<$Res,
+        $Val extends ReownAppKitModalNetworkInfo>
+    implements $ReownAppKitModalNetworkInfoCopyWith<$Res> {
+  _$ReownAppKitModalNetworkInfoCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -109,7 +111,7 @@ class _$AppKitModalNetworkInfoCopyWithImpl<$Res,
 
 /// @nodoc
 abstract class _$$AppKitNetworkInfoImplCopyWith<$Res>
-    implements $AppKitModalNetworkInfoCopyWith<$Res> {
+    implements $ReownAppKitModalNetworkInfoCopyWith<$Res> {
   factory _$$AppKitNetworkInfoImplCopyWith(_$AppKitNetworkInfoImpl value,
           $Res Function(_$AppKitNetworkInfoImpl) then) =
       __$$AppKitNetworkInfoImplCopyWithImpl<$Res>;
@@ -128,7 +130,8 @@ abstract class _$$AppKitNetworkInfoImplCopyWith<$Res>
 
 /// @nodoc
 class __$$AppKitNetworkInfoImplCopyWithImpl<$Res>
-    extends _$AppKitModalNetworkInfoCopyWithImpl<$Res, _$AppKitNetworkInfoImpl>
+    extends _$ReownAppKitModalNetworkInfoCopyWithImpl<$Res,
+        _$AppKitNetworkInfoImpl>
     implements _$$AppKitNetworkInfoImplCopyWith<$Res> {
   __$$AppKitNetworkInfoImplCopyWithImpl(_$AppKitNetworkInfoImpl _value,
       $Res Function(_$AppKitNetworkInfoImpl) _then)
@@ -222,7 +225,7 @@ class _$AppKitNetworkInfoImpl implements _AppKitNetworkInfo {
 
   @override
   String toString() {
-    return 'AppKitModalNetworkInfo(name: $name, chainId: $chainId, currency: $currency, rpcUrl: $rpcUrl, explorerUrl: $explorerUrl, extraRpcUrls: $extraRpcUrls, isTestNetwork: $isTestNetwork, chainIcon: $chainIcon)';
+    return 'ReownAppKitModalNetworkInfo(name: $name, chainId: $chainId, currency: $currency, rpcUrl: $rpcUrl, explorerUrl: $explorerUrl, extraRpcUrls: $extraRpcUrls, isTestNetwork: $isTestNetwork, chainIcon: $chainIcon)';
   }
 
   @override
@@ -265,7 +268,7 @@ class _$AppKitNetworkInfoImpl implements _AppKitNetworkInfo {
           this, _$identity);
 }
 
-abstract class _AppKitNetworkInfo implements AppKitModalNetworkInfo {
+abstract class _AppKitNetworkInfo implements ReownAppKitModalNetworkInfo {
   factory _AppKitNetworkInfo(
       {required final String name,
       required final String chainId,

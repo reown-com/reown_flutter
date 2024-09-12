@@ -15,7 +15,7 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$AppKitModalColors {
+mixin _$ReownAppKitModalColors {
   Color get accent100 => throw _privateConstructorUsedError;
   Color get accent090 => throw _privateConstructorUsedError;
   Color get accent080 => throw _privateConstructorUsedError; //
@@ -50,15 +50,15 @@ mixin _$AppKitModalColors {
   Color get yellow100 => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $AppKitModalColorsCopyWith<AppKitModalColors> get copyWith =>
+  $ReownAppKitModalColorsCopyWith<ReownAppKitModalColors> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $AppKitModalColorsCopyWith<$Res> {
-  factory $AppKitModalColorsCopyWith(
-          AppKitModalColors value, $Res Function(AppKitModalColors) then) =
-      _$AppKitModalColorsCopyWithImpl<$Res, AppKitModalColors>;
+abstract class $ReownAppKitModalColorsCopyWith<$Res> {
+  factory $ReownAppKitModalColorsCopyWith(ReownAppKitModalColors value,
+          $Res Function(ReownAppKitModalColors) then) =
+      _$ReownAppKitModalColorsCopyWithImpl<$Res, ReownAppKitModalColors>;
   @useResult
   $Res call(
       {Color accent100,
@@ -96,9 +96,10 @@ abstract class $AppKitModalColorsCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$AppKitModalColorsCopyWithImpl<$Res, $Val extends AppKitModalColors>
-    implements $AppKitModalColorsCopyWith<$Res> {
-  _$AppKitModalColorsCopyWithImpl(this._value, this._then);
+class _$ReownAppKitModalColorsCopyWithImpl<$Res,
+        $Val extends ReownAppKitModalColors>
+    implements $ReownAppKitModalColorsCopyWith<$Res> {
+  _$ReownAppKitModalColorsCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -276,7 +277,7 @@ class _$AppKitModalColorsCopyWithImpl<$Res, $Val extends AppKitModalColors>
 
 /// @nodoc
 abstract class _$$AppKitModalColorsImplCopyWith<$Res>
-    implements $AppKitModalColorsCopyWith<$Res> {
+    implements $ReownAppKitModalColorsCopyWith<$Res> {
   factory _$$AppKitModalColorsImplCopyWith(_$AppKitModalColorsImpl value,
           $Res Function(_$AppKitModalColorsImpl) then) =
       __$$AppKitModalColorsImplCopyWithImpl<$Res>;
@@ -319,7 +320,7 @@ abstract class _$$AppKitModalColorsImplCopyWith<$Res>
 
 /// @nodoc
 class __$$AppKitModalColorsImplCopyWithImpl<$Res>
-    extends _$AppKitModalColorsCopyWithImpl<$Res, _$AppKitModalColorsImpl>
+    extends _$ReownAppKitModalColorsCopyWithImpl<$Res, _$AppKitModalColorsImpl>
     implements _$$AppKitModalColorsImplCopyWith<$Res> {
   __$$AppKitModalColorsImplCopyWithImpl(_$AppKitModalColorsImpl _value,
       $Res Function(_$AppKitModalColorsImpl) _then)
@@ -602,7 +603,7 @@ class _$AppKitModalColorsImpl implements _AppKitModalColors {
 
   @override
   String toString() {
-    return 'AppKitModalColors(accent100: $accent100, accent090: $accent090, accent080: $accent080, grayGlass100: $grayGlass100, foreground100: $foreground100, foreground125: $foreground125, foreground150: $foreground150, foreground175: $foreground175, foreground200: $foreground200, foreground225: $foreground225, foreground250: $foreground250, foreground275: $foreground275, foreground300: $foreground300, background100: $background100, background125: $background125, background150: $background150, background175: $background175, background200: $background200, background225: $background225, background250: $background250, background275: $background275, background300: $background300, inverse100: $inverse100, inverse000: $inverse000, success100: $success100, error100: $error100, teal100: $teal100, magenta100: $magenta100, indigo100: $indigo100, orange100: $orange100, purple100: $purple100, yellow100: $yellow100)';
+    return 'ReownAppKitModalColors(accent100: $accent100, accent090: $accent090, accent080: $accent080, grayGlass100: $grayGlass100, foreground100: $foreground100, foreground125: $foreground125, foreground150: $foreground150, foreground175: $foreground175, foreground200: $foreground200, foreground225: $foreground225, foreground250: $foreground250, foreground275: $foreground275, foreground300: $foreground300, background100: $background100, background125: $background125, background150: $background150, background175: $background175, background200: $background200, background225: $background225, background250: $background250, background275: $background275, background300: $background300, inverse100: $inverse100, inverse000: $inverse000, success100: $success100, error100: $error100, teal100: $teal100, magenta100: $magenta100, indigo100: $indigo100, orange100: $orange100, purple100: $purple100, yellow100: $yellow100)';
   }
 
   @override
@@ -720,7 +721,7 @@ class _$AppKitModalColorsImpl implements _AppKitModalColors {
           this, _$identity);
 }
 
-abstract class _AppKitModalColors implements AppKitModalColors {
+abstract class _AppKitModalColors implements ReownAppKitModalColors {
   const factory _AppKitModalColors(
       {required final Color accent100,
       required final Color accent090,

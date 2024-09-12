@@ -19,8 +19,8 @@ class ToastMessage {
   });
 
   RoundedIcon icon(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     switch (type) {
       case ToastType.success:
         return RoundedIcon(

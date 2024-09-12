@@ -109,8 +109,8 @@ class _ModalSearchBarState extends State<ModalSearchBar>
   }
 
   void _setDecoration() {
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     _decorationTween = DecorationTween(
       begin: BoxDecoration(
         borderRadius: BorderRadius.circular(radiuses.radiusXS),
@@ -170,9 +170,9 @@ class _ModalSearchBarState extends State<ModalSearchBar>
 
   @override
   Widget build(BuildContext context) {
-    final themeData = AppKitModalTheme.getDataOf(context);
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final unfocusedBorder = OutlineInputBorder(
       borderSide: BorderSide(color: themeColors.grayGlass005, width: 1.0),
       borderRadius: BorderRadius.circular(radiuses.radius2XS),

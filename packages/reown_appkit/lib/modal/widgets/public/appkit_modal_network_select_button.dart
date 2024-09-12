@@ -18,7 +18,7 @@ class AppKitModalNetworkSelectButton extends StatefulWidget {
     this.custom,
   });
 
-  final IAppKitModal service;
+  final IReownAppKitModal service;
   final BaseButtonSize size;
   final BuildContext? context;
   final Widget? custom;
@@ -30,7 +30,7 @@ class AppKitModalNetworkSelectButton extends StatefulWidget {
 
 class _AppKitModalNetworkSelectButtonState
     extends State<AppKitModalNetworkSelectButton> {
-  AppKitModalNetworkInfo? _selectedChain;
+  ReownAppKitModalNetworkInfo? _selectedChain;
 
   @override
   void initState() {
@@ -59,7 +59,7 @@ class _AppKitModalNetworkSelectButtonState
   void _onConnectPressed() {
     analyticsService.instance.sendEvent(ClickNetworksEvent());
     widget.service.openModalView(
-      AppKitModalSelectNetworkPage(
+      ReownAppKitModalSelectNetworkPage(
         onTapNetwork: (info) {
           widget.service.selectChain(info);
           widgetStack.instance.addDefault();

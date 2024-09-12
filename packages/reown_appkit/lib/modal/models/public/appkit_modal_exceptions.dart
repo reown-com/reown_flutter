@@ -1,5 +1,5 @@
-class AppKitModalException implements Exception {
+class ReownAppKitModalException implements Exception {
   final dynamic message;
   final dynamic stackTrace;
-  AppKitModalException(this.message, [this.stackTrace]) : super();
+  ReownAppKitModalException(this.message, [this.stackTrace]) : super();
 }

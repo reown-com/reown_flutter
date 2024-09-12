@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 ButtonStyle buttonStyle(BuildContext context) {
-  final themeColors = AppKitModalTheme.colorsOf(context);
+  final themeColors = ReownAppKitModalTheme.colorsOf(context);
   return ButtonStyle(
     backgroundColor: MaterialStateProperty.resolveWith<Color>(
       (states) {
         if (states.contains(MaterialState.disabled)) {
-          return AppKitModalTheme.colorsOf(context).background225;
+          return ReownAppKitModalTheme.colorsOf(context).background225;
         }
-        return AppKitModalTheme.colorsOf(context).accent100;
+        return ReownAppKitModalTheme.colorsOf(context).accent100;
       },
     ),
     shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
@@ -24,25 +24,28 @@ ButtonStyle buttonStyle(BuildContext context) {
     ),
     textStyle: MaterialStateProperty.resolveWith<TextStyle>(
       (states) {
-        return AppKitModalTheme.getDataOf(context).textStyles.small600.copyWith(
+        return ReownAppKitModalTheme.getDataOf(context)
+            .textStyles
+            .small600
+            .copyWith(
               color: (states.contains(MaterialState.disabled))
-                  ? AppKitModalTheme.colorsOf(context).foreground300
-                  : AppKitModalTheme.colorsOf(context).inverse100,
+                  ? ReownAppKitModalTheme.colorsOf(context).foreground300
+                  : ReownAppKitModalTheme.colorsOf(context).inverse100,
             );
       },
     ),
     foregroundColor: MaterialStateProperty.resolveWith<Color>(
       (states) {
         return (states.contains(MaterialState.disabled))
-            ? AppKitModalTheme.colorsOf(context).foreground300
-            : AppKitModalTheme.colorsOf(context).inverse100;
+            ? ReownAppKitModalTheme.colorsOf(context).foreground300
+            : ReownAppKitModalTheme.colorsOf(context).inverse100;
       },
     ),
   );
 }
 
 BorderRadiusGeometry borderRadius(BuildContext context) {
-  final radiuses = AppKitModalTheme.radiusesOf(context);
+  final radiuses = ReownAppKitModalTheme.radiusesOf(context);
   return radiuses.isSquare()
       ? const BorderRadius.all(Radius.zero)
       : radiuses.isCircular()

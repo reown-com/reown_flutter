@@ -65,7 +65,7 @@ class _LoadingBorderState extends State<LoadingBorder>
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return Stack(
       alignment: Alignment.center,
       children: [

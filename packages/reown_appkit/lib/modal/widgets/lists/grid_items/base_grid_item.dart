@@ -17,8 +17,8 @@ class BaseGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final maxRadius = min(radiuses.radiusXS, 32.0);
     return FilledButton(
       onPressed: onTap,

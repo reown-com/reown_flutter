@@ -12,7 +12,7 @@ class AddressButton extends StatefulWidget {
     this.size = BaseButtonSize.regular,
     this.onTap,
   });
-  final IAppKitModal service;
+  final IReownAppKitModal service;
   final BaseButtonSize size;
   final VoidCallback? onTap;
 
@@ -44,7 +44,7 @@ class _AddressButtonState extends State<AddressButton> {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return BaseButton(
       size: widget.size,
       onTap: widget.onTap,

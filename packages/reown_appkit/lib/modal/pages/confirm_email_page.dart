@@ -122,9 +122,9 @@ class __VerifyDeviceViewState extends State<_VerifyDeviceView> {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final textStyles = AppKitModalTheme.getDataOf(context).textStyles;
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final textStyles = ReownAppKitModalTheme.getDataOf(context).textStyles;
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final borderRadiusIcon = radiuses.isSquare() ? 0.0 : 20.0;
     return Column(
       mainAxisSize: MainAxisSize.min,

@@ -30,9 +30,9 @@ class SimpleIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
-    final textStyles = AppKitModalTheme.getDataOf(context).textStyles;
-    final radiuses = AppKitModalTheme.radiusesOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final textStyles = ReownAppKitModalTheme.getDataOf(context).textStyles;
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final borderRadius =
         radiuses.isSquare() ? 0.0 : (BaseButtonSize.regular.height / 2);
     return BaseButton(

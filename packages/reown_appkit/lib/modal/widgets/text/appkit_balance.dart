@@ -22,7 +22,7 @@ class BalanceText extends StatefulWidget {
 class _BalanceTextState extends State<BalanceText> {
   String _balance = BalanceButton.balanceDefault;
   String? _tokenName;
-  IAppKitModal? _service;
+  IReownAppKitModal? _service;
 
   @override
   void initState() {
@@ -50,8 +50,8 @@ class _BalanceTextState extends State<BalanceText> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = AppKitModalTheme.getDataOf(context);
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return Text(
       '$_balance ${_tokenName ?? ''}',
       style: themeData.textStyles.paragraph500.copyWith(

@@ -19,7 +19,7 @@ abstract class ISiweService {
 
   Future<String> signMessageRequest(
     String message, {
-    required AppKitModalSession session,
+    required ReownAppKitModalSession session,
   });
 
   Future<bool> verifyMessage({

@@ -13,7 +13,7 @@ class AccountAvatar extends StatefulWidget {
     this.disabled = false,
   });
 
-  final IAppKitModal service;
+  final IReownAppKitModal service;
   final double size;
   final bool disabled;
 
@@ -40,7 +40,7 @@ class _AccountAvatarState extends State<AccountAvatar> {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return SizedBox(
       width: widget.size,
       height: widget.size,
@@ -86,7 +86,7 @@ class GradientOrb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Color> colors = RenderUtils.generateAvatarColors(address);
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return Stack(
       children: [
         Container(

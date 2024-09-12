@@ -3,48 +3,48 @@ import 'package:reown_appkit/modal/theme/public/appkit_modal_colors.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_radiuses.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme_data.dart';
 
-class AppKitModalTheme extends InheritedWidget {
-  const AppKitModalTheme({
+class ReownAppKitModalTheme extends InheritedWidget {
+  const ReownAppKitModalTheme({
     super.key,
     required super.child,
     this.themeData,
     this.isDarkMode = false,
   });
 
-  final AppKitModalThemeData? themeData;
+  final ReownAppKitModalThemeData? themeData;
   final bool isDarkMode;
 
-  static AppKitModalTheme of(BuildContext context) {
-    final AppKitModalTheme? result = maybeOf(context);
-    assert(result != null, 'No AppKitModalTheme found in context');
+  static ReownAppKitModalTheme of(BuildContext context) {
+    final ReownAppKitModalTheme? result = maybeOf(context);
+    assert(result != null, 'No ReownAppKitModalTheme found in context');
     return result!;
   }
 
   static bool isCustomTheme(BuildContext context) {
-    final AppKitModalTheme? theme = maybeOf(context);
+    final ReownAppKitModalTheme? theme = maybeOf(context);
     return theme?.themeData != null;
   }
 
-  static AppKitModalTheme? maybeOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<AppKitModalTheme>();
+  static ReownAppKitModalTheme? maybeOf(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<ReownAppKitModalTheme>();
   }
 
-  static AppKitModalThemeData getDataOf(BuildContext context) {
-    final AppKitModalTheme? theme = maybeOf(context);
-    return theme?.themeData ?? const AppKitModalThemeData();
+  static ReownAppKitModalThemeData getDataOf(BuildContext context) {
+    final ReownAppKitModalTheme? theme = maybeOf(context);
+    return theme?.themeData ?? const ReownAppKitModalThemeData();
   }
 
-  static AppKitModalColors colorsOf(BuildContext context) {
-    final AppKitModalTheme? theme = maybeOf(context);
+  static ReownAppKitModalColors colorsOf(BuildContext context) {
+    final ReownAppKitModalTheme? theme = maybeOf(context);
     if (theme?.isDarkMode == true) {
-      return theme?.themeData?.darkColors ?? AppKitModalColors.darkMode;
+      return theme?.themeData?.darkColors ?? ReownAppKitModalColors.darkMode;
     }
-    return theme?.themeData?.lightColors ?? AppKitModalColors.lightMode;
+    return theme?.themeData?.lightColors ?? ReownAppKitModalColors.lightMode;
   }
 
-  static AppKitModalRadiuses radiusesOf(BuildContext context) {
-    final AppKitModalTheme? theme = maybeOf(context);
-    return theme?.themeData?.radiuses ?? const AppKitModalRadiuses();
+  static ReownAppKitModalRadiuses radiusesOf(BuildContext context) {
+    final ReownAppKitModalTheme? theme = maybeOf(context);
+    return theme?.themeData?.radiuses ?? const ReownAppKitModalRadiuses();
   }
 
   @override

@@ -6,9 +6,9 @@ inputs:
     description: The type of CI to run.
     required: true
   relay-endpoint:
-    description: 'The endpoint of the relay e.g. relay.walletconnect.com'
+    description: 'The endpoint of the relay e.g. relay.walletconnect.org'
     required: false
-    default: 'wss://relay.walletconnect.com'
+    default: 'wss://relay.walletconnect.org'
   project-id:
     description: 'Reown project id'
     required: true

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
-enum AppKitModalStatus {
+enum ReownAppKitModalStatus {
   idle,
   initializing,
   initialized,
@@ -15,11 +15,11 @@ enum AppKitModalStatus {
 
 /// Either a [projectId] and [metadata] must be provided or an already created [appKit].
 /// optionalNamespaces is mostly not needed, if you use it, the values set here will override every optionalNamespaces set in evey chain
-abstract class IAppKitModal with ChangeNotifier {
+abstract class IReownAppKitModal with ChangeNotifier {
   BuildContext? get modalContext;
 
   /// Whether or not this object has been initialized.
-  AppKitModalStatus get status;
+  ReownAppKitModalStatus get status;
 
   bool get hasNamespaces;
 
@@ -37,7 +37,7 @@ abstract class IAppKitModal with ChangeNotifier {
   String? get wcUri;
 
   /// The current session's data.
-  AppKitModalSession? get session;
+  ReownAppKitModalSession? get session;
 
   /// The url to the account's avatar image.
   /// Pass this into a [Image.network] and it will load the avatar image.
@@ -49,16 +49,16 @@ abstract class IAppKitModal with ChangeNotifier {
   ValueNotifier<String> get balanceNotifier;
 
   /// The currently selected chain.
-  AppKitModalNetworkInfo? get selectedChain;
+  ReownAppKitModalNetworkInfo? get selectedChain;
 
   /// The currently selected wallet.
-  AppKitModalWalletInfo? get selectedWallet;
+  ReownAppKitModalWalletInfo? get selectedWallet;
 
   /// Sets up the explorer and appKit if they already been initialized.
   Future<void> init();
 
   // @Deprecated(
-  //     'Add context param to AppKitModal and use openNetworksView() instead')
+  //     'Add context param to ReownAppKitModal and use openNetworksView() instead')
   // Future<void> openNetworks(BuildContext context);
 
   Future<void> openNetworksView();
@@ -72,13 +72,13 @@ abstract class IAppKitModal with ChangeNotifier {
   Future<void> reconnectRelay();
 
   /// Sets the [selectedWallet] to be connected
-  void selectWallet(AppKitModalWalletInfo? walletInfo);
+  void selectWallet(ReownAppKitModalWalletInfo? walletInfo);
 
   /// Sets the [selectedChain] and gets the [chainBalance].
   /// If the wallet is already connected, it will request the chain to be changed and will update the session with the new chain.
   /// If [chainInfo] is null this will disconnect the wallet.
   Future<void> selectChain(
-    AppKitModalNetworkInfo? chainInfo, {
+    ReownAppKitModalNetworkInfo? chainInfo, {
     bool switchChain = false,
   });
 
@@ -142,8 +142,8 @@ abstract class IAppKitModal with ChangeNotifier {
     required SessionRequestParams request,
   });
 
-  Future<void> requestSwitchToChain(AppKitModalNetworkInfo newChain);
-  Future<void> requestAddChain(AppKitModalNetworkInfo newChain);
+  Future<void> requestSwitchToChain(ReownAppKitModalNetworkInfo newChain);
+  Future<void> requestAddChain(ReownAppKitModalNetworkInfo newChain);
 
   /// Closes the modal.
   void closeModal({bool disconnectSession = false});

@@ -85,10 +85,10 @@ class WidgetStack extends IWidgetStack {
 
     // Choose the state based on platform
     if (pType == PlatformType.mobile) {
-      push(const AppKitModalMainWalletsPage(), renderScreen: true);
+      push(const ReownAppKitModalMainWalletsPage(), renderScreen: true);
     } else if (pType == PlatformType.desktop || pType == PlatformType.web) {
       // add(const QRCodeAndWalletListPage());
-      push(const AppKitModalMainWalletsPage(), renderScreen: true);
+      push(const ReownAppKitModalMainWalletsPage(), renderScreen: true);
       // TODO [WidgetStack] fix non mobile page
     }
   }

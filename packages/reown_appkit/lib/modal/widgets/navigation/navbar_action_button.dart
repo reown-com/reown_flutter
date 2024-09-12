@@ -16,7 +16,7 @@ class NavbarActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return SizedBox.square(
       dimension: kNavbarHeight,
       child: IconButton(

@@ -3,8 +3,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'appkit_modal_radiuses.freezed.dart';
 
 @freezed
-class AppKitModalRadiuses with _$AppKitModalRadiuses {
-  const factory AppKitModalRadiuses({
+class ReownAppKitModalRadiuses with _$ReownAppKitModalRadiuses {
+  const factory ReownAppKitModalRadiuses({
     @Default(6.0) double radius4XS,
     @Default(8.0) double radius3XS,
     @Default(12.0) double radius2XS,
@@ -13,9 +13,9 @@ class AppKitModalRadiuses with _$AppKitModalRadiuses {
     @Default(28.0) double radiusM,
     @Default(36.0) double radiusL,
     @Default(80.0) double radius3XL,
-  }) = _AppKitModalRadiuses;
+  }) = _ReownAppKitModalRadiuses;
 
-  static const square = AppKitModalRadiuses(
+  static const square = ReownAppKitModalRadiuses(
     radius4XS: 0.0,
     radius3XS: 0.0,
     radius2XS: 0.0,
@@ -26,7 +26,7 @@ class AppKitModalRadiuses with _$AppKitModalRadiuses {
     radius3XL: 0.0,
   );
 
-  static const circular = AppKitModalRadiuses(
+  static const circular = ReownAppKitModalRadiuses(
     radius4XS: 100.0,
     radius3XS: 100.0,
     radius2XS: 100.0,
@@ -38,7 +38,7 @@ class AppKitModalRadiuses with _$AppKitModalRadiuses {
   );
 }
 
-extension AppKitModalRadiusesExtension on AppKitModalRadiuses {
+extension ReownAppKitModalRadiusesExtension on ReownAppKitModalRadiuses {
   bool isSquare() {
     return radius4XS == 0.0 &&
         radius3XS == 0.0 &&

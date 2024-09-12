@@ -19,7 +19,7 @@ import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class ConnectNetworkPage extends StatefulWidget {
-  final AppKitModalNetworkInfo chainInfo;
+  final ReownAppKitModalNetworkInfo chainInfo;
   const ConnectNetworkPage({
     required this.chainInfo,
   }) : super(key: KeyConstants.connecNetworkPageKey);
@@ -30,7 +30,7 @@ class ConnectNetworkPage extends StatefulWidget {
 
 class _ConnectNetworkPageState extends State<ConnectNetworkPage>
     with WidgetsBindingObserver {
-  IAppKitModal? _service;
+  IReownAppKitModal? _service;
   ModalError? errorEvent;
 
   @override
@@ -51,7 +51,7 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
     try {
       await _service!.requestSwitchToChain(widget.chainInfo);
       final chainId = widget.chainInfo.chainId;
-      final chainInfo = AppKitModalNetworks.getNetworkById(
+      final chainInfo = ReownAppKitModalNetworks.getNetworkById(
         CoreConstants.namespace,
         chainId,
       );
@@ -94,8 +94,8 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
     if (_service == null) {
       return ContentLoading();
     }
-    final themeData = AppKitModalTheme.getDataOf(context);
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final isPortrait = ResponsiveData.isPortrait(context);
     final maxWidth = isPortrait
         ? ResponsiveData.maxWidthOf(context)
@@ -104,7 +104,7 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
             (kPadding16 * 2);
     //
     final chainId = widget.chainInfo.chainId;
-    final imageId = AppKitModalNetworks.getNetworkIconId(chainId);
+    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
     final imageUrl = explorerService.instance.getAssetImageUrl(imageId);
     //
     return ModalNavbar(
@@ -187,7 +187,7 @@ class _WalletAvatar extends StatelessWidget {
 
   final String imageUrl;
   final bool errorConnection;
-  final AppKitModalColors themeColors;
+  final ReownAppKitModalColors themeColors;
 
   @override
   Widget build(BuildContext context) {

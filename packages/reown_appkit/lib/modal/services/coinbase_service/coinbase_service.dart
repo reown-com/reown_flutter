@@ -18,7 +18,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 
 class CoinbaseService implements ICoinbaseService {
   static const coinbasePackageName = 'org.toshi';
-  static const defaultWalletData = AppKitModalWalletInfo(
+  static const defaultWalletData = ReownAppKitModalWalletInfo(
     listing: Listing(
       id: 'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
       name: 'Coinbase Wallet',
@@ -80,7 +80,7 @@ class CoinbaseService implements ICoinbaseService {
 
   late final PairingMetadata _metadata;
   late bool _enabled;
-  late AppKitModalWalletInfo _walletData;
+  late ReownAppKitModalWalletInfo _walletData;
   late final IReownCore _core;
 
   CoinbaseService({
@@ -315,7 +315,7 @@ extension on SessionRequestParams {
       case MethodsConstants.walletSwitchEthChain:
       case MethodsConstants.walletAddEthChain:
         try {
-          final chainInfo = AppKitModalNetworks.getNetworkById(
+          final chainInfo = ReownAppKitModalNetworks.getNetworkById(
             CoreConstants.namespace,
             chainId!,
           )!;

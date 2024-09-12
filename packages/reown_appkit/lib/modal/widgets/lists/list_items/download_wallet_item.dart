@@ -14,7 +14,7 @@ class DownloadWalletItem extends StatelessWidget {
     required this.walletInfo,
     this.webOnly = false,
   });
-  final AppKitModalWalletInfo walletInfo;
+  final ReownAppKitModalWalletInfo walletInfo;
   final bool webOnly;
 
   String get _storeUrl {
@@ -32,7 +32,7 @@ class DownloadWalletItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     if (_storeUrl.isEmpty) {
       return SizedBox.shrink();
     }

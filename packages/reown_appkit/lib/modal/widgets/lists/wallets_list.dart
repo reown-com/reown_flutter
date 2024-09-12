@@ -16,15 +16,15 @@ class WalletsList extends StatelessWidget {
     this.onTapWallet,
     this.isLoading = false,
   });
-  final List<GridItem<AppKitModalWalletInfo>> itemList;
+  final List<GridItem<ReownAppKitModalWalletInfo>> itemList;
   final Widget? firstItem;
   final List<Widget> bottomItems;
-  final Function(AppKitModalWalletInfo walletInfo)? onTapWallet;
+  final Function(ReownAppKitModalWalletInfo walletInfo)? onTapWallet;
   final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final loadingList = [
       const WalletListItem(title: ''),
       const WalletListItem(title: ''),

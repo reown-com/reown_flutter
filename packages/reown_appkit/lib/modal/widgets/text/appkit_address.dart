@@ -10,7 +10,7 @@ class Address extends StatefulWidget {
     this.style,
   });
 
-  final IAppKitModal service;
+  final IReownAppKitModal service;
   final TextStyle? style;
 
   @override
@@ -35,8 +35,8 @@ class _AddressState extends State<Address> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = AppKitModalTheme.getDataOf(context);
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return Text(
       RenderUtils.truncate(_address ?? ''),
       style: widget.style ??

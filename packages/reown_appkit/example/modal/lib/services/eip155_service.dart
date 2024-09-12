@@ -66,7 +66,7 @@ class EIP155 {
   }
 
   static Future<dynamic> callMethod({
-    required AppKitModal appKit,
+    required ReownAppKitModal appKit,
     required String topic,
     required EIP155UIMethods method,
     required String chainId,
@@ -120,7 +120,7 @@ class EIP155 {
   }
 
   static Future<dynamic> requestAccounts({
-    required AppKitModal appKit,
+    required ReownAppKitModal appKit,
   }) async {
     return await appKit.request(
       topic: appKit.session!.topic,
@@ -133,7 +133,7 @@ class EIP155 {
   }
 
   static Future<dynamic> personalSign({
-    required AppKitModal appKit,
+    required ReownAppKitModal appKit,
     required String message,
   }) async {
     final bytes = utf8.encode(message);
@@ -153,7 +153,7 @@ class EIP155 {
   }
 
   static Future<dynamic> ethSignTypedData({
-    required AppKitModal appKit,
+    required ReownAppKitModal appKit,
     required String data,
   }) async {
     return await appKit.request(
@@ -170,7 +170,7 @@ class EIP155 {
   }
 
   static Future<dynamic> ethSignTypedDataV3({
-    required AppKitModal appKit,
+    required ReownAppKitModal appKit,
     required String data,
   }) async {
     return await appKit.request(
@@ -187,7 +187,7 @@ class EIP155 {
   }
 
   static Future<dynamic> ethSignTypedDataV4({
-    required AppKitModal appKit,
+    required ReownAppKitModal appKit,
     required String data,
   }) async {
     return await appKit.request(
@@ -204,7 +204,7 @@ class EIP155 {
   }
 
   static Future<dynamic> ethSendOrSignTransaction({
-    required AppKitModal appKit,
+    required ReownAppKitModal appKit,
     required Transaction transaction,
     required EIP155UIMethods method,
   }) async {
@@ -221,7 +221,7 @@ class EIP155 {
   }
 
   static Future<dynamic> walletWatchAsset({
-    required AppKitModal appKit,
+    required ReownAppKitModal appKit,
   }) async {
     return await appKit.request(
       topic: appKit.session!.topic,
@@ -244,7 +244,7 @@ class EIP155 {
 
   // Example of calling `transfer` function from AAVE token Smart Contract
   static Future<dynamic> callTestSmartContract({
-    required AppKitModal appKit,
+    required ReownAppKitModal appKit,
     required String action,
   }) async {
     // Create DeployedContract object using contract's ABI and address
@@ -327,7 +327,7 @@ class EIP155 {
 
   // Example of calling `transfer` function from USDT token Smart Contract
   static Future<dynamic> callUSDTSmartContract({
-    required AppKitModal appKit,
+    required ReownAppKitModal appKit,
     required String action,
   }) async {
     // Create DeployedContract object using contract's ABI and address
@@ -378,7 +378,7 @@ class EIP155 {
   }
 
   static Future<dynamic> _readSmartContract({
-    required AppKitModal appKit,
+    required ReownAppKitModal appKit,
     required DeployedContract contract,
   }) async {
     final results = await Future.wait([

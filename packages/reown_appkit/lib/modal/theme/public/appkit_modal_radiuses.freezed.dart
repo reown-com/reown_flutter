@@ -15,7 +15,7 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$AppKitModalRadiuses {
+mixin _$ReownAppKitModalRadiuses {
   double get radius4XS => throw _privateConstructorUsedError;
   double get radius3XS => throw _privateConstructorUsedError;
   double get radius2XS => throw _privateConstructorUsedError;
@@ -26,15 +26,15 @@ mixin _$AppKitModalRadiuses {
   double get radius3XL => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $AppKitModalRadiusesCopyWith<AppKitModalRadiuses> get copyWith =>
+  $ReownAppKitModalRadiusesCopyWith<ReownAppKitModalRadiuses> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $AppKitModalRadiusesCopyWith<$Res> {
-  factory $AppKitModalRadiusesCopyWith(
-          AppKitModalRadiuses value, $Res Function(AppKitModalRadiuses) then) =
-      _$AppKitModalRadiusesCopyWithImpl<$Res, AppKitModalRadiuses>;
+abstract class $ReownAppKitModalRadiusesCopyWith<$Res> {
+  factory $ReownAppKitModalRadiusesCopyWith(ReownAppKitModalRadiuses value,
+          $Res Function(ReownAppKitModalRadiuses) then) =
+      _$ReownAppKitModalRadiusesCopyWithImpl<$Res, ReownAppKitModalRadiuses>;
   @useResult
   $Res call(
       {double radius4XS,
@@ -48,9 +48,10 @@ abstract class $AppKitModalRadiusesCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$AppKitModalRadiusesCopyWithImpl<$Res, $Val extends AppKitModalRadiuses>
-    implements $AppKitModalRadiusesCopyWith<$Res> {
-  _$AppKitModalRadiusesCopyWithImpl(this._value, this._then);
+class _$ReownAppKitModalRadiusesCopyWithImpl<$Res,
+        $Val extends ReownAppKitModalRadiuses>
+    implements $ReownAppKitModalRadiusesCopyWith<$Res> {
+  _$ReownAppKitModalRadiusesCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -107,11 +108,12 @@ class _$AppKitModalRadiusesCopyWithImpl<$Res, $Val extends AppKitModalRadiuses>
 }
 
 /// @nodoc
-abstract class _$$AppKitModalRadiusesImplCopyWith<$Res>
-    implements $AppKitModalRadiusesCopyWith<$Res> {
-  factory _$$AppKitModalRadiusesImplCopyWith(_$AppKitModalRadiusesImpl value,
-          $Res Function(_$AppKitModalRadiusesImpl) then) =
-      __$$AppKitModalRadiusesImplCopyWithImpl<$Res>;
+abstract class _$$ReownAppKitModalRadiusesImplCopyWith<$Res>
+    implements $ReownAppKitModalRadiusesCopyWith<$Res> {
+  factory _$$ReownAppKitModalRadiusesImplCopyWith(
+          _$ReownAppKitModalRadiusesImpl value,
+          $Res Function(_$ReownAppKitModalRadiusesImpl) then) =
+      __$$ReownAppKitModalRadiusesImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -126,11 +128,13 @@ abstract class _$$AppKitModalRadiusesImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$AppKitModalRadiusesImplCopyWithImpl<$Res>
-    extends _$AppKitModalRadiusesCopyWithImpl<$Res, _$AppKitModalRadiusesImpl>
-    implements _$$AppKitModalRadiusesImplCopyWith<$Res> {
-  __$$AppKitModalRadiusesImplCopyWithImpl(_$AppKitModalRadiusesImpl _value,
-      $Res Function(_$AppKitModalRadiusesImpl) _then)
+class __$$ReownAppKitModalRadiusesImplCopyWithImpl<$Res>
+    extends _$ReownAppKitModalRadiusesCopyWithImpl<$Res,
+        _$ReownAppKitModalRadiusesImpl>
+    implements _$$ReownAppKitModalRadiusesImplCopyWith<$Res> {
+  __$$ReownAppKitModalRadiusesImplCopyWithImpl(
+      _$ReownAppKitModalRadiusesImpl _value,
+      $Res Function(_$ReownAppKitModalRadiusesImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -145,7 +149,7 @@ class __$$AppKitModalRadiusesImplCopyWithImpl<$Res>
     Object? radiusL = null,
     Object? radius3XL = null,
   }) {
-    return _then(_$AppKitModalRadiusesImpl(
+    return _then(_$ReownAppKitModalRadiusesImpl(
       radius4XS: null == radius4XS
           ? _value.radius4XS
           : radius4XS // ignore: cast_nullable_to_non_nullable
@@ -184,8 +188,8 @@ class __$$AppKitModalRadiusesImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AppKitModalRadiusesImpl implements _AppKitModalRadiuses {
-  const _$AppKitModalRadiusesImpl(
+class _$ReownAppKitModalRadiusesImpl implements _ReownAppKitModalRadiuses {
+  const _$ReownAppKitModalRadiusesImpl(
       {this.radius4XS = 6.0,
       this.radius3XS = 8.0,
       this.radius2XS = 12.0,
@@ -222,14 +226,14 @@ class _$AppKitModalRadiusesImpl implements _AppKitModalRadiuses {
 
   @override
   String toString() {
-    return 'AppKitModalRadiuses(radius4XS: $radius4XS, radius3XS: $radius3XS, radius2XS: $radius2XS, radiusXS: $radiusXS, radiusS: $radiusS, radiusM: $radiusM, radiusL: $radiusL, radius3XL: $radius3XL)';
+    return 'ReownAppKitModalRadiuses(radius4XS: $radius4XS, radius3XS: $radius3XS, radius2XS: $radius2XS, radiusXS: $radiusXS, radiusS: $radiusS, radiusM: $radiusM, radiusL: $radiusL, radius3XL: $radius3XL)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$AppKitModalRadiusesImpl &&
+            other is _$ReownAppKitModalRadiusesImpl &&
             (identical(other.radius4XS, radius4XS) ||
                 other.radius4XS == radius4XS) &&
             (identical(other.radius3XS, radius3XS) ||
@@ -252,13 +256,13 @@ class _$AppKitModalRadiusesImpl implements _AppKitModalRadiuses {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$AppKitModalRadiusesImplCopyWith<_$AppKitModalRadiusesImpl> get copyWith =>
-      __$$AppKitModalRadiusesImplCopyWithImpl<_$AppKitModalRadiusesImpl>(
-          this, _$identity);
+  _$$ReownAppKitModalRadiusesImplCopyWith<_$ReownAppKitModalRadiusesImpl>
+      get copyWith => __$$ReownAppKitModalRadiusesImplCopyWithImpl<
+          _$ReownAppKitModalRadiusesImpl>(this, _$identity);
 }
 
-abstract class _AppKitModalRadiuses implements AppKitModalRadiuses {
-  const factory _AppKitModalRadiuses(
+abstract class _ReownAppKitModalRadiuses implements ReownAppKitModalRadiuses {
+  const factory _ReownAppKitModalRadiuses(
       {final double radius4XS,
       final double radius3XS,
       final double radius2XS,
@@ -266,7 +270,7 @@ abstract class _AppKitModalRadiuses implements AppKitModalRadiuses {
       final double radiusS,
       final double radiusM,
       final double radiusL,
-      final double radius3XL}) = _$AppKitModalRadiusesImpl;
+      final double radius3XL}) = _$ReownAppKitModalRadiusesImpl;
 
   @override
   double get radius4XS;
@@ -286,6 +290,6 @@ abstract class _AppKitModalRadiuses implements AppKitModalRadiuses {
   double get radius3XL;
   @override
   @JsonKey(ignore: true)
-  _$$AppKitModalRadiusesImplCopyWith<_$AppKitModalRadiusesImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$ReownAppKitModalRadiusesImplCopyWith<_$ReownAppKitModalRadiusesImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }

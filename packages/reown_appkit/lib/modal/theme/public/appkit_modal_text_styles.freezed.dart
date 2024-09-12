@@ -15,7 +15,7 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$AppKitModalTextStyles {
+mixin _$ReownAppKitModalTextStyles {
   String get fontFamily => throw _privateConstructorUsedError;
   TextStyle get title400 => throw _privateConstructorUsedError;
   TextStyle get title500 => throw _privateConstructorUsedError;
@@ -36,15 +36,16 @@ mixin _$AppKitModalTextStyles {
   TextStyle get micro700 => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $AppKitModalTextStylesCopyWith<AppKitModalTextStyles> get copyWith =>
-      throw _privateConstructorUsedError;
+  $ReownAppKitModalTextStylesCopyWith<ReownAppKitModalTextStyles>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $AppKitModalTextStylesCopyWith<$Res> {
-  factory $AppKitModalTextStylesCopyWith(AppKitModalTextStyles value,
-          $Res Function(AppKitModalTextStyles) then) =
-      _$AppKitModalTextStylesCopyWithImpl<$Res, AppKitModalTextStyles>;
+abstract class $ReownAppKitModalTextStylesCopyWith<$Res> {
+  factory $ReownAppKitModalTextStylesCopyWith(ReownAppKitModalTextStyles value,
+          $Res Function(ReownAppKitModalTextStyles) then) =
+      _$ReownAppKitModalTextStylesCopyWithImpl<$Res,
+          ReownAppKitModalTextStyles>;
   @useResult
   $Res call(
       {String fontFamily,
@@ -68,10 +69,10 @@ abstract class $AppKitModalTextStylesCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$AppKitModalTextStylesCopyWithImpl<$Res,
-        $Val extends AppKitModalTextStyles>
-    implements $AppKitModalTextStylesCopyWith<$Res> {
-  _$AppKitModalTextStylesCopyWithImpl(this._value, this._then);
+class _$ReownAppKitModalTextStylesCopyWithImpl<$Res,
+        $Val extends ReownAppKitModalTextStyles>
+    implements $ReownAppKitModalTextStylesCopyWith<$Res> {
+  _$ReownAppKitModalTextStylesCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -178,12 +179,12 @@ class _$AppKitModalTextStylesCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$AppKitModalTextStylesImplCopyWith<$Res>
-    implements $AppKitModalTextStylesCopyWith<$Res> {
-  factory _$$AppKitModalTextStylesImplCopyWith(
-          _$AppKitModalTextStylesImpl value,
-          $Res Function(_$AppKitModalTextStylesImpl) then) =
-      __$$AppKitModalTextStylesImplCopyWithImpl<$Res>;
+abstract class _$$ReownAppKitModalTextStylesImplCopyWith<$Res>
+    implements $ReownAppKitModalTextStylesCopyWith<$Res> {
+  factory _$$ReownAppKitModalTextStylesImplCopyWith(
+          _$ReownAppKitModalTextStylesImpl value,
+          $Res Function(_$ReownAppKitModalTextStylesImpl) then) =
+      __$$ReownAppKitModalTextStylesImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -208,12 +209,13 @@ abstract class _$$AppKitModalTextStylesImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$AppKitModalTextStylesImplCopyWithImpl<$Res>
-    extends _$AppKitModalTextStylesCopyWithImpl<$Res,
-        _$AppKitModalTextStylesImpl>
-    implements _$$AppKitModalTextStylesImplCopyWith<$Res> {
-  __$$AppKitModalTextStylesImplCopyWithImpl(_$AppKitModalTextStylesImpl _value,
-      $Res Function(_$AppKitModalTextStylesImpl) _then)
+class __$$ReownAppKitModalTextStylesImplCopyWithImpl<$Res>
+    extends _$ReownAppKitModalTextStylesCopyWithImpl<$Res,
+        _$ReownAppKitModalTextStylesImpl>
+    implements _$$ReownAppKitModalTextStylesImplCopyWith<$Res> {
+  __$$ReownAppKitModalTextStylesImplCopyWithImpl(
+      _$ReownAppKitModalTextStylesImpl _value,
+      $Res Function(_$ReownAppKitModalTextStylesImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -238,7 +240,7 @@ class __$$AppKitModalTextStylesImplCopyWithImpl<$Res>
     Object? micro600 = null,
     Object? micro700 = null,
   }) {
-    return _then(_$AppKitModalTextStylesImpl(
+    return _then(_$ReownAppKitModalTextStylesImpl(
       fontFamily: null == fontFamily
           ? _value.fontFamily
           : fontFamily // ignore: cast_nullable_to_non_nullable
@@ -317,8 +319,8 @@ class __$$AppKitModalTextStylesImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$AppKitModalTextStylesImpl implements _AppKitModalTextStyles {
-  const _$AppKitModalTextStylesImpl(
+class _$ReownAppKitModalTextStylesImpl implements _ReownAppKitModalTextStyles {
+  const _$ReownAppKitModalTextStylesImpl(
       {required this.fontFamily,
       required this.title400,
       required this.title500,
@@ -377,14 +379,14 @@ class _$AppKitModalTextStylesImpl implements _AppKitModalTextStyles {
 
   @override
   String toString() {
-    return 'AppKitModalTextStyles(fontFamily: $fontFamily, title400: $title400, title500: $title500, title600: $title600, large400: $large400, large500: $large500, large600: $large600, paragraph400: $paragraph400, paragraph500: $paragraph500, paragraph600: $paragraph600, small400: $small400, small500: $small500, small600: $small600, tiny400: $tiny400, tiny500: $tiny500, tiny600: $tiny600, micro600: $micro600, micro700: $micro700)';
+    return 'ReownAppKitModalTextStyles(fontFamily: $fontFamily, title400: $title400, title500: $title500, title600: $title600, large400: $large400, large500: $large500, large600: $large600, paragraph400: $paragraph400, paragraph500: $paragraph500, paragraph600: $paragraph600, small400: $small400, small500: $small500, small600: $small600, tiny400: $tiny400, tiny500: $tiny500, tiny600: $tiny600, micro600: $micro600, micro700: $micro700)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$AppKitModalTextStylesImpl &&
+            other is _$ReownAppKitModalTextStylesImpl &&
             (identical(other.fontFamily, fontFamily) ||
                 other.fontFamily == fontFamily) &&
             (identical(other.title400, title400) ||
@@ -445,13 +447,14 @@ class _$AppKitModalTextStylesImpl implements _AppKitModalTextStyles {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$AppKitModalTextStylesImplCopyWith<_$AppKitModalTextStylesImpl>
-      get copyWith => __$$AppKitModalTextStylesImplCopyWithImpl<
-          _$AppKitModalTextStylesImpl>(this, _$identity);
+  _$$ReownAppKitModalTextStylesImplCopyWith<_$ReownAppKitModalTextStylesImpl>
+      get copyWith => __$$ReownAppKitModalTextStylesImplCopyWithImpl<
+          _$ReownAppKitModalTextStylesImpl>(this, _$identity);
 }
 
-abstract class _AppKitModalTextStyles implements AppKitModalTextStyles {
-  const factory _AppKitModalTextStyles(
+abstract class _ReownAppKitModalTextStyles
+    implements ReownAppKitModalTextStyles {
+  const factory _ReownAppKitModalTextStyles(
       {required final String fontFamily,
       required final TextStyle title400,
       required final TextStyle title500,
@@ -469,7 +472,7 @@ abstract class _AppKitModalTextStyles implements AppKitModalTextStyles {
       required final TextStyle tiny500,
       required final TextStyle tiny600,
       required final TextStyle micro600,
-      required final TextStyle micro700}) = _$AppKitModalTextStylesImpl;
+      required final TextStyle micro700}) = _$ReownAppKitModalTextStylesImpl;
 
   @override
   String get fontFamily;
@@ -509,6 +512,6 @@ abstract class _AppKitModalTextStyles implements AppKitModalTextStyles {
   TextStyle get micro700;
   @override
   @JsonKey(ignore: true)
-  _$$AppKitModalTextStylesImplCopyWith<_$AppKitModalTextStylesImpl>
+  _$$ReownAppKitModalTextStylesImplCopyWith<_$ReownAppKitModalTextStylesImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

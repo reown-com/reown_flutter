@@ -11,17 +11,18 @@ class NetworkService implements INetworkService {
   @override
   ValueNotifier<bool> initialized = ValueNotifier<bool>(false);
 
-  List<GridItem<AppKitModalNetworkInfo>> itemListComplete = [];
+  List<GridItem<ReownAppKitModalNetworkInfo>> itemListComplete = [];
 
   @override
-  ValueNotifier<List<GridItem<AppKitModalNetworkInfo>>> itemList =
-      ValueNotifier<List<GridItem<AppKitModalNetworkInfo>>>([]);
+  ValueNotifier<List<GridItem<ReownAppKitModalNetworkInfo>>> itemList =
+      ValueNotifier<List<GridItem<ReownAppKitModalNetworkInfo>>>([]);
 
-  String _getImageUrl(AppKitModalNetworkInfo chainInfo) {
+  String _getImageUrl(ReownAppKitModalNetworkInfo chainInfo) {
     if (chainInfo.chainIcon != null && chainInfo.chainIcon!.contains('http')) {
       return chainInfo.chainIcon!;
     }
-    final imageId = AppKitModalNetworks.getNetworkIconId(chainInfo.chainId);
+    final imageId =
+        ReownAppKitModalNetworks.getNetworkIconId(chainInfo.chainId);
     return explorerService.instance.getAssetImageUrl(imageId);
   }
 
@@ -31,13 +32,13 @@ class NetworkService implements INetworkService {
       return;
     }
 
-    final networks = AppKitModalNetworks.getNetworks(
+    final networks = ReownAppKitModalNetworks.getNetworks(
       CoreConstants.namespace,
     );
     for (var chain in networks) {
       final imageUrl = _getImageUrl(chain);
       itemListComplete.add(
-        GridItem<AppKitModalNetworkInfo>(
+        GridItem<ReownAppKitModalNetworkInfo>(
           image: imageUrl,
           id: chain.chainId,
           title: RenderUtils.shorten(chain.name),

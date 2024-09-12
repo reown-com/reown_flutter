@@ -15,40 +15,41 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$AppKitModalThemeData {
-  AppKitModalColors get lightColors => throw _privateConstructorUsedError;
-  AppKitModalColors get darkColors => throw _privateConstructorUsedError;
-  AppKitModalTextStyles get textStyles => throw _privateConstructorUsedError;
-  AppKitModalRadiuses get radiuses => throw _privateConstructorUsedError;
+mixin _$ReownAppKitModalThemeData {
+  ReownAppKitModalColors get lightColors => throw _privateConstructorUsedError;
+  ReownAppKitModalColors get darkColors => throw _privateConstructorUsedError;
+  ReownAppKitModalTextStyles get textStyles =>
+      throw _privateConstructorUsedError;
+  ReownAppKitModalRadiuses get radiuses => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $AppKitModalThemeDataCopyWith<AppKitModalThemeData> get copyWith =>
+  $ReownAppKitModalThemeDataCopyWith<ReownAppKitModalThemeData> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $AppKitModalThemeDataCopyWith<$Res> {
-  factory $AppKitModalThemeDataCopyWith(AppKitModalThemeData value,
-          $Res Function(AppKitModalThemeData) then) =
-      _$AppKitModalThemeDataCopyWithImpl<$Res, AppKitModalThemeData>;
+abstract class $ReownAppKitModalThemeDataCopyWith<$Res> {
+  factory $ReownAppKitModalThemeDataCopyWith(ReownAppKitModalThemeData value,
+          $Res Function(ReownAppKitModalThemeData) then) =
+      _$ReownAppKitModalThemeDataCopyWithImpl<$Res, ReownAppKitModalThemeData>;
   @useResult
   $Res call(
-      {AppKitModalColors lightColors,
-      AppKitModalColors darkColors,
-      AppKitModalTextStyles textStyles,
-      AppKitModalRadiuses radiuses});
+      {ReownAppKitModalColors lightColors,
+      ReownAppKitModalColors darkColors,
+      ReownAppKitModalTextStyles textStyles,
+      ReownAppKitModalRadiuses radiuses});
 
-  $AppKitModalColorsCopyWith<$Res> get lightColors;
-  $AppKitModalColorsCopyWith<$Res> get darkColors;
-  $AppKitModalTextStylesCopyWith<$Res> get textStyles;
-  $AppKitModalRadiusesCopyWith<$Res> get radiuses;
+  $ReownAppKitModalColorsCopyWith<$Res> get lightColors;
+  $ReownAppKitModalColorsCopyWith<$Res> get darkColors;
+  $ReownAppKitModalTextStylesCopyWith<$Res> get textStyles;
+  $ReownAppKitModalRadiusesCopyWith<$Res> get radiuses;
 }
 
 /// @nodoc
-class _$AppKitModalThemeDataCopyWithImpl<$Res,
-        $Val extends AppKitModalThemeData>
-    implements $AppKitModalThemeDataCopyWith<$Res> {
-  _$AppKitModalThemeDataCopyWithImpl(this._value, this._then);
+class _$ReownAppKitModalThemeDataCopyWithImpl<$Res,
+        $Val extends ReownAppKitModalThemeData>
+    implements $ReownAppKitModalThemeDataCopyWith<$Res> {
+  _$ReownAppKitModalThemeDataCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -67,85 +68,89 @@ class _$AppKitModalThemeDataCopyWithImpl<$Res,
       lightColors: null == lightColors
           ? _value.lightColors
           : lightColors // ignore: cast_nullable_to_non_nullable
-              as AppKitModalColors,
+              as ReownAppKitModalColors,
       darkColors: null == darkColors
           ? _value.darkColors
           : darkColors // ignore: cast_nullable_to_non_nullable
-              as AppKitModalColors,
+              as ReownAppKitModalColors,
       textStyles: null == textStyles
           ? _value.textStyles
           : textStyles // ignore: cast_nullable_to_non_nullable
-              as AppKitModalTextStyles,
+              as ReownAppKitModalTextStyles,
       radiuses: null == radiuses
           ? _value.radiuses
           : radiuses // ignore: cast_nullable_to_non_nullable
-              as AppKitModalRadiuses,
+              as ReownAppKitModalRadiuses,
     ) as $Val);
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $AppKitModalColorsCopyWith<$Res> get lightColors {
-    return $AppKitModalColorsCopyWith<$Res>(_value.lightColors, (value) {
+  $ReownAppKitModalColorsCopyWith<$Res> get lightColors {
+    return $ReownAppKitModalColorsCopyWith<$Res>(_value.lightColors, (value) {
       return _then(_value.copyWith(lightColors: value) as $Val);
     });
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $AppKitModalColorsCopyWith<$Res> get darkColors {
-    return $AppKitModalColorsCopyWith<$Res>(_value.darkColors, (value) {
+  $ReownAppKitModalColorsCopyWith<$Res> get darkColors {
+    return $ReownAppKitModalColorsCopyWith<$Res>(_value.darkColors, (value) {
       return _then(_value.copyWith(darkColors: value) as $Val);
     });
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $AppKitModalTextStylesCopyWith<$Res> get textStyles {
-    return $AppKitModalTextStylesCopyWith<$Res>(_value.textStyles, (value) {
+  $ReownAppKitModalTextStylesCopyWith<$Res> get textStyles {
+    return $ReownAppKitModalTextStylesCopyWith<$Res>(_value.textStyles,
+        (value) {
       return _then(_value.copyWith(textStyles: value) as $Val);
     });
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $AppKitModalRadiusesCopyWith<$Res> get radiuses {
-    return $AppKitModalRadiusesCopyWith<$Res>(_value.radiuses, (value) {
+  $ReownAppKitModalRadiusesCopyWith<$Res> get radiuses {
+    return $ReownAppKitModalRadiusesCopyWith<$Res>(_value.radiuses, (value) {
       return _then(_value.copyWith(radiuses: value) as $Val);
     });
   }
 }
 
 /// @nodoc
-abstract class _$$AppKitModalThemeDataImplCopyWith<$Res>
-    implements $AppKitModalThemeDataCopyWith<$Res> {
-  factory _$$AppKitModalThemeDataImplCopyWith(_$AppKitModalThemeDataImpl value,
-          $Res Function(_$AppKitModalThemeDataImpl) then) =
-      __$$AppKitModalThemeDataImplCopyWithImpl<$Res>;
+abstract class _$$ReownAppKitModalThemeDataImplCopyWith<$Res>
+    implements $ReownAppKitModalThemeDataCopyWith<$Res> {
+  factory _$$ReownAppKitModalThemeDataImplCopyWith(
+          _$ReownAppKitModalThemeDataImpl value,
+          $Res Function(_$ReownAppKitModalThemeDataImpl) then) =
+      __$$ReownAppKitModalThemeDataImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
-      {AppKitModalColors lightColors,
-      AppKitModalColors darkColors,
-      AppKitModalTextStyles textStyles,
-      AppKitModalRadiuses radiuses});
+      {ReownAppKitModalColors lightColors,
+      ReownAppKitModalColors darkColors,
+      ReownAppKitModalTextStyles textStyles,
+      ReownAppKitModalRadiuses radiuses});
 
   @override
-  $AppKitModalColorsCopyWith<$Res> get lightColors;
+  $ReownAppKitModalColorsCopyWith<$Res> get lightColors;
   @override
-  $AppKitModalColorsCopyWith<$Res> get darkColors;
+  $ReownAppKitModalColorsCopyWith<$Res> get darkColors;
   @override
-  $AppKitModalTextStylesCopyWith<$Res> get textStyles;
+  $ReownAppKitModalTextStylesCopyWith<$Res> get textStyles;
   @override
-  $AppKitModalRadiusesCopyWith<$Res> get radiuses;
+  $ReownAppKitModalRadiusesCopyWith<$Res> get radiuses;
 }
 
 /// @nodoc
-class __$$AppKitModalThemeDataImplCopyWithImpl<$Res>
-    extends _$AppKitModalThemeDataCopyWithImpl<$Res, _$AppKitModalThemeDataImpl>
-    implements _$$AppKitModalThemeDataImplCopyWith<$Res> {
-  __$$AppKitModalThemeDataImplCopyWithImpl(_$AppKitModalThemeDataImpl _value,
-      $Res Function(_$AppKitModalThemeDataImpl) _then)
+class __$$ReownAppKitModalThemeDataImplCopyWithImpl<$Res>
+    extends _$ReownAppKitModalThemeDataCopyWithImpl<$Res,
+        _$ReownAppKitModalThemeDataImpl>
+    implements _$$ReownAppKitModalThemeDataImplCopyWith<$Res> {
+  __$$ReownAppKitModalThemeDataImplCopyWithImpl(
+      _$ReownAppKitModalThemeDataImpl _value,
+      $Res Function(_$ReownAppKitModalThemeDataImpl) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -156,59 +161,59 @@ class __$$AppKitModalThemeDataImplCopyWithImpl<$Res>
     Object? textStyles = null,
     Object? radiuses = null,
   }) {
-    return _then(_$AppKitModalThemeDataImpl(
+    return _then(_$ReownAppKitModalThemeDataImpl(
       lightColors: null == lightColors
           ? _value.lightColors
           : lightColors // ignore: cast_nullable_to_non_nullable
-              as AppKitModalColors,
+              as ReownAppKitModalColors,
       darkColors: null == darkColors
           ? _value.darkColors
           : darkColors // ignore: cast_nullable_to_non_nullable
-              as AppKitModalColors,
+              as ReownAppKitModalColors,
       textStyles: null == textStyles
           ? _value.textStyles
           : textStyles // ignore: cast_nullable_to_non_nullable
-              as AppKitModalTextStyles,
+              as ReownAppKitModalTextStyles,
       radiuses: null == radiuses
           ? _value.radiuses
           : radiuses // ignore: cast_nullable_to_non_nullable
-              as AppKitModalRadiuses,
+              as ReownAppKitModalRadiuses,
     ));
   }
 }
 
 /// @nodoc
 
-class _$AppKitModalThemeDataImpl implements _AppKitModalThemeData {
-  const _$AppKitModalThemeDataImpl(
-      {this.lightColors = AppKitModalColors.lightMode,
-      this.darkColors = AppKitModalColors.darkMode,
-      this.textStyles = AppKitModalTextStyles.textStyle,
-      this.radiuses = const AppKitModalRadiuses()});
+class _$ReownAppKitModalThemeDataImpl implements _ReownAppKitModalThemeData {
+  const _$ReownAppKitModalThemeDataImpl(
+      {this.lightColors = ReownAppKitModalColors.lightMode,
+      this.darkColors = ReownAppKitModalColors.darkMode,
+      this.textStyles = ReownAppKitModalTextStyles.textStyle,
+      this.radiuses = const ReownAppKitModalRadiuses()});
 
   @override
   @JsonKey()
-  final AppKitModalColors lightColors;
+  final ReownAppKitModalColors lightColors;
   @override
   @JsonKey()
-  final AppKitModalColors darkColors;
+  final ReownAppKitModalColors darkColors;
   @override
   @JsonKey()
-  final AppKitModalTextStyles textStyles;
+  final ReownAppKitModalTextStyles textStyles;
   @override
   @JsonKey()
-  final AppKitModalRadiuses radiuses;
+  final ReownAppKitModalRadiuses radiuses;
 
   @override
   String toString() {
-    return 'AppKitModalThemeData(lightColors: $lightColors, darkColors: $darkColors, textStyles: $textStyles, radiuses: $radiuses)';
+    return 'ReownAppKitModalThemeData(lightColors: $lightColors, darkColors: $darkColors, textStyles: $textStyles, radiuses: $radiuses)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$AppKitModalThemeDataImpl &&
+            other is _$ReownAppKitModalThemeDataImpl &&
             (identical(other.lightColors, lightColors) ||
                 other.lightColors == lightColors) &&
             (identical(other.darkColors, darkColors) ||
@@ -226,29 +231,29 @@ class _$AppKitModalThemeDataImpl implements _AppKitModalThemeData {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$AppKitModalThemeDataImplCopyWith<_$AppKitModalThemeDataImpl>
-      get copyWith =>
-          __$$AppKitModalThemeDataImplCopyWithImpl<_$AppKitModalThemeDataImpl>(
-              this, _$identity);
+  _$$ReownAppKitModalThemeDataImplCopyWith<_$ReownAppKitModalThemeDataImpl>
+      get copyWith => __$$ReownAppKitModalThemeDataImplCopyWithImpl<
+          _$ReownAppKitModalThemeDataImpl>(this, _$identity);
 }
 
-abstract class _AppKitModalThemeData implements AppKitModalThemeData {
-  const factory _AppKitModalThemeData(
-      {final AppKitModalColors lightColors,
-      final AppKitModalColors darkColors,
-      final AppKitModalTextStyles textStyles,
-      final AppKitModalRadiuses radiuses}) = _$AppKitModalThemeDataImpl;
+abstract class _ReownAppKitModalThemeData implements ReownAppKitModalThemeData {
+  const factory _ReownAppKitModalThemeData(
+          {final ReownAppKitModalColors lightColors,
+          final ReownAppKitModalColors darkColors,
+          final ReownAppKitModalTextStyles textStyles,
+          final ReownAppKitModalRadiuses radiuses}) =
+      _$ReownAppKitModalThemeDataImpl;
 
   @override
-  AppKitModalColors get lightColors;
+  ReownAppKitModalColors get lightColors;
   @override
-  AppKitModalColors get darkColors;
+  ReownAppKitModalColors get darkColors;
   @override
-  AppKitModalTextStyles get textStyles;
+  ReownAppKitModalTextStyles get textStyles;
   @override
-  AppKitModalRadiuses get radiuses;
+  ReownAppKitModalRadiuses get radiuses;
   @override
   @JsonKey(ignore: true)
-  _$$AppKitModalThemeDataImplCopyWith<_$AppKitModalThemeDataImpl>
+  _$$ReownAppKitModalThemeDataImplCopyWith<_$ReownAppKitModalThemeDataImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

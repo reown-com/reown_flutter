@@ -238,14 +238,14 @@ class RpcRequest extends MessageData {
 }
 
 class SyncTheme extends MessageData {
-  final AppKitModalTheme? theme;
+  final ReownAppKitModalTheme? theme;
   SyncTheme({required this.theme}) : super(type: '@w3m-app/SYNC_THEME');
 
   @override
   String toString() {
     final mode = theme?.isDarkMode == true ? 'dark' : 'light';
-    final themeData = theme?.themeData ?? AppKitModalThemeData();
-    late AppKitModalColors colors;
+    final themeData = theme?.themeData ?? ReownAppKitModalThemeData();
+    late ReownAppKitModalColors colors;
     if (mode == 'dark') {
       colors = themeData.darkColors;
     } else {

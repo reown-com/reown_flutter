@@ -116,7 +116,7 @@ class BlockChainService implements IBlockChainService {
         return jsonResponse.result;
       }
       throw jsonResponse.error ??
-          // TODO AppKitModal change this error
+          // TODO ReownAppKitModal change this error
           ReownSignError(
             code: 0,
             message: 'Error parsing result',

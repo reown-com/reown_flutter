@@ -35,7 +35,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final overlay = OverlayController(const Duration(milliseconds: 200));
-  late AppKitModal _appKitModal;
+  late ReownAppKitModal _appKitModal;
   late SIWESampleWebService _siweTestService;
   bool _initialized = false;
 
@@ -212,15 +212,15 @@ class _MyHomePageState extends State<MyHomePage> {
     final siweAuthValue = prefs.getBool('appkit_siwe_auth') ?? true;
 
     // See https://docs.walletconnect.com/appkit/flutter/core/custom-chains
-    final eip155Chains = AppKitModalNetworks.supported['eip155']!;
-    final eip155Tests = AppKitModalNetworks.test['eip155']!;
-    AppKitModalNetworks.supported['eip155'] = [
+    final eip155Chains = ReownAppKitModalNetworks.supported['eip155']!;
+    final eip155Tests = ReownAppKitModalNetworks.test['eip155']!;
+    ReownAppKitModalNetworks.supported['eip155'] = [
       ...eip155Chains,
       ...eip155Tests,
     ];
 
     try {
-      _appKitModal = AppKitModal(
+      _appKitModal = ReownAppKitModal(
         context: context,
         projectId: DartDefines.projectId,
         logLevel: LogLevel.error,
@@ -245,7 +245,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
       );
       setState(() => _initialized = true);
-    } on AppKitModalException catch (e) {
+    } on ReownAppKitModalException catch (e) {
       debugPrint('⛔️ ${e.message}');
       return;
     }
@@ -377,12 +377,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppKitModalTheme.colorsOf(context).background125,
+      backgroundColor: ReownAppKitModalTheme.colorsOf(context).background125,
       appBar: AppBar(
         elevation: 0.0,
         title: const Text(StringConstants.pageTitle),
-        backgroundColor: AppKitModalTheme.colorsOf(context).background175,
-        foregroundColor: AppKitModalTheme.colorsOf(context).foreground100,
+        backgroundColor: ReownAppKitModalTheme.colorsOf(context).background175,
+        foregroundColor: ReownAppKitModalTheme.colorsOf(context).foreground100,
       ),
       body: !_initialized
           ? const SizedBox.shrink()
@@ -400,7 +400,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
       endDrawer: Drawer(
-        backgroundColor: AppKitModalTheme.colorsOf(context).background125,
+        backgroundColor: ReownAppKitModalTheme.colorsOf(context).background125,
         child: DebugDrawer(
           toggleOverlay: _toggleOverlay,
           toggleBrightness: widget.toggleBrightness,
@@ -440,7 +440,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class _ButtonsView extends StatelessWidget {
   const _ButtonsView({required this.appKit});
-  final AppKitModal appKit;
+  final ReownAppKitModal appKit;
 
   @override
   Widget build(BuildContext context) {
@@ -468,10 +468,10 @@ class _ButtonsView extends StatelessWidget {
           // custom: ElevatedButton(
           //   onPressed: () {
           //     // TODO document openModalView
-          //     // appKit.openModalView(AppKitModalQRCodePage());
-          //     // appKit.openModalView(AppKitModalSelectNetworkPage());
-          //     // appKit.openModalView(AppKitModalAllWalletsPage());
-          //     // appKit.openModalView(AppKitModalMainWalletsPage());
+          //     // appKit.openModalView(ReownAppKitModalQRCodePage());
+          //     // appKit.openModalView(ReownAppKitModalSelectNetworkPage());
+          //     // appKit.openModalView(ReownAppKitModalAllWalletsPage());
+          //     // appKit.openModalView(ReownAppKitModalMainWalletsPage());
           //   },
           //   child: appKit.isConnected
           //       ? Text('${appKit.session!.address!.substring(0, 7)}...')
@@ -485,7 +485,7 @@ class _ButtonsView extends StatelessWidget {
 
 class _ConnectedView extends StatelessWidget {
   const _ConnectedView({required this.appKit});
-  final AppKitModal appKit;
+  final ReownAppKitModal appKit;
 
   @override
   Widget build(BuildContext context) {

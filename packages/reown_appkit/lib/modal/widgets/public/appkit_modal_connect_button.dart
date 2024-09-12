@@ -15,7 +15,7 @@ class AppKitModalConnectButton extends StatefulWidget {
     this.custom,
   });
 
-  final IAppKitModal service;
+  final IReownAppKitModal service;
   final BaseButtonSize size;
   final ConnectButtonState? state;
   final BuildContext? context;
@@ -82,7 +82,7 @@ class _AppKitModalConnectButtonState extends State<AppKitModalConnectButton> {
       return;
     }
     // Case 0: init error
-    if (widget.service.status == AppKitModalStatus.error) {
+    if (widget.service.status == ReownAppKitModalStatus.error) {
       return setState(() => _state = ConnectButtonState.error);
     }
     // Case 1: Is connected

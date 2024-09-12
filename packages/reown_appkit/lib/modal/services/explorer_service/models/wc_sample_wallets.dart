@@ -77,9 +77,9 @@ class WCSampleWallets {
         },
       ];
 
-  static List<AppKitModalWalletInfo> getSampleWallets() {
+  static List<ReownAppKitModalWalletInfo> getSampleWallets() {
     final wallets = _getSampleWallets().mapIndexed((index, entry) {
-      return AppKitModalWalletInfo(
+      return ReownAppKitModalWalletInfo(
         listing: Listing.fromJson({
           'id': index,
           'name': entry['name'] as String?,
@@ -94,7 +94,7 @@ class WCSampleWallets {
         recent: false,
       );
     }).toList();
-    return wallets.whereType<AppKitModalWalletInfo>().toList();
+    return wallets.whereType<ReownAppKitModalWalletInfo>().toList();
   }
 
   static List<Map<String, dynamic>> _getSampleWallets() {

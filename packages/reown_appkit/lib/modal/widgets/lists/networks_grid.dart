@@ -13,15 +13,15 @@ class NetworksGrid extends StatelessWidget {
     required this.itemList,
     this.onTapNetwork,
   });
-  final List<GridItem<AppKitModalNetworkInfo>> itemList;
-  final Function(AppKitModalNetworkInfo)? onTapNetwork;
+  final List<GridItem<ReownAppKitModalNetworkInfo>> itemList;
+  final Function(ReownAppKitModalNetworkInfo)? onTapNetwork;
 
   @override
   Widget build(BuildContext context) {
     final service = ModalProvider.of(context).service;
     final itemSize = ResponsiveData.gridItemSzieOf(context);
-    // final themeData = AppKitModalTheme.getDataOf(context);
-    // final themeColors = AppKitModalTheme.colorsOf(context);
+    // final themeData = ReownAppKitModalTheme.getDataOf(context);
+    // final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final children = itemList
         .map(
           (info) => WalletGridItem(

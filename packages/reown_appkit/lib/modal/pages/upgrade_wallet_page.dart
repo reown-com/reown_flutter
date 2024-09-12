@@ -15,8 +15,8 @@ class UpgradeWalletPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyles = AppKitModalTheme.getDataOf(context).textStyles;
-    final themeColors = AppKitModalTheme.colorsOf(context);
+    final textStyles = ReownAppKitModalTheme.getDataOf(context).textStyles;
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return ModalNavbar(
       title: 'Upgrade your Wallet',
       safeAreaBottom: true,
