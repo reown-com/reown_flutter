@@ -13,5 +13,5 @@ For a full reference please check the [Official Documentation](https://docs.reow
 
 ## Example
 
-Please check the [example](https://github.com/WalletConnect/Web3ModalFlutter/tree/master/packages/reown_appkit/example/modal) folder for the example.
+Please check the [example](https://github.com/reown-com/reown_flutter/tree/master/packages/reown_appkit/example/modal) folder for the example.
 

@@ -3,6 +3,7 @@ description: "The communications protocol for web3"
 version: 1.0.0
 homepage: https://github.com/reown-com/reown_flutter
 repository: https://github.com/reown-com/reown_flutter
+documentation: https://docs.reown.com/walletkit/flutter
 
 environment:
   sdk: ">=2.19.0 <4.0.0"
