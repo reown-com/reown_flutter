@@ -154,7 +154,7 @@ void signEngineTests({
             isA<ReownSignError>().having(
               (e) => e.message,
               'message',
-              'Unsupported chains. registerEventEmitter, chain $TEST_CHAIN_INVALID_1 should conform to "namespace:chainId" format',
+              'Unsupported chains. registerEventEmitter, chain $TEST_CHAIN_INVALID_1 should conform to "CAIP-2" format',
             ),
           ),
         );
@@ -186,7 +186,7 @@ void signEngineTests({
             isA<ReownSignError>().having(
               (e) => e.message,
               'message',
-              'Unsupported chains. registerAccount, chain $TEST_CHAIN_INVALID_1 should conform to "namespace:chainId" format',
+              'Unsupported chains. registerAccount, chain $TEST_CHAIN_INVALID_1 should conform to "CAIP-2" format',
             ),
           ),
         );

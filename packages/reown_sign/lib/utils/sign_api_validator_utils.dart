@@ -39,8 +39,7 @@ class SignApiValidatorUtils {
         if (!NamespaceUtils.isValidChainId(c)) {
           throw Errors.getSdkError(
             Errors.UNSUPPORTED_CHAINS,
-            context:
-                '$context, chain $c should conform to "namespace:chainId" format',
+            context: '$context, chain $c should conform to "CAIP-2" format',
           ).toSignError();
         }
       }

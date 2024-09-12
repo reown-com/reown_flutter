@@ -95,7 +95,7 @@ void main() {
         isA<ReownSignError>().having(
           (e) => e.message,
           'message',
-          'Unsupported chains. test, chain $TEST_CHAIN_INVALID_1 should conform to "namespace:chainId" format',
+          'Unsupported chains. test, chain $TEST_CHAIN_INVALID_1 should conform to "CAIP-2" format',
         ),
       ),
     );
@@ -131,7 +131,7 @@ void main() {
         isA<ReownSignError>().having(
           (e) => e.message,
           'message',
-          'Unsupported chains. test requiredNamespace, chain $TEST_CHAIN_INVALID_1 should conform to "namespace:chainId" format',
+          'Unsupported chains. test requiredNamespace, chain $TEST_CHAIN_INVALID_1 should conform to "CAIP-2" format',
         ),
       ),
     );
@@ -213,7 +213,7 @@ void main() {
         isA<ReownSignError>().having(
           (e) => e.message,
           'message',
-          'Unsupported chains. chain $TEST_CHAIN_INVALID_1 should conform to "namespace:chainId" format',
+          'Unsupported chains. chain $TEST_CHAIN_INVALID_1 should conform to "CAIP-2" format',
         ),
       ),
     );
@@ -265,7 +265,7 @@ void main() {
         isA<ReownSignError>().having(
           (e) => e.message,
           'message',
-          'Unsupported chains. chain $TEST_CHAIN_INVALID_1 should conform to "namespace:chainId" format',
+          'Unsupported chains. chain $TEST_CHAIN_INVALID_1 should conform to "CAIP-2" format',
         ),
       ),
     );
@@ -318,7 +318,7 @@ void main() {
         isA<ReownSignError>().having(
           (e) => e.message,
           'message',
-          'Unsupported chains. chain $TEST_CHAIN_INVALID_1 should conform to "namespace:chainId" format',
+          'Unsupported chains. chain $TEST_CHAIN_INVALID_1 should conform to "CAIP-2" format',
         ),
       ),
     );
