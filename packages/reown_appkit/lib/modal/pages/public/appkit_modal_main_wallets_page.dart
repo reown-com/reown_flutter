@@ -53,7 +53,7 @@ class _AppKitModalMainWalletsPageState
 
   @override
   Widget build(BuildContext context) {
-    final service = ModalProvider.of(context).service;
+    final service = ModalProvider.of(context).instance;
     final isPortrait = ResponsiveData.isPortrait(context);
     double maxHeight = isPortrait
         ? (kListItemHeight * 6)
@@ -227,7 +227,7 @@ class __EmailLoginWidgetState extends State<_EmailLoginWidget> {
               },
               onSubmitted: (value) {
                 setState(() => _submitted = true);
-                final service = ModalProvider.of(context).service;
+                final service = ModalProvider.of(context).instance;
                 final chainId = service.selectedChain?.chainId;
                 analyticsService.instance.sendEvent(EmailSubmitted());
                 magicService.instance.connectEmail(

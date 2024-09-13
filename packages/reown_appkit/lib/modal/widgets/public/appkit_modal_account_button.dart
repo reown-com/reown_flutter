@@ -18,14 +18,14 @@ import 'package:reown_appkit/reown_appkit.dart';
 class AppKitModalAccountButton extends StatefulWidget {
   const AppKitModalAccountButton({
     super.key,
-    required this.service,
+    required this.appKit,
     this.size = BaseButtonSize.regular,
     this.avatar,
     this.context,
     this.custom,
   });
 
-  final IReownAppKitModal service;
+  final IReownAppKitModal appKit;
   final BaseButtonSize size;
   final String? avatar;
   final BuildContext? context;
@@ -46,7 +46,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
   void initState() {
     super.initState();
     _modalNotifyListener();
-    widget.service.addListener(_modalNotifyListener);
+    widget.appKit.addListener(_modalNotifyListener);
     // TODO [AppKitModalAccountButton] this should go in ReownAppKitModal but for that, init() method of ReownAppKitModal should receive a BuildContext, which would be a breaking change
     magicService.instance.onMagicRpcRequest.subscribe(_approveSign);
     magicService.instance.onMagicLoginRequest.subscribe(_loginRequested);
@@ -54,7 +54,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
 
   @override
   void dispose() {
-    widget.service.removeListener(_modalNotifyListener);
+    widget.appKit.removeListener(_modalNotifyListener);
     magicService.instance.onMagicRpcRequest.unsubscribe(_approveSign);
     magicService.instance.onMagicLoginRequest.unsubscribe(_loginRequested);
     super.dispose();
@@ -62,34 +62,34 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
 
   void _modalNotifyListener() {
     setState(() {
-      _address = widget.service.session?.address ?? '';
-      final chainId = widget.service.selectedChain?.chainId ?? '';
+      _address = widget.appKit.session?.address ?? '';
+      final chainId = widget.appKit.selectedChain?.chainId ?? '';
       final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
       _tokenImage = explorerService.instance.getAssetImageUrl(imageId);
-      _balance = widget.service.chainBalance;
-      _tokenName = widget.service.selectedChain?.currency;
+      _balance = widget.appKit.chainBalance;
+      _tokenName = widget.appKit.selectedChain?.currency;
     });
   }
 
   void _onTap() {
-    widget.service.openModalView();
+    widget.appKit.openModalView();
   }
 
   void _approveSign(MagicRequestEvent? args) async {
     if (args?.request != null) {
-      if (widget.service.isOpen) {
+      if (widget.appKit.isOpen) {
         widgetStack.instance.push(ApproveTransactionPage());
       } else {
-        widget.service.openModalView(ApproveTransactionPage());
+        widget.appKit.openModalView(ApproveTransactionPage());
       }
     }
   }
 
   void _loginRequested(MagicSessionEvent? args) {
-    if (widget.service.isOpen) {
+    if (widget.appKit.isOpen) {
       widgetStack.instance.popAllAndPush(ConfirmEmailPage());
     } else {
-      widget.service.openModalView(ConfirmEmailPage());
+      widget.appKit.openModalView(ConfirmEmailPage());
     }
   }
 
@@ -101,7 +101,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final borderRadius = radiuses.isSquare() ? 0.0 : widget.size.height / 2;
-    final enabled = _address.isNotEmpty && widget.service.status.isInitialized;
+    final enabled = _address.isNotEmpty && widget.appKit.status.isInitialized;
     // TODO [AppKitModalAccountButton] this button should be able to be disable by passing a null onTap action
     // I should decouple an AccountButton from AppKitModalAccountButton like on ConnectButton and NetworkButton
     return BaseButton(
@@ -142,7 +142,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
         mainAxisSize: MainAxisSize.min,
         children: [
           _BalanceButton(
-            isLoading: widget.service.status.isLoading,
+            isLoading: widget.appKit.status.isLoading,
             balance: _balance,
             tokenName: _tokenName,
             tokenImage: _tokenImage,
@@ -154,7 +154,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
           _AddressButton(
             address: _address,
             buttonSize: widget.size,
-            service: widget.service,
+            appKit: widget.appKit,
             onTap: enabled ? _onTap : null,
           ),
         ],
@@ -167,13 +167,13 @@ class _AddressButton extends StatelessWidget {
   const _AddressButton({
     required this.buttonSize,
     required this.address,
-    required this.service,
+    required this.appKit,
     required this.onTap,
   });
   final BaseButtonSize buttonSize;
   final VoidCallback? onTap;
   final String address;
-  final IReownAppKitModal service;
+  final IReownAppKitModal appKit;
 
   @override
   Widget build(BuildContext context) {
@@ -249,7 +249,7 @@ class _AddressButton extends StatelessWidget {
                 ),
               ),
               child: AccountAvatar(
-                service: service,
+                appKit: appKit,
                 size: buttonSize.iconSize,
                 disabled: false,
               ),

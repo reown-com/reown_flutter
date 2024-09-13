@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 
 class ModalProvider extends InheritedWidget {
-  final IReownAppKitModal service;
+  final IReownAppKitModal instance;
 
   const ModalProvider({
     super.key,
-    required this.service,
+    required this.instance,
     required super.child,
   });
 

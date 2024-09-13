@@ -13,7 +13,6 @@ dependencies:
     sdk: flutter
   http: ^1.2.2
   intl: ^0.19.0
-  package_info_plus: ^7.0.0
   reown_appkit:
     path: ../..
   shared_preferences: ^2.2.0

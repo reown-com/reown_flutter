@@ -86,6 +86,8 @@ class ExplorerService implements IExplorerService {
   @override
   bool get canPaginate => _canPaginate;
 
+  late final String _bundleId;
+
   ExplorerService({
     required IReownCore core,
     required String referer,
@@ -101,6 +103,7 @@ class ExplorerService implements IExplorerService {
     if (initialized.value) {
       return;
     }
+    _bundleId = await ReownCoreUtils.getPackageName();
 
     // TODO ideally we should call this at every opening to be able to detect newly installed wallets.
     final nativeData = await _fetchNativeAppData();
@@ -196,6 +199,7 @@ class ExplorerService implements IExplorerService {
     final headers = CoreUtils.getAPIHeaders(
       _core.projectId,
       _referer,
+      _bundleId,
     );
     final uri = Platform.isIOS
         ? Uri.parse('${UrlConstants.apiService}/getIosData')
@@ -280,6 +284,7 @@ class ExplorerService implements IExplorerService {
     final headers = CoreUtils.getAPIHeaders(
       _core.projectId,
       _referer,
+      _bundleId,
     );
     final uri = Uri.parse('${UrlConstants.apiService}/getWallets').replace(
       queryParameters: queryParams,

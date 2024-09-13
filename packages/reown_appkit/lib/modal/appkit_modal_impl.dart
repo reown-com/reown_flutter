@@ -128,8 +128,6 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     return null;
   }
 
-  /// `context` is required if SIWEConfig is passed.
-  // TODO change to ReownAppKitModal
   ReownAppKitModal({
     required BuildContext context,
     IReownAppKit? appKit,
@@ -609,7 +607,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
         : ModalContainer(startWidget: showWidget);
 
     final rootWidget = ModalProvider(
-      service: this,
+      instance: this,
       child: childWidget,
     );
 

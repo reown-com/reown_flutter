@@ -12,13 +12,13 @@ import 'package:reown_appkit/modal/widgets/buttons/network_button.dart';
 class AppKitModalNetworkSelectButton extends StatefulWidget {
   const AppKitModalNetworkSelectButton({
     super.key,
-    required this.service,
+    required this.appKit,
     this.size = BaseButtonSize.regular,
     this.context,
     this.custom,
   });
 
-  final IReownAppKitModal service;
+  final IReownAppKitModal appKit;
   final BaseButtonSize size;
   final BuildContext? context;
   final Widget? custom;
@@ -36,12 +36,12 @@ class _AppKitModalNetworkSelectButtonState
   void initState() {
     super.initState();
     _onServiceUpdate();
-    widget.service.addListener(_onServiceUpdate);
+    widget.appKit.addListener(_onServiceUpdate);
   }
 
   @override
   void dispose() {
-    widget.service.removeListener(_onServiceUpdate);
+    widget.appKit.removeListener(_onServiceUpdate);
     super.dispose();
   }
 
@@ -49,7 +49,7 @@ class _AppKitModalNetworkSelectButtonState
   Widget build(BuildContext context) {
     return widget.custom ??
         NetworkButton(
-          serviceStatus: widget.service.status,
+          serviceStatus: widget.appKit.status,
           chainInfo: _selectedChain,
           size: widget.size,
           onTap: () => _onConnectPressed(),
@@ -58,10 +58,10 @@ class _AppKitModalNetworkSelectButtonState
 
   void _onConnectPressed() {
     analyticsService.instance.sendEvent(ClickNetworksEvent());
-    widget.service.openModalView(
+    widget.appKit.openModalView(
       ReownAppKitModalSelectNetworkPage(
         onTapNetwork: (info) {
-          widget.service.selectChain(info);
+          widget.appKit.selectChain(info);
           widgetStack.instance.addDefault();
         },
       ),
@@ -70,7 +70,7 @@ class _AppKitModalNetworkSelectButtonState
 
   void _onServiceUpdate() {
     setState(() {
-      _selectedChain = widget.service.selectedChain;
+      _selectedChain = widget.appKit.selectedChain;
     });
   }
 }

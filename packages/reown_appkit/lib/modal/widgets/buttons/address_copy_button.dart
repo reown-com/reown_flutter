@@ -14,7 +14,7 @@ class AddressCopyButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final service = ModalProvider.of(context).service;
+    final service = ModalProvider.of(context).instance;
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return GestureDetector(

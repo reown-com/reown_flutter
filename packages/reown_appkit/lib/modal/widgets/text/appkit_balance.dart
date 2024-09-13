@@ -28,7 +28,7 @@ class _BalanceTextState extends State<BalanceText> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _service = ModalProvider.of(context).service;
+      _service = ModalProvider.of(context).instance;
       _modalNotifyListener();
       _service?.addListener(_modalNotifyListener);
     });

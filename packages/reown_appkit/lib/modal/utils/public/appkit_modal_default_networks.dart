@@ -273,6 +273,28 @@ class ReownAppKitModalNetworks {
     return supported[namespace]?.firstWhere((e) => e.chainId == chainId);
   }
 
+  static void removeNetworks(
+    String namespace,
+    List<String> chainIds,
+  ) {
+    supported[namespace]!.removeWhere((chain) {
+      if (chainIds.contains(chain.chainId)) {
+        return true;
+      }
+      return false;
+    });
+  }
+
+  static void addNetworks(
+    String namespace,
+    List<ReownAppKitModalNetworkInfo> chains,
+  ) {
+    supported[namespace] = [
+      ...List.from(supported[namespace] ?? []),
+      ...chains,
+    ];
+  }
+
   static List<ReownAppKitModalNetworkInfo> getNetworks(String namespace) {
     return supported[namespace] ?? [];
   }

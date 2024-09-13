@@ -25,7 +25,7 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
 
   void _onSelectNetwork(
       BuildContext context, ReownAppKitModalNetworkInfo chainInfo) async {
-    final service = ModalProvider.of(context).service;
+    final service = ModalProvider.of(context).instance;
     if (service.isConnected) {
       final approvedChains = service.session!.getApprovedChains() ?? [];
       final caip2Chain = '${CoreConstants.namespace}:${chainInfo.chainId}';
@@ -47,7 +47,7 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final service = ModalProvider.of(context).service;
+    final service = ModalProvider.of(context).instance;
     final isSwitch = service.selectedChain != null;
     final isPortrait = ResponsiveData.isPortrait(context);
     final maxHeight =

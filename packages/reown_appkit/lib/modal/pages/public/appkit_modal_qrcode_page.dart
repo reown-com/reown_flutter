@@ -31,7 +31,7 @@ class _AppKitModalQRCodePageState extends State<ReownAppKitModalQRCodePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _service = ModalProvider.of(context).service;
+      _service = ModalProvider.of(context).instance;
       _service!.addListener(_buildWidget);
       _service!.appKit!.core.pairing.onPairingExpire.subscribe(
         _onPairingExpire,
@@ -150,7 +150,7 @@ class _AppKitModalQRCodePageState extends State<ReownAppKitModalQRCodePage> {
   }
 
   Future<void> _copyToClipboard(BuildContext context) async {
-    final service = ModalProvider.of(context).service;
+    final service = ModalProvider.of(context).instance;
     await Clipboard.setData(ClipboardData(text: service.wcUri!));
     toastService.instance.show(
       ToastMessage(type: ToastType.success, text: 'Link copied'),

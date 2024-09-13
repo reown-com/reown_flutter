@@ -35,7 +35,7 @@ class _AccountPageState extends State<AccountPage> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _service = ModalProvider.of(context).service;
+      _service = ModalProvider.of(context).instance;
       _service?.addListener(_rebuild);
       _rebuild();
     });
@@ -204,7 +204,7 @@ class _DefaultAccountView extends StatelessWidget {
 class _SelectNetworkButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final service = ModalProvider.of(context).service;
+    final service = ModalProvider.of(context).instance;
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final chainId = service.selectedChain?.chainId ?? '';

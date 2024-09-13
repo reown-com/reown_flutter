@@ -10,7 +10,7 @@ class Orb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final service = ModalProvider.of(context).service;
+    final service = ModalProvider.of(context).instance;
     return Container(
       width: size,
       height: size,
@@ -22,7 +22,7 @@ class Orb extends StatelessWidget {
         ),
       ),
       child: AccountAvatar(
-        service: service,
+        appKit: service,
         size: size - 8.0,
       ),
     );

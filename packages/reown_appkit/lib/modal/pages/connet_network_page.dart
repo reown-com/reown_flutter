@@ -38,7 +38,7 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _service = ModalProvider.of(context).service;
+      _service = ModalProvider.of(context).instance;
       _service?.onModalError.subscribe(_errorListener);
       setState(() {});
       Future.delayed(const Duration(milliseconds: 300), () => _connect());

@@ -59,7 +59,7 @@ class DownloadWalletItem extends StatelessWidget {
         mode: LaunchMode.externalApplication,
       );
     } catch (e) {
-      ModalProvider.of(context).service.connectSelectedWallet();
+      ModalProvider.of(context).instance.connectSelectedWallet();
     }
   }
 }

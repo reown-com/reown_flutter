@@ -11,7 +11,7 @@ class ReownAppKitModalNetworkInfo with _$ReownAppKitModalNetworkInfo {
     required String rpcUrl,
     required String explorerUrl,
     @Default(<String>[]) List<String> extraRpcUrls,
-    @Default(false) isTestNetwork,
+    @Default(false) bool isTestNetwork,
     String? chainIcon,
   }) = _AppKitNetworkInfo;
 }

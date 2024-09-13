@@ -79,7 +79,7 @@ class ModalNavbar extends StatelessWidget {
                           : NavbarActionButton(
                               asset: 'lib/modal/assets/icons/close.svg',
                               action: () {
-                                ModalProvider.of(context).service.closeModal();
+                                ModalProvider.of(context).instance.closeModal();
                               },
                             ),
                     ],

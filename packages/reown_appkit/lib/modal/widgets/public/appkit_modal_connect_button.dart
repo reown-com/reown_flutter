@@ -8,14 +8,14 @@ import 'package:reown_appkit/modal/widgets/buttons/connect_button.dart';
 class AppKitModalConnectButton extends StatefulWidget {
   const AppKitModalConnectButton({
     super.key,
-    required this.service,
+    required this.appKit,
     this.size = BaseButtonSize.regular,
     this.state,
     this.context,
     this.custom,
   });
 
-  final IReownAppKitModal service;
+  final IReownAppKitModal appKit;
   final BaseButtonSize size;
   final ConnectButtonState? state;
   final BuildContext? context;
@@ -34,7 +34,7 @@ class _AppKitModalConnectButtonState extends State<AppKitModalConnectButton> {
     super.initState();
     _state = widget.state ?? ConnectButtonState.idle;
     _updateState();
-    widget.service.addListener(_updateState);
+    widget.appKit.addListener(_updateState);
   }
 
   @override
@@ -47,7 +47,7 @@ class _AppKitModalConnectButtonState extends State<AppKitModalConnectButton> {
   @override
   void dispose() {
     super.dispose();
-    widget.service.removeListener(_updateState);
+    widget.appKit.removeListener(_updateState);
   }
 
   @override
@@ -58,7 +58,7 @@ class _AppKitModalConnectButtonState extends State<AppKitModalConnectButton> {
         _WebViewWidget(),
         widget.custom ??
             ConnectButton(
-              serviceStatus: widget.service.status,
+              serviceStatus: widget.appKit.status,
               state: _state,
               size: widget.size,
               onTap: _onTap,
@@ -68,37 +68,37 @@ class _AppKitModalConnectButtonState extends State<AppKitModalConnectButton> {
   }
 
   void _onTap() {
-    if (widget.service.isConnected) {
-      widget.service.disconnect();
+    if (widget.appKit.isConnected) {
+      widget.appKit.disconnect();
     } else {
-      widget.service.openModalView();
+      widget.appKit.openModalView();
       _updateState();
     }
   }
 
   void _updateState() {
-    final isConnected = widget.service.isConnected;
+    final isConnected = widget.appKit.isConnected;
     if (_state == ConnectButtonState.none && !isConnected) {
       return;
     }
     // Case 0: init error
-    if (widget.service.status == ReownAppKitModalStatus.error) {
+    if (widget.appKit.status == ReownAppKitModalStatus.error) {
       return setState(() => _state = ConnectButtonState.error);
     }
     // Case 1: Is connected
-    else if (widget.service.isConnected) {
+    else if (widget.appKit.isConnected) {
       return setState(() => _state = ConnectButtonState.connected);
     }
     // Case 1.5: No required namespaces
-    else if (!widget.service.hasNamespaces) {
+    else if (!widget.appKit.hasNamespaces) {
       return setState(() => _state = ConnectButtonState.disabled);
     }
     // Case 2: Is not open and is not connected
-    else if (!widget.service.isOpen && !widget.service.isConnected) {
+    else if (!widget.appKit.isOpen && !widget.appKit.isConnected) {
       return setState(() => _state = ConnectButtonState.idle);
     }
     // Case 3: Is open and is not connected
-    else if (widget.service.isOpen && !widget.service.isConnected) {
+    else if (widget.appKit.isOpen && !widget.appKit.isConnected) {
       return setState(() => _state = ConnectButtonState.connecting);
     }
   }

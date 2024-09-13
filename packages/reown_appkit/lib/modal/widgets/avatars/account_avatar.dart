@@ -8,12 +8,12 @@ import 'package:reown_appkit/reown_appkit.dart';
 class AccountAvatar extends StatefulWidget {
   const AccountAvatar({
     super.key,
-    required this.service,
+    required this.appKit,
     this.size = 40.0,
     this.disabled = false,
   });
 
-  final IReownAppKitModal service;
+  final IReownAppKitModal appKit;
   final double size;
   final bool disabled;
 
@@ -28,13 +28,13 @@ class _AccountAvatarState extends State<AccountAvatar> {
   @override
   void initState() {
     super.initState();
-    widget.service.addListener(_modalNotifyListener);
+    widget.appKit.addListener(_modalNotifyListener);
     _modalNotifyListener();
   }
 
   @override
   void dispose() {
-    widget.service.removeListener(_modalNotifyListener);
+    widget.appKit.removeListener(_modalNotifyListener);
     super.dispose();
   }
 
@@ -55,7 +55,7 @@ class _AccountAvatarState extends State<AccountAvatar> {
               ? CachedNetworkImage(
                   imageUrl: _avatarUrl!,
                   httpHeaders: CoreUtils.getAPIHeaders(
-                    widget.service.appKit!.core.projectId,
+                    widget.appKit.appKit!.core.projectId,
                   ),
                   fadeInDuration: const Duration(milliseconds: 500),
                   fadeOutDuration: const Duration(milliseconds: 500),
@@ -68,8 +68,8 @@ class _AccountAvatarState extends State<AccountAvatar> {
 
   void _modalNotifyListener() {
     setState(() {
-      _avatarUrl = widget.service.avatarUrl;
-      _address = widget.service.session?.address;
+      _avatarUrl = widget.appKit.avatarUrl;
+      _address = widget.appKit.session?.address;
     });
   }
 }

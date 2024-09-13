@@ -42,7 +42,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        _service = ModalProvider.of(context).service;
+        _service = ModalProvider.of(context).instance;
         _service?.onModalError.subscribe(_errorListener);
       });
       Future.delayed(const Duration(milliseconds: 300), () {
@@ -295,7 +295,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
   }
 
   Future<void> _copyToClipboard(BuildContext context) async {
-    final service = ModalProvider.of(context).service;
+    final service = ModalProvider.of(context).instance;
     await Clipboard.setData(ClipboardData(text: service.wcUri!));
     toastService.instance.show(
       ToastMessage(type: ToastType.success, text: 'Link copied'),

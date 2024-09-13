@@ -53,7 +53,7 @@ class _AppKitModalAllWalletsPageState
 
   @override
   Widget build(BuildContext context) {
-    final service = ModalProvider.of(context).service;
+    final service = ModalProvider.of(context).instance;
     final totalListings = explorerService.instance.totalListings.value;
     final rows = (totalListings / 4.0).ceil();
     final isSearchAvailable = totalListings >= kShortWalletListCount;

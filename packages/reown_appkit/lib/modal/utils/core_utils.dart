@@ -105,6 +105,7 @@ class CoreUtils {
   static Map<String, String> getAPIHeaders(
     String projectId, [
     String? referer,
+    String? origin,
   ]) {
     return {
       'x-project-id': projectId,
@@ -112,6 +113,7 @@ class CoreUtils {
       'x-sdk-version': 'flutter-${CoreConstants.X_SDK_VERSION}',
       'user-agent': getUserAgent(),
       if (referer != null) 'referer': referer,
+      if (origin != null) 'origin': origin,
     };
   }
 }

@@ -28,7 +28,7 @@ class NetworkServiceItemsListener extends StatelessWidget {
         return ValueListenableBuilder(
           valueListenable: networkService.instance.itemList,
           builder: (context, items, _) {
-            final service = ModalProvider.of(context).service;
+            final service = ModalProvider.of(context).instance;
             final supportedChains = service.getAvailableChains();
             final parsedItems = supportedChains == null
                 ? items

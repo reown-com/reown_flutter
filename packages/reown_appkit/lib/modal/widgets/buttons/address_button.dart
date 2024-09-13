@@ -86,7 +86,7 @@ class _AddressButtonState extends State<AddressButton> {
         mainAxisSize: MainAxisSize.min,
         children: [
           AccountAvatar(
-            service: widget.service,
+            appKit: widget.service,
             size: widget.size.height * 0.7,
             disabled: widget.onTap == null,
           ),

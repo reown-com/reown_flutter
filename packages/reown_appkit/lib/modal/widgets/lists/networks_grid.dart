@@ -18,7 +18,7 @@ class NetworksGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final service = ModalProvider.of(context).service;
+    final service = ModalProvider.of(context).instance;
     final itemSize = ResponsiveData.gridItemSzieOf(context);
     // final themeData = ReownAppKitModalTheme.getDataOf(context);
     // final themeColors = ReownAppKitModalTheme.colorsOf(context);

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:reown_appkit_example/home_page.dart';
 import 'package:reown_appkit_example/utils/constants.dart';
 import 'package:reown_appkit/reown_appkit.dart';
@@ -54,7 +53,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Future<List<Object>> _initDeps() async {
     final deps = await Future.wait([
       SharedPreferences.getInstance(),
-      PackageInfo.fromPlatform(),
+      ReownCoreUtils.getPackageName(),
     ]);
     return deps;
   }
@@ -74,7 +73,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             if (snapshot.hasData) {
               return MyHomePage(
                 prefs: snapshot.data!.first as SharedPreferences,
-                packageInfo: snapshot.data!.last as PackageInfo,
+                bundleId: snapshot.data!.last as String,
                 toggleTheme: () => _toggleTheme(),
                 toggleBrightness: () => _toggleBrightness(),
               );

@@ -44,7 +44,7 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         _position = (MediaQuery.of(context).size.width / 2) + 8.0;
-        _appKitModal = ModalProvider.of(context).service;
+        _appKitModal = ModalProvider.of(context).instance;
         Future.delayed(Duration(milliseconds: 200), () {
           _animate();
         });
@@ -178,7 +178,7 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
                     ),
                     child: _appKitModal!.session!.sessionService.isMagic
                         ? AccountAvatar(
-                            service: _appKitModal!,
+                            appKit: _appKitModal!,
                             size: 60.0,
                           )
                         : SizedBox(
@@ -216,7 +216,7 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
                     ),
                     child: selfIcon.isEmpty
                         ? AccountAvatar(
-                            service: _appKitModal!,
+                            appKit: _appKitModal!,
                             size: 60.0,
                           )
                         : SizedBox(

@@ -450,7 +450,6 @@ class Pairing implements IPairing {
         'pairing sendRequest Relay, '
         'id: $id topic: $topic, method: $method, params: $params, ttl: $ttl',
       );
-      // TODO CHANGED THIS
       // RpcOptions opts = MethodConstants.RPC_OPTS[method]!['req']!;
       RpcOptions opts = MethodConstants.RPC_OPTS[method]!['req']!;
       if (ttl != null) {

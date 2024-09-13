@@ -22,7 +22,7 @@ mixin _$ReownAppKitModalNetworkInfo {
   String get rpcUrl => throw _privateConstructorUsedError;
   String get explorerUrl => throw _privateConstructorUsedError;
   List<String> get extraRpcUrls => throw _privateConstructorUsedError;
-  dynamic get isTestNetwork => throw _privateConstructorUsedError;
+  bool get isTestNetwork => throw _privateConstructorUsedError;
   String? get chainIcon => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -45,7 +45,7 @@ abstract class $ReownAppKitModalNetworkInfoCopyWith<$Res> {
       String rpcUrl,
       String explorerUrl,
       List<String> extraRpcUrls,
-      dynamic isTestNetwork,
+      bool isTestNetwork,
       String? chainIcon});
 }
 
@@ -69,7 +69,7 @@ class _$ReownAppKitModalNetworkInfoCopyWithImpl<$Res,
     Object? rpcUrl = null,
     Object? explorerUrl = null,
     Object? extraRpcUrls = null,
-    Object? isTestNetwork = freezed,
+    Object? isTestNetwork = null,
     Object? chainIcon = freezed,
   }) {
     return _then(_value.copyWith(
@@ -97,10 +97,10 @@ class _$ReownAppKitModalNetworkInfoCopyWithImpl<$Res,
           ? _value.extraRpcUrls
           : extraRpcUrls // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      isTestNetwork: freezed == isTestNetwork
+      isTestNetwork: null == isTestNetwork
           ? _value.isTestNetwork
           : isTestNetwork // ignore: cast_nullable_to_non_nullable
-              as dynamic,
+              as bool,
       chainIcon: freezed == chainIcon
           ? _value.chainIcon
           : chainIcon // ignore: cast_nullable_to_non_nullable
@@ -124,7 +124,7 @@ abstract class _$$AppKitNetworkInfoImplCopyWith<$Res>
       String rpcUrl,
       String explorerUrl,
       List<String> extraRpcUrls,
-      dynamic isTestNetwork,
+      bool isTestNetwork,
       String? chainIcon});
 }
 
@@ -146,7 +146,7 @@ class __$$AppKitNetworkInfoImplCopyWithImpl<$Res>
     Object? rpcUrl = null,
     Object? explorerUrl = null,
     Object? extraRpcUrls = null,
-    Object? isTestNetwork = freezed,
+    Object? isTestNetwork = null,
     Object? chainIcon = freezed,
   }) {
     return _then(_$AppKitNetworkInfoImpl(
@@ -174,8 +174,10 @@ class __$$AppKitNetworkInfoImplCopyWithImpl<$Res>
           ? _value._extraRpcUrls
           : extraRpcUrls // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      isTestNetwork:
-          freezed == isTestNetwork ? _value.isTestNetwork! : isTestNetwork,
+      isTestNetwork: null == isTestNetwork
+          ? _value.isTestNetwork
+          : isTestNetwork // ignore: cast_nullable_to_non_nullable
+              as bool,
       chainIcon: freezed == chainIcon
           ? _value.chainIcon
           : chainIcon // ignore: cast_nullable_to_non_nullable
@@ -219,7 +221,7 @@ class _$AppKitNetworkInfoImpl implements _AppKitNetworkInfo {
 
   @override
   @JsonKey()
-  final dynamic isTestNetwork;
+  final bool isTestNetwork;
   @override
   final String? chainIcon;
 
@@ -242,8 +244,8 @@ class _$AppKitNetworkInfoImpl implements _AppKitNetworkInfo {
                 other.explorerUrl == explorerUrl) &&
             const DeepCollectionEquality()
                 .equals(other._extraRpcUrls, _extraRpcUrls) &&
-            const DeepCollectionEquality()
-                .equals(other.isTestNetwork, isTestNetwork) &&
+            (identical(other.isTestNetwork, isTestNetwork) ||
+                other.isTestNetwork == isTestNetwork) &&
             (identical(other.chainIcon, chainIcon) ||
                 other.chainIcon == chainIcon));
   }
@@ -257,7 +259,7 @@ class _$AppKitNetworkInfoImpl implements _AppKitNetworkInfo {
       rpcUrl,
       explorerUrl,
       const DeepCollectionEquality().hash(_extraRpcUrls),
-      const DeepCollectionEquality().hash(isTestNetwork),
+      isTestNetwork,
       chainIcon);
 
   @JsonKey(ignore: true)
@@ -276,7 +278,7 @@ abstract class _AppKitNetworkInfo implements ReownAppKitModalNetworkInfo {
       required final String rpcUrl,
       required final String explorerUrl,
       final List<String> extraRpcUrls,
-      final dynamic isTestNetwork,
+      final bool isTestNetwork,
       final String? chainIcon}) = _$AppKitNetworkInfoImpl;
 
   @override
@@ -292,7 +294,7 @@ abstract class _AppKitNetworkInfo implements ReownAppKitModalNetworkInfo {
   @override
   List<String> get extraRpcUrls;
   @override
-  dynamic get isTestNetwork;
+  bool get isTestNetwork;
   @override
   String? get chainIcon;
   @override

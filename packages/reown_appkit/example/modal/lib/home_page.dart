@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:reown_appkit/reown_appkit.dart';
@@ -19,7 +18,7 @@ class MyHomePage extends StatefulWidget {
   const MyHomePage({
     super.key,
     required this.prefs,
-    required this.packageInfo,
+    required this.bundleId,
     required this.toggleBrightness,
     required this.toggleTheme,
   });
@@ -27,7 +26,7 @@ class MyHomePage extends StatefulWidget {
   final VoidCallback toggleBrightness;
   final VoidCallback toggleTheme;
   final SharedPreferences prefs;
-  final PackageInfo packageInfo;
+  final String bundleId;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -56,8 +55,8 @@ class _MyHomePageState extends State<MyHomePage> {
   String get _flavor {
     // String flavor = '-${const String.fromEnvironment('FLUTTER_APP_FLAVOR')}';
     // return flavor.replaceAll('-production', '');
-    final internal = widget.packageInfo.packageName.endsWith('.internal');
-    final debug = widget.packageInfo.packageName.endsWith('.debug');
+    final internal = widget.bundleId.endsWith('.internal');
+    final debug = widget.bundleId.endsWith('.debug');
     if (internal || debug || kDebugMode) {
       return 'internal';
     }
@@ -82,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
       universal: _universalLink(),
       // enable linkMode on Wallet so Dapps can use relay-less connection
       // universal: value must be set on cloud config as well
-      // linkMode: true,
+      linkMode: true,
     );
   }
 
@@ -144,7 +143,6 @@ class _MyHomePageState extends State<MyHomePage> {
           } catch (error) {
             debugPrint('[SIWEConfig] verifyMessage error: $error');
             // Fallback patch for testing purposes in case SIWE backend has issues
-            // TODO document SIWEUtils
             final chainId = SIWEUtils.getChainIdFromMessage(args.message);
             final address = SIWEUtils.getAddressFromMessage(args.message);
             final cacaoSignature = args.cacao != null
@@ -211,13 +209,9 @@ class _MyHomePageState extends State<MyHomePage> {
     final emailWalletValue = prefs.getBool('appkit_email_wallet') ?? true;
     final siweAuthValue = prefs.getBool('appkit_siwe_auth') ?? true;
 
-    // See https://docs.walletconnect.com/appkit/flutter/core/custom-chains
-    final eip155Chains = ReownAppKitModalNetworks.supported['eip155']!;
-    final eip155Tests = ReownAppKitModalNetworks.test['eip155']!;
-    ReownAppKitModalNetworks.supported['eip155'] = [
-      ...eip155Chains,
-      ...eip155Tests,
-    ];
+    // See https://docs.reown.com/appkit/flutter/core/custom-chains
+    final testNetworks = ReownAppKitModalNetworks.test['eip155'] ?? [];
+    ReownAppKitModalNetworks.addNetworks('eip155', testNetworks);
 
     try {
       _appKitModal = ReownAppKitModal(
@@ -448,8 +442,7 @@ class _ButtonsView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         AppKitModalNetworkSelectButton(
-          service: appKit,
-          context: context,
+          appKit: appKit,
           // UNCOMMENT TO USE A CUSTOM BUTTON
           // custom: ElevatedButton(
           //   onPressed: () {
@@ -460,14 +453,11 @@ class _ButtonsView extends StatelessWidget {
         ),
         const SizedBox.square(dimension: 6.0),
         AppKitModalConnectButton(
-          service: appKit,
-          context: context,
+          appKit: appKit,
           // UNCOMMENT TO USE A CUSTOM BUTTON
           // TO HIDE AppKitModalConnectButton BUT STILL RENDER IT (NEEDED) JUST USE SizedBox.shrink()
-          // TODO document custom button
           // custom: ElevatedButton(
           //   onPressed: () {
-          //     // TODO document openModalView
           //     // appKit.openModalView(ReownAppKitModalQRCodePage());
           //     // appKit.openModalView(ReownAppKitModalSelectNetworkPage());
           //     // appKit.openModalView(ReownAppKitModalAllWalletsPage());
@@ -496,10 +486,9 @@ class _ConnectedView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         AppKitModalAccountButton(
-          service: appKit,
-          context: context,
+          appKit: appKit,
           // custom: ValueListenableBuilder<String>(
-          //   valueListenable: appKit.balanceNotifier, // TODO document balanceNotifier
+          //   valueListenable: appKit.balanceNotifier,
           //   builder: (_, balance, __) {
           //     return ElevatedButton(
           //       onPressed: () {
