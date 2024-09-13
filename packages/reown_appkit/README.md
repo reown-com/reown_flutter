@@ -1,11 +1,10 @@
 # **Reown - AppKit Flutter**
 
-The all-in-one stack to build apps for the new internet<br />
-With a layered feature stack spanning onboarding to payments, messaging and more, AppKit enables apps to build powerful top-to-bottom web3 experiences made to last, all through one seamless integration.
+<img src="https://reown-docs-git-feature-flutterdocsupdate-walletconnect1.vercel.app/reown/appkit-logo.svg">
+
+Reown is the onchain UX platform that provides toolkits built on top of the WalletConnect Network that enable builders to create onchain user experiences that make digital ownership effortless, intuitive, and secure.
 
 Read more about it on our [website](https://reown.com/appkit)
-
-<img src="https://images.prismic.io/wallet-connect/ZmcC_Zm069VX1mgF_ak5.png">
 
 ## Documentation
 
