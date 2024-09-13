@@ -13,9 +13,13 @@ dependencies:
   flutter:
     sdk: flutter
   reown_core:
-    path: ../reown_core
+    git:
+      url: https://github.com/reown-com/reown_flutter.git
+      path: packages/reown_core
   reown_sign:
-    path: ../reown_sign
+    git:
+      url: https://github.com/reown-com/reown_flutter.git
+      path: packages/reown_sign
 
 dev_dependencies:
   build_runner: ^2.4.7

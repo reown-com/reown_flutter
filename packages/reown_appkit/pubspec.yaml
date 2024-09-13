@@ -26,9 +26,13 @@ dependencies:
   plugin_platform_interface: ^2.1.8
   qr_flutter_wc: ^0.0.3
   reown_core:
-    path: ../reown_core
+    git:
+      url: https://github.com/reown-com/reown_flutter.git
+      path: packages/reown_core
   reown_sign:
-    path: ../reown_sign
+    git:
+      url: https://github.com/reown-com/reown_flutter.git
+      path: packages/reown_sign
   shimmer: ^3.0.0
   url_launcher: ^6.2.5
   uuid: ^4.3.3
