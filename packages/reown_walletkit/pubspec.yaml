@@ -1,9 +1,10 @@
 name: reown_walletkit
-description: "The communications protocol for web3"
+description: "Reown is the onchain UX platform that provides toolkits built on top of the WalletConnect Network"
 version: 1.0.0
 homepage: https://github.com/reown-com/reown_flutter
-repository: https://github.com/reown-com/reown_flutter
+repository: https://github.com/reown-com/reown_flutter/tree/master/packages/reown_walletkit
 documentation: https://docs.reown.com/walletkit/flutter
+publish_to: https://pub.dev/publishers/reown.com
 
 environment:
   sdk: ">=2.19.0 <4.0.0"
@@ -31,10 +32,13 @@ dev_dependencies:
   http: ^1.2.2
   # freezed: ^2.4.5
   # json_serializable: ^6.7.0
+  logger: ^2.2.0
   mockito: ^5.4.3
   package_info_plus: ^7.0.0
   reown_appkit:
-    path: ../reown_appkit
+    git:
+      url: https://github.com/reown-com/reown_flutter.git
+      path: packages/reown_appkit
 
 platforms:
   android:
