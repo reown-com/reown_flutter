@@ -50,6 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool _initializing = true;
 
   ReownAppKit? _appKit;
+  ReownAppKitModal? _appKitModal;
 
   List<PageData> _pageDatas = [];
   int _selectedIndex = 0;
@@ -79,10 +80,10 @@ class _MyHomePageState extends State<MyHomePage> {
   Redirect _constructRedirect() {
     return Redirect(
       native: 'wcflutterdapp$_flavor://',
-      // universal: _universalLink(),
-      // // enable linkMode on Wallet so Dapps can use relay-less connection
-      // // universal: value must be set on cloud config as well
-      // linkMode: true,
+      universal: _universalLink(),
+      // enable linkMode on Wallet so Dapps can use relay-less connection
+      // universal: value must be set on cloud config as well
+      linkMode: true,
     );
   }
 
@@ -121,7 +122,19 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKit!.onSessionConnect.subscribe(_onSessionConnect);
     _appKit!.onSessionAuthResponse.subscribe(_onSessionAuthResponse);
 
-    await _appKit!.init();
+    _appKitModal = ReownAppKitModal(
+      context: context,
+      appKit: _appKit,
+      siweConfig: _siweConfig(),
+    );
+
+    _appKitModal!.onModalConnect.subscribe(_onModalConnect);
+    _appKitModal!.onModalUpdate.subscribe(_onModalUpdate);
+    _appKitModal!.onModalNetworkChange.subscribe(_onModalNetworkChange);
+    _appKitModal!.onModalDisconnect.subscribe(_onModalDisconnect);
+    _appKitModal!.onModalError.subscribe(_onModalError);
+
+    await _appKitModal!.init();
     await _registerEventHandlers();
 
     DeepLinkHandler.init(_appKit!);
@@ -141,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _pageDatas = [
         PageData(
-          page: ConnectPage(appKit: _appKit!),
+          page: ConnectPage(appKitModal: _appKitModal!),
           title: StringConstants.connectPageTitle,
           icon: Icons.home,
         ),
@@ -217,13 +230,19 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKit!.core.relayClient.onRelayClientMessage.unsubscribe(
       _onRelayMessage,
     );
-
+    //
     _appKit!.onSessionPing.unsubscribe(_onSessionPing);
     _appKit!.onSessionEvent.unsubscribe(_onSessionEvent);
     _appKit!.onSessionUpdate.unsubscribe(_onSessionUpdate);
     _appKit!.onSessionConnect.subscribe(_onSessionConnect);
     _appKit!.onSessionAuthResponse.subscribe(_onSessionAuthResponse);
-
+    //
+    _appKitModal!.onModalConnect.unsubscribe(_onModalConnect);
+    _appKitModal!.onModalUpdate.unsubscribe(_onModalUpdate);
+    _appKitModal!.onModalNetworkChange.unsubscribe(_onModalNetworkChange);
+    _appKitModal!.onModalDisconnect.unsubscribe(_onModalDisconnect);
+    _appKitModal!.onModalError.unsubscribe(_onModalError);
+    //
     super.dispose();
   }
 
@@ -369,5 +388,103 @@ class _MyHomePageState extends State<MyHomePage> {
         debugPrint('[SampleDapp] _onRelayMessage error $e');
       }
     }
+  }
+
+  SIWEConfig _siweConfig() => SIWEConfig(
+        getNonce: () async {
+          // this has to be called at the very moment of creating the pairing uri
+          return SIWEUtils.generateNonce();
+        },
+        getMessageParams: () async {
+          // Provide everything that is needed to construct the SIWE message
+          debugPrint('[SIWEConfig] getMessageParams()');
+          final url = _appKitModal!.appKit!.metadata.url;
+          final uri = Uri.parse(url);
+          return SIWEMessageArgs(
+            domain: uri.authority,
+            uri: 'https://${uri.authority}/login',
+            statement: 'Welcome to AppKit $packageVersion for Flutter.',
+            methods: MethodsConstants.allMethods,
+          );
+        },
+        createMessage: (SIWECreateMessageArgs args) {
+          // Create SIWE message to be signed.
+          // You can use our provided formatMessage() method of implement your own
+          debugPrint('[SIWEConfig] createMessage()');
+          return SIWEUtils.formatMessage(args);
+        },
+        verifyMessage: (SIWEVerifyMessageArgs args) async {
+          // Implement your verifyMessage to authenticate the user after it.
+          debugPrint('[SIWEConfig] verifyMessage()');
+          final chainId = SIWEUtils.getChainIdFromMessage(args.message);
+          final address = SIWEUtils.getAddressFromMessage(args.message);
+          final cacaoSignature = args.cacao != null
+              ? args.cacao!.s
+              : CacaoSignature(
+                  t: CacaoSignature.EIP191,
+                  s: args.signature,
+                );
+          return await SIWEUtils.verifySignature(
+            address,
+            args.message,
+            cacaoSignature,
+            chainId,
+            DartDefines.projectId,
+          );
+        },
+        getSession: () async {
+          // Return proper session from your Web Service
+          final address = _appKitModal!.session!.address!;
+          final chainId = _appKitModal!.session!.chainId;
+          return SIWESession(address: address, chains: [chainId]);
+        },
+        onSignIn: (SIWESession session) {
+          // Called after SIWE message is signed and verified
+          debugPrint('[SIWEConfig] onSignIn()');
+        },
+        signOut: () async {
+          // Called when user taps on disconnect button
+          return true;
+        },
+        onSignOut: () {
+          // Called when disconnecting WalletConnect session was successfull
+          debugPrint('[SIWEConfig] onSignOut()');
+        },
+        enabled: true,
+        // signOutOnDisconnect: true,
+        // signOutOnAccountChange: true,
+        // signOutOnNetworkChange: true,
+        // nonceRefetchIntervalMs: 300000,
+        // sessionRefetchIntervalMs: 300000,
+      );
+
+  void _onModalConnect(ModalConnect? event) async {
+    setState(() {});
+    debugPrint('[ExampleApp] _onModalConnect ${event?.session.toJson()}');
+  }
+
+  void _onModalUpdate(ModalConnect? event) {
+    setState(() {});
+  }
+
+  void _onModalNetworkChange(ModalNetworkChange? event) {
+    debugPrint('[ExampleApp] _onModalNetworkChange ${event?.toString()}');
+    setState(() {});
+  }
+
+  void _onModalDisconnect(ModalDisconnect? event) {
+    debugPrint('[ExampleApp] _onModalDisconnect ${event?.toString()}');
+    setState(() {});
+  }
+
+  void _onModalError(ModalError? event) {
+    debugPrint('[ExampleApp] _onModalError ${event?.toString()}');
+    // When user connected to Coinbase Wallet but Coinbase Wallet does not have a session anymore
+    // (for instance if user disconnected the dapp directly within Coinbase Wallet)
+    // Then Coinbase Wallet won't emit any event
+    if ((event?.message ?? '').contains('Coinbase Wallet Error')) {
+      _appKitModal!.disconnect();
+    }
+    setState(() {});
   }
 }

@@ -58,7 +58,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return deps;
   }
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return ReownAppKitModalTheme(

@@ -43,10 +43,10 @@ class WalletKitService extends IWalletKitService {
   Redirect _constructRedirect() {
     return Redirect(
       native: 'wcflutterwallet$_flavor://',
-      // universal: _universalLink(),
-      // // enable linkMode on Wallet so Dapps can use relay-less connection
-      // // universal: value must be set on cloud config as well
-      // linkMode: true,
+      universal: _universalLink(),
+      // enable linkMode on Wallet so Dapps can use relay-less connection
+      // universal: value must be set on cloud config as well
+      linkMode: true,
     );
   }
 

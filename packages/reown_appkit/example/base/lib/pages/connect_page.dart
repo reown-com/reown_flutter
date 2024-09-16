@@ -20,10 +20,10 @@ import 'package:reown_appkit_dapp/widgets/chain_button.dart';
 class ConnectPage extends StatefulWidget {
   const ConnectPage({
     super.key,
-    required this.appKit,
+    required this.appKitModal,
   });
 
-  final ReownAppKit appKit;
+  final ReownAppKitModal appKitModal;
 
   @override
   ConnectPageState createState() => ConnectPageState();
@@ -37,12 +37,28 @@ class ConnectPageState extends State<ConnectPage> {
   @override
   void initState() {
     super.initState();
-    widget.appKit.onSessionConnect.subscribe(_onSessionConnect);
+    widget.appKitModal.appKit!.onSessionConnect.subscribe(
+      _onSessionConnect,
+    );
+    widget.appKitModal.appKit!.onSessionAuthResponse.subscribe(
+      _onSessionAuthResponse,
+    );
+    widget.appKitModal.onModalDisconnect.subscribe(
+      _onModalDisconnect,
+    );
   }
 
   @override
   void dispose() {
-    widget.appKit.onSessionConnect.unsubscribe(_onSessionConnect);
+    widget.appKitModal.onModalDisconnect.unsubscribe(
+      _onModalDisconnect,
+    );
+    widget.appKitModal.appKit!.onSessionAuthResponse.unsubscribe(
+      _onSessionAuthResponse,
+    );
+    widget.appKitModal.appKit!.onSessionConnect.unsubscribe(
+      _onSessionConnect,
+    );
     super.dispose();
   }
 
@@ -152,123 +168,149 @@ class ConnectPageState extends State<ConnectPage> {
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: StyleConstants.linear8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              StringConstants.testnetsOnly,
-              style: StyleConstants.buttonText,
-            ),
-            Switch(
-              value: _testnetOnly,
-              onChanged: (value) {
-                setState(() {
-                  _selectedChains.clear();
-                  _testnetOnly = value;
-                });
-              },
-            ),
-          ],
-        ),
-        const Text('EVM Chains:', style: StyleConstants.buttonText),
-        const SizedBox(height: StyleConstants.linear8),
-        Wrap(
-          spacing: 10.0,
-          children: evmChainButtons,
-        ),
         const Divider(),
-        const Text('Non EVM Chains:', style: StyleConstants.buttonText),
-        Wrap(
-          spacing: 10.0,
-          children: nonEvmChainButtons,
+        const Text(
+          'Connect With AppKit Modal and Link Mode:',
+          style: StyleConstants.buttonText,
+          textAlign: TextAlign.center,
         ),
         const SizedBox(height: StyleConstants.linear8),
-        const Divider(),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: StyleConstants.linear8),
-            const Text(
-              'Connect Session Propose:',
-              style: StyleConstants.buttonText,
-            ),
-            const SizedBox(height: StyleConstants.linear8),
-            Column(
-              children: WCSampleWallets.getSampleWallets().map((wallet) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: ElevatedButton(
-                    style: _buttonStyle,
-                    onPressed: _selectedChains.isEmpty
-                        ? null
-                        : () {
-                            _onConnect(
-                              nativeLink: '${wallet['schema']}',
-                              closeModal: () {
-                                if (Navigator.canPop(context)) {
-                                  Navigator.of(context).pop();
-                                }
-                              },
-                              showToast: (m) async {
-                                showPlatformToast(
-                                  child: Text(m),
-                                  context: context,
-                                );
-                              },
-                            );
-                          },
-                    child: Text(
-                      '${wallet['name']}',
-                      style: StyleConstants.buttonText,
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: StyleConstants.linear8),
-            const Divider(),
-            const Text(
-              '1-Click Auth with LinkMode:',
-              style: StyleConstants.buttonText,
-            ),
-            const SizedBox(height: StyleConstants.linear8),
-            Column(
-              children: WCSampleWallets.getSampleWallets().map((wallet) {
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: ElevatedButton(
-                    style: _buttonStyle,
-                    onPressed: _selectedChains.isEmpty
-                        ? null
-                        : () {
-                            _sessionAuthenticate(
-                              nativeLink: '${wallet['schema']}',
-                              universalLink: '${wallet['universal']}',
-                              closeModal: () {
-                                if (Navigator.canPop(context)) {
-                                  Navigator.of(context).pop();
-                                }
-                              },
-                              showToast: (message) {
-                                showPlatformToast(
-                                  child: Text(message),
-                                  context: context,
-                                );
-                              },
-                            );
-                          },
-                    child: Text(
-                      '${wallet['name']}',
-                      style: StyleConstants.buttonText,
-                    ),
-                  ),
-                );
-              }).toList(),
-            ),
-          ],
+        AppKitModalConnectButton(
+          appKit: widget.appKitModal,
         ),
-        const SizedBox(height: StyleConstants.linear16),
-        const Divider(height: 1.0),
+        const SizedBox(height: StyleConstants.linear8),
+        Visibility(
+          visible: widget.appKitModal.isConnected,
+          child: AppKitModalAccountButton(
+            appKit: widget.appKitModal,
+          ),
+        ),
+        const SizedBox(height: StyleConstants.linear8),
+        Visibility(
+          visible: !widget.appKitModal.isConnected,
+          child: Column(
+            children: [
+              const Divider(),
+              const SizedBox(height: StyleConstants.linear8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    StringConstants.testnetsOnly,
+                    style: StyleConstants.buttonText,
+                  ),
+                  Switch(
+                    value: _testnetOnly,
+                    onChanged: (value) {
+                      setState(() {
+                        _selectedChains.clear();
+                        _testnetOnly = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              const Text('EVM Chains:', style: StyleConstants.buttonText),
+              const SizedBox(height: StyleConstants.linear8),
+              Wrap(
+                spacing: 10.0,
+                children: evmChainButtons,
+              ),
+              const Divider(),
+              const Text('Non EVM Chains:', style: StyleConstants.buttonText),
+              Wrap(
+                spacing: 10.0,
+                children: nonEvmChainButtons,
+              ),
+              const SizedBox(height: StyleConstants.linear8),
+              const Divider(),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Connect Session Propose:',
+                    style: StyleConstants.buttonText,
+                  ),
+                  const SizedBox(height: StyleConstants.linear8),
+                  Column(
+                    children: WCSampleWallets.getSampleWallets().map((wallet) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: ElevatedButton(
+                          style: _buttonStyle,
+                          onPressed: _selectedChains.isEmpty
+                              ? null
+                              : () {
+                                  _onConnect(
+                                    nativeLink: '${wallet['schema']}',
+                                    closeModal: () {
+                                      if (Navigator.canPop(context)) {
+                                        Navigator.of(context).pop();
+                                      }
+                                    },
+                                    showToast: (m) async {
+                                      showPlatformToast(
+                                        child: Text(m),
+                                        context: context,
+                                      );
+                                    },
+                                  );
+                                },
+                          child: Text(
+                            '${wallet['name']}',
+                            style: StyleConstants.buttonText,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                  const SizedBox(height: StyleConstants.linear8),
+                  const Divider(),
+                  const Text(
+                    '1-Click Auth with LinkMode:',
+                    style: StyleConstants.buttonText,
+                  ),
+                  const SizedBox(height: StyleConstants.linear8),
+                  Column(
+                    children: WCSampleWallets.getSampleWallets().map((wallet) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: ElevatedButton(
+                          style: _buttonStyle,
+                          onPressed: _selectedChains.isEmpty
+                              ? null
+                              : () {
+                                  _sessionAuthenticate(
+                                    nativeLink: '${wallet['schema']}',
+                                    universalLink: '${wallet['universal']}',
+                                    closeModal: () {
+                                      if (Navigator.canPop(context)) {
+                                        Navigator.of(context).pop();
+                                      }
+                                    },
+                                    showToast: (message) {
+                                      showPlatformToast(
+                                        child: Text(message),
+                                        context: context,
+                                      );
+                                    },
+                                  );
+                                },
+                          child: Text(
+                            '${wallet['name']}',
+                            style: StyleConstants.buttonText,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
+              const SizedBox(height: StyleConstants.linear16),
+              const Divider(height: 1.0),
+            ],
+          ),
+        ),
         const SizedBox(height: StyleConstants.linear16),
         const Text(
           'Redirect:',
@@ -281,7 +323,7 @@ class ConnectPageState extends State<ConnectPage> {
             const Text('Native: '),
             Expanded(
               child: Text(
-                '${widget.appKit.metadata.redirect?.native}',
+                '${widget.appKitModal.appKit!.metadata.redirect?.native}',
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
@@ -294,7 +336,7 @@ class ConnectPageState extends State<ConnectPage> {
             const Text('Universal: '),
             Expanded(
               child: Text(
-                '${widget.appKit.metadata.redirect?.universal}',
+                '${widget.appKitModal.appKit!.metadata.redirect?.universal}',
                 style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
@@ -304,7 +346,7 @@ class ConnectPageState extends State<ConnectPage> {
           children: [
             const Text('Link Mode: '),
             Text(
-              '${widget.appKit.metadata.redirect?.linkMode}',
+              '${widget.appKitModal.appKit!.metadata.redirect?.linkMode}',
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
@@ -348,7 +390,7 @@ class ConnectPageState extends State<ConnectPage> {
     debugPrint('[SampleDapp] Creating connection with $nativeLink');
     // It is currently safer to send chains approvals on optionalNamespaces
     // but depending on Wallet implementation you may need to send some (for innstance eip155:1) as required
-    final connectResponse = await widget.appKit.connect(
+    final connectResponse = await widget.appKitModal.appKit!.connect(
       requiredNamespaces: requiredNamespaces,
       optionalNamespaces: optionalNamespaces,
     );
@@ -381,12 +423,12 @@ class ConnectPageState extends State<ConnectPage> {
         '[SampleDapp] Creating authenticate with $nativeLink, $universalLink');
     final methods1 = requiredNamespaces['eip155']?.methods ?? [];
     final methods2 = optionalNamespaces['eip155']?.methods ?? [];
-    final authResponse = await widget.appKit.authenticate(
+    final authResponse = await widget.appKitModal.appKit!.authenticate(
       params: SessionAuthRequestParams(
         chains: _selectedChains.map((e) => e.chainId).toList(),
-        domain: Uri.parse(widget.appKit.metadata.url).authority,
+        domain: Uri.parse(widget.appKitModal.appKit!.metadata.url).authority,
         nonce: AuthUtils.generateNonce(),
-        uri: widget.appKit.metadata.url,
+        uri: widget.appKitModal.appKit!.metadata.url,
         statement: 'Welcome to example flutter app',
         methods: <String>{...methods1, ...methods2}.toList(),
       ),
@@ -483,6 +525,16 @@ class ConnectPageState extends State<ConnectPage> {
       _shouldDismissQrCode = false;
       Navigator.pop(context);
     }
+  }
+
+  void _onSessionAuthResponse(SessionAuthResponse? response) {
+    if (response?.session != null) {
+      setState(() => _selectedChains.clear());
+    }
+  }
+
+  void _onModalDisconnect(ModalDisconnect? event) {
+    setState(() {});
   }
 
   ButtonStyle get _buttonStyle => ButtonStyle(

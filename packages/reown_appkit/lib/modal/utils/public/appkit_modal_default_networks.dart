@@ -289,10 +289,12 @@ class ReownAppKitModalNetworks {
     String namespace,
     List<ReownAppKitModalNetworkInfo> chains,
   ) {
-    supported[namespace] = [
+    final List<ReownAppKitModalNetworkInfo> networks = [
       ...List.from(supported[namespace] ?? []),
       ...chains,
     ];
+
+    supported[namespace] = networks;
   }
 
   static List<ReownAppKitModalNetworkInfo> getNetworks(String namespace) {

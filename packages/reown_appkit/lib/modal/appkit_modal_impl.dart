@@ -767,13 +767,19 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     if (!_isConnected) {
       try {
         if (siweService.instance!.enabled) {
+          final walletRedirect = explorerService.instance.getWalletRedirect(
+            selectedWallet,
+          );
           final nonce = await siweService.instance!.getNonce();
           final p1 = await siweService.instance!.config!.getMessageParams();
-          final chains =
-              ReownAppKitModalNetworks.getNetworks(CoreConstants.namespace)
-                  .map((e) => '${CoreConstants.namespace}:${e.chainId}')
-                  .toList();
           final methods = p1.methods ?? MethodsConstants.allMethods;
+          //
+          final supportedNetworks = ReownAppKitModalNetworks.getNetworks(
+            CoreConstants.namespace,
+          );
+          final chains = supportedNetworks
+              .map((e) => '${CoreConstants.namespace}:${e.chainId}')
+              .toList();
           final p2 = {'nonce': nonce, 'chains': chains, 'methods': methods};
           final authParams = SessionAuthRequestParams.fromJson({
             ...p1.toJson(),
@@ -782,6 +788,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
           // One-Click Auth
           final authResponse = await _appKit.authenticate(
             params: authParams,
+            walletUniversalLink: walletRedirect?.linkMode,
           );
           _wcUri = authResponse.uri?.toString() ?? '';
           _notify();

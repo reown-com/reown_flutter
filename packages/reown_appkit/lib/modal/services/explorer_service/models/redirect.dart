@@ -1,10 +1,12 @@
 class WalletRedirect {
   String? mobile;
+  String? linkMode;
   String? desktop;
   String? web;
 
   WalletRedirect({
     this.mobile,
+    this.linkMode,
     this.desktop,
     this.web,
   });
@@ -19,11 +21,13 @@ class WalletRedirect {
 
   WalletRedirect copyWith({
     String? mobile,
+    String? linkMode,
     String? desktop,
     String? web,
   }) {
     return WalletRedirect(
       mobile: mobile ?? this.mobile,
+      linkMode: linkMode ?? this.linkMode,
       desktop: desktop ?? this.desktop,
       web: web ?? this.web,
     );
@@ -31,5 +35,5 @@ class WalletRedirect {
 
   @override
   String toString() =>
-      'mobile: $mobile (mobileOnly: $mobileOnly), desktop: $desktop (desktopOnly: $desktopOnly), web: $web (webOnly: $webOnly)';
+      'mobile: $mobile (mobileOnly: $mobileOnly), desktop: $desktop (desktopOnly: $desktopOnly), web: $web (webOnly: $webOnly), linkMode: $linkMode';
 }

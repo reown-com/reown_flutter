@@ -104,61 +104,66 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
     final enabled = _address.isNotEmpty && widget.appKit.status.isInitialized;
     // TODO [AppKitModalAccountButton] this button should be able to be disable by passing a null onTap action
     // I should decouple an AccountButton from AppKitModalAccountButton like on ConnectButton and NetworkButton
-    return BaseButton(
-      size: widget.size,
-      onTap: enabled ? _onTap : null,
-      overridePadding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-        const EdgeInsets.only(left: 4.0, right: 4.0),
-      ),
-      buttonStyle: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
-          (states) {
-            if (states.contains(MaterialState.disabled)) {
-              return themeColors.grayGlass005;
-            }
-            return themeColors.grayGlass010;
-          },
-        ),
-        foregroundColor: MaterialStateProperty.resolveWith<Color>(
-          (states) {
-            if (states.contains(MaterialState.disabled)) {
-              return themeColors.grayGlass015;
-            }
-            return themeColors.foreground175;
-          },
-        ),
-        shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
-          (states) {
-            return RoundedRectangleBorder(
-              side: states.contains(MaterialState.disabled)
-                  ? BorderSide(color: themeColors.grayGlass005, width: 1.0)
-                  : BorderSide(color: themeColors.grayGlass010, width: 1.0),
-              borderRadius: BorderRadius.circular(borderRadius),
-            );
-          },
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _BalanceButton(
-            isLoading: widget.appKit.status.isLoading,
-            balance: _balance,
-            tokenName: _tokenName,
-            tokenImage: _tokenImage,
-            iconSize: widget.size.iconSize,
-            buttonSize: widget.size,
-            onTap: enabled ? _onTap : null,
+    return Stack(
+      alignment: AlignmentDirectional.center,
+      children: [
+        BaseButton(
+          size: widget.size,
+          onTap: enabled ? _onTap : null,
+          overridePadding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+            const EdgeInsets.only(left: 4.0, right: 4.0),
           ),
-          const SizedBox.square(dimension: 4.0),
-          _AddressButton(
-            address: _address,
-            buttonSize: widget.size,
-            appKit: widget.appKit,
-            onTap: enabled ? _onTap : null,
+          buttonStyle: ButtonStyle(
+            backgroundColor: MaterialStateProperty.resolveWith<Color>(
+              (states) {
+                if (states.contains(MaterialState.disabled)) {
+                  return themeColors.grayGlass005;
+                }
+                return themeColors.grayGlass010;
+              },
+            ),
+            foregroundColor: MaterialStateProperty.resolveWith<Color>(
+              (states) {
+                if (states.contains(MaterialState.disabled)) {
+                  return themeColors.grayGlass015;
+                }
+                return themeColors.foreground175;
+              },
+            ),
+            shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
+              (states) {
+                return RoundedRectangleBorder(
+                  side: states.contains(MaterialState.disabled)
+                      ? BorderSide(color: themeColors.grayGlass005, width: 1.0)
+                      : BorderSide(color: themeColors.grayGlass010, width: 1.0),
+                  borderRadius: BorderRadius.circular(borderRadius),
+                );
+              },
+            ),
           ),
-        ],
-      ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _BalanceButton(
+                isLoading: widget.appKit.status.isLoading,
+                balance: _balance,
+                tokenName: _tokenName,
+                tokenImage: _tokenImage,
+                iconSize: widget.size.iconSize,
+                buttonSize: widget.size,
+                onTap: enabled ? _onTap : null,
+              ),
+              const SizedBox.square(dimension: 4.0),
+              _AddressButton(
+                address: _address,
+                buttonSize: widget.size,
+                appKit: widget.appKit,
+                onTap: enabled ? _onTap : null,
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

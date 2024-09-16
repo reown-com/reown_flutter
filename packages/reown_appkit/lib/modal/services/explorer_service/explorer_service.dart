@@ -477,12 +477,14 @@ class ExplorerService implements IExplorerService {
     if (walletInfo.listing.id == CoinbaseService.defaultWalletData.listing.id) {
       return WalletRedirect(
         mobile: CoinbaseService.defaultWalletData.listing.mobileLink,
+        linkMode: null,
         desktop: null,
         web: null,
       );
     }
     return WalletRedirect(
       mobile: walletInfo.listing.mobileLink?.trim(),
+      linkMode: walletInfo.listing.linkMode?.trim(),
       desktop: walletInfo.listing.desktopLink,
       web: walletInfo.listing.webappLink,
     );
