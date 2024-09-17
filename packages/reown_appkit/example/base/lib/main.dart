@@ -94,11 +94,11 @@ class _MyHomePageState extends State<MyHomePage> {
         logLevel: LogLevel.error,
       ),
       metadata: PairingMetadata(
-        name: 'Flutter Dapp Sample',
+        name: 'Flutter AppKit Sample',
         description: 'Reown\'s sample dapp with Flutter',
         url: _universalLink(),
         icons: [
-          'https://images.prismic.io/wallet-connect/65785a56531ac2845a260732_WalletConnect-App-Logo-1024X1024.png'
+          'https://raw.githubusercontent.com/reown-com/reown_flutter/develop/assets/appkit_logo.png',
         ],
         redirect: _constructRedirect(),
       ),
@@ -126,6 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       appKit: _appKit,
       siweConfig: _siweConfig(),
+      enableEmail: true,
     );
 
     _appKitModal!.onModalConnect.subscribe(_onModalConnect);
@@ -451,9 +452,9 @@ class _MyHomePageState extends State<MyHomePage> {
           debugPrint('[SIWEConfig] onSignOut()');
         },
         enabled: true,
-        // signOutOnDisconnect: true,
-        // signOutOnAccountChange: true,
-        // signOutOnNetworkChange: true,
+        signOutOnDisconnect: true,
+        signOutOnAccountChange: true,
+        signOutOnNetworkChange: false,
         // nonceRefetchIntervalMs: 300000,
         // sessionRefetchIntervalMs: 300000,
       );

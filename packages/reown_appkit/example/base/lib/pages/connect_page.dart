@@ -162,8 +162,8 @@ class ConnectPageState extends State<ConnectPage> {
     return ListView(
       padding: const EdgeInsets.symmetric(horizontal: StyleConstants.linear8),
       children: <Widget>[
-        const Text(
-          'Flutter Dapp',
+        Text(
+          widget.appKitModal.appKit!.metadata.name,
           style: StyleConstants.subtitleText,
           textAlign: TextAlign.center,
         ),

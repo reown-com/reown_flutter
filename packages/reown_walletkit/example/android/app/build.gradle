@@ -69,14 +69,14 @@ android {
             applicationIdSuffix ".internal"
             manifestPlaceholders = [
                     appIcon: "@mipmap/ic_launcher_internal",
-                    applicationLabel: "WalletKit Flutter (internal)",
+                    applicationLabel: "FL WalletKit",
             ]
         }
         production {
             dimension "version"
             manifestPlaceholders = [
                     appIcon: "@mipmap/ic_launcher",
-                    applicationLabel: "WalletKit Flutter",
+                    applicationLabel: "FL WalletKit",
             ]
         }
     }

@@ -197,9 +197,9 @@ class _MyHomePageState extends State<MyHomePage> {
           debugPrint('[SIWEConfig] onSignOut()');
         },
         enabled: enabled,
-        // signOutOnDisconnect: true,
-        // signOutOnAccountChange: true,
-        // signOutOnNetworkChange: true,
+        signOutOnDisconnect: true,
+        signOutOnAccountChange: true,
+        signOutOnNetworkChange: false,
         // nonceRefetchIntervalMs: 300000,
         // sessionRefetchIntervalMs: 300000,
       );

@@ -85,7 +85,7 @@ class WCSampleWallets {
           'name': entry['name'] as String?,
           'homepage': 'https://reown.com',
           'image_id':
-              'https://thegraph.academy/wp-content/uploads/2021/04/WalletConnect-logo.png',
+              'https://raw.githubusercontent.com/reown-com/reown_flutter/develop/assets/walletkit_logo.png',
           'order': 10,
           'mobile_link': entry['schema'] as String?,
           'link_mode': entry['universal'] as String?,
