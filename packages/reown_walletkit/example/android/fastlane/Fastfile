@@ -19,7 +19,7 @@ platform :android do
   
   # Helper method to read the changelog
   def read_changelog
-    changelog_file = '../../../../CHANGELOG.md'
+    changelog_file = '../../../CHANGELOG.md'
     changelog = ""
   
     if File.exist?(changelog_file)

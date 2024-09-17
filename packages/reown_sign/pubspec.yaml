@@ -17,10 +17,7 @@ dependencies:
   http: ^1.2.0
   logger: ^2.2.0
   pointycastle: ^3.9.1
-  reown_core:
-    git:
-      url: https://github.com/reown-com/reown_flutter.git
-      path: packages/reown_core
+  reown_core: ^1.0.0
   web3dart: ^2.7.3
 
 dev_dependencies:

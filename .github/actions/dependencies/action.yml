@@ -1,6 +1,11 @@
 name: ci
 description: Installs dependencies
 
+inputs:
+  working-directory:
+    description: 'Package directory'
+    required: true
+
 runs:
   using: composite
   steps:
@@ -11,53 +16,13 @@ runs:
         flutter-version: '3.19.5'
 
     # Get package dependencies and generate files
-    # - name: Get package dependencies and generate files
-    #   shell: bash
-    #   run: |
-    #     flutter pub get
-    #     flutter analyze TODO Uncomment this when packages are published
-
-    # Get example app dependencies and generate files
-    - name: Get example app dependencies and generate files
+    - name: Get package dependencies and generate files
       shell: bash
-      working-directory: packages/reown_core
+      working-directory: ${{ inputs.working-directory }}
       run: |
-        flutter pub get
-        flutter pub run build_runner build --delete-conflicting-outputs
-        dart format --output=none --set-exit-if-changed .
+          flutter pub get
+          flutter pub run build_runner build --delete-conflicting-outputs
+          dart format --output=none --set-exit-if-changed .
+    # add flutter analyze when packages are published
 
-    # Get example app dependencies and generate files
-    - name: Get example app dependencies and generate files
-      shell: bash
-      working-directory: packages/reown_sign
-      run: |
-        flutter pub get
-        flutter pub run build_runner build --delete-conflicting-outputs
-        dart format --output=none --set-exit-if-changed .
-
-    # Get example app dependencies and generate files
-    - name: Get example app dependencies and generate files
-      shell: bash
-      working-directory: packages/reown_walletkit
-      run: |
-        flutter pub get
-        flutter pub run build_runner build --delete-conflicting-outputs
-        dart format --output=none --set-exit-if-changed .
-
-    # Get example app dependencies and generate files
-    - name: Get example app dependencies and generate files
-      shell: bash
-      working-directory: packages/reown_appkit
-      run: |
-        flutter pub get
-        flutter pub run build_runner build --delete-conflicting-outputs
-        dart format --output=none --set-exit-if-changed .
-
-    # - name: Verify formatting and analyze project source
-    #   shell: bash
-    #   run: dart format --output=none --set-exit-if-changed .
-
-    # - name: Analyze project source
-    #   shell: bash
-    #   run: flutter analyze
     

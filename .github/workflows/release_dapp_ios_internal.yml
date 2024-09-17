@@ -6,6 +6,11 @@ on:
     types:
       - closed
 
+# inputs:
+# working-directory
+# flavor
+# BUNDLE_ID
+
 jobs:
   build:
     if: (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop') || github.event_name == 'workflow_dispatch'
@@ -30,10 +35,11 @@ jobs:
     
     # Install Flutter and Dependencies
     - uses: ./.github/actions/dependencies
+      with:
+        working-directory: packages/reown_appkit/example/base
   
     # Build App
     - name: Build App
-      # working-directory: example/dapp
       working-directory: packages/reown_appkit/example/base
       env:
         PROJECT_ID: ${{ secrets.DAPP_PROJECT_ID }}
@@ -48,7 +54,6 @@ jobs:
     
     # Fastlane
     - name: Fastlane
-      # working-directory: example/dapp/ios
       working-directory: packages/reown_appkit/example/base/ios
       env:
         BUNDLE_ID: "com.walletconnect.flutterdapp.internal"
