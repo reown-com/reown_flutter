@@ -65,12 +65,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String _universalLink() {
     // TODO change /flutter_appkit to something else
-    Uri link = Uri.parse('https://lab.web3modal.com/flutter_appkit');
+    Uri link = Uri.parse('https://appkit-lab.reown.com/flutter_appkit');
     if (_flavor.isNotEmpty) {
-      return link
-          .replace(path: '${link.path}_internal')
-          .replace(host: 'dev.${link.host}')
-          .toString();
+      return link.replace(path: '${link.path}_internal').toString();
     }
     return link.toString();
   }

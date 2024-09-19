@@ -30,12 +30,9 @@ class WalletKitService extends IWalletKitService {
   }
 
   String _universalLink() {
-    Uri link = Uri.parse('https://lab.web3modal.com/flutter_walletkit');
-    if (_flavor.isNotEmpty) {
-      return link
-          .replace(path: '${link.path}_internal')
-          .replace(host: 'dev.${link.host}')
-          .toString();
+    Uri link = Uri.parse('https://appkit-lab.reown.com/flutter_walletkit');
+    if (_flavor.isNotEmpty || kDebugMode) {
+      return link.replace(path: '${link.path}_internal').toString();
     }
     return link.toString();
   }

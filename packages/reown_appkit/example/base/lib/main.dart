@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -67,12 +68,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String _universalLink() {
-    Uri link = Uri.parse('https://lab.web3modal.com/flutter_appkit');
-    if (_flavor.isNotEmpty) {
-      return link
-          .replace(path: '${link.path}_internal')
-          .replace(host: 'dev.${link.host}')
-          .toString();
+    Uri link = Uri.parse('https://appkit-lab.reown.com/flutter_appkit');
+    if (_flavor.isNotEmpty || kDebugMode) {
+      return link.replace(path: '${link.path}_internal').toString();
     }
     return link.toString();
   }

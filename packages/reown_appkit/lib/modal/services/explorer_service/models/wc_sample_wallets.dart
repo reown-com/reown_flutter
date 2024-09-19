@@ -1,26 +1,25 @@
-import 'dart:io';
-
 import 'package:collection/collection.dart';
 import 'package:reown_appkit/modal/models/public/appkit_wallet_info.dart';
+import 'package:reown_appkit/modal/utils/platform_utils.dart';
 
 class WCSampleWallets {
-  static List<Map<String, dynamic>> sampleWalletsInternal() => [
+  static List<Map<String, dynamic>> _sampleWalletsInternal() => [
         {
-          'name': 'Swift Wallet',
+          'name': 'SW Wallet (internal)',
           'platform': ['ios'],
           'id': '123456789012345678901234567890',
           'schema': 'walletapp://',
           'bundleId': 'com.walletconnect.sample.wallet',
-          'universal': 'https://lab.web3modal.com/wallet',
+          'universal': 'https://appkit-lab.reown.com/wallet',
         },
         {
-          'name': 'Flutter Wallet (internal)',
+          'name': 'FL Wallet (internal)',
           'platform': ['ios', 'android'],
           'id': '123456789012345678901234567895',
           'schema': 'wcflutterwallet-internal://',
           'bundleId': 'com.walletconnect.flutterwallet.internal',
           'universal':
-              'https://dev.lab.web3modal.com/flutter_walletkit_internal',
+              'https://appkit-lab.reown.com/flutter_walletkit_internal',
         },
         {
           'name': 'RN Wallet (internal)',
@@ -28,10 +27,10 @@ class WCSampleWallets {
           'id': '1234567890123456789012345678922',
           'schema': 'rn-web3wallet://wc',
           'bundleId': 'com.walletconnect.web3wallet.rnsample.internal',
-          'universal': 'https://lab.web3modal.com/rn_walletkit',
+          'universal': 'https://appkit-lab.reown.com/rn_walletkit_internal',
         },
         {
-          'name': 'Kotlin Wallet (Internal)',
+          'name': 'KT Wallet (Internal)',
           'platform': ['android'],
           'id': '123456789012345678901234567894',
           'schema': 'kotlin-web3wallet://wc',
@@ -41,22 +40,22 @@ class WCSampleWallets {
         },
       ];
 
-  static List<Map<String, dynamic>> sampleWalletsProduction() => [
+  static List<Map<String, dynamic>> _sampleWalletsProduction() => [
         {
-          'name': 'Swift Wallet',
+          'name': 'SW Wallet',
           'platform': ['ios'],
           'id': '123456789012345678901234567890',
           'schema': 'walletapp://',
           'bundleId': 'com.walletconnect.sample.wallet',
-          'universal': 'https://lab.web3modal.com/wallet',
+          'universal': 'https://appkit-lab.reown.com/wallet',
         },
         {
-          'name': 'Flutter Wallet',
+          'name': 'FL Wallet',
           'platform': ['ios', 'android'],
           'id': '123456789012345678901234567891',
           'schema': 'wcflutterwallet://',
           'bundleId': 'com.walletconnect.flutterwallet',
-          'universal': 'https://lab.web3modal.com/flutter_walletkit',
+          'universal': 'https://appkit-lab.reown.com/flutter_walletkit',
         },
         {
           'name': 'RN Wallet',
@@ -64,10 +63,10 @@ class WCSampleWallets {
           'id': '123456789012345678901234567892',
           'schema': 'rn-web3wallet://wc',
           'bundleId': 'com.walletconnect.web3wallet.rnsample',
-          'universal': 'https://lab.web3modal.com/rn_walletkit',
+          'universal': 'https://appkit-lab.reown.com/rn_walletkit',
         },
         {
-          'name': 'Kotlin Wallet',
+          'name': 'KT Wallet',
           'platform': ['android'],
           'id': '123456789012345678901234567893',
           'schema': 'kotlin-web3wallet://wc',
@@ -78,30 +77,56 @@ class WCSampleWallets {
       ];
 
   static List<ReownAppKitModalWalletInfo> getSampleWallets() {
-    final wallets = _getSampleWallets().mapIndexed((index, entry) {
+    final wallets = _sampleWallets().map((entry) {
+      final id = entry['id'] as String?;
+      final name = entry['name'] as String?;
+      final schema = entry['schema'] as String?;
+      final universal = entry['universal'] as String?;
+      final bundleId = entry['universal'] as String?;
       return ReownAppKitModalWalletInfo(
         listing: Listing.fromJson({
-          'id': index,
-          'name': entry['name'] as String?,
+          'id': id,
+          'name': name,
           'homepage': 'https://reown.com',
           'image_id':
               'https://raw.githubusercontent.com/reown-com/reown_flutter/develop/assets/walletkit_logo.png',
           'order': 10,
-          'mobile_link': entry['schema'] as String?,
-          'link_mode': entry['universal'] as String?,
+          'mobile_link': schema,
+          'link_mode': universal,
+          'app_store': 'https://apps.apple.com/app/apple-store/id$id',
+          'play_store':
+              'https://play.google.com/store/apps/details?id=$bundleId',
         }),
         installed: false,
         recent: false,
       );
-    }).toList();
+    });
     return wallets.whereType<ReownAppKitModalWalletInfo>().toList();
   }
 
-  static List<Map<String, dynamic>> _getSampleWallets() {
-    return sampleWalletsInternal().where((e) {
-      return (e['platform'] as List<String>).contains(
-        Platform.operatingSystem,
-      );
+  static List<Map<String, dynamic>> _sampleWallets() {
+    String flavor = '-${const String.fromEnvironment('FLUTTER_APP_FLAVOR')}';
+    flavor = flavor.replaceAll('-production', '');
+
+    final platform = PlatformUtils.getPlatformExact().name;
+    final platformName = platform.toString().toLowerCase();
+
+    if (flavor.isNotEmpty) {
+      return _sampleWalletsInternal().where((e) {
+        return (e['platform'] as List<String>).contains(platformName);
+      }).toList();
+    }
+    return _sampleWalletsProduction().where((e) {
+      return (e['platform'] as List<String>).contains(platformName);
     }).toList();
+  }
+
+  static String? getSampleWalletScheme(String id) {
+    final wallet = _sampleWallets().firstWhereOrNull((e) => e['id'] == id);
+    final platform = PlatformUtils.getPlatformExact();
+    if (platform == PlatformExact.android) {
+      return wallet?['bundleId'] as String?;
+    }
+    return wallet?['schema'] as String?;
   }
 }
