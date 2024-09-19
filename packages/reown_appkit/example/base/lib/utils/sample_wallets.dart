@@ -1,23 +1,23 @@
 import 'dart:io';
 
 class WCSampleWallets {
-  static List<Map<String, dynamic>> sampleWalletsInternal() => [
+  static List<Map<String, dynamic>> _sampleWalletsInternal() => [
         {
-          'name': 'Swift Wallet',
+          'name': 'SW Wallet (internal)',
           'platform': ['ios'],
           'id': '123456789012345678901234567890',
           'schema': 'walletapp://',
           'bundleId': 'com.walletconnect.sample.wallet',
-          'universal': 'https://lab.web3modal.com/wallet',
+          'universal': 'https://appkit-lab.reown.com/wallet',
         },
         {
-          'name': 'Flutter Wallet (internal)',
+          'name': 'FL Wallet (internal)',
           'platform': ['ios', 'android'],
           'id': '123456789012345678901234567895',
           'schema': 'wcflutterwallet-internal://',
           'bundleId': 'com.walletconnect.flutterwallet.internal',
           'universal':
-              'https://dev.lab.web3modal.com/flutter_walletkit_internal',
+              'https://appkit-lab.reown.com/flutter_walletkit_internal',
         },
         {
           'name': 'RN Wallet (internal)',
@@ -25,10 +25,10 @@ class WCSampleWallets {
           'id': '1234567890123456789012345678922',
           'schema': 'rn-web3wallet://wc',
           'bundleId': 'com.walletconnect.web3wallet.rnsample.internal',
-          'universal': 'https://lab.web3modal.com/rn_walletkit',
+          'universal': 'https://appkit-lab.reown.com/rn_walletkit_internal',
         },
         {
-          'name': 'Kotlin Wallet (Internal)',
+          'name': 'KT Wallet (Internal)',
           'platform': ['android'],
           'id': '123456789012345678901234567894',
           'schema': 'kotlin-web3wallet://wc',
@@ -38,22 +38,22 @@ class WCSampleWallets {
         },
       ];
 
-  static List<Map<String, dynamic>> sampleWalletsProduction() => [
+  static List<Map<String, dynamic>> _sampleWalletsProduction() => [
         {
-          'name': 'Swift Wallet',
+          'name': 'SW Wallet',
           'platform': ['ios'],
           'id': '123456789012345678901234567890',
           'schema': 'walletapp://',
           'bundleId': 'com.walletconnect.sample.wallet',
-          'universal': 'https://lab.web3modal.com/wallet',
+          'universal': 'https://appkit-lab.reown.com/wallet',
         },
         {
-          'name': 'Flutter Wallet',
+          'name': 'FL Wallet',
           'platform': ['ios', 'android'],
           'id': '123456789012345678901234567891',
           'schema': 'wcflutterwallet://',
           'bundleId': 'com.walletconnect.flutterwallet',
-          'universal': 'https://lab.web3modal.com/flutter_walletkit',
+          'universal': 'https://appkit-lab.reown.com/flutter_walletkit',
         },
         {
           'name': 'RN Wallet',
@@ -61,10 +61,10 @@ class WCSampleWallets {
           'id': '123456789012345678901234567892',
           'schema': 'rn-web3wallet://wc',
           'bundleId': 'com.walletconnect.web3wallet.rnsample',
-          'universal': 'https://lab.web3modal.com/rn_walletkit',
+          'universal': 'https://appkit-lab.reown.com/rn_walletkit',
         },
         {
-          'name': 'Kotlin Wallet',
+          'name': 'KT Wallet',
           'platform': ['android'],
           'id': '123456789012345678901234567893',
           'schema': 'kotlin-web3wallet://wc',
@@ -78,12 +78,12 @@ class WCSampleWallets {
     String flavor = '-${const String.fromEnvironment('FLUTTER_APP_FLAVOR')}';
     flavor = flavor.replaceAll('-production', '');
     if (flavor.isNotEmpty) {
-      return sampleWalletsInternal().where((e) {
+      return _sampleWalletsInternal().where((e) {
         return (e['platform'] as List<String>)
             .contains(Platform.operatingSystem);
       }).toList();
     }
-    return sampleWalletsProduction().where((e) {
+    return _sampleWalletsProduction().where((e) {
       return (e['platform'] as List<String>).contains(Platform.operatingSystem);
     }).toList();
   }

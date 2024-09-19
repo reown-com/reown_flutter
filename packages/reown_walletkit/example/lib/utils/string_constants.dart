@@ -37,7 +37,7 @@ class StringConstants {
   static const String reject = 'Reject';
 
   // Main Page
-  static const String appTitle = 'Reown WalletKit Flutter';
+  static const String appTitle = 'FL WalletKit';
   static const String connectPageTitle = 'Connections';
   static const String pairingsPageTitle = 'Pairings';
   static const String sessionsPageTitle = 'Sessions';

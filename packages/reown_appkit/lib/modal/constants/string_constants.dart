@@ -40,19 +40,18 @@ class StorageConstants {
 }
 
 class UrlConstants {
-  static const String apiService = 'https://api.web3modal.com';
-  static const String blockChainService = 'https://rpc.walletconnect.org';
-  static const String analyticsService = 'https://pulse.walletconnect.org';
-  static const String cloudService = 'https://cloud.walletconnect.com';
-  static const String exploreWallets =
+  static const apiService = 'https://api.web3modal.com';
+  static const blockChainService = 'https://rpc.walletconnect.org';
+  static const analyticsService = 'https://pulse.walletconnect.org';
+  static const exploreWallets =
       'https://explorer.walletconnect.com/?type=wallet';
-  static const String secureService =
-      'https://secure-mobile.walletconnect.com/mobile-sdk';
-
   //
-  static const String secureDashboard =
-      'https://secure.walletconnect.com/dashboard';
-  static const String learnMoreUrl =
+  static const secureService =
+      'https://secure-mobile.walletconnect.com/mobile-sdk';
+  static const secureDashboard = 'https://secure.walletconnect.com/dashboard';
+  //
+  static const learnMoreUrl =
       'https://ethereum.org/en/developers/docs/networks';
-  static const String docsUrl = 'https://docs.walletconnect.com';
+  static const String docsUrl = 'https://docs.reown.com';
+  static const String cloudService = 'https://cloud.reown.com';
 }

@@ -47,7 +47,7 @@ class StyleConstants {
 
 class StringConstants {
   static const String close = 'Close';
-  static const String pageTitle = 'AppKit Flutter';
+  static const String pageTitle = 'Flutter AppKit Sample';
   static const String copiedToClipboard = 'Copied to clipboard';
   static const String sessionTopic = 'Session Topic: ';
   static const String methods = 'Methods';

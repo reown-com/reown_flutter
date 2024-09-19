@@ -30,12 +30,9 @@ class WalletKitService extends IWalletKitService {
   }
 
   String _universalLink() {
-    Uri link = Uri.parse('https://lab.web3modal.com/flutter_walletkit');
-    if (_flavor.isNotEmpty) {
-      return link
-          .replace(path: '${link.path}_internal')
-          .replace(host: 'dev.${link.host}')
-          .toString();
+    Uri link = Uri.parse('https://appkit-lab.reown.com/flutter_walletkit');
+    if (_flavor.isNotEmpty || kDebugMode) {
+      return link.replace(path: '${link.path}_internal').toString();
     }
     return link.toString();
   }
@@ -59,11 +56,11 @@ class WalletKitService extends IWalletKitService {
         logLevel: LogLevel.error,
       ),
       metadata: PairingMetadata(
-        name: 'WalletKit Flutter Sample',
+        name: 'FL WalletKit Sample',
         description: 'Reown\'s sample wallet with Flutter',
         url: _universalLink(),
         icons: [
-          'https://docs.walletconnect.com/assets/images/web3walletLogo-54d3b546146931ceaf47a3500868a73a.png'
+          'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/walletkit-icon$_flavor.png'
         ],
         redirect: _constructRedirect(),
       ),

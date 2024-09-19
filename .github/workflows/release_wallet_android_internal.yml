@@ -38,20 +38,19 @@ jobs:
     
     # Install Flutter and Dependencies
     - uses: ./.github/actions/dependencies
+      with:
+        working-directory: packages/reown_walletkit/example
 
     - name: Add Secrets file
-      # working-directory: example/wallet/android
       working-directory: packages/reown_walletkit/example/android
       run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
 
     - name: Add Keystore file
-      # working-directory: example/wallet/android
       working-directory: packages/reown_walletkit/example/android
       run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
     
     # Fastlane
     - name: Fastlane
-      # working-directory: example/wallet/android
       working-directory: packages/reown_walletkit/example/android
       env:
         FLAVOR: "internal"
@@ -61,7 +60,7 @@ jobs:
         FIREBASE_WALLET_ID: ${{ secrets.FIREBASE_WALLET_ID_INTERNAL }}
         DOWNLOAD_URL: ${{ secrets.DOWNLOAD_URL_WALLET_INTERNAL }}
       run: |
-        PUBSPEC_FILE=../../../pubspec.yaml
+        PUBSPEC_FILE=../../pubspec.yaml
         FILE_VALUE=$(echo | grep "^version: " $PUBSPEC_FILE)
         PARTS=(${FILE_VALUE//:/ })
         FULL_VERSION=${PARTS[1]}
@@ -72,4 +71,4 @@ jobs:
 
 # Launch locally
 # Remove build: if:
-# act -j build --container-architecture linux/amd64 -P macos-latest-xlarge=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_wallet_android.yml
+# act -j build --container-architecture linux/amd64 -P macos-latest-xlarge=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_wallet_android_internal.yml

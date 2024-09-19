@@ -38,6 +38,8 @@ jobs:
     
     # Install Flutter and Dependencies
     - uses: ./.github/actions/dependencies
+      with:
+        working-directory: packages/reown_appkit/example/base
 
     - name: Add Secrets file
       working-directory: packages/reown_appkit/example/base/android

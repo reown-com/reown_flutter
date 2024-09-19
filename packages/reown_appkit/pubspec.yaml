@@ -1,10 +1,9 @@
 name: reown_appkit
 description: "Reown is the onchain UX platform that provides toolkits built on top of the WalletConnect Network"
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/reown-com/reown_flutter
 repository: https://github.com/reown-com/reown_flutter/tree/master/packages/reown_appkit
-documentation: https://docs.reown.com/appkit/flutter
-publish_to: https://pub.dev/publishers/reown.com
+documentation: https://docs.reown.com/appkit/flutter/core/installation
 
 environment:
   sdk: ">=2.19.0 <4.0.0"
@@ -12,7 +11,7 @@ environment:
 dependencies:
   appcheck: ^1.5.1
   cached_network_image: ^3.3.1
-  coinbase_wallet_sdk: ^1.0.9
+  coinbase_wallet_sdk: ^1.0.10
   collection: ^1.17.2
   convert: ^3.1.1
   cupertino_icons: ^1.0.2
@@ -26,14 +25,8 @@ dependencies:
   json_annotation: ^4.8.1
   plugin_platform_interface: ^2.1.8
   qr_flutter_wc: ^0.0.3
-  reown_core:
-    git:
-      url: https://github.com/reown-com/reown_flutter.git
-      path: packages/reown_core
-  reown_sign:
-    git:
-      url: https://github.com/reown-com/reown_flutter.git
-      path: packages/reown_sign
+  reown_core: ^1.0.0
+  reown_sign: ^1.0.0
   shimmer: ^3.0.0
   url_launcher: ^6.2.5
   uuid: ^4.3.3
@@ -53,10 +46,7 @@ dev_dependencies:
   logger: ^2.2.0
   mockito: ^5.4.3
   package_info_plus: ^7.0.0
-  reown_walletkit:
-    git:
-      url: https://github.com/reown-com/reown_flutter.git
-      path: packages/reown_walletkit
+  reown_walletkit: ^1.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

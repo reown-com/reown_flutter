@@ -93,7 +93,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
-      customArchiveName = "AppKit Flutter"
+      customArchiveName = "FL AppKit"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

@@ -65,12 +65,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   String _universalLink() {
     // TODO change /flutter_appkit to something else
-    Uri link = Uri.parse('https://lab.web3modal.com/flutter_appkit');
+    Uri link = Uri.parse('https://appkit-lab.reown.com/flutter_appkit');
     if (_flavor.isNotEmpty) {
-      return link
-          .replace(path: '${link.path}_internal')
-          .replace(host: 'dev.${link.host}')
-          .toString();
+      return link.replace(path: '${link.path}_internal').toString();
     }
     return link.toString();
   }
@@ -197,9 +194,9 @@ class _MyHomePageState extends State<MyHomePage> {
           debugPrint('[SIWEConfig] onSignOut()');
         },
         enabled: enabled,
-        // signOutOnDisconnect: true,
-        // signOutOnAccountChange: true,
-        // signOutOnNetworkChange: true,
+        signOutOnDisconnect: true,
+        signOutOnAccountChange: true,
+        signOutOnNetworkChange: false,
         // nonceRefetchIntervalMs: 300000,
         // sessionRefetchIntervalMs: 300000,
       );
@@ -270,7 +267,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _logListener(LogEvent event) {
-    if (event.level == Level.debug) {
+    if (event.level == Level.debug || event.level == Level.error) {
       // TODO send to mixpanel
       log('${event.message}');
     } else {

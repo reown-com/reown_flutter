@@ -146,7 +146,9 @@ class ExplorerService implements IExplorerService {
     for (var sampleWallet in WCSampleWallets.getSampleWallets()) {
       // final data = WCSampleWallets.nativeData[sampleWallet.listing.id];
       // final schema = (data?[platformName]! as NativeAppData).schema ?? '';
-      final schema = sampleWallet.listing.mobileLink;
+      final schema = WCSampleWallets.getSampleWalletScheme(
+        sampleWallet.listing.id,
+      );
       final installed = await uriService.instance.isInstalled(schema);
       if (installed) {
         sampleWallet = sampleWallet.copyWith(installed: true);

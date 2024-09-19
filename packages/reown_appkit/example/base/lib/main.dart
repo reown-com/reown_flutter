@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -58,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    initialize();
+    initializeService();
   }
 
   String get _flavor {
@@ -67,12 +68,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String _universalLink() {
-    Uri link = Uri.parse('https://lab.web3modal.com/flutter_appkit');
-    if (_flavor.isNotEmpty) {
-      return link
-          .replace(path: '${link.path}_internal')
-          .replace(host: 'dev.${link.host}')
-          .toString();
+    Uri link = Uri.parse('https://appkit-lab.reown.com/flutter_appkit');
+    if (_flavor.isNotEmpty || kDebugMode) {
+      return link.replace(path: '${link.path}_internal').toString();
     }
     return link.toString();
   }
@@ -87,21 +85,25 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> initialize() async {
+  PairingMetadata _pairingMetadata() {
+    return PairingMetadata(
+      name: 'Flutter AppKit Sample',
+      description: 'Reown\'s sample dapp with Flutter',
+      url: _universalLink(),
+      icons: [
+        'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/appkit-icon$_flavor.png',
+      ],
+      redirect: _constructRedirect(),
+    );
+  }
+
+  Future<void> initializeService() async {
     _appKit = ReownAppKit(
       core: ReownCore(
         projectId: DartDefines.projectId,
         logLevel: LogLevel.error,
       ),
-      metadata: PairingMetadata(
-        name: 'Flutter Dapp Sample',
-        description: 'Reown\'s sample dapp with Flutter',
-        url: _universalLink(),
-        icons: [
-          'https://images.prismic.io/wallet-connect/65785a56531ac2845a260732_WalletConnect-App-Logo-1024X1024.png'
-        ],
-        redirect: _constructRedirect(),
-      ),
+      metadata: _pairingMetadata(),
     );
 
     _appKit!.core.addLogListener(_logListener);
@@ -126,6 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       appKit: _appKit,
       siweConfig: _siweConfig(),
+      enableEmail: true,
     );
 
     _appKitModal!.onModalConnect.subscribe(_onModalConnect);
@@ -451,9 +454,9 @@ class _MyHomePageState extends State<MyHomePage> {
           debugPrint('[SIWEConfig] onSignOut()');
         },
         enabled: true,
-        // signOutOnDisconnect: true,
-        // signOutOnAccountChange: true,
-        // signOutOnNetworkChange: true,
+        signOutOnDisconnect: true,
+        signOutOnAccountChange: true,
+        signOutOnNetworkChange: false,
         // nonceRefetchIntervalMs: 300000,
         // sessionRefetchIntervalMs: 300000,
       );
