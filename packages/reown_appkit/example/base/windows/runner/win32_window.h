@@ -8,7 +8,7 @@
 #include <string>
 
 // A class abstraction for a high DPI-aware Win32 Window. Intended to be
-// inherited from by classes that wish to specialize with custom
+// inherited from classes that wish to specialize with custom
 // rendering and input handling
 class Win32Window {
  public:
