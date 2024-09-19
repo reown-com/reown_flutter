@@ -61,7 +61,7 @@ platform :android do
       _new_build_number = 1
     end
     
-    _app_version = "#{options[:app_version]}"
+    _app_version = "3.0.0" #"#{options[:app_version]}"
     _project_id = "#{options[:project_id]}"
 
     # gradle(task: 'assemble', build_type: 'Release')
@@ -78,7 +78,7 @@ platform :android do
     )
 
     slack(
-      message: "🔐 WalletKit Flutter #{_app_version}-#{_flavor} (#{_new_build_number}) for 🤖 Android successfully released!\n\n",
+      message: "🔐 WalletKit Flutter Sample #{_app_version}-#{_flavor} (#{_new_build_number}) for 🤖 Android successfully released!\n\n",
       default_payloads: [],
       attachment_properties: {
         fields: [

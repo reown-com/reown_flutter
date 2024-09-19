@@ -118,7 +118,7 @@ platform :ios do
     )
 
     slack(
-      message: "🔐 WalletKit Flutter #{options[:app_version]}-#{_flavor} (#{new_build_number}) for 🍎 iOS successfully released!\n\n",
+      message: "🔐 WalletKit Flutter Sample #{options[:app_version]}-#{_flavor} (#{new_build_number}) for 🍎 iOS successfully released!\n\n",
       default_payloads: [],
       attachment_properties: {
         fields: [
