@@ -56,7 +56,7 @@
     </queries>
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="AppKit Flutter"
+        android:label="FL AppKit"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         

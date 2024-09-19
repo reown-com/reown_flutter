@@ -27,10 +27,6 @@ dependencies:
   polkadart_keyring: ^0.4.3
   qr_bar_code_scanner_dialog:
     path: packages/qr-bar-code-scanner-dialog
-  # reown_core:
-  #   path: ../../reown_core/
-  # reown_sign:
-  #   path: ../../reown_sign/
   reown_walletkit:
     path: ../
   shared_preferences: ^2.2.2

@@ -3,7 +3,6 @@ description: "Reown is the onchain UX platform that provides toolkits built on t
 version: 1.0.0
 homepage: https://github.com/reown-com/reown_flutter
 repository: https://github.com/reown-com/reown_flutter/tree/master/packages/reown_sign
-publish_to: https://pub.dev/publishers/reown.com
 
 environment:
   sdk: ">=2.19.0 <4.0.0"

@@ -58,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    initialize();
+    initializeService();
   }
 
   String get _flavor {
@@ -87,21 +87,25 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> initialize() async {
+  PairingMetadata _pairingMetadata() {
+    return PairingMetadata(
+      name: 'Flutter AppKit Sample',
+      description: 'Reown\'s sample dapp with Flutter',
+      url: _universalLink(),
+      icons: [
+        'https://raw.githubusercontent.com/reown-com/reown_flutter/develop/assets/appkit_logo.png',
+      ],
+      redirect: _constructRedirect(),
+    );
+  }
+
+  Future<void> initializeService() async {
     _appKit = ReownAppKit(
       core: ReownCore(
         projectId: DartDefines.projectId,
         logLevel: LogLevel.error,
       ),
-      metadata: PairingMetadata(
-        name: 'Flutter AppKit Sample',
-        description: 'Reown\'s sample dapp with Flutter',
-        url: _universalLink(),
-        icons: [
-          'https://raw.githubusercontent.com/reown-com/reown_flutter/develop/assets/appkit_logo.png',
-        ],
-        redirect: _constructRedirect(),
-      ),
+      metadata: _pairingMetadata(),
     );
 
     _appKit!.core.addLogListener(_logListener);
