@@ -91,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
       description: 'Reown\'s sample dapp with Flutter',
       url: _universalLink(),
       icons: [
-        'https://raw.githubusercontent.com/reown-com/reown_flutter/develop/assets/appkit_logo.png',
+        'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/appkit-icon$_flavor.png',
       ],
       redirect: _constructRedirect(),
     );

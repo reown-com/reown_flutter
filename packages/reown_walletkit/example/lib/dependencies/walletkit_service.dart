@@ -60,7 +60,7 @@ class WalletKitService extends IWalletKitService {
         description: 'Reown\'s sample wallet with Flutter',
         url: _universalLink(),
         icons: [
-          'https://docs.walletconnect.com/assets/images/web3walletLogo-54d3b546146931ceaf47a3500868a73a.png'
+          'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/walletkit-icon$_flavor.png'
         ],
         redirect: _constructRedirect(),
       ),
