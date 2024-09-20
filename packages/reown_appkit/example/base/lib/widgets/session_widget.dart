@@ -4,6 +4,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 
 import 'package:reown_appkit_dapp/models/chain_metadata.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
+import 'package:reown_appkit_dapp/utils/crypto/bitcoin.dart';
 import 'package:reown_appkit_dapp/utils/crypto/eip155.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
@@ -226,6 +227,14 @@ class SessionWidgetState extends State<SessionWidget> {
     switch (chainMetadata.type) {
       case ChainType.eip155:
         return EIP155.callMethod(
+          appKit: widget.appKit,
+          topic: widget.session.topic,
+          method: method,
+          chainData: chainMetadata,
+          address: address,
+        );
+      case ChainType.bip122:
+        return Bitcoin.callMethod(
           appKit: widget.appKit,
           topic: widget.session.topic,
           method: method,

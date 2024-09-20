@@ -98,6 +98,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> initializeService() async {
+    final testNetworks = ReownAppKitModalNetworks.test['eip155'] ?? [];
+    ReownAppKitModalNetworks.addNetworks('eip155', testNetworks);
+
     _appKit = ReownAppKit(
       core: ReownCore(
         projectId: DartDefines.projectId,

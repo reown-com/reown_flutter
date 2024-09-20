@@ -3,6 +3,7 @@ import 'package:get_it_mixin/get_it_mixin.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/bottom_sheet_listener.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/bitcoin_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/cosmos_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
@@ -73,6 +74,14 @@ class _MyHomePageState extends State<MyHomePage> with GetItStateMixin {
     for (final chainData in ChainData.eip155Chains) {
       GetIt.I.registerSingleton<EVMService>(
         EVMService(chainSupported: chainData),
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Bitcoin Chains
+    for (final chainData in ChainData.bitcoinChains) {
+      GetIt.I.registerSingleton<BitcoinService>(
+        BitcoinService(chainSupported: chainData),
         instanceName: chainData.chainId,
       );
     }

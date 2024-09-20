@@ -9,6 +9,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/models/chain_metadata.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
+import 'package:reown_appkit_dapp/utils/crypto/bitcoin.dart';
 import 'package:reown_appkit_dapp/utils/crypto/chain_data.dart';
 import 'package:reown_appkit_dapp/utils/crypto/eip155.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
@@ -30,7 +31,6 @@ class ConnectPage extends StatefulWidget {
 }
 
 class ConnectPageState extends State<ConnectPage> {
-  bool _testnetOnly = false;
   final List<ChainMetadata> _selectedChains = [];
   bool _shouldDismissQrCode = true;
 
@@ -89,6 +89,16 @@ class ConnectPageState extends State<ConnectPage> {
       );
     }
 
+    final btcChains =
+        _selectedChains.where((e) => e.type == ChainType.bip122).toList();
+    if (btcChains.isNotEmpty) {
+      optionalNamespaces['bip122'] = RequiredNamespace(
+        chains: btcChains.map((c) => c.chainId).toList(),
+        methods: Bitcoin.methods.values.toList(),
+        events: Bitcoin.events.values.toList(),
+      );
+    }
+
     final solanaChains =
         _selectedChains.where((e) => e.type == ChainType.solana).toList();
     if (solanaChains.isNotEmpty) {
@@ -129,17 +139,13 @@ class ConnectPageState extends State<ConnectPage> {
     // Build the list of chain buttons, clear if the textnet changed
     final testChains = ChainData.allChains.where((e) => e.isTestnet).toList();
     final mainChains = ChainData.allChains.where((e) => !e.isTestnet).toList();
-    final List<ChainMetadata> chains = _testnetOnly ? testChains : mainChains;
 
-    final List<Widget> evmChainButtons = [];
-    final List<Widget> nonEvmChainButtons = [];
+    final List<Widget> chainButtons = [];
+    final List<Widget> testButtons = [];
 
-    final evmChains = chains.where((e) => e.type == ChainType.eip155);
-    final nonEvmChains = chains.where((e) => e.type != ChainType.eip155);
-
-    for (final ChainMetadata chain in evmChains) {
+    for (final ChainMetadata chain in mainChains) {
       // Build the button
-      evmChainButtons.add(
+      chainButtons.add(
         ChainButton(
           chain: chain,
           onPressed: () => _selectChain(chain),
@@ -147,10 +153,9 @@ class ConnectPageState extends State<ConnectPage> {
         ),
       );
     }
-
-    for (final ChainMetadata chain in nonEvmChains) {
+    for (final ChainMetadata chain in testChains) {
       // Build the button
-      nonEvmChainButtons.add(
+      testButtons.add(
         ChainButton(
           chain: chain,
           onPressed: () => _selectChain(chain),
@@ -174,9 +179,26 @@ class ConnectPageState extends State<ConnectPage> {
           style: StyleConstants.buttonText,
           textAlign: TextAlign.center,
         ),
+        Text(
+          'Only EVM chains',
+          style: TextStyle(
+            color: Colors.black.withOpacity(0.7),
+            fontSize: 12.0,
+          ),
+          textAlign: TextAlign.center,
+        ),
         const SizedBox(height: StyleConstants.linear8),
-        AppKitModalConnectButton(
-          appKit: widget.appKitModal,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AppKitModalNetworkSelectButton(
+              appKit: widget.appKitModal,
+            ),
+            const SizedBox.square(dimension: 8.0),
+            AppKitModalConnectButton(
+              appKit: widget.appKitModal,
+            ),
+          ],
         ),
         const SizedBox(height: StyleConstants.linear8),
         Visibility(
@@ -190,119 +212,134 @@ class ConnectPageState extends State<ConnectPage> {
           visible: !widget.appKitModal.isConnected,
           child: Column(
             children: [
-              const Divider(),
-              const SizedBox(height: StyleConstants.linear8),
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(
-                    StringConstants.testnetsOnly,
-                    style: StyleConstants.buttonText,
+                  Expanded(
+                    child: const Divider(),
                   ),
-                  Switch(
-                    value: _testnetOnly,
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedChains.clear();
-                        _testnetOnly = value;
-                      });
-                    },
+                  const Text(
+                    ' Or ',
+                    style: StyleConstants.buttonText,
+                    textAlign: TextAlign.center,
+                  ),
+                  Expanded(
+                    child: const Divider(),
                   ),
                 ],
               ),
-              const Text('EVM Chains:', style: StyleConstants.buttonText),
+              const SizedBox(height: StyleConstants.linear8),
+              const Text(
+                'Connect With AppKit multichain',
+                style: StyleConstants.buttonText,
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: StyleConstants.linear8),
               Wrap(
                 spacing: 10.0,
-                children: evmChainButtons,
+                children: chainButtons,
               ),
-              const Divider(),
-              const Text('Non EVM Chains:', style: StyleConstants.buttonText),
+              // const Divider(),
+              const Text('Test chains'),
               Wrap(
                 spacing: 10.0,
-                children: nonEvmChainButtons,
+                children: testButtons,
               ),
-              const SizedBox(height: StyleConstants.linear8),
-              const Divider(),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+              const SizedBox(height: StyleConstants.linear16),
+              // const Divider(),
+              Row(
                 children: [
-                  const Text(
-                    'Connect Session Propose:',
-                    style: StyleConstants.buttonText,
-                  ),
-                  const SizedBox(height: StyleConstants.linear8),
-                  Column(
-                    children: WCSampleWallets.getSampleWallets().map((wallet) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: ElevatedButton(
-                          style: _buttonStyle,
-                          onPressed: _selectedChains.isEmpty
-                              ? null
-                              : () {
-                                  _onConnect(
-                                    nativeLink: '${wallet['schema']}',
-                                    closeModal: () {
-                                      if (Navigator.canPop(context)) {
-                                        Navigator.of(context).pop();
-                                      }
-                                    },
-                                    showToast: (m) async {
-                                      showPlatformToast(
-                                        child: Text(m),
-                                        context: context,
-                                      );
-                                    },
-                                  );
-                                },
-                          child: Text(
-                            '${wallet['name']}',
-                            style: StyleConstants.buttonText,
-                          ),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Session Propose:',
+                          style: StyleConstants.buttonText,
                         ),
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: StyleConstants.linear8),
-                  const Divider(),
-                  const Text(
-                    '1-Click Auth with LinkMode:',
-                    style: StyleConstants.buttonText,
-                  ),
-                  const SizedBox(height: StyleConstants.linear8),
-                  Column(
-                    children: WCSampleWallets.getSampleWallets().map((wallet) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: ElevatedButton(
-                          style: _buttonStyle,
-                          onPressed: _selectedChains.isEmpty
-                              ? null
-                              : () {
-                                  _sessionAuthenticate(
-                                    nativeLink: '${wallet['schema']}',
-                                    universalLink: '${wallet['universal']}',
-                                    closeModal: () {
-                                      if (Navigator.canPop(context)) {
-                                        Navigator.of(context).pop();
-                                      }
-                                    },
-                                    showToast: (message) {
-                                      showPlatformToast(
-                                        child: Text(message),
-                                        context: context,
-                                      );
-                                    },
-                                  );
-                                },
-                          child: Text(
-                            '${wallet['name']}',
-                            style: StyleConstants.buttonText,
-                          ),
+                        const SizedBox(height: StyleConstants.linear8),
+                        Column(
+                          children:
+                              WCSampleWallets.getSampleWallets().map((wallet) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: ElevatedButton(
+                                style: _buttonStyle,
+                                onPressed: _selectedChains.isEmpty
+                                    ? null
+                                    : () {
+                                        _onConnect(
+                                          nativeLink: '${wallet['schema']}',
+                                          closeModal: () {
+                                            if (Navigator.canPop(context)) {
+                                              Navigator.of(context).pop();
+                                            }
+                                          },
+                                          showToast: (m) async {
+                                            showPlatformToast(
+                                              child: Text(m),
+                                              context: context,
+                                            );
+                                          },
+                                        );
+                                      },
+                                child: Text(
+                                  '${wallet['name']}',
+                                  style: StyleConstants.buttonText,
+                                ),
+                              ),
+                            );
+                          }).toList(),
                         ),
-                      );
-                    }).toList(),
+                      ],
+                    ),
+                  ),
+                  const SizedBox.square(dimension: 8.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          'Link Mode:',
+                          style: StyleConstants.buttonText,
+                        ),
+                        const SizedBox(height: StyleConstants.linear8),
+                        Column(
+                          children:
+                              WCSampleWallets.getSampleWallets().map((wallet) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: ElevatedButton(
+                                style: _buttonStyle,
+                                onPressed: _selectedChains.isEmpty
+                                    ? null
+                                    : () {
+                                        _sessionAuthenticate(
+                                          nativeLink: '${wallet['schema']}',
+                                          universalLink:
+                                              '${wallet['universal']}',
+                                          closeModal: () {
+                                            if (Navigator.canPop(context)) {
+                                              Navigator.of(context).pop();
+                                            }
+                                          },
+                                          showToast: (message) {
+                                            showPlatformToast(
+                                              child: Text(message),
+                                              context: context,
+                                            );
+                                          },
+                                        );
+                                      },
+                                child: Text(
+                                  '${wallet['name']}',
+                                  style: StyleConstants.buttonText,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -545,6 +582,15 @@ class ConnectPageState extends State<ConnectPage> {
             }
             return StyleConstants.primaryColor;
           },
+        ),
+        textStyle: MaterialStateProperty.resolveWith<TextStyle>(
+          (states) => TextStyle(
+            fontSize: 8.0,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        padding: MaterialStateProperty.resolveWith<EdgeInsetsGeometry>(
+          (states) => EdgeInsets.all(0.0),
         ),
         minimumSize: MaterialStateProperty.all<Size>(const Size(
           1000.0,
