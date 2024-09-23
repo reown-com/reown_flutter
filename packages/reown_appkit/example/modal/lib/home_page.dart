@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
       description: StringConstants.pageTitle,
       url: _universalLink(),
       icons: [
-        'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/appkit-icon$_flavor.png',
+        'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/appkit_logo.png',
       ],
       redirect: _constructRedirect(),
     );
@@ -220,13 +220,15 @@ class _MyHomePageState extends State<MyHomePage> {
         enableAnalytics: analyticsValue, // OPTIONAL - null by default
         enableEmail: emailWalletValue, // OPTIONAL - false by default
         socials: [
-          AppKitSocialOption.X,
+          AppKitSocialOption.Google,
           AppKitSocialOption.Apple,
           AppKitSocialOption.Discord,
+          AppKitSocialOption.Github,
+          AppKitSocialOption.X,
           AppKitSocialOption.Facebook,
           AppKitSocialOption.Farcaster,
-          AppKitSocialOption.Github,
-          // AppKitSocialOption.Google,
+          AppKitSocialOption.Twitch,
+          AppKitSocialOption.Telegram,
         ],
         // requiredNamespaces: {},
         // optionalNamespaces: {},

@@ -228,7 +228,7 @@ class _ModalSearchBarState extends State<ModalSearchBar>
                     Container(
                       width: 16.0,
                       height: 16.0,
-                      margin: const EdgeInsets.only(left: kPadding12),
+                      margin: const EdgeInsets.only(left: kPadding16),
                       child: GestureDetector(
                         onTap: () {
                           _controller.clear();
@@ -251,8 +251,8 @@ class _ModalSearchBarState extends State<ModalSearchBar>
             prefixIconConstraints: BoxConstraints(
               maxHeight: widget.height,
               minHeight: widget.height,
-              maxWidth: 36.0,
-              minWidth: widget.noIcons ? 0.0 : 36.0,
+              maxWidth: 40.0,
+              minWidth: widget.noIcons ? 0.0 : 40.0,
             ),
             labelStyle: themeData.textStyles.paragraph500.copyWith(
               color: themeColors.inverse100,
@@ -303,7 +303,7 @@ class _ModalSearchBarState extends State<ModalSearchBar>
             disabledBorder: disabledBorder,
             focusedBorder: focusedBorder,
             filled: true,
-            fillColor: themeColors.grayGlass005,
+            fillColor: themeColors.grayGlass002,
             contentPadding: const EdgeInsets.all(0.0),
           ),
         ),

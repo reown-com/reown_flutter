@@ -67,7 +67,7 @@ class _InputEmailWidgetState extends State<InputEmailWidget> {
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return ModalSearchBar(
-      height: kEmailFieldHeight,
+      height: kListItemHeight,
       enabled: !_timedOut && _ready && !_submitted,
       controller: _controller,
       initialValue: _controller.text,

@@ -6,4 +6,6 @@ enum AppKitSocialOption {
   Apple,
   Facebook,
   Farcaster,
+  Twitch,
+  Telegram,
 }
