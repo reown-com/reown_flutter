@@ -3,6 +3,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 
 abstract class IMagicService {
   ConnectionMetadata get metadata;
+  List<AppKitSocialOption> get socials;
 
   Future<void> init();
 
@@ -10,6 +11,9 @@ abstract class IMagicService {
   void setNewEmail(String value);
 
   // ****** W3mFrameProvider public methods ******* //
+  Future<String?> getSocialRedirectUri({required String provider});
+  Future<dynamic> connectSocial({required String uri});
+
   Future<void> connectEmail({required String value});
   Future<void> updateEmail({required String value});
   Future<void> updateEmailPrimaryOtp({required String otp});

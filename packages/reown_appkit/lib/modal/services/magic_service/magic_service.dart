@@ -50,13 +50,12 @@ class MagicService implements IMagicService {
           name: defaultWalletData.listing.name,
           description: '',
           url: defaultWalletData.listing.homepage,
-          icons: [''],
+          icons: [''], // TODO set the icon here depending on the login type
         ),
         publicKey: '',
       );
 
   //
-  // final IReownAppKit _appKit;
   Timer? _timeOutTimer;
   String? _connectionChainId;
   int _onLoadCount = 0;
@@ -102,14 +101,19 @@ class MagicService implements IMagicService {
 
   late final IReownCore _core;
   late final PairingMetadata _metadata;
+  late final List<AppKitSocialOption> _socialOptions;
+
+  @override
+  List<AppKitSocialOption> get socials => _socialOptions;
 
   MagicService({
-    // required IReownAppKit appKit,
     required IReownCore core,
     required PairingMetadata metadata,
+    required List<AppKitSocialOption> socials,
     bool enabled = false,
   })  : _core = core,
-        _metadata = metadata {
+        _metadata = metadata,
+        _socialOptions = socials {
     isEnabled.value = enabled;
     if (isEnabled.value) {
       _webViewController = WebViewController();
@@ -199,6 +203,32 @@ class MagicService implements IMagicService {
 
   // ****** W3mFrameProvider public methods ******* //
 
+  Completer<String?> _getSocialRedirectUri = Completer<String?>();
+  @override
+  Future<String?> getSocialRedirectUri({
+    required String provider,
+    String? chainId,
+  }) async {
+    if (!isEnabled.value || !isReady.value) return null;
+    _getSocialRedirectUri = Completer<String?>();
+    _connectionChainId = chainId ?? _connectionChainId;
+    final message = GetSocialRedirectUri(
+      provider: provider.toLowerCase(),
+    ).toString();
+    await _webViewController.runJavaScript('sendMessage($message)');
+    return await _getSocialRedirectUri.future;
+  }
+
+  Completer<dynamic> _connectSocial = Completer<dynamic>();
+  @override
+  Future<dynamic> connectSocial({required String uri}) async {
+    if (!isEnabled.value || !isReady.value) return null;
+    _connectSocial = Completer<dynamic>();
+    final message = ConnectSocial(uri: uri).toString();
+    await _webViewController.runJavaScript('sendMessage($message)');
+    return await _connectSocial.future;
+  }
+
   @override
   Future<void> connectEmail({required String value, String? chainId}) async {
     if (!isEnabled.value || !isReady.value) return;
@@ -270,7 +300,7 @@ class MagicService implements IMagicService {
   }
 
   Future<void> _getUser(String? chainId) async {
-    final message = GetUser(chainId: chainId).toString();
+    final message = GetUser(chainId: chainId ?? _connectionChainId).toString();
     return await _webViewController.runJavaScript('sendMessage($message)');
   }
 
@@ -377,6 +407,21 @@ class MagicService implements IMagicService {
         if (isConnected.value) {
           await _getUser(_connectionChainId);
         }
+      }
+      if (messageData.getSocialRedirectUriSuccess) {
+        final uri = messageData.getPayloadMapKey<String>('uri');
+        _getSocialRedirectUri.complete(uri);
+      }
+      if (messageData.getSocialRedirectUriError) {
+        // TODO Social Login capture and pass error
+        _getSocialRedirectUri.complete(null);
+      }
+      if (messageData.connectSocialSuccess) {
+        _connectSocial.complete(true);
+      }
+      if (messageData.connectSocialError) {
+        // TODO Social Login capture and pass error
+        _connectSocial.complete(false);
       }
       // ****** CONNECT_EMAIL
       if (messageData.connectEmailSuccess) {
@@ -581,9 +626,6 @@ class MagicService implements IMagicService {
       }
     ''');
   }
-
-  // sendMessage({type:"@w3m-app/GET_SOCIAL_REDIRECT_URI",payload:{provider:"x"}});
-  // sendMessage({type:"@w3m-app/CONNECT_SOCIAL",payload:{uri:"https://auth.magic.link/v1/oauth2/twitter/start?magic_api_key=pk_live_B080E9DC31E5875E&magic_challenge=9HbSG6KYL3r2b7LqzhD7-EcjoHLj-a7wt7npmSBR2fw&state=FfR0W7idPzp81HM2KE~zBPR7bbSQM97CL5zZZMHd_2_ZHZ~rLvnO63MO3fd6eB4LMymif9pQupdhVL11l4NsQk4D-zQDfPGB17PpiWjPobCemCZwP.HdkH4dQeSDgkiH&platform=web&redirect_uri=https%3A%2F%2Fsecure.walletconnect.com%2Fsdk%2Foauth%3FprojectId%3Dcad4956f31a5e40a00b62865b030c6f8"}});
 
   void _onDebugConsoleReceived(JavaScriptConsoleMessage message) {
     _core.logger.d('[$runtimeType] JS Console ${message.message}');

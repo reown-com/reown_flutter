@@ -80,6 +80,15 @@ class MessageData {
   // @w3m-frame events
   bool get syncThemeSuccess => type == '@w3m-frame/SYNC_THEME_SUCCESS';
   bool get syncDataSuccess => type == '@w3m-frame/SYNC_DAPP_DATA_SUCCESS';
+
+  bool get getSocialRedirectUriSuccess =>
+      type == '@w3m-frame/GET_SOCIAL_REDIRECT_URI_SUCCESS';
+  bool get getSocialRedirectUriError =>
+      type == '@w3m-frame/GET_SOCIAL_REDIRECT_URI_ERROR';
+
+  bool get connectSocialSuccess => type == '@w3m-frame/CONNECT_SOCIAL_SUCCESS';
+  bool get connectSocialError => type == '@w3m-frame/CONNECT_SOCIAL_ERROR';
+
   bool get connectEmailSuccess => type == '@w3m-frame/CONNECT_EMAIL_SUCCESS';
   bool get connectEmailError => type == '@w3m-frame/CONNECT_EMAIL_ERROR';
   bool get updateEmailSuccess => type == '@w3m-frame/UPDATE_EMAIL_SUCCESS';
@@ -125,6 +134,27 @@ class SwitchNetwork extends MessageData {
 
   @override
   String toString() => '{type:\'${super.type}\',payload:{chainId:$chainId}}';
+}
+
+class GetSocialRedirectUri extends MessageData {
+  final String provider;
+  GetSocialRedirectUri({
+    required this.provider,
+  }) : super(type: '@w3m-app/GET_SOCIAL_REDIRECT_URI');
+
+  @override
+  String toString() =>
+      '{type:\'${super.type}\',payload:{provider:\'$provider\'}}';
+}
+
+class ConnectSocial extends MessageData {
+  final String uri;
+  ConnectSocial({
+    required this.uri,
+  }) : super(type: '@w3m-app/CONNECT_SOCIAL');
+
+  @override
+  String toString() => '{type:\'${super.type}\',payload:{uri:\'$uri\'}}';
 }
 
 class ConnectEmail extends MessageData {

@@ -155,7 +155,7 @@ class EIP155 {
     required String message,
   }) async {
     final bytes = utf8.encode(message);
-    final encoded = bytesToHex(bytes);
+    final encoded = bytesToHex(bytes, include0x: true);
 
     return await appKit.request(
       topic: topic,

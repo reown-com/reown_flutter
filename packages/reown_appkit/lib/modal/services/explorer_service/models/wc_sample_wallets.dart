@@ -35,8 +35,7 @@ class WCSampleWallets {
           'id': '123456789012345678901234567894',
           'schema': 'kotlin-web3wallet://wc',
           'bundleId': 'com.walletconnect.sample.wallet.internal',
-          'universal':
-              'https://web3modal-laboratory-git-chore-kotlin-assetlinks-walletconnect1.vercel.app/wallet_internal',
+          'universal': 'https://appkit-lab.reown.com/wallet_internal',
         },
       ];
 
@@ -71,8 +70,7 @@ class WCSampleWallets {
           'id': '123456789012345678901234567893',
           'schema': 'kotlin-web3wallet://wc',
           'bundleId': 'com.walletconnect.sample.wallet',
-          'universal':
-              'https://web3modal-laboratory-git-chore-kotlin-assetlinks-walletconnect1.vercel.app/wallet_release',
+          'universal': 'https://appkit-lab.reown.com/wallet_release',
         },
       ];
 

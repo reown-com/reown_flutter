@@ -141,6 +141,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     Set<String>? excludedWalletIds,
     bool? enableAnalytics,
     bool enableEmail = false,
+    List<AppKitSocialOption> socials = const [],
     List<ReownAppKitModalNetworkInfo> blockchains = const [],
     LogLevel logLevel = LogLevel.nothing,
   }) {
@@ -201,6 +202,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       core: _appKit.core,
       metadata: _appKit.metadata,
       enabled: enableEmail,
+      socials: socials,
     );
 
     coinbaseService.instance = CoinbaseService(
@@ -1335,15 +1337,19 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     }
 
     // Get the chain balance.
-    _chainBalance = await blockchainService.instance.rpcRequest(
-      chainId: '${CoreConstants.namespace}:$_currentSelectedChainId',
-      request: SessionRequestParams(
-        method: 'eth_getBalance',
-        params: [_currentSession!.address!, 'latest'],
-      ),
-    );
-    final tokenName = selectedChain?.currency ?? '';
-    balanceNotifier.value = '$_chainBalance $tokenName';
+    try {
+      _chainBalance = await blockchainService.instance.rpcRequest(
+        chainId: '${CoreConstants.namespace}:$_currentSelectedChainId',
+        request: SessionRequestParams(
+          method: 'eth_getBalance',
+          params: [_currentSession!.address!, 'latest'],
+        ),
+      );
+      final tokenName = selectedChain?.currency ?? '';
+      balanceNotifier.value = '$_chainBalance $tokenName';
+    } catch (e) {
+      _logger.e('[$runtimeType] loadAccountData $e');
+    }
 
     // Get the avatar, each chainId is just a number in string form.
     try {

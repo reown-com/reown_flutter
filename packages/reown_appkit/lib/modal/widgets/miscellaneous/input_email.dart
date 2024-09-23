@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
@@ -66,6 +67,7 @@ class _InputEmailWidgetState extends State<InputEmailWidget> {
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return ModalSearchBar(
+      height: kEmailFieldHeight,
       enabled: !_timedOut && _ready && !_submitted,
       controller: _controller,
       initialValue: _controller.text,

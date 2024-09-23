@@ -58,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final internal = widget.bundleId.endsWith('.internal');
     final debug = widget.bundleId.endsWith('.debug');
     if (internal || debug || kDebugMode) {
-      return 'internal';
+      return '-internal';
     }
     return '';
   }
@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
       description: StringConstants.pageTitle,
       url: _universalLink(),
       icons: [
-        'https://docs.walletconnect.com/assets/images/web3modalLogo-2cee77e07851ba0a710b56d03d4d09dd.png'
+        'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/appkit-icon$_flavor.png',
       ],
       redirect: _constructRedirect(),
     );
@@ -219,6 +219,15 @@ class _MyHomePageState extends State<MyHomePage> {
         siweConfig: _siweConfig(siweAuthValue),
         enableAnalytics: analyticsValue, // OPTIONAL - null by default
         enableEmail: emailWalletValue, // OPTIONAL - false by default
+        socials: [
+          AppKitSocialOption.X,
+          AppKitSocialOption.Apple,
+          AppKitSocialOption.Discord,
+          AppKitSocialOption.Facebook,
+          AppKitSocialOption.Farcaster,
+          AppKitSocialOption.Github,
+          // AppKitSocialOption.Google,
+        ],
         // requiredNamespaces: {},
         // optionalNamespaces: {},
         // includedWalletIds: {},
