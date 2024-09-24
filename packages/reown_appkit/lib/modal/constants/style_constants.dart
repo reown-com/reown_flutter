@@ -7,7 +7,6 @@ const kNavbarHeight = 64.0;
 const kShortWalletListCount = 4;
 const kLShortWalletListCount = 3;
 const kSearchFieldHeight = 40.0;
-const kEmailFieldHeight = 56.0;
 
 const kPadding16 = 16.0;
 const kPadding12 = 12.0;

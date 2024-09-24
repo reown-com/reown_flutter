@@ -87,7 +87,14 @@ class _InputEmailWidgetState extends State<InputEmailWidget> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CircularLoader(size: 20.0, strokeWidth: 2.0),
+                    Row(
+                      children: [
+                        CircularLoader(size: 20.0, strokeWidth: 2.0),
+                        const SizedBox.square(
+                          dimension: kListViewSeparatorHeight,
+                        ),
+                      ],
+                    )
                   ],
                 )
               : ValueListenableBuilder<String>(

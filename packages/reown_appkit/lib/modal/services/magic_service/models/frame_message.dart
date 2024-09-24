@@ -133,7 +133,7 @@ class SwitchNetwork extends MessageData {
   }) : super(type: '@w3m-app/SWITCH_NETWORK');
 
   @override
-  String toString() => '{type:\'${super.type}\',payload:{chainId:$chainId}}';
+  String toString() => '{type:"${super.type}",payload:{chainId:$chainId}}';
 }
 
 class GetSocialRedirectUri extends MessageData {
@@ -143,8 +143,7 @@ class GetSocialRedirectUri extends MessageData {
   }) : super(type: '@w3m-app/GET_SOCIAL_REDIRECT_URI');
 
   @override
-  String toString() =>
-      '{type:\'${super.type}\',payload:{provider:\'$provider\'}}';
+  String toString() => '{type:"${super.type}",payload:{provider:"$provider"}}';
 }
 
 class ConnectSocial extends MessageData {
@@ -154,7 +153,7 @@ class ConnectSocial extends MessageData {
   }) : super(type: '@w3m-app/CONNECT_SOCIAL');
 
   @override
-  String toString() => '{type:\'${super.type}\',payload:{uri:\'$uri\'}}';
+  String toString() => '{type:"${super.type}",payload:{uri:"$uri"}}';
 }
 
 class ConnectEmail extends MessageData {
@@ -162,7 +161,7 @@ class ConnectEmail extends MessageData {
   ConnectEmail({required this.email}) : super(type: '@w3m-app/CONNECT_EMAIL');
 
   @override
-  String toString() => '{type:\'${super.type}\',payload:{email:\'$email\'}}';
+  String toString() => '{type:"${super.type}",payload:{email:"$email"}}';
 }
 
 class UpdateEmail extends MessageData {
@@ -170,7 +169,7 @@ class UpdateEmail extends MessageData {
   UpdateEmail({required this.email}) : super(type: '@w3m-app/UPDATE_EMAIL');
 
   @override
-  String toString() => '{type:\'${super.type}\',payload:{email:\'$email\'}}';
+  String toString() => '{type:"${super.type}",payload:{email:"$email"}}';
 }
 
 class UpdateEmailPrimaryOtp extends MessageData {
@@ -180,7 +179,7 @@ class UpdateEmailPrimaryOtp extends MessageData {
   }) : super(type: '@w3m-app/UPDATE_EMAIL_PRIMARY_OTP');
 
   @override
-  String toString() => '{type:\'${super.type}\',payload:{otp:\'$otp\'}}';
+  String toString() => '{type:"${super.type}",payload:{otp:"$otp"}}';
 }
 
 class UpdateEmailSecondaryOtp extends MessageData {
@@ -190,7 +189,7 @@ class UpdateEmailSecondaryOtp extends MessageData {
   }) : super(type: '@w3m-app/UPDATE_EMAIL_SECONDARY_OTP');
 
   @override
-  String toString() => '{type:\'${super.type}\',payload:{otp:\'$otp\'}}';
+  String toString() => '{type:"${super.type}",payload:{otp:"$otp"}}';
 }
 
 class ConnectOtp extends MessageData {
@@ -198,7 +197,7 @@ class ConnectOtp extends MessageData {
   ConnectOtp({required this.otp}) : super(type: '@w3m-app/CONNECT_OTP');
 
   @override
-  String toString() => '{type:\'${super.type}\',payload:{otp:\'$otp\'}}';
+  String toString() => '{type:"${super.type}",payload:{otp:"$otp"}}';
 }
 
 class GetUser extends MessageData {
@@ -208,9 +207,9 @@ class GetUser extends MessageData {
   @override
   String toString() {
     if ((chainId ?? '').isNotEmpty) {
-      return '{type:\'${super.type}\',payload:{chainId:$chainId}}';
+      return '{type:"${super.type}",payload:{chainId:$chainId}}';
     }
-    return '{type:\'${super.type}\'}';
+    return '{type:"${super.type}"}';
   }
 }
 
@@ -240,14 +239,14 @@ class RpcRequest extends MessageData {
   @override
   String toString() {
     debugPrint('[$runtimeType] method $method');
-    final m = 'method:\'$method\'';
-    final t = 'type:\'${super.type}\'';
+    final m = 'method:"$method"';
+    final t = 'type:"${super.type}"';
     final p = params.map((i) => '$i').toList();
 
     if (method == 'personal_sign') {
       final data = p.first;
       final address = p.last;
-      return '{$t,payload:{$m,params:[\'$data\',\'$address\']}}';
+      return '{$t,payload:{$m,params:["$data","$address"]}}';
     }
     if (method == 'eth_signTypedData_v4' ||
         method == 'eth_signTypedData_v3' ||
@@ -255,7 +254,7 @@ class RpcRequest extends MessageData {
       // final data = jsonEncode(jsonDecode(p.first) as Map<String, dynamic>);
       final data = p.first;
       final address = p.last;
-      return '{$t,payload:{$m,params:[\'$address\',\'$data\']}}';
+      return '{$t,payload:{$m,params:["$address","$data"]}}';
     }
     if (method == 'eth_sendTransaction' || method == 'eth_signTransaction') {
       final jp = jsonEncode(params.first);
@@ -282,20 +281,20 @@ class SyncTheme extends MessageData {
       colors = themeData.lightColors;
     }
 
-    final tm = 'themeMode:\'$mode\'';
+    final tm = 'themeMode:"$mode"';
 
     final mix = RenderUtils.colorToRGBA(colors.background125);
-    final tv1 = '\'--w3m-color-mix\':\'$mix\'';
-    // final tv2 = '\'--w3m-color-mix-strength\':\'0%\'';
+    final tv1 = '"--w3m-color-mix":"$mix"';
+    // final tv2 = '"--w3m-color-mix-strength":"0%"';
     final tv = 'themeVariables:{$tv1}';
 
     final accent = RenderUtils.colorToRGBA(colors.accent100);
-    final wtv1 = '\'--w3m-accent\':\'$accent\'';
+    final wtv1 = '"--w3m-accent":"$accent"';
     final background = RenderUtils.colorToRGBA(colors.background125);
-    final wtv2 = '\'--w3m-background\':\'$background\'';
+    final wtv2 = '"--w3m-background":"$background"';
     final w3mtv = 'w3mThemeVariables:{$wtv1,$wtv2}';
 
-    return '{type:\'${super.type}\',payload:{$tm, $tv,$w3mtv}}';
+    return '{type:"${super.type}",payload:{$tm, $tv,$w3mtv}}';
   }
 }
 
@@ -313,14 +312,14 @@ class SyncAppData extends MessageData {
   @override
   String toString() {
     final v = 'verified: true';
-    final p1 = 'projectId:\'$projectId\'';
-    final p2 = 'sdkVersion:\'$sdkVersion\'';
-    final m1 = 'name:\'${metadata.name}\'';
-    final m2 = 'description:\'${metadata.description}\'';
-    final m3 = 'url:\'${metadata.url}\'';
+    final p1 = 'projectId:"$projectId"';
+    final p2 = 'sdkVersion:"$sdkVersion"';
+    final m1 = 'name:"${metadata.name}"';
+    final m2 = 'description:"${metadata.description}"';
+    final m3 = 'url:"${metadata.url}"';
     final m4 = 'icons:["${metadata.icons.first}"]';
     final p3 = 'metadata:{$m1,$m2,$m3,$m4}';
     final p = 'payload:{$v,$p1,$p2,$p3}';
-    return '{type:\'${super.type}\',$p}';
+    return '{type:"${super.type}",$p}';
   }
 }

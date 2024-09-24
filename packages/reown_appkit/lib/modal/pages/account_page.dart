@@ -1,4 +1,6 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
@@ -7,6 +9,7 @@ import 'package:reown_appkit/modal/pages/upgrade_wallet_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
+import 'package:reown_appkit/modal/utils/asset_util.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/content_loading.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
@@ -88,7 +91,6 @@ class _DefaultAccountView extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final isEmailLogin = _service.session?.sessionService.isMagic ?? false;
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -121,59 +123,11 @@ class _DefaultAccountView extends StatelessWidget {
         const SizedBox.square(dimension: kPadding12),
         Visibility(
           visible: isEmailLogin,
-          child: Column(
-            children: [
-              const SizedBox.square(dimension: kPadding8),
-              AccountListItem(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: kPadding8,
-                  vertical: kPadding12,
-                ),
-                iconWidget: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: RoundedIcon(
-                    borderRadius: radiuses.isSquare()
-                        ? 0.0
-                        : radiuses.isCircular()
-                            ? 40.0
-                            : 8.0,
-                    size: 40.0,
-                    assetPath: 'lib/modal/assets/icons/regular/wallet.svg',
-                    assetColor: themeColors.accent100,
-                    circleColor: themeColors.accenGlass010,
-                    borderColor: themeColors.accenGlass010,
-                  ),
-                ),
-                title: 'Upgrade your wallet',
-                subtitle: 'Transition to a self-custodial wallet',
-                hightlighted: true,
-                flexible: true,
-                titleStyle: themeData.textStyles.paragraph500.copyWith(
-                  color: themeColors.foreground100,
-                ),
-                onTap: () => widgetStack.instance.push(UpgradeWalletPage()),
-              ),
-            ],
-          ),
+          child: _UpgradeWalletButton(),
         ),
         Visibility(
           visible: isEmailLogin,
-          child: Column(
-            children: [
-              const SizedBox.square(dimension: kPadding8),
-              AccountListItem(
-                iconPath: 'lib/modal/assets/icons/mail.svg',
-                iconColor: themeColors.foreground100,
-                title: _service.session?.email ?? '',
-                titleStyle: themeData.textStyles.paragraph500.copyWith(
-                  color: themeColors.foreground100,
-                ),
-                onTap: () {
-                  widgetStack.instance.push(EditEmailPage());
-                },
-              ),
-            ],
-          ),
+          child: _EmailLoginButton(),
         ),
         const SizedBox.square(dimension: kPadding8),
         _SelectNetworkButton(),
@@ -195,6 +149,96 @@ class _DefaultAccountView extends StatelessWidget {
           onTap: _service.status.isLoading
               ? null
               : () => _service.closeModal(disconnectSession: true),
+        ),
+      ],
+    );
+  }
+}
+
+class _UpgradeWalletButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    return Column(
+      children: [
+        const SizedBox.square(dimension: kPadding8),
+        AccountListItem(
+          padding: const EdgeInsets.symmetric(
+            horizontal: kPadding8,
+            vertical: kPadding12,
+          ),
+          iconWidget: Padding(
+            padding: const EdgeInsets.all(4.0),
+            child: RoundedIcon(
+              borderRadius: radiuses.isSquare()
+                  ? 0.0
+                  : radiuses.isCircular()
+                      ? 40.0
+                      : 8.0,
+              size: 40.0,
+              assetPath: 'lib/modal/assets/icons/regular/wallet.svg',
+              assetColor: themeColors.accent100,
+              circleColor: themeColors.accenGlass010,
+              borderColor: themeColors.accenGlass010,
+            ),
+          ),
+          title: 'Upgrade your wallet',
+          subtitle: 'Transition to a self-custodial wallet',
+          hightlighted: true,
+          flexible: true,
+          titleStyle: themeData.textStyles.paragraph500.copyWith(
+            color: themeColors.foreground100,
+          ),
+          onTap: () => widgetStack.instance.push(UpgradeWalletPage()),
+        ),
+      ],
+    );
+  }
+}
+
+class _EmailLoginButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final service = ModalProvider.of(context).instance;
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    final provider = AppKitSocialOption.values.firstWhereOrNull(
+      (e) => e.name == service.session?.peer?.metadata.name,
+    );
+    return Column(
+      children: [
+        const SizedBox.square(dimension: kPadding8),
+        AccountListItem(
+          iconWidget: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: provider == null
+                ? RoundedIcon(
+                    assetPath: 'lib/modal/assets/icons/mail.svg',
+                    assetColor: themeColors.foreground100,
+                    borderRadius: radiuses.isSquare() ? 0.0 : null,
+                  )
+                : SizedBox.square(
+                    dimension: 34.0,
+                    child: SvgPicture.asset(
+                      AssetUtils.getThemedAsset(
+                        context,
+                        '${provider.name.toLowerCase()}_logo.svg',
+                      ),
+                      package: 'reown_appkit',
+                    ),
+                  ),
+          ),
+          title: service.session?.email ?? '',
+          titleStyle: themeData.textStyles.paragraph500.copyWith(
+            color: themeColors.foreground100,
+          ),
+          onTap: provider == null
+              ? () => widgetStack.instance.push(EditEmailPage())
+              : null,
+          trailing: provider != null ? const SizedBox.shrink() : null,
         ),
       ],
     );
@@ -230,12 +274,10 @@ class _SelectNetworkButton extends StatelessWidget {
       titleStyle: themeData.textStyles.paragraph500.copyWith(
         color: themeColors.foreground100,
       ),
-      onTap: () {
-        widgetStack.instance.push(
-          ReownAppKitModalSelectNetworkPage(),
-          event: ClickNetworksEvent(),
-        );
-      },
+      onTap: () => widgetStack.instance.push(
+        ReownAppKitModalSelectNetworkPage(),
+        event: ClickNetworksEvent(),
+      ),
     );
   }
 }

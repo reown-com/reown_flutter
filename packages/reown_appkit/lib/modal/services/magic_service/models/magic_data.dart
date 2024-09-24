@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class MagicData {
@@ -6,6 +7,7 @@ class MagicData {
   int chainId;
   ConnectionMetadata? self;
   ConnectionMetadata? peer;
+  AppKitSocialOption? provider;
 
   MagicData({
     required this.email,
@@ -13,6 +15,7 @@ class MagicData {
     required this.address,
     this.self,
     this.peer,
+    this.provider,
   });
 
   factory MagicData.fromJson(Map<String, dynamic> json) {
@@ -26,6 +29,10 @@ class MagicData {
       peer: (json['peer'] != null)
           ? ConnectionMetadata.fromJson(json['peer'])
           : null,
+      provider: (json['provider'] != null)
+          ? AppKitSocialOption.values.firstWhereOrNull((e) =>
+              e.name.toLowerCase() == json['provider'].toString().toLowerCase())
+          : null,
     );
   }
 
@@ -36,6 +43,7 @@ class MagicData {
       'chainId': chainId,
       'self': self?.toJson(),
       'peer': peer?.toJson(),
+      'provider': provider?.name.toLowerCase(),
     };
   }
 
@@ -48,6 +56,7 @@ class MagicData {
     int? chainId,
     ConnectionMetadata? self,
     ConnectionMetadata? peer,
+    AppKitSocialOption? provider,
   }) {
     return MagicData(
       email: email ?? this.email,
@@ -55,6 +64,7 @@ class MagicData {
       chainId: chainId ?? this.chainId,
       self: self ?? this.self,
       peer: peer ?? this.peer,
+      provider: provider ?? this.provider,
     );
   }
 }
