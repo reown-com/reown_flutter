@@ -165,15 +165,8 @@ class SessionWidgetState extends State<SessionWidget> {
   }
 
   Widget _buildAccountWidget(String account) {
-    // final chainId = NamespaceUtils.getChainFromAccount(account);
-    // final chainMetadata = ChainDataWrapper.getChainMetadataFromChain(
-    //   chainId.split(':').first,
-    //   chainId.split(':').last,
-    // );
-
     final List<Widget> children = [
       Text(
-        // chainMetadata.appKitNetworkInfo.name,
         widget.appKit.selectedChain?.name ?? 'Unsupported chain',
         style: ReownAppKitModalTheme.getDataOf(context)
             .textStyles
@@ -271,12 +264,9 @@ class SessionWidgetState extends State<SessionWidget> {
             onPressed: implemented
                 ? () async {
                     widget.appKit.launchConnectedWallet();
-                    final future = callChainMethod(
-                        // chainMetadata.type,
-                        EIP155.methodFromName(method)
-                        // chainMetadata,
-                        // address,
-                        );
+                    final future = callChainMethod(EIP155.methodFromName(
+                      method,
+                    ));
                     MethodDialog.show(context, method, future);
                   }
                 : null,
@@ -457,12 +447,7 @@ class SessionWidgetState extends State<SessionWidget> {
     );
   }
 
-  Future<dynamic> callChainMethod(
-    // ChainType type,
-    EIP155UIMethods method,
-    // ChainMetadata chainMetadata,
-    // String address,
-  ) {
+  Future<dynamic> callChainMethod(EIP155UIMethods method) {
     final session = widget.appKit.session!;
     return EIP155.callMethod(
       appKit: widget.appKit,

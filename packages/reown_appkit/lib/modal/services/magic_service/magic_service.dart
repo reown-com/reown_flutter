@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
@@ -24,32 +25,19 @@ class MagicService implements IMagicService {
     'auth.magic.link',
     'launchdarkly.com',
   ];
-  static const supportedMethods = [
-    'personal_sign',
-    'eth_sign',
-    'eth_sendTransaction',
-    'eth_signTypedData_v4',
-    'wallet_switchEthereumChain',
-    'wallet_addEthereumChain',
-  ];
-  static const defaultWalletData = ReownAppKitModalWalletInfo(
-    listing: Listing(
-      id: '',
-      name: 'Email Wallet',
-      homepage: '',
-      imageId: '',
-      order: 10000,
-    ),
-    installed: false,
-    recent: false,
-  );
+  static const supportedMethods = MethodsConstants.allMethods;
 
-  @override
-  ConnectionMetadata get metadata => ConnectionMetadata(
+  ConnectionMetadata get _selfMetadata => ConnectionMetadata(
+        metadata: _metadata,
+        publicKey: '',
+      );
+
+  // TODO export this
+  ConnectionMetadata get _peerMetadata => ConnectionMetadata(
         metadata: PairingMetadata(
-          name: defaultWalletData.listing.name,
+          name: 'Email Wallet',
           description: '',
-          url: defaultWalletData.listing.homepage,
+          url: '',
           icons: [''], // TODO set the icon here depending on the login type
         ),
         publicKey: '',
@@ -60,6 +48,7 @@ class MagicService implements IMagicService {
   String? _connectionChainId;
   int _onLoadCount = 0;
   String _packageName = '';
+  AppKitSocialOption? _socialProvider;
 
   late final WebViewController _webViewController;
   WebViewController get controller => _webViewController;
@@ -90,7 +79,11 @@ class MagicService implements IMagicService {
   @override
   Event<MagicRequestEvent> onMagicRpcRequest = Event<MagicRequestEvent>();
 
-  final isEnabled = ValueNotifier(false);
+  // @override
+  // Event<SocialLoginEvent> onSocialLoginEvent = Event<SocialLoginEvent>();
+
+  final isEmailEnabled = ValueNotifier(false);
+  final isSocialEnabled = ValueNotifier(false);
   final isReady = ValueNotifier(false);
   final isConnected = ValueNotifier(false);
   final isTimeout = ValueNotifier(false);
@@ -109,13 +102,15 @@ class MagicService implements IMagicService {
   MagicService({
     required IReownCore core,
     required PairingMetadata metadata,
-    required List<AppKitSocialOption> socials,
-    bool enabled = false,
+    List<AppKitSocialOption> socials = const [],
+    bool enableEmail = false,
   })  : _core = core,
         _metadata = metadata,
         _socialOptions = socials {
-    isEnabled.value = enabled;
-    if (isEnabled.value) {
+    isEmailEnabled.value = enableEmail;
+    isSocialEnabled.value = _socialOptions.isNotEmpty;
+    //
+    if (isEmailEnabled.value || isSocialEnabled.value) {
       _webViewController = WebViewController();
       _webview = WebViewWidget(controller: _webViewController);
       isReady.addListener(_readyListener);
@@ -131,7 +126,7 @@ class MagicService implements IMagicService {
 
   @override
   Future<void> init() async {
-    if (!isEnabled.value) {
+    if (!isEmailEnabled.value && !isSocialEnabled.value) {
       _initialized = Completer<bool>();
       _initialized.complete(false);
       _connected = Completer<bool>();
@@ -201,19 +196,35 @@ class MagicService implements IMagicService {
     newEmail.value = value;
   }
 
+  @override
+  void setProvider(String? value) {
+    _socialProvider = AppKitSocialOption.values.firstWhereOrNull(
+      (e) => e.name.toLowerCase() == value,
+    );
+  }
+
+  bool get _socialsNotReady => (!isSocialEnabled.value || !isReady.value);
+  bool get _emailNotReady => (!isEmailEnabled.value || !isReady.value);
+  bool get _serviceNotReady =>
+      (!isEmailEnabled.value && !isSocialEnabled.value) || !isReady.value;
+
   // ****** W3mFrameProvider public methods ******* //
+
+  // SOCIAL RELATED METHODS
 
   Completer<String?> _getSocialRedirectUri = Completer<String?>();
   @override
   Future<String?> getSocialRedirectUri({
-    required String provider,
+    required AppKitSocialOption provider,
     String? chainId,
   }) async {
-    if (!isEnabled.value || !isReady.value) return null;
+    if (_socialsNotReady) return null;
+    //
     _getSocialRedirectUri = Completer<String?>();
     _connectionChainId = chainId ?? _connectionChainId;
+    _socialProvider = provider;
     final message = GetSocialRedirectUri(
-      provider: provider.toLowerCase(),
+      provider: _socialProvider!.name.toLowerCase(),
     ).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
     return await _getSocialRedirectUri.future;
@@ -222,16 +233,21 @@ class MagicService implements IMagicService {
   Completer<dynamic> _connectSocial = Completer<dynamic>();
   @override
   Future<dynamic> connectSocial({required String uri}) async {
-    if (!isEnabled.value || !isReady.value) return null;
+    if (_socialsNotReady) return null;
+    //
     _connectSocial = Completer<dynamic>();
     final message = ConnectSocial(uri: uri).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
     return await _connectSocial.future;
   }
 
+  // EMAIL RELATED METHODS
+
   @override
   Future<void> connectEmail({required String value, String? chainId}) async {
-    if (!isEnabled.value || !isReady.value) return;
+    if (_emailNotReady) return;
+    //
+    _socialProvider = null;
     _connectionChainId = chainId ?? _connectionChainId;
     final message = ConnectEmail(email: value).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
@@ -239,7 +255,8 @@ class MagicService implements IMagicService {
 
   @override
   Future<void> updateEmail({required String value}) async {
-    if (!isEnabled.value || !isReady.value) return;
+    if (_emailNotReady) return;
+    //
     step.value = EmailLoginStep.loading;
     final message = UpdateEmail(email: value).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
@@ -247,7 +264,8 @@ class MagicService implements IMagicService {
 
   @override
   Future<void> updateEmailPrimaryOtp({required String otp}) async {
-    if (!isEnabled.value || !isReady.value) return;
+    if (_emailNotReady) return;
+    //
     step.value = EmailLoginStep.loading;
     final message = UpdateEmailPrimaryOtp(otp: otp).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
@@ -255,7 +273,8 @@ class MagicService implements IMagicService {
 
   @override
   Future<void> updateEmailSecondaryOtp({required String otp}) async {
-    if (!isEnabled.value || !isReady.value) return;
+    if (_emailNotReady) return;
+    //
     step.value = EmailLoginStep.loading;
     final message = UpdateEmailSecondaryOtp(otp: otp).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
@@ -263,28 +282,26 @@ class MagicService implements IMagicService {
 
   @override
   Future<void> connectOtp({required String otp}) async {
-    if (!isEnabled.value || !isReady.value) return;
+    if (_emailNotReady) return;
+    //
     step.value = EmailLoginStep.loading;
     final message = ConnectOtp(otp: otp).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
   }
 
-  @override
-  Future<void> getChainId() async {
-    if (!isEnabled.value || !isReady.value) return;
-    final message = GetChainId().toString();
-    await _webViewController.runJavaScript('sendMessage($message)');
-  }
+  // SHARED METHODS
 
   @override
   Future<void> syncTheme(ReownAppKitModalTheme? theme) async {
-    if (!isEnabled.value || !isReady.value) return;
+    if (_serviceNotReady) return;
+    //
     final message = SyncTheme(theme: theme).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
   }
 
   void _syncDappData() async {
-    if (!isEnabled.value || !isReady.value) return;
+    if (_serviceNotReady) return;
+    //
     final message = SyncAppData(
       metadata: _metadata,
       projectId: _core.projectId,
@@ -294,8 +311,17 @@ class MagicService implements IMagicService {
   }
 
   @override
+  Future<void> getChainId() async {
+    if (_serviceNotReady) return;
+    //
+    final message = GetChainId().toString();
+    await _webViewController.runJavaScript('sendMessage($message)');
+  }
+
+  @override
   Future<void> getUser({String? chainId}) async {
-    if (!isEnabled.value || !isReady.value) return;
+    if (_serviceNotReady) return;
+    //
     return await _getUser(chainId);
   }
 
@@ -306,7 +332,8 @@ class MagicService implements IMagicService {
 
   @override
   Future<void> switchNetwork({required String chainId}) async {
-    if (!isEnabled.value || !isReady.value) return;
+    if (_serviceNotReady) return;
+    //
     final message = SwitchNetwork(chainId: chainId).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
   }
@@ -316,7 +343,8 @@ class MagicService implements IMagicService {
     String? chainId,
     required SessionRequestParams request,
   }) async {
-    if (!isEnabled.value) return;
+    if (_serviceNotReady) return;
+    //
     await _awaitReadyness.future;
     await _rpcRequest(request.toJson());
     return await _response.future;
@@ -340,7 +368,8 @@ class MagicService implements IMagicService {
 
   @override
   Future<bool> disconnect() async {
-    if (!isEnabled.value || !isReady.value) return false;
+    if (_serviceNotReady) return false;
+    //
     _disconnect = Completer<bool>();
     if (!isConnected.value) {
       _resetTimeOut();
@@ -412,16 +441,15 @@ class MagicService implements IMagicService {
         final uri = messageData.getPayloadMapKey<String>('uri');
         _getSocialRedirectUri.complete(uri);
       }
-      if (messageData.getSocialRedirectUriError) {
-        // TODO Social Login capture and pass error
-        _getSocialRedirectUri.complete(null);
-      }
       if (messageData.connectSocialSuccess) {
+        final data = MagicData.fromJson(messageData.payload!);
+        final event = MagicSessionEvent(
+          email: data.email ?? data.userName,
+          address: data.address,
+          chainId: data.chainId,
+        );
+        onMagicUpdate.broadcast(event);
         _connectSocial.complete(true);
-      }
-      if (messageData.connectSocialError) {
-        // TODO Social Login capture and pass error
-        _connectSocial.complete(false);
       }
       // ****** CONNECT_EMAIL
       if (messageData.connectEmailSuccess) {
@@ -503,11 +531,13 @@ class MagicService implements IMagicService {
           _connected.complete(isConnected.value);
         } else {
           final session = data.copytWith(
-            peer: metadata,
-            self: ConnectionMetadata(
-              metadata: _metadata,
-              publicKey: '',
+            peer: _peerMetadata.copyWith(
+              metadata: _peerMetadata.metadata.copyWith(
+                name: _socialProvider?.name ?? 'Email Wallet',
+              ),
             ),
+            self: _selfMetadata,
+            provider: _socialProvider,
           );
           onMagicLoginSuccess.broadcast(MagicLoginEvent(session));
         }
@@ -547,6 +577,24 @@ class MagicService implements IMagicService {
         analyticsService.instance.sendEvent(EmailVerificationCodeFail());
         final message = messageData.payload?['message']?.toString();
         _error(ConnectOtpErrorEvent(message: message));
+      }
+      if (messageData.getSocialRedirectUriError) {
+        String? message = messageData.payload?['message']?.toString();
+        message = message?.replaceFirst(
+          'Error: Magic RPC Error: [-32600] ',
+          '',
+        );
+        _error(MagicErrorEvent(message));
+        _getSocialRedirectUri.complete(null);
+      }
+      if (messageData.connectSocialError) {
+        String? message = messageData.payload?['message']?.toString();
+        message = message?.replaceFirst(
+          'Error: Magic RPC Error: [-32600] ',
+          '',
+        );
+        _error(MagicErrorEvent(message));
+        _connectSocial.complete(false);
       }
       if (messageData.getUserError) {
         _error(GetUserErrorEvent());
@@ -682,9 +730,10 @@ class MagicService implements IMagicService {
         }
         if (Platform.isAndroid) {
           if (_webViewController.platform is AndroidWebViewController) {
+            final platform =
+                _webViewController.platform as AndroidWebViewController;
             AndroidWebViewController.enableDebugging(true);
-            (_webViewController.platform as AndroidWebViewController)
-                .setMediaPlaybackRequiresUserGesture(false);
+            platform.setMediaPlaybackRequiresUserGesture(false);
 
             final cookieManager =
                 WebViewCookieManager().platform as AndroidWebViewCookieManager;

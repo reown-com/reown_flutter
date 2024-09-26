@@ -36,7 +36,7 @@ class EIP155 {
   };
 
   static Future<dynamic> callMethod({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String method,
     required ChainMetadata chainData,
@@ -49,7 +49,6 @@ class EIP155 {
           topic: topic,
           chainId: chainData.chainId,
           address: address,
-          message: testSignData,
         );
       case 'eth_sign':
         return ethSign(
@@ -57,7 +56,6 @@ class EIP155 {
           topic: topic,
           chainId: chainData.chainId,
           address: address,
-          message: testSignData,
         );
       case 'eth_signTypedData':
         return ethSignTypedData(
@@ -65,33 +63,18 @@ class EIP155 {
           topic: topic,
           chainId: chainData.chainId,
           address: address,
-          data: typedData,
         );
       case 'eth_signTransaction':
         return ethSignTransaction(
           appKit: appKit,
           topic: topic,
           chainId: chainData.chainId,
-          transaction: Transaction(
-            from: EthereumAddress.fromHex(address),
-            to: EthereumAddress.fromHex(
-              '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
-            ),
-            value: EtherAmount.fromInt(EtherUnit.finney, 12), // == 0.012
-          ),
         );
       case 'eth_sendTransaction':
         return ethSendTransaction(
           appKit: appKit,
           topic: topic,
           chainId: chainData.chainId,
-          transaction: Transaction(
-            from: EthereumAddress.fromHex(address),
-            to: EthereumAddress.fromHex(
-              '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
-            ),
-            value: EtherAmount.fromInt(EtherUnit.finney, 11), // == 0.011
-          ),
         );
       default:
         throw 'Method unimplemented';
@@ -99,7 +82,7 @@ class EIP155 {
   }
 
   static Future<dynamic> callSmartContract({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String address,
     required String action,
@@ -148,93 +131,70 @@ class EIP155 {
   }
 
   static Future<dynamic> personalSign({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String chainId,
     required String address,
-    required String message,
   }) async {
-    final bytes = utf8.encode(message);
-    final encoded = bytesToHex(bytes, include0x: true);
-
     return await appKit.request(
       topic: topic,
       chainId: chainId,
-      request: SessionRequestParams(
-        method: methods[EIP155Methods.personalSign]!,
-        params: [encoded, address],
-      ),
+      request: getParams('personal_sign', address)!,
     );
   }
 
   static Future<dynamic> ethSign({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String chainId,
     required String address,
-    required String message,
   }) async {
     return await appKit.request(
       topic: topic,
       chainId: chainId,
-      request: SessionRequestParams(
-        method: methods[EIP155Methods.ethSign]!,
-        params: [address, message],
-      ),
+      request: getParams('eth_sign', address)!,
     );
   }
 
   static Future<dynamic> ethSignTypedData({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String chainId,
     required String address,
-    required String data,
   }) async {
     return await appKit.request(
       topic: topic,
       chainId: chainId,
-      request: SessionRequestParams(
-        method: methods[EIP155Methods.ethSignTypedData]!,
-        params: [address, data],
-      ),
+      request: getParams('eth_signTypedData', address)!,
     );
   }
 
   static Future<dynamic> ethSignTransaction({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String chainId,
-    required Transaction transaction,
   }) async {
     return await appKit.request(
       topic: topic,
       chainId: chainId,
-      request: SessionRequestParams(
-        method: methods[EIP155Methods.ethSignTransaction]!,
-        params: [transaction.toJson()],
-      ),
+      request: getParams('eth_signTransaction', '')!,
     );
   }
 
   static Future<dynamic> ethSendTransaction({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String chainId,
-    required Transaction transaction,
   }) async {
     return await appKit.request(
       topic: topic,
       chainId: chainId,
-      request: SessionRequestParams(
-        method: methods[EIP155Methods.ethSendTransaction]!,
-        params: [transaction.toJson()],
-      ),
+      request: getParams('eth_sendTransaction', '')!,
     );
   }
 
   static Future<dynamic> readSmartContract({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String rpcUrl,
     required String address,
     required DeployedContract contract,
@@ -273,5 +233,55 @@ class EIP155 {
       'totalSupply': oCcy.format(total),
       'balance': oCcy.format(balance),
     };
+  }
+
+  static SessionRequestParams? getParams(String method, String address) {
+    switch (method) {
+      case 'personal_sign':
+        final bytes = utf8.encode(testSignData);
+        final encoded = bytesToHex(bytes, include0x: true);
+        return SessionRequestParams(
+          method: methods[EIP155Methods.personalSign]!,
+          params: [encoded, address],
+        );
+      case 'eth_sign':
+        return SessionRequestParams(
+          method: methods[EIP155Methods.ethSign]!,
+          params: [address, testSignData],
+        );
+      case 'eth_signTypedData':
+        return SessionRequestParams(
+          method: methods[EIP155Methods.ethSignTypedData]!,
+          params: [address, typedData],
+        );
+      case 'eth_signTransaction':
+        return SessionRequestParams(
+          method: methods[EIP155Methods.ethSignTransaction]!,
+          params: [
+            Transaction(
+              from: EthereumAddress.fromHex(address),
+              to: EthereumAddress.fromHex(
+                '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
+              ),
+              value: EtherAmount.fromInt(EtherUnit.finney, 12), // == 0.012
+            ).toJson(),
+          ],
+        );
+      case 'eth_sendTransaction':
+        return SessionRequestParams(
+          method: methods[EIP155Methods.ethSendTransaction]!,
+          params: [
+            Transaction(
+              from: EthereumAddress.fromHex(address),
+              to: EthereumAddress.fromHex(
+                '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
+              ),
+              value: EtherAmount.fromInt(EtherUnit.finney, 12), // == 0.012
+            ).toJson(),
+          ],
+        );
+      default:
+        return null;
+    }
   }
 }

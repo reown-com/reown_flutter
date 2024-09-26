@@ -42,7 +42,7 @@ class _EmailLoginInputFieldState extends State<EmailLoginInputField> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
-      valueListenable: magicService.instance.isEnabled,
+      valueListenable: magicService.instance.isEmailEnabled,
       builder: (context, emailEnabled, _) {
         if (!emailEnabled) {
           return const SizedBox.shrink();

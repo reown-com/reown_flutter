@@ -1,3 +1,7 @@
+import 'dart:io';
+import 'dart:math';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
@@ -6,14 +10,23 @@ import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
+import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
+import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
+import 'package:reown_appkit/modal/utils/platform_utils.dart';
+import 'package:reown_appkit/modal/widgets/buttons/simple_icon_button.dart';
+import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/content_loading.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/avatars/loading_border.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
+import 'package:reown_appkit/modal/widgets/navigation/navbar_action_button.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 class SocialLoginPage extends StatefulWidget {
   const SocialLoginPage({required this.socialOption})
@@ -24,15 +37,14 @@ class SocialLoginPage extends StatefulWidget {
   State<SocialLoginPage> createState() => _SocialLoginPageState();
 }
 
-class _SocialLoginPageState extends State<SocialLoginPage>
-    with WidgetsBindingObserver {
+class _SocialLoginPageState extends State<SocialLoginPage> {
   IReownAppKitModal? _service;
   ModalError? errorEvent;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    // WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _service = ModalProvider.of(context).instance;
       _service?.onModalError.subscribe(_errorListener);
@@ -42,48 +54,90 @@ class _SocialLoginPageState extends State<SocialLoginPage>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      // final isOpen = _service?.isOpen ?? false;
-      // final isConnected = _service?.isConnected ?? false;
-      // if (isOpen && isConnected && !siweService.instance!.enabled) {
-      //   Future.delayed(Duration(seconds: 1), () {
-      //     if (!mounted) return;
-      //     _service?.closeModal();
-      //   });
-      // }
-    }
+  void dispose() {
+    _service?.onModalError.unsubscribe(_errorListener);
+    // WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
   }
 
-  void _errorListener(ModalError? event) => setState(() => errorEvent = event);
+  void _errorListener(ModalError? event) {
+    toastService.instance.show(ToastMessage(
+      type: ToastType.error,
+      text: event?.message ?? 'Something went wrong.',
+    ));
+    setState(() => errorEvent = event);
+  }
 
   void _initSocialLogin(AppKitSocialOption option) async {
     try {
+      setState(() => errorEvent = null);
       final appKitModal = ModalProvider.of(context).instance;
       final redirectUri = await magicService.instance.getSocialRedirectUri(
-        provider: option.name.toLowerCase(),
+        provider: option,
         chainId: appKitModal.selectedChain?.chainId,
       );
-      debugPrint('[$runtimeType] _initSocialLogin uri $redirectUri');
-      final result = await Navigator.push(
-        context,
-        MaterialPageRoute(
-          fullscreenDialog: true,
-          barrierDismissible: true,
-          builder: (context) => _WebViewLoginWidget(url: redirectUri!),
-        ),
-      );
-      // await ReownCoreUtils.openURL(uri!);
-      // await _launchUrlInBottomSheet(uri!);
-      await _completeSocialLogin(result);
+      setState(() => errorEvent = null);
+      if (option.supportsWebView) {
+        await _continueInWebview(redirectUri!);
+      } else {
+        await ReownCoreUtils.openURL(redirectUri!);
+        // await _launchUrlInBottomSheet(uri!);
+        // magicService.instance.onSocialLoginEvent.subscribe((event) async {
+        //   await _completeSocialLogin(event!.uri!);
+        // });
+      }
     } catch (e) {
       debugPrint('[$runtimeType] _initSocialLogin error $e');
     }
   }
 
+  bool _retrievingData = false;
+  Future<void> _continueInWebview(String redirectUri) async {
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    final bottomSheet = PlatformUtils.isBottomSheet();
+    final isTabletSize = PlatformUtils.isTablet(context);
+    final maxRadius = min(radiuses.radiusM, 36.0);
+    final innerContainerBorderRadius = bottomSheet && !isTabletSize
+        ? BorderRadius.only(
+            topLeft: Radius.circular(maxRadius),
+            topRight: Radius.circular(maxRadius),
+          )
+        : BorderRadius.all(Radius.circular(maxRadius));
+    final result = await showModalBottomSheet(
+      backgroundColor: Colors.black.withOpacity(0.5),
+      isDismissible: false,
+      isScrollControlled: true,
+      enableDrag: false,
+      useRootNavigator: false,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.9,
+      ),
+      context: context,
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: themeColors.background125,
+          borderRadius: innerContainerBorderRadius,
+        ),
+        child: _WebViewLoginWidget(
+          url: redirectUri,
+          onCancel: () {
+            Navigator.of(context).pop(false);
+          },
+        ),
+      ),
+    );
+
+    if (result == false) {
+      _cancelSocialLogin();
+    } else {
+      await _completeSocialLogin(result);
+    }
+  }
+
   Future<void> _completeSocialLogin(String url) async {
     try {
-      debugPrint('[$runtimeType] _completeSocialLogin $url');
+      setState(() => _retrievingData = true);
       final uri = Uri.parse(url);
       final result = await magicService.instance.connectSocial(
         uri: '?${uri.query}',
@@ -94,14 +148,13 @@ class _SocialLoginPageState extends State<SocialLoginPage>
       }
     } catch (e) {
       debugPrint('[$runtimeType] _completeSocialLogin error $e');
+      setState(() => _retrievingData = false);
     }
   }
 
-  @override
-  void dispose() {
-    _service?.onModalError.unsubscribe(_errorListener);
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
+  void _cancelSocialLogin() {
+    errorEvent = ModalError('User canceled');
+    setState(() => _retrievingData = false);
   }
 
   @override
@@ -120,9 +173,7 @@ class _SocialLoginPageState extends State<SocialLoginPage>
     return ModalNavbar(
       title: widget.socialOption.name,
       onBack: () {
-        // TODO Social Login cancel Social Login flow
-        // _service?.selectWallet(null);
-        // widgetStack.instance.pop();
+        widgetStack.instance.pop();
       },
       body: SingleChildScrollView(
         scrollDirection: isPortrait ? Axis.vertical : Axis.horizontal,
@@ -136,19 +187,54 @@ class _SocialLoginPageState extends State<SocialLoginPage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox.square(dimension: 20.0),
-                  LoadingBorder(
-                    animate: errorEvent == null,
-                    borderRadius: themeData.radiuses.isSquare()
-                        ? 0
-                        : themeData.radiuses.radiusM + 4.0,
-                    child: SvgPicture.asset(
-                      AssetUtils.getThemedAsset(
-                        context,
-                        '${widget.socialOption.name.toLowerCase()}_logo.svg',
-                      ),
-                      package: 'reown_appkit',
-                    ),
-                  ),
+                  errorEvent == null
+                      ? LoadingBorder(
+                          animate: errorEvent == null,
+                          borderRadius: maxWidth / 2,
+                          child: SvgPicture.asset(
+                            AssetUtils.getThemedAsset(
+                              context,
+                              '${widget.socialOption.name.toLowerCase()}_logo.svg',
+                            ),
+                            package: 'reown_appkit',
+                          ),
+                        )
+                      : Stack(
+                          children: [
+                            SizedBox.square(
+                              dimension: kSelectedWalletIconHeight,
+                              child: SvgPicture.asset(
+                                AssetUtils.getThemedAsset(
+                                  context,
+                                  '${widget.socialOption.name.toLowerCase()}_logo.svg',
+                                ),
+                                package: 'reown_appkit',
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: themeColors.background125,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(30.0)),
+                                ),
+                                padding: const EdgeInsets.all(1.0),
+                                clipBehavior: Clip.antiAlias,
+                                child: RoundedIcon(
+                                  assetPath: 'lib/modal/assets/icons/close.svg',
+                                  assetColor: themeColors.error100,
+                                  circleColor:
+                                      themeColors.error100.withOpacity(0.2),
+                                  borderColor: themeColors.background125,
+                                  padding: 4.0,
+                                  size: 24.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                   const SizedBox.square(dimension: 20.0),
                   Text(
                     'Log in with ${widget.socialOption.name}',
@@ -158,13 +244,25 @@ class _SocialLoginPageState extends State<SocialLoginPage>
                     ),
                   ),
                   const SizedBox.square(dimension: 8.0),
-                  Text(
-                    'Connect in the provider window',
-                    textAlign: TextAlign.center,
-                    style: themeData.textStyles.small500.copyWith(
-                      color: themeColors.foreground200,
-                    ),
-                  ),
+                  errorEvent == null
+                      ? Text(
+                          _retrievingData
+                              ? 'Retrieving user data'
+                              : 'Connect in the provider window',
+                          textAlign: TextAlign.center,
+                          style: themeData.textStyles.small500.copyWith(
+                            color: themeColors.foreground200,
+                          ),
+                        )
+                      : SimpleIconButton(
+                          onTap: () {
+                            _initSocialLogin(widget.socialOption);
+                          },
+                          leftIcon: 'lib/modal/assets/icons/refresh_back.svg',
+                          title: 'Try again',
+                          backgroundColor: Colors.transparent,
+                          foregroundColor: themeColors.accent100,
+                        ),
                   const SizedBox.square(dimension: kPadding16),
                 ],
               ),
@@ -178,8 +276,12 @@ class _SocialLoginPageState extends State<SocialLoginPage>
 }
 
 class _WebViewLoginWidget extends StatefulWidget {
-  const _WebViewLoginWidget({required this.url});
+  const _WebViewLoginWidget({
+    required this.url,
+    required this.onCancel,
+  });
   final String url;
+  final VoidCallback onCancel;
 
   @override
   State<_WebViewLoginWidget> createState() => __WebViewLoginWidgetState();
@@ -187,6 +289,7 @@ class _WebViewLoginWidget extends StatefulWidget {
 
 class __WebViewLoginWidgetState extends State<_WebViewLoginWidget> {
   final _webViewController = WebViewController();
+  final _cookieManager = WebViewCookieManager();
   final _authority = Uri.parse(UrlConstants.secureDashboard).authority;
 
   @override
@@ -195,7 +298,55 @@ class __WebViewLoginWidgetState extends State<_WebViewLoginWidget> {
     _init();
   }
 
+  Future<void> _clearCookies() async {
+    if (kDebugMode) return;
+    try {
+      if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+        final webKitManager =
+            _cookieManager.platform as WebKitWebViewCookieManager;
+        webKitManager.clearCookies();
+      } else if (WebViewPlatform.instance is AndroidWebViewPlatform) {
+        final androidManager =
+            _cookieManager.platform as AndroidWebViewCookieManager;
+        androidManager.clearCookies();
+        androidManager.setAcceptThirdPartyCookies(
+          _webViewController.platform as AndroidWebViewController,
+          kDebugMode,
+        );
+      }
+    } catch (e) {
+      debugPrint('[$runtimeType] _clearCookies error $e');
+    }
+  }
+
+  void _setDebugMode() {
+    if (kDebugMode) {
+      if (Platform.isIOS) {
+        final wkCtrl = _webViewController.platform as WebKitWebViewController;
+        wkCtrl.setInspectable(true);
+      }
+      if (Platform.isAndroid) {
+        if (_webViewController.platform is AndroidWebViewController) {
+          final aCtrl = _webViewController.platform as AndroidWebViewController;
+          aCtrl.setMediaPlaybackRequiresUserGesture(false);
+          AndroidWebViewController.enableDebugging(true);
+
+          final cookieManager =
+              _cookieManager.platform as AndroidWebViewCookieManager;
+          cookieManager.setAcceptThirdPartyCookies(
+            _webViewController.platform as AndroidWebViewController,
+            true,
+          );
+        }
+      }
+    }
+  }
+
   Future<void> _init() async {
+    _setDebugMode();
+    await _clearCookies();
+    await _webViewController.clearCache();
+    await _webViewController.clearLocalStorage();
     await _webViewController.setNavigationDelegate(
       NavigationDelegate(
         onNavigationRequest: (NavigationRequest request) {
@@ -216,11 +367,40 @@ class __WebViewLoginWidgetState extends State<_WebViewLoginWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: WebViewWidget(
-        controller: _webViewController,
+    return ModalNavbar(
+      title: '',
+      onBack: () => widget.onCancel(),
+      noClose: true,
+      rightAction: NavbarActionButton(
+        asset: 'lib/modal/assets/icons/close.svg',
+        action: () => widget.onCancel(),
       ),
+      body: WebViewWidget(controller: _webViewController),
     );
+  }
+}
+
+extension _AppKitSocialOptionExtension on AppKitSocialOption {
+  bool get supportsWebView {
+    switch (this) {
+      case AppKitSocialOption.X:
+        return true;
+      case AppKitSocialOption.Apple:
+        return true;
+      case AppKitSocialOption.Discord:
+        return true;
+      case AppKitSocialOption.Github:
+        return true;
+      case AppKitSocialOption.Facebook:
+        return true;
+      case AppKitSocialOption.Farcaster:
+        return true;
+      // case AppKitSocialOption.Twitch:
+      //   return true;
+      // case AppKitSocialOption.Telegram:
+      //   return true;
+      // case AppKitSocialOption.Google:
+      //   return false;
+    }
   }
 }

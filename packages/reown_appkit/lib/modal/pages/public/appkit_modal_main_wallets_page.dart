@@ -36,16 +36,18 @@ class _AppKitModalMainWalletsPageState
   @override
   void initState() {
     super.initState();
-    magicService.instance.isEnabled.addListener(_mailEnabledListener);
+    magicService.instance.isEmailEnabled.addListener(_enabledListener);
+    magicService.instance.isSocialEnabled.addListener(_enabledListener);
   }
 
-  void _mailEnabledListener() {
+  void _enabledListener() {
     setState(() {});
   }
 
   @override
   void dispose() {
-    magicService.instance.isEnabled.removeListener(_mailEnabledListener);
+    magicService.instance.isSocialEnabled.removeListener(_enabledListener);
+    magicService.instance.isEmailEnabled.removeListener(_enabledListener);
     super.dispose();
   }
 
@@ -84,10 +86,14 @@ class _AppKitModalMainWalletsPageState
           if (itemsCount < kShortWalletListCount) {
             maxHeight = kListItemHeight * (itemsCount + 1.5);
           }
-          final emailEnabled = magicService.instance.isEnabled.value;
+          final emailEnabled = magicService.instance.isEmailEnabled.value;
           if (emailEnabled) {
-            // TODO multiply depending on social options
-            maxHeight += (kEmailFieldHeight * 4);
+            maxHeight += (kListItemHeight * 1);
+          }
+          final socialEnabled = magicService.instance.isSocialEnabled.value;
+          if (socialEnabled) {
+            final count = magicService.instance.socials.length > 1 ? 3 : 2;
+            maxHeight += (kListItemHeight * count);
           }
           final itemsToShow = items.getRange(0, itemsCount);
           return ConstrainedBox(
@@ -100,39 +106,55 @@ class _AppKitModalMainWalletsPageState
               firstItem: Column(
                 children: [
                   EmailLoginInputField(),
-                  SocialLoginButtonsView(),
-                  _LoginDivider(),
-                  const SizedBox.square(dimension: kListViewSeparatorHeight),
+                  Visibility(
+                    visible: emailEnabled || socialEnabled,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4.0,
+                      ),
+                      child: Column(
+                        children: [
+                          SocialLoginButtonsView(),
+                          _LoginDivider(),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
               itemList: itemsToShow.toList(),
               bottomItems: [
-                AllWalletsItem(
-                  trailing: (items.length <= kShortWalletListCount)
-                      ? null
-                      : ValueListenableBuilder<int>(
-                          valueListenable:
-                              explorerService.instance.totalListings,
-                          builder: (context, value, _) {
-                            return WalletItemChip(value: value.lazyCount);
-                          },
-                        ),
-                  onTap: () {
-                    if (items.length <= kShortWalletListCount) {
-                      widgetStack.instance.push(
-                        const ReownAppKitModalQRCodePage(),
-                        event: SelectWalletEvent(
-                          name: 'WalletConnect',
-                          platform: AnalyticsPlatform.qrcode,
-                        ),
-                      );
-                    } else {
-                      widgetStack.instance.push(
-                        const ReownAppKitModalAllWalletsPage(),
-                        event: ClickAllWalletsEvent(),
-                      );
-                    }
-                  },
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4.0,
+                  ),
+                  child: AllWalletsItem(
+                    trailing: (items.length <= kShortWalletListCount)
+                        ? null
+                        : ValueListenableBuilder<int>(
+                            valueListenable:
+                                explorerService.instance.totalListings,
+                            builder: (context, value, _) {
+                              return WalletItemChip(value: value.lazyCount);
+                            },
+                          ),
+                    onTap: () {
+                      if (items.length <= kShortWalletListCount) {
+                        widgetStack.instance.push(
+                          const ReownAppKitModalQRCodePage(),
+                          event: SelectWalletEvent(
+                            name: 'WalletConnect',
+                            platform: AnalyticsPlatform.qrcode,
+                          ),
+                        );
+                      } else {
+                        widgetStack.instance.push(
+                          const ReownAppKitModalAllWalletsPage(),
+                          event: ClickAllWalletsEvent(),
+                        );
+                      }
+                    },
+                  ),
                 ),
               ],
             ),

@@ -14,23 +14,33 @@ import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
 class SessionWidget extends StatefulWidget {
   const SessionWidget({
     super.key,
-    required this.session,
-    required this.appKit,
+    required this.sessionTopic,
+    required this.appKitModal,
   });
 
-  final SessionData session;
-  final ReownAppKit appKit;
+  final String sessionTopic;
+  final ReownAppKitModal appKitModal;
 
   @override
   SessionWidgetState createState() => SessionWidgetState();
 }
 
 class SessionWidgetState extends State<SessionWidget> {
+  late IReownAppKit _appKit;
+  late SessionData _session;
+
+  @override
+  void initState() {
+    super.initState();
+    _appKit = widget.appKitModal.appKit!;
+    _session = _appKit.sessions.get(widget.sessionTopic)!;
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> children = [
       Text(
-        '${StringConstants.sessionTopic}${widget.session.topic}',
+        '${StringConstants.sessionTopic}${_session.topic}',
       ),
     ];
 
@@ -38,7 +48,7 @@ class SessionWidgetState extends State<SessionWidget> {
     final List<String> namespaceAccounts = [];
 
     // Loop through the namespaces, and get the accounts
-    for (final Namespace namespace in widget.session.namespaces.values) {
+    for (final Namespace namespace in _session.namespaces.values) {
       namespaceAccounts.addAll(namespace.accounts);
     }
 
@@ -61,8 +71,8 @@ class SessionWidgetState extends State<SessionWidget> {
         ),
         child: ElevatedButton(
           onPressed: () async {
-            await widget.appKit.disconnectSession(
-              topic: widget.session.topic,
+            await _appKit.disconnectSession(
+              topic: _session.topic,
               reason: Errors.getSdkError(
                 Errors.USER_DISCONNECTED,
               ).toSignError(),
@@ -170,7 +180,7 @@ class SessionWidgetState extends State<SessionWidget> {
     final List<Widget> buttons = [];
     // Add Methods
     for (final String method in getChainMethods(chainMetadata.type)) {
-      final namespaces = widget.session.namespaces[chainMetadata.type.name];
+      final namespaces = _session.namespaces[chainMetadata.type.name];
       final supported = namespaces?.methods.contains(method) ?? false;
       buttons.add(
         Container(
@@ -226,24 +236,24 @@ class SessionWidgetState extends State<SessionWidget> {
     switch (chainMetadata.type) {
       case ChainType.eip155:
         return EIP155.callMethod(
-          appKit: widget.appKit,
-          topic: widget.session.topic,
+          appKit: _appKit,
+          topic: _session.topic,
           method: method,
           chainData: chainMetadata,
           address: address,
         );
       case ChainType.polkadot:
         return Polkadot.callMethod(
-          appKit: widget.appKit,
-          topic: widget.session.topic,
+          appKit: _appKit,
+          topic: _session.topic,
           method: method,
           chainId: chainMetadata.chainId,
           address: address,
         );
       case ChainType.solana:
         return Solana.callMethod(
-          appKit: widget.appKit,
-          topic: widget.session.topic,
+          appKit: _appKit,
+          topic: _session.topic,
           method: method,
           chainData: chainMetadata,
           address: address,
@@ -251,8 +261,8 @@ class SessionWidgetState extends State<SessionWidget> {
         );
       // case ChainType.kadena:
       //   return Kadena.callMethod(
-      //     appKit: widget.appKit,
-      //     topic: widget.session.topic,
+      //     appKit: _appKit,
+      //     topic: _session.topic,
       //     method: method.toKadenaMethod()!,
       //     chainId: chainMetadata.chainId,
       //     address: address.toLowerCase(),
@@ -264,9 +274,9 @@ class SessionWidgetState extends State<SessionWidget> {
 
   void _launchWallet() {
     if (kIsWeb) return;
-    widget.appKit.redirectToWallet(
-      topic: widget.session.topic,
-      redirect: widget.session.peer.metadata.redirect,
+    _appKit.redirectToWallet(
+      topic: _session.topic,
+      redirect: _session.peer.metadata.redirect,
     );
   }
 
@@ -284,8 +294,8 @@ class SessionWidgetState extends State<SessionWidget> {
           onPressed: enabled
               ? () async {
                   final future = EIP155.callSmartContract(
-                    appKit: widget.appKit,
-                    topic: widget.session.topic,
+                    appKit: _appKit,
+                    topic: _session.topic,
                     address: address,
                     action: 'read',
                   );
@@ -326,8 +336,8 @@ class SessionWidgetState extends State<SessionWidget> {
           onPressed: enabled
               ? () async {
                   final future = EIP155.callSmartContract(
-                    appKit: widget.appKit,
-                    topic: widget.session.topic,
+                    appKit: _appKit,
+                    topic: _session.topic,
                     address: address,
                     action: 'write',
                   );

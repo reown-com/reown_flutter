@@ -124,11 +124,38 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKit!.onSessionConnect.subscribe(_onSessionConnect);
     _appKit!.onSessionAuthResponse.subscribe(_onSessionAuthResponse);
 
+    // See https://docs.reown.com/appkit/flutter/core/custom-chains
+    final testNetworks = ReownAppKitModalNetworks.test['eip155'] ?? [];
+    ReownAppKitModalNetworks.addNetworks('eip155', testNetworks);
+
     _appKitModal = ReownAppKitModal(
       context: context,
       appKit: _appKit,
       siweConfig: _siweConfig(),
+      enableAnalytics: true,
       enableEmail: true,
+      socials: [
+        AppKitSocialOption.Apple,
+        AppKitSocialOption.Discord,
+        AppKitSocialOption.X,
+        AppKitSocialOption.Facebook,
+        AppKitSocialOption.Github,
+      ],
+      // requiredNamespaces: {},
+      // optionalNamespaces: {},
+      // includedWalletIds: {},
+      featuredWalletIds: {
+        'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
+        '18450873727504ae9315a084fa7624b5297d2fe5880f0982979c17345a138277', // Kraken Wallet
+        'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // Metamask
+        '1ae92b26df02f0abca6304df07debccd18262fdf5fe82daa81593582dac9a369', // Rainbow
+        'c03dfee351b6fcc421b4494ea33b9d4b92a984f87aa76d1663bb28705e95034a', // Uniswap
+        '38f5d18bd8522c244bdd70cb4a68e0e718865155811c043f052fb9f1c51de662', // Bitget
+      },
+      // excludedWalletIds: {
+      //   'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
+      // },
+      // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
     );
 
     _appKitModal!.onModalConnect.subscribe(_onModalConnect);
@@ -162,12 +189,12 @@ class _MyHomePageState extends State<MyHomePage> {
           icon: Icons.home,
         ),
         PageData(
-          page: PairingsPage(appKit: _appKit!),
+          page: PairingsPage(appKitModal: _appKitModal!),
           title: StringConstants.pairingsPageTitle,
           icon: Icons.vertical_align_center_rounded,
         ),
         PageData(
-          page: SessionsPage(appKit: _appKit!),
+          page: SessionsPage(appKitModal: _appKitModal!),
           title: StringConstants.sessionsPageTitle,
           icon: Icons.workspaces_filled,
         ),
@@ -462,11 +489,12 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 
   void _onModalConnect(ModalConnect? event) async {
-    setState(() {});
     debugPrint('[ExampleApp] _onModalConnect ${event?.session.toJson()}');
+    setState(() {});
   }
 
   void _onModalUpdate(ModalConnect? event) {
+    debugPrint('[ExampleApp] _onModalUpdate ${event?.session.toJson()}');
     setState(() {});
   }
 

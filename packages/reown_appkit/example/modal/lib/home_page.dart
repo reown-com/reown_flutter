@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:reown_appkit_example/services/deep_link_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:reown_appkit/reown_appkit.dart';
@@ -64,9 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String _universalLink() {
-    // TODO change /flutter_appkit to something else
-    Uri link = Uri.parse('https://appkit-lab.reown.com/flutter_appkit');
-    if (_flavor.isNotEmpty) {
+    Uri link = Uri.parse('https://appkit-lab.reown.com/flutter_appkit_modal');
+    if (_flavor.isNotEmpty && !kDebugMode) {
       return link.replace(path: '${link.path}_internal').toString();
     }
     return link.toString();
@@ -220,15 +220,13 @@ class _MyHomePageState extends State<MyHomePage> {
         enableAnalytics: analyticsValue, // OPTIONAL - null by default
         enableEmail: emailWalletValue, // OPTIONAL - false by default
         socials: [
-          AppKitSocialOption.Google,
+          // AppKitSocialOption.Google,
           AppKitSocialOption.Apple,
           AppKitSocialOption.Discord,
-          AppKitSocialOption.Github,
           AppKitSocialOption.X,
           AppKitSocialOption.Facebook,
+          AppKitSocialOption.Github,
           AppKitSocialOption.Farcaster,
-          AppKitSocialOption.Twitch,
-          AppKitSocialOption.Telegram,
         ],
         // requiredNamespaces: {},
         // optionalNamespaces: {},
@@ -274,6 +272,10 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKitModal.appKit!.core.addLogListener(_logListener);
     //
     await _appKitModal.init();
+
+    DeepLinkHandler.init(_appKitModal);
+    DeepLinkHandler.checkInitialLink();
+
     setState(() {});
   }
 
@@ -378,6 +380,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_initialized) {
+      return SizedBox.shrink();
+    }
     return Scaffold(
       backgroundColor: ReownAppKitModalTheme.colorsOf(context).background125,
       appBar: AppBar(
@@ -407,6 +412,7 @@ class _MyHomePageState extends State<MyHomePage> {
           toggleOverlay: _toggleOverlay,
           toggleBrightness: widget.toggleBrightness,
           toggleTheme: widget.toggleTheme,
+          appKitModal: _appKitModal,
         ),
       ),
       onEndDrawerChanged: (isOpen) {

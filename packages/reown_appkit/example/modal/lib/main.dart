@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:reown_appkit_example/home_page.dart';
+import 'package:reown_appkit_example/services/deep_link_handler.dart';
 import 'package:reown_appkit_example/utils/constants.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  DeepLinkHandler.initListener();
   runApp(const MyApp());
 }
 
