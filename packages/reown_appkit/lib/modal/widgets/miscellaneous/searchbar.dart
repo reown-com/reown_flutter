@@ -112,9 +112,15 @@ class _ModalSearchBarState extends State<ModalSearchBar>
 
   void _setDecoration() {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     _decorationTween = DecorationTween(
       begin: BoxDecoration(
-        borderRadius: BorderRadius.circular(widget.height * 0.4),
+        // borderRadius: BorderRadius.circular(widget.height * 0.4),
+        borderRadius: radiuses.isSquare()
+            ? BorderRadius.zero
+            : (radiuses.isCircular()
+                ? BorderRadius.circular(widget.height)
+                : BorderRadius.circular(widget.height * 0.4)),
         boxShadow: [
           BoxShadow(
             color: Colors.transparent,
@@ -126,7 +132,12 @@ class _ModalSearchBarState extends State<ModalSearchBar>
         ],
       ),
       end: BoxDecoration(
-        borderRadius: BorderRadius.circular(widget.height * 0.4),
+        // borderRadius: BorderRadius.circular(widget.height * 0.4),
+        borderRadius: radiuses.isSquare()
+            ? BorderRadius.zero
+            : (radiuses.isCircular()
+                ? BorderRadius.circular(widget.height)
+                : BorderRadius.circular(widget.height * 0.4)),
         boxShadow: [
           BoxShadow(
             color: themeColors.accenGlass015,
@@ -173,9 +184,15 @@ class _ModalSearchBarState extends State<ModalSearchBar>
   Widget build(BuildContext context) {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final unfocusedBorder = OutlineInputBorder(
       borderSide: BorderSide(color: themeColors.grayGlass005, width: 1.0),
-      borderRadius: BorderRadius.circular(widget.height * 0.3),
+      // borderRadius: BorderRadius.circular(widget.height * 0.3),
+      borderRadius: radiuses.isSquare()
+          ? BorderRadius.zero
+          : (radiuses.isCircular()
+              ? BorderRadius.circular(widget.height)
+              : BorderRadius.circular(widget.height * 0.3)),
     );
     final focusedBorder = unfocusedBorder.copyWith(
       borderSide: BorderSide(color: themeColors.accent100, width: 1.0),

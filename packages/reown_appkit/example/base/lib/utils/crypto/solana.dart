@@ -24,7 +24,7 @@ class Solana {
   static final Map<SolanaEvents, String> events = {};
 
   static Future<dynamic> callMethod({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String method,
     required ChainMetadata chainData,

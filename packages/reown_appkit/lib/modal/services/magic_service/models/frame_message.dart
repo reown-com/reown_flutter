@@ -248,6 +248,11 @@ class RpcRequest extends MessageData {
       final address = p.last;
       return '{$t,payload:{$m,params:["$data","$address"]}}';
     }
+    if (method == 'eth_sign') {
+      final address = p.first;
+      final data = p.last;
+      return '{$t,payload:{$m,params:["$address","$data"]}}';
+    }
     if (method == 'eth_signTypedData_v4' ||
         method == 'eth_signTypedData_v3' ||
         method == 'eth_signTypedData') {
@@ -318,7 +323,11 @@ class SyncAppData extends MessageData {
     final m2 = 'description:"${metadata.description}"';
     final m3 = 'url:"${metadata.url}"';
     final m4 = 'icons:["${metadata.icons.first}"]';
-    final p3 = 'metadata:{$m1,$m2,$m3,$m4}';
+    final r1 = 'native:"${metadata.redirect?.native}"';
+    final r2 = 'universal:"${metadata.redirect?.universal}"';
+    final r3 = 'linkMode:"${metadata.redirect?.linkMode}"';
+    final m5 = 'redirect:{$r1,$r2,$r3}';
+    final p3 = 'metadata:{$m1,$m2,$m3,$m4,$m5}';
     final p = 'payload:{$v,$p1,$p2,$p3}';
     return '{type:"${super.type}",$p}';
   }

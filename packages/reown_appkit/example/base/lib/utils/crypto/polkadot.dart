@@ -18,7 +18,7 @@ class Polkadot {
   static final Map<PolkadotEvents, String> events = {};
 
   static Future<dynamic> callMethod({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String method,
     required String chainId,

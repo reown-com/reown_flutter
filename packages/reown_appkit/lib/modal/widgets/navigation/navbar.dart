@@ -14,6 +14,7 @@ class ModalNavbar extends StatelessWidget {
     required this.body,
     required this.title,
     this.leftAction,
+    this.rightAction,
     this.safeAreaLeft = false,
     this.safeAreaRight = false,
     this.safeAreaBottom = true,
@@ -26,6 +27,7 @@ class ModalNavbar extends StatelessWidget {
   final Widget body;
   final String title;
   final NavbarActionButton? leftAction;
+  final NavbarActionButton? rightAction;
   final bool safeAreaLeft, safeAreaRight, safeAreaBottom, noClose, divider;
 
   @override
@@ -82,6 +84,7 @@ class ModalNavbar extends StatelessWidget {
                                 ModalProvider.of(context).instance.closeModal();
                               },
                             ),
+                      rightAction ?? SizedBox.shrink(),
                     ],
                   );
                 },
