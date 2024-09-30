@@ -106,9 +106,7 @@ class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
   }
 
   void _initSocialLogin(AppKitSocialOption option) => widgetStack.instance.push(
-        SocialLoginPage(
-          socialOption: option,
-        ),
+        SocialLoginPage(socialOption: option),
       );
 
   List<Widget> _buttonsWithDivider(List<Widget> widgets) {

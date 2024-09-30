@@ -10,6 +10,8 @@ import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/farcaster_qrcode_page.dart';
+import 'package:reown_appkit/modal/services/analytics_service/analytics_service_singleton.dart';
+import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
 import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
@@ -80,6 +82,9 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
   Future<void> _initSocialLogin(AppKitSocialOption option) async {
     try {
       setState(() => errorEvent = null);
+      analyticsService.instance.sendEvent(SocialLoginStarted(
+        provider: widget.socialOption.name.toLowerCase(),
+      ));
       if (option == AppKitSocialOption.Farcaster) {
         final farcasterUri = await magicService.instance.getFarcasterUri(
           chainId: _service?.selectedChain?.chainId,
@@ -154,6 +159,9 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
       );
       if (success == true) {
         await magicService.instance.getUser();
+        analyticsService.instance.sendEvent(SocialLoginSuccess(
+          provider: widget.socialOption.name.toLowerCase(),
+        ));
       } else {
         _cancelSocialLogin();
       }
@@ -187,6 +195,9 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
     debugPrint('[$runtimeType] _cancelSocialLogin');
     errorEvent = ModalError('User canceled');
     setState(() => _retrievingData = false);
+    analyticsService.instance.sendEvent(SocialLoginError(
+      provider: widget.socialOption.name.toLowerCase(),
+    ));
   }
 
   @override
@@ -205,10 +216,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     return ModalNavbar(
       title: widget.socialOption.name,
-      onBack: () {
-        _cancelSocialLogin();
-        widgetStack.instance.pop();
-      },
+      noBack: true,
       body: SingleChildScrollView(
         scrollDirection: isPortrait ? Axis.vertical : Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: kPadding16),
@@ -413,11 +421,11 @@ class __WebViewLoginWidgetState extends State<_WebViewLoginWidget> {
   Widget build(BuildContext context) {
     return ModalNavbar(
       title: '',
-      onBack: () => widget.onCancel(),
+      noBack: true,
       noClose: true,
       rightAction: NavbarActionButton(
         asset: 'lib/modal/assets/icons/close.svg',
-        action: () => widget.onCancel(),
+        action: widget.onCancel,
       ),
       body: WebViewWidget(controller: _webViewController),
     );

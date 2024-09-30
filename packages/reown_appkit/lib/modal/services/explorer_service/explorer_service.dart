@@ -155,7 +155,6 @@ class ExplorerService implements IExplorerService {
         sampleWallets.add(sampleWallet);
       }
     }
-    _core.logger.d('[$runtimeType] sample wallets: ${sampleWallets.length}');
     return sampleWallets;
   }
 
@@ -215,10 +214,6 @@ class ExplorerService implements IExplorerService {
         );
         return apiResponse.data.toList();
       } else {
-        _core.logger.d(
-          '⛔ [$runtimeType] error fetching native data ${response.request?.url}',
-          error: response.statusCode,
-        );
         return <NativeAppData>[];
       }
     } catch (e) {
@@ -248,8 +243,8 @@ class ExplorerService implements IExplorerService {
     );
     // this query gives me a count of installedWalletsParam.length
     final installedWallets = await _fetchListings(params: params);
-    _core.logger.d(
-      '[$runtimeType] installed wallets: ${installedWallets.length}',
+    _core.logger.t(
+      '[$runtimeType] ${installedWallets.length} installed wallets',
     );
     return installedWallets.setInstalledFlag();
   }
@@ -291,7 +286,6 @@ class ExplorerService implements IExplorerService {
     final uri = Uri.parse('${UrlConstants.apiService}/getWallets').replace(
       queryParameters: queryParams,
     );
-    _core.logger.d('[$runtimeType] fetching $uri');
     try {
       final response = await _client.get(uri, headers: headers);
       if (response.statusCode == 200 || response.statusCode == 202) {
@@ -304,15 +298,10 @@ class ExplorerService implements IExplorerService {
         }
         return apiResponse.data.toList().toAppKitWalletInfo();
       } else {
-        _core.logger.d(
-          '⛔ [$runtimeType] error fetching listings (${response.statusCode}) ${response.request?.url}\n'
-          'headers: $headers\n'
-          'queryParams $queryParams',
-        );
         return <ReownAppKitModalWalletInfo>[];
       }
     } catch (e) {
-      _core.logger.d(
+      _core.logger.e(
         '[$runtimeType] error fetching listings: $uri',
         error: e,
       );
@@ -353,7 +342,7 @@ class ExplorerService implements IExplorerService {
       }
     } catch (e, s) {
       _core.logger.e(
-        '[$runtimeType] error getConnectedWallet:',
+        '[$runtimeType] error get connected wallet:',
         error: e,
         stackTrace: s,
       );
@@ -383,7 +372,7 @@ class ExplorerService implements IExplorerService {
       _listings = currentListings;
       listings.value = _listings;
     } catch (e) {
-      _core.logger.e('[$runtimeType] updating recent wallet: $e');
+      _core.logger.e('[$runtimeType] error updating recent wallet: $e');
     }
   }
 
@@ -407,7 +396,6 @@ class ExplorerService implements IExplorerService {
     final excludedIds = (excludedWalletIds ?? <String>{});
     final exclude = excludedIds.isNotEmpty ? excludedIds.join(',') : null;
 
-    _core.logger.d('[$runtimeType] search $query');
     _currentSearchValue = query;
     final newListins = await _fetchListings(
       params: RequestParams(
@@ -423,7 +411,6 @@ class ExplorerService implements IExplorerService {
 
     listings.value = newListins;
     _debouncer.run(() => isSearching.value = false);
-    _core.logger.d('[$runtimeType] _searchListings $query');
   }
 
   @override

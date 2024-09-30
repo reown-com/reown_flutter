@@ -61,6 +61,8 @@ class MagicService implements IMagicService {
   late Completer<dynamic> _response;
   late Completer<bool> _disconnect;
 
+  Logger get _logger => _core.logger;
+
   @override
   Event<MagicSessionEvent> onMagicLoginRequest = Event<MagicSessionEvent>();
 
@@ -440,7 +442,7 @@ class MagicService implements IMagicService {
 
   void _onFrameMessage(JavaScriptMessage jsMessage) async {
     if (Platform.isAndroid) {
-      _core.logger.d('[$runtimeType] jsMessage ${jsMessage.message}');
+      debugPrint('[$runtimeType] jsMessage ${jsMessage.message}');
     }
     try {
       final frameMessage = jsMessage.toFrameMessage();
@@ -665,7 +667,7 @@ class MagicService implements IMagicService {
         _error(SignOutErrorEvent());
       }
     } catch (e, s) {
-      _core.logger.d('[$runtimeType] $jsMessage', stackTrace: s);
+      _logger.d('[$runtimeType] $jsMessage $e', stackTrace: s);
     }
   }
 
@@ -731,7 +733,7 @@ class MagicService implements IMagicService {
   }
 
   void _onDebugConsoleReceived(JavaScriptConsoleMessage message) {
-    _core.logger.d('[$runtimeType] JS Console ${message.message}');
+    debugPrint('[$runtimeType] JS Console: ${message.message}');
   }
 
   void _onWebResourceError(WebResourceError error) {
@@ -764,7 +766,7 @@ class MagicService implements IMagicService {
       _resetTimeOut();
       _error(IsConnectedErrorEvent());
       isTimeout.value = true;
-      _core.logger.e(
+      _logger.e(
         '[EmailLogin] initialization timed out. Please check if your '
         'bundleId/packageName $_packageName is whitelisted in your cloud '
         'configuration at ${UrlConstants.cloudService} for project id ${_core.projectId}',

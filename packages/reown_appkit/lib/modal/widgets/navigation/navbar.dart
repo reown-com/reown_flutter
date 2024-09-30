@@ -19,6 +19,7 @@ class ModalNavbar extends StatelessWidget {
     this.safeAreaRight = false,
     this.safeAreaBottom = true,
     this.noClose = false,
+    this.noBack = false,
     this.divider = true,
   });
 
@@ -28,7 +29,12 @@ class ModalNavbar extends StatelessWidget {
   final String title;
   final NavbarActionButton? leftAction;
   final NavbarActionButton? rightAction;
-  final bool safeAreaLeft, safeAreaRight, safeAreaBottom, noClose, divider;
+  final bool safeAreaLeft,
+      safeAreaRight,
+      safeAreaBottom,
+      noClose,
+      noBack,
+      divider;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +62,7 @@ class ModalNavbar extends StatelessWidget {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      widgetStack.instance.canPop()
+                      widgetStack.instance.canPop() && !noBack
                           ? NavbarActionButton(
                               asset: 'lib/modal/assets/icons/chevron_left.svg',
                               action: onBack ?? widgetStack.instance.pop,
