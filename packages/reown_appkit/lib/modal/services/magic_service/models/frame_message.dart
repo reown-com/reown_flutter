@@ -168,12 +168,12 @@ class GetFarcasterUri extends MessageData {
   String toString() => '{type:"${super.type}"}';
 }
 
-class ConnectFarcaster extends MessageData {
-  ConnectFarcaster() : super(type: '@w3m-app/CONNECT_FARCASTER');
+// class ConnectFarcaster extends MessageData {
+//   ConnectFarcaster() : super(type: '@w3m-app/CONNECT_FARCASTER');
 
-  @override
-  String toString() => '{type:"${super.type}"}';
-}
+//   @override
+//   String toString() => '{type:"${super.type}"}';
+// }
 
 class ConnectEmail extends MessageData {
   final String email;

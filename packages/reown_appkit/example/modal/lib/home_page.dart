@@ -220,7 +220,6 @@ class _MyHomePageState extends State<MyHomePage> {
         enableAnalytics: analyticsValue, // OPTIONAL - null by default
         enableEmail: emailWalletValue, // OPTIONAL - false by default
         socials: [
-          // AppKitSocialOption.Google,
           AppKitSocialOption.Apple,
           AppKitSocialOption.Discord,
           AppKitSocialOption.X,

@@ -20,7 +20,7 @@ class _ApproveTransactionPageState extends State<ApproveTransactionPage> {
     );
     return ModalNavbar(
       title: 'Approve Transaction',
-      // noClose: true,
+      noClose: true,
       safeAreaLeft: true,
       safeAreaRight: true,
       body: ConstrainedBox(

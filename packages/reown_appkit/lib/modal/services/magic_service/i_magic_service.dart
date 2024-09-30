@@ -17,7 +17,7 @@ abstract class IMagicService {
   });
   Future<dynamic> connectSocial({required String uri});
   Future<String?> getFarcasterUri({String? chainId});
-  Future<bool> connectFarcaster();
+  Future<bool> awaitFarcasterResponse();
 
   Future<void> connectEmail({required String value});
   Future<void> updateEmail({required String value});
@@ -40,5 +40,4 @@ abstract class IMagicService {
   abstract final Event<MagicSessionEvent> onMagicUpdate;
   abstract final Event<MagicErrorEvent> onMagicError;
   abstract final Event<MagicRequestEvent> onMagicRpcRequest;
-  // abstract final Event<SocialLoginEvent> onSocialLoginEvent;
 }

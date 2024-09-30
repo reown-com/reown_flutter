@@ -79,9 +79,6 @@ class MagicService implements IMagicService {
   @override
   Event<MagicRequestEvent> onMagicRpcRequest = Event<MagicRequestEvent>();
 
-  // @override
-  // Event<SocialLoginEvent> onSocialLoginEvent = Event<SocialLoginEvent>();
-
   final isEmailEnabled = ValueNotifier(false);
   final isSocialEnabled = ValueNotifier(false);
   final isReady = ValueNotifier(false);
@@ -210,7 +207,7 @@ class MagicService implements IMagicService {
 
   // ****** W3mFrameProvider public methods ******* //
 
-  // SOCIAL RELATED METHODS
+  // SOCIAL LOGIN RELATED METHODS
 
   Completer<String?> _getSocialRedirectUri = Completer<String?>();
   @override
@@ -258,9 +255,8 @@ class MagicService implements IMagicService {
   }
 
   Completer<bool> _connectFarcaster = Completer<bool>();
-  // TODO rename to awaitFarcasterResponse()
   @override
-  Future<bool> connectFarcaster() async {
+  Future<bool> awaitFarcasterResponse() async {
     if (_socialsNotReady) return false;
     //
     _connectFarcaster = Completer<bool>();

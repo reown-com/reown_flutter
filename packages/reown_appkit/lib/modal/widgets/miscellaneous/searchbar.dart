@@ -115,7 +115,6 @@ class _ModalSearchBarState extends State<ModalSearchBar>
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     _decorationTween = DecorationTween(
       begin: BoxDecoration(
-        // borderRadius: BorderRadius.circular(widget.height * 0.4),
         borderRadius: radiuses.isSquare()
             ? BorderRadius.zero
             : (radiuses.isCircular()
@@ -132,7 +131,6 @@ class _ModalSearchBarState extends State<ModalSearchBar>
         ],
       ),
       end: BoxDecoration(
-        // borderRadius: BorderRadius.circular(widget.height * 0.4),
         borderRadius: radiuses.isSquare()
             ? BorderRadius.zero
             : (radiuses.isCircular()
@@ -187,7 +185,6 @@ class _ModalSearchBarState extends State<ModalSearchBar>
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final unfocusedBorder = OutlineInputBorder(
       borderSide: BorderSide(color: themeColors.grayGlass005, width: 1.0),
-      // borderRadius: BorderRadius.circular(widget.height * 0.3),
       borderRadius: radiuses.isSquare()
           ? BorderRadius.zero
           : (radiuses.isCircular()

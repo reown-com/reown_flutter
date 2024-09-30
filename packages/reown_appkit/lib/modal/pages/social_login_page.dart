@@ -169,7 +169,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
       replace: true,
       FarcasterQRCodePage(
         farcasterUri: farcasterUri,
-        farcasterCompleter: magicService.instance.connectFarcaster(),
+        farcasterCompleter: magicService.instance.awaitFarcasterResponse(),
       ),
     );
   }
@@ -421,30 +421,5 @@ class __WebViewLoginWidgetState extends State<_WebViewLoginWidget> {
       ),
       body: WebViewWidget(controller: _webViewController),
     );
-  }
-}
-
-extension _AppKitSocialOptionExtension on AppKitSocialOption {
-  bool get supportsWebView {
-    switch (this) {
-      case AppKitSocialOption.X:
-        return true;
-      case AppKitSocialOption.Apple:
-        return true;
-      case AppKitSocialOption.Discord:
-        return true;
-      case AppKitSocialOption.Github:
-        return true;
-      case AppKitSocialOption.Facebook:
-        return true;
-      case AppKitSocialOption.Farcaster:
-        return true;
-      // case AppKitSocialOption.Twitch:
-      //   return true;
-      // case AppKitSocialOption.Telegram:
-      //   return true;
-      // case AppKitSocialOption.Google:
-      //   return false;
-    }
   }
 }
