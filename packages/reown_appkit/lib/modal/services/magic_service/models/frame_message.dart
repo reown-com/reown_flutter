@@ -80,12 +80,17 @@ class MessageData {
   // @w3m-frame events
   bool get syncThemeSuccess => type == '@w3m-frame/SYNC_THEME_SUCCESS';
   bool get syncDataSuccess => type == '@w3m-frame/SYNC_DAPP_DATA_SUCCESS';
-
   bool get getSocialRedirectUriSuccess =>
       type == '@w3m-frame/GET_SOCIAL_REDIRECT_URI_SUCCESS';
   bool get getSocialRedirectUriError =>
       type == '@w3m-frame/GET_SOCIAL_REDIRECT_URI_ERROR';
-
+  bool get getFarcasterUriSuccess =>
+      type == '@w3m-frame/GET_FARCASTER_URI_SUCCESS';
+  bool get getFarcasterUriError => type == '@w3m-frame/GET_FARCASTER_URI_ERROR';
+  bool get connectFarcasterSuccess =>
+      type == '@w3m-frame/CONNECT_FARCASTER_SUCCESS';
+  bool get connectFarcasterError =>
+      type == '@w3m-frame/CONNECT_FARCASTER_ERROR';
   bool get connectSocialSuccess => type == '@w3m-frame/CONNECT_SOCIAL_SUCCESS';
   bool get connectSocialError => type == '@w3m-frame/CONNECT_SOCIAL_ERROR';
 
@@ -154,6 +159,20 @@ class ConnectSocial extends MessageData {
 
   @override
   String toString() => '{type:"${super.type}",payload:{uri:"$uri"}}';
+}
+
+class GetFarcasterUri extends MessageData {
+  GetFarcasterUri() : super(type: '@w3m-app/GET_FARCASTER_URI');
+
+  @override
+  String toString() => '{type:"${super.type}"}';
+}
+
+class ConnectFarcaster extends MessageData {
+  ConnectFarcaster() : super(type: '@w3m-app/CONNECT_FARCASTER');
+
+  @override
+  String toString() => '{type:"${super.type}"}';
 }
 
 class ConnectEmail extends MessageData {

@@ -140,6 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
         AppKitSocialOption.X,
         AppKitSocialOption.Facebook,
         AppKitSocialOption.Github,
+        AppKitSocialOption.Farcaster,
       ],
       // requiredNamespaces: {},
       // optionalNamespaces: {},

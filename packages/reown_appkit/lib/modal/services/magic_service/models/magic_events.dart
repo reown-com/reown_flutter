@@ -11,11 +11,13 @@ class MagicLoginEvent implements EventArgs {
 
 class MagicSessionEvent implements EventArgs {
   String? email;
+  String? userName;
   String? address;
   int? chainId;
 
   MagicSessionEvent({
     this.email,
+    this.userName,
     this.address,
     this.chainId,
   });
@@ -24,6 +26,9 @@ class MagicSessionEvent implements EventArgs {
     Map<String, dynamic> params = {};
     if ((email ?? '').isNotEmpty) {
       params['email'] = email;
+    }
+    if ((userName ?? '').isNotEmpty) {
+      params['userName'] = userName;
     }
     if ((address ?? '').isNotEmpty) {
       params['address'] = address;

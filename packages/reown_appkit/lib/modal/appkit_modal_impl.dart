@@ -1024,9 +1024,9 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       return;
     }
     _isOpen = false;
+    final currentKey = widgetStack.instance.getCurrent().key;
     if (_disconnectOnClose) {
       _disconnectOnClose = false;
-      final currentKey = widgetStack.instance.getCurrent().key;
       if (currentKey == KeyConstants.approveSiwePageKey) {
         analyticsService.instance.sendEvent(ClickCancelSiwe(
           network: _currentSelectedChainId ?? '',
@@ -1613,11 +1613,13 @@ extension _EmailConnectorExtension on ReownAppKitModal {
       final newChainId = _getStoredChainId('${args.data!.chainId}')!;
       _currentSelectedChainId = newChainId;
       //
+      final email = args.data?.email ?? _currentSession?.toRawJson()['email'];
+      final userName =
+          args.data?.userName ?? _currentSession?.toRawJson()['userName'];
       final magicData = args.data?.copytWith(
         chainId: int.tryParse(newChainId),
-        email: args.data?.email ?? _currentSession?.toRawJson()['email'],
-        userName:
-            args.data?.userName ?? _currentSession?.toRawJson()['userName'],
+        email: email,
+        userName: userName,
       );
 
       final session = ReownAppKitModalSession(magicData: magicData);
@@ -1652,7 +1654,9 @@ extension _EmailConnectorExtension on ReownAppKitModal {
     _logger.d('[$runtimeType] _onMagicUpdateEvent: $args');
     if (args != null) {
       try {
-        final newEmail = args.email ?? _currentSession!.email;
+        final userName = _currentSession?.toRawJson()['userName'];
+        final email = _currentSession?.toRawJson()['email'];
+        final newEmail = args.email ?? email ?? userName;
         final address = args.address ?? _currentSession!.address!;
         final chainId = args.chainId?.toString() ?? _currentSession!.chainId;
         _currentSelectedChainId = chainId;
@@ -1661,6 +1665,7 @@ extension _EmailConnectorExtension on ReownAppKitModal {
           email: newEmail,
           address: address,
           chainId: int.parse(chainId),
+          userName: userName,
           // peer: _currentSession?.peer,
           // self: _currentSession?.self,
         );

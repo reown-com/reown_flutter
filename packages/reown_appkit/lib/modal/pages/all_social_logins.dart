@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
-import 'package:reown_appkit/modal/widgets/lists/list_items/base_list_item.dart';
+import 'package:reown_appkit/modal/widgets/buttons/social_login_button.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -23,40 +22,15 @@ class AllSocialLoginsPage extends StatefulWidget {
 class _AppKitModalMainWalletsPageState extends State<AllSocialLoginsPage> {
   @override
   Widget build(BuildContext context) {
-    final themeData = ReownAppKitModalTheme.getDataOf(context);
-    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final listItems = magicService.instance.socials
-        .map(
-          (item) => BaseListItem(
-            onTap: () => widget.onSelect(item),
-            child: Row(
-              children: [
-                LayoutBuilder(
-                  builder: (_, constraints) {
-                    return SvgPicture.asset(
-                      AssetUtils.getThemedAsset(
-                        context,
-                        '${item.name.toLowerCase()}_logo.svg',
-                      ),
-                      package: 'reown_appkit',
-                      height: constraints.maxHeight,
-                      width: constraints.maxHeight,
-                    );
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Text(
-                    item.name,
-                    style: themeData.textStyles.paragraph500.copyWith(
-                      color: themeColors.foreground100,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        )
+        .map((item) => SocialLoginButton(
+              logoPath: AssetUtils.getThemedAsset(
+                context,
+                '${item.name.toLowerCase()}_logo.svg',
+              ),
+              onTap: () => widget.onSelect(item),
+              title: item.name,
+            ))
         .toList();
     return ModalNavbar(
       title: 'All socials',

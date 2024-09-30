@@ -11,8 +11,13 @@ abstract class IMagicService {
   void setProvider(String? value);
 
   // ****** W3mFrameProvider public methods ******* //
-  Future<String?> getSocialRedirectUri({required AppKitSocialOption provider});
+  Future<String?> getSocialRedirectUri({
+    required AppKitSocialOption provider,
+    String? chainId,
+  });
   Future<dynamic> connectSocial({required String uri});
+  Future<String?> getFarcasterUri({String? chainId});
+  Future<bool> connectFarcaster();
 
   Future<void> connectEmail({required String value});
   Future<void> updateEmail({required String value});

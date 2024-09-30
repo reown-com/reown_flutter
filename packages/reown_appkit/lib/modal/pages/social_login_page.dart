@@ -9,6 +9,7 @@ import 'package:reown_appkit/modal/constants/string_constants.dart';
 
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/pages/farcaster_qrcode_page.dart';
 import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
 import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
@@ -29,9 +30,12 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 class SocialLoginPage extends StatefulWidget {
-  const SocialLoginPage({required this.socialOption})
-      : super(key: KeyConstants.socialLoginPage);
+  const SocialLoginPage({
+    required this.socialOption,
+    this.farcasterCompleter,
+  }) : super(key: KeyConstants.socialLoginPage);
   final AppKitSocialOption socialOption;
+  final Future<bool>? farcasterCompleter;
 
   @override
   State<SocialLoginPage> createState() => _SocialLoginPageState();
@@ -40,23 +44,28 @@ class SocialLoginPage extends StatefulWidget {
 class _SocialLoginPageState extends State<SocialLoginPage> {
   IReownAppKitModal? _service;
   ModalError? errorEvent;
+  bool _retrievingData = false;
 
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       _service = ModalProvider.of(context).instance;
       _service?.onModalError.subscribe(_errorListener);
-      _initSocialLogin(widget.socialOption);
-      setState(() {});
+      if (widget.farcasterCompleter == null) {
+        _initSocialLogin(widget.socialOption);
+        setState(() {});
+      } else {
+        widget.farcasterCompleter!.then((success) async {
+          await _completeFarcasterLogin(success);
+        });
+      }
     });
   }
 
   @override
   void dispose() {
     _service?.onModalError.unsubscribe(_errorListener);
-    // WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -68,30 +77,32 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
     setState(() => errorEvent = event);
   }
 
-  void _initSocialLogin(AppKitSocialOption option) async {
+  Future<void> _initSocialLogin(AppKitSocialOption option) async {
     try {
       setState(() => errorEvent = null);
-      final appKitModal = ModalProvider.of(context).instance;
-      final redirectUri = await magicService.instance.getSocialRedirectUri(
-        provider: option,
-        chainId: appKitModal.selectedChain?.chainId,
-      );
-      setState(() => errorEvent = null);
-      if (option.supportsWebView) {
-        await _continueInWebview(redirectUri!);
+      if (option == AppKitSocialOption.Farcaster) {
+        final farcasterUri = await magicService.instance.getFarcasterUri(
+          chainId: _service?.selectedChain?.chainId,
+        );
+
+        if (farcasterUri != null) {
+          await _continueInFarcaster(farcasterUri);
+        }
       } else {
-        await ReownCoreUtils.openURL(redirectUri!);
-        // await _launchUrlInBottomSheet(uri!);
-        // magicService.instance.onSocialLoginEvent.subscribe((event) async {
-        //   await _completeSocialLogin(event!.uri!);
-        // });
+        final redirectUri = await magicService.instance.getSocialRedirectUri(
+          provider: option,
+          chainId: _service?.selectedChain?.chainId,
+        );
+
+        if (redirectUri != null) {
+          await _continueInWebview(redirectUri);
+        }
       }
     } catch (e) {
       debugPrint('[$runtimeType] _initSocialLogin error $e');
     }
   }
 
-  bool _retrievingData = false;
   Future<void> _continueInWebview(String redirectUri) async {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
@@ -138,21 +149,42 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
   Future<void> _completeSocialLogin(String url) async {
     try {
       setState(() => _retrievingData = true);
-      final uri = Uri.parse(url);
-      final result = await magicService.instance.connectSocial(
-        uri: '?${uri.query}',
+      final success = await magicService.instance.connectSocial(
+        uri: '?${Uri.parse(url).query}',
       );
-      debugPrint('[$runtimeType] _completeSocialLogin result $result');
-      if (result == true) {
+      if (success == true) {
         await magicService.instance.getUser();
+      } else {
+        _cancelSocialLogin();
       }
     } catch (e) {
       debugPrint('[$runtimeType] _completeSocialLogin error $e');
+      _cancelSocialLogin();
       setState(() => _retrievingData = false);
     }
   }
 
+  Future<void> _continueInFarcaster(String farcasterUri) async {
+    widgetStack.instance.push(
+      replace: true,
+      FarcasterQRCodePage(
+        farcasterUri: farcasterUri,
+        farcasterCompleter: magicService.instance.connectFarcaster(),
+      ),
+    );
+  }
+
+  Future<void> _completeFarcasterLogin(bool success) async {
+    if (success == false) {
+      _cancelSocialLogin();
+    } else {
+      setState(() => _retrievingData = true);
+      await magicService.instance.getUser();
+    }
+  }
+
   void _cancelSocialLogin() {
+    debugPrint('[$runtimeType] _cancelSocialLogin');
     errorEvent = ModalError('User canceled');
     setState(() => _retrievingData = false);
   }
@@ -170,9 +202,11 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
         : ResponsiveData.maxHeightOf(context) -
             kNavbarHeight -
             (kPadding16 * 2);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     return ModalNavbar(
       title: widget.socialOption.name,
       onBack: () {
+        _cancelSocialLogin();
         widgetStack.instance.pop();
       },
       body: SingleChildScrollView(
@@ -190,25 +224,35 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
                   errorEvent == null
                       ? LoadingBorder(
                           animate: errorEvent == null,
-                          borderRadius: maxWidth / 2,
-                          child: SvgPicture.asset(
-                            AssetUtils.getThemedAsset(
-                              context,
-                              '${widget.socialOption.name.toLowerCase()}_logo.svg',
+                          borderRadius: kSelectedWalletIconHeight,
+                          child: ClipRRect(
+                            borderRadius: radiuses.isSquare()
+                                ? BorderRadius.zero
+                                : BorderRadius.circular(maxWidth),
+                            child: SvgPicture.asset(
+                              AssetUtils.getThemedAsset(
+                                context,
+                                '${widget.socialOption.name.toLowerCase()}_logo.svg',
+                              ),
+                              package: 'reown_appkit',
                             ),
-                            package: 'reown_appkit',
                           ),
                         )
                       : Stack(
                           children: [
                             SizedBox.square(
                               dimension: kSelectedWalletIconHeight,
-                              child: SvgPicture.asset(
-                                AssetUtils.getThemedAsset(
-                                  context,
-                                  '${widget.socialOption.name.toLowerCase()}_logo.svg',
+                              child: ClipRRect(
+                                borderRadius: radiuses.isSquare()
+                                    ? BorderRadius.zero
+                                    : BorderRadius.circular(maxWidth),
+                                child: SvgPicture.asset(
+                                  AssetUtils.getThemedAsset(
+                                    context,
+                                    '${widget.socialOption.name.toLowerCase()}_logo.svg',
+                                  ),
+                                  package: 'reown_appkit',
                                 ),
-                                package: 'reown_appkit',
                               ),
                             ),
                             Positioned(

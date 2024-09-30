@@ -206,8 +206,11 @@ class _EmailLoginButton extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final provider = AppKitSocialOption.values.firstWhereOrNull(
-      (e) => e.name == service.session?.peer?.metadata.name,
+      (e) => e.name == service.session!.peer?.metadata.name,
     );
+    final title = service.session!.email.isNotEmpty
+        ? service.session!.email
+        : service.session!.userName;
     return Column(
       children: [
         const SizedBox.square(dimension: kPadding8),
@@ -220,18 +223,22 @@ class _EmailLoginButton extends StatelessWidget {
                     assetColor: themeColors.foreground100,
                     borderRadius: radiuses.isSquare() ? 0.0 : null,
                   )
-                : SizedBox.square(
-                    dimension: 34.0,
+                : ClipRRect(
+                    borderRadius: radiuses.isSquare()
+                        ? BorderRadius.zero
+                        : BorderRadius.circular(34),
                     child: SvgPicture.asset(
                       AssetUtils.getThemedAsset(
                         context,
                         '${provider.name.toLowerCase()}_logo.svg',
                       ),
                       package: 'reown_appkit',
+                      height: 34,
+                      width: 34,
                     ),
                   ),
           ),
-          title: service.session?.email ?? '',
+          title: title,
           titleStyle: themeData.textStyles.paragraph500.copyWith(
             color: themeColors.foreground100,
           ),

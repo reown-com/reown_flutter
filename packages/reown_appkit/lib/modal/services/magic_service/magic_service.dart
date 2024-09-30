@@ -230,15 +230,43 @@ class MagicService implements IMagicService {
     return await _getSocialRedirectUri.future;
   }
 
-  Completer<dynamic> _connectSocial = Completer<dynamic>();
+  Completer<bool> _connectSocial = Completer<bool>();
   @override
   Future<dynamic> connectSocial({required String uri}) async {
     if (_socialsNotReady) return null;
     //
-    _connectSocial = Completer<dynamic>();
+    _connectSocial = Completer<bool>();
     final message = ConnectSocial(uri: uri).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
     return await _connectSocial.future;
+  }
+
+  Completer<String?> _getFarcasterUri = Completer<String?>();
+  @override
+  Future<String?> getFarcasterUri({String? chainId}) async {
+    if (_socialsNotReady) return null;
+    if (_getFarcasterUri.isCompleted) {
+      return await _getFarcasterUri.future;
+    }
+    //
+    _getFarcasterUri = Completer<String?>();
+    _connectionChainId = chainId ?? _connectionChainId;
+    _socialProvider = AppKitSocialOption.Farcaster;
+    final message = GetFarcasterUri().toString();
+    await _webViewController.runJavaScript('sendMessage($message)');
+    return await _getFarcasterUri.future;
+  }
+
+  Completer<bool> _connectFarcaster = Completer<bool>();
+  // TODO rename to awaitFarcasterResponse()
+  @override
+  Future<bool> connectFarcaster() async {
+    if (_socialsNotReady) return false;
+    //
+    _connectFarcaster = Completer<bool>();
+    // final message = ConnectFarcaster().toString();
+    // await _webViewController.runJavaScript('sendMessage($message)');
+    return await _connectFarcaster.future;
   }
 
   // EMAIL RELATED METHODS
@@ -412,6 +440,8 @@ class MagicService implements IMagicService {
     await _webViewController.runJavaScript('sendMessage($message)');
   }
 
+  String? _socialUsername;
+
   void _onFrameMessage(JavaScriptMessage jsMessage) async {
     if (Platform.isAndroid) {
       _core.logger.d('[$runtimeType] jsMessage ${jsMessage.message}');
@@ -441,15 +471,22 @@ class MagicService implements IMagicService {
         final uri = messageData.getPayloadMapKey<String>('uri');
         _getSocialRedirectUri.complete(uri);
       }
+      // ****** CONNECT_SOCIAL_SUCCESS
       if (messageData.connectSocialSuccess) {
-        final data = MagicData.fromJson(messageData.payload!);
-        final event = MagicSessionEvent(
-          email: data.email ?? data.userName,
-          address: data.address,
-          chainId: data.chainId,
-        );
-        onMagicUpdate.broadcast(event);
+        _socialUsername = messageData.getPayloadMapKey<String?>('userName');
+        debugPrint('[$runtimeType] connectSocialSuccess $_socialUsername');
         _connectSocial.complete(true);
+      }
+      // ****** GET_FARCASTER_URI_SUCCESS
+      if (messageData.getFarcasterUriSuccess) {
+        final url = messageData.getPayloadMapKey<String>('url');
+        _getFarcasterUri.complete(url);
+      }
+      // ****** CONNECT_FARCASTER_SUCCESS
+      if (messageData.connectFarcasterSuccess) {
+        _socialUsername = messageData.getPayloadMapKey<String?>('userName');
+        debugPrint('[$runtimeType] connectFarcasterSuccess $_socialUsername');
+        _connectFarcaster.complete(true);
       }
       // ****** CONNECT_EMAIL
       if (messageData.connectEmailSuccess) {
@@ -520,17 +557,22 @@ class MagicService implements IMagicService {
       // ****** GET_USER
       if (messageData.getUserSuccess) {
         isConnected.value = true;
-        final data = MagicData.fromJson(messageData.payload!);
+        debugPrint('[$runtimeType] getUserSuccess ${messageData.payload}');
+        final magicData = MagicData.fromJson(messageData.payload!).copytWith(
+          userName: _socialUsername,
+        );
+        _socialUsername = null;
         if (!_connected.isCompleted) {
           final event = MagicSessionEvent(
-            email: data.email,
-            address: data.address,
-            chainId: data.chainId,
+            email: magicData.email,
+            userName: magicData.userName,
+            address: magicData.address,
+            chainId: magicData.chainId,
           );
           onMagicUpdate.broadcast(event);
           _connected.complete(isConnected.value);
         } else {
-          final session = data.copytWith(
+          final session = magicData.copytWith(
             peer: _peerMetadata.copyWith(
               metadata: _peerMetadata.metadata.copyWith(
                 name: _socialProvider?.name ?? 'Email Wallet',
@@ -542,12 +584,11 @@ class MagicService implements IMagicService {
           onMagicLoginSuccess.broadcast(MagicLoginEvent(session));
         }
       }
-      // ****** SIGN_OUT
+      // ****** SIGN_OUT_SUCCESS
       if (messageData.signOutSuccess) {
         _resetTimeOut();
         _disconnect.complete(true);
       }
-      // ****** SESSION_UPDATE
       if (messageData.sessionUpdate) {
         // onMagicUpdate.broadcast(MagicSessionEvent(...));
       }
@@ -555,31 +596,31 @@ class MagicService implements IMagicService {
         _error(IsConnectedErrorEvent());
       }
       if (messageData.connectEmailError) {
-        String? message = messageData.payload?['message']?.toString();
+        String? message = messageData.getPayloadMapKey<String?>('message');
         if (message?.toLowerCase() == 'invalid params') {
           message = 'Wrong email format';
         }
         _error(ConnectEmailErrorEvent(message: message));
       }
       if (messageData.updateEmailError) {
-        final message = messageData.payload?['message']?.toString();
+        final message = messageData.getPayloadMapKey<String?>('message');
         _error(UpdateEmailErrorEvent(message: message));
       }
       if (messageData.updateEmailPrimaryOtpError) {
-        final message = messageData.payload?['message']?.toString();
+        final message = messageData.getPayloadMapKey<String?>('message');
         _error(UpdateEmailPrimaryOtpErrorEvent(message: message));
       }
       if (messageData.updateEmailSecondaryOtpError) {
-        final message = messageData.payload?['message']?.toString();
+        final message = messageData.getPayloadMapKey<String?>('message');
         _error(UpdateEmailSecondaryOtpErrorEvent(message: message));
       }
       if (messageData.connectOtpError) {
         analyticsService.instance.sendEvent(EmailVerificationCodeFail());
-        final message = messageData.payload?['message']?.toString();
+        final message = messageData.getPayloadMapKey<String?>('message');
         _error(ConnectOtpErrorEvent(message: message));
       }
       if (messageData.getSocialRedirectUriError) {
-        String? message = messageData.payload?['message']?.toString();
+        String? message = messageData.getPayloadMapKey<String?>('message');
         message = message?.replaceFirst(
           'Error: Magic RPC Error: [-32600] ',
           '',
@@ -588,13 +629,31 @@ class MagicService implements IMagicService {
         _getSocialRedirectUri.complete(null);
       }
       if (messageData.connectSocialError) {
-        String? message = messageData.payload?['message']?.toString();
+        String? message = messageData.getPayloadMapKey<String?>('message');
         message = message?.replaceFirst(
           'Error: Magic RPC Error: [-32600] ',
           '',
         );
         _error(MagicErrorEvent(message));
         _connectSocial.complete(false);
+      }
+      if (messageData.getFarcasterUriError) {
+        String? message = messageData.getPayloadMapKey<String?>('message');
+        message = message?.replaceFirst(
+          'Error: Magic RPC Error: [-32600] ',
+          '',
+        );
+        _error(MagicErrorEvent(message));
+        _getFarcasterUri.complete(null);
+      }
+      if (messageData.connectFarcasterError) {
+        String? message = messageData.getPayloadMapKey<String?>('message');
+        message = message?.replaceFirst(
+          'Error: Magic RPC Error: [-32600] ',
+          '',
+        );
+        _error(MagicErrorEvent(message));
+        _connectFarcaster.complete(false);
       }
       if (messageData.getUserError) {
         _error(GetUserErrorEvent());
