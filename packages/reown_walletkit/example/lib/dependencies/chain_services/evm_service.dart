@@ -476,6 +476,7 @@ class EVMService {
         topic,
         session!.peer.metadata.redirect,
         response.error?.message,
+        response.error == null,
       );
     } on ReownSignError catch (error) {
       MethodsUtils.handleRedirect(

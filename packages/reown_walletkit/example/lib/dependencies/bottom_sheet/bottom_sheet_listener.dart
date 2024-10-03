@@ -46,7 +46,9 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
             Future.delayed(Duration(seconds: item.closeAfter), () {
               try {
                 if (!mounted) return;
-                Navigator.pop(context);
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                }
               } catch (e) {
                 debugPrint('[$runtimeType] close $e');
               }
@@ -78,7 +80,11 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
                     IconButton(
                       padding: const EdgeInsets.all(0.0),
                       visualDensity: VisualDensity.compact,
-                      onPressed: () => Navigator.pop(context),
+                      onPressed: () {
+                        if (Navigator.canPop(context)) {
+                          Navigator.pop(context);
+                        }
+                      },
                       icon: const Icon(Icons.close_sharp),
                     ),
                   ],
