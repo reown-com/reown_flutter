@@ -223,9 +223,12 @@ class WalletKitService extends IWalletKitService {
             ),
             sessionProperties: args.params.sessionProperties,
           );
+          debugPrint('[$runtimeType] approveSession $session');
           MethodsUtils.handleRedirect(
             session.topic,
             session.session!.peer.metadata.redirect,
+            '',
+            true,
           );
         } on ReownSignError catch (error) {
           MethodsUtils.handleRedirect(
@@ -358,9 +361,12 @@ class WalletKitService extends IWalletKitService {
             id: args.id,
             auths: cacaos,
           );
+          debugPrint('[$runtimeType] approveSessionAuthenticate $session');
           MethodsUtils.handleRedirect(
             session.topic,
             session.session?.peer.metadata.redirect,
+            '',
+            true,
           );
         } on ReownSignError catch (error) {
           MethodsUtils.handleRedirect(

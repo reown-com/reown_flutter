@@ -38,7 +38,9 @@ class AppsPageState extends State<AppsPage> with GetItStateMixin {
     //
     _registerListeners();
     // TODO _walletKit.core.echo.register(firebaseAccessToken);
-    DeepLinkHandler.checkInitialLink();
+    Future.delayed(Duration(seconds: 2), () {
+      DeepLinkHandler.checkInitialLink();
+    });
   }
 
   void _registerListeners() {
@@ -244,7 +246,9 @@ class AppsPageState extends State<AppsPage> with GetItStateMixin {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  }
                 },
                 child: const Text(
                   'Close',

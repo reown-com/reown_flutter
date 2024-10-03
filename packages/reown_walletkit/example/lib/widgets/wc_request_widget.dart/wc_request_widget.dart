@@ -41,7 +41,11 @@ class WCRequestWidget extends StatelessWidget {
           children: [
             CustomButton(
               onTap: onReject ??
-                  () => Navigator.of(context).pop(WCBottomSheetResult.reject),
+                  () {
+                    if (Navigator.canPop(context)) {
+                      Navigator.of(context).pop(WCBottomSheetResult.reject);
+                    }
+                  },
               type: CustomButtonType.invalid,
               child: const Text(
                 StringConstants.reject,
@@ -53,8 +57,14 @@ class WCRequestWidget extends StatelessWidget {
               width: StyleConstants.linear16,
             ),
             CustomButton(
+              // onTap: onAccept ??
+              //     () => Navigator.of(context).pop(WCBottomSheetResult.one),
               onTap: onAccept ??
-                  () => Navigator.of(context).pop(WCBottomSheetResult.one),
+                  () {
+                    if (Navigator.canPop(context)) {
+                      Navigator.of(context).pop(WCBottomSheetResult.one);
+                    }
+                  },
               type: CustomButtonType.valid,
               child: const Text(
                 StringConstants.approve,

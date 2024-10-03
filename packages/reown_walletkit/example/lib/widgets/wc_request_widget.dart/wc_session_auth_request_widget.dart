@@ -26,8 +26,13 @@ class WCSessionAuthRequestWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             CustomButton(
-              onTap: () =>
-                  Navigator.of(context).pop(WCBottomSheetResult.reject),
+              // onTap: () =>
+              //     Navigator.of(context).pop(WCBottomSheetResult.reject),
+              onTap: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop(WCBottomSheetResult.reject);
+                }
+              },
               type: CustomButtonType.invalid,
               child: const Text(
                 'Cancel',
@@ -37,7 +42,12 @@ class WCSessionAuthRequestWidget extends StatelessWidget {
             ),
             const SizedBox(width: StyleConstants.linear8),
             CustomButton(
-              onTap: () => Navigator.of(context).pop(WCBottomSheetResult.one),
+              // onTap: () => Navigator.of(context).pop(WCBottomSheetResult.one),
+              onTap: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop(WCBottomSheetResult.one);
+                }
+              },
               type: CustomButtonType.normal,
               child: const Text(
                 'Sign One',
@@ -47,7 +57,12 @@ class WCSessionAuthRequestWidget extends StatelessWidget {
             ),
             const SizedBox(width: StyleConstants.linear8),
             CustomButton(
-              onTap: () => Navigator.of(context).pop(WCBottomSheetResult.all),
+              // onTap: () => Navigator.of(context).pop(WCBottomSheetResult.all),
+              onTap: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop(WCBottomSheetResult.all);
+                }
+              },
               type: CustomButtonType.valid,
               child: const Text(
                 'Sign All',

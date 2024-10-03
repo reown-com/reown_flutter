@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
@@ -139,13 +140,39 @@ class AppDetailPageState extends State<AppDetailPage> {
               visible: metadata != null,
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 40.0,
-                    backgroundImage: ((metadata?.icons ?? []).isNotEmpty
-                            ? NetworkImage(metadata!.icons[0])
-                            : const AssetImage(
-                                'assets/images/default_icon.png'))
-                        as ImageProvider<Object>,
+                  Builder(
+                    builder: (BuildContext context) {
+                      if (metadata!.icons.isNotEmpty) {
+                        final imageUrl = metadata.icons.first;
+                        if (imageUrl.split('.').last == 'svg') {
+                          return Container(
+                            width: 80.0,
+                            height: 80.0,
+                            padding: const EdgeInsets.all(1.0),
+                            decoration: BoxDecoration(
+                              border:
+                                  Border.all(width: 1.0, color: Colors.black38),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0)),
+                            ),
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40.0)),
+                              child: SvgPicture.network(imageUrl),
+                            ),
+                          );
+                        }
+                        return CircleAvatar(
+                          backgroundImage: NetworkImage(imageUrl),
+                          radius: 40.0,
+                        );
+                      }
+                      return CircleAvatar(
+                        backgroundImage:
+                            const AssetImage('assets/images/default_icon.png'),
+                        radius: 40.0,
+                      );
+                    },
                   ),
                   const SizedBox(width: 10.0),
                   Expanded(
@@ -213,6 +240,8 @@ class AppDetailPageState extends State<AppDetailPage> {
   }
 
   void _back() {
-    Navigator.of(context).pop();
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
   }
 }

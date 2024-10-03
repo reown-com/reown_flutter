@@ -53,16 +53,19 @@ class MethodsUtils {
     String topic,
     Redirect? redirect, [
     String? error,
+    bool success = false,
   ]) {
     debugPrint(
         '[SampleWallet] handleRedirect topic: $topic, redirect: $redirect, error: $error');
-    openApp(topic, redirect, onFail: (e) {
-      goBackModal(
-        title: 'Error',
+    openApp(
+      topic,
+      redirect,
+      onFail: (e) => goBackModal(
+        title: success ? 'Success' : 'Error',
         message: error,
-        success: false,
-      );
-    });
+        success: success,
+      ),
+    );
   }
 
   static void openApp(
