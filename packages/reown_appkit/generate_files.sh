@@ -20,8 +20,8 @@ dart run dependency_validator
 
 cd ios
 
-pod deintegrate
-pod cache clean -all
+# pod deintegrate
+# pod cache clean -all
 pod install
 
 cd ..
@@ -42,8 +42,8 @@ dart run dependency_validator
 
 cd ios
 
-pod deintegrate
-pod cache clean -all
+# pod deintegrate
+# pod cache clean -all
 pod install
 
 cd ..

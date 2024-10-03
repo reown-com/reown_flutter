@@ -38,9 +38,7 @@ class AppsPageState extends State<AppsPage> with GetItStateMixin {
     //
     _registerListeners();
     // TODO _walletKit.core.echo.register(firebaseAccessToken);
-    Future.delayed(Duration(seconds: 2), () {
-      DeepLinkHandler.checkInitialLink();
-    });
+    DeepLinkHandler.checkInitialLink();
   }
 
   void _registerListeners() {
