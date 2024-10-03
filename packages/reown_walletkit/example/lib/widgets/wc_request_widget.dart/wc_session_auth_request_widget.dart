@@ -26,8 +26,6 @@ class WCSessionAuthRequestWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             CustomButton(
-              // onTap: () =>
-              //     Navigator.of(context).pop(WCBottomSheetResult.reject),
               onTap: () {
                 if (Navigator.canPop(context)) {
                   Navigator.of(context).pop(WCBottomSheetResult.reject);
@@ -42,7 +40,6 @@ class WCSessionAuthRequestWidget extends StatelessWidget {
             ),
             const SizedBox(width: StyleConstants.linear8),
             CustomButton(
-              // onTap: () => Navigator.of(context).pop(WCBottomSheetResult.one),
               onTap: () {
                 if (Navigator.canPop(context)) {
                   Navigator.of(context).pop(WCBottomSheetResult.one);
@@ -57,7 +54,6 @@ class WCSessionAuthRequestWidget extends StatelessWidget {
             ),
             const SizedBox(width: StyleConstants.linear8),
             CustomButton(
-              // onTap: () => Navigator.of(context).pop(WCBottomSheetResult.all),
               onTap: () {
                 if (Navigator.canPop(context)) {
                   Navigator.of(context).pop(WCBottomSheetResult.all);

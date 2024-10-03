@@ -57,8 +57,6 @@ class WCRequestWidget extends StatelessWidget {
               width: StyleConstants.linear16,
             ),
             CustomButton(
-              // onTap: onAccept ??
-              //     () => Navigator.of(context).pop(WCBottomSheetResult.one),
               onTap: onAccept ??
                   () {
                     if (Navigator.canPop(context)) {
