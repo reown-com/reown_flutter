@@ -145,7 +145,7 @@ abstract class IReownAppKitModal with ChangeNotifier {
   Future<void> requestSwitchToChain(ReownAppKitModalNetworkInfo newChain);
   Future<void> requestAddChain(ReownAppKitModalNetworkInfo newChain);
 
-  Future<void> dispatchEnvelope(String url);
+  Future<bool> dispatchEnvelope(String url);
 
   /// Closes the modal.
   void closeModal({bool disconnectSession = false});

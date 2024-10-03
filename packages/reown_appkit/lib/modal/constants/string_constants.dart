@@ -48,6 +48,9 @@ class UrlConstants {
   //
   static const secureService =
       'https://secure-mobile.walletconnect.com/mobile-sdk';
+  // static const secureService =
+  //     'https://secure-mobile-oauth.vercel.app/mobile-sdk';
+  // static const secureService = 'https://secure-appkit-sdk.pages.dev/mobile-sdk';
   static const secureDashboard = 'https://secure.walletconnect.com/dashboard';
   //
   static const learnMoreUrl =

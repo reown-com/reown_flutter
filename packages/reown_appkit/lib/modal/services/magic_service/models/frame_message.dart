@@ -34,8 +34,10 @@ class FrameMessage {
       };
 
   bool get isValidOrigin {
-    return Uri.parse(origin ?? '').authority ==
-        Uri.parse(UrlConstants.secureDashboard).authority;
+    final authority1 = Uri.parse(UrlConstants.secureDashboard).authority;
+    final authority2 = Uri.parse(UrlConstants.secureService).authority;
+    final originAuthority = Uri.parse(origin ?? '').authority;
+    return originAuthority == authority1 || originAuthority == authority2;
   }
 
   bool get isValidData {
@@ -143,12 +145,22 @@ class SwitchNetwork extends MessageData {
 
 class GetSocialRedirectUri extends MessageData {
   final String provider;
+  final String? schema;
   GetSocialRedirectUri({
     required this.provider,
+    this.schema,
   }) : super(type: '@w3m-app/GET_SOCIAL_REDIRECT_URI');
 
   @override
-  String toString() => '{type:"${super.type}",payload:{provider:"$provider"}}';
+  String toString() {
+    final p = 'provider:"$provider"';
+    final s = 'schema:"$schema"';
+
+    if (schema != null) {
+      return '{type:"${super.type}",payload:{$p,$s}}';
+    }
+    return '{type:"${super.type}",payload:{$p}}';
+  }
 }
 
 class ConnectSocial extends MessageData {

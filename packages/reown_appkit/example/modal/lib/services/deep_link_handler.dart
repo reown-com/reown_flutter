@@ -47,7 +47,10 @@ class DeepLinkHandler {
   static void _onLink(dynamic link) async {
     debugPrint('[SampleModal] _onLink $link');
     if (link == null) return;
-    await _appKitModal.dispatchEnvelope(link);
+    final handled = await _appKitModal.dispatchEnvelope(link);
+    if (!handled) {
+      debugPrint('[SampleModal] _onLink not handled by AppKit');
+    }
   }
 
   static void _onError(dynamic error) {

@@ -13,9 +13,11 @@ abstract class IMagicService {
   // ****** W3mFrameProvider public methods ******* //
   Future<String?> getSocialRedirectUri({
     required AppKitSocialOption provider,
+    String? schema,
     String? chainId,
   });
   Future<dynamic> connectSocial({required String uri});
+  void completeSocialLogin({required String url});
   Future<String?> getFarcasterUri({String? chainId});
   Future<bool> awaitFarcasterResponse();
 
@@ -40,4 +42,5 @@ abstract class IMagicService {
   abstract final Event<MagicSessionEvent> onMagicUpdate;
   abstract final Event<MagicErrorEvent> onMagicError;
   abstract final Event<MagicRequestEvent> onMagicRpcRequest;
+  abstract final Event<CompleteSocialLoginEvent> onCompleteSocialLogin;
 }

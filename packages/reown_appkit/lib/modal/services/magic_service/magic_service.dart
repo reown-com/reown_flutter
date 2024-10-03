@@ -21,11 +21,17 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 class MagicService implements IMagicService {
-  static const _safeDomains = [
+  static const _thirdSafeDomains = [
     'auth.magic.link',
     'launchdarkly.com',
   ];
-  static const supportedMethods = MethodsConstants.allMethods;
+  static const supportedMethods = [
+    'personal_sign',
+    'eth_sendTransaction',
+    'eth_accounts',
+    'eth_sendRawTransaction',
+    'eth_signTypedData_v4',
+  ];
 
   ConnectionMetadata get _selfMetadata => ConnectionMetadata(
         metadata: _metadata,
@@ -80,6 +86,10 @@ class MagicService implements IMagicService {
 
   @override
   Event<MagicRequestEvent> onMagicRpcRequest = Event<MagicRequestEvent>();
+
+  @override
+  Event<CompleteSocialLoginEvent> onCompleteSocialLogin =
+      Event<CompleteSocialLoginEvent>();
 
   final isEmailEnabled = ValueNotifier(false);
   final isSocialEnabled = ValueNotifier(false);
@@ -147,14 +157,16 @@ class MagicService implements IMagicService {
 
     await _webViewController.setBackgroundColor(Colors.transparent);
     await _webViewController.setJavaScriptMode(JavaScriptMode.unrestricted);
+    await _webViewController.enableZoom(false);
     await _webViewController.addJavaScriptChannel(
       'w3mWebview',
       onMessageReceived: _onFrameMessage,
     );
     await _webViewController.setNavigationDelegate(
       NavigationDelegate(
-        onNavigationRequest: (NavigationRequest request) {
+        onNavigationRequest: (NavigationRequest request) async {
           if (_isAllowedDomain(request.url)) {
+            await _fitToScreen();
             return NavigationDecision.navigate;
           }
           if (isReady.value) {
@@ -167,6 +179,7 @@ class MagicService implements IMagicService {
         },
         onWebResourceError: _onWebResourceError,
         onPageFinished: (String url) async {
+          await _fitToScreen();
           _onLoadCount++;
           // If bundleId/packageName is whitelisted in cloud then for some reason it enters here twice
           // Like as if secure-mobile.walletconnect.com is loaded twice
@@ -215,6 +228,7 @@ class MagicService implements IMagicService {
   @override
   Future<String?> getSocialRedirectUri({
     required AppKitSocialOption provider,
+    String? schema,
     String? chainId,
   }) async {
     if (_socialsNotReady) return null;
@@ -224,6 +238,7 @@ class MagicService implements IMagicService {
     _socialProvider = provider;
     final message = GetSocialRedirectUri(
       provider: _socialProvider!.name.toLowerCase(),
+      schema: schema,
     ).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
     return await _getSocialRedirectUri.future;
@@ -238,6 +253,11 @@ class MagicService implements IMagicService {
     final message = ConnectSocial(uri: uri).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
     return await _connectSocial.future;
+  }
+
+  @override
+  void completeSocialLogin({required String url}) {
+    onCompleteSocialLogin.broadcast(CompleteSocialLoginEvent(url));
   }
 
   Completer<String?> _getFarcasterUri = Completer<String?>();
@@ -716,6 +736,19 @@ class MagicService implements IMagicService {
     onMagicError.broadcast(errorEvent);
   }
 
+  Future<void> _fitToScreen() async {
+    return await _webViewController.runJavaScript('''
+      if (document.querySelector('meta[name="viewport"]') === null) {
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+        document.head.appendChild(meta);
+      } else {
+        document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+      }
+    ''');
+  }
+
   Future<void> _runJavascript() async {
     return await _webViewController.runJavaScript('''
       const iframeFL = document.getElementById('frame-mobile-sdk')
@@ -733,7 +766,7 @@ class MagicService implements IMagicService {
   }
 
   void _onDebugConsoleReceived(JavaScriptConsoleMessage message) {
-    debugPrint('[$runtimeType] JS Console: ${message.message}');
+    _logger.d('[$runtimeType] JS Console: ${message.message}');
   }
 
   void _onWebResourceError(WebResourceError error) {
@@ -756,7 +789,7 @@ class MagicService implements IMagicService {
     final domains = [
       Uri.parse(UrlConstants.secureService).authority,
       Uri.parse(UrlConstants.secureDashboard).authority,
-      ..._safeDomains,
+      ..._thirdSafeDomains,
     ].join('|');
     return RegExp(r'' + domains).hasMatch(domain);
   }

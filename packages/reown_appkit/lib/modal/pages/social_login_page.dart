@@ -13,6 +13,7 @@ import 'package:reown_appkit/modal/pages/farcaster_qrcode_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/analytics_service_singleton.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
+import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
 import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
@@ -94,13 +95,29 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
           await _continueInFarcaster(farcasterUri);
         }
       } else {
+        final schema = null; //_service?.appKit?.metadata.redirect?.universal;
         final redirectUri = await magicService.instance.getSocialRedirectUri(
           provider: option,
+          schema: schema,
           chainId: _service?.selectedChain?.chainId,
         );
 
         if (redirectUri != null) {
-          await _continueInWebview(redirectUri);
+          if (schema != null) {
+            magicService.instance.onCompleteSocialLogin.subscribe(
+              _onCompleteSocialLogin,
+            );
+            await ReownCoreUtils.openURL(redirectUri);
+          } else {
+            await _continueInWebview(redirectUri);
+            // final result = await ReownSocialLogin.login(initialUrl: redirectUri);
+            // debugPrint('ReownSocialLogin $result');
+            // if (result == null) {
+            //   _cancelSocialLogin();
+            // } else {
+            //   await _completeSocialLogin(result);
+            // }
+          }
         }
       }
     } catch (e) {
@@ -151,6 +168,14 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
     }
   }
 
+  void _onCompleteSocialLogin(CompleteSocialLoginEvent? event) async {
+    if (event != null) {
+      await _completeSocialLogin(event.url);
+    } else {
+      _cancelSocialLogin();
+    }
+  }
+
   Future<void> _completeSocialLogin(String url) async {
     try {
       setState(() => _retrievingData = true);
@@ -162,6 +187,9 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
         analyticsService.instance.sendEvent(SocialLoginSuccess(
           provider: widget.socialOption.name.toLowerCase(),
         ));
+        magicService.instance.onCompleteSocialLogin.unsubscribe(
+          _onCompleteSocialLogin,
+        );
       } else {
         _cancelSocialLogin();
       }
@@ -342,7 +370,6 @@ class _WebViewLoginWidget extends StatefulWidget {
 class __WebViewLoginWidgetState extends State<_WebViewLoginWidget> {
   final _webViewController = WebViewController();
   final _cookieManager = WebViewCookieManager();
-  final _authority = Uri.parse(UrlConstants.secureDashboard).authority;
 
   @override
   void initState() {
@@ -372,40 +399,57 @@ class __WebViewLoginWidgetState extends State<_WebViewLoginWidget> {
   }
 
   void _setDebugMode() {
-    if (kDebugMode) {
-      if (Platform.isIOS) {
-        final wkCtrl = _webViewController.platform as WebKitWebViewController;
-        wkCtrl.setInspectable(true);
-      }
-      if (Platform.isAndroid) {
-        if (_webViewController.platform is AndroidWebViewController) {
-          final aCtrl = _webViewController.platform as AndroidWebViewController;
-          aCtrl.setMediaPlaybackRequiresUserGesture(false);
-          AndroidWebViewController.enableDebugging(true);
+    if (!kDebugMode) return;
+    if (Platform.isIOS) {
+      final wkCtrl = _webViewController.platform as WebKitWebViewController;
+      wkCtrl.setInspectable(true);
+    }
+    if (Platform.isAndroid) {
+      if (_webViewController.platform is AndroidWebViewController) {
+        final aCtrl = _webViewController.platform as AndroidWebViewController;
+        aCtrl.setMediaPlaybackRequiresUserGesture(false);
+        AndroidWebViewController.enableDebugging(true);
 
-          final cookieManager =
-              _cookieManager.platform as AndroidWebViewCookieManager;
-          cookieManager.setAcceptThirdPartyCookies(
-            _webViewController.platform as AndroidWebViewController,
-            true,
-          );
-        }
+        final cookieManager =
+            _cookieManager.platform as AndroidWebViewCookieManager;
+        cookieManager.setAcceptThirdPartyCookies(
+          _webViewController.platform as AndroidWebViewController,
+          true,
+        );
       }
     }
+  }
+
+  Future<void> _fitToScreen() async {
+    return await _webViewController.runJavaScript('''
+      if (document.querySelector('meta[name="viewport"]') === null) {
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
+        document.head.appendChild(meta);
+      } else {
+        document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+      }
+      ''');
   }
 
   Future<void> _init() async {
     _setDebugMode();
     await _clearCookies();
-    await _webViewController.clearCache();
-    await _webViewController.clearLocalStorage();
+    // await _webViewController.clearCache();
+    // await _webViewController.clearLocalStorage();
+    await _webViewController.enableZoom(false);
+    await _webViewController.setJavaScriptMode(JavaScriptMode.unrestricted);
+    await _fitToScreen();
     await _webViewController.setNavigationDelegate(
       NavigationDelegate(
         onNavigationRequest: (NavigationRequest request) {
           final uri = Uri.parse(request.url);
           final params = uri.queryParameters;
-          if (uri.authority == _authority && params.containsKey('state')) {
-            debugPrint('onNavigationRequest ${request.url}');
+          final authority1 = Uri.parse(UrlConstants.secureDashboard).authority;
+          final authority2 = Uri.parse(UrlConstants.secureService).authority;
+          if ((uri.authority == authority1 || uri.authority == authority2) &&
+              params.containsKey('state')) {
             Future.delayed(Duration(milliseconds: 500), () {
               Navigator.of(context).pop(request.url);
             });

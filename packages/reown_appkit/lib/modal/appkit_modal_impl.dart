@@ -221,11 +221,20 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   bool _serviceInitialized = false;
 
   @override
-  Future<void> dispatchEnvelope(String url) async {
+  Future<bool> dispatchEnvelope(String url) async {
     final envelope = ReownCoreUtils.getSearchParamFromURL(url, 'wc_ev');
     if (envelope.isNotEmpty) {
-      return await _appKit.dispatchEnvelope(url);
+      await _appKit.dispatchEnvelope(url);
+      return true;
     }
+
+    final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
+    if (state.isNotEmpty) {
+      magicService.instance.completeSocialLogin(url: url);
+      return true;
+    }
+
+    return false;
   }
 
   @override
@@ -925,6 +934,14 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     }
 
     final metadataRedirect = _currentSession!.peer?.metadata.redirect;
+
+    final appLink = (metadataRedirect?.universal ?? '');
+    final supportedApps = _appKit.core.getLinkModeSupportedApps();
+    final isLinkMode = appLink.isNotEmpty && supportedApps.contains(appLink);
+    if (isLinkMode) {
+      // Opening peers during Link Mode requests is handled in Sign Engine
+      return;
+    }
 
     final walletRedirect = explorerService.instance.getWalletRedirect(
       walletInfo,
