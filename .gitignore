@@ -55,4 +55,4 @@ app.*.map.json
 
 # Run scripts
 run_tests_all.sh
-*.env.secret
+*.env.secret*
