@@ -1,4 +1,4 @@
-name: Build iOS App Release
+name: iOS Modal (production) deploy
 
 on:
   workflow_dispatch:
