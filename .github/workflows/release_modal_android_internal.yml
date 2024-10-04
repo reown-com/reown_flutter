@@ -1,4 +1,4 @@
-name: Build Android App Internal (beta)
+name: Android Modal (internal) deploy
 
 on:
   workflow_dispatch:

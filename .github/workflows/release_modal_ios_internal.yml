@@ -1,4 +1,4 @@
-name: Build iOS App Internal (beta)
+name: iOS Modal (internal) deploy
 
 on:
   workflow_dispatch:

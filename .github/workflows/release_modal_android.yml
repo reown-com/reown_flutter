@@ -1,4 +1,4 @@
-name: Build Android App Release
+name: Android Modal (production) deploy
 
 on:
   workflow_dispatch:
