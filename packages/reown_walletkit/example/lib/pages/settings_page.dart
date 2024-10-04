@@ -37,7 +37,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   onCreateAddress: () async {
                     await keysService.createAddressFromSeed();
                     await keysService.loadKeys();
-                    Navigator.of(context).pop();
+                    if (Navigator.canPop(context)) {
+                      Navigator.pop(context);
+                    }
                     setState(() {});
                   },
                   onAccountChanged: (address) async {

@@ -216,17 +216,19 @@ class WalletKitService extends IWalletKitService {
         // generatedNamespaces is constructed based on registered methods handlers
         // so if you want to handle requests using onSessionRequest event then you would need to manually add that method in the approved namespaces
         try {
-          final session = await _walletKit!.approveSession(
+          _walletKit!.approveSession(
             id: args.id,
             namespaces: NamespaceUtils.regenerateNamespacesWithChains(
               args.params.generatedNamespaces!,
             ),
             sessionProperties: args.params.sessionProperties,
           );
-          MethodsUtils.handleRedirect(
-            session.topic,
-            session.session!.peer.metadata.redirect,
-          );
+          // MethodsUtils.handleRedirect(
+          //   session.topic,
+          //   session.session!.peer.metadata.redirect,
+          //   '',
+          //   true,
+          // );
         } on ReownSignError catch (error) {
           MethodsUtils.handleRedirect(
             '',
@@ -271,7 +273,13 @@ class WalletKitService extends IWalletKitService {
   void _onSessionConnect(SessionConnect? args) {
     if (args != null) {
       final session = jsonEncode(args.session.toJson());
-      debugPrint('[SampleWallet] _onSessionConnect $session');
+      log('[SampleWallet] _onSessionConnect $session');
+      MethodsUtils.handleRedirect(
+        args.session.topic,
+        args.session.peer.metadata.redirect,
+        '',
+        true,
+      );
     }
   }
 
@@ -358,9 +366,12 @@ class WalletKitService extends IWalletKitService {
             id: args.id,
             auths: cacaos,
           );
+          debugPrint('[$runtimeType] approveSessionAuthenticate $session');
           MethodsUtils.handleRedirect(
             session.topic,
             session.session?.peer.metadata.redirect,
+            '',
+            true,
           );
         } on ReownSignError catch (error) {
           MethodsUtils.handleRedirect(

@@ -244,7 +244,9 @@ class AppsPageState extends State<AppsPage> with GetItStateMixin {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  if (Navigator.canPop(context)) {
+                    Navigator.pop(context);
+                  }
                 },
                 child: const Text(
                   'Close',

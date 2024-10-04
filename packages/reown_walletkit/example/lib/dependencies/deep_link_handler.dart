@@ -25,7 +25,10 @@ class DeepLinkHandler {
   static void checkInitialLink() async {
     if (kIsWeb) return;
     try {
-      _methodChannel.invokeMethod('initialLink');
+      final initialLink = await _methodChannel.invokeMethod('initialLink');
+      if (initialLink != null) {
+        _onLink(initialLink);
+      }
     } catch (e) {
       debugPrint('[SampleWallet] [DeepLinkHandler] checkInitialLink $e');
     }
@@ -40,11 +43,9 @@ class DeepLinkHandler {
   static String get host => universalUri.host;
 
   static void _onLink(Object? event) async {
-    final ev = ReownCoreUtils.getSearchParamFromURL('$event', 'wc_ev');
-    if (ev.isNotEmpty) {
-      debugPrint('[SampleWallet] is linkMode $event');
-      await _walletKit.dispatchEnvelope('$event');
-    } else {
+    try {
+      return await _walletKit.dispatchEnvelope('$event');
+    } catch (e) {
       final decodedUri = Uri.parse(Uri.decodeFull(event.toString()));
       if (decodedUri.isScheme('wc')) {
         debugPrint('[SampleWallet] is legacy uri $decodedUri');
@@ -52,7 +53,7 @@ class DeepLinkHandler {
         await _walletKit.pair(uri: decodedUri);
       } else {
         final uriParam = ReownCoreUtils.getSearchParamFromURL(
-          '$decodedUri',
+          decodedUri.toString(),
           'uri',
         );
         if (decodedUri.isScheme(nativeUri.scheme) && uriParam.isNotEmpty) {
