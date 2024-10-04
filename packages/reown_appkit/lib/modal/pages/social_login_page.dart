@@ -95,20 +95,15 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
           await _continueInFarcaster(farcasterUri);
         }
       } else {
-        final schema = null; //_service?.appKit?.metadata.redirect?.universal;
+        // final schema = _service?.appKit?.metadata.redirect?.universal;
         final redirectUri = await magicService.instance.getSocialRedirectUri(
           provider: option,
-          schema: schema,
+          schema: null,
           chainId: _service?.selectedChain?.chainId,
         );
 
         if (redirectUri != null) {
-          if (schema != null) {
-            magicService.instance.onCompleteSocialLogin.subscribe(
-              _onCompleteSocialLogin,
-            );
-            await ReownCoreUtils.openURL(redirectUri);
-          } else {
+          if (option.supportsWebView) {
             await _continueInWebview(redirectUri);
             // final result = await ReownSocialLogin.login(initialUrl: redirectUri);
             // debugPrint('ReownSocialLogin $result');
@@ -117,6 +112,11 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
             // } else {
             //   await _completeSocialLogin(result);
             // }
+          } else {
+            magicService.instance.onCompleteSocialLogin.subscribe(
+              _onCompleteSocialLogin,
+            );
+            await ReownCoreUtils.openURL(redirectUri);
           }
         }
       }
@@ -473,5 +473,30 @@ class __WebViewLoginWidgetState extends State<_WebViewLoginWidget> {
       ),
       body: WebViewWidget(controller: _webViewController),
     );
+  }
+}
+
+extension _AppKitSocialOptionExtension on AppKitSocialOption {
+  bool get supportsWebView {
+    switch (this) {
+      case AppKitSocialOption.X:
+        return true;
+      case AppKitSocialOption.Apple:
+        return true;
+      case AppKitSocialOption.Discord:
+        return true;
+      case AppKitSocialOption.Github:
+        return true;
+      case AppKitSocialOption.Facebook:
+        return true;
+      case AppKitSocialOption.Farcaster:
+        return true;
+      // case AppKitSocialOption.Twitch:
+      //   return true;
+      // case AppKitSocialOption.Telegram:
+      //   return true;
+      case AppKitSocialOption.Google:
+        return false;
+    }
   }
 }
