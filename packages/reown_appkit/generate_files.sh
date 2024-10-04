@@ -20,6 +20,7 @@ dart run dependency_validator
 
 cd ios
 
+# rm Podfile.lock
 # pod deintegrate
 # pod cache clean -all
 pod install
@@ -42,6 +43,7 @@ dart run dependency_validator
 
 cd ios
 
+# rm Podfile.lock
 # pod deintegrate
 # pod cache clean -all
 pod install
