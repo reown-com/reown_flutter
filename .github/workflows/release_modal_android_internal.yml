@@ -11,12 +11,14 @@ on:
 jobs:
   build_with_signing:
     name: Build Android App Internal (beta)
-    runs-on: macos-latest
+    runs-on: macos-latest-xlarge
     
     steps:
     # Checkout the repo
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    # Create temp firebase key
     - name: Create temp firebase key
       env:
         FIREBASE_KEY_BASE64: ${{ secrets.FIREBASE_KEY_BASE64 }}
@@ -26,6 +28,7 @@ jobs:
 
         # import certificate and provisioning profile from secrets
         echo -n "$FIREBASE_KEY_BASE64" | base64 --decode -o $FIREBASE_KEY_PATH
+
     # Setup Java 11
     - name: Setup Java 17
       uses: actions/setup-java@v3
@@ -34,6 +37,8 @@ jobs:
         java-version: '17'
         architecture: x86_64
         cache: 'gradle'
+    
+    # Cache Gradle
     - name: Cache Gradle
       uses: actions/cache@v3
       with:
@@ -43,25 +48,15 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
           ${{ runner.os }}-gradle-
-    # Install Flutter SDK
-    - name: Install Flutter
-      uses: subosito/flutter-action@v2
+
+    # Install Flutter and Dependencies
+    - uses: ./.github/actions/dependencies
       with:
-        flutter-version: '3.19.5'
-    # Get package dependencies and generate files
-    - name: Get package dependencies and generate files
-      run: |
-        flutter pub get
-        flutter pub run build_runner build --delete-conflicting-outputs
-    # Get example app dependencies and generate files
-    - name: Get example app dependencies and generate files
-      working-directory: example
-      run: |
-        flutter pub get
-        flutter pub run build_runner build --delete-conflicting-outputs
+        working-directory: packages/reown_appkit/example/modal
+
     # Build Android example app
     - name: Build Android APK
-      working-directory: example
+      working-directory: packages/reown_appkit/example/modal
       env:
         PROJECT_ID: ${{ secrets.PROJECT_ID }}
         APPKIT_AUTH: ${{ secrets.APPKIT_AUTH }}
@@ -69,10 +64,10 @@ jobs:
         AUTH_SERVICE_URL: ${{ secrets.AUTH_SERVICE_URL }}
       run: |
         # Get app version from file
+        # VERSION_FILE=$GITHUB_WORKSPACE/lib/version.dart
+        # VERSION=`echo $(cat $VERSION_FILE) | sed "s/[^']*'\([^']*\)'.*/\1/"`
+        VERSION=4.0.0
         GRADLE_FILE=android/gradle.properties
-        VERSION_FILE=$GITHUB_WORKSPACE/lib/version.dart
-
-        VERSION=`echo $(cat $VERSION_FILE) | sed "s/[^']*'\([^']*\)'.*/\1/"`
 
         # Set versionName on gradle.properties
         awk -F"=" -v newval="$VERSION" 'BEGIN{OFS=FS} $1=="versionName"{$2=newval}1' $GRADLE_FILE > "$GRADLE_FILE.tmp" && mv "$GRADLE_FILE.tmp" $GRADLE_FILE
@@ -89,18 +84,23 @@ jobs:
     # Setup Node
     - name: Setup Node
       uses: actions/setup-node@v3
+
     # Setup Firebase
     - name: Setup Firebase
       uses: w9jds/setup-firebase@main
       with:
         tools-version: 13.0.1
         firebase_token: ${{ secrets.FIREBASE_TOKEN }}
+
+    # Upload APK
     - name: Upload APK
-      working-directory: example/build/app/outputs/flutter-apk
+      working-directory: packages/reown_appkit/example/modal/build/app/outputs/flutter-apk
       env:
         APP_ID: ${{ secrets.ANDROID_APP_ID_INTERNAL }}
       run: |
-        firebase appdistribution:distribute app-beta-release.apk --app $APP_ID --release-notes "Web3Modal Flutter beta release" --groups "flutter-team, javascript-team, kotlin-team"
+        firebase appdistribution:distribute app-beta-release.apk --app $APP_ID --release-notes "AppKit Flutter sample internal" --groups "flutter-team, javascript-team, kotlin-team"
+
+    # Notify Channel
     - name: Notify Channel
       uses: slackapi/slack-github-action@v1.24.0
       env:
@@ -109,8 +109,9 @@ jobs:
       with:
         payload: |-
           {
-            "text":"🤖 New *Android* build *${{ github.ref_name }}* version for *Web3Modal Flutter* was just deployed. Test at https://appdistribution.firebase.dev/i/a47ee97e86fbdfff"
+            "text":"🤖 AppKit *Modal* Flutter Sample *Internal* *${{ github.ref_name }}* was just deployed. Test at https://appdistribution.firebase.dev/i/a47ee97e86fbdfff"
           }
+
     # Clean up Flutter envs
     - name: Clean up
       if: ${{ always() }}
@@ -119,3 +120,7 @@ jobs:
         flutter clean
         cd example
         flutter clean
+
+# Launch locally
+# Needs docker to be running
+# act -j build_with_signing --container-architecture linux/amd64 -P macos-latest-xlarge=-self-hosted --secret-file .github/workflows/.env.secret.modal -W .github/workflows/release_modal_android_internal.yml
