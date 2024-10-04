@@ -1009,6 +1009,12 @@ class ReownSign implements IReownSign {
       function: _onSessionAuthenticateRequest,
       type: ProtocolType.sign,
     );
+    // Deprecated method but still supported for retrocompatibility
+    // core.pairing.register(
+    //   method: MethodConstants.WC_AUTH_REQUEST,
+    //   function: _onAuthRequest,
+    //   type: ProtocolType.sign,
+    // );
   }
 
   bool _shouldIgnoreSessionPropose(String topic) {
@@ -2617,6 +2623,18 @@ class ReownSign implements IReownSign {
     await sessionAuthRequests.delete(id.toString());
     await _deleteProposal(id);
   }
+
+  // Deprecated method but still supported for retrocompatibility
+  // void _onAuthRequest(String topic, JsonRpcRequest payload, [_]) async {
+  //   await core.pairing.sendError(
+  //     payload.id,
+  //     topic,
+  //     payload.method,
+  //     JsonRpcError.invalidRequest(
+  //       '${payload.method} is deprecated, use wc_sessionAuthenticate',
+  //     ),
+  //   );
+  // }
 
   void _onSessionAuthenticateRequest(
     String topic,

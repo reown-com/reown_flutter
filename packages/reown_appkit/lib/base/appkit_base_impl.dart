@@ -10,6 +10,7 @@ class ReownAppKit implements IReownAppKit {
       MethodConstants.WC_SESSION_REQUEST,
     ],
     // [
+    //   // Deprecated method but still supported for retrocompatibility
     //   MethodConstants.WC_AUTH_REQUEST,
     // ]
   ];

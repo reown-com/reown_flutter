@@ -15,6 +15,7 @@ class MethodConstants {
   static const WC_SESSION_DELETE = 'wc_sessionDelete';
   static const WC_SESSION_PING = 'wc_sessionPing';
 
+  // Deprecated method but still supported for retrocompatibility
   // static const WC_AUTH_REQUEST = 'wc_authRequest';
 
   static const WC_SESSION_AUTHENTICATE = 'wc_sessionAuthenticate';
