@@ -89,6 +89,9 @@ class ReownAppKitModalSession {
     if (sessionService.isCoinbase) {
       return true;
     }
+    if (sessionService.isMagic) {
+      return true;
+    }
 
     final nsMethods = getApprovedMethods() ?? [];
     final supportsAddChain = nsMethods.contains(
