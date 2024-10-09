@@ -1,10 +1,7 @@
 import 'dart:convert';
 import 'package:bs58/bs58.dart';
 import 'package:solana_web3/solana_web3.dart' as solana;
-
 import 'package:reown_appkit/reown_appkit.dart';
-
-import 'package:reown_appkit_dapp/models/chain_metadata.dart';
 
 enum SolanaMethods {
   solanaSignTransaction,
@@ -27,7 +24,7 @@ class Solana {
     required ReownAppKit appKit,
     required String topic,
     required String method,
-    required ChainMetadata chainData,
+    required ReownAppKitModalNetworkInfo chainData,
     required String address,
     bool isV0 = false,
   }) async {
@@ -51,7 +48,7 @@ class Solana {
       case 'solana_signTransaction':
         // Create a connection to the devnet cluster.
         final cluster = solana.Cluster.https(
-          Uri.parse(chainData.rpc.first).authority,
+          Uri.parse(chainData.rpcUrl).authority,
         );
         // final cluster = solana.Cluster.devnet;
         final connection = solana.Connection(cluster);

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:convert/convert.dart';
-import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/coinbase_service_singleton.dart';
 import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
 import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
@@ -9,19 +9,28 @@ import 'package:reown_appkit/reown_appkit.dart';
 
 class SiweService implements ISiweService {
   late final SIWEConfig? _siweConfig;
-  final IReownAppKit _appKit;
+  late final IReownAppKit _appKit;
+  late final Map<String, RequiredNamespace> _namespaces;
 
   SiweService({
     required IReownAppKit appKit,
     required SIWEConfig? siweConfig,
+    required Map<String, RequiredNamespace> namespaces,
   })  : _appKit = appKit,
-        _siweConfig = siweConfig;
+        _siweConfig = siweConfig,
+        _namespaces = namespaces;
 
   @override
   SIWEConfig? get config => _siweConfig;
 
   @override
-  bool get enabled => _siweConfig?.enabled == true;
+  bool get enabled {
+    // TODO check this logic
+    final nonEVM = _namespaces.keys.firstWhereOrNull(
+      (k) => k != NetworkUtils.eip155,
+    );
+    return _siweConfig?.enabled == true && nonEVM == null;
+  }
 
   @override
   int get nonceRefetchIntervalMs =>
@@ -78,11 +87,7 @@ class SiweService implements ISiweService {
     if (!enabled) throw Exception('siweConfig not enabled');
     //
     final chainId = AuthSignature.getChainIdFromMessage(message);
-    final chainInfo = ReownAppKitModalNetworks.getNetworkById(
-      CoreConstants.namespace,
-      chainId,
-    )!;
-    final caip2Chain = '${CoreConstants.namespace}:${chainInfo.chainId}';
+    final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(chainId);
     final address = AuthSignature.getAddressFromMessage(message);
     final bytes = utf8.encode(message);
     final encoded = hex.encode(bytes);

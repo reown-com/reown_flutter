@@ -1,6 +1,7 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
-import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/pages/about_networks.dart';
 import 'package:reown_appkit/modal/pages/connet_network_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
@@ -24,17 +25,33 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
   final Function(ReownAppKitModalNetworkInfo)? onTapNetwork;
 
   void _onSelectNetwork(
-      BuildContext context, ReownAppKitModalNetworkInfo chainInfo) async {
+    BuildContext context,
+    ReownAppKitModalNetworkInfo chainInfo,
+  ) async {
     final service = ModalProvider.of(context).instance;
     if (service.isConnected) {
-      final approvedChains = service.session!.getApprovedChains() ?? [];
-      final caip2Chain = '${CoreConstants.namespace}:${chainInfo.chainId}';
-      final isChainApproved = approvedChains.contains(caip2Chain);
+      final chainId = chainInfo.chainId;
+      final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(chainId);
+      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+        chainId,
+      );
+      final approvedChains = service.session!.getApprovedChains(
+        namespace: namespace,
+      );
+      final isChainApproved = (approvedChains ?? []).contains(caip2Chain);
       if (chainInfo.chainId == service.selectedChain?.chainId) {
-        widgetStack.instance.pop();
+        if (widgetStack.instance.canPop()) {
+          widgetStack.instance.pop();
+        } else {
+          service.closeModal();
+        }
       } else if (isChainApproved || service.session!.sessionService.isMagic) {
         await service.selectChain(chainInfo, switchChain: true);
-        widgetStack.instance.pop();
+        if (widgetStack.instance.canPop()) {
+          widgetStack.instance.pop();
+        } else {
+          service.closeModal();
+        }
       } else {
         widgetStack.instance.push(ConnectNetworkPage(chainInfo: chainInfo));
       }
@@ -50,8 +67,6 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
     final service = ModalProvider.of(context).instance;
     final isSwitch = service.selectedChain != null;
     final isPortrait = ResponsiveData.isPortrait(context);
-    final maxHeight =
-        (ResponsiveData.gridItemSzieOf(context).height * 3) + (kPadding12 * 4);
 
     return ModalNavbar(
       title: isSwitch ? 'Change network' : 'Select network',
@@ -62,22 +77,26 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
         children: [
           Flexible(
             fit: isPortrait ? FlexFit.loose : FlexFit.tight,
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxHeight: maxHeight),
-              child: NetworkServiceItemsListener(
-                builder: (context, initialised, items) {
-                  if (!initialised) {
-                    return const ContentLoading();
-                  }
-                  return NetworksGrid(
+            child: NetworkServiceItemsListener(
+              builder: (context, initialised, items) {
+                if (!initialised) {
+                  return const ContentLoading();
+                }
+                final rows = min((items.length ~/ 4) + 1, 3);
+                final maxHeight =
+                    (ResponsiveData.gridItemSzieOf(context).height * rows) +
+                        (kPadding12 * (rows + 1));
+                return ConstrainedBox(
+                  constraints: BoxConstraints(maxHeight: maxHeight),
+                  child: NetworksGrid(
                     onTapNetwork: (chainInfo) => _onSelectNetwork(
                       context,
                       chainInfo,
                     ),
                     itemList: items,
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ),
           Divider(color: themeColors.grayGlass005, height: 0.0),
