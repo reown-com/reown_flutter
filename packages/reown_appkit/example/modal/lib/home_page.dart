@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:reown_appkit_example/services/deep_link_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:reown_appkit/modal/services/blockchain_service/blockchain_service_singleton.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 import 'package:reown_appkit_example/widgets/debug_drawer.dart';
@@ -168,8 +169,11 @@ class _MyHomePageState extends State<MyHomePage> {
           } catch (error) {
             debugPrint('[SIWEConfig] getSession error: $error');
             // Fallback patch for testing purposes in case SIWE backend has issues
-            final address = _appKitModal.session!.address!;
             final chainId = _appKitModal.session!.chainId;
+            final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+              chainId,
+            );
+            final address = _appKitModal.session!.getAddress(namespace)!;
             return SIWESession(address: address, chains: [chainId]);
           }
         },
@@ -207,8 +211,28 @@ class _MyHomePageState extends State<MyHomePage> {
     final siweAuthValue = prefs.getBool('appkit_siwe_auth') ?? true;
 
     // See https://docs.reown.com/appkit/flutter/core/custom-chains
-    final testNetworks = ReownAppKitModalNetworks.test['eip155'] ?? [];
-    ReownAppKitModalNetworks.addNetworks('eip155', testNetworks);
+    // final extraChains = ReownAppKitModalNetworks.extra['eip155']!;
+    // ReownAppKitModalNetworks.addSupportedNetworks('eip155', extraChains);
+    // ReownAppKitModalNetworks.removeSupportedNetworks('eip155');
+    // ReownAppKitModalNetworks.removeTestNetworks();
+    ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
+      ReownAppKitModalNetworkInfo(
+        name: 'Polkadot',
+        chainId: '91b171bb158e2d3848fa23a9f1c25182',
+        chainIcon: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png',
+        currency: 'DOT',
+        rpcUrl: 'https://rpc.polkadot.io',
+        explorerUrl: 'https://polkadot.subscan.io',
+      ),
+      ReownAppKitModalNetworkInfo(
+        name: 'Westend',
+        chainId: 'e143f23803ac50e8f6f8e62695d1ce9e',
+        currency: 'DOT',
+        rpcUrl: 'https://westend-rpc.polkadot.io',
+        explorerUrl: 'https://westend.subscan.io',
+        isTestNetwork: true,
+      ),
+    ]);
 
     try {
       _appKitModal = ReownAppKitModal(
@@ -239,10 +263,50 @@ class _MyHomePageState extends State<MyHomePage> {
           'c03dfee351b6fcc421b4494ea33b9d4b92a984f87aa76d1663bb28705e95034a', // Uniswap
           '38f5d18bd8522c244bdd70cb4a68e0e718865155811c043f052fb9f1c51de662', // Bitget
         },
-        // excludedWalletIds: {
-        //   'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
-        // },
+        // excludedWalletIds: {},
         // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
+        getBalance: () async {
+          try {
+            final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+              _appKitModal.selectedChain!.chainId,
+            );
+            return await blockchainService.instance.getBalance(
+              address: _appKitModal.session!.getAddress(namespace)!,
+              namespace: namespace,
+              chainId: _appKitModal.selectedChain!.chainId,
+            );
+          } catch (e) {
+            debugPrint('[$runtimeType] getBalance $e');
+            return 0.0;
+          }
+        },
+        optionalNamespaces: {
+          'eip155': RequiredNamespace.fromJson({
+            'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
+              namespace: 'eip155',
+            ).map((chain) => 'eip155:${chain.chainId}').toList(),
+            'methods': NetworkUtils.defaultNetworkMethods['eip155']!.toList(),
+            'events': NetworkUtils.defaultNetworkEvents['eip155']!.toList(),
+          }),
+          'solana': RequiredNamespace.fromJson({
+            'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
+              namespace: 'solana',
+            ).map((chain) => 'solana:${chain.chainId}').toList(),
+            'methods': NetworkUtils.defaultNetworkMethods['solana']!.toList(),
+            'events': [],
+          }),
+          'polkadot': RequiredNamespace.fromJson({
+            'chains': [
+              'polkadot:91b171bb158e2d3848fa23a9f1c25182',
+              'polkadot:e143f23803ac50e8f6f8e62695d1ce9e'
+            ],
+            'methods': [
+              'polkadot_signMessage',
+              'polkadot_signTransaction',
+            ],
+            'events': []
+          }),
+        },
       );
       setState(() => _initialized = true);
     } on ReownAppKitModalException catch (e) {

@@ -35,76 +35,65 @@ class BlockChainService implements IBlockChainService {
     try {
       final uri = Uri.parse('$_baseUrl/identity/$address');
       final queryParams = {..._requiredParams};
-      // if (queryParams['clientId'] == null) {
-      //   queryParams['clientId'] = await _core.crypto.getClientId();
-      // }
       final response = await http.get(
         uri.replace(queryParameters: queryParams),
         headers: _requiredHeaders,
       );
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.body.isNotEmpty) {
         return BlockchainIdentity.fromJson(jsonDecode(response.body));
+      }
+      if (response.statusCode == 400) {
+        final errorData = jsonDecode(response.body) as Map<String, dynamic>;
+        final reasons = errorData['reasons'] as List<dynamic>;
+        final reason = reasons.isNotEmpty
+            ? reasons.first['description'] ?? ''
+            : response.body;
+        throw Exception(reason);
       } else {
         throw Exception('Failed to load avatar');
       }
     } catch (e) {
-      _core.logger.e('[$runtimeType] getIdentity: $e');
       rethrow;
     }
   }
 
-  int _retries = 1;
   @override
-  Future<dynamic> rpcRequest({
-    // required String? topic,
+  Future<dynamic> getBalance({
+    required String address,
+    required String namespace,
     required String chainId,
-    required SessionRequestParams request,
   }) async {
-    final bool isChainId = NamespaceUtils.isValidChainId(chainId);
-    if (!isChainId) {
-      throw Errors.getSdkError(
-        Errors.UNSUPPORTED_CHAINS,
-        context: '[$runtimeType] chain should be CAIP-2 valid',
-      );
-    }
     final uri = Uri.parse(_baseUrl);
-    final queryParams = {..._requiredParams, 'chainId': chainId};
+    final queryParams = {..._requiredParams, 'chainId': '$namespace:$chainId'};
     final response = await http.post(
       uri.replace(queryParameters: queryParams),
-      headers: {
-        ..._requiredHeaders,
-        'Content-Type': 'application/json',
-      },
+      headers: {..._requiredHeaders, 'Content-Type': 'application/json'},
       body: jsonEncode({
         'id': 1,
         'jsonrpc': '2.0',
-        'method': request.method,
-        'params': request.params,
+        'method': _balanceMetod(namespace),
+        'params': [
+          address,
+          if (namespace == NetworkUtils.eip155) 'latest',
+        ],
       }),
     );
     if (response.statusCode == 200 && response.body.isNotEmpty) {
-      _retries = 1;
       try {
-        final result = _parseRpcResultAs<String>(response.body);
-        final amount = EtherAmount.fromBigInt(EtherUnit.wei, hexToInt(result));
-        return amount.getValueInUnit(EtherUnit.ether);
+        return _parseBalanceResult(namespace, response.body);
       } catch (e) {
-        _core.logger.e(
-          '[$runtimeType] Failed to get parse ${request.toJson()}. '
-          'Response: ${response.body}, Status code: ${response.statusCode}',
-        );
-        rethrow;
+        throw Exception('Failed to load balance. $e');
       }
+    }
+    if (response.statusCode == 400) {
+      final errorData = jsonDecode(response.body) as Map<String, dynamic>;
+      final reasons = errorData['reasons'] as List<dynamic>;
+      final reason = reasons.isNotEmpty
+          ? reasons.first['description'] ?? ''
+          : response.body;
+      throw Exception(reason);
     } else {
-      if (response.body.isEmpty && _retries > 0) {
-        _core.logger.i('[$runtimeType] Empty body');
-        _retries -= 1;
-        await rpcRequest(chainId: chainId, request: request);
-      } else {
-        _core.logger.e(
-          '[$runtimeType] Failed to get request ${request.toJson()}. Response: ${response.body}, Status code: ${response.statusCode}',
-        );
-      }
+      throw Exception('Failed to load balance');
     }
   }
 
@@ -129,49 +118,97 @@ class BlockChainService implements IBlockChainService {
     }
   }
 
+  String _balanceMetod(String namespace) {
+    if (namespace == NetworkUtils.eip155) {
+      return 'eth_getBalance';
+    } else if (namespace == NetworkUtils.solana) {
+      return 'getBalance';
+    }
+    return '';
+  }
+
+  double _parseBalanceResult(String namespace, String balanceResult) {
+    if (namespace == NetworkUtils.solana) {
+      final result = _parseRpcResultAs<Map<String, dynamic>>(balanceResult);
+      final value = result['value'] as int;
+      return value / 1000000000.0;
+    } else if (namespace == NetworkUtils.eip155) {
+      final result = _parseRpcResultAs<String>(balanceResult);
+      final amount = EtherAmount.fromBigInt(
+        EtherUnit.wei,
+        hexToInt(result),
+      );
+      return amount.getValueInUnit(EtherUnit.ether);
+    }
+    return 0.0;
+  }
+
+  // int _retries = 1;
   // @override
-  // Future<double?> getBalance(
-  //   String address,
-  //   String currency, {
-  //   String? chain,
-  //   String? forceUpdate,
+  // Future<dynamic> rpcRequest({
+  //   // required String? topic,
+  //   required String chainId,
+  //   required SessionRequestParams request,
   // }) async {
-  //   final uri = Uri.parse('$_baseUrl/account/$address/balance');
-  //   final queryParams = {
-  //     ..._requiredParams,
-  //     'currency': currency,
-  //     if (chain != null) 'chainId': chain,
-  //     if (forceUpdate != null) 'forceUpdate': forceUpdate,
-  //   };
-  //   final response = await http.get(
+  //   final bool isChainId = NamespaceUtils.isValidChainId(chainId);
+  //   if (!isChainId) {
+  //     throw Errors.getSdkError(
+  //       Errors.UNSUPPORTED_CHAINS,
+  //       context: '[$runtimeType] chain should be CAIP-2 valid',
+  //     );
+  //   }
+  //   final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+  //   String method = request.method;
+  //   // TODO NON-EVM Support: handle this better
+  //   if (namespace == NetworkUtils.eip155) {
+  //     method = 'eth_$method';
+  //   }
+  //   final uri = Uri.parse(_baseUrl);
+  //   final queryParams = {..._requiredParams, 'chainId': chainId};
+  //   final response = await http.post(
   //     uri.replace(queryParameters: queryParams),
   //     headers: {
   //       ..._requiredHeaders,
-  //       // 'chain': chainId,
-  //       // 'forceUpdate': string
-  //       // 'Content-Type': 'application/json',
+  //       'Content-Type': 'application/json',
   //     },
-  //     // body: jsonEncode({
-  //     //   'jsonrpc': '2.0',
-  //     //   'method': 'eth_getBalance',
-  //     //   'params': [address, 'latest'],
-  //     //   'chainId': 1
-  //     // }),
+  //     body: jsonEncode({
+  //       'id': 1,
+  //       'jsonrpc': '2.0',
+  //       'method': method,
+  //       'params': request.params,
+  //     }),
   //   );
-  //   _core.logger.i('[$runtimeType] getBalance $address: ${response.body}');
-  //   if (response.statusCode == 200) {
+  //   if (response.statusCode == 200 && response.body.isNotEmpty) {
+  //     _retries = 1;
+  //     try {
+  //       // TODO NON-EVM Support: handle this better
+  //       if (namespace == NetworkUtils.solana) {
+  //         final result = _parseRpcResultAs<Map<String, dynamic>>(response.body);
+  //         final value = result['value'] as int;
+  //         return value / 1000000000.0;
+  //       }
+  //       if (namespace == NetworkUtils.eip155) {
+  //         final result = _parseRpcResultAs<String>(response.body);
+  //         final amount = EtherAmount.fromBigInt(
+  //           EtherUnit.wei,
+  //           hexToInt(result),
+  //         );
+  //         return amount.getValueInUnit(EtherUnit.ether);
+  //       }
+  //     } catch (e) {
+  //       rethrow;
+  //     }
   //   } else {
-  //     throw Exception('Failed to load balance');
+  //     if (response.body.isEmpty && _retries > 0) {
+  //       _core.logger.i('[$runtimeType] Empty body');
+  //       _retries -= 1;
+  //       await rpcRequest(chainId: chainId, request: request);
+  //     } else {
+  //       _core.logger.i(
+  //         '[$runtimeType] Failed to get request ${request.toJson()}. '
+  //         'Response: ${response.body}, Status code: ${response.statusCode}',
+  //       );
+  //     }
   //   }
-  // }
-
-  // @override
-  // Future<String> fetchEnsName(String rpcUrl, String address) async {
-  //   return '';
-  // }
-
-  // @override
-  // Future<String> fetchEnsAvatar(String rpcUrl, String address) async {
-  //   return '';
   // }
 }

@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
-import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/pages/about_networks.dart';
 import 'package:reown_appkit/modal/pages/connet_network_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
@@ -30,9 +29,15 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
   ) async {
     final service = ModalProvider.of(context).instance;
     if (service.isConnected) {
-      final approvedChains = service.session!.getApprovedChains() ?? [];
-      final caip2Chain = '${CoreConstants.namespace}:${chainInfo.chainId}';
-      final isChainApproved = approvedChains.contains(caip2Chain);
+      final chainId = chainInfo.chainId;
+      final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(chainId);
+      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+        chainId,
+      );
+      final approvedChains = service.session!.getApprovedChains(
+        namespace: namespace,
+      );
+      final isChainApproved = (approvedChains ?? []).contains(caip2Chain);
       if (chainInfo.chainId == service.selectedChain?.chainId) {
         if (widgetStack.instance.canPop()) {
           widgetStack.instance.pop();

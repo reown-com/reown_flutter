@@ -1,14 +1,15 @@
 import 'package:collection/collection.dart';
 import 'package:reown_appkit/modal/models/public/appkit_network_info.dart';
+import 'package:reown_appkit/modal/utils/public/appkit_modal_networks_utils.dart';
 
 class ReownAppKitModalNetworks {
   // https://github.com/WalletConnect/blockchain-api/blob/master/SUPPORTED_CHAINS.md
-  static Map<String, List<ReownAppKitModalNetworkInfo>> supported = {
-    'eip155': [
+  static final Map<String, List<ReownAppKitModalNetworkInfo>> _mainnets = {
+    NetworkUtils.eip155: [
       ReownAppKitModalNetworkInfo(
         name: 'Ethereum',
         chainId: '1',
-        chainIcon: chainImagesId['1'],
+        chainIcon: _networkIcons['1'],
         currency: 'ETH',
         rpcUrl: 'https://ethereum-rpc.publicnode.com',
         explorerUrl: 'https://etherscan.io',
@@ -16,7 +17,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Optimism',
         chainId: '10',
-        chainIcon: chainImagesId['10'],
+        chainIcon: _networkIcons['10'],
         currency: 'ETH',
         rpcUrl: 'https://mainnet.optimism.io/',
         explorerUrl: 'https://optimistic.etherscan.io',
@@ -24,7 +25,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Binance Smart Chain',
         chainId: '56',
-        chainIcon: chainImagesId['56'],
+        chainIcon: _networkIcons['56'],
         currency: 'BNB',
         rpcUrl: 'https://bsc-dataseed.binance.org/',
         explorerUrl: 'https://bscscan.com',
@@ -32,7 +33,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Gnosis Chain',
         chainId: '100',
-        chainIcon: chainImagesId['100'],
+        chainIcon: _networkIcons['100'],
         currency: 'xDAI',
         rpcUrl: 'https://rpc.gnosischain.com',
         explorerUrl: 'https://gnosis.blockscout.com',
@@ -40,7 +41,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Polygon',
         chainId: '137',
-        chainIcon: chainImagesId['137'],
+        chainIcon: _networkIcons['137'],
         currency: 'MATIC',
         rpcUrl: 'https://polygon.drpc.org',
         explorerUrl: 'https://polygonscan.com',
@@ -48,7 +49,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'zkSync Era',
         chainId: '324',
-        chainIcon: chainImagesId['324'],
+        chainIcon: _networkIcons['324'],
         currency: 'ETH',
         rpcUrl: 'https://mainnet.era.zksync.io',
         explorerUrl: 'https://explorer.zksync.io',
@@ -56,7 +57,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Polygon zkEVM',
         chainId: '1101',
-        chainIcon: chainImagesId['1101'],
+        chainIcon: _networkIcons['1101'],
         currency: 'ETH',
         rpcUrl: 'https://rpc-mainnet.matic.network',
         explorerUrl: 'https://explorer-evm.polygon.technology',
@@ -64,7 +65,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Mantle',
         chainId: '5000',
-        chainIcon: chainImagesId['5000'],
+        chainIcon: _networkIcons['5000'],
         currency: 'BIT',
         rpcUrl: 'https://rpc.mantlenetwork.io',
         explorerUrl: 'https://explorer.mantlenetwork.io',
@@ -72,7 +73,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Klaytn Mainnet',
         chainId: '8217',
-        chainIcon: chainImagesId['8217'],
+        chainIcon: _networkIcons['8217'],
         currency: 'KLAY',
         rpcUrl: 'https://public-node-api.klaytnapi.com/v1/cypress',
         explorerUrl: 'https://scope.klaytn.com',
@@ -80,7 +81,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Base',
         chainId: '8453',
-        chainIcon: chainImagesId['8453'],
+        chainIcon: _networkIcons['8453'],
         currency: 'ETH',
         rpcUrl: 'https://mainnet.base.org',
         explorerUrl: 'https://basescan.org',
@@ -88,7 +89,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Arbitrum',
         chainId: '42161',
-        chainIcon: chainImagesId['42161'],
+        chainIcon: _networkIcons['42161'],
         currency: 'ETH',
         rpcUrl: 'https://arbitrum.blockpi.network/v1/rpc/public',
         explorerUrl: 'https://arbiscan.io/',
@@ -96,7 +97,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Celo',
         chainId: '42220',
-        chainIcon: chainImagesId['42220'],
+        chainIcon: _networkIcons['42220'],
         currency: 'CELO',
         rpcUrl: 'https://forno.celo.org',
         explorerUrl: 'https://explorer.celo.org/mainnet',
@@ -104,7 +105,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Avalanche',
         chainId: '43114',
-        chainIcon: chainImagesId['43114'],
+        chainIcon: _networkIcons['43114'],
         currency: 'AVAX',
         rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
         explorerUrl: 'https://snowtrace.io',
@@ -112,7 +113,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Linea',
         chainId: '59144',
-        chainIcon: chainImagesId['59144'],
+        chainIcon: _networkIcons['59144'],
         currency: 'ETH',
         rpcUrl: 'https://rpc.linea.build',
         explorerUrl: 'https://explorer.linea.build',
@@ -120,7 +121,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Zora',
         chainId: '7777777',
-        chainIcon: chainImagesId['7777777'],
+        chainIcon: _networkIcons['7777777'],
         currency: 'ETH',
         rpcUrl: 'https://rpc.zora.energy',
         explorerUrl: 'https://explorer.zora.energy',
@@ -128,53 +129,26 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Aurora',
         chainId: '1313161554',
-        chainIcon: chainImagesId['1313161554'],
+        chainIcon: _networkIcons['1313161554'],
         currency: 'ETH',
         rpcUrl: 'https://mainnet.aurora.dev',
         explorerUrl: 'https://explorer.aurora.dev',
       ),
     ],
+    NetworkUtils.solana: [
+      ReownAppKitModalNetworkInfo(
+        name: 'Solana',
+        chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        chainIcon: _networkIcons['5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+        currency: 'SOL',
+        rpcUrl: 'https://api.mainnet-beta.solana.com',
+        explorerUrl: 'https://solscan.io',
+      ),
+    ],
   };
 
-  static Map<String, List<ReownAppKitModalNetworkInfo>> extra = {
-    'eip155': [
-      ReownAppKitModalNetworkInfo(
-        name: 'Fantom',
-        chainId: '250',
-        chainIcon: chainImagesId['250'],
-        currency: 'FTM',
-        rpcUrl: 'https://rpc.ftm.tools/',
-        explorerUrl: 'https://ftmscan.com',
-      ),
-      ReownAppKitModalNetworkInfo(
-        name: 'EVMos',
-        chainId: '9001',
-        chainIcon: chainImagesId['9001'],
-        currency: 'EVMOS',
-        rpcUrl: 'https://evmos-evm.publicnode.com',
-        explorerUrl: '',
-      ),
-      ReownAppKitModalNetworkInfo(
-        name: 'Iotx',
-        chainId: '4689',
-        chainIcon: chainImagesId['4689'],
-        currency: 'IOTX',
-        rpcUrl: 'https://rpc.ankr.com/iotex',
-        explorerUrl: 'https://iotexscan.io',
-      ),
-      ReownAppKitModalNetworkInfo(
-        name: 'Metis',
-        chainId: '1088',
-        chainIcon: chainImagesId['1088'],
-        currency: 'METIS',
-        rpcUrl: 'https://metis-mainnet.public.blastapi.io',
-        explorerUrl: 'https://andromeda-explorer.metis.io',
-      ),
-    ]
-  };
-
-  static Map<String, List<ReownAppKitModalNetworkInfo>> test = {
-    'eip155': [
+  static final Map<String, List<ReownAppKitModalNetworkInfo>> _testnets = {
+    NetworkUtils.eip155: [
       ReownAppKitModalNetworkInfo(
         name: 'Sepolia',
         chainId: '11155111',
@@ -186,7 +160,6 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Holesky',
         chainId: '17000',
-        chainIcon: chainImagesId['17000'],
         currency: 'ETH',
         rpcUrl: 'https://rpc.holesky.test',
         explorerUrl: 'https://explorer.holesky.test',
@@ -210,14 +183,134 @@ class ReownAppKitModalNetworks {
         chainId: '80002',
         currency: 'MATIC',
         rpcUrl: 'https://rpc-amoy.polygon.technology/',
-        extraRpcUrls: [],
         explorerUrl: 'https://amoy.polygonscan.com',
         isTestNetwork: true,
       )
     ],
+    NetworkUtils.solana: [
+      ReownAppKitModalNetworkInfo(
+        name: 'Solana Testnet',
+        chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
+        currency: 'SOL',
+        rpcUrl: 'https://api.testnet.solana.com',
+        explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
+        isTestNetwork: true,
+      ),
+      ReownAppKitModalNetworkInfo(
+        name: 'Solana Devnet',
+        chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+        currency: 'SOL',
+        rpcUrl: 'https://api.devnet.solana.com',
+        explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
+        isTestNetwork: true,
+      ),
+    ],
   };
 
-  static Map<String, String> chainImagesId = {
+  static ReownAppKitModalNetworkInfo? getNetworkById(
+    String namespace,
+    String chainId,
+  ) {
+    return getAllSupportedNetworks(namespace: namespace).firstWhere(
+      (e) => e.chainId == chainId,
+    );
+  }
+
+  static void removeSupportedNetworks(
+    String namespace, {
+    List<String> chainIds = const [],
+    bool includeTestnets = true,
+  }) {
+    _mainnets[namespace]!.removeWhere((chain) {
+      if (chainIds.isEmpty || chainIds.contains(chain.chainId)) {
+        return true;
+      }
+      return false;
+    });
+    if (includeTestnets) {
+      _testnets[namespace]!.removeWhere((chain) {
+        if (chainIds.isEmpty || chainIds.contains(chain.chainId)) {
+          return true;
+        }
+        return false;
+      });
+    }
+  }
+
+  static void removeTestNetworks() {
+    for (var key in _testnets.keys) {
+      _testnets[key]!.clear();
+    }
+  }
+
+  static void addSupportedNetworks(
+    String namespace,
+    List<ReownAppKitModalNetworkInfo> chains,
+  ) {
+    final List<ReownAppKitModalNetworkInfo> mainnets = [
+      ...List.from(_mainnets[namespace] ?? []),
+      ...(chains.where((e) => e.isTestNetwork == false)),
+    ];
+    _mainnets[namespace] = mainnets;
+
+    final List<ReownAppKitModalNetworkInfo> testnets = [
+      ...List.from(_testnets[namespace] ?? []),
+      ...(chains.where((e) => e.isTestNetwork == true)),
+    ];
+    _testnets[namespace] = testnets;
+  }
+
+  static List<String> getAllSupportedNamespaces() {
+    final mainNamespaces =
+        _mainnets.keys.where((key) => _mainnets[key]!.isNotEmpty).toList();
+    final testNamespaces =
+        _testnets.keys.where((key) => _mainnets[key]!.isNotEmpty).toList();
+    return <String>{...mainNamespaces, ...testNamespaces}.toList();
+  }
+
+  static List<ReownAppKitModalNetworkInfo> getAllSupportedNetworks({
+    String? namespace,
+  }) {
+    final allMainnets = namespace != null
+        ? (_mainnets[namespace] ?? [])
+        : _mainnets.values.expand((e) => e);
+    final mainnets = allMainnets.where((e) {
+      return !e.isTestNetwork;
+    }).toList();
+    final allTestnets = namespace != null
+        ? (_testnets[namespace] ?? [])
+        : _testnets.values.expand((e) => e);
+    final testnets = allTestnets.where((e) {
+      return e.isTestNetwork;
+    }).toList();
+    return [...mainnets, ...testnets].toList();
+  }
+
+  static String getNamespaceForChainId(String chainId) {
+    String? namespace;
+    final namespaces = getAllSupportedNamespaces();
+    for (var ns in namespaces) {
+      final found = getAllSupportedNetworks(namespace: ns).firstWhereOrNull(
+        (e) => e.chainId == chainId,
+      );
+      if (found != null) {
+        namespace = ns;
+        break;
+      }
+    }
+    return namespace ?? '';
+  }
+
+  static String getNetworkIconId(String chainId) {
+    return _networkIcons[chainId] ?? '';
+  }
+
+  static String getCaip2Chain(String chainId) {
+    final namespace = getNamespaceForChainId(chainId);
+    return '$namespace:$chainId';
+  }
+
+  static final Map<String, String> _networkIcons = {
     // Ethereum
     '1': 'ba0ba0cd-17c6-4806-ad93-f9d174f17900',
     // Optimism
@@ -264,60 +357,9 @@ class ReownAppKitModalNetworks {
     '7777777': '845c60df-d429-4991-e687-91ae45791600',
     // Aurora
     '1313161554': '3ff73439-a619-4894-9262-4470c773a100',
+    // Solana
+    '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'a1b58899-f671-4276-6a5e-56ca5bd59700',
+    // Near
+    'mainnet': 'ab3d4dee-e416-4d8d-226c-4c131b8b7600',
   };
-
-  static ReownAppKitModalNetworkInfo? getNetworkById(
-    String namespace,
-    String chainId,
-  ) {
-    return supported[namespace]?.firstWhere((e) => e.chainId == chainId);
-  }
-
-  static void removeNetworks(
-    String namespace,
-    List<String> chainIds,
-  ) {
-    supported[namespace]!.removeWhere((chain) {
-      if (chainIds.contains(chain.chainId)) {
-        return true;
-      }
-      return false;
-    });
-  }
-
-  static void addNetworks(
-    String namespace,
-    List<ReownAppKitModalNetworkInfo> chains,
-  ) {
-    final List<ReownAppKitModalNetworkInfo> networks = [
-      ...List.from(supported[namespace] ?? []),
-      ...chains,
-    ];
-
-    supported[namespace] = networks;
-  }
-
-  static List<ReownAppKitModalNetworkInfo> getNetworks(String namespace) {
-    return supported[namespace] ?? [];
-  }
-
-  static String? getNamespaceForChainId(String chainId) {
-    // final allChains = supported.values.expand((e) => e).toList();
-    String? namespace;
-    final namespaces = supported.keys.toList();
-    for (var ns in namespaces) {
-      final found = supported[ns]!.firstWhereOrNull(
-        (e) => e.chainId == chainId,
-      );
-      if (found != null) {
-        namespace = ns;
-        break;
-      }
-    }
-    return namespace;
-  }
-
-  static String getNetworkIconId(String chainId) {
-    return chainImagesId[chainId] ?? '';
-  }
 }

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:reown_appkit/modal/constants/string_constants.dart';
 
 import 'package:reown_appkit/modal/services/coinbase_service/i_coinbase_service.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_data.dart';
@@ -315,9 +314,12 @@ extension on SessionRequestParams {
       case MethodsConstants.walletSwitchEthChain:
       case MethodsConstants.walletAddEthChain:
         try {
-          final chainInfo = ReownAppKitModalNetworks.getNetworkById(
-            CoreConstants.namespace,
+          final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
             chainId!,
+          );
+          final chainInfo = ReownAppKitModalNetworks.getNetworkById(
+            namespace,
+            chainId,
           )!;
           return AddEthereumChain(
             chainId: chainInfo.chainId,
