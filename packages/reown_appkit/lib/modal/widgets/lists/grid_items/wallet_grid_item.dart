@@ -95,7 +95,9 @@ class WalletGridItem extends StatelessWidget {
                   style: themeData.textStyles.tiny500.copyWith(
                     color: isSelected
                         ? themeColors.accent100
-                        : themeColors.foreground100,
+                        : (isNetwork && onTap == null)
+                            ? themeColors.background300
+                            : themeColors.foreground100,
                     height: 1.0,
                   ),
                 ),

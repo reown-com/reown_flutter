@@ -8,7 +8,6 @@ class CoreConstants {
   static const X_SDK_TYPE = 'appkit';
   static const X_SDK_VERSION = packageVersion;
   static const X_CORE_SDK_VERSION = 'flutter_${reown_sign.packageVersion}';
-  static const String namespace = 'eip155';
 }
 
 class UIConstants {

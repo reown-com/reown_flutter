@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/foundation.dart';
@@ -7,9 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:reown_appkit/reown_appkit.dart';
-import 'package:reown_appkit_dapp/models/chain_metadata.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
-import 'package:reown_appkit_dapp/utils/crypto/chain_data.dart';
 import 'package:reown_appkit_dapp/utils/crypto/eip155.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
 import 'package:reown_appkit_dapp/utils/crypto/solana.dart';
@@ -31,8 +30,9 @@ class ConnectPage extends StatefulWidget {
 }
 
 class ConnectPageState extends State<ConnectPage> {
-  final List<ChainMetadata> _selectedChains = [];
+  final List<ReownAppKitModalNetworkInfo> _selectedChains = [];
   bool _shouldDismissQrCode = true;
+  bool _linkMode = false;
 
   @override
   void initState() {
@@ -73,7 +73,7 @@ class ConnectPageState extends State<ConnectPage> {
     super.dispose();
   }
 
-  void _selectChain(ChainMetadata chain) {
+  void _selectChain(ReownAppKitModalNetworkInfo chain) {
     setState(() {
       if (_selectedChains.contains(chain)) {
         _selectedChains.remove(chain);
@@ -90,61 +90,60 @@ class ConnectPageState extends State<ConnectPage> {
   void _updateNamespaces() {
     optionalNamespaces = {};
 
-    final evmChains =
-        _selectedChains.where((e) => e.type == ChainType.eip155).toList();
+    final evmChains = _selectedChains.where((c) {
+      final ns = ReownAppKitModalNetworks.getNamespaceForChainId(c.chainId);
+      return ns == 'eip155';
+    }).toList();
     if (evmChains.isNotEmpty) {
       optionalNamespaces['eip155'] = RequiredNamespace(
-        chains: evmChains.map((c) => c.chainId).toList(),
+        chains: evmChains.map((c) => 'eip155:${c.chainId}').toList(),
         methods: EIP155.methods.values.toList(),
         events: EIP155.events.values.toList(),
       );
     }
 
-    final solanaChains =
-        _selectedChains.where((e) => e.type == ChainType.solana).toList();
+    final solanaChains = _selectedChains.where((c) {
+      final ns = ReownAppKitModalNetworks.getNamespaceForChainId(c.chainId);
+      return ns == 'solana';
+    }).toList();
     if (solanaChains.isNotEmpty) {
       optionalNamespaces['solana'] = RequiredNamespace(
-        chains: solanaChains.map((c) => c.chainId).toList(),
+        chains: solanaChains.map((c) => 'solana:${c.chainId}').toList(),
         methods: Solana.methods.values.toList(),
         events: Solana.events.values.toList(),
       );
     }
 
-    final polkadotChains =
-        _selectedChains.where((e) => e.type == ChainType.polkadot).toList();
+    final polkadotChains = _selectedChains.where((c) {
+      final ns = ReownAppKitModalNetworks.getNamespaceForChainId(c.chainId);
+      return ns == 'polkadot';
+    }).toList();
     if (polkadotChains.isNotEmpty) {
       optionalNamespaces['polkadot'] = RequiredNamespace(
-        chains: polkadotChains.map((c) => c.chainId).toList(),
+        chains: polkadotChains.map((c) => 'polkadot:${c.chainId}').toList(),
         methods: Polkadot.methods.values.toList(),
         events: Polkadot.events.values.toList(),
       );
     }
 
-    if (optionalNamespaces.isEmpty) {
-      requiredNamespaces = {};
-    } else {
-      // WalletConnectModal still requires to have requiredNamespaces
-      // this has to be changed in that SDK
-      requiredNamespaces = {
-        'eip155': const RequiredNamespace(
-          chains: ['eip155:1'],
-          methods: ['personal_sign', 'eth_signTransaction'],
-          events: ['chainChanged'],
-        ),
-      };
-    }
+    debugPrint(
+      '[$runtimeType] optionalNamespaces ${jsonEncode(optionalNamespaces)}',
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     // Build the list of chain buttons, clear if the textnet changed
-    final testChains = ChainData.allChains.where((e) => e.isTestnet).toList();
-    final mainChains = ChainData.allChains.where((e) => !e.isTestnet).toList();
+    final allChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
+      namespace: _linkMode ? 'eip155' : null,
+    );
+    final mainChains = allChains.where((e) => !e.isTestNetwork).toList();
+    final testChains = allChains.where((e) => e.isTestNetwork).toList();
 
     final List<Widget> chainButtons = [];
     final List<Widget> testButtons = [];
 
-    for (final ChainMetadata chain in mainChains) {
+    for (final chain in mainChains) {
       // Build the button
       chainButtons.add(
         ChainButton(
@@ -154,7 +153,7 @@ class ConnectPageState extends State<ConnectPage> {
         ),
       );
     }
-    for (final ChainMetadata chain in testChains) {
+    for (final chain in testChains) {
       // Build the button
       testButtons.add(
         ChainButton(
@@ -166,26 +165,21 @@ class ConnectPageState extends State<ConnectPage> {
     }
 
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: StyleConstants.linear8),
+      padding: const EdgeInsets.symmetric(
+        horizontal: StyleConstants.linear8,
+      ),
       children: <Widget>[
         Text(
           widget.appKitModal.appKit!.metadata.name,
           style: StyleConstants.subtitleText,
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: StyleConstants.linear8),
-        const Divider(),
+        const SizedBox(height: StyleConstants.linear16),
+        const Divider(height: 1.0),
+        const SizedBox(height: StyleConstants.linear16),
         const Text(
-          'Connect With AppKit Modal and Link Mode:',
+          'Connect With AppKit Modal',
           style: StyleConstants.buttonText,
-          textAlign: TextAlign.center,
-        ),
-        Text(
-          'Only EVM chains',
-          style: TextStyle(
-            color: Colors.black.withOpacity(0.7),
-            fontSize: 12.0,
-          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: StyleConstants.linear8),
@@ -222,7 +216,7 @@ class ConnectPageState extends State<ConnectPage> {
               Row(
                 children: [
                   Expanded(
-                    child: const Divider(),
+                    child: const Divider(height: 1.0),
                   ),
                   const Text(
                     ' Or ',
@@ -230,17 +224,32 @@ class ConnectPageState extends State<ConnectPage> {
                     textAlign: TextAlign.center,
                   ),
                   Expanded(
-                    child: const Divider(),
+                    child: const Divider(height: 1.0),
                   ),
                 ],
               ),
-              const SizedBox(height: StyleConstants.linear8),
+              const SizedBox(height: StyleConstants.linear16),
               const Text(
-                'Connect With AppKit multichain',
+                'Custom connection',
                 style: StyleConstants.buttonText,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: StyleConstants.linear8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Link Mode'),
+                  Switch(
+                    value: _linkMode,
+                    onChanged: (value) {
+                      requiredNamespaces = {};
+                      optionalNamespaces = {};
+                      _selectedChains.clear();
+                      setState(() => _linkMode = value);
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: StyleConstants.linear16),
               Wrap(
                 spacing: 10.0,
                 children: chainButtons,
@@ -253,10 +262,8 @@ class ConnectPageState extends State<ConnectPage> {
               ),
               const SizedBox(height: StyleConstants.linear16),
               // const Divider(),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
+              !_linkMode
+                  ? Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const Text(
@@ -298,11 +305,8 @@ class ConnectPageState extends State<ConnectPage> {
                           }).toList(),
                         ),
                       ],
-                    ),
-                  ),
-                  const SizedBox.square(dimension: 8.0),
-                  Expanded(
-                    child: Column(
+                    )
+                  : Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         const Text(
@@ -347,81 +351,13 @@ class ConnectPageState extends State<ConnectPage> {
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
               const SizedBox(height: StyleConstants.linear16),
               const Divider(height: 1.0),
+              const SizedBox(height: StyleConstants.linear8),
+              _FooterWidget(appKitModal: widget.appKitModal),
             ],
           ),
         ),
-        const SizedBox(height: StyleConstants.linear16),
-        const Text(
-          'Redirect:',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Native: '),
-            Expanded(
-              child: Text(
-                '${widget.appKitModal.appKit!.metadata.redirect?.native}',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Universal: '),
-            Expanded(
-              child: Text(
-                '${widget.appKitModal.appKit!.metadata.redirect?.universal}',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            const Text('Link Mode: '),
-            Text(
-              '${widget.appKitModal.appKit!.metadata.redirect?.linkMode}',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        const SizedBox(height: StyleConstants.linear8),
-        FutureBuilder<PackageInfo>(
-          future: PackageInfo.fromPlatform(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const SizedBox.shrink();
-            }
-            final v = snapshot.data!.version;
-            final b = snapshot.data!.buildNumber;
-            const f = String.fromEnvironment('FLUTTER_APP_FLAVOR');
-            // return Text('App Version: $v-$f ($b) - SDK v$packageVersion');
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('App Version: '),
-                Expanded(
-                  child: Text(
-                    '$v-$f ($b) - SDK v$packageVersion',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-        const SizedBox(height: StyleConstants.linear16),
       ],
     );
   }
@@ -635,7 +571,7 @@ class ConnectPageState extends State<ConnectPage> {
             if (states.contains(MaterialState.disabled)) {
               return StyleConstants.grayColor;
             }
-            return StyleConstants.primaryColor;
+            return Colors.blue;
           },
         ),
         textStyle: MaterialStateProperty.resolveWith<TextStyle>(
@@ -659,6 +595,82 @@ class ConnectPageState extends State<ConnectPage> {
           ),
         ),
       );
+}
+
+class _FooterWidget extends StatefulWidget {
+  const _FooterWidget({required this.appKitModal});
+  final ReownAppKitModal appKitModal;
+
+  @override
+  State<_FooterWidget> createState() => __FooterWidgetState();
+}
+
+class __FooterWidgetState extends State<_FooterWidget> {
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = TextStyle(fontSize: 12.0);
+    final textStyleBold = textStyle.copyWith(fontWeight: FontWeight.bold);
+    final redirect = widget.appKitModal.appKit!.metadata.redirect;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: StyleConstants.linear8),
+        Text('Redirect:', style: textStyleBold),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Native: ', style: textStyle),
+            Expanded(
+              child: Text('${redirect?.native}', style: textStyleBold),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Universal: ', style: textStyle),
+            Expanded(
+              child: Text('${redirect?.universal}', style: textStyleBold),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Text('Link Mode: ', style: textStyle),
+            Text('${redirect?.linkMode}', style: textStyleBold),
+          ],
+        ),
+        FutureBuilder<PackageInfo>(
+          future: PackageInfo.fromPlatform(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const SizedBox.shrink();
+            }
+            final v = snapshot.data!.version;
+            final b = snapshot.data!.buildNumber;
+            const f = String.fromEnvironment('FLUTTER_APP_FLAVOR');
+            // return Text('App Version: $v-$f ($b) - SDK v$packageVersion');
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('App Version: ', style: textStyle),
+                Expanded(
+                  child: Text(
+                    '$v-$f ($b) - SDK v$packageVersion',
+                    style: textStyleBold,
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+        const SizedBox(height: StyleConstants.linear8),
+      ],
+    );
+  }
 }
 
 class QRCodeScreen extends StatefulWidget {

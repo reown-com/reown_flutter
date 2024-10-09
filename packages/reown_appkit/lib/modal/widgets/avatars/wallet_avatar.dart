@@ -26,6 +26,7 @@ class ListAvatar extends StatelessWidget {
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final radius = borderRadius ?? radiuses.radiusM;
     final projectId = explorerService.instance.projectId;
+    final validImage = (imageUrl ?? '').isNotEmpty && !disabled;
     return Stack(
       children: [
         AspectRatio(
@@ -67,11 +68,11 @@ class ListAvatar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(radius),
                   ),
             clipBehavior: Clip.antiAlias,
-            child: (imageUrl ?? '').isNotEmpty
+            child: validImage
                 ? ColorFiltered(
                     colorFilter: ColorFilter.mode(
-                      disabled ? Colors.grey : Colors.transparent,
-                      BlendMode.saturation,
+                      disabled ? Colors.white : Colors.transparent,
+                      disabled ? BlendMode.saturation : BlendMode.saturation,
                     ),
                     child: CachedNetworkImage(
                       imageUrl: imageUrl!,
@@ -90,8 +91,10 @@ class ListAvatar extends StatelessWidget {
                           'lib/modal/assets/icons/network.svg',
                           package: 'reown_appkit',
                           colorFilter: ColorFilter.mode(
-                            themeColors.grayGlass030,
-                            BlendMode.srcIn,
+                            disabled
+                                ? Colors.black12
+                                : themeColors.grayGlass030,
+                            disabled ? BlendMode.srcIn : BlendMode.srcIn,
                           ),
                         ),
                       )

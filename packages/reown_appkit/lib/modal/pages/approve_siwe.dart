@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
-import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/services/analytics_service/analytics_service_singleton.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/services/siwe_service/siwe_service_singleton.dart';
@@ -68,12 +67,15 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
   void _signIn() async {
     setState(() => _waitingSign = true);
     try {
-      final address = _appKitModal!.session!.address!;
       String chainId = _appKitModal!.selectedChain?.chainId ?? '1';
+      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+        chainId,
+      );
+      final address = _appKitModal!.session!.getAddress(namespace)!;
       analyticsService.instance.sendEvent(ClickSignSiweMessage(
         network: chainId,
       ));
-      chainId = '${CoreConstants.namespace}:$chainId';
+      chainId = ReownAppKitModalNetworks.getCaip2Chain(chainId);
       //
       final message = await siweService.instance!.createMessage(
         chainId: chainId,

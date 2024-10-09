@@ -38,7 +38,15 @@ class _AddressButtonState extends State<AddressButton> {
 
   void _modalNotifyListener() {
     setState(() {
-      _address = widget.service.session?.address;
+      try {
+        final chainId = widget.service.selectedChain!.chainId;
+        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+          chainId,
+        );
+        _address = widget.service.session?.getAddress(namespace);
+      } catch (e) {
+        widget.service.appKit!.core.logger.e('[$runtimeType] $e');
+      }
     });
   }
 

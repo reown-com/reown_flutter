@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:reown_appkit_dapp/models/chain_metadata.dart';
+import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 
 class ChainButton extends StatelessWidget {
@@ -12,7 +12,7 @@ class ChainButton extends StatelessWidget {
     this.selected = false,
   });
 
-  final ChainMetadata chain;
+  final ReownAppKitModalNetworkInfo chain;
   final VoidCallback onPressed;
   final bool selected;
 
@@ -24,19 +24,20 @@ class ChainButton extends StatelessWidget {
               2) -
           14.0,
       height: StyleConstants.linear48,
-      margin: const EdgeInsets.symmetric(
-        vertical: StyleConstants.linear8,
+      margin: const EdgeInsets.only(
+        bottom: StyleConstants.linear8,
       ),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ButtonStyle(
+          elevation: MaterialStateProperty.all(0.0),
           backgroundColor: MaterialStateProperty.all<Color>(
-            selected ? Colors.grey.shade400 : Colors.white,
+            selected ? Colors.white : Colors.grey.shade300,
           ),
           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               side: BorderSide(
-                color: selected ? Colors.grey.shade400 : chain.color,
+                color: selected ? Colors.blue : Colors.grey.shade300,
                 width: selected ? 4 : 2,
               ),
               borderRadius: BorderRadius.circular(

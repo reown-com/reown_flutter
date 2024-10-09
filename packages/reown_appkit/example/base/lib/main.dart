@@ -4,14 +4,11 @@ import 'dart:developer';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
-
-import 'package:reown_appkit_dapp/models/chain_metadata.dart';
 import 'package:reown_appkit_dapp/models/page_data.dart';
 import 'package:reown_appkit_dapp/pages/connect_page.dart';
 import 'package:reown_appkit_dapp/pages/pairings_page.dart';
 import 'package:reown_appkit_dapp/pages/sessions_page.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
-import 'package:reown_appkit_dapp/utils/crypto/chain_data.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
 import 'package:reown_appkit_dapp/utils/dart_defines.dart';
 import 'package:reown_appkit_dapp/utils/deep_link_handler.dart';
@@ -172,10 +169,14 @@ class _MyHomePageState extends State<MyHomePage> {
     DeepLinkHandler.init(_appKit!);
     DeepLinkHandler.checkInitialLink();
 
+    final allChains = ReownAppKitModalNetworks.getAllSupportedNetworks();
     // Loop through all the chain data
-    for (final ChainMetadata chain in ChainData.allChains) {
+    for (final chain in allChains) {
       // Loop through the events for that chain
-      for (final event in getChainEvents(chain.type)) {
+      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+        chain.chainId,
+      );
+      for (final event in getChainEvents(namespace)) {
         _appKit!.registerEventHandler(
           chainId: chain.chainId,
           event: event,
@@ -215,9 +216,13 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     // Loop through all the chain data
-    for (final ChainMetadata chain in ChainData.allChains) {
+    final allChains = ReownAppKitModalNetworks.getAllSupportedNetworks();
+    for (final chain in allChains) {
       // Loop through the events for that chain
-      for (final event in getChainEvents(chain.type)) {
+      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+        chain.chainId,
+      );
+      for (final event in getChainEvents(namespace)) {
         _appKit!.registerEventHandler(
           chainId: chain.chainId,
           event: event,
@@ -467,8 +472,11 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         getSession: () async {
           // Return proper session from your Web Service
-          final address = _appKitModal!.session!.address!;
           final chainId = _appKitModal!.session!.chainId;
+          final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+            chainId,
+          );
+          final address = _appKitModal!.session!.getAddress(namespace)!;
           return SIWESession(address: address, chains: [chainId]);
         },
         onSignIn: (SIWESession session) {

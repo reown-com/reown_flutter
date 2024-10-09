@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:reown_appkit/reown_appkit.dart';
-import 'package:reown_appkit_dapp/models/chain_metadata.dart';
-import 'package:reown_appkit_dapp/utils/crypto/chain_data.dart';
 import 'package:reown_appkit_dapp/utils/smart_contracts.dart';
 import 'package:reown_appkit_dapp/utils/test_data.dart';
 
@@ -39,7 +37,7 @@ class EIP155 {
     required IReownAppKit appKit,
     required String topic,
     required String method,
-    required ChainMetadata chainData,
+    required ReownAppKitModalNetworkInfo chainData,
     required String address,
   }) {
     switch (method) {
@@ -96,14 +94,16 @@ class EIP155 {
       EthereumAddress.fromHex(SepoliaTestContract.contractAddress),
     );
 
-    final sepolia =
-        ChainData.allChains.firstWhere((e) => e.chainId == 'eip155:11155111');
+    final sepolia = ReownAppKitModalNetworks.getNetworkById(
+      'eip155',
+      '11155111',
+    )!;
 
     switch (action) {
       case 'read':
         return readSmartContract(
           appKit: appKit,
-          rpcUrl: sepolia.rpc.first,
+          rpcUrl: sepolia.rpcUrl,
           contract: deployedContract,
           address: address,
         );
