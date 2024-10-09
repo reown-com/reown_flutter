@@ -100,14 +100,17 @@ abstract class IReownAppKitModal with ChangeNotifier {
   /// List of available chains to be added in connected wallet
   List<String>? getAvailableChains();
 
+  // TODO NON-EVM Support: make namespace non nullable
   /// List of approved chains by connected wallet
-  List<String>? getApprovedChains();
+  List<String>? getApprovedChains({required String? namespace});
 
+  // TODO NON-EVM Support: make namespace non nullable
   /// List of approved methods by connected wallet
-  List<String>? getApprovedMethods();
+  List<String>? getApprovedMethods({required String? namespace});
 
+  // TODO NON-EVM Support: make namespace non nullable
   /// List of approved events by connected wallet
-  List<String>? getApprovedEvents();
+  List<String>? getApprovedEvents({required String? namespace});
 
   Future<void> loadAccountData();
 
@@ -144,6 +147,8 @@ abstract class IReownAppKitModal with ChangeNotifier {
 
   Future<void> requestSwitchToChain(ReownAppKitModalNetworkInfo newChain);
   Future<void> requestAddChain(ReownAppKitModalNetworkInfo newChain);
+
+  Future<bool> dispatchEnvelope(String url);
 
   /// Closes the modal.
   void closeModal({bool disconnectSession = false});

@@ -1,4 +1,3 @@
-import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/coinbase_service.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_data.dart';
 import 'package:reown_appkit/modal/services/magic_service/magic_service.dart';
@@ -90,14 +89,17 @@ class ReownAppKitModalSession {
       return true;
     }
 
-    final nsMethods = getApprovedMethods() ?? [];
+    final nsMethods = getApprovedMethods(namespace: 'eip155') ?? [];
     final supportsAddChain = nsMethods.contains(
       MethodsConstants.walletAddEthChain,
     );
     return supportsAddChain;
   }
 
-  List<String>? getApprovedMethods() {
+  // TODO NON-EVM Support: make namespace non nullable
+  List<String>? getApprovedMethods({required String? namespace}) {
+    final methodsList = <String>[];
+
     if (sessionService.noSession) {
       return null;
     }
@@ -109,29 +111,45 @@ class ReownAppKitModalSession {
     }
 
     final sessionNamespaces = _sessionData!.namespaces;
-    final namespace = sessionNamespaces[CoreConstants.namespace];
-    final methodsList = namespace?.methods.toSet().toList();
-    return methodsList ?? [];
+    if ((namespace ?? '').isEmpty) {
+      for (var namespace in sessionNamespaces.keys) {
+        final events = sessionNamespaces[namespace]?.methods ?? [];
+        methodsList.addAll(events);
+      }
+
+      return methodsList;
+    }
+
+    return sessionNamespaces[namespace]?.methods ?? [];
   }
 
-  List<String>? getApprovedEvents() {
+  List<String>? getApprovedEvents({required String? namespace}) {
+    final eventsList = <String>[];
+
     if (sessionService.noSession) {
       return null;
     }
     if (sessionService.isCoinbase) {
-      return [];
+      return eventsList;
     }
     if (sessionService.isMagic) {
-      return [];
+      return eventsList;
     }
 
     final sessionNamespaces = _sessionData!.namespaces;
-    final namespace = sessionNamespaces[CoreConstants.namespace];
-    final eventsList = namespace?.events.toSet().toList();
-    return eventsList ?? [];
+    if ((namespace ?? '').isEmpty) {
+      for (var namespace in sessionNamespaces.keys) {
+        final events = sessionNamespaces[namespace]?.events ?? [];
+        eventsList.addAll(events);
+      }
+
+      return eventsList;
+    }
+
+    return sessionNamespaces[namespace]?.events ?? [];
   }
 
-  List<String>? getApprovedChains() {
+  List<String>? getApprovedChains({required String? namespace}) {
     if (sessionService.noSession) {
       return null;
     }
@@ -140,24 +158,34 @@ class ReownAppKitModalSession {
       return [chainId];
     }
 
-    final accounts = getAccounts() ?? [];
-    final approvedChains = NamespaceUtils.getChainsFromAccounts(accounts);
-    return approvedChains;
+    final accounts = getAccounts(namespace: namespace) ?? [];
+    return NamespaceUtils.getChainsFromAccounts(accounts);
   }
 
-  List<String>? getAccounts() {
+  List<String>? getAccounts({required String? namespace}) {
+    final accountList = <String>[];
+
     if (sessionService.noSession) {
       return null;
     }
     if (sessionService.isCoinbase) {
-      return ['${CoreConstants.namespace}:$chainId:$address'];
+      return ['$namespace:$chainId:${getAddress(namespace ?? 'eip155')}'];
     }
     if (sessionService.isMagic) {
-      return ['${CoreConstants.namespace}:$chainId:$address'];
+      return ['$namespace:$chainId:${getAddress(namespace ?? 'eip155')}'];
     }
 
     final sessionNamespaces = _sessionData!.namespaces;
-    return sessionNamespaces[CoreConstants.namespace]?.accounts ?? [];
+    if ((namespace ?? '').isEmpty) {
+      for (var namespace in sessionNamespaces.keys) {
+        final accounts = sessionNamespaces[namespace]?.accounts ?? [];
+        accountList.addAll(accounts);
+      }
+
+      return accountList;
+    }
+
+    return sessionNamespaces[namespace]?.accounts ?? [];
   }
 
   Redirect? getSessionRedirect() {
@@ -225,7 +253,7 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
   String get email => _magicData?.email ?? '';
 
   //
-  String? get address {
+  String? getAddress(String namespace) {
     if (sessionService.noSession) {
       return null;
     }
@@ -235,8 +263,8 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     if (sessionService.isMagic) {
       return _magicData!.address;
     }
-    final namespace = namespaces?[CoreConstants.namespace];
-    final accounts = namespace?.accounts ?? [];
+    final ns = namespaces?[namespace];
+    final accounts = ns?.accounts ?? [];
     if (accounts.isNotEmpty) {
       return NamespaceUtils.getAccount(accounts.first);
     }
@@ -283,22 +311,27 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
   }
 
   Map<String, Namespace>? _namespaces() {
+    final eip155 = NetworkUtils.eip155;
+    // TODO check if namespaces are needed when connected to Coinbase or Magic
     if (sessionService.isCoinbase) {
+      // Coinbase only supports eip155 chains
       return {
-        CoreConstants.namespace: Namespace(
-          chains: ['${CoreConstants.namespace}:$chainId'],
-          accounts: ['${CoreConstants.namespace}:$chainId:$address'],
+        eip155: Namespace(
+          chains: ['$eip155:$chainId'],
+          accounts: ['$eip155:$chainId:${getAddress(eip155)}'],
           methods: [...CoinbaseService.supportedMethods],
+          // Coinbase does not have events as it doesn't use WC protocol
           events: [],
         ),
       };
     }
     if (sessionService.isMagic) {
       return {
-        CoreConstants.namespace: Namespace(
-          chains: ['${CoreConstants.namespace}:$chainId'],
-          accounts: ['${CoreConstants.namespace}:$chainId:$address'],
+        eip155: Namespace(
+          chains: ['$eip155:$chainId'],
+          accounts: ['$eip155:$chainId:${getAddress(eip155)}'],
           methods: [...MagicService.supportedMethods],
+          // Magic does not have events as it doesn't use WC protocol
           events: [],
         ),
       };

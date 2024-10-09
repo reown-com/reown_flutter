@@ -87,6 +87,8 @@ class ExplorerService implements IExplorerService {
   bool get canPaginate => _canPaginate;
 
   late final String _bundleId;
+  late final Set<String> _chains;
+  late final Map<String, RequiredNamespace> namespaces;
 
   ExplorerService({
     required IReownCore core,
@@ -94,6 +96,7 @@ class ExplorerService implements IExplorerService {
     this.featuredWalletIds,
     this.includedWalletIds,
     this.excludedWalletIds,
+    this.namespaces = const {},
   })  : _core = core,
         _referer = referer,
         _client = http.Client();
@@ -104,6 +107,10 @@ class ExplorerService implements IExplorerService {
       return;
     }
     _bundleId = await ReownCoreUtils.getPackageName();
+
+    _chains = NamespaceUtils.getChainIdsFromRequiredNamespaces(
+      requiredNamespaces: namespaces,
+    ).map((chainId) => NamespaceUtils.getNamespaceFromChain(chainId)).toSet();
 
     // TODO ideally we should call this at every opening to be able to detect newly installed wallets.
     final nativeData = await _fetchNativeAppData();
@@ -282,14 +289,14 @@ class ExplorerService implements IExplorerService {
     RequestParams? params,
     bool updateCount = true,
   }) async {
-    final queryParams = params?.toJson() ?? {};
+    params = params?.copyWith(chains: _chains.join(','));
     final headers = CoreUtils.getAPIHeaders(
       _core.projectId,
       _referer,
       _bundleId,
     );
     final uri = Uri.parse('${UrlConstants.apiService}/getWallets').replace(
-      queryParameters: queryParams,
+      queryParameters: params?.toJson(),
     );
     _core.logger.d('[$runtimeType] fetching $uri');
     try {
@@ -307,7 +314,7 @@ class ExplorerService implements IExplorerService {
         _core.logger.d(
           '⛔ [$runtimeType] error fetching listings (${response.statusCode}) ${response.request?.url}\n'
           'headers: $headers\n'
-          'queryParams $queryParams',
+          'queryParams $params',
         );
         return <ReownAppKitModalWalletInfo>[];
       }

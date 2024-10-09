@@ -19,10 +19,16 @@ class AddressCopyButton extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return GestureDetector(
       onTap: () async {
-        await Clipboard.setData(ClipboardData(text: service.session!.address!));
-        toastService.instance.show(
-          ToastMessage(type: ToastType.success, text: 'Address copied'),
+        final chainId = service.selectedChain!.chainId;
+        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+          chainId,
         );
+        final address = service.session!.getAddress(namespace)!;
+        await Clipboard.setData(ClipboardData(text: address));
+        toastService.instance.show(ToastMessage(
+          type: ToastType.success,
+          text: 'Address copied',
+        ));
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

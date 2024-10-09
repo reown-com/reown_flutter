@@ -62,8 +62,11 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
 
   void _modalNotifyListener() {
     setState(() {
-      _address = widget.appKit.session?.address ?? '';
       final chainId = widget.appKit.selectedChain?.chainId ?? '';
+      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+        chainId,
+      );
+      _address = widget.appKit.session?.getAddress(namespace) ?? '';
       final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
       _tokenImage = explorerService.instance.getAssetImageUrl(imageId);
       _balance = widget.appKit.chainBalance;

@@ -9,7 +9,7 @@ import 'package:convert/convert.dart';
 import 'package:reown_appkit_example/services/contracts/aave_contract.dart';
 import 'package:reown_appkit_example/services/contracts/test_data.dart';
 
-enum EIP155UIMethods {
+enum SupportedMethods {
   personalSign,
   ethSendTransaction,
   requestAccounts,
@@ -17,7 +17,9 @@ enum EIP155UIMethods {
   ethSignTypedDataV3,
   ethSignTypedDataV4,
   ethSignTransaction,
-  walletWatchAsset;
+  walletWatchAsset,
+  solanaSignMessage,
+  solanaSignTransaction;
 
   String get name {
     switch (this) {
@@ -37,69 +39,73 @@ enum EIP155UIMethods {
         return 'eth_signTransaction';
       case walletWatchAsset:
         return 'wallet_watchAsset';
+      case solanaSignMessage:
+        return 'solana_signMessage';
+      case solanaSignTransaction:
+        return 'solana_signTransaction';
     }
   }
 }
 
-class EIP155 {
-  static EIP155UIMethods methodFromName(String name) {
+class MethodsService {
+  static SupportedMethods methodFromName(String name) {
     switch (name) {
       case 'personal_sign':
-        return EIP155UIMethods.personalSign;
+        return SupportedMethods.personalSign;
       case 'eth_signTypedData_v4':
-        return EIP155UIMethods.ethSignTypedDataV4;
+        return SupportedMethods.ethSignTypedDataV4;
       case 'eth_sendTransaction':
-        return EIP155UIMethods.ethSendTransaction;
+        return SupportedMethods.ethSendTransaction;
       case 'eth_requestAccounts':
-        return EIP155UIMethods.requestAccounts;
+        return SupportedMethods.requestAccounts;
       case 'eth_signTypedData_v3':
-        return EIP155UIMethods.ethSignTypedDataV3;
+        return SupportedMethods.ethSignTypedDataV3;
       case 'eth_signTypedData':
-        return EIP155UIMethods.ethSignTypedData;
+        return SupportedMethods.ethSignTypedData;
       case 'eth_signTransaction':
-        return EIP155UIMethods.ethSignTransaction;
+        return SupportedMethods.ethSignTransaction;
       case 'wallet_watchAsset':
-        return EIP155UIMethods.walletWatchAsset;
+        return SupportedMethods.walletWatchAsset;
       default:
-        throw Exception('Unrecognized method');
+        throw Exception('Method not implemented');
     }
   }
 
   static Future<dynamic> callMethod({
     required ReownAppKitModal appKit,
     required String topic,
-    required EIP155UIMethods method,
+    required SupportedMethods method,
     required String chainId,
     required String address,
   }) {
     final cid = int.parse(chainId);
     switch (method) {
-      case EIP155UIMethods.requestAccounts:
+      case SupportedMethods.requestAccounts:
         return requestAccounts(
           appKit: appKit,
         );
-      case EIP155UIMethods.personalSign:
+      case SupportedMethods.personalSign:
         return personalSign(
           appKit: appKit,
           message: testSignData,
         );
-      case EIP155UIMethods.ethSignTypedDataV3:
+      case SupportedMethods.ethSignTypedDataV3:
         return ethSignTypedDataV3(
           appKit: appKit,
           data: jsonEncode(typeDataV3(cid)),
         );
-      case EIP155UIMethods.ethSignTypedData:
+      case SupportedMethods.ethSignTypedData:
         return ethSignTypedData(
           appKit: appKit,
           data: jsonEncode(typedData()),
         );
-      case EIP155UIMethods.ethSignTypedDataV4:
+      case SupportedMethods.ethSignTypedDataV4:
         return ethSignTypedDataV4(
           appKit: appKit,
           data: jsonEncode(typeDataV4(cid)),
         );
-      case EIP155UIMethods.ethSignTransaction:
-      case EIP155UIMethods.ethSendTransaction:
+      case SupportedMethods.ethSignTransaction:
+      case SupportedMethods.ethSendTransaction:
         return ethSendOrSignTransaction(
           appKit: appKit,
           method: method,
@@ -112,10 +118,14 @@ class EIP155 {
             data: utf8.encode('0x'), // to make it work with some wallets
           ),
         );
-      case EIP155UIMethods.walletWatchAsset:
+      case SupportedMethods.walletWatchAsset:
         return walletWatchAsset(
           appKit: appKit,
         );
+      case SupportedMethods.solanaSignMessage:
+        throw Exception('Method not implemented');
+      case SupportedMethods.solanaSignTransaction:
+        throw Exception('Method not implemented');
     }
   }
 
@@ -126,7 +136,7 @@ class EIP155 {
       topic: appKit.session!.topic,
       chainId: appKit.selectedChain!.chainId,
       request: SessionRequestParams(
-        method: EIP155UIMethods.requestAccounts.name,
+        method: SupportedMethods.requestAccounts.name,
         params: [],
       ),
     );
@@ -138,15 +148,18 @@ class EIP155 {
   }) async {
     final bytes = utf8.encode(message);
     final encoded = hex.encode(bytes);
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+      appKit.selectedChain!.chainId,
+    );
 
     return await appKit.request(
       topic: appKit.session!.topic,
       chainId: appKit.selectedChain!.chainId,
       request: SessionRequestParams(
-        method: EIP155UIMethods.personalSign.name,
+        method: SupportedMethods.personalSign.name,
         params: [
           '0x$encoded',
-          appKit.session!.address!,
+          appKit.session!.getAddress(namespace)!,
         ],
       ),
     );
@@ -156,14 +169,17 @@ class EIP155 {
     required ReownAppKitModal appKit,
     required String data,
   }) async {
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+      appKit.selectedChain!.chainId,
+    );
     return await appKit.request(
       topic: appKit.session!.topic,
       chainId: appKit.selectedChain!.chainId,
       request: SessionRequestParams(
-        method: EIP155UIMethods.ethSignTypedData.name,
+        method: SupportedMethods.ethSignTypedData.name,
         params: [
           data,
-          appKit.session!.address!,
+          appKit.session!.getAddress(namespace)!,
         ],
       ),
     );
@@ -173,14 +189,17 @@ class EIP155 {
     required ReownAppKitModal appKit,
     required String data,
   }) async {
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+      appKit.selectedChain!.chainId,
+    );
     return await appKit.request(
       topic: appKit.session!.topic,
       chainId: appKit.selectedChain!.chainId,
       request: SessionRequestParams(
-        method: EIP155UIMethods.ethSignTypedDataV3.name,
+        method: SupportedMethods.ethSignTypedDataV3.name,
         params: [
           data,
-          appKit.session!.address!,
+          appKit.session!.getAddress(namespace)!,
         ],
       ),
     );
@@ -190,14 +209,17 @@ class EIP155 {
     required ReownAppKitModal appKit,
     required String data,
   }) async {
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+      appKit.selectedChain!.chainId,
+    );
     return await appKit.request(
       topic: appKit.session!.topic,
       chainId: appKit.selectedChain!.chainId,
       request: SessionRequestParams(
-        method: EIP155UIMethods.ethSignTypedDataV4.name,
+        method: SupportedMethods.ethSignTypedDataV4.name,
         params: [
           data,
-          appKit.session!.address!,
+          appKit.session!.getAddress(namespace)!,
         ],
       ),
     );
@@ -206,7 +228,7 @@ class EIP155 {
   static Future<dynamic> ethSendOrSignTransaction({
     required ReownAppKitModal appKit,
     required Transaction transaction,
-    required EIP155UIMethods method,
+    required SupportedMethods method,
   }) async {
     return await appKit.request(
       topic: appKit.session!.topic,
@@ -227,7 +249,7 @@ class EIP155 {
       topic: appKit.session!.topic,
       chainId: appKit.selectedChain!.chainId,
       request: SessionRequestParams(
-        method: EIP155UIMethods.walletWatchAsset.name,
+        method: SupportedMethods.walletWatchAsset.name,
         params: {
           'type': 'ERC20',
           'options': {
@@ -285,13 +307,18 @@ class EIP155 {
         final d = (decimals.first as BigInt);
         final requestValue = _formatValue(0.01, decimals: d);
         // now we call `transfer` write function with the parsed value.
+        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+          appKit.selectedChain!.chainId,
+        );
         return appKit.requestWriteContract(
           topic: appKit.session!.topic,
           chainId: appKit.selectedChain!.chainId,
           deployedContract: deployedContract,
           functionName: 'transfer',
           transaction: Transaction(
-            from: EthereumAddress.fromHex(appKit.session!.address!),
+            from: EthereumAddress.fromHex(
+              appKit.session!.getAddress(namespace)!,
+            ),
           ),
           parameters: [
             EthereumAddress.fromHex(
@@ -357,13 +384,18 @@ class EIP155 {
         final d = (decimals.first as BigInt);
         final requestValue = _formatValue(0.23, decimals: d);
         // now we call `transfer` write function with the parsed value.
+        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+          appKit.selectedChain!.chainId,
+        );
         return appKit.requestWriteContract(
           topic: appKit.session!.topic,
           chainId: appKit.selectedChain!.chainId,
           deployedContract: deployedContract,
           functionName: 'transfer',
           transaction: Transaction(
-            from: EthereumAddress.fromHex(appKit.session!.address!),
+            from: EthereumAddress.fromHex(
+              appKit.session!.getAddress(namespace)!,
+            ),
           ),
           parameters: [
             EthereumAddress.fromHex(
@@ -381,6 +413,9 @@ class EIP155 {
     required ReownAppKitModal appKit,
     required DeployedContract contract,
   }) async {
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+      appKit.selectedChain!.chainId,
+    );
     final results = await Future.wait([
       // results[0]
       appKit.requestReadContract(
@@ -403,7 +438,7 @@ class EIP155 {
         deployedContract: contract,
         functionName: 'balanceOf',
         parameters: [
-          EthereumAddress.fromHex(appKit.session!.address!),
+          EthereumAddress.fromHex(appKit.session!.getAddress(namespace)!),
         ],
       ),
       // results[4]

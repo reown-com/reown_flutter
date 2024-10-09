@@ -12,7 +12,7 @@ export 'modal/models/public/appkit_modal_models.dart';
 export 'modal/theme/public/appkit_modal_theme.dart';
 
 /// Utils
-export 'modal/utils/public/appkit_modal_utils.dart';
+export 'modal/utils/public/appkit_modal_networks_utils.dart';
 
 /// Widgets
 export 'modal/widgets/public/appkit_modal_widgets.dart';

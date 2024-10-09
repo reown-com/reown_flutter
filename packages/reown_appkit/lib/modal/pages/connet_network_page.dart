@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
-import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
 import 'package:reown_appkit/modal/services/siwe_service/siwe_service_singleton.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
@@ -51,8 +50,11 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
     try {
       await _service!.requestSwitchToChain(widget.chainInfo);
       final chainId = widget.chainInfo.chainId;
+      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+        chainId,
+      );
       final chainInfo = ReownAppKitModalNetworks.getNetworkById(
-        CoreConstants.namespace,
+        namespace,
         chainId,
       );
       if (chainInfo != null) {

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:reown_appkit/modal/constants/string_constants.dart';
 
 import 'package:reown_appkit/modal/models/grid_item.dart';
 import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
@@ -18,11 +17,15 @@ class NetworkService implements INetworkService {
       ValueNotifier<List<GridItem<ReownAppKitModalNetworkInfo>>>([]);
 
   String _getImageUrl(ReownAppKitModalNetworkInfo chainInfo) {
+    if (chainInfo.isTestNetwork) {
+      return '';
+    }
     if (chainInfo.chainIcon != null && chainInfo.chainIcon!.contains('http')) {
       return chainInfo.chainIcon!;
     }
-    final imageId =
-        ReownAppKitModalNetworks.getNetworkIconId(chainInfo.chainId);
+    final imageId = ReownAppKitModalNetworks.getNetworkIconId(
+      chainInfo.chainId,
+    );
     return explorerService.instance.getAssetImageUrl(imageId);
   }
 
@@ -32,17 +35,15 @@ class NetworkService implements INetworkService {
       return;
     }
 
-    final networks = ReownAppKitModalNetworks.getNetworks(
-      CoreConstants.namespace,
-    );
-    for (var chain in networks) {
-      final imageUrl = _getImageUrl(chain);
+    final networks = ReownAppKitModalNetworks.getAllSupportedNetworks();
+    for (var network in networks) {
+      final imageUrl = _getImageUrl(network);
       itemListComplete.add(
         GridItem<ReownAppKitModalNetworkInfo>(
           image: imageUrl,
-          id: chain.chainId,
-          title: RenderUtils.shorten(chain.name),
-          data: chain,
+          id: network.chainId,
+          title: RenderUtils.shorten(network.name),
+          data: network,
         ),
       );
     }
