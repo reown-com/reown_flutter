@@ -1,53 +1,27 @@
-import 'package:flutter/material.dart';
-import 'package:reown_appkit_dapp/models/chain_metadata.dart';
-import 'package:reown_appkit_dapp/utils/crypto/chain_data.dart';
 import 'package:reown_appkit_dapp/utils/crypto/eip155.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
 import 'package:reown_appkit_dapp/utils/crypto/solana.dart';
 
-String getChainName(String chain) {
-  try {
-    return ChainData.allChains
-        .where((element) => element.chainId == chain)
-        .first
-        .name;
-  } catch (e) {
-    debugPrint('[SampleDapp] Invalid chain');
-  }
-  return 'Unknown';
-}
-
-ChainMetadata getChainMetadataFromChain(String chain) {
-  try {
-    return ChainData.allChains
-        .where((element) => element.chainId == chain)
-        .first;
-  } catch (e) {
-    debugPrint('[SampleDapp] Invalid chain');
-  }
-  return ChainData.eip155Chains[0];
-}
-
-List<String> getChainMethods(ChainType value) {
-  switch (value) {
-    case ChainType.eip155:
+List<String> getChainMethods(String namespace) {
+  switch (namespace) {
+    case 'eip155':
       return EIP155.methods.values.toList();
-    case ChainType.solana:
+    case 'solana':
       return Solana.methods.values.toList();
-    case ChainType.polkadot:
+    case 'polkadot':
       return Polkadot.methods.values.toList();
     default:
       return [];
   }
 }
 
-List<String> getChainEvents(ChainType value) {
-  switch (value) {
-    case ChainType.eip155:
+List<String> getChainEvents(String namespace) {
+  switch (namespace) {
+    case 'eip155':
       return EIP155.events.values.toList();
-    case ChainType.solana:
+    case 'solana':
       return Solana.events.values.toList();
-    case ChainType.polkadot:
+    case 'polkadot':
       return Polkadot.events.values.toList();
     default:
       return [];

@@ -343,11 +343,11 @@ class SyncAppData extends MessageData {
   @override
   String toString() {
     final v = 'verified: true';
-    final p1 = 'projectId:"$projectId"';
-    final p2 = 'sdkVersion:"$sdkVersion"';
-    final m1 = 'name:"${metadata.name}"';
-    final m2 = 'description:"${metadata.description}"';
-    final m3 = 'url:"${metadata.url}"';
+    final p1 = 'projectId:\'$projectId\'';
+    final p2 = 'sdkVersion:\'${sdkVersion.replaceAll("'", "\\'")}\'';
+    final m1 = 'name:\'${metadata.name.replaceAll("'", "\\'")}\'';
+    final m2 = 'description:\'${metadata.description.replaceAll("'", "\\'")}\'';
+    final m3 = 'url:\'${metadata.url}\'';
     final m4 = 'icons:["${metadata.icons.first}"]';
     final r1 = 'native:"${metadata.redirect?.native}"';
     final r2 = 'universal:"${metadata.redirect?.universal}"';
