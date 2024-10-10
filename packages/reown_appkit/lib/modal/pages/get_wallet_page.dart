@@ -60,23 +60,28 @@ class GetWalletPage extends StatelessWidget {
                 }
               },
               bottomItems: [
-                AllWalletsItem(
-                  title: 'Explore all',
-                  onTap: () => uriService.instance.launchUrl(
-                    Uri.parse(UrlConstants.exploreWallets),
-                    mode: LaunchMode.externalApplication,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4.0,
                   ),
-                  trailing: Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: SvgPicture.asset(
-                      'lib/modal/assets/icons/arrow_top_right.svg',
-                      package: 'reown_appkit',
-                      colorFilter: ColorFilter.mode(
-                        themeColors.foreground200,
-                        BlendMode.srcIn,
+                  child: AllWalletsItem(
+                    title: 'Explore all',
+                    onTap: () => uriService.instance.launchUrl(
+                      Uri.parse(UrlConstants.exploreWallets),
+                      mode: LaunchMode.externalApplication,
+                    ),
+                    trailing: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: SvgPicture.asset(
+                        'lib/modal/assets/icons/arrow_top_right.svg',
+                        package: 'reown_appkit',
+                        colorFilter: ColorFilter.mode(
+                          themeColors.foreground200,
+                          BlendMode.srcIn,
+                        ),
+                        width: 18.0,
+                        height: 18.0,
                       ),
-                      width: 18.0,
-                      height: 18.0,
                     ),
                   ),
                 ),

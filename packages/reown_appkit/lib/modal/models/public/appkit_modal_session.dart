@@ -89,6 +89,9 @@ class ReownAppKitModalSession {
     if (sessionService.isCoinbase) {
       return true;
     }
+    if (sessionService.isMagic) {
+      return true;
+    }
 
     final nsMethods = getApprovedMethods() ?? [];
     final supportsAddChain = nsMethods.contains(
@@ -170,21 +173,25 @@ class ReownAppKitModalSession {
 
   // toJson() would convert ReownAppKitModalSession to a SessionData kind of map
   // no matter if Coinbase Wallet or Email Wallet is connected
-  Map<String, dynamic> toJson() => {
-        if (topic != null) 'topic': topic,
-        if (pairingTopic != null) 'pairingTopic': pairingTopic,
-        if (relay != null) 'relay': relay,
-        if (expiry != null) 'expiry': expiry,
-        if (acknowledged != null) 'acknowledged': acknowledged,
-        if (controller != null) 'controller': controller,
-        'namespaces': _namespaces(),
-        if (requiredNamespaces != null)
-          'requiredNamespaces': requiredNamespaces,
-        if (optionalNamespaces != null)
-          'optionalNamespaces': optionalNamespaces,
-        'self': self?.toJson(),
-        'peer': peer?.toJson(),
-      };
+  Map<String, dynamic> toJson() {
+    final sessionData = SessionData(
+      topic: topic ?? '',
+      pairingTopic: pairingTopic ?? '',
+      relay: relay ?? Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
+      expiry: expiry ?? 0,
+      acknowledged: acknowledged ?? false,
+      controller: controller ?? '',
+      namespaces: _namespaces() ?? {},
+      self: self!,
+      peer: peer!,
+      requiredNamespaces: _sessionData?.requiredNamespaces,
+      optionalNamespaces: _sessionData?.optionalNamespaces,
+      sessionProperties: _sessionData?.sessionProperties,
+      authentication: _sessionData?.authentication,
+      transportType: _sessionData?.transportType ?? TransportType.relay,
+    );
+    return sessionData.toJson();
+  }
 }
 
 extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
@@ -195,18 +202,22 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
   bool? get acknowledged => _sessionData?.acknowledged;
   String? get controller => _sessionData?.controller;
   Map<String, Namespace>? get namespaces => _sessionData?.namespaces;
-  Map<String, RequiredNamespace>? get requiredNamespaces =>
-      _sessionData?.requiredNamespaces;
-  Map<String, RequiredNamespace>? get optionalNamespaces =>
-      _sessionData?.optionalNamespaces;
-  Map<String, String>? get sessionProperties => _sessionData?.sessionProperties;
 
   ConnectionMetadata? get self {
     if (sessionService.isCoinbase) {
       return _coinbaseData?.self;
     }
     if (sessionService.isMagic) {
-      return _magicData?.self;
+      return _magicData?.self ??
+          ConnectionMetadata(
+            publicKey: '',
+            metadata: PairingMetadata(
+              name: 'Email Wallet',
+              description: '',
+              url: '',
+              icons: [],
+            ),
+          );
     }
     return _sessionData?.self;
   }
@@ -216,13 +227,26 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
       return _coinbaseData?.peer;
     }
     if (sessionService.isMagic) {
-      return _magicData?.peer;
+      return _magicData?.peer ??
+          ConnectionMetadata(
+            publicKey: '',
+            metadata: PairingMetadata(
+              name: 'Email Wallet',
+              description: '',
+              url: '',
+              icons: [],
+            ),
+          );
     }
     return _sessionData?.peer;
   }
 
   //
   String get email => _magicData?.email ?? '';
+
+  String get userName => _magicData?.userName ?? '';
+
+  AppKitSocialOption? get socialProvider => _magicData?.provider;
 
   //
   String? get address {
@@ -264,9 +288,6 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
   String? get connectedWalletName {
     if (sessionService.isCoinbase) {
       return CoinbaseService.defaultWalletData.listing.name;
-    }
-    if (sessionService.isMagic) {
-      return MagicService.defaultWalletData.listing.name;
     }
     if (sessionService.isWC) {
       return peer?.metadata.name;

@@ -9,37 +9,44 @@ import 'package:reown_appkit_dapp/widgets/session_widget.dart';
 class SessionsPage extends StatefulWidget {
   const SessionsPage({
     super.key,
-    required this.appKit,
+    required this.appKitModal,
   });
 
-  final ReownAppKit appKit;
+  final ReownAppKitModal appKitModal;
 
   @override
   SessionsPageState createState() => SessionsPageState();
 }
 
 class SessionsPageState extends State<SessionsPage> {
+  late IReownAppKit _appKit;
   Map<String, SessionData> _activeSessions = {};
-  String _selectedSession = '';
+  String _selectedTopic = '';
 
   @override
   void initState() {
-    _activeSessions = widget.appKit.getActiveSessions();
-    widget.appKit.onSessionDelete.subscribe(_onSessionDelete);
-    widget.appKit.onSessionExpire.subscribe(_onSessionExpire);
+    _appKit = widget.appKitModal.appKit!;
+    _activeSessions = _appKit.getActiveSessions();
+    _appKit.onSessionDelete.subscribe(_onSessionDelete);
+    _appKit.onSessionExpire.subscribe(_onSessionExpire);
     super.initState();
   }
 
   @override
   void dispose() {
-    widget.appKit.onSessionDelete.unsubscribe(_onSessionDelete);
-    widget.appKit.onSessionExpire.unsubscribe(_onSessionExpire);
+    _appKit.onSessionDelete.unsubscribe(_onSessionDelete);
+    _appKit.onSessionExpire.unsubscribe(_onSessionExpire);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final List<SessionData> sessions = _activeSessions.values.toList();
+    if (sessions.isEmpty) {
+      return Center(
+        child: Text('No relay sessions'),
+      );
+    }
     return Center(
       child: Container(
         constraints: const BoxConstraints(
@@ -53,14 +60,14 @@ class SessionsPageState extends State<SessionsPage> {
               materialGapSize: 0.0,
               expansionCallback: (int index, bool isExpanded) {
                 setState(() {
-                  _selectedSession = !isExpanded ? '' : sessions[index].topic;
+                  _selectedTopic = !isExpanded ? '' : sessions[index].topic;
                 });
               },
               children: sessions
                   .map(
                     (session) => ExpansionPanel(
                       canTapOnHeader: true,
-                      isExpanded: _selectedSession == session.topic,
+                      isExpanded: _selectedTopic == session.topic,
                       backgroundColor: Colors.blue.withOpacity(0.2),
                       headerBuilder: (context, isExpanded) {
                         return SessionItem(
@@ -84,7 +91,7 @@ class SessionsPageState extends State<SessionsPage> {
   }
 
   Widget _buildSessionView() {
-    if (_selectedSession == '') {
+    if (_selectedTopic == '') {
       return const Center(
         child: Text(
           StringConstants.noSessionSelected,
@@ -93,29 +100,27 @@ class SessionsPageState extends State<SessionsPage> {
       );
     }
 
-    final SessionData session = _activeSessions[_selectedSession]!;
-
     return SessionWidget(
-      appKit: widget.appKit,
-      session: session,
+      appKitModal: widget.appKitModal,
+      sessionTopic: _selectedTopic,
     );
   }
 
   void _onSessionDelete(SessionDelete? event) {
     setState(() {
-      if (event!.topic == _selectedSession) {
-        _selectedSession = '';
+      if (event!.topic == _selectedTopic) {
+        _selectedTopic = '';
       }
-      _activeSessions = widget.appKit.getActiveSessions();
+      _activeSessions = _appKit.getActiveSessions();
     });
   }
 
   void _onSessionExpire(SessionExpire? event) {
     setState(() {
-      if (event!.topic == _selectedSession) {
-        _selectedSession = '';
+      if (event!.topic == _selectedTopic) {
+        _selectedTopic = '';
       }
-      _activeSessions = widget.appKit.getActiveSessions();
+      _activeSessions = _appKit.getActiveSessions();
     });
   }
 }

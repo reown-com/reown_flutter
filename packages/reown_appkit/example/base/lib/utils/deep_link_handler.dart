@@ -20,7 +20,7 @@ class DeepLinkHandler {
             onError: _onError,
           );
     } catch (e) {
-      debugPrint('[SampleWallet] [DeepLinkHandler] checkInitialLink $e');
+      debugPrint('[SampleDapp] checkInitialLink $e');
     }
   }
 
@@ -34,7 +34,7 @@ class DeepLinkHandler {
     try {
       _methodChannel.invokeMethod('initialLink');
     } catch (e) {
-      debugPrint('[SampleWallet] [DeepLinkHandler] checkInitialLink $e');
+      debugPrint('[SampleDapp] checkInitialLink $e');
     }
   }
 

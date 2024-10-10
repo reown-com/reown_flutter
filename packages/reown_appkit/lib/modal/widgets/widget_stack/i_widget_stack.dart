@@ -11,6 +11,7 @@ abstract class IWidgetStack with ChangeNotifier {
   void push(
     Widget widget, {
     bool renderScreen = false,
+    bool replace = false,
     AnalyticsEvent? event,
   });
 

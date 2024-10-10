@@ -16,6 +16,7 @@ import 'package:reown_appkit_dapp/utils/crypto/solana.dart';
 import 'package:reown_appkit_dapp/utils/sample_wallets.dart';
 import 'package:reown_appkit_dapp/utils/string_constants.dart';
 import 'package:reown_appkit_dapp/widgets/chain_button.dart';
+import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
 
 class ConnectPage extends StatefulWidget {
   const ConnectPage({
@@ -36,6 +37,12 @@ class ConnectPageState extends State<ConnectPage> {
   @override
   void initState() {
     super.initState();
+    widget.appKitModal.onModalConnect.subscribe(_onModalConnect);
+    widget.appKitModal.onModalUpdate.subscribe(_onModalUpdate);
+    widget.appKitModal.onModalNetworkChange.subscribe(_onModalNetworkChange);
+    widget.appKitModal.onModalDisconnect.subscribe(_onModalDisconnect);
+    widget.appKitModal.onModalError.subscribe(_onModalError);
+    //
     widget.appKitModal.appKit!.onSessionConnect.subscribe(
       _onSessionConnect,
     );
@@ -49,6 +56,11 @@ class ConnectPageState extends State<ConnectPage> {
 
   @override
   void dispose() {
+    widget.appKitModal.onModalConnect.unsubscribe(_onModalConnect);
+    widget.appKitModal.onModalUpdate.unsubscribe(_onModalUpdate);
+    widget.appKitModal.onModalNetworkChange.unsubscribe(_onModalNetworkChange);
+    widget.appKitModal.onModalDisconnect.unsubscribe(_onModalDisconnect);
+    widget.appKitModal.onModalError.unsubscribe(_onModalError);
     widget.appKitModal.onModalDisconnect.unsubscribe(
       _onModalDisconnect,
     );
@@ -192,8 +204,14 @@ class ConnectPageState extends State<ConnectPage> {
         const SizedBox(height: StyleConstants.linear8),
         Visibility(
           visible: widget.appKitModal.isConnected,
-          child: AppKitModalAccountButton(
-            appKit: widget.appKitModal,
+          child: Column(
+            children: [
+              AppKitModalAccountButton(
+                appKit: widget.appKitModal,
+              ),
+              const SizedBox.square(dimension: 8.0),
+              ...(_buildRequestButtons()),
+            ],
           ),
         ),
         const SizedBox(height: StyleConstants.linear8),
@@ -408,6 +426,38 @@ class ConnectPageState extends State<ConnectPage> {
     );
   }
 
+  List<Widget> _buildRequestButtons() {
+    return widget.appKitModal.getApprovedMethods()?.map((method) {
+          final topic = widget.appKitModal.session!.topic ?? '';
+          final chainId = widget.appKitModal.selectedChain!.chainId;
+          final address = widget.appKitModal.session!.address!;
+          final requestParams = EIP155.getParams(method, address);
+          final enabled = requestParams != null;
+          return Container(
+            height: 40.0,
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(
+              vertical: StyleConstants.linear8,
+            ),
+            child: ElevatedButton(
+              onPressed: enabled
+                  ? () {
+                      widget.appKitModal.launchConnectedWallet();
+                      final future = widget.appKitModal.request(
+                        topic: topic,
+                        chainId: chainId,
+                        request: requestParams,
+                      );
+                      MethodDialog.show(context, method, future);
+                    }
+                  : null,
+              child: Text(method),
+            ),
+          );
+        }).toList() ??
+        [];
+  }
+
   Future<void> _onConnect({
     required String nativeLink,
     VoidCallback? closeModal,
@@ -559,7 +609,23 @@ class ConnectPageState extends State<ConnectPage> {
     }
   }
 
+  void _onModalConnect(ModalConnect? event) async {
+    setState(() {});
+  }
+
+  void _onModalUpdate(ModalConnect? event) {
+    setState(() {});
+  }
+
+  void _onModalNetworkChange(ModalNetworkChange? event) {
+    setState(() {});
+  }
+
   void _onModalDisconnect(ModalDisconnect? event) {
+    setState(() {});
+  }
+
+  void _onModalError(ModalError? event) {
     setState(() {});
   }
 

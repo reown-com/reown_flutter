@@ -11,7 +11,9 @@ class KeyConstants {
   static const Key upgradeWalletPage = Key('upgradeWalletPage');
   static const Key helpPageKey = Key('helpPageKey');
   static const Key qrCodePageKey = Key('qrCodePageKey');
+  static const Key farcasterQrCodePageKey = Key('farcasterQrCodePageKey');
   static const Key walletListShortPageKey = Key('walletListShortPageKey');
+  static const Key allSocialLoginPageKey = Key('allSocialLoginPageKey');
   static const Key walletListLongPageKey = Key('walletListLongPageKey');
   static const Key connectWalletPageKey = Key('connectWalletPageKey');
   static const Key connecNetworkPageKey = Key('connecNetworkPageKey');
@@ -21,6 +23,7 @@ class KeyConstants {
   static const Key approveTransactionPage = Key('approveTransactionPage');
   static const Key confirmEmailPage = Key('confirmEmailPage');
   static const Key approveSiwePageKey = Key('approveSiwePageKey');
+  static const Key socialLoginPage = Key('socialLoginPage');
 
   // Buttons
   static const Key helpButtonKey = Key('helpButtonKey');

@@ -40,16 +40,24 @@ class WalletsList extends StatelessWidget {
     );
 
     final walletsListItems = isLoading
-        ? loadingList
+        ? loadingList.map(
+            (listItem) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: listItem,
+            ),
+          )
         : itemList.map(
-            (e) => WalletListItem(
-              onTap: () => onTapWallet?.call(e.data),
-              showCheckmark: e.data.installed,
-              imageUrl: e.image,
-              title: e.title,
-              trailing: e.data.recent
-                  ? const WalletItemChip(value: ' RECENT ')
-                  : null,
+            (listItem) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: WalletListItem(
+                onTap: () => onTapWallet?.call(listItem.data),
+                showCheckmark: listItem.data.installed,
+                imageUrl: listItem.image,
+                title: listItem.title,
+                trailing: listItem.data.recent
+                    ? const WalletItemChip(value: ' RECENT ')
+                    : null,
+              ),
             ),
           );
     final List<Widget> items = List<Widget>.from(walletsListItems);
@@ -62,7 +70,7 @@ class WalletsList extends StatelessWidget {
 
     return ListView.separated(
       padding: const EdgeInsets.symmetric(
-        horizontal: kPadding12,
+        horizontal: kPadding8,
         vertical: kPadding12,
       ),
       itemBuilder: (context, index) {
@@ -72,7 +80,7 @@ class WalletsList extends StatelessWidget {
         );
       },
       separatorBuilder: (_, index) => SizedBox.square(
-        dimension: index == 0 ? 0.0 : kListViewSeparatorHeight,
+        dimension: kListViewSeparatorHeight,
       ),
       itemCount: items.length,
     );

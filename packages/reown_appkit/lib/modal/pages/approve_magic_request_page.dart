@@ -15,9 +15,6 @@ class ApproveTransactionPage extends StatefulWidget {
 class _ApproveTransactionPageState extends State<ApproveTransactionPage> {
   @override
   Widget build(BuildContext context) {
-    magicService.instance.controller.runJavaScript(
-      'document.body.style.zoom = "1%"',
-    );
     return ModalNavbar(
       title: 'Approve Transaction',
       noClose: true,

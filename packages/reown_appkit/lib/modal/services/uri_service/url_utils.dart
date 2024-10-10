@@ -32,9 +32,9 @@ class UriService extends IUriService {
         }
       } on FormatException catch (e) {
         if (id != null) {
-          _core.logger.d('[$runtimeType] $uri ($id): ${e.message}');
+          _core.logger.i('[$runtimeType] $uri ($id): ${e.message}');
         } else {
-          _core.logger.d('[$runtimeType] $uri: ${e.message}');
+          _core.logger.i('[$runtimeType] $uri: ${e.message}');
         }
       } catch (e) {
         rethrow;

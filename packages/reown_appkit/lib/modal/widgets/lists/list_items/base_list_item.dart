@@ -53,7 +53,12 @@ class BaseListItem extends StatelessWidget {
       ),
       child: Padding(
         padding: padding ?? const EdgeInsets.all(8.0),
-        child: child,
+        child: Row(
+          children: [
+            Expanded(child: child),
+            trailing ?? SizedBox.shrink(),
+          ],
+        ),
       ),
     );
   }

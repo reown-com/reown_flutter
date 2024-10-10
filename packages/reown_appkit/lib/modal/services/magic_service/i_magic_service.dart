@@ -2,14 +2,25 @@ import 'package:reown_appkit/modal/services/magic_service/models/magic_events.da
 import 'package:reown_appkit/reown_appkit.dart';
 
 abstract class IMagicService {
-  ConnectionMetadata get metadata;
+  List<AppKitSocialOption> get socials;
 
   Future<void> init();
 
   void setEmail(String value);
   void setNewEmail(String value);
+  void setProvider(AppKitSocialOption? provider);
 
   // ****** W3mFrameProvider public methods ******* //
+  Future<String?> getSocialRedirectUri({
+    required AppKitSocialOption provider,
+    String? schema,
+    String? chainId,
+  });
+  Future<dynamic> connectSocial({required String uri});
+  void completeSocialLogin({required String url});
+  Future<String?> getFarcasterUri({String? chainId});
+  Future<bool> awaitFarcasterResponse();
+
   Future<void> connectEmail({required String value});
   Future<void> updateEmail({required String value});
   Future<void> updateEmailPrimaryOtp({required String otp});
@@ -31,4 +42,5 @@ abstract class IMagicService {
   abstract final Event<MagicSessionEvent> onMagicUpdate;
   abstract final Event<MagicErrorEvent> onMagicError;
   abstract final Event<MagicRequestEvent> onMagicRpcRequest;
+  abstract final Event<CompleteSocialLoginEvent> onCompleteSocialLogin;
 }

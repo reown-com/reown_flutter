@@ -6,11 +6,15 @@ class PrimaryButton extends StatelessWidget {
   final String title;
   final VoidCallback? onTap;
   final bool loading;
+  final Color? color;
+  final BorderRadiusGeometry? borderRadius;
   const PrimaryButton({
     super.key,
     required this.title,
     this.onTap,
     this.loading = false,
+    this.color,
+    this.borderRadius,
   });
 
   @override
@@ -36,7 +40,7 @@ class PrimaryButton extends StatelessWidget {
             if (states.contains(MaterialState.disabled)) {
               return themeColors.grayGlass010;
             }
-            return themeColors.accent100;
+            return color ?? themeColors.accent100;
           },
         ),
         foregroundColor: MaterialStateProperty.resolveWith<Color>(
@@ -54,9 +58,10 @@ class PrimaryButton extends StatelessWidget {
                 color: themeColors.grayGlass010,
                 width: 1.0,
               ),
-              borderRadius: radiuses.isSquare()
-                  ? BorderRadius.all(Radius.zero)
-                  : BorderRadius.circular(16.0),
+              borderRadius: borderRadius ??
+                  (radiuses.isSquare()
+                      ? BorderRadius.all(Radius.zero)
+                      : BorderRadius.circular(16.0)),
             );
           },
         ),

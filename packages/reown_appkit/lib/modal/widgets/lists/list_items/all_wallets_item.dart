@@ -42,9 +42,9 @@ class AllWalletsItem extends StatelessWidget {
               ),
             ),
           ),
-          trailing ?? const SizedBox.shrink(),
         ],
       ),
+      trailing: trailing,
     );
   }
 }
