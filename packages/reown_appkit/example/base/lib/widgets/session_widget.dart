@@ -247,7 +247,7 @@ class SessionWidgetState extends State<SessionWidget> {
           appKit: _appKit,
           topic: _session.topic,
           method: method,
-          chainId: chainMetadata.chainId,
+          chainData: chainMetadata,
           address: address,
         );
       case ChainType.solana:
@@ -257,7 +257,6 @@ class SessionWidgetState extends State<SessionWidget> {
           method: method,
           chainData: chainMetadata,
           address: address,
-          isV0: true,
         );
       // case ChainType.kadena:
       //   return Kadena.callMethod(

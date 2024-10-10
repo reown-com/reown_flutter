@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/utils/render_utils.dart';
 import 'package:reown_appkit/reown_appkit.dart';
@@ -95,7 +93,6 @@ class MessageData {
       type == '@w3m-frame/CONNECT_FARCASTER_ERROR';
   bool get connectSocialSuccess => type == '@w3m-frame/CONNECT_SOCIAL_SUCCESS';
   bool get connectSocialError => type == '@w3m-frame/CONNECT_SOCIAL_ERROR';
-
   bool get connectEmailSuccess => type == '@w3m-frame/CONNECT_EMAIL_SUCCESS';
   bool get connectEmailError => type == '@w3m-frame/CONNECT_EMAIL_ERROR';
   bool get updateEmailSuccess => type == '@w3m-frame/UPDATE_EMAIL_SUCCESS';
@@ -269,7 +266,6 @@ class RpcRequest extends MessageData {
 
   @override
   String toString() {
-    debugPrint('[$runtimeType] method $method');
     final m = 'method:"$method"';
     final t = 'type:"${super.type}"';
     final p = params.map((i) => '$i').toList();
@@ -287,7 +283,6 @@ class RpcRequest extends MessageData {
     if (method == 'eth_signTypedData_v4' ||
         method == 'eth_signTypedData_v3' ||
         method == 'eth_signTypedData') {
-      // final data = jsonEncode(jsonDecode(p.first) as Map<String, dynamic>);
       final data = p.first;
       final address = p.last;
       return '{$t,payload:{$m,params:["$address","$data"]}}';

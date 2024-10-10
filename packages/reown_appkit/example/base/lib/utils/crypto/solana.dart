@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'package:bs58/bs58.dart';
 import 'package:solana_web3/solana_web3.dart' as solana;
-
 import 'package:reown_appkit/reown_appkit.dart';
-
 import 'package:reown_appkit_dapp/models/chain_metadata.dart';
 
 enum SolanaMethods {
@@ -29,7 +27,6 @@ class Solana {
     required String method,
     required ChainMetadata chainData,
     required String address,
-    bool isV0 = false,
   }) async {
     switch (method) {
       case 'solana_signMessage':

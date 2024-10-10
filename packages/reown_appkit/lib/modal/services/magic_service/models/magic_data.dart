@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class MagicData {
@@ -39,8 +38,7 @@ class MagicData {
           ? ConnectionMetadata.fromJson(json['peer'])
           : null,
       provider: (json['provider'] != null)
-          ? AppKitSocialOption.values.firstWhereOrNull((e) =>
-              e.name.toLowerCase() == json['provider'].toString().toLowerCase())
+          ? AppKitSocialOption.fromString(json['provider'].toString())
           : null,
     );
   }
@@ -55,7 +53,7 @@ class MagicData {
       'preferredAccountType': preferredAccountType,
       'self': self?.toJson(),
       'peer': peer?.toJson(),
-      'provider': provider?.name.toLowerCase(),
+      'provider': provider?.name,
     };
   }
 

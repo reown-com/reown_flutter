@@ -1,4 +1,5 @@
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_appkit_dapp/models/chain_metadata.dart';
 
 enum PolkadotMethods {
   polkadotSignTransaction,
@@ -21,14 +22,14 @@ class Polkadot {
     required IReownAppKit appKit,
     required String topic,
     required String method,
-    required String chainId,
+    required ChainMetadata chainData,
     required String address,
   }) {
     switch (method) {
       case 'polkadot_signMessage':
         return appKit.request(
           topic: topic,
-          chainId: chainId,
+          chainId: chainData.chainId,
           request: SessionRequestParams(
             method: method,
             params: {
@@ -41,7 +42,7 @@ class Polkadot {
       case 'polkadot_signTransaction':
         return appKit.request(
           topic: topic,
-          chainId: chainId,
+          chainId: chainData.chainId,
           request: SessionRequestParams(
             method: method,
             params: {
