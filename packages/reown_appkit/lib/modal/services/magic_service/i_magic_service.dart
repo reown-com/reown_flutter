@@ -8,7 +8,7 @@ abstract class IMagicService {
 
   void setEmail(String value);
   void setNewEmail(String value);
-  void setProvider(String? value);
+  void setProvider(AppKitSocialOption? provider);
 
   // ****** W3mFrameProvider public methods ******* //
   Future<String?> getSocialRedirectUri({

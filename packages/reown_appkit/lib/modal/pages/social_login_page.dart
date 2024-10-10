@@ -95,15 +95,15 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
           await _continueInFarcaster(farcasterUri);
         }
       } else {
-        // final schema = _service?.appKit?.metadata.redirect?.universal;
+        final schema = null; // _service?.appKit?.metadata.redirect?.universal;
         final redirectUri = await magicService.instance.getSocialRedirectUri(
           provider: option,
-          schema: null,
+          schema: schema,
           chainId: _service?.selectedChain?.chainId,
         );
 
         if (redirectUri != null) {
-          if (option.supportsWebView) {
+          if (schema == null && option.supportsWebView) {
             await _continueInWebview(redirectUri);
             // final result = await ReownSocialLogin.login(initialUrl: redirectUri);
             // debugPrint('ReownSocialLogin $result');
@@ -377,8 +377,9 @@ class __WebViewLoginWidgetState extends State<_WebViewLoginWidget> {
     _init();
   }
 
+  // ignore: unused_element
   Future<void> _clearCookies() async {
-    if (kDebugMode) return;
+    if (!kDebugMode) return;
     try {
       if (WebViewPlatform.instance is WebKitWebViewPlatform) {
         final webKitManager =
@@ -435,7 +436,7 @@ class __WebViewLoginWidgetState extends State<_WebViewLoginWidget> {
 
   Future<void> _init() async {
     _setDebugMode();
-    await _clearCookies();
+    // await _clearCookies();
     // await _webViewController.clearCache();
     // await _webViewController.clearLocalStorage();
     await _webViewController.enableZoom(false);
@@ -446,9 +447,10 @@ class __WebViewLoginWidgetState extends State<_WebViewLoginWidget> {
         onNavigationRequest: (NavigationRequest request) {
           final uri = Uri.parse(request.url);
           final params = uri.queryParameters;
-          final authority1 = Uri.parse(UrlConstants.secureDashboard).authority;
-          final authority2 = Uri.parse(UrlConstants.secureService).authority;
-          if ((uri.authority == authority1 || uri.authority == authority2) &&
+          final secureOrigin1 = UrlConstants.secureOrigin1;
+          final secureOrigin2 = UrlConstants.secureOrigin2;
+          if ((uri.authority == secureOrigin1 ||
+                  uri.authority == secureOrigin2) &&
               params.containsKey('state')) {
             Future.delayed(Duration(milliseconds: 500), () {
               Navigator.of(context).pop(request.url);
@@ -485,18 +487,18 @@ extension _AppKitSocialOptionExtension on AppKitSocialOption {
         return true;
       case AppKitSocialOption.Discord:
         return true;
-      case AppKitSocialOption.Github:
-        return true;
-      case AppKitSocialOption.Facebook:
-        return true;
       case AppKitSocialOption.Farcaster:
         return true;
+      // case AppKitSocialOption.GitHub:
+      //   return true;
+      // case AppKitSocialOption.Facebook:
+      //   return true;
       // case AppKitSocialOption.Twitch:
       //   return true;
       // case AppKitSocialOption.Telegram:
       //   return true;
-      case AppKitSocialOption.Google:
-        return false;
+      // case AppKitSocialOption.Google:
+      //   return false;
     }
   }
 }

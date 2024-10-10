@@ -1,9 +1,11 @@
 enum AppKitSocialOption {
-  Google,
   X,
-  Github,
-  Discord,
   Apple,
-  Facebook,
+  Discord,
   Farcaster,
+  // GitHub,
+  // Facebook,
+  // Google,
+  // Twitch,
+  // Telegram,
 }

@@ -28,6 +28,7 @@ class _AppKitModalMainWalletsPageState extends State<AllSocialLoginsPage> {
                 context,
                 '${item.name.toLowerCase()}_logo.svg',
               ),
+              textAlign: TextAlign.left,
               onTap: () => widget.onSelect(item),
               title: item.name,
             ))

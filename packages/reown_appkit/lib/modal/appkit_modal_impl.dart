@@ -321,8 +321,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
           // So we will need to treat magic session differently
           final email = _currentSession!.email;
           magicService.instance.setEmail(email);
-          // TODO make it better
-          final provider = _currentSession!.toRawJson()['provider'] as String?;
+          final provider = _currentSession!.socialProvider;
           magicService.instance.setProvider(provider);
         } else {
           await _cleanSession();
@@ -583,6 +582,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     KeyConstants.confirmEmailPage,
     KeyConstants.selectNetworkPage,
     KeyConstants.accountPage,
+    KeyConstants.socialLoginPage,
   ];
 
   final List<Key> _allowedScreensWhenDisconnected = [
@@ -1681,18 +1681,21 @@ extension _EmailConnectorExtension on ReownAppKitModal {
   Future<void> _onMagicSessionUpdateEvent(MagicSessionEvent? args) async {
     if (args != null) {
       try {
-        final userName = _currentSession?.toRawJson()['userName'];
-        final email = _currentSession?.toRawJson()['email'];
-        final newEmail = args.email ?? email ?? userName;
-        final address = args.address ?? _currentSession!.address!;
-        final chainId = args.chainId?.toString() ?? _currentSession!.chainId;
-        _currentSelectedChainId = chainId;
+        final currentUsername = _currentSession?.userName;
+        final currentEmail = _currentSession?.email;
+        final newEmail = args.email ?? currentEmail ?? currentUsername;
+        final newUsername = args.userName ?? currentUsername;
+        final newProvider = args.provider ?? _currentSession?.socialProvider;
+        final newAddress = args.address ?? _currentSession!.address!;
+        final newChainId = args.chainId?.toString() ?? _currentSession!.chainId;
+        _currentSelectedChainId = newChainId;
         //
         final magicData = MagicData(
           email: newEmail,
-          address: address,
-          chainId: int.parse(chainId),
-          userName: userName,
+          address: newAddress,
+          userName: newUsername,
+          provider: newProvider,
+          chainId: int.parse(newChainId),
         );
         final session = (_currentSession != null)
             ? _currentSession!.copyWith(

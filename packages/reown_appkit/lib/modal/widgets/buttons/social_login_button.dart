@@ -11,10 +11,12 @@ class SocialLoginButton extends StatelessWidget {
     required this.logoPath,
     required this.onTap,
     this.title,
+    this.textAlign = TextAlign.center,
   });
   final String logoPath;
   final VoidCallback onTap;
   final String? title;
+  final TextAlign textAlign;
 
   @override
   Widget build(BuildContext context) {
@@ -42,10 +44,13 @@ class SocialLoginButton extends StatelessWidget {
           if (title != null)
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(right: kListItemHeight - 12.0),
+                padding: const EdgeInsets.only(
+                  left: 12.0,
+                  right: kListItemHeight - 12.0,
+                ),
                 child: Text(
                   title!,
-                  textAlign: TextAlign.center,
+                  textAlign: textAlign,
                   style: themeData.textStyles.paragraph500.copyWith(
                     color: themeColors.foreground100,
                   ),

@@ -221,11 +221,9 @@ class _MyHomePageState extends State<MyHomePage> {
         enableEmail: emailWalletValue, // OPTIONAL - false by default
         socials: [
           AppKitSocialOption.Farcaster,
+          AppKitSocialOption.X,
           AppKitSocialOption.Apple,
           AppKitSocialOption.Discord,
-          AppKitSocialOption.X,
-          AppKitSocialOption.Facebook,
-          AppKitSocialOption.Github,
         ],
         // requiredNamespaces: {},
         // optionalNamespaces: {},

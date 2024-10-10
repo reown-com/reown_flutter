@@ -92,8 +92,12 @@ class _AppKitModalMainWalletsPageState
           }
           final socialEnabled = magicService.instance.isSocialEnabled.value;
           if (socialEnabled) {
-            final count = magicService.instance.socials.length > 1 ? 3 : 2;
-            maxHeight += (kListItemHeight * count);
+            final length = magicService.instance.socials.length;
+            if (length <= 4) {
+              maxHeight += (kListItemHeight * 2);
+            } else {
+              maxHeight += (kListItemHeight * 3);
+            }
           }
           final itemsToShow = items.getRange(0, itemsCount);
           return ConstrainedBox(

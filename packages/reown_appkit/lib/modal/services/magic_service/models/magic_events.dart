@@ -12,12 +12,14 @@ class MagicLoginEvent implements EventArgs {
 class MagicSessionEvent implements EventArgs {
   String? email;
   String? userName;
+  AppKitSocialOption? provider;
   String? address;
   int? chainId;
 
   MagicSessionEvent({
     this.email,
     this.userName,
+    this.provider,
     this.address,
     this.chainId,
   });
@@ -29,6 +31,9 @@ class MagicSessionEvent implements EventArgs {
     }
     if ((userName ?? '').isNotEmpty) {
       params['userName'] = userName;
+    }
+    if (provider != null) {
+      params['provider'] = provider;
     }
     if ((address ?? '').isNotEmpty) {
       params['address'] = address;

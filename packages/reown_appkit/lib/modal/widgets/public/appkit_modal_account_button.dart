@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/modal/pages/approve_magic_request_page.dart';
 import 'package:reown_appkit/modal/pages/confirm_email_page.dart';
+import 'package:reown_appkit/modal/pages/social_login_page.dart';
 import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
 import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
@@ -86,10 +87,25 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
   }
 
   void _loginRequested(MagicSessionEvent? args) {
-    if (widget.appKit.isOpen) {
-      widgetStack.instance.popAllAndPush(ConfirmEmailPage());
+    if (args == null) return;
+    final provider = args.provider;
+    final isOpen = widget.appKit.isOpen;
+    if (isOpen) {
+      if (provider != null) {
+        widgetStack.instance.popAllAndPush(SocialLoginPage(
+          socialOption: provider,
+        ));
+      } else {
+        widgetStack.instance.popAllAndPush(ConfirmEmailPage());
+      }
     } else {
-      widget.appKit.openModalView(ConfirmEmailPage());
+      if (provider != null) {
+        widget.appKit.openModalView(SocialLoginPage(
+          socialOption: provider,
+        ));
+      } else {
+        widget.appKit.openModalView(ConfirmEmailPage());
+      }
     }
   }
 

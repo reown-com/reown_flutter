@@ -246,6 +246,8 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
 
   String get userName => _magicData?.userName ?? '';
 
+  AppKitSocialOption? get socialProvider => _magicData?.provider;
+
   //
   String? get address {
     if (sessionService.noSession) {

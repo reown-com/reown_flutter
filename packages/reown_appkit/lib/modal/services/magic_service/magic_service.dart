@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
@@ -209,10 +208,8 @@ class MagicService implements IMagicService {
   }
 
   @override
-  void setProvider(String? value) {
-    _socialProvider = AppKitSocialOption.values.firstWhereOrNull(
-      (e) => e.name.toLowerCase() == value,
-    );
+  void setProvider(AppKitSocialOption? provider) {
+    _socialProvider = provider;
   }
 
   bool get _socialsNotReady => (!isSocialEnabled.value || !isReady.value);
@@ -399,9 +396,17 @@ class MagicService implements IMagicService {
   Future<void> _rpcRequest(Map<String, dynamic> parameters) async {
     _response = Completer<dynamic>();
     if (!isConnected.value) {
-      onMagicLoginRequest.broadcast(MagicSessionEvent(email: email.value));
       _connected = Completer<bool>();
-      await connectEmail(value: email.value);
+      if (_socialProvider != null) {
+        onMagicLoginRequest.broadcast(MagicSessionEvent(
+          provider: _socialProvider,
+        ));
+      } else {
+        onMagicLoginRequest.broadcast(MagicSessionEvent(
+          email: email.value,
+        ));
+        await connectEmail(value: email.value);
+      }
       final success = await _connected.future;
       if (!success) return;
     }
@@ -586,6 +591,7 @@ class MagicService implements IMagicService {
             userName: magicData.userName,
             address: magicData.address,
             chainId: magicData.chainId,
+            provider: magicData.provider,
           );
           onMagicUpdate.broadcast(event);
           _connected.complete(isConnected.value);
@@ -787,8 +793,8 @@ class MagicService implements IMagicService {
 
   bool _isAllowedDomain(String domain) {
     final domains = [
-      Uri.parse(UrlConstants.secureService).authority,
-      Uri.parse(UrlConstants.secureDashboard).authority,
+      UrlConstants.secureOrigin1,
+      UrlConstants.secureOrigin2,
       ..._thirdSafeDomains,
     ].join('|');
     return RegExp(r'' + domains).hasMatch(domain);

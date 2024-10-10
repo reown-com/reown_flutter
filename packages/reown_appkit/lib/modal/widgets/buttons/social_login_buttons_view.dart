@@ -25,20 +25,43 @@ class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
     return ValueListenableBuilder<bool>(
       valueListenable: magicService.instance.isReady,
       builder: (context, isReady, _) {
-        final socialButtons = magicService.instance.socials;
-        final count = socialButtons.length;
+        final options = magicService.instance.socials;
+        final count = options.length;
         if (count == 0) {
           return SizedBox.shrink();
         }
+        if (count == 1) {
+          return Column(
+            children: [
+              const SizedBox.square(dimension: kListViewSeparatorHeight),
+              isReady
+                  ? SocialLoginButton(
+                      logoPath: AssetUtils.getThemedAsset(
+                        context,
+                        '${options.first.name.toLowerCase()}_logo.svg',
+                      ),
+                      onTap: () => _initSocialLogin(options.first),
+                      title: 'Continue with ${options.first.name}',
+                    )
+                  : ShimmerSocialLoginButton(
+                      title: 'Continue with ${options.first.name}',
+                    ),
+              const SizedBox.square(dimension: kListViewSeparatorHeight),
+            ],
+          );
+        }
         final maxItems = isPortrait ? 6 : 8;
+        final isLess = count <= 4;
         final fits = count == maxItems;
         final exceeds = count > maxItems;
         //
-        final firstItem = socialButtons.first;
-        final restItems = fits
-            ? socialButtons.sublist(1, min(socialButtons.length, maxItems))
-            : socialButtons.sublist(
-                1, min(socialButtons.length, (maxItems - 1)));
+        final firstItem = isLess ? null : options.first;
+        final restItems = isLess
+            ? options
+            : fits
+                ? options.sublist(1, min(options.length, maxItems))
+                : options.sublist(1, min(options.length, (maxItems - 1)));
+        //
         final secondRowList = [
           ...restItems.map(
             (item) => Expanded(
@@ -77,19 +100,30 @@ class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
         ];
         return Column(
           children: [
-            const SizedBox.square(dimension: kListViewSeparatorHeight),
-            isReady
-                ? SocialLoginButton(
-                    logoPath: AssetUtils.getThemedAsset(
-                      context,
-                      '${firstItem.name.toLowerCase()}_logo.svg',
-                    ),
-                    onTap: () => _initSocialLogin(firstItem),
-                    title: 'Continue with ${firstItem.name}',
-                  )
-                : ShimmerSocialLoginButton(
-                    title: 'Continue with ${firstItem.name}',
-                  ),
+            Builder(
+              builder: (_) {
+                if (firstItem == null) {
+                  return SizedBox.shrink();
+                }
+                return Column(
+                  children: [
+                    const SizedBox.square(dimension: kListViewSeparatorHeight),
+                    isReady
+                        ? SocialLoginButton(
+                            logoPath: AssetUtils.getThemedAsset(
+                              context,
+                              '${firstItem.name.toLowerCase()}_logo.svg',
+                            ),
+                            onTap: () => _initSocialLogin(firstItem),
+                            title: 'Continue with ${firstItem.name}',
+                          )
+                        : ShimmerSocialLoginButton(
+                            title: 'Continue with ${firstItem.name}',
+                          ),
+                  ],
+                );
+              },
+            ),
             Column(
               children: [
                 const SizedBox.square(dimension: kListViewSeparatorHeight),

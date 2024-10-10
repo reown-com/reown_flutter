@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
+import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
+import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
+import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/searchbar.dart';
@@ -27,8 +30,8 @@ class InputEmailWidget extends StatefulWidget {
 }
 
 class _InputEmailWidgetState extends State<InputEmailWidget> {
-  bool hasFocus = false;
   late TextEditingController _controller;
+  bool hasFocus = false;
   bool _ready = false;
   bool _timedOut = false;
   bool _submitted = false;
@@ -39,6 +42,7 @@ class _InputEmailWidgetState extends State<InputEmailWidget> {
     _controller = TextEditingController(text: widget.initialValue);
     _ready = magicService.instance.isReady.value;
     _timedOut = magicService.instance.isTimeout.value;
+    magicService.instance.onMagicError.subscribe(_onMagicErrorEvent);
     magicService.instance.isReady.addListener(_updateStatus);
     magicService.instance.isTimeout.addListener(_updateStatus);
   }
@@ -50,6 +54,15 @@ class _InputEmailWidgetState extends State<InputEmailWidget> {
     });
   }
 
+  void _onMagicErrorEvent(MagicErrorEvent? event) {
+    toastService.instance.show(ToastMessage(
+      type: ToastType.error,
+      text: event?.error ?? 'An error occurred.',
+    ));
+    _submitted = false;
+    setState(() {});
+  }
+
   @override
   void didUpdateWidget(covariant InputEmailWidget oldWidget) {
     _updateStatus();
@@ -58,6 +71,7 @@ class _InputEmailWidgetState extends State<InputEmailWidget> {
 
   @override
   void dispose() {
+    magicService.instance.onMagicError.subscribe(_onMagicErrorEvent);
     magicService.instance.isTimeout.addListener(_updateStatus);
     magicService.instance.isReady.removeListener(_updateStatus);
     super.dispose();
