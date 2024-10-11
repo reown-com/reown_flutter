@@ -278,8 +278,9 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  void _logListener(LogEvent event) {
-    if (event.level == Level.debug) {
+  void _logListener(event) {
+    if ('${event.level}' == 'Level.debug' ||
+        '${event.level}' == 'Level.error') {
       // TODO send to mixpanel
       log('${event.message}');
     } else {

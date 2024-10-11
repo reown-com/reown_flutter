@@ -57,7 +57,7 @@ class MagicService implements IMagicService {
   late final FeaturesConfig _features;
   late final WebViewController _webViewController;
   late final WebViewWidget _webview;
-  Logger get _logger => _core.logger;
+  // Logger get _logger => _core.logger;
 
   @override
   final List<String> supportedMethods = [
@@ -468,7 +468,7 @@ class MagicService implements IMagicService {
 
   void _onFrameMessage(JavaScriptMessage jsMessage) async {
     if (Platform.isAndroid) {
-      _logger.d('[$runtimeType] JS Console: $jsMessage');
+      _core.logger.d('[$runtimeType] JS Console: $jsMessage');
     }
     try {
       final frameMessage = jsMessage.toFrameMessage();
@@ -694,7 +694,7 @@ class MagicService implements IMagicService {
         _error(SignOutErrorEvent());
       }
     } catch (e, s) {
-      _logger.d('[$runtimeType] $jsMessage $e', stackTrace: s);
+      _core.logger.d('[$runtimeType] $jsMessage $e', stackTrace: s);
     }
   }
 
@@ -772,7 +772,7 @@ class MagicService implements IMagicService {
   }
 
   void _onDebugConsoleReceived(JavaScriptConsoleMessage message) {
-    _logger.d('[$runtimeType] JS Console: ${message.message}');
+    _core.logger.d('[$runtimeType] JS Console: ${message.message}');
   }
 
   void _onWebResourceError(WebResourceError error) {
@@ -805,7 +805,7 @@ class MagicService implements IMagicService {
       _resetTimeOut();
       _error(IsConnectedErrorEvent());
       isTimeout.value = true;
-      _logger.e(
+      _core.logger.e(
         '[EmailLogin] initialization timed out. Please check if your '
         'bundleId/packageName $_packageName is whitelisted in your cloud '
         'configuration at ${UrlConstants.cloudService} for project id ${_core.projectId}',

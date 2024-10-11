@@ -26,10 +26,9 @@ dependencies:
   json_annotation: ^4.8.1
   plugin_platform_interface: ^2.1.8
   qr_flutter_wc: ^0.0.3
-  reown_core: ^1.0.0
-  reown_sign: ^1.0.0
+  reown_core: ^1.0.1
+  reown_sign: ^1.0.1
   shimmer: ^3.0.0
-  url_launcher: ^6.3.1
   uuid: ^4.5.1
   webview_flutter: ^4.8.0
   webview_flutter_android: ^3.16.3
@@ -46,8 +45,8 @@ dev_dependencies:
   json_serializable: ^6.7.0
   logger: ^2.2.0
   mockito: ^5.4.3
-  package_info_plus: ^7.0.0
-  reown_walletkit: ^1.0.0
+  package_info_plus: ^8.0.2
+  reown_walletkit: ^1.0.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

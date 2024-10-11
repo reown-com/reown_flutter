@@ -4,7 +4,6 @@ import 'package:reown_appkit/modal/services/uri_service/launch_url_exception.dar
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/utils/platform_utils.dart';
 import 'package:reown_appkit/reown_appkit.dart';
-import 'package:url_launcher/url_launcher.dart' as launcher;
 import 'package:reown_appkit/modal/services/explorer_service/models/redirect.dart';
 
 class UriService extends IUriService {
@@ -28,8 +27,7 @@ class UriService extends IUriService {
         if (p == PlatformExact.android) {
           return await _androidAppCheck(uri);
         } else if (p == PlatformExact.ios) {
-          // TODO change to ReownCoreUtils.canOpenUrl(uri)
-          return await launcher.canLaunchUrl(Uri.parse(uri));
+          return await ReownCoreUtils.canOpenUrl(Uri.parse(uri).toString());
         }
       } on FormatException catch (e) {
         if (id != null) {
@@ -46,11 +44,8 @@ class UriService extends IUriService {
   }
 
   @override
-  Future<bool> launchUrl(Uri url, {launcher.LaunchMode? mode}) async {
-    return await _launchUrlFunc(
-      url,
-      mode: mode,
-    );
+  Future<bool> launchUrl(Uri url, {dynamic mode}) async {
+    return await _launchUrlFunc(url);
   }
 
   @override
@@ -90,18 +85,12 @@ class UriService extends IUriService {
       return false;
     }
     _core.logger.i('[$runtimeType] openRedirect $uriToOpen');
-    return await _launchUrlFunc(
-      uriToOpen!,
-      mode: launcher.LaunchMode.externalApplication,
-    );
+    return await _launchUrlFunc(uriToOpen!);
   }
 
-  Future<bool> _launchUrlFunc(Uri url, {launcher.LaunchMode? mode}) async {
+  Future<bool> _launchUrlFunc(Uri url) async {
     try {
-      final success = await launcher.launchUrl(
-        url,
-        mode: mode ?? launcher.LaunchMode.platformDefault,
-      );
+      final success = await ReownCoreUtils.openURL(url.toString());
       if (!success) {
         throw CanNotLaunchUrl();
       }
