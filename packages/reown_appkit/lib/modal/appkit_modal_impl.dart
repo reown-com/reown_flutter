@@ -5,16 +5,16 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:reown_core/store/i_store.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/services/uri_service/launch_url_exception.dart';
 import 'package:reown_appkit/modal/services/uri_service/url_utils.dart';
 import 'package:reown_appkit/modal/services/uri_service/url_utils_singleton.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/utils/platform_utils.dart';
-import 'package:reown_appkit/reown_appkit.dart';
-import 'package:reown_core/store/i_store.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
-
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/pages/account_page.dart';
 import 'package:reown_appkit/modal/pages/approve_magic_request_page.dart';
@@ -92,10 +92,9 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   String? get avatarUrl => _avatarUrl;
 
   double? _chainBalance;
+  @Deprecated('Use balanceNotifier')
   @override
-  String get chainBalance {
-    return CoreUtils.formatChainBalance(_chainBalance);
-  }
+  String get chainBalance => CoreUtils.formatChainBalance(_chainBalance);
 
   @override
   final balanceNotifier = ValueNotifier<String>('-.--');
@@ -127,6 +126,9 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     return null;
   }
 
+  @override
+  late final FeaturesConfig featuresConfig;
+
   ReownAppKitModal({
     required BuildContext context,
     IReownAppKit? appKit,
@@ -138,10 +140,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     Set<String>? featuredWalletIds,
     Set<String>? includedWalletIds,
     Set<String>? excludedWalletIds,
-    bool? enableAnalytics,
-    bool enableEmail = false,
-    List<AppKitSocialOption> socials = const [],
-    List<ReownAppKitModalNetworkInfo> blockchains = const [],
+    FeaturesConfig? featuresConfig,
     LogLevel logLevel = LogLevel.nothing,
   }) {
     if (appKit == null) {
@@ -156,11 +155,8 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
         );
       }
     }
-    // if (siweConfig?.enabled == true && context == null) {
-    //   throw ReownAppKitModalException(
-    //     '`context:` parameter is required if using `siweConfig:`. Also, `context:` parameter will be enforced in future versions.',
-    //   );
-    // }
+
+    this.featuresConfig = featuresConfig ?? FeaturesConfig();
 
     _context = context;
 
@@ -180,7 +176,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
 
     analyticsService.instance = AnalyticsService(
       core: _appKit.core,
-      enableAnalytics: enableAnalytics,
+      enableAnalytics: this.featuresConfig.enableAnalytics,
     )..init().then((_) {
         analyticsService.instance.sendEvent(ModalLoadedEvent());
       });
@@ -200,8 +196,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     magicService.instance = MagicService(
       core: _appKit.core,
       metadata: _appKit.metadata,
-      enableEmail: enableEmail,
-      socials: socials,
+      featuresConfig: this.featuresConfig,
     );
 
     coinbaseService.instance = CoinbaseService(
@@ -1376,7 +1371,8 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
         ),
       );
       final tokenName = selectedChain?.currency ?? '';
-      balanceNotifier.value = '$_chainBalance $tokenName';
+      balanceNotifier.value =
+          '${CoreUtils.formatChainBalance(_chainBalance)} $tokenName';
     } catch (e, s) {
       _logger.d(
         '[$runtimeType] loadAccountData error: $e',

@@ -4,8 +4,9 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:reown_appkit/reown_appkit.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+
+import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/services/analytics_service/analytics_service_singleton.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
@@ -14,8 +15,8 @@ import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_data.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/frame_message.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
@@ -102,21 +103,20 @@ class MagicService implements IMagicService {
 
   late final IReownCore _core;
   late final PairingMetadata _metadata;
-  late final List<AppKitSocialOption> _socialOptions;
+  late final FeaturesConfig _features;
 
   @override
-  List<AppKitSocialOption> get socials => _socialOptions;
+  List<AppKitSocialOption> get socials => _features.socials;
 
   MagicService({
     required IReownCore core,
     required PairingMetadata metadata,
-    List<AppKitSocialOption> socials = const [],
-    bool enableEmail = false,
+    required FeaturesConfig featuresConfig,
   })  : _core = core,
         _metadata = metadata,
-        _socialOptions = socials {
-    isEmailEnabled.value = enableEmail;
-    isSocialEnabled.value = _socialOptions.isNotEmpty;
+        _features = featuresConfig {
+    isEmailEnabled.value = _features.enableEmail;
+    isSocialEnabled.value = _features.socials.isNotEmpty;
     //
     if (isEmailEnabled.value || isSocialEnabled.value) {
       _webViewController = WebViewController();
@@ -178,7 +178,6 @@ class MagicService implements IMagicService {
         },
         onWebResourceError: _onWebResourceError,
         onPageFinished: (String url) async {
-          await _fitToScreen();
           _onLoadCount++;
           // If bundleId/packageName is whitelisted in cloud then for some reason it enters here twice
           // Like as if secure-mobile.walletconnect.com is loaded twice
@@ -186,6 +185,7 @@ class MagicService implements IMagicService {
           // This is happening only on Android devices, on iOS only once execution is done no matter what.
           if (_onLoadCount < 2 && Platform.isAndroid) return;
           await _runJavascript();
+          await _fitToScreen();
           Future.delayed(Duration(milliseconds: 600)).then((value) {
             if (_initialized.isCompleted) return;
             _initialized.complete(true);
@@ -467,7 +467,7 @@ class MagicService implements IMagicService {
 
   void _onFrameMessage(JavaScriptMessage jsMessage) async {
     if (Platform.isAndroid) {
-      debugPrint('[$runtimeType] jsMessage ${jsMessage.message}');
+      _logger.d('[$runtimeType] JS Console: $jsMessage');
     }
     try {
       final frameMessage = jsMessage.toFrameMessage();
@@ -757,14 +757,13 @@ class MagicService implements IMagicService {
 
   Future<void> _runJavascript() async {
     return await _webViewController.runJavaScript('''
-      const iframeFL = document.getElementById('frame-mobile-sdk')
-
       window.addEventListener('message', ({ data, origin }) => {
         console.log('[MagicService] received <=== ' + JSON.stringify({data,origin}))
         window.w3mWebview.postMessage(JSON.stringify({data,origin}))
       })
 
       const sendMessage = async (message) => {
+        const iframeFL = document.getElementById('frame-mobile-sdk')
         console.log('[MagicService] posted =====> ' + JSON.stringify(message))
         iframeFL.contentWindow.postMessage(message, '*')
       }

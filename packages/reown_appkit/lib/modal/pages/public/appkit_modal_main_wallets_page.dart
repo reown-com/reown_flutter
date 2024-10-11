@@ -11,6 +11,7 @@ import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/widgets/buttons/email_login_input_field.dart';
 import 'package:reown_appkit/modal/widgets/buttons/social_login_buttons_view.dart';
+import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
@@ -53,6 +54,8 @@ class _AppKitModalMainWalletsPageState
 
   @override
   Widget build(BuildContext context) {
+    final modalInstance = ModalProvider.of(context).instance;
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final service = ModalProvider.of(context).instance;
     final isPortrait = ResponsiveData.isPortrait(context);
     double maxHeight = isPortrait
@@ -82,13 +85,18 @@ class _AppKitModalMainWalletsPageState
               ),
             );
           }
+          final emailEnabled = magicService.instance.isEmailEnabled.value;
+          if (!modalInstance.featuresConfig.showMainWallets && emailEnabled) {
+            items.clear();
+          }
           final itemsCount = min(kShortWalletListCount, items.length);
           if (itemsCount < kShortWalletListCount) {
             maxHeight = kListItemHeight * (itemsCount + 1.5);
           }
-          final emailEnabled = magicService.instance.isEmailEnabled.value;
           if (emailEnabled) {
-            maxHeight += (kListItemHeight * 1);
+            maxHeight += kListItemHeight;
+          } else {
+            maxHeight -= 10.0;
           }
           final socialEnabled = magicService.instance.isSocialEnabled.value;
           if (socialEnabled) {
@@ -98,6 +106,8 @@ class _AppKitModalMainWalletsPageState
             } else {
               maxHeight += (kListItemHeight * 3);
             }
+          } else {
+            maxHeight += 30.0;
           }
           final itemsToShow = items.getRange(0, itemsCount);
           return ConstrainedBox(
@@ -129,36 +139,56 @@ class _AppKitModalMainWalletsPageState
               itemList: itemsToShow.toList(),
               bottomItems: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4.0,
-                  ),
-                  child: AllWalletsItem(
-                    trailing: (items.length <= kShortWalletListCount)
-                        ? null
-                        : ValueListenableBuilder<int>(
-                            valueListenable:
-                                explorerService.instance.totalListings,
-                            builder: (context, value, _) {
-                              return WalletItemChip(value: value.lazyCount);
-                            },
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: modalInstance.featuresConfig.showMainWallets ||
+                          !emailEnabled
+                      ? AllWalletsItem(
+                          trailing: (items.length <= kShortWalletListCount)
+                              ? null
+                              : ValueListenableBuilder<int>(
+                                  valueListenable:
+                                      explorerService.instance.totalListings,
+                                  builder: (context, value, _) {
+                                    return WalletItemChip(
+                                      value: value.lazyCount,
+                                    );
+                                  },
+                                ),
+                          onTap: () {
+                            if (items.length <= kShortWalletListCount) {
+                              widgetStack.instance.push(
+                                const ReownAppKitModalQRCodePage(),
+                                event: SelectWalletEvent(
+                                  name: 'WalletConnect',
+                                  platform: AnalyticsPlatform.qrcode,
+                                ),
+                              );
+                            } else {
+                              widgetStack.instance.push(
+                                const ReownAppKitModalAllWalletsPage(),
+                                event: ClickAllWalletsEvent(),
+                              );
+                            }
+                          },
+                        )
+                      : AllWalletsItem(
+                          title: 'Connect wallet',
+                          titleAlign: TextAlign.center,
+                          leading: RoundedIcon(
+                            padding: 10.0,
+                            assetPath:
+                                'lib/modal/assets/icons/regular/wallet.svg',
+                            assetColor: themeColors.foreground100,
+                            circleColor: Colors.transparent,
+                            borderColor: Colors.transparent,
                           ),
-                    onTap: () {
-                      if (items.length <= kShortWalletListCount) {
-                        widgetStack.instance.push(
-                          const ReownAppKitModalQRCodePage(),
-                          event: SelectWalletEvent(
-                            name: 'WalletConnect',
-                            platform: AnalyticsPlatform.qrcode,
-                          ),
-                        );
-                      } else {
-                        widgetStack.instance.push(
-                          const ReownAppKitModalAllWalletsPage(),
-                          event: ClickAllWalletsEvent(),
-                        );
-                      }
-                    },
-                  ),
+                          onTap: () {
+                            widgetStack.instance.push(
+                              const ReownAppKitModalAllWalletsPage(),
+                              event: ClickAllWalletsEvent(),
+                            );
+                          },
+                        ),
                 ),
               ],
             ),

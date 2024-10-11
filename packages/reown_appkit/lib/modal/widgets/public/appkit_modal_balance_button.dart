@@ -6,50 +6,44 @@ import 'package:reown_appkit/modal/utils/public/appkit_modal_default_networks.da
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 
-// Export
-class BalanceButton extends StatefulWidget {
-  static const balanceDefault = '_._';
-
-  const BalanceButton({
+class AppKitModalBalanceButton extends StatefulWidget {
+  const AppKitModalBalanceButton({
     super.key,
-    required this.service,
+    required this.appKitModal,
     this.size = BaseButtonSize.regular,
     this.onTap,
   });
-
-  final IReownAppKitModal service;
+  static const balanceDefault = '_._';
+  final IReownAppKitModal appKitModal;
   final BaseButtonSize size;
   final VoidCallback? onTap;
 
   @override
-  State<BalanceButton> createState() => _BalanceButtonState();
+  State<AppKitModalBalanceButton> createState() =>
+      _AppKitModalBalanceButtonState();
 }
 
-class _BalanceButtonState extends State<BalanceButton> {
-  String _balance = BalanceButton.balanceDefault;
+class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
   String? _tokenImage;
-  String? _tokenName;
 
   @override
   void initState() {
     super.initState();
     _modalNotifyListener();
-    widget.service.addListener(_modalNotifyListener);
+    widget.appKitModal.addListener(_modalNotifyListener);
   }
 
   @override
   void dispose() {
-    widget.service.removeListener(_modalNotifyListener);
+    widget.appKitModal.removeListener(_modalNotifyListener);
     super.dispose();
   }
 
   void _modalNotifyListener() {
     setState(() {
-      final chainId = widget.service.selectedChain?.chainId ?? '1';
+      final chainId = widget.appKitModal.selectedChain?.chainId ?? '1';
       final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
       _tokenImage = explorerService.instance.getAssetImageUrl(imageId);
-      _balance = widget.service.chainBalance;
-      _tokenName = widget.service.selectedChain?.currency;
     });
   }
 
@@ -98,10 +92,15 @@ class _BalanceButtonState extends State<BalanceButton> {
         children: [
           RoundedIcon(
             imageUrl: _tokenImage,
-            size: widget.size.height * 0.7,
+            size: widget.size.height * 0.55,
           ),
           const SizedBox.square(dimension: 4.0),
-          Text('$_balance ${_tokenName ?? ''}'),
+          ValueListenableBuilder<String>(
+            valueListenable: widget.appKitModal.balanceNotifier,
+            builder: (_, balance, __) {
+              return Text(balance);
+            },
+          ),
         ],
       ),
     );

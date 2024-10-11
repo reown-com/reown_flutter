@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
-import 'package:reown_appkit/modal/widgets/buttons/balance_button.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
 
@@ -20,43 +19,46 @@ class BalanceText extends StatefulWidget {
 }
 
 class _BalanceTextState extends State<BalanceText> {
-  String _balance = BalanceButton.balanceDefault;
-  String? _tokenName;
-  IReownAppKitModal? _service;
+  IReownAppKitModal? _appKitModal;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _service = ModalProvider.of(context).instance;
+      _appKitModal = ModalProvider.of(context).instance;
       _modalNotifyListener();
-      _service?.addListener(_modalNotifyListener);
+      _appKitModal?.addListener(_modalNotifyListener);
     });
   }
 
   @override
   void dispose() {
-    _service?.removeListener(_modalNotifyListener);
+    _appKitModal?.removeListener(_modalNotifyListener);
     super.dispose();
   }
 
   void _modalNotifyListener() {
-    if (_service == null) return;
-    setState(() {
-      _balance = _service!.chainBalance;
-      _tokenName = _service?.selectedChain?.currency;
-    });
+    if (_appKitModal == null) return;
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    return Text(
-      '$_balance ${_tokenName ?? ''}',
-      style: themeData.textStyles.paragraph500.copyWith(
-        color: themeColors.foreground200,
-      ),
+    if (_appKitModal == null) {
+      return const SizedBox.shrink();
+    }
+    return ValueListenableBuilder<String>(
+      valueListenable: _appKitModal!.balanceNotifier,
+      builder: (_, balance, __) {
+        return Text(
+          balance,
+          style: themeData.textStyles.paragraph500.copyWith(
+            color: themeColors.foreground200,
+          ),
+        );
+      },
     );
   }
 }

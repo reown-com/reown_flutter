@@ -217,14 +217,17 @@ class _MyHomePageState extends State<MyHomePage> {
         logLevel: LogLevel.error,
         metadata: _pairingMetadata(),
         siweConfig: _siweConfig(siweAuthValue),
-        enableAnalytics: analyticsValue, // OPTIONAL - null by default
-        enableEmail: emailWalletValue, // OPTIONAL - false by default
-        socials: [
-          AppKitSocialOption.Farcaster,
-          AppKitSocialOption.X,
-          AppKitSocialOption.Apple,
-          AppKitSocialOption.Discord,
-        ],
+        featuresConfig: FeaturesConfig(
+          enableAnalytics: analyticsValue, // OPTIONAL - null by default
+          enableEmail: emailWalletValue, // OPTIONAL - false by default
+          socials: [
+            AppKitSocialOption.Farcaster,
+            AppKitSocialOption.X,
+            AppKitSocialOption.Apple,
+            AppKitSocialOption.Discord,
+          ],
+          showMainWallets: false, // OPTIONAL - true by default
+        ),
         // requiredNamespaces: {},
         // optionalNamespaces: {},
         // includedWalletIds: {},
@@ -509,6 +512,20 @@ class _ConnectedView extends StatelessWidget {
           //     );
           //   },
           // ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AppKitModalBalanceButton(
+              appKitModal: appKit,
+              onTap: appKit.openModalView,
+            ),
+            const SizedBox.square(dimension: 8.0),
+            AppKitModalAddressButton(
+              appKitModal: appKit,
+              onTap: appKit.openModalView,
+            ),
+          ],
         ),
         SessionWidget(appKit: appKit),
         const SizedBox.square(dimension: 12.0),

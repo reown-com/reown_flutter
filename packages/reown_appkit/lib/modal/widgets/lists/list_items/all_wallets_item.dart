@@ -8,10 +8,14 @@ class AllWalletsItem extends StatelessWidget {
   const AllWalletsItem({
     super.key,
     this.title = 'All wallets',
+    this.titleAlign = TextAlign.left,
+    this.leading,
     this.trailing,
     this.onTap,
   });
   final String title;
+  final TextAlign titleAlign;
+  final Widget? leading;
   final Widget? trailing;
   final VoidCallback? onTap;
 
@@ -21,29 +25,35 @@ class AllWalletsItem extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return BaseListItem(
       onTap: onTap,
-      child: Row(
-        children: [
-          LayoutBuilder(
-            builder: (_, constraints) {
-              return ThemedIcon(
-                iconPath: 'lib/modal/assets/icons/dots.svg',
-                size: constraints.maxHeight,
-              );
-            },
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: Text(
-                title,
-                style: themeData.textStyles.paragraph500.copyWith(
-                  color: themeColors.foreground100,
+      child: LayoutBuilder(builder: (_, constraints) {
+        return Row(
+          children: [
+            SizedBox.square(
+              dimension: constraints.maxHeight,
+              child: leading ??
+                  ThemedIcon(
+                    iconPath: 'lib/modal/assets/icons/dots.svg',
+                  ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Text(
+                  title,
+                  textAlign: titleAlign,
+                  style: themeData.textStyles.paragraph500.copyWith(
+                    color: themeColors.foreground100,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
+            SizedBox.square(
+              dimension: constraints.maxHeight,
+              child: Container(),
+            ),
+          ],
+        );
+      }),
       trailing: trailing,
     );
   }
