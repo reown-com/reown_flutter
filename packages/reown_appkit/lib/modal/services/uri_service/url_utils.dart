@@ -28,6 +28,7 @@ class UriService extends IUriService {
         if (p == PlatformExact.android) {
           return await _androidAppCheck(uri);
         } else if (p == PlatformExact.ios) {
+          // TODO change to ReownCoreUtils.canOpenUrl(uri)
           return await launcher.canLaunchUrl(Uri.parse(uri));
         }
       } on FormatException catch (e) {

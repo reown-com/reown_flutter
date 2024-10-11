@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_core/store/i_store.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/services/uri_service/launch_url_exception.dart';
@@ -1073,10 +1072,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       final blockExplorer = selectedChain!.explorerUrl;
       final address = _currentSession?.address ?? '';
       final explorerUrl = '$blockExplorer/address/$address';
-      await uriService.instance.launchUrl(
-        Uri.parse(explorerUrl),
-        mode: LaunchMode.externalApplication,
-      );
+      await ReownCoreUtils.openURL(explorerUrl);
     }
   }
 

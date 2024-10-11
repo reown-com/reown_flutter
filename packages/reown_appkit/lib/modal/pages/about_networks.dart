@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
@@ -46,10 +45,7 @@ class AboutNetworks extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             SimpleIconButton(
-              onTap: () => launchUrlString(
-                UrlConstants.learnMoreUrl,
-                mode: LaunchMode.externalApplication,
-              ),
+              onTap: () => ReownCoreUtils.openURL(UrlConstants.learnMoreUrl),
               rightIcon: 'lib/modal/assets/icons/arrow_top_right.svg',
               title: 'Learn more',
               size: BaseButtonSize.small,

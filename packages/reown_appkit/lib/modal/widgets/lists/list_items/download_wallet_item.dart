@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 import 'package:reown_appkit/modal/widgets/buttons/simple_icon_button.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
@@ -54,10 +53,7 @@ class DownloadWalletItem extends StatelessWidget {
 
   void _downloadApp(BuildContext context) {
     try {
-      launchUrlString(
-        _storeUrl,
-        mode: LaunchMode.externalApplication,
-      );
+      ReownCoreUtils.openURL(_storeUrl);
     } catch (e) {
       ModalProvider.of(context).instance.connectSelectedWallet();
     }

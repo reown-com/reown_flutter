@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
@@ -174,10 +173,7 @@ class MagicService implements IMagicService {
             return NavigationDecision.navigate;
           }
           if (isReady.value) {
-            launchUrlString(
-              request.url,
-              mode: LaunchMode.externalApplication,
-            );
+            ReownCoreUtils.openURL(request.url);
           }
           return NavigationDecision.prevent;
         },
