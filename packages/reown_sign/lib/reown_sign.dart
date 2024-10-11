@@ -28,4 +28,3 @@ export 'sign_engine.dart';
 export 'package:web3dart/web3dart.dart';
 export 'package:web3dart/crypto.dart' hide bytesToHex;
 export 'package:web3dart/json_rpc.dart';
-export 'package:logger/logger.dart';
