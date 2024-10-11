@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
@@ -110,17 +111,18 @@ class _WebViewWidget extends StatefulWidget {
 }
 
 class _WebViewWidgetState extends State<_WebViewWidget> {
+  IMagicService get _magicService => GetIt.I<IMagicService>();
   bool _show = true;
   //
   @override
   void initState() {
     super.initState();
-    magicService.instance.onMagicRpcRequest.subscribe(_onRequest);
+    _magicService.onMagicRpcRequest.subscribe(_onRequest);
   }
 
   @override
   void dispose() {
-    magicService.instance.onMagicRpcRequest.unsubscribe(_onRequest);
+    _magicService.onMagicRpcRequest.unsubscribe(_onRequest);
     super.dispose();
   }
 
@@ -134,13 +136,13 @@ class _WebViewWidgetState extends State<_WebViewWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final emailEnabled = magicService.instance.isEmailEnabled.value;
-    final socialEnabled = magicService.instance.isSocialEnabled.value;
+    final emailEnabled = _magicService.isEmailEnabled.value;
+    final socialEnabled = _magicService.isSocialEnabled.value;
     if ((emailEnabled || socialEnabled) && _show) {
       return SizedBox(
         width: 0.5,
         height: 0.5,
-        child: magicService.instance.webview,
+        child: _magicService.webview,
       );
     }
     return const SizedBox.shrink();

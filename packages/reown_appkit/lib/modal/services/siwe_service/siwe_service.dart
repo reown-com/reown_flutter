@@ -1,13 +1,16 @@
 import 'dart:convert';
 
 import 'package:convert/convert.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/coinbase_service_singleton.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class SiweService implements ISiweService {
+  IMagicService get _magicService => GetIt.I<IMagicService>();
+
   late final SIWEConfig? _siweConfig;
   final IReownAppKit _appKit;
 
@@ -88,7 +91,7 @@ class SiweService implements ISiweService {
     final encoded = hex.encode(bytes);
     //
     if (session.sessionService.isMagic) {
-      return await magicService.instance.request(
+      return await _magicService.request(
         chainId: caip2Chain,
         request: SessionRequestParams(
           method: 'personal_sign',

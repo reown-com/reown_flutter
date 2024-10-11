@@ -1,8 +1,23 @@
+import 'package:flutter/foundation.dart';
+import 'package:reown_appkit/modal/services/magic_service/models/email_login_step.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 abstract class IMagicService {
+  List<String> get supportedMethods;
   List<AppKitSocialOption> get socials;
+
+  ValueNotifier<bool> get isReady;
+  ValueNotifier<bool> get isConnected;
+  ValueNotifier<bool> get isTimeout;
+  ValueNotifier<bool> get isEmailEnabled;
+  ValueNotifier<bool> get isSocialEnabled;
+  ValueNotifier<String> get email;
+  ValueNotifier<String> get newEmail;
+  ValueNotifier<EmailLoginStep> get step;
+
+  WebViewWidget get webview;
 
   Future<void> init();
 
@@ -10,7 +25,6 @@ abstract class IMagicService {
   void setNewEmail(String value);
   void setProvider(AppKitSocialOption? provider);
 
-  // ****** W3mFrameProvider public methods ******* //
   Future<String?> getSocialRedirectUri({
     required AppKitSocialOption provider,
     String? schema,
@@ -21,7 +35,7 @@ abstract class IMagicService {
   Future<String?> getFarcasterUri({String? chainId});
   Future<bool> awaitFarcasterResponse();
 
-  Future<void> connectEmail({required String value});
+  Future<void> connectEmail({required String value, String? chainId});
   Future<void> updateEmail({required String value});
   Future<void> updateEmailPrimaryOtp({required String otp});
   Future<void> updateEmailSecondaryOtp({required String otp});

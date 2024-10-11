@@ -1,10 +1,11 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/all_social_logins.dart';
 import 'package:reown_appkit/modal/pages/social_login_page.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
 import 'package:reown_appkit/modal/widgets/buttons/social_login_button.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
@@ -19,13 +20,15 @@ class SocialLoginButtonsView extends StatefulWidget {
 }
 
 class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
+  IMagicService get _magicService => GetIt.I<IMagicService>();
+
   @override
   Widget build(BuildContext context) {
     final isPortrait = ResponsiveData.isPortrait(context);
     return ValueListenableBuilder<bool>(
-      valueListenable: magicService.instance.isReady,
+      valueListenable: _magicService.isReady,
       builder: (context, isReady, _) {
-        final options = magicService.instance.socials;
+        final options = _magicService.socials;
         final count = options.length;
         if (count == 0) {
           return SizedBox.shrink();

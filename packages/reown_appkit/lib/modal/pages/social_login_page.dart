@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 
@@ -12,7 +13,7 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/farcaster_qrcode_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/analytics_service_singleton.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
 import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
@@ -45,6 +46,8 @@ class SocialLoginPage extends StatefulWidget {
 }
 
 class _SocialLoginPageState extends State<SocialLoginPage> {
+  IMagicService get _magicService => GetIt.I<IMagicService>();
+
   IReownAppKitModal? _service;
   ModalError? errorEvent;
   bool _retrievingData = false;
@@ -87,7 +90,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
         provider: widget.socialOption.name.toLowerCase(),
       ));
       if (option == AppKitSocialOption.Farcaster) {
-        final farcasterUri = await magicService.instance.getFarcasterUri(
+        final farcasterUri = await _magicService.getFarcasterUri(
           chainId: _service?.selectedChain?.chainId,
         );
 
@@ -96,7 +99,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
         }
       } else {
         final schema = null; // _service?.appKit?.metadata.redirect?.universal;
-        final redirectUri = await magicService.instance.getSocialRedirectUri(
+        final redirectUri = await _magicService.getSocialRedirectUri(
           provider: option,
           schema: schema,
           chainId: _service?.selectedChain?.chainId,
@@ -113,7 +116,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
             //   await _completeSocialLogin(result);
             // }
           } else {
-            magicService.instance.onCompleteSocialLogin.subscribe(
+            _magicService.onCompleteSocialLogin.subscribe(
               _onCompleteSocialLogin,
             );
             await ReownCoreUtils.openURL(redirectUri);
@@ -179,15 +182,15 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
   Future<void> _completeSocialLogin(String url) async {
     try {
       setState(() => _retrievingData = true);
-      final success = await magicService.instance.connectSocial(
+      final success = await _magicService.connectSocial(
         uri: '?${Uri.parse(url).query}',
       );
       if (success == true) {
-        await magicService.instance.getUser();
+        await _magicService.getUser();
         analyticsService.instance.sendEvent(SocialLoginSuccess(
           provider: widget.socialOption.name.toLowerCase(),
         ));
-        magicService.instance.onCompleteSocialLogin.unsubscribe(
+        _magicService.onCompleteSocialLogin.unsubscribe(
           _onCompleteSocialLogin,
         );
       } else {
@@ -205,7 +208,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
       replace: true,
       FarcasterQRCodePage(
         farcasterUri: farcasterUri,
-        farcasterCompleter: magicService.instance.awaitFarcasterResponse(),
+        farcasterCompleter: _magicService.awaitFarcasterResponse(),
       ),
     );
   }
@@ -215,7 +218,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
       _cancelSocialLogin();
     } else {
       setState(() => _retrievingData = true);
-      await magicService.instance.getUser();
+      await _magicService.getUser();
     }
   }
 

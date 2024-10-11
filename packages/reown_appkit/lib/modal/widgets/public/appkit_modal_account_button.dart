@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/pages/approve_magic_request_page.dart';
 import 'package:reown_appkit/modal/pages/confirm_email_page.dart';
 import 'package:reown_appkit/modal/pages/social_login_page.dart';
 import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
@@ -35,6 +36,7 @@ class AppKitModalAccountButton extends StatefulWidget {
 }
 
 class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
+  IMagicService get _magicService => GetIt.I<IMagicService>();
   String _address = '';
 
   @override
@@ -43,15 +45,15 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
     _modalNotifyListener();
     widget.appKit.addListener(_modalNotifyListener);
     // TODO [AppKitModalAccountButton] this should go in ReownAppKitModal but for that, init() method of ReownAppKitModal should receive a BuildContext, which would be a breaking change
-    magicService.instance.onMagicRpcRequest.subscribe(_approveSign);
-    magicService.instance.onMagicLoginRequest.subscribe(_loginRequested);
+    _magicService.onMagicRpcRequest.subscribe(_approveSign);
+    _magicService.onMagicLoginRequest.subscribe(_loginRequested);
   }
 
   @override
   void dispose() {
     widget.appKit.removeListener(_modalNotifyListener);
-    magicService.instance.onMagicRpcRequest.unsubscribe(_approveSign);
-    magicService.instance.onMagicLoginRequest.unsubscribe(_loginRequested);
+    _magicService.onMagicRpcRequest.unsubscribe(_approveSign);
+    _magicService.onMagicLoginRequest.unsubscribe(_loginRequested);
     super.dispose();
   }
 

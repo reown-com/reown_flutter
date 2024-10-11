@@ -1,12 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/pages/about_wallets.dart';
 import 'package:reown_appkit/modal/pages/connect_wallet_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/widgets/buttons/email_login_input_field.dart';
@@ -34,11 +35,13 @@ class ReownAppKitModalMainWalletsPage extends StatefulWidget {
 
 class _AppKitModalMainWalletsPageState
     extends State<ReownAppKitModalMainWalletsPage> {
+  IMagicService get _magicService => GetIt.I<IMagicService>();
+
   @override
   void initState() {
     super.initState();
-    magicService.instance.isEmailEnabled.addListener(_enabledListener);
-    magicService.instance.isSocialEnabled.addListener(_enabledListener);
+    _magicService.isEmailEnabled.addListener(_enabledListener);
+    _magicService.isSocialEnabled.addListener(_enabledListener);
   }
 
   void _enabledListener() {
@@ -47,8 +50,8 @@ class _AppKitModalMainWalletsPageState
 
   @override
   void dispose() {
-    magicService.instance.isSocialEnabled.removeListener(_enabledListener);
-    magicService.instance.isEmailEnabled.removeListener(_enabledListener);
+    _magicService.isSocialEnabled.removeListener(_enabledListener);
+    _magicService.isEmailEnabled.removeListener(_enabledListener);
     super.dispose();
   }
 
@@ -85,7 +88,7 @@ class _AppKitModalMainWalletsPageState
               ),
             );
           }
-          final emailEnabled = magicService.instance.isEmailEnabled.value;
+          final emailEnabled = _magicService.isEmailEnabled.value;
           if (!modalInstance.featuresConfig.showMainWallets && emailEnabled) {
             items.clear();
           }
@@ -98,9 +101,9 @@ class _AppKitModalMainWalletsPageState
           } else {
             maxHeight -= 10.0;
           }
-          final socialEnabled = magicService.instance.isSocialEnabled.value;
+          final socialEnabled = _magicService.isSocialEnabled.value;
           if (socialEnabled) {
-            final length = magicService.instance.socials.length;
+            final length = _magicService.socials.length;
             if (length <= 4) {
               maxHeight += (kListItemHeight * 2);
             } else {

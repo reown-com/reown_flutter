@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/pages/confirm_email_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/analytics_service_singleton.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/email_login_step.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/input_email.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
@@ -16,17 +17,19 @@ class EmailLoginInputField extends StatefulWidget {
 }
 
 class _EmailLoginInputFieldState extends State<EmailLoginInputField> {
+  IMagicService get _magicService => GetIt.I<IMagicService>();
+
   bool _submitted = false;
   @override
   void initState() {
     super.initState();
-    magicService.instance.step.addListener(_stepListener);
+    _magicService.step.addListener(_stepListener);
   }
 
   void _stepListener() {
-    if ((magicService.instance.step.value == EmailLoginStep.verifyDevice ||
-            magicService.instance.step.value == EmailLoginStep.verifyOtp ||
-            magicService.instance.step.value == EmailLoginStep.verifyOtp2) &&
+    if ((_magicService.step.value == EmailLoginStep.verifyDevice ||
+            _magicService.step.value == EmailLoginStep.verifyOtp ||
+            _magicService.step.value == EmailLoginStep.verifyOtp2) &&
         _submitted) {
       widgetStack.instance.push(ConfirmEmailPage());
       _submitted = false;
@@ -35,14 +38,14 @@ class _EmailLoginInputFieldState extends State<EmailLoginInputField> {
 
   @override
   void dispose() {
-    magicService.instance.step.removeListener(_stepListener);
+    _magicService.step.removeListener(_stepListener);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
-      valueListenable: magicService.instance.isEmailEnabled,
+      valueListenable: _magicService.isEmailEnabled,
       builder: (context, emailEnabled, _) {
         if (!emailEnabled) {
           return const SizedBox.shrink();
@@ -54,14 +57,14 @@ class _EmailLoginInputFieldState extends State<EmailLoginInputField> {
             }
           },
           onValueChange: (value) {
-            magicService.instance.setEmail(value);
+            _magicService.setEmail(value);
           },
           onSubmitted: (value) {
             setState(() => _submitted = true);
             final service = ModalProvider.of(context).instance;
             final chainId = service.selectedChain?.chainId;
             analyticsService.instance.sendEvent(EmailSubmitted());
-            magicService.instance.connectEmail(
+            _magicService.connectEmail(
               value: value,
               chainId: chainId,
             );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 
@@ -24,7 +25,7 @@ class _ApproveTransactionPageState extends State<ApproveTransactionPage> {
         constraints: BoxConstraints(
           maxHeight: ResponsiveData.maxHeightOf(context),
         ),
-        child: magicService.instance.webview,
+        child: GetIt.I<IMagicService>().webview,
       ),
     );
   }

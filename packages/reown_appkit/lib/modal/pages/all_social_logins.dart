@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
@@ -22,7 +23,8 @@ class AllSocialLoginsPage extends StatefulWidget {
 class _AppKitModalMainWalletsPageState extends State<AllSocialLoginsPage> {
   @override
   Widget build(BuildContext context) {
-    final listItems = magicService.instance.socials
+    final listItems = GetIt.I<IMagicService>()
+        .socials
         .map((item) => SocialLoginButton(
               logoPath: AssetUtils.getThemedAsset(
                 context,

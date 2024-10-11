@@ -5,6 +5,8 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_core/store/i_store.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -31,7 +33,6 @@ import 'package:reown_appkit/modal/services/explorer_service/explorer_service.da
 import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/redirect.dart';
 import 'package:reown_appkit/modal/services/magic_service/magic_service.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_data.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/modal/services/siwe_service/siwe_service.dart';
@@ -54,6 +55,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   Map<String, RequiredNamespace> _optionalNamespaces = {};
   String? _lastChainEmitted;
   bool _supportsOneClickAuth = false;
+  bool _serviceInitialized = false;
 
   ReownAppKitModalStatus _status = ReownAppKitModalStatus.idle;
   @override
@@ -193,10 +195,12 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       core: _appKit.core,
     );
 
-    magicService.instance = MagicService(
-      core: _appKit.core,
-      metadata: _appKit.metadata,
-      featuresConfig: this.featuresConfig,
+    GetIt.I.registerSingleton<IMagicService>(
+      MagicService(
+        core: _appKit.core,
+        metadata: _appKit.metadata,
+        featuresConfig: this.featuresConfig,
+      ),
     );
 
     coinbaseService.instance = CoinbaseService(
@@ -211,9 +215,9 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     );
   }
 
-  ////////* PUBLIC METHODS */////////
+  IMagicService get _magicService => GetIt.I<IMagicService>();
 
-  bool _serviceInitialized = false;
+  ////////* PUBLIC METHODS */////////
 
   @override
   Future<bool> dispatchEnvelope(String url) async {
@@ -225,7 +229,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
 
     final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
     if (state.isNotEmpty) {
-      magicService.instance.completeSocialLogin(url: url);
+      _magicService.completeSocialLogin(url: url);
       return true;
     }
 
@@ -266,10 +270,10 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       _currentSelectedChainId ??= _currentSession!.chainId;
       await _setSesionAndChainData(_currentSession!);
       if (isMagic) {
-        await magicService.instance.init();
+        await _magicService.init();
       }
     } else {
-      magicService.instance.init();
+      _magicService.init();
     }
 
     await expirePreviousInactivePairings();
@@ -315,9 +319,9 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
           // Every time the app gets killed Magic service will treat the user as disconnected
           // So we will need to treat magic session differently
           final email = _currentSession!.email;
-          magicService.instance.setEmail(email);
+          _magicService.setEmail(email);
           final provider = _currentSession!.socialProvider;
-          magicService.instance.setProvider(provider);
+          _magicService.setProvider(provider);
         } else {
           await _cleanSession();
         }
@@ -442,7 +446,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     _chainBalance = null;
 
     if (_currentSession?.sessionService.isMagic == true) {
-      await magicService.instance.switchNetwork(chainId: chainInfo.chainId);
+      await _magicService.switchNetwork(chainId: chainInfo.chainId);
       // onModalNetworkChange.broadcast(ModalNetworkChange(
       //   chainId: chainInfo.namespace,
       // ));
@@ -619,7 +623,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
 
     final isBottomSheet = PlatformUtils.isBottomSheet();
     final theme = ReownAppKitModalTheme.maybeOf(_context!);
-    await magicService.instance.syncTheme(theme);
+    await _magicService.syncTheme(theme);
     final themeData = theme?.themeData ?? const ReownAppKitModalThemeData();
 
     Widget? showWidget = startWidget;
@@ -982,7 +986,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     }
     if (_currentSession?.sessionService.isMagic == true) {
       await Future.delayed(Duration(milliseconds: 300));
-      final disconnected = await magicService.instance.disconnect();
+      final disconnected = await _magicService.disconnect();
       if (!disconnected) {
         _status = ReownAppKitModalStatus.initialized;
         _notify();
@@ -1198,7 +1202,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     );
     try {
       if (_currentSession!.sessionService.isMagic) {
-        return await magicService.instance.request(
+        return await _magicService.request(
           chainId: reqChainId,
           request: request,
         );
@@ -1533,11 +1537,11 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
 
   void _registerListeners() {
     // Magic
-    magicService.instance.onMagicConnect.subscribe(_onMagicConnectEvent);
-    magicService.instance.onMagicLoginSuccess.subscribe(_onMagicLoginEvent);
-    magicService.instance.onMagicError.subscribe(_onMagicErrorEvent);
-    magicService.instance.onMagicUpdate.subscribe(_onMagicSessionUpdateEvent);
-    magicService.instance.onMagicRpcRequest.subscribe(_onMagicRequest);
+    _magicService.onMagicConnect.subscribe(_onMagicConnectEvent);
+    _magicService.onMagicLoginSuccess.subscribe(_onMagicLoginEvent);
+    _magicService.onMagicError.subscribe(_onMagicErrorEvent);
+    _magicService.onMagicUpdate.subscribe(_onMagicSessionUpdateEvent);
+    _magicService.onMagicRpcRequest.subscribe(_onMagicRequest);
     //
     // Coinbase
     coinbaseService.instance.onCoinbaseConnect.subscribe(
@@ -1587,10 +1591,10 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
 
   void _unregisterListeners() {
     // Magic
-    magicService.instance.onMagicLoginSuccess.unsubscribe(_onMagicLoginEvent);
-    magicService.instance.onMagicError.unsubscribe(_onMagicErrorEvent);
-    magicService.instance.onMagicUpdate.unsubscribe(_onMagicSessionUpdateEvent);
-    magicService.instance.onMagicRpcRequest.unsubscribe(_onMagicRequest);
+    _magicService.onMagicLoginSuccess.unsubscribe(_onMagicLoginEvent);
+    _magicService.onMagicError.unsubscribe(_onMagicErrorEvent);
+    _magicService.onMagicUpdate.unsubscribe(_onMagicSessionUpdateEvent);
+    _magicService.onMagicRpcRequest.unsubscribe(_onMagicRequest);
     //
     // Coinbase
     coinbaseService.instance.onCoinbaseConnect.unsubscribe(
@@ -1661,7 +1665,7 @@ extension _EmailConnectorExtension on ReownAppKitModal {
         } else {
           _disconnectOnClose = true;
           final theme = ReownAppKitModalTheme.maybeOf(_context!);
-          await magicService.instance.syncTheme(theme);
+          await _magicService.syncTheme(theme);
           widgetStack.instance.push(ApproveSIWEPage(
             onSiweFinish: _oneSIWEFinish,
           ));

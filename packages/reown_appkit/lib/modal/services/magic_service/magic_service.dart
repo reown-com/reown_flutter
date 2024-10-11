@@ -25,13 +25,6 @@ class MagicService implements IMagicService {
     'auth.magic.link',
     'launchdarkly.com',
   ];
-  static const supportedMethods = [
-    'personal_sign',
-    'eth_sendTransaction',
-    'eth_accounts',
-    'eth_sendRawTransaction',
-    'eth_signTypedData_v4',
-  ];
 
   ConnectionMetadata get _selfMetadata => ConnectionMetadata(
         metadata: _metadata,
@@ -56,18 +49,47 @@ class MagicService implements IMagicService {
   String _packageName = '';
   AppKitSocialOption? _socialProvider;
 
-  late final WebViewController _webViewController;
-  WebViewController get controller => _webViewController;
-
-  late final WebViewWidget _webview;
-  WebViewWidget get webview => _webview;
-
   late Completer<bool> _initialized;
   late Completer<bool> _connected;
   late Completer<dynamic> _response;
   late Completer<bool> _disconnect;
-
+  late final IReownCore _core;
+  late final PairingMetadata _metadata;
+  late final FeaturesConfig _features;
+  late final WebViewController _webViewController;
+  late final WebViewWidget _webview;
   Logger get _logger => _core.logger;
+
+  @override
+  final List<String> supportedMethods = [
+    'personal_sign',
+    'eth_sendTransaction',
+    'eth_accounts',
+    'eth_sendRawTransaction',
+    'eth_signTypedData_v4',
+  ];
+
+  @override
+  WebViewWidget get webview => _webview;
+  @override
+  final isReady = ValueNotifier(false);
+  @override
+  final isConnected = ValueNotifier(false);
+  @override
+  final isTimeout = ValueNotifier(false);
+  @override
+  final isEmailEnabled = ValueNotifier(false);
+  @override
+  final isSocialEnabled = ValueNotifier(false);
+  @override
+  final email = ValueNotifier<String>('');
+  @override
+  final newEmail = ValueNotifier<String>('');
+  @override
+  final step = ValueNotifier<EmailLoginStep>(EmailLoginStep.idle);
+
+  @override
+  List<AppKitSocialOption> get socials => _features.socials;
 
   @override
   Event<MagicSessionEvent> onMagicLoginRequest = Event<MagicSessionEvent>();
@@ -90,23 +112,6 @@ class MagicService implements IMagicService {
   @override
   Event<CompleteSocialLoginEvent> onCompleteSocialLogin =
       Event<CompleteSocialLoginEvent>();
-
-  final isEmailEnabled = ValueNotifier(false);
-  final isSocialEnabled = ValueNotifier(false);
-  final isReady = ValueNotifier(false);
-  final isConnected = ValueNotifier(false);
-  final isTimeout = ValueNotifier(false);
-
-  final email = ValueNotifier<String>('');
-  final newEmail = ValueNotifier<String>('');
-  final step = ValueNotifier<EmailLoginStep>(EmailLoginStep.idle);
-
-  late final IReownCore _core;
-  late final PairingMetadata _metadata;
-  late final FeaturesConfig _features;
-
-  @override
-  List<AppKitSocialOption> get socials => _features.socials;
 
   MagicService({
     required IReownCore core,

@@ -1,7 +1,8 @@
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/coinbase_service.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_data.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_data.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -108,7 +109,7 @@ class ReownAppKitModalSession {
       return CoinbaseService.supportedMethods;
     }
     if (sessionService.isMagic) {
-      return MagicService.supportedMethods;
+      return GetIt.I<IMagicService>().supportedMethods;
     }
 
     final sessionNamespaces = _sessionData!.namespaces;
@@ -319,7 +320,7 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
         CoreConstants.namespace: Namespace(
           chains: ['${CoreConstants.namespace}:$chainId'],
           accounts: ['${CoreConstants.namespace}:$chainId:$address'],
-          methods: [...MagicService.supportedMethods],
+          methods: [...GetIt.I<IMagicService>().supportedMethods],
           events: [],
         ),
       };
