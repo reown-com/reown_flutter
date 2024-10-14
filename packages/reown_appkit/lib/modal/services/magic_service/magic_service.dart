@@ -119,7 +119,7 @@ class MagicService implements IMagicService {
   })  : _core = core,
         _metadata = metadata,
         _features = featuresConfig {
-    isEmailEnabled.value = _features.enableEmail;
+    isEmailEnabled.value = _features.email;
     isSocialEnabled.value = _features.socials.isNotEmpty;
     //
     if (isEmailEnabled.value || isSocialEnabled.value) {

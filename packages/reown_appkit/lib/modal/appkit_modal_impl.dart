@@ -112,8 +112,6 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   @override
   ReownAppKitModalSession? get session => _currentSession;
 
-  // Logger get _appKit.core.logger => _appKit.core.logger;
-
   IStore<Map<String, dynamic>> get _storage => _appKit.core.storage;
 
   bool _disconnectOnClose = false;
@@ -130,18 +128,20 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   @override
   late final FeaturesConfig featuresConfig;
 
+  ///
   ReownAppKitModal({
     required BuildContext context,
     IReownAppKit? appKit,
     String? projectId,
     PairingMetadata? metadata,
+    bool? enableAnalytics,
     SIWEConfig? siweConfig,
+    FeaturesConfig? featuresConfig,
     Map<String, RequiredNamespace>? requiredNamespaces,
     Map<String, RequiredNamespace>? optionalNamespaces,
     Set<String>? featuredWalletIds,
     Set<String>? includedWalletIds,
     Set<String>? excludedWalletIds,
-    FeaturesConfig? featuresConfig,
     LogLevel logLevel = LogLevel.nothing,
   }) {
     if (appKit == null) {
@@ -157,7 +157,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       }
     }
 
-    this.featuresConfig = featuresConfig ?? FeaturesConfig();
+    this.featuresConfig = featuresConfig ?? FeaturesConfig(email: false);
 
     _context = context;
 
@@ -177,7 +177,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
 
     analyticsService.instance = AnalyticsService(
       core: _appKit.core,
-      enableAnalytics: this.featuresConfig.enableAnalytics,
+      enableAnalytics: enableAnalytics,
     )..init().then((_) {
         analyticsService.instance.sendEvent(ModalLoadedEvent());
       });

@@ -217,16 +217,16 @@ class _MyHomePageState extends State<MyHomePage> {
         logLevel: LogLevel.error,
         metadata: _pairingMetadata(),
         siweConfig: _siweConfig(siweAuthValue),
+        enableAnalytics: analyticsValue, // OPTIONAL - null by default
         featuresConfig: FeaturesConfig(
-          enableAnalytics: analyticsValue, // OPTIONAL - null by default
-          enableEmail: emailWalletValue, // OPTIONAL - false by default
+          email: emailWalletValue,
           socials: [
             AppKitSocialOption.Farcaster,
             AppKitSocialOption.X,
             AppKitSocialOption.Apple,
             AppKitSocialOption.Discord,
           ],
-          showMainWallets: false, // OPTIONAL - true by default
+          showMainWallets: true, // OPTIONAL - true by default
         ),
         // requiredNamespaces: {},
         // optionalNamespaces: {},

@@ -29,6 +29,7 @@ linter:
     sort_pub_dependencies: true
     avoid_unnecessary_containers: true
     cancel_subscriptions: true
+    public_member_api_docs: false
 
 analyzer:
   exclude:

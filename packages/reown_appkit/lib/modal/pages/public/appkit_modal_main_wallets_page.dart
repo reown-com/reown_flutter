@@ -89,7 +89,9 @@ class _AppKitModalMainWalletsPageState
             );
           }
           final emailEnabled = _magicService.isEmailEnabled.value;
-          if (!modalInstance.featuresConfig.showMainWallets && emailEnabled) {
+          final socials = _magicService.socials;
+          if (!modalInstance.featuresConfig.showMainWallets &&
+              (emailEnabled || socials.isNotEmpty)) {
             items.clear();
           }
           final itemsCount = min(kShortWalletListCount, items.length);
@@ -103,7 +105,7 @@ class _AppKitModalMainWalletsPageState
           }
           final socialEnabled = _magicService.isSocialEnabled.value;
           if (socialEnabled) {
-            final length = _magicService.socials.length;
+            final length = socials.length;
             if (length <= 4) {
               maxHeight += (kListItemHeight * 2);
             } else {
@@ -143,9 +145,27 @@ class _AppKitModalMainWalletsPageState
               bottomItems: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: modalInstance.featuresConfig.showMainWallets ||
-                          !emailEnabled
+                  child: (!modalInstance.featuresConfig.showMainWallets &&
+                          (emailEnabled || socials.isNotEmpty))
                       ? AllWalletsItem(
+                          title: 'Connect wallet',
+                          titleAlign: TextAlign.center,
+                          leading: RoundedIcon(
+                            padding: 10.0,
+                            assetPath:
+                                'lib/modal/assets/icons/regular/wallet.svg',
+                            assetColor: themeColors.foreground100,
+                            circleColor: Colors.transparent,
+                            borderColor: Colors.transparent,
+                          ),
+                          onTap: () {
+                            widgetStack.instance.push(
+                              const ReownAppKitModalAllWalletsPage(),
+                              event: ClickAllWalletsEvent(),
+                            );
+                          },
+                        )
+                      : AllWalletsItem(
                           trailing: (items.length <= kShortWalletListCount)
                               ? null
                               : ValueListenableBuilder<int>(
@@ -172,24 +192,6 @@ class _AppKitModalMainWalletsPageState
                                 event: ClickAllWalletsEvent(),
                               );
                             }
-                          },
-                        )
-                      : AllWalletsItem(
-                          title: 'Connect wallet',
-                          titleAlign: TextAlign.center,
-                          leading: RoundedIcon(
-                            padding: 10.0,
-                            assetPath:
-                                'lib/modal/assets/icons/regular/wallet.svg',
-                            assetColor: themeColors.foreground100,
-                            circleColor: Colors.transparent,
-                            borderColor: Colors.transparent,
-                          ),
-                          onTap: () {
-                            widgetStack.instance.push(
-                              const ReownAppKitModalAllWalletsPage(),
-                              event: ClickAllWalletsEvent(),
-                            );
                           },
                         ),
                 ),

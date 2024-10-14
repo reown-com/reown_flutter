@@ -132,9 +132,9 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       appKit: _appKit,
       siweConfig: _siweConfig(),
+      enableAnalytics: true,
       featuresConfig: FeaturesConfig(
-        enableAnalytics: true,
-        enableEmail: true,
+        email: true,
         socials: [
           AppKitSocialOption.Farcaster,
           AppKitSocialOption.X,

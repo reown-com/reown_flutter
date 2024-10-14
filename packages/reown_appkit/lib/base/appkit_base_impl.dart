@@ -3,7 +3,9 @@ import 'package:reown_core/relay_client/websocket/http_client.dart';
 import 'package:reown_core/store/generic_store.dart';
 import 'package:reown_core/store/i_generic_store.dart';
 
+/// Base class that containes Core and SIgn used dapps developers to create UI-less interaction with WalletConnect protocol
 class ReownAppKit implements IReownAppKit {
+  ///
   static const List<List<String>> DEFAULT_METHODS = [
     [
       MethodConstants.WC_SESSION_PROPOSE,
@@ -17,6 +19,7 @@ class ReownAppKit implements IReownAppKit {
 
   bool _initialized = false;
 
+  /// Creates a instance of ReownAppKit to be used alone or to pass to ReownAppKitModal
   static Future<ReownAppKit> createInstance({
     required String projectId,
     String relayUrl = ReownConstants.DEFAULT_RELAY_URL,
@@ -54,6 +57,7 @@ class ReownAppKit implements IReownAppKit {
   @override
   final PairingMetadata metadata;
 
+  ///
   ReownAppKit({
     required this.core,
     required this.metadata,

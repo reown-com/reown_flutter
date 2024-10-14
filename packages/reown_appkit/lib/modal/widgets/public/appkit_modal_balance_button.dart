@@ -13,7 +13,7 @@ class AppKitModalBalanceButton extends StatefulWidget {
     this.size = BaseButtonSize.regular,
     this.onTap,
   });
-  static const balanceDefault = '_._';
+  static const balanceDefault = '_.__';
   final IReownAppKitModal appKitModal;
   final BaseButtonSize size;
   final VoidCallback? onTap;

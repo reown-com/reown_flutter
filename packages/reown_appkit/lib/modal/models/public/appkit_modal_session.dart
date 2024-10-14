@@ -19,6 +19,7 @@ enum ReownAppKitModalConnector {
   bool get noSession => this == ReownAppKitModalConnector.none;
 }
 
+/// Session object of the modal when connected
 class ReownAppKitModalSession {
   SessionData? _sessionData;
   CoinbaseData? _coinbaseData;
@@ -69,6 +70,7 @@ class ReownAppKitModalSession {
     );
   }
 
+  /// Indicates the connected service
   ReownAppKitModalConnector get sessionService {
     if (_sessionData != null) {
       return ReownAppKitModalConnector.wc;
@@ -77,6 +79,7 @@ class ReownAppKitModalSession {
       return ReownAppKitModalConnector.coinbase;
     }
     if (_magicData != null) {
+      // TODO rename to ReownAppKitModalConnector.socials
       return ReownAppKitModalConnector.magic;
     }
 
@@ -101,6 +104,7 @@ class ReownAppKitModalSession {
     return supportsAddChain;
   }
 
+  /// Get the approved methods by the connected peer
   List<String>? getApprovedMethods() {
     if (sessionService.noSession) {
       return null;
@@ -118,6 +122,7 @@ class ReownAppKitModalSession {
     return methodsList ?? [];
   }
 
+  /// Get the approved events by the connected peer
   List<String>? getApprovedEvents() {
     if (sessionService.noSession) {
       return null;
@@ -135,6 +140,7 @@ class ReownAppKitModalSession {
     return eventsList ?? [];
   }
 
+  /// Get the approved chains by the connected peer
   List<String>? getApprovedChains() {
     if (sessionService.noSession) {
       return null;
@@ -149,6 +155,7 @@ class ReownAppKitModalSession {
     return approvedChains;
   }
 
+  /// Get the approved accounts by the connected peer
   List<String>? getAccounts() {
     if (sessionService.noSession) {
       return null;

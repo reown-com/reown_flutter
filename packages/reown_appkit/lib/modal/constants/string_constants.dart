@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_sign/version.dart' as reown_sign;
 
