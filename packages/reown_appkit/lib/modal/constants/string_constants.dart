@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_sign/version.dart' as reown_sign;
 
@@ -46,9 +48,10 @@ class UrlConstants {
   static const exploreWallets =
       'https://explorer.walletconnect.com/?type=wallet';
   //
-  static const secureService =
-      'https://secure-mobile.walletconnect.com/mobile-sdk';
-  static const secureDashboard = 'https://secure.walletconnect.com/dashboard';
+  static const secureOrigin1 = 'secure-mobile.walletconnect.com';
+  static const secureOrigin2 = 'secure.walletconnect.com';
+  static const secureService = 'https://$secureOrigin1/mobile-sdk';
+  static const secureDashboard = 'https://$secureOrigin2/dashboard';
   //
   static const learnMoreUrl =
       'https://ethereum.org/en/developers/docs/networks';

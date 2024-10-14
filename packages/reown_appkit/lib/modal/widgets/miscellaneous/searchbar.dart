@@ -29,6 +29,7 @@ class ModalSearchBar extends StatefulWidget {
     this.debounce = true,
     this.focusNode,
     this.width,
+    this.height = kSearchFieldHeight,
     this.enabled = true,
     this.inputFormatters,
   });
@@ -52,6 +53,7 @@ class ModalSearchBar extends StatefulWidget {
   final bool debounce;
   final FocusNode? focusNode;
   final double? width;
+  final double height;
   final bool enabled;
   final List<TextInputFormatter>? inputFormatters;
 
@@ -113,7 +115,11 @@ class _ModalSearchBarState extends State<ModalSearchBar>
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     _decorationTween = DecorationTween(
       begin: BoxDecoration(
-        borderRadius: BorderRadius.circular(radiuses.radiusXS),
+        borderRadius: radiuses.isSquare()
+            ? BorderRadius.zero
+            : (radiuses.isCircular()
+                ? BorderRadius.circular(widget.height)
+                : BorderRadius.circular(widget.height * 0.4)),
         boxShadow: [
           BoxShadow(
             color: Colors.transparent,
@@ -125,7 +131,11 @@ class _ModalSearchBarState extends State<ModalSearchBar>
         ],
       ),
       end: BoxDecoration(
-        borderRadius: BorderRadius.circular(radiuses.radiusXS),
+        borderRadius: radiuses.isSquare()
+            ? BorderRadius.zero
+            : (radiuses.isCircular()
+                ? BorderRadius.circular(widget.height)
+                : BorderRadius.circular(widget.height * 0.4)),
         boxShadow: [
           BoxShadow(
             color: themeColors.accenGlass015,
@@ -175,7 +185,11 @@ class _ModalSearchBarState extends State<ModalSearchBar>
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final unfocusedBorder = OutlineInputBorder(
       borderSide: BorderSide(color: themeColors.grayGlass005, width: 1.0),
-      borderRadius: BorderRadius.circular(radiuses.radius2XS),
+      borderRadius: radiuses.isSquare()
+          ? BorderRadius.zero
+          : (radiuses.isCircular()
+              ? BorderRadius.circular(widget.height)
+              : BorderRadius.circular(widget.height * 0.3)),
     );
     final focusedBorder = unfocusedBorder.copyWith(
       borderSide: BorderSide(color: themeColors.accent100, width: 1.0),
@@ -187,7 +201,7 @@ class _ModalSearchBarState extends State<ModalSearchBar>
     return DecoratedBoxTransition(
       decoration: _decorationTween.animate(_animationController),
       child: Container(
-        height: kSearchFieldHeight + 8.0,
+        height: widget.height + 8.0,
         width: widget.width,
         padding: const EdgeInsets.all(4.0),
         child: TextFormField(
@@ -228,7 +242,7 @@ class _ModalSearchBarState extends State<ModalSearchBar>
                     Container(
                       width: 16.0,
                       height: 16.0,
-                      margin: const EdgeInsets.only(left: kPadding12),
+                      margin: const EdgeInsets.only(left: kPadding16),
                       child: GestureDetector(
                         onTap: () {
                           _controller.clear();
@@ -249,10 +263,10 @@ class _ModalSearchBarState extends State<ModalSearchBar>
                   ],
                 ),
             prefixIconConstraints: BoxConstraints(
-              maxHeight: kSearchFieldHeight,
-              minHeight: kSearchFieldHeight,
-              maxWidth: 36.0,
-              minWidth: widget.noIcons ? 0.0 : 36.0,
+              maxHeight: widget.height,
+              minHeight: widget.height,
+              maxWidth: 40.0,
+              minWidth: widget.noIcons ? 0.0 : 40.0,
             ),
             labelStyle: themeData.textStyles.paragraph500.copyWith(
               color: themeColors.inverse100,
@@ -292,8 +306,8 @@ class _ModalSearchBarState extends State<ModalSearchBar>
                       )
                     : null),
             suffixIconConstraints: BoxConstraints(
-              maxHeight: kSearchFieldHeight,
-              minHeight: kSearchFieldHeight,
+              maxHeight: widget.height,
+              minHeight: widget.height,
               maxWidth: 36.0,
               minWidth: widget.noIcons ? 0.0 : 36.0,
             ),
@@ -303,7 +317,7 @@ class _ModalSearchBarState extends State<ModalSearchBar>
             disabledBorder: disabledBorder,
             focusedBorder: focusedBorder,
             filled: true,
-            fillColor: themeColors.grayGlass005,
+            fillColor: themeColors.grayGlass002,
             contentPadding: const EdgeInsets.all(0.0),
           ),
         ),

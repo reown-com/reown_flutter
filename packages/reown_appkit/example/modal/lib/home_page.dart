@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:reown_appkit_example/services/deep_link_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:reown_appkit/reown_appkit.dart';
@@ -58,15 +59,14 @@ class _MyHomePageState extends State<MyHomePage> {
     final internal = widget.bundleId.endsWith('.internal');
     final debug = widget.bundleId.endsWith('.debug');
     if (internal || debug || kDebugMode) {
-      return 'internal';
+      return '-internal';
     }
     return '';
   }
 
   String _universalLink() {
-    // TODO change /flutter_appkit to something else
-    Uri link = Uri.parse('https://appkit-lab.reown.com/flutter_appkit');
-    if (_flavor.isNotEmpty) {
+    Uri link = Uri.parse('https://appkit-lab.reown.com/flutter_appkit_modal');
+    if (_flavor.isNotEmpty && !kDebugMode) {
       return link.replace(path: '${link.path}_internal').toString();
     }
     return link.toString();
@@ -88,7 +88,7 @@ class _MyHomePageState extends State<MyHomePage> {
       description: StringConstants.pageTitle,
       url: _universalLink(),
       icons: [
-        'https://docs.walletconnect.com/assets/images/web3modalLogo-2cee77e07851ba0a710b56d03d4d09dd.png'
+        'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/appkit_logo.png',
       ],
       redirect: _constructRedirect(),
     );
@@ -218,7 +218,16 @@ class _MyHomePageState extends State<MyHomePage> {
         metadata: _pairingMetadata(),
         siweConfig: _siweConfig(siweAuthValue),
         enableAnalytics: analyticsValue, // OPTIONAL - null by default
-        enableEmail: emailWalletValue, // OPTIONAL - false by default
+        featuresConfig: FeaturesConfig(
+          email: emailWalletValue,
+          socials: [
+            AppKitSocialOption.Farcaster,
+            AppKitSocialOption.X,
+            AppKitSocialOption.Apple,
+            AppKitSocialOption.Discord,
+          ],
+          showMainWallets: true, // OPTIONAL - true by default
+        ),
         // requiredNamespaces: {},
         // optionalNamespaces: {},
         // includedWalletIds: {},
@@ -263,11 +272,16 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKitModal.appKit!.core.addLogListener(_logListener);
     //
     await _appKitModal.init();
+
+    DeepLinkHandler.init(_appKitModal);
+    DeepLinkHandler.checkInitialLink();
+
     setState(() {});
   }
 
-  void _logListener(LogEvent event) {
-    if (event.level == Level.debug || event.level == Level.error) {
+  void _logListener(event) {
+    if ('${event.level}' == 'Level.debug' ||
+        '${event.level}' == 'Level.error') {
       // TODO send to mixpanel
       log('${event.message}');
     } else {
@@ -367,6 +381,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (!_initialized) {
+      return SizedBox.shrink();
+    }
     return Scaffold(
       backgroundColor: ReownAppKitModalTheme.colorsOf(context).background125,
       appBar: AppBar(
@@ -396,6 +413,7 @@ class _MyHomePageState extends State<MyHomePage> {
           toggleOverlay: _toggleOverlay,
           toggleBrightness: widget.toggleBrightness,
           toggleTheme: widget.toggleTheme,
+          appKitModal: _appKitModal,
         ),
       ),
       onEndDrawerChanged: (isOpen) {
@@ -495,6 +513,20 @@ class _ConnectedView extends StatelessWidget {
           //     );
           //   },
           // ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AppKitModalBalanceButton(
+              appKitModal: appKit,
+              onTap: appKit.openModalView,
+            ),
+            const SizedBox.square(dimension: 8.0),
+            AppKitModalAddressButton(
+              appKitModal: appKit,
+              onTap: appKit.openModalView,
+            ),
+          ],
         ),
         SessionWidget(appKit: appKit),
         const SizedBox.square(dimension: 12.0),

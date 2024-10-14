@@ -29,14 +29,14 @@ class NetworkServiceItemsListener extends StatelessWidget {
           valueListenable: networkService.instance.itemList,
           builder: (context, items, _) {
             final service = ModalProvider.of(context).instance;
-            final supportedChains = service.getAvailableChains();
-            final parsedItems = supportedChains == null
+            final availableChains = service.getAvailableChains();
+            final parsedItems = availableChains == null
                 ? items
                 : items.map((e) {
                     final caip2Chain =
                         '${CoreConstants.namespace}:${e.data.chainId}';
                     return e.copyWith(
-                      disabled: !supportedChains.contains(caip2Chain),
+                      disabled: !availableChains.contains(caip2Chain),
                     );
                   }).toList()
               ..sort((a, b) {

@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
+import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
+import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
+import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/searchbar.dart';
@@ -26,8 +31,10 @@ class InputEmailWidget extends StatefulWidget {
 }
 
 class _InputEmailWidgetState extends State<InputEmailWidget> {
-  bool hasFocus = false;
+  IMagicService get _magicService => GetIt.I<IMagicService>();
+
   late TextEditingController _controller;
+  bool hasFocus = false;
   bool _ready = false;
   bool _timedOut = false;
   bool _submitted = false;
@@ -36,17 +43,27 @@ class _InputEmailWidgetState extends State<InputEmailWidget> {
   void initState() {
     super.initState();
     _controller = TextEditingController(text: widget.initialValue);
-    _ready = magicService.instance.isReady.value;
-    _timedOut = magicService.instance.isTimeout.value;
-    magicService.instance.isReady.addListener(_updateStatus);
-    magicService.instance.isTimeout.addListener(_updateStatus);
+    _ready = _magicService.isReady.value;
+    _timedOut = _magicService.isTimeout.value;
+    _magicService.onMagicError.subscribe(_onMagicErrorEvent);
+    _magicService.isReady.addListener(_updateStatus);
+    _magicService.isTimeout.addListener(_updateStatus);
   }
 
   void _updateStatus() {
     setState(() {
-      _ready = magicService.instance.isReady.value;
-      _timedOut = magicService.instance.isTimeout.value;
+      _ready = _magicService.isReady.value;
+      _timedOut = _magicService.isTimeout.value;
     });
+  }
+
+  void _onMagicErrorEvent(MagicErrorEvent? event) {
+    toastService.instance.show(ToastMessage(
+      type: ToastType.error,
+      text: event?.error ?? 'An error occurred.',
+    ));
+    _submitted = false;
+    setState(() {});
   }
 
   @override
@@ -57,8 +74,9 @@ class _InputEmailWidgetState extends State<InputEmailWidget> {
 
   @override
   void dispose() {
-    magicService.instance.isTimeout.addListener(_updateStatus);
-    magicService.instance.isReady.removeListener(_updateStatus);
+    _magicService.onMagicError.subscribe(_onMagicErrorEvent);
+    _magicService.isTimeout.addListener(_updateStatus);
+    _magicService.isReady.removeListener(_updateStatus);
     super.dispose();
   }
 
@@ -66,6 +84,7 @@ class _InputEmailWidgetState extends State<InputEmailWidget> {
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return ModalSearchBar(
+      height: kListItemHeight,
       enabled: !_timedOut && _ready && !_submitted,
       controller: _controller,
       initialValue: _controller.text,
@@ -80,16 +99,23 @@ class _InputEmailWidgetState extends State<InputEmailWidget> {
       },
       onFocusChange: _onFocusChange,
       suffixIcon: widget.suffixIcon ??
-          (!magicService.instance.isReady.value || _submitted
+          (!_magicService.isReady.value || _submitted
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    CircularLoader(size: 20.0, strokeWidth: 2.0),
+                    Row(
+                      children: [
+                        CircularLoader(size: 20.0, strokeWidth: 2.0),
+                        const SizedBox.square(
+                          dimension: kListViewSeparatorHeight,
+                        ),
+                      ],
+                    )
                   ],
                 )
               : ValueListenableBuilder<String>(
-                  valueListenable: magicService.instance.email,
+                  valueListenable: _magicService.email,
                   builder: (context, value, _) {
                     if (!hasFocus || _invalidEmail(value)) {
                       return SizedBox.shrink();
@@ -136,8 +162,8 @@ class _InputEmailWidgetState extends State<InputEmailWidget> {
 
   void _clearEmail() {
     _controller.clear();
-    magicService.instance.setEmail('');
-    magicService.instance.setNewEmail('');
+    _magicService.setEmail('');
+    _magicService.setNewEmail('');
     FocusManager.instance.primaryFocus?.unfocus();
   }
 }

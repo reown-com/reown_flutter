@@ -89,6 +89,10 @@ class BlockChainService implements IBlockChainService {
         final amount = EtherAmount.fromBigInt(EtherUnit.wei, hexToInt(result));
         return amount.getValueInUnit(EtherUnit.ether);
       } catch (e) {
+        _core.logger.e(
+          '[$runtimeType] Failed to get parse ${request.toJson()}. '
+          'Response: ${response.body}, Status code: ${response.statusCode}',
+        );
         rethrow;
       }
     } else {
@@ -97,9 +101,8 @@ class BlockChainService implements IBlockChainService {
         _retries -= 1;
         await rpcRequest(chainId: chainId, request: request);
       } else {
-        _core.logger.i(
-          '[$runtimeType] Failed to get request ${request.toJson()}. '
-          'Response: ${response.body}, Status code: ${response.statusCode}',
+        _core.logger.e(
+          '[$runtimeType] Failed to get request ${request.toJson()}. Response: ${response.body}, Status code: ${response.statusCode}',
         );
       }
     }

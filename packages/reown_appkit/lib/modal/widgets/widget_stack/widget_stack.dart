@@ -18,6 +18,7 @@ class WidgetStack extends IWidgetStack {
   @override
   void push(
     Widget widget, {
+    bool replace = false,
     bool renderScreen = false,
     AnalyticsEvent? event,
   }) {
@@ -25,6 +26,9 @@ class WidgetStack extends IWidgetStack {
       analyticsService.instance.sendEvent(event);
     }
     onRenderScreen.value = renderScreen;
+    if (replace) {
+      _stack.removeLast();
+    }
     _stack.add(widget);
     notifyListeners();
   }

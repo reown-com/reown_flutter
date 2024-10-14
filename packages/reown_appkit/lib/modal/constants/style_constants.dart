@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 const kListItemHeight = 56.0;
 
 const kGridItemWidth = 76.0;

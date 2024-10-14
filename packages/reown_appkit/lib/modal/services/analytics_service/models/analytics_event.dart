@@ -587,3 +587,72 @@ class SiweAuthError implements AnalyticsEvent {
         if (properties != null) 'properties': properties,
       };
 }
+
+class SocialLoginStarted implements AnalyticsEvent {
+  final String _provider;
+  SocialLoginStarted({required String provider}) : _provider = provider;
+
+  @override
+  String get type => 'track';
+
+  @override
+  String get event => 'LOGIN_STARTED';
+
+  @override
+  Map<String, dynamic>? get properties => {
+        'provider': _provider,
+      };
+
+  @override
+  Map<String, dynamic> toMap() => {
+        'type': type,
+        'event': event,
+        if (properties != null) 'properties': properties,
+      };
+}
+
+class SocialLoginSuccess implements AnalyticsEvent {
+  final String _provider;
+  SocialLoginSuccess({required String provider}) : _provider = provider;
+
+  @override
+  String get type => 'track';
+
+  @override
+  String get event => 'LOGIN_SUCCESS';
+
+  @override
+  Map<String, dynamic>? get properties => {
+        'provider': _provider,
+      };
+
+  @override
+  Map<String, dynamic> toMap() => {
+        'type': type,
+        'event': event,
+        if (properties != null) 'properties': properties,
+      };
+}
+
+class SocialLoginError implements AnalyticsEvent {
+  final String _provider;
+  SocialLoginError({required String provider}) : _provider = provider;
+
+  @override
+  String get type => 'track';
+
+  @override
+  String get event => 'LOGIN_ERROR';
+
+  @override
+  Map<String, dynamic>? get properties => {
+        'provider': _provider,
+      };
+
+  @override
+  Map<String, dynamic> toMap() => {
+        'type': type,
+        'event': event,
+        if (properties != null) 'properties': properties,
+      };
+}

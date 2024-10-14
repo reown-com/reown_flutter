@@ -66,7 +66,7 @@ class EIP155 {
   }
 
   static Future<dynamic> callMethod({
-    required ReownAppKitModal appKit,
+    required ReownAppKitModal appKitModal,
     required String topic,
     required EIP155UIMethods method,
     required String chainId,
@@ -76,32 +76,32 @@ class EIP155 {
     switch (method) {
       case EIP155UIMethods.requestAccounts:
         return requestAccounts(
-          appKit: appKit,
+          appKitModal: appKitModal,
         );
       case EIP155UIMethods.personalSign:
         return personalSign(
-          appKit: appKit,
+          appKitModal: appKitModal,
           message: testSignData,
         );
       case EIP155UIMethods.ethSignTypedDataV3:
         return ethSignTypedDataV3(
-          appKit: appKit,
+          appKitModal: appKitModal,
           data: jsonEncode(typeDataV3(cid)),
         );
       case EIP155UIMethods.ethSignTypedData:
         return ethSignTypedData(
-          appKit: appKit,
+          appKitModal: appKitModal,
           data: jsonEncode(typedData()),
         );
       case EIP155UIMethods.ethSignTypedDataV4:
         return ethSignTypedDataV4(
-          appKit: appKit,
+          appKitModal: appKitModal,
           data: jsonEncode(typeDataV4(cid)),
         );
       case EIP155UIMethods.ethSignTransaction:
       case EIP155UIMethods.ethSendTransaction:
         return ethSendOrSignTransaction(
-          appKit: appKit,
+          appKitModal: appKitModal,
           method: method,
           transaction: Transaction(
             from: EthereumAddress.fromHex(address),
@@ -114,17 +114,17 @@ class EIP155 {
         );
       case EIP155UIMethods.walletWatchAsset:
         return walletWatchAsset(
-          appKit: appKit,
+          appKitModal: appKitModal,
         );
     }
   }
 
   static Future<dynamic> requestAccounts({
-    required ReownAppKitModal appKit,
+    required ReownAppKitModal appKitModal,
   }) async {
-    return await appKit.request(
-      topic: appKit.session!.topic,
-      chainId: appKit.selectedChain!.chainId,
+    return await appKitModal.request(
+      topic: appKitModal.session!.topic,
+      chainId: appKitModal.selectedChain!.chainId,
       request: SessionRequestParams(
         method: EIP155UIMethods.requestAccounts.name,
         params: [],
@@ -133,84 +133,84 @@ class EIP155 {
   }
 
   static Future<dynamic> personalSign({
-    required ReownAppKitModal appKit,
+    required ReownAppKitModal appKitModal,
     required String message,
   }) async {
     final bytes = utf8.encode(message);
     final encoded = hex.encode(bytes);
 
-    return await appKit.request(
-      topic: appKit.session!.topic,
-      chainId: appKit.selectedChain!.chainId,
+    return await appKitModal.request(
+      topic: appKitModal.session!.topic,
+      chainId: appKitModal.selectedChain!.chainId,
       request: SessionRequestParams(
         method: EIP155UIMethods.personalSign.name,
         params: [
           '0x$encoded',
-          appKit.session!.address!,
+          appKitModal.session!.address!,
         ],
       ),
     );
   }
 
   static Future<dynamic> ethSignTypedData({
-    required ReownAppKitModal appKit,
+    required ReownAppKitModal appKitModal,
     required String data,
   }) async {
-    return await appKit.request(
-      topic: appKit.session!.topic,
-      chainId: appKit.selectedChain!.chainId,
+    return await appKitModal.request(
+      topic: appKitModal.session!.topic,
+      chainId: appKitModal.selectedChain!.chainId,
       request: SessionRequestParams(
         method: EIP155UIMethods.ethSignTypedData.name,
         params: [
           data,
-          appKit.session!.address!,
+          appKitModal.session!.address!,
         ],
       ),
     );
   }
 
   static Future<dynamic> ethSignTypedDataV3({
-    required ReownAppKitModal appKit,
+    required ReownAppKitModal appKitModal,
     required String data,
   }) async {
-    return await appKit.request(
-      topic: appKit.session!.topic,
-      chainId: appKit.selectedChain!.chainId,
+    return await appKitModal.request(
+      topic: appKitModal.session!.topic,
+      chainId: appKitModal.selectedChain!.chainId,
       request: SessionRequestParams(
         method: EIP155UIMethods.ethSignTypedDataV3.name,
         params: [
           data,
-          appKit.session!.address!,
+          appKitModal.session!.address!,
         ],
       ),
     );
   }
 
   static Future<dynamic> ethSignTypedDataV4({
-    required ReownAppKitModal appKit,
+    required ReownAppKitModal appKitModal,
     required String data,
   }) async {
-    return await appKit.request(
-      topic: appKit.session!.topic,
-      chainId: appKit.selectedChain!.chainId,
+    return await appKitModal.request(
+      topic: appKitModal.session!.topic,
+      chainId: appKitModal.selectedChain!.chainId,
       request: SessionRequestParams(
         method: EIP155UIMethods.ethSignTypedDataV4.name,
         params: [
           data,
-          appKit.session!.address!,
+          appKitModal.session!.address!,
         ],
       ),
     );
   }
 
   static Future<dynamic> ethSendOrSignTransaction({
-    required ReownAppKitModal appKit,
+    required ReownAppKitModal appKitModal,
     required Transaction transaction,
     required EIP155UIMethods method,
   }) async {
-    return await appKit.request(
-      topic: appKit.session!.topic,
-      chainId: appKit.selectedChain!.chainId,
+    return await appKitModal.request(
+      topic: appKitModal.session!.topic,
+      chainId: appKitModal.selectedChain!.chainId,
       request: SessionRequestParams(
         method: method.name,
         params: [
@@ -221,11 +221,11 @@ class EIP155 {
   }
 
   static Future<dynamic> walletWatchAsset({
-    required ReownAppKitModal appKit,
+    required ReownAppKitModal appKitModal,
   }) async {
-    return await appKit.request(
-      topic: appKit.session!.topic,
-      chainId: appKit.selectedChain!.chainId,
+    return await appKitModal.request(
+      topic: appKitModal.session!.topic,
+      chainId: appKitModal.selectedChain!.chainId,
       request: SessionRequestParams(
         method: EIP155UIMethods.walletWatchAsset.name,
         params: {
@@ -244,7 +244,7 @@ class EIP155 {
 
   // Example of calling `transfer` function from AAVE token Smart Contract
   static Future<dynamic> callTestSmartContract({
-    required ReownAppKitModal appKit,
+    required ReownAppKitModal appKitModal,
     required String action,
   }) async {
     // Create DeployedContract object using contract's ABI and address
@@ -259,7 +259,7 @@ class EIP155 {
     switch (action) {
       case 'read':
         return _readSmartContract(
-          appKit: appKit,
+          appKitModal: appKitModal,
           contract: deployedContract,
         );
       case 'write':
@@ -276,22 +276,22 @@ class EIP155 {
         // );
         // we first call `decimals` function, which is a read function,
         // to check how much decimal we need to use to parse the amount value
-        final decimals = await appKit.requestReadContract(
-          topic: appKit.session!.topic,
-          chainId: appKit.selectedChain!.chainId,
+        final decimals = await appKitModal.requestReadContract(
+          topic: appKitModal.session!.topic,
+          chainId: appKitModal.selectedChain!.chainId,
           deployedContract: deployedContract,
           functionName: 'decimals',
         );
         final d = (decimals.first as BigInt);
         final requestValue = _formatValue(0.01, decimals: d);
         // now we call `transfer` write function with the parsed value.
-        return appKit.requestWriteContract(
-          topic: appKit.session!.topic,
-          chainId: appKit.selectedChain!.chainId,
+        return appKitModal.requestWriteContract(
+          topic: appKitModal.session!.topic,
+          chainId: appKitModal.selectedChain!.chainId,
           deployedContract: deployedContract,
           functionName: 'transfer',
           transaction: Transaction(
-            from: EthereumAddress.fromHex(appKit.session!.address!),
+            from: EthereumAddress.fromHex(appKitModal.session!.address!),
           ),
           parameters: [
             EthereumAddress.fromHex(
@@ -327,7 +327,7 @@ class EIP155 {
 
   // Example of calling `transfer` function from USDT token Smart Contract
   static Future<dynamic> callUSDTSmartContract({
-    required ReownAppKitModal appKit,
+    required ReownAppKitModal appKitModal,
     required String action,
   }) async {
     // Create DeployedContract object using contract's ABI and address
@@ -342,28 +342,28 @@ class EIP155 {
     switch (action) {
       case 'read':
         return _readSmartContract(
-          appKit: appKit,
+          appKitModal: appKitModal,
           contract: deployedContract,
         );
       case 'write':
         // we first call `decimals` function, which is a read function,
         // to check how much decimal we need to use to parse the amount value
-        final decimals = await appKit.requestReadContract(
-          topic: appKit.session!.topic,
-          chainId: appKit.selectedChain!.chainId,
+        final decimals = await appKitModal.requestReadContract(
+          topic: appKitModal.session!.topic,
+          chainId: appKitModal.selectedChain!.chainId,
           deployedContract: deployedContract,
           functionName: 'decimals',
         );
         final d = (decimals.first as BigInt);
         final requestValue = _formatValue(0.23, decimals: d);
         // now we call `transfer` write function with the parsed value.
-        return appKit.requestWriteContract(
-          topic: appKit.session!.topic,
-          chainId: appKit.selectedChain!.chainId,
+        return appKitModal.requestWriteContract(
+          topic: appKitModal.session!.topic,
+          chainId: appKitModal.selectedChain!.chainId,
           deployedContract: deployedContract,
           functionName: 'transfer',
           transaction: Transaction(
-            from: EthereumAddress.fromHex(appKit.session!.address!),
+            from: EthereumAddress.fromHex(appKitModal.session!.address!),
           ),
           parameters: [
             EthereumAddress.fromHex(
@@ -378,38 +378,38 @@ class EIP155 {
   }
 
   static Future<dynamic> _readSmartContract({
-    required ReownAppKitModal appKit,
+    required ReownAppKitModal appKitModal,
     required DeployedContract contract,
   }) async {
     final results = await Future.wait([
       // results[0]
-      appKit.requestReadContract(
-        topic: appKit.session!.topic,
-        chainId: appKit.selectedChain!.chainId,
+      appKitModal.requestReadContract(
+        topic: appKitModal.session!.topic,
+        chainId: appKitModal.selectedChain!.chainId,
         deployedContract: contract,
         functionName: 'name',
       ),
       // results[1]
-      appKit.requestReadContract(
-        topic: appKit.session!.topic,
-        chainId: appKit.selectedChain!.chainId,
+      appKitModal.requestReadContract(
+        topic: appKitModal.session!.topic,
+        chainId: appKitModal.selectedChain!.chainId,
         deployedContract: contract,
         functionName: 'totalSupply',
       ),
       // results[2]
-      appKit.requestReadContract(
-        topic: appKit.session!.topic,
-        chainId: appKit.selectedChain!.chainId,
+      appKitModal.requestReadContract(
+        topic: appKitModal.session!.topic,
+        chainId: appKitModal.selectedChain!.chainId,
         deployedContract: contract,
         functionName: 'balanceOf',
         parameters: [
-          EthereumAddress.fromHex(appKit.session!.address!),
+          EthereumAddress.fromHex(appKitModal.session!.address!),
         ],
       ),
       // results[4]
-      appKit.requestReadContract(
-        topic: appKit.session!.topic,
-        chainId: appKit.selectedChain!.chainId,
+      appKitModal.requestReadContract(
+        topic: appKitModal.session!.topic,
+        chainId: appKitModal.selectedChain!.chainId,
         deployedContract: contract,
         functionName: 'decimals',
       ),

@@ -3,10 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:reown_appkit/modal/services/uri_service/url_utils_singleton.dart';
 import 'package:reown_appkit/reown_appkit.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/models/grid_item.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
@@ -53,30 +50,31 @@ class GetWalletPage extends StatelessWidget {
                     ? data.listing.appStore
                     : data.listing.playStore;
                 if ((url ?? '').isNotEmpty) {
-                  uriService.instance.launchUrl(
-                    Uri.parse(url!),
-                    mode: LaunchMode.externalApplication,
-                  );
+                  ReownCoreUtils.openURL(url!);
                 }
               },
               bottomItems: [
-                AllWalletsItem(
-                  title: 'Explore all',
-                  onTap: () => uriService.instance.launchUrl(
-                    Uri.parse(UrlConstants.exploreWallets),
-                    mode: LaunchMode.externalApplication,
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4.0,
                   ),
-                  trailing: Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: SvgPicture.asset(
-                      'lib/modal/assets/icons/arrow_top_right.svg',
-                      package: 'reown_appkit',
-                      colorFilter: ColorFilter.mode(
-                        themeColors.foreground200,
-                        BlendMode.srcIn,
+                  child: AllWalletsItem(
+                    title: 'Explore all',
+                    onTap: () => ReownCoreUtils.openURL(
+                      UrlConstants.exploreWallets,
+                    ),
+                    trailing: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: SvgPicture.asset(
+                        'lib/modal/assets/icons/arrow_top_right.svg',
+                        package: 'reown_appkit',
+                        colorFilter: ColorFilter.mode(
+                          themeColors.foreground200,
+                          BlendMode.srcIn,
+                        ),
+                        width: 18.0,
+                        height: 18.0,
                       ),
-                      width: 18.0,
-                      height: 18.0,
                     ),
                   ),
                 ),
