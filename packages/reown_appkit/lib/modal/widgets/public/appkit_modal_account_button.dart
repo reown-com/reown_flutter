@@ -64,10 +64,6 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
         chainId,
       );
       _address = widget.appKit.session?.getAddress(namespace) ?? '';
-      final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-      _tokenImage = explorerService.instance.getAssetImageUrl(imageId);
-      _balance = widget.appKit.chainBalance;
-      _tokenName = widget.appKit.selectedChain?.currency;
     });
   }
 

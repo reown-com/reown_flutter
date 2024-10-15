@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/utils/public/appkit_modal_default_networks.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
+import 'package:reown_appkit/modal/widgets/circular_loader.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 
 class AppKitModalBalanceButton extends StatefulWidget {
@@ -90,10 +92,28 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          RoundedIcon(
-            imageUrl: _tokenImage,
-            size: widget.size.height * 0.55,
-          ),
+          widget.appKitModal.status.isLoading
+              ? Row(
+                  children: [
+                    const SizedBox.square(dimension: kPadding6),
+                    CircularLoader(
+                      size: 16.0,
+                      strokeWidth: 1.5,
+                    ),
+                    const SizedBox.square(dimension: kPadding6),
+                  ],
+                )
+              : (_tokenImage ?? '').isEmpty
+                  ? RoundedIcon(
+                      assetPath: 'lib/modal/assets/icons/network.svg',
+                      size: widget.size.iconSize,
+                      assetColor: themeColors.inverse100,
+                      padding: 4.0,
+                    )
+                  : RoundedIcon(
+                      imageUrl: _tokenImage!,
+                      size: widget.size.iconSize + 2.0,
+                    ),
           const SizedBox.square(dimension: 4.0),
           ValueListenableBuilder<String>(
             valueListenable: widget.appKitModal.balanceNotifier,
