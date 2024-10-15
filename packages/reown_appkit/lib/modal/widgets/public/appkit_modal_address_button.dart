@@ -18,10 +18,18 @@ class AppKitModalAddressButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if ((appKitModal.session?.address ?? '').isEmpty) {
+    if (appKitModal.session == null) {
       return SizedBox.shrink();
     }
-    final address = appKitModal.session!.address!;
+    final chainId = appKitModal.selectedChain?.chainId ?? '';
+    if (chainId.isEmpty) {
+      return SizedBox.shrink();
+    }
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    final address = appKitModal.session!.getAddress(namespace);
+    if ((address ?? '').isEmpty) {
+      return SizedBox.shrink();
+    }
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final textStyle = size == BaseButtonSize.small
         ? themeData.textStyles.small600
@@ -98,7 +106,7 @@ class AppKitModalAddressButton extends StatelessWidget {
             const SizedBox.square(dimension: 4.0),
             Text(
               RenderUtils.truncate(
-                address,
+                address!,
                 length: size == BaseButtonSize.small ? 2 : 4,
               ),
               style: textStyle,

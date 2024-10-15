@@ -149,7 +149,7 @@ class MethodsService {
     final bytes = utf8.encode(message);
     final encoded = hex.encode(bytes);
     final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-      appKit.selectedChain!.chainId,
+      appKitModal.selectedChain!.chainId,
     );
 
     return await appKitModal.request(
@@ -159,7 +159,7 @@ class MethodsService {
         method: SupportedMethods.personalSign.name,
         params: [
           '0x$encoded',
-          appKit.session!.getAddress(namespace)!,
+          appKitModal.session!.getAddress(namespace)!,
         ],
       ),
     );
@@ -170,16 +170,16 @@ class MethodsService {
     required String data,
   }) async {
     final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-      appKit.selectedChain!.chainId,
+      appKitModal.selectedChain!.chainId,
     );
-    return await appKit.request(
-      topic: appKit.session!.topic,
-      chainId: appKit.selectedChain!.chainId,
+    return await appKitModal.request(
+      topic: appKitModal.session!.topic,
+      chainId: appKitModal.selectedChain!.chainId,
       request: SessionRequestParams(
         method: SupportedMethods.ethSignTypedData.name,
         params: [
           data,
-          appKit.session!.getAddress(namespace)!,
+          appKitModal.session!.getAddress(namespace)!,
         ],
       ),
     );
@@ -190,16 +190,16 @@ class MethodsService {
     required String data,
   }) async {
     final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-      appKit.selectedChain!.chainId,
+      appKitModal.selectedChain!.chainId,
     );
-    return await appKit.request(
-      topic: appKit.session!.topic,
-      chainId: appKit.selectedChain!.chainId,
+    return await appKitModal.request(
+      topic: appKitModal.session!.topic,
+      chainId: appKitModal.selectedChain!.chainId,
       request: SessionRequestParams(
         method: SupportedMethods.ethSignTypedDataV3.name,
         params: [
           data,
-          appKit.session!.getAddress(namespace)!,
+          appKitModal.session!.getAddress(namespace)!,
         ],
       ),
     );
@@ -210,16 +210,16 @@ class MethodsService {
     required String data,
   }) async {
     final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-      appKit.selectedChain!.chainId,
+      appKitModal.selectedChain!.chainId,
     );
-    return await appKit.request(
-      topic: appKit.session!.topic,
-      chainId: appKit.selectedChain!.chainId,
+    return await appKitModal.request(
+      topic: appKitModal.session!.topic,
+      chainId: appKitModal.selectedChain!.chainId,
       request: SessionRequestParams(
         method: SupportedMethods.ethSignTypedDataV4.name,
         params: [
           data,
-          appKit.session!.getAddress(namespace)!,
+          appKitModal.session!.getAddress(namespace)!,
         ],
       ),
     );
@@ -308,16 +308,16 @@ class MethodsService {
         final requestValue = _formatValue(0.01, decimals: d);
         // now we call `transfer` write function with the parsed value.
         final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-          appKit.selectedChain!.chainId,
+          appKitModal.selectedChain!.chainId,
         );
-        return appKit.requestWriteContract(
-          topic: appKit.session!.topic,
-          chainId: appKit.selectedChain!.chainId,
+        return appKitModal.requestWriteContract(
+          topic: appKitModal.session!.topic,
+          chainId: appKitModal.selectedChain!.chainId,
           deployedContract: deployedContract,
           functionName: 'transfer',
           transaction: Transaction(
             from: EthereumAddress.fromHex(
-              appKit.session!.getAddress(namespace)!,
+              appKitModal.session!.getAddress(namespace)!,
             ),
           ),
           parameters: [
@@ -385,16 +385,16 @@ class MethodsService {
         final requestValue = _formatValue(0.23, decimals: d);
         // now we call `transfer` write function with the parsed value.
         final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-          appKit.selectedChain!.chainId,
+          appKitModal.selectedChain!.chainId,
         );
-        return appKit.requestWriteContract(
-          topic: appKit.session!.topic,
-          chainId: appKit.selectedChain!.chainId,
+        return appKitModal.requestWriteContract(
+          topic: appKitModal.session!.topic,
+          chainId: appKitModal.selectedChain!.chainId,
           deployedContract: deployedContract,
           functionName: 'transfer',
           transaction: Transaction(
             from: EthereumAddress.fromHex(
-              appKit.session!.getAddress(namespace)!,
+              appKitModal.session!.getAddress(namespace)!,
             ),
           ),
           parameters: [
@@ -414,7 +414,7 @@ class MethodsService {
     required DeployedContract contract,
   }) async {
     final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-      appKit.selectedChain!.chainId,
+      appKitModal.selectedChain!.chainId,
     );
     final results = await Future.wait([
       // results[0]
@@ -438,7 +438,7 @@ class MethodsService {
         deployedContract: contract,
         functionName: 'balanceOf',
         parameters: [
-          EthereumAddress.fromHex(appKit.session!.getAddress(namespace)!),
+          EthereumAddress.fromHex(appKitModal.session!.getAddress(namespace)!),
         ],
       ),
       // results[4]

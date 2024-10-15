@@ -332,7 +332,7 @@ class SessionWidgetState extends State<SessionWidget> {
           onPressed: onSepolia
               ? () async {
                   final future = MethodsService.callTestSmartContract(
-                    appKit: widget.appKit,
+                    appKitModal: widget.appKit,
                     action: 'read',
                   );
                   MethodDialog.show(
@@ -344,7 +344,7 @@ class SessionWidgetState extends State<SessionWidget> {
               : onMainnet
                   ? () async {
                       final future = MethodsService.callUSDTSmartContract(
-                        appKit: widget.appKit,
+                        appKitModal: widget.appKit,
                         action: 'read',
                       );
                       MethodDialog.show(
@@ -369,7 +369,7 @@ class SessionWidgetState extends State<SessionWidget> {
               ? () async {
                   widget.appKit.launchConnectedWallet();
                   final future = MethodsService.callTestSmartContract(
-                    appKit: widget.appKit,
+                    appKitModal: widget.appKit,
                     action: 'write',
                   );
                   MethodDialog.show(context, 'Test Contract (Write)', future);
@@ -378,7 +378,7 @@ class SessionWidgetState extends State<SessionWidget> {
                   ? () async {
                       widget.appKit.launchConnectedWallet();
                       final future = MethodsService.callUSDTSmartContract(
-                        appKit: widget.appKit,
+                        appKitModal: widget.appKit,
                         action: 'write',
                       );
                       MethodDialog.show(
@@ -484,7 +484,7 @@ class SessionWidgetState extends State<SessionWidget> {
     final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
     final address = session.getAddress(namespace)!;
     return MethodsService.callMethod(
-      appKit: widget.appKit,
+      appKitModal: widget.appKit,
       topic: session.topic ?? '',
       method: method,
       chainId: widget.appKit.selectedChain!.chainId,

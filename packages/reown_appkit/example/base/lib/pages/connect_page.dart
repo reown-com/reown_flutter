@@ -363,10 +363,12 @@ class ConnectPageState extends State<ConnectPage> {
   }
 
   List<Widget> _buildRequestButtons() {
-    return widget.appKitModal.getApprovedMethods()?.map((method) {
+    final chainId = widget.appKitModal.selectedChain!.chainId;
+    final ns = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    return widget.appKitModal.getApprovedMethods(namespace: ns)?.map((method) {
           final topic = widget.appKitModal.session!.topic ?? '';
           final chainId = widget.appKitModal.selectedChain!.chainId;
-          final address = widget.appKitModal.session!.address!;
+          final address = widget.appKitModal.session!.getAddress(ns)!;
           final requestParams = EIP155.getParams(method, address);
           final enabled = requestParams != null;
           return Container(

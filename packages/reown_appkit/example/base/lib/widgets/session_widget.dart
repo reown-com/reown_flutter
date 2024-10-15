@@ -183,7 +183,7 @@ class SessionWidgetState extends State<SessionWidget> {
       chainMetadata.chainId,
     );
     for (final String method in getChainMethods(namespace)) {
-      final namespaces = widget.session.namespaces[namespace];
+      final namespaces = _session.namespaces[namespace];
       final supported = namespaces?.methods.contains(method) ?? false;
       buttons.add(
         Container(
