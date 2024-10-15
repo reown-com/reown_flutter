@@ -137,7 +137,7 @@ class SwitchNetwork extends MessageData {
   }) : super(type: '@w3m-app/SWITCH_NETWORK');
 
   @override
-  String toString() => '{type:"${super.type}",payload:{chainId:$chainId}}';
+  String toString() => '{type:"${super.type}",payload:{chainId:"$chainId"}}';
 }
 
 class GetSocialRedirectUri extends MessageData {

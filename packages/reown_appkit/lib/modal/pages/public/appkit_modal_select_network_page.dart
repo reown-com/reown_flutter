@@ -27,29 +27,30 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
     BuildContext context,
     ReownAppKitModalNetworkInfo chainInfo,
   ) async {
-    final service = ModalProvider.of(context).instance;
-    if (service.isConnected) {
+    final appKitModal = ModalProvider.of(context).instance;
+    if (appKitModal.isConnected) {
       final chainId = chainInfo.chainId;
       final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(chainId);
       final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
         chainId,
       );
-      final approvedChains = service.session!.getApprovedChains(
+      final approvedChains = appKitModal.session!.getApprovedChains(
         namespace: namespace,
       );
       final isChainApproved = (approvedChains ?? []).contains(caip2Chain);
-      if (chainInfo.chainId == service.selectedChain?.chainId) {
+      if (chainInfo.chainId == appKitModal.selectedChain?.chainId) {
         if (widgetStack.instance.canPop()) {
           widgetStack.instance.pop();
         } else {
-          service.closeModal();
+          appKitModal.closeModal();
         }
-      } else if (isChainApproved || service.session!.sessionService.isMagic) {
-        await service.selectChain(chainInfo, switchChain: true);
+      } else if (isChainApproved ||
+          appKitModal.session!.sessionService.isMagic) {
+        await appKitModal.selectChain(chainInfo, switchChain: true);
         if (widgetStack.instance.canPop()) {
           widgetStack.instance.pop();
         } else {
-          service.closeModal();
+          appKitModal.closeModal();
         }
       } else {
         widgetStack.instance.push(ConnectNetworkPage(chainInfo: chainInfo));

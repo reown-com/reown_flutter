@@ -3,7 +3,6 @@ import 'package:reown_appkit/modal/models/grid_item.dart';
 
 import 'package:reown_appkit/modal/models/public/appkit_network_info.dart';
 import 'package:reown_appkit/modal/services/network_service/network_service_singleton.dart';
-import 'package:reown_appkit/modal/utils/public/appkit_modal_default_networks.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 
 class NetworkServiceItemsListener extends StatelessWidget {
@@ -50,10 +49,9 @@ extension on List<GridItem<ReownAppKitModalNetworkInfo>> {
         });
     }
     return map((item) {
-      final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
-        item.data.chainId,
+      return item.copyWith(
+        disabled: !supportedChains.contains(item.data.chainId),
       );
-      return item.copyWith(disabled: !supportedChains.contains(caip2Chain));
     }).toList()
       ..sort((a, b) {
         final disabledA = a.disabled ? 0 : 1;
