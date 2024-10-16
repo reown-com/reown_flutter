@@ -14,7 +14,7 @@ class MagicSessionEvent implements EventArgs {
   String? userName;
   AppKitSocialOption? provider;
   String? address;
-  int? chainId;
+  String? chainId;
 
   MagicSessionEvent({
     this.email,
@@ -121,7 +121,11 @@ class GetUserErrorEvent extends MagicErrorEvent {
 }
 
 class SwitchNetworkErrorEvent extends MagicErrorEvent {
-  SwitchNetworkErrorEvent() : super('Error switching network');
+  final String? message;
+  SwitchNetworkErrorEvent({this.message})
+      : super(
+          message ?? 'Error switching network',
+        );
 }
 
 class SignOutErrorEvent extends MagicErrorEvent {

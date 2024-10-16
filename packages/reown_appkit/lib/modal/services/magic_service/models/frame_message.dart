@@ -69,7 +69,7 @@ class MessageData {
 
   Map<String, dynamic> toJson() => {
         'type': type,
-        'payload': payload?.toJson(),
+        if (payload != null) 'payload': payload,
       };
 
   T getPayloadMapKey<T>(String key) {
@@ -79,7 +79,9 @@ class MessageData {
 
   // @w3m-frame events
   bool get syncThemeSuccess => type == '@w3m-frame/SYNC_THEME_SUCCESS';
+  bool get syncThemeError => type == '@w3m-frame/SYNC_THEME_ERROR';
   bool get syncDataSuccess => type == '@w3m-frame/SYNC_DAPP_DATA_SUCCESS';
+  bool get syncDataError => type == '@w3m-frame/SYNC_DAPP_DATA_ERROR';
   bool get getSocialRedirectUriSuccess =>
       type == '@w3m-frame/GET_SOCIAL_REDIRECT_URI_SUCCESS';
   bool get getSocialRedirectUriError =>
@@ -137,7 +139,7 @@ class SwitchNetwork extends MessageData {
   }) : super(type: '@w3m-app/SWITCH_NETWORK');
 
   @override
-  String toString() => '{type:"${super.type}",payload:{chainId:$chainId}}';
+  String toString() => '{type:"${super.type}",payload:{chainId:"$chainId"}}';
 }
 
 class GetSocialRedirectUri extends MessageData {
@@ -235,7 +237,7 @@ class GetUser extends MessageData {
   @override
   String toString() {
     if ((chainId ?? '').isNotEmpty) {
-      return '{type:"${super.type}",payload:{chainId:$chainId}}';
+      return '{type:"${super.type}",payload:{chainId:"$chainId"}}';
     }
     return '{type:"${super.type}"}';
   }
@@ -257,7 +259,7 @@ class GetChainId extends MessageData {
 
 class RpcRequest extends MessageData {
   final String method;
-  final List<dynamic> params;
+  final dynamic params;
 
   RpcRequest({
     required this.method,
@@ -268,6 +270,14 @@ class RpcRequest extends MessageData {
   String toString() {
     final m = 'method:"$method"';
     final t = 'type:"${super.type}"';
+
+    if (params is Map) {
+      List<String> ps =
+          (params as Map).entries.map((e) => '${e.key}:"${e.value}"').toList();
+      final pString = ps.join(',');
+      return '{$t,payload:{$m,params:{$pString}}}';
+    }
+
     final p = params.map((i) => '$i').toList();
 
     if (method == 'personal_sign') {
@@ -343,11 +353,11 @@ class SyncAppData extends MessageData {
   @override
   String toString() {
     final v = 'verified: true';
-    final p1 = 'projectId:"$projectId"';
-    final p2 = 'sdkVersion:"$sdkVersion"';
-    final m1 = 'name:"${metadata.name}"';
-    final m2 = 'description:"${metadata.description}"';
-    final m3 = 'url:"${metadata.url}"';
+    final p1 = 'projectId:\'$projectId\'';
+    final p2 = 'sdkVersion:\'${sdkVersion.replaceAll("'", "\\'")}\'';
+    final m1 = 'name:\'${metadata.name.replaceAll("'", "\\'")}\'';
+    final m2 = 'description:\'${metadata.description.replaceAll("'", "\\'")}\'';
+    final m3 = 'url:\'${metadata.url}\'';
     final m4 = 'icons:["${metadata.icons.first}"]';
     final r1 = 'native:"${metadata.redirect?.native}"';
     final r2 = 'universal:"${metadata.redirect?.universal}"';

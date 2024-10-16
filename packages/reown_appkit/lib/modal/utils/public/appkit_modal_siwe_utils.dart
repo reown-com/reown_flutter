@@ -1,12 +1,11 @@
-import 'package:reown_appkit/modal/services/siwe_service/siwe_service_singleton.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class SIWEUtils {
   /// Given SIWECreateMessageArgs will format message according to EIP-4361 https://docs.login.xyz/general-information/siwe-overview/eip-4361
   static String formatMessage(SIWECreateMessageArgs params) {
-    return siweService.instance!.formatMessage(
-      params,
-    );
+    return GetIt.I<ISiweService>().formatMessage(params);
   }
 
   static String getAddressFromMessage(String message) {

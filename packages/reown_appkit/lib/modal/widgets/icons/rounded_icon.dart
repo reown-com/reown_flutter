@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 
@@ -25,7 +26,7 @@ class RoundedIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final projectId = explorerService.instance.projectId;
+    final projectId = GetIt.I<IExplorerService>().projectId;
     final radius = borderRadius ?? size;
     return Container(
       width: size,

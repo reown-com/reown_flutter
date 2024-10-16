@@ -5,9 +5,10 @@ import 'package:reown_appkit/reown_appkit.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 abstract class IMagicService {
-  List<String> get supportedMethods;
+  Map<String, List<String>> get supportedMethods;
   List<AppKitSocialOption> get socials;
 
+  WebViewWidget get webview;
   ValueNotifier<bool> get isReady;
   ValueNotifier<bool> get isConnected;
   ValueNotifier<bool> get isTimeout;
@@ -17,9 +18,7 @@ abstract class IMagicService {
   ValueNotifier<String> get newEmail;
   ValueNotifier<EmailLoginStep> get step;
 
-  WebViewWidget get webview;
-
-  Future<void> init();
+  Future<void> init({String? chainId});
 
   void setEmail(String value);
   void setNewEmail(String value);
@@ -34,16 +33,15 @@ abstract class IMagicService {
   void completeSocialLogin({required String url});
   Future<String?> getFarcasterUri({String? chainId});
   Future<bool> awaitFarcasterResponse();
-
   Future<void> connectEmail({required String value, String? chainId});
   Future<void> updateEmail({required String value});
   Future<void> updateEmailPrimaryOtp({required String otp});
   Future<void> updateEmailSecondaryOtp({required String otp});
   Future<void> connectOtp({required String otp});
-  Future<void> getChainId();
   Future<void> syncTheme(ReownAppKitModalTheme? theme);
-  Future<void> getUser({String? chainId});
-  Future<void> switchNetwork({required String chainId});
+  Future<String?> getChainId();
+  Future<bool> getUser({required String? chainId});
+  Future<bool> switchNetwork({required String chainId});
   Future<dynamic> request({
     String? chainId,
     required SessionRequestParams request,

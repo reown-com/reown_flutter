@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/models/grid_item.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class ExplorerServiceItemsListener extends StatefulWidget {
@@ -26,23 +27,24 @@ class ExplorerServiceItemsListener extends StatefulWidget {
 class _ExplorerServiceItemsListenerState
     extends State<ExplorerServiceItemsListener> {
   List<GridItem<ReownAppKitModalWalletInfo>> _items = [];
+  IExplorerService get _explorerService => GetIt.I<IExplorerService>();
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
-      valueListenable: explorerService.instance.initialized,
+      valueListenable: _explorerService.initialized,
       builder: (context, initialised, _) {
         if (!initialised) {
           return widget.builder(context, initialised, [], false);
         }
         return ValueListenableBuilder<bool>(
-          valueListenable: explorerService.instance.isSearching,
+          valueListenable: _explorerService.isSearching,
           builder: (context, searching, _) {
             if (searching) {
               return widget.builder(context, initialised, _items, searching);
             }
             return ValueListenableBuilder<List<ReownAppKitModalWalletInfo>>(
-              valueListenable: explorerService.instance.listings,
+              valueListenable: _explorerService.listings,
               builder: (context, items, _) {
                 if (widget.listen) {
                   _items = items.toGridItems();
@@ -65,7 +67,7 @@ extension on List<ReownAppKitModalWalletInfo> {
         GridItem<ReownAppKitModalWalletInfo>(
           title: item.listing.name,
           id: item.listing.id,
-          image: explorerService.instance.getWalletImageUrl(
+          image: GetIt.I<IExplorerService>().getWalletImageUrl(
             item.listing.imageId,
           ),
           data: item,

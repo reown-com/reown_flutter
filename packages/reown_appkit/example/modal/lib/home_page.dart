@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:fl_toast/fl_toast.dart';
@@ -7,7 +8,6 @@ import 'package:reown_appkit_example/services/deep_link_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:reown_appkit/reown_appkit.dart';
-
 import 'package:reown_appkit_example/widgets/debug_drawer.dart';
 import 'package:reown_appkit_example/utils/constants.dart';
 import 'package:reown_appkit_example/services/siwe_service.dart';
@@ -34,7 +34,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final overlay = OverlayController(const Duration(milliseconds: 200));
+  late OverlayController overlay;
   late ReownAppKitModal _appKitModal;
   late SIWESampleWebService _siweTestService;
   bool _initialized = false;
@@ -44,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _siweTestService = SIWESampleWebService();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _toggleOverlay();
+      // _toggleOverlay();
       _initializeService(widget.prefs);
     });
   }
@@ -168,8 +168,11 @@ class _MyHomePageState extends State<MyHomePage> {
           } catch (error) {
             debugPrint('[SIWEConfig] getSession error: $error');
             // Fallback patch for testing purposes in case SIWE backend has issues
-            final address = _appKitModal.session!.address!;
-            final chainId = _appKitModal.session!.chainId;
+            final chainId = _appKitModal.selectedChain?.chainId ?? '1';
+            final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+              chainId,
+            );
+            final address = _appKitModal.session!.getAddress(namespace)!;
             return SIWESession(address: address, chains: [chainId]);
           }
         },
@@ -207,8 +210,28 @@ class _MyHomePageState extends State<MyHomePage> {
     final siweAuthValue = prefs.getBool('appkit_siwe_auth') ?? true;
 
     // See https://docs.reown.com/appkit/flutter/core/custom-chains
-    final testNetworks = ReownAppKitModalNetworks.test['eip155'] ?? [];
-    ReownAppKitModalNetworks.addNetworks('eip155', testNetworks);
+    // final extraChains = ReownAppKitModalNetworks.extra['eip155']!;
+    // ReownAppKitModalNetworks.addSupportedNetworks('eip155', extraChains);
+    // ReownAppKitModalNetworks.removeSupportedNetworks('eip155');
+    // ReownAppKitModalNetworks.removeTestNetworks();
+    ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
+      ReownAppKitModalNetworkInfo(
+        name: 'Polkadot',
+        chainId: '91b171bb158e2d3848fa23a9f1c25182',
+        chainIcon: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png',
+        currency: 'DOT',
+        rpcUrl: 'https://rpc.polkadot.io',
+        explorerUrl: 'https://polkadot.subscan.io',
+      ),
+      ReownAppKitModalNetworkInfo(
+        name: 'Westend',
+        chainId: 'e143f23803ac50e8f6f8e62695d1ce9e',
+        currency: 'DOT',
+        rpcUrl: 'https://westend-rpc.polkadot.io',
+        explorerUrl: 'https://westend.subscan.io',
+        isTestNetwork: true,
+      ),
+    ]);
 
     try {
       _appKitModal = ReownAppKitModal(
@@ -226,7 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
             AppKitSocialOption.Apple,
             AppKitSocialOption.Discord,
           ],
-          showMainWallets: true, // OPTIONAL - true by default
+          showMainWallets: false, // OPTIONAL - true by default
         ),
         // requiredNamespaces: {},
         // optionalNamespaces: {},
@@ -239,11 +262,44 @@ class _MyHomePageState extends State<MyHomePage> {
           'c03dfee351b6fcc421b4494ea33b9d4b92a984f87aa76d1663bb28705e95034a', // Uniswap
           '38f5d18bd8522c244bdd70cb4a68e0e718865155811c043f052fb9f1c51de662', // Bitget
         },
-        // excludedWalletIds: {
-        //   'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
-        // },
+        // excludedWalletIds: {},
         // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
+        // getBalance: () async {
+        //   // Your own balance function
+        // },
+        optionalNamespaces: {
+          'eip155': RequiredNamespace.fromJson({
+            'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
+              namespace: 'eip155',
+            ).map((chain) => 'eip155:${chain.chainId}').toList(),
+            'methods': NetworkUtils.defaultNetworkMethods['eip155']!.toList(),
+            'events': NetworkUtils.defaultNetworkEvents['eip155']!.toList(),
+          }),
+          'solana': RequiredNamespace.fromJson({
+            'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
+              namespace: 'solana',
+            ).map((chain) => 'solana:${chain.chainId}').toList(),
+            'methods': NetworkUtils.defaultNetworkMethods['solana']!.toList(),
+            'events': [],
+          }),
+          'polkadot': RequiredNamespace.fromJson({
+            'chains': [
+              'polkadot:91b171bb158e2d3848fa23a9f1c25182',
+              'polkadot:e143f23803ac50e8f6f8e62695d1ce9e'
+            ],
+            'methods': [
+              'polkadot_signMessage',
+              'polkadot_signTransaction',
+            ],
+            'events': []
+          }),
+        },
       );
+      overlay = OverlayController(
+        const Duration(milliseconds: 200),
+        appKitModal: _appKitModal,
+      );
+      _toggleOverlay();
       setState(() => _initialized = true);
     } on ReownAppKitModalException catch (e) {
       debugPrint('⛔️ ${e.message}');
@@ -318,7 +374,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _onModalConnect(ModalConnect? event) async {
     setState(() {});
-    debugPrint('[ExampleApp] _onModalConnect ${event?.session.toJson()}');
+    log('[ExampleApp] _onModalConnect ${jsonEncode(event?.session.toJson())}');
   }
 
   void _onModalUpdate(ModalConnect? event) {
@@ -326,17 +382,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onModalNetworkChange(ModalNetworkChange? event) {
-    debugPrint('[ExampleApp] _onModalNetworkChange ${event?.toString()}');
+    log('[ExampleApp] _onModalNetworkChange ${event?.toString()}');
     setState(() {});
   }
 
   void _onModalDisconnect(ModalDisconnect? event) {
-    debugPrint('[ExampleApp] _onModalDisconnect ${event?.toString()}');
+    log('[ExampleApp] _onModalDisconnect ${event?.toString()}');
     setState(() {});
   }
 
   void _onModalError(ModalError? event) {
-    debugPrint('[ExampleApp] _onModalError ${event?.toString()}');
+    log('[ExampleApp] _onModalError ${event?.toString()}');
     // When user connected to Coinbase Wallet but Coinbase Wallet does not have a session anymore
     // (for instance if user disconnected the dapp directly within Coinbase Wallet)
     // Then Coinbase Wallet won't emit any event
@@ -519,7 +575,7 @@ class _ConnectedView extends StatelessWidget {
           children: [
             AppKitModalBalanceButton(
               appKitModal: appKit,
-              onTap: appKit.openModalView,
+              onTap: appKit.openNetworksView,
             ),
             const SizedBox.square(dimension: 8.0),
             AppKitModalAddressButton(
