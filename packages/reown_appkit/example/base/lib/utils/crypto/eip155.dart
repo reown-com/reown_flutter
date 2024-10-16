@@ -1,10 +1,9 @@
 import 'dart:convert';
 
-import 'package:eth_sig_util/util/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
 import 'package:reown_appkit_dapp/utils/smart_contracts.dart';
-import 'package:reown_appkit_dapp/utils/test_data.dart';
 
 enum EIP155Methods {
   personalSign,
@@ -139,7 +138,7 @@ class EIP155 {
     return await appKit.request(
       topic: topic,
       chainId: chainId,
-      request: getParams('personal_sign', address)!,
+      request: (await getParams('personal_sign', address))!,
     );
   }
 
@@ -152,7 +151,7 @@ class EIP155 {
     return await appKit.request(
       topic: topic,
       chainId: chainId,
-      request: getParams('eth_sign', address)!,
+      request: (await getParams('eth_sign', address))!,
     );
   }
 
@@ -165,7 +164,7 @@ class EIP155 {
     return await appKit.request(
       topic: topic,
       chainId: chainId,
-      request: getParams('eth_signTypedData', address)!,
+      request: (await getParams('eth_signTypedData', address))!,
     );
   }
 
@@ -177,7 +176,7 @@ class EIP155 {
     return await appKit.request(
       topic: topic,
       chainId: chainId,
-      request: getParams('eth_signTransaction', '')!,
+      request: (await getParams('eth_signTransaction', ''))!,
     );
   }
 
@@ -189,7 +188,7 @@ class EIP155 {
     return await appKit.request(
       topic: topic,
       chainId: chainId,
-      request: getParams('eth_sendTransaction', '')!,
+      request: (await getParams('eth_sendTransaction', ''))!,
     );
   }
 
@@ -233,55 +232,5 @@ class EIP155 {
       'totalSupply': oCcy.format(total),
       'balance': oCcy.format(balance),
     };
-  }
-
-  static SessionRequestParams? getParams(String method, String address) {
-    switch (method) {
-      case 'personal_sign':
-        final bytes = utf8.encode(testSignData);
-        final encoded = bytesToHex(bytes, include0x: true);
-        return SessionRequestParams(
-          method: methods[EIP155Methods.personalSign]!,
-          params: [encoded, address],
-        );
-      case 'eth_sign':
-        return SessionRequestParams(
-          method: methods[EIP155Methods.ethSign]!,
-          params: [address, testSignData],
-        );
-      case 'eth_signTypedData':
-        return SessionRequestParams(
-          method: methods[EIP155Methods.ethSignTypedData]!,
-          params: [address, typedData],
-        );
-      case 'eth_signTransaction':
-        return SessionRequestParams(
-          method: methods[EIP155Methods.ethSignTransaction]!,
-          params: [
-            Transaction(
-              from: EthereumAddress.fromHex(address),
-              to: EthereumAddress.fromHex(
-                '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
-              ),
-              value: EtherAmount.fromInt(EtherUnit.finney, 12), // == 0.012
-            ).toJson(),
-          ],
-        );
-      case 'eth_sendTransaction':
-        return SessionRequestParams(
-          method: methods[EIP155Methods.ethSendTransaction]!,
-          params: [
-            Transaction(
-              from: EthereumAddress.fromHex(address),
-              to: EthereumAddress.fromHex(
-                '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
-              ),
-              value: EtherAmount.fromInt(EtherUnit.finney, 12), // == 0.012
-            ).toJson(),
-          ],
-        );
-      default:
-        return null;
-    }
   }
 }

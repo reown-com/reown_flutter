@@ -94,11 +94,11 @@ class CoreUtils {
   }
 
   static String getUserAgent() {
-    String userAgent = '${CoreConstants.X_SDK_TYPE}'
-        '-flutter-'
+    String userAgent = '${CoreConstants.X_SDK_TYPE}/'
         '${CoreConstants.X_SDK_VERSION}/'
         '${CoreConstants.X_CORE_SDK_VERSION}/'
         '${ReownCoreUtils.getOS()}';
+    //
     return userAgent;
   }
 
@@ -110,7 +110,7 @@ class CoreUtils {
     return {
       'x-project-id': projectId,
       'x-sdk-type': CoreConstants.X_SDK_TYPE,
-      'x-sdk-version': 'flutter-${CoreConstants.X_SDK_VERSION}',
+      'x-sdk-version': CoreConstants.X_SDK_VERSION,
       'user-agent': getUserAgent(),
       if (referer != null) 'referer': referer,
       if (origin != null) 'origin': origin,

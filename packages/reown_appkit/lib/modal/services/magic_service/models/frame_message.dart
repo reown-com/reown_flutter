@@ -69,7 +69,7 @@ class MessageData {
 
   Map<String, dynamic> toJson() => {
         'type': type,
-        'payload': payload?.toJson(),
+        if (payload != null) 'payload': payload,
       };
 
   T getPayloadMapKey<T>(String key) {
@@ -79,7 +79,9 @@ class MessageData {
 
   // @w3m-frame events
   bool get syncThemeSuccess => type == '@w3m-frame/SYNC_THEME_SUCCESS';
+  bool get syncThemeError => type == '@w3m-frame/SYNC_THEME_ERROR';
   bool get syncDataSuccess => type == '@w3m-frame/SYNC_DAPP_DATA_SUCCESS';
+  bool get syncDataError => type == '@w3m-frame/SYNC_DAPP_DATA_ERROR';
   bool get getSocialRedirectUriSuccess =>
       type == '@w3m-frame/GET_SOCIAL_REDIRECT_URI_SUCCESS';
   bool get getSocialRedirectUriError =>
@@ -235,7 +237,7 @@ class GetUser extends MessageData {
   @override
   String toString() {
     if ((chainId ?? '').isNotEmpty) {
-      return '{type:"${super.type}",payload:{chainId:$chainId}}';
+      return '{type:"${super.type}",payload:{chainId:"$chainId"}}';
     }
     return '{type:"${super.type}"}';
   }
@@ -257,7 +259,7 @@ class GetChainId extends MessageData {
 
 class RpcRequest extends MessageData {
   final String method;
-  final List<dynamic> params;
+  final dynamic params;
 
   RpcRequest({
     required this.method,
@@ -268,6 +270,14 @@ class RpcRequest extends MessageData {
   String toString() {
     final m = 'method:"$method"';
     final t = 'type:"${super.type}"';
+
+    if (params is Map) {
+      List<String> ps =
+          (params as Map).entries.map((e) => '${e.key}:"${e.value}"').toList();
+      final pString = ps.join(',');
+      return '{$t,payload:{$m,params:{$pString}}}';
+    }
+
     final p = params.map((i) => '$i').toList();
 
     if (method == 'personal_sign') {

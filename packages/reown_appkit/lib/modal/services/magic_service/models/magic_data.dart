@@ -3,7 +3,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 class MagicData {
   String? email;
   String address;
-  int chainId;
+  String chainId;
   String? userName;
   bool? smartAccountDeployed;
   String? preferredAccountType;
@@ -27,7 +27,7 @@ class MagicData {
     return MagicData(
       email: json['email']?.toString(),
       address: json['address'].toString(),
-      chainId: int.parse(json['chainId'].toString()),
+      chainId: _parseChainId(json['chainId'].toString()),
       userName: json['userName']?.toString(),
       smartAccountDeployed: json['smartAccountDeployed'] as bool?,
       preferredAccountType: json['preferredAccountType']?.toString(),
@@ -41,6 +41,14 @@ class MagicData {
           ? AppKitSocialOption.fromString(json['provider'].toString())
           : null,
     );
+  }
+
+  static String _parseChainId(String value) {
+    String chainId = value.toString();
+    if (chainId.contains(':')) {
+      return chainId.split(':').last;
+    }
+    return chainId;
   }
 
   Map<String, dynamic> toJson() {
@@ -63,7 +71,7 @@ class MagicData {
   MagicData copytWith({
     String? email,
     String? address,
-    int? chainId,
+    String? chainId,
     String? userName,
     bool? smartAccountDeployed,
     String? preferredAccountType,
@@ -71,6 +79,9 @@ class MagicData {
     ConnectionMetadata? peer,
     AppKitSocialOption? provider,
   }) {
+    if (chainId != null) {
+      chainId = _parseChainId(chainId);
+    }
     return MagicData(
       email: email ?? this.email,
       address: address ?? this.address,

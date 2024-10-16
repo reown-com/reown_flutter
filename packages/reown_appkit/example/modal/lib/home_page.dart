@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:fl_toast/fl_toast.dart';
@@ -169,7 +170,7 @@ class _MyHomePageState extends State<MyHomePage> {
           } catch (error) {
             debugPrint('[SIWEConfig] getSession error: $error');
             // Fallback patch for testing purposes in case SIWE backend has issues
-            final chainId = _appKitModal.session!.chainId;
+            final chainId = _appKitModal.selectedChain?.chainId ?? '1';
             final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
               chainId,
             );
@@ -267,13 +268,15 @@ class _MyHomePageState extends State<MyHomePage> {
         // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
         getBalance: () async {
           try {
+            final chainId = _appKitModal.selectedChain!.chainId;
             final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
               _appKitModal.selectedChain!.chainId,
             );
+            final address = _appKitModal.session!.getAddress(namespace)!;
             return await blockchainService.instance.getBalance(
-              address: _appKitModal.session!.getAddress(namespace)!,
+              address: address,
               namespace: namespace,
-              chainId: _appKitModal.selectedChain!.chainId,
+              chainId: chainId,
             );
           } catch (e) {
             debugPrint('[$runtimeType] getBalance $e');
@@ -382,7 +385,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _onModalConnect(ModalConnect? event) async {
     setState(() {});
-    debugPrint('[ExampleApp] _onModalConnect ${event?.session.toJson()}');
+    log('[ExampleApp] _onModalConnect ${jsonEncode(event?.session.toJson())}');
   }
 
   void _onModalUpdate(ModalConnect? event) {
@@ -390,17 +393,17 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onModalNetworkChange(ModalNetworkChange? event) {
-    debugPrint('[ExampleApp] _onModalNetworkChange ${event?.toString()}');
+    log('[ExampleApp] _onModalNetworkChange ${event?.toString()}');
     setState(() {});
   }
 
   void _onModalDisconnect(ModalDisconnect? event) {
-    debugPrint('[ExampleApp] _onModalDisconnect ${event?.toString()}');
+    log('[ExampleApp] _onModalDisconnect ${event?.toString()}');
     setState(() {});
   }
 
   void _onModalError(ModalError? event) {
-    debugPrint('[ExampleApp] _onModalError ${event?.toString()}');
+    log('[ExampleApp] _onModalError ${event?.toString()}');
     // When user connected to Coinbase Wallet but Coinbase Wallet does not have a session anymore
     // (for instance if user disconnected the dapp directly within Coinbase Wallet)
     // Then Coinbase Wallet won't emit any event
@@ -583,7 +586,7 @@ class _ConnectedView extends StatelessWidget {
           children: [
             AppKitModalBalanceButton(
               appKitModal: appKit,
-              onTap: appKit.openModalView,
+              onTap: appKit.openNetworksView,
             ),
             const SizedBox.square(dimension: 8.0),
             AppKitModalAddressButton(
