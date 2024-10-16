@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
+import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 
 class ListAvatar extends StatelessWidget {
   const ListAvatar({
@@ -22,10 +22,11 @@ class ListAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appKitModal = ModalProvider.of(context).instance;
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final radius = borderRadius ?? radiuses.radiusM;
-    final projectId = explorerService.instance.projectId;
+    final projectId = appKitModal.appKit!.core.projectId;
     final validImage = (imageUrl ?? '').isNotEmpty && !disabled;
     return Stack(
       children: [

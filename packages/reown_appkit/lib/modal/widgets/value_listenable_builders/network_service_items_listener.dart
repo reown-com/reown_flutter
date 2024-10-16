@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/models/grid_item.dart';
 
 import 'package:reown_appkit/modal/models/public/appkit_network_info.dart';
-import 'package:reown_appkit/modal/services/network_service/network_service_singleton.dart';
+import 'package:reown_appkit/modal/services/network_service/i_network_service.dart';
 import 'package:reown_appkit/modal/utils/public/appkit_modal_default_networks.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 
 class NetworkServiceItemsListener extends StatelessWidget {
+  INetworkService get _networkService => GetIt.I<INetworkService>();
   const NetworkServiceItemsListener({
     super.key,
     required this.builder,
@@ -20,13 +22,13 @@ class NetworkServiceItemsListener extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: networkService.instance.initialized,
+      valueListenable: _networkService.initialized,
       builder: (context, bool initialised, _) {
         if (!initialised) {
           return builder(context, initialised, []);
         }
         return ValueListenableBuilder(
-          valueListenable: networkService.instance.itemList,
+          valueListenable: _networkService.itemList,
           builder: (context, items, _) {
             final parsedItems = items.parseItems(context);
             return builder(context, initialised, parsedItems);

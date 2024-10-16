@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
-import 'package:reown_appkit/modal/services/siwe_service/siwe_service_singleton.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/content_loading.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
@@ -50,6 +50,8 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
   }
 
   IMagicService get _magicService => GetIt.I<IMagicService>();
+  IExplorerService get _explorerService => GetIt.I<IExplorerService>();
+  ISiweService get _siweService => GetIt.I<ISiweService>();
 
   void _connect() async {
     errorEvent = null;
@@ -72,7 +74,7 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
         );
         if (chainInfo != null) {
           Future.delayed(const Duration(milliseconds: 300), () {
-            if (!siweService.instance!.enabled) {
+            if (!_siweService.enabled) {
               widgetStack.instance.pop();
             }
           });
@@ -88,7 +90,7 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
     if (state == AppLifecycleState.resumed) {
       if (_appKitModal?.session?.sessionService.isCoinbase == true) {
         if (_appKitModal?.selectedChain?.chainId == widget.chainInfo.chainId) {
-          if (!siweService.instance!.enabled) {
+          if (!_siweService.enabled) {
             widgetStack.instance.pop();
           }
         }
@@ -121,7 +123,7 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
     //
     final chainId = widget.chainInfo.chainId;
     final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-    final imageUrl = explorerService.instance.getAssetImageUrl(imageId);
+    final imageUrl = _explorerService.getAssetImageUrl(imageId);
     //
     return ModalNavbar(
       title: widget.chainInfo.name,

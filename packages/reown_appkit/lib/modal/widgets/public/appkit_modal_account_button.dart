@@ -3,7 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/pages/approve_magic_request_page.dart';
 import 'package:reown_appkit/modal/pages/confirm_email_page.dart';
 import 'package:reown_appkit/modal/pages/social_login_page.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
@@ -196,7 +196,7 @@ class _BalanceButton extends StatelessWidget {
         : themeData.textStyles.paragraph600;
     final chainId = appKit.selectedChain?.chainId ?? '';
     final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-    final tokenImage = explorerService.instance.getAssetImageUrl(imageId);
+    final tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
     return BaseButton(
       size: BaseButtonSize.small,
       onTap: onTap,
