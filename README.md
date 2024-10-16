@@ -12,14 +12,18 @@ The communications protocol for web3, Reown brings the ecosystem together by ena
 
 Reown is released under the Apache 2.0 license. [See LICENSE](/LICENSE) for details.
 
-### Generate project dependencies
+### To try this repo out
 
-- Run `sh scripts/generate_all.sh` in the root folder to generate dependencies.
+```
+1. git clone https://github.com/reown-com/reown_flutter.git
+2. cd reown_flutter
+3. sh scripts/generate_all.sh
+```
 
 ### Run WalletKit Sample
 
 1. Run `cd packages/reown_walletkit/example`
-2. Run `flutter run --dart-define=PROJECT_ID=0123... --flavor internal --debug`
+2. Run `flutter run --dart-define="PROJECT_ID=0123..." --flavor internal`
 
 You can add your own keys for testing purposes as follows:
 
@@ -42,12 +46,5 @@ _NB: WalletKit sample is intended to be used just as an explanatory project_
 
 ### Run AppKit Sample
 
-AppKit has two samples, `base`, which is made with `ReownAppKit` UI-less SDK, and `modal`, which is made with `ReownAppKitModal`
-
 1. Run `cd packages/reown_appkit/example/base`
-2. Run `flutter run --dart-define=PROJECT_ID=0123... --flavor internal --debug`
-
-or
-
-1. Run `cd packages/reown_appkit/example/modal`
-2. Run `flutter run --dart-define=PROJECT_ID=0123... --debug`
+2. Run `flutter run --dart-define="PROJECT_ID=0123..." --flavor internal`
