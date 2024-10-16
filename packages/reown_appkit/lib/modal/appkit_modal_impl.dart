@@ -54,7 +54,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   Map<String, RequiredNamespace> _optionalNamespaces = {};
   String? _lastChainEmitted;
   bool _supportsOneClickAuth = false;
-  bool _serviceInitialized = false;
+  bool _relayConnected = false;
 
   ReownAppKitModalStatus _status = ReownAppKitModalStatus.idle;
   @override
@@ -194,8 +194,8 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       core: _appKit.core,
     );
 
-    GetIt.I.registerSingleton<IMagicService>(
-      MagicService(
+    GetIt.I.registerSingletonIfAbsent<IMagicService>(
+      () => MagicService(
         core: _appKit.core,
         metadata: _appKit.metadata,
         featuresConfig: this.featuresConfig,
@@ -235,9 +235,13 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     return false;
   }
 
+  Completer<bool> _awaitRelayOnce = Completer<bool>();
+
   @override
   Future<void> init() async {
-    _serviceInitialized = false;
+    _relayConnected = false;
+    _awaitRelayOnce = Completer<bool>();
+
     if (!CoreUtils.isValidProjectID(_projectId)) {
       _appKit.core.logger.e(
         '[$runtimeType] projectId $_projectId is invalid. '
@@ -332,12 +336,18 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
 
     onModalNetworkChange.subscribe(_onNetworkChainRequireSIWE);
 
-    final connected = _appKit.core.relayClient.isConnected;
-    _serviceInitialized = connected;
-    _status = connected
+    _relayConnected = _appKit.core.relayClient.isConnected;
+    if (!_relayConnected) {
+      _relayConnected = await _awaitRelayOnce.future;
+    } else {
+      if (!_awaitRelayOnce.isCompleted) {
+        _awaitRelayOnce.complete(_relayConnected);
+      }
+    }
+    _status = _relayConnected
         ? ReownAppKitModalStatus.initialized
-        : ReownAppKitModalStatus.error;
-    _appKit.core.logger.i('[$runtimeType] initialized');
+        : ReownAppKitModalStatus.initializing;
+    _appKit.core.logger.i('[$runtimeType] status $_status');
     _notify();
   }
 
@@ -595,7 +605,6 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     Widget? startWidget,
   }) async {
     _checkInitialized();
-    ApproveTransactionPage();
 
     if (_isOpen) {
       closeModal();
@@ -1966,9 +1975,12 @@ extension _AppKitModalExtension on ReownAppKitModal {
     _appKit.core.logger.i('[$runtimeType] relay client connected');
     final service =
         _currentSession?.sessionService ?? ReownAppKitModalConnector.wc;
-    if (service.isWC && _serviceInitialized) {
+    if (service.isWC && _relayConnected) {
       _status = ReownAppKitModalStatus.initialized;
       _notify();
+    }
+    if (!_awaitRelayOnce.isCompleted) {
+      _awaitRelayOnce.complete(true);
     }
   }
 
@@ -1976,7 +1988,7 @@ extension _AppKitModalExtension on ReownAppKitModal {
     _appKit.core.logger.i('[$runtimeType] relay client disconnected');
     final service =
         _currentSession?.sessionService ?? ReownAppKitModalConnector.wc;
-    if (service.isWC && _serviceInitialized) {
+    if (service.isWC && _relayConnected) {
       _status = ReownAppKitModalStatus.idle;
       _notify();
     }

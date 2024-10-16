@@ -1,4 +1,4 @@
-## 1.1.0-beta01
+## 1.1.0-beta02
 
 - Social Logins
 
