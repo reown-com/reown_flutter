@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/services/coinbase_service/i_coinbase_service.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_data.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_events.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
 
 import 'package:coinbase_wallet_sdk/currency.dart';
 import 'package:coinbase_wallet_sdk/action.dart';
@@ -13,6 +13,7 @@ import 'package:coinbase_wallet_sdk/coinbase_wallet_sdk.dart';
 import 'package:coinbase_wallet_sdk/configuration.dart';
 import 'package:coinbase_wallet_sdk/eth_web3_rpc.dart';
 import 'package:coinbase_wallet_sdk/request.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class CoinbaseService implements ICoinbaseService {
@@ -82,6 +83,8 @@ class CoinbaseService implements ICoinbaseService {
   late ReownAppKitModalWalletInfo _walletData;
   late final IReownCore _core;
 
+  IExplorerService get _explorerService => GetIt.I<IExplorerService>();
+
   CoinbaseService({
     required PairingMetadata metadata,
     required IReownCore core,
@@ -95,10 +98,10 @@ class CoinbaseService implements ICoinbaseService {
     if (!_enabled) return;
     // Configure SDK for each platform
 
-    _walletData = (await explorerService.instance.getCoinbaseWalletObject()) ??
-        defaultWalletData;
+    _walletData =
+        (await _explorerService.getCoinbaseWalletObject()) ?? defaultWalletData;
     final imageId = defaultWalletData.listing.imageId;
-    _iconImage = explorerService.instance.getWalletImageUrl(imageId);
+    _iconImage = _explorerService.getWalletImageUrl(imageId);
 
     final walletLink = _walletData.listing.mobileLink ?? '';
     final redirect = _metadata.redirect;

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/models/grid_item.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/services/network_service/i_network_service.dart';
 import 'package:reown_appkit/modal/utils/render_utils.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class NetworkService implements INetworkService {
+  IExplorerService get _explorerService => GetIt.I<IExplorerService>();
+
   @override
   ValueNotifier<bool> initialized = ValueNotifier<bool>(false);
 
@@ -26,7 +29,7 @@ class NetworkService implements INetworkService {
     final imageId = ReownAppKitModalNetworks.getNetworkIconId(
       chainInfo.chainId,
     );
-    return explorerService.instance.getAssetImageUrl(imageId);
+    return _explorerService.getAssetImageUrl(imageId);
   }
 
   @override

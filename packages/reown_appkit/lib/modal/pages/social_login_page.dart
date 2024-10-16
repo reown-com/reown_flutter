@@ -10,7 +10,7 @@ import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/farcaster_qrcode_page.dart';
-import 'package:reown_appkit/modal/services/analytics_service/analytics_service_singleton.dart';
+import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
@@ -44,6 +44,7 @@ class SocialLoginPage extends StatefulWidget {
 
 class _SocialLoginPageState extends State<SocialLoginPage> {
   IMagicService get _magicService => GetIt.I<IMagicService>();
+  IAnalyticsService get _analyticsService => GetIt.I<IAnalyticsService>();
 
   IReownAppKitModal? _service;
   ModalError? errorEvent;
@@ -79,7 +80,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
   Future<void> _initSocialLogin(AppKitSocialOption option) async {
     try {
       setState(() => errorEvent = null);
-      analyticsService.instance.sendEvent(SocialLoginStarted(
+      _analyticsService.sendEvent(SocialLoginStarted(
         provider: widget.socialOption.name.toLowerCase(),
       ));
       if (option == AppKitSocialOption.Farcaster) {
@@ -183,7 +184,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
           _service?.selectedChain?.chainId ?? '1',
         );
         await _magicService.getUser(chainId: caip2Chain);
-        analyticsService.instance.sendEvent(SocialLoginSuccess(
+        _analyticsService.sendEvent(SocialLoginSuccess(
           provider: widget.socialOption.name.toLowerCase(),
         ));
         _magicService.onCompleteSocialLogin.unsubscribe(
@@ -225,7 +226,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
     debugPrint('[$runtimeType] _cancelSocialLogin');
     errorEvent = ModalError('User canceled');
     setState(() => _retrievingData = false);
-    analyticsService.instance.sendEvent(SocialLoginError(
+    _analyticsService.sendEvent(SocialLoginError(
       provider: widget.socialOption.name.toLowerCase(),
     ));
   }
@@ -451,9 +452,10 @@ class __WebViewLoginWidgetState extends State<_WebViewLoginWidget> {
           final params = uri.queryParameters;
           final secureOrigin1 = UrlConstants.secureOrigin1;
           final secureOrigin2 = UrlConstants.secureOrigin2;
-          if ((uri.authority == secureOrigin1 ||
-                  uri.authority == secureOrigin2) &&
-              params.containsKey('state')) {
+          final origin1 = uri.authority == secureOrigin1;
+          final origin2 = uri.authority == secureOrigin2;
+          final hasState = params.containsKey('state');
+          if ((origin1 || origin2) && hasState) {
             Future.delayed(Duration(milliseconds: 500), () {
               Navigator.of(context).pop(request.url);
             });
@@ -471,19 +473,22 @@ class __WebViewLoginWidgetState extends State<_WebViewLoginWidget> {
       title: '',
       noBack: true,
       noClose: true,
-      rightAction: NavbarActionButton(
-        asset: 'lib/modal/assets/icons/close.svg',
-        action: widget.onCancel,
-      ),
-      leftAction: NavbarActionButton(
-        asset: 'lib/modal/assets/icons/disconnect.svg',
-        action: () async {
-          await _clearCookies();
-          await _webViewController.clearCache();
-          await _webViewController.clearLocalStorage();
-          await _webViewController.reload();
-        },
-      ),
+      rightActions: [
+        NavbarActionButton(
+          asset: 'lib/modal/assets/icons/disconnect.svg',
+          dimension: 48.0,
+          action: () async {
+            await _clearCookies();
+            await _webViewController.clearCache();
+            await _webViewController.clearLocalStorage();
+            await _webViewController.reload();
+          },
+        ),
+        NavbarActionButton(
+          asset: 'lib/modal/assets/icons/close.svg',
+          action: widget.onCancel,
+        ),
+      ],
       body: WebViewWidget(controller: _webViewController),
     );
   }

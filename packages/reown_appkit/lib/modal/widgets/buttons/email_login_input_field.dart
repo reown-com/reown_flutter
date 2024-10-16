@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/pages/confirm_email_page.dart';
-import 'package:reown_appkit/modal/services/analytics_service/analytics_service_singleton.dart';
+import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/email_login_step.dart';
@@ -18,6 +18,7 @@ class EmailLoginInputField extends StatefulWidget {
 
 class _EmailLoginInputFieldState extends State<EmailLoginInputField> {
   IMagicService get _magicService => GetIt.I<IMagicService>();
+  IAnalyticsService get _analyticsService => GetIt.I<IAnalyticsService>();
 
   bool _submitted = false;
   @override
@@ -53,7 +54,7 @@ class _EmailLoginInputFieldState extends State<EmailLoginInputField> {
         return InputEmailWidget(
           onFocus: (value) {
             if (value) {
-              analyticsService.instance.sendEvent(EmailLoginSelected());
+              _analyticsService.sendEvent(EmailLoginSelected());
             }
           },
           onValueChange: (value) {
@@ -63,7 +64,7 @@ class _EmailLoginInputFieldState extends State<EmailLoginInputField> {
             setState(() => _submitted = true);
             final service = ModalProvider.of(context).instance;
             final chainId = service.selectedChain?.chainId;
-            analyticsService.instance.sendEvent(EmailSubmitted());
+            _analyticsService.sendEvent(EmailSubmitted());
             _magicService.connectEmail(
               value: value,
               chainId: chainId,

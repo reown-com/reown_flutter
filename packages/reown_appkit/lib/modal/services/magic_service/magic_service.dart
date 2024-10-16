@@ -4,11 +4,12 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
-import 'package:reown_appkit/modal/services/analytics_service/analytics_service_singleton.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/email_login_step.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
@@ -21,7 +22,7 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 class MagicService implements IMagicService {
-  static const _thirdSafeDomains = [
+  static const _thirdPartySafeDomains = [
     'auth.magic.link',
     'launchdarkly.com',
   ];
@@ -114,6 +115,8 @@ class MagicService implements IMagicService {
   @override
   Event<CompleteSocialLoginEvent> onCompleteSocialLogin =
       Event<CompleteSocialLoginEvent>();
+
+  IAnalyticsService get _analyticsService => GetIt.I<IAnalyticsService>();
 
   MagicService({
     required IReownCore core,
@@ -598,16 +601,16 @@ class MagicService implements IMagicService {
         final newStep = EmailLoginStep.fromAction(value);
         if (newStep == EmailLoginStep.verifyOtp) {
           if (step.value == EmailLoginStep.verifyDevice) {
-            analyticsService.instance.sendEvent(DeviceRegisteredForEmail());
+            _analyticsService.sendEvent(DeviceRegisteredForEmail());
           }
-          analyticsService.instance.sendEvent(EmailVerificationCodeSent());
+          _analyticsService.sendEvent(EmailVerificationCodeSent());
         }
         step.value = newStep;
       }
     }
     // ****** CONNECT_OTP
     if (messageData.connectOtpSuccess) {
-      analyticsService.instance.sendEvent(EmailVerificationCodePass());
+      _analyticsService.sendEvent(EmailVerificationCodePass());
       step.value = EmailLoginStep.idle;
       await _getUser(_connectionChainId);
     }
@@ -619,7 +622,7 @@ class MagicService implements IMagicService {
       } else {
         step.value = EmailLoginStep.verifyOtp;
       }
-      analyticsService.instance.sendEvent(EmailEdit());
+      _analyticsService.sendEvent(EmailEdit());
     }
     // ****** UPDATE_EMAIL_PRIMARY_OTP
     if (messageData.updateEmailPrimarySuccess) {
@@ -627,7 +630,7 @@ class MagicService implements IMagicService {
     }
     // ****** UPDATE_EMAIL_SECONDARY_OTP
     if (messageData.updateEmailSecondarySuccess) {
-      analyticsService.instance.sendEvent(EmailEditComplete());
+      _analyticsService.sendEvent(EmailEditComplete());
       step.value = EmailLoginStep.idle;
       setEmail(newEmail.value);
       setNewEmail('');
@@ -741,7 +744,7 @@ class MagicService implements IMagicService {
       _error(UpdateEmailSecondaryOtpErrorEvent(message: message));
     }
     if (messageData.connectOtpError) {
-      analyticsService.instance.sendEvent(EmailVerificationCodeFail());
+      _analyticsService.sendEvent(EmailVerificationCodeFail());
       final message = messageData.getPayloadMapKey<String?>('message');
       _error(ConnectOtpErrorEvent(message: message));
     }
@@ -905,7 +908,7 @@ class MagicService implements IMagicService {
     final domains = [
       UrlConstants.secureOrigin1,
       UrlConstants.secureOrigin2,
-      ..._thirdSafeDomains,
+      ..._thirdPartySafeDomains,
     ].join('|');
     return RegExp(r'' + domains).hasMatch(domain);
   }

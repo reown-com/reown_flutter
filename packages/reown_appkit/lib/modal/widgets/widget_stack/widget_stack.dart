@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/pages/public/appkit_modal_main_wallets_page.dart';
-import 'package:reown_appkit/modal/services/analytics_service/analytics_service_singleton.dart';
+import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/utils/platform_utils.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
@@ -23,7 +24,7 @@ class WidgetStack extends IWidgetStack {
     AnalyticsEvent? event,
   }) {
     if (event != null) {
-      analyticsService.instance.sendEvent(event);
+      GetIt.I<IAnalyticsService>().sendEvent(event);
     }
     onRenderScreen.value = renderScreen;
     if (replace) {
