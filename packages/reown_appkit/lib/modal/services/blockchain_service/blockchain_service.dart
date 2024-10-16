@@ -22,7 +22,7 @@ class BlockChainService implements IBlockChainService {
 
   Map<String, String> get _requiredHeaders => {
         'x-sdk-type': CoreConstants.X_SDK_TYPE,
-        'x-sdk-version': 'flutter-${CoreConstants.X_SDK_VERSION}',
+        'x-sdk-version': CoreConstants.X_SDK_VERSION,
       };
 
   @override

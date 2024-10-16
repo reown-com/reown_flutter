@@ -5,7 +5,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 abstract class IMagicService {
-  List<String> get supportedMethods;
+  Map<String, List<String>> get supportedMethods;
   List<AppKitSocialOption> get socials;
 
   ValueNotifier<bool> get isReady;
@@ -19,7 +19,7 @@ abstract class IMagicService {
 
   WebViewWidget get webview;
 
-  Future<void> init();
+  Future<void> init({String? chainId});
 
   void setEmail(String value);
   void setNewEmail(String value);
@@ -40,10 +40,10 @@ abstract class IMagicService {
   Future<void> updateEmailPrimaryOtp({required String otp});
   Future<void> updateEmailSecondaryOtp({required String otp});
   Future<void> connectOtp({required String otp});
-  Future<void> getChainId();
+  Future<String?> getChainId();
   Future<void> syncTheme(ReownAppKitModalTheme? theme);
-  Future<void> getUser({String? chainId});
-  Future<void> switchNetwork({required String chainId});
+  Future<bool> getUser({required String? chainId});
+  Future<bool> switchNetwork({required String chainId});
   Future<dynamic> request({
     String? chainId,
     required SessionRequestParams request,

@@ -37,6 +37,7 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
       final approvedChains = appKitModal.session!.getApprovedChains(
         namespace: namespace,
       );
+      final isMagic = appKitModal.session!.sessionService.isMagic;
       final isChainApproved = (approvedChains ?? []).contains(caip2Chain);
       if (chainInfo.chainId == appKitModal.selectedChain?.chainId) {
         if (widgetStack.instance.canPop()) {
@@ -44,13 +45,19 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
         } else {
           appKitModal.closeModal();
         }
-      } else if (isChainApproved ||
-          appKitModal.session!.sessionService.isMagic) {
-        await appKitModal.selectChain(chainInfo, switchChain: true);
-        if (widgetStack.instance.canPop()) {
-          widgetStack.instance.pop();
+      } else if (isChainApproved || isMagic) {
+        if (isMagic) {
+          widgetStack.instance.push(ConnectNetworkPage(
+            chainInfo: chainInfo,
+            isMagic: true,
+          ));
         } else {
-          appKitModal.closeModal();
+          await appKitModal.selectChain(chainInfo, switchChain: true);
+          if (widgetStack.instance.canPop()) {
+            widgetStack.instance.pop();
+          } else {
+            appKitModal.closeModal();
+          }
         }
       } else {
         widgetStack.instance.push(ConnectNetworkPage(chainInfo: chainInfo));

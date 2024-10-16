@@ -10,6 +10,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 import 'package:reown_appkit_dapp/utils/crypto/eip155.dart';
+import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
 import 'package:reown_appkit_dapp/utils/crypto/solana.dart';
 import 'package:reown_appkit_dapp/utils/sample_wallets.dart';
@@ -363,34 +364,43 @@ class ConnectPageState extends State<ConnectPage> {
   }
 
   List<Widget> _buildRequestButtons() {
-    final chainId = widget.appKitModal.selectedChain!.chainId;
+    final chainId = widget.appKitModal.selectedChain?.chainId ?? '1';
     final ns = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
     return widget.appKitModal.getApprovedMethods(namespace: ns)?.map((method) {
           final topic = widget.appKitModal.session!.topic ?? '';
           final chainId = widget.appKitModal.selectedChain!.chainId;
           final address = widget.appKitModal.session!.getAddress(ns)!;
-          final requestParams = EIP155.getParams(method, address);
-          final enabled = requestParams != null;
+          final chainInfo = ReownAppKitModalNetworks.getNetworkById(
+            ns,
+            chainId,
+          );
+          // final requestParams = await getParams(method, address);
+          // final enabled = requestParams != null;
           return Container(
             height: 40.0,
             width: double.infinity,
             margin: const EdgeInsets.symmetric(
               vertical: StyleConstants.linear8,
             ),
-            child: ElevatedButton(
-              onPressed: enabled
-                  ? () {
-                      widget.appKitModal.launchConnectedWallet();
-                      final future = widget.appKitModal.request(
-                        topic: topic,
-                        chainId: chainId,
-                        request: requestParams,
-                      );
-                      MethodDialog.show(context, method, future);
-                    }
-                  : null,
-              child: Text(method),
-            ),
+            child: FutureBuilder<SessionRequestParams?>(
+                future: getParams(method, address, rpcUrl: chainInfo?.rpcUrl),
+                builder: (_, snapshot) {
+                  final enabled = snapshot.data != null;
+                  return ElevatedButton(
+                    onPressed: enabled
+                        ? () {
+                            widget.appKitModal.launchConnectedWallet();
+                            final future = widget.appKitModal.request(
+                              topic: topic,
+                              chainId: chainId,
+                              request: snapshot.data!,
+                            );
+                            MethodDialog.show(context, method, future);
+                          }
+                        : null,
+                    child: Text(method),
+                  );
+                }),
           );
         }).toList() ??
         [];

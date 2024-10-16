@@ -7,7 +7,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
-
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/farcaster_qrcode_page.dart';
@@ -15,8 +14,6 @@ import 'package:reown_appkit/modal/services/analytics_service/analytics_service_
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
-import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
-import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
 import 'package:reown_appkit/modal/utils/platform_utils.dart';
 import 'package:reown_appkit/modal/widgets/buttons/simple_icon_button.dart';
@@ -76,10 +73,6 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
   }
 
   void _errorListener(ModalError? event) {
-    toastService.instance.show(ToastMessage(
-      type: ToastType.error,
-      text: event?.message ?? 'Something went wrong.',
-    ));
     setState(() => errorEvent = event);
   }
 
@@ -186,7 +179,10 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
         uri: '?${Uri.parse(url).query}',
       );
       if (success == true) {
-        await _magicService.getUser();
+        final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
+          _service?.selectedChain?.chainId ?? '1',
+        );
+        await _magicService.getUser(chainId: caip2Chain);
         analyticsService.instance.sendEvent(SocialLoginSuccess(
           provider: widget.socialOption.name.toLowerCase(),
         ));
@@ -218,7 +214,10 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
       _cancelSocialLogin();
     } else {
       setState(() => _retrievingData = true);
-      await _magicService.getUser();
+      final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
+        _service?.selectedChain?.chainId ?? '1',
+      );
+      await _magicService.getUser(chainId: caip2Chain);
     }
   }
 
@@ -475,6 +474,15 @@ class __WebViewLoginWidgetState extends State<_WebViewLoginWidget> {
       rightAction: NavbarActionButton(
         asset: 'lib/modal/assets/icons/close.svg',
         action: widget.onCancel,
+      ),
+      leftAction: NavbarActionButton(
+        asset: 'lib/modal/assets/icons/disconnect.svg',
+        action: () async {
+          await _clearCookies();
+          await _webViewController.clearCache();
+          await _webViewController.clearLocalStorage();
+          await _webViewController.reload();
+        },
       ),
       body: WebViewWidget(controller: _webViewController),
     );

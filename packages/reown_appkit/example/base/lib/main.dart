@@ -122,8 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKit!.onSessionAuthResponse.subscribe(_onSessionAuthResponse);
 
     // See https://docs.reown.com/appkit/flutter/core/custom-chains
-    final testNetworks = ReownAppKitModalNetworks.test['eip155'] ?? [];
-    ReownAppKitModalNetworks.addNetworks('eip155', testNetworks);
+    // final testNetworks = ReownAppKitModalNetworks.test['eip155'] ?? [];
+    // ReownAppKitModalNetworks.addNetworks('eip155', testNetworks);
 
     _appKitModal = ReownAppKitModal(
       context: context,
@@ -472,7 +472,7 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         getSession: () async {
           // Return proper session from your Web Service
-          final chainId = _appKitModal!.session!.chainId;
+          final chainId = _appKitModal!.selectedChain?.chainId ?? '1';
           final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
             chainId,
           );

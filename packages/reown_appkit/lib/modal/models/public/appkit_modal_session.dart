@@ -1,5 +1,4 @@
 import 'package:get_it/get_it.dart';
-import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/coinbase_service.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_data.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
@@ -97,7 +96,7 @@ class ReownAppKitModalSession {
       return true;
     }
 
-    final nsMethods = getApprovedMethods(namespace: 'eip155') ?? [];
+    final nsMethods = getApprovedMethods(namespace: NetworkUtils.eip155) ?? [];
     final supportsAddChain = nsMethods.contains(
       MethodsConstants.walletAddEthChain,
     );
@@ -115,7 +114,8 @@ class ReownAppKitModalSession {
       return CoinbaseService.supportedMethods;
     }
     if (sessionService.isMagic) {
-      return GetIt.I<IMagicService>().supportedMethods;
+      final ns = namespace ?? NetworkUtils.eip155;
+      return GetIt.I<IMagicService>().supportedMethods[ns];
     }
 
     final sessionNamespaces = _sessionData!.namespaces;
@@ -161,9 +161,23 @@ class ReownAppKitModalSession {
     if (sessionService.noSession) {
       return null;
     }
-    // We can not know which chains are approved from Coinbase or Magic
-    if (!sessionService.isWC) {
-      return [chainId];
+    // Coinbase only support EIP155 but since we can not know which chains are actually approved...
+    // Magic only support EIP155 and Solana but since we can not know which chains are actually approved...
+
+    final allEIP155 = ReownAppKitModalNetworks.getAllSupportedNetworks(
+      namespace: NetworkUtils.eip155,
+    ).map((e) => '${NetworkUtils.eip155}:${e.chainId}').toList();
+
+    if (sessionService.isCoinbase) {
+      return [...allEIP155];
+    }
+
+    final allSolana = ReownAppKitModalNetworks.getAllSupportedNetworks(
+      namespace: NetworkUtils.solana,
+    ).map((e) => '${NetworkUtils.solana}:${e.chainId}').toList();
+
+    if (sessionService.isMagic) {
+      return [...allEIP155, ...allSolana];
     }
 
     final accounts = getAccounts(namespace: namespace) ?? [];
@@ -176,11 +190,19 @@ class ReownAppKitModalSession {
     if (sessionService.noSession) {
       return null;
     }
+
     if (sessionService.isCoinbase) {
-      return ['$namespace:$chainId:${getAddress(namespace ?? 'eip155')}'];
+      final ns = NetworkUtils.eip155;
+      return ReownAppKitModalNetworks.getAllSupportedNetworks(namespace: ns)
+          .map((e) => '$ns:${e.chainId}:${getAddress(ns)}')
+          .toList();
     }
+
     if (sessionService.isMagic) {
-      return ['$namespace:$chainId:${getAddress(namespace ?? 'eip155')}'];
+      final ns = namespace ?? NetworkUtils.eip155;
+      return ReownAppKitModalNetworks.getAllSupportedNetworks(namespace: ns)
+          .map((e) => '$ns:${e.chainId}:${getAddress(ns)}')
+          .toList();
     }
 
     final sessionNamespaces = _sessionData!.namespaces;
@@ -337,31 +359,41 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
   }
 
   Map<String, Namespace>? _namespaces() {
-    final eip155 = NetworkUtils.eip155;
-    // TODO check if namespaces are needed when connected to Coinbase or Magic
     if (sessionService.isCoinbase) {
       // Coinbase only supports eip155 chains
+      final eip155 = NetworkUtils.eip155;
+      final allEIP155 = ReownAppKitModalNetworks.getAllSupportedNetworks(
+        namespace: eip155,
+      ).map((e) => '$eip155:${e.chainId}').toList();
       return {
         eip155: Namespace(
-          chains: ['$eip155:$chainId'],
-          accounts: ['$eip155:$chainId:${getAddress(eip155)}'],
+          chains: [...allEIP155],
+          accounts: [...getAccounts(namespace: eip155)!],
           methods: [...CoinbaseService.supportedMethods],
           // Coinbase does not have events as it doesn't use WC protocol
           events: [],
         ),
       };
     }
+
     if (sessionService.isMagic) {
+      final ns = ReownAppKitModalNetworks.getNamespaceForChainId(
+        _magicData!.chainId,
+      );
+      final allChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
+        namespace: ns,
+      ).map((e) => '$ns:${e.chainId}').toList();
       return {
-        eip155: Namespace(
-          chains: ['$eip155:$chainId'],
-          accounts: ['$eip155:$chainId:${getAddress(eip155)}'],
-          methods: [...MagicService.supportedMethods],
+        ns: Namespace(
+          chains: [...allChains],
+          accounts: [...getAccounts(namespace: ns)!],
+          methods: [...NetworkUtils.defaultNetworkMethods[ns]!],
           // Magic does not have events as it doesn't use WC protocol
           events: [],
         ),
       };
     }
+
     return namespaces;
   }
 

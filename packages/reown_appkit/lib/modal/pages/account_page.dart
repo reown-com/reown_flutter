@@ -208,9 +208,8 @@ class _EmailLoginButton extends StatelessWidget {
     final provider = AppKitSocialOption.values.firstWhereOrNull(
       (e) => e.name == service.session!.peer?.metadata.name,
     );
-    final title = service.session!.email.isNotEmpty
-        ? service.session!.email
-        : service.session!.userName;
+    final title =
+        provider != null ? service.session!.userName : service.session!.email;
     return Column(
       children: [
         const SizedBox.square(dimension: kPadding8),
