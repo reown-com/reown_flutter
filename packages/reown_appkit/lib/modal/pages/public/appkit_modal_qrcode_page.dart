@@ -23,7 +23,7 @@ class ReownAppKitModalQRCodePage extends StatefulWidget {
 }
 
 class _AppKitModalQRCodePageState extends State<ReownAppKitModalQRCodePage> {
-  IReownAppKitModal? _service;
+  IReownAppKitModal? _appKitModal;
   Widget? _qrQodeWidget;
   //
 
@@ -31,46 +31,34 @@ class _AppKitModalQRCodePageState extends State<ReownAppKitModalQRCodePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _service = ModalProvider.of(context).instance;
-      _service!.addListener(_buildWidget);
-      _service!.appKit!.core.pairing.onPairingExpire.subscribe(
+      _appKitModal = ModalProvider.of(context).instance;
+      _appKitModal!.addListener(_buildWidget);
+      _appKitModal!.appKit!.core.pairing.onPairingExpire.subscribe(
         _onPairingExpire,
       );
-      _service?.onModalError.subscribe(_onError);
-      await _service!.buildConnectionUri();
+      await _appKitModal!.buildConnectionUri();
     });
   }
 
   void _buildWidget() => setState(() {
         _qrQodeWidget = QRCodeView(
-          uri: _service!.wcUri!,
+          uri: _appKitModal!.wcUri!,
           logoPath: 'lib/modal/assets/png/logo_wc.png',
         );
       });
 
   void _onPairingExpire(EventArgs? args) async {
-    await _service!.buildConnectionUri();
+    await _appKitModal!.buildConnectionUri();
     setState(() {});
-  }
-
-  void _onError(ModalError? args) {
-    final event = args ?? ModalError('An error occurred');
-    toastService.instance.show(
-      ToastMessage(
-        type: ToastType.error,
-        text: event.message,
-      ),
-    );
   }
 
   @override
   void dispose() async {
-    _service?.onModalError.unsubscribe(_onError);
-    _service!.appKit!.core.pairing.onPairingExpire.unsubscribe(
+    _appKitModal!.appKit!.core.pairing.onPairingExpire.unsubscribe(
       _onPairingExpire,
     );
-    _service!.removeListener(_buildWidget);
-    _service!.expirePreviousInactivePairings();
+    _appKitModal!.removeListener(_buildWidget);
+    _appKitModal!.expirePreviousInactivePairings();
     super.dispose();
   }
 

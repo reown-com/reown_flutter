@@ -4,8 +4,6 @@ import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
-import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
-import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/searchbar.dart';
@@ -51,6 +49,7 @@ class _InputEmailWidgetState extends State<InputEmailWidget> {
   }
 
   void _updateStatus() {
+    if (!mounted) return;
     setState(() {
       _ready = _magicService.isReady.value;
       _timedOut = _magicService.isTimeout.value;
@@ -58,10 +57,7 @@ class _InputEmailWidgetState extends State<InputEmailWidget> {
   }
 
   void _onMagicErrorEvent(MagicErrorEvent? event) {
-    toastService.instance.show(ToastMessage(
-      type: ToastType.error,
-      text: event?.error ?? 'An error occurred.',
-    ));
+    if (!mounted) return;
     _submitted = false;
     setState(() {});
   }

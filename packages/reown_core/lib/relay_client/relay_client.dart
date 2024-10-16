@@ -248,8 +248,8 @@ class RelayClient implements IRelayClient {
     final url = ReownCoreUtils.formatRelayRpcUrl(
       protocol: ReownConstants.CORE_PROTOCOL,
       version: ReownConstants.CORE_VERSION,
-      relayUrl: core.relayUrl,
       sdkVersion: ReownConstants.SDK_VERSION,
+      relayUrl: core.relayUrl,
       auth: auth,
       projectId: core.projectId,
       packageName: (await ReownCoreUtils.getPackageName()),

@@ -38,10 +38,6 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
   }
 
   void _onMagicErrorEvent(MagicErrorEvent? event) {
-    toastService.instance.show(ToastMessage(
-      type: ToastType.error,
-      text: event?.error ?? 'Something went wrong.',
-    ));
     if (event is ConnectEmailErrorEvent) {
       _goBack();
     } else {
