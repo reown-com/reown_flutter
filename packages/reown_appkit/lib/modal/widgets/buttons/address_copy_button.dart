@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/text/appkit_address.dart';
 
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
-import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class AddressCopyButton extends StatelessWidget {
@@ -25,7 +26,7 @@ class AddressCopyButton extends StatelessWidget {
         );
         final address = service.session!.getAddress(namespace)!;
         await Clipboard.setData(ClipboardData(text: address));
-        toastService.instance.show(ToastMessage(
+        GetIt.I<IToastService>().show(ToastMessage(
           type: ToastType.success,
           text: 'Address copied',
         ));

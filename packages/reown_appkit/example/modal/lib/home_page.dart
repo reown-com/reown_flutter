@@ -7,9 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:reown_appkit_example/services/deep_link_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:reown_appkit/modal/services/blockchain_service/blockchain_service_singleton.dart';
 import 'package:reown_appkit/reown_appkit.dart';
-
 import 'package:reown_appkit_example/widgets/debug_drawer.dart';
 import 'package:reown_appkit_example/utils/constants.dart';
 import 'package:reown_appkit_example/services/siwe_service.dart';
@@ -36,7 +34,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final overlay = OverlayController(const Duration(milliseconds: 200));
+  late OverlayController overlay;
   late ReownAppKitModal _appKitModal;
   late SIWESampleWebService _siweTestService;
   bool _initialized = false;
@@ -46,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _siweTestService = SIWESampleWebService();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _toggleOverlay();
+      // _toggleOverlay();
       _initializeService(widget.prefs);
     });
   }
@@ -251,7 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
             AppKitSocialOption.Apple,
             AppKitSocialOption.Discord,
           ],
-          showMainWallets: true, // OPTIONAL - true by default
+          showMainWallets: false, // OPTIONAL - true by default
         ),
         // requiredNamespaces: {},
         // optionalNamespaces: {},
@@ -266,23 +264,9 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         // excludedWalletIds: {},
         // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
-        getBalance: () async {
-          try {
-            final chainId = _appKitModal.selectedChain!.chainId;
-            final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-              _appKitModal.selectedChain!.chainId,
-            );
-            final address = _appKitModal.session!.getAddress(namespace)!;
-            return await blockchainService.instance.getBalance(
-              address: address,
-              namespace: namespace,
-              chainId: chainId,
-            );
-          } catch (e) {
-            debugPrint('[$runtimeType] getBalance $e');
-            return 0.0;
-          }
-        },
+        // getBalance: () async {
+        //   // Your own balance function
+        // },
         optionalNamespaces: {
           'eip155': RequiredNamespace.fromJson({
             'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
@@ -311,6 +295,11 @@ class _MyHomePageState extends State<MyHomePage> {
           }),
         },
       );
+      overlay = OverlayController(
+        const Duration(milliseconds: 200),
+        appKitModal: _appKitModal,
+      );
+      _toggleOverlay();
       setState(() => _initialized = true);
     } on ReownAppKitModalException catch (e) {
       debugPrint('⛔️ ${e.message}');

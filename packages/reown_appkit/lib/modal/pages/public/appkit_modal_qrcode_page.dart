@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -12,7 +14,6 @@ import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.da
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
-import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 
 class ReownAppKitModalQRCodePage extends StatefulWidget {
   const ReownAppKitModalQRCodePage() : super(key: KeyConstants.qrCodePageKey);
@@ -140,8 +141,9 @@ class _AppKitModalQRCodePageState extends State<ReownAppKitModalQRCodePage> {
   Future<void> _copyToClipboard(BuildContext context) async {
     final service = ModalProvider.of(context).instance;
     await Clipboard.setData(ClipboardData(text: service.wcUri!));
-    toastService.instance.show(
-      ToastMessage(type: ToastType.success, text: 'Link copied'),
-    );
+    GetIt.I<IToastService>().show(ToastMessage(
+      type: ToastType.success,
+      text: 'Link copied',
+    ));
   }
 }

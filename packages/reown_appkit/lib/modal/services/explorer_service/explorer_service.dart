@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/coinbase_service.dart';
@@ -11,7 +12,7 @@ import 'package:reown_appkit/modal/services/explorer_service/models/native_app_d
 import 'package:reown_appkit/modal/services/explorer_service/models/redirect.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/request_params.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/wc_sample_wallets.dart';
-import 'package:reown_appkit/modal/services/uri_service/url_utils_singleton.dart';
+import 'package:reown_appkit/modal/services/uri_service/i_url_utils.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/utils/debouncer.dart';
 import 'package:reown_appkit/modal/utils/platform_utils.dart';
@@ -22,6 +23,8 @@ import 'package:reown_appkit/reown_appkit.dart';
 const int _defaultEntriesCount = 48;
 
 class ExplorerService implements IExplorerService {
+  IUriService get _uriService => GetIt.I<IUriService>();
+
   final http.Client _client;
   final String _referer;
 
@@ -156,7 +159,7 @@ class ExplorerService implements IExplorerService {
       final schema = WCSampleWallets.getSampleWalletScheme(
         sampleWallet.listing.id,
       );
-      final installed = await uriService.instance.isInstalled(schema);
+      final installed = await _uriService.isInstalled(schema);
       if (installed) {
         sampleWallet = sampleWallet.copyWith(installed: true);
         sampleWallets.add(sampleWallet);
@@ -436,7 +439,7 @@ class ExplorerService implements IExplorerService {
       final wallet =
           ReownAppKitModalWalletInfo.fromJson(results.first.toJson());
       final mobileLink = CoinbaseService.defaultWalletData.listing.mobileLink;
-      bool installed = await uriService.instance.isInstalled(mobileLink);
+      bool installed = await _uriService.isInstalled(mobileLink);
       return wallet.copyWith(
         listing: wallet.listing.copyWith(mobileLink: mobileLink),
         installed: installed,
@@ -542,7 +545,7 @@ extension on List<NativeAppData> {
   Future<List<NativeAppData>> getInstalledApps() async {
     final installedApps = <NativeAppData>[];
     for (var appData in this) {
-      bool installed = await uriService.instance.isInstalled(
+      bool installed = await GetIt.I<IUriService>().isInstalled(
         appData.schema,
         id: appData.id,
       );

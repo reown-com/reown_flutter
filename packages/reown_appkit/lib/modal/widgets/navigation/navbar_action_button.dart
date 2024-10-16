@@ -9,18 +9,22 @@ class NavbarActionButton extends StatelessWidget {
     required this.asset,
     required this.action,
     this.color,
+    this.dimension = kNavbarHeight,
   });
   final String asset;
   final VoidCallback action;
   final Color? color;
+  final double dimension;
 
   @override
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return SizedBox.square(
-      dimension: kNavbarHeight,
+      dimension: dimension,
       child: IconButton(
         onPressed: action,
+        padding: const EdgeInsets.all(0.0),
+        visualDensity: VisualDensity.compact,
         icon: SvgPicture.asset(
           asset,
           package: 'reown_appkit',

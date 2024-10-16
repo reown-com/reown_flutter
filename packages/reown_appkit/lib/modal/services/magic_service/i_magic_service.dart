@@ -8,6 +8,7 @@ abstract class IMagicService {
   Map<String, List<String>> get supportedMethods;
   List<AppKitSocialOption> get socials;
 
+  WebViewWidget get webview;
   ValueNotifier<bool> get isReady;
   ValueNotifier<bool> get isConnected;
   ValueNotifier<bool> get isTimeout;
@@ -16,8 +17,6 @@ abstract class IMagicService {
   ValueNotifier<String> get email;
   ValueNotifier<String> get newEmail;
   ValueNotifier<EmailLoginStep> get step;
-
-  WebViewWidget get webview;
 
   Future<void> init({String? chainId});
 
@@ -34,14 +33,13 @@ abstract class IMagicService {
   void completeSocialLogin({required String url});
   Future<String?> getFarcasterUri({String? chainId});
   Future<bool> awaitFarcasterResponse();
-
   Future<void> connectEmail({required String value, String? chainId});
   Future<void> updateEmail({required String value});
   Future<void> updateEmailPrimaryOtp({required String otp});
   Future<void> updateEmailSecondaryOtp({required String otp});
   Future<void> connectOtp({required String otp});
-  Future<String?> getChainId();
   Future<void> syncTheme(ReownAppKitModalTheme? theme);
+  Future<String?> getChainId();
   Future<bool> getUser({required String? chainId});
   Future<bool> switchNetwork({required String chainId});
   Future<dynamic> request({
