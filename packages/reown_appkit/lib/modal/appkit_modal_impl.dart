@@ -1321,7 +1321,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       (k) => k != CoreConstants.namespace,
     );
     if (wrongNamespace != null) {
-      throw ReownAppKitModalException('Only eip155 blockains are supported');
+      throw ReownAppKitModalException('Only eip155 blockchains are supported');
     }
   }
 
