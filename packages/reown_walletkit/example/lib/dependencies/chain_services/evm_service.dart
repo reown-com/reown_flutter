@@ -590,4 +590,58 @@ class EVMService {
       return false;
     }
   }
+
+  Future<dynamic> getBalance({required String address}) async {
+    final uri = Uri.parse('https://rpc.walletconnect.org/v1');
+    final queryParams = {
+      'projectId': _walletKit.core.projectId,
+      'chainId': chainSupported.chainId
+    };
+    final response = await http.post(
+      uri.replace(queryParameters: queryParams),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'id': 1,
+        'jsonrpc': '2.0',
+        'method': 'eth_getBalance',
+        'params': [address, 'latest'],
+      }),
+    );
+    if (response.statusCode == 200 && response.body.isNotEmpty) {
+      try {
+        final result = _parseRpcResultAs<String>(response.body);
+        final amount = EtherAmount.fromBigInt(
+          EtherUnit.wei,
+          hexToInt(result),
+        );
+        return amount.getValueInUnit(EtherUnit.ether);
+      } catch (e) {
+        throw Exception('Failed to load balance. $e');
+      }
+    }
+    try {
+      final errorData = jsonDecode(response.body) as Map<String, dynamic>;
+      final reasons = errorData['reasons'] as List<dynamic>;
+      final reason = reasons.isNotEmpty
+          ? reasons.first['description'] ?? ''
+          : response.body;
+      throw Exception(reason);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  T _parseRpcResultAs<T>(String body) {
+    try {
+      final result = Map<String, dynamic>.from({...jsonDecode(body), 'id': 1});
+      final jsonResponse = JsonRpcResponse.fromJson(result);
+      if (jsonResponse.result != null) {
+        return jsonResponse.result;
+      } else {
+        throw jsonResponse.error ?? 'Error parsing result';
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

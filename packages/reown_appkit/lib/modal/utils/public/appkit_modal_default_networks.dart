@@ -229,14 +229,14 @@ class ReownAppKitModalNetworks {
     List<String> chainIds = const [],
     bool includeTestnets = true,
   }) {
-    _mainnets[namespace]!.removeWhere((chain) {
+    _mainnets[namespace]?.removeWhere((chain) {
       if (chainIds.isEmpty || chainIds.contains(chain.chainId)) {
         return true;
       }
       return false;
     });
     if (includeTestnets) {
-      _testnets[namespace]!.removeWhere((chain) {
+      _testnets[namespace]?.removeWhere((chain) {
         if (chainIds.isEmpty || chainIds.contains(chain.chainId)) {
           return true;
         }
@@ -310,6 +310,11 @@ class ReownAppKitModalNetworks {
   }
 
   static String getNetworkIconId(String chainId) {
+    final namespace = getNamespaceForChainId(chainId);
+    final network = getNetworkById(namespace, chainId);
+    if ((network?.chainIcon ?? '').isNotEmpty) {
+      return network!.chainIcon!;
+    }
     return _networkIcons[chainId] ?? '';
   }
 

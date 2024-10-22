@@ -25,11 +25,12 @@ class _DraggableCardState extends State<DraggableCard> {
     );
   }
 
-  void _eventsListener(event) {
+  void _eventsListener(String event) {
     if (!mounted) return;
-    if (!event.message.toString().contains('[AnalyticsService]')) return;
-    String message = '${event.message}'.replaceAll('[AnalyticsService] ', '');
+    if (!event.toString().contains('[AnalyticsService]')) return;
+    String message = event.replaceAll('[AnalyticsService] ', '');
     message = message.replaceAll('send event 202: ', '');
+    message = message.replaceAll('info: ', '');
     _logs.add(
       Text(
         '=> $message',

@@ -39,6 +39,7 @@ class BlockChainService implements IBlockChainService {
         uri.replace(queryParameters: queryParams),
         headers: _requiredHeaders,
       );
+      _core.logger.i('[$runtimeType] getIdentity $address => ${response.body}');
       if (response.statusCode == 200 && response.body.isNotEmpty) {
         return BlockchainIdentity.fromJson(jsonDecode(response.body));
       }
@@ -53,6 +54,7 @@ class BlockChainService implements IBlockChainService {
         throw Exception('Failed to load avatar');
       }
     } catch (e) {
+      _core.logger.e('[$runtimeType] getIdentity $address error => $e');
       rethrow;
     }
   }
@@ -78,22 +80,27 @@ class BlockChainService implements IBlockChainService {
         ],
       }),
     );
+    _core.logger.i(
+      '[$runtimeType] getBalance $namespace, $chainId, $address => ${response.body}',
+    );
     if (response.statusCode == 200 && response.body.isNotEmpty) {
       try {
         return _parseBalanceResult(namespace, response.body);
       } catch (e) {
+        _core.logger.e('[$runtimeType] getBalance, parse result error => $e');
         throw Exception('Failed to load balance. $e');
       }
     }
-    if (response.statusCode == 400) {
+    try {
       final errorData = jsonDecode(response.body) as Map<String, dynamic>;
       final reasons = errorData['reasons'] as List<dynamic>;
       final reason = reasons.isNotEmpty
           ? reasons.first['description'] ?? ''
           : response.body;
       throw Exception(reason);
-    } else {
-      throw Exception('Failed to load balance');
+    } catch (e) {
+      _core.logger.e('[$runtimeType] getBalance, decode result error => $e');
+      rethrow;
     }
   }
 
@@ -142,73 +149,4 @@ class BlockChainService implements IBlockChainService {
     }
     return 0.0;
   }
-
-  // int _retries = 1;
-  // @override
-  // Future<dynamic> rpcRequest({
-  //   // required String? topic,
-  //   required String chainId,
-  //   required SessionRequestParams request,
-  // }) async {
-  //   final bool isChainId = NamespaceUtils.isValidChainId(chainId);
-  //   if (!isChainId) {
-  //     throw Errors.getSdkError(
-  //       Errors.UNSUPPORTED_CHAINS,
-  //       context: '[$runtimeType] chain should be CAIP-2 valid',
-  //     );
-  //   }
-  //   final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-  //   String method = request.method;
-  //   // TODO NON-EVM Support: handle this better
-  //   if (namespace == NetworkUtils.eip155) {
-  //     method = 'eth_$method';
-  //   }
-  //   final uri = Uri.parse(_baseUrl);
-  //   final queryParams = {..._requiredParams, 'chainId': chainId};
-  //   final response = await http.post(
-  //     uri.replace(queryParameters: queryParams),
-  //     headers: {
-  //       ..._requiredHeaders,
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: jsonEncode({
-  //       'id': 1,
-  //       'jsonrpc': '2.0',
-  //       'method': method,
-  //       'params': request.params,
-  //     }),
-  //   );
-  //   if (response.statusCode == 200 && response.body.isNotEmpty) {
-  //     _retries = 1;
-  //     try {
-  //       // TODO NON-EVM Support: handle this better
-  //       if (namespace == NetworkUtils.solana) {
-  //         final result = _parseRpcResultAs<Map<String, dynamic>>(response.body);
-  //         final value = result['value'] as int;
-  //         return value / 1000000000.0;
-  //       }
-  //       if (namespace == NetworkUtils.eip155) {
-  //         final result = _parseRpcResultAs<String>(response.body);
-  //         final amount = EtherAmount.fromBigInt(
-  //           EtherUnit.wei,
-  //           hexToInt(result),
-  //         );
-  //         return amount.getValueInUnit(EtherUnit.ether);
-  //       }
-  //     } catch (e) {
-  //       rethrow;
-  //     }
-  //   } else {
-  //     if (response.body.isEmpty && _retries > 0) {
-  //       _core.logger.i('[$runtimeType] Empty body');
-  //       _retries -= 1;
-  //       await rpcRequest(chainId: chainId, request: request);
-  //     } else {
-  //       _core.logger.i(
-  //         '[$runtimeType] Failed to get request ${request.toJson()}. '
-  //         'Response: ${response.body}, Status code: ${response.statusCode}',
-  //       );
-  //     }
-  //   }
-  // }
 }

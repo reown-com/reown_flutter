@@ -44,7 +44,6 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _siweTestService = SIWESampleWebService();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // _toggleOverlay();
       _initializeService(widget.prefs);
     });
   }
@@ -54,8 +53,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   String get _flavor {
-    // String flavor = '-${const String.fromEnvironment('FLUTTER_APP_FLAVOR')}';
-    // return flavor.replaceAll('-production', '');
     final internal = widget.bundleId.endsWith('.internal');
     final debug = widget.bundleId.endsWith('.debug');
     if (internal || debug || kDebugMode) {
@@ -237,20 +234,22 @@ class _MyHomePageState extends State<MyHomePage> {
       _appKitModal = ReownAppKitModal(
         context: context,
         projectId: DartDefines.projectId,
-        logLevel: LogLevel.error,
+        logLevel: LogLevel.all,
         metadata: _pairingMetadata(),
         siweConfig: _siweConfig(siweAuthValue),
         enableAnalytics: analyticsValue, // OPTIONAL - null by default
-        featuresConfig: FeaturesConfig(
-          email: emailWalletValue,
-          socials: [
-            AppKitSocialOption.Farcaster,
-            AppKitSocialOption.X,
-            AppKitSocialOption.Apple,
-            AppKitSocialOption.Discord,
-          ],
-          showMainWallets: false, // OPTIONAL - true by default
-        ),
+        featuresConfig: emailWalletValue
+            ? FeaturesConfig(
+                email: true,
+                socials: [
+                  AppKitSocialOption.Farcaster,
+                  AppKitSocialOption.X,
+                  AppKitSocialOption.Apple,
+                  AppKitSocialOption.Discord,
+                ],
+                showMainWallets: false, // OPTIONAL - true by default
+              )
+            : null,
         // requiredNamespaces: {},
         // optionalNamespaces: {},
         // includedWalletIds: {},
@@ -264,8 +263,10 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         // excludedWalletIds: {},
         // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
-        // getBalance: () async {
-        //   // Your own balance function
+        // getBalanceFallback: () async {
+        //   // This method will be triggered if getting the balance from our blockchain API fails
+        //   // You could place here your own getBalance method
+        //   return 0.123;
         // },
         optionalNamespaces: {
           'eip155': RequiredNamespace.fromJson({
@@ -325,7 +326,6 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKitModal.appKit!.core.relayClient.onRelayClientDisconnect.subscribe(
       _onRelayClientDisconnect,
     );
-    _appKitModal.appKit!.core.addLogListener(_logListener);
     //
     await _appKitModal.init();
 
@@ -335,20 +335,9 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {});
   }
 
-  void _logListener(event) {
-    if ('${event.level}' == 'Level.debug' ||
-        '${event.level}' == 'Level.error') {
-      // TODO send to mixpanel
-      log('${event.message}');
-    } else {
-      debugPrint('${event.message}');
-    }
-  }
-
   @override
   void dispose() {
     //
-    _appKitModal.appKit!.core.removeLogListener(_logListener);
     _appKitModal.appKit!.core.relayClient.onRelayClientConnect.unsubscribe(
       _onRelayClientConnect,
     );
@@ -422,7 +411,7 @@ class _MyHomePageState extends State<MyHomePage> {
     showTextToast(text: 'Relay connected', context: context);
   }
 
-  void _onRelayClientError(EventArgs? event) {
+  void _onRelayClientError(ErrorEvent? event) {
     setState(() {});
     showTextToast(text: 'Relay disconnected', context: context);
   }
@@ -557,7 +546,7 @@ class _ConnectedView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         AppKitModalAccountButton(
-          appKit: appKit,
+          appKitModal: appKit,
           // custom: ValueListenableBuilder<String>(
           //   valueListenable: appKit.balanceNotifier,
           //   builder: (_, balance, __) {

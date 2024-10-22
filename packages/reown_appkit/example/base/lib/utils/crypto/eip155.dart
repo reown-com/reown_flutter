@@ -109,7 +109,7 @@ class EIP155 {
       case 'write':
         return appKit.requestWriteContract(
           topic: topic,
-          chainId: sepolia.chainId,
+          chainId: 'eip155:${sepolia.chainId}',
           deployedContract: deployedContract,
           functionName: 'transfer',
           transaction: Transaction(
@@ -137,7 +137,7 @@ class EIP155 {
   }) async {
     return await appKit.request(
       topic: topic,
-      chainId: chainId,
+      chainId: 'eip155:$chainId',
       request: (await getParams('personal_sign', address))!,
     );
   }
@@ -150,7 +150,7 @@ class EIP155 {
   }) async {
     return await appKit.request(
       topic: topic,
-      chainId: chainId,
+      chainId: 'eip155:$chainId',
       request: (await getParams('eth_sign', address))!,
     );
   }
@@ -163,7 +163,7 @@ class EIP155 {
   }) async {
     return await appKit.request(
       topic: topic,
-      chainId: chainId,
+      chainId: 'eip155:$chainId',
       request: (await getParams('eth_signTypedData', address))!,
     );
   }
@@ -175,7 +175,7 @@ class EIP155 {
   }) async {
     return await appKit.request(
       topic: topic,
-      chainId: chainId,
+      chainId: 'eip155:$chainId',
       request: (await getParams('eth_signTransaction', ''))!,
     );
   }
@@ -187,7 +187,7 @@ class EIP155 {
   }) async {
     return await appKit.request(
       topic: topic,
-      chainId: chainId,
+      chainId: 'eip155:$chainId',
       request: (await getParams('eth_sendTransaction', ''))!,
     );
   }

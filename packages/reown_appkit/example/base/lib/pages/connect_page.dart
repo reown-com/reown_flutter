@@ -13,7 +13,7 @@ import 'package:reown_appkit_dapp/utils/crypto/eip155.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
 import 'package:reown_appkit_dapp/utils/crypto/solana.dart';
-import 'package:reown_appkit_dapp/utils/sample_wallets.dart';
+// import 'package:reown_appkit_dapp/utils/sample_wallets.dart';
 import 'package:reown_appkit_dapp/utils/string_constants.dart';
 import 'package:reown_appkit_dapp/widgets/chain_button.dart';
 import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
@@ -22,9 +22,13 @@ class ConnectPage extends StatefulWidget {
   const ConnectPage({
     super.key,
     required this.appKitModal,
+    required this.reinitialize,
+    this.linkMode = false,
   });
 
   final ReownAppKitModal appKitModal;
+  final Function(bool linkMode) reinitialize;
+  final bool linkMode;
 
   @override
   ConnectPageState createState() => ConnectPageState();
@@ -33,7 +37,6 @@ class ConnectPage extends StatefulWidget {
 class ConnectPageState extends State<ConnectPage> {
   final List<ReownAppKitModalNetworkInfo> _selectedChains = [];
   bool _shouldDismissQrCode = true;
-  bool _linkMode = false;
 
   @override
   void initState() {
@@ -135,9 +138,7 @@ class ConnectPageState extends State<ConnectPage> {
   @override
   Widget build(BuildContext context) {
     // Build the list of chain buttons, clear if the textnet changed
-    final allChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
-      namespace: _linkMode ? 'eip155' : null,
-    );
+    final allChains = ReownAppKitModalNetworks.getAllSupportedNetworks();
     final mainChains = allChains.where((e) => !e.isTestNetwork).toList();
     final testChains = allChains.where((e) => e.isTestNetwork).toList();
 
@@ -202,7 +203,22 @@ class ConnectPageState extends State<ConnectPage> {
           child: Column(
             children: [
               AppKitModalAccountButton(
-                appKit: widget.appKitModal,
+                appKitModal: widget.appKitModal,
+              ),
+              const SizedBox.square(dimension: 8.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AppKitModalBalanceButton(
+                    appKitModal: widget.appKitModal,
+                    onTap: widget.appKitModal.openNetworksView,
+                  ),
+                  const SizedBox.square(dimension: 8.0),
+                  AppKitModalAddressButton(
+                    appKitModal: widget.appKitModal,
+                    onTap: widget.appKitModal.openModalView,
+                  ),
+                ],
               ),
               const SizedBox.square(dimension: 8.0),
               ...(_buildRequestButtons()),
@@ -214,151 +230,163 @@ class ConnectPageState extends State<ConnectPage> {
           visible: !widget.appKitModal.isConnected,
           child: Column(
             children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: const Divider(height: 1.0),
-                  ),
-                  const Text(
-                    ' Or ',
-                    style: StyleConstants.buttonText,
-                    textAlign: TextAlign.center,
-                  ),
-                  Expanded(
-                    child: const Divider(height: 1.0),
-                  ),
-                ],
-              ),
-              const SizedBox(height: StyleConstants.linear16),
-              const Text(
-                'Custom connection',
-                style: StyleConstants.buttonText,
-                textAlign: TextAlign.center,
-              ),
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: const Divider(height: 1.0),
+              //     ),
+              //     const Text(
+              //       ' Or ',
+              //       style: StyleConstants.buttonText,
+              //       textAlign: TextAlign.center,
+              //     ),
+              //     Expanded(
+              //       child: const Divider(height: 1.0),
+              //     ),
+              //   ],
+              // ),
+              // const SizedBox(height: StyleConstants.linear16),
+              // const Text(
+              //   'Custom connection',
+              //   style: StyleConstants.buttonText,
+              //   textAlign: TextAlign.center,
+              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Link Mode'),
+                  Text(
+                    'non-EVM',
+                    style: TextStyle(
+                      fontWeight: !widget.linkMode
+                          ? FontWeight.bold
+                          : FontWeight.normal,
+                    ),
+                  ),
                   Switch(
-                    value: _linkMode,
+                    value: widget.linkMode,
                     onChanged: (value) {
-                      requiredNamespaces = {};
-                      optionalNamespaces = {};
-                      _selectedChains.clear();
-                      setState(() => _linkMode = value);
+                      widget.reinitialize(value);
                     },
+                  ),
+                  Text(
+                    'Link Mode',
+                    style: TextStyle(
+                      fontWeight:
+                          widget.linkMode ? FontWeight.bold : FontWeight.normal,
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: StyleConstants.linear16),
-              Wrap(
-                spacing: 10.0,
-                children: chainButtons,
-              ),
-              // const Divider(),
-              const Text('Test chains'),
-              Wrap(
-                spacing: 10.0,
-                children: testButtons,
-              ),
-              const SizedBox(height: StyleConstants.linear16),
-              // const Divider(),
-              !_linkMode
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Session Propose:',
-                          style: StyleConstants.buttonText,
-                        ),
-                        const SizedBox(height: StyleConstants.linear8),
-                        Column(
-                          children:
-                              WCSampleWallets.getSampleWallets().map((wallet) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: ElevatedButton(
-                                style: _buttonStyle,
-                                onPressed: _selectedChains.isEmpty
-                                    ? null
-                                    : () {
-                                        _onConnect(
-                                          nativeLink: '${wallet['schema']}',
-                                          closeModal: () {
-                                            if (Navigator.canPop(context)) {
-                                              Navigator.of(context).pop();
-                                            }
-                                          },
-                                          showToast: (m) async {
-                                            showPlatformToast(
-                                              child: Text(m),
-                                              context: context,
-                                            );
-                                          },
-                                        );
-                                      },
-                                child: Text(
-                                  '${wallet['name']}',
-                                  style: StyleConstants.buttonText,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Link Mode:',
-                          style: StyleConstants.buttonText,
-                        ),
-                        const SizedBox(height: StyleConstants.linear8),
-                        Column(
-                          children:
-                              WCSampleWallets.getSampleWallets().map((wallet) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: ElevatedButton(
-                                style: _buttonStyle,
-                                onPressed: _selectedChains.isEmpty
-                                    ? null
-                                    : () {
-                                        _sessionAuthenticate(
-                                          nativeLink: '${wallet['schema']}',
-                                          universalLink:
-                                              '${wallet['universal']}',
-                                          closeModal: () {
-                                            if (Navigator.canPop(context)) {
-                                              Navigator.of(context).pop();
-                                            }
-                                          },
-                                          showToast: (message) {
-                                            showPlatformToast(
-                                              child: Text(message),
-                                              context: context,
-                                            );
-                                          },
-                                        );
-                                      },
-                                child: Text(
-                                  '${wallet['name']}',
-                                  style: StyleConstants.buttonText,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    ),
-              const SizedBox(height: StyleConstants.linear16),
-              const Divider(height: 1.0),
-              const SizedBox(height: StyleConstants.linear8),
-              _FooterWidget(appKitModal: widget.appKitModal),
+              // const SizedBox(height: StyleConstants.linear16),
+              // Wrap(
+              //   spacing: 10.0,
+              //   children: chainButtons,
+              // ),
+              // // const Divider(),
+              // const Text('Test chains'),
+              // Wrap(
+              //   spacing: 10.0,
+              //   children: testButtons,
+              // ),
+              // const SizedBox(height: StyleConstants.linear16),
+              // // const Divider(),
+              // !_linkMode
+              //     ? Column(
+              //         crossAxisAlignment: CrossAxisAlignment.center,
+              //         children: [
+              //           const Text(
+              //             'Session Propose:',
+              //             style: StyleConstants.buttonText,
+              //           ),
+              //           const SizedBox(height: StyleConstants.linear8),
+              //           Column(
+              //             children:
+              //                 WCSampleWallets.getSampleWallets().map((wallet) {
+              //               return Padding(
+              //                 padding: const EdgeInsets.only(bottom: 8.0),
+              //                 child: ElevatedButton(
+              //                   style: _buttonStyle,
+              //                   onPressed: _selectedChains.isEmpty
+              //                       ? null
+              //                       : () {
+              //                           _onConnect(
+              //                             nativeLink: '${wallet['schema']}',
+              //                             closeModal: () {
+              //                               if (Navigator.canPop(context)) {
+              //                                 Navigator.of(context).pop();
+              //                               }
+              //                             },
+              //                             showToast: (m) async {
+              //                               showPlatformToast(
+              //                                 child: Text(m),
+              //                                 context: context,
+              //                               );
+              //                             },
+              //                           );
+              //                         },
+              //                   child: Text(
+              //                     '${wallet['name']}',
+              //                     style: StyleConstants.buttonText,
+              //                   ),
+              //                 ),
+              //               );
+              //             }).toList(),
+              //           ),
+              //         ],
+              //       )
+              //     : Column(
+              //         crossAxisAlignment: CrossAxisAlignment.center,
+              //         children: [
+              //           const Text(
+              //             'Link Mode:',
+              //             style: StyleConstants.buttonText,
+              //           ),
+              //           const SizedBox(height: StyleConstants.linear8),
+              //           Column(
+              //             children:
+              //                 WCSampleWallets.getSampleWallets().map((wallet) {
+              //               return Padding(
+              //                 padding: const EdgeInsets.only(bottom: 8.0),
+              //                 child: ElevatedButton(
+              //                   style: _buttonStyle,
+              //                   onPressed: _selectedChains.isEmpty
+              //                       ? null
+              //                       : () {
+              //                           _sessionAuthenticate(
+              //                             nativeLink: '${wallet['schema']}',
+              //                             universalLink:
+              //                                 '${wallet['universal']}',
+              //                             closeModal: () {
+              //                               if (Navigator.canPop(context)) {
+              //                                 Navigator.of(context).pop();
+              //                               }
+              //                             },
+              //                             showToast: (message) {
+              //                               showPlatformToast(
+              //                                 child: Text(message),
+              //                                 context: context,
+              //                               );
+              //                             },
+              //                           );
+              //                         },
+              //                   child: Text(
+              //                     '${wallet['name']}',
+              //                     style: StyleConstants.buttonText,
+              //                   ),
+              //                 ),
+              //               );
+              //             }).toList(),
+              //           ),
+              //         ],
+              //       ),
             ],
           ),
         ),
+        const SizedBox(height: StyleConstants.linear16),
+        const Divider(height: 1.0),
+        const SizedBox(height: StyleConstants.linear8),
+        _FooterWidget(appKitModal: widget.appKitModal),
+        const SizedBox(height: StyleConstants.linear8),
       ],
     );
   }
@@ -444,12 +472,13 @@ class ConnectPageState extends State<ConnectPage> {
     Function(String message)? showToast,
   }) async {
     debugPrint(
-        '[SampleDapp] Creating authenticate with $nativeLink, $universalLink');
+      '[SampleDapp] Creating authentication with $nativeLink, $universalLink',
+    );
     final methods1 = requiredNamespaces['eip155']?.methods ?? [];
     final methods2 = optionalNamespaces['eip155']?.methods ?? [];
     final authResponse = await widget.appKitModal.appKit!.authenticate(
       params: SessionAuthRequestParams(
-        chains: _selectedChains.map((e) => e.chainId).toList(),
+        chains: _selectedChains.map((e) => 'eip155:${e.chainId}').toList(),
         domain: Uri.parse(widget.appKitModal.appKit!.metadata.url).authority,
         nonce: AuthUtils.generateNonce(),
         uri: widget.appKitModal.appKit!.metadata.url,

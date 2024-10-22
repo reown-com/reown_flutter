@@ -42,7 +42,7 @@ class NetworkServiceItemsListener extends StatelessWidget {
 extension on List<GridItem<ReownAppKitModalNetworkInfo>> {
   List<GridItem<ReownAppKitModalNetworkInfo>> parseItems(BuildContext context) {
     final service = ModalProvider.of(context).instance;
-    final supportedChains = service.getAvailableChains();
+    final supportedChains = service.getApprovedChains();
     if (supportedChains == null) {
       return this
         ..sort((a, b) {

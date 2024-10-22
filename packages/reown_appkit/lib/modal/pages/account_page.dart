@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -128,8 +129,12 @@ class _DefaultAccountView extends StatelessWidget {
         ),
         Visibility(
           visible: isEmailLogin,
-          child: _EmailLoginButton(),
+          child: _EmailAndSocialLoginButton(),
         ),
+        // Visibility(
+        //   visible: !isEmailLogin,
+        //   child: _ConnectedWalletButton(),
+        // ),
         const SizedBox.square(dimension: kPadding8),
         _SelectNetworkButton(),
         const SizedBox.square(dimension: kPadding8),
@@ -199,7 +204,7 @@ class _UpgradeWalletButton extends StatelessWidget {
   }
 }
 
-class _EmailLoginButton extends StatelessWidget {
+class _EmailAndSocialLoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final service = ModalProvider.of(context).instance;
@@ -246,6 +251,60 @@ class _EmailLoginButton extends StatelessWidget {
               ? () => widgetStack.instance.push(EditEmailPage())
               : null,
           trailing: provider != null ? const SizedBox.shrink() : null,
+        ),
+      ],
+    );
+  }
+}
+
+class _ConnectedWalletButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final service = ModalProvider.of(context).instance;
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    String iconImage = '';
+    if ((service.session!.peer?.metadata.icons ?? []).isNotEmpty) {
+      iconImage = service.session!.peer?.metadata.icons.first ?? '';
+    }
+    final walletInfo = GetIt.I<IExplorerService>().getConnectedWallet();
+    return Column(
+      children: [
+        const SizedBox.square(dimension: kPadding8),
+        AccountListItem(
+          iconWidget: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: iconImage.isEmpty
+                ? RoundedIcon(
+                    assetPath: 'lib/modal/assets/icons/wallet.svg',
+                    assetColor: themeColors.inverse100,
+                    borderRadius: radiuses.isSquare() ? 0.0 : null,
+                  )
+                : ClipRRect(
+                    borderRadius: radiuses.isSquare()
+                        ? BorderRadius.zero
+                        : BorderRadius.circular(34),
+                    child: CachedNetworkImage(
+                      imageUrl: iconImage,
+                      height: 34,
+                      width: 34,
+                      errorWidget: (context, url, error) {
+                        return RoundedIcon(
+                          assetPath: 'lib/modal/assets/icons/wallet.svg',
+                          assetColor: themeColors.inverse100,
+                          borderRadius: radiuses.isSquare() ? 0.0 : null,
+                        );
+                      },
+                    ),
+                  ),
+          ),
+          title: service.session!.peer?.metadata.name ?? 'Connected Wallet',
+          titleStyle: themeData.textStyles.paragraph500.copyWith(
+            color: themeColors.foreground100,
+          ),
+          onTap:
+              walletInfo != null ? () => service.launchConnectedWallet() : null,
         ),
       ],
     );

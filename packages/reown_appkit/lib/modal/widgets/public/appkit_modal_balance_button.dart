@@ -47,6 +47,11 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
       final chainId = widget.appKitModal.selectedChain?.chainId ?? '1';
       final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
       _tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
+      final balance = widget.appKitModal.balanceNotifier.value;
+      debugPrint('[$runtimeType] $balance');
+      if (balance.contains(AppKitModalBalanceButton.balanceDefault)) {
+        _tokenImage = '';
+      }
     });
   }
 

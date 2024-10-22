@@ -8,8 +8,12 @@ import 'package:get_it/get_it.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service_2.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
+import 'package:reown_walletkit_wallet/models/chain_data.dart';
+import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/recover_from_seed.dart';
@@ -162,11 +166,20 @@ class _EVMAccounts extends StatefulWidget {
 class _EVMAccountsState extends State<_EVMAccounts> {
   int _currentPage = 0;
   late final PageController _pageController;
+  ChainMetadata? _selectedChain;
+  double _balance = 0.0;
 
   @override
   void initState() {
     super.initState();
+    _selectedChain = ChainsDataList.eip155Chains.first;
     _pageController = PageController();
+    final keysService = GetIt.I<IKeyService>();
+    final chainKeys = keysService.getKeysForChain('eip155');
+    GetIt.I
+        .get<EVMService>(instanceName: _selectedChain!.chainId)
+        .getBalance(address: chainKeys[_currentPage].address)
+        .then((value) => setState(() => _balance = value));
   }
 
   @override
@@ -180,7 +193,6 @@ class _EVMAccountsState extends State<_EVMAccounts> {
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Row(
             children: [
-              const SizedBox.square(dimension: 8.0),
               Expanded(
                 child: Text(
                   'EVM Accounts (${_currentPage + 1}/${chainKeys.length})',
@@ -242,6 +254,41 @@ class _EVMAccountsState extends State<_EVMAccounts> {
             ],
           ),
         ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Text(
+                  '${_balance.toStringAsFixed(3)} ETH',
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              DropdownButton(
+                value: _selectedChain,
+                items: ChainsDataList.eip155Chains.map((e) {
+                  return DropdownMenuItem<ChainMetadata>(
+                    value: e,
+                    child: Text(e.name),
+                  );
+                }).toList(),
+                onChanged: (ChainMetadata? chain) {
+                  setState(() => _selectedChain = chain);
+                  final chainKey = chainKeys[_currentPage];
+                  GetIt.I
+                      .get<EVMService>(instanceName: chain?.chainId)
+                      .getBalance(address: chainKey.address)
+                      .then((value) => setState(() => _balance = value));
+                },
+              ),
+            ],
+          ),
+        ),
         SizedBox(
           height: 300.0,
           child: PageView.builder(
@@ -261,7 +308,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                     const SizedBox(height: 12.0),
                     _DataContainer(
                       title: 'CAIP-10',
-                      data: 'eip155:1:${chainKey.address}',
+                      data: '${_selectedChain?.chainId}:${chainKey.address}',
                       height: 84.0,
                     ),
                     const SizedBox(height: 12.0),
@@ -324,7 +371,27 @@ class _EVMAccountsState extends State<_EVMAccounts> {
   }
 }
 
-class _SolanaAccounts extends StatelessWidget {
+class _SolanaAccounts extends StatefulWidget {
+  @override
+  State<_SolanaAccounts> createState() => _SolanaAccountsState();
+}
+
+class _SolanaAccountsState extends State<_SolanaAccounts> {
+  ChainMetadata? _selectedChain;
+  double _balance = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedChain = ChainsDataList.solanaChains.first;
+    final keysService = GetIt.I<IKeyService>();
+    final chainKeys = keysService.getKeysForChain('solana');
+    GetIt.I
+        .get<SolanaService2>(instanceName: _selectedChain!.chainId)
+        .getBalance(address: chainKeys.first.address)
+        .then((value) => setState(() => _balance = value));
+  }
+
   @override
   Widget build(BuildContext context) {
     final keysService = GetIt.I<IKeyService>();
@@ -346,6 +413,41 @@ class _SolanaAccounts extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 ),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Text(
+                  '${_balance.toStringAsFixed(3)} SOL',
+                  style: TextStyle(
+                    fontSize: 15.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              DropdownButton(
+                value: _selectedChain,
+                items: ChainsDataList.solanaChains.map((e) {
+                  return DropdownMenuItem<ChainMetadata>(
+                    value: e,
+                    child: Text(e.name),
+                  );
+                }).toList(),
+                onChanged: (ChainMetadata? chain) {
+                  setState(() => _selectedChain = chain);
+                  final chainKey = chainKeys.first;
+                  GetIt.I
+                      .get<SolanaService2>(instanceName: chain?.chainId)
+                      .getBalance(address: chainKey.address)
+                      .then((value) => setState(() => _balance = value));
+                },
               ),
             ],
           ),

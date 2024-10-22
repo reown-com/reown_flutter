@@ -25,7 +25,9 @@ class NetworkButton extends StatelessWidget {
   final ReownAppKitModalStatus serviceStatus;
   final VoidCallback? onTap;
 
-  String _getImageUrl(ReownAppKitModalNetworkInfo chainInfo) {
+  String _getImageUrl(ReownAppKitModalNetworkInfo? chainInfo) {
+    if (chainInfo == null) return '';
+
     if (chainInfo.chainIcon != null && chainInfo.chainIcon!.contains('http')) {
       return chainInfo.chainIcon!;
     }
@@ -38,10 +40,7 @@ class NetworkButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    String imageUrl = '';
-    if (chainInfo != null && (chainInfo!.chainIcon ?? '').isNotEmpty) {
-      imageUrl = _getImageUrl(chainInfo!);
-    }
+    final imageUrl = _getImageUrl(chainInfo);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final borderRadius = radiuses.isSquare() ? 0.0 : size.height / 2;
     return BaseButton(

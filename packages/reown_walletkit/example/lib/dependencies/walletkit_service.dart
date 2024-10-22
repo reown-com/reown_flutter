@@ -288,7 +288,7 @@ class WalletKitService extends IWalletKitService {
       final SessionAuthPayload authPayload = args.authPayload;
       final jsonPyaload = jsonEncode(authPayload.toJson());
       debugPrint('[SampleWallet] _onSessionAuthRequest $jsonPyaload');
-      final supportedChains = ChainData.eip155Chains.map((e) => e.chainId);
+      final supportedChains = ChainsDataList.eip155Chains.map((e) => e.chainId);
       final supportedMethods = SupportedEVMMethods.values.map((e) => e.name);
       final newAuthPayload = AuthSignature.populateAuthPayload(
         authPayload: authPayload,

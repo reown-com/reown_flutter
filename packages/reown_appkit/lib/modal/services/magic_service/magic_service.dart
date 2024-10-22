@@ -52,6 +52,7 @@ class MagicService implements IMagicService {
   String _packageName = '';
   AppKitSocialOption? _socialProvider;
   String? _socialUsername;
+  ReownAppKitModalTheme? _appTheme;
 
   late final IReownCore _core;
   late final PairingMetadata _metadata;
@@ -147,6 +148,7 @@ class MagicService implements IMagicService {
   Future<void> init({String? chainId}) async {
     _connectionChainId = chainId;
     _initializedCompleter = Completer<bool>();
+    _isConnectedCompleter = Completer<bool>();
     if (!isEmailEnabled.value && !isSocialEnabled.value) {
       _initializedCompleter.complete(false);
       _isConnectedCompleter.complete(false);
@@ -157,6 +159,7 @@ class MagicService implements IMagicService {
     await _isConnected();
     await _syncAppData();
     isReady.value = true;
+    await syncTheme(_appTheme);
   }
 
   Future<bool> _init() async {
@@ -381,15 +384,12 @@ class MagicService implements IMagicService {
     await _webViewController.runJavaScript('sendMessage($message)');
   }
 
-  // SHARED METHODS
-
   @override
   Future<void> syncTheme(ReownAppKitModalTheme? theme) async {
-    if (_serviceNotReady) {
-      throw Exception('Service is not ready');
-    }
+    _appTheme = theme;
+    if (_serviceNotReady || _appTheme == null) return;
     //
-    final message = SyncTheme(theme: theme).toString();
+    final message = SyncTheme(theme: _appTheme).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
   }
 
@@ -549,15 +549,16 @@ class MagicService implements IMagicService {
       if (!frameMessage.isValidOrigin || !frameMessage.isValidData) {
         return;
       }
-      _core.logger.i('[$runtimeType] ${frameMessage.data!.toRawJson()}');
+      _core.logger.d('[$runtimeType] ${frameMessage.data!.toRawJson()}');
       _successMessageHandler(frameMessage.data!); // await?
       _errorMessageHandler(frameMessage.data!);
     } catch (e, s) {
-      _core.logger.d('[$runtimeType] $jsMessage $e', stackTrace: s);
+      _core.logger.e('[$runtimeType] $jsMessage $e', stackTrace: s);
     }
   }
 
   Future<void> _successMessageHandler(MessageData messageData) async {
+    // ******* SYNC_DAPP_DATA_SUCCESS
     if (messageData.syncDataSuccess) {
       _resetTimeOut();
       _syncAppDataCompleter.complete(true);
@@ -885,7 +886,7 @@ class MagicService implements IMagicService {
   }
 
   void _onDebugConsoleReceived(JavaScriptConsoleMessage message) {
-    _core.logger.i('[$runtimeType] ${message.message}');
+    _core.logger.d('[$runtimeType] ${message.message}');
   }
 
   void _onWebResourceError(WebResourceError error) {

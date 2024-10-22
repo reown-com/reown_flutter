@@ -103,8 +103,7 @@ class ReownAppKitModalSession {
     return supportsAddChain;
   }
 
-  // TODO NON-EVM Support: make namespace non nullable
-  List<String>? getApprovedMethods({required String? namespace}) {
+  List<String>? getApprovedMethods({String? namespace}) {
     final methodsList = <String>[];
 
     if (sessionService.noSession) {
@@ -131,7 +130,7 @@ class ReownAppKitModalSession {
     return sessionNamespaces[namespace]?.methods ?? [];
   }
 
-  List<String>? getApprovedEvents({required String? namespace}) {
+  List<String>? getApprovedEvents({String? namespace}) {
     final eventsList = <String>[];
 
     if (sessionService.noSession) {
@@ -157,7 +156,7 @@ class ReownAppKitModalSession {
     return sessionNamespaces[namespace]?.events ?? [];
   }
 
-  List<String>? getApprovedChains({required String? namespace}) {
+  List<String>? getApprovedChains({String? namespace}) {
     if (sessionService.noSession) {
       return null;
     }
@@ -184,7 +183,7 @@ class ReownAppKitModalSession {
     return NamespaceUtils.getChainsFromAccounts(accounts);
   }
 
-  List<String>? getAccounts({required String? namespace}) {
+  List<String>? getAccounts({String? namespace}) {
     final accountList = <String>[];
 
     if (sessionService.noSession) {
