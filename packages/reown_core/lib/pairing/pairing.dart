@@ -433,7 +433,7 @@ class Pairing implements IPairing {
 
     if ((appLink ?? '').isNotEmpty) {
       // during wc_sessionAuthenticate we don't need to openURL as it will be done by the host dapp
-      core.logger.t(
+      core.logger.d(
         'pairing sendRequest LinkMode, '
         'id: $id topic: $topic, method: $method, params: $params, ttl: $ttl',
       );
@@ -446,7 +446,7 @@ class Pairing implements IPairing {
         await ReownCoreUtils.openURL(redirectURL);
       }
     } else {
-      core.logger.t(
+      core.logger.d(
         'pairing sendRequest Relay, '
         'id: $id topic: $topic, method: $method, params: $params, ttl: $ttl',
       );
@@ -511,14 +511,14 @@ class Pairing implements IPairing {
         topic,
         message,
       );
-      core.logger.t(
+      core.logger.d(
         'pairing sendResult LinkMode, '
         'id: $id topic: $topic, method: $method, result: $result',
       );
       await ReownCoreUtils.openURL(redirectURL);
     } else {
       final RpcOptions opts = MethodConstants.RPC_OPTS[method]!['res']!;
-      core.logger.t(
+      core.logger.d(
         'pairing sendResult Relay, '
         'id: $id topic: $topic, method: $method, result: $result',
       );
@@ -562,7 +562,7 @@ class Pairing implements IPairing {
         topic,
         message,
       );
-      core.logger.t(
+      core.logger.d(
         'pairing sendError LinkMode, '
         'id: $id topic: $topic, method: $method, error: $error',
       );
@@ -573,7 +573,7 @@ class Pairing implements IPairing {
       final fallbackMethodOpts = MethodConstants.RPC_OPTS[fallbackMethod]!;
       final relayOpts = methodOpts ?? fallbackMethodOpts;
       final fallbackOpts = relayOpts['reject'] ?? relayOpts['res']!;
-      core.logger.t(
+      core.logger.d(
         'pairing sendError Relay, '
         'id: $id topic: $topic, method: $method, error: $error',
       );
@@ -709,7 +709,7 @@ class Pairing implements IPairing {
     }
 
     Map<String, dynamic> data = jsonDecode(payloadString);
-    core.logger.i('Pairing _onMessageEvent, Received data: $data');
+    core.logger.d('Pairing _onMessageEvent, Received data: $data');
 
     // If it's an rpc request, handle it
     if (data.containsKey('method')) {
@@ -877,7 +877,7 @@ class Pairing implements IPairing {
     required String topic,
     required String envelope,
   }) async {
-    core.logger.i('[$runtimeType] dispatchEnvelope $topic, $envelope');
+    core.logger.d('[$runtimeType] dispatchEnvelope $topic, $envelope');
 
     final message = Uri.decodeComponent(envelope);
     await core.relayClient.handleLinkModeMessage(topic, message);

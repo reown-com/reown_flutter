@@ -39,6 +39,6 @@ abstract class IReownCore {
 
   List<String> getLinkModeSupportedApps();
 
-  void addLogListener(LogCallback callback);
-  bool removeLogListener(LogCallback callback);
+  void addLogListener(Function(String) callback);
+  bool removeLogListener(Function(String) callback);
 }

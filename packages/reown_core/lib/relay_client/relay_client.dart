@@ -191,14 +191,15 @@ class RelayClient implements IRelayClient {
   /// PRIVATE FUNCTIONS ///
 
   Future<void> _connect({String? relayUrl}) async {
-    core.logger
-        .t('[$runtimeType]: _connect $relayUrl, isConnected: $isConnected');
+    core.logger.d(
+      '[$runtimeType]: _connect $relayUrl, isConnected: $isConnected',
+    );
     if (isConnected) {
       return;
     }
 
     core.relayUrl = relayUrl ?? core.relayUrl;
-    core.logger.d('[$runtimeType] Connecting to relay url ${core.relayUrl}');
+    core.logger.i('[$runtimeType] Connecting to relay url ${core.relayUrl}');
 
     // If we have tried connecting to the relay before, disconnect
     if (_active) {
@@ -213,19 +214,19 @@ class RelayClient implements IRelayClient {
       _subscribeToHeartbeat();
       //
     } on TimeoutException catch (e) {
-      core.logger.d('[$runtimeType]: Connect timeout: $e');
+      core.logger.e('[$runtimeType]: Connect timeout: $e');
       onRelayClientError.broadcast(ErrorEvent('Connection to relay timeout'));
       _connecting = false;
       _connect();
     } catch (e) {
-      core.logger.d('[$runtimeType]: Connect error: $e');
+      core.logger.e('[$runtimeType]: Connect error: $e');
       onRelayClientError.broadcast(ErrorEvent(e));
       _connecting = false;
     }
   }
 
   Future<void> _disconnect() async {
-    core.logger.t('[$runtimeType]: _disconnecting from relay');
+    core.logger.d('[$runtimeType]: _disconnecting from relay');
     _active = false;
 
     final bool shouldBroadcastDisonnect = isConnected;
@@ -244,7 +245,7 @@ class RelayClient implements IRelayClient {
     _connecting = true;
     _active = true;
     final auth = await core.crypto.signJWT(core.relayUrl);
-    core.logger.t('[$runtimeType]: Signed JWT: $auth');
+    core.logger.d('[$runtimeType]: Signed JWT: $auth');
     final url = ReownCoreUtils.formatRelayRpcUrl(
       protocol: ReownConstants.CORE_PROTOCOL,
       version: ReownConstants.CORE_VERSION,
@@ -260,7 +261,7 @@ class RelayClient implements IRelayClient {
       jsonRPC = null;
     }
 
-    core.logger.t('[$runtimeType]: Initializing WebSocket with $url');
+    core.logger.d('[$runtimeType]: Initializing WebSocket with $url');
     await socketHandler.setup(url: url);
     await socketHandler.connect().timeout(Duration(seconds: 5));
 
@@ -300,18 +301,19 @@ class RelayClient implements IRelayClient {
     );
 
     onRelayClientConnect.broadcast();
-    core.logger.d('[$runtimeType]: Connected to relay ${core.relayUrl}');
+    core.logger.i('[$runtimeType]: Connected to relay ${core.relayUrl}');
   }
 
   Future<void> _handleRelayClose(int? code, String? reason) async {
     if (_handledClose) {
-      core.logger.i('[$runtimeType]: Relay close already handled');
+      core.logger.d('[$runtimeType]: Relay close already handled');
       return;
     }
     _handledClose = true;
 
-    core.logger.i(
-        '[$runtimeType]: Handling relay close, code: $code, reason: $reason');
+    core.logger.d(
+      '[$runtimeType]: Handling relay close, code: $code, reason: $reason',
+    );
     // If the relay isn't active (Disconnected manually), don't do anything
     if (!_active) {
       return;
@@ -362,7 +364,7 @@ class RelayClient implements IRelayClient {
   // This method could be placed directly into pairings API but it's place here for consistency with onRelayClientMessage
   @override
   Future<bool> handleLinkModeMessage(String topic, String message) async {
-    core.logger.t('[$runtimeType]: handleLinkModeMessage: $topic, $message');
+    core.logger.d('[$runtimeType]: handleLinkModeMessage: $topic, $message');
 
     // if client calls dispatchEnvelope with the same message more than once we do nothing.
     final recorded = messageTracker.messageIsRecorded(topic, message);
@@ -383,10 +385,10 @@ class RelayClient implements IRelayClient {
   /// JSON RPC MESSAGE HANDLERS
 
   Future<bool> handlePublish(String topic, String message) async {
-    core.logger.t('[$runtimeType]: Handling Publish Message: $topic, $message');
+    core.logger.d('[$runtimeType]: Handling Publish Message: $topic, $message');
     // If we want to ignore the message, stop
     if (await _shouldIgnoreMessageEvent(topic, message)) {
-      core.logger.w('[$runtimeType]: Ignoring Message: $topic, $message');
+      core.logger.d('[$runtimeType]: Ignoring Message: $topic, $message');
       return false;
     }
 
@@ -416,7 +418,7 @@ class RelayClient implements IRelayClient {
   }
 
   void _handleUnsubscribe(Parameters params) {
-    core.logger.i('[$runtimeType]: handle unsubscribe $params');
+    core.logger.d('[$runtimeType]: handle unsubscribe $params');
   }
 
   /// MESSAGE HANDLING
@@ -465,7 +467,7 @@ class RelayClient implements IRelayClient {
         JsonRpcUtils.payloadId(entropy: 6),
       );
     } catch (e) {
-      core.logger.w('RelayClient, onSubscribe error. Topic: $topic, Error: $e');
+      core.logger.e('RelayClient, onSubscribe error. Topic: $topic, Error: $e');
       onRelayClientError.broadcast(ErrorEvent(e));
     }
 
