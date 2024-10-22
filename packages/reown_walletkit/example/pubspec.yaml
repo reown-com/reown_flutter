@@ -22,7 +22,7 @@ dependencies:
   http: ^1.2.2
   json_annotation: ^4.8.1
   kadena_dart_sdk: ^2.3.2
-  package_info_plus: ^7.0.0
+  package_info_plus: ^8.0.2
   pointycastle: ^3.9.1
   polkadart: ^0.4.6
   polkadart_keyring: ^0.4.3

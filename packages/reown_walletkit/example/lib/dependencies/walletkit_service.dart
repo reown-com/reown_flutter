@@ -53,7 +53,7 @@ class WalletKitService extends IWalletKitService {
     _walletKit = ReownWalletKit(
       core: ReownCore(
         projectId: DartDefines.projectId,
-        logLevel: LogLevel.error,
+        logLevel: LogLevel.info,
       ),
       metadata: PairingMetadata(
         name: 'FL WalletKit Sample',
@@ -65,8 +65,6 @@ class WalletKitService extends IWalletKitService {
         redirect: _constructRedirect(),
       ),
     );
-
-    _walletKit!.core.addLogListener(_logListener);
 
     // Setup our listeners
     debugPrint('[SampleWallet] create');
@@ -148,18 +146,8 @@ class WalletKitService extends IWalletKitService {
     }
   }
 
-  void _logListener(LogEvent event) {
-    if (event.level == Level.debug) {
-      // TODO send to mixpanel
-      log('${event.message}');
-    } else {
-      debugPrint('${event.message}');
-    }
-  }
-
   @override
   FutureOr onDispose() {
-    _walletKit!.core.removeLogListener(_logListener);
     _walletKit!.core.pairing.onPairingInvalid.unsubscribe(_onPairingInvalid);
     _walletKit!.core.pairing.onPairingCreate.unsubscribe(_onPairingCreate);
     _walletKit!.core.relayClient.onRelayClientError.unsubscribe(
