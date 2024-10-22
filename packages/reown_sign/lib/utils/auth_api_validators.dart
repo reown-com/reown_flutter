@@ -110,6 +110,14 @@ class AuthApiValidators {
       ).toSignError();
     }
 
+    final isValidChainId = NamespaceUtils.isValidChainId(params.chains.first);
+    if (!isValidChainId) {
+      throw Errors.getInternalError(
+        Errors.NON_CONFORMING_NAMESPACES,
+        context: 'authenticate() chainId should conform to "CAIP-2" format',
+      ).toSignError();
+    }
+
     final namespace = NamespaceUtils.getNamespaceFromChain(params.chains.first);
     if (namespace != 'eip155') {
       throw Errors.getInternalError(

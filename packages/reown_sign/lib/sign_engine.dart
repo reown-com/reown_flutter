@@ -1032,13 +1032,13 @@ class ReownSign implements IReownSign {
     _,
   ]) async {
     if (_shouldIgnoreSessionPropose(topic)) {
-      core.logger.t(
+      core.logger.i(
         'Session Propose ignored. Session Authenticate will be used instead',
       );
       return;
     }
     try {
-      core.logger.t(
+      core.logger.d(
         '_onSessionProposeRequest, topic: $topic, payload: $payload',
       );
       final proposeRequest = WcSessionProposeRequest.fromJson(payload.params);
@@ -1070,7 +1070,7 @@ class ReownSign implements IReownSign {
           );
         } on ReownSignError catch (err) {
           // If they aren't, send an error
-          core.logger.t(
+          core.logger.e(
             '_onSessionProposeRequest ReownSignError: $err',
           );
           final rpcOpts = MethodConstants.RPC_OPTS[payload.method];
@@ -1903,6 +1903,8 @@ class ReownSign implements IReownSign {
     } catch (e, s) {
       if (e is! AttestationNotFound) {
         core.logger.e('[$runtimeType] verify error', error: e, stackTrace: s);
+      } else {
+        core.logger.d('[$runtimeType] attestation not found');
       }
       return VerifyContext(
         origin: metadataUri?.origin ?? proposerMetada.url,
@@ -2423,7 +2425,7 @@ class ReownSign implements IReownSign {
       if (walletLink.isNotEmpty && matchesLink) {
         // save wallet link in array of apps that support linkMode
         await core.addLinkModeSupportedApp(walletUniversalLink!);
-        core.logger.i(
+        core.logger.d(
           '[$runtimeType] session update $sessionTopic to linkMode',
         );
         await sessions.update(
@@ -2641,7 +2643,7 @@ class ReownSign implements IReownSign {
     JsonRpcRequest payload, [
     TransportType transportType = TransportType.relay,
   ]) async {
-    core.logger.t(
+    core.logger.d(
       '_onSessionAuthenticateRequest, topic: $topic, payload: $payload',
     );
 
@@ -2658,7 +2660,7 @@ class ReownSign implements IReownSign {
       );
 
       await pairings.set(topic, pairingInfo);
-      core.logger.t(
+      core.logger.d(
         '[$runtimeType] _onSessionAuthenticateRequest pairingInfo $pairingInfo',
       );
     }
@@ -2742,7 +2744,7 @@ class ReownSign implements IReownSign {
 
     final session = sessions.get(topic);
     if (session != null) {
-      core.logger.i('[$runtimeType] sessions.update $topic to linkMode');
+      core.logger.d('[$runtimeType] sessions.update $topic to linkMode');
       await sessions.update(
         session.topic,
         transportType: TransportType.linkMode,
