@@ -1454,7 +1454,7 @@ class MockReownCore extends _i1.Mock implements _i28.ReownCore {
       ) as _i19.Logger);
 
   @override
-  void addLogListener(_i19.LogCallback? callback) => super.noSuchMethod(
+  void addLogListener(dynamic Function(String)? callback) => super.noSuchMethod(
         Invocation.method(
           #addLogListener,
           [callback],
@@ -1463,7 +1463,8 @@ class MockReownCore extends _i1.Mock implements _i28.ReownCore {
       );
 
   @override
-  bool removeLogListener(_i19.LogCallback? callback) => (super.noSuchMethod(
+  bool removeLogListener(dynamic Function(String)? callback) =>
+      (super.noSuchMethod(
         Invocation.method(
           #removeLogListener,
           [callback],

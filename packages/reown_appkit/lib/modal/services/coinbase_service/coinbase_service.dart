@@ -1,12 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:reown_appkit/modal/constants/string_constants.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/services/coinbase_service/i_coinbase_service.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_data.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_events.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
 
 import 'package:coinbase_wallet_sdk/currency.dart';
 import 'package:coinbase_wallet_sdk/action.dart';
@@ -14,6 +13,7 @@ import 'package:coinbase_wallet_sdk/coinbase_wallet_sdk.dart';
 import 'package:coinbase_wallet_sdk/configuration.dart';
 import 'package:coinbase_wallet_sdk/eth_web3_rpc.dart';
 import 'package:coinbase_wallet_sdk/request.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class CoinbaseService implements ICoinbaseService {
@@ -83,6 +83,8 @@ class CoinbaseService implements ICoinbaseService {
   late ReownAppKitModalWalletInfo _walletData;
   late final IReownCore _core;
 
+  IExplorerService get _explorerService => GetIt.I<IExplorerService>();
+
   CoinbaseService({
     required PairingMetadata metadata,
     required IReownCore core,
@@ -96,14 +98,17 @@ class CoinbaseService implements ICoinbaseService {
     if (!_enabled) return;
     // Configure SDK for each platform
 
-    _walletData = (await explorerService.instance.getCoinbaseWalletObject()) ??
-        defaultWalletData;
+    _walletData =
+        (await _explorerService.getCoinbaseWalletObject()) ?? defaultWalletData;
     final imageId = defaultWalletData.listing.imageId;
-    _iconImage = explorerService.instance.getWalletImageUrl(imageId);
+    _iconImage = _explorerService.getWalletImageUrl(imageId);
 
     final walletLink = _walletData.listing.mobileLink ?? '';
     final redirect = _metadata.redirect;
     final callback = redirect?.universal ?? redirect?.native ?? '';
+    _core.logger.i(
+      '[$runtimeType] init with $walletLink, $redirect, $callback',
+    );
     if (callback.isNotEmpty || walletLink.isNotEmpty) {
       try {
         final config = Configuration(
@@ -121,6 +126,7 @@ class CoinbaseService implements ICoinbaseService {
       }
     } else {
       _enabled = false;
+      _core.logger.e('[$runtimeType] Initialization error');
       throw CoinbaseServiceException('Initialization error');
     }
   }
@@ -170,13 +176,16 @@ class CoinbaseService implements ICoinbaseService {
         ),
       );
       onCoinbaseConnect.broadcast(CoinbaseConnectEvent(data));
+      _core.logger.i('[$runtimeType] getAccount ${data.toJson()}');
       return;
     } on PlatformException catch (e, s) {
+      _core.logger.e('[$runtimeType] getAccount PlatformException $e');
       // Currently Coinbase SDK is not differentiate between User rejection or any other kind of error in iOS
       final errorMessage = (e.message ?? '').toLowerCase();
       onCoinbaseError.broadcast(CoinbaseErrorEvent(errorMessage));
       throw CoinbaseServiceException(errorMessage, e, s);
     } catch (e, s) {
+      _core.logger.e('[$runtimeType] getAccount $e');
       onCoinbaseError.broadcast(CoinbaseErrorEvent('Initial handshake error'));
       throw CoinbaseServiceException('Initial handshake error', e, s);
     }
@@ -189,6 +198,7 @@ class CoinbaseService implements ICoinbaseService {
   }) async {
     await _checkInstalled();
     final cid = chainId.contains(':') ? chainId.split(':').last : chainId;
+    _core.logger.i('[$runtimeType] request $chainId, ${request.toJson()}');
     try {
       final req = Request(actions: [request.toCoinbaseRequest(cid)]);
       final result = (await CoinbaseWalletSDK.shared.makeRequest(req)).first;
@@ -222,11 +232,14 @@ class CoinbaseService implements ICoinbaseService {
           onCoinbaseResponse.broadcast(CoinbaseResponseEvent(data: value));
           break;
       }
+      _core.logger.i('[$runtimeType] request result $value');
       return value;
     } on CoinbaseServiceException catch (e) {
+      _core.logger.e('[$runtimeType] request CoinbaseServiceException $e');
       onCoinbaseError.broadcast(CoinbaseErrorEvent(e.message));
       rethrow;
     } on PlatformException catch (e, s) {
+      _core.logger.e('[$runtimeType] request PlatformException $e');
       final message = 'Coinbase Wallet Error: (${e.code}) ${e.message}';
       onCoinbaseError.broadcast(CoinbaseErrorEvent(message));
       throw CoinbaseServiceException(message, e, s);
@@ -238,6 +251,7 @@ class CoinbaseService implements ICoinbaseService {
     try {
       return await CoinbaseWalletSDK.shared.isAppInstalled();
     } catch (e, s) {
+      _core.logger.e('[$runtimeType] isInstalled $e');
       throw CoinbaseServiceException('Check is installed error', e, s);
     }
   }
@@ -247,6 +261,7 @@ class CoinbaseService implements ICoinbaseService {
     try {
       return await CoinbaseWalletSDK.shared.isConnected();
     } catch (e, s) {
+      _core.logger.e('[$runtimeType] isConnected $e');
       throw CoinbaseServiceException('Check is connected error', e, s);
     }
   }
@@ -256,6 +271,7 @@ class CoinbaseService implements ICoinbaseService {
     try {
       return CoinbaseWalletSDK.shared.resetSession();
     } catch (e, s) {
+      _core.logger.e('[$runtimeType] resetSession $e');
       throw CoinbaseServiceException('Reset session error', e, s);
     }
   }
@@ -315,9 +331,12 @@ extension on SessionRequestParams {
       case MethodsConstants.walletSwitchEthChain:
       case MethodsConstants.walletAddEthChain:
         try {
-          final chainInfo = ReownAppKitModalNetworks.getNetworkById(
-            CoreConstants.namespace,
+          final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
             chainId!,
+          );
+          final chainInfo = ReownAppKitModalNetworks.getNetworkById(
+            namespace,
+            chainId,
           )!;
           return AddEthereumChain(
             chainId: chainInfo.chainId,

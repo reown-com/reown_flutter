@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/models/public/appkit_network_info.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/utils/public/appkit_modal_default_networks.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
@@ -24,22 +25,22 @@ class NetworkButton extends StatelessWidget {
   final ReownAppKitModalStatus serviceStatus;
   final VoidCallback? onTap;
 
-  String _getImageUrl(ReownAppKitModalNetworkInfo chainInfo) {
+  String _getImageUrl(ReownAppKitModalNetworkInfo? chainInfo) {
+    if (chainInfo == null) return '';
+
     if (chainInfo.chainIcon != null && chainInfo.chainIcon!.contains('http')) {
       return chainInfo.chainIcon!;
     }
-    final imageId =
-        ReownAppKitModalNetworks.getNetworkIconId(chainInfo.chainId);
-    return explorerService.instance.getAssetImageUrl(imageId);
+    final imageId = ReownAppKitModalNetworks.getNetworkIconId(
+      chainInfo.chainId,
+    );
+    return GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
   }
 
   @override
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    String imageUrl = '';
-    if (chainInfo != null && (chainInfo!.chainIcon ?? '').isNotEmpty) {
-      imageUrl = _getImageUrl(chainInfo!);
-    }
+    final imageUrl = _getImageUrl(chainInfo);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final borderRadius = radiuses.isSquare() ? 0.0 : size.height / 2;
     return BaseButton(

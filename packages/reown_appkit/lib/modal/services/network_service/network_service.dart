@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:reown_appkit/modal/constants/string_constants.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/models/grid_item.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/services/network_service/i_network_service.dart';
 import 'package:reown_appkit/modal/utils/render_utils.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class NetworkService implements INetworkService {
+  IExplorerService get _explorerService => GetIt.I<IExplorerService>();
+
   @override
   ValueNotifier<bool> initialized = ValueNotifier<bool>(false);
 
@@ -18,12 +20,16 @@ class NetworkService implements INetworkService {
       ValueNotifier<List<GridItem<ReownAppKitModalNetworkInfo>>>([]);
 
   String _getImageUrl(ReownAppKitModalNetworkInfo chainInfo) {
+    if (chainInfo.isTestNetwork) {
+      return '';
+    }
     if (chainInfo.chainIcon != null && chainInfo.chainIcon!.contains('http')) {
       return chainInfo.chainIcon!;
     }
-    final imageId =
-        ReownAppKitModalNetworks.getNetworkIconId(chainInfo.chainId);
-    return explorerService.instance.getAssetImageUrl(imageId);
+    final imageId = ReownAppKitModalNetworks.getNetworkIconId(
+      chainInfo.chainId,
+    );
+    return _explorerService.getAssetImageUrl(imageId);
   }
 
   @override
@@ -32,17 +38,15 @@ class NetworkService implements INetworkService {
       return;
     }
 
-    final networks = ReownAppKitModalNetworks.getNetworks(
-      CoreConstants.namespace,
-    );
-    for (var chain in networks) {
-      final imageUrl = _getImageUrl(chain);
+    final networks = ReownAppKitModalNetworks.getAllSupportedNetworks();
+    for (var network in networks) {
+      final imageUrl = _getImageUrl(network);
       itemListComplete.add(
         GridItem<ReownAppKitModalNetworkInfo>(
           image: imageUrl,
-          id: chain.chainId,
-          title: RenderUtils.shorten(chain.name),
-          data: chain,
+          id: network.chainId,
+          title: RenderUtils.shorten(network.name),
+          data: network,
         ),
       );
     }

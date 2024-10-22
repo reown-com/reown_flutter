@@ -5,6 +5,7 @@ class RequestParams {
   final String? include; // eg. id1,id2,id3
   final String? exclude; // eg. id1,id2,id3
   final String? platform; // 'ios' | 'android'
+  final String? chains; // eip155,solana
 
   const RequestParams({
     required this.page,
@@ -13,6 +14,7 @@ class RequestParams {
     this.include,
     this.exclude,
     this.platform,
+    this.chains,
   });
 
   Map<String, dynamic> toJson({bool short = false}) {
@@ -32,6 +34,9 @@ class RequestParams {
     if ((platform ?? '').isNotEmpty) {
       params['platform'] = platform;
     }
+    if ((chains ?? '').isNotEmpty) {
+      params['chains'] = chains;
+    }
 
     return params;
   }
@@ -43,6 +48,7 @@ class RequestParams {
     String? include,
     String? exclude,
     String? platform,
+    String? chains,
   }) =>
       RequestParams(
         page: page ?? this.page,
@@ -51,6 +57,7 @@ class RequestParams {
         include: include ?? this.include,
         exclude: exclude ?? this.exclude,
         platform: platform ?? this.platform,
+        chains: chains ?? this.chains,
       );
 
   RequestParams nextPage() => RequestParams(
@@ -60,5 +67,6 @@ class RequestParams {
         include: include,
         exclude: exclude,
         platform: platform,
+        chains: chains,
       );
 }

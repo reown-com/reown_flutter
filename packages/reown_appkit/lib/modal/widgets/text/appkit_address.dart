@@ -48,7 +48,11 @@ class _AddressState extends State<Address> {
 
   void _modalNotifyListener() {
     setState(() {
-      _address = widget.service.session?.address;
+      final chainId = widget.service.selectedChain?.chainId ?? '';
+      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+        chainId,
+      );
+      _address = widget.service.session?.getAddress(namespace);
     });
   }
 }

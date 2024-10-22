@@ -5,14 +5,10 @@ import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.d
 import 'package:reown_appkit/reown_appkit.dart';
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/widgets/qr_code_view.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
-import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
-import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
-import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 import 'package:shimmer/shimmer.dart';
 
 class FarcasterQRCodePage extends StatefulWidget {
@@ -28,15 +24,12 @@ class FarcasterQRCodePage extends StatefulWidget {
 }
 
 class _FarcasterQRCodePageState extends State<FarcasterQRCodePage> {
-  IReownAppKitModal? _service;
   Widget? _qrQodeWidget;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _service = ModalProvider.of(context).instance;
-      _service?.onModalError.subscribe(_onError);
       _qrQodeWidget = QRCodeView(
         uri: widget.farcasterUri,
         logoPath: 'lib/modal/assets/png/farcaster.png',
@@ -52,22 +45,6 @@ class _FarcasterQRCodePageState extends State<FarcasterQRCodePage> {
         );
       });
     });
-  }
-
-  void _onError(ModalError? args) {
-    final event = args ?? ModalError('An error occurred');
-    toastService.instance.show(
-      ToastMessage(
-        type: ToastType.error,
-        text: event.message,
-      ),
-    );
-  }
-
-  @override
-  void dispose() async {
-    _service?.onModalError.unsubscribe(_onError);
-    super.dispose();
   }
 
   @override

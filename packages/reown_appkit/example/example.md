@@ -38,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _appKitModal = ReownAppKitModal(
       context: context,
-      projectId: '07429........',
+      projectId: '074.....',
       metadata: const PairingMetadata(
         name: 'Example App',
         description: 'Example app description',
@@ -51,7 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
-    _appKitModal.init();
+    _appKitModal.init().then((value) => setState(() {}));
   }
 
   @override
@@ -61,25 +61,26 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          AppKitModalNetworkSelectButton(
-            appKit: _appKitModal,
-            context: context,
-          ),
-          AppKitModalConnectButton(
-            appKit: _appKitModal,
-            context: context,
-          ),
-          Visibility(
-            visible: _appKitModal.isConnected,
-            child: AppKitModalAccountButton(
+      body: Center(
+        child: Column(
+          children: [
+            AppKitModalNetworkSelectButton(
               appKit: _appKitModal,
               context: context,
             ),
-          )
-        ],
+            AppKitModalConnectButton(
+              appKit: _appKitModal,
+              context: context,
+            ),
+            Visibility(
+              visible: _appKitModal.isConnected,
+              child: AppKitModalAccountButton(
+                appKit: _appKitModal,
+                context: context,
+              ),
+            )
+          ],
+        ),
       ),
     );
   }

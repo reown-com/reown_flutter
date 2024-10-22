@@ -89,19 +89,21 @@ class AccountListItem extends StatelessWidget {
             ),
           ),
           trailing ??
-              Padding(
-                padding: const EdgeInsets.only(right: 8.0),
-                child: SvgPicture.asset(
-                  'lib/modal/assets/icons/chevron_right.svg',
-                  package: 'reown_appkit',
-                  colorFilter: ColorFilter.mode(
-                    themeColors.foreground200,
-                    BlendMode.srcIn,
-                  ),
-                  width: 18.0,
-                  height: 18.0,
-                ),
-              ),
+              (onTap != null
+                  ? Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: SvgPicture.asset(
+                        'lib/modal/assets/icons/chevron_right.svg',
+                        package: 'reown_appkit',
+                        colorFilter: ColorFilter.mode(
+                          themeColors.foreground200,
+                          BlendMode.srcIn,
+                        ),
+                        width: 18.0,
+                        height: 18.0,
+                      ),
+                    )
+                  : const SizedBox.shrink()),
         ],
       ),
     );

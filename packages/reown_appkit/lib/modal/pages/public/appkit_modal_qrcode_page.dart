@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -12,7 +14,6 @@ import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.da
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
-import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 
 class ReownAppKitModalQRCodePage extends StatefulWidget {
   const ReownAppKitModalQRCodePage() : super(key: KeyConstants.qrCodePageKey);
@@ -23,7 +24,7 @@ class ReownAppKitModalQRCodePage extends StatefulWidget {
 }
 
 class _AppKitModalQRCodePageState extends State<ReownAppKitModalQRCodePage> {
-  IReownAppKitModal? _service;
+  IReownAppKitModal? _appKitModal;
   Widget? _qrQodeWidget;
   //
 
@@ -31,46 +32,34 @@ class _AppKitModalQRCodePageState extends State<ReownAppKitModalQRCodePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _service = ModalProvider.of(context).instance;
-      _service!.addListener(_buildWidget);
-      _service!.appKit!.core.pairing.onPairingExpire.subscribe(
+      _appKitModal = ModalProvider.of(context).instance;
+      _appKitModal!.addListener(_buildWidget);
+      _appKitModal!.appKit!.core.pairing.onPairingExpire.subscribe(
         _onPairingExpire,
       );
-      _service?.onModalError.subscribe(_onError);
-      await _service!.buildConnectionUri();
+      await _appKitModal!.buildConnectionUri();
     });
   }
 
   void _buildWidget() => setState(() {
         _qrQodeWidget = QRCodeView(
-          uri: _service!.wcUri!,
+          uri: _appKitModal!.wcUri!,
           logoPath: 'lib/modal/assets/png/logo_wc.png',
         );
       });
 
   void _onPairingExpire(EventArgs? args) async {
-    await _service!.buildConnectionUri();
+    await _appKitModal!.buildConnectionUri();
     setState(() {});
-  }
-
-  void _onError(ModalError? args) {
-    final event = args ?? ModalError('An error occurred');
-    toastService.instance.show(
-      ToastMessage(
-        type: ToastType.error,
-        text: event.message,
-      ),
-    );
   }
 
   @override
   void dispose() async {
-    _service?.onModalError.unsubscribe(_onError);
-    _service!.appKit!.core.pairing.onPairingExpire.unsubscribe(
+    _appKitModal!.appKit!.core.pairing.onPairingExpire.unsubscribe(
       _onPairingExpire,
     );
-    _service!.removeListener(_buildWidget);
-    _service!.expirePreviousInactivePairings();
+    _appKitModal!.removeListener(_buildWidget);
+    _appKitModal!.expirePreviousInactivePairings();
     super.dispose();
   }
 
@@ -152,8 +141,9 @@ class _AppKitModalQRCodePageState extends State<ReownAppKitModalQRCodePage> {
   Future<void> _copyToClipboard(BuildContext context) async {
     final service = ModalProvider.of(context).instance;
     await Clipboard.setData(ClipboardData(text: service.wcUri!));
-    toastService.instance.show(
-      ToastMessage(type: ToastType.success, text: 'Link copied'),
-    );
+    GetIt.I<IToastService>().show(ToastMessage(
+      type: ToastType.success,
+      text: 'Link copied',
+    ));
   }
 }

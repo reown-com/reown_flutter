@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:reown_appkit/modal/services/analytics_service/analytics_service_singleton.dart';
+import 'package:reown_appkit/reown_appkit.dart';
 
 class DraggableCard extends StatefulWidget {
   final OverlayController overlayController;
+  //
   const DraggableCard({
     super.key,
     required this.overlayController,
@@ -19,14 +20,20 @@ class _DraggableCardState extends State<DraggableCard> {
   @override
   void initState() {
     super.initState();
-    analyticsService.instance.events.listen(_eventsListener);
+    widget.overlayController.appKitModal.appKit!.core.addLogListener(
+      _eventsListener,
+    );
   }
 
-  void _eventsListener(event) {
+  void _eventsListener(String event) {
     if (!mounted) return;
+    if (!event.toString().contains('[AnalyticsService]')) return;
+    String message = event.replaceAll('[AnalyticsService] ', '');
+    message = message.replaceAll('send event 202: ', '');
+    message = message.replaceAll('info: ', '');
     _logs.add(
       Text(
-        '=> $event',
+        '=> $message',
         style: const TextStyle(
           color: Colors.white,
           fontSize: 12.0,
@@ -38,6 +45,9 @@ class _DraggableCardState extends State<DraggableCard> {
 
   @override
   void dispose() {
+    widget.overlayController.appKitModal.appKit!.core.removeLogListener(
+      _eventsListener,
+    );
     widget.overlayController.remove();
     super.dispose();
   }
@@ -55,12 +65,12 @@ class _DraggableCardState extends State<DraggableCard> {
         children: [
           SizedBox(
             width: MediaQuery.of(context).size.width,
-            height: 200.0,
+            height: 300.0,
             child: Row(
               children: [
                 Expanded(
                   child: SizedBox(
-                    height: 200.0,
+                    height: 300.0,
                     child: ListView(
                       reverse: true,
                       padding: const EdgeInsets.all(6.0),
@@ -99,7 +109,11 @@ class _DraggableCardState extends State<DraggableCard> {
 }
 
 class OverlayController extends AnimatedOverlay {
-  OverlayController(super.duration);
+  OverlayController(
+    super.duration, {
+    required this.appKitModal,
+  });
+  final ReownAppKitModal appKitModal;
   OverlayEntry? _entry;
   final _defaultAlign = const Alignment(0.0, -30.0);
   Alignment align = const Alignment(0.0, -30.0);

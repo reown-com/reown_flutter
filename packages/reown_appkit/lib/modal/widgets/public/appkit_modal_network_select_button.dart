@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/models/public/appkit_network_info.dart';
 import 'package:reown_appkit/modal/pages/public/appkit_modal_select_network_page.dart';
-import 'package:reown_appkit/modal/services/analytics_service/analytics_service_singleton.dart';
+import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
@@ -57,7 +58,7 @@ class _AppKitModalNetworkSelectButtonState
   }
 
   void _onConnectPressed() {
-    analyticsService.instance.sendEvent(ClickNetworksEvent());
+    GetIt.I<IAnalyticsService>().sendEvent(ClickNetworksEvent());
     widget.appKit.openModalView(
       ReownAppKitModalSelectNetworkPage(
         onTapNetwork: (info) {

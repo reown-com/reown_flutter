@@ -70,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> with GetItStateMixin {
     GetIt.I.registerSingleton<IWalletKitService>(walletKitService);
 
     // Support EVM Chains
-    for (final chainData in ChainData.eip155Chains) {
+    for (final chainData in ChainsDataList.eip155Chains) {
       GetIt.I.registerSingleton<EVMService>(
         EVMService(chainSupported: chainData),
         instanceName: chainData.chainId,
@@ -78,7 +78,7 @@ class _MyHomePageState extends State<MyHomePage> with GetItStateMixin {
     }
 
     // Support Kadena Chains
-    for (final chainData in ChainData.kadenaChains) {
+    for (final chainData in ChainsDataList.kadenaChains) {
       GetIt.I.registerSingleton<KadenaService>(
         KadenaService(chainSupported: chainData),
         instanceName: chainData.chainId,
@@ -86,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> with GetItStateMixin {
     }
 
     // Support Polkadot Chains
-    for (final chainData in ChainData.polkadotChains) {
+    for (final chainData in ChainsDataList.polkadotChains) {
       GetIt.I.registerSingleton<PolkadotService>(
         PolkadotService(chainSupported: chainData),
         instanceName: chainData.chainId,
@@ -95,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> with GetItStateMixin {
 
     // Support Solana Chains
     // Change SolanaService2 to SolanaService to switch between solana_web3: ^0.1.3 to solana: ^0.30.4
-    for (final chainData in ChainData.solanaChains) {
+    for (final chainData in ChainsDataList.solanaChains) {
       GetIt.I.registerSingleton<SolanaService2>(
         SolanaService2(chainSupported: chainData),
         instanceName: chainData.chainId,
@@ -103,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> with GetItStateMixin {
     }
 
     // Support Cosmos Chains
-    for (final chainData in ChainData.cosmosChains) {
+    for (final chainData in ChainsDataList.cosmosChains) {
       GetIt.I.registerSingleton<CosmosService>(
         CosmosService(chainSupported: chainData),
         instanceName: chainData.chainId,
