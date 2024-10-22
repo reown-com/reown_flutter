@@ -149,7 +149,7 @@ class _AppKitModalMainWalletsPageState
                   child: (!modalInstance.featuresConfig.showMainWallets &&
                           (emailEnabled || socials.isNotEmpty))
                       ? AllWalletsItem(
-                          title: 'Connect wallet',
+                          title: 'Continue with a wallet',
                           titleAlign: TextAlign.center,
                           leading: RoundedIcon(
                             padding: 10.0,

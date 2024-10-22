@@ -134,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKit = ReownAppKit(
       core: ReownCore(
         projectId: DartDefines.projectId,
-        logLevel: LogLevel.debug,
+        logLevel: LogLevel.info,
       ),
       metadata: _pairingMetadata(),
     );

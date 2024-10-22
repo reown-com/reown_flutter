@@ -568,7 +568,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       }
       _lastChainEmitted = caip2Chain;
     }
-    // loadAccountData();
+    loadAccountData();
   }
 
   @override

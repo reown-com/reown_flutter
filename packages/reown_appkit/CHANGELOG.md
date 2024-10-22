@@ -1,4 +1,4 @@
-## 1.2.0-beta01
+## 1.2.0-alpha01
 
 - Non-EVM Chains support
 
