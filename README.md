@@ -6,7 +6,7 @@ The communications protocol for web3, Reown brings the ecosystem together by ena
 
 | [Core SDK](packages/reown_core) | [Sign SDK](packages/reown_sign) | [WalletKit](packages/reown_walletkit) | [AppKit](packages/reown_appkit) |
 |---------------------------------|---------------------------------|---------------------------------------|---------------------------------|
-| 1.0.1                           | 1.0.1                           | 1.0.1                                 | 1.1.0-beta01                    |
+| 1.0.2                           | 1.0.2                           | 1.0.2                                 | 1.0.1                           |
 
 ## License
 
