@@ -101,19 +101,17 @@ abstract class IReownAppKitModal with ChangeNotifier {
   void launchConnectedWallet();
 
   /// List of available chains to be added in connected wallet
+  @Deprecated('User getApprovedChains()')
   List<String>? getAvailableChains();
 
-  // TODO NON-EVM Support: make namespace non nullable
   /// List of approved chains by connected wallet
-  List<String>? getApprovedChains({required String? namespace});
+  List<String>? getApprovedChains({String? namespace});
 
-  // TODO NON-EVM Support: make namespace non nullable
   /// List of approved methods by connected wallet
-  List<String>? getApprovedMethods({required String? namespace});
+  List<String>? getApprovedMethods({String? namespace});
 
-  // TODO NON-EVM Support: make namespace non nullable
   /// List of approved events by connected wallet
-  List<String>? getApprovedEvents({required String? namespace});
+  List<String>? getApprovedEvents({String? namespace});
 
   /// Loads/Refresh account balance and identity
   Future<void> loadAccountData();

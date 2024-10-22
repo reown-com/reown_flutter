@@ -134,6 +134,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
 
   ///
   late final Future<double> Function()? _getBalance;
+  Completer<bool> _awaitRelayOnce = Completer<bool>();
 
   ReownAppKitModal({
     required BuildContext context,
@@ -148,7 +149,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     Set<String>? featuredWalletIds,
     Set<String>? includedWalletIds,
     Set<String>? excludedWalletIds,
-    Future<double> Function()? getBalance,
+    Future<double> Function()? getBalanceFallback,
     LogLevel logLevel = LogLevel.nothing,
   }) {
     if (appKit == null) {
@@ -167,7 +168,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     this.featuresConfig = featuresConfig ?? FeaturesConfig(email: false);
 
     _context = context;
-    _getBalance = getBalance;
+    _getBalance = getBalanceFallback;
 
     _appKit = appKit ??
         ReownAppKit(
@@ -179,25 +180,25 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
         );
     _projectId = _appKit.core.projectId;
 
+    // TODO should be moved to init()
     _setRequiredNamespaces(requiredNamespaces);
     _setOptionalNamespaces(optionalNamespaces);
 
-    GetIt.I.registerSingleton<IUriService>(
-      UriService(
-        core: _appKit.core,
-      ),
+    GetIt.I.registerSingletonIfAbsent<IUriService>(
+      () => UriService(core: _appKit.core),
     );
-    GetIt.I.registerSingletonAsync<IAnalyticsService>(() async {
-      final analyticsService = AnalyticsService(
+    GetIt.I.registerSingletonIfAbsent<IAnalyticsService>(
+      () => AnalyticsService(
         core: _appKit.core,
         enableAnalytics: enableAnalytics,
-      );
-      await analyticsService.init();
-      analyticsService.sendEvent(ModalLoadedEvent());
-      return analyticsService;
-    });
-    GetIt.I.registerSingleton<IExplorerService>(
-      ExplorerService(
+      ),
+    );
+    // TODO should be moved to init()
+    _analyticsService.init().then(
+          (_) => _analyticsService.sendEvent(ModalLoadedEvent()),
+        );
+    GetIt.I.registerSingletonIfAbsent<IExplorerService>(
+      () => ExplorerService(
         core: _appKit.core,
         referer: _appKit.metadata.name.replaceAll(' ', ''),
         featuredWalletIds: featuredWalletIds,
@@ -206,14 +207,13 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
         namespaces: {..._requiredNamespaces, ..._optionalNamespaces},
       ),
     );
-    GetIt.I.registerSingleton<INetworkService>(NetworkService());
-    GetIt.I.registerSingleton<IToastService>(ToastService());
-    GetIt.I.registerSingleton<IBlockChainService>(
-      BlockChainService(
+    GetIt.I.registerSingletonIfAbsent<INetworkService>(() => NetworkService());
+    GetIt.I.registerSingletonIfAbsent<IToastService>(() => ToastService());
+    GetIt.I.registerSingletonIfAbsent<IBlockChainService>(
+      () => BlockChainService(
         core: _appKit.core,
       ),
     );
-
     GetIt.I.registerSingletonIfAbsent<IMagicService>(
       () => MagicService(
         core: _appKit.core,
@@ -221,15 +221,15 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
         featuresConfig: this.featuresConfig,
       ),
     );
-    GetIt.I.registerSingleton<ICoinbaseService>(
-      CoinbaseService(
+    GetIt.I.registerSingletonIfAbsent<ICoinbaseService>(
+      () => CoinbaseService(
         core: _appKit.core,
         metadata: _appKit.metadata,
         enabled: _initializeCoinbaseSDK,
       ),
     );
-    GetIt.I.registerSingleton<ISiweService>(
-      SiweService(
+    GetIt.I.registerSingletonIfAbsent<ISiweService>(
+      () => SiweService(
         appKit: _appKit,
         siweConfig: siweConfig,
         namespaces: {..._requiredNamespaces, ..._optionalNamespaces},
@@ -265,8 +265,6 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
 
     return false;
   }
-
-  Completer<bool> _awaitRelayOnce = Completer<bool>();
 
   @override
   Future<void> init() async {
@@ -367,6 +365,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     await _selectChainFromStoredId();
 
     onModalNetworkChange.subscribe(_onNetworkChainRequireSIWE);
+    onModalConnect.subscribe(_loadAccountData);
 
     _relayConnected = _appKit.core.relayClient.isConnected;
     if (!_relayConnected) {
@@ -407,11 +406,8 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       await _storeSession(mSession);
       _currentSelectedChainId = _currentSelectedChainId ?? mSession.chainId;
       await _setLocalEthChain(_currentSelectedChainId!, logEvent: false);
-    } catch (e, s) {
-      _appKit.core.logger.d(
-        '[$runtimeType] _setSesionAndChainData error $e',
-        stackTrace: s,
-      );
+    } catch (e) {
+      _appKit.core.logger.e('[$runtimeType] _setSesionAndChainData error $e');
     }
   }
 
@@ -423,11 +419,8 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
           return ReownAppKitModalSession.fromMap(storedSession);
         }
       }
-    } catch (e, s) {
-      _appKit.core.logger.d(
-        '[$runtimeType] _getStoredSession error: $e',
-        stackTrace: s,
-      );
+    } catch (e) {
+      _appKit.core.logger.e('[$runtimeType] _getStoredSession error: $e');
     }
     return null;
   }
@@ -439,11 +432,8 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
         StorageConstants.modalSession,
         _currentSession!.toMap(),
       );
-    } catch (e, s) {
-      _appKit.core.logger.d(
-        '[$runtimeType] _storeSession error: $e',
-        stackTrace: s,
-      );
+    } catch (e) {
+      _appKit.core.logger.e('[$runtimeType] _storeSession error: $e');
     }
     // _isConnected shoudl probably go at the very end of the connection
     _isConnected = true;
@@ -488,6 +478,9 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     }
 
     _chainBalance = null;
+    final tokenName = chainInfo.currency;
+    final formattedBalance = CoreUtils.formatChainBalance(_chainBalance);
+    balanceNotifier.value = '$formattedBalance $tokenName';
 
     final hasValidSession = _isConnected && _currentSession != null;
     if (switchChain && hasValidSession && _currentSelectedChainId != null) {
@@ -516,55 +509,41 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   }
 
   /// Will get the list of available chains to add
+  @Deprecated('User getApprovedChains()')
   @override
   List<String>? getAvailableChains() {
-    // if there's no session or if supportsAddChain method then every chain can be used
-    final evmHasSwitch = _currentSession?.hasSwitchMethod() ?? false;
-    if ((_currentSession == null ||
-        (evmHasSwitch && _currentSession!.sessionService.isWC))) {
-      return null;
-    }
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-      _currentSelectedChainId!,
-    );
-    return getApprovedChains(namespace: namespace);
+    return getApprovedChains();
   }
 
   /// Will get the list of already approved chains by the wallet (to switch to)
   @override
-  List<String>? getApprovedChains({required String? namespace}) {
+  List<String>? getApprovedChains({String? namespace}) {
     if (_currentSession == null) {
       return null;
     }
-    return _currentSession!.getApprovedChains(
-      namespace: namespace,
-    );
+    return _currentSession!.getApprovedChains(namespace: namespace);
   }
 
   @override
-  List<String>? getApprovedMethods({required String? namespace}) {
+  List<String>? getApprovedMethods({String? namespace}) {
     if (_currentSession == null) {
       return null;
     }
-    return _currentSession!.getApprovedMethods(
-      namespace: namespace,
-    );
+    return _currentSession!.getApprovedMethods(namespace: namespace);
   }
 
   @override
-  List<String>? getApprovedEvents({required String? namespace}) {
+  List<String>? getApprovedEvents({String? namespace}) {
     if (_currentSession == null) {
       return null;
     }
-    return _currentSession!.getApprovedEvents(
-      namespace: namespace,
-    );
+    return _currentSession!.getApprovedEvents(namespace: namespace);
   }
 
   Future<void> _setLocalEthChain(String chainId, {bool? logEvent}) async {
     _currentSelectedChainId = chainId;
     final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(chainId);
-    _appKit.core.logger.i('[$runtimeType] set local chain $caip2Chain');
+    _appKit.core.logger.d('[$runtimeType] _setLocalEthChain $caip2Chain');
     _notify();
     try {
       if (isConnected) {
@@ -573,11 +552,8 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
           {'chainId': _currentSelectedChainId!},
         );
       }
-    } catch (e, s) {
-      _appKit.core.logger.d(
-        '[$runtimeType] _setLocalEthChain error: $e',
-        stackTrace: s,
-      );
+    } catch (e) {
+      _appKit.core.logger.e('[$runtimeType] _setLocalEthChain error: $e');
     }
     if (_isConnected && logEvent == true) {
       _analyticsService.sendEvent(SwitchNetworkEvent(
@@ -592,7 +568,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       }
       _lastChainEmitted = caip2Chain;
     }
-    loadAccountData();
+    // loadAccountData();
   }
 
   @override
@@ -884,11 +860,8 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
           _notify();
           _awaitConnectionCallback(connectResponse);
         }
-      } catch (e, s) {
-        _appKit.core.logger.d(
-          '[$runtimeType] buildConnectionUri error: $e',
-          stackTrace: s,
-        );
+      } catch (e) {
+        _appKit.core.logger.e('[$runtimeType] buildConnectionUri error: $e');
       }
     }
   }
@@ -1157,8 +1130,9 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       }
     }
     //
-    _appKit.core.logger
-        .t('[$runtimeType] requestWriteContract, chainId: $reqChainId');
+    _appKit.core.logger.i(
+      '[$runtimeType] requestReadContract, chainId: $reqChainId',
+    );
 
     final networkInfo = ReownAppKitModalNetworks.getNetworkById(
       reqChainId.split(':').first,
@@ -1209,8 +1183,9 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       }
     }
     //
-    _appKit.core.logger
-        .t('[$runtimeType] requestWriteContract, chainId: $reqChainId');
+    _appKit.core.logger.i(
+      '[$runtimeType] requestWriteContract, chainId: $reqChainId',
+    );
 
     try {
       return await _appKit.requestWriteContract(
@@ -1250,7 +1225,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       }
     }
     //
-    _appKit.core.logger.t(
+    _appKit.core.logger.d(
       '[$runtimeType] request, chainId: $reqChainId, '
       '${jsonEncode(request.toJson())}',
     );
@@ -1295,10 +1270,21 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   @override
   Future<void> dispose() async {
     if (_status == ReownAppKitModalStatus.initialized) {
-      await disconnect();
-      await expirePreviousInactivePairings();
       _unregisterListeners();
+      await expirePreviousInactivePairings();
+      await disconnect();
+      await _appKit.core.relayClient.disconnect();
+      _relayConnected = false;
+      _isConnected = false;
+      _currentSelectedChainId = null;
+      _requiredNamespaces = {};
+      _optionalNamespaces = {};
+      _lastChainEmitted = null;
+      _supportsOneClickAuth = false;
+      _relayConnected = false;
       _status = ReownAppKitModalStatus.idle;
+      await Future.delayed(Duration(milliseconds: 500));
+      _notify();
     }
     super.dispose();
   }
@@ -1363,7 +1349,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       // Set the required namespaces to everything in our chain presets
       _requiredNamespaces = {};
     }
-    _appKit.core.logger.i(
+    _appKit.core.logger.d(
       '[$runtimeType] required namespaces ${jsonEncode(_requiredNamespaces)}',
     );
   }
@@ -1396,7 +1382,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       }
     }
 
-    _appKit.core.logger.i(
+    _appKit.core.logger.d(
       '[$runtimeType] optional namespaces ${jsonEncode(_optionalNamespaces)}',
     );
   }
@@ -1416,16 +1402,21 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     );
 
     try {
-      _chainBalance = await (_getBalance?.call() ??
-          _blockchainService.getBalance(
-            address: _currentSession!.getAddress(namespace)!,
-            namespace: namespace,
-            chainId: _currentSelectedChainId!,
-          ));
+      _chainBalance = await _blockchainService.getBalance(
+        address: _currentSession!.getAddress(namespace)!,
+        namespace: namespace,
+        chainId: _currentSelectedChainId!,
+      );
       final tokenName = selectedChain?.currency ?? '';
       final formattedBalance = CoreUtils.formatChainBalance(_chainBalance);
       balanceNotifier.value = '$formattedBalance $tokenName';
-    } catch (_) {}
+    } catch (_) {
+      // Calling getBalanceFallback defined by user
+      _chainBalance = await _getBalance?.call();
+      final tokenName = selectedChain?.currency ?? '';
+      final formattedBalance = CoreUtils.formatChainBalance(_chainBalance);
+      balanceNotifier.value = '$formattedBalance $tokenName';
+    }
 
     if (namespace == NetworkUtils.eip155) {
       // Get the avatar, each chainId is just a number in string form.
@@ -1482,7 +1473,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
           // Otherwise it meas chain has to be added.
           return await requestAddChain(newChain);
         } catch (e, s) {
-          _appKit.core.logger.d(
+          _appKit.core.logger.e(
             '[$runtimeType] requestSwitchToChain error: $e',
             stackTrace: s,
           );
@@ -1501,9 +1492,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     final newCaip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
       newChain.chainId,
     );
-    _appKit.core.logger.i(
-      '[$runtimeType] requesting switch to add chain $newCaip2Chain',
-    );
+    _appKit.core.logger.i('[$runtimeType] requesting add chain $newCaip2Chain');
     try {
       await request(
         topic: topic,
@@ -1518,7 +1507,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       await _setSesionAndChainData(_currentSession!);
       return;
     } catch (e, s) {
-      _appKit.core.logger.d(
+      _appKit.core.logger.e(
         '[$runtimeType] requestAddChain error: $e',
         stackTrace: s,
       );
@@ -1587,6 +1576,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   }
 
   void _onNetworkChainRequireSIWE(ModalNetworkChange? args) async {
+    if (_siweService.config?.enabled != true) return;
     try {
       if (_siweService.signOutOnNetworkChange) {
         await _siweService.signOut();
@@ -1596,11 +1586,15 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
         ));
       }
     } catch (e, s) {
-      _appKit.core.logger.d(
+      _appKit.core.logger.e(
         '[$runtimeType] _onNetworkChainRequireSIWE error: $e',
         stackTrace: s,
       );
     }
+  }
+
+  void _loadAccountData(ModalConnect? event) {
+    loadAccountData();
   }
 
   void _checkInitialized() {
@@ -1768,7 +1762,7 @@ extension _EmailConnectorExtension on ReownAppKitModal {
         await _setSesionAndChainData(session);
         onModalUpdate.broadcast(ModalConnect(session));
       } catch (e, s) {
-        _appKit.core.logger.d(
+        _appKit.core.logger.e(
           '[$runtimeType] _onMagicUpdateEvent error: $e',
           stackTrace: s,
         );
@@ -1829,8 +1823,9 @@ extension _CoinbaseConnectorExtension on ReownAppKitModal {
   }
 
   void _onCoinbaseSessionUpdateEvent(CoinbaseSessionEvent? args) async {
-    _appKit.core.logger
-        .d('[$runtimeType] _onCoinbaseSessionUpdateEvent: $args');
+    _appKit.core.logger.d(
+      '[$runtimeType] _onCoinbaseSessionUpdateEvent: $args',
+    );
     if (args != null) {
       try {
         final chainId = args.chainId ?? _currentSession!.chainId;
@@ -1853,7 +1848,7 @@ extension _CoinbaseConnectorExtension on ReownAppKitModal {
         await _setSesionAndChainData(session);
         onModalUpdate.broadcast(ModalConnect(session));
       } catch (e, s) {
-        _appKit.core.logger.d(
+        _appKit.core.logger.e(
           '[$runtimeType] _onCoinbaseSessionUpdateEvent error: $e',
           stackTrace: s,
         );
@@ -1976,7 +1971,7 @@ extension _AppKitModalExtension on ReownAppKitModal {
         {'chainId': _currentSelectedChainId!},
       );
     } catch (e, s) {
-      _appKit.core.logger.d(
+      _appKit.core.logger.e(
         '[$runtimeType] _oneSIWEFinish error: $e',
         stackTrace: s,
       );
@@ -2000,7 +1995,7 @@ extension _AppKitModalExtension on ReownAppKitModal {
           await _siweService.signOut();
         }
       } catch (e, s) {
-        _appKit.core.logger.d(
+        _appKit.core.logger.e(
           '[$runtimeType] _onSessionEvent error: $e',
           stackTrace: s,
         );

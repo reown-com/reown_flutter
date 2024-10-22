@@ -253,7 +253,7 @@ class ExplorerService implements IExplorerService {
     );
     // this query gives me a count of installedWalletsParam.length
     final installedWallets = await _fetchListings(params: params);
-    _core.logger.t(
+    _core.logger.d(
       '[$runtimeType] ${installedWallets.length} installed wallets',
     );
     return installedWallets.setInstalledFlag();
@@ -381,8 +381,11 @@ class ExplorerService implements IExplorerService {
       }
       _listings = currentListings;
       listings.value = _listings;
-    } catch (e) {
-      _core.logger.e('[$runtimeType] error updating recent wallet: $e');
+    } catch (e, s) {
+      _core.logger.e(
+        '[$runtimeType] error updating recent wallet: $e',
+        stackTrace: s,
+      );
     }
   }
 

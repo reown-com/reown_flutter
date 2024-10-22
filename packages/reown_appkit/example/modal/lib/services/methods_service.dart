@@ -5,6 +5,8 @@ import 'package:reown_appkit/reown_appkit.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:convert/convert.dart';
+// ignore: depend_on_referenced_packages
+import 'package:bs58/bs58.dart';
 
 import 'package:reown_appkit_example/services/contracts/aave_contract.dart';
 import 'package:reown_appkit_example/services/contracts/test_data.dart';
@@ -18,8 +20,7 @@ enum SupportedMethods {
   ethSignTypedDataV4,
   ethSignTransaction,
   walletWatchAsset,
-  solanaSignMessage,
-  solanaSignTransaction;
+  solanaSignMessage;
 
   String get name {
     switch (this) {
@@ -41,8 +42,6 @@ enum SupportedMethods {
         return 'wallet_watchAsset';
       case solanaSignMessage:
         return 'solana_signMessage';
-      case solanaSignTransaction:
-        return 'solana_signTransaction';
     }
   }
 }
@@ -66,6 +65,8 @@ class MethodsService {
         return SupportedMethods.ethSignTransaction;
       case 'wallet_watchAsset':
         return SupportedMethods.walletWatchAsset;
+      case 'solana_signMessage':
+        return SupportedMethods.solanaSignMessage;
       default:
         throw Exception('Method not implemented');
     }
@@ -78,7 +79,7 @@ class MethodsService {
     required String chainId,
     required String address,
   }) {
-    final cid = int.parse(chainId);
+    // final cid = int.parse(chainId);
     switch (method) {
       case SupportedMethods.requestAccounts:
         return requestAccounts(
@@ -92,7 +93,7 @@ class MethodsService {
       case SupportedMethods.ethSignTypedDataV3:
         return ethSignTypedDataV3(
           appKitModal: appKitModal,
-          data: jsonEncode(typeDataV3(cid)),
+          data: jsonEncode(typeDataV3(int.parse(chainId))),
         );
       case SupportedMethods.ethSignTypedData:
         return ethSignTypedData(
@@ -102,7 +103,7 @@ class MethodsService {
       case SupportedMethods.ethSignTypedDataV4:
         return ethSignTypedDataV4(
           appKitModal: appKitModal,
-          data: jsonEncode(typeDataV4(cid)),
+          data: jsonEncode(typeDataV4(int.parse(chainId))),
         );
       case SupportedMethods.ethSignTransaction:
       case SupportedMethods.ethSendTransaction:
@@ -123,9 +124,10 @@ class MethodsService {
           appKitModal: appKitModal,
         );
       case SupportedMethods.solanaSignMessage:
-        throw Exception('Method not implemented');
-      case SupportedMethods.solanaSignTransaction:
-        throw Exception('Method not implemented');
+        return solanaSignMessage(
+          appKitModal: appKitModal,
+          message: testSignData,
+        );
     }
   }
 
@@ -161,6 +163,27 @@ class MethodsService {
           '0x$encoded',
           appKitModal.session!.getAddress(namespace)!,
         ],
+      ),
+    );
+  }
+
+  static Future<dynamic> solanaSignMessage({
+    required ReownAppKitModal appKitModal,
+    required String message,
+  }) async {
+    final bytes = utf8.encode(testSignData);
+    final message = base58.encode(bytes);
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+      appKitModal.selectedChain!.chainId,
+    );
+    final address = appKitModal.session!.getAddress(namespace)!;
+
+    return await appKitModal.request(
+      topic: appKitModal.session!.topic,
+      chainId: appKitModal.selectedChain!.chainId,
+      request: SessionRequestParams(
+        method: SupportedMethods.solanaSignMessage.name,
+        params: {'pubkey': address, 'message': message},
       ),
     );
   }

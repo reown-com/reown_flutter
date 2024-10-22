@@ -6,6 +6,7 @@ import 'package:reown_appkit/modal/pages/about_networks.dart';
 import 'package:reown_appkit/modal/pages/connet_network_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
 import 'package:reown_appkit/modal/widgets/buttons/simple_icon_button.dart';
@@ -29,6 +30,10 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
   ) async {
     final appKitModal = ModalProvider.of(context).instance;
     if (appKitModal.isConnected) {
+      final tokenName = chainInfo.currency;
+      final formattedBalance = CoreUtils.formatChainBalance(null);
+      appKitModal.balanceNotifier.value = '$formattedBalance $tokenName';
+
       final chainId = chainInfo.chainId;
       final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(chainId);
       final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(

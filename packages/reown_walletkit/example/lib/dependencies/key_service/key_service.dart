@@ -148,7 +148,7 @@ class KeyService extends IKeyService {
     final private = EthPrivateKey.fromHex(keyPair.privateKey);
     final address = private.address.hex;
     final evmChainKey = ChainKey(
-      chains: ChainData.eip155Chains.map((e) => e.chainId).toList(),
+      chains: ChainsDataList.eip155Chains.map((e) => e.chainId).toList(),
       privateKey: keyPair.privateKey,
       publicKey: keyPair.publicKey,
       address: address,
@@ -174,7 +174,7 @@ class KeyService extends IKeyService {
 
   ChainKey _kadenaChainKey() {
     return ChainKey(
-      chains: ChainData.kadenaChains.map((e) => e.chainId).toList(),
+      chains: ChainsDataList.kadenaChains.map((e) => e.chainId).toList(),
       privateKey: DartDefines.kadenaSecretKey,
       publicKey: DartDefines.kadenaAddress,
       address: DartDefines.kadenaAddress,
@@ -183,7 +183,7 @@ class KeyService extends IKeyService {
 
   ChainKey _polkadotChainKey() {
     return ChainKey(
-      chains: ChainData.polkadotChains.map((e) => e.chainId).toList(),
+      chains: ChainsDataList.polkadotChains.map((e) => e.chainId).toList(),
       privateKey: DartDefines.polkadotMnemonic,
       publicKey: '',
       address: DartDefines.polkadotAddress,
@@ -192,7 +192,7 @@ class KeyService extends IKeyService {
 
   ChainKey _solanaChainKey() {
     return ChainKey(
-      chains: ChainData.solanaChains.map((e) => e.chainId).toList(),
+      chains: ChainsDataList.solanaChains.map((e) => e.chainId).toList(),
       privateKey: DartDefines.solanaSecretKey,
       publicKey: DartDefines.solanaAddress,
       address: DartDefines.solanaAddress,

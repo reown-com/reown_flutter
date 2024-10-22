@@ -112,7 +112,7 @@ class KadenaService {
     );
 
     try {
-      final chain = ChainData.kadenaChains.firstWhere(
+      final chain = ChainsDataList.kadenaChains.firstWhere(
         (c) => c.chainId == chainSupported.chainId,
       );
       final uri = Uri.parse(chain.rpc.first);

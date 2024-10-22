@@ -106,6 +106,9 @@ class CoinbaseService implements ICoinbaseService {
     final walletLink = _walletData.listing.mobileLink ?? '';
     final redirect = _metadata.redirect;
     final callback = redirect?.universal ?? redirect?.native ?? '';
+    _core.logger.i(
+      '[$runtimeType] init with $walletLink, $redirect, $callback',
+    );
     if (callback.isNotEmpty || walletLink.isNotEmpty) {
       try {
         final config = Configuration(
@@ -123,6 +126,7 @@ class CoinbaseService implements ICoinbaseService {
       }
     } else {
       _enabled = false;
+      _core.logger.e('[$runtimeType] Initialization error');
       throw CoinbaseServiceException('Initialization error');
     }
   }
@@ -172,13 +176,16 @@ class CoinbaseService implements ICoinbaseService {
         ),
       );
       onCoinbaseConnect.broadcast(CoinbaseConnectEvent(data));
+      _core.logger.i('[$runtimeType] getAccount ${data.toJson()}');
       return;
     } on PlatformException catch (e, s) {
+      _core.logger.e('[$runtimeType] getAccount PlatformException $e');
       // Currently Coinbase SDK is not differentiate between User rejection or any other kind of error in iOS
       final errorMessage = (e.message ?? '').toLowerCase();
       onCoinbaseError.broadcast(CoinbaseErrorEvent(errorMessage));
       throw CoinbaseServiceException(errorMessage, e, s);
     } catch (e, s) {
+      _core.logger.e('[$runtimeType] getAccount $e');
       onCoinbaseError.broadcast(CoinbaseErrorEvent('Initial handshake error'));
       throw CoinbaseServiceException('Initial handshake error', e, s);
     }
@@ -191,6 +198,7 @@ class CoinbaseService implements ICoinbaseService {
   }) async {
     await _checkInstalled();
     final cid = chainId.contains(':') ? chainId.split(':').last : chainId;
+    _core.logger.i('[$runtimeType] request $chainId, ${request.toJson()}');
     try {
       final req = Request(actions: [request.toCoinbaseRequest(cid)]);
       final result = (await CoinbaseWalletSDK.shared.makeRequest(req)).first;
@@ -224,11 +232,14 @@ class CoinbaseService implements ICoinbaseService {
           onCoinbaseResponse.broadcast(CoinbaseResponseEvent(data: value));
           break;
       }
+      _core.logger.i('[$runtimeType] request result $value');
       return value;
     } on CoinbaseServiceException catch (e) {
+      _core.logger.e('[$runtimeType] request CoinbaseServiceException $e');
       onCoinbaseError.broadcast(CoinbaseErrorEvent(e.message));
       rethrow;
     } on PlatformException catch (e, s) {
+      _core.logger.e('[$runtimeType] request PlatformException $e');
       final message = 'Coinbase Wallet Error: (${e.code}) ${e.message}';
       onCoinbaseError.broadcast(CoinbaseErrorEvent(message));
       throw CoinbaseServiceException(message, e, s);
@@ -240,6 +251,7 @@ class CoinbaseService implements ICoinbaseService {
     try {
       return await CoinbaseWalletSDK.shared.isAppInstalled();
     } catch (e, s) {
+      _core.logger.e('[$runtimeType] isInstalled $e');
       throw CoinbaseServiceException('Check is installed error', e, s);
     }
   }
@@ -249,6 +261,7 @@ class CoinbaseService implements ICoinbaseService {
     try {
       return await CoinbaseWalletSDK.shared.isConnected();
     } catch (e, s) {
+      _core.logger.e('[$runtimeType] isConnected $e');
       throw CoinbaseServiceException('Check is connected error', e, s);
     }
   }
@@ -258,6 +271,7 @@ class CoinbaseService implements ICoinbaseService {
     try {
       return CoinbaseWalletSDK.shared.resetSession();
     } catch (e, s) {
+      _core.logger.e('[$runtimeType] resetSession $e');
       throw CoinbaseServiceException('Reset session error', e, s);
     }
   }
