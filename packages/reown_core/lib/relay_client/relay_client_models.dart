@@ -52,11 +52,13 @@ class MessageEvent extends EventArgs {
 }
 
 class ErrorEvent extends EventArgs {
-  dynamic error;
-
   ErrorEvent(
-    this.error,
-  );
+    this.error, [
+    this.stackTrace,
+  ]);
+
+  dynamic error;
+  StackTrace? stackTrace;
 }
 
 class SubscriptionEvent extends EventArgs {

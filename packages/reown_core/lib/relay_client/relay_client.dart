@@ -128,9 +128,9 @@ class RelayClient implements IRelayClient {
         data,
         JsonRpcUtils.payloadId(entropy: 6),
       );
-    } catch (e) {
+    } catch (e, s) {
       // print(e);
-      onRelayClientError.broadcast(ErrorEvent(e));
+      onRelayClientError.broadcast(ErrorEvent(e, s));
     }
   }
 
@@ -158,8 +158,8 @@ class RelayClient implements IRelayClient {
         },
         JsonRpcUtils.payloadId(entropy: 6),
       );
-    } catch (e) {
-      onRelayClientError.broadcast(ErrorEvent(e));
+    } catch (e, s) {
+      onRelayClientError.broadcast(ErrorEvent(e, s));
     }
 
     // Remove the subscription
@@ -213,14 +213,14 @@ class RelayClient implements IRelayClient {
       _connecting = false;
       _subscribeToHeartbeat();
       //
-    } on TimeoutException catch (e) {
+    } on TimeoutException catch (e, s) {
       core.logger.e('[$runtimeType]: Connect timeout: $e');
-      onRelayClientError.broadcast(ErrorEvent('Connection to relay timeout'));
+      onRelayClientError.broadcast(ErrorEvent(e, s));
       _connecting = false;
       _connect();
-    } catch (e) {
+    } catch (e, s) {
       core.logger.e('[$runtimeType]: Connect error: $e');
-      onRelayClientError.broadcast(ErrorEvent(e));
+      onRelayClientError.broadcast(ErrorEvent(e, s));
       _connecting = false;
     }
   }
@@ -330,10 +330,13 @@ class RelayClient implements IRelayClient {
             ? reason ?? WebSocketErrors.INVALID_PROJECT_ID_OR_JWT
             : '';
         onRelayClientError.broadcast(
-          ErrorEvent(ReownCoreError(
-            code: code,
-            message: errorReason,
-          )),
+          ErrorEvent(
+            ReownCoreError(
+              code: code,
+              message: errorReason,
+            ),
+            null,
+          ),
         );
       }
     }
@@ -466,9 +469,9 @@ class RelayClient implements IRelayClient {
         {'topic': topic},
         JsonRpcUtils.payloadId(entropy: 6),
       );
-    } catch (e) {
+    } catch (e, s) {
       core.logger.e('RelayClient, onSubscribe error. Topic: $topic, Error: $e');
-      onRelayClientError.broadcast(ErrorEvent(e));
+      onRelayClientError.broadcast(ErrorEvent(e, s));
     }
 
     if (requestId == null) {
