@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -350,7 +351,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onSessionConnect(SessionConnect? event) {
-    debugPrint('[SampleDapp] _onSessionConnect $event');
+    log('[SampleDapp] _onSessionConnect ${jsonEncode(event?.session.toJson())}');
   }
 
   void _onSessionAuthResponse(SessionAuthResponse? response) {
