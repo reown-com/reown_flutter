@@ -213,7 +213,15 @@ class ReownAppKitModalNetworks {
         extraRpcUrls: [],
         explorerUrl: 'https://amoy.polygonscan.com',
         isTestNetwork: true,
-      )
+      ),
+      ReownAppKitModalNetworkInfo(
+        name: 'BSC Testnet',
+        chainId: '97',
+        currency: 'tBNB',
+        rpcUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+        explorerUrl: 'https://testnet.bscscan.com',
+        isTestNetwork: true,
+      ),
     ],
   };
 
