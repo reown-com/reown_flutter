@@ -114,6 +114,8 @@ class RelayClient implements IRelayClient {
   }) async {
     _checkInitialized();
 
+    core.logger.i('[$runtimeType] publish, $topic, $message');
+
     Map<String, dynamic> data = {
       'message': message,
       'ttl': ttl,
@@ -128,8 +130,8 @@ class RelayClient implements IRelayClient {
         data,
         JsonRpcUtils.payloadId(entropy: 6),
       );
-    } catch (e) {
-      // print(e);
+    } catch (e, s) {
+      core.logger.e('[$runtimeType], publish: $e', stackTrace: s);
       onRelayClientError.broadcast(ErrorEvent(e));
     }
   }
@@ -137,6 +139,8 @@ class RelayClient implements IRelayClient {
   @override
   Future<String> subscribe({required String topic}) async {
     _checkInitialized();
+
+    core.logger.i('[$runtimeType] subscribe, $topic');
 
     pendingSubscriptions[topic] = _onSubscribe(topic);
 
@@ -146,6 +150,8 @@ class RelayClient implements IRelayClient {
   @override
   Future<void> unsubscribe({required String topic}) async {
     _checkInitialized();
+
+    core.logger.i('[$runtimeType] unsubscribe, $topic');
 
     String id = topicMap.get(topic) ?? '';
 
@@ -158,7 +164,8 @@ class RelayClient implements IRelayClient {
         },
         JsonRpcUtils.payloadId(entropy: 6),
       );
-    } catch (e) {
+    } catch (e, s) {
+      core.logger.e('[$runtimeType], unsubscribe: $e', stackTrace: s);
       onRelayClientError.broadcast(ErrorEvent(e));
     }
 
@@ -213,13 +220,13 @@ class RelayClient implements IRelayClient {
       _connecting = false;
       _subscribeToHeartbeat();
       //
-    } on TimeoutException catch (e) {
-      core.logger.e('[$runtimeType]: Connect timeout: $e');
+    } on TimeoutException catch (e, s) {
+      core.logger.e('[$runtimeType], _connect timeout: $e', stackTrace: s);
       onRelayClientError.broadcast(ErrorEvent('Connection to relay timeout'));
       _connecting = false;
       _connect();
-    } catch (e) {
-      core.logger.e('[$runtimeType]: Connect error: $e');
+    } catch (e, s) {
+      core.logger.e('[$runtimeType], _connect error: $e', stackTrace: s);
       onRelayClientError.broadcast(ErrorEvent(e));
       _connecting = false;
     }
@@ -335,6 +342,7 @@ class RelayClient implements IRelayClient {
             message: errorReason,
           )),
         );
+        core.logger.e('[$runtimeType], _handleRelayClose: $core, $errorReason');
       }
     }
   }
@@ -466,8 +474,11 @@ class RelayClient implements IRelayClient {
         {'topic': topic},
         JsonRpcUtils.payloadId(entropy: 6),
       );
-    } catch (e) {
-      core.logger.e('RelayClient, onSubscribe error. Topic: $topic, Error: $e');
+    } catch (e, s) {
+      core.logger.e(
+        '[$runtimeType], _onSubscribe: Topic, $topic, Error: $e',
+        stackTrace: s,
+      );
       onRelayClientError.broadcast(ErrorEvent(e));
     }
 
