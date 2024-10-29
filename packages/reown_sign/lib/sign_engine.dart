@@ -1537,6 +1537,7 @@ class ReownSign implements IReownSign {
   }
 
   Future<void> _onPairingDelete(PairingEvent? event) async {
+    core.logger.i('[$runtimeType] onPairingDelete ${event.toString()}');
     // Delete all the sessions associated with the pairing
     if (event == null) {
       return;
