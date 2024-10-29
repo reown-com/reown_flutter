@@ -228,6 +228,10 @@ class ReownAppKitModalSession {
   // toJson() would convert ReownAppKitModalSession to a SessionData kind of map
   // no matter if Coinbase Wallet or Email Wallet is connected
   Map<String, dynamic> toJson() {
+    if (_sessionData != null) {
+      return _sessionData!.toJson();
+    }
+
     final sessionData = SessionData(
       topic: topic ?? '',
       pairingTopic: pairingTopic ?? '',

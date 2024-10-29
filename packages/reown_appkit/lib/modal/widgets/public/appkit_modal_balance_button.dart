@@ -48,7 +48,6 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
       final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
       _tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
       final balance = widget.appKitModal.balanceNotifier.value;
-      debugPrint('[$runtimeType] $balance');
       if (balance.contains(AppKitModalBalanceButton.balanceDefault)) {
         _tokenImage = '';
       }
@@ -118,7 +117,7 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
                     )
                   : RoundedIcon(
                       imageUrl: _tokenImage!,
-                      size: widget.size.height + 2.0,
+                      size: widget.size.height * 0.55,
                     ),
           const SizedBox.square(dimension: 4.0),
           ValueListenableBuilder<String>(

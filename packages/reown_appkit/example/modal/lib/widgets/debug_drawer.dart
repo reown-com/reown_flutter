@@ -182,7 +182,7 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                     color:
                         ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
-                  title: const Text('Analytics On'),
+                  title: const Text('Analytics'),
                   titleTextStyle: TextStyle(
                     color:
                         ReownAppKitModalTheme.colorsOf(context).foreground100,
@@ -203,7 +203,7 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                     color:
                         ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
-                  title: const Text('Email Wallet On'),
+                  title: const Text('Email & Socials'),
                   titleTextStyle: TextStyle(
                     color:
                         ReownAppKitModalTheme.colorsOf(context).foreground100,
@@ -224,7 +224,7 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                     color:
                         ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
-                  title: const Text('1-CA + SIWE On'),
+                  title: const Text('1-CA + SIWE'),
                   titleTextStyle: TextStyle(
                     color:
                         ReownAppKitModalTheme.colorsOf(context).foreground100,

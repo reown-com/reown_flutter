@@ -27,7 +27,11 @@ dependencies:
   plugin_platform_interface: ^2.1.8
   qr_flutter_wc: ^0.0.3
   reown_core: ^1.0.2
+  # reown_core:
+  #   path: ../reown_core/
   reown_sign: ^1.0.2
+  # reown_sign:
+  #   path: ../reown_sign/
   shimmer: ^3.0.0
   uuid: ^4.5.1
   webview_flutter: ^4.8.0
@@ -47,6 +51,8 @@ dev_dependencies:
   mockito: ^5.4.3
   package_info_plus: ^8.0.2
   reown_walletkit: ^1.0.2
+  # reown_walletkit:
+  #   path: ../reown_walletkit/
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

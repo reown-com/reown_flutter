@@ -101,7 +101,6 @@ abstract class IReownAppKitModal with ChangeNotifier {
   void launchConnectedWallet();
 
   /// List of available chains to be added in connected wallet
-  @Deprecated('User getApprovedChains()')
   List<String>? getAvailableChains();
 
   /// List of approved chains by connected wallet

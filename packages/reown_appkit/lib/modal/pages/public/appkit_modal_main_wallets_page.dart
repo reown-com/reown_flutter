@@ -65,8 +65,11 @@ class _AppKitModalMainWalletsPageState
     double maxHeight = isPortrait
         ? (kListItemHeight * 6)
         : ResponsiveData.maxHeightOf(context);
+
+    final isSignIn = _magicService.isEmailEnabled.value ||
+        _magicService.isSocialEnabled.value;
     return ModalNavbar(
-      title: 'Connect wallet',
+      title: isSignIn ? 'Sign in' : 'Connect wallet',
       leftAction: NavbarActionButton(
         asset: 'lib/modal/assets/icons/help.svg',
         action: () {

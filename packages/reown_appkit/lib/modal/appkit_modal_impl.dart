@@ -329,6 +329,10 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       }
     }
 
+    _appKit.core.logger.d('[$runtimeType] wcSessions ${wcSessions.length}');
+    _appKit.core.logger
+        .d('[$runtimeType] _currentSession ${_currentSession?.toJson()}');
+
     // There's a session stored
     if (wcSessions.isNotEmpty) {
       await _storeSession(ReownAppKitModalSession(
@@ -477,42 +481,71 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       return;
     }
 
-    _chainBalance = null;
-    final tokenName = chainInfo.currency;
-    final formattedBalance = CoreUtils.formatChainBalance(_chainBalance);
-    balanceNotifier.value = '$formattedBalance $tokenName';
+    try {
+      _chainBalance = null;
+      final tokenName = chainInfo.currency;
+      final formattedBalance = CoreUtils.formatChainBalance(_chainBalance);
+      balanceNotifier.value = '$formattedBalance $tokenName';
 
-    final hasValidSession = _isConnected && _currentSession != null;
-    if (switchChain && hasValidSession && _currentSelectedChainId != null) {
-      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-        chainInfo.chainId,
-      );
-      final approvedChains = _currentSession!.getApprovedChains(
-        namespace: namespace,
-      );
-      final newCaip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
-        chainInfo.chainId,
-      );
-      final hasChainAlready = (approvedChains ?? []).contains(newCaip2Chain);
-      if (!hasChainAlready) {
-        requestSwitchToChain(chainInfo);
-        final hasSwitchMethod = _currentSession!.hasSwitchMethod();
-        if (hasSwitchMethod) {
-          launchConnectedWallet();
+      final hasValidSession = _isConnected && _currentSession != null;
+      if (switchChain && hasValidSession && _currentSelectedChainId != null) {
+        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+          chainInfo.chainId,
+        );
+        final approvedChains = _currentSession!.getApprovedChains(
+          namespace: namespace,
+        );
+        final newCaip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
+          chainInfo.chainId,
+        );
+        final hasChainAlready = (approvedChains ?? []).contains(newCaip2Chain);
+        if (!hasChainAlready) {
+          requestSwitchToChain(chainInfo);
+          final hasSwitchMethod = _currentSession!.hasSwitchMethod();
+          if (hasSwitchMethod) {
+            launchConnectedWallet();
+          }
+        } else {
+          await _setLocalEthChain(chainInfo.chainId, logEvent: logEvent);
         }
       } else {
         await _setLocalEthChain(chainInfo.chainId, logEvent: logEvent);
       }
-    } else {
-      await _setLocalEthChain(chainInfo.chainId, logEvent: logEvent);
+    } on JsonRpcError catch (e) {
+      onModalError.broadcast(ModalError(e.message ?? 'An error occurred'));
+    } on ReownAppKitModalException catch (e) {
+      onModalError.broadcast(ModalError(e.message));
+    } catch (e) {
+      onModalError.broadcast(ModalError('An error occurred'));
     }
   }
 
   /// Will get the list of available chains to add
-  @Deprecated('User getApprovedChains()')
   @override
   List<String>? getAvailableChains() {
-    return getApprovedChains();
+    // if there's no session or if supportsAddChain method then every chain can be used
+    if (_currentSession == null) {
+      // meaning all chains in the list are available
+      return null;
+    }
+    // Valid only for EVM chains
+    final hasSwitchMethod = _currentSession!.hasSwitchMethod();
+    if (!hasSwitchMethod) {
+      return getApprovedChains();
+    }
+
+    List<String> availableChains = [];
+    final namespaces = ReownAppKitModalNetworks.getAllSupportedNamespaces();
+    for (var ns in namespaces) {
+      final chains =
+          ReownAppKitModalNetworks.getAllSupportedNetworks(namespace: ns)
+              .map(
+                (e) => '$ns:${e.chainId}',
+              )
+              .toList();
+      availableChains.addAll(chains);
+    }
+    return availableChains;
   }
 
   /// Will get the list of already approved chains by the wallet (to switch to)
@@ -549,7 +582,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       if (isConnected) {
         await _storage.set(
           StorageConstants.selectedChainId,
-          {'chainId': _currentSelectedChainId!},
+          {'chainId': _currentSelectedChainId ?? '1'},
         );
       }
     } catch (e) {
@@ -823,6 +856,8 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   @override
   Future<void> buildConnectionUri() async {
     if (!_isConnected) {
+      /// TODO Qs: How do I handle SIWE if non-EVM chains are included?
+      /// TODO Qs: How do I handle switch to Solana from EVM chain?
       try {
         if (_siweService.enabled) {
           final walletRedirect = _explorerService.getWalletRedirect(
@@ -1281,7 +1316,6 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       _optionalNamespaces = {};
       _lastChainEmitted = null;
       _supportsOneClickAuth = false;
-      _relayConnected = false;
       _status = ReownAppKitModalStatus.idle;
       await Future.delayed(Duration(milliseconds: 500));
       _notify();
@@ -1434,6 +1468,14 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   Future<void> requestSwitchToChain(
     ReownAppKitModalNetworkInfo newChain,
   ) async {
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+      newChain.chainId,
+    );
+    if (namespace != NetworkUtils.eip155) {
+      // If chain is not EVM then there's no need to request a switch since it doesn't exist such method for non-EVM chains
+      // Therefor at this point the selected non-EVM chain is either already approved, invalidating the need of a switch call, or not approved, failing with the following error.
+      throw ReownAppKitModalException('Unsupported Chain');
+    }
     if (_currentSession?.sessionService.isMagic == true) {
       await selectChain(newChain);
       return;
@@ -1472,9 +1514,20 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
         try {
           // Otherwise it meas chain has to be added.
           return await requestAddChain(newChain);
+        } on JsonRpcError catch (e) {
+          _appKit.core.logger.e(
+            '[$runtimeType] Switch to chain error: ${e.toJson()}',
+          );
+          rethrow;
+        } on ReownAppKitModalException catch (e) {
+          _appKit.core.logger.e(
+            '[$runtimeType] Switch to chain error: ${e.message}',
+            stackTrace: e.stackTrace,
+          );
+          rethrow;
         } catch (e, s) {
           _appKit.core.logger.e(
-            '[$runtimeType] requestSwitchToChain error: $e',
+            '[$runtimeType] Switch to chain error: ${e.toString()}',
             stackTrace: s,
           );
           rethrow;
@@ -1506,13 +1559,12 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       _currentSelectedChainId = newChain.chainId;
       await _setSesionAndChainData(_currentSession!);
       return;
-    } catch (e, s) {
-      _appKit.core.logger.e(
-        '[$runtimeType] requestAddChain error: $e',
-        stackTrace: s,
-      );
+    } on JsonRpcError {
       await _setLocalEthChain(_currentSelectedChainId!);
-      throw JsonRpcError(code: 5002, message: 'User rejected methods.');
+      rethrow;
+    } catch (e, s) {
+      await _setLocalEthChain(_currentSelectedChainId!);
+      throw ReownAppKitModalException(e.toString(), s);
     }
   }
 
@@ -1550,12 +1602,13 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       final walletId = storedWalletId?['walletId'];
       await _storage.deleteAll();
       await _explorerService.storeRecentWalletId(walletId);
-    } catch (_) {
+    } catch (e, s) {
+      _appKit.core.logger.e('[$runtimeType] _cleanSession $e', stackTrace: s);
       await _storage.deleteAll();
     }
     if (event) {
       onModalDisconnect.broadcast(ModalDisconnect(
-        topic: args?.topic,
+        topic: args?.topic ?? _currentSession?.topic,
         id: args?.id,
       ));
     }
@@ -1988,17 +2041,17 @@ extension _AppKitModalExtension on ReownAppKitModal {
     onSessionEventEvent.broadcast(args);
     if (args?.name == EventsConstants.chainChanged) {
       _currentSelectedChainId = args?.data?.toString();
-    } else if (args?.name == EventsConstants.accountsChanged) {
-      try {
-        // TODO implement account change
-        if (_siweService.signOutOnAccountChange) {
+    }
+    if (args?.name == EventsConstants.accountsChanged) {
+      if (_siweService.enabled && _siweService.signOutOnAccountChange) {
+        try {
           await _siweService.signOut();
+        } catch (e, s) {
+          _appKit.core.logger.e(
+            '[$runtimeType] _onSessionEvent error: $e',
+            stackTrace: s,
+          );
         }
-      } catch (e, s) {
-        _appKit.core.logger.e(
-          '[$runtimeType] _onSessionEvent error: $e',
-          stackTrace: s,
-        );
       }
     }
     _notify();

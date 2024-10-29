@@ -61,8 +61,8 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
       );
       await _magicService.switchNetwork(chainId: newCaip2Chain);
     } else {
-      _appKitModal!.launchConnectedWallet();
       try {
+        _appKitModal!.launchConnectedWallet();
         await _appKitModal!.requestSwitchToChain(widget.chainInfo);
         final chainId = widget.chainInfo.chainId;
         final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
@@ -79,8 +79,14 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
             }
           });
         }
+      } on JsonRpcError catch (e) {
+        setState(
+          () => errorEvent = ModalError(e.message ?? 'An error occurred'),
+        );
+      } on ReownAppKitModalException catch (e) {
+        setState(() => errorEvent = ModalError(e.message));
       } catch (e) {
-        setState(() {});
+        setState(() => errorEvent = ModalError('An error occurred'));
       }
     }
   }
@@ -156,7 +162,7 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
                   const SizedBox.square(dimension: 20.0),
                   errorEvent != null
                       ? Text(
-                          'Switch declined',
+                          errorEvent?.message ?? 'Switch declined',
                           textAlign: TextAlign.center,
                           style: themeData.textStyles.paragraph500.copyWith(
                             color: themeColors.error100,
@@ -174,7 +180,7 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
                   const SizedBox.square(dimension: 8.0),
                   errorEvent != null
                       ? Text(
-                          'Switch can be declined by the user or if a previous request is still active',
+                          'Switch can be declined by the user or if the wallet doesn\'t support the selected chain.',
                           textAlign: TextAlign.center,
                           style: themeData.textStyles.small500.copyWith(
                             color: themeColors.foreground200,

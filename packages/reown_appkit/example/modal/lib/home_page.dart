@@ -207,10 +207,14 @@ class _MyHomePageState extends State<MyHomePage> {
     final siweAuthValue = prefs.getBool('appkit_siwe_auth') ?? true;
 
     // See https://docs.reown.com/appkit/flutter/core/custom-chains
+    // Add extra chains
     // final extraChains = ReownAppKitModalNetworks.extra['eip155']!;
     // ReownAppKitModalNetworks.addSupportedNetworks('eip155', extraChains);
-    // ReownAppKitModalNetworks.removeSupportedNetworks('eip155');
+    // Remove Solana support
+    // ReownAppKitModalNetworks.removeSupportedNetworks('solana');
+    // Remove every test network
     // ReownAppKitModalNetworks.removeTestNetworks();
+    // Add custom chains
     ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
       ReownAppKitModalNetworkInfo(
         name: 'Polkadot',
@@ -247,7 +251,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   AppKitSocialOption.Apple,
                   AppKitSocialOption.Discord,
                 ],
-                showMainWallets: false, // OPTIONAL - true by default
+                // showMainWallets: false, // OPTIONAL - true by default
               )
             : null,
         // requiredNamespaces: {},
