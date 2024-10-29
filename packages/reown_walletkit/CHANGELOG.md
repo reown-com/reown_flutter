@@ -1,6 +1,6 @@
-## 1.0.2
+## 1.0.3
 
-- Minor dependency update 
+- Minor dependency update
 
 ## 1.0.1
 
