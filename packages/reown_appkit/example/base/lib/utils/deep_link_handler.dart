@@ -45,11 +45,12 @@ class DeepLinkHandler {
   static String get host => universalUri.host;
 
   static void _onLink(dynamic link) async {
+    debugPrint('[SampleDapp] _onLink $link');
     if (link == null) return;
-    final envelope = ReownCoreUtils.getSearchParamFromURL(link, 'wc_ev');
-    if (envelope.isNotEmpty) {
-      debugPrint('[SampleDapp] is linkMode $link');
-      await _appKit.dispatchEnvelope(link);
+    try {
+      return await _appKit.dispatchEnvelope(link);
+    } catch (e) {
+      debugPrint('[SampleDapp] _onLink error $e');
     }
   }
 

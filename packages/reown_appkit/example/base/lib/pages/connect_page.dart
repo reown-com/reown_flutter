@@ -13,7 +13,6 @@ import 'package:reown_appkit_dapp/utils/crypto/eip155.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
 import 'package:reown_appkit_dapp/utils/crypto/solana.dart';
-// import 'package:reown_appkit_dapp/utils/sample_wallets.dart';
 import 'package:reown_appkit_dapp/utils/string_constants.dart';
 import 'package:reown_appkit_dapp/widgets/chain_button.dart';
 import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
@@ -230,36 +229,18 @@ class ConnectPageState extends State<ConnectPage> {
           visible: !widget.appKitModal.isConnected,
           child: Column(
             children: [
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: const Divider(height: 1.0),
-              //     ),
-              //     const Text(
-              //       ' Or ',
-              //       style: StyleConstants.buttonText,
-              //       textAlign: TextAlign.center,
-              //     ),
-              //     Expanded(
-              //       child: const Divider(height: 1.0),
-              //     ),
-              //   ],
-              // ),
-              // const SizedBox(height: StyleConstants.linear16),
-              // const Text(
-              //   'Custom connection',
-              //   style: StyleConstants.buttonText,
-              //   textAlign: TextAlign.center,
-              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'non-EVM',
-                    style: TextStyle(
-                      fontWeight: !widget.linkMode
-                          ? FontWeight.bold
-                          : FontWeight.normal,
+                  Expanded(
+                    child: Text(
+                      'non-EVM\nSession Proposal',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        fontWeight: !widget.linkMode
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
                     ),
                   ),
                   Switch(
@@ -268,117 +249,18 @@ class ConnectPageState extends State<ConnectPage> {
                       widget.reinitialize(value);
                     },
                   ),
-                  Text(
-                    'Link Mode',
-                    style: TextStyle(
-                      fontWeight:
-                          widget.linkMode ? FontWeight.bold : FontWeight.normal,
+                  Expanded(
+                    child: Text(
+                      'only EVM\nLink Mode',
+                      style: TextStyle(
+                        fontWeight: widget.linkMode
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
                     ),
                   ),
                 ],
               ),
-              // const SizedBox(height: StyleConstants.linear16),
-              // Wrap(
-              //   spacing: 10.0,
-              //   children: chainButtons,
-              // ),
-              // // const Divider(),
-              // const Text('Test chains'),
-              // Wrap(
-              //   spacing: 10.0,
-              //   children: testButtons,
-              // ),
-              // const SizedBox(height: StyleConstants.linear16),
-              // // const Divider(),
-              // !_linkMode
-              //     ? Column(
-              //         crossAxisAlignment: CrossAxisAlignment.center,
-              //         children: [
-              //           const Text(
-              //             'Session Propose:',
-              //             style: StyleConstants.buttonText,
-              //           ),
-              //           const SizedBox(height: StyleConstants.linear8),
-              //           Column(
-              //             children:
-              //                 WCSampleWallets.getSampleWallets().map((wallet) {
-              //               return Padding(
-              //                 padding: const EdgeInsets.only(bottom: 8.0),
-              //                 child: ElevatedButton(
-              //                   style: _buttonStyle,
-              //                   onPressed: _selectedChains.isEmpty
-              //                       ? null
-              //                       : () {
-              //                           _onConnect(
-              //                             nativeLink: '${wallet['schema']}',
-              //                             closeModal: () {
-              //                               if (Navigator.canPop(context)) {
-              //                                 Navigator.of(context).pop();
-              //                               }
-              //                             },
-              //                             showToast: (m) async {
-              //                               showPlatformToast(
-              //                                 child: Text(m),
-              //                                 context: context,
-              //                               );
-              //                             },
-              //                           );
-              //                         },
-              //                   child: Text(
-              //                     '${wallet['name']}',
-              //                     style: StyleConstants.buttonText,
-              //                   ),
-              //                 ),
-              //               );
-              //             }).toList(),
-              //           ),
-              //         ],
-              //       )
-              //     : Column(
-              //         crossAxisAlignment: CrossAxisAlignment.center,
-              //         children: [
-              //           const Text(
-              //             'Link Mode:',
-              //             style: StyleConstants.buttonText,
-              //           ),
-              //           const SizedBox(height: StyleConstants.linear8),
-              //           Column(
-              //             children:
-              //                 WCSampleWallets.getSampleWallets().map((wallet) {
-              //               return Padding(
-              //                 padding: const EdgeInsets.only(bottom: 8.0),
-              //                 child: ElevatedButton(
-              //                   style: _buttonStyle,
-              //                   onPressed: _selectedChains.isEmpty
-              //                       ? null
-              //                       : () {
-              //                           _sessionAuthenticate(
-              //                             nativeLink: '${wallet['schema']}',
-              //                             universalLink:
-              //                                 '${wallet['universal']}',
-              //                             closeModal: () {
-              //                               if (Navigator.canPop(context)) {
-              //                                 Navigator.of(context).pop();
-              //                               }
-              //                             },
-              //                             showToast: (message) {
-              //                               showPlatformToast(
-              //                                 child: Text(message),
-              //                                 context: context,
-              //                               );
-              //                             },
-              //                           );
-              //                         },
-              //                   child: Text(
-              //                     '${wallet['name']}',
-              //                     style: StyleConstants.buttonText,
-              //                   ),
-              //                 ),
-              //               );
-              //             }).toList(),
-              //           ),
-              //         ],
-              //       ),
             ],
           ),
         ),
@@ -434,6 +316,7 @@ class ConnectPageState extends State<ConnectPage> {
         [];
   }
 
+  // ignore: unused_element
   Future<void> _onConnect({
     required String nativeLink,
     VoidCallback? closeModal,
@@ -465,6 +348,7 @@ class ConnectPageState extends State<ConnectPage> {
     closeModal?.call();
   }
 
+  // ignore: unused_element
   void _sessionAuthenticate({
     required String nativeLink,
     required String universalLink,
@@ -606,6 +490,7 @@ class ConnectPageState extends State<ConnectPage> {
     setState(() {});
   }
 
+  // ignore: unused_element
   ButtonStyle get _buttonStyle => ButtonStyle(
         backgroundColor: MaterialStateProperty.resolveWith<Color>(
           (states) {

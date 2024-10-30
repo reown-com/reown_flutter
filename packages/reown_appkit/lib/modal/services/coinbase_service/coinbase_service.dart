@@ -53,16 +53,17 @@ class CoinbaseService implements ICoinbaseService {
         publicKey: '',
       );
 
-  static const supportedMethods = [
-    ...MethodsConstants.requiredMethods,
-    'eth_requestAccounts',
-    'eth_signTypedData_v3',
-    'eth_signTypedData_v4',
-    'eth_signTransaction',
-    MethodsConstants.walletSwitchEthChain,
-    MethodsConstants.walletAddEthChain,
-    'wallet_watchAsset',
-  ];
+  @override
+  List<String> get supportedMethods => [
+        ...MethodsConstants.requiredMethods,
+        'eth_requestAccounts',
+        'eth_signTypedData_v3',
+        'eth_signTypedData_v4',
+        'eth_signTransaction',
+        MethodsConstants.walletSwitchEthChain,
+        MethodsConstants.walletAddEthChain,
+        'wallet_watchAsset',
+      ];
 
   @override
   Event<CoinbaseConnectEvent> onCoinbaseConnect = Event<CoinbaseConnectEvent>();

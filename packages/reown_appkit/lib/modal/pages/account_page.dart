@@ -257,6 +257,7 @@ class _EmailAndSocialLoginButton extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _ConnectedWalletButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

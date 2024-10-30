@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/coinbase_service.dart';
+import 'package:reown_appkit/modal/services/coinbase_service/i_coinbase_service.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_data.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_data.dart';
@@ -110,7 +111,7 @@ class ReownAppKitModalSession {
       return null;
     }
     if (sessionService.isCoinbase) {
-      return CoinbaseService.supportedMethods;
+      return GetIt.I<ICoinbaseService>().supportedMethods;
     }
     if (sessionService.isMagic) {
       final ns = namespace ?? NetworkUtils.eip155;
@@ -372,7 +373,7 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
         eip155: Namespace(
           chains: [...allEIP155],
           accounts: [...getAccounts(namespace: eip155)!],
-          methods: [...CoinbaseService.supportedMethods],
+          methods: [...GetIt.I<ICoinbaseService>().supportedMethods],
           // Coinbase does not have events as it doesn't use WC protocol
           events: [],
         ),

@@ -483,9 +483,8 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
 
     try {
       _chainBalance = null;
-      final tokenName = chainInfo.currency;
       final formattedBalance = CoreUtils.formatChainBalance(_chainBalance);
-      balanceNotifier.value = '$formattedBalance $tokenName';
+      balanceNotifier.value = '$formattedBalance ${chainInfo.currency}';
 
       final hasValidSession = _isConnected && _currentSession != null;
       if (switchChain && hasValidSession && _currentSelectedChainId != null) {
@@ -534,17 +533,25 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       return getApprovedChains();
     }
 
+    final isMagic = _currentSession!.sessionService.isMagic;
+    final isCoinbase = _currentSession!.sessionService.isCoinbase;
+    if (isMagic || isCoinbase) {
+      return getApprovedChains();
+    }
+
     List<String> availableChains = [];
     final namespaces = ReownAppKitModalNetworks.getAllSupportedNamespaces();
     for (var ns in namespaces) {
       final chains =
           ReownAppKitModalNetworks.getAllSupportedNetworks(namespace: ns)
-              .map(
-                (e) => '$ns:${e.chainId}',
-              )
+              .map((e) => '$ns:${e.chainId}')
               .toList();
       availableChains.addAll(chains);
     }
+    if (availableChains.isEmpty) {
+      return getApprovedChains();
+    }
+
     return availableChains;
   }
 
@@ -1474,7 +1481,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     if (namespace != NetworkUtils.eip155) {
       // If chain is not EVM then there's no need to request a switch since it doesn't exist such method for non-EVM chains
       // Therefor at this point the selected non-EVM chain is either already approved, invalidating the need of a switch call, or not approved, failing with the following error.
-      throw ReownAppKitModalException('Unsupported Chain');
+      throw ReownAppKitModalException('Chain namespace is not supported');
     }
     if (_currentSession?.sessionService.isMagic == true) {
       await selectChain(newChain);
@@ -1596,15 +1603,23 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     }
   }
 
+  Future<void> _deleteStorage() async {
+    for (var key in _storage.keys) {
+      if (key.startsWith(StorageConstants.prefix)) {
+        await _storage.delete(key);
+      }
+    }
+  }
+
   Future<void> _cleanSession({SessionDelete? args, bool event = true}) async {
     try {
       final storedWalletId = _storage.get(StorageConstants.recentWalletId);
       final walletId = storedWalletId?['walletId'];
-      await _storage.deleteAll();
+      await _deleteStorage();
       await _explorerService.storeRecentWalletId(walletId);
     } catch (e, s) {
       _appKit.core.logger.e('[$runtimeType] _cleanSession $e', stackTrace: s);
-      await _storage.deleteAll();
+      await _deleteStorage();
     }
     if (event) {
       onModalDisconnect.broadcast(ModalDisconnect(

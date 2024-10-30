@@ -21,6 +21,8 @@ class CoinbaseNotEnabledException extends CoinbaseServiceException {
 }
 
 abstract class ICoinbaseService {
+  List<String> get supportedMethods;
+
   Future<void> init();
   Future<bool> isConnected();
   Future<void> getAccount();

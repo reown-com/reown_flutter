@@ -33,12 +33,12 @@ class UIConstants {
 
 class StorageConstants {
   // Storage
-  static const _prefix = '${CoreConstants.X_SDK_TYPE}:$packageVersion//';
+  static const prefix = '${CoreConstants.X_SDK_TYPE}:$packageVersion//';
 
-  static const String recentWalletId = '${_prefix}recentWallet';
-  static const String connectedWalletData = '${_prefix}walletData';
-  static const String selectedChainId = '${_prefix}selectedChainId';
-  static const String modalSession = '${_prefix}session';
+  static const String recentWalletId = '${prefix}recentWallet';
+  static const String connectedWalletData = '${prefix}walletData';
+  static const String selectedChainId = '${prefix}selectedChainId';
+  static const String modalSession = '${prefix}session';
 }
 
 class UrlConstants {

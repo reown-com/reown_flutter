@@ -61,17 +61,17 @@ class MagicService implements IMagicService {
   late final WebViewWidget _webview;
 
   @override
-  final Map<String, List<String>> supportedMethods = {
-    NetworkUtils.eip155: [
-      'personal_sign',
-      'eth_sendTransaction',
-      'eth_accounts',
-      'eth_sendRawTransaction',
-      'eth_signTypedData_v4',
-    ],
-    NetworkUtils.solana:
-        NetworkUtils.defaultNetworkMethods[NetworkUtils.solana]!,
-  };
+  Map<String, List<String>> get supportedMethods => {
+        NetworkUtils.eip155: [
+          'personal_sign',
+          'eth_sendTransaction',
+          'eth_accounts',
+          'eth_sendRawTransaction',
+          'eth_signTypedData_v4',
+        ],
+        NetworkUtils.solana:
+            NetworkUtils.defaultNetworkMethods[NetworkUtils.solana]!,
+      };
 
   @override
   WebViewWidget get webview => _webview;
