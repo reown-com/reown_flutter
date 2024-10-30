@@ -2283,7 +2283,7 @@ class ReownSign implements IReownSign {
         ttl: ttl,
         appLink: isLinkMode ? walletUniversalLink : null,
         // We don't want to open the appLink in this case as it will be opened by the host app
-        openUrl: false,
+        // openUrl: false,
       );
       result = WcSessionAuthRequestResult.fromJson(response);
     } catch (error) {

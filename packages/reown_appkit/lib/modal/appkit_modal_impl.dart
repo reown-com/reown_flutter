@@ -809,11 +809,11 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
         await _explorerService.storeConnectedWallet(_selectedWallet);
       } else {
         await buildConnectionUri();
-        await _uriService.openRedirect(
-          walletRedirect,
-          wcURI: wcUri!,
-          pType: pType,
-        );
+        // await _uriService.openRedirect(
+        //   walletRedirect,
+        //   wcURI: wcUri!,
+        //   pType: pType,
+        // );
       }
     } on LaunchUrlException catch (e) {
       if (e is CanNotLaunchUrl) {
