@@ -158,6 +158,7 @@ class GenericStore<T> implements IGenericStore<T> {
       } catch (e) {
         // print('Error restoring $storageKey: $e');
         await storage.delete(storedVersion);
+        rethrow;
       }
     }
   }

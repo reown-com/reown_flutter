@@ -351,6 +351,8 @@ class Pairing implements IPairing {
   Future<void> disconnect({required String topic}) async {
     _checkInitialized();
 
+    core.logger.i('[$runtimeType] disconnect $topic');
+
     await _isValidDisconnect(topic);
     if (pairings.has(topic)) {
       // Send the request to delete the pairing, we don't care if it fails
@@ -605,6 +607,7 @@ class Pairing implements IPairing {
   }
 
   Future<void> _deletePairing(String topic, bool expirerHasDeleted) async {
+    core.logger.d('[$runtimeType] _deletePairing $topic, $expirerHasDeleted');
     await core.relayClient.unsubscribe(topic: topic);
     await pairings.delete(topic);
     await core.crypto.deleteSymKey(topic);
@@ -614,6 +617,7 @@ class Pairing implements IPairing {
   }
 
   Future<void> _cleanup() async {
+    core.logger.d('[$runtimeType] _cleanup');
     final List<PairingInfo> expiredPairings = getPairings()
         .where(
           (PairingInfo info) => ReownCoreUtils.isExpired(info.expiry),
@@ -780,7 +784,9 @@ class Pairing implements IPairing {
     JsonRpcRequest request, [
     _,
   ]) async {
-    // print('delete');
+    core.logger.d(
+      '[$runtimeType] _onPairingDeleteRequest $topic, ${request.toJson()}',
+    );
     final int id = request.id;
     try {
       await _isValidDisconnect(topic);
@@ -846,6 +852,7 @@ class Pairing implements IPairing {
     if (event == null) {
       return;
     }
+    core.logger.d('[$runtimeType] _onExpired, ${event.toString()}');
 
     if (pairings.has(event.target)) {
       // Clean up the pairing
