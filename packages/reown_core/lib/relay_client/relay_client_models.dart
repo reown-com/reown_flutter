@@ -57,8 +57,8 @@ class ErrorEvent extends EventArgs {
     this.stackTrace,
   ]);
 
-  dynamic error;
-  StackTrace? stackTrace;
+  final dynamic error;
+  final StackTrace? stackTrace;
 }
 
 class SubscriptionEvent extends EventArgs {
