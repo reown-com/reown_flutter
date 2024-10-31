@@ -1,9 +1,9 @@
 import 'package:reown_core/store/generic_store.dart';
 import 'package:reown_core/store/i_generic_store.dart';
-import 'package:reown_core/utils/constants.dart';
 
-abstract class ILinkModeStore extends IGenericStore<List<String>> {
-  Future<void> update(String url);
+abstract class ILinkModeStore implements IGenericStore<List<String>> {
+  Future<bool> update(String url);
+  Future<bool> remove(String url);
   List<String> getList();
 }
 
@@ -17,17 +17,40 @@ class LinkModeStore extends GenericStore<List<String>>
     required super.fromJson,
   });
 
-  static const _key = ReownConstants.REOWN_LINK_MODE_APPS;
+  static const _key = 'linkModeStore';
 
   @override
-  Future<void> update(String url) async {
+  Future<bool> update(String url) async {
     checkInitialized();
 
-    final currentList = getList();
-    if (!currentList.contains(url)) {
-      final newList = List<String>.from([...currentList, url]);
-      await storage.set(_key, {_key: newList});
+    try {
+      final currentList = getList();
+      if (!currentList.contains(url)) {
+        final newList = List<String>.from([...currentList, url]);
+        await storage.set(_key, {_key: newList});
+        return true;
+      }
+    } catch (_) {
+      // debugPrint('[$runtimeType] update, $_key, $e');
     }
+    return false;
+  }
+
+  @override
+  Future<bool> remove(String url) async {
+    checkInitialized();
+
+    try {
+      final currentList = getList();
+      if (currentList.contains(url)) {
+        final newList = List<String>.from(currentList..remove(url));
+        await storage.set(_key, {_key: newList});
+        return true;
+      }
+    } catch (_) {
+      // debugPrint('[$runtimeType] remove, $_key, $e');
+    }
+    return false;
   }
 
   @override

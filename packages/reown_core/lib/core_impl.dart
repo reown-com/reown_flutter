@@ -226,13 +226,16 @@ class ReownCore implements IReownCore {
   }
 
   @override
-  Future<void> addLinkModeSupportedApp(String universalLink) async {
+  Future<bool> addLinkModeSupportedApp(String universalLink) async {
+    logger.d('[$runtimeType] addLinkModeSupportedApp $universalLink');
     return await linkModeStore.update(universalLink);
   }
 
   @override
   List<String> getLinkModeSupportedApps() {
-    return linkModeStore.getList();
+    final linoModeApps = linkModeStore.getList();
+    logger.d('[$runtimeType] getLinkModeSupportedApps $linoModeApps');
+    return linoModeApps;
   }
 
   @override
