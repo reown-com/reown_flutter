@@ -242,18 +242,18 @@ class _MyHomePageState extends State<MyHomePage> {
         metadata: _pairingMetadata(),
         siweConfig: _siweConfig(siweAuthValue),
         enableAnalytics: analyticsValue, // OPTIONAL - null by default
-        // featuresConfig: emailWalletValue
-        //     ? FeaturesConfig(
-        //         email: true,
-        //         socials: [
-        //           AppKitSocialOption.Farcaster,
-        //           AppKitSocialOption.X,
-        //           AppKitSocialOption.Apple,
-        //           AppKitSocialOption.Discord,
-        //         ],
-        //         // showMainWallets: false, // OPTIONAL - true by default
-        //       )
-        //     : null,
+        featuresConfig: emailWalletValue
+            ? FeaturesConfig(
+                email: true,
+                socials: [
+                  AppKitSocialOption.Farcaster,
+                  AppKitSocialOption.X,
+                  AppKitSocialOption.Apple,
+                  AppKitSocialOption.Discord,
+                ],
+                // showMainWallets: false, // OPTIONAL - true by default
+              )
+            : null,
         // requiredNamespaces: {},
         // optionalNamespaces: {},
         // includedWalletIds: {},

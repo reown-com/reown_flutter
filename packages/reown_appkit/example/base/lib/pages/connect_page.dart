@@ -594,6 +594,30 @@ class __FooterWidgetState extends State<_FooterWidget> {
           },
         ),
         const SizedBox(height: StyleConstants.linear8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Visibility(
+              visible: !widget.appKitModal.isConnected,
+              child: SizedBox(
+                height: 30.0,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await widget.appKitModal.appKit!.core.storage.deleteAll();
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Storage cleared'),
+                      duration: Duration(seconds: 1),
+                    ));
+                  },
+                  child: Text(
+                    'CLEAR STORAGE',
+                    style: TextStyle(fontSize: 10.0),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }

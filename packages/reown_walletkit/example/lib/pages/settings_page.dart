@@ -81,6 +81,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 const SizedBox(height: 20.0),
                 const Divider(height: 1.0),
                 _Buttons(
+                  onDeleteData: () async {
+                    final walletKit = GetIt.I<IWalletKitService>().walletKit;
+                    await walletKit.core.storage.deleteAll();
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Storage cleared'),
+                      duration: Duration(seconds: 1),
+                    ));
+                  },
                   onRestoreFromSeed: () async {
                     final mnemonic =
                         await GetIt.I<IBottomSheetService>().queueBottomSheet(
@@ -624,9 +632,11 @@ class _DeviceData extends StatelessWidget {
 class _Buttons extends StatelessWidget {
   final VoidCallback onRestoreFromSeed;
   final VoidCallback onRestoreDefault;
+  final VoidCallback onDeleteData;
   const _Buttons({
     required this.onRestoreFromSeed,
     required this.onRestoreDefault,
+    required this.onDeleteData,
   });
 
   @override
@@ -636,6 +646,19 @@ class _Buttons extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 8.0),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: onDeleteData,
+              child: Text(
+                'Clear local storage',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 12.0),
           Row(
             children: [
               CustomButton(

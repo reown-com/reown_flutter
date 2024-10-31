@@ -1483,14 +1483,15 @@ class MockReownCore extends _i1.Mock implements _i28.ReownCore {
       ) as _i23.Future<void>);
 
   @override
-  _i23.Future<bool> addLinkModeSupportedApp(String? universalLink) =>
+  _i23.Future<void> addLinkModeSupportedApp(String? universalLink) =>
       (super.noSuchMethod(
         Invocation.method(
           #addLinkModeSupportedApp,
           [universalLink],
         ),
-        returnValue: _i23.Future<bool>.value(false),
-      ) as _i23.Future<bool>);
+        returnValue: _i23.Future<void>.value(),
+        returnValueForMissingStub: _i23.Future<void>.value(),
+      ) as _i23.Future<void>);
 
   @override
   List<String> getLinkModeSupportedApps() => (super.noSuchMethod(

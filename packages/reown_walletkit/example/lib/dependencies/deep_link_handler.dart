@@ -47,7 +47,7 @@ class DeepLinkHandler {
     try {
       return await _walletKit.dispatchEnvelope('$link');
     } catch (e) {
-      final decodedUri = Uri.parse(Uri.decodeFull(link.toString()));
+      final decodedUri = Uri.parse(Uri.decodeFull('$link'));
       if (decodedUri.isScheme('wc')) {
         debugPrint('[SampleWallet] is legacy uri $decodedUri');
         waiting.value = true;

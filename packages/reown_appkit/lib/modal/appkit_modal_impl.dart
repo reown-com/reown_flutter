@@ -809,11 +809,16 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
         await _explorerService.storeConnectedWallet(_selectedWallet);
       } else {
         await buildConnectionUri();
-        // await _uriService.openRedirect(
-        //   walletRedirect,
-        //   wcURI: wcUri!,
-        //   pType: pType,
-        // );
+        final linkMode = walletRedirect.linkMode ?? '';
+        if (linkMode.isNotEmpty && _wcUri.startsWith(linkMode)) {
+          await ReownCoreUtils.openURL(_wcUri);
+        } else {
+          await _uriService.openRedirect(
+            walletRedirect,
+            wcURI: _wcUri,
+            pType: pType,
+          );
+        }
       }
     } on LaunchUrlException catch (e) {
       if (e is CanNotLaunchUrl) {
@@ -885,6 +890,9 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
             ...p2,
           });
           // One-Click Auth
+          _appKit.core.logger.d(
+            '[$runtimeType] authenticate ${jsonEncode(authParams.toJson())}, ${walletRedirect?.linkMode}',
+          );
           final authResponse = await _appKit.authenticate(
             params: authParams,
             walletUniversalLink: walletRedirect?.linkMode,
