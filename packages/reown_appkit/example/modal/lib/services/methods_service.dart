@@ -75,12 +75,13 @@ class MethodsService {
   static Future<dynamic> callMethod({
     required ReownAppKitModal appKitModal,
     required String topic,
-    required SupportedMethods method,
+    required String method,
     required String chainId,
     required String address,
   }) {
     // final cid = int.parse(chainId);
-    switch (method) {
+    final supportedMethod = MethodsService.methodFromName(method);
+    switch (supportedMethod) {
       case SupportedMethods.requestAccounts:
         return requestAccounts(
           appKitModal: appKitModal,
@@ -251,13 +252,13 @@ class MethodsService {
   static Future<dynamic> ethSendOrSignTransaction({
     required ReownAppKitModal appKitModal,
     required Transaction transaction,
-    required SupportedMethods method,
+    required String method,
   }) async {
     return await appKitModal.request(
       topic: appKitModal.session!.topic,
       chainId: appKitModal.selectedChain!.chainId,
       request: SessionRequestParams(
-        method: method.name,
+        method: method,
         params: [
           transaction.toJson(),
         ],

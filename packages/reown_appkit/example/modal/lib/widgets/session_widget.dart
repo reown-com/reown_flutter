@@ -269,7 +269,7 @@ class SessionWidgetState extends State<SessionWidget> {
     final usableMethods = SupportedMethods.values.map((e) => e.name).toList();
     //
     final List<Widget> children = [];
-    for (final method in (approvedMethods ?? [])) {
+    for (final method in (approvedMethods ?? <String>[])) {
       final implemented = usableMethods.contains(method);
       children.add(
         Container(
@@ -280,10 +280,7 @@ class SessionWidgetState extends State<SessionWidget> {
             onPressed: implemented
                 ? () async {
                     widget.appKit.launchConnectedWallet();
-                    final future =
-                        callChainMethod(MethodsService.methodFromName(
-                      method,
-                    ));
+                    final future = callChainMethod(method);
                     MethodDialog.show(context, method, future);
                   }
                 : null,
@@ -478,7 +475,7 @@ class SessionWidgetState extends State<SessionWidget> {
     );
   }
 
-  Future<dynamic> callChainMethod(SupportedMethods method) {
+  Future<dynamic> callChainMethod(String method) {
     final session = widget.appKit.session!;
     final chainId = widget.appKit.selectedChain!.chainId;
     final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);

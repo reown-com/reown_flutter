@@ -210,29 +210,32 @@ class _MyHomePageState extends State<MyHomePage> {
     // Add extra chains
     // final extraChains = ReownAppKitModalNetworks.extra['eip155']!;
     // ReownAppKitModalNetworks.addSupportedNetworks('eip155', extraChains);
-    // Remove Solana support
-    ReownAppKitModalNetworks.removeSupportedNetworks('solana');
     // Remove every test network
     // ReownAppKitModalNetworks.removeTestNetworks();
-    // Add custom chains
-    // ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
-    //   ReownAppKitModalNetworkInfo(
-    //     name: 'Polkadot',
-    //     chainId: '91b171bb158e2d3848fa23a9f1c25182',
-    //     chainIcon: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png',
-    //     currency: 'DOT',
-    //     rpcUrl: 'https://rpc.polkadot.io',
-    //     explorerUrl: 'https://polkadot.subscan.io',
-    //   ),
-    //   ReownAppKitModalNetworkInfo(
-    //     name: 'Westend',
-    //     chainId: 'e143f23803ac50e8f6f8e62695d1ce9e',
-    //     currency: 'DOT',
-    //     rpcUrl: 'https://westend-rpc.polkadot.io',
-    //     explorerUrl: 'https://westend.subscan.io',
-    //     isTestNetwork: true,
-    //   ),
-    // ]);
+    if (siweAuthValue) {
+      // Remove Solana support
+      ReownAppKitModalNetworks.removeSupportedNetworks('solana');
+    } else {
+      // Add custom chains
+      ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
+        ReownAppKitModalNetworkInfo(
+          name: 'Polkadot',
+          chainId: '91b171bb158e2d3848fa23a9f1c25182',
+          chainIcon: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png',
+          currency: 'DOT',
+          rpcUrl: 'https://rpc.polkadot.io',
+          explorerUrl: 'https://polkadot.subscan.io',
+        ),
+        ReownAppKitModalNetworkInfo(
+          name: 'Westend',
+          chainId: 'e143f23803ac50e8f6f8e62695d1ce9e',
+          currency: 'DOT',
+          rpcUrl: 'https://westend-rpc.polkadot.io',
+          explorerUrl: 'https://westend.subscan.io',
+          isTestNetwork: true,
+        ),
+      ]);
+    }
 
     try {
       _appKitModal = ReownAppKitModal(
@@ -272,33 +275,38 @@ class _MyHomePageState extends State<MyHomePage> {
         //   // You could place here your own getBalance method
         //   return 0.123;
         // },
-        // optionalNamespaces: {
-        //   'eip155': RequiredNamespace.fromJson({
-        //     'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
-        //       namespace: 'eip155',
-        //     ).map((chain) => 'eip155:${chain.chainId}').toList(),
-        //     'methods': NetworkUtils.defaultNetworkMethods['eip155']!.toList(),
-        //     'events': NetworkUtils.defaultNetworkEvents['eip155']!.toList(),
-        //   }),
-        //   'solana': RequiredNamespace.fromJson({
-        //     'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
-        //       namespace: 'solana',
-        //     ).map((chain) => 'solana:${chain.chainId}').toList(),
-        //     'methods': NetworkUtils.defaultNetworkMethods['solana']!.toList(),
-        //     'events': [],
-        //   }),
-        //   'polkadot': RequiredNamespace.fromJson({
-        //     'chains': [
-        //       'polkadot:91b171bb158e2d3848fa23a9f1c25182',
-        //       'polkadot:e143f23803ac50e8f6f8e62695d1ce9e'
-        //     ],
-        //     'methods': [
-        //       'polkadot_signMessage',
-        //       'polkadot_signTransaction',
-        //     ],
-        //     'events': []
-        //   }),
-        // },
+        optionalNamespaces: siweAuthValue
+            ? null
+            : {
+                'eip155': RequiredNamespace.fromJson({
+                  'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
+                    namespace: 'eip155',
+                  ).map((chain) => 'eip155:${chain.chainId}').toList(),
+                  'methods':
+                      NetworkUtils.defaultNetworkMethods['eip155']!.toList(),
+                  'events':
+                      NetworkUtils.defaultNetworkEvents['eip155']!.toList(),
+                }),
+                'solana': RequiredNamespace.fromJson({
+                  'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
+                    namespace: 'solana',
+                  ).map((chain) => 'solana:${chain.chainId}').toList(),
+                  'methods':
+                      NetworkUtils.defaultNetworkMethods['solana']!.toList(),
+                  'events': [],
+                }),
+                'polkadot': RequiredNamespace.fromJson({
+                  'chains': [
+                    'polkadot:91b171bb158e2d3848fa23a9f1c25182',
+                    'polkadot:e143f23803ac50e8f6f8e62695d1ce9e'
+                  ],
+                  'methods': [
+                    'polkadot_signMessage',
+                    'polkadot_signTransaction',
+                  ],
+                  'events': []
+                }),
+              },
       );
       overlay = OverlayController(
         const Duration(milliseconds: 200),
