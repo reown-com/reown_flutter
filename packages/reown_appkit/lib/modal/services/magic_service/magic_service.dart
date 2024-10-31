@@ -509,7 +509,7 @@ class MagicService implements IMagicService {
     if (!isConnected.value) {
       _resetTimeOut();
       _disconnectCompleter.complete(true);
-      return true;
+      return await _disconnectCompleter.future;
     }
     final message = SignOut().toString();
     await _webViewController.runJavaScript('sendMessage($message)');

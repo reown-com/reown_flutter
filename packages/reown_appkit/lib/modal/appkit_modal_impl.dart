@@ -419,6 +419,9 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     try {
       if (_storage.has(StorageConstants.modalSession)) {
         final storedSession = _storage.get(StorageConstants.modalSession);
+        _appKit.core.logger.i(
+          '[$runtimeType] _getStoredSession, storedSession: $storedSession, key: ${StorageConstants.modalSession}',
+        );
         if (storedSession != null) {
           return ReownAppKitModalSession.fromMap(storedSession);
         }
@@ -1053,16 +1056,19 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     if (_currentSession?.sessionService.isCoinbase == true) {
       try {
         await _coinbaseService.resetSession();
-      } catch (_) {
+      } catch (e) {
+        _appKit.core.logger.d('[$runtimeType] disconnect coinbase $e');
         _status = ReownAppKitModalStatus.initialized;
         _notify();
         return;
       }
     }
     if (_currentSession?.sessionService.isMagic == true) {
-      await Future.delayed(Duration(milliseconds: 300));
-      final disconnected = await _magicService.disconnect();
-      if (!disconnected) {
+      try {
+        await Future.delayed(Duration(milliseconds: 300));
+        await _magicService.disconnect();
+      } catch (e) {
+        _appKit.core.logger.d('[$runtimeType] disconnect magic $e');
         _status = ReownAppKitModalStatus.initialized;
         _notify();
         return;
@@ -1612,11 +1618,8 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   }
 
   Future<void> _deleteStorage() async {
-    for (var key in _storage.keys) {
-      if (key.startsWith(StorageConstants.prefix)) {
-        await _storage.delete(key);
-      }
-    }
+    await _storage.delete(StorageConstants.selectedChainId);
+    await _storage.delete(StorageConstants.modalSession);
   }
 
   Future<void> _cleanSession({SessionDelete? args, bool event = true}) async {
