@@ -1387,7 +1387,8 @@ class ReownSign implements IReownSign {
       final appLink = (session.peer.metadata.redirect?.universal ?? '');
       if (session.transportType.isLinkMode && appLink.isNotEmpty) {
         // save app as supported for link mode
-        core.addLinkModeSupportedApp(appLink);
+        final success = await core.addLinkModeSupportedApp(appLink);
+        core.logger.d('[$runtimeType] addLinkModeSupportedApp, $success');
       }
 
       final methodKey = _getRegisterKey(
@@ -2055,10 +2056,17 @@ class ReownSign implements IReownSign {
     final selfLinkMode = metadata.redirect?.linkMode == true;
     final selfLink = (metadata.redirect?.universal ?? '');
     final walletUniversalLink = (walletLink ?? '');
+    final linkModeApps = core.getLinkModeSupportedApps();
+    final containsLink = linkModeApps.contains(walletLink);
+    core.logger.d(
+      '[$runtimeType] _isLinkModeAuthenticate, selfLinkMode: $selfLinkMode, '
+      'selfLink: $selfLink, walletUniversalLink: $walletUniversalLink '
+      'linkModeApps: $linkModeApps, containsLink: $containsLink',
+    );
     return selfLinkMode &&
         selfLink.isNotEmpty &&
         walletUniversalLink.isNotEmpty &&
-        core.getLinkModeSupportedApps().contains(walletLink);
+        containsLink;
   }
 
   @override
@@ -2425,14 +2433,13 @@ class ReownSign implements IReownSign {
     if (selfLinkMode && responderLinkMode) {
       if (walletLink.isNotEmpty && matchesLink) {
         // save wallet link in array of apps that support linkMode
-        await core.addLinkModeSupportedApp(walletUniversalLink!);
-        core.logger.d(
-          '[$runtimeType] session update $sessionTopic to linkMode',
-        );
-        await sessions.update(
-          sessionTopic,
-          transportType: TransportType.linkMode,
-        );
+        final success = await core.addLinkModeSupportedApp(walletLink);
+        if (success) {
+          await sessions.update(
+            sessionTopic,
+            transportType: TransportType.linkMode,
+          );
+        }
       }
     }
   }
@@ -2666,17 +2673,15 @@ class ReownSign implements IReownSign {
       );
     }
 
-    final sessionAuthRequest = WcSessionAuthRequestParams.fromJson(
-      payload.params,
-    );
+    final saRequest = WcSessionAuthRequestParams.fromJson(payload.params);
     try {
       final cacaoPayload = CacaoRequestPayload.fromSessionAuthPayload(
-        sessionAuthRequest.authPayload,
+        saRequest.authPayload,
       );
 
       final verifyContext = await _getVerifyContext(
         payload,
-        sessionAuthRequest.requester.metadata,
+        saRequest.requester.metadata,
         transportType,
       );
 
@@ -2685,33 +2690,32 @@ class ReownSign implements IReownSign {
         PendingSessionAuthRequest(
           id: payload.id,
           pairingTopic: topic,
-          requester: sessionAuthRequest.requester,
+          requester: saRequest.requester,
           authPayload: cacaoPayload,
-          expiryTimestamp: sessionAuthRequest.expiryTimestamp,
+          expiryTimestamp: saRequest.expiryTimestamp,
           verifyContext: verifyContext,
           transportType: transportType,
         ),
       );
 
-      final appLink =
-          (sessionAuthRequest.requester.metadata.redirect?.universal ?? '');
+      final appLink = (saRequest.requester.metadata.redirect?.universal ?? '');
       if (transportType.isLinkMode && appLink.isNotEmpty) {
         // save app as supported for link mode
-        core.addLinkModeSupportedApp(appLink);
+        await core.addLinkModeSupportedApp(appLink);
       }
 
       onSessionAuthRequest.broadcast(
         SessionAuthRequest(
           id: payload.id,
           topic: topic,
-          requester: sessionAuthRequest.requester,
-          authPayload: sessionAuthRequest.authPayload,
+          requester: saRequest.requester,
+          authPayload: saRequest.authPayload,
           verifyContext: verifyContext,
           transportType: transportType,
         ),
       );
     } on ReownSignError catch (err) {
-      final receiverPublicKey = sessionAuthRequest.requester.publicKey;
+      final receiverPublicKey = saRequest.requester.publicKey;
       final senderPublicKey = await core.crypto.generateKeyPair();
 
       final encodeOpts = EncodeOptions(
@@ -2735,6 +2739,7 @@ class ReownSign implements IReownSign {
   Future<void> dispatchEnvelope(String url) async {
     final topic = ReownCoreUtils.getSearchParamFromURL(url, 'topic');
     final envelope = ReownCoreUtils.getSearchParamFromURL(url, 'wc_ev');
+    core.logger.d('[$runtimeType] dispatchEnvelope $url');
 
     if (envelope.isEmpty) {
       throw ReownSignError(code: 0, message: 'Envelope not found');
@@ -2799,6 +2804,9 @@ class ReownSign implements IReownSign {
       final session = sessions.get(topic)!;
       final isLinkMode = session.transportType.isLinkMode;
       final isEnabled = _isLinkModeEnabled(session.peer.metadata);
+      core.logger.d(
+        '[$runtimeType] callRedirect, isLinkMode: $isLinkMode, isEnabled: $isEnabled',
+      );
       if (isLinkMode && isEnabled) {
         // linkMode redirection is already handled in the requests
         return false;
