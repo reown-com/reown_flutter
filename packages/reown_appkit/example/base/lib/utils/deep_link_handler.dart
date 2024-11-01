@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 
 class DeepLinkHandler {
   static const _methodChannel = MethodChannel(
@@ -10,7 +10,7 @@ class DeepLinkHandler {
     'com.walletconnect.flutterdapp/events',
   );
   static final waiting = ValueNotifier<bool>(false);
-  static late IReownAppKit _appKit;
+  static late IReownAppKitModal _appKitModal;
 
   static void initListener() {
     if (kIsWeb) return;
@@ -24,9 +24,9 @@ class DeepLinkHandler {
     }
   }
 
-  static void init(IReownAppKit appKit) {
+  static void init(IReownAppKitModal appKitModal) {
     if (kIsWeb) return;
-    _appKit = appKit;
+    _appKitModal = appKitModal;
   }
 
   static void checkInitialLink() async {
@@ -39,18 +39,17 @@ class DeepLinkHandler {
   }
 
   static Uri get nativeUri =>
-      Uri.parse(_appKit.metadata.redirect?.native ?? '');
+      Uri.parse(_appKitModal.appKit!.metadata.redirect?.native ?? '');
   static Uri get universalUri =>
-      Uri.parse(_appKit.metadata.redirect?.universal ?? '');
+      Uri.parse(_appKitModal.appKit!.metadata.redirect?.universal ?? '');
   static String get host => universalUri.host;
 
   static void _onLink(dynamic link) async {
     debugPrint('[SampleDapp] _onLink $link');
     if (link == null) return;
-    try {
-      return await _appKit.dispatchEnvelope(link);
-    } catch (e) {
-      debugPrint('[SampleDapp] _onLink error $e');
+    final handled = await _appKitModal.dispatchEnvelope(link);
+    if (!handled) {
+      debugPrint('[SampleDapp] _onLink not handled by AppKit');
     }
   }
 

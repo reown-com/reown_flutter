@@ -108,7 +108,7 @@ class CoinbaseService implements ICoinbaseService {
     final redirect = _metadata.redirect;
     final callback = redirect?.universal ?? redirect?.native ?? '';
     _core.logger.i(
-      '[$runtimeType] init with $walletLink, $redirect, $callback',
+      '[$runtimeType] init with host: ${Uri.parse(walletLink)}, callback: ${Uri.parse(callback)}',
     );
     if (callback.isNotEmpty || walletLink.isNotEmpty) {
       try {

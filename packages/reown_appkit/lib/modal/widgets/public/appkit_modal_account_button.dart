@@ -61,13 +61,14 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
   }
 
   void _modalNotifyListener() {
-    setState(() {
-      final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
+    final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
+    if (chainId.isNotEmpty) {
       final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
         chainId,
       );
       _address = widget.appKitModal.session?.getAddress(namespace) ?? '';
-    });
+    }
+    setState(() {});
   }
 
   void _onTap() {

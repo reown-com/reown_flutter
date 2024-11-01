@@ -251,6 +251,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
 
   @override
   Future<bool> dispatchEnvelope(String url) async {
+    _appKit.core.logger.d('[$runtimeType] dispatchEnvelope $url');
     final envelope = ReownCoreUtils.getSearchParamFromURL(url, 'wc_ev');
     if (envelope.isNotEmpty) {
       await _appKit.dispatchEnvelope(url);
@@ -2042,7 +2043,9 @@ extension _AppKitModalExtension on ReownAppKitModal {
   }
 
   void _oneSIWEFinish(ReownAppKitModalSession updatedSession) async {
-    _appKit.core.logger.d('[$runtimeType] _oneSIWEFinish $updatedSession');
+    _appKit.core.logger.d(
+      '[$runtimeType] _oneSIWEFinish ${updatedSession.toJson()}',
+    );
     await _storeSession(updatedSession);
     try {
       await _storage.set(

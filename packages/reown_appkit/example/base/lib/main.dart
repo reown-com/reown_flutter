@@ -190,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKitModal = ReownAppKitModal(
       context: context,
       appKit: _appKit,
-      siweConfig: linkMode ? _siweConfig() : null,
+      siweConfig: _siweConfig(linkMode),
       enableAnalytics: true,
       featuresConfig: FeaturesConfig(
         email: true,
@@ -307,7 +307,7 @@ class _MyHomePageState extends State<MyHomePage> {
     await _appKitModal!.init();
     await _registerEventHandlers();
 
-    DeepLinkHandler.init(_appKit!);
+    DeepLinkHandler.init(_appKitModal!);
     DeepLinkHandler.checkInitialLink();
 
     final allChains = ReownAppKitModalNetworks.getAllSupportedNetworks();
@@ -522,7 +522,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  SIWEConfig _siweConfig() => SIWEConfig(
+  SIWEConfig _siweConfig(bool enabled) => SIWEConfig(
         getNonce: () async {
           // this has to be called at the very moment of creating the pairing uri
           return SIWEUtils.generateNonce();
@@ -585,7 +585,7 @@ class _MyHomePageState extends State<MyHomePage> {
           // Called when disconnecting WalletConnect session was successfull
           debugPrint('[SIWEConfig] onSignOut()');
         },
-        enabled: true,
+        enabled: enabled,
         signOutOnDisconnect: true,
         signOutOnAccountChange: true,
         signOutOnNetworkChange: false,
