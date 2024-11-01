@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:reown_appkit/modal/models/public/appkit_network_info.dart';
-import 'package:reown_appkit/modal/utils/public/appkit_modal_networks_utils.dart';
+import 'package:reown_appkit/reown_appkit.dart';
 
 class ReownAppKitModalNetworks {
   // https://github.com/WalletConnect/blockchain-api/blob/master/SUPPORTED_CHAINS.md
@@ -219,6 +218,18 @@ class ReownAppKitModalNetworks {
     String namespace,
     String chainId,
   ) {
+    if (namespace.isEmpty) {
+      throw ReownAppKitModalException('`namespace` can not be empty');
+    }
+    if (chainId.isEmpty) {
+      throw ReownAppKitModalException('`chainId` can not be empty');
+    }
+    if (chainId.contains(':')) {
+      return getAllSupportedNetworks(namespace: chainId.split(':').first)
+          .firstWhere(
+        (e) => e.chainId == chainId.split(':').last,
+      );
+    }
     return getAllSupportedNetworks(namespace: namespace).firstWhere(
       (e) => e.chainId == chainId,
     );
@@ -229,6 +240,9 @@ class ReownAppKitModalNetworks {
     List<String> chainIds = const [],
     bool includeTestnets = true,
   }) {
+    if (namespace.isEmpty) {
+      throw ReownAppKitModalException('`namespace` can not be empty');
+    }
     _mainnets[namespace]?.removeWhere((chain) {
       if (chainIds.isEmpty || chainIds.contains(chain.chainId)) {
         return true;
@@ -255,6 +269,10 @@ class ReownAppKitModalNetworks {
     String namespace,
     List<ReownAppKitModalNetworkInfo> chains,
   ) {
+    if (namespace.isEmpty) {
+      throw ReownAppKitModalException('`namespace` can not be empty');
+    }
+
     final List<ReownAppKitModalNetworkInfo> mainnets = [
       ...List.from(_mainnets[namespace] ?? []),
       ...(chains.where((e) => e.isTestNetwork == false)),
@@ -279,22 +297,31 @@ class ReownAppKitModalNetworks {
   static List<ReownAppKitModalNetworkInfo> getAllSupportedNetworks({
     String? namespace,
   }) {
-    final allMainnets = namespace != null
+    final allMainnets = (namespace ?? '').isNotEmpty
         ? (_mainnets[namespace] ?? [])
         : _mainnets.values.expand((e) => e);
     final mainnets = allMainnets.where((e) {
       return !e.isTestNetwork;
     }).toList();
-    final allTestnets = namespace != null
+    //
+    final allTestnets = (namespace ?? '').isNotEmpty
         ? (_testnets[namespace] ?? [])
         : _testnets.values.expand((e) => e);
     final testnets = allTestnets.where((e) {
       return e.isTestNetwork;
     }).toList();
+    //
     return [...mainnets, ...testnets].toList();
   }
 
   static String getNamespaceForChainId(String chainId) {
+    if (chainId.isEmpty) {
+      throw ReownAppKitModalException('`chainId` can not be empty');
+    }
+    if (NamespaceUtils.isValidChainId(chainId)) {
+      return chainId.split(':').first;
+    }
+
     String? namespace;
     final namespaces = getAllSupportedNamespaces();
     for (var ns in namespaces) {
@@ -310,15 +337,22 @@ class ReownAppKitModalNetworks {
   }
 
   static String getNetworkIconId(String chainId) {
-    final namespace = getNamespaceForChainId(chainId);
-    final network = getNetworkById(namespace, chainId);
-    if ((network?.chainIcon ?? '').isNotEmpty) {
-      return network!.chainIcon!;
+    try {
+      final namespace = getNamespaceForChainId(chainId);
+      final network = getNetworkById(namespace, chainId);
+      if ((network?.chainIcon ?? '').isNotEmpty) {
+        return network!.chainIcon!;
+      }
+      return _networkIcons[chainId]!;
+    } catch (e) {
+      return '';
     }
-    return _networkIcons[chainId] ?? '';
   }
 
   static String getCaip2Chain(String chainId) {
+    if (NamespaceUtils.isValidChainId(chainId)) {
+      return chainId;
+    }
     final namespace = getNamespaceForChainId(chainId);
     return '$namespace:$chainId';
   }
