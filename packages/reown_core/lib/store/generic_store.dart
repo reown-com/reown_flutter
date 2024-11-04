@@ -124,6 +124,7 @@ class GenericStore<T> implements IGenericStore<T> {
     );
 
     await storage.set(storageKey, data);
+    await updateVersion();
   }
 
   @override
@@ -131,7 +132,7 @@ class GenericStore<T> implements IGenericStore<T> {
     // If we haven't stored our version yet, we need to store it and stop
     if (!storage.has(context)) {
       // print('Storing $context');
-      await storage.set(context, {'version': version});
+      await updateVersion();
       await storage.set(storageKey, <String, dynamic>{});
       return;
     }
@@ -142,7 +143,7 @@ class GenericStore<T> implements IGenericStore<T> {
     if (storedVersion != version) {
       // print('Updating storage from $storedVersion to $version');
       await storage.delete('$storedVersion//$context');
-      await storage.set(context, {'version': version});
+      await updateVersion();
       await storage.set(storageKey, <String, dynamic>{});
       return;
     }
@@ -169,4 +170,10 @@ class GenericStore<T> implements IGenericStore<T> {
       throw Errors.getInternalError(Errors.NOT_INITIALIZED);
     }
   }
+
+  @protected
+  Future<void> updateVersion() async {
+    await storage.set(context, {'version': version});
+  }
+
 }
