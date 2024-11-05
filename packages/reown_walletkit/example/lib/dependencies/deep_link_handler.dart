@@ -42,11 +42,12 @@ class DeepLinkHandler {
       Uri.parse(_walletKit.metadata.redirect?.universal ?? '');
   static String get host => universalUri.host;
 
-  static void _onLink(Object? event) async {
+  static void _onLink(dynamic link) async {
+    debugPrint('[SampleWallet] _onLink $link');
     try {
-      return await _walletKit.dispatchEnvelope('$event');
+      return await _walletKit.dispatchEnvelope('$link');
     } catch (e) {
-      final decodedUri = Uri.parse(Uri.decodeFull(event.toString()));
+      final decodedUri = Uri.parse(Uri.decodeFull('$link'));
       if (decodedUri.isScheme('wc')) {
         debugPrint('[SampleWallet] is legacy uri $decodedUri');
         waiting.value = true;

@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
+import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 
 class ListAvatar extends StatelessWidget {
   const ListAvatar({
@@ -22,10 +22,12 @@ class ListAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final appKitModal = ModalProvider.of(context).instance;
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final radius = borderRadius ?? radiuses.radiusM;
-    final projectId = explorerService.instance.projectId;
+    final projectId = appKitModal.appKit!.core.projectId;
+    final validImage = (imageUrl ?? '').isNotEmpty && !disabled;
     return Stack(
       children: [
         AspectRatio(
@@ -67,11 +69,11 @@ class ListAvatar extends StatelessWidget {
                     borderRadius: BorderRadius.circular(radius),
                   ),
             clipBehavior: Clip.antiAlias,
-            child: (imageUrl ?? '').isNotEmpty
+            child: validImage
                 ? ColorFiltered(
                     colorFilter: ColorFilter.mode(
-                      disabled ? Colors.grey : Colors.transparent,
-                      BlendMode.saturation,
+                      disabled ? Colors.white : Colors.transparent,
+                      disabled ? BlendMode.saturation : BlendMode.saturation,
                     ),
                     child: CachedNetworkImage(
                       imageUrl: imageUrl!,
@@ -90,8 +92,10 @@ class ListAvatar extends StatelessWidget {
                           'lib/modal/assets/icons/network.svg',
                           package: 'reown_appkit',
                           colorFilter: ColorFilter.mode(
-                            themeColors.grayGlass030,
-                            BlendMode.srcIn,
+                            disabled
+                                ? Colors.black12
+                                : themeColors.grayGlass030,
+                            disabled ? BlendMode.srcIn : BlendMode.srcIn,
                           ),
                         ),
                       )

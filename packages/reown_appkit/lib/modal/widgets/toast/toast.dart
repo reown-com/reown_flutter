@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
-import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 
 class ToastWidget extends StatefulWidget {
   const ToastWidget({
@@ -37,7 +38,7 @@ class _ToastWidgetState extends State<ToastWidget>
         if (!mounted) {
           return;
         }
-        _controller.reverse().then((value) => toastService.instance.clear());
+        _controller.reverse().then((value) => GetIt.I<IToastService>().clear());
       });
     });
   }

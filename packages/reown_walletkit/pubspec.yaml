@@ -12,10 +12,10 @@ dependencies:
   event: ^2.1.2
   flutter:
     sdk: flutter
-  reown_core: ^1.0.3
+  reown_core: ^1.0.4
   # reown_core:
   #   path: ../reown_core/
-  reown_sign: ^1.0.3
+  reown_sign: ^1.0.4
   # reown_sign:
   #   path: ../reown_sign/
 

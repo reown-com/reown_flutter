@@ -3,16 +3,16 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
-import 'package:reown_appkit/modal/constants/string_constants.dart';
-import 'package:reown_appkit/modal/services/analytics_service/analytics_service_singleton.dart';
+import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
-import 'package:reown_appkit/modal/services/siwe_service/siwe_service_singleton.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
+import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
-import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 import 'package:reown_appkit/modal/widgets/avatars/account_avatar.dart';
 import 'package:reown_appkit/modal/widgets/buttons/primary_button.dart';
 import 'package:reown_appkit/modal/widgets/buttons/secondary_button.dart';
@@ -34,6 +34,9 @@ class ApproveSIWEPage extends StatefulWidget {
 }
 
 class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
+  ISiweService get _siweService => GetIt.I<ISiweService>();
+  IAnalyticsService get _analyticsService => GetIt.I<IAnalyticsService>();
+
   IReownAppKitModal? _appKitModal;
   double _position = 0.0;
   static const _duration = Duration(milliseconds: 1500);
@@ -68,32 +71,33 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
   void _signIn() async {
     setState(() => _waitingSign = true);
     try {
-      final address = _appKitModal!.session!.address!;
       String chainId = _appKitModal!.selectedChain?.chainId ?? '1';
-      analyticsService.instance.sendEvent(ClickSignSiweMessage(
-        network: chainId,
-      ));
-      chainId = '${CoreConstants.namespace}:$chainId';
+      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+        chainId,
+      );
+      final address = _appKitModal!.session!.getAddress(namespace)!;
+      _analyticsService.sendEvent(ClickSignSiweMessage(network: chainId));
+      chainId = ReownAppKitModalNetworks.getCaip2Chain(chainId);
       //
-      final message = await siweService.instance!.createMessage(
+      final message = await _siweService.createMessage(
         chainId: chainId,
         address: address,
       );
       //
       _appKitModal!.launchConnectedWallet();
-      final signature = await siweService.instance!.signMessageRequest(
+      final signature = await _siweService.signMessageRequest(
         message,
         session: _appKitModal!.session!,
       );
       //
       final clientId = await _appKitModal!.appKit!.core.crypto.getClientId();
-      await siweService.instance!.verifyMessage(
+      await _siweService.verifyMessage(
         message: message,
         signature: signature,
         clientId: clientId,
       );
       //
-      final siweSession = await siweService.instance!.getSession();
+      final siweSession = await _siweService.getSession();
       final newSession =
           _appKitModal!.session!.copyWith(siweSession: siweSession);
       //
@@ -111,8 +115,8 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
   void _handleError(String? error) {
     debugPrint('[$runtimeType] _handleError $error');
     String chainId = _appKitModal!.selectedChain?.chainId ?? '1';
-    analyticsService.instance.sendEvent(SiweAuthError(network: chainId));
-    toastService.instance.show(ToastMessage(
+    _analyticsService.sendEvent(SiweAuthError(network: chainId));
+    GetIt.I<IToastService>().show(ToastMessage(
       type: ToastType.error,
       text: error ?? 'Something went wrong.',
     ));

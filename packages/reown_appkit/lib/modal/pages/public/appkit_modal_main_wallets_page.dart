@@ -6,7 +6,7 @@ import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/pages/about_wallets.dart';
 import 'package:reown_appkit/modal/pages/connect_wallet_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
@@ -36,6 +36,7 @@ class ReownAppKitModalMainWalletsPage extends StatefulWidget {
 class _AppKitModalMainWalletsPageState
     extends State<ReownAppKitModalMainWalletsPage> {
   IMagicService get _magicService => GetIt.I<IMagicService>();
+  IExplorerService get _explorerService => GetIt.I<IExplorerService>();
 
   @override
   void initState() {
@@ -64,8 +65,11 @@ class _AppKitModalMainWalletsPageState
     double maxHeight = isPortrait
         ? (kListItemHeight * 6)
         : ResponsiveData.maxHeightOf(context);
+
+    final isSignIn = _magicService.isEmailEnabled.value ||
+        _magicService.isSocialEnabled.value;
     return ModalNavbar(
-      title: 'Connect wallet',
+      title: isSignIn ? 'Sign in' : 'Connect wallet',
       leftAction: NavbarActionButton(
         asset: 'lib/modal/assets/icons/help.svg',
         action: () {
@@ -148,7 +152,7 @@ class _AppKitModalMainWalletsPageState
                   child: (!modalInstance.featuresConfig.showMainWallets &&
                           (emailEnabled || socials.isNotEmpty))
                       ? AllWalletsItem(
-                          title: 'Connect wallet',
+                          title: 'Continue with a wallet',
                           titleAlign: TextAlign.center,
                           leading: RoundedIcon(
                             padding: 10.0,
@@ -170,7 +174,7 @@ class _AppKitModalMainWalletsPageState
                               ? null
                               : ValueListenableBuilder<int>(
                                   valueListenable:
-                                      explorerService.instance.totalListings,
+                                      _explorerService.totalListings,
                                   builder: (context, value, _) {
                                     return WalletItemChip(
                                       value: value.lazyCount,

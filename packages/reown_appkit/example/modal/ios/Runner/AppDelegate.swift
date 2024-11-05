@@ -114,3 +114,4 @@ class LinkStreamHandler: NSObject, FlutterStreamHandler {
         return true
     }
 }
+

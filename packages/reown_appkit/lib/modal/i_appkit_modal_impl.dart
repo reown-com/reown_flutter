@@ -104,13 +104,13 @@ abstract class IReownAppKitModal with ChangeNotifier {
   List<String>? getAvailableChains();
 
   /// List of approved chains by connected wallet
-  List<String>? getApprovedChains();
+  List<String>? getApprovedChains({String? namespace});
 
   /// List of approved methods by connected wallet
-  List<String>? getApprovedMethods();
+  List<String>? getApprovedMethods({String? namespace});
 
   /// List of approved events by connected wallet
-  List<String>? getApprovedEvents();
+  List<String>? getApprovedEvents({String? namespace});
 
   /// Loads/Refresh account balance and identity
   Future<void> loadAccountData();

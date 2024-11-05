@@ -1,5 +1,4 @@
 import 'package:reown_appkit/reown_appkit.dart';
-import 'package:reown_appkit_dapp/models/chain_metadata.dart';
 
 enum PolkadotMethods {
   polkadotSignTransaction,
@@ -22,7 +21,7 @@ class Polkadot {
     required IReownAppKit appKit,
     required String topic,
     required String method,
-    required ChainMetadata chainData,
+    required ReownAppKitModalNetworkInfo chainData,
     required String address,
   }) {
     switch (method) {

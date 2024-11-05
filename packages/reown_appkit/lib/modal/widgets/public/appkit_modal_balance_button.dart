@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/utils/public/appkit_modal_default_networks.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
@@ -45,7 +46,11 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
     setState(() {
       final chainId = widget.appKitModal.selectedChain?.chainId ?? '1';
       final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-      _tokenImage = explorerService.instance.getAssetImageUrl(imageId);
+      _tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
+      final balance = widget.appKitModal.balanceNotifier.value;
+      if (balance.contains(AppKitModalBalanceButton.balanceDefault)) {
+        _tokenImage = '';
+      }
     });
   }
 
@@ -112,7 +117,7 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
                     )
                   : RoundedIcon(
                       imageUrl: _tokenImage!,
-                      size: widget.size.height + 2.0,
+                      size: widget.size.height * 0.55,
                     ),
           const SizedBox.square(dimension: 4.0),
           ValueListenableBuilder<String>(

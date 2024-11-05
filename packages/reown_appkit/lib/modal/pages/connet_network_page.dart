@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
-import 'package:reown_appkit/modal/constants/string_constants.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
-import 'package:reown_appkit/modal/services/siwe_service/siwe_service_singleton.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/content_loading.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
@@ -19,10 +20,13 @@ import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class ConnectNetworkPage extends StatefulWidget {
-  final ReownAppKitModalNetworkInfo chainInfo;
   const ConnectNetworkPage({
     required this.chainInfo,
+    this.isMagic = false,
   }) : super(key: KeyConstants.connecNetworkPageKey);
+
+  final ReownAppKitModalNetworkInfo chainInfo;
+  final bool isMagic;
 
   @override
   State<ConnectNetworkPage> createState() => _ConnectNetworkPageState();
@@ -30,7 +34,7 @@ class ConnectNetworkPage extends StatefulWidget {
 
 class _ConnectNetworkPageState extends State<ConnectNetworkPage>
     with WidgetsBindingObserver {
-  IReownAppKitModal? _service;
+  IReownAppKitModal? _appKitModal;
   ModalError? errorEvent;
 
   @override
@@ -38,41 +42,61 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _service = ModalProvider.of(context).instance;
-      _service?.onModalError.subscribe(_errorListener);
+      _appKitModal = ModalProvider.of(context).instance;
+      _appKitModal?.onModalError.subscribe(_errorListener);
       setState(() {});
       Future.delayed(const Duration(milliseconds: 300), () => _connect());
     });
   }
 
+  IMagicService get _magicService => GetIt.I<IMagicService>();
+  IExplorerService get _explorerService => GetIt.I<IExplorerService>();
+  ISiweService get _siweService => GetIt.I<ISiweService>();
+
   void _connect() async {
     errorEvent = null;
-    _service!.launchConnectedWallet();
-    try {
-      await _service!.requestSwitchToChain(widget.chainInfo);
-      final chainId = widget.chainInfo.chainId;
-      final chainInfo = ReownAppKitModalNetworks.getNetworkById(
-        CoreConstants.namespace,
-        chainId,
+    if (widget.isMagic) {
+      final newCaip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
+        widget.chainInfo.chainId,
       );
-      if (chainInfo != null) {
-        Future.delayed(const Duration(milliseconds: 300), () {
-          if (!siweService.instance!.enabled) {
-            widgetStack.instance.pop();
-          }
-        });
+      await _magicService.switchNetwork(chainId: newCaip2Chain);
+    } else {
+      try {
+        _appKitModal!.launchConnectedWallet();
+        await _appKitModal!.requestSwitchToChain(widget.chainInfo);
+        final chainId = widget.chainInfo.chainId;
+        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+          chainId,
+        );
+        final chainInfo = ReownAppKitModalNetworks.getNetworkById(
+          namespace,
+          chainId,
+        );
+        if (chainInfo != null) {
+          Future.delayed(const Duration(milliseconds: 300), () {
+            if (!_siweService.enabled) {
+              widgetStack.instance.pop();
+            }
+          });
+        }
+      } on JsonRpcError catch (e) {
+        setState(
+          () => errorEvent = ModalError(e.message ?? 'An error occurred'),
+        );
+      } on ReownAppKitModalException catch (e) {
+        setState(() => errorEvent = ModalError(e.message));
+      } catch (e) {
+        setState(() => errorEvent = ModalError('An error occurred'));
       }
-    } catch (e) {
-      setState(() {});
     }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      if (_service?.session?.sessionService.isCoinbase == true) {
-        if (_service?.selectedChain?.chainId == widget.chainInfo.chainId) {
-          if (!siweService.instance!.enabled) {
+      if (_appKitModal?.session?.sessionService.isCoinbase == true) {
+        if (_appKitModal?.selectedChain?.chainId == widget.chainInfo.chainId) {
+          if (!_siweService.enabled) {
             widgetStack.instance.pop();
           }
         }
@@ -84,14 +108,14 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
 
   @override
   void dispose() {
-    _service?.onModalError.unsubscribe(_errorListener);
+    _appKitModal?.onModalError.unsubscribe(_errorListener);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_service == null) {
+    if (_appKitModal == null) {
       return ContentLoading();
     }
     final themeData = ReownAppKitModalTheme.getDataOf(context);
@@ -105,7 +129,7 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
     //
     final chainId = widget.chainInfo.chainId;
     final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-    final imageUrl = explorerService.instance.getAssetImageUrl(imageId);
+    final imageUrl = _explorerService.getAssetImageUrl(imageId);
     //
     return ModalNavbar(
       title: widget.chainInfo.name,
@@ -138,14 +162,16 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
                   const SizedBox.square(dimension: 20.0),
                   errorEvent != null
                       ? Text(
-                          'Switch declined',
+                          errorEvent?.message ?? 'Switch declined',
                           textAlign: TextAlign.center,
                           style: themeData.textStyles.paragraph500.copyWith(
                             color: themeColors.error100,
                           ),
                         )
                       : Text(
-                          'Continue in ${_service?.session?.peer?.metadata.name ?? 'wallet'}',
+                          widget.isMagic
+                              ? 'Switching to ${widget.chainInfo.name}'
+                              : 'Continue in ${_appKitModal?.session?.peer?.metadata.name ?? 'wallet'}',
                           textAlign: TextAlign.center,
                           style: themeData.textStyles.paragraph500.copyWith(
                             color: themeColors.foreground100,
@@ -154,14 +180,16 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
                   const SizedBox.square(dimension: 8.0),
                   errorEvent != null
                       ? Text(
-                          'Switch can be declined by the user or if a previous request is still active',
+                          'Switch can be declined by the user or if the wallet doesn\'t support the selected chain.',
                           textAlign: TextAlign.center,
                           style: themeData.textStyles.small500.copyWith(
                             color: themeColors.foreground200,
                           ),
                         )
                       : Text(
-                          'Accept switch request in your wallet',
+                          widget.isMagic
+                              ? 'Wait until it\'s completed'
+                              : 'Accept switch request in your wallet',
                           textAlign: TextAlign.center,
                           style: themeData.textStyles.small500.copyWith(
                             color: themeColors.foreground200,

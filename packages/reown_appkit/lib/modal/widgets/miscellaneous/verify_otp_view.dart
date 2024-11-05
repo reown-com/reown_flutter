@@ -1,9 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
-import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/searchbar.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -68,7 +69,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView>
   void _resendEmail() async {
     final diff = DateTime.now().difference(_resendEnabledAt).inSeconds;
     if (diff < 0) {
-      toastService.instance.show(ToastMessage(
+      GetIt.I<IToastService>().show(ToastMessage(
         type: ToastType.error,
         text: 'Try again after ${diff.abs()} seconds',
       ));
@@ -76,7 +77,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView>
       final email = widget.currentEmail;
       widget.resendEmail(value: email);
       _resendEnabledAt = DateTime.now().add(Duration(seconds: 30));
-      toastService.instance.show(ToastMessage(
+      GetIt.I<IToastService>().show(ToastMessage(
         type: ToastType.success,
         text: 'Code email resent',
       ));

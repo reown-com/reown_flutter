@@ -3,7 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/pages/approve_magic_request_page.dart';
 import 'package:reown_appkit/modal/pages/confirm_email_page.dart';
 import 'package:reown_appkit/modal/pages/social_login_page.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
@@ -17,14 +17,17 @@ import 'package:reown_appkit/reown_appkit.dart';
 class AppKitModalAccountButton extends StatefulWidget {
   const AppKitModalAccountButton({
     super.key,
-    required this.appKit,
+    @Deprecated('Use appKitModal parameter') this.appKit,
+    required this.appKitModal,
     this.size = BaseButtonSize.regular,
     this.avatar,
     this.context,
     this.custom,
   });
 
-  final IReownAppKitModal appKit;
+  @Deprecated('Use appKitModal parameter')
+  final IReownAppKitModal? appKit;
+  final IReownAppKitModal appKitModal;
   final BaseButtonSize size;
   final String? avatar;
   final BuildContext? context;
@@ -43,7 +46,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
   void initState() {
     super.initState();
     _modalNotifyListener();
-    widget.appKit.addListener(_modalNotifyListener);
+    widget.appKitModal.addListener(_modalNotifyListener);
     // TODO [AppKitModalAccountButton] this should go in ReownAppKitModal but for that, init() method of ReownAppKitModal should receive a BuildContext, which would be a breaking change
     _magicService.onMagicRpcRequest.subscribe(_approveSign);
     _magicService.onMagicLoginRequest.subscribe(_loginRequested);
@@ -51,26 +54,33 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
 
   @override
   void dispose() {
-    widget.appKit.removeListener(_modalNotifyListener);
+    widget.appKitModal.removeListener(_modalNotifyListener);
     _magicService.onMagicRpcRequest.unsubscribe(_approveSign);
     _magicService.onMagicLoginRequest.unsubscribe(_loginRequested);
     super.dispose();
   }
 
   void _modalNotifyListener() {
-    setState(() => _address = widget.appKit.session?.address ?? '');
+    final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
+    if (chainId.isNotEmpty) {
+      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+        chainId,
+      );
+      _address = widget.appKitModal.session?.getAddress(namespace) ?? '';
+    }
+    setState(() {});
   }
 
   void _onTap() {
-    widget.appKit.openModalView();
+    widget.appKitModal.openModalView();
   }
 
   void _approveSign(MagicRequestEvent? args) async {
     if (args?.request != null) {
-      if (widget.appKit.isOpen) {
+      if (widget.appKitModal.isOpen) {
         widgetStack.instance.push(ApproveTransactionPage());
       } else {
-        widget.appKit.openModalView(ApproveTransactionPage());
+        widget.appKitModal.openModalView(ApproveTransactionPage());
       }
     }
   }
@@ -78,7 +88,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
   void _loginRequested(MagicSessionEvent? args) {
     if (args == null) return;
     final provider = args.provider;
-    final isOpen = widget.appKit.isOpen;
+    final isOpen = widget.appKitModal.isOpen;
     if (isOpen) {
       if (provider != null) {
         widgetStack.instance.popAllAndPush(SocialLoginPage(
@@ -89,11 +99,11 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
       }
     } else {
       if (provider != null) {
-        widget.appKit.openModalView(SocialLoginPage(
+        widget.appKitModal.openModalView(SocialLoginPage(
           socialOption: provider,
         ));
       } else {
-        widget.appKit.openModalView(ConfirmEmailPage());
+        widget.appKitModal.openModalView(ConfirmEmailPage());
       }
     }
   }
@@ -106,7 +116,8 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final borderRadius = radiuses.isSquare() ? 0.0 : widget.size.height / 2;
-    final enabled = _address.isNotEmpty && widget.appKit.status.isInitialized;
+    final enabled =
+        _address.isNotEmpty && widget.appKitModal.status.isInitialized;
     // TODO [AppKitModalAccountButton] this button should be able to be disable by passing a null onTap action
     // I should decouple an AccountButton from AppKitModalAccountButton like on ConnectButton and NetworkButton
     return Stack(
@@ -150,7 +161,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
             mainAxisSize: MainAxisSize.min,
             children: [
               _BalanceButton(
-                appKit: widget.appKit,
+                appKit: widget.appKitModal,
                 buttonSize: widget.size,
                 onTap: enabled ? _onTap : null,
               ),
@@ -159,7 +170,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
                 padding: const EdgeInsets.symmetric(vertical: 4.0),
                 child: AppKitModalAddressButton(
                   size: widget.size,
-                  appKitModal: widget.appKit,
+                  appKitModal: widget.appKitModal,
                   onTap: enabled ? _onTap : null,
                 ),
               ),
@@ -190,7 +201,11 @@ class _BalanceButton extends StatelessWidget {
         : themeData.textStyles.paragraph600;
     final chainId = appKit.selectedChain?.chainId ?? '';
     final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-    final tokenImage = explorerService.instance.getAssetImageUrl(imageId);
+    String tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
+    final balance = appKit.balanceNotifier.value;
+    if (balance.contains(AppKitModalBalanceButton.balanceDefault)) {
+      tokenImage = '';
+    }
     return BaseButton(
       size: BaseButtonSize.small,
       onTap: onTap,

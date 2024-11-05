@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 
-class ChainData {
+class ChainsDataList {
   static final List<ChainMetadata> eip155Chains = [
     ChainMetadata(
       type: ChainType.eip155,
