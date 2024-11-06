@@ -6,6 +6,7 @@ import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/pages/activity_page.dart';
 import 'package:reown_appkit/modal/pages/edit_email_page.dart';
 import 'package:reown_appkit/modal/pages/upgrade_wallet_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
@@ -91,7 +92,6 @@ class _DefaultAccountView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final isEmailLogin = _service.session?.sessionService.isMagic ?? false;
     return Column(
@@ -135,27 +135,9 @@ class _DefaultAccountView extends StatelessWidget {
         //   visible: !isEmailLogin,
         //   child: _ConnectedWalletButton(),
         // ),
-        const SizedBox.square(dimension: kPadding8),
         _SelectNetworkButton(),
-        const SizedBox.square(dimension: kPadding8),
-        AccountListItem(
-          iconPath: 'lib/modal/assets/icons/disconnect.svg',
-          trailing: _service.status.isLoading
-              ? Row(
-                  children: [
-                    CircularLoader(size: 18.0, strokeWidth: 2.0),
-                    SizedBox.square(dimension: kPadding12),
-                  ],
-                )
-              : const SizedBox.shrink(),
-          title: 'Disconnect',
-          titleStyle: themeData.textStyles.paragraph500.copyWith(
-            color: themeColors.foreground200,
-          ),
-          onTap: _service.status.isLoading
-              ? null
-              : () => _service.closeModal(disconnectSession: true),
-        ),
+        _ActivityButton(),
+        _DisconnectButton(),
       ],
     );
   }
@@ -322,29 +304,92 @@ class _SelectNetworkButton extends StatelessWidget {
     final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
     final tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
-    return AccountListItem(
-      iconWidget: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: imageId.isEmpty
-            ? RoundedIcon(
-                assetPath: 'lib/modal/assets/icons/network.svg',
-                assetColor: themeColors.inverse100,
-                borderRadius: radiuses.isSquare() ? 0.0 : null,
-              )
-            : RoundedIcon(
-                borderRadius: radiuses.isSquare() ? 0.0 : null,
-                imageUrl: tokenImage,
-                assetColor: themeColors.background100,
-              ),
-      ),
-      title: service.selectedChain?.name ?? 'Unsupported network',
-      titleStyle: themeData.textStyles.paragraph500.copyWith(
-        color: themeColors.foreground100,
-      ),
-      onTap: () => widgetStack.instance.push(
-        ReownAppKitModalSelectNetworkPage(),
-        event: ClickNetworksEvent(),
-      ),
+    return Column(
+      children: [
+        const SizedBox.square(dimension: kPadding8),
+        AccountListItem(
+          iconWidget: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: imageId.isEmpty
+                ? RoundedIcon(
+                    assetPath: 'lib/modal/assets/icons/network.svg',
+                    assetColor: themeColors.inverse100,
+                    borderRadius: radiuses.isSquare() ? 0.0 : null,
+                  )
+                : RoundedIcon(
+                    borderRadius: radiuses.isSquare() ? 0.0 : null,
+                    imageUrl: tokenImage,
+                    assetColor: themeColors.background100,
+                  ),
+          ),
+          title: service.selectedChain?.name ?? 'Unsupported network',
+          titleStyle: themeData.textStyles.paragraph500.copyWith(
+            color: themeColors.foreground100,
+          ),
+          onTap: () => widgetStack.instance.push(
+            ReownAppKitModalSelectNetworkPage(),
+            event: ClickNetworksEvent(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ActivityButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    return Column(
+      children: [
+        const SizedBox.square(dimension: kPadding8),
+        AccountListItem(
+          iconPath: 'lib/modal/assets/icons/swap_horizontal.svg',
+          iconColor: themeColors.accent100,
+          iconBGColor: themeColors.accenGlass015,
+          iconBorderColor: themeColors.accenGlass005,
+          title: 'Activity',
+          // titleStyle: themeData.textStyles.paragraph500.copyWith(
+          //   color: themeColors.foreground200,
+          // ),
+          onTap: () => widgetStack.instance.push(ActivityPage()),
+        ),
+      ],
+    );
+  }
+}
+
+class _DisconnectButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final service = ModalProvider.of(context).instance;
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    return Column(
+      children: [
+        const SizedBox.square(dimension: kPadding8),
+        AccountListItem(
+          iconPath: 'lib/modal/assets/icons/disconnect.svg',
+          iconColor: themeColors.foreground175,
+          iconBGColor: themeColors.grayGlass010,
+          iconBorderColor: themeColors.grayGlass005,
+          trailing: service.status.isLoading
+              ? Row(
+                  children: [
+                    CircularLoader(size: 18.0, strokeWidth: 2.0),
+                    SizedBox.square(dimension: kPadding12),
+                  ],
+                )
+              : const SizedBox.shrink(),
+          title: 'Disconnect',
+          titleStyle: themeData.textStyles.paragraph500.copyWith(
+            color: themeColors.foreground200,
+          ),
+          onTap: service.status.isLoading
+              ? null
+              : () => service.closeModal(disconnectSession: true),
+        ),
+      ],
     );
   }
 }

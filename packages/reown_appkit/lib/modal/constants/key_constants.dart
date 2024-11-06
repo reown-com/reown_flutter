@@ -26,6 +26,7 @@ class KeyConstants {
   static const Key confirmEmailPage = Key('confirmEmailPage');
   static const Key approveSiwePageKey = Key('approveSiwePageKey');
   static const Key socialLoginPage = Key('socialLoginPage');
+  static const Key activityPageKey = Key('activityPageKey');
 
   // Buttons
   static const Key helpButtonKey = Key('helpButtonKey');

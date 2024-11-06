@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:reown_appkit/modal/services/blockchain_service/models/wallet_activity.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/blockchain_identity.dart';
@@ -100,6 +101,43 @@ class BlockChainService implements IBlockChainService {
       throw Exception(reason);
     } catch (e) {
       _core.logger.e('[$runtimeType] getBalance, decode result error => $e');
+      rethrow;
+    }
+  }
+
+  @override
+  Future<ActivityData> getActivity({
+    required String address,
+    String? cursor,
+  }) async {
+    final uri = Uri.parse('$_baseUrl/account/$address/history');
+    final queryParams = {
+      ..._requiredParams,
+      if (cursor != null) 'cursor': cursor,
+    };
+    final url = uri.replace(queryParameters: queryParams);
+    final response = await http.get(url, headers: {
+      ..._requiredHeaders,
+      'Content-Type': 'application/json',
+    });
+    _core.logger.d('[$runtimeType] getActivity $url, ${response.statusCode}');
+    if (response.statusCode == 200 && response.body.isNotEmpty) {
+      try {
+        return ActivityData.fromRawJson(response.body);
+      } catch (e) {
+        _core.logger.e('[$runtimeType] getActivity, parse result error => $e');
+        throw Exception('Failed to load wallet activity. $e');
+      }
+    }
+    try {
+      final errorData = jsonDecode(response.body) as Map<String, dynamic>;
+      final reasons = errorData['reasons'] as List<dynamic>;
+      final reason = reasons.isNotEmpty
+          ? reasons.first['description'] ?? ''
+          : response.body;
+      throw Exception(reason);
+    } catch (e) {
+      _core.logger.e('[$runtimeType] getActivity, decode result error => $e');
       rethrow;
     }
   }

@@ -89,8 +89,18 @@ class CoreUtils {
     if (chainBalance == 0.0) {
       return '0.'.padRight(precision + 2, '0');
     }
-    return chainBalance.toStringAsPrecision(precision)
-      ..replaceAll(RegExp(r'([.]*0+)(?!.*\d)'), '');
+
+    if (chainBalance.toInt() <= 0) {
+      return chainBalance.toStringAsPrecision(precision)
+        ..replaceAll(RegExp(r'([.]*0+)(?!.*\d)'), '');
+    }
+
+    return chainBalance.toStringAsFixed(2);
+  }
+
+  static String formatStringBalance(String stringValue) {
+    final value = double.tryParse(stringValue) ?? double.parse('0');
+    return formatChainBalance(value);
   }
 
   static String getUserAgent() {
