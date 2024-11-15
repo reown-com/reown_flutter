@@ -26,23 +26,24 @@ import 'package:reown_appkit/modal/widgets/lists/list_items/account_list_item.da
 import 'package:reown_appkit/modal/widgets/text/appkit_balance.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
-class AccountPage extends StatefulWidget {
-  const AccountPage() : super(key: KeyConstants.accountPage);
+class EOAccountPage extends StatefulWidget {
+  const EOAccountPage() : super(key: KeyConstants.eoAccountPage);
 
   @override
-  State<AccountPage> createState() => _AccountPageState();
+  State<EOAccountPage> createState() => _EOAccountPageState();
 }
 
-class _AccountPageState extends State<AccountPage> with WidgetsBindingObserver {
-  IReownAppKitModal? _service;
+class _EOAccountPageState extends State<EOAccountPage>
+    with WidgetsBindingObserver {
+  IReownAppKitModal? _appKitModal;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _service = ModalProvider.of(context).instance;
-      _service?.addListener(_rebuild);
+      _appKitModal = ModalProvider.of(context).instance;
+      _appKitModal?.addListener(_rebuild);
       _rebuild();
     });
   }
@@ -58,14 +59,14 @@ class _AccountPageState extends State<AccountPage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    _service?.removeListener(_rebuild);
+    _appKitModal?.removeListener(_rebuild);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_service == null) {
+    if (_appKitModal == null) {
       return ContentLoading(viewHeight: 400.0);
     }
 
@@ -78,7 +79,7 @@ class _AccountPageState extends State<AccountPage> with WidgetsBindingObserver {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kPadding12),
         child: _DefaultAccountView(
-          service: _service!,
+          appKitModal: _appKitModal!,
         ),
       ),
     );
@@ -86,14 +87,15 @@ class _AccountPageState extends State<AccountPage> with WidgetsBindingObserver {
 }
 
 class _DefaultAccountView extends StatelessWidget {
-  const _DefaultAccountView({required IReownAppKitModal service})
-      : _service = service;
-  final IReownAppKitModal _service;
+  const _DefaultAccountView({required IReownAppKitModal appKitModal})
+      : _appKitMoldal = appKitModal;
+  final IReownAppKitModal _appKitMoldal;
 
   @override
   Widget build(BuildContext context) {
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final isEmailLogin = _service.session?.sessionService.isMagic ?? false;
+    final isEmailLogin = _appKitMoldal.session?.sessionService.isMagic ?? false;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -102,20 +104,24 @@ class _DefaultAccountView extends StatelessWidget {
             const Orb(size: 72.0),
             const SizedBox.square(dimension: kPadding12),
             const AddressCopyButton(),
-            const BalanceText(),
+            BalanceText(
+              textStyle: themeData.textStyles.paragraph500.copyWith(
+                color: themeColors.foreground200,
+              ),
+            ),
             Visibility(
-              visible: _service.selectedChain?.explorerUrl != null,
+              visible: _appKitMoldal.selectedChain?.explorerUrl != null,
               child: Padding(
                 padding: const EdgeInsets.only(top: kPadding12),
                 child: SimpleIconButton(
-                  onTap: () => _service.launchBlockExplorer(),
+                  onTap: () => _appKitMoldal.launchBlockExplorer(),
                   leftIcon: 'lib/modal/assets/icons/compass.svg',
                   rightIcon: 'lib/modal/assets/icons/arrow_top_right.svg',
                   title: 'Block Explorer',
-                  backgroundColor: themeColors.background125,
+                  backgroundColor: themeColors.grayGlass002,
                   foregroundColor: themeColors.foreground150,
-                  overlayColor: WidgetStateProperty.all<Color>(
-                    themeColors.background200,
+                  overlayColor: MaterialStateProperty.all<Color>(
+                    themeColors.grayGlass002,
                   ),
                 ),
               ),
@@ -136,7 +142,10 @@ class _DefaultAccountView extends StatelessWidget {
         //   child: _ConnectedWalletButton(),
         // ),
         _SelectNetworkButton(),
-        _ActivityButton(),
+        Visibility(
+          visible: !isEmailLogin,
+          child: _ActivityButton(),
+        ),
         _DisconnectButton(),
       ],
     );

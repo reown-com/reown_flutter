@@ -82,7 +82,7 @@ class CoreUtils {
     return Uri.parse('${plainAppUrl}wc?uri=$encodedWcUrl');
   }
 
-  static String formatChainBalance(double? chainBalance, {int precision = 3}) {
+  static String formatChainBalance(double? chainBalance, {int precision = 4}) {
     if (chainBalance == null) {
       return '_.'.padRight(precision + 1, '_');
     }
@@ -90,17 +90,18 @@ class CoreUtils {
       return '0.'.padRight(precision + 2, '0');
     }
 
-    if (chainBalance.toInt() <= 0) {
-      return chainBalance.toStringAsPrecision(precision)
+    if (chainBalance.toInt() > 0) {
+      return chainBalance.toStringAsFixed(precision - 1)
         ..replaceAll(RegExp(r'([.]*0+)(?!.*\d)'), '');
     }
 
-    return chainBalance.toStringAsFixed(2);
+    return chainBalance.toStringAsFixed(precision)
+      ..replaceAll(RegExp(r'([.]*0+)(?!.*\d)'), '');
   }
 
-  static String formatStringBalance(String stringValue) {
+  static String formatStringBalance(String stringValue, {int precision = 4}) {
     final value = double.tryParse(stringValue) ?? double.parse('0');
-    return formatChainBalance(value);
+    return formatChainBalance(value, precision: precision);
   }
 
   static String getUserAgent() {

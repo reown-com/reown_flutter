@@ -22,6 +22,7 @@ class AccountListItem extends StatelessWidget {
     this.hightlighted = false,
     this.flexible = false,
     this.padding,
+    this.backgroundColor,
   });
   final Widget? iconWidget;
   final String? iconPath;
@@ -35,6 +36,7 @@ class AccountListItem extends StatelessWidget {
   final bool hightlighted;
   final bool flexible;
   final EdgeInsets? padding;
+  final MaterialStateProperty<Color?>? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,7 @@ class AccountListItem extends StatelessWidget {
       hightlighted: hightlighted,
       padding: padding,
       flexible: flexible,
+      backgroundColor: backgroundColor,
       child: Row(
         children: [
           iconWidget ?? const SizedBox.shrink(),

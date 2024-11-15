@@ -7,6 +7,7 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/wallet_activity.dart';
+import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/lists/activity_item.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
@@ -21,9 +22,38 @@ class ActivityPage extends StatefulWidget {
 }
 
 class _ActivityPageState extends State<ActivityPage> {
+  @override
+  Widget build(BuildContext context) {
+    return ModalNavbar(
+      title: 'Activity',
+      safeAreaLeft: true,
+      safeAreaRight: true,
+      safeAreaBottom: false,
+      body: Container(
+        constraints: BoxConstraints(
+          maxHeight: ResponsiveData.maxHeightOf(context),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: kPadding12),
+        child: ActivityListViewBuilder(
+          appKitModal: ModalProvider.of(context).instance,
+        ),
+      ),
+    );
+  }
+}
+
+class ActivityListViewBuilder extends StatefulWidget {
+  ActivityListViewBuilder({required this.appKitModal, super.key});
+  final IReownAppKitModal appKitModal;
+
+  @override
+  State<ActivityListViewBuilder> createState() =>
+      _ActivityListViewBuilderState();
+}
+
+class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
   IBlockChainService get _blockchainService => GetIt.I<IBlockChainService>();
-  IReownCore get _core => _appKitModal.appKit!.core;
-  late final IReownAppKitModal _appKitModal;
+  IReownCore get _core => widget.appKitModal.appKit!.core;
 
   final _scrollController = ScrollController();
   final List<Activity> _activities = [];
@@ -36,47 +66,62 @@ class _ActivityPageState extends State<ActivityPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      _appKitModal = ModalProvider.of(context).instance;
-      final chainId = _appKitModal.selectedChain!.chainId;
-      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-        chainId,
-      );
-      _currentChain = '$namespace:$chainId';
-      _currentAddress = _appKitModal.session!.getAddress(namespace)!;
+    final chainId = widget.appKitModal.selectedChain!.chainId;
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+      chainId,
+    );
+    _currentChain = '$namespace:$chainId';
+    _currentAddress = widget.appKitModal.session!.getAddress(namespace)!;
 
-      _scrollController.addListener(() {
-        if (_scrollController.position.pixels >=
-            _scrollController.position.maxScrollExtent - 100) {
-          _loadMoreActivities();
-        }
-      });
-
-      _fetchActivities();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 100) {
+        _loadMoreActivities();
+      }
     });
+
+    // cached items
+    final cachedItems = _blockchainService.activityData?.data ?? <Activity>[];
+    if (cachedItems.isNotEmpty) {
+      final activityList = cachedItems.where((data) {
+        return data.metadata?.chain == _currentChain &&
+            (data.transfers ?? []).isNotEmpty;
+      }).toList();
+      _activities.addAll(activityList);
+    }
+    setState(() {});
+
+    _fetchActivities();
   }
 
   Future<void> _fetchActivities() async {
-    setState(() => _isLoadingActivities = true);
+    setState(() => _isLoadingActivities = _activities.isEmpty);
 
-    // Initial API request here
-    final activityData = await _blockchainService.getActivity(
-      address: _currentAddress,
-      cursor: _currentCursor,
-    );
-    final newItems = activityData.data ?? <Activity>[];
-    final activityList = newItems.where((data) {
-      return data.metadata?.chain == _currentChain &&
-          (data.transfers ?? []).isNotEmpty;
-    }).toList();
+    try {
+      final activityData = await _blockchainService.getHistory(
+        address: _currentAddress,
+        cursor: _currentCursor,
+      );
+      _activities.clear();
+      final newItems = activityData.data ?? <Activity>[];
+      final activityList = newItems.where((data) {
+        return data.metadata?.chain == _currentChain &&
+            (data.transfers ?? []).isNotEmpty;
+      }).toList();
 
-    _activities.addAll(activityList);
-    _isLoadingActivities = false;
-    _currentCursor = activityData.next;
-    _hasMoreActivities = _currentCursor != null;
-    _core.logger.d(
-      '[$runtimeType] fetch data, items: ${activityList.length}, cursor: $_currentCursor, _hasMoreActivities: $_hasMoreActivities',
-    );
+      _activities.addAll(activityList);
+      _isLoadingActivities = false;
+      _currentCursor = activityData.next;
+      _hasMoreActivities = _currentCursor != null;
+      _core.logger.d(
+        '[$runtimeType] fetch data, items: ${activityList.length}, cursor: $_currentCursor, _hasMoreActivities: $_hasMoreActivities',
+      );
+    } catch (e) {
+      _isLoadingActivities = false;
+      widget.appKitModal.onModalError.broadcast(ModalError(
+        'Error fetching activity',
+      ));
+    }
     setState(() {});
   }
 
@@ -93,52 +138,9 @@ class _ActivityPageState extends State<ActivityPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ModalNavbar(
-      title: 'Activity',
-      safeAreaLeft: true,
-      safeAreaRight: true,
-      safeAreaBottom: false,
-      body: Container(
-        constraints: BoxConstraints(
-          maxHeight: ((_isLoadingActivities && _activities.isEmpty) ||
-                  _activities.length <= 4)
-              ? 340.0
-              : ResponsiveData.maxHeightOf(context),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: kPadding12),
-        child: _ListBuilder(
-          scrollController: _scrollController,
-          items: _activities,
-          caip2chain: _currentChain,
-          isLoading: _isLoadingActivities,
-        ),
-      ),
-    );
-  }
-}
-
-class _ListBuilder extends StatefulWidget {
-  const _ListBuilder({
-    required this.scrollController,
-    required this.items,
-    required this.caip2chain,
-    required this.isLoading,
-  });
-  final ScrollController scrollController;
-  final List<Activity> items;
-  final String caip2chain;
-  final bool isLoading;
-
-  @override
-  State<_ListBuilder> createState() => __ListBuilderState();
-}
-
-class __ListBuilderState extends State<_ListBuilder> {
-  @override
-  Widget build(BuildContext context) {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    if (widget.isLoading && widget.items.isEmpty) {
+    if (_isLoadingActivities && _activities.isEmpty) {
       final loadingList = [
         ActivityListItemLoader(),
         ActivityListItemLoader(),
@@ -167,18 +169,37 @@ class __ListBuilderState extends State<_ListBuilder> {
       );
     }
 
-    if (widget.items.isEmpty) {
-      return Center(
-        child: Text(
-          'No activity found',
-          style: themeData.textStyles.paragraph500.copyWith(
-            color: themeColors.foreground100,
+    if (_activities.isEmpty) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          RoundedIcon(
+            assetPath: 'lib/modal/assets/icons/swap_horizontal.svg',
+            assetColor: themeColors.foreground200,
+            circleColor: themeColors.grayGlass010,
+            borderColor: themeColors.grayGlass010,
+            borderRadius: 8.0,
           ),
-        ),
+          const SizedBox.square(dimension: kPadding8),
+          Text(
+            'No activity yet',
+            style: themeData.textStyles.paragraph500.copyWith(
+              color: themeColors.foreground100,
+            ),
+          ),
+          Text(
+            'Your next transactions will appear here',
+            style: themeData.textStyles.small400.copyWith(
+              color: themeColors.foreground200,
+            ),
+          ),
+          const SizedBox.square(dimension: 30.0),
+        ],
       );
     }
 
-    final groupedByYearMonth = groupBy(widget.items, (Activity obj) {
+    final groupedByYearMonth = groupBy(_activities, (Activity obj) {
       final monthName = DateFormat.MMMM().format(
         obj.metadata!.minedAt!,
       );
@@ -192,10 +213,20 @@ class __ListBuilderState extends State<_ListBuilder> {
       groupedActivities.addAll(objs.map((obj) => MapEntry('', [obj])));
     });
 
+    // final height = groupedActivities.map((entry) {
+    //       if (entry.key.isNotEmpty) {
+    //         // title
+    //         return 28.0;
+    //       } else {
+    //         // transfers
+    //         return kListItemHeight;
+    //       }
+    //     }).reduce((a, b) => a + b) +
+    //     30.0;
     return ListView.builder(
-      controller: widget.scrollController,
+      controller: _scrollController,
       // Extra space for loading indicator
-      itemCount: groupedActivities.length + (widget.isLoading ? 1 : 0),
+      itemCount: groupedActivities.length + (_isLoadingActivities ? 1 : 0),
       padding: const EdgeInsets.only(bottom: 30.0),
       itemBuilder: (_, int index) {
         if (index == groupedActivities.length) {
@@ -235,7 +266,7 @@ class __ListBuilderState extends State<_ListBuilder> {
   List<Activity> _removeNFTsFromTransfers(List<Activity> activities) {
     final activityList = activities
         .where((data) {
-          return data.metadata?.chain == widget.caip2chain &&
+          return data.metadata?.chain == _currentChain &&
               (data.transfers ?? []).isNotEmpty;
         })
         .toList()

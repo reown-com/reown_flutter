@@ -50,10 +50,10 @@ class ConnectButton extends StatelessWidget {
         backgroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) {
             if (connecting) {
-              return themeColors.grayGlass010;
+              return themeColors.grayGlass002;
             }
-            if (states.contains(WidgetState.disabled)) {
-              return themeColors.grayGlass005;
+            if (states.contains(MaterialState.disabled)) {
+              return themeColors.grayGlass002;
             }
             return themeColors.accent100;
           },
@@ -72,8 +72,11 @@ class ConnectButton extends StatelessWidget {
         shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
           (states) {
             return RoundedRectangleBorder(
-              side: (states.contains(WidgetState.disabled) || connecting)
-                  ? BorderSide(color: themeColors.grayGlass010, width: 1.0)
+              side: (states.contains(MaterialState.disabled) || connecting)
+                  ? BorderSide(
+                      color: themeColors.grayGlass002,
+                      width: 1.0,
+                    )
                   : BorderSide.none,
               borderRadius: BorderRadius.circular(borderRadius),
             );

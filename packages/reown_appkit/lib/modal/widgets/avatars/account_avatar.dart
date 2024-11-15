@@ -69,7 +69,7 @@ class _AccountAvatarState extends State<AccountAvatar> {
   void _modalNotifyListener() {
     setState(() {
       try {
-        _avatarUrl = widget.appKit.avatarUrl;
+        _avatarUrl = widget.appKit.blockchainIdentity?.avatar;
         final chainId = widget.appKit.selectedChain?.chainId ?? '';
         final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
           chainId,
@@ -103,7 +103,7 @@ class GradientOrb extends StatelessWidget {
             borderRadius: BorderRadius.circular(size / 2.0),
             boxShadow: [
               BoxShadow(
-                color: themeColors.grayGlass025,
+                color: themeColors.grayGlass005,
                 spreadRadius: 1.0,
                 blurRadius: 0.0,
               ),
