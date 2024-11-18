@@ -9,6 +9,11 @@
 - Reconnection and resubscription mechanism, specially for Android 15 that implemented a strict doze mode.
 
 ## 1.2.0
+## 1.3.0-alpha01
+
+- Wallet Features for Email and Social Login
+
+## 1.2.0-beta01
 
 - Non-EVM Chains support
 - Social Logins
