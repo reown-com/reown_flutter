@@ -7,6 +7,7 @@ The communications protocol for web3, Reown brings the ecosystem together by ena
 | [Core SDK](packages/reown_core) | [Sign SDK](packages/reown_sign) | [WalletKit](packages/reown_walletkit) | [AppKit](packages/reown_appkit) |
 |---------------------------------|---------------------------------|---------------------------------------|---------------------------------|
 | 1.0.2                           | 1.0.2                           | 1.0.2                                 | 1.0.1                           |
+| 1.0.4                           | 1.0.4                           | 1.0.3                                 | 1.0.1                           |
 
 ## License
 
@@ -48,3 +49,12 @@ _NB: WalletKit sample is intended to be used just as an explanatory project_
 
 1. Run `cd packages/reown_appkit/example/base`
 2. Run `flutter run --dart-define="PROJECT_ID=0123..." --flavor internal`
+
+### Test Sample Dapp and Wallet
+
+- Sample Wallet:
+  - [Sample Wallet for iOS](https://testflight.apple.com/join/Uv0XoBuD)
+  - [Sample Wallet for Android](https://appdistribution.firebase.dev/i/2b8b3dce9e2831cd)
+- AppKit DApp:
+  - [AppKit Dapp for iOS](https://testflight.apple.com/join/6aRJSllc)
+  - [AppKit Dapp for Android](https://appdistribution.firebase.dev/i/2c6573f6956fa7b5)
