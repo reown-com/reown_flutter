@@ -70,6 +70,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       isDarkMode: _isDarkMode,
       child: MaterialApp(
         title: StringConstants.appTitle,
+        theme: ThemeData(
+          colorScheme: _isDarkMode
+              ? ColorScheme.dark(
+                  primary: ReownAppKitModalThemeData().darkColors.accent100,
+                )
+              : ColorScheme.light(
+                  primary: ReownAppKitModalThemeData().lightColors.accent100,
+                ),
+        ),
         home: const MyHomePage(),
       ),
     );
@@ -358,12 +367,12 @@ class _MyHomePageState extends State<MyHomePage> {
     debugPrint('[SampleDapp] _onSessionAuthResponse $response');
   }
 
-  void _setState(_) => setState(() {});
-
   void _relayClientError(ErrorEvent? event) {
     debugPrint('[SampleDapp] _relayClientError ${event?.error}');
     _setState('');
   }
+
+  void _setState(_) => setState(() {});
 
   @override
   void dispose() {
@@ -408,6 +417,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     return Scaffold(
+      backgroundColor: ReownAppKitModalTheme.colorsOf(context).background125,
       appBar: AppBar(
         title: Text(_pageDatas[_selectedIndex].title),
         centerTitle: true,

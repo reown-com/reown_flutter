@@ -1,3 +1,7 @@
+## 1.3.0-alpha01
+
+- Wallet Features for Email and Social Login
+
 ## 1.2.0-beta01
 
 - Non-EVM Chains support

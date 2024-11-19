@@ -11,6 +11,7 @@ class BaseListItem extends StatelessWidget {
     this.padding,
     this.hightlighted = false,
     this.flexible = false,
+    this.backgroundColor,
   });
   final Widget? trailing;
   final VoidCallback? onTap;
@@ -18,6 +19,7 @@ class BaseListItem extends StatelessWidget {
   final EdgeInsets? padding;
   final bool hightlighted;
   final bool flexible;
+  final MaterialStateProperty<Color?>? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +38,12 @@ class BaseListItem extends StatelessWidget {
                 const Size(1000.0, kListItemHeight),
               )
             : null,
-        backgroundColor: MaterialStateProperty.all<Color>(
-          hightlighted ? themeColors.accenGlass015 : themeColors.grayGlass002,
-        ),
+        backgroundColor: backgroundColor ??
+            MaterialStateProperty.all<Color>(
+              hightlighted
+                  ? themeColors.accenGlass015
+                  : themeColors.grayGlass002,
+            ),
         overlayColor: MaterialStateProperty.all<Color>(
           themeColors.grayGlass005,
         ),

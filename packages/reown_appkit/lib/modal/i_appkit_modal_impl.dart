@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:reown_appkit/modal/services/blockchain_service/models/blockchain_identity.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 enum ReownAppKitModalStatus {
@@ -45,7 +46,7 @@ abstract class IReownAppKitModal with ChangeNotifier {
 
   /// The url to the account's avatar image.
   /// Pass this into a [Image.network] and it will load the avatar image.
-  String? get avatarUrl;
+  BlockchainIdentity? get blockchainIdentity;
 
   /// Returns the balance of the currently connected wallet on the selected chain.
   @Deprecated('Use balanceNotifier')

@@ -21,7 +21,7 @@ class SecondaryButton extends StatelessWidget {
       onTap: onTap,
       buttonStyle: ButtonStyle(
         backgroundColor: MaterialStateProperty.resolveWith<Color>(
-          (states) => themeColors.grayGlass001,
+          (states) => themeColors.grayGlass002,
         ),
         foregroundColor: MaterialStateProperty.resolveWith<Color>(
           (states) => themeColors.foreground200,
@@ -30,7 +30,7 @@ class SecondaryButton extends StatelessWidget {
           (states) {
             return RoundedRectangleBorder(
               side: BorderSide(
-                color: themeColors.grayGlass010,
+                color: themeColors.grayGlass002,
                 width: 1.0,
               ),
               borderRadius: radiuses.isSquare()

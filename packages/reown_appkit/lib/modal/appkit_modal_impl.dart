@@ -5,7 +5,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/pages/smart_account_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
+import 'package:reown_appkit/modal/services/blockchain_service/models/blockchain_identity.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/services/network_service/i_network_service.dart';
 import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
@@ -92,15 +94,15 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   @override
   IReownAppKit? get appKit => _appKit;
 
-  String? _avatarUrl;
+  BlockchainIdentity? _blockchainIdentity;
   @override
-  String? get avatarUrl => _avatarUrl;
+  BlockchainIdentity? get blockchainIdentity => _blockchainIdentity;
 
-  double? _chainBalance;
   @Deprecated('Use balanceNotifier')
   @override
   String get chainBalance => CoreUtils.formatChainBalance(_chainBalance);
 
+  double? _chainBalance;
   @override
   final balanceNotifier = ValueNotifier<String>('-.--');
 
@@ -485,8 +487,9 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       return;
     }
 
+    _chainBalance = null;
+
     try {
-      _chainBalance = null;
       final formattedBalance = CoreUtils.formatChainBalance(_chainBalance);
       balanceNotifier.value = '$formattedBalance ${chainInfo.currency}';
 
@@ -630,14 +633,17 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   @override
   Future<void> openModalView([Widget? startWidget]) {
     final keyString = startWidget?.key?.toString() ?? '';
+    final isMagic = _currentSession?.sessionService.isMagic == true;
     if (_isConnected) {
       final connectedKeys =
           _allowedScreensWhenConnected.map((e) => e.toString()).toList();
       if (startWidget == null) {
-        startWidget = const AccountPage();
+        startWidget =
+            isMagic ? const SmartAccountPage() : const EOAccountPage();
       } else {
         if (!connectedKeys.contains(keyString)) {
-          startWidget = const AccountPage();
+          startWidget =
+              isMagic ? const SmartAccountPage() : const EOAccountPage();
         }
       }
     } else {
@@ -654,7 +660,8 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     KeyConstants.approveTransactionPage,
     KeyConstants.confirmEmailPage,
     KeyConstants.selectNetworkPage,
-    KeyConstants.accountPage,
+    KeyConstants.eoAccountPage,
+    KeyConstants.smartAccountPage,
     KeyConstants.socialLoginPage,
   ];
 
@@ -701,7 +708,8 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
 
     Widget? showWidget = startWidget;
     if (_isConnected && showWidget == null) {
-      showWidget = const AccountPage();
+      final isMagic = _currentSession?.sessionService.isMagic == true;
+      startWidget = isMagic ? const SmartAccountPage() : const EOAccountPage();
     }
 
     final childWidget = theme == null
@@ -872,8 +880,6 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   @override
   Future<void> buildConnectionUri() async {
     if (!_isConnected) {
-      /// TODO Qs: How do I handle SIWE if non-EVM chains are included?
-      /// TODO Qs: How do I handle switch to Solana from EVM chain?
       try {
         if (_siweService.enabled) {
           final walletRedirect = _explorerService.getWalletRedirect(
@@ -1458,7 +1464,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     );
 
     try {
-      _chainBalance = await _blockchainService.getBalance(
+      _chainBalance = await _blockchainService.getTokenBalance(
         address: _currentSession!.getAddress(namespace)!,
         namespace: namespace,
         chainId: _currentSelectedChainId!,
@@ -1477,10 +1483,13 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     if (namespace == NetworkUtils.eip155) {
       // Get the avatar, each chainId is just a number in string form.
       try {
+        final address = _currentSession!.getAddress(namespace)!;
         final blockchainId = await _blockchainService.getIdentity(
-          _currentSession!.getAddress(namespace)!,
+          address: address,
         );
-        _avatarUrl = blockchainId.avatar;
+        _blockchainIdentity = BlockchainIdentity.fromJson(
+          blockchainId.toJson(),
+        );
       } catch (_) {}
     }
     _notify();
@@ -1645,6 +1654,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     _lastChainEmitted = null;
     _supportsOneClickAuth = false;
     _status = ReownAppKitModalStatus.initialized;
+    _blockchainService.dispose();
     _notify();
   }
 
@@ -1850,11 +1860,14 @@ extension _EmailConnectorExtension on ReownAppKitModal {
     }
   }
 
-  Future<void> _onMagicErrorEvent(MagicErrorEvent? args) async {
-    _appKit.core.logger.d('[$runtimeType] _onMagicErrorEvent: $args');
-    final errorMessage = args?.error ?? 'Something went wrong';
+  Future<void> _onMagicErrorEvent(MagicErrorEvent? event) async {
+    _appKit.core.logger.d('[$runtimeType] _onMagicErrorEvent: ${event?.error}');
+    final errorMessage = event?.error ?? 'Something went wrong';
     if (!errorMessage.toLowerCase().contains('user denied')) {
       onModalError.broadcast(ModalError(errorMessage));
+    }
+    if (event is IsConnectedErrorEvent && _currentSession != null) {
+      await _cleanSession();
     }
     _notify();
   }

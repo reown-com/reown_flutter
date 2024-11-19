@@ -131,12 +131,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
           ),
           buttonStyle: ButtonStyle(
             backgroundColor: MaterialStateProperty.resolveWith<Color>(
-              (states) {
-                if (states.contains(MaterialState.disabled)) {
-                  return themeColors.grayGlass005;
-                }
-                return themeColors.grayGlass010;
-              },
+              (states) => themeColors.grayGlass002,
             ),
             foregroundColor: MaterialStateProperty.resolveWith<Color>(
               (states) {
@@ -149,9 +144,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
             shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
               (states) {
                 return RoundedRectangleBorder(
-                  side: states.contains(MaterialState.disabled)
-                      ? BorderSide(color: themeColors.grayGlass005, width: 1.0)
-                      : BorderSide(color: themeColors.grayGlass010, width: 1.0),
+                  side: BorderSide(color: themeColors.grayGlass002, width: 1.0),
                   borderRadius: BorderRadius.circular(borderRadius),
                 );
               },
@@ -217,7 +210,7 @@ class _BalanceButton extends StatelessWidget {
         foregroundColor: MaterialStateProperty.resolveWith<Color>(
           (states) {
             if (states.contains(MaterialState.disabled)) {
-              return themeColors.grayGlass015;
+              return themeColors.grayGlass005;
             }
             return themeColors.foreground100;
           },

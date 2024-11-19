@@ -14,6 +14,7 @@ class RoundedIcon extends StatelessWidget {
     this.assetColor,
     this.circleColor,
     this.borderColor,
+    this.borderWidth,
     this.size = 34.0,
     this.padding = 8.0,
     this.borderRadius,
@@ -21,7 +22,7 @@ class RoundedIcon extends StatelessWidget {
   final String? assetPath, imageUrl;
   final Color? assetColor, circleColor, borderColor;
   final double size, padding;
-  final double? borderRadius;
+  final double? borderRadius, borderWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +37,7 @@ class RoundedIcon extends StatelessWidget {
         border: Border.fromBorderSide(
           BorderSide(
             color: borderColor ?? themeColors.grayGlass005,
-            width: 2,
+            width: borderWidth ?? 2.0,
             strokeAlign: BorderSide.strokeAlignOutside,
           ),
         ),

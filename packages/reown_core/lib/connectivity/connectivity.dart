@@ -28,7 +28,9 @@ class ConnectivityState implements IConnectivity {
   Future<void> _updateConnectionStatus(List<ConnectivityResult> result) async {
     final isMobileData = result.contains(ConnectivityResult.mobile);
     final isWifi = result.contains(ConnectivityResult.wifi);
-    final isOnlineStatus = isMobileData || isWifi;
+    final isCable = result.contains(ConnectivityResult.ethernet);
+    final isVPN = result.contains(ConnectivityResult.vpn);
+    final isOnlineStatus = isMobileData || isWifi || isCable || isVPN;
 
     if (isOnline.value != isOnlineStatus) {
       isOnline.value = isOnlineStatus;

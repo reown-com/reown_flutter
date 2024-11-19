@@ -17,6 +17,7 @@ class SimpleIconButton extends StatelessWidget {
     this.size = BaseButtonSize.regular,
     this.overlayColor,
     this.withBorder = true,
+    this.borderRadius,
   });
   final VoidCallback? onTap;
   final String title;
@@ -27,23 +28,37 @@ class SimpleIconButton extends StatelessWidget {
   final BaseButtonSize size;
   final MaterialStateProperty<Color>? overlayColor;
   final bool withBorder;
+  final double? borderRadius;
 
   @override
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final textStyles = ReownAppKitModalTheme.getDataOf(context).textStyles;
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
-    final borderRadius =
-        radiuses.isSquare() ? 0.0 : (BaseButtonSize.regular.height / 2);
+    final radius = radiuses.isSquare()
+        ? 0.0
+        : radiuses.isCircular()
+            ? 100.0
+            : borderRadius ?? (size.height / 2);
     return BaseButton(
       onTap: onTap,
       size: size,
       buttonStyle: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(
-          backgroundColor ?? themeColors.accent100,
+        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+          (states) {
+            if (states.contains(MaterialState.disabled)) {
+              return themeColors.grayGlass005;
+            }
+            return backgroundColor ?? themeColors.accent100;
+          },
         ),
-        foregroundColor: MaterialStateProperty.all<Color>(
-          foregroundColor ?? themeColors.inverse100,
+        foregroundColor: MaterialStateProperty.resolveWith<Color>(
+          (states) {
+            if (states.contains(MaterialState.disabled)) {
+              return themeColors.grayGlass005;
+            }
+            return foregroundColor ?? themeColors.inverse100;
+          },
         ),
         overlayColor: overlayColor,
         shape: withBorder
@@ -51,10 +66,10 @@ class SimpleIconButton extends StatelessWidget {
                 (states) {
                   return RoundedRectangleBorder(
                     side: BorderSide(
-                      color: themeColors.grayGlass010,
+                      color: backgroundColor ?? themeColors.grayGlass010,
                       width: 1.0,
                     ),
-                    borderRadius: BorderRadius.circular(borderRadius),
+                    borderRadius: BorderRadius.circular(radius),
                   );
                 },
               )
@@ -73,7 +88,9 @@ class SimpleIconButton extends StatelessWidget {
                   leftIcon!,
                   package: 'reown_appkit',
                   colorFilter: ColorFilter.mode(
-                    foregroundColor ?? themeColors.inverse100,
+                    onTap == null
+                        ? themeColors.grayGlass025
+                        : foregroundColor ?? themeColors.inverse100,
                     BlendMode.srcIn,
                   ),
                   width: iconSize ?? 14.0,
@@ -97,7 +114,9 @@ class SimpleIconButton extends StatelessWidget {
                   rightIcon!,
                   package: 'reown_appkit',
                   colorFilter: ColorFilter.mode(
-                    foregroundColor ?? themeColors.inverse100,
+                    onTap == null
+                        ? themeColors.grayGlass025
+                        : foregroundColor ?? themeColors.inverse100,
                     BlendMode.srcIn,
                   ),
                   width: iconSize ?? 14.0,

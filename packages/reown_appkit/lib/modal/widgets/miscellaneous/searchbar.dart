@@ -17,11 +17,13 @@ class ModalSearchBar extends StatefulWidget {
     this.iconPath = 'lib/modal/assets/icons/search.svg',
     this.prefixIcon,
     this.suffixIcon,
+    this.suffixWidth,
     this.textAlign,
     this.textInputType,
     this.textInputAction,
     this.onSubmitted,
     this.autofocus,
+    this.maxLines,
     this.onFocusChange,
     this.noIcons = false,
     this.showCursor = true,
@@ -31,6 +33,7 @@ class ModalSearchBar extends StatefulWidget {
     this.width,
     this.height = kSearchFieldHeight,
     this.enabled = true,
+    this.borderOnFocus = true,
     this.inputFormatters,
   });
   final Function(String) onTextChanged;
@@ -41,11 +44,13 @@ class ModalSearchBar extends StatefulWidget {
   final String initialValue;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final double? suffixWidth;
   final TextAlign? textAlign;
   final TextInputType? textInputType;
   final TextInputAction? textInputAction;
   final Function(String)? onSubmitted;
   final bool? autofocus;
+  final int? maxLines;
   final Function(bool)? onFocusChange;
   final bool noIcons;
   final bool showCursor;
@@ -55,6 +60,7 @@ class ModalSearchBar extends StatefulWidget {
   final double? width;
   final double height;
   final bool enabled;
+  final bool borderOnFocus;
   final List<TextInputFormatter>? inputFormatters;
 
   @override
@@ -159,7 +165,9 @@ class _ModalSearchBarState extends State<ModalSearchBar>
   void _updateState() {
     if (_focusNode.hasFocus && !_hasFocus) {
       _hasFocus = _focusNode.hasFocus;
-      _animationController.forward();
+      if (widget.borderOnFocus) {
+        _animationController.forward();
+      }
     }
     if (!_focusNode.hasFocus && _hasFocus) {
       _hasFocus = _focusNode.hasFocus;
@@ -199,12 +207,15 @@ class _ModalSearchBarState extends State<ModalSearchBar>
     );
 
     return DecoratedBoxTransition(
-      decoration: _decorationTween.animate(_animationController),
+      decoration: _decorationTween.animate(
+        _animationController,
+      ),
       child: Container(
         height: widget.height + 8.0,
         width: widget.width,
         padding: const EdgeInsets.all(4.0),
         child: TextFormField(
+          maxLines: widget.maxLines ?? 1,
           keyboardType: widget.textInputType ?? TextInputType.text,
           textInputAction:
               widget.textInputAction ?? TextInputAction.unspecified,
@@ -268,14 +279,20 @@ class _ModalSearchBarState extends State<ModalSearchBar>
               maxWidth: 40.0,
               minWidth: widget.noIcons ? 0.0 : 40.0,
             ),
-            labelStyle: themeData.textStyles.paragraph500.copyWith(
-              color: themeColors.inverse100,
-            ),
+            labelStyle: widget.textStyle?.copyWith(
+                  color: themeColors.inverse100,
+                ) ??
+                themeData.textStyles.paragraph500.copyWith(
+                  color: themeColors.inverse100,
+                ),
             hintText: widget.hint,
-            hintStyle: themeData.textStyles.paragraph500.copyWith(
-              color: themeColors.foreground275,
-              height: 1.5,
-            ),
+            hintStyle: widget.textStyle?.copyWith(
+                  color: themeColors.foreground275,
+                ) ??
+                themeData.textStyles.paragraph500.copyWith(
+                  color: themeColors.foreground275,
+                  height: 1.5,
+                ),
             suffixIcon: widget.suffixIcon ??
                 (_controller.value.text.isNotEmpty || _focusNode.hasFocus
                     ? Column(
@@ -308,14 +325,15 @@ class _ModalSearchBarState extends State<ModalSearchBar>
             suffixIconConstraints: BoxConstraints(
               maxHeight: widget.height,
               minHeight: widget.height,
-              maxWidth: 36.0,
-              minWidth: widget.noIcons ? 0.0 : 36.0,
+              maxWidth: widget.suffixWidth ?? 36.0,
+              minWidth: widget.suffixWidth ?? (widget.noIcons ? 0.0 : 36.0),
             ),
             border: unfocusedBorder,
             errorBorder: unfocusedBorder,
             enabledBorder: unfocusedBorder,
             disabledBorder: disabledBorder,
-            focusedBorder: focusedBorder,
+            focusedBorder:
+                widget.borderOnFocus ? focusedBorder : unfocusedBorder,
             filled: true,
             fillColor: themeColors.grayGlass002,
             contentPadding: const EdgeInsets.all(0.0),

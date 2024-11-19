@@ -4,8 +4,13 @@ import 'package:reown_appkit/modal/widgets/avatars/account_avatar.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 
 class Orb extends StatelessWidget {
-  const Orb({super.key, this.size = 70.0});
+  const Orb({
+    super.key,
+    this.size = 70.0,
+    this.border = 8.0,
+  });
   final double size;
+  final double border;
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +23,12 @@ class Orb extends StatelessWidget {
         borderRadius: BorderRadius.circular(size / 2),
         border: Border.all(
           color: themeColors.grayGlass005,
-          width: 8.0,
+          width: border,
         ),
       ),
       child: AccountAvatar(
         appKit: service,
-        size: size - 8.0,
+        size: size - border,
       ),
     );
   }

@@ -15,16 +15,16 @@ class AddressCopyButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final service = ModalProvider.of(context).instance;
+    final appKitModal = ModalProvider.of(context).instance;
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return GestureDetector(
       onTap: () async {
-        final chainId = service.selectedChain!.chainId;
+        final chainId = appKitModal.selectedChain!.chainId;
         final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
           chainId,
         );
-        final address = service.session!.getAddress(namespace)!;
+        final address = appKitModal.session!.getAddress(namespace)!;
         await Clipboard.setData(ClipboardData(text: address));
         GetIt.I<IToastService>().show(ToastMessage(
           type: ToastType.success,
@@ -34,8 +34,8 @@ class AddressCopyButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Address(
-            service: service,
+          AddressText(
+            appKitModal: appKitModal,
             style: themeData.textStyles.title600.copyWith(
               color: themeColors.foreground100,
             ),
@@ -48,8 +48,8 @@ class AddressCopyButton extends StatelessWidget {
               themeColors.foreground250,
               BlendMode.srcIn,
             ),
-            width: 20.0,
-            height: 20.0,
+            width: 16.0,
+            height: 16.0,
           ),
         ],
       ),

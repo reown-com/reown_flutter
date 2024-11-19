@@ -32,22 +32,18 @@ class StyleConstants {
 
   // Text styles
   static const TextStyle titleText = TextStyle(
-    color: Colors.black,
     fontSize: magic40,
     fontWeight: FontWeight.w600,
   );
   static const TextStyle subtitleText = TextStyle(
-    color: Colors.black,
     fontSize: linear24,
     fontWeight: FontWeight.w600,
   );
   static const TextStyle paragraph = TextStyle(
-    color: Colors.black,
     fontSize: linear16,
     fontWeight: FontWeight.w600,
   );
   static const TextStyle buttonText = TextStyle(
-    color: Colors.black,
     fontSize: magic14,
     fontWeight: FontWeight.w600,
   );

@@ -3,33 +3,34 @@ import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/utils/render_utils.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
-class Address extends StatefulWidget {
-  const Address({
+/// Widget to show the address or identity name
+class AddressText extends StatefulWidget {
+  const AddressText({
     super.key,
-    required this.service,
+    required this.appKitModal,
     this.style,
   });
 
-  final IReownAppKitModal service;
+  final IReownAppKitModal appKitModal;
   final TextStyle? style;
 
   @override
-  State<Address> createState() => _AddressState();
+  State<AddressText> createState() => _AddressTextState();
 }
 
-class _AddressState extends State<Address> {
+class _AddressTextState extends State<AddressText> {
   String? _address;
 
   @override
   void initState() {
     super.initState();
     _modalNotifyListener();
-    widget.service.addListener(_modalNotifyListener);
+    widget.appKitModal.addListener(_modalNotifyListener);
   }
 
   @override
   void dispose() {
-    widget.service.removeListener(_modalNotifyListener);
+    widget.appKitModal.removeListener(_modalNotifyListener);
     super.dispose();
   }
 
@@ -37,8 +38,12 @@ class _AddressState extends State<Address> {
   Widget build(BuildContext context) {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final identityName =
+        (widget.appKitModal.blockchainIdentity?.name ?? '').isNotEmpty
+            ? widget.appKitModal.blockchainIdentity!.name!
+            : null;
     return Text(
-      RenderUtils.truncate(_address ?? ''),
+      identityName ?? RenderUtils.truncate(_address ?? ''),
       style: widget.style ??
           themeData.textStyles.paragraph600.copyWith(
             color: themeColors.foreground100,
@@ -48,11 +53,11 @@ class _AddressState extends State<Address> {
 
   void _modalNotifyListener() {
     setState(() {
-      final chainId = widget.service.selectedChain?.chainId ?? '';
+      final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
       final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
         chainId,
       );
-      _address = widget.service.session?.getAddress(namespace);
+      _address = widget.appKitModal.session?.getAddress(namespace);
     });
   }
 }

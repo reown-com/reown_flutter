@@ -297,6 +297,15 @@ class ConnectPageState extends State<ConnectPage> {
                 builder: (_, snapshot) {
                   final enabled = snapshot.data != null;
                   return ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (states) => states.contains(MaterialState.disabled)
+                            ? ReownAppKitModalTheme.colorsOf(context)
+                                .grayGlass005
+                            : ReownAppKitModalTheme.colorsOf(context)
+                                .background125,
+                      ),
+                    ),
                     onPressed: enabled
                         ? () {
                             widget.appKitModal.launchConnectedWallet();
@@ -489,38 +498,6 @@ class ConnectPageState extends State<ConnectPage> {
   void _onModalError(ModalError? event) {
     setState(() {});
   }
-
-  // ignore: unused_element
-  ButtonStyle get _buttonStyle => ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
-          (states) {
-            if (states.contains(MaterialState.disabled)) {
-              return StyleConstants.grayColor;
-            }
-            return Colors.blue;
-          },
-        ),
-        textStyle: MaterialStateProperty.resolveWith<TextStyle>(
-          (states) => TextStyle(
-            fontSize: 8.0,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        padding: MaterialStateProperty.resolveWith<EdgeInsetsGeometry>(
-          (states) => EdgeInsets.all(0.0),
-        ),
-        minimumSize: MaterialStateProperty.all<Size>(const Size(
-          1000.0,
-          StyleConstants.linear48,
-        )),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              StyleConstants.linear8,
-            ),
-          ),
-        ),
-      );
 }
 
 class _FooterWidget extends StatefulWidget {
