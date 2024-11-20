@@ -59,6 +59,7 @@ class SiweService implements ISiweService {
   Future<String> getNonce() async {
     if (!enabled) throw Exception('siweConfig not enabled');
     //
+    _appKit.core.logger.d('[$runtimeType] getNonce() called');
     return await _siweConfig!.getNonce();
   }
 
@@ -80,6 +81,7 @@ class SiweService implements ISiweService {
       type: messageParams.type ?? CacaoHeader(t: 'eip4361'),
     );
 
+    _appKit.core.logger.d('[$runtimeType] createMessage() called');
     return _siweConfig!.createMessage(createMessageArgs);
   }
 
@@ -96,6 +98,7 @@ class SiweService implements ISiweService {
     final bytes = utf8.encode(message);
     final encoded = hex.encode(bytes);
     //
+    _appKit.core.logger.d('[$runtimeType] signMessageRequest() called');
     if (session.sessionService.isMagic) {
       return await _magicService.request(
         chainId: caip2Chain,
@@ -139,6 +142,7 @@ class SiweService implements ISiweService {
       cacao: cacao,
       clientId: clientId,
     );
+    _appKit.core.logger.d('[$runtimeType] verifyMessage() called');
     final isValid = await _siweConfig!.verifyMessage(verifyArgs);
     if (!isValid) {
       throw ReownAppKitModalException('Error verifying SIWE signature');
@@ -151,6 +155,7 @@ class SiweService implements ISiweService {
     if (!enabled) throw Exception('siweConfig not enabled');
     //
     try {
+      _appKit.core.logger.d('[$runtimeType] getSession() called');
       final siweSession = await _siweConfig!.getSession();
       if (siweSession == null) {
         throw ReownAppKitModalException('Error getting SIWE session');
@@ -167,6 +172,7 @@ class SiweService implements ISiweService {
   Future<void> signOut() async {
     if (!enabled) throw Exception('siweConfig not enabled');
 
+    _appKit.core.logger.d('[$runtimeType] signOut() called');
     final success = await _siweConfig!.signOut();
     if (!success) {
       throw ReownAppKitModalException('signOut() from siweConfig failed');
@@ -182,6 +188,7 @@ class SiweService implements ISiweService {
       'aud': params.uri,
       'type': params.type?.t,
     });
+    _appKit.core.logger.d('[$runtimeType] formatMessage() called');
     return _appKit.formatAuthMessage(
       iss: 'did:pkh:${params.address}',
       cacaoPayload: CacaoRequestPayload.fromSessionAuthPayload(authPayload),

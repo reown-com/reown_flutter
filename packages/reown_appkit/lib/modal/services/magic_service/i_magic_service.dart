@@ -40,7 +40,7 @@ abstract class IMagicService {
   Future<void> connectOtp({required String otp});
   Future<void> syncTheme(ReownAppKitModalTheme? theme);
   Future<String?> getChainId();
-  Future<bool> getUser({required String? chainId});
+  Future<bool> getUser({required String? chainId, required bool isUpdate});
   Future<bool> switchNetwork({required String chainId});
   Future<dynamic> request({
     String? chainId,

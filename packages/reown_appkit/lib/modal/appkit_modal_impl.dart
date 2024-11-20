@@ -330,10 +330,6 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       }
     }
 
-    _appKit.core.logger.d('[$runtimeType] wcSessions ${wcSessions.length}');
-    _appKit.core.logger
-        .d('[$runtimeType] _currentSession ${_currentSession?.toJson()}');
-
     // There's a session stored
     if (wcSessions.isNotEmpty) {
       await _storeSession(ReownAppKitModalSession(
@@ -1629,8 +1625,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       final walletId = storedWalletId?['walletId'];
       await _deleteStorage();
       await _explorerService.storeRecentWalletId(walletId);
-    } catch (e, s) {
-      _appKit.core.logger.e('[$runtimeType] _cleanSession $e', stackTrace: s);
+    } catch (_) {
       await _deleteStorage();
     }
     if (event) {
@@ -1659,6 +1654,10 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
     if (_siweService.config?.enabled != true) return;
     try {
       if (_siweService.signOutOnNetworkChange) {
+        final caip2chain = ReownAppKitModalNetworks.getCaip2Chain(
+          _currentSelectedChainId!,
+        );
+        await _magicService.getUser(chainId: caip2chain, isUpdate: true);
         await _siweService.signOut();
         _disconnectOnClose = true;
         widgetStack.instance.push(ApproveSIWEPage(
@@ -1667,7 +1666,8 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       }
     } catch (e, s) {
       _appKit.core.logger.e(
-        '[$runtimeType] _onNetworkChainRequireSIWE error: $e',
+        '[$runtimeType] _onNetworkChainRequireSIWE',
+        error: e,
         stackTrace: s,
       );
     }
@@ -1833,12 +1833,8 @@ extension _EmailConnectorExtension on ReownAppKitModal {
           chainId: newChainId,
         );
         final session = (_currentSession != null)
-            ? _currentSession!.copyWith(
-                magicData: magicData,
-              )
-            : ReownAppKitModalSession(
-                magicData: magicData,
-              );
+            ? _currentSession!.copyWith(magicData: magicData)
+            : ReownAppKitModalSession(magicData: magicData);
         await _setSesionAndChainData(session);
         onModalUpdate.broadcast(ModalConnect(session));
       } catch (e, s) {

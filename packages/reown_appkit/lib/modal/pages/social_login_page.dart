@@ -183,7 +183,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
         final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
           _service?.selectedChain?.chainId ?? '1',
         );
-        await _magicService.getUser(chainId: caip2Chain);
+        await _magicService.getUser(chainId: caip2Chain, isUpdate: false);
         _analyticsService.sendEvent(SocialLoginSuccess(
           provider: widget.socialOption.name.toLowerCase(),
         ));
@@ -218,7 +218,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
       final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
         _service?.selectedChain?.chainId ?? '1',
       );
-      await _magicService.getUser(chainId: caip2Chain);
+      await _magicService.getUser(chainId: caip2Chain, isUpdate: false);
     }
   }
 
