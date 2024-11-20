@@ -587,7 +587,7 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         enabled: enabled,
         signOutOnDisconnect: true,
-        signOutOnAccountChange: true,
+        signOutOnAccountChange: false,
         signOutOnNetworkChange: false,
         // nonceRefetchIntervalMs: 300000,
         // sessionRefetchIntervalMs: 300000,

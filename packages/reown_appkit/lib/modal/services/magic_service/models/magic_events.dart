@@ -117,7 +117,8 @@ class ConnectOtpErrorEvent extends MagicErrorEvent {
 }
 
 class GetUserErrorEvent extends MagicErrorEvent {
-  GetUserErrorEvent() : super('Error getting user');
+  final String? message;
+  GetUserErrorEvent({this.message}) : super('Error getting user');
 }
 
 class SwitchNetworkErrorEvent extends MagicErrorEvent {

@@ -62,10 +62,28 @@ class ReownAppKitModalSession {
     MagicData? magicData,
     SIWESession? siweSession,
   }) {
+    final newCoinbaseData = _coinbaseData?.copytWith(
+      address: coinbaseData?.address,
+      chainName: coinbaseData?.chainName,
+      chainId: coinbaseData?.chainId,
+      self: coinbaseData?.self,
+      peer: coinbaseData?.peer,
+    );
+    final newMagicData = _magicData?.copytWith(
+      email: magicData?.email,
+      address: magicData?.address,
+      chainId: magicData?.chainId,
+      userName: magicData?.userName,
+      smartAccountDeployed: magicData?.smartAccountDeployed,
+      preferredAccountType: magicData?.preferredAccountType,
+      self: magicData?.self,
+      peer: magicData?.peer,
+      provider: magicData?.provider,
+    );
     return ReownAppKitModalSession(
       sessionData: sessionData ?? _sessionData,
-      coinbaseData: coinbaseData ?? _coinbaseData,
-      magicData: magicData ?? _magicData,
+      coinbaseData: newCoinbaseData ?? _coinbaseData,
+      magicData: newMagicData ?? _magicData,
       siweSession: siweSession ?? _siweSession,
     );
   }

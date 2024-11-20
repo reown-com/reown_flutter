@@ -59,7 +59,21 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
       final newCaip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
         widget.chainInfo.chainId,
       );
-      await _magicService.switchNetwork(chainId: newCaip2Chain);
+      final success = await _magicService.switchNetwork(chainId: newCaip2Chain);
+      if (success) {
+        final siweEnabled = _siweService.config?.enabled != true;
+        final signOutOnNetworkChange = _siweService.signOutOnNetworkChange;
+        if (!siweEnabled || !signOutOnNetworkChange) {
+          final newCaip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
+            widget.chainInfo.chainId,
+          );
+          await _magicService.getUser(
+            chainId: newCaip2Chain,
+            isUpdate: true,
+          );
+          widgetStack.instance.pop();
+        }
+      }
     } else {
       try {
         _appKitModal!.launchConnectedWallet();

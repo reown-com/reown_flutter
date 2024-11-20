@@ -407,19 +407,32 @@ class MagicService implements IMagicService {
   }
 
   Completer<bool> _getUserCompleter = Completer<bool>();
+  bool _isUpdateUser = false;
   @override
-  Future<bool> getUser({required String? chainId}) async {
+  Future<bool> getUser({
+    required String? chainId,
+    required bool isUpdate,
+  }) async {
     if (_serviceNotReady) {
       throw Exception('Service is not ready');
     }
     //
-    _getUserCompleter = Completer<bool>();
-    await _getUser(chainId);
+    await _getUser(chainId, isUpdate);
     return await _getUserCompleter.future;
   }
 
-  Future<void> _getUser(String? chainId) async {
-    final message = GetUser(chainId: chainId ?? _connectionChainId).toString();
+  Future<void> _getUser(String? chainId, bool isUpdate) async {
+    _isUpdateUser = isUpdate;
+    _getUserCompleter = Completer<bool>();
+    String? cid = chainId ?? _connectionChainId;
+    if (cid != null && !NamespaceUtils.isValidChainId(cid)) {
+      try {
+        cid = ReownAppKitModalNetworks.getCaip2Chain(cid);
+      } catch (_) {
+        cid = null;
+      }
+    }
+    final message = GetUser(chainId: cid).toString();
     return await _webViewController.runJavaScript('sendMessage($message)');
   }
 
@@ -572,7 +585,7 @@ class MagicService implements IMagicService {
       }
       onMagicConnect.broadcast(MagicConnectEvent(isConnected.value));
       if (isConnected.value) {
-        await _getUser(_connectionChainId);
+        await _getUser(_connectionChainId, false);
       }
     }
     if (messageData.getSocialRedirectUriSuccess) {
@@ -581,7 +594,9 @@ class MagicService implements IMagicService {
     }
     // ****** CONNECT_SOCIAL_SUCCESS
     if (messageData.connectSocialSuccess) {
-      _socialUsername = messageData.getPayloadMapKey<String?>('userName');
+      final username = messageData.getPayloadMapKey<String?>('userName');
+      final email = messageData.getPayloadMapKey<String?>('email');
+      _socialUsername = username ?? email;
       _connectSocial.complete(true);
     }
     // ****** GET_FARCASTER_URI_SUCCESS
@@ -591,7 +606,9 @@ class MagicService implements IMagicService {
     }
     // ****** CONNECT_FARCASTER_SUCCESS
     if (messageData.connectFarcasterSuccess) {
-      _socialUsername = messageData.getPayloadMapKey<String?>('userName');
+      final username = messageData.getPayloadMapKey<String?>('userName');
+      final email = messageData.getPayloadMapKey<String?>('email');
+      _socialUsername = username ?? email;
       _connectFarcaster.complete(true);
     }
     // ****** CONNECT_EMAIL
@@ -613,7 +630,7 @@ class MagicService implements IMagicService {
     if (messageData.connectOtpSuccess) {
       _analyticsService.sendEvent(EmailVerificationCodePass());
       step.value = EmailLoginStep.idle;
-      await _getUser(_connectionChainId);
+      await _getUser(_connectionChainId, false);
     }
     // ****** UPDAET_EMAIL
     if (messageData.updateEmailSuccess) {
@@ -635,7 +652,7 @@ class MagicService implements IMagicService {
       step.value = EmailLoginStep.idle;
       setEmail(newEmail.value);
       setNewEmail('');
-      await _getUser(_connectionChainId);
+      await _getUser(_connectionChainId, true);
     }
     // ****** SWITCH_NETWORK_SUCCESS
     if (messageData.switchNetworkSuccess) {
@@ -650,11 +667,7 @@ class MagicService implements IMagicService {
         ));
         _connectionChainId = chainId?.toString();
       }
-      final newCaip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
-        _connectionChainId ?? '1',
-      );
-      final success = await getUser(chainId: newCaip2Chain);
-      _switchNetworkCompleter.complete(success);
+      _switchNetworkCompleter.complete(true);
     }
     // ****** GET_CHAIN_ID
     if (messageData.getChainIdSuccess) {
@@ -695,6 +708,15 @@ class MagicService implements IMagicService {
         );
         onMagicUpdate.broadcast(event);
         _isConnectedCompleter.complete(isConnected.value);
+      } else if (_isUpdateUser) {
+        final event = MagicSessionEvent(
+          email: magicData.email,
+          userName: magicData.userName,
+          address: magicData.address,
+          chainId: magicData.chainId,
+          provider: magicData.provider,
+        );
+        onMagicUpdate.broadcast(event);
       } else {
         final session = magicData.copytWith(
           peer: _peerMetadata.copyWith(
@@ -707,7 +729,10 @@ class MagicService implements IMagicService {
         );
         onMagicLoginSuccess.broadcast(MagicLoginEvent(session));
       }
-      _getUserCompleter.complete(true);
+      // TODO this try/catch is a temporary workaround
+      try {
+        _getUserCompleter.complete(true);
+      } catch (_) {}
     }
     // ****** SIGN_OUT_SUCCESS
     if (messageData.signOutSuccess) {
@@ -787,8 +812,8 @@ class MagicService implements IMagicService {
     }
     // GET_USER_ERROR
     if (messageData.getUserError) {
-      // final message = messageData.getPayloadMapKey<String?>('message');
-      _error(GetUserErrorEvent());
+      final message = messageData.getPayloadMapKey<String?>('message');
+      _error(GetUserErrorEvent(message: message));
       _getUserCompleter.complete(false);
     }
     if (messageData.switchNetworkError) {
