@@ -98,8 +98,9 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
       );
       //
       final siweSession = await _siweService.getSession();
-      final newSession =
-          _appKitModal!.session!.copyWith(siweSession: siweSession);
+      final newSession = _appKitModal!.session!.copyWith(
+        siweSession: siweSession,
+      );
       //
       widget.onSiweFinish(newSession);
       //
@@ -113,8 +114,7 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
   }
 
   void _handleError(String? error) {
-    debugPrint('[$runtimeType] _handleError $error');
-    String chainId = _appKitModal!.selectedChain?.chainId ?? '1';
+    final chainId = _appKitModal!.selectedChain?.chainId ?? '1';
     _analyticsService.sendEvent(SiweAuthError(network: chainId));
     GetIt.I<IToastService>().show(ToastMessage(
       type: ToastType.error,
