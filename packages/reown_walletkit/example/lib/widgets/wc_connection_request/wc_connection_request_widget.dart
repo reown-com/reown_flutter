@@ -12,13 +12,13 @@ import '../wc_connection_widget/wc_connection_model.dart';
 
 class WCConnectionRequestWidget extends StatelessWidget {
   const WCConnectionRequestWidget({
-    Key? key,
+    super.key,
     // this.authPayloadParams,
     this.sessionAuthPayload,
     this.proposalData,
     this.requester,
     this.verifyContext,
-  }) : super(key: key);
+  });
 
   // final AuthPayloadParams? authPayloadParams;
   final SessionAuthPayload? sessionAuthPayload;

@@ -492,28 +492,28 @@ class ConnectPageState extends State<ConnectPage> {
 
   // ignore: unused_element
   ButtonStyle get _buttonStyle => ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) {
-            if (states.contains(MaterialState.disabled)) {
+            if (states.contains(WidgetState.disabled)) {
               return StyleConstants.grayColor;
             }
             return Colors.blue;
           },
         ),
-        textStyle: MaterialStateProperty.resolveWith<TextStyle>(
+        textStyle: WidgetStateProperty.resolveWith<TextStyle>(
           (states) => TextStyle(
             fontSize: 8.0,
             fontWeight: FontWeight.w400,
           ),
         ),
-        padding: MaterialStateProperty.resolveWith<EdgeInsetsGeometry>(
+        padding: WidgetStateProperty.resolveWith<EdgeInsetsGeometry>(
           (states) => EdgeInsets.all(0.0),
         ),
-        minimumSize: MaterialStateProperty.all<Size>(const Size(
+        minimumSize: WidgetStateProperty.all<Size>(const Size(
           1000.0,
           StyleConstants.linear48,
         )),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
               StyleConstants.linear8,

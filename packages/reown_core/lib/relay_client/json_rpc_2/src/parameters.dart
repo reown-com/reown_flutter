@@ -152,8 +152,7 @@ class Parameter extends Parameters {
   /// Whether this parameter exists.
   bool get exists => true;
 
-  Parameter._(String method, value, this._parent, this._key)
-      : super(method, value);
+  Parameter._(super.method, super.value, this._parent, this._key);
 
   /// Returns [value], or [defaultValue] if this parameter wasn't passed.
   dynamic valueOr(defaultValue) => value;

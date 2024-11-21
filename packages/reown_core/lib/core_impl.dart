@@ -103,7 +103,7 @@ class ReownCore implements IReownCore {
   @override
   bool removeLogListener(Function(String) callback) {
     if (_logCallback != null) {
-      return Logger.removeLogListener(_logCallback!);
+      return Logger.removeLogListener(_logCallback);
     }
     return false;
   }

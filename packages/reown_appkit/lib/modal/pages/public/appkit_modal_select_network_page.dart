@@ -132,7 +132,7 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
             fontSize: 15.0,
             backgroundColor: Colors.transparent,
             foregroundColor: themeColors.accent100,
-            overlayColor: MaterialStateProperty.all<Color>(
+            overlayColor: WidgetStateProperty.all<Color>(
               themeColors.background200,
             ),
             withBorder: false,

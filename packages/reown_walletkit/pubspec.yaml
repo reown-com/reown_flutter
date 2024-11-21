@@ -6,33 +6,34 @@ repository: https://github.com/reown-com/reown_flutter/tree/master/packages/reow
 documentation: https://docs.reown.com/walletkit/flutter/installation
 
 environment:
-  sdk: ">=2.19.0 <4.0.0"
+  sdk: ">=3.2.3"
+  flutter: ">=3.16.6"
 
 dependencies:
-  event: ^2.1.2
+  event: ^3.1.0
   flutter:
     sdk: flutter
-  reown_core: ^1.0.4
-  # reown_core:
-  #   path: ../reown_core/
-  reown_sign: ^1.0.4
-  # reown_sign:
-  #   path: ../reown_sign/
+  # reown_core: ^1.0.4
+  reown_core:
+    path: ../reown_core/
+  # reown_sign: ^1.0.4
+  reown_sign:
+    path: ../reown_sign/
 
 dev_dependencies:
-  build_runner: ^2.4.7
+  build_runner: ^2.4.13
   build_version: ^2.1.1
-  dependency_validator: ^3.2.2
+  dependency_validator: ^4.1.1
   flutter_lints: ^2.0.0
   flutter_test:
     sdk: flutter
   http: ^1.2.2
-  logger: ^2.2.0
-  mockito: ^5.4.3
-  package_info_plus: ^8.0.2
-  reown_appkit: ^1.0.2
-  # reown_appkit:
-  #   path: ../reown_appkit/
+  logger: ^2.5.0
+  mockito: ^5.4.4
+  package_info_plus: ^8.1.1
+  # reown_appkit: ^1.0.2
+  reown_appkit:
+    path: ../reown_appkit/
 
 platforms:
   android:

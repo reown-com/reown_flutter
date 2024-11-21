@@ -24,8 +24,12 @@ mixin _$RequiredNamespace {
   List<String> get methods => throw _privateConstructorUsedError;
   List<String> get events => throw _privateConstructorUsedError;
 
+  /// Serializes this RequiredNamespace to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of RequiredNamespace
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $RequiredNamespaceCopyWith<RequiredNamespace> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -49,6 +53,8 @@ class _$RequiredNamespaceCopyWithImpl<$Res, $Val extends RequiredNamespace>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of RequiredNamespace
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -92,6 +98,8 @@ class __$$RequiredNamespaceImplCopyWithImpl<$Res>
       $Res Function(_$RequiredNamespaceImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of RequiredNamespace
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -172,7 +180,7 @@ class _$RequiredNamespaceImpl implements _RequiredNamespace {
             const DeepCollectionEquality().equals(other._events, _events));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -180,7 +188,9 @@ class _$RequiredNamespaceImpl implements _RequiredNamespace {
       const DeepCollectionEquality().hash(_methods),
       const DeepCollectionEquality().hash(_events));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of RequiredNamespace
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$RequiredNamespaceImplCopyWith<_$RequiredNamespaceImpl> get copyWith =>
@@ -210,8 +220,11 @@ abstract class _RequiredNamespace implements RequiredNamespace {
   List<String> get methods;
   @override
   List<String> get events;
+
+  /// Create a copy of RequiredNamespace
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$RequiredNamespaceImplCopyWith<_$RequiredNamespaceImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -225,8 +238,12 @@ mixin _$SessionProposal {
   int get id => throw _privateConstructorUsedError;
   ProposalData get params => throw _privateConstructorUsedError;
 
+  /// Serializes this SessionProposal to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SessionProposal
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SessionProposalCopyWith<SessionProposal> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -252,6 +269,8 @@ class _$SessionProposalCopyWithImpl<$Res, $Val extends SessionProposal>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SessionProposal
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -270,6 +289,8 @@ class _$SessionProposalCopyWithImpl<$Res, $Val extends SessionProposal>
     ) as $Val);
   }
 
+  /// Create a copy of SessionProposal
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ProposalDataCopyWith<$Res> get params {
@@ -301,6 +322,8 @@ class __$$SessionProposalImplCopyWithImpl<$Res>
       _$SessionProposalImpl _value, $Res Function(_$SessionProposalImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SessionProposal
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -348,11 +371,13 @@ class _$SessionProposalImpl implements _SessionProposal {
             (identical(other.params, params) || other.params == params));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, params);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SessionProposal
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SessionProposalImplCopyWith<_$SessionProposalImpl> get copyWith =>
@@ -379,8 +404,11 @@ abstract class _SessionProposal implements SessionProposal {
   int get id;
   @override
   ProposalData get params;
+
+  /// Create a copy of SessionProposal
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SessionProposalImplCopyWith<_$SessionProposalImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -405,8 +433,12 @@ mixin _$ProposalData {
   Map<String, Namespace>? get generatedNamespaces =>
       throw _privateConstructorUsedError;
 
+  /// Serializes this ProposalData to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ProposalData
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ProposalDataCopyWith<ProposalData> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -441,6 +473,8 @@ class _$ProposalDataCopyWithImpl<$Res, $Val extends ProposalData>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ProposalData
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -494,6 +528,8 @@ class _$ProposalDataCopyWithImpl<$Res, $Val extends ProposalData>
     ) as $Val);
   }
 
+  /// Create a copy of ProposalData
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ConnectionMetadataCopyWith<$Res> get proposer {
@@ -534,6 +570,8 @@ class __$$ProposalDataImplCopyWithImpl<$Res>
       _$ProposalDataImpl _value, $Res Function(_$ProposalDataImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ProposalData
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -694,7 +732,7 @@ class _$ProposalDataImpl implements _ProposalData {
                 .equals(other._generatedNamespaces, _generatedNamespaces));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -708,7 +746,9 @@ class _$ProposalDataImpl implements _ProposalData {
       const DeepCollectionEquality().hash(_sessionProperties),
       const DeepCollectionEquality().hash(_generatedNamespaces));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ProposalData
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ProposalDataImplCopyWith<_$ProposalDataImpl> get copyWith =>
@@ -755,8 +795,11 @@ abstract class _ProposalData implements ProposalData {
   Map<String, String>? get sessionProperties;
   @override
   Map<String, Namespace>? get generatedNamespaces;
+
+  /// Create a copy of ProposalData
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ProposalDataImplCopyWith<_$ProposalDataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

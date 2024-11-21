@@ -32,7 +32,7 @@ void main() {
       int errorCount = 0;
       core.relayClient.onRelayClientError.subscribe((args) {
         errorCount++;
-        expect(args!.error.message, 'No internet connection: test');
+        expect(args.error.message, 'No internet connection: test');
       });
 
       await core.start();
@@ -68,7 +68,7 @@ void main() {
       errorCount = 0;
       core.relayClient.onRelayClientError.subscribe((args) {
         errorCount++;
-        expect(args!.error.message, 'No internet connection: test');
+        expect(args.error.message, 'No internet connection: test');
       });
 
       await core.start();
