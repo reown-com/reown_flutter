@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/utils/render_utils.dart';
 import 'package:reown_appkit/reown_appkit.dart';
@@ -34,8 +32,10 @@ class FrameMessage {
       };
 
   bool get isValidOrigin {
-    return Uri.parse(origin ?? '').authority ==
-        Uri.parse(UrlConstants.secureDashboard).authority;
+    final authority1 = Uri.parse(UrlConstants.secureDashboard).authority;
+    final authority2 = Uri.parse(UrlConstants.secureService).authority;
+    final originAuthority = Uri.parse(origin ?? '').authority;
+    return originAuthority == authority1 || originAuthority == authority2;
   }
 
   bool get isValidData {
@@ -69,7 +69,7 @@ class MessageData {
 
   Map<String, dynamic> toJson() => {
         'type': type,
-        'payload': payload?.toJson(),
+        if (payload != null) 'payload': payload,
       };
 
   T getPayloadMapKey<T>(String key) {
@@ -79,7 +79,22 @@ class MessageData {
 
   // @w3m-frame events
   bool get syncThemeSuccess => type == '@w3m-frame/SYNC_THEME_SUCCESS';
+  bool get syncThemeError => type == '@w3m-frame/SYNC_THEME_ERROR';
   bool get syncDataSuccess => type == '@w3m-frame/SYNC_DAPP_DATA_SUCCESS';
+  bool get syncDataError => type == '@w3m-frame/SYNC_DAPP_DATA_ERROR';
+  bool get getSocialRedirectUriSuccess =>
+      type == '@w3m-frame/GET_SOCIAL_REDIRECT_URI_SUCCESS';
+  bool get getSocialRedirectUriError =>
+      type == '@w3m-frame/GET_SOCIAL_REDIRECT_URI_ERROR';
+  bool get getFarcasterUriSuccess =>
+      type == '@w3m-frame/GET_FARCASTER_URI_SUCCESS';
+  bool get getFarcasterUriError => type == '@w3m-frame/GET_FARCASTER_URI_ERROR';
+  bool get connectFarcasterSuccess =>
+      type == '@w3m-frame/CONNECT_FARCASTER_SUCCESS';
+  bool get connectFarcasterError =>
+      type == '@w3m-frame/CONNECT_FARCASTER_ERROR';
+  bool get connectSocialSuccess => type == '@w3m-frame/CONNECT_SOCIAL_SUCCESS';
+  bool get connectSocialError => type == '@w3m-frame/CONNECT_SOCIAL_ERROR';
   bool get connectEmailSuccess => type == '@w3m-frame/CONNECT_EMAIL_SUCCESS';
   bool get connectEmailError => type == '@w3m-frame/CONNECT_EMAIL_ERROR';
   bool get updateEmailSuccess => type == '@w3m-frame/UPDATE_EMAIL_SUCCESS';
@@ -124,15 +139,59 @@ class SwitchNetwork extends MessageData {
   }) : super(type: '@w3m-app/SWITCH_NETWORK');
 
   @override
-  String toString() => '{type:\'${super.type}\',payload:{chainId:$chainId}}';
+  String toString() => '{type:"${super.type}",payload:{chainId:"$chainId"}}';
 }
+
+class GetSocialRedirectUri extends MessageData {
+  final String provider;
+  final String? schema;
+  GetSocialRedirectUri({
+    required this.provider,
+    this.schema,
+  }) : super(type: '@w3m-app/GET_SOCIAL_REDIRECT_URI');
+
+  @override
+  String toString() {
+    final p = 'provider:"$provider"';
+    final s = 'schema:"$schema"';
+
+    if (schema != null) {
+      return '{type:"${super.type}",payload:{$p,$s}}';
+    }
+    return '{type:"${super.type}",payload:{$p}}';
+  }
+}
+
+class ConnectSocial extends MessageData {
+  final String uri;
+  ConnectSocial({
+    required this.uri,
+  }) : super(type: '@w3m-app/CONNECT_SOCIAL');
+
+  @override
+  String toString() => '{type:"${super.type}",payload:{uri:"$uri"}}';
+}
+
+class GetFarcasterUri extends MessageData {
+  GetFarcasterUri() : super(type: '@w3m-app/GET_FARCASTER_URI');
+
+  @override
+  String toString() => '{type:"${super.type}"}';
+}
+
+// class ConnectFarcaster extends MessageData {
+//   ConnectFarcaster() : super(type: '@w3m-app/CONNECT_FARCASTER');
+
+//   @override
+//   String toString() => '{type:"${super.type}"}';
+// }
 
 class ConnectEmail extends MessageData {
   final String email;
   ConnectEmail({required this.email}) : super(type: '@w3m-app/CONNECT_EMAIL');
 
   @override
-  String toString() => '{type:\'${super.type}\',payload:{email:\'$email\'}}';
+  String toString() => '{type:"${super.type}",payload:{email:"$email"}}';
 }
 
 class UpdateEmail extends MessageData {
@@ -140,7 +199,7 @@ class UpdateEmail extends MessageData {
   UpdateEmail({required this.email}) : super(type: '@w3m-app/UPDATE_EMAIL');
 
   @override
-  String toString() => '{type:\'${super.type}\',payload:{email:\'$email\'}}';
+  String toString() => '{type:"${super.type}",payload:{email:"$email"}}';
 }
 
 class UpdateEmailPrimaryOtp extends MessageData {
@@ -150,7 +209,7 @@ class UpdateEmailPrimaryOtp extends MessageData {
   }) : super(type: '@w3m-app/UPDATE_EMAIL_PRIMARY_OTP');
 
   @override
-  String toString() => '{type:\'${super.type}\',payload:{otp:\'$otp\'}}';
+  String toString() => '{type:"${super.type}",payload:{otp:"$otp"}}';
 }
 
 class UpdateEmailSecondaryOtp extends MessageData {
@@ -160,7 +219,7 @@ class UpdateEmailSecondaryOtp extends MessageData {
   }) : super(type: '@w3m-app/UPDATE_EMAIL_SECONDARY_OTP');
 
   @override
-  String toString() => '{type:\'${super.type}\',payload:{otp:\'$otp\'}}';
+  String toString() => '{type:"${super.type}",payload:{otp:"$otp"}}';
 }
 
 class ConnectOtp extends MessageData {
@@ -168,7 +227,7 @@ class ConnectOtp extends MessageData {
   ConnectOtp({required this.otp}) : super(type: '@w3m-app/CONNECT_OTP');
 
   @override
-  String toString() => '{type:\'${super.type}\',payload:{otp:\'$otp\'}}';
+  String toString() => '{type:"${super.type}",payload:{otp:"$otp"}}';
 }
 
 class GetUser extends MessageData {
@@ -178,9 +237,9 @@ class GetUser extends MessageData {
   @override
   String toString() {
     if ((chainId ?? '').isNotEmpty) {
-      return '{type:\'${super.type}\',payload:{chainId:$chainId}}';
+      return '{type:"${super.type}",payload:{chainId:"$chainId"}}';
     }
-    return '{type:\'${super.type}\'}';
+    return '{type:"${super.type}"}';
   }
 }
 
@@ -200,7 +259,7 @@ class GetChainId extends MessageData {
 
 class RpcRequest extends MessageData {
   final String method;
-  final List<dynamic> params;
+  final dynamic params;
 
   RpcRequest({
     required this.method,
@@ -209,23 +268,34 @@ class RpcRequest extends MessageData {
 
   @override
   String toString() {
-    debugPrint('[$runtimeType] method $method');
-    final m = 'method:\'$method\'';
-    final t = 'type:\'${super.type}\'';
+    final m = 'method:"$method"';
+    final t = 'type:"${super.type}"';
+
+    if (params is Map) {
+      List<String> ps =
+          (params as Map).entries.map((e) => '${e.key}:"${e.value}"').toList();
+      final pString = ps.join(',');
+      return '{$t,payload:{$m,params:{$pString}}}';
+    }
+
     final p = params.map((i) => '$i').toList();
 
     if (method == 'personal_sign') {
       final data = p.first;
       final address = p.last;
-      return '{$t,payload:{$m,params:[\'$data\',\'$address\']}}';
+      return '{$t,payload:{$m,params:["$data","$address"]}}';
+    }
+    if (method == 'eth_sign') {
+      final address = p.first;
+      final data = p.last;
+      return '{$t,payload:{$m,params:["$address","$data"]}}';
     }
     if (method == 'eth_signTypedData_v4' ||
         method == 'eth_signTypedData_v3' ||
         method == 'eth_signTypedData') {
-      // final data = jsonEncode(jsonDecode(p.first) as Map<String, dynamic>);
       final data = p.first;
       final address = p.last;
-      return '{$t,payload:{$m,params:[\'$address\',\'$data\']}}';
+      return '{$t,payload:{$m,params:["$address","$data"]}}';
     }
     if (method == 'eth_sendTransaction' || method == 'eth_signTransaction') {
       final jp = jsonEncode(params.first);
@@ -252,20 +322,20 @@ class SyncTheme extends MessageData {
       colors = themeData.lightColors;
     }
 
-    final tm = 'themeMode:\'$mode\'';
+    final tm = 'themeMode:"$mode"';
 
     final mix = RenderUtils.colorToRGBA(colors.background125);
-    final tv1 = '\'--w3m-color-mix\':\'$mix\'';
-    // final tv2 = '\'--w3m-color-mix-strength\':\'0%\'';
+    final tv1 = '"--w3m-color-mix":"$mix"';
+    // final tv2 = '"--w3m-color-mix-strength":"0%"';
     final tv = 'themeVariables:{$tv1}';
 
     final accent = RenderUtils.colorToRGBA(colors.accent100);
-    final wtv1 = '\'--w3m-accent\':\'$accent\'';
+    final wtv1 = '"--w3m-accent":"$accent"';
     final background = RenderUtils.colorToRGBA(colors.background125);
-    final wtv2 = '\'--w3m-background\':\'$background\'';
+    final wtv2 = '"--w3m-background":"$background"';
     final w3mtv = 'w3mThemeVariables:{$wtv1,$wtv2}';
 
-    return '{type:\'${super.type}\',payload:{$tm, $tv,$w3mtv}}';
+    return '{type:"${super.type}",payload:{$tm, $tv,$w3mtv}}';
   }
 }
 
@@ -284,13 +354,17 @@ class SyncAppData extends MessageData {
   String toString() {
     final v = 'verified: true';
     final p1 = 'projectId:\'$projectId\'';
-    final p2 = 'sdkVersion:\'$sdkVersion\'';
-    final m1 = 'name:\'${metadata.name}\'';
-    final m2 = 'description:\'${metadata.description}\'';
+    final p2 = 'sdkVersion:\'${sdkVersion.replaceAll("'", "\\'")}\'';
+    final m1 = 'name:\'${metadata.name.replaceAll("'", "\\'")}\'';
+    final m2 = 'description:\'${metadata.description.replaceAll("'", "\\'")}\'';
     final m3 = 'url:\'${metadata.url}\'';
     final m4 = 'icons:["${metadata.icons.first}"]';
-    final p3 = 'metadata:{$m1,$m2,$m3,$m4}';
+    final r1 = 'native:"${metadata.redirect?.native}"';
+    final r2 = 'universal:"${metadata.redirect?.universal}"';
+    final r3 = 'linkMode:"${metadata.redirect?.linkMode}"';
+    final m5 = 'redirect:{$r1,$r2,$r3}';
+    final p3 = 'metadata:{$m1,$m2,$m3,$m4,$m5}';
     final p = 'payload:{$v,$p1,$p2,$p3}';
-    return '{type:\'${super.type}\',$p}';
+    return '{type:"${super.type}",$p}';
   }
 }

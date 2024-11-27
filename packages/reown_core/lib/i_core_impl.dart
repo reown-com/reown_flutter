@@ -35,10 +35,10 @@ abstract class IReownCore {
 
   void confirmOnlineStateOrThrow();
 
-  Future<void> addLinkModeSupportedApp(String universalLink);
+  Future<bool> addLinkModeSupportedApp(String universalLink);
 
   List<String> getLinkModeSupportedApps();
 
-  void addLogListener(LogCallback callback);
-  bool removeLogListener(LogCallback callback);
+  void addLogListener(Function(String) callback);
+  bool removeLogListener(Function(String) callback);
 }

@@ -11,11 +11,15 @@ class MagicLoginEvent implements EventArgs {
 
 class MagicSessionEvent implements EventArgs {
   String? email;
+  String? userName;
+  AppKitSocialOption? provider;
   String? address;
-  int? chainId;
+  String? chainId;
 
   MagicSessionEvent({
     this.email,
+    this.userName,
+    this.provider,
     this.address,
     this.chainId,
   });
@@ -24,6 +28,12 @@ class MagicSessionEvent implements EventArgs {
     Map<String, dynamic> params = {};
     if ((email ?? '').isNotEmpty) {
       params['email'] = email;
+    }
+    if ((userName ?? '').isNotEmpty) {
+      params['userName'] = userName;
+    }
+    if (provider != null) {
+      params['provider'] = provider;
     }
     if ((address ?? '').isNotEmpty) {
       params['address'] = address;
@@ -107,11 +117,16 @@ class ConnectOtpErrorEvent extends MagicErrorEvent {
 }
 
 class GetUserErrorEvent extends MagicErrorEvent {
-  GetUserErrorEvent() : super('Error getting user');
+  final String? message;
+  GetUserErrorEvent({this.message}) : super('Error getting user');
 }
 
 class SwitchNetworkErrorEvent extends MagicErrorEvent {
-  SwitchNetworkErrorEvent() : super('Error switching network');
+  final String? message;
+  SwitchNetworkErrorEvent({this.message})
+      : super(
+          message ?? 'Error switching network',
+        );
 }
 
 class SignOutErrorEvent extends MagicErrorEvent {
@@ -121,4 +136,9 @@ class SignOutErrorEvent extends MagicErrorEvent {
 class RpcRequestErrorEvent extends MagicErrorEvent {
   RpcRequestErrorEvent(String? message)
       : super(message ?? 'Error during request');
+}
+
+class CompleteSocialLoginEvent implements EventArgs {
+  final String url;
+  CompleteSocialLoginEvent(this.url);
 }

@@ -1,12 +1,9 @@
 import 'dart:convert';
 
-import 'package:eth_sig_util/util/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:reown_appkit/reown_appkit.dart';
-import 'package:reown_appkit_dapp/models/chain_metadata.dart';
-import 'package:reown_appkit_dapp/utils/crypto/chain_data.dart';
+import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
 import 'package:reown_appkit_dapp/utils/smart_contracts.dart';
-import 'package:reown_appkit_dapp/utils/test_data.dart';
 
 enum EIP155Methods {
   personalSign,
@@ -36,10 +33,10 @@ class EIP155 {
   };
 
   static Future<dynamic> callMethod({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String method,
-    required ChainMetadata chainData,
+    required ReownAppKitModalNetworkInfo chainData,
     required String address,
   }) {
     switch (method) {
@@ -49,7 +46,6 @@ class EIP155 {
           topic: topic,
           chainId: chainData.chainId,
           address: address,
-          message: testSignData,
         );
       case 'eth_sign':
         return ethSign(
@@ -57,7 +53,6 @@ class EIP155 {
           topic: topic,
           chainId: chainData.chainId,
           address: address,
-          message: testSignData,
         );
       case 'eth_signTypedData':
         return ethSignTypedData(
@@ -65,33 +60,18 @@ class EIP155 {
           topic: topic,
           chainId: chainData.chainId,
           address: address,
-          data: typedData,
         );
       case 'eth_signTransaction':
         return ethSignTransaction(
           appKit: appKit,
           topic: topic,
           chainId: chainData.chainId,
-          transaction: Transaction(
-            from: EthereumAddress.fromHex(address),
-            to: EthereumAddress.fromHex(
-              '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
-            ),
-            value: EtherAmount.fromInt(EtherUnit.finney, 12), // == 0.012
-          ),
         );
       case 'eth_sendTransaction':
         return ethSendTransaction(
           appKit: appKit,
           topic: topic,
           chainId: chainData.chainId,
-          transaction: Transaction(
-            from: EthereumAddress.fromHex(address),
-            to: EthereumAddress.fromHex(
-              '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
-            ),
-            value: EtherAmount.fromInt(EtherUnit.finney, 11), // == 0.011
-          ),
         );
       default:
         throw 'Method unimplemented';
@@ -99,7 +79,7 @@ class EIP155 {
   }
 
   static Future<dynamic> callSmartContract({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String address,
     required String action,
@@ -113,21 +93,23 @@ class EIP155 {
       EthereumAddress.fromHex(SepoliaTestContract.contractAddress),
     );
 
-    final sepolia =
-        ChainData.allChains.firstWhere((e) => e.chainId == 'eip155:11155111');
+    final sepolia = ReownAppKitModalNetworks.getNetworkById(
+      'eip155',
+      '11155111',
+    )!;
 
     switch (action) {
       case 'read':
         return readSmartContract(
           appKit: appKit,
-          rpcUrl: sepolia.rpc.first,
+          rpcUrl: sepolia.rpcUrl,
           contract: deployedContract,
           address: address,
         );
       case 'write':
         return appKit.requestWriteContract(
           topic: topic,
-          chainId: sepolia.chainId,
+          chainId: 'eip155:${sepolia.chainId}',
           deployedContract: deployedContract,
           functionName: 'transfer',
           transaction: Transaction(
@@ -148,93 +130,70 @@ class EIP155 {
   }
 
   static Future<dynamic> personalSign({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String chainId,
     required String address,
-    required String message,
   }) async {
-    final bytes = utf8.encode(message);
-    final encoded = bytesToHex(bytes);
-
     return await appKit.request(
       topic: topic,
-      chainId: chainId,
-      request: SessionRequestParams(
-        method: methods[EIP155Methods.personalSign]!,
-        params: [encoded, address],
-      ),
+      chainId: 'eip155:$chainId',
+      request: (await getParams('personal_sign', address))!,
     );
   }
 
   static Future<dynamic> ethSign({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String chainId,
     required String address,
-    required String message,
   }) async {
     return await appKit.request(
       topic: topic,
-      chainId: chainId,
-      request: SessionRequestParams(
-        method: methods[EIP155Methods.ethSign]!,
-        params: [address, message],
-      ),
+      chainId: 'eip155:$chainId',
+      request: (await getParams('eth_sign', address))!,
     );
   }
 
   static Future<dynamic> ethSignTypedData({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String chainId,
     required String address,
-    required String data,
   }) async {
     return await appKit.request(
       topic: topic,
-      chainId: chainId,
-      request: SessionRequestParams(
-        method: methods[EIP155Methods.ethSignTypedData]!,
-        params: [address, data],
-      ),
+      chainId: 'eip155:$chainId',
+      request: (await getParams('eth_signTypedData', address))!,
     );
   }
 
   static Future<dynamic> ethSignTransaction({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String chainId,
-    required Transaction transaction,
   }) async {
     return await appKit.request(
       topic: topic,
-      chainId: chainId,
-      request: SessionRequestParams(
-        method: methods[EIP155Methods.ethSignTransaction]!,
-        params: [transaction.toJson()],
-      ),
+      chainId: 'eip155:$chainId',
+      request: (await getParams('eth_signTransaction', ''))!,
     );
   }
 
   static Future<dynamic> ethSendTransaction({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String chainId,
-    required Transaction transaction,
   }) async {
     return await appKit.request(
       topic: topic,
-      chainId: chainId,
-      request: SessionRequestParams(
-        method: methods[EIP155Methods.ethSendTransaction]!,
-        params: [transaction.toJson()],
-      ),
+      chainId: 'eip155:$chainId',
+      request: (await getParams('eth_sendTransaction', ''))!,
     );
   }
 
   static Future<dynamic> readSmartContract({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String rpcUrl,
     required String address,
     required DeployedContract contract,

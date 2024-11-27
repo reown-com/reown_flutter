@@ -18,17 +18,17 @@ class Polkadot {
   static final Map<PolkadotEvents, String> events = {};
 
   static Future<dynamic> callMethod({
-    required ReownAppKit appKit,
+    required IReownAppKit appKit,
     required String topic,
     required String method,
-    required String chainId,
+    required ReownAppKitModalNetworkInfo chainData,
     required String address,
   }) {
     switch (method) {
       case 'polkadot_signMessage':
         return appKit.request(
           topic: topic,
-          chainId: chainId,
+          chainId: chainData.chainId,
           request: SessionRequestParams(
             method: method,
             params: {
@@ -41,7 +41,7 @@ class Polkadot {
       case 'polkadot_signTransaction':
         return appKit.request(
           topic: topic,
-          chainId: chainId,
+          chainId: chainData.chainId,
           request: SessionRequestParams(
             method: method,
             params: {

@@ -1,13 +1,19 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// ignore: depend_on_referenced_packages
+
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:reown_appkit/version.dart' as apkt;
 
 import 'package:reown_appkit/reown_appkit.dart';
+
+import 'package:reown_appkit/version.dart' as apkt_v;
+
+import 'package:reown_sign/version.dart' as sign_v;
+import 'package:reown_core/version.dart' as core_v;
 
 class DebugDrawer extends StatefulWidget {
   const DebugDrawer({
@@ -15,10 +21,12 @@ class DebugDrawer extends StatefulWidget {
     required this.toggleOverlay,
     required this.toggleBrightness,
     required this.toggleTheme,
+    required this.appKitModal,
   });
   final VoidCallback toggleOverlay;
   final VoidCallback toggleBrightness;
   final VoidCallback toggleTheme;
+  final ReownAppKitModal appKitModal;
 
   @override
   State<DebugDrawer> createState() => _DebugDrawerState();
@@ -174,7 +182,7 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                     color:
                         ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
-                  title: const Text('Analytics On'),
+                  title: const Text('Analytics'),
                   titleTextStyle: TextStyle(
                     color:
                         ReownAppKitModalTheme.colorsOf(context).foreground100,
@@ -195,7 +203,7 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                     color:
                         ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
-                  title: const Text('Email Wallet On'),
+                  title: const Text('Email & Socials'),
                   titleTextStyle: TextStyle(
                     color:
                         ReownAppKitModalTheme.colorsOf(context).foreground100,
@@ -216,7 +224,7 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                     color:
                         ReownAppKitModalTheme.colorsOf(context).foreground100,
                   ),
-                  title: const Text('1-CA + SIWE On'),
+                  title: const Text('1-CA + SIWE'),
                   titleTextStyle: TextStyle(
                     color:
                         ReownAppKitModalTheme.colorsOf(context).foreground100,
@@ -234,32 +242,105 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
               ],
             ),
           ),
-          FutureBuilder(
-            future: PackageInfo.fromPlatform(),
-            builder: (context, snapshot) {
-              return InkWell(
-                onTap: () {
-                  Clipboard.setData(
-                    ClipboardData(
-                      text:
-                          '${snapshot.data?.packageName} v${snapshot.data?.version ?? ''} (${snapshot.data?.buildNumber})\n'
-                          'AppKit v${apkt.packageVersion}\n'
-                          'Core v$packageVersion',
-                    ),
-                  );
-                },
-                child: Text(
-                  '${snapshot.data?.packageName} v${snapshot.data?.version ?? ''} (${snapshot.data?.buildNumber})\n'
-                  'AppKit v${apkt.packageVersion}\n'
-                  'Core v$packageVersion',
+          const SizedBox(height: 16.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Redirect:',
+                  textAlign: TextAlign.left,
                   style: TextStyle(
                     fontSize: 12.0,
-                    color:
-                        ReownAppKitModalTheme.colorsOf(context).foreground100,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-              );
-            },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Native: ',
+                      style: TextStyle(fontSize: 12.0),
+                    ),
+                    Expanded(
+                      child: Text(
+                        '${widget.appKitModal.appKit!.metadata.redirect?.native}',
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.bold,
+                          color: ReownAppKitModalTheme.colorsOf(context)
+                              .foreground100,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Universal: ',
+                      style: TextStyle(fontSize: 12.0),
+                    ),
+                    Expanded(
+                      child: Text(
+                        '${widget.appKitModal.appKit!.metadata.redirect?.universal}',
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          fontWeight: FontWeight.bold,
+                          color: ReownAppKitModalTheme.colorsOf(context)
+                              .foreground100,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Text(
+                      'Link Mode: ',
+                      style: TextStyle(fontSize: 12.0),
+                    ),
+                    Text(
+                      '${widget.appKitModal.appKit!.metadata.redirect?.linkMode}',
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        fontWeight: FontWeight.bold,
+                        color: ReownAppKitModalTheme.colorsOf(context)
+                            .foreground100,
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(height: 10.0),
+                FutureBuilder(
+                  future: PackageInfo.fromPlatform(),
+                  builder: (context, snapshot) {
+                    final versionText =
+                        '${snapshot.data?.packageName} v${snapshot.data?.version ?? ''} (${snapshot.data?.buildNumber})\n'
+                        'AppKit v${apkt_v.packageVersion}\n'
+                        'Sign v${sign_v.packageVersion}\n'
+                        'Core v${core_v.packageVersion}';
+                    return InkWell(
+                      onTap: () => Clipboard.setData(ClipboardData(
+                        text: versionText,
+                      )),
+                      child: Text(
+                        versionText,
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          color: ReownAppKitModalTheme.colorsOf(context)
+                              .foreground100,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
           const SizedBox.square(dimension: 10.0),
           const Divider(height: 1.0, indent: 12.0, endIndent: 12.0),

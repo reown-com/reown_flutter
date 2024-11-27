@@ -5,20 +5,20 @@
 // platforms in the `pubspec.yaml` at
 // https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
 
-/// Models
+// Models
 export 'modal/models/public/appkit_modal_models.dart';
 
-/// Theme
+// Theme
 export 'modal/theme/public/appkit_modal_theme.dart';
 
 /// Utils
-export 'modal/utils/public/appkit_modal_utils.dart';
+export 'modal/utils/public/appkit_modal_networks_utils.dart';
 
-/// Widgets
+// Widgets
 export 'modal/widgets/public/appkit_modal_widgets.dart';
 
-/// Pages
+// Pages
 export 'modal/pages/public/appkit_modal_pages.dart';
 
-/// Services
+// Services
 export 'modal/appkit_modal_impl.dart';

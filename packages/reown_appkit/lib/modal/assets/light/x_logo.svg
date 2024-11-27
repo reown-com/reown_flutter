@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1080" height="1080" viewBox="0 0 1080 1080" xml:space="preserve">
+<desc>Created with Fabric.js 5.2.4</desc>
+<defs>
+</defs>
+<g transform="matrix(1 0 0 1 540 540)" id="a7200c35-ab6f-4ab7-8824-ab6a47c20a16"  >
+<rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  x="-540" y="-540" rx="0" ry="0" width="1080" height="1080" />
+</g>
+<g transform="matrix(1 0 0 1 540 540)" id="5e22823b-25e4-4b89-8b01-49ca6019d490"  >
+</g>
+<g transform="matrix(26.34 0 0 26.34 540 540)"  >
+<g style=""   >
+		<g transform="matrix(1 0 0 1 0.3 0)" clip-path="url(#CLIPPATH_3)"  >
+<clipPath id="CLIPPATH_3" >
+	<path transform="matrix(1 0 0 1 0 0) translate(-20.8, -20)" id="a" d="M 0.8 20 C 0.8 8.954305003384132 9.754305003384133 0 20.8 0 C 31.84569499661587 0 40.8 8.954305003384126 40.8 19.999999999999996 C 40.8 31.045694996615868 31.845694996615865 40 20.799999999999997 40 C 9.754305003384129 40 0.7999999999999972 31.045694996615868 0.7999999999999972 20 Z" stroke-linecap="round" />
+</clipPath>
+<path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-20.8, -20)" d="M 0.8 0 L 40.8 0 L 40.8 40 L 0.8 40 z" stroke-linecap="round" />
+</g>
+		<g transform="matrix(1 0 0 1 0.3 -0.03)" clip-path="url(#CLIPPATH_4)"  >
+<clipPath id="CLIPPATH_4" >
+	<path transform="matrix(1 0 0 1 0 0.03) translate(-20.8, -20)" id="a" d="M 0.8 20 C 0.8 8.954305003384132 9.754305003384133 0 20.8 0 C 31.84569499661587 0 40.8 8.954305003384126 40.8 19.999999999999996 C 40.8 31.045694996615868 31.845694996615865 40 20.799999999999997 40 C 9.754305003384129 40 0.7999999999999972 31.045694996615868 0.7999999999999972 20 Z" stroke-linecap="round" />
+</clipPath>
+<path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-20.8, -19.97)" d="M 22.63 18.46 L 29.77 10.16 L 28.08 10.16 L 21.88 17.36 L 16.919999999999998 10.16 L 11.2 10.16 L 18.7 21.060000000000002 L 11.2 29.770000000000003 L 12.899999999999999 29.770000000000003 L 19.45 22.160000000000004 L 24.68 29.770000000000003 L 30.4 29.770000000000003 L 22.63 18.46 Z M 13.499999999999998 11.43 L 16.099999999999998 11.43 L 28.08 28.56 L 25.479999999999997 28.56 L 13.5 11.43 Z" stroke-linecap="round" />
+</g>
+</g>
+</g>
+</svg>

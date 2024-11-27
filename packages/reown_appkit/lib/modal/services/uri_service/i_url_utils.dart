@@ -1,5 +1,4 @@
 import 'package:reown_appkit/modal/utils/platform_utils.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/redirect.dart';
 
 abstract class IUriService {
@@ -7,7 +6,7 @@ abstract class IUriService {
 
   Future<bool> isInstalled(String? uri, {String? id});
 
-  Future<bool> launchUrl(Uri url, {LaunchMode? mode});
+  Future<bool> launchUrl(Uri url, {dynamic mode});
 
   Future<bool> openRedirect(
     WalletRedirect redirect, {

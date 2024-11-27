@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:reown_appkit/reown_appkit.dart';
@@ -23,6 +25,8 @@ abstract class IReownAppKitModal with ChangeNotifier {
 
   bool get hasNamespaces;
 
+  FeaturesConfig get featuresConfig;
+
   /// The object that manages sessions, authentication, events, and requests for WalletConnect.
   IReownAppKit? get appKit;
 
@@ -44,8 +48,10 @@ abstract class IReownAppKitModal with ChangeNotifier {
   String? get avatarUrl;
 
   /// Returns the balance of the currently connected wallet on the selected chain.
+  @Deprecated('Use balanceNotifier')
   String get chainBalance;
 
+  /// Returns the balance of the currently connected wallet on the selected chain.
   ValueNotifier<String> get balanceNotifier;
 
   /// The currently selected chain.
@@ -57,10 +63,7 @@ abstract class IReownAppKitModal with ChangeNotifier {
   /// Sets up the explorer and appKit if they already been initialized.
   Future<void> init();
 
-  // @Deprecated(
-  //     'Add context param to ReownAppKitModal and use openNetworksView() instead')
-  // Future<void> openNetworks(BuildContext context);
-
+  /// Opens modal on Network Selection Screen
   Future<void> openNetworksView();
 
   /// Opens the modal with the provided [startWidget] (if any).
@@ -74,7 +77,7 @@ abstract class IReownAppKitModal with ChangeNotifier {
   /// Sets the [selectedWallet] to be connected
   void selectWallet(ReownAppKitModalWalletInfo? walletInfo);
 
-  /// Sets the [selectedChain] and gets the [chainBalance].
+  /// Sets the [selectedChain]
   /// If the wallet is already connected, it will request the chain to be changed and will update the session with the new chain.
   /// If [chainInfo] is null this will disconnect the wallet.
   Future<void> selectChain(
@@ -101,14 +104,15 @@ abstract class IReownAppKitModal with ChangeNotifier {
   List<String>? getAvailableChains();
 
   /// List of approved chains by connected wallet
-  List<String>? getApprovedChains();
+  List<String>? getApprovedChains({String? namespace});
 
   /// List of approved methods by connected wallet
-  List<String>? getApprovedMethods();
+  List<String>? getApprovedMethods({String? namespace});
 
   /// List of approved events by connected wallet
-  List<String>? getApprovedEvents();
+  List<String>? getApprovedEvents({String? namespace});
 
+  /// Loads/Refresh account balance and identity
   Future<void> loadAccountData();
 
   /// Disconnects the session and pairing, if any.
@@ -144,6 +148,8 @@ abstract class IReownAppKitModal with ChangeNotifier {
 
   Future<void> requestSwitchToChain(ReownAppKitModalNetworkInfo newChain);
   Future<void> requestAddChain(ReownAppKitModalNetworkInfo newChain);
+
+  Future<bool> dispatchEnvelope(String url);
 
   /// Closes the modal.
   void closeModal({bool disconnectSession = false});

@@ -1,27 +1,40 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:convert/convert.dart';
-import 'package:reown_appkit/modal/constants/string_constants.dart';
-import 'package:reown_appkit/modal/services/coinbase_service/coinbase_service_singleton.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/coinbase_service/i_coinbase_service.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class SiweService implements ISiweService {
+  IMagicService get _magicService => GetIt.I<IMagicService>();
+  ICoinbaseService get _coinbaseService => GetIt.I<ICoinbaseService>();
+
   late final SIWEConfig? _siweConfig;
-  final IReownAppKit _appKit;
+  late final IReownAppKit _appKit;
+  late final Map<String, RequiredNamespace> _namespaces;
 
   SiweService({
     required IReownAppKit appKit,
     required SIWEConfig? siweConfig,
+    required Map<String, RequiredNamespace> namespaces,
   })  : _appKit = appKit,
-        _siweConfig = siweConfig;
+        _siweConfig = siweConfig,
+        _namespaces = namespaces;
 
   @override
   SIWEConfig? get config => _siweConfig;
 
   @override
-  bool get enabled => _siweConfig?.enabled == true;
+  bool get enabled {
+    // TODO check this logic
+    final nonEVM = _namespaces.keys.firstWhereOrNull(
+      (k) => k != NetworkUtils.eip155,
+    );
+    return _siweConfig?.enabled == true && nonEVM == null;
+  }
 
   @override
   int get nonceRefetchIntervalMs =>
@@ -46,6 +59,7 @@ class SiweService implements ISiweService {
   Future<String> getNonce() async {
     if (!enabled) throw Exception('siweConfig not enabled');
     //
+    _appKit.core.logger.d('[$runtimeType] getNonce() called');
     return await _siweConfig!.getNonce();
   }
 
@@ -67,6 +81,7 @@ class SiweService implements ISiweService {
       type: messageParams.type ?? CacaoHeader(t: 'eip4361'),
     );
 
+    _appKit.core.logger.d('[$runtimeType] createMessage() called');
     return _siweConfig!.createMessage(createMessageArgs);
   }
 
@@ -78,17 +93,14 @@ class SiweService implements ISiweService {
     if (!enabled) throw Exception('siweConfig not enabled');
     //
     final chainId = AuthSignature.getChainIdFromMessage(message);
-    final chainInfo = ReownAppKitModalNetworks.getNetworkById(
-      CoreConstants.namespace,
-      chainId,
-    )!;
-    final caip2Chain = '${CoreConstants.namespace}:${chainInfo.chainId}';
+    final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(chainId);
     final address = AuthSignature.getAddressFromMessage(message);
     final bytes = utf8.encode(message);
     final encoded = hex.encode(bytes);
     //
+    _appKit.core.logger.d('[$runtimeType] signMessageRequest() called');
     if (session.sessionService.isMagic) {
-      return await magicService.instance.request(
+      return await _magicService.request(
         chainId: caip2Chain,
         request: SessionRequestParams(
           method: 'personal_sign',
@@ -97,7 +109,7 @@ class SiweService implements ISiweService {
       );
     }
     if (session.sessionService.isCoinbase) {
-      return await coinbaseService.instance.request(
+      return await _coinbaseService.request(
         chainId: caip2Chain,
         request: SessionRequestParams(
           method: 'personal_sign',
@@ -130,6 +142,7 @@ class SiweService implements ISiweService {
       cacao: cacao,
       clientId: clientId,
     );
+    _appKit.core.logger.d('[$runtimeType] verifyMessage() called');
     final isValid = await _siweConfig!.verifyMessage(verifyArgs);
     if (!isValid) {
       throw ReownAppKitModalException('Error verifying SIWE signature');
@@ -142,6 +155,7 @@ class SiweService implements ISiweService {
     if (!enabled) throw Exception('siweConfig not enabled');
     //
     try {
+      _appKit.core.logger.d('[$runtimeType] getSession() called');
       final siweSession = await _siweConfig!.getSession();
       if (siweSession == null) {
         throw ReownAppKitModalException('Error getting SIWE session');
@@ -158,6 +172,7 @@ class SiweService implements ISiweService {
   Future<void> signOut() async {
     if (!enabled) throw Exception('siweConfig not enabled');
 
+    _appKit.core.logger.d('[$runtimeType] signOut() called');
     final success = await _siweConfig!.signOut();
     if (!success) {
       throw ReownAppKitModalException('signOut() from siweConfig failed');
@@ -173,6 +188,7 @@ class SiweService implements ISiweService {
       'aud': params.uri,
       'type': params.type?.t,
     });
+    _appKit.core.logger.d('[$runtimeType] formatMessage() called');
     return _appKit.formatAuthMessage(
       iss: 'did:pkh:${params.address}',
       cacaoPayload: CacaoRequestPayload.fromSessionAuthPayload(authPayload),

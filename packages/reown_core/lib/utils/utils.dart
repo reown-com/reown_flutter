@@ -248,12 +248,16 @@ class ReownCoreUtils {
     return '$universalLink?wc_ev=$encodedEnvelope&topic=$topic';
   }
 
-  static Future<bool> openURL(String url) async {
+  static Future<bool> canOpenUrl(String url) async {
+    return await canLaunchUrlString(url);
+  }
+
+  static Future<bool> openURL(
+    String url, [
+    LaunchMode mode = LaunchMode.externalApplication,
+  ]) async {
     try {
-      final success = await launchUrlString(
-        url,
-        mode: LaunchMode.externalApplication,
-      );
+      final success = await launchUrlString(url, mode: mode);
       if (!success) {
         throw ReownCoreError(code: 3000, message: 'Can not open $url');
       }

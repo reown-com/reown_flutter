@@ -25,7 +25,7 @@ class WCSampleWallets {
           'name': 'RN Wallet (internal)',
           'platform': ['ios', 'android'],
           'id': '1234567890123456789012345678922',
-          'schema': 'rn-web3wallet://wc',
+          'schema': 'rn-web3wallet-internal://',
           'bundleId': 'com.walletconnect.web3wallet.rnsample.internal',
           'universal': 'https://appkit-lab.reown.com/rn_walletkit_internal',
         },
@@ -34,9 +34,8 @@ class WCSampleWallets {
           'platform': ['android'],
           'id': '123456789012345678901234567894',
           'schema': 'kotlin-web3wallet://wc',
-          'bundleId': 'com.walletconnect.sample.wallet.internal',
-          'universal':
-              'https://web3modal-laboratory-git-chore-kotlin-assetlinks-walletconnect1.vercel.app/wallet_internal',
+          'bundleId': 'com.reown.sample.wallet.internal',
+          'universal': 'https://appkit-lab.reown.com/wallet_internal',
         },
       ];
 
@@ -61,7 +60,7 @@ class WCSampleWallets {
           'name': 'RN Wallet',
           'platform': ['ios', 'android'],
           'id': '123456789012345678901234567892',
-          'schema': 'rn-web3wallet://wc',
+          'schema': 'rn-web3wallet://',
           'bundleId': 'com.walletconnect.web3wallet.rnsample',
           'universal': 'https://appkit-lab.reown.com/rn_walletkit',
         },
@@ -70,9 +69,8 @@ class WCSampleWallets {
           'platform': ['android'],
           'id': '123456789012345678901234567893',
           'schema': 'kotlin-web3wallet://wc',
-          'bundleId': 'com.walletconnect.sample.wallet',
-          'universal':
-              'https://web3modal-laboratory-git-chore-kotlin-assetlinks-walletconnect1.vercel.app/wallet_release',
+          'bundleId': 'com.reown.sample.wallet',
+          'universal': 'https://appkit-lab.reown.com/wallet_release',
         },
       ];
 

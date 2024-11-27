@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/pages/public/appkit_modal_qrcode_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/widgets/icons/themed_icon.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/searchbar.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
@@ -21,12 +22,12 @@ class AllWalletsHeader extends StatelessWidget {
             child: ModalSearchBar(
               hint: 'Search wallet',
               onTextChanged: (value) {
-                explorerService.instance.search(query: value);
+                GetIt.I<IExplorerService>().search(query: value);
               },
               onDismissKeyboard: (clear) {
                 FocusManager.instance.primaryFocus?.unfocus();
                 if (clear) {
-                  explorerService.instance.search(query: null);
+                  GetIt.I<IExplorerService>().search(query: null);
                 }
               },
             ),

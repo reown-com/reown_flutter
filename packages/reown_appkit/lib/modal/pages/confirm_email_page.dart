@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/email_login_step.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
-
 import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
-import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/content_loading.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/verify_otp_view.dart';
@@ -22,24 +22,22 @@ class ConfirmEmailPage extends StatefulWidget {
 }
 
 class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
+  IMagicService get _magicService => GetIt.I<IMagicService>();
+
   @override
   void initState() {
     super.initState();
-    magicService.instance.onMagicError.subscribe(_onMagicErrorEvent);
+    _magicService.onMagicError.subscribe(_onMagicErrorEvent);
   }
 
   @override
   void dispose() {
-    magicService.instance.onMagicError.unsubscribe(_onMagicErrorEvent);
-    magicService.instance.step.value = EmailLoginStep.idle;
+    _magicService.onMagicError.unsubscribe(_onMagicErrorEvent);
+    _magicService.step.value = EmailLoginStep.idle;
     super.dispose();
   }
 
   void _onMagicErrorEvent(MagicErrorEvent? event) {
-    toastService.instance.show(ToastMessage(
-      type: ToastType.error,
-      text: event?.error ?? 'Something went wrong.',
-    ));
     if (event is ConnectEmailErrorEvent) {
       _goBack();
     } else {
@@ -48,8 +46,8 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
   }
 
   void _goBack() {
-    magicService.instance.step.value = EmailLoginStep.idle;
-    magicService.instance.setEmail('');
+    _magicService.step.value = EmailLoginStep.idle;
+    _magicService.setEmail('');
     FocusManager.instance.primaryFocus?.unfocus();
     widgetStack.instance.pop();
   }
@@ -57,7 +55,7 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<EmailLoginStep>(
-      valueListenable: magicService.instance.step,
+      valueListenable: _magicService.step,
       builder: (context, action, _) {
         final title = (action == EmailLoginStep.verifyDevice)
             ? 'Register device'
@@ -74,9 +72,9 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
               }
               if (action == EmailLoginStep.verifyOtp) {
                 return VerifyOtpView(
-                  currentEmail: magicService.instance.email.value,
-                  resendEmail: magicService.instance.connectEmail,
-                  verifyOtp: magicService.instance.connectOtp,
+                  currentEmail: _magicService.email.value,
+                  resendEmail: _magicService.connectEmail,
+                  verifyOtp: _magicService.connectOtp,
                 );
               }
               return ContentLoading(viewHeight: 200.0);
@@ -95,6 +93,7 @@ class _VerifyDeviceView extends StatefulWidget {
 
 class __VerifyDeviceViewState extends State<_VerifyDeviceView> {
   late DateTime _resendEnabledAt;
+  IMagicService get _magicService => GetIt.I<IMagicService>();
 
   @override
   void initState() {
@@ -105,15 +104,15 @@ class __VerifyDeviceViewState extends State<_VerifyDeviceView> {
   void _resendEmail() async {
     final diff = DateTime.now().difference(_resendEnabledAt).inSeconds;
     if (diff < 0) {
-      toastService.instance.show(ToastMessage(
+      GetIt.I<IToastService>().show(ToastMessage(
         type: ToastType.error,
         text: 'Try again after ${diff.abs()} seconds',
       ));
     } else {
-      final email = magicService.instance.email.value;
-      await magicService.instance.connectEmail(value: email);
+      final email = _magicService.email.value;
+      await _magicService.connectEmail(value: email);
       _resendEnabledAt = DateTime.now().add(Duration(seconds: 30));
-      toastService.instance.show(ToastMessage(
+      GetIt.I<IToastService>().show(ToastMessage(
         type: ToastType.success,
         text: 'Link email resent',
       ));
@@ -155,7 +154,7 @@ class __VerifyDeviceViewState extends State<_VerifyDeviceView> {
                 ),
               ),
               Text(
-                magicService.instance.email.value,
+                _magicService.email.value,
                 textAlign: TextAlign.center,
                 style: textStyles.paragraph500.copyWith(
                   color: themeColors.foreground100,

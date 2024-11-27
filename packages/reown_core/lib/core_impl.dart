@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:logger/logger.dart';
 import 'package:reown_core/connectivity/connectivity.dart';
 import 'package:reown_core/connectivity/i_connectivity.dart';
@@ -83,13 +86,26 @@ class ReownCore implements IReownCore {
   Logger get logger => _logger;
 
   @override
-  void addLogListener(LogCallback callback) {
-    Logger.addLogListener(callback);
+  void addLogListener(Function(String) callback) {
+    try {
+      _logCallback = (LogEvent event) {
+        if (event.level == _logLevel.toLevel()) {
+          callback.call('[LogLevel ${event.level.name}] ${event.message}');
+        }
+      };
+      Logger.addLogListener(_logCallback!);
+    } catch (_) {}
   }
 
+  late final LogLevel _logLevel;
+  late final LogCallback? _logCallback;
+
   @override
-  bool removeLogListener(LogCallback callback) {
-    return Logger.removeLogListener(callback);
+  bool removeLogListener(Function(String) callback) {
+    if (_logCallback != null) {
+      return Logger.removeLogListener(_logCallback!);
+    }
+    return false;
   }
 
   @override
@@ -104,9 +120,16 @@ class ReownCore implements IReownCore {
     IHttpClient httpClient = const HttpWrapper(),
     IWebSocketHandler? webSocketHandler,
   }) {
+    PrettyPrinter();
+    _logLevel = logLevel;
     _logger = Logger(
-      level: logLevel.toLevel(),
-      printer: PrettyPrinter(methodCount: null),
+      level: _logLevel.toLevel(),
+      printer: _LogPrinter(
+        stackTraceBeginIndex: 0,
+        methodCount:
+            _logLevel == LogLevel.debug || _logLevel == LogLevel.error ? 8 : 0,
+        errorMethodCount: 8,
+      ),
     );
     heartbeat = HeartBeat();
     storage = SharedPrefsStores(
@@ -203,13 +226,16 @@ class ReownCore implements IReownCore {
   }
 
   @override
-  Future<void> addLinkModeSupportedApp(String universalLink) async {
+  Future<bool> addLinkModeSupportedApp(String universalLink) async {
+    logger.d('[$runtimeType] addLinkModeSupportedApp $universalLink');
     return await linkModeStore.update(universalLink);
   }
 
   @override
   List<String> getLinkModeSupportedApps() {
-    return linkModeStore.getList();
+    final linoModeApps = linkModeStore.getList();
+    logger.d('[$runtimeType] getLinkModeSupportedApps $linoModeApps');
+    return linoModeApps;
   }
 
   @override
@@ -217,5 +243,247 @@ class ReownCore implements IReownCore {
     if (!connectivity.isOnline.value) {
       throw ReownCoreError(code: -1, message: 'No internet connection');
     }
+  }
+}
+
+class _LogPrinter extends LogPrinter {
+  static const topLeftCorner = '┌';
+  static const bottomLeftCorner = '└';
+  static const middleCorner = '├';
+  static const verticalLine = '│';
+  static const doubleDivider = '─';
+  static const singleDivider = '┄';
+
+  static final Map<Level, String> defaultLevelEmojis = {
+    Level.debug: '🐛',
+    Level.info: '📝',
+    Level.error: '❌',
+  };
+
+  static final _deviceStackTraceRegex = RegExp(r'#[0-9]+\s+(.+) \((\S+)\)');
+
+  static final _webStackTraceRegex = RegExp(r'^((packages|dart-sdk)/\S+/)');
+
+  static final _browserStackTraceRegex =
+      RegExp(r'^(?:package:)?(dart:\S+|\S+)');
+
+  final int stackTraceBeginIndex;
+
+  final int? methodCount;
+
+  final int? errorMethodCount;
+
+  final int lineLength = 200;
+
+  final Map<Level, bool> excludeBox = const {};
+
+  final bool noBoxingByDefault = false;
+
+  final List<String> excludePaths = const [];
+
+  /// Contains the parsed rules resulting from [excludeBox] and [noBoxingByDefault].
+  late final Map<Level, bool> _includeBox;
+  String _topBorder = '';
+  String _middleBorder = '';
+  String _bottomBorder = '';
+
+  _LogPrinter({
+    this.stackTraceBeginIndex = 0,
+    this.methodCount = 0,
+    this.errorMethodCount = 8,
+  }) {
+    var doubleDividerLine = StringBuffer();
+    var singleDividerLine = StringBuffer();
+    for (var i = 0; i < lineLength - 1; i++) {
+      doubleDividerLine.write(doubleDivider);
+      singleDividerLine.write(singleDivider);
+    }
+
+    _topBorder = '$topLeftCorner$doubleDividerLine';
+    _middleBorder = '$middleCorner$singleDividerLine';
+    _bottomBorder = '$bottomLeftCorner$doubleDividerLine';
+
+    // Translate excludeBox map (constant if default) to includeBox map with all Level enum possibilities
+    _includeBox = {};
+    for (var l in Level.values) {
+      _includeBox[l] = !noBoxingByDefault;
+    }
+    excludeBox.forEach((k, v) => _includeBox[k] = !v);
+  }
+
+  @override
+  List<String> log(LogEvent event) {
+    var messageStr = stringifyMessage(event.message);
+
+    String? stackTraceStr;
+    if (event.error != null) {
+      if ((errorMethodCount == null || errorMethodCount! > 0)) {
+        stackTraceStr = formatStackTrace(
+          event.stackTrace ?? StackTrace.current,
+          errorMethodCount,
+        );
+      }
+    } else if (methodCount == null || methodCount! > 0) {
+      stackTraceStr = formatStackTrace(
+        event.stackTrace ?? StackTrace.current,
+        methodCount,
+      );
+    }
+
+    var errorStr = event.error?.toString();
+
+    return _formatAndPrint(
+      event.level,
+      messageStr,
+      DateTime.now().toString(),
+      errorStr,
+      stackTraceStr,
+    );
+  }
+
+  String? formatStackTrace(StackTrace? stackTrace, int? methodCount) {
+    List<String> lines = stackTrace
+        .toString()
+        .split('\n')
+        .where(
+          (line) =>
+              !_discardDeviceStacktraceLine(line) &&
+              !_discardWebStacktraceLine(line) &&
+              !_discardBrowserStacktraceLine(line) &&
+              line.isNotEmpty,
+        )
+        .toList();
+    List<String> formatted = [];
+
+    int stackTraceLength =
+        (methodCount != null ? min(lines.length, methodCount) : lines.length);
+    for (int count = 0; count < stackTraceLength; count++) {
+      var line = lines[count];
+      if (count < stackTraceBeginIndex) {
+        continue;
+      }
+      formatted.add('#$count   ${line.replaceFirst(RegExp(r'#\d+\s+'), '')}');
+    }
+
+    if (formatted.isEmpty) {
+      return null;
+    } else {
+      return formatted.join('\n');
+    }
+  }
+
+  bool _isInExcludePaths(String segment) {
+    for (var element in excludePaths) {
+      if (segment.startsWith(element)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool _discardDeviceStacktraceLine(String line) {
+    var match = _deviceStackTraceRegex.matchAsPrefix(line);
+    if (match == null) {
+      return false;
+    }
+    final segment = match.group(2)!;
+    if (segment.startsWith('package:logger')) {
+      return true;
+    }
+    return _isInExcludePaths(segment);
+  }
+
+  bool _discardWebStacktraceLine(String line) {
+    var match = _webStackTraceRegex.matchAsPrefix(line);
+    if (match == null) {
+      return false;
+    }
+    final segment = match.group(1)!;
+    if (segment.startsWith('packages/logger') ||
+        segment.startsWith('dart-sdk/lib')) {
+      return true;
+    }
+    return _isInExcludePaths(segment);
+  }
+
+  bool _discardBrowserStacktraceLine(String line) {
+    var match = _browserStackTraceRegex.matchAsPrefix(line);
+    if (match == null) {
+      return false;
+    }
+    final segment = match.group(1)!;
+    if (segment.startsWith('package:logger') || segment.startsWith('dart:')) {
+      return true;
+    }
+    return _isInExcludePaths(segment);
+  }
+
+  // Handles any object that is causing JsonEncoder() problems
+  Object toEncodableFallback(dynamic object) {
+    return object.toString();
+  }
+
+  String stringifyMessage(dynamic message) {
+    final finalMessage = message is Function ? message() : message;
+    if (finalMessage is Map || finalMessage is Iterable) {
+      var encoder = JsonEncoder.withIndent('  ', toEncodableFallback);
+      return encoder.convert(finalMessage);
+    } else {
+      return finalMessage.toString();
+    }
+  }
+
+  String _getEmoji(Level level) {
+    // if (printEmojis) {
+    final String? emoji = defaultLevelEmojis[level];
+    if (emoji != null) {
+      return '$emoji ';
+    }
+    // }
+    return '';
+  }
+
+  List<String> _formatAndPrint(
+    Level level,
+    String message,
+    String time,
+    String? error,
+    String? stacktrace,
+  ) {
+    final hasBorders = methodCount != null && methodCount! > 0;
+
+    List<String> buffer = [];
+    var verticalLineAtLevel =
+        (_includeBox[level]!) && hasBorders ? ('$verticalLine ') : '';
+
+    if (_includeBox[level]! && hasBorders) buffer.add(_topBorder);
+
+    if (error != null) {
+      for (var line in error.split('\n')) {
+        if (line.isNotEmpty) {
+          buffer.add('$verticalLineAtLevel$line');
+        }
+      }
+      if (_includeBox[level]! && hasBorders) buffer.add(_middleBorder);
+    }
+
+    if (stacktrace != null) {
+      for (var line in stacktrace.split('\n')) {
+        if (line.isNotEmpty) {
+          buffer.add('$verticalLineAtLevel$line');
+        }
+      }
+      if (_includeBox[level]! && hasBorders) buffer.add(_middleBorder);
+    }
+
+    var emoji = _getEmoji(level);
+    for (var line in message.split('\n')) {
+      if (line.isNotEmpty) {
+        buffer.add('$verticalLineAtLevel$time $emoji$line');
+      }
+    }
+    if (_includeBox[level]! && hasBorders) buffer.add(_bottomBorder);
+
+    return buffer;
   }
 }

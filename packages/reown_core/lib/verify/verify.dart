@@ -40,7 +40,9 @@ class Verify implements IVerify {
       }
       return AttestationResponse.fromJson(jsonDecode(response.body));
     } catch (e) {
-      _core.logger.d('[$runtimeType] resolve $e');
+      if (e is! AttestationNotFound) {
+        _core.logger.e('[$runtimeType] resolve $e');
+      }
       rethrow;
     }
   }
@@ -68,7 +70,7 @@ class Verify implements IVerify {
     String url = verifyUrl ?? ReownConstants.VERIFY_SERVER;
 
     if (!ReownConstants.TRUSTED_VERIFY_URLS.contains(url)) {
-      _core.logger.i(
+      _core.logger.d(
         '[$runtimeType] verifyUrl $url not included in trusted list, '
         'assigning default: ${ReownConstants.VERIFY_SERVER}',
       );

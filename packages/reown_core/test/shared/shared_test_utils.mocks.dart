@@ -1454,7 +1454,7 @@ class MockReownCore extends _i1.Mock implements _i28.ReownCore {
       ) as _i19.Logger);
 
   @override
-  void addLogListener(_i19.LogCallback? callback) => super.noSuchMethod(
+  void addLogListener(dynamic Function(String)? callback) => super.noSuchMethod(
         Invocation.method(
           #addLogListener,
           [callback],
@@ -1463,7 +1463,8 @@ class MockReownCore extends _i1.Mock implements _i28.ReownCore {
       );
 
   @override
-  bool removeLogListener(_i19.LogCallback? callback) => (super.noSuchMethod(
+  bool removeLogListener(dynamic Function(String)? callback) =>
+      (super.noSuchMethod(
         Invocation.method(
           #removeLogListener,
           [callback],
@@ -1482,15 +1483,14 @@ class MockReownCore extends _i1.Mock implements _i28.ReownCore {
       ) as _i23.Future<void>);
 
   @override
-  _i23.Future<void> addLinkModeSupportedApp(String? universalLink) =>
+  _i23.Future<bool> addLinkModeSupportedApp(String? universalLink) =>
       (super.noSuchMethod(
         Invocation.method(
           #addLinkModeSupportedApp,
           [universalLink],
         ),
-        returnValue: _i23.Future<void>.value(),
-        returnValueForMissingStub: _i23.Future<void>.value(),
-      ) as _i23.Future<void>);
+        returnValue: _i23.Future<bool>.value(false),
+      ) as _i23.Future<bool>);
 
   @override
   List<String> getLinkModeSupportedApps() => (super.noSuchMethod(

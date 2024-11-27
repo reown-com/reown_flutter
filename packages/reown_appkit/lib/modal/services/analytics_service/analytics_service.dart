@@ -48,9 +48,9 @@ class AnalyticsService implements IAnalyticsService {
         _isEnabled = enableAnalytics!;
       }
       _bundleId = await ReownCoreUtils.getPackageName();
-      _core.logger.d('[$runtimeType] enabled: $_isEnabled');
+      _core.logger.i('[$runtimeType] enabled: $_isEnabled');
     } catch (e, _) {
-      _core.logger.d('[$runtimeType] init error', error: e);
+      _core.logger.e('[$runtimeType] init error', error: e);
     }
   }
 
@@ -63,9 +63,10 @@ class AnalyticsService implements IAnalyticsService {
       );
       final json = jsonDecode(response.body) as Map<String, dynamic>;
       final enabled = json['isAnalyticsEnabled'] as bool?;
+      _core.logger.i('[$runtimeType] fetch result $enabled');
       return enabled ?? false;
-    } catch (e, _) {
-      _core.logger.d('[$runtimeType] fetch error', error: e);
+    } catch (e, s) {
+      _core.logger.e('[$runtimeType] fetch error', error: e, stackTrace: s);
       return false;
     }
   }
@@ -90,9 +91,9 @@ class AnalyticsService implements IAnalyticsService {
       if (code == 200 || code == 202) {
         _eventsController.sink.add(analyticsEvent.toMap());
       }
-      _core.logger.d('[$runtimeType] send event $code: $body');
+      _core.logger.i('[$runtimeType] send event $code: $body');
     } catch (e, _) {
-      _core.logger.d('[$runtimeType] send event error', error: e);
+      _core.logger.e('[$runtimeType] send event error', error: e);
     }
   }
 }

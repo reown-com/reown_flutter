@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
-
-import 'package:reown_appkit_dapp/models/chain_metadata.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 import 'package:reown_appkit_dapp/utils/crypto/eip155.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
@@ -14,23 +12,33 @@ import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
 class SessionWidget extends StatefulWidget {
   const SessionWidget({
     super.key,
-    required this.session,
-    required this.appKit,
+    required this.sessionTopic,
+    required this.appKitModal,
   });
 
-  final SessionData session;
-  final ReownAppKit appKit;
+  final String sessionTopic;
+  final ReownAppKitModal appKitModal;
 
   @override
   SessionWidgetState createState() => SessionWidgetState();
 }
 
 class SessionWidgetState extends State<SessionWidget> {
+  late IReownAppKit _appKit;
+  late SessionData _session;
+
+  @override
+  void initState() {
+    super.initState();
+    _appKit = widget.appKitModal.appKit!;
+    _session = _appKit.sessions.get(widget.sessionTopic)!;
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<Widget> children = [
       Text(
-        '${StringConstants.sessionTopic}${widget.session.topic}',
+        '${StringConstants.sessionTopic}${_session.topic}',
       ),
     ];
 
@@ -38,7 +46,7 @@ class SessionWidgetState extends State<SessionWidget> {
     final List<String> namespaceAccounts = [];
 
     // Loop through the namespaces, and get the accounts
-    for (final Namespace namespace in widget.session.namespaces.values) {
+    for (final Namespace namespace in _session.namespaces.values) {
       namespaceAccounts.addAll(namespace.accounts);
     }
 
@@ -61,8 +69,8 @@ class SessionWidgetState extends State<SessionWidget> {
         ),
         child: ElevatedButton(
           onPressed: () async {
-            await widget.appKit.disconnectSession(
-              topic: widget.session.topic,
+            await _appKit.disconnectSession(
+              topic: _session.topic,
               reason: Errors.getSdkError(
                 Errors.USER_DISCONNECTED,
               ).toSignError(),
@@ -90,11 +98,17 @@ class SessionWidgetState extends State<SessionWidget> {
   Widget _buildAccountWidget(String namespaceAccount) {
     final chainId = NamespaceUtils.getChainFromAccount(namespaceAccount);
     final account = NamespaceUtils.getAccount(namespaceAccount);
-    final chainMetadata = getChainMetadataFromChain(chainId);
+    final namespace = NamespaceUtils.getNamespaceFromChain(
+      chainId,
+    );
+    final chainData = ReownAppKitModalNetworks.getNetworkById(
+      namespace,
+      chainId.split(':').last,
+    );
 
     final List<Widget> children = [
       Text(
-        chainMetadata.name,
+        chainData!.name,
         style: StyleConstants.subtitleText,
       ),
       const SizedBox(
@@ -113,7 +127,7 @@ class SessionWidgetState extends State<SessionWidget> {
       ),
     ];
 
-    children.addAll(_buildChainMethodButtons(chainMetadata, account));
+    children.addAll(_buildChainMethodButtons(chainData, account));
 
     children.add(const Divider());
 
@@ -131,11 +145,7 @@ class SessionWidgetState extends State<SessionWidget> {
         style: StyleConstants.subtitleText,
       ),
     ]);
-    children.addAll(
-      _buildChainEventsTiles(
-        chainMetadata,
-      ),
-    );
+    children.addAll(_buildChainEventsTiles(chainData));
 
     // final ChainMetadata
     return Container(
@@ -149,7 +159,7 @@ class SessionWidgetState extends State<SessionWidget> {
       ),
       decoration: BoxDecoration(
         border: Border.all(
-          color: chainMetadata.color,
+          color: Colors.blue,
         ),
         borderRadius: const BorderRadius.all(
           Radius.circular(
@@ -164,13 +174,16 @@ class SessionWidgetState extends State<SessionWidget> {
   }
 
   List<Widget> _buildChainMethodButtons(
-    ChainMetadata chainMetadata,
+    ReownAppKitModalNetworkInfo chainMetadata,
     String address,
   ) {
     final List<Widget> buttons = [];
     // Add Methods
-    for (final String method in getChainMethods(chainMetadata.type)) {
-      final namespaces = widget.session.namespaces[chainMetadata.type.name];
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+      chainMetadata.chainId,
+    );
+    for (final String method in getChainMethods(namespace)) {
+      final namespaces = _session.namespaces[namespace];
       final supported = namespaces?.methods.contains(method) ?? false;
       buttons.add(
         Container(
@@ -195,7 +208,7 @@ class SessionWidgetState extends State<SessionWidget> {
               backgroundColor: MaterialStateProperty.resolveWith<Color>(
                 (states) => states.contains(MaterialState.disabled)
                     ? Colors.grey
-                    : chainMetadata.color,
+                    : Colors.blue,
               ),
               shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
@@ -220,39 +233,41 @@ class SessionWidgetState extends State<SessionWidget> {
 
   Future<dynamic> callChainMethod(
     String method,
-    ChainMetadata chainMetadata,
+    ReownAppKitModalNetworkInfo chainMetadata,
     String address,
   ) {
-    switch (chainMetadata.type) {
-      case ChainType.eip155:
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+      chainMetadata.chainId,
+    );
+    switch (namespace) {
+      case 'eip155':
         return EIP155.callMethod(
-          appKit: widget.appKit,
-          topic: widget.session.topic,
+          appKit: _appKit,
+          topic: _session.topic,
           method: method,
           chainData: chainMetadata,
           address: address,
         );
-      case ChainType.polkadot:
+      case 'polkadot':
         return Polkadot.callMethod(
-          appKit: widget.appKit,
-          topic: widget.session.topic,
-          method: method,
-          chainId: chainMetadata.chainId,
-          address: address,
-        );
-      case ChainType.solana:
-        return Solana.callMethod(
-          appKit: widget.appKit,
-          topic: widget.session.topic,
+          appKit: _appKit,
+          topic: _session.topic,
           method: method,
           chainData: chainMetadata,
           address: address,
-          isV0: true,
+        );
+      case 'solana':
+        return Solana.callMethod(
+          appKit: _appKit,
+          topic: _session.topic,
+          method: method,
+          chainData: chainMetadata,
+          address: address,
         );
       // case ChainType.kadena:
       //   return Kadena.callMethod(
-      //     appKit: widget.appKit,
-      //     topic: widget.session.topic,
+      //     appKit: _appKit,
+      //     topic: _session.topic,
       //     method: method.toKadenaMethod()!,
       //     chainId: chainMetadata.chainId,
       //     address: address.toLowerCase(),
@@ -264,9 +279,9 @@ class SessionWidgetState extends State<SessionWidget> {
 
   void _launchWallet() {
     if (kIsWeb) return;
-    widget.appKit.redirectToWallet(
-      topic: widget.session.topic,
-      redirect: widget.session.peer.metadata.redirect,
+    _appKit.redirectToWallet(
+      topic: _session.topic,
+      redirect: _session.peer.metadata.redirect,
     );
   }
 
@@ -284,8 +299,8 @@ class SessionWidgetState extends State<SessionWidget> {
           onPressed: enabled
               ? () async {
                   final future = EIP155.callSmartContract(
-                    appKit: widget.appKit,
-                    topic: widget.session.topic,
+                    appKit: _appKit,
+                    topic: _session.topic,
                     address: address,
                     action: 'read',
                   );
@@ -326,8 +341,8 @@ class SessionWidgetState extends State<SessionWidget> {
           onPressed: enabled
               ? () async {
                   final future = EIP155.callSmartContract(
-                    appKit: widget.appKit,
-                    topic: widget.session.topic,
+                    appKit: _appKit,
+                    topic: _session.topic,
                     address: address,
                     action: 'write',
                   );
@@ -362,10 +377,12 @@ class SessionWidgetState extends State<SessionWidget> {
     return buttons;
   }
 
-  List<Widget> _buildChainEventsTiles(ChainMetadata chainMetadata) {
+  List<Widget> _buildChainEventsTiles(ReownAppKitModalNetworkInfo chainData) {
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+      chainData.chainId,
+    );
     final List<Widget> values = [];
-
-    for (final String event in getChainEvents(chainMetadata.type)) {
+    for (final String event in getChainEvents(namespace)) {
       values.add(
         Container(
           width: double.infinity,
@@ -375,7 +392,7 @@ class SessionWidgetState extends State<SessionWidget> {
           ),
           decoration: BoxDecoration(
             border: Border.all(
-              color: chainMetadata.color,
+              color: Colors.blue,
             ),
             borderRadius: const BorderRadius.all(
               Radius.circular(

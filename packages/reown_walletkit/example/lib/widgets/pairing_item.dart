@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
@@ -31,11 +32,33 @@ class PairingItem extends StatelessWidget {
         .toList();
 
     return ListTile(
-      leading: CircleAvatar(
-        backgroundImage: (metadata.icons.isNotEmpty
-                ? NetworkImage(metadata.icons[0])
-                : const AssetImage('assets/images/default_icon.png'))
-            as ImageProvider<Object>,
+      leading: Builder(
+        builder: (BuildContext context) {
+          if (metadata.icons.isNotEmpty) {
+            final imageUrl = metadata.icons.first;
+            if (imageUrl.split('.').last == 'svg') {
+              return Container(
+                width: 40.0,
+                height: 40.0,
+                padding: const EdgeInsets.all(1.0),
+                decoration: BoxDecoration(
+                  border: Border.all(width: 1.0, color: Colors.black38),
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                  child: SvgPicture.network(imageUrl),
+                ),
+              );
+            }
+            return CircleAvatar(
+              backgroundImage: NetworkImage(imageUrl),
+            );
+          }
+          return CircleAvatar(
+            backgroundImage: const AssetImage('assets/images/default_icon.png'),
+          );
+        },
       ),
       title: Text(
         metadata.name,

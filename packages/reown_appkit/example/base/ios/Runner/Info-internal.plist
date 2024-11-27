@@ -41,8 +41,53 @@
 	<string></string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>wcflutterwallet-internal</string>
+		<string>wirexwallet</string>
+		<string>stasis</string>
+		<string>omni</string>
+		<string>strikex</string>
+		<string>bitcoincom</string>
+		<string>bnc</string>
+		<string>kryptogo</string>
+		<string>roninwallet</string>
+		<string>moonstake</string>
+		<string>ripio</string>
+		<string>frontier</string>
+		<string>qubic</string>
+		<string>dropp</string>
+		<string>safepalwallet</string>
+		<string>bee</string>
+		<string>shido</string>
+		<string>foxwallet</string>
+		<string>exodus</string>
+		<string>coolwallet</string>
+		<string>shinobi-wallet</string>
+		<string>halowallet</string>
+		<string>spotonchain</string>
+		<string>rainbow</string>
+		<string>obvious</string>
+		<string>robinhood-wallet</string>
+		<string>cbwallet</string>
+		<string>okto</string>
+		<string>bitkeep</string>
+		<string>bitizen</string>
+		<string>ape</string>
+		<string>uniswap</string>
+		<string>zerion</string>
+		<string>oasys-wallet</string>
+		<string>coinstats</string>
+		<string>ledgerlive</string>
+		<string>safe</string>
+		<string>okex</string>
+		<string>trust</string>
+		<string>thorwallet</string>
+		<string>krakenwallet</string>
+		<string>coinwallet</string>
+		<string>mewwallet</string>
+		<string>metamask</string>
+		<string>avacus</string>
 		<string>walletapp</string>
+		<string>wcflutterwallet-internal</string>
+		<string>rn-web3wallet-internal</string>
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>

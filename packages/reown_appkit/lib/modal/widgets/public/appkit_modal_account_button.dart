@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/pages/approve_magic_request_page.dart';
 import 'package:reown_appkit/modal/pages/confirm_email_page.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
+import 'package:reown_appkit/modal/pages/social_login_page.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
-import 'package:reown_appkit/modal/utils/render_utils.dart';
-import 'package:reown_appkit/modal/widgets/avatars/account_avatar.dart';
-import 'package:reown_appkit/modal/widgets/buttons/balance_button.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
@@ -18,14 +17,17 @@ import 'package:reown_appkit/reown_appkit.dart';
 class AppKitModalAccountButton extends StatefulWidget {
   const AppKitModalAccountButton({
     super.key,
-    required this.appKit,
+    @Deprecated('Use appKitModal parameter') this.appKit,
+    required this.appKitModal,
     this.size = BaseButtonSize.regular,
     this.avatar,
     this.context,
     this.custom,
   });
 
-  final IReownAppKitModal appKit;
+  @Deprecated('Use appKitModal parameter')
+  final IReownAppKitModal? appKit;
+  final IReownAppKitModal appKitModal;
   final BaseButtonSize size;
   final String? avatar;
   final BuildContext? context;
@@ -37,59 +39,72 @@ class AppKitModalAccountButton extends StatefulWidget {
 }
 
 class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
-  String _balance = BalanceButton.balanceDefault;
+  IMagicService get _magicService => GetIt.I<IMagicService>();
   String _address = '';
-  String? _tokenImage;
-  String? _tokenName;
 
   @override
   void initState() {
     super.initState();
     _modalNotifyListener();
-    widget.appKit.addListener(_modalNotifyListener);
+    widget.appKitModal.addListener(_modalNotifyListener);
     // TODO [AppKitModalAccountButton] this should go in ReownAppKitModal but for that, init() method of ReownAppKitModal should receive a BuildContext, which would be a breaking change
-    magicService.instance.onMagicRpcRequest.subscribe(_approveSign);
-    magicService.instance.onMagicLoginRequest.subscribe(_loginRequested);
+    _magicService.onMagicRpcRequest.subscribe(_approveSign);
+    _magicService.onMagicLoginRequest.subscribe(_loginRequested);
   }
 
   @override
   void dispose() {
-    widget.appKit.removeListener(_modalNotifyListener);
-    magicService.instance.onMagicRpcRequest.unsubscribe(_approveSign);
-    magicService.instance.onMagicLoginRequest.unsubscribe(_loginRequested);
+    widget.appKitModal.removeListener(_modalNotifyListener);
+    _magicService.onMagicRpcRequest.unsubscribe(_approveSign);
+    _magicService.onMagicLoginRequest.unsubscribe(_loginRequested);
     super.dispose();
   }
 
   void _modalNotifyListener() {
-    setState(() {
-      _address = widget.appKit.session?.address ?? '';
-      final chainId = widget.appKit.selectedChain?.chainId ?? '';
-      final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-      _tokenImage = explorerService.instance.getAssetImageUrl(imageId);
-      _balance = widget.appKit.chainBalance;
-      _tokenName = widget.appKit.selectedChain?.currency;
-    });
+    final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
+    if (chainId.isNotEmpty) {
+      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+        chainId,
+      );
+      _address = widget.appKitModal.session?.getAddress(namespace) ?? '';
+    }
+    setState(() {});
   }
 
   void _onTap() {
-    widget.appKit.openModalView();
+    widget.appKitModal.openModalView();
   }
 
   void _approveSign(MagicRequestEvent? args) async {
     if (args?.request != null) {
-      if (widget.appKit.isOpen) {
+      if (widget.appKitModal.isOpen) {
         widgetStack.instance.push(ApproveTransactionPage());
       } else {
-        widget.appKit.openModalView(ApproveTransactionPage());
+        widget.appKitModal.openModalView(ApproveTransactionPage());
       }
     }
   }
 
   void _loginRequested(MagicSessionEvent? args) {
-    if (widget.appKit.isOpen) {
-      widgetStack.instance.popAllAndPush(ConfirmEmailPage());
+    if (args == null) return;
+    final provider = args.provider;
+    final isOpen = widget.appKitModal.isOpen;
+    if (isOpen) {
+      if (provider != null) {
+        widgetStack.instance.popAllAndPush(SocialLoginPage(
+          socialOption: provider,
+        ));
+      } else {
+        widgetStack.instance.popAllAndPush(ConfirmEmailPage());
+      }
     } else {
-      widget.appKit.openModalView(ConfirmEmailPage());
+      if (provider != null) {
+        widget.appKitModal.openModalView(SocialLoginPage(
+          socialOption: provider,
+        ));
+      } else {
+        widget.appKitModal.openModalView(ConfirmEmailPage());
+      }
     }
   }
 
@@ -101,7 +116,8 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final borderRadius = radiuses.isSquare() ? 0.0 : widget.size.height / 2;
-    final enabled = _address.isNotEmpty && widget.appKit.status.isInitialized;
+    final enabled =
+        _address.isNotEmpty && widget.appKitModal.status.isInitialized;
     // TODO [AppKitModalAccountButton] this button should be able to be disable by passing a null onTap action
     // I should decouple an AccountButton from AppKitModalAccountButton like on ConnectButton and NetworkButton
     return Stack(
@@ -145,20 +161,18 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
             mainAxisSize: MainAxisSize.min,
             children: [
               _BalanceButton(
-                isLoading: widget.appKit.status.isLoading,
-                balance: _balance,
-                tokenName: _tokenName,
-                tokenImage: _tokenImage,
-                iconSize: widget.size.iconSize,
+                appKit: widget.appKitModal,
                 buttonSize: widget.size,
                 onTap: enabled ? _onTap : null,
               ),
               const SizedBox.square(dimension: 4.0),
-              _AddressButton(
-                address: _address,
-                buttonSize: widget.size,
-                appKit: widget.appKit,
-                onTap: enabled ? _onTap : null,
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: AppKitModalAddressButton(
+                  size: widget.size,
+                  appKitModal: widget.appKitModal,
+                  onTap: enabled ? _onTap : null,
+                ),
               ),
             ],
           ),
@@ -168,128 +182,14 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
   }
 }
 
-class _AddressButton extends StatelessWidget {
-  const _AddressButton({
-    required this.buttonSize,
-    required this.address,
-    required this.appKit,
-    required this.onTap,
-  });
-  final BaseButtonSize buttonSize;
-  final VoidCallback? onTap;
-  final String address;
-  final IReownAppKitModal appKit;
-
-  @override
-  Widget build(BuildContext context) {
-    if (address.isEmpty) {
-      return SizedBox.shrink();
-    }
-    final themeData = ReownAppKitModalTheme.getDataOf(context);
-    final textStyle = buttonSize == BaseButtonSize.small
-        ? themeData.textStyles.small600
-        : themeData.textStyles.paragraph600;
-    final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
-    final innerBorderRadius =
-        radiuses.isSquare() ? 0.0 : BaseButtonSize.small.height / 2;
-    return Padding(
-      padding: EdgeInsets.only(
-        top: buttonSize == BaseButtonSize.small ? 4.0 : 0.0,
-        bottom: buttonSize == BaseButtonSize.small ? 4.0 : 0.0,
-      ),
-      child: BaseButton(
-        size: BaseButtonSize.small,
-        onTap: onTap,
-        overridePadding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-          EdgeInsets.only(
-            left: buttonSize == BaseButtonSize.small ? 4.0 : 6.0,
-            right: 8.0,
-          ),
-        ),
-        buttonStyle: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith<Color>(
-            (states) {
-              if (states.contains(MaterialState.disabled)) {
-                return themeColors.grayGlass005;
-              }
-              return themeColors.grayGlass010;
-            },
-          ),
-          foregroundColor: MaterialStateProperty.resolveWith<Color>(
-            (states) {
-              if (states.contains(MaterialState.disabled)) {
-                return themeColors.grayGlass015;
-              }
-              return themeColors.foreground175;
-            },
-          ),
-          shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
-            (states) {
-              return RoundedRectangleBorder(
-                side: states.contains(MaterialState.disabled)
-                    ? BorderSide(
-                        color: themeColors.grayGlass005,
-                        width: 1.0,
-                      )
-                    : BorderSide(
-                        color: themeColors.grayGlass010,
-                        width: 1.0,
-                      ),
-                borderRadius: BorderRadius.circular(innerBorderRadius),
-              );
-            },
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(buttonSize.iconSize),
-                border: Border.all(
-                  color: themeColors.grayGlass005,
-                  width: 1.0,
-                  strokeAlign: BorderSide.strokeAlignInside,
-                ),
-              ),
-              child: AccountAvatar(
-                appKit: appKit,
-                size: buttonSize.iconSize,
-                disabled: false,
-              ),
-            ),
-            const SizedBox.square(dimension: 4.0),
-            Text(
-              RenderUtils.truncate(
-                address,
-                length: buttonSize == BaseButtonSize.small ? 2 : 4,
-              ),
-              style: textStyle,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class _BalanceButton extends StatelessWidget {
   const _BalanceButton({
+    required this.appKit,
     required this.onTap,
-    required this.isLoading,
-    required this.balance,
-    required this.tokenName,
-    required this.tokenImage,
-    required this.iconSize,
     required this.buttonSize,
   });
+  final IReownAppKitModal appKit;
   final VoidCallback? onTap;
-  final bool isLoading;
-  final String balance;
-  final String? tokenName;
-  final String? tokenImage;
-  final double iconSize;
   final BaseButtonSize buttonSize;
 
   @override
@@ -299,6 +199,13 @@ class _BalanceButton extends StatelessWidget {
     final textStyle = buttonSize == BaseButtonSize.small
         ? themeData.textStyles.small600
         : themeData.textStyles.paragraph600;
+    final chainId = appKit.selectedChain?.chainId ?? '';
+    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
+    String tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
+    final balance = appKit.balanceNotifier.value;
+    if (balance.contains(AppKitModalBalanceButton.balanceDefault)) {
+      tokenImage = '';
+    }
     return BaseButton(
       size: BaseButtonSize.small,
       onTap: onTap,
@@ -319,7 +226,7 @@ class _BalanceButton extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          isLoading
+          appKit.status.isLoading
               ? Row(
                   children: [
                     const SizedBox.square(dimension: kPadding6),
@@ -330,21 +237,26 @@ class _BalanceButton extends StatelessWidget {
                     const SizedBox.square(dimension: kPadding6),
                   ],
                 )
-              : (tokenImage ?? '').isEmpty
+              : tokenImage.isEmpty
                   ? RoundedIcon(
                       assetPath: 'lib/modal/assets/icons/network.svg',
-                      size: iconSize,
+                      size: buttonSize.iconSize,
                       assetColor: themeColors.inverse100,
                       padding: 4.0,
                     )
                   : RoundedIcon(
                       imageUrl: tokenImage,
-                      size: iconSize + 2.0,
+                      size: buttonSize.iconSize + 2.0,
                     ),
           const SizedBox.square(dimension: 4.0),
-          Text(
-            '$balance ${tokenName ?? ''}',
-            style: textStyle,
+          ValueListenableBuilder<String>(
+            valueListenable: appKit.balanceNotifier,
+            builder: (_, balance, __) {
+              return Text(
+                balance,
+                style: textStyle,
+              );
+            },
           ),
         ],
       ),

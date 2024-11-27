@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/foundation.dart';
@@ -7,35 +8,44 @@ import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:reown_appkit/reown_appkit.dart';
-import 'package:reown_appkit_dapp/models/chain_metadata.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
-import 'package:reown_appkit_dapp/utils/crypto/chain_data.dart';
 import 'package:reown_appkit_dapp/utils/crypto/eip155.dart';
+import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
 import 'package:reown_appkit_dapp/utils/crypto/solana.dart';
-import 'package:reown_appkit_dapp/utils/sample_wallets.dart';
 import 'package:reown_appkit_dapp/utils/string_constants.dart';
 import 'package:reown_appkit_dapp/widgets/chain_button.dart';
+import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
 
 class ConnectPage extends StatefulWidget {
   const ConnectPage({
     super.key,
     required this.appKitModal,
+    required this.reinitialize,
+    this.linkMode = false,
   });
 
   final ReownAppKitModal appKitModal;
+  final Function(bool linkMode) reinitialize;
+  final bool linkMode;
 
   @override
   ConnectPageState createState() => ConnectPageState();
 }
 
 class ConnectPageState extends State<ConnectPage> {
-  final List<ChainMetadata> _selectedChains = [];
+  final List<ReownAppKitModalNetworkInfo> _selectedChains = [];
   bool _shouldDismissQrCode = true;
 
   @override
   void initState() {
     super.initState();
+    widget.appKitModal.onModalConnect.subscribe(_onModalConnect);
+    widget.appKitModal.onModalUpdate.subscribe(_onModalUpdate);
+    widget.appKitModal.onModalNetworkChange.subscribe(_onModalNetworkChange);
+    widget.appKitModal.onModalDisconnect.subscribe(_onModalDisconnect);
+    widget.appKitModal.onModalError.subscribe(_onModalError);
+    //
     widget.appKitModal.appKit!.onSessionConnect.subscribe(
       _onSessionConnect,
     );
@@ -49,6 +59,11 @@ class ConnectPageState extends State<ConnectPage> {
 
   @override
   void dispose() {
+    widget.appKitModal.onModalConnect.unsubscribe(_onModalConnect);
+    widget.appKitModal.onModalUpdate.unsubscribe(_onModalUpdate);
+    widget.appKitModal.onModalNetworkChange.unsubscribe(_onModalNetworkChange);
+    widget.appKitModal.onModalDisconnect.unsubscribe(_onModalDisconnect);
+    widget.appKitModal.onModalError.unsubscribe(_onModalError);
     widget.appKitModal.onModalDisconnect.unsubscribe(
       _onModalDisconnect,
     );
@@ -61,7 +76,7 @@ class ConnectPageState extends State<ConnectPage> {
     super.dispose();
   }
 
-  void _selectChain(ChainMetadata chain) {
+  void _selectChain(ReownAppKitModalNetworkInfo chain) {
     setState(() {
       if (_selectedChains.contains(chain)) {
         _selectedChains.remove(chain);
@@ -78,61 +93,58 @@ class ConnectPageState extends State<ConnectPage> {
   void _updateNamespaces() {
     optionalNamespaces = {};
 
-    final evmChains =
-        _selectedChains.where((e) => e.type == ChainType.eip155).toList();
+    final evmChains = _selectedChains.where((c) {
+      final ns = ReownAppKitModalNetworks.getNamespaceForChainId(c.chainId);
+      return ns == 'eip155';
+    }).toList();
     if (evmChains.isNotEmpty) {
       optionalNamespaces['eip155'] = RequiredNamespace(
-        chains: evmChains.map((c) => c.chainId).toList(),
+        chains: evmChains.map((c) => 'eip155:${c.chainId}').toList(),
         methods: EIP155.methods.values.toList(),
         events: EIP155.events.values.toList(),
       );
     }
 
-    final solanaChains =
-        _selectedChains.where((e) => e.type == ChainType.solana).toList();
+    final solanaChains = _selectedChains.where((c) {
+      final ns = ReownAppKitModalNetworks.getNamespaceForChainId(c.chainId);
+      return ns == 'solana';
+    }).toList();
     if (solanaChains.isNotEmpty) {
       optionalNamespaces['solana'] = RequiredNamespace(
-        chains: solanaChains.map((c) => c.chainId).toList(),
+        chains: solanaChains.map((c) => 'solana:${c.chainId}').toList(),
         methods: Solana.methods.values.toList(),
         events: Solana.events.values.toList(),
       );
     }
 
-    final polkadotChains =
-        _selectedChains.where((e) => e.type == ChainType.polkadot).toList();
+    final polkadotChains = _selectedChains.where((c) {
+      final ns = ReownAppKitModalNetworks.getNamespaceForChainId(c.chainId);
+      return ns == 'polkadot';
+    }).toList();
     if (polkadotChains.isNotEmpty) {
       optionalNamespaces['polkadot'] = RequiredNamespace(
-        chains: polkadotChains.map((c) => c.chainId).toList(),
+        chains: polkadotChains.map((c) => 'polkadot:${c.chainId}').toList(),
         methods: Polkadot.methods.values.toList(),
         events: Polkadot.events.values.toList(),
       );
     }
 
-    if (optionalNamespaces.isEmpty) {
-      requiredNamespaces = {};
-    } else {
-      // WalletConnectModal still requires to have requiredNamespaces
-      // this has to be changed in that SDK
-      requiredNamespaces = {
-        'eip155': const RequiredNamespace(
-          chains: ['eip155:1'],
-          methods: ['personal_sign', 'eth_signTransaction'],
-          events: ['chainChanged'],
-        ),
-      };
-    }
+    debugPrint(
+      '[$runtimeType] optionalNamespaces ${jsonEncode(optionalNamespaces)}',
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     // Build the list of chain buttons, clear if the textnet changed
-    final testChains = ChainData.allChains.where((e) => e.isTestnet).toList();
-    final mainChains = ChainData.allChains.where((e) => !e.isTestnet).toList();
+    final allChains = ReownAppKitModalNetworks.getAllSupportedNetworks();
+    final mainChains = allChains.where((e) => !e.isTestNetwork).toList();
+    final testChains = allChains.where((e) => e.isTestNetwork).toList();
 
     final List<Widget> chainButtons = [];
     final List<Widget> testButtons = [];
 
-    for (final ChainMetadata chain in mainChains) {
+    for (final chain in mainChains) {
       // Build the button
       chainButtons.add(
         ChainButton(
@@ -142,7 +154,7 @@ class ConnectPageState extends State<ConnectPage> {
         ),
       );
     }
-    for (final ChainMetadata chain in testChains) {
+    for (final chain in testChains) {
       // Build the button
       testButtons.add(
         ChainButton(
@@ -154,26 +166,21 @@ class ConnectPageState extends State<ConnectPage> {
     }
 
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: StyleConstants.linear8),
+      padding: const EdgeInsets.symmetric(
+        horizontal: StyleConstants.linear8,
+      ),
       children: <Widget>[
         Text(
           widget.appKitModal.appKit!.metadata.name,
           style: StyleConstants.subtitleText,
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: StyleConstants.linear8),
-        const Divider(),
+        const SizedBox(height: StyleConstants.linear16),
+        const Divider(height: 1.0),
+        const SizedBox(height: StyleConstants.linear16),
         const Text(
-          'Connect With AppKit Modal and Link Mode:',
+          'Connect With AppKit Modal',
           style: StyleConstants.buttonText,
-          textAlign: TextAlign.center,
-        ),
-        Text(
-          'Only EVM chains',
-          style: TextStyle(
-            color: Colors.black.withOpacity(0.7),
-            fontSize: 12.0,
-          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: StyleConstants.linear8),
@@ -192,8 +199,29 @@ class ConnectPageState extends State<ConnectPage> {
         const SizedBox(height: StyleConstants.linear8),
         Visibility(
           visible: widget.appKitModal.isConnected,
-          child: AppKitModalAccountButton(
-            appKit: widget.appKitModal,
+          child: Column(
+            children: [
+              AppKitModalAccountButton(
+                appKitModal: widget.appKitModal,
+              ),
+              const SizedBox.square(dimension: 8.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AppKitModalBalanceButton(
+                    appKitModal: widget.appKitModal,
+                    onTap: widget.appKitModal.openNetworksView,
+                  ),
+                  const SizedBox.square(dimension: 8.0),
+                  AppKitModalAddressButton(
+                    appKitModal: widget.appKitModal,
+                    onTap: widget.appKitModal.openModalView,
+                  ),
+                ],
+              ),
+              const SizedBox.square(dimension: 8.0),
+              ...(_buildRequestButtons()),
+            ],
           ),
         ),
         const SizedBox(height: StyleConstants.linear8),
@@ -202,212 +230,93 @@ class ConnectPageState extends State<ConnectPage> {
           child: Column(
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Expanded(
-                    child: const Divider(),
-                  ),
-                  const Text(
-                    ' Or ',
-                    style: StyleConstants.buttonText,
-                    textAlign: TextAlign.center,
-                  ),
-                  Expanded(
-                    child: const Divider(),
-                  ),
-                ],
-              ),
-              const SizedBox(height: StyleConstants.linear8),
-              const Text(
-                'Connect With AppKit multichain',
-                style: StyleConstants.buttonText,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: StyleConstants.linear8),
-              Wrap(
-                spacing: 10.0,
-                children: chainButtons,
-              ),
-              // const Divider(),
-              const Text('Test chains'),
-              Wrap(
-                spacing: 10.0,
-                children: testButtons,
-              ),
-              const SizedBox(height: StyleConstants.linear16),
-              // const Divider(),
-              Row(
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Session Propose:',
-                          style: StyleConstants.buttonText,
-                        ),
-                        const SizedBox(height: StyleConstants.linear8),
-                        Column(
-                          children:
-                              WCSampleWallets.getSampleWallets().map((wallet) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: ElevatedButton(
-                                style: _buttonStyle,
-                                onPressed: _selectedChains.isEmpty
-                                    ? null
-                                    : () {
-                                        _onConnect(
-                                          nativeLink: '${wallet['schema']}',
-                                          closeModal: () {
-                                            if (Navigator.canPop(context)) {
-                                              Navigator.of(context).pop();
-                                            }
-                                          },
-                                          showToast: (m) async {
-                                            showPlatformToast(
-                                              child: Text(m),
-                                              context: context,
-                                            );
-                                          },
-                                        );
-                                      },
-                                child: Text(
-                                  '${wallet['name']}',
-                                  style: StyleConstants.buttonText,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ],
+                    child: Text(
+                      'non-EVM\nSession Proposal',
+                      textAlign: TextAlign.end,
+                      style: TextStyle(
+                        fontWeight: !widget.linkMode
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
                     ),
                   ),
-                  const SizedBox.square(dimension: 8.0),
+                  Switch(
+                    value: widget.linkMode,
+                    onChanged: (value) {
+                      widget.reinitialize(value);
+                    },
+                  ),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text(
-                          'Link Mode:',
-                          style: StyleConstants.buttonText,
-                        ),
-                        const SizedBox(height: StyleConstants.linear8),
-                        Column(
-                          children:
-                              WCSampleWallets.getSampleWallets().map((wallet) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: ElevatedButton(
-                                style: _buttonStyle,
-                                onPressed: _selectedChains.isEmpty
-                                    ? null
-                                    : () {
-                                        _sessionAuthenticate(
-                                          nativeLink: '${wallet['schema']}',
-                                          universalLink:
-                                              '${wallet['universal']}',
-                                          closeModal: () {
-                                            if (Navigator.canPop(context)) {
-                                              Navigator.of(context).pop();
-                                            }
-                                          },
-                                          showToast: (message) {
-                                            showPlatformToast(
-                                              child: Text(message),
-                                              context: context,
-                                            );
-                                          },
-                                        );
-                                      },
-                                child: Text(
-                                  '${wallet['name']}',
-                                  style: StyleConstants.buttonText,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ],
+                    child: Text(
+                      'only EVM\nLink Mode',
+                      style: TextStyle(
+                        fontWeight: widget.linkMode
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: StyleConstants.linear16),
-              const Divider(height: 1.0),
             ],
           ),
         ),
         const SizedBox(height: StyleConstants.linear16),
-        const Text(
-          'Redirect:',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Native: '),
-            Expanded(
-              child: Text(
-                '${widget.appKitModal.appKit!.metadata.redirect?.native}',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Universal: '),
-            Expanded(
-              child: Text(
-                '${widget.appKitModal.appKit!.metadata.redirect?.universal}',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            const Text('Link Mode: '),
-            Text(
-              '${widget.appKitModal.appKit!.metadata.redirect?.linkMode}',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
+        const Divider(height: 1.0),
         const SizedBox(height: StyleConstants.linear8),
-        FutureBuilder<PackageInfo>(
-          future: PackageInfo.fromPlatform(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const SizedBox.shrink();
-            }
-            final v = snapshot.data!.version;
-            final b = snapshot.data!.buildNumber;
-            const f = String.fromEnvironment('FLUTTER_APP_FLAVOR');
-            // return Text('App Version: $v-$f ($b) - SDK v$packageVersion');
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text('App Version: '),
-                Expanded(
-                  child: Text(
-                    '$v-$f ($b) - SDK v$packageVersion',
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-        const SizedBox(height: StyleConstants.linear16),
+        _FooterWidget(appKitModal: widget.appKitModal),
+        const SizedBox(height: StyleConstants.linear8),
       ],
     );
   }
 
+  List<Widget> _buildRequestButtons() {
+    final chainId = widget.appKitModal.selectedChain?.chainId ?? '1';
+    final ns = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    return widget.appKitModal.getApprovedMethods(namespace: ns)?.map((method) {
+          final topic = widget.appKitModal.session!.topic ?? '';
+          final chainId = widget.appKitModal.selectedChain!.chainId;
+          final address = widget.appKitModal.session!.getAddress(ns)!;
+          final chainInfo = ReownAppKitModalNetworks.getNetworkById(
+            ns,
+            chainId,
+          );
+          // final requestParams = await getParams(method, address);
+          // final enabled = requestParams != null;
+          return Container(
+            height: 40.0,
+            width: double.infinity,
+            margin: const EdgeInsets.symmetric(
+              vertical: StyleConstants.linear8,
+            ),
+            child: FutureBuilder<SessionRequestParams?>(
+                future: getParams(method, address, rpcUrl: chainInfo?.rpcUrl),
+                builder: (_, snapshot) {
+                  final enabled = snapshot.data != null;
+                  return ElevatedButton(
+                    onPressed: enabled
+                        ? () {
+                            widget.appKitModal.launchConnectedWallet();
+                            final future = widget.appKitModal.request(
+                              topic: topic,
+                              chainId: chainId,
+                              request: snapshot.data!,
+                            );
+                            MethodDialog.show(context, method, future);
+                          }
+                        : null,
+                    child: Text(method),
+                  );
+                }),
+          );
+        }).toList() ??
+        [];
+  }
+
+  // ignore: unused_element
   Future<void> _onConnect({
     required String nativeLink,
     VoidCallback? closeModal,
@@ -439,6 +348,7 @@ class ConnectPageState extends State<ConnectPage> {
     closeModal?.call();
   }
 
+  // ignore: unused_element
   void _sessionAuthenticate({
     required String nativeLink,
     required String universalLink,
@@ -446,12 +356,13 @@ class ConnectPageState extends State<ConnectPage> {
     Function(String message)? showToast,
   }) async {
     debugPrint(
-        '[SampleDapp] Creating authenticate with $nativeLink, $universalLink');
+      '[SampleDapp] Creating authentication with $nativeLink, $universalLink',
+    );
     final methods1 = requiredNamespaces['eip155']?.methods ?? [];
     final methods2 = optionalNamespaces['eip155']?.methods ?? [];
     final authResponse = await widget.appKitModal.appKit!.authenticate(
       params: SessionAuthRequestParams(
-        chains: _selectedChains.map((e) => e.chainId).toList(),
+        chains: _selectedChains.map((e) => 'eip155:${e.chainId}').toList(),
         domain: Uri.parse(widget.appKitModal.appKit!.metadata.url).authority,
         nonce: AuthUtils.generateNonce(),
         uri: widget.appKitModal.appKit!.metadata.url,
@@ -559,17 +470,34 @@ class ConnectPageState extends State<ConnectPage> {
     }
   }
 
+  void _onModalConnect(ModalConnect? event) async {
+    setState(() {});
+  }
+
+  void _onModalUpdate(ModalConnect? event) {
+    setState(() {});
+  }
+
+  void _onModalNetworkChange(ModalNetworkChange? event) {
+    setState(() {});
+  }
+
   void _onModalDisconnect(ModalDisconnect? event) {
     setState(() {});
   }
 
+  void _onModalError(ModalError? event) {
+    setState(() {});
+  }
+
+  // ignore: unused_element
   ButtonStyle get _buttonStyle => ButtonStyle(
         backgroundColor: MaterialStateProperty.resolveWith<Color>(
           (states) {
             if (states.contains(MaterialState.disabled)) {
               return StyleConstants.grayColor;
             }
-            return StyleConstants.primaryColor;
+            return Colors.blue;
           },
         ),
         textStyle: MaterialStateProperty.resolveWith<TextStyle>(
@@ -593,6 +521,106 @@ class ConnectPageState extends State<ConnectPage> {
           ),
         ),
       );
+}
+
+class _FooterWidget extends StatefulWidget {
+  const _FooterWidget({required this.appKitModal});
+  final ReownAppKitModal appKitModal;
+
+  @override
+  State<_FooterWidget> createState() => __FooterWidgetState();
+}
+
+class __FooterWidgetState extends State<_FooterWidget> {
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = TextStyle(fontSize: 12.0);
+    final textStyleBold = textStyle.copyWith(fontWeight: FontWeight.bold);
+    final redirect = widget.appKitModal.appKit!.metadata.redirect;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: StyleConstants.linear8),
+        Text('Redirect:', style: textStyleBold),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Native: ', style: textStyle),
+            Expanded(
+              child: Text('${redirect?.native}', style: textStyleBold),
+            ),
+          ],
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Universal: ', style: textStyle),
+            Expanded(
+              child: Text('${redirect?.universal}', style: textStyleBold),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            Text('Link Mode: ', style: textStyle),
+            Text('${redirect?.linkMode}', style: textStyleBold),
+          ],
+        ),
+        FutureBuilder<PackageInfo>(
+          future: PackageInfo.fromPlatform(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const SizedBox.shrink();
+            }
+            final v = snapshot.data!.version;
+            final b = snapshot.data!.buildNumber;
+            const f = String.fromEnvironment('FLUTTER_APP_FLAVOR');
+            // return Text('App Version: $v-$f ($b) - SDK v$packageVersion');
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('App Version: ', style: textStyle),
+                Expanded(
+                  child: Text(
+                    '$v-$f ($b) - SDK v$packageVersion',
+                    style: textStyleBold,
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+        const SizedBox(height: StyleConstants.linear8),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Visibility(
+              visible: !widget.appKitModal.isConnected,
+              child: SizedBox(
+                height: 30.0,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await widget.appKitModal.appKit!.core.storage.deleteAll();
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Storage cleared'),
+                      duration: Duration(seconds: 1),
+                    ));
+                  },
+                  child: Text(
+                    'CLEAR STORAGE',
+                    style: TextStyle(fontSize: 10.0),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
 }
 
 class QRCodeScreen extends StatefulWidget {

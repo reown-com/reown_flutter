@@ -1,18 +1,18 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/pages/about_wallets.dart';
-import 'package:reown_appkit/modal/pages/confirm_email_page.dart';
 import 'package:reown_appkit/modal/pages/connect_wallet_page.dart';
-import 'package:reown_appkit/modal/services/analytics_service/analytics_service_singleton.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service_singleton.dart';
-import 'package:reown_appkit/modal/services/magic_service/models/email_login_step.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
-import 'package:reown_appkit/modal/widgets/miscellaneous/input_email.dart';
+import 'package:reown_appkit/modal/widgets/buttons/email_login_input_field.dart';
+import 'package:reown_appkit/modal/widgets/buttons/social_login_buttons_view.dart';
+import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
@@ -35,31 +35,41 @@ class ReownAppKitModalMainWalletsPage extends StatefulWidget {
 
 class _AppKitModalMainWalletsPageState
     extends State<ReownAppKitModalMainWalletsPage> {
+  IMagicService get _magicService => GetIt.I<IMagicService>();
+  IExplorerService get _explorerService => GetIt.I<IExplorerService>();
+
   @override
   void initState() {
     super.initState();
-    magicService.instance.isEnabled.addListener(_mailEnabledListener);
+    _magicService.isEmailEnabled.addListener(_enabledListener);
+    _magicService.isSocialEnabled.addListener(_enabledListener);
   }
 
-  void _mailEnabledListener() {
+  void _enabledListener() {
     setState(() {});
   }
 
   @override
   void dispose() {
-    magicService.instance.isEnabled.removeListener(_mailEnabledListener);
+    _magicService.isSocialEnabled.removeListener(_enabledListener);
+    _magicService.isEmailEnabled.removeListener(_enabledListener);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final modalInstance = ModalProvider.of(context).instance;
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final service = ModalProvider.of(context).instance;
     final isPortrait = ResponsiveData.isPortrait(context);
     double maxHeight = isPortrait
         ? (kListItemHeight * 6)
         : ResponsiveData.maxHeightOf(context);
+
+    final isSignIn = _magicService.isEmailEnabled.value ||
+        _magicService.isSocialEnabled.value;
     return ModalNavbar(
-      title: 'Connect wallet',
+      title: isSignIn ? 'Sign in' : 'Connect wallet',
       leftAction: NavbarActionButton(
         asset: 'lib/modal/assets/icons/help.svg',
         action: () {
@@ -82,13 +92,31 @@ class _AppKitModalMainWalletsPageState
               ),
             );
           }
+          final emailEnabled = _magicService.isEmailEnabled.value;
+          final socials = _magicService.socials;
+          if (!modalInstance.featuresConfig.showMainWallets &&
+              (emailEnabled || socials.isNotEmpty)) {
+            items.clear();
+          }
           final itemsCount = min(kShortWalletListCount, items.length);
           if (itemsCount < kShortWalletListCount) {
             maxHeight = kListItemHeight * (itemsCount + 1.5);
           }
-          final emailEnabled = magicService.instance.isEnabled.value;
           if (emailEnabled) {
-            maxHeight += (kSearchFieldHeight * 2);
+            maxHeight += kListItemHeight;
+          } else {
+            maxHeight -= 10.0;
+          }
+          final socialEnabled = _magicService.isSocialEnabled.value;
+          if (socialEnabled) {
+            final length = socials.length;
+            if (length <= 4) {
+              maxHeight += (kListItemHeight * 2);
+            } else {
+              maxHeight += (kListItemHeight * 3);
+            }
+          } else {
+            maxHeight += 30.0;
           }
           final itemsToShow = items.getRange(0, itemsCount);
           return ConstrainedBox(
@@ -98,35 +126,78 @@ class _AppKitModalMainWalletsPageState
                 service.selectWallet(data);
                 widgetStack.instance.push(const ConnectWalletPage());
               },
-              firstItem: _EmailLoginWidget(),
+              firstItem: Column(
+                children: [
+                  EmailLoginInputField(),
+                  Visibility(
+                    visible: emailEnabled || socialEnabled,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 4.0,
+                      ),
+                      child: Column(
+                        children: [
+                          SocialLoginButtonsView(),
+                          _LoginDivider(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               itemList: itemsToShow.toList(),
               bottomItems: [
-                AllWalletsItem(
-                  trailing: (items.length <= kShortWalletListCount)
-                      ? null
-                      : ValueListenableBuilder<int>(
-                          valueListenable:
-                              explorerService.instance.totalListings,
-                          builder: (context, value, _) {
-                            return WalletItemChip(value: value.lazyCount);
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: (!modalInstance.featuresConfig.showMainWallets &&
+                          (emailEnabled || socials.isNotEmpty))
+                      ? AllWalletsItem(
+                          title: 'Continue with a wallet',
+                          titleAlign: TextAlign.center,
+                          leading: RoundedIcon(
+                            padding: 10.0,
+                            assetPath:
+                                'lib/modal/assets/icons/regular/wallet.svg',
+                            assetColor: themeColors.foreground100,
+                            circleColor: Colors.transparent,
+                            borderColor: Colors.transparent,
+                          ),
+                          onTap: () {
+                            widgetStack.instance.push(
+                              const ReownAppKitModalAllWalletsPage(),
+                              event: ClickAllWalletsEvent(),
+                            );
+                          },
+                        )
+                      : AllWalletsItem(
+                          trailing: (items.length <= kShortWalletListCount)
+                              ? null
+                              : ValueListenableBuilder<int>(
+                                  valueListenable:
+                                      _explorerService.totalListings,
+                                  builder: (context, value, _) {
+                                    return WalletItemChip(
+                                      value: value.lazyCount,
+                                    );
+                                  },
+                                ),
+                          onTap: () {
+                            if (items.length <= kShortWalletListCount) {
+                              widgetStack.instance.push(
+                                const ReownAppKitModalQRCodePage(),
+                                event: SelectWalletEvent(
+                                  name: 'WalletConnect',
+                                  platform: AnalyticsPlatform.qrcode,
+                                ),
+                              );
+                            } else {
+                              widgetStack.instance.push(
+                                const ReownAppKitModalAllWalletsPage(),
+                                event: ClickAllWalletsEvent(),
+                              );
+                            }
                           },
                         ),
-                  onTap: () {
-                    if (items.length <= kShortWalletListCount) {
-                      widgetStack.instance.push(
-                        const ReownAppKitModalQRCodePage(),
-                        event: SelectWalletEvent(
-                          name: 'WalletConnect',
-                          platform: AnalyticsPlatform.qrcode,
-                        ),
-                      );
-                    } else {
-                      widgetStack.instance.push(
-                        const ReownAppKitModalAllWalletsPage(),
-                        event: ClickAllWalletsEvent(),
-                      );
-                    }
-                  },
                 ),
               ],
             ),
@@ -171,77 +242,5 @@ extension on int {
   String get lazyCount {
     if (this <= 10) return toString();
     return '${toString().substring(0, toString().length - 1)}0+';
-  }
-}
-
-class _EmailLoginWidget extends StatefulWidget {
-  @override
-  State<_EmailLoginWidget> createState() => __EmailLoginWidgetState();
-}
-
-class __EmailLoginWidgetState extends State<_EmailLoginWidget> {
-  bool _submitted = false;
-  @override
-  void initState() {
-    super.initState();
-    magicService.instance.step.addListener(_stepListener);
-  }
-
-  void _stepListener() {
-    debugPrint(magicService.instance.step.value.toString());
-    if ((magicService.instance.step.value == EmailLoginStep.verifyDevice ||
-            magicService.instance.step.value == EmailLoginStep.verifyOtp ||
-            magicService.instance.step.value == EmailLoginStep.verifyOtp2) &&
-        _submitted) {
-      widgetStack.instance.push(ConfirmEmailPage());
-      _submitted = false;
-    }
-  }
-
-  @override
-  void dispose() {
-    magicService.instance.step.removeListener(_stepListener);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: magicService.instance.isEnabled,
-      builder: (context, emailEnabled, _) {
-        if (!emailEnabled) {
-          return const SizedBox.shrink();
-        }
-        return Column(
-          children: [
-            InputEmailWidget(
-              onFocus: (value) {
-                if (value) {
-                  analyticsService.instance.sendEvent(
-                    EmailLoginSelected(),
-                  );
-                }
-              },
-              onValueChange: (value) {
-                magicService.instance.setEmail(value);
-              },
-              onSubmitted: (value) {
-                setState(() => _submitted = true);
-                final service = ModalProvider.of(context).instance;
-                final chainId = service.selectedChain?.chainId;
-                analyticsService.instance.sendEvent(EmailSubmitted());
-                magicService.instance.connectEmail(
-                  value: value,
-                  chainId: chainId,
-                );
-              },
-            ),
-            const SizedBox.square(dimension: 4.0),
-            _LoginDivider(),
-            const SizedBox.square(dimension: kListViewSeparatorHeight),
-          ],
-        );
-      },
-    );
   }
 }

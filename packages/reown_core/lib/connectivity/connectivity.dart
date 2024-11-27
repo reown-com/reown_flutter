@@ -31,14 +31,14 @@ class ConnectivityState implements IConnectivity {
     final isOnlineStatus = isMobileData || isWifi;
 
     if (isOnline.value != isOnlineStatus) {
-      _core.logger.i('[$runtimeType] Connectivity changed $result');
       isOnline.value = isOnlineStatus;
+      _core.logger.i('[$runtimeType] Connectivity changed $isOnlineStatus');
 
-      if (isOnline.value && !_core.relayClient.isConnected) {
-        await _core.relayClient.connect();
-      } else if (!isOnline.value && _core.relayClient.isConnected) {
-        await _core.relayClient.disconnect();
-      }
+      // if (isOnline.value && !_core.relayClient.isConnected) {
+      //   await _core.relayClient.connect();
+      // } else if (!isOnline.value && _core.relayClient.isConnected) {
+      //   await _core.relayClient.disconnect();
+      // }
     }
   }
 }

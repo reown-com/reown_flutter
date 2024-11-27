@@ -1,12 +1,15 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_core/version.dart' as reown_core;
 import 'package:reown_sign/version.dart' as reown_sign;
 
 class CoreConstants {
   // Request Headers
   static const X_SDK_TYPE = 'appkit';
-  static const X_SDK_VERSION = packageVersion;
-  static const X_CORE_SDK_VERSION = 'flutter_${reown_sign.packageVersion}';
-  static const String namespace = 'eip155';
+  static const X_SDK_VERSION = 'flutter-$packageVersion';
+  static const X_CORE_SDK_VERSION = 'core-${reown_core.packageVersion}';
+  static const X_SIGN_SDK_VERSION = 'sign-${reown_sign.packageVersion}';
 }
 
 class UIConstants {
@@ -30,13 +33,12 @@ class UIConstants {
 
 class StorageConstants {
   // Storage
-  static const String recentWalletId =
-      '${CoreConstants.X_SDK_TYPE}_recentWallet';
-  static const String connectedWalletData =
-      '${CoreConstants.X_SDK_TYPE}_walletData';
-  static const String selectedChainId =
-      '${CoreConstants.X_SDK_TYPE}_selectedChainId';
-  static const String modalSession = '${CoreConstants.X_SDK_TYPE}_session';
+  static const prefix = '${CoreConstants.X_SDK_TYPE}:$packageVersion//';
+
+  static const String recentWalletId = '${prefix}recentWallet';
+  static const String connectedWalletData = '${prefix}walletData';
+  static const String selectedChainId = '${prefix}selectedChainId';
+  static const String modalSession = '${prefix}session';
 }
 
 class UrlConstants {
@@ -46,9 +48,10 @@ class UrlConstants {
   static const exploreWallets =
       'https://explorer.walletconnect.com/?type=wallet';
   //
-  static const secureService =
-      'https://secure-mobile.walletconnect.com/mobile-sdk';
-  static const secureDashboard = 'https://secure.walletconnect.com/dashboard';
+  static const secureOrigin1 = 'secure-mobile.walletconnect.com';
+  static const secureOrigin2 = 'secure.walletconnect.com';
+  static const secureService = 'https://$secureOrigin1/mobile-sdk';
+  static const secureDashboard = 'https://$secureOrigin2/dashboard';
   //
   static const learnMoreUrl =
       'https://ethereum.org/en/developers/docs/networks';

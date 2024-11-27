@@ -1,7 +1,8 @@
-import 'package:reown_appkit/modal/constants/string_constants.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/coinbase_service.dart';
+import 'package:reown_appkit/modal/services/coinbase_service/i_coinbase_service.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_data.dart';
-import 'package:reown_appkit/modal/services/magic_service/magic_service.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_data.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -18,6 +19,7 @@ enum ReownAppKitModalConnector {
   bool get noSession => this == ReownAppKitModalConnector.none;
 }
 
+/// Session object of the modal when connected
 class ReownAppKitModalSession {
   SessionData? _sessionData;
   CoinbaseData? _coinbaseData;
@@ -60,14 +62,33 @@ class ReownAppKitModalSession {
     MagicData? magicData,
     SIWESession? siweSession,
   }) {
+    final newCoinbaseData = _coinbaseData?.copytWith(
+      address: coinbaseData?.address,
+      chainName: coinbaseData?.chainName,
+      chainId: coinbaseData?.chainId,
+      self: coinbaseData?.self,
+      peer: coinbaseData?.peer,
+    );
+    final newMagicData = _magicData?.copytWith(
+      email: magicData?.email,
+      address: magicData?.address,
+      chainId: magicData?.chainId,
+      userName: magicData?.userName,
+      smartAccountDeployed: magicData?.smartAccountDeployed,
+      preferredAccountType: magicData?.preferredAccountType,
+      self: magicData?.self,
+      peer: magicData?.peer,
+      provider: magicData?.provider,
+    );
     return ReownAppKitModalSession(
       sessionData: sessionData ?? _sessionData,
-      coinbaseData: coinbaseData ?? _coinbaseData,
-      magicData: magicData ?? _magicData,
+      coinbaseData: newCoinbaseData ?? _coinbaseData,
+      magicData: newMagicData ?? _magicData,
       siweSession: siweSession ?? _siweSession,
     );
   }
 
+  /// Indicates the connected service
   ReownAppKitModalConnector get sessionService {
     if (_sessionData != null) {
       return ReownAppKitModalConnector.wc;
@@ -76,6 +97,7 @@ class ReownAppKitModalSession {
       return ReownAppKitModalConnector.coinbase;
     }
     if (_magicData != null) {
+      // TODO rename to ReownAppKitModalConnector.socials
       return ReownAppKitModalConnector.magic;
     }
 
@@ -89,75 +111,129 @@ class ReownAppKitModalSession {
     if (sessionService.isCoinbase) {
       return true;
     }
+    if (sessionService.isMagic) {
+      return true;
+    }
 
-    final nsMethods = getApprovedMethods() ?? [];
+    final nsMethods = getApprovedMethods(namespace: NetworkUtils.eip155) ?? [];
     final supportsAddChain = nsMethods.contains(
       MethodsConstants.walletAddEthChain,
     );
     return supportsAddChain;
   }
 
-  List<String>? getApprovedMethods() {
+  List<String>? getApprovedMethods({String? namespace}) {
+    final methodsList = <String>[];
+
     if (sessionService.noSession) {
       return null;
     }
     if (sessionService.isCoinbase) {
-      return CoinbaseService.supportedMethods;
+      return GetIt.I<ICoinbaseService>().supportedMethods;
     }
     if (sessionService.isMagic) {
-      return MagicService.supportedMethods;
+      final ns = namespace ?? NetworkUtils.eip155;
+      return GetIt.I<IMagicService>().supportedMethods[ns];
     }
 
     final sessionNamespaces = _sessionData!.namespaces;
-    final namespace = sessionNamespaces[CoreConstants.namespace];
-    final methodsList = namespace?.methods.toSet().toList();
-    return methodsList ?? [];
+    if ((namespace ?? '').isEmpty) {
+      for (var namespace in sessionNamespaces.keys) {
+        final events = sessionNamespaces[namespace]?.methods ?? [];
+        methodsList.addAll(events);
+      }
+
+      return methodsList;
+    }
+
+    return sessionNamespaces[namespace]?.methods ?? [];
   }
 
-  List<String>? getApprovedEvents() {
+  List<String>? getApprovedEvents({String? namespace}) {
+    final eventsList = <String>[];
+
     if (sessionService.noSession) {
       return null;
     }
     if (sessionService.isCoinbase) {
-      return [];
+      return eventsList;
     }
     if (sessionService.isMagic) {
-      return [];
+      return eventsList;
     }
 
     final sessionNamespaces = _sessionData!.namespaces;
-    final namespace = sessionNamespaces[CoreConstants.namespace];
-    final eventsList = namespace?.events.toSet().toList();
-    return eventsList ?? [];
+    if ((namespace ?? '').isEmpty) {
+      for (var namespace in sessionNamespaces.keys) {
+        final events = sessionNamespaces[namespace]?.events ?? [];
+        eventsList.addAll(events);
+      }
+
+      return eventsList;
+    }
+
+    return sessionNamespaces[namespace]?.events ?? [];
   }
 
-  List<String>? getApprovedChains() {
+  List<String>? getApprovedChains({String? namespace}) {
     if (sessionService.noSession) {
       return null;
     }
-    // We can not know which chains are approved from Coinbase or Magic
-    if (!sessionService.isWC) {
-      return [chainId];
-    }
+    // Coinbase only support EIP155 but since we can not know which chains are actually approved...
+    // Magic only support EIP155 and Solana but since we can not know which chains are actually approved...
 
-    final accounts = getAccounts() ?? [];
-    final approvedChains = NamespaceUtils.getChainsFromAccounts(accounts);
-    return approvedChains;
-  }
+    final allEIP155 = ReownAppKitModalNetworks.getAllSupportedNetworks(
+      namespace: NetworkUtils.eip155,
+    ).map((e) => '${NetworkUtils.eip155}:${e.chainId}').toList();
 
-  List<String>? getAccounts() {
-    if (sessionService.noSession) {
-      return null;
-    }
     if (sessionService.isCoinbase) {
-      return ['${CoreConstants.namespace}:$chainId:$address'];
+      return [...allEIP155];
     }
+
+    final allSolana = ReownAppKitModalNetworks.getAllSupportedNetworks(
+      namespace: NetworkUtils.solana,
+    ).map((e) => '${NetworkUtils.solana}:${e.chainId}').toList();
+
     if (sessionService.isMagic) {
-      return ['${CoreConstants.namespace}:$chainId:$address'];
+      return [...allEIP155, ...allSolana];
+    }
+
+    final accounts = getAccounts(namespace: namespace) ?? [];
+    return NamespaceUtils.getChainsFromAccounts(accounts);
+  }
+
+  List<String>? getAccounts({String? namespace}) {
+    final accountList = <String>[];
+
+    if (sessionService.noSession) {
+      return null;
+    }
+
+    if (sessionService.isCoinbase) {
+      final ns = NetworkUtils.eip155;
+      return ReownAppKitModalNetworks.getAllSupportedNetworks(namespace: ns)
+          .map((e) => '$ns:${e.chainId}:${getAddress(ns)}')
+          .toList();
+    }
+
+    if (sessionService.isMagic) {
+      final ns = namespace ?? NetworkUtils.eip155;
+      return ReownAppKitModalNetworks.getAllSupportedNetworks(namespace: ns)
+          .map((e) => '$ns:${e.chainId}:${getAddress(ns)}')
+          .toList();
     }
 
     final sessionNamespaces = _sessionData!.namespaces;
-    return sessionNamespaces[CoreConstants.namespace]?.accounts ?? [];
+    if ((namespace ?? '').isEmpty) {
+      for (var namespace in sessionNamespaces.keys) {
+        final accounts = sessionNamespaces[namespace]?.accounts ?? [];
+        accountList.addAll(accounts);
+      }
+
+      return accountList;
+    }
+
+    return sessionNamespaces[namespace]?.accounts ?? [];
   }
 
   Redirect? getSessionRedirect() {
@@ -170,21 +246,29 @@ class ReownAppKitModalSession {
 
   // toJson() would convert ReownAppKitModalSession to a SessionData kind of map
   // no matter if Coinbase Wallet or Email Wallet is connected
-  Map<String, dynamic> toJson() => {
-        if (topic != null) 'topic': topic,
-        if (pairingTopic != null) 'pairingTopic': pairingTopic,
-        if (relay != null) 'relay': relay,
-        if (expiry != null) 'expiry': expiry,
-        if (acknowledged != null) 'acknowledged': acknowledged,
-        if (controller != null) 'controller': controller,
-        'namespaces': _namespaces(),
-        if (requiredNamespaces != null)
-          'requiredNamespaces': requiredNamespaces,
-        if (optionalNamespaces != null)
-          'optionalNamespaces': optionalNamespaces,
-        'self': self?.toJson(),
-        'peer': peer?.toJson(),
-      };
+  Map<String, dynamic> toJson() {
+    if (_sessionData != null) {
+      return _sessionData!.toJson();
+    }
+
+    final sessionData = SessionData(
+      topic: topic ?? '',
+      pairingTopic: pairingTopic ?? '',
+      relay: relay ?? Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
+      expiry: expiry ?? 0,
+      acknowledged: acknowledged ?? false,
+      controller: controller ?? '',
+      namespaces: _namespaces() ?? {},
+      self: self!,
+      peer: peer!,
+      requiredNamespaces: _sessionData?.requiredNamespaces,
+      optionalNamespaces: _sessionData?.optionalNamespaces,
+      sessionProperties: _sessionData?.sessionProperties,
+      authentication: _sessionData?.authentication,
+      transportType: _sessionData?.transportType ?? TransportType.relay,
+    );
+    return sessionData.toJson();
+  }
 }
 
 extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
@@ -195,18 +279,22 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
   bool? get acknowledged => _sessionData?.acknowledged;
   String? get controller => _sessionData?.controller;
   Map<String, Namespace>? get namespaces => _sessionData?.namespaces;
-  Map<String, RequiredNamespace>? get requiredNamespaces =>
-      _sessionData?.requiredNamespaces;
-  Map<String, RequiredNamespace>? get optionalNamespaces =>
-      _sessionData?.optionalNamespaces;
-  Map<String, String>? get sessionProperties => _sessionData?.sessionProperties;
 
   ConnectionMetadata? get self {
     if (sessionService.isCoinbase) {
       return _coinbaseData?.self;
     }
     if (sessionService.isMagic) {
-      return _magicData?.self;
+      return _magicData?.self ??
+          ConnectionMetadata(
+            publicKey: '',
+            metadata: PairingMetadata(
+              name: 'Email Wallet',
+              description: '',
+              url: '',
+              icons: [],
+            ),
+          );
     }
     return _sessionData?.self;
   }
@@ -216,7 +304,16 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
       return _coinbaseData?.peer;
     }
     if (sessionService.isMagic) {
-      return _magicData?.peer;
+      return _magicData?.peer ??
+          ConnectionMetadata(
+            publicKey: '',
+            metadata: PairingMetadata(
+              name: 'Email Wallet',
+              description: '',
+              url: '',
+              icons: [],
+            ),
+          );
     }
     return _sessionData?.peer;
   }
@@ -224,8 +321,12 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
   //
   String get email => _magicData?.email ?? '';
 
+  String get userName => _magicData?.userName ?? '';
+
+  AppKitSocialOption? get socialProvider => _magicData?.provider;
+
   //
-  String? get address {
+  String? getAddress(String namespace) {
     if (sessionService.noSession) {
       return null;
     }
@@ -235,8 +336,8 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     if (sessionService.isMagic) {
       return _magicData!.address;
     }
-    final namespace = namespaces?[CoreConstants.namespace];
-    final accounts = namespace?.accounts ?? [];
+    final ns = namespaces?[namespace];
+    final accounts = ns?.accounts ?? [];
     if (accounts.isNotEmpty) {
       return NamespaceUtils.getAccount(accounts.first);
     }
@@ -265,9 +366,6 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     if (sessionService.isCoinbase) {
       return CoinbaseService.defaultWalletData.listing.name;
     }
-    if (sessionService.isMagic) {
-      return MagicService.defaultWalletData.listing.name;
-    }
     if (sessionService.isWC) {
       return peer?.metadata.name;
     }
@@ -284,25 +382,40 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
 
   Map<String, Namespace>? _namespaces() {
     if (sessionService.isCoinbase) {
+      // Coinbase only supports eip155 chains
+      final eip155 = NetworkUtils.eip155;
+      final allEIP155 = ReownAppKitModalNetworks.getAllSupportedNetworks(
+        namespace: eip155,
+      ).map((e) => '$eip155:${e.chainId}').toList();
       return {
-        CoreConstants.namespace: Namespace(
-          chains: ['${CoreConstants.namespace}:$chainId'],
-          accounts: ['${CoreConstants.namespace}:$chainId:$address'],
-          methods: [...CoinbaseService.supportedMethods],
+        eip155: Namespace(
+          chains: [...allEIP155],
+          accounts: [...getAccounts(namespace: eip155)!],
+          methods: [...GetIt.I<ICoinbaseService>().supportedMethods],
+          // Coinbase does not have events as it doesn't use WC protocol
           events: [],
         ),
       };
     }
+
     if (sessionService.isMagic) {
+      final ns = ReownAppKitModalNetworks.getNamespaceForChainId(
+        _magicData!.chainId,
+      );
+      final allChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
+        namespace: ns,
+      ).map((e) => '$ns:${e.chainId}').toList();
       return {
-        CoreConstants.namespace: Namespace(
-          chains: ['${CoreConstants.namespace}:$chainId'],
-          accounts: ['${CoreConstants.namespace}:$chainId:$address'],
-          methods: [...MagicService.supportedMethods],
+        ns: Namespace(
+          chains: [...allChains],
+          accounts: [...getAccounts(namespace: ns)!],
+          methods: [...NetworkUtils.defaultNetworkMethods[ns]!],
+          // Magic does not have events as it doesn't use WC protocol
           events: [],
         ),
       };
     }
+
     return namespaces;
   }
 

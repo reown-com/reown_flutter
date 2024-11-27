@@ -53,7 +53,7 @@ class WalletKitService extends IWalletKitService {
     _walletKit = ReownWalletKit(
       core: ReownCore(
         projectId: DartDefines.projectId,
-        logLevel: LogLevel.error,
+        logLevel: LogLevel.all,
       ),
       metadata: PairingMetadata(
         name: 'FL WalletKit Sample',
@@ -65,8 +65,6 @@ class WalletKitService extends IWalletKitService {
         redirect: _constructRedirect(),
       ),
     );
-
-    _walletKit!.core.addLogListener(_logListener);
 
     // Setup our listeners
     debugPrint('[SampleWallet] create');
@@ -148,18 +146,8 @@ class WalletKitService extends IWalletKitService {
     }
   }
 
-  void _logListener(LogEvent event) {
-    if (event.level == Level.debug) {
-      // TODO send to mixpanel
-      log('${event.message}');
-    } else {
-      debugPrint('${event.message}');
-    }
-  }
-
   @override
   FutureOr onDispose() {
-    _walletKit!.core.removeLogListener(_logListener);
     _walletKit!.core.pairing.onPairingInvalid.unsubscribe(_onPairingInvalid);
     _walletKit!.core.pairing.onPairingCreate.unsubscribe(_onPairingCreate);
     _walletKit!.core.relayClient.onRelayClientError.unsubscribe(
@@ -216,17 +204,19 @@ class WalletKitService extends IWalletKitService {
         // generatedNamespaces is constructed based on registered methods handlers
         // so if you want to handle requests using onSessionRequest event then you would need to manually add that method in the approved namespaces
         try {
-          final session = await _walletKit!.approveSession(
+          _walletKit!.approveSession(
             id: args.id,
             namespaces: NamespaceUtils.regenerateNamespacesWithChains(
               args.params.generatedNamespaces!,
             ),
             sessionProperties: args.params.sessionProperties,
           );
-          MethodsUtils.handleRedirect(
-            session.topic,
-            session.session!.peer.metadata.redirect,
-          );
+          // MethodsUtils.handleRedirect(
+          //   session.topic,
+          //   session.session!.peer.metadata.redirect,
+          //   '',
+          //   true,
+          // );
         } on ReownSignError catch (error) {
           MethodsUtils.handleRedirect(
             '',
@@ -271,7 +261,13 @@ class WalletKitService extends IWalletKitService {
   void _onSessionConnect(SessionConnect? args) {
     if (args != null) {
       final session = jsonEncode(args.session.toJson());
-      debugPrint('[SampleWallet] _onSessionConnect $session');
+      log('[SampleWallet] _onSessionConnect $session');
+      MethodsUtils.handleRedirect(
+        args.session.topic,
+        args.session.peer.metadata.redirect,
+        '',
+        true,
+      );
     }
   }
 
@@ -292,7 +288,7 @@ class WalletKitService extends IWalletKitService {
       final SessionAuthPayload authPayload = args.authPayload;
       final jsonPyaload = jsonEncode(authPayload.toJson());
       debugPrint('[SampleWallet] _onSessionAuthRequest $jsonPyaload');
-      final supportedChains = ChainData.eip155Chains.map((e) => e.chainId);
+      final supportedChains = ChainsDataList.eip155Chains.map((e) => e.chainId);
       final supportedMethods = SupportedEVMMethods.values.map((e) => e.name);
       final newAuthPayload = AuthSignature.populateAuthPayload(
         authPayload: authPayload,
@@ -358,9 +354,12 @@ class WalletKitService extends IWalletKitService {
             id: args.id,
             auths: cacaos,
           );
+          debugPrint('[$runtimeType] approveSessionAuthenticate $session');
           MethodsUtils.handleRedirect(
             session.topic,
             session.session?.peer.metadata.redirect,
+            '',
+            true,
           );
         } on ReownSignError catch (error) {
           MethodsUtils.handleRedirect(

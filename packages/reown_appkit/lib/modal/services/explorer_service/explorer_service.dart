@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/coinbase_service.dart';
@@ -11,7 +12,7 @@ import 'package:reown_appkit/modal/services/explorer_service/models/native_app_d
 import 'package:reown_appkit/modal/services/explorer_service/models/redirect.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/request_params.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/wc_sample_wallets.dart';
-import 'package:reown_appkit/modal/services/uri_service/url_utils_singleton.dart';
+import 'package:reown_appkit/modal/services/uri_service/i_url_utils.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/utils/debouncer.dart';
 import 'package:reown_appkit/modal/utils/platform_utils.dart';
@@ -22,6 +23,8 @@ import 'package:reown_appkit/reown_appkit.dart';
 const int _defaultEntriesCount = 48;
 
 class ExplorerService implements IExplorerService {
+  IUriService get _uriService => GetIt.I<IUriService>();
+
   final http.Client _client;
   final String _referer;
 
@@ -87,6 +90,8 @@ class ExplorerService implements IExplorerService {
   bool get canPaginate => _canPaginate;
 
   late final String _bundleId;
+  late final Set<String> _chains;
+  late final Map<String, RequiredNamespace> namespaces;
 
   ExplorerService({
     required IReownCore core,
@@ -94,6 +99,7 @@ class ExplorerService implements IExplorerService {
     this.featuredWalletIds,
     this.includedWalletIds,
     this.excludedWalletIds,
+    this.namespaces = const {},
   })  : _core = core,
         _referer = referer,
         _client = http.Client();
@@ -104,6 +110,10 @@ class ExplorerService implements IExplorerService {
       return;
     }
     _bundleId = await ReownCoreUtils.getPackageName();
+
+    _chains = NamespaceUtils.getChainIdsFromRequiredNamespaces(
+      requiredNamespaces: namespaces,
+    ).map((chainId) => NamespaceUtils.getNamespaceFromChain(chainId)).toSet();
 
     // TODO ideally we should call this at every opening to be able to detect newly installed wallets.
     final nativeData = await _fetchNativeAppData();
@@ -149,13 +159,12 @@ class ExplorerService implements IExplorerService {
       final schema = WCSampleWallets.getSampleWalletScheme(
         sampleWallet.listing.id,
       );
-      final installed = await uriService.instance.isInstalled(schema);
+      final installed = await _uriService.isInstalled(schema);
       if (installed) {
         sampleWallet = sampleWallet.copyWith(installed: true);
         sampleWallets.add(sampleWallet);
       }
     }
-    _core.logger.d('[$runtimeType] sample wallets: ${sampleWallets.length}');
     return sampleWallets;
   }
 
@@ -215,10 +224,6 @@ class ExplorerService implements IExplorerService {
         );
         return apiResponse.data.toList();
       } else {
-        _core.logger.d(
-          '⛔ [$runtimeType] error fetching native data ${response.request?.url}',
-          error: response.statusCode,
-        );
         return <NativeAppData>[];
       }
     } catch (e) {
@@ -249,7 +254,7 @@ class ExplorerService implements IExplorerService {
     // this query gives me a count of installedWalletsParam.length
     final installedWallets = await _fetchListings(params: params);
     _core.logger.d(
-      '[$runtimeType] installed wallets: ${installedWallets.length}',
+      '[$runtimeType] ${installedWallets.length} installed wallets',
     );
     return installedWallets.setInstalledFlag();
   }
@@ -282,16 +287,15 @@ class ExplorerService implements IExplorerService {
     RequestParams? params,
     bool updateCount = true,
   }) async {
-    final queryParams = params?.toJson() ?? {};
+    params = params?.copyWith(chains: _chains.join(','));
     final headers = CoreUtils.getAPIHeaders(
       _core.projectId,
       _referer,
       _bundleId,
     );
     final uri = Uri.parse('${UrlConstants.apiService}/getWallets').replace(
-      queryParameters: queryParams,
+      queryParameters: params?.toJson(),
     );
-    _core.logger.d('[$runtimeType] fetching $uri');
     try {
       final response = await _client.get(uri, headers: headers);
       if (response.statusCode == 200 || response.statusCode == 202) {
@@ -304,15 +308,10 @@ class ExplorerService implements IExplorerService {
         }
         return apiResponse.data.toList().toAppKitWalletInfo();
       } else {
-        _core.logger.d(
-          '⛔ [$runtimeType] error fetching listings (${response.statusCode}) ${response.request?.url}\n'
-          'headers: $headers\n'
-          'queryParams $queryParams',
-        );
         return <ReownAppKitModalWalletInfo>[];
       }
     } catch (e) {
-      _core.logger.d(
+      _core.logger.e(
         '[$runtimeType] error fetching listings: $uri',
         error: e,
       );
@@ -353,7 +352,7 @@ class ExplorerService implements IExplorerService {
       }
     } catch (e, s) {
       _core.logger.e(
-        '[$runtimeType] error getConnectedWallet:',
+        '[$runtimeType] error get connected wallet:',
         error: e,
         stackTrace: s,
       );
@@ -382,8 +381,11 @@ class ExplorerService implements IExplorerService {
       }
       _listings = currentListings;
       listings.value = _listings;
-    } catch (e) {
-      _core.logger.e('[$runtimeType] updating recent wallet: $e');
+    } catch (e, s) {
+      _core.logger.e(
+        '[$runtimeType] error updating recent wallet: $e',
+        stackTrace: s,
+      );
     }
   }
 
@@ -407,7 +409,6 @@ class ExplorerService implements IExplorerService {
     final excludedIds = (excludedWalletIds ?? <String>{});
     final exclude = excludedIds.isNotEmpty ? excludedIds.join(',') : null;
 
-    _core.logger.d('[$runtimeType] search $query');
     _currentSearchValue = query;
     final newListins = await _fetchListings(
       params: RequestParams(
@@ -423,7 +424,6 @@ class ExplorerService implements IExplorerService {
 
     listings.value = newListins;
     _debouncer.run(() => isSearching.value = false);
-    _core.logger.d('[$runtimeType] _searchListings $query');
   }
 
   @override
@@ -442,7 +442,7 @@ class ExplorerService implements IExplorerService {
       final wallet =
           ReownAppKitModalWalletInfo.fromJson(results.first.toJson());
       final mobileLink = CoinbaseService.defaultWalletData.listing.mobileLink;
-      bool installed = await uriService.instance.isInstalled(mobileLink);
+      bool installed = await _uriService.isInstalled(mobileLink);
       return wallet.copyWith(
         listing: wallet.listing.copyWith(mobileLink: mobileLink),
         installed: installed,
@@ -548,7 +548,7 @@ extension on List<NativeAppData> {
   Future<List<NativeAppData>> getInstalledApps() async {
     final installedApps = <NativeAppData>[];
     for (var appData in this) {
-      bool installed = await uriService.instance.isInstalled(
+      bool installed = await GetIt.I<IUriService>().isInstalled(
         appData.schema,
         id: appData.id,
       );

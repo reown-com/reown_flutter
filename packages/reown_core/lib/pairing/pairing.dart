@@ -195,9 +195,7 @@ class Pairing implements IPairing {
     try {
       await pairings.set(topic, pairing);
       await core.crypto.setSymKey(symKey, overrideTopic: topic);
-      await core.relayClient.subscribe(topic: topic).timeout(
-            const Duration(seconds: 15),
-          );
+      await core.relayClient.subscribe(topic: topic);
       await core.expirer.set(topic, expiry);
 
       onPairingCreate.broadcast(
@@ -351,6 +349,8 @@ class Pairing implements IPairing {
   Future<void> disconnect({required String topic}) async {
     _checkInitialized();
 
+    core.logger.i('[$runtimeType] disconnect $topic');
+
     await _isValidDisconnect(topic);
     if (pairings.has(topic)) {
       // Send the request to delete the pairing, we don't care if it fails
@@ -431,12 +431,12 @@ class Pairing implements IPairing {
     });
     pendingRequests[payload['id']] = resp;
 
+    core.logger.d(
+      '[$runtimeType] sendRequest appLink: $appLink, '
+      'id: $id topic: $topic, method: $method, params: $params, ttl: $ttl',
+    );
     if ((appLink ?? '').isNotEmpty) {
       // during wc_sessionAuthenticate we don't need to openURL as it will be done by the host dapp
-      core.logger.t(
-        'pairing sendRequest LinkMode, '
-        'id: $id topic: $topic, method: $method, params: $params, ttl: $ttl',
-      );
       if (openUrl) {
         final redirectURL = ReownCoreUtils.getLinkModeURL(
           appLink!,
@@ -446,10 +446,6 @@ class Pairing implements IPairing {
         await ReownCoreUtils.openURL(redirectURL);
       }
     } else {
-      core.logger.t(
-        'pairing sendRequest Relay, '
-        'id: $id topic: $topic, method: $method, params: $params, ttl: $ttl',
-      );
       // RpcOptions opts = MethodConstants.RPC_OPTS[method]!['req']!;
       RpcOptions opts = MethodConstants.RPC_OPTS[method]!['req']!;
       if (ttl != null) {
@@ -505,23 +501,19 @@ class Pairing implements IPairing {
       return;
     }
 
+    core.logger.d(
+      '[$runtimeType] sendRequest appLink: $appLink, '
+      'id: $id topic: $topic, method: $method, result: $result',
+    );
     if ((appLink ?? '').isNotEmpty) {
       final redirectURL = ReownCoreUtils.getLinkModeURL(
         appLink!,
         topic,
         message,
       );
-      core.logger.t(
-        'pairing sendResult LinkMode, '
-        'id: $id topic: $topic, method: $method, result: $result',
-      );
       await ReownCoreUtils.openURL(redirectURL);
     } else {
       final RpcOptions opts = MethodConstants.RPC_OPTS[method]!['res']!;
-      core.logger.t(
-        'pairing sendResult Relay, '
-        'id: $id topic: $topic, method: $method, result: $result',
-      );
       await core.relayClient.publish(
         topic: topic,
         message: message,
@@ -556,15 +548,15 @@ class Pairing implements IPairing {
       return;
     }
 
+    core.logger.d(
+      '[$runtimeType] sendRequest appLink: $appLink, '
+      'id: $id topic: $topic, method: $method, error: $error',
+    );
     if ((appLink ?? '').isNotEmpty) {
       final redirectURL = ReownCoreUtils.getLinkModeURL(
         appLink!,
         topic,
         message,
-      );
-      core.logger.t(
-        'pairing sendError LinkMode, '
-        'id: $id topic: $topic, method: $method, error: $error',
       );
       await ReownCoreUtils.openURL(redirectURL);
     } else {
@@ -573,10 +565,6 @@ class Pairing implements IPairing {
       final fallbackMethodOpts = MethodConstants.RPC_OPTS[fallbackMethod]!;
       final relayOpts = methodOpts ?? fallbackMethodOpts;
       final fallbackOpts = relayOpts['reject'] ?? relayOpts['res']!;
-      core.logger.t(
-        'pairing sendError Relay, '
-        'id: $id topic: $topic, method: $method, error: $error',
-      );
       await core.relayClient.publish(
         topic: topic,
         message: message,
@@ -605,6 +593,7 @@ class Pairing implements IPairing {
   }
 
   Future<void> _deletePairing(String topic, bool expirerHasDeleted) async {
+    core.logger.d('[$runtimeType] _deletePairing $topic, $expirerHasDeleted');
     await core.relayClient.unsubscribe(topic: topic);
     await pairings.delete(topic);
     await core.crypto.deleteSymKey(topic);
@@ -614,6 +603,7 @@ class Pairing implements IPairing {
   }
 
   Future<void> _cleanup() async {
+    core.logger.d('[$runtimeType] _cleanup');
     final List<PairingInfo> expiredPairings = getPairings()
         .where(
           (PairingInfo info) => ReownCoreUtils.isExpired(info.expiry),
@@ -688,8 +678,12 @@ class Pairing implements IPairing {
     }
 
     // If we have a reciever public key for the topic, use it
-    ReceiverPublicKey? receiverPublicKey =
-        topicToReceiverPublicKey.get(event.topic);
+    ReceiverPublicKey? receiverPublicKey = topicToReceiverPublicKey.get(
+      event.topic,
+    );
+    core.logger.d(
+      '[$runtimeType] _onMessageEvent, receiverPublicKey: $receiverPublicKey',
+    );
     // If there was a public key, delete it. One use.
     if (receiverPublicKey != null) {
       await topicToReceiverPublicKey.delete(event.topic);
@@ -704,12 +698,15 @@ class Pairing implements IPairing {
       ),
     );
 
+    core.logger.d(
+      '[$runtimeType] _onMessageEvent, payloadString: $payloadString',
+    );
+
     if (payloadString == null) {
       return;
     }
 
     Map<String, dynamic> data = jsonDecode(payloadString);
-    core.logger.i('Pairing _onMessageEvent, Received data: $data');
 
     // If it's an rpc request, handle it
     if (data.containsKey('method')) {
@@ -780,7 +777,9 @@ class Pairing implements IPairing {
     JsonRpcRequest request, [
     _,
   ]) async {
-    // print('delete');
+    core.logger.d(
+      '[$runtimeType] _onPairingDeleteRequest $topic, ${request.toJson()}',
+    );
     final int id = request.id;
     try {
       await _isValidDisconnect(topic);
@@ -846,6 +845,7 @@ class Pairing implements IPairing {
     if (event == null) {
       return;
     }
+    core.logger.d('[$runtimeType] _onExpired, ${event.toString()}');
 
     if (pairings.has(event.target)) {
       // Clean up the pairing
@@ -877,7 +877,9 @@ class Pairing implements IPairing {
     required String topic,
     required String envelope,
   }) async {
-    core.logger.i('[$runtimeType] dispatchEnvelope $topic, $envelope');
+    core.logger.d(
+      '[$runtimeType] dispatchEnvelope, topic: $topic, envelope: $envelope',
+    );
 
     final message = Uri.decodeComponent(envelope);
     await core.relayClient.handleLinkModeMessage(topic, message);

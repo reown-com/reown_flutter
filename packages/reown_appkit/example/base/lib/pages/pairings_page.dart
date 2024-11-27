@@ -8,10 +8,10 @@ import 'package:reown_appkit_dapp/widgets/pairing_item.dart';
 class PairingsPage extends StatefulWidget {
   const PairingsPage({
     super.key,
-    required this.appKit,
+    required this.appKitModal,
   });
 
-  final ReownAppKit appKit;
+  final ReownAppKitModal appKitModal;
 
   @override
   PairingsPageState createState() => PairingsPageState();
@@ -19,26 +19,31 @@ class PairingsPage extends StatefulWidget {
 
 class PairingsPageState extends State<PairingsPage> {
   List<PairingInfo> _pairings = [];
+  late IReownAppKit _appKit;
 
   @override
   void initState() {
-    _pairings = widget.appKit.pairings.getAll();
-    // widget.appKit.onSessionDelete.subscribe(_onSessionDelete);
-    widget.appKit.core.pairing.onPairingDelete.subscribe(_onPairingDelete);
-    widget.appKit.core.pairing.onPairingExpire.subscribe(_onPairingDelete);
+    _appKit = widget.appKitModal.appKit!;
+    _pairings = _appKit.pairings.getAll();
+    _appKit.core.pairing.onPairingDelete.subscribe(_onPairingDelete);
+    _appKit.core.pairing.onPairingExpire.subscribe(_onPairingDelete);
     super.initState();
   }
 
   @override
   void dispose() {
-    // widget.appKit.onSessionDelete.unsubscribe(_onSessionDelete);
-    widget.appKit.core.pairing.onPairingDelete.unsubscribe(_onPairingDelete);
-    widget.appKit.core.pairing.onPairingExpire.unsubscribe(_onPairingDelete);
+    _appKit.core.pairing.onPairingDelete.unsubscribe(_onPairingDelete);
+    _appKit.core.pairing.onPairingExpire.unsubscribe(_onPairingDelete);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_pairings.isEmpty) {
+      return Center(
+        child: Text('No relay pairings'),
+      );
+    }
     final List<PairingItem> pairingItems = _pairings
         .map(
           (PairingInfo pairing) => PairingItem(
@@ -71,7 +76,7 @@ class PairingsPageState extends State<PairingsPage> {
                         ),
                         onPressed: () async {
                           try {
-                            widget.appKit.core.pairing.disconnect(
+                            _appKit.core.pairing.disconnect(
                               topic: pairing.topic,
                             );
                             Navigator.of(context).pop();
@@ -104,7 +109,7 @@ class PairingsPageState extends State<PairingsPage> {
 
   void _onPairingDelete(PairingEvent? event) {
     setState(() {
-      _pairings = widget.appKit.pairings.getAll();
+      _pairings = _appKit.pairings.getAll();
     });
   }
 }

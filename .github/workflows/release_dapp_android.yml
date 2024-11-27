@@ -6,6 +6,11 @@ on:
     types:
       - closed
 
+# inputs:
+# working-directory
+# flavor
+# BUNDLE_ID
+
 jobs:
   build:
     if: (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master') || github.event_name == 'workflow_dispatch'

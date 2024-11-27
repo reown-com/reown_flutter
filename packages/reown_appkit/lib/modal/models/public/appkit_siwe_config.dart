@@ -5,6 +5,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 part 'appkit_siwe_config.g.dart';
 part 'appkit_siwe_config.freezed.dart';
 
+/// Object to pass to [siweConfig:] parameter of ReownAppKitModal to enable or disable One-Click Auth + SIWE
 class SIWEConfig {
   final Future<String> Function() getNonce;
   final Future<SIWEMessageArgs> Function() getMessageParams;
@@ -46,6 +47,11 @@ class SIWEConfig {
     this.nonceRefetchIntervalMs = 300000,
     this.sessionRefetchIntervalMs = 300000,
   });
+
+  @override
+  String toString() {
+    return 'SIWEConfig(enabled: $enabled, signOutOnDisconnect: $signOutOnDisconnect, signOutOnAccountChange: $signOutOnAccountChange, signOutOnNetworkChange: $signOutOnNetworkChange, nonceRefetchIntervalMs: $nonceRefetchIntervalMs, sessionRefetchIntervalMs: $sessionRefetchIntervalMs)';
+  }
 }
 
 @freezed
