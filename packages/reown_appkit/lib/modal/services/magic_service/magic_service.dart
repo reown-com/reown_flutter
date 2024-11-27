@@ -539,10 +539,10 @@ class MagicService implements IMagicService {
         'x-bundle-id': _packageName,
       };
       final uri = Uri.parse(UrlConstants.secureService);
+      final cid = (_connectionChainId ?? '');
       final queryParams = {
         'projectId': _core.projectId,
-        'bundleId': _packageName,
-        if (_connectionChainId != null) 'chainId': _connectionChainId,
+        if (cid.isNotEmpty) 'chainId': cid,
       };
       final requestUri = uri.replace(queryParameters: queryParams);
       await _webViewController.loadRequest(requestUri, headers: headers);
@@ -555,7 +555,7 @@ class MagicService implements IMagicService {
 
   void _onFrameMessage(JavaScriptMessage jsMessage) async {
     if (Platform.isAndroid) {
-      _core.logger.d('[$runtimeType] JS Console: $jsMessage');
+      _core.logger.d('[$runtimeType] JS Console: ${jsMessage.message}');
     }
     try {
       final frameMessage = jsMessage.toFrameMessage();

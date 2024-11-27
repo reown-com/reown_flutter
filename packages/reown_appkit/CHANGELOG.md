@@ -1,4 +1,4 @@
-## 1.2.0-beta02
+## 1.2.0
 
 - Non-EVM Chains support
 - Social Logins
