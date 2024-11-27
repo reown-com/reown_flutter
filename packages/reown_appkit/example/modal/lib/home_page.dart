@@ -509,37 +509,42 @@ class _ButtonsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        AppKitModalNetworkSelectButton(
-          appKit: appKit,
-          // UNCOMMENT TO USE A CUSTOM BUTTON
-          // custom: ElevatedButton(
-          //   onPressed: () {
-          //     appKit.openNetworksView();
-          //   },
-          //   child: Text(appKit.selectedChain?.name ?? 'OPEN CHAINS'),
-          // ),
+    return Center(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AppKitModalNetworkSelectButton(
+              appKit: appKit,
+              // UNCOMMENT TO USE A CUSTOM BUTTON
+              // custom: ElevatedButton(
+              //   onPressed: () {
+              //     appKit.openNetworksView();
+              //   },
+              //   child: Text(appKit.selectedChain?.name ?? 'OPEN CHAINS'),
+              // ),
+            ),
+            const SizedBox.square(dimension: 6.0),
+            AppKitModalConnectButton(
+              appKit: appKit,
+              // UNCOMMENT TO USE A CUSTOM BUTTON
+              // TO HIDE AppKitModalConnectButton BUT STILL RENDER IT (NEEDED) JUST USE SizedBox.shrink()
+              // custom: ElevatedButton(
+              //   onPressed: () {
+              //     // appKit.openModalView(ReownAppKitModalQRCodePage());
+              //     // appKit.openModalView(ReownAppKitModalSelectNetworkPage());
+              //     // appKit.openModalView(ReownAppKitModalAllWalletsPage());
+              //     // appKit.openModalView(ReownAppKitModalMainWalletsPage());
+              //   },
+              //   child: appKit.isConnected
+              //       ? Text('${appKit.session!.address!.substring(0, 7)}...')
+              //       : const Text('CONNECT WALLET'),
+              // ),
+            ),
+          ],
         ),
-        const SizedBox.square(dimension: 6.0),
-        AppKitModalConnectButton(
-          appKit: appKit,
-          // UNCOMMENT TO USE A CUSTOM BUTTON
-          // TO HIDE AppKitModalConnectButton BUT STILL RENDER IT (NEEDED) JUST USE SizedBox.shrink()
-          // custom: ElevatedButton(
-          //   onPressed: () {
-          //     // appKit.openModalView(ReownAppKitModalQRCodePage());
-          //     // appKit.openModalView(ReownAppKitModalSelectNetworkPage());
-          //     // appKit.openModalView(ReownAppKitModalAllWalletsPage());
-          //     // appKit.openModalView(ReownAppKitModalMainWalletsPage());
-          //   },
-          //   child: appKit.isConnected
-          //       ? Text('${appKit.session!.address!.substring(0, 7)}...')
-          //       : const Text('CONNECT WALLET'),
-          // ),
-        ),
-      ],
+      ),
     );
   }
 }
