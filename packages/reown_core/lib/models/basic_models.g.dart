@@ -14,18 +14,9 @@ _$ReownCoreErrorImpl _$$ReownCoreErrorImplFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$$ReownCoreErrorImplToJson(
-    _$ReownCoreErrorImpl instance) {
-  final val = <String, dynamic>{
-    'code': instance.code,
-    'message': instance.message,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('data', instance.data);
-  return val;
-}
+        _$ReownCoreErrorImpl instance) =>
+    <String, dynamic>{
+      'code': instance.code,
+      'message': instance.message,
+      if (instance.data case final value?) 'data': value,
+    };

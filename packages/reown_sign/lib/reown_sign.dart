@@ -1,4 +1,4 @@
-library reown_sign;
+library;
 
 // models
 export 'models/proposal_models.dart';

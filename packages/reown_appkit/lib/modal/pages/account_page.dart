@@ -114,7 +114,7 @@ class _DefaultAccountView extends StatelessWidget {
                   title: 'Block Explorer',
                   backgroundColor: themeColors.background125,
                   foregroundColor: themeColors.foreground150,
-                  overlayColor: MaterialStateProperty.all<Color>(
+                  overlayColor: WidgetStateProperty.all<Color>(
                     themeColors.background200,
                   ),
                 ),

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:flutter/foundation.dart';

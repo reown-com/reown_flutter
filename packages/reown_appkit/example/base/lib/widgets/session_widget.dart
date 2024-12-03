@@ -77,7 +77,7 @@ class SessionWidgetState extends State<SessionWidget> {
             );
           },
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(
+            backgroundColor: WidgetStateProperty.all<Color>(
               Colors.red,
             ),
           ),
@@ -205,12 +205,12 @@ class SessionWidgetState extends State<SessionWidget> {
                   }
                 : null,
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.resolveWith<Color>(
-                (states) => states.contains(MaterialState.disabled)
+              backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                (states) => states.contains(WidgetState.disabled)
                     ? Colors.grey
                     : Colors.blue,
               ),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(
                     StyleConstants.linear8,
@@ -308,13 +308,13 @@ class SessionWidgetState extends State<SessionWidget> {
                 }
               : null,
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-              if (states.contains(MaterialState.disabled)) {
+            backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+              if (states.contains(WidgetState.disabled)) {
                 return StyleConstants.grayColor;
               }
               return Colors.orange;
             }),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(
                   StyleConstants.linear8,
@@ -351,13 +351,13 @@ class SessionWidgetState extends State<SessionWidget> {
                 }
               : null,
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-              if (states.contains(MaterialState.disabled)) {
+            backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+              if (states.contains(WidgetState.disabled)) {
                 return StyleConstants.grayColor;
               }
               return Colors.orange;
             }),
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            shape: WidgetStateProperty.all<RoundedRectangleBorder>(
               RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(
                   StyleConstants.linear8,

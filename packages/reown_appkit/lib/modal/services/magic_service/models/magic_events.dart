@@ -7,6 +7,12 @@ class MagicLoginEvent implements EventArgs {
 
   @override
   String toString() => data?.toString() ?? '';
+
+  @override
+  String? eventName;
+
+  @override
+  DateTime? whenOccurred;
 }
 
 class MagicSessionEvent implements EventArgs {
@@ -47,6 +53,12 @@ class MagicSessionEvent implements EventArgs {
 
   @override
   String toString() => toJson().toString();
+
+  @override
+  String? eventName;
+
+  @override
+  DateTime? whenOccurred;
 }
 
 class MagicRequestEvent implements EventArgs {
@@ -62,16 +74,34 @@ class MagicRequestEvent implements EventArgs {
 
   @override
   String toString() => 'request: $request, success: $success, result: $result';
+
+  @override
+  String? eventName;
+
+  @override
+  DateTime? whenOccurred;
 }
 
 class MagicConnectEvent implements EventArgs {
   final bool connected;
   MagicConnectEvent(this.connected);
+
+  @override
+  String? eventName;
+
+  @override
+  DateTime? whenOccurred;
 }
 
 class MagicErrorEvent implements EventArgs {
   final String? error;
   MagicErrorEvent(this.error);
+
+  @override
+  String? eventName;
+
+  @override
+  DateTime? whenOccurred;
 }
 
 class IsConnectedErrorEvent extends MagicErrorEvent {
@@ -141,4 +171,10 @@ class RpcRequestErrorEvent extends MagicErrorEvent {
 class CompleteSocialLoginEvent implements EventArgs {
   final String url;
   CompleteSocialLoginEvent(this.url);
+
+  @override
+  String? eventName;
+
+  @override
+  DateTime? whenOccurred;
 }

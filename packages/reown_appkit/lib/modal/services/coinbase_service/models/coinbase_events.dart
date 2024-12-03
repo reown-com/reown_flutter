@@ -7,11 +7,23 @@ class CoinbaseConnectEvent implements EventArgs {
 
   @override
   String toString() => data?.toString() ?? '';
+
+  @override
+  String? eventName;
+
+  @override
+  DateTime? whenOccurred;
 }
 
 class CoinbaseErrorEvent implements EventArgs {
   final String? error;
   CoinbaseErrorEvent(this.error);
+
+  @override
+  String? eventName;
+
+  @override
+  DateTime? whenOccurred;
 }
 
 class CoinbaseSessionEvent implements EventArgs {
@@ -42,9 +54,21 @@ class CoinbaseSessionEvent implements EventArgs {
 
   @override
   String toString() => toJson().toString();
+
+  @override
+  String? eventName;
+
+  @override
+  DateTime? whenOccurred;
 }
 
 class CoinbaseResponseEvent implements EventArgs {
   String? data;
   CoinbaseResponseEvent({required this.data});
+
+  @override
+  String? eventName;
+
+  @override
+  DateTime? whenOccurred;
 }

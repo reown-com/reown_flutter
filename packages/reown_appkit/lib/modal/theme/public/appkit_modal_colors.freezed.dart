@@ -49,7 +49,9 @@ mixin _$ReownAppKitModalColors {
   Color get purple100 => throw _privateConstructorUsedError;
   Color get yellow100 => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ReownAppKitModalColors
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ReownAppKitModalColorsCopyWith<ReownAppKitModalColors> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -106,6 +108,8 @@ class _$ReownAppKitModalColorsCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ReownAppKitModalColors
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -326,6 +330,8 @@ class __$$AppKitModalColorsImplCopyWithImpl<$Res>
       $Res Function(_$AppKitModalColorsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ReownAppKitModalColors
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -713,7 +719,9 @@ class _$AppKitModalColorsImpl implements _AppKitModalColors {
         yellow100
       ]);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ReownAppKitModalColors
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$AppKitModalColorsImplCopyWith<_$AppKitModalColorsImpl> get copyWith =>
@@ -761,10 +769,10 @@ abstract class _AppKitModalColors implements ReownAppKitModalColors {
   @override
   Color get accent090;
   @override
-  Color get accent080;
-  @override //
-  Color get grayGlass100;
-  @override //
+  Color get accent080; //
+  @override
+  Color get grayGlass100; //
+  @override
   Color get foreground100;
   @override
   Color get foreground125;
@@ -781,8 +789,8 @@ abstract class _AppKitModalColors implements ReownAppKitModalColors {
   @override
   Color get foreground275;
   @override
-  Color get foreground300;
-  @override //
+  Color get foreground300; //
+  @override
   Color get background100;
   @override
   Color get background125;
@@ -799,8 +807,8 @@ abstract class _AppKitModalColors implements ReownAppKitModalColors {
   @override
   Color get background275;
   @override
-  Color get background300;
-  @override //
+  Color get background300; //
+  @override
   Color get inverse100;
   @override
   Color get inverse000;
@@ -820,8 +828,11 @@ abstract class _AppKitModalColors implements ReownAppKitModalColors {
   Color get purple100;
   @override
   Color get yellow100;
+
+  /// Create a copy of ReownAppKitModalColors
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AppKitModalColorsImplCopyWith<_$AppKitModalColorsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

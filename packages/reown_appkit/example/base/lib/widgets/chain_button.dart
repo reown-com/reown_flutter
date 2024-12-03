@@ -30,11 +30,11 @@ class ChainButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ButtonStyle(
-          elevation: MaterialStateProperty.all(0.0),
-          backgroundColor: MaterialStateProperty.all<Color>(
+          elevation: WidgetStateProperty.all(0.0),
+          backgroundColor: WidgetStateProperty.all<Color>(
             selected ? Colors.white : Colors.grey.shade300,
           ),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               side: BorderSide(
                 color: selected ? Colors.blue : Colors.grey.shade300,

@@ -4,9 +4,9 @@ import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connectio
 
 class WCConnectionWidgetInfo extends StatelessWidget {
   const WCConnectionWidgetInfo({
-    Key? key,
+    super.key,
     required this.model,
-  }) : super(key: key);
+  });
 
   final WCConnectionModel model;
 
@@ -56,15 +56,15 @@ class WCConnectionWidgetInfo extends StatelessWidget {
           model.elementActions != null ? model.elementActions![text] : null,
       style: ButtonStyle(
         elevation: model.elementActions != null
-            ? MaterialStateProperty.all(4.0)
-            : MaterialStateProperty.all(0.0),
-        padding: MaterialStateProperty.all(const EdgeInsets.all(0.0)),
+            ? WidgetStateProperty.all(4.0)
+            : WidgetStateProperty.all(0.0),
+        padding: WidgetStateProperty.all(const EdgeInsets.all(0.0)),
         visualDensity: VisualDensity.compact,
-        backgroundColor: MaterialStateProperty.all(
+        backgroundColor: WidgetStateProperty.all(
           StyleConstants.layerColor4,
         ),
-        overlayColor: MaterialStateProperty.all(Colors.white),
-        shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
+        overlayColor: WidgetStateProperty.all(Colors.white),
+        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
           (states) {
             return RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(StyleConstants.linear16),

@@ -18,21 +18,13 @@ _$NamespaceImpl _$$NamespaceImplFromJson(Map<String, dynamic> json) =>
           (json['events'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
-Map<String, dynamic> _$$NamespaceImplToJson(_$NamespaceImpl instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('chains', instance.chains);
-  val['accounts'] = instance.accounts;
-  val['methods'] = instance.methods;
-  val['events'] = instance.events;
-  return val;
-}
+Map<String, dynamic> _$$NamespaceImplToJson(_$NamespaceImpl instance) =>
+    <String, dynamic>{
+      if (instance.chains case final value?) 'chains': value,
+      'accounts': instance.accounts,
+      'methods': instance.methods,
+      'events': instance.events,
+    };
 
 _$SessionDataImpl _$$SessionDataImplFromJson(Map<String, dynamic> json) =>
     _$SessionDataImpl(
@@ -69,35 +61,30 @@ _$SessionDataImpl _$$SessionDataImplFromJson(Map<String, dynamic> json) =>
               TransportType.relay,
     );
 
-Map<String, dynamic> _$$SessionDataImplToJson(_$SessionDataImpl instance) {
-  final val = <String, dynamic>{
-    'topic': instance.topic,
-    'pairingTopic': instance.pairingTopic,
-    'relay': instance.relay.toJson(),
-    'expiry': instance.expiry,
-    'acknowledged': instance.acknowledged,
-    'controller': instance.controller,
-    'namespaces': instance.namespaces.map((k, e) => MapEntry(k, e.toJson())),
-    'self': instance.self.toJson(),
-    'peer': instance.peer.toJson(),
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('requiredNamespaces',
-      instance.requiredNamespaces?.map((k, e) => MapEntry(k, e.toJson())));
-  writeNotNull('optionalNamespaces',
-      instance.optionalNamespaces?.map((k, e) => MapEntry(k, e.toJson())));
-  writeNotNull('sessionProperties', instance.sessionProperties);
-  writeNotNull('authentication',
-      instance.authentication?.map((e) => e.toJson()).toList());
-  val['transportType'] = _$TransportTypeEnumMap[instance.transportType]!;
-  return val;
-}
+Map<String, dynamic> _$$SessionDataImplToJson(_$SessionDataImpl instance) =>
+    <String, dynamic>{
+      'topic': instance.topic,
+      'pairingTopic': instance.pairingTopic,
+      'relay': instance.relay.toJson(),
+      'expiry': instance.expiry,
+      'acknowledged': instance.acknowledged,
+      'controller': instance.controller,
+      'namespaces': instance.namespaces.map((k, e) => MapEntry(k, e.toJson())),
+      'self': instance.self.toJson(),
+      'peer': instance.peer.toJson(),
+      if (instance.requiredNamespaces?.map((k, e) => MapEntry(k, e.toJson()))
+          case final value?)
+        'requiredNamespaces': value,
+      if (instance.optionalNamespaces?.map((k, e) => MapEntry(k, e.toJson()))
+          case final value?)
+        'optionalNamespaces': value,
+      if (instance.sessionProperties case final value?)
+        'sessionProperties': value,
+      if (instance.authentication?.map((e) => e.toJson()).toList()
+          case final value?)
+        'authentication': value,
+      'transportType': _$TransportTypeEnumMap[instance.transportType]!,
+    };
 
 const _$TransportTypeEnumMap = {
   TransportType.relay: 'relay',

@@ -24,8 +24,12 @@ mixin _$ReownSignError {
   String get message => throw _privateConstructorUsedError;
   String? get data => throw _privateConstructorUsedError;
 
+  /// Serializes this ReownSignError to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ReownSignError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ReownSignErrorCopyWith<ReownSignError> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -49,6 +53,8 @@ class _$ReownSignErrorCopyWithImpl<$Res, $Val extends ReownSignError>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ReownSignError
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -92,6 +98,8 @@ class __$$ReownSignErrorImplCopyWithImpl<$Res>
       _$ReownSignErrorImpl _value, $Res Function(_$ReownSignErrorImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ReownSignError
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -148,11 +156,13 @@ class _$ReownSignErrorImpl implements _ReownSignError {
             (identical(other.data, data) || other.data == data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, code, message, data);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ReownSignError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ReownSignErrorImplCopyWith<_$ReownSignErrorImpl> get copyWith =>
@@ -182,8 +192,11 @@ abstract class _ReownSignError implements ReownSignError {
   String get message;
   @override
   String? get data;
+
+  /// Create a copy of ReownSignError
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ReownSignErrorImplCopyWith<_$ReownSignErrorImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -197,8 +210,12 @@ mixin _$ConnectionMetadata {
   String get publicKey => throw _privateConstructorUsedError;
   PairingMetadata get metadata => throw _privateConstructorUsedError;
 
+  /// Serializes this ConnectionMetadata to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ConnectionMetadata
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ConnectionMetadataCopyWith<ConnectionMetadata> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -224,6 +241,8 @@ class _$ConnectionMetadataCopyWithImpl<$Res, $Val extends ConnectionMetadata>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ConnectionMetadata
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -242,6 +261,8 @@ class _$ConnectionMetadataCopyWithImpl<$Res, $Val extends ConnectionMetadata>
     ) as $Val);
   }
 
+  /// Create a copy of ConnectionMetadata
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $PairingMetadataCopyWith<$Res> get metadata {
@@ -273,6 +294,8 @@ class __$$ConnectionMetadataImplCopyWithImpl<$Res>
       $Res Function(_$ConnectionMetadataImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ConnectionMetadata
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -322,11 +345,13 @@ class _$ConnectionMetadataImpl implements _ConnectionMetadata {
                 other.metadata == metadata));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, publicKey, metadata);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ConnectionMetadata
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ConnectionMetadataImplCopyWith<_$ConnectionMetadataImpl> get copyWith =>
@@ -353,8 +378,11 @@ abstract class _ConnectionMetadata implements ConnectionMetadata {
   String get publicKey;
   @override
   PairingMetadata get metadata;
+
+  /// Create a copy of ConnectionMetadata
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ConnectionMetadataImplCopyWith<_$ConnectionMetadataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -367,8 +395,12 @@ AuthPublicKey _$AuthPublicKeyFromJson(Map<String, dynamic> json) {
 mixin _$AuthPublicKey {
   String get publicKey => throw _privateConstructorUsedError;
 
+  /// Serializes this AuthPublicKey to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of AuthPublicKey
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $AuthPublicKeyCopyWith<AuthPublicKey> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -392,6 +424,8 @@ class _$AuthPublicKeyCopyWithImpl<$Res, $Val extends AuthPublicKey>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of AuthPublicKey
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -425,6 +459,8 @@ class __$$AuthPublicKeyImplCopyWithImpl<$Res>
       _$AuthPublicKeyImpl _value, $Res Function(_$AuthPublicKeyImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of AuthPublicKey
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -465,11 +501,13 @@ class _$AuthPublicKeyImpl implements _AuthPublicKey {
                 other.publicKey == publicKey));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, publicKey);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of AuthPublicKey
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$AuthPublicKeyImplCopyWith<_$AuthPublicKeyImpl> get copyWith =>
@@ -492,8 +530,11 @@ abstract class _AuthPublicKey implements AuthPublicKey {
 
   @override
   String get publicKey;
+
+  /// Create a copy of AuthPublicKey
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AuthPublicKeyImplCopyWith<_$AuthPublicKeyImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

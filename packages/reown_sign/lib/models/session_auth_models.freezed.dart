@@ -34,8 +34,12 @@ mixin _$SessionAuthRequestParams {
   int? get expiry => throw _privateConstructorUsedError;
   List<String>? get methods => throw _privateConstructorUsedError;
 
+  /// Serializes this SessionAuthRequestParams to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SessionAuthRequestParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SessionAuthRequestParamsCopyWith<SessionAuthRequestParams> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -74,6 +78,8 @@ class _$SessionAuthRequestParamsCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SessionAuthRequestParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -142,6 +148,8 @@ class _$SessionAuthRequestParamsCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of SessionAuthRequestParams
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $CacaoHeaderCopyWith<$Res>? get type {
@@ -192,6 +200,8 @@ class __$$SessionAuthRequestParamsImplCopyWithImpl<$Res>
       $Res Function(_$SessionAuthRequestParamsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SessionAuthRequestParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -360,7 +370,7 @@ class _$SessionAuthRequestParamsImpl implements _SessionAuthRequestParams {
             const DeepCollectionEquality().equals(other._methods, _methods));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -377,7 +387,9 @@ class _$SessionAuthRequestParamsImpl implements _SessionAuthRequestParams {
       expiry,
       const DeepCollectionEquality().hash(_methods));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SessionAuthRequestParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SessionAuthRequestParamsImplCopyWith<_$SessionAuthRequestParamsImpl>
@@ -417,8 +429,8 @@ abstract class _SessionAuthRequestParams implements SessionAuthRequestParams {
   @override
   String get nonce;
   @override
-  String get uri;
-  @override //
+  String get uri; //
+  @override
   CacaoHeader? get type;
   @override
   String? get nbf;
@@ -434,8 +446,11 @@ abstract class _SessionAuthRequestParams implements SessionAuthRequestParams {
   int? get expiry;
   @override
   List<String>? get methods;
+
+  /// Create a copy of SessionAuthRequestParams
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SessionAuthRequestParamsImplCopyWith<_$SessionAuthRequestParamsImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -459,8 +474,12 @@ mixin _$SessionAuthPayload {
   String? get requestId => throw _privateConstructorUsedError;
   List<String>? get resources => throw _privateConstructorUsedError;
 
+  /// Serializes this SessionAuthPayload to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SessionAuthPayload
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SessionAuthPayloadCopyWith<SessionAuthPayload> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -496,6 +515,8 @@ class _$SessionAuthPayloadCopyWithImpl<$Res, $Val extends SessionAuthPayload>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SessionAuthPayload
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -596,6 +617,8 @@ class __$$SessionAuthPayloadImplCopyWithImpl<$Res>
       $Res Function(_$SessionAuthPayloadImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SessionAuthPayload
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -755,7 +778,7 @@ class _$SessionAuthPayloadImpl implements _SessionAuthPayload {
                 .equals(other._resources, _resources));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -772,7 +795,9 @@ class _$SessionAuthPayloadImpl implements _SessionAuthPayload {
       requestId,
       const DeepCollectionEquality().hash(_resources));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SessionAuthPayload
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SessionAuthPayloadImplCopyWith<_$SessionAuthPayloadImpl> get copyWith =>
@@ -814,12 +839,12 @@ abstract class _SessionAuthPayload implements SessionAuthPayload {
   @override
   String get aud;
   @override
-  String get type;
-  @override //
+  String get type; //
+  @override
   String get version;
   @override
-  String get iat;
-  @override //
+  String get iat; //
+  @override
   String? get nbf;
   @override
   String? get exp;
@@ -829,8 +854,11 @@ abstract class _SessionAuthPayload implements SessionAuthPayload {
   String? get requestId;
   @override
   List<String>? get resources;
+
+  /// Create a copy of SessionAuthPayload
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SessionAuthPayloadImplCopyWith<_$SessionAuthPayloadImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -850,8 +878,12 @@ mixin _$PendingSessionAuthRequest {
   VerifyContext get verifyContext => throw _privateConstructorUsedError;
   TransportType get transportType => throw _privateConstructorUsedError;
 
+  /// Serializes this PendingSessionAuthRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of PendingSessionAuthRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PendingSessionAuthRequestCopyWith<PendingSessionAuthRequest> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -887,6 +919,8 @@ class _$PendingSessionAuthRequestCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PendingSessionAuthRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -930,6 +964,8 @@ class _$PendingSessionAuthRequestCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of PendingSessionAuthRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ConnectionMetadataCopyWith<$Res> get requester {
@@ -938,6 +974,8 @@ class _$PendingSessionAuthRequestCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of PendingSessionAuthRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $CacaoRequestPayloadCopyWith<$Res> get authPayload {
@@ -946,6 +984,8 @@ class _$PendingSessionAuthRequestCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of PendingSessionAuthRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $VerifyContextCopyWith<$Res> get verifyContext {
@@ -991,6 +1031,8 @@ class __$$PendingSessionAuthRequestImplCopyWithImpl<$Res>
       $Res Function(_$PendingSessionAuthRequestImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PendingSessionAuthRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1092,12 +1134,14 @@ class _$PendingSessionAuthRequestImpl implements _PendingSessionAuthRequest {
                 other.transportType == transportType));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, pairingTopic, requester,
       expiryTimestamp, authPayload, verifyContext, transportType);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PendingSessionAuthRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PendingSessionAuthRequestImplCopyWith<_$PendingSessionAuthRequestImpl>
@@ -1139,8 +1183,11 @@ abstract class _PendingSessionAuthRequest implements PendingSessionAuthRequest {
   VerifyContext get verifyContext;
   @override
   TransportType get transportType;
+
+  /// Create a copy of PendingSessionAuthRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PendingSessionAuthRequestImplCopyWith<_$PendingSessionAuthRequestImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

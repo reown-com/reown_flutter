@@ -71,7 +71,7 @@ class SubscriptionDeletionEvent extends SubscriptionEvent {
   String reason;
 
   SubscriptionDeletionEvent(
-    id,
+    super.id,
     this.reason,
-  ) : super(id);
+  );
 }

@@ -794,10 +794,10 @@ class SizeReportingWidget extends StatefulWidget {
   final ValueChanged<Size> onSizeChange;
 
   const SizeReportingWidget({
-    Key? key,
+    super.key,
     required this.child,
     required this.onSizeChange,
-  }) : super(key: key);
+  });
 
   @override
   State<SizeReportingWidget> createState() => _SizeReportingWidgetState();
@@ -830,11 +830,11 @@ class ExpandablePageView extends StatefulWidget {
   final Function(int)? onPageChanged;
 
   const ExpandablePageView({
-    Key? key,
+    super.key,
     required this.children,
     this.controller,
     this.onPageChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<ExpandablePageView> createState() => _ExpandablePageViewState();

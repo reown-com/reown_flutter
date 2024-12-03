@@ -36,8 +36,12 @@ mixin _$SIWECreateMessageArgs {
   int? get expiry => throw _privateConstructorUsedError;
   String? get iat => throw _privateConstructorUsedError;
 
+  /// Serializes this SIWECreateMessageArgs to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SIWECreateMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SIWECreateMessageArgsCopyWith<SIWECreateMessageArgs> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -78,6 +82,8 @@ class _$SIWECreateMessageArgsCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SIWECreateMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -156,6 +162,8 @@ class _$SIWECreateMessageArgsCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of SIWECreateMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $CacaoHeaderCopyWith<$Res>? get type {
@@ -207,6 +215,8 @@ class __$$SIWECreateMessageArgsImplCopyWithImpl<$Res>
       $Res Function(_$SIWECreateMessageArgsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SIWECreateMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -377,7 +387,7 @@ class _$SIWECreateMessageArgsImpl implements _SIWECreateMessageArgs {
             (identical(other.iat, iat) || other.iat == iat));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -396,7 +406,9 @@ class _$SIWECreateMessageArgsImpl implements _SIWECreateMessageArgs {
       expiry,
       iat);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SIWECreateMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SIWECreateMessageArgsImplCopyWith<_$SIWECreateMessageArgsImpl>
@@ -459,8 +471,11 @@ abstract class _SIWECreateMessageArgs implements SIWECreateMessageArgs {
   int? get expiry;
   @override
   String? get iat;
+
+  /// Create a copy of SIWECreateMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SIWECreateMessageArgsImplCopyWith<_$SIWECreateMessageArgsImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -483,8 +498,12 @@ mixin _$SIWEMessageArgs {
   String? get iat => throw _privateConstructorUsedError;
   List<String>? get methods => throw _privateConstructorUsedError;
 
+  /// Serializes this SIWEMessageArgs to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SIWEMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SIWEMessageArgsCopyWith<SIWEMessageArgs> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -521,6 +540,8 @@ class _$SIWEMessageArgsCopyWithImpl<$Res, $Val extends SIWEMessageArgs>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SIWEMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -584,6 +605,8 @@ class _$SIWEMessageArgsCopyWithImpl<$Res, $Val extends SIWEMessageArgs>
     ) as $Val);
   }
 
+  /// Create a copy of SIWEMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $CacaoHeaderCopyWith<$Res>? get type {
@@ -630,6 +653,8 @@ class __$$SIWEMessageArgsImplCopyWithImpl<$Res>
       _$SIWEMessageArgsImpl _value, $Res Function(_$SIWEMessageArgsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SIWEMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -780,7 +805,7 @@ class _$SIWEMessageArgsImpl implements _SIWEMessageArgs {
             const DeepCollectionEquality().equals(other._methods, _methods));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -796,7 +821,9 @@ class _$SIWEMessageArgsImpl implements _SIWEMessageArgs {
       iat,
       const DeepCollectionEquality().hash(_methods));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SIWEMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SIWEMessageArgsImplCopyWith<_$SIWEMessageArgsImpl> get copyWith =>
@@ -850,8 +877,11 @@ abstract class _SIWEMessageArgs implements SIWEMessageArgs {
   String? get iat;
   @override
   List<String>? get methods;
+
+  /// Create a copy of SIWEMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SIWEMessageArgsImplCopyWith<_$SIWEMessageArgsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -868,8 +898,12 @@ mixin _$SIWEVerifyMessageArgs {
   Cacao? get cacao => throw _privateConstructorUsedError; // for One-Click Auth
   String? get clientId => throw _privateConstructorUsedError;
 
+  /// Serializes this SIWEVerifyMessageArgs to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SIWEVerifyMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SIWEVerifyMessageArgsCopyWith<SIWEVerifyMessageArgs> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -896,6 +930,8 @@ class _$SIWEVerifyMessageArgsCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SIWEVerifyMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -924,6 +960,8 @@ class _$SIWEVerifyMessageArgsCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of SIWEVerifyMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $CacaoCopyWith<$Res>? get cacao {
@@ -961,6 +999,8 @@ class __$$SIWEVerifyMessageArgsImplCopyWithImpl<$Res>
       $Res Function(_$SIWEVerifyMessageArgsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SIWEVerifyMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1030,12 +1070,14 @@ class _$SIWEVerifyMessageArgsImpl implements _SIWEVerifyMessageArgs {
                 other.clientId == clientId));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, message, signature, cacao, clientId);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SIWEVerifyMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SIWEVerifyMessageArgsImplCopyWith<_$SIWEVerifyMessageArgsImpl>
@@ -1065,11 +1107,14 @@ abstract class _SIWEVerifyMessageArgs implements SIWEVerifyMessageArgs {
   @override
   String get signature;
   @override
-  Cacao? get cacao;
-  @override // for One-Click Auth
-  String? get clientId;
+  Cacao? get cacao; // for One-Click Auth
   @override
-  @JsonKey(ignore: true)
+  String? get clientId;
+
+  /// Create a copy of SIWEVerifyMessageArgs
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SIWEVerifyMessageArgsImplCopyWith<_$SIWEVerifyMessageArgsImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1083,8 +1128,12 @@ mixin _$SIWESession {
   String get address => throw _privateConstructorUsedError;
   List<String> get chains => throw _privateConstructorUsedError;
 
+  /// Serializes this SIWESession to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SIWESession
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SIWESessionCopyWith<SIWESession> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1108,6 +1157,8 @@ class _$SIWESessionCopyWithImpl<$Res, $Val extends SIWESession>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SIWESession
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1146,6 +1197,8 @@ class __$$SIWESessionImplCopyWithImpl<$Res>
       _$SIWESessionImpl _value, $Res Function(_$SIWESessionImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SIWESession
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1194,12 +1247,14 @@ class _$SIWESessionImpl implements _SIWESession {
             const DeepCollectionEquality().equals(other._chains, _chains));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, address, const DeepCollectionEquality().hash(_chains));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SIWESession
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SIWESessionImplCopyWith<_$SIWESessionImpl> get copyWith =>
@@ -1225,8 +1280,11 @@ abstract class _SIWESession implements SIWESession {
   String get address;
   @override
   List<String> get chains;
+
+  /// Create a copy of SIWESession
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SIWESessionImplCopyWith<_$SIWESessionImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

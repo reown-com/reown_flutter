@@ -61,26 +61,26 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
       size: widget.size,
       onTap: widget.onTap,
       buttonStyle: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) {
-            if (states.contains(MaterialState.disabled)) {
+            if (states.contains(WidgetState.disabled)) {
               return themeColors.grayGlass005;
             }
             return themeColors.grayGlass010;
           },
         ),
-        foregroundColor: MaterialStateProperty.resolveWith<Color>(
+        foregroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) {
-            if (states.contains(MaterialState.disabled)) {
+            if (states.contains(WidgetState.disabled)) {
               return themeColors.grayGlass015;
             }
             return themeColors.foreground100;
           },
         ),
-        shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
+        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
           (states) {
             return RoundedRectangleBorder(
-              side: states.contains(MaterialState.disabled)
+              side: states.contains(WidgetState.disabled)
                   ? BorderSide(color: themeColors.grayGlass005, width: 1.0)
                   : BorderSide(color: themeColors.grayGlass010, width: 1.0),
               borderRadius: BorderRadius.circular(widget.size.height / 2),
@@ -88,7 +88,7 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
           },
         ),
       ),
-      overridePadding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+      overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
         EdgeInsets.only(
           left: 6.0,
           right: widget.size == BaseButtonSize.small ? 12.0 : 16.0,
