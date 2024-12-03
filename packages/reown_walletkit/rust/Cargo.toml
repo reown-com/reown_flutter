@@ -1,0 +1,51 @@
+[package]
+name = "reown_walletkit"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.79"
+license = "Apache-2.0"
+
+[lib]
+name = "yttrium_dart"
+crate-type = ["cdylib"]
+
+[build-dependencies]
+flutter_rust_bridge_codegen = "2.6.0"
+# uniffi_build = { git = "https://github.com/mozilla/uniffi-rs", rev = "e796e00ad150f8b14b61a859a2e8c6497b35074e" }
+
+[dependencies]
+flutter_rust_bridge = "=2.6.0"
+yttrium = { git = "https://github.com/reown-com/yttrium.git", branch = "dart-bindings", package = "yttrium"}
+# uniffi = { git = "https://github.com/mozilla/uniffi-rs", rev = "e796e00ad150f8b14b61a859a2e8c6497b35074e" }
+# openssl = { version = "0.10", features = ["vendored"] }
+# openssl-sys = { version = "0.9.103", features = ["vendored"] }
+relay_rpc = { git = "https://github.com/WalletConnect/WalletConnectRust.git" }
+
+eyre = "0.6.12"
+thiserror = "1.0"
+
+# Async
+tokio = { version = "1.17", features = [] }
+
+# Networking
+reqwest = { version = "0.12.5", features = ["json"] }
+
+# Serialization
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Logging
+oslog = "0.2.0"
+log = "0.4.20"
+
+alloy = "0.6.1"
+alloy-provider = "0.6.1"
+erc6492 = { git = "https://github.com/reown-com/erc6492.git", branch = "main" }
+
+# [[bin]]
+# name = "dart_bindgen"
+# path = "dart_bindgen.rs"
+
+# [package.metadata.cargo-udeps.ignore]
+# # These crates are needed for Linux builds, but will give unused deps error when built on macOS
+# normal = ["openssl", "openssl-sys"]

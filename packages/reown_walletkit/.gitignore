@@ -56,3 +56,5 @@ app.*.map.json
 # Run scripts
 run_tests.sh
 *.env.secret
+
+rust/target
