@@ -16,7 +16,7 @@ dependencies:
   #     ref: dart-bindings
   #     path: crates/dart-ffi
   #   # path: /Users/alfreedom/Development/Reown/yttrium/crates/dart-ffi
-  dylib: ^0.3.3
+  # dylib: ^0.3.3
   event: ^2.1.2
   flutter:
     sdk: flutter
@@ -48,14 +48,21 @@ dev_dependencies:
   # reown_appkit:
   #   path: ../reown_appkit/
 
+# The following section is specific to Flutter packages.
 flutter:
-  assets:
-    - assets/libyttrium_dart.dylib
-
-platforms:
-  android:
-  ios:
-  web:
-  macos:
-  linux:
-  windows:
+  plugin:
+    platforms:
+      android:
+        package: com.example.reown_walletkit
+        pluginClass: ReownWalletkitPlugin
+      ios:
+        pluginClass: ReownWalletkitPlugin
+      linux:
+        pluginClass: ReownWalletkitPlugin
+      macos:
+        pluginClass: ReownWalletkitPlugin
+      windows:
+        pluginClass: ReownWalletkitPluginCApi
+      web:
+        pluginClass: YttriumDartWeb
+        fileName: reown_walletkit_web.dart

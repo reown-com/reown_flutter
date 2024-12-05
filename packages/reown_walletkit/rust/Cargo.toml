@@ -7,7 +7,7 @@ license = "Apache-2.0"
 
 [lib]
 name = "yttrium_dart"
-crate-type = ["cdylib"]
+crate-type = ["staticlib", "cdylib"]
 
 [build-dependencies]
 flutter_rust_bridge_codegen = "2.6.0"

@@ -1,7 +1,7 @@
 rust_root: "rust/" # rust code entry point relative to local path
 rust_input: crate # meaning src/ folder inside rust/
 dart_output: lib/generated/ # output path for generated Dart code
-c_output: bridge_generated.h
+# c_output: bridge_generated.h
 # duplicated_c_output: args.duplicated_c_output,
 # rust_output: rust/src/bridge_generated.rs
 # full_dep: true

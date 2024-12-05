@@ -56,3 +56,7 @@ app.*.map.json
 # Run scripts
 run_tests_all.sh
 *.env.secret*
+
+packages/reown_walletkit_bkp/
+packages/reown_walletkit_bkp/*
+packages/reown_walletkit_bkp/**

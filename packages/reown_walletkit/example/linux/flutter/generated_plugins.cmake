@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  reown_walletkit
   url_launcher_linux
 )
 
