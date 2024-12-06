@@ -194,9 +194,11 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       ),
     );
     // TODO should be moved to init()
-    _analyticsService.init().then(
-          (_) => _analyticsService.sendEvent(ModalLoadedEvent()),
-        );
+    if (enableAnalytics == true) {
+      _analyticsService.init().then(
+            (_) => _analyticsService.sendEvent(ModalLoadedEvent()),
+          );
+    }
     GetIt.I.registerSingletonIfAbsent<IExplorerService>(
       () => ExplorerService(
         core: _appKit.core,
