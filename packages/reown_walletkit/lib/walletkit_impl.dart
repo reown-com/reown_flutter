@@ -150,7 +150,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
       // Initialize the Rust library
       await YttriumDart.init(externalLibrary: yttrium);
       // Create ChainAbstractionClient instance
-      _chainAbstraction = await ChainAbstractionClient.newInstance(
+      _chainAbstractionClient = await ChainAbstractionClient.newInstance(
         projectId: core.projectId,
       );
     } catch (e) {
@@ -536,33 +536,53 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
 
   ///---------- CHAIN ABSTRACTION ----------///
 
-  late final ChainAbstractionClient _chainAbstraction;
+  ChainAbstractionClient? _chainAbstractionClient;
 
   // TODO shouldn't be needed
   @override
-  String get projectId => _chainAbstraction.projectId;
+  String get projectId => _chainAbstractionClient?.projectId ?? core.projectId;
 
   // TODO shouldn't be needed
   @override
-  bool get isDisposed => _chainAbstraction.isDisposed;
+  bool get isDisposed => _chainAbstractionClient?.isDisposed ?? true;
 
   // TODO shouldn't be needed
   @override
-  set projectId(String projectId) => _chainAbstraction.projectId = projectId;
+  set projectId(String projectId) {
+    if (_chainAbstractionClient == null) {
+      throw 'ChainAbstractionClient is not initialized';
+    }
+    _chainAbstractionClient!.projectId = projectId;
+  }
 
   @override
   Future<Eip1559Estimation> estimateFees({required String chainId}) async {
-    return await _chainAbstraction.estimateFees(chainId: chainId);
+    if (_chainAbstractionClient == null) {
+      throw 'ChainAbstractionClient is not initialized';
+    }
+    return await _chainAbstractionClient!.estimateFees(
+      chainId: chainId,
+    );
   }
 
   @override
   Future<RouteResponse> route({required InitTransaction transaction}) async {
-    return await _chainAbstraction.route(transaction: transaction);
+    if (_chainAbstractionClient == null) {
+      throw 'ChainAbstractionClient is not initialized';
+    }
+    return await _chainAbstractionClient!.route(
+      transaction: transaction,
+    );
   }
 
   @override
   Future<StatusResponse> status({required String orchestrationId}) async {
-    return await _chainAbstraction.status(orchestrationId: orchestrationId);
+    if (_chainAbstractionClient == null) {
+      throw 'ChainAbstractionClient is not initialized';
+    }
+    return await _chainAbstractionClient!.status(
+      orchestrationId: orchestrationId,
+    );
   }
 
   @override
@@ -571,7 +591,10 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     required BigInt checkIn,
     required BigInt timeout,
   }) async {
-    return await _chainAbstraction.waitForSuccessWithTimeout(
+    if (_chainAbstractionClient == null) {
+      throw 'ChainAbstractionClient is not initialized';
+    }
+    return await _chainAbstractionClient!.waitForSuccessWithTimeout(
       orchestrationId: orchestrationId,
       checkIn: checkIn,
       timeout: timeout,
@@ -580,5 +603,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
 
   // TODO shouldn't be needed
   @override
-  void dispose() => _chainAbstraction.dispose();
+  void dispose() {
+    _chainAbstractionClient?.dispose();
+  }
 }
