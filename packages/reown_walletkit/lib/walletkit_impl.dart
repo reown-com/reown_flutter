@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:event/event.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
@@ -138,6 +140,22 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     _chainAbstraction = await ChainAbstractionClient.newInstance(
       projectId: core.projectId,
     );
+    try {
+      // Locate the native library file
+      final yttrium = Platform.isAndroid
+          ? ExternalLibrary.open('libyttrium_dart.so')
+          : (Platform.isIOS || Platform.isMacOS)
+              ? ExternalLibrary.open('libyttrium_dart_universal.dylib')
+              : throw 'Yttrium not yet supported on ${Platform.localeName}';
+      // Initialize the Rust library
+      await YttriumDart.init(externalLibrary: yttrium);
+      // Create ChainAbstractionClient instance
+      _chainAbstraction = await ChainAbstractionClient.newInstance(
+        projectId: core.projectId,
+      );
+    } catch (e) {
+      core.logger.e('[$runtimeType] $e');
+    }
 
     _initialized = true;
   }
