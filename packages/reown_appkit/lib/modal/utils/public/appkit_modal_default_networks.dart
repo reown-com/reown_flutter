@@ -213,18 +213,6 @@ class ReownAppKitModalNetworks {
       ),
     ],
   };
-  static void addNetworks(
-    String namespace,
-    List<ReownAppKitModalNetworkInfo> chains,
-  ) {
-    for (var chain in chains) {
-      if (chain.isTestNetwork) {
-        _testnets[namespace]!.add(chain);
-      } else {
-        _mainnets[namespace]!.add(chain);
-      }
-    }
-  }
 
   static ReownAppKitModalNetworkInfo? getNetworkById(
     String namespace,
