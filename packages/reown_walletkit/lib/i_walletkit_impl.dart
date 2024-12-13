@@ -6,5 +6,4 @@ abstract class IReownWalletKit implements IReownSignWallet {
   final int version = 2;
 
   abstract final IReownSign reOwnSign;
-  // abstract final ChainAbstractionClient chainAbstraction;
 }
