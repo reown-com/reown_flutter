@@ -18,12 +18,12 @@ dart run build_runner build --delete-conflicting-outputs
 dart format .
 dart run dependency_validator
 
-# cd ios
+cd ios
 
 # rm Podfile.lock
 # pod deintegrate
 # pod cache clean -all
-# pod install
+pod install
 
-# cd ..
-# cd ..
+cd ..
+cd ..

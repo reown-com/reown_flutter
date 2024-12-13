@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:event/event.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
@@ -13,8 +11,6 @@ import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/generic_store.dart';
 import 'package:reown_core/store/i_generic_store.dart';
 import 'package:reown_sign/reown_sign.dart';
-import 'package:reown_walletkit/generated/frb_generated.dart';
-import 'package:reown_walletkit/generated/lib.dart';
 import 'package:reown_walletkit/i_walletkit_impl.dart';
 
 class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
@@ -142,19 +138,8 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     );
     try {
       // Locate the native library file
-      final yttrium = Platform.isAndroid
-          ? ExternalLibrary.open('libyttrium_dart.so')
-          : (Platform.isIOS || Platform.isMacOS)
-              ? ExternalLibrary.open('libyttrium_dart_universal.dylib')
-              : throw 'Yttrium not yet supported on ${Platform.localeName}';
-      // Initialize the Rust library
-      await YttriumDart.init(externalLibrary: yttrium);
-      // Create ChainAbstractionClient instance
-      _chainAbstractionClient = await ChainAbstractionClient.newInstance(
-        projectId: core.projectId,
-      );
     } catch (e) {
-      core.logger.e('[$runtimeType] $e');
+      print(e);
     }
 
     _initialized = true;
@@ -174,7 +159,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   ///---------- SIGN ENGINE ----------///
 
   @override
-  late final IReownSign reOwnSign;
+  late IReownSign reOwnSign;
 
   @override
   Event<SessionConnect> get onSessionConnect => reOwnSign.onSessionConnect;
@@ -536,74 +521,6 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
 
   ///---------- CHAIN ABSTRACTION ----------///
 
-  ChainAbstractionClient? _chainAbstractionClient;
-
-  // TODO shouldn't be needed
-  @override
-  String get projectId => _chainAbstractionClient?.projectId ?? core.projectId;
-
-  // TODO shouldn't be needed
-  @override
-  bool get isDisposed => _chainAbstractionClient?.isDisposed ?? true;
-
-  // TODO shouldn't be needed
-  @override
-  set projectId(String projectId) {
-    if (_chainAbstractionClient == null) {
-      throw 'ChainAbstractionClient is not initialized';
-    }
-    _chainAbstractionClient!.projectId = projectId;
-  }
-
-  @override
-  Future<Eip1559Estimation> estimateFees({required String chainId}) async {
-    if (_chainAbstractionClient == null) {
-      throw 'ChainAbstractionClient is not initialized';
-    }
-    return await _chainAbstractionClient!.estimateFees(
-      chainId: chainId,
-    );
-  }
-
-  @override
-  Future<RouteResponse> route({required InitTransaction transaction}) async {
-    if (_chainAbstractionClient == null) {
-      throw 'ChainAbstractionClient is not initialized';
-    }
-    return await _chainAbstractionClient!.route(
-      transaction: transaction,
-    );
-  }
-
-  @override
-  Future<StatusResponse> status({required String orchestrationId}) async {
-    if (_chainAbstractionClient == null) {
-      throw 'ChainAbstractionClient is not initialized';
-    }
-    return await _chainAbstractionClient!.status(
-      orchestrationId: orchestrationId,
-    );
-  }
-
-  @override
-  Future<StatusResponseCompleted> waitForSuccessWithTimeout({
-    required String orchestrationId,
-    required BigInt checkIn,
-    required BigInt timeout,
-  }) async {
-    if (_chainAbstractionClient == null) {
-      throw 'ChainAbstractionClient is not initialized';
-    }
-    return await _chainAbstractionClient!.waitForSuccessWithTimeout(
-      orchestrationId: orchestrationId,
-      checkIn: checkIn,
-      timeout: timeout,
-    );
-  }
-
-  // TODO shouldn't be needed
-  @override
-  void dispose() {
-    _chainAbstractionClient?.dispose();
-  }
+  // @override
+  // late ChainAbstractionClient chainAbstraction;
 }
