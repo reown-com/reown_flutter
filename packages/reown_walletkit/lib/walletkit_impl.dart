@@ -12,6 +12,8 @@ import 'package:reown_core/store/generic_store.dart';
 import 'package:reown_core/store/i_generic_store.dart';
 import 'package:reown_sign/reown_sign.dart';
 import 'package:reown_walletkit/i_walletkit_impl.dart';
+import 'package:yttrium_dart/generated/lib.dart';
+import 'package:yttrium_dart/yttrium_dart.dart';
 
 class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   bool _initialized = false;
@@ -140,6 +142,12 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
       // Locate the native library file
     } catch (e) {
       print(e);
+    try {
+      await YttriumDart.instance.init(
+        projectId: core.projectId,
+      );
+    } catch (e) {
+      core.logger.e('[$runtimeType] $e');
     }
 
     _initialized = true;
@@ -159,7 +167,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   ///---------- SIGN ENGINE ----------///
 
   @override
-  late IReownSign reOwnSign;
+  late final IReownSign reOwnSign;
 
   @override
   Event<SessionConnect> get onSessionConnect => reOwnSign.onSessionConnect;
@@ -523,4 +531,33 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
 
   // @override
   // late ChainAbstractionClient chainAbstraction;
+  ///---------- CHAIN ABSTRACTION ----------///
+
+  @override
+  Future<Eip1559Estimation> estimateFees({required String chainId}) async {
+    return await YttriumDart.instance.estimateFees(chainId: chainId);
+  }
+
+  @override
+  Future<RouteResponse> route({required InitTransaction transaction}) async {
+    return await YttriumDart.instance.route(transaction: transaction);
+  }
+
+  @override
+  Future<StatusResponse> status({required String orchestrationId}) async {
+    return await YttriumDart.instance.status(orchestrationId: orchestrationId);
+  }
+
+  @override
+  Future<StatusResponseCompleted> waitForSuccessWithTimeout({
+    required String orchestrationId,
+    required BigInt checkIn,
+    required BigInt timeout,
+  }) async {
+    return await YttriumDart.instance.waitForSuccessWithTimeout(
+      orchestrationId: orchestrationId,
+      checkIn: checkIn,
+      timeout: timeout,
+    );
+  }
 }
