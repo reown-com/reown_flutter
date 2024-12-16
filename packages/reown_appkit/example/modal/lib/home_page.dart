@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_appkit_example/services/deep_link_handler.dart';
@@ -13,6 +12,7 @@ import 'package:reown_appkit_example/services/siwe_service.dart';
 import 'package:reown_appkit_example/widgets/logger_widget.dart';
 import 'package:reown_appkit_example/widgets/session_widget.dart';
 import 'package:reown_appkit_example/utils/dart_defines.dart';
+import 'package:toastification/toastification.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
@@ -419,19 +419,31 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _onRelayClientConnect(EventArgs? event) {
     setState(() {});
-    showTextToast(text: 'Relay connected', context: context);
+    toastification.show(
+      title: Text('Relay connected'),
+      context: context,
+      autoCloseDuration: Duration(seconds: 2),
+      alignment: Alignment.bottomCenter,
+    );
   }
 
   void _onRelayClientError(ErrorEvent? event) {
     setState(() {});
-    showTextToast(text: 'Relay disconnected', context: context);
+    toastification.show(
+      title: Text('Relay error: ${event?.error}'),
+      context: context,
+      autoCloseDuration: Duration(seconds: 2),
+      alignment: Alignment.bottomCenter,
+    );
   }
 
   void _onRelayClientDisconnect(EventArgs? event) {
     setState(() {});
-    showTextToast(
-      text: 'Relay disconnected: ${event?.toString()}',
+    toastification.show(
+      title: Text('Relay disconnected: ${event?.toString()}'),
       context: context,
+      autoCloseDuration: Duration(seconds: 2),
+      alignment: Alignment.bottomCenter,
     );
   }
 

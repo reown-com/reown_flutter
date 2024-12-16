@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:qr_bar_code_scanner_dialog/qr_bar_code_scanner_dialog.dart';
@@ -14,6 +13,7 @@ import 'package:reown_walletkit_wallet/utils/eth_utils.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
 import 'package:reown_walletkit_wallet/widgets/pairing_item.dart';
 import 'package:reown_walletkit_wallet/widgets/uri_input_popup.dart';
+import 'package:toastification/toastification.dart';
 
 class AppsPage extends StatefulWidget {
   AppsPage({super.key});
@@ -77,18 +77,11 @@ class AppsPageState extends State<AppsPage> {
       if (!mounted) return;
       if (jsonObject is JsonRpcRequest &&
           jsonObject.method == MethodConstants.WC_SESSION_PING) {
-        showPlatformToast(
-          duration: const Duration(seconds: 1),
-          child: Container(
-            padding: const EdgeInsets.all(StyleConstants.linear8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                StyleConstants.linear16,
-              ),
-            ),
-            child: Text(jsonObject.method, maxLines: 1),
-          ),
+        toastification.show(
+          title: Text(jsonObject.method, maxLines: 1),
           context: context,
+          autoCloseDuration: Duration(seconds: 2),
+          alignment: Alignment.bottomCenter,
         );
       }
     }

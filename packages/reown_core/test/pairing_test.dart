@@ -1,3 +1,4 @@
+// ignore: library_annotations
 @Timeout(Duration(seconds: 45))
 
 import 'dart:async';

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +15,7 @@ import 'package:reown_appkit_dapp/utils/crypto/solana.dart';
 import 'package:reown_appkit_dapp/utils/string_constants.dart';
 import 'package:reown_appkit_dapp/widgets/chain_button.dart';
 import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
+import 'package:toastification/toastification.dart';
 
 class ConnectPage extends StatefulWidget {
   const ConnectPage({
@@ -673,9 +673,11 @@ class _QRCodeView extends StatelessWidget {
             Clipboard.setData(
               ClipboardData(text: uri.toString()),
             ).then(
-              (_) => showPlatformToast(
-                child: const Text(StringConstants.copiedToClipboard),
+              (_) => toastification.show(
+                title: const Text(StringConstants.copiedToClipboard),
                 context: context,
+                autoCloseDuration: Duration(seconds: 2),
+                alignment: Alignment.bottomCenter,
               ),
             );
           },
