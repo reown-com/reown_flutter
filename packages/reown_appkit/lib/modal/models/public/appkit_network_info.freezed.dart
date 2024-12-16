@@ -25,7 +25,9 @@ mixin _$ReownAppKitModalNetworkInfo {
   bool get isTestNetwork => throw _privateConstructorUsedError;
   String? get chainIcon => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ReownAppKitModalNetworkInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ReownAppKitModalNetworkInfoCopyWith<ReownAppKitModalNetworkInfo>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -60,6 +62,8 @@ class _$ReownAppKitModalNetworkInfoCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ReownAppKitModalNetworkInfo
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -137,6 +141,8 @@ class __$$AppKitNetworkInfoImplCopyWithImpl<$Res>
       $Res Function(_$AppKitNetworkInfoImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ReownAppKitModalNetworkInfo
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -262,7 +268,9 @@ class _$AppKitNetworkInfoImpl implements _AppKitNetworkInfo {
       isTestNetwork,
       chainIcon);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ReownAppKitModalNetworkInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$AppKitNetworkInfoImplCopyWith<_$AppKitNetworkInfoImpl> get copyWith =>
@@ -297,8 +305,11 @@ abstract class _AppKitNetworkInfo implements ReownAppKitModalNetworkInfo {
   bool get isTestNetwork;
   @override
   String? get chainIcon;
+
+  /// Create a copy of ReownAppKitModalNetworkInfo
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AppKitNetworkInfoImplCopyWith<_$AppKitNetworkInfoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

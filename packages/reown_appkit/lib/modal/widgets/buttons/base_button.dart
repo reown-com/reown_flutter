@@ -42,7 +42,7 @@ class BaseButton extends StatelessWidget {
   final VoidCallback? onTap;
   final BaseButtonSize size;
   final ButtonStyle? buttonStyle;
-  final MaterialStateProperty<EdgeInsetsGeometry?>? overridePadding;
+  final WidgetStateProperty<EdgeInsetsGeometry?>? overridePadding;
 
   @override
   Widget build(BuildContext context) {
@@ -54,17 +54,17 @@ class BaseButton extends StatelessWidget {
       onPressed: onTap,
       child: child,
       style: ButtonStyle(
-        textStyle: MaterialStateProperty.all<TextStyle>(textStyle),
-        minimumSize: MaterialStateProperty.all<Size>(Size(
+        textStyle: WidgetStateProperty.all<TextStyle>(textStyle),
+        minimumSize: WidgetStateProperty.all<Size>(Size(
           size.height,
           size.height,
         )),
-        maximumSize: MaterialStateProperty.all<Size>(Size(
+        maximumSize: WidgetStateProperty.all<Size>(Size(
           1000.0,
           size.height,
         )),
         padding: overridePadding ??
-            MaterialStateProperty.all<EdgeInsetsGeometry>(
+            WidgetStateProperty.all<EdgeInsetsGeometry>(
               const EdgeInsets.only(
                 left: 16.0,
                 right: 16.0,

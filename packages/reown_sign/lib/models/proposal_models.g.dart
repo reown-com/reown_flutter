@@ -18,20 +18,12 @@ _$RequiredNamespaceImpl _$$RequiredNamespaceImplFromJson(
     );
 
 Map<String, dynamic> _$$RequiredNamespaceImplToJson(
-    _$RequiredNamespaceImpl instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('chains', instance.chains);
-  val['methods'] = instance.methods;
-  val['events'] = instance.events;
-  return val;
-}
+        _$RequiredNamespaceImpl instance) =>
+    <String, dynamic>{
+      if (instance.chains case final value?) 'chains': value,
+      'methods': instance.methods,
+      'events': instance.events,
+    };
 
 _$SessionProposalImpl _$$SessionProposalImplFromJson(
         Map<String, dynamic> json) =>
@@ -77,27 +69,20 @@ _$ProposalDataImpl _$$ProposalDataImplFromJson(Map<String, dynamic> json) =>
       ),
     );
 
-Map<String, dynamic> _$$ProposalDataImplToJson(_$ProposalDataImpl instance) {
-  final val = <String, dynamic>{
-    'id': instance.id,
-    'expiry': instance.expiry,
-    'relays': instance.relays.map((e) => e.toJson()).toList(),
-    'proposer': instance.proposer.toJson(),
-    'requiredNamespaces':
-        instance.requiredNamespaces.map((k, e) => MapEntry(k, e.toJson())),
-    'optionalNamespaces':
-        instance.optionalNamespaces.map((k, e) => MapEntry(k, e.toJson())),
-    'pairingTopic': instance.pairingTopic,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('sessionProperties', instance.sessionProperties);
-  writeNotNull('generatedNamespaces',
-      instance.generatedNamespaces?.map((k, e) => MapEntry(k, e.toJson())));
-  return val;
-}
+Map<String, dynamic> _$$ProposalDataImplToJson(_$ProposalDataImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'expiry': instance.expiry,
+      'relays': instance.relays.map((e) => e.toJson()).toList(),
+      'proposer': instance.proposer.toJson(),
+      'requiredNamespaces':
+          instance.requiredNamespaces.map((k, e) => MapEntry(k, e.toJson())),
+      'optionalNamespaces':
+          instance.optionalNamespaces.map((k, e) => MapEntry(k, e.toJson())),
+      'pairingTopic': instance.pairingTopic,
+      if (instance.sessionProperties case final value?)
+        'sessionProperties': value,
+      if (instance.generatedNamespaces?.map((k, e) => MapEntry(k, e.toJson()))
+          case final value?)
+        'generatedNamespaces': value,
+    };

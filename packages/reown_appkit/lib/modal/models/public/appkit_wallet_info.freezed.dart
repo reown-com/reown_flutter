@@ -25,8 +25,12 @@ mixin _$ReownAppKitModalWalletInfo {
   bool get installed => throw _privateConstructorUsedError;
   bool get recent => throw _privateConstructorUsedError;
 
+  /// Serializes this ReownAppKitModalWalletInfo to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ReownAppKitModalWalletInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ReownAppKitModalWalletInfoCopyWith<ReownAppKitModalWalletInfo>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -52,6 +56,8 @@ class _$ReownAppKitModalWalletInfoCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ReownAppKitModalWalletInfo
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -98,6 +104,8 @@ class __$$ReownAppKitModalWalletInfoImplCopyWithImpl<$Res>
       $Res Function(_$ReownAppKitModalWalletInfoImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ReownAppKitModalWalletInfo
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -155,11 +163,13 @@ class _$ReownAppKitModalWalletInfoImpl implements _ReownAppKitModalWalletInfo {
             (identical(other.recent, recent) || other.recent == recent));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, listing, installed, recent);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ReownAppKitModalWalletInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ReownAppKitModalWalletInfoImplCopyWith<_$ReownAppKitModalWalletInfoImpl>
@@ -190,8 +200,11 @@ abstract class _ReownAppKitModalWalletInfo
   bool get installed;
   @override
   bool get recent;
+
+  /// Create a copy of ReownAppKitModalWalletInfo
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ReownAppKitModalWalletInfoImplCopyWith<_$ReownAppKitModalWalletInfoImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

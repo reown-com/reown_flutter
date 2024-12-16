@@ -1,7 +1,7 @@
 import UIKit
 import Flutter
 
-@UIApplicationMain
+@main
 @objc class AppDelegate: FlutterAppDelegate {
     
     private static let EVENTS_CHANNEL = "com.walletconnect.flutterwallet/events"

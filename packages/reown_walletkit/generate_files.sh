@@ -27,3 +27,5 @@ pod install
 
 cd ..
 cd ..
+
+flutter pub run yttrium_dart:setup

@@ -24,8 +24,12 @@ mixin _$WcPairingDeleteRequest {
   int get code => throw _privateConstructorUsedError;
   String get message => throw _privateConstructorUsedError;
 
+  /// Serializes this WcPairingDeleteRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of WcPairingDeleteRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $WcPairingDeleteRequestCopyWith<WcPairingDeleteRequest> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -50,6 +54,8 @@ class _$WcPairingDeleteRequestCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of WcPairingDeleteRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -91,6 +97,8 @@ class __$$WcPairingDeleteRequestImplCopyWithImpl<$Res>
       $Res Function(_$WcPairingDeleteRequestImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of WcPairingDeleteRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -139,11 +147,13 @@ class _$WcPairingDeleteRequestImpl implements _WcPairingDeleteRequest {
             (identical(other.message, message) || other.message == message));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, code, message);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of WcPairingDeleteRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$WcPairingDeleteRequestImplCopyWith<_$WcPairingDeleteRequestImpl>
@@ -170,8 +180,11 @@ abstract class _WcPairingDeleteRequest implements WcPairingDeleteRequest {
   int get code;
   @override
   String get message;
+
+  /// Create a copy of WcPairingDeleteRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$WcPairingDeleteRequestImplCopyWith<_$WcPairingDeleteRequestImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -184,8 +197,12 @@ WcPairingPingRequest _$WcPairingPingRequestFromJson(Map<String, dynamic> json) {
 mixin _$WcPairingPingRequest {
   Map<String, dynamic> get data => throw _privateConstructorUsedError;
 
+  /// Serializes this WcPairingPingRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of WcPairingPingRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $WcPairingPingRequestCopyWith<WcPairingPingRequest> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -210,6 +227,8 @@ class _$WcPairingPingRequestCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of WcPairingPingRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -243,6 +262,8 @@ class __$$WcPairingPingRequestImplCopyWithImpl<$Res>
       $Res Function(_$WcPairingPingRequestImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of WcPairingPingRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -288,12 +309,14 @@ class _$WcPairingPingRequestImpl implements _WcPairingPingRequest {
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of WcPairingPingRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$WcPairingPingRequestImplCopyWith<_$WcPairingPingRequestImpl>
@@ -318,8 +341,11 @@ abstract class _WcPairingPingRequest implements WcPairingPingRequest {
 
   @override
   Map<String, dynamic> get data;
+
+  /// Create a copy of WcPairingPingRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$WcPairingPingRequestImplCopyWith<_$WcPairingPingRequestImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -340,8 +366,12 @@ mixin _$WcSessionProposeRequest {
       throw _privateConstructorUsedError;
   ConnectionMetadata get proposer => throw _privateConstructorUsedError;
 
+  /// Serializes this WcSessionProposeRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of WcSessionProposeRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $WcSessionProposeRequestCopyWith<WcSessionProposeRequest> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -373,6 +403,8 @@ class _$WcSessionProposeRequestCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of WcSessionProposeRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -406,6 +438,8 @@ class _$WcSessionProposeRequestCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of WcSessionProposeRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ConnectionMetadataCopyWith<$Res> get proposer {
@@ -445,6 +479,8 @@ class __$$WcSessionProposeRequestImplCopyWithImpl<$Res>
       $Res Function(_$WcSessionProposeRequestImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of WcSessionProposeRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -560,7 +596,7 @@ class _$WcSessionProposeRequestImpl implements _WcSessionProposeRequest {
                 other.proposer == proposer));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -570,7 +606,9 @@ class _$WcSessionProposeRequestImpl implements _WcSessionProposeRequest {
       const DeepCollectionEquality().hash(_sessionProperties),
       proposer);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of WcSessionProposeRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$WcSessionProposeRequestImplCopyWith<_$WcSessionProposeRequestImpl>
@@ -607,8 +645,11 @@ abstract class _WcSessionProposeRequest implements WcSessionProposeRequest {
   Map<String, String>? get sessionProperties;
   @override
   ConnectionMetadata get proposer;
+
+  /// Create a copy of WcSessionProposeRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$WcSessionProposeRequestImplCopyWith<_$WcSessionProposeRequestImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -623,8 +664,12 @@ mixin _$WcSessionProposeResponse {
   Relay get relay => throw _privateConstructorUsedError;
   String get responderPublicKey => throw _privateConstructorUsedError;
 
+  /// Serializes this WcSessionProposeResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of WcSessionProposeResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $WcSessionProposeResponseCopyWith<WcSessionProposeResponse> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -649,6 +694,8 @@ class _$WcSessionProposeResponseCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of WcSessionProposeResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -690,6 +737,8 @@ class __$$WcSessionProposeResponseImplCopyWithImpl<$Res>
       $Res Function(_$WcSessionProposeResponseImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of WcSessionProposeResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -739,11 +788,13 @@ class _$WcSessionProposeResponseImpl implements _WcSessionProposeResponse {
                 other.responderPublicKey == responderPublicKey));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, relay, responderPublicKey);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of WcSessionProposeResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$WcSessionProposeResponseImplCopyWith<_$WcSessionProposeResponseImpl>
@@ -771,8 +822,11 @@ abstract class _WcSessionProposeResponse implements WcSessionProposeResponse {
   Relay get relay;
   @override
   String get responderPublicKey;
+
+  /// Create a copy of WcSessionProposeResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$WcSessionProposeResponseImplCopyWith<_$WcSessionProposeResponseImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -795,8 +849,12 @@ mixin _$WcSessionSettleRequest {
   int get expiry => throw _privateConstructorUsedError;
   ConnectionMetadata get controller => throw _privateConstructorUsedError;
 
+  /// Serializes this WcSessionSettleRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of WcSessionSettleRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $WcSessionSettleRequestCopyWith<WcSessionSettleRequest> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -830,6 +888,8 @@ class _$WcSessionSettleRequestCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of WcSessionSettleRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -873,6 +933,8 @@ class _$WcSessionSettleRequestCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of WcSessionSettleRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ConnectionMetadataCopyWith<$Res> get controller {
@@ -914,6 +976,8 @@ class __$$WcSessionSettleRequestImplCopyWithImpl<$Res>
       $Res Function(_$WcSessionSettleRequestImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of WcSessionSettleRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1050,7 +1114,7 @@ class _$WcSessionSettleRequestImpl implements _WcSessionSettleRequest {
                 other.controller == controller));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -1062,7 +1126,9 @@ class _$WcSessionSettleRequestImpl implements _WcSessionSettleRequest {
       expiry,
       controller);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of WcSessionSettleRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$WcSessionSettleRequestImplCopyWith<_$WcSessionSettleRequestImpl>
@@ -1105,8 +1171,11 @@ abstract class _WcSessionSettleRequest implements WcSessionSettleRequest {
   int get expiry;
   @override
   ConnectionMetadata get controller;
+
+  /// Create a copy of WcSessionSettleRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$WcSessionSettleRequestImplCopyWith<_$WcSessionSettleRequestImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1120,8 +1189,12 @@ WcSessionUpdateRequest _$WcSessionUpdateRequestFromJson(
 mixin _$WcSessionUpdateRequest {
   Map<String, Namespace> get namespaces => throw _privateConstructorUsedError;
 
+  /// Serializes this WcSessionUpdateRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of WcSessionUpdateRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $WcSessionUpdateRequestCopyWith<WcSessionUpdateRequest> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1146,6 +1219,8 @@ class _$WcSessionUpdateRequestCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of WcSessionUpdateRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1182,6 +1257,8 @@ class __$$WcSessionUpdateRequestImplCopyWithImpl<$Res>
       $Res Function(_$WcSessionUpdateRequestImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of WcSessionUpdateRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1229,12 +1306,14 @@ class _$WcSessionUpdateRequestImpl implements _WcSessionUpdateRequest {
                 .equals(other._namespaces, _namespaces));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, const DeepCollectionEquality().hash(_namespaces));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of WcSessionUpdateRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$WcSessionUpdateRequestImplCopyWith<_$WcSessionUpdateRequestImpl>
@@ -1259,8 +1338,11 @@ abstract class _WcSessionUpdateRequest implements WcSessionUpdateRequest {
 
   @override
   Map<String, Namespace> get namespaces;
+
+  /// Create a copy of WcSessionUpdateRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$WcSessionUpdateRequestImplCopyWith<_$WcSessionUpdateRequestImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1274,8 +1356,12 @@ WcSessionExtendRequest _$WcSessionExtendRequestFromJson(
 mixin _$WcSessionExtendRequest {
   Map<String, dynamic>? get data => throw _privateConstructorUsedError;
 
+  /// Serializes this WcSessionExtendRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of WcSessionExtendRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $WcSessionExtendRequestCopyWith<WcSessionExtendRequest> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1300,6 +1386,8 @@ class _$WcSessionExtendRequestCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of WcSessionExtendRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1336,6 +1424,8 @@ class __$$WcSessionExtendRequestImplCopyWithImpl<$Res>
       $Res Function(_$WcSessionExtendRequestImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of WcSessionExtendRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1383,12 +1473,14 @@ class _$WcSessionExtendRequestImpl implements _WcSessionExtendRequest {
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of WcSessionExtendRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$WcSessionExtendRequestImplCopyWith<_$WcSessionExtendRequestImpl>
@@ -1412,8 +1504,11 @@ abstract class _WcSessionExtendRequest implements WcSessionExtendRequest {
 
   @override
   Map<String, dynamic>? get data;
+
+  /// Create a copy of WcSessionExtendRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$WcSessionExtendRequestImplCopyWith<_$WcSessionExtendRequestImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1429,8 +1524,12 @@ mixin _$WcSessionDeleteRequest {
   String get message => throw _privateConstructorUsedError;
   String? get data => throw _privateConstructorUsedError;
 
+  /// Serializes this WcSessionDeleteRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of WcSessionDeleteRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $WcSessionDeleteRequestCopyWith<WcSessionDeleteRequest> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1455,6 +1554,8 @@ class _$WcSessionDeleteRequestCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of WcSessionDeleteRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1501,6 +1602,8 @@ class __$$WcSessionDeleteRequestImplCopyWithImpl<$Res>
       $Res Function(_$WcSessionDeleteRequestImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of WcSessionDeleteRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1557,11 +1660,13 @@ class _$WcSessionDeleteRequestImpl implements _WcSessionDeleteRequest {
             (identical(other.data, data) || other.data == data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, code, message, data);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of WcSessionDeleteRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$WcSessionDeleteRequestImplCopyWith<_$WcSessionDeleteRequestImpl>
@@ -1591,8 +1696,11 @@ abstract class _WcSessionDeleteRequest implements WcSessionDeleteRequest {
   String get message;
   @override
   String? get data;
+
+  /// Create a copy of WcSessionDeleteRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$WcSessionDeleteRequestImplCopyWith<_$WcSessionDeleteRequestImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1605,8 +1713,12 @@ WcSessionPingRequest _$WcSessionPingRequestFromJson(Map<String, dynamic> json) {
 mixin _$WcSessionPingRequest {
   Map<String, dynamic>? get data => throw _privateConstructorUsedError;
 
+  /// Serializes this WcSessionPingRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of WcSessionPingRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $WcSessionPingRequestCopyWith<WcSessionPingRequest> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1631,6 +1743,8 @@ class _$WcSessionPingRequestCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of WcSessionPingRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1664,6 +1778,8 @@ class __$$WcSessionPingRequestImplCopyWithImpl<$Res>
       $Res Function(_$WcSessionPingRequestImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of WcSessionPingRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1711,12 +1827,14 @@ class _$WcSessionPingRequestImpl implements _WcSessionPingRequest {
             const DeepCollectionEquality().equals(other._data, _data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of WcSessionPingRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$WcSessionPingRequestImplCopyWith<_$WcSessionPingRequestImpl>
@@ -1741,8 +1859,11 @@ abstract class _WcSessionPingRequest implements WcSessionPingRequest {
 
   @override
   Map<String, dynamic>? get data;
+
+  /// Create a copy of WcSessionPingRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$WcSessionPingRequestImplCopyWith<_$WcSessionPingRequestImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1757,8 +1878,12 @@ mixin _$WcSessionRequestRequest {
   String get chainId => throw _privateConstructorUsedError;
   SessionRequestParams get request => throw _privateConstructorUsedError;
 
+  /// Serializes this WcSessionRequestRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of WcSessionRequestRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $WcSessionRequestRequestCopyWith<WcSessionRequestRequest> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1785,6 +1910,8 @@ class _$WcSessionRequestRequestCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of WcSessionRequestRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1803,6 +1930,8 @@ class _$WcSessionRequestRequestCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of WcSessionRequestRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $SessionRequestParamsCopyWith<$Res> get request {
@@ -1837,6 +1966,8 @@ class __$$WcSessionRequestRequestImplCopyWithImpl<$Res>
       $Res Function(_$WcSessionRequestRequestImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of WcSessionRequestRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1885,11 +2016,13 @@ class _$WcSessionRequestRequestImpl implements _WcSessionRequestRequest {
             (identical(other.request, request) || other.request == request));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, chainId, request);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of WcSessionRequestRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$WcSessionRequestRequestImplCopyWith<_$WcSessionRequestRequestImpl>
@@ -1917,8 +2050,11 @@ abstract class _WcSessionRequestRequest implements WcSessionRequestRequest {
   String get chainId;
   @override
   SessionRequestParams get request;
+
+  /// Create a copy of WcSessionRequestRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$WcSessionRequestRequestImplCopyWith<_$WcSessionRequestRequestImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1932,8 +2068,12 @@ mixin _$SessionRequestParams {
   String get method => throw _privateConstructorUsedError;
   dynamic get params => throw _privateConstructorUsedError;
 
+  /// Serializes this SessionRequestParams to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SessionRequestParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SessionRequestParamsCopyWith<SessionRequestParams> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1958,6 +2098,8 @@ class _$SessionRequestParamsCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SessionRequestParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1996,6 +2138,8 @@ class __$$SessionRequestParamsImplCopyWithImpl<$Res>
       $Res Function(_$SessionRequestParamsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SessionRequestParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2044,12 +2188,14 @@ class _$SessionRequestParamsImpl implements _SessionRequestParams {
             const DeepCollectionEquality().equals(other.params, params));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, method, const DeepCollectionEquality().hash(params));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SessionRequestParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SessionRequestParamsImplCopyWith<_$SessionRequestParamsImpl>
@@ -2077,8 +2223,11 @@ abstract class _SessionRequestParams implements SessionRequestParams {
   String get method;
   @override
   dynamic get params;
+
+  /// Create a copy of SessionRequestParams
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SessionRequestParamsImplCopyWith<_$SessionRequestParamsImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -2093,8 +2242,12 @@ mixin _$WcSessionEventRequest {
   String get chainId => throw _privateConstructorUsedError;
   SessionEventParams get event => throw _privateConstructorUsedError;
 
+  /// Serializes this WcSessionEventRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of WcSessionEventRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $WcSessionEventRequestCopyWith<WcSessionEventRequest> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -2121,6 +2274,8 @@ class _$WcSessionEventRequestCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of WcSessionEventRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2139,6 +2294,8 @@ class _$WcSessionEventRequestCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of WcSessionEventRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $SessionEventParamsCopyWith<$Res> get event {
@@ -2172,6 +2329,8 @@ class __$$WcSessionEventRequestImplCopyWithImpl<$Res>
       $Res Function(_$WcSessionEventRequestImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of WcSessionEventRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2220,11 +2379,13 @@ class _$WcSessionEventRequestImpl implements _WcSessionEventRequest {
             (identical(other.event, event) || other.event == event));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, chainId, event);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of WcSessionEventRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$WcSessionEventRequestImplCopyWith<_$WcSessionEventRequestImpl>
@@ -2251,8 +2412,11 @@ abstract class _WcSessionEventRequest implements WcSessionEventRequest {
   String get chainId;
   @override
   SessionEventParams get event;
+
+  /// Create a copy of WcSessionEventRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$WcSessionEventRequestImplCopyWith<_$WcSessionEventRequestImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -2266,8 +2430,12 @@ mixin _$SessionEventParams {
   String get name => throw _privateConstructorUsedError;
   dynamic get data => throw _privateConstructorUsedError;
 
+  /// Serializes this SessionEventParams to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SessionEventParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SessionEventParamsCopyWith<SessionEventParams> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -2291,6 +2459,8 @@ class _$SessionEventParamsCopyWithImpl<$Res, $Val extends SessionEventParams>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SessionEventParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2329,6 +2499,8 @@ class __$$SessionEventParamsImplCopyWithImpl<$Res>
       $Res Function(_$SessionEventParamsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SessionEventParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2376,12 +2548,14 @@ class _$SessionEventParamsImpl implements _SessionEventParams {
             const DeepCollectionEquality().equals(other.data, data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, name, const DeepCollectionEquality().hash(data));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SessionEventParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SessionEventParamsImplCopyWith<_$SessionEventParamsImpl> get copyWith =>
@@ -2408,8 +2582,11 @@ abstract class _SessionEventParams implements SessionEventParams {
   String get name;
   @override
   dynamic get data;
+
+  /// Create a copy of SessionEventParams
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SessionEventParamsImplCopyWith<_$SessionEventParamsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -2425,8 +2602,12 @@ mixin _$WcSessionAuthRequestParams {
   ConnectionMetadata get requester => throw _privateConstructorUsedError;
   int get expiryTimestamp => throw _privateConstructorUsedError;
 
+  /// Serializes this WcSessionAuthRequestParams to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of WcSessionAuthRequestParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $WcSessionAuthRequestParamsCopyWith<WcSessionAuthRequestParams>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -2458,6 +2639,8 @@ class _$WcSessionAuthRequestParamsCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of WcSessionAuthRequestParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2481,6 +2664,8 @@ class _$WcSessionAuthRequestParamsCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of WcSessionAuthRequestParams
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $SessionAuthPayloadCopyWith<$Res> get authPayload {
@@ -2489,6 +2674,8 @@ class _$WcSessionAuthRequestParamsCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of WcSessionAuthRequestParams
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ConnectionMetadataCopyWith<$Res> get requester {
@@ -2528,6 +2715,8 @@ class __$$WcSessionAuthRequestParamsImplCopyWithImpl<$Res>
       $Res Function(_$WcSessionAuthRequestParamsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of WcSessionAuthRequestParams
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2590,12 +2779,14 @@ class _$WcSessionAuthRequestParamsImpl implements _WcSessionAuthRequestParams {
                 other.expiryTimestamp == expiryTimestamp));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, authPayload, requester, expiryTimestamp);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of WcSessionAuthRequestParams
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$WcSessionAuthRequestParamsImplCopyWith<_$WcSessionAuthRequestParamsImpl>
@@ -2626,8 +2817,11 @@ abstract class _WcSessionAuthRequestParams
   ConnectionMetadata get requester;
   @override
   int get expiryTimestamp;
+
+  /// Create a copy of WcSessionAuthRequestParams
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$WcSessionAuthRequestParamsImplCopyWith<_$WcSessionAuthRequestParamsImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -2642,8 +2836,12 @@ mixin _$WcSessionAuthRequestResult {
   List<Cacao> get cacaos => throw _privateConstructorUsedError;
   ConnectionMetadata get responder => throw _privateConstructorUsedError;
 
+  /// Serializes this WcSessionAuthRequestResult to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of WcSessionAuthRequestResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $WcSessionAuthRequestResultCopyWith<WcSessionAuthRequestResult>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -2671,6 +2869,8 @@ class _$WcSessionAuthRequestResultCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of WcSessionAuthRequestResult
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2689,6 +2889,8 @@ class _$WcSessionAuthRequestResultCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of WcSessionAuthRequestResult
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ConnectionMetadataCopyWith<$Res> get responder {
@@ -2723,6 +2925,8 @@ class __$$WcSessionAuthRequestResultImplCopyWithImpl<$Res>
       $Res Function(_$WcSessionAuthRequestResultImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of WcSessionAuthRequestResult
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2780,12 +2984,14 @@ class _$WcSessionAuthRequestResultImpl implements _WcSessionAuthRequestResult {
                 other.responder == responder));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, const DeepCollectionEquality().hash(_cacaos), responder);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of WcSessionAuthRequestResult
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$WcSessionAuthRequestResultImplCopyWith<_$WcSessionAuthRequestResultImpl>
@@ -2814,8 +3020,11 @@ abstract class _WcSessionAuthRequestResult
   List<Cacao> get cacaos;
   @override
   ConnectionMetadata get responder;
+
+  /// Create a copy of WcSessionAuthRequestResult
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$WcSessionAuthRequestResultImplCopyWith<_$WcSessionAuthRequestResultImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

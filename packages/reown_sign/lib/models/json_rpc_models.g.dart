@@ -57,25 +57,18 @@ _$WcSessionProposeRequestImpl _$$WcSessionProposeRequestImplFromJson(
     );
 
 Map<String, dynamic> _$$WcSessionProposeRequestImplToJson(
-    _$WcSessionProposeRequestImpl instance) {
-  final val = <String, dynamic>{
-    'relays': instance.relays.map((e) => e.toJson()).toList(),
-    'requiredNamespaces':
-        instance.requiredNamespaces.map((k, e) => MapEntry(k, e.toJson())),
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('optionalNamespaces',
-      instance.optionalNamespaces?.map((k, e) => MapEntry(k, e.toJson())));
-  writeNotNull('sessionProperties', instance.sessionProperties);
-  val['proposer'] = instance.proposer.toJson();
-  return val;
-}
+        _$WcSessionProposeRequestImpl instance) =>
+    <String, dynamic>{
+      'relays': instance.relays.map((e) => e.toJson()).toList(),
+      'requiredNamespaces':
+          instance.requiredNamespaces.map((k, e) => MapEntry(k, e.toJson())),
+      if (instance.optionalNamespaces?.map((k, e) => MapEntry(k, e.toJson()))
+          case final value?)
+        'optionalNamespaces': value,
+      if (instance.sessionProperties case final value?)
+        'sessionProperties': value,
+      'proposer': instance.proposer.toJson(),
+    };
 
 _$WcSessionProposeResponseImpl _$$WcSessionProposeResponseImplFromJson(
         Map<String, dynamic> json) =>
@@ -118,27 +111,21 @@ _$WcSessionSettleRequestImpl _$$WcSessionSettleRequestImplFromJson(
     );
 
 Map<String, dynamic> _$$WcSessionSettleRequestImplToJson(
-    _$WcSessionSettleRequestImpl instance) {
-  final val = <String, dynamic>{
-    'relay': instance.relay.toJson(),
-    'namespaces': instance.namespaces.map((k, e) => MapEntry(k, e.toJson())),
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('requiredNamespaces',
-      instance.requiredNamespaces?.map((k, e) => MapEntry(k, e.toJson())));
-  writeNotNull('optionalNamespaces',
-      instance.optionalNamespaces?.map((k, e) => MapEntry(k, e.toJson())));
-  writeNotNull('sessionProperties', instance.sessionProperties);
-  val['expiry'] = instance.expiry;
-  val['controller'] = instance.controller.toJson();
-  return val;
-}
+        _$WcSessionSettleRequestImpl instance) =>
+    <String, dynamic>{
+      'relay': instance.relay.toJson(),
+      'namespaces': instance.namespaces.map((k, e) => MapEntry(k, e.toJson())),
+      if (instance.requiredNamespaces?.map((k, e) => MapEntry(k, e.toJson()))
+          case final value?)
+        'requiredNamespaces': value,
+      if (instance.optionalNamespaces?.map((k, e) => MapEntry(k, e.toJson()))
+          case final value?)
+        'optionalNamespaces': value,
+      if (instance.sessionProperties case final value?)
+        'sessionProperties': value,
+      'expiry': instance.expiry,
+      'controller': instance.controller.toJson(),
+    };
 
 _$WcSessionUpdateRequestImpl _$$WcSessionUpdateRequestImplFromJson(
         Map<String, dynamic> json) =>
@@ -161,18 +148,10 @@ _$WcSessionExtendRequestImpl _$$WcSessionExtendRequestImplFromJson(
     );
 
 Map<String, dynamic> _$$WcSessionExtendRequestImplToJson(
-    _$WcSessionExtendRequestImpl instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('data', instance.data);
-  return val;
-}
+        _$WcSessionExtendRequestImpl instance) =>
+    <String, dynamic>{
+      if (instance.data case final value?) 'data': value,
+    };
 
 _$WcSessionDeleteRequestImpl _$$WcSessionDeleteRequestImplFromJson(
         Map<String, dynamic> json) =>
@@ -183,21 +162,12 @@ _$WcSessionDeleteRequestImpl _$$WcSessionDeleteRequestImplFromJson(
     );
 
 Map<String, dynamic> _$$WcSessionDeleteRequestImplToJson(
-    _$WcSessionDeleteRequestImpl instance) {
-  final val = <String, dynamic>{
-    'code': instance.code,
-    'message': instance.message,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('data', instance.data);
-  return val;
-}
+        _$WcSessionDeleteRequestImpl instance) =>
+    <String, dynamic>{
+      'code': instance.code,
+      'message': instance.message,
+      if (instance.data case final value?) 'data': value,
+    };
 
 _$WcSessionPingRequestImpl _$$WcSessionPingRequestImplFromJson(
         Map<String, dynamic> json) =>
@@ -206,18 +176,10 @@ _$WcSessionPingRequestImpl _$$WcSessionPingRequestImplFromJson(
     );
 
 Map<String, dynamic> _$$WcSessionPingRequestImplToJson(
-    _$WcSessionPingRequestImpl instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('data', instance.data);
-  return val;
-}
+        _$WcSessionPingRequestImpl instance) =>
+    <String, dynamic>{
+      if (instance.data case final value?) 'data': value,
+    };
 
 _$WcSessionRequestRequestImpl _$$WcSessionRequestRequestImplFromJson(
         Map<String, dynamic> json) =>

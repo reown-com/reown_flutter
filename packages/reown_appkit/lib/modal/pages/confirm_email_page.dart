@@ -188,10 +188,10 @@ class __VerifyDeviceViewState extends State<_VerifyDeviceView> {
                       ),
                     ),
                     style: ButtonStyle(
-                      overlayColor: MaterialStateProperty.all<Color>(
+                      overlayColor: WidgetStateProperty.all<Color>(
                         themeColors.accenGlass010,
                       ),
-                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                      padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
                         const EdgeInsets.symmetric(horizontal: 8.0),
                       ),
                       visualDensity: VisualDensity.compact,

@@ -25,8 +25,12 @@ mixin _$VerifyContext {
   String get verifyUrl => throw _privateConstructorUsedError;
   bool? get isScam => throw _privateConstructorUsedError;
 
+  /// Serializes this VerifyContext to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of VerifyContext
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $VerifyContextCopyWith<VerifyContext> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -51,6 +55,8 @@ class _$VerifyContextCopyWithImpl<$Res, $Val extends VerifyContext>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of VerifyContext
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -100,6 +106,8 @@ class __$$VerifyContextImplCopyWithImpl<$Res>
       _$VerifyContextImpl _value, $Res Function(_$VerifyContextImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of VerifyContext
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -169,12 +177,14 @@ class _$VerifyContextImpl implements _VerifyContext {
             (identical(other.isScam, isScam) || other.isScam == isScam));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, origin, validation, verifyUrl, isScam);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of VerifyContext
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$VerifyContextImplCopyWith<_$VerifyContextImpl> get copyWith =>
@@ -206,8 +216,11 @@ abstract class _VerifyContext implements VerifyContext {
   String get verifyUrl;
   @override
   bool? get isScam;
+
+  /// Create a copy of VerifyContext
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$VerifyContextImplCopyWith<_$VerifyContextImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -222,8 +235,12 @@ mixin _$AttestationResponse {
   String get attestationId => throw _privateConstructorUsedError;
   bool? get isScam => throw _privateConstructorUsedError;
 
+  /// Serializes this AttestationResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of AttestationResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $AttestationResponseCopyWith<AttestationResponse> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -247,6 +264,8 @@ class _$AttestationResponseCopyWithImpl<$Res, $Val extends AttestationResponse>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of AttestationResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -290,6 +309,8 @@ class __$$AttestationResponseImplCopyWithImpl<$Res>
       $Res Function(_$AttestationResponseImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of AttestationResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -347,11 +368,13 @@ class _$AttestationResponseImpl implements _AttestationResponse {
             (identical(other.isScam, isScam) || other.isScam == isScam));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, origin, attestationId, isScam);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of AttestationResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$AttestationResponseImplCopyWith<_$AttestationResponseImpl> get copyWith =>
@@ -381,8 +404,11 @@ abstract class _AttestationResponse implements AttestationResponse {
   String get attestationId;
   @override
   bool? get isScam;
+
+  /// Create a copy of AttestationResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AttestationResponseImplCopyWith<_$AttestationResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

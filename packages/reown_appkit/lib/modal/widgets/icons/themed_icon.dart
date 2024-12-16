@@ -61,22 +61,22 @@ class ThemedButton extends StatelessWidget {
       onPressed: onPressed,
       clipBehavior: Clip.antiAlias,
       style: ButtonStyle(
-        minimumSize: MaterialStateProperty.all<Size>(
+        minimumSize: WidgetStateProperty.all<Size>(
           const Size(kSearchFieldHeight, kSearchFieldHeight),
         ),
-        maximumSize: MaterialStateProperty.all<Size>(
+        maximumSize: WidgetStateProperty.all<Size>(
           const Size(kSearchFieldHeight, kSearchFieldHeight),
         ),
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        iconSize: MaterialStateProperty.all<double?>(0.0),
-        elevation: MaterialStateProperty.all<double?>(0.0),
-        overlayColor: MaterialStateProperty.all<Color>(
+        iconSize: WidgetStateProperty.all<double?>(0.0),
+        elevation: WidgetStateProperty.all<double?>(0.0),
+        overlayColor: WidgetStateProperty.all<Color>(
           themeColors.accenGlass010,
         ),
-        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+        padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
           const EdgeInsets.all(0.0),
         ),
-        shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
+        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
           (states) {
             return RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(radiuses.radius2XS),

@@ -2,7 +2,7 @@ import UIKit
 import Flutter
 import CoinbaseWalletSDK
 
-@UIApplicationMain
+@main
 @objc class AppDelegate: FlutterAppDelegate {
 
     private static let EVENTS_CHANNEL = "com.web3modal.flutterExample/events"

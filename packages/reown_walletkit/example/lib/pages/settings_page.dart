@@ -193,8 +193,8 @@ class _EVMAccountsState extends State<_EVMAccounts> {
   @override
   Widget build(BuildContext context) {
     final keysService = GetIt.I<IKeyService>();
+    final walletKit = GetIt.I<IWalletKitService>().walletKit;
     final chainKeys = keysService.getKeysForChain('eip155');
-    debugPrint('[$runtimeType] chainKeys ${chainKeys.length}');
     return Column(
       children: [
         Padding(
@@ -263,36 +263,88 @@ class _EVMAccountsState extends State<_EVMAccounts> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          padding: const EdgeInsets.only(
+            left: 12.0,
+            right: 12.0,
+            top: 10.0,
+            bottom: 8.0,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                child: Text(
-                  '${_balance.toStringAsFixed(3)} ETH',
-                  style: TextStyle(
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 2.5,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Network',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                        height: 1.1,
+                      ),
+                    ),
+                    DropdownButton(
+                      isDense: true,
+                      isExpanded: true,
+                      value: _selectedChain,
+                      items: ChainsDataList.eip155Chains.map((e) {
+                        return DropdownMenuItem<ChainMetadata>(
+                          value: e,
+                          child: Text(
+                            e.name,
+                            style: TextStyle(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (ChainMetadata? chain) async {
+                        try {
+                          setState(() => _selectedChain = chain);
+                          final chainKey = chainKeys[_currentPage];
+                          final value = await GetIt.I
+                              .get<EVMService>(instanceName: chain?.chainId)
+                              .getBalance(address: chainKey.address);
+                          setState(() => _balance = value);
+                        } catch (e) {
+                          debugPrint(e.toString());
+                          setState(() => _balance = 0.0);
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ),
-              DropdownButton(
-                value: _selectedChain,
-                items: ChainsDataList.eip155Chains.map((e) {
-                  return DropdownMenuItem<ChainMetadata>(
-                    value: e,
-                    child: Text(e.name),
-                  );
-                }).toList(),
-                onChanged: (ChainMetadata? chain) {
-                  setState(() => _selectedChain = chain);
-                  final chainKey = chainKeys[_currentPage];
-                  GetIt.I
-                      .get<EVMService>(instanceName: chain?.chainId)
-                      .getBalance(address: chainKey.address)
-                      .then((value) => setState(() => _balance = value));
-                },
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Balance: ${_balance.toStringAsFixed(4)} ETH',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    FutureBuilder(
+                      future: walletKit.estimateFees(
+                        chainId: _selectedChain!.chainId,
+                      ),
+                      builder: (_, snapshot) {
+                        final inGWei =
+                            int.parse(snapshot.data?.maxFeePerGas ?? '0') / 1e9;
+                        return Text(
+                            'Gas price: ${inGWei.toStringAsFixed(2)} Gwei');
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -408,13 +460,12 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
     return Column(
       children: [
         const Padding(
-          padding: EdgeInsets.all(12.0),
+          padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 12.0),
           child: Row(
             children: [
-              SizedBox.square(dimension: 8.0),
               Expanded(
                 child: Text(
-                  'Solana Account',
+                  'Solana Accounts',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16.0,
@@ -426,40 +477,72 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          padding: const EdgeInsets.all(12.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                child: Text(
-                  '${_balance.toStringAsFixed(3)} SOL',
-                  style: TextStyle(
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+              SizedBox(
+                width: MediaQuery.of(context).size.width / 2.5,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Network',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                        height: 1.1,
+                      ),
+                    ),
+                    DropdownButton(
+                      isDense: true,
+                      isExpanded: true,
+                      value: _selectedChain,
+                      items: ChainsDataList.solanaChains.map((e) {
+                        return DropdownMenuItem<ChainMetadata>(
+                          value: e,
+                          child: Text(
+                            e.name,
+                            style: TextStyle(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (ChainMetadata? chain) {
+                        setState(() => _selectedChain = chain);
+                        final chainKey = chainKeys.first;
+                        GetIt.I
+                            .get<SolanaService2>(instanceName: chain?.chainId)
+                            .getBalance(address: chainKey.address)
+                            .then((value) => setState(() => _balance = value));
+                      },
+                    ),
+                  ],
                 ),
               ),
-              DropdownButton(
-                value: _selectedChain,
-                items: ChainsDataList.solanaChains.map((e) {
-                  return DropdownMenuItem<ChainMetadata>(
-                    value: e,
-                    child: Text(e.name),
-                  );
-                }).toList(),
-                onChanged: (ChainMetadata? chain) {
-                  setState(() => _selectedChain = chain);
-                  final chainKey = chainKeys.first;
-                  GetIt.I
-                      .get<SolanaService2>(instanceName: chain?.chainId)
-                      .getBalance(address: chainKey.address)
-                      .then((value) => setState(() => _balance = value));
-                },
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      'Balance: ${_balance.toStringAsFixed(3)} SOL',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ),
+        const SizedBox.square(dimension: 8.0),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Column(
@@ -494,15 +577,12 @@ class _PolkadotAccounts extends StatelessWidget {
           padding: EdgeInsets.all(12.0),
           child: Row(
             children: [
-              SizedBox.square(dimension: 8.0),
-              Expanded(
-                child: Text(
-                  'Polkadot Account',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w500,
-                  ),
+              Text(
+                'Polkadot Account',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
@@ -542,15 +622,12 @@ class _KadenaAccounts extends StatelessWidget {
           padding: EdgeInsets.all(12.0),
           child: Row(
             children: [
-              SizedBox.square(dimension: 8.0),
-              Expanded(
-                child: Text(
-                  'Kadena Account',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w500,
-                  ),
+              Text(
+                'Kadena Account',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ],
@@ -588,9 +665,9 @@ class _DeviceData extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Padding(
-            padding: EdgeInsets.only(left: 8.0, bottom: 8.0, top: 12.0),
+            padding: EdgeInsets.only(bottom: 8.0, top: 12.0),
             child: Text(
-              'Device',
+              'Device info',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 16.0,

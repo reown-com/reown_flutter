@@ -14,21 +14,12 @@ _$ReownSignErrorImpl _$$ReownSignErrorImplFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$$ReownSignErrorImplToJson(
-    _$ReownSignErrorImpl instance) {
-  final val = <String, dynamic>{
-    'code': instance.code,
-    'message': instance.message,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('data', instance.data);
-  return val;
-}
+        _$ReownSignErrorImpl instance) =>
+    <String, dynamic>{
+      'code': instance.code,
+      'message': instance.message,
+      if (instance.data case final value?) 'data': value,
+    };
 
 _$ConnectionMetadataImpl _$$ConnectionMetadataImplFromJson(
         Map<String, dynamic> json) =>

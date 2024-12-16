@@ -259,7 +259,9 @@ class _MyHomePageState extends State<MyHomePage> {
             : null,
         // requiredNamespaces: {},
         // optionalNamespaces: {},
-        // includedWalletIds: {},
+        // includedWalletIds: {
+        //   'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96',
+        // },
         featuredWalletIds: {
           'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
           '18450873727504ae9315a084fa7624b5297d2fe5880f0982979c17345a138277', // Kraken Wallet

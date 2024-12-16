@@ -25,8 +25,12 @@ mixin _$Namespace {
   List<String> get methods => throw _privateConstructorUsedError;
   List<String> get events => throw _privateConstructorUsedError;
 
+  /// Serializes this Namespace to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Namespace
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $NamespaceCopyWith<Namespace> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -53,6 +57,8 @@ class _$NamespaceCopyWithImpl<$Res, $Val extends Namespace>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Namespace
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -105,6 +111,8 @@ class __$$NamespaceImplCopyWithImpl<$Res>
       _$NamespaceImpl _value, $Res Function(_$NamespaceImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Namespace
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -201,7 +209,7 @@ class _$NamespaceImpl implements _Namespace {
             const DeepCollectionEquality().equals(other._events, _events));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -210,7 +218,9 @@ class _$NamespaceImpl implements _Namespace {
       const DeepCollectionEquality().hash(_methods),
       const DeepCollectionEquality().hash(_events));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Namespace
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$NamespaceImplCopyWith<_$NamespaceImpl> get copyWith =>
@@ -242,8 +252,11 @@ abstract class _Namespace implements Namespace {
   List<String> get methods;
   @override
   List<String> get events;
+
+  /// Create a copy of Namespace
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$NamespaceImplCopyWith<_$NamespaceImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -272,8 +285,12 @@ mixin _$SessionData {
   List<Cacao>? get authentication => throw _privateConstructorUsedError;
   TransportType get transportType => throw _privateConstructorUsedError;
 
+  /// Serializes this SessionData to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SessionData
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SessionDataCopyWith<SessionData> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -314,6 +331,8 @@ class _$SessionDataCopyWithImpl<$Res, $Val extends SessionData>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SessionData
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -392,6 +411,8 @@ class _$SessionDataCopyWithImpl<$Res, $Val extends SessionData>
     ) as $Val);
   }
 
+  /// Create a copy of SessionData
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ConnectionMetadataCopyWith<$Res> get self {
@@ -400,6 +421,8 @@ class _$SessionDataCopyWithImpl<$Res, $Val extends SessionData>
     });
   }
 
+  /// Create a copy of SessionData
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ConnectionMetadataCopyWith<$Res> get peer {
@@ -447,6 +470,8 @@ class __$$SessionDataImplCopyWithImpl<$Res>
       _$SessionDataImpl _value, $Res Function(_$SessionDataImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SessionData
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -660,7 +685,7 @@ class _$SessionDataImpl implements _SessionData {
                 other.transportType == transportType));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -679,7 +704,9 @@ class _$SessionDataImpl implements _SessionData {
       const DeepCollectionEquality().hash(_authentication),
       transportType);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SessionData
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SessionDataImplCopyWith<_$SessionDataImpl> get copyWith =>
@@ -741,8 +768,11 @@ abstract class _SessionData implements SessionData {
   List<Cacao>? get authentication;
   @override
   TransportType get transportType;
+
+  /// Create a copy of SessionData
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SessionDataImplCopyWith<_$SessionDataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -761,8 +791,12 @@ mixin _$SessionRequest {
   VerifyContext get verifyContext => throw _privateConstructorUsedError;
   TransportType get transportType => throw _privateConstructorUsedError;
 
+  /// Serializes this SessionRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SessionRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SessionRequestCopyWith<SessionRequest> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -795,6 +829,8 @@ class _$SessionRequestCopyWithImpl<$Res, $Val extends SessionRequest>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SessionRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -838,6 +874,8 @@ class _$SessionRequestCopyWithImpl<$Res, $Val extends SessionRequest>
     ) as $Val);
   }
 
+  /// Create a copy of SessionRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $VerifyContextCopyWith<$Res> get verifyContext {
@@ -876,6 +914,8 @@ class __$$SessionRequestImplCopyWithImpl<$Res>
       _$SessionRequestImpl _value, $Res Function(_$SessionRequestImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SessionRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -973,7 +1013,7 @@ class _$SessionRequestImpl implements _SessionRequest {
                 other.transportType == transportType));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -985,7 +1025,9 @@ class _$SessionRequestImpl implements _SessionRequest {
       verifyContext,
       transportType);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SessionRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SessionRequestImplCopyWith<_$SessionRequestImpl> get copyWith =>
@@ -1027,8 +1069,11 @@ abstract class _SessionRequest implements SessionRequest {
   VerifyContext get verifyContext;
   @override
   TransportType get transportType;
+
+  /// Create a copy of SessionRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SessionRequestImplCopyWith<_$SessionRequestImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
