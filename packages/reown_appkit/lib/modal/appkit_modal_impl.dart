@@ -48,7 +48,9 @@ import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 
 /// Either a [projectId] and [metadata] must be provided or an already created [appKit].
 /// optionalNamespaces is mostly not needed, if you use it, the values set here will override every optionalNamespaces set in evey chain
-class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
+class ReownAppKitModal
+    with ChangeNotifier, WidgetsBindingObserver
+    implements IReownAppKitModal {
   String _projectId = '';
 
   Map<String, RequiredNamespace> _requiredNamespaces = {};
@@ -381,6 +383,13 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
         : ReownAppKitModalStatus.initializing;
     _appKit.core.logger.i('[$runtimeType] status $_status');
     _notify();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      reconnectRelay();
+    }
   }
 
   Future<void> _checkSIWEStatus() async {
@@ -1687,6 +1696,8 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   }
 
   void _registerListeners() {
+    WidgetsBinding.instance.addObserver(this);
+
     onModalError.subscribe(_onModalError);
     // Magic
     _magicService.onMagicConnect.subscribe(_onMagicConnectEvent);
@@ -1721,6 +1732,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   }
 
   void _unregisterListeners() {
+    WidgetsBinding.instance.removeObserver(this);
     onModalError.unsubscribe(_onModalError);
 
     // Magic
