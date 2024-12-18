@@ -20,7 +20,9 @@ mixin _$RpcOptions {
   bool get prompt => throw _privateConstructorUsedError;
   int get tag => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of RpcOptions
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $RpcOptionsCopyWith<RpcOptions> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -44,6 +46,8 @@ class _$RpcOptionsCopyWithImpl<$Res, $Val extends RpcOptions>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of RpcOptions
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -87,6 +91,8 @@ class __$$RpcOptionsImplCopyWithImpl<$Res>
       _$RpcOptionsImpl _value, $Res Function(_$RpcOptionsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of RpcOptions
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -142,7 +148,9 @@ class _$RpcOptionsImpl implements _RpcOptions {
   @override
   int get hashCode => Object.hash(runtimeType, ttl, prompt, tag);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of RpcOptions
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$RpcOptionsImplCopyWith<_$RpcOptionsImpl> get copyWith =>
@@ -161,8 +169,11 @@ abstract class _RpcOptions implements RpcOptions {
   bool get prompt;
   @override
   int get tag;
+
+  /// Create a copy of RpcOptions
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$RpcOptionsImplCopyWith<_$RpcOptionsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -176,8 +187,12 @@ mixin _$JsonRpcError {
   int? get code => throw _privateConstructorUsedError;
   String? get message => throw _privateConstructorUsedError;
 
+  /// Serializes this JsonRpcError to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of JsonRpcError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $JsonRpcErrorCopyWith<JsonRpcError> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -201,6 +216,8 @@ class _$JsonRpcErrorCopyWithImpl<$Res, $Val extends JsonRpcError>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of JsonRpcError
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -239,6 +256,8 @@ class __$$JsonRpcErrorImplCopyWithImpl<$Res>
       _$JsonRpcErrorImpl _value, $Res Function(_$JsonRpcErrorImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of JsonRpcError
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -286,11 +305,13 @@ class _$JsonRpcErrorImpl implements _JsonRpcError {
             (identical(other.message, message) || other.message == message));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, code, message);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of JsonRpcError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$JsonRpcErrorImplCopyWith<_$JsonRpcErrorImpl> get copyWith =>
@@ -315,8 +336,11 @@ abstract class _JsonRpcError implements JsonRpcError {
   int? get code;
   @override
   String? get message;
+
+  /// Create a copy of JsonRpcError
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$JsonRpcErrorImplCopyWith<_$JsonRpcErrorImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -332,8 +356,12 @@ mixin _$JsonRpcRequest {
   String get method => throw _privateConstructorUsedError;
   dynamic get params => throw _privateConstructorUsedError;
 
+  /// Serializes this JsonRpcRequest to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of JsonRpcRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $JsonRpcRequestCopyWith<JsonRpcRequest> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -357,6 +385,8 @@ class _$JsonRpcRequestCopyWithImpl<$Res, $Val extends JsonRpcRequest>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of JsonRpcRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -405,6 +435,8 @@ class __$$JsonRpcRequestImplCopyWithImpl<$Res>
       _$JsonRpcRequestImpl _value, $Res Function(_$JsonRpcRequestImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of JsonRpcRequest
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -473,12 +505,14 @@ class _$JsonRpcRequestImpl implements _JsonRpcRequest {
             const DeepCollectionEquality().equals(other.params, params));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, jsonrpc, method,
       const DeepCollectionEquality().hash(params));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of JsonRpcRequest
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$JsonRpcRequestImplCopyWith<_$JsonRpcRequestImpl> get copyWith =>
@@ -511,8 +545,11 @@ abstract class _JsonRpcRequest implements JsonRpcRequest {
   String get method;
   @override
   dynamic get params;
+
+  /// Create a copy of JsonRpcRequest
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$JsonRpcRequestImplCopyWith<_$JsonRpcRequestImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -529,9 +566,13 @@ mixin _$JsonRpcResponse<T> {
   JsonRpcError? get error => throw _privateConstructorUsedError;
   T? get result => throw _privateConstructorUsedError;
 
+  /// Serializes this JsonRpcResponse to a JSON map.
   Map<String, dynamic> toJson(Object? Function(T) toJsonT) =>
       throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of JsonRpcResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $JsonRpcResponseCopyWith<T, JsonRpcResponse<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -557,6 +598,8 @@ class _$JsonRpcResponseCopyWithImpl<T, $Res, $Val extends JsonRpcResponse<T>>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of JsonRpcResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -585,6 +628,8 @@ class _$JsonRpcResponseCopyWithImpl<T, $Res, $Val extends JsonRpcResponse<T>>
     ) as $Val);
   }
 
+  /// Create a copy of JsonRpcResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $JsonRpcErrorCopyWith<$Res>? get error {
@@ -620,6 +665,8 @@ class __$$JsonRpcResponseImplCopyWithImpl<T, $Res>
       $Res Function(_$JsonRpcResponseImpl<T>) _then)
       : super(_value, _then);
 
+  /// Create a copy of JsonRpcResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -685,12 +732,14 @@ class _$JsonRpcResponseImpl<T> implements _JsonRpcResponse<T> {
             const DeepCollectionEquality().equals(other.result, result));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, jsonrpc, error,
       const DeepCollectionEquality().hash(result));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of JsonRpcResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$JsonRpcResponseImplCopyWith<T, _$JsonRpcResponseImpl<T>> get copyWith =>
@@ -722,8 +771,11 @@ abstract class _JsonRpcResponse<T> implements JsonRpcResponse<T> {
   JsonRpcError? get error;
   @override
   T? get result;
+
+  /// Create a copy of JsonRpcResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$JsonRpcResponseImplCopyWith<T, _$JsonRpcResponseImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }

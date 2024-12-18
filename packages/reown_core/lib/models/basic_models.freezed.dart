@@ -24,8 +24,12 @@ mixin _$ReownCoreError {
   String get message => throw _privateConstructorUsedError;
   String? get data => throw _privateConstructorUsedError;
 
+  /// Serializes this ReownCoreError to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ReownCoreError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ReownCoreErrorCopyWith<ReownCoreError> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -49,6 +53,8 @@ class _$ReownCoreErrorCopyWithImpl<$Res, $Val extends ReownCoreError>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ReownCoreError
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -92,6 +98,8 @@ class __$$ReownCoreErrorImplCopyWithImpl<$Res>
       _$ReownCoreErrorImpl _value, $Res Function(_$ReownCoreErrorImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ReownCoreError
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -148,11 +156,13 @@ class _$ReownCoreErrorImpl implements _ReownCoreError {
             (identical(other.data, data) || other.data == data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, code, message, data);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ReownCoreError
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ReownCoreErrorImplCopyWith<_$ReownCoreErrorImpl> get copyWith =>
@@ -182,8 +192,11 @@ abstract class _ReownCoreError implements ReownCoreError {
   String get message;
   @override
   String? get data;
+
+  /// Create a copy of ReownCoreError
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ReownCoreErrorImplCopyWith<_$ReownCoreErrorImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

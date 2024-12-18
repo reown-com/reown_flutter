@@ -1,4 +1,5 @@
 import 'package:event/event.dart';
+import 'package:flutter/widgets.dart';
 import 'package:reown_core/relay_client/websocket/http_client.dart';
 import 'package:reown_core/relay_client/websocket/i_http_client.dart';
 import 'package:reown_core/reown_core.dart';
@@ -7,7 +8,7 @@ import 'package:reown_core/store/i_generic_store.dart';
 import 'package:reown_sign/reown_sign.dart';
 import 'package:reown_walletkit/i_walletkit_impl.dart';
 
-class ReownWalletKit implements IReownWalletKit {
+class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   bool _initialized = false;
 
   static Future<ReownWalletKit> createInstance({
@@ -116,6 +117,7 @@ class ReownWalletKit implements IReownWalletKit {
     await core.start();
     await reOwnSign.init();
 
+    WidgetsBinding.instance.addObserver(this);
     _initialized = true;
   }
 
@@ -483,4 +485,13 @@ class ReownWalletKit implements IReownWalletKit {
 
   @override
   IGenericStore<String> get pairingTopics => reOwnSign.pairingTopics;
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      if (!core.relayClient.isConnected) {
+        await core.relayClient.connect();
+      }
+    }
+  }
 }

@@ -82,7 +82,7 @@ class SiweService implements ISiweService {
     );
 
     _appKit.core.logger.d('[$runtimeType] createMessage() called');
-    return _siweConfig!.createMessage(createMessageArgs);
+    return _siweConfig.createMessage(createMessageArgs);
   }
 
   @override
@@ -160,7 +160,7 @@ class SiweService implements ISiweService {
       if (siweSession == null) {
         throw ReownAppKitModalException('Error getting SIWE session');
       }
-      _siweConfig!.onSignIn?.call(siweSession);
+      _siweConfig.onSignIn?.call(siweSession);
 
       return siweSession;
     } catch (e) {
@@ -177,7 +177,7 @@ class SiweService implements ISiweService {
     if (!success) {
       throw ReownAppKitModalException('signOut() from siweConfig failed');
     }
-    _siweConfig!.onSignOut?.call();
+    _siweConfig.onSignOut?.call();
   }
 
   @override

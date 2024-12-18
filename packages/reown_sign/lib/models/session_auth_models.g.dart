@@ -32,30 +32,21 @@ _$SessionAuthRequestParamsImpl _$$SessionAuthRequestParamsImplFromJson(
     );
 
 Map<String, dynamic> _$$SessionAuthRequestParamsImplToJson(
-    _$SessionAuthRequestParamsImpl instance) {
-  final val = <String, dynamic>{
-    'chains': instance.chains,
-    'domain': instance.domain,
-    'nonce': instance.nonce,
-    'uri': instance.uri,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('type', instance.type?.toJson());
-  writeNotNull('nbf', instance.nbf);
-  writeNotNull('exp', instance.exp);
-  writeNotNull('statement', instance.statement);
-  writeNotNull('requestId', instance.requestId);
-  writeNotNull('resources', instance.resources);
-  writeNotNull('expiry', instance.expiry);
-  writeNotNull('methods', instance.methods);
-  return val;
-}
+        _$SessionAuthRequestParamsImpl instance) =>
+    <String, dynamic>{
+      'chains': instance.chains,
+      'domain': instance.domain,
+      'nonce': instance.nonce,
+      'uri': instance.uri,
+      if (instance.type?.toJson() case final value?) 'type': value,
+      if (instance.nbf case final value?) 'nbf': value,
+      if (instance.exp case final value?) 'exp': value,
+      if (instance.statement case final value?) 'statement': value,
+      if (instance.requestId case final value?) 'requestId': value,
+      if (instance.resources case final value?) 'resources': value,
+      if (instance.expiry case final value?) 'expiry': value,
+      if (instance.methods case final value?) 'methods': value,
+    };
 
 _$SessionAuthPayloadImpl _$$SessionAuthPayloadImplFromJson(
         Map<String, dynamic> json) =>
@@ -78,30 +69,21 @@ _$SessionAuthPayloadImpl _$$SessionAuthPayloadImplFromJson(
     );
 
 Map<String, dynamic> _$$SessionAuthPayloadImplToJson(
-    _$SessionAuthPayloadImpl instance) {
-  final val = <String, dynamic>{
-    'chains': instance.chains,
-    'domain': instance.domain,
-    'nonce': instance.nonce,
-    'aud': instance.aud,
-    'type': instance.type,
-    'version': instance.version,
-    'iat': instance.iat,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('nbf', instance.nbf);
-  writeNotNull('exp', instance.exp);
-  writeNotNull('statement', instance.statement);
-  writeNotNull('requestId', instance.requestId);
-  writeNotNull('resources', instance.resources);
-  return val;
-}
+        _$SessionAuthPayloadImpl instance) =>
+    <String, dynamic>{
+      'chains': instance.chains,
+      'domain': instance.domain,
+      'nonce': instance.nonce,
+      'aud': instance.aud,
+      'type': instance.type,
+      'version': instance.version,
+      'iat': instance.iat,
+      if (instance.nbf case final value?) 'nbf': value,
+      if (instance.exp case final value?) 'exp': value,
+      if (instance.statement case final value?) 'statement': value,
+      if (instance.requestId case final value?) 'requestId': value,
+      if (instance.resources case final value?) 'resources': value,
+    };
 
 _$PendingSessionAuthRequestImpl _$$PendingSessionAuthRequestImplFromJson(
         Map<String, dynamic> json) =>

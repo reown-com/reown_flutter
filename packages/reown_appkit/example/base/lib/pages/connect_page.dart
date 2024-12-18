@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +15,7 @@ import 'package:reown_appkit_dapp/utils/crypto/solana.dart';
 import 'package:reown_appkit_dapp/utils/string_constants.dart';
 import 'package:reown_appkit_dapp/widgets/chain_button.dart';
 import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
+import 'package:toastification/toastification.dart';
 
 class ConnectPage extends StatefulWidget {
   const ConnectPage({
@@ -492,28 +492,28 @@ class ConnectPageState extends State<ConnectPage> {
 
   // ignore: unused_element
   ButtonStyle get _buttonStyle => ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) {
-            if (states.contains(MaterialState.disabled)) {
+            if (states.contains(WidgetState.disabled)) {
               return StyleConstants.grayColor;
             }
             return Colors.blue;
           },
         ),
-        textStyle: MaterialStateProperty.resolveWith<TextStyle>(
+        textStyle: WidgetStateProperty.resolveWith<TextStyle>(
           (states) => TextStyle(
             fontSize: 8.0,
             fontWeight: FontWeight.w400,
           ),
         ),
-        padding: MaterialStateProperty.resolveWith<EdgeInsetsGeometry>(
+        padding: WidgetStateProperty.resolveWith<EdgeInsetsGeometry>(
           (states) => EdgeInsets.all(0.0),
         ),
-        minimumSize: MaterialStateProperty.all<Size>(const Size(
+        minimumSize: WidgetStateProperty.all<Size>(const Size(
           1000.0,
           StyleConstants.linear48,
         )),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
               StyleConstants.linear8,
@@ -673,9 +673,11 @@ class _QRCodeView extends StatelessWidget {
             Clipboard.setData(
               ClipboardData(text: uri.toString()),
             ).then(
-              (_) => showPlatformToast(
-                child: const Text(StringConstants.copiedToClipboard),
+              (_) => toastification.show(
+                title: const Text(StringConstants.copiedToClipboard),
                 context: context,
+                autoCloseDuration: Duration(seconds: 2),
+                alignment: Alignment.bottomCenter,
               ),
             );
           },

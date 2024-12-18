@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -17,6 +16,7 @@ import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/recover_from_seed.dart';
+import 'package:toastification/toastification.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -730,9 +730,11 @@ class __DataContainerState extends State<_DataContainer> {
     final blurValue = blurred ? 5.0 : 0.0;
     return GestureDetector(
       onTap: () => Clipboard.setData(ClipboardData(text: widget.data)).then(
-        (_) => showPlatformToast(
-          child: Text('${widget.title} copied'),
+        (_) => toastification.show(
+          title: Text('${widget.title} copied'),
           context: context,
+          autoCloseDuration: Duration(seconds: 2),
+          alignment: Alignment.bottomCenter,
         ),
       ),
       onLongPress: () => setState(() {
@@ -794,10 +796,10 @@ class SizeReportingWidget extends StatefulWidget {
   final ValueChanged<Size> onSizeChange;
 
   const SizeReportingWidget({
-    Key? key,
+    super.key,
     required this.child,
     required this.onSizeChange,
-  }) : super(key: key);
+  });
 
   @override
   State<SizeReportingWidget> createState() => _SizeReportingWidgetState();
@@ -830,11 +832,11 @@ class ExpandablePageView extends StatefulWidget {
   final Function(int)? onPageChanged;
 
   const ExpandablePageView({
-    Key? key,
+    super.key,
     required this.children,
     this.controller,
     this.onPageChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<ExpandablePageView> createState() => _ExpandablePageViewState();

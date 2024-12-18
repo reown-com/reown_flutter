@@ -1,9 +1,7 @@
 import 'dart:async';
 
-import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:get_it_mixin/get_it_mixin.dart';
 import 'package:qr_bar_code_scanner_dialog/qr_bar_code_scanner_dialog.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
@@ -15,15 +13,16 @@ import 'package:reown_walletkit_wallet/utils/eth_utils.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
 import 'package:reown_walletkit_wallet/widgets/pairing_item.dart';
 import 'package:reown_walletkit_wallet/widgets/uri_input_popup.dart';
+import 'package:toastification/toastification.dart';
 
-class AppsPage extends StatefulWidget with GetItStatefulWidgetMixin {
-  AppsPage({Key? key}) : super(key: key);
+class AppsPage extends StatefulWidget {
+  AppsPage({super.key});
 
   @override
   AppsPageState createState() => AppsPageState();
 }
 
-class AppsPageState extends State<AppsPage> with GetItStateMixin {
+class AppsPageState extends State<AppsPage> {
   List<PairingInfo> _pairings = [];
   late IWalletKitService _walletKitService;
   late IReownWalletKit _walletKit;
@@ -78,18 +77,11 @@ class AppsPageState extends State<AppsPage> with GetItStateMixin {
       if (!mounted) return;
       if (jsonObject is JsonRpcRequest &&
           jsonObject.method == MethodConstants.WC_SESSION_PING) {
-        showPlatformToast(
-          duration: const Duration(seconds: 1),
-          child: Container(
-            padding: const EdgeInsets.all(StyleConstants.linear8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(
-                StyleConstants.linear16,
-              ),
-            ),
-            child: Text(jsonObject.method, maxLines: 1),
-          ),
+        toastification.show(
+          title: Text(jsonObject.method, maxLines: 1),
           context: context,
+          autoCloseDuration: Duration(seconds: 2),
+          alignment: Alignment.bottomCenter,
         );
       }
     }

@@ -24,28 +24,19 @@ _$CacaoRequestPayloadImpl _$$CacaoRequestPayloadImplFromJson(
     );
 
 Map<String, dynamic> _$$CacaoRequestPayloadImplToJson(
-    _$CacaoRequestPayloadImpl instance) {
-  final val = <String, dynamic>{
-    'domain': instance.domain,
-    'aud': instance.aud,
-    'version': instance.version,
-    'nonce': instance.nonce,
-    'iat': instance.iat,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('nbf', instance.nbf);
-  writeNotNull('exp', instance.exp);
-  writeNotNull('statement', instance.statement);
-  writeNotNull('requestId', instance.requestId);
-  writeNotNull('resources', instance.resources);
-  return val;
-}
+        _$CacaoRequestPayloadImpl instance) =>
+    <String, dynamic>{
+      'domain': instance.domain,
+      'aud': instance.aud,
+      'version': instance.version,
+      'nonce': instance.nonce,
+      'iat': instance.iat,
+      if (instance.nbf case final value?) 'nbf': value,
+      if (instance.exp case final value?) 'exp': value,
+      if (instance.statement case final value?) 'statement': value,
+      if (instance.requestId case final value?) 'requestId': value,
+      if (instance.resources case final value?) 'resources': value,
+    };
 
 _$CacaoPayloadImpl _$$CacaoPayloadImplFromJson(Map<String, dynamic> json) =>
     _$CacaoPayloadImpl(
@@ -64,29 +55,20 @@ _$CacaoPayloadImpl _$$CacaoPayloadImplFromJson(Map<String, dynamic> json) =>
           .toList(),
     );
 
-Map<String, dynamic> _$$CacaoPayloadImplToJson(_$CacaoPayloadImpl instance) {
-  final val = <String, dynamic>{
-    'iss': instance.iss,
-    'domain': instance.domain,
-    'aud': instance.aud,
-    'version': instance.version,
-    'nonce': instance.nonce,
-    'iat': instance.iat,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('nbf', instance.nbf);
-  writeNotNull('exp', instance.exp);
-  writeNotNull('statement', instance.statement);
-  writeNotNull('requestId', instance.requestId);
-  writeNotNull('resources', instance.resources);
-  return val;
-}
+Map<String, dynamic> _$$CacaoPayloadImplToJson(_$CacaoPayloadImpl instance) =>
+    <String, dynamic>{
+      'iss': instance.iss,
+      'domain': instance.domain,
+      'aud': instance.aud,
+      'version': instance.version,
+      'nonce': instance.nonce,
+      'iat': instance.iat,
+      if (instance.nbf case final value?) 'nbf': value,
+      if (instance.exp case final value?) 'exp': value,
+      if (instance.statement case final value?) 'statement': value,
+      if (instance.requestId case final value?) 'requestId': value,
+      if (instance.resources case final value?) 'resources': value,
+    };
 
 _$CacaoHeaderImpl _$$CacaoHeaderImplFromJson(Map<String, dynamic> json) =>
     _$CacaoHeaderImpl(
@@ -106,21 +88,12 @@ _$CacaoSignatureImpl _$$CacaoSignatureImplFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$$CacaoSignatureImplToJson(
-    _$CacaoSignatureImpl instance) {
-  final val = <String, dynamic>{
-    't': instance.t,
-    's': instance.s,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('m', instance.m);
-  return val;
-}
+        _$CacaoSignatureImpl instance) =>
+    <String, dynamic>{
+      't': instance.t,
+      's': instance.s,
+      if (instance.m case final value?) 'm': value,
+    };
 
 _$CacaoImpl _$$CacaoImplFromJson(Map<String, dynamic> json) => _$CacaoImpl(
       h: CacaoHeader.fromJson(json['h'] as Map<String, dynamic>),

@@ -20,25 +20,18 @@ EthereumTransaction _$EthereumTransactionFromJson(Map<String, dynamic> json) =>
       data: json['data'] as String?,
     );
 
-Map<String, dynamic> _$EthereumTransactionToJson(EthereumTransaction instance) {
-  final val = <String, dynamic>{
-    'from': instance.from,
-    'to': instance.to,
-    'value': instance.value,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('nonce', instance.nonce);
-  writeNotNull('gasPrice', instance.gasPrice);
-  writeNotNull('maxFeePerGas', instance.maxFeePerGas);
-  writeNotNull('maxPriorityFeePerGas', instance.maxPriorityFeePerGas);
-  writeNotNull('gas', instance.gas);
-  writeNotNull('gasLimit', instance.gasLimit);
-  writeNotNull('data', instance.data);
-  return val;
-}
+Map<String, dynamic> _$EthereumTransactionToJson(
+        EthereumTransaction instance) =>
+    <String, dynamic>{
+      'from': instance.from,
+      'to': instance.to,
+      'value': instance.value,
+      if (instance.nonce case final value?) 'nonce': value,
+      if (instance.gasPrice case final value?) 'gasPrice': value,
+      if (instance.maxFeePerGas case final value?) 'maxFeePerGas': value,
+      if (instance.maxPriorityFeePerGas case final value?)
+        'maxPriorityFeePerGas': value,
+      if (instance.gas case final value?) 'gas': value,
+      if (instance.gasLimit case final value?) 'gasLimit': value,
+      if (instance.data case final value?) 'data': value,
+    };

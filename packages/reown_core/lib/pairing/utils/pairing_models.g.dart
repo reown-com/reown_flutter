@@ -44,24 +44,15 @@ _$PairingMetadataImpl _$$PairingMetadataImplFromJson(
     );
 
 Map<String, dynamic> _$$PairingMetadataImplToJson(
-    _$PairingMetadataImpl instance) {
-  final val = <String, dynamic>{
-    'name': instance.name,
-    'description': instance.description,
-    'url': instance.url,
-    'icons': instance.icons,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('verifyUrl', instance.verifyUrl);
-  writeNotNull('redirect', instance.redirect?.toJson());
-  return val;
-}
+        _$PairingMetadataImpl instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'description': instance.description,
+      'url': instance.url,
+      'icons': instance.icons,
+      if (instance.verifyUrl case final value?) 'verifyUrl': value,
+      if (instance.redirect?.toJson() case final value?) 'redirect': value,
+    };
 
 _$RedirectImpl _$$RedirectImplFromJson(Map<String, dynamic> json) =>
     _$RedirectImpl(
@@ -88,25 +79,16 @@ _$JsonRpcRecordImpl _$$JsonRpcRecordImplFromJson(Map<String, dynamic> json) =>
       response: json['response'],
     );
 
-Map<String, dynamic> _$$JsonRpcRecordImplToJson(_$JsonRpcRecordImpl instance) {
-  final val = <String, dynamic>{
-    'id': instance.id,
-    'topic': instance.topic,
-    'method': instance.method,
-  };
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('params', instance.params);
-  writeNotNull('chainId', instance.chainId);
-  writeNotNull('expiry', instance.expiry);
-  writeNotNull('response', instance.response);
-  return val;
-}
+Map<String, dynamic> _$$JsonRpcRecordImplToJson(_$JsonRpcRecordImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'topic': instance.topic,
+      'method': instance.method,
+      if (instance.params case final value?) 'params': value,
+      if (instance.chainId case final value?) 'chainId': value,
+      if (instance.expiry case final value?) 'expiry': value,
+      if (instance.response case final value?) 'response': value,
+    };
 
 _$ReceiverPublicKeyImpl _$$ReceiverPublicKeyImplFromJson(
         Map<String, dynamic> json) =>

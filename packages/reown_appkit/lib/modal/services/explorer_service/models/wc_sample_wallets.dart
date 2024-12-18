@@ -29,12 +29,20 @@ class WCSampleWallets {
           'bundleId': 'com.walletconnect.web3wallet.rnsample.internal',
           'universal': 'https://appkit-lab.reown.com/rn_walletkit_internal',
         },
+        // {
+        //   'name': 'KT Wallet (Internal)',
+        //   'platform': ['android'],
+        //   'id': '123456789012345678901234567894',
+        //   'schema': 'kotlin-web3wallet://wc',
+        //   'bundleId': 'com.reown.sample.wallet.internal',
+        //   'universal': 'https://appkit-lab.reown.com/wallet_internal',
+        // },
         {
           'name': 'KT Wallet (Internal)',
           'platform': ['android'],
           'id': '123456789012345678901234567894',
           'schema': 'kotlin-web3wallet://wc',
-          'bundleId': 'com.reown.sample.wallet.internal',
+          'bundleId': 'com.walletconnect.sample.wallet.internal',
           'universal': 'https://appkit-lab.reown.com/wallet_internal',
         },
       ];
@@ -64,12 +72,20 @@ class WCSampleWallets {
           'bundleId': 'com.walletconnect.web3wallet.rnsample',
           'universal': 'https://appkit-lab.reown.com/rn_walletkit',
         },
+        // {
+        //   'name': 'KT Wallet',
+        //   'platform': ['android'],
+        //   'id': '123456789012345678901234567893',
+        //   'schema': 'kotlin-web3wallet://wc',
+        //   'bundleId': 'com.reown.sample.wallet',
+        //   'universal': 'https://appkit-lab.reown.com/wallet_release',
+        // },
         {
           'name': 'KT Wallet',
           'platform': ['android'],
           'id': '123456789012345678901234567893',
           'schema': 'kotlin-web3wallet://wc',
-          'bundleId': 'com.reown.sample.wallet',
+          'bundleId': 'com.walletconnect.sample.wallet',
           'universal': 'https://appkit-lab.reown.com/wallet_release',
         },
       ];

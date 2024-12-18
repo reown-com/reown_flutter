@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
@@ -12,6 +11,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_example/utils/constants.dart';
 import 'package:reown_appkit_example/services/methods_service.dart';
 import 'package:reown_appkit_example/widgets/method_dialog.dart';
+import 'package:toastification/toastification.dart';
 
 class SessionWidget extends StatefulWidget {
   const SessionWidget({super.key, required this.appKit});
@@ -145,9 +145,11 @@ class SessionWidgetState extends State<SessionWidget> {
                 text: jsonEncode(widget.appKit.session?.toMap()),
               ),
             ).then(
-              (_) => showPlatformToast(
-                child: const Text(StringConstants.copiedToClipboard),
+              (_) => toastification.show(
+                title: Text(StringConstants.copiedToClipboard),
                 context: context,
+                autoCloseDuration: Duration(seconds: 2),
+                alignment: Alignment.bottomCenter,
               ),
             ),
             child: Text(

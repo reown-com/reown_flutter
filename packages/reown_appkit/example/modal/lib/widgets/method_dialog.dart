@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:reown_appkit_example/utils/constants.dart';
+import 'package:toastification/toastification.dart';
 
 class MethodDialog extends StatefulWidget {
   static Future<void> show(
@@ -81,11 +81,11 @@ class MethodDialogState extends State<MethodDialog> {
 
   void _copyToClipboard(String text) {
     Clipboard.setData(ClipboardData(text: text)).then(
-      (_) => showPlatformToast(
-        child: const Text(
-          StringConstants.copiedToClipboard,
-        ),
+      (_) => toastification.show(
+        title: Text(StringConstants.copiedToClipboard),
         context: context,
+        autoCloseDuration: Duration(seconds: 2),
+        alignment: Alignment.bottomCenter,
       ),
     );
   }
