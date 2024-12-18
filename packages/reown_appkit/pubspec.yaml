@@ -6,8 +6,7 @@ repository: https://github.com/reown-com/reown_flutter/tree/master/packages/reow
 documentation: https://docs.reown.com/appkit/flutter/core/installation
 
 environment:
-  sdk: ">=3.2.3"
-  flutter: ">=3.16.6"
+  sdk: ">=3.2.3 <4.0.0"
 
 dependencies:
   appcheck: ^1.5.2
