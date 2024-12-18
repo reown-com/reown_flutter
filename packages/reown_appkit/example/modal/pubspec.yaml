@@ -17,7 +17,7 @@ dependencies:
   intl: ^0.19.0
   reown_appkit:
     path: ../..
-  shared_preferences: ^2.3.3
+  shared_preferences: ^2.3.4
   toastification: ^2.3.0
 
 dev_dependencies:
