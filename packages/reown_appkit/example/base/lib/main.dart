@@ -199,7 +199,7 @@ class _MyHomePageState extends State<MyHomePage> {
           AppKitSocialOption.Apple,
           AppKitSocialOption.Discord,
         ],
-        showMainWallets: false, // OPTIONAL - true by default
+        showMainWallets: true, // OPTIONAL - true by default
       ),
       // requiredNamespaces: {},
       // optionalNamespaces: {},

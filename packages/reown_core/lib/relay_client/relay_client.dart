@@ -330,7 +330,7 @@ class RelayClient implements IRelayClient {
     final reconnectCodes = [1001, 4008, 4010, 1002, 1005, 10002];
     if (code != null) {
       if (reconnectCodes.contains(code)) {
-        await connect();
+        await _connect();
       } else {
         await disconnect();
         final errorReason = code == 3000
