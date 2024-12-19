@@ -35,12 +35,12 @@ class RoundedIcon extends StatelessWidget {
         borderRadius: BorderRadius.all(Radius.circular(radius)),
         border: Border.fromBorderSide(
           BorderSide(
-            color: borderColor ?? themeColors.grayGlass005,
+            color: borderColor ?? themeColors.grayGlass002,
             width: 2,
             strokeAlign: BorderSide.strokeAlignOutside,
           ),
         ),
-        color: circleColor ?? themeColors.grayGlass010,
+        color: circleColor ?? themeColors.grayGlass005,
       ),
       clipBehavior: Clip.antiAlias,
       child: (imageUrl ?? '').isNotEmpty

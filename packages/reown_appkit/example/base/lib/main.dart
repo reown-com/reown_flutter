@@ -1,20 +1,24 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:developer' as dev;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+// ignore: depend_on_referenced_packages
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:reown_appkit_dapp/models/page_data.dart';
 import 'package:reown_appkit_dapp/pages/connect_page.dart';
 import 'package:reown_appkit_dapp/pages/pairings_page.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
+import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
+import 'package:reown_appkit_dapp/utils/crypto/tron.dart';
 import 'package:reown_appkit_dapp/utils/dart_defines.dart';
 import 'package:reown_appkit_dapp/utils/deep_link_handler.dart';
 import 'package:reown_appkit_dapp/utils/string_constants.dart';
 import 'package:reown_appkit_dapp/widgets/event_widget.dart';
-// ignore: depend_on_referenced_packages
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -92,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    initializeService();
+    _initializeService();
   }
 
   String get _flavor {
@@ -130,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> initializeService() async {
+  Future<void> _initializeService() async {
     _appKit = ReownAppKit(
       core: ReownCore(
         projectId: DartDefines.projectId,
@@ -163,28 +167,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final prefs = await SharedPreferences.getInstance();
     final linkMode = prefs.getBool('appkit_sample_linkmode') ?? false;
-    if (!linkMode) {
-      ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
-        ReownAppKitModalNetworkInfo(
-          name: 'Polkadot',
-          chainId: '91b171bb158e2d3848fa23a9f1c25182',
-          chainIcon: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png',
-          currency: 'DOT',
-          rpcUrl: 'https://rpc.polkadot.io',
-          explorerUrl: 'https://polkadot.subscan.io',
-        ),
-        ReownAppKitModalNetworkInfo(
-          name: 'Westend',
-          chainId: 'e143f23803ac50e8f6f8e62695d1ce9e',
-          currency: 'DOT',
-          rpcUrl: 'https://westend-rpc.polkadot.io',
-          explorerUrl: 'https://westend.subscan.io',
-          isTestNetwork: true,
-        ),
-      ]);
-    } else {
-      ReownAppKitModalNetworks.removeSupportedNetworks('solana');
-    }
+
+    _addOrRemoveNetworks(linkMode);
 
     _appKitModal = ReownAppKitModal(
       context: context,
@@ -204,6 +188,11 @@ class _MyHomePageState extends State<MyHomePage> {
       // requiredNamespaces: {},
       // optionalNamespaces: {},
       // includedWalletIds: {},
+      getBalanceFallback: () async {
+        // This method will be triggered if getting the balance from our blockchain API fails
+        // You could place here your own getBalance method
+        return 0.0;
+      },
       featuredWalletIds: {
         'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
         '18450873727504ae9315a084fa7624b5297d2fe5880f0982979c17345a138277', // Kraken Wallet
@@ -216,38 +205,7 @@ class _MyHomePageState extends State<MyHomePage> {
       //   'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
       // },
       // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
-      optionalNamespaces: !linkMode
-          ? {
-              // This is needed if more chains besides EVM and Solana are supported
-              // mostly because we can not define internally every possible method for every possible chain
-              'eip155': RequiredNamespace.fromJson({
-                'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
-                  namespace: 'eip155',
-                ).map((chain) => 'eip155:${chain.chainId}').toList(),
-                'methods':
-                    NetworkUtils.defaultNetworkMethods['eip155']!.toList(),
-                'events': NetworkUtils.defaultNetworkEvents['eip155']!.toList(),
-              }),
-              'solana': RequiredNamespace.fromJson({
-                'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
-                  namespace: 'solana',
-                ).map((chain) => 'solana:${chain.chainId}').toList(),
-                'methods':
-                    NetworkUtils.defaultNetworkMethods['solana']!.toList(),
-                'events': [],
-              }),
-              'polkadot': RequiredNamespace.fromJson({
-                'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
-                  namespace: 'polkadot',
-                ).map((chain) => 'polkadot:${chain.chainId}').toList(),
-                'methods': [
-                  'polkadot_signMessage',
-                  'polkadot_signTransaction',
-                ],
-                'events': []
-              }),
-            }
-          : null,
+      optionalNamespaces: _updatedNamespaces(),
     );
 
     _appKitModal!.onModalConnect.subscribe(_onModalConnect);
@@ -325,6 +283,102 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  // Adds or remove supported networks based on linkMode
+  void _addOrRemoveNetworks(bool linkMode) {
+    if (!linkMode) {
+      ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
+        ReownAppKitModalNetworkInfo(
+          name: 'Polkadot',
+          chainId: '91b171bb158e2d3848fa23a9f1c25182',
+          chainIcon: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png',
+          currency: 'DOT',
+          rpcUrl: 'https://rpc.polkadot.io',
+          explorerUrl: 'https://polkadot.subscan.io',
+        ),
+        ReownAppKitModalNetworkInfo(
+          name: 'Westend',
+          chainId: 'e143f23803ac50e8f6f8e62695d1ce9e',
+          currency: 'DOT',
+          rpcUrl: 'https://westend-rpc.polkadot.io',
+          explorerUrl: 'https://westend.subscan.io',
+          isTestNetwork: true,
+        ),
+      ]);
+      ReownAppKitModalNetworks.addSupportedNetworks('tron', [
+        ReownAppKitModalNetworkInfo(
+          name: 'Tron',
+          chainId: '0x2b6653dc',
+          chainIcon: 'https://cryptologos.cc/logos/tron-trx-logo.png',
+          currency: 'TRX',
+          rpcUrl: 'https://api.trongrid.io',
+          explorerUrl: 'https://tronscan.org',
+        ),
+        ReownAppKitModalNetworkInfo(
+          name: 'Tron testnet',
+          chainId: '0xcd8690dc',
+          chainIcon: 'https://cryptologos.cc/logos/tron-trx-logo.png',
+          currency: 'TRX',
+          rpcUrl: 'https://nile.trongrid.io',
+          explorerUrl: 'https://test.tronscan.org',
+          isTestNetwork: true,
+        ),
+      ]);
+    } else {
+      ReownAppKitModalNetworks.removeSupportedNetworks('solana');
+    }
+  }
+
+  // Updates namespaces based on supported networks list
+  Map<String, RequiredNamespace>? _updatedNamespaces() {
+    Map<String, RequiredNamespace>? namespaces = {};
+
+    final evmChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
+      namespace: 'eip155',
+    );
+    if (evmChains.isNotEmpty) {
+      namespaces['eip155'] = RequiredNamespace(
+        chains: evmChains.map((c) => 'eip155:${c.chainId}').toList(),
+        methods: NetworkUtils.defaultNetworkMethods['eip155']!.toList(),
+        events: NetworkUtils.defaultNetworkEvents['eip155']!.toList(),
+      );
+    }
+    //
+    final solanaChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
+      namespace: 'solana',
+    );
+    if (solanaChains.isNotEmpty) {
+      namespaces['solana'] = RequiredNamespace(
+        chains: solanaChains.map((c) => 'solana:${c.chainId}').toList(),
+        methods: NetworkUtils.defaultNetworkMethods['solana']!.toList(),
+        events: NetworkUtils.defaultNetworkEvents['solana']!.toList(),
+      );
+    }
+    //
+    final polkadotChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
+      namespace: 'polkadot',
+    );
+    if (polkadotChains.isNotEmpty) {
+      namespaces['polkadot'] = RequiredNamespace(
+        chains: polkadotChains.map((c) => 'polkadot:${c.chainId}').toList(),
+        methods: Polkadot.methods.values.toList(),
+        events: Polkadot.events.values.toList(),
+      );
+    }
+    //
+    final tronChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
+      namespace: 'tron',
+    );
+    if (tronChains.isNotEmpty) {
+      namespaces['tron'] = RequiredNamespace(
+        chains: tronChains.map((c) => 'tron:${c.chainId}').toList(),
+        methods: Tron.methods.values.toList(),
+        events: Tron.events.values.toList(),
+      );
+    }
+
+    return namespaces;
+  }
+
   Future<void> _registerEventHandlers() async {
     final onLine = _appKit!.core.connectivity.isOnline.value;
     if (!onLine) {
@@ -350,7 +404,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onSessionConnect(SessionConnect? event) {
-    log('[SampleDapp] _onSessionConnect ${jsonEncode(event?.session.toJson())}');
+    dev.log(
+      '[SampleDapp] _onSessionConnect ${jsonEncode(event?.session.toJson())}',
+    );
   }
 
   void _onSessionAuthResponse(SessionAuthResponse? response) {

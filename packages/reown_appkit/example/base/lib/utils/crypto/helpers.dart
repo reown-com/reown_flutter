@@ -3,9 +3,8 @@ import 'dart:convert';
 import 'package:bs58/bs58.dart';
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:reown_appkit/reown_appkit.dart';
-import 'package:reown_appkit_dapp/utils/crypto/eip155.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
-import 'package:reown_appkit_dapp/utils/crypto/solana.dart';
+import 'package:reown_appkit_dapp/utils/crypto/tron.dart';
 import 'package:reown_appkit_dapp/utils/test_data.dart';
 
 import 'package:solana_web3/solana_web3.dart' as solana;
@@ -13,11 +12,13 @@ import 'package:solana_web3/solana_web3.dart' as solana;
 List<String> getChainMethods(String namespace) {
   switch (namespace) {
     case 'eip155':
-      return EIP155.methods.values.toList();
+      return NetworkUtils.defaultNetworkMethods['eip155']!.toList();
     case 'solana':
-      return Solana.methods.values.toList();
+      return NetworkUtils.defaultNetworkMethods['solana']!.toList();
     case 'polkadot':
       return Polkadot.methods.values.toList();
+    case 'tron':
+      return Tron.methods.values.toList();
     default:
       return [];
   }
@@ -26,11 +27,13 @@ List<String> getChainMethods(String namespace) {
 List<String> getChainEvents(String namespace) {
   switch (namespace) {
     case 'eip155':
-      return EIP155.events.values.toList();
+      return NetworkUtils.defaultNetworkEvents['eip155']!.toList();
     case 'solana':
-      return Solana.events.values.toList();
+      return NetworkUtils.defaultNetworkEvents['solana']!.toList();
     case 'polkadot':
       return Polkadot.events.values.toList();
+    case 'tron':
+      return Tron.events.values.toList();
     default:
       return [];
   }
@@ -38,9 +41,9 @@ List<String> getChainEvents(String namespace) {
 
 Future<SessionRequestParams?> getParams(
   String method,
-  String address, {
-  String? rpcUrl,
-}) async {
+  String address,
+  ReownAppKitModalNetworkInfo chainData,
+) async {
   switch (method) {
     case 'personal_sign':
       final bytes = utf8.encode(testSignData);
@@ -95,7 +98,7 @@ Future<SessionRequestParams?> getParams(
     case 'solana_signTransaction':
       // Create a connection to the devnet cluster.
       final cluster = solana.Cluster.https(
-        Uri.parse(rpcUrl!).authority,
+        Uri.parse(chainData.rpcUrl).authority,
       );
       // final cluster = solana.Cluster.devnet;
       final connection = solana.Connection(cluster);
@@ -147,6 +150,27 @@ Future<SessionRequestParams?> getParams(
           // 'pubkey': address,
           // 'feePayer': address,
           // ...transactionv0.message.toJson(),
+        },
+      );
+    case 'tron_signMessage':
+      return SessionRequestParams(
+        method: method,
+        params: {
+          'address': address,
+          'message': testSignData,
+        },
+      );
+    case 'tron_signTransaction':
+      //
+      final transaction = await Tron.triggerSmartContract(
+        chainData: chainData,
+        walletAdress: address,
+      );
+      return SessionRequestParams(
+        method: method,
+        params: {
+          'address': address,
+          'transaction': transaction,
         },
       );
     default:
