@@ -36,7 +36,9 @@ _$PairingMetadataImpl _$$PairingMetadataImplFromJson(
       name: json['name'] as String,
       description: json['description'] as String,
       url: json['url'] as String,
-      icons: (json['icons'] as List<dynamic>).map((e) => e as String).toList(),
+      icons:
+          (json['icons'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+              const <String>[],
       verifyUrl: json['verifyUrl'] as String?,
       redirect: json['redirect'] == null
           ? null

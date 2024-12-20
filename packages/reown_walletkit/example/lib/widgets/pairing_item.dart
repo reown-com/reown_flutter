@@ -56,7 +56,7 @@ class PairingItem extends StatelessWidget {
             );
           }
           return CircleAvatar(
-            backgroundImage: const AssetImage('assets/images/default_icon.png'),
+            backgroundColor: Colors.black12,
           );
         },
       ),

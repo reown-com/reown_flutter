@@ -391,13 +391,17 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
   @override
   void initState() {
     super.initState();
-    _selectedChain = ChainsDataList.solanaChains.first;
-    final keysService = GetIt.I<IKeyService>();
-    final chainKeys = keysService.getKeysForChain('solana');
-    GetIt.I
-        .get<SolanaService2>(instanceName: _selectedChain!.chainId)
-        .getBalance(address: chainKeys.first.address)
-        .then((value) => setState(() => _balance = value));
+    try {
+      _selectedChain = ChainsDataList.solanaChains.first;
+      final keysService = GetIt.I<IKeyService>();
+      final chainKeys = keysService.getKeysForChain('solana');
+      GetIt.I
+          .get<SolanaService2>(instanceName: _selectedChain!.chainId)
+          .getBalance(address: chainKeys.first.address)
+          .then((value) => setState(() => _balance = value));
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override

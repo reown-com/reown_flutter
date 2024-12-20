@@ -480,7 +480,7 @@ class _$PairingMetadataImpl implements _PairingMetadata {
       {required this.name,
       required this.description,
       required this.url,
-      required final List<String> icons,
+      final List<String> icons = const <String>[],
       this.verifyUrl,
       this.redirect})
       : _icons = icons;
@@ -496,6 +496,7 @@ class _$PairingMetadataImpl implements _PairingMetadata {
   final String url;
   final List<String> _icons;
   @override
+  @JsonKey()
   List<String> get icons {
     if (_icons is EqualUnmodifiableListView) return _icons;
     // ignore: implicit_dynamic_type
@@ -555,7 +556,7 @@ abstract class _PairingMetadata implements PairingMetadata {
       {required final String name,
       required final String description,
       required final String url,
-      required final List<String> icons,
+      final List<String> icons,
       final String? verifyUrl,
       final Redirect? redirect}) = _$PairingMetadataImpl;
 
