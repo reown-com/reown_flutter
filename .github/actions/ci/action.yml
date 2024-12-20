@@ -50,7 +50,7 @@ runs:
       run: flutter test --dart-define=RELAY_ENDPOINT=$RELAY_ENDPOINT --dart-define=PROJECT_ID=$PROJECT_ID
     
     # Run WalletKit Unit and Integration Tests
-    - name: Run AppKit tests
+    - name: Run WalletKit tests
       if: inputs.type == 'integration-tests'
       shell: bash
       working-directory: packages/reown_walletkit

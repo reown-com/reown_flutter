@@ -847,7 +847,7 @@ class ReownSign implements IReownSign {
 
     // Subscribe to all the sessions
     for (final SessionData session in sessions.getAll()) {
-      core.logger.i('Resubscribing to session topic: ${session.topic}');
+      core.logger.i('[$runtimeType] Resubscribe to session: ${session.topic}');
       await core.relayClient.subscribe(topic: session.topic);
     }
   }

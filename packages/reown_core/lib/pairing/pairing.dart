@@ -584,7 +584,7 @@ class Pairing implements IPairing {
 
     // Resubscribe to all active pairings
     for (final PairingInfo pairing in pairings.getAll()) {
-      core.logger.i('Resubscribing to pairing topic: ${pairing.topic}');
+      core.logger.i('[$runtimeType] Resubscribe to pairing: ${pairing.topic}');
       await core.relayClient.subscribe(topic: pairing.topic);
     }
   }

@@ -23,6 +23,8 @@ class GenericStore<T> implements IGenericStore<T> {
   @override
   final Event<StoreDeleteEvent<T>> onDelete = Event();
   @override
+  final Event<StoreErrorEvent<T>> onError = Event();
+  @override
   final Event<StoreSyncEvent> onSync = Event();
 
   bool _initialized = false;
@@ -158,7 +160,10 @@ class GenericStore<T> implements IGenericStore<T> {
       } catch (e) {
         // print('Error restoring $storageKey: $e');
         await storage.delete(storedVersion);
-        rethrow;
+        onError.broadcast(StoreErrorEvent<String>(
+          storedVersion,
+          e.toString(),
+        ));
       }
     }
   }
