@@ -251,14 +251,14 @@ class RelayClient implements IRelayClient {
   Future<void> _createJsonRPCProvider() async {
     _connecting = true;
     _active = true;
-    final auth = await core.crypto.signJWT(core.relayUrl);
-    core.logger.d('[$runtimeType]: Signed JWT: $auth');
+    final signedJWT = await core.crypto.signJWT(core.relayUrl);
+    core.logger.d('[$runtimeType]: Signed JWT: $signedJWT');
     final url = ReownCoreUtils.formatRelayRpcUrl(
       protocol: ReownConstants.CORE_PROTOCOL,
       version: ReownConstants.CORE_VERSION,
       sdkVersion: ReownConstants.SDK_VERSION,
       relayUrl: core.relayUrl,
-      auth: auth,
+      auth: signedJWT,
       projectId: core.projectId,
       packageName: (await ReownCoreUtils.getPackageName()),
     );

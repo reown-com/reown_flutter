@@ -30,6 +30,16 @@ class StoreDeleteEvent<T> extends EventArgs {
   );
 }
 
+class StoreErrorEvent<T> extends EventArgs {
+  final String key;
+  final T error;
+
+  StoreErrorEvent(
+    this.key,
+    this.error,
+  );
+}
+
 class StoreSyncEvent extends EventArgs {
   StoreSyncEvent();
 }

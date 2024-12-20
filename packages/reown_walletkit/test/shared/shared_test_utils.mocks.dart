@@ -936,6 +936,16 @@ class MockMessageTracker extends _i1.Mock implements _i25.MessageTracker {
       ) as _i8.Event<_i26.StoreDeleteEvent<Map<String, String>>>);
 
   @override
+  _i8.Event<_i26.StoreErrorEvent<Map<String, String>>> get onError =>
+      (super.noSuchMethod(
+        Invocation.getter(#onError),
+        returnValue: _FakeEvent_8<_i26.StoreErrorEvent<Map<String, String>>>(
+          this,
+          Invocation.getter(#onError),
+        ),
+      ) as _i8.Event<_i26.StoreErrorEvent<Map<String, String>>>);
+
+  @override
   _i8.Event<_i26.StoreSyncEvent> get onSync => (super.noSuchMethod(
         Invocation.getter(#onSync),
         returnValue: _FakeEvent_8<_i26.StoreSyncEvent>(

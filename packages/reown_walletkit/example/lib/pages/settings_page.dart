@@ -187,7 +187,10 @@ class _EVMAccountsState extends State<_EVMAccounts> {
     GetIt.I
         .get<EVMService>(instanceName: _selectedChain!.chainId)
         .getBalance(address: chainKeys[_currentPage].address)
-        .then((value) => setState(() => _balance = value));
+        .then((value) {
+      if (!mounted) return;
+      setState(() => _balance = value);
+    });
   }
 
   @override
@@ -270,7 +273,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
             children: [
               Expanded(
                 child: Text(
-                  '${_balance.toStringAsFixed(3)} ETH',
+                  '${_balance.toStringAsFixed(4)} ETH',
                   style: TextStyle(
                     fontSize: 15.0,
                     fontWeight: FontWeight.bold,
@@ -398,7 +401,10 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
       GetIt.I
           .get<SolanaService2>(instanceName: _selectedChain!.chainId)
           .getBalance(address: chainKeys.first.address)
-          .then((value) => setState(() => _balance = value));
+          .then((value) {
+        if (!mounted) return;
+        setState(() => _balance = value);
+      });
     } catch (e) {
       debugPrint(e.toString());
     }
