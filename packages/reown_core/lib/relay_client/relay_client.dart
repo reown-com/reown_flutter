@@ -342,7 +342,7 @@ class RelayClient implements IRelayClient {
               code: code,
               message: errorReason,
             ),
-            null,
+            StackTrace.current,
           ),
         );
         core.logger.e('[$runtimeType], _handleRelayClose: $core, $errorReason');
