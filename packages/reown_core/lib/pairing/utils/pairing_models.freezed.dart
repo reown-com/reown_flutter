@@ -27,8 +27,12 @@ mixin _$PairingInfo {
   List<String>? get methods => throw _privateConstructorUsedError;
   PairingMetadata? get peerMetadata => throw _privateConstructorUsedError;
 
+  /// Serializes this PairingInfo to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of PairingInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PairingInfoCopyWith<PairingInfo> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -60,6 +64,8 @@ class _$PairingInfoCopyWithImpl<$Res, $Val extends PairingInfo>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PairingInfo
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -98,6 +104,8 @@ class _$PairingInfoCopyWithImpl<$Res, $Val extends PairingInfo>
     ) as $Val);
   }
 
+  /// Create a copy of PairingInfo
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $PairingMetadataCopyWith<$Res>? get peerMetadata {
@@ -139,6 +147,8 @@ class __$$PairingInfoImplCopyWithImpl<$Res>
       _$PairingInfoImpl _value, $Res Function(_$PairingInfoImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PairingInfo
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -234,12 +244,14 @@ class _$PairingInfoImpl implements _PairingInfo {
                 other.peerMetadata == peerMetadata));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, topic, expiry, relay, active,
       const DeepCollectionEquality().hash(_methods), peerMetadata);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PairingInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PairingInfoImplCopyWith<_$PairingInfoImpl> get copyWith =>
@@ -277,8 +289,11 @@ abstract class _PairingInfo implements PairingInfo {
   List<String>? get methods;
   @override
   PairingMetadata? get peerMetadata;
+
+  /// Create a copy of PairingInfo
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PairingInfoImplCopyWith<_$PairingInfoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -296,8 +311,12 @@ mixin _$PairingMetadata {
   String? get verifyUrl => throw _privateConstructorUsedError;
   Redirect? get redirect => throw _privateConstructorUsedError;
 
+  /// Serializes this PairingMetadata to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of PairingMetadata
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PairingMetadataCopyWith<PairingMetadata> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -329,6 +348,8 @@ class _$PairingMetadataCopyWithImpl<$Res, $Val extends PairingMetadata>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PairingMetadata
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -367,6 +388,8 @@ class _$PairingMetadataCopyWithImpl<$Res, $Val extends PairingMetadata>
     ) as $Val);
   }
 
+  /// Create a copy of PairingMetadata
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $RedirectCopyWith<$Res>? get redirect {
@@ -408,6 +431,8 @@ class __$$PairingMetadataImplCopyWithImpl<$Res>
       _$PairingMetadataImpl _value, $Res Function(_$PairingMetadataImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PairingMetadata
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -455,7 +480,7 @@ class _$PairingMetadataImpl implements _PairingMetadata {
       {required this.name,
       required this.description,
       required this.url,
-      required final List<String> icons,
+      final List<String> icons = const <String>[],
       this.verifyUrl,
       this.redirect})
       : _icons = icons;
@@ -471,6 +496,7 @@ class _$PairingMetadataImpl implements _PairingMetadata {
   final String url;
   final List<String> _icons;
   @override
+  @JsonKey()
   List<String> get icons {
     if (_icons is EqualUnmodifiableListView) return _icons;
     // ignore: implicit_dynamic_type
@@ -503,12 +529,14 @@ class _$PairingMetadataImpl implements _PairingMetadata {
                 other.redirect == redirect));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, name, description, url,
       const DeepCollectionEquality().hash(_icons), verifyUrl, redirect);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PairingMetadata
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PairingMetadataImplCopyWith<_$PairingMetadataImpl> get copyWith =>
@@ -528,7 +556,7 @@ abstract class _PairingMetadata implements PairingMetadata {
       {required final String name,
       required final String description,
       required final String url,
-      required final List<String> icons,
+      final List<String> icons,
       final String? verifyUrl,
       final Redirect? redirect}) = _$PairingMetadataImpl;
 
@@ -547,8 +575,11 @@ abstract class _PairingMetadata implements PairingMetadata {
   String? get verifyUrl;
   @override
   Redirect? get redirect;
+
+  /// Create a copy of PairingMetadata
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PairingMetadataImplCopyWith<_$PairingMetadataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -563,8 +594,12 @@ mixin _$Redirect {
   String? get universal => throw _privateConstructorUsedError;
   bool get linkMode => throw _privateConstructorUsedError;
 
+  /// Serializes this Redirect to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Redirect
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $RedirectCopyWith<Redirect> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -587,6 +622,8 @@ class _$RedirectCopyWithImpl<$Res, $Val extends Redirect>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Redirect
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -630,6 +667,8 @@ class __$$RedirectImplCopyWithImpl<$Res>
       _$RedirectImpl _value, $Res Function(_$RedirectImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Redirect
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -688,11 +727,13 @@ class _$RedirectImpl implements _Redirect {
                 other.linkMode == linkMode));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, native, universal, linkMode);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Redirect
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$RedirectImplCopyWith<_$RedirectImpl> get copyWith =>
@@ -721,8 +762,11 @@ abstract class _Redirect implements Redirect {
   String? get universal;
   @override
   bool get linkMode;
+
+  /// Create a copy of Redirect
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$RedirectImplCopyWith<_$RedirectImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -741,8 +785,12 @@ mixin _$JsonRpcRecord {
   int? get expiry => throw _privateConstructorUsedError;
   dynamic get response => throw _privateConstructorUsedError;
 
+  /// Serializes this JsonRpcRecord to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of JsonRpcRecord
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $JsonRpcRecordCopyWith<JsonRpcRecord> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -773,6 +821,8 @@ class _$JsonRpcRecordCopyWithImpl<$Res, $Val extends JsonRpcRecord>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of JsonRpcRecord
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -843,6 +893,8 @@ class __$$JsonRpcRecordImplCopyWithImpl<$Res>
       _$JsonRpcRecordImpl _value, $Res Function(_$JsonRpcRecordImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of JsonRpcRecord
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -937,7 +989,7 @@ class _$JsonRpcRecordImpl implements _JsonRpcRecord {
             const DeepCollectionEquality().equals(other.response, response));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -949,7 +1001,9 @@ class _$JsonRpcRecordImpl implements _JsonRpcRecord {
       expiry,
       const DeepCollectionEquality().hash(response));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of JsonRpcRecord
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$JsonRpcRecordImplCopyWith<_$JsonRpcRecordImpl> get copyWith =>
@@ -990,8 +1044,11 @@ abstract class _JsonRpcRecord implements JsonRpcRecord {
   int? get expiry;
   @override
   dynamic get response;
+
+  /// Create a copy of JsonRpcRecord
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$JsonRpcRecordImplCopyWith<_$JsonRpcRecordImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1006,8 +1063,12 @@ mixin _$ReceiverPublicKey {
   String get publicKey => throw _privateConstructorUsedError;
   int get expiry => throw _privateConstructorUsedError;
 
+  /// Serializes this ReceiverPublicKey to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of ReceiverPublicKey
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ReceiverPublicKeyCopyWith<ReceiverPublicKey> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1031,6 +1092,8 @@ class _$ReceiverPublicKeyCopyWithImpl<$Res, $Val extends ReceiverPublicKey>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ReceiverPublicKey
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1074,6 +1137,8 @@ class __$$ReceiverPublicKeyImplCopyWithImpl<$Res>
       $Res Function(_$ReceiverPublicKeyImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ReceiverPublicKey
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1131,11 +1196,13 @@ class _$ReceiverPublicKeyImpl implements _ReceiverPublicKey {
             (identical(other.expiry, expiry) || other.expiry == expiry));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, topic, publicKey, expiry);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ReceiverPublicKey
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ReceiverPublicKeyImplCopyWith<_$ReceiverPublicKeyImpl> get copyWith =>
@@ -1165,8 +1232,11 @@ abstract class _ReceiverPublicKey implements ReceiverPublicKey {
   String get publicKey;
   @override
   int get expiry;
+
+  /// Create a copy of ReceiverPublicKey
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ReceiverPublicKeyImplCopyWith<_$ReceiverPublicKeyImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

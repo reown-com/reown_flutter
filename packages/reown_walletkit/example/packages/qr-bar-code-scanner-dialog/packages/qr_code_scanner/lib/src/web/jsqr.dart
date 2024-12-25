@@ -1,5 +1,5 @@
 @JS()
-library jsqr;
+library;
 
 import 'package:js/js.dart';
 

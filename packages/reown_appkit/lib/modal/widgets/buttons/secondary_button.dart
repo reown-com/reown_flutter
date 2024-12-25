@@ -20,13 +20,13 @@ class SecondaryButton extends StatelessWidget {
       child: Text(title),
       onTap: onTap,
       buttonStyle: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) => themeColors.grayGlass001,
         ),
-        foregroundColor: MaterialStateProperty.resolveWith<Color>(
+        foregroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) => themeColors.foreground200,
         ),
-        shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
+        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
           (states) {
             return RoundedRectangleBorder(
               side: BorderSide(

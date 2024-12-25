@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:flutter/foundation.dart';
@@ -53,7 +52,7 @@ class WalletKitService extends IWalletKitService {
     _walletKit = ReownWalletKit(
       core: ReownCore(
         projectId: DartDefines.projectId,
-        logLevel: LogLevel.info,
+        logLevel: LogLevel.all,
       ),
       metadata: PairingMetadata(
         name: 'FL WalletKit Sample',
@@ -288,7 +287,7 @@ class WalletKitService extends IWalletKitService {
       final SessionAuthPayload authPayload = args.authPayload;
       final jsonPyaload = jsonEncode(authPayload.toJson());
       debugPrint('[SampleWallet] _onSessionAuthRequest $jsonPyaload');
-      final supportedChains = ChainData.eip155Chains.map((e) => e.chainId);
+      final supportedChains = ChainsDataList.eip155Chains.map((e) => e.chainId);
       final supportedMethods = SupportedEVMMethods.values.map((e) => e.name);
       final newAuthPayload = AuthSignature.populateAuthPayload(
         authPayload: authPayload,

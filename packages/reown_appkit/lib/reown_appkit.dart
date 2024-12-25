@@ -1,4 +1,4 @@
-library reown_appkit;
+library;
 
 ///
 /// BASE

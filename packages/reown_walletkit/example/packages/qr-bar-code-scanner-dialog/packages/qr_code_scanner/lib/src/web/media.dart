@@ -2,7 +2,7 @@
 // https://stackoverflow.com/questions/61161135/adding-support-for-navigator-mediadevices-getusermedia-to-dart
 
 @JS('navigator.mediaDevices')
-library media_devices;
+library;
 
 import 'package:js/js.dart';
 

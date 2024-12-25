@@ -195,9 +195,7 @@ class Pairing implements IPairing {
     try {
       await pairings.set(topic, pairing);
       await core.crypto.setSymKey(symKey, overrideTopic: topic);
-      await core.relayClient.subscribe(topic: topic).timeout(
-            const Duration(seconds: 15),
-          );
+      await core.relayClient.subscribe(topic: topic);
       await core.expirer.set(topic, expiry);
 
       onPairingCreate.broadcast(
@@ -433,12 +431,12 @@ class Pairing implements IPairing {
     });
     pendingRequests[payload['id']] = resp;
 
+    core.logger.d(
+      '[$runtimeType] sendRequest appLink: $appLink, '
+      'id: $id topic: $topic, method: $method, params: $params, ttl: $ttl',
+    );
     if ((appLink ?? '').isNotEmpty) {
       // during wc_sessionAuthenticate we don't need to openURL as it will be done by the host dapp
-      core.logger.d(
-        'pairing sendRequest LinkMode, '
-        'id: $id topic: $topic, method: $method, params: $params, ttl: $ttl',
-      );
       if (openUrl) {
         final redirectURL = ReownCoreUtils.getLinkModeURL(
           appLink!,
@@ -448,10 +446,6 @@ class Pairing implements IPairing {
         await ReownCoreUtils.openURL(redirectURL);
       }
     } else {
-      core.logger.d(
-        'pairing sendRequest Relay, '
-        'id: $id topic: $topic, method: $method, params: $params, ttl: $ttl',
-      );
       // RpcOptions opts = MethodConstants.RPC_OPTS[method]!['req']!;
       RpcOptions opts = MethodConstants.RPC_OPTS[method]!['req']!;
       if (ttl != null) {
@@ -507,23 +501,19 @@ class Pairing implements IPairing {
       return;
     }
 
+    core.logger.d(
+      '[$runtimeType] sendRequest appLink: $appLink, '
+      'id: $id topic: $topic, method: $method, result: $result',
+    );
     if ((appLink ?? '').isNotEmpty) {
       final redirectURL = ReownCoreUtils.getLinkModeURL(
         appLink!,
         topic,
         message,
       );
-      core.logger.d(
-        'pairing sendResult LinkMode, '
-        'id: $id topic: $topic, method: $method, result: $result',
-      );
       await ReownCoreUtils.openURL(redirectURL);
     } else {
       final RpcOptions opts = MethodConstants.RPC_OPTS[method]!['res']!;
-      core.logger.d(
-        'pairing sendResult Relay, '
-        'id: $id topic: $topic, method: $method, result: $result',
-      );
       await core.relayClient.publish(
         topic: topic,
         message: message,
@@ -558,15 +548,15 @@ class Pairing implements IPairing {
       return;
     }
 
+    core.logger.d(
+      '[$runtimeType] sendRequest appLink: $appLink, '
+      'id: $id topic: $topic, method: $method, error: $error',
+    );
     if ((appLink ?? '').isNotEmpty) {
       final redirectURL = ReownCoreUtils.getLinkModeURL(
         appLink!,
         topic,
         message,
-      );
-      core.logger.d(
-        'pairing sendError LinkMode, '
-        'id: $id topic: $topic, method: $method, error: $error',
       );
       await ReownCoreUtils.openURL(redirectURL);
     } else {
@@ -575,10 +565,6 @@ class Pairing implements IPairing {
       final fallbackMethodOpts = MethodConstants.RPC_OPTS[fallbackMethod]!;
       final relayOpts = methodOpts ?? fallbackMethodOpts;
       final fallbackOpts = relayOpts['reject'] ?? relayOpts['res']!;
-      core.logger.d(
-        'pairing sendError Relay, '
-        'id: $id topic: $topic, method: $method, error: $error',
-      );
       await core.relayClient.publish(
         topic: topic,
         message: message,
@@ -597,12 +583,9 @@ class Pairing implements IPairing {
     }
 
     // Resubscribe to all active pairings
-    final List<PairingInfo> activePairings = pairings.getAll();
-    for (final PairingInfo pairing in activePairings) {
-      if (pairing.active) {
-        // print('Resubscribing to topic: ${pairing.topic}');
-        await core.relayClient.subscribe(topic: pairing.topic);
-      }
+    for (final PairingInfo pairing in pairings.getAll()) {
+      core.logger.i('[$runtimeType] Resubscribe to pairing: ${pairing.topic}');
+      await core.relayClient.subscribe(topic: pairing.topic);
     }
   }
 
@@ -692,8 +675,12 @@ class Pairing implements IPairing {
     }
 
     // If we have a reciever public key for the topic, use it
-    ReceiverPublicKey? receiverPublicKey =
-        topicToReceiverPublicKey.get(event.topic);
+    ReceiverPublicKey? receiverPublicKey = topicToReceiverPublicKey.get(
+      event.topic,
+    );
+    core.logger.d(
+      '[$runtimeType] _onMessageEvent, receiverPublicKey: $receiverPublicKey',
+    );
     // If there was a public key, delete it. One use.
     if (receiverPublicKey != null) {
       await topicToReceiverPublicKey.delete(event.topic);
@@ -708,12 +695,15 @@ class Pairing implements IPairing {
       ),
     );
 
+    core.logger.d(
+      '[$runtimeType] _onMessageEvent, payloadString: $payloadString',
+    );
+
     if (payloadString == null) {
       return;
     }
 
     Map<String, dynamic> data = jsonDecode(payloadString);
-    core.logger.d('Pairing _onMessageEvent, Received data: $data');
 
     // If it's an rpc request, handle it
     if (data.containsKey('method')) {
@@ -884,7 +874,9 @@ class Pairing implements IPairing {
     required String topic,
     required String envelope,
   }) async {
-    core.logger.d('[$runtimeType] dispatchEnvelope $topic, $envelope');
+    core.logger.d(
+      '[$runtimeType] dispatchEnvelope, topic: $topic, envelope: $envelope',
+    );
 
     final message = Uri.decodeComponent(envelope);
     await core.relayClient.handleLinkModeMessage(topic, message);

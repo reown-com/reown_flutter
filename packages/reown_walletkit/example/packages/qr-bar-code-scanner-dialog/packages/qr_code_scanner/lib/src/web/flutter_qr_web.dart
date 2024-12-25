@@ -24,11 +24,11 @@ class WebQrView extends StatefulWidget {
   final CameraFacing? cameraFacing;
 
   const WebQrView({
-    Key? key,
+    super.key,
     required this.onPlatformViewCreated,
     this.onPermissionSet,
     this.cameraFacing = CameraFacing.front,
-  }) : super(key: key);
+  });
 
   @override
   _WebQrViewState createState() => _WebQrViewState();

@@ -94,7 +94,7 @@ class EVMService {
   // personal_sign is handled using onSessionRequest event for demo purposes
   Future<void> personalSign(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] personalSign request: $parameters');
-    final SessionRequest pRequest = _walletKit.pendingRequests.getAll().last;
+    final pRequest = _walletKit.pendingRequests.getAll().last;
     final address = EthUtils.getAddressFromSessionRequest(pRequest);
     final data = EthUtils.getDataFromSessionRequest(pRequest);
     final message = EthUtils.getUtf8Message(data.toString());
@@ -154,6 +154,7 @@ class EVMService {
   Future<void> ethSign(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] ethSign request: $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
+    final address = EthUtils.getAddressFromSessionRequest(pRequest);
     final data = EthUtils.getDataFromSessionRequest(pRequest);
     final message = EthUtils.getUtf8Message(data.toString());
     var response = JsonRpcResponse(
@@ -163,6 +164,9 @@ class EVMService {
 
     if (await MethodsUtils.requestApproval(
       message,
+      method: pRequest.method,
+      chainId: pRequest.chainId,
+      address: address,
       transportType: pRequest.transportType.name,
       verifyContext: pRequest.verifyContext,
     )) {
@@ -208,6 +212,7 @@ class EVMService {
   Future<void> ethSignTypedData(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] ethSignTypedData request: $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
+    final address = EthUtils.getAddressFromSessionRequest(pRequest);
     final data = EthUtils.getDataFromSessionRequest(pRequest);
     var response = JsonRpcResponse(
       id: pRequest.id,
@@ -216,6 +221,9 @@ class EVMService {
 
     if (await MethodsUtils.requestApproval(
       data,
+      method: pRequest.method,
+      chainId: pRequest.chainId,
+      address: address,
       transportType: pRequest.transportType.name,
       verifyContext: pRequest.verifyContext,
     )) {
@@ -257,6 +265,7 @@ class EVMService {
   Future<void> ethSignTypedDataV4(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] ethSignTypedDataV4 request: $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
+    final address = EthUtils.getAddressFromSessionRequest(pRequest);
     final data = EthUtils.getDataFromSessionRequest(pRequest);
     var response = JsonRpcResponse(
       id: pRequest.id,
@@ -265,6 +274,9 @@ class EVMService {
 
     if (await MethodsUtils.requestApproval(
       data,
+      method: pRequest.method,
+      chainId: pRequest.chainId,
+      address: address,
       transportType: pRequest.transportType.name,
       verifyContext: pRequest.verifyContext,
     )) {
@@ -305,6 +317,7 @@ class EVMService {
 
     final data = EthUtils.getTransactionFromSessionRequest(pRequest);
     if (data == null) return;
+    final address = EthUtils.getAddressFromSessionRequest(pRequest);
 
     var response = JsonRpcResponse(
       id: pRequest.id,
@@ -315,6 +328,7 @@ class EVMService {
       data,
       method: pRequest.method,
       chainId: pRequest.chainId,
+      address: address,
       transportType: pRequest.transportType.name,
       verifyContext: pRequest.verifyContext,
     );
@@ -505,6 +519,7 @@ class EVMService {
     String? title,
     String? method,
     String? chainId,
+    String? address,
     VerifyContext? verifyContext,
     required String transportType,
   }) async {
@@ -539,6 +554,7 @@ class EVMService {
       title: title,
       method: method,
       chainId: chainId,
+      address: address,
       transportType: transportType,
       verifyContext: verifyContext,
       extraModels: [
@@ -588,6 +604,60 @@ class EVMService {
       return isValid;
     } catch (e) {
       return false;
+    }
+  }
+
+  Future<dynamic> getBalance({required String address}) async {
+    final uri = Uri.parse('https://rpc.walletconnect.org/v1');
+    final queryParams = {
+      'projectId': _walletKit.core.projectId,
+      'chainId': chainSupported.chainId
+    };
+    final response = await http.post(
+      uri.replace(queryParameters: queryParams),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'id': 1,
+        'jsonrpc': '2.0',
+        'method': 'eth_getBalance',
+        'params': [address, 'latest'],
+      }),
+    );
+    if (response.statusCode == 200 && response.body.isNotEmpty) {
+      try {
+        final result = _parseRpcResultAs<String>(response.body);
+        final amount = EtherAmount.fromBigInt(
+          EtherUnit.wei,
+          hexToInt(result),
+        );
+        return amount.getValueInUnit(EtherUnit.ether);
+      } catch (e) {
+        throw Exception('Failed to load balance. $e');
+      }
+    }
+    try {
+      final errorData = jsonDecode(response.body) as Map<String, dynamic>;
+      final reasons = errorData['reasons'] as List<dynamic>;
+      final reason = reasons.isNotEmpty
+          ? reasons.first['description'] ?? ''
+          : response.body;
+      throw Exception(reason);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  T _parseRpcResultAs<T>(String body) {
+    try {
+      final result = Map<String, dynamic>.from({...jsonDecode(body), 'id': 1});
+      final jsonResponse = JsonRpcResponse.fromJson(result);
+      if (jsonResponse.result != null) {
+        return jsonResponse.result;
+      } else {
+        throw jsonResponse.error ?? 'Error parsing result';
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 }

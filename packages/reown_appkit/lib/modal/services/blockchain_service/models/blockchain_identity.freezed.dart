@@ -23,8 +23,12 @@ mixin _$BlockchainIdentity {
   String? get name => throw _privateConstructorUsedError;
   String? get avatar => throw _privateConstructorUsedError;
 
+  /// Serializes this BlockchainIdentity to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of BlockchainIdentity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $BlockchainIdentityCopyWith<BlockchainIdentity> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -48,6 +52,8 @@ class _$BlockchainIdentityCopyWithImpl<$Res, $Val extends BlockchainIdentity>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of BlockchainIdentity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -86,6 +92,8 @@ class __$$BlockchainIdentityImplCopyWithImpl<$Res>
       $Res Function(_$BlockchainIdentityImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of BlockchainIdentity
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -132,11 +140,13 @@ class _$BlockchainIdentityImpl implements _BlockchainIdentity {
             (identical(other.avatar, avatar) || other.avatar == avatar));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, name, avatar);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of BlockchainIdentity
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$BlockchainIdentityImplCopyWith<_$BlockchainIdentityImpl> get copyWith =>
@@ -162,8 +172,11 @@ abstract class _BlockchainIdentity implements BlockchainIdentity {
   String? get name;
   @override
   String? get avatar;
+
+  /// Create a copy of BlockchainIdentity
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$BlockchainIdentityImplCopyWith<_$BlockchainIdentityImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

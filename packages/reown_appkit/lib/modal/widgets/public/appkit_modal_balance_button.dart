@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/utils/public/appkit_modal_default_networks.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
@@ -45,7 +46,11 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
     setState(() {
       final chainId = widget.appKitModal.selectedChain?.chainId ?? '1';
       final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-      _tokenImage = explorerService.instance.getAssetImageUrl(imageId);
+      _tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
+      final balance = widget.appKitModal.balanceNotifier.value;
+      if (balance.contains(AppKitModalBalanceButton.balanceDefault)) {
+        _tokenImage = '';
+      }
     });
   }
 
@@ -56,34 +61,34 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
       size: widget.size,
       onTap: widget.onTap,
       buttonStyle: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) {
-            if (states.contains(MaterialState.disabled)) {
-              return themeColors.grayGlass005;
+            if (states.contains(WidgetState.disabled)) {
+              return themeColors.grayGlass002;
             }
-            return themeColors.grayGlass010;
+            return themeColors.grayGlass005;
           },
         ),
-        foregroundColor: MaterialStateProperty.resolveWith<Color>(
+        foregroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) {
-            if (states.contains(MaterialState.disabled)) {
+            if (states.contains(WidgetState.disabled)) {
               return themeColors.grayGlass015;
             }
             return themeColors.foreground100;
           },
         ),
-        shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
+        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
           (states) {
             return RoundedRectangleBorder(
-              side: states.contains(MaterialState.disabled)
-                  ? BorderSide(color: themeColors.grayGlass005, width: 1.0)
-                  : BorderSide(color: themeColors.grayGlass010, width: 1.0),
+              side: states.contains(WidgetState.disabled)
+                  ? BorderSide(color: themeColors.grayGlass002, width: 1.0)
+                  : BorderSide(color: themeColors.grayGlass005, width: 1.0),
               borderRadius: BorderRadius.circular(widget.size.height / 2),
             );
           },
         ),
       ),
-      overridePadding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+      overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
         EdgeInsets.only(
           left: 6.0,
           right: widget.size == BaseButtonSize.small ? 12.0 : 16.0,
@@ -112,7 +117,7 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
                     )
                   : RoundedIcon(
                       imageUrl: _tokenImage!,
-                      size: widget.size.height + 2.0,
+                      size: widget.size.height * 0.55,
                     ),
           const SizedBox.square(dimension: 4.0),
           ValueListenableBuilder<String>(

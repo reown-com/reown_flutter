@@ -25,7 +25,7 @@ class SimpleIconButton extends StatelessWidget {
   final double? iconSize;
   final Color? backgroundColor, foregroundColor;
   final BaseButtonSize size;
-  final MaterialStateProperty<Color>? overlayColor;
+  final WidgetStateProperty<Color>? overlayColor;
   final bool withBorder;
 
   @override
@@ -39,15 +39,15 @@ class SimpleIconButton extends StatelessWidget {
       onTap: onTap,
       size: size,
       buttonStyle: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(
+        backgroundColor: WidgetStateProperty.all<Color>(
           backgroundColor ?? themeColors.accent100,
         ),
-        foregroundColor: MaterialStateProperty.all<Color>(
+        foregroundColor: WidgetStateProperty.all<Color>(
           foregroundColor ?? themeColors.inverse100,
         ),
         overlayColor: overlayColor,
         shape: withBorder
-            ? MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
+            ? WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
                 (states) {
                   return RoundedRectangleBorder(
                     side: BorderSide(
@@ -60,7 +60,7 @@ class SimpleIconButton extends StatelessWidget {
               )
             : null,
         padding:
-            MaterialStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.all(0.0)),
+            WidgetStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.all(0.0)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -107,7 +107,7 @@ class SimpleIconButton extends StatelessWidget {
             ),
         ],
       ),
-      overridePadding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+      overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
         size == BaseButtonSize.regular
             ? EdgeInsets.only(
                 left: (leftIcon != null) ? 12.0 : 16.0,

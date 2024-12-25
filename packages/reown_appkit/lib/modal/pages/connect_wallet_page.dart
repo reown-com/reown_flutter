@@ -2,14 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
-import 'package:reown_appkit/modal/services/siwe_service/siwe_service_singleton.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
+import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
-import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/content_loading.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/segmented_control.dart';
@@ -32,6 +33,9 @@ class ConnectWalletPage extends StatefulWidget {
 
 class _ConnectWalletPageState extends State<ConnectWalletPage>
     with WidgetsBindingObserver {
+  IExplorerService get _explorerService => GetIt.I<IExplorerService>();
+  ISiweService get _siweService => GetIt.I<ISiweService>();
+
   IReownAppKitModal? _service;
   SegmentOption _selectedSegment = SegmentOption.mobile;
   ModalError? errorEvent;
@@ -56,7 +60,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
     if (state == AppLifecycleState.resumed) {
       final isOpen = _service?.isOpen ?? false;
       final isConnected = _service?.isConnected ?? false;
-      if (isOpen && isConnected && !siweService.instance!.enabled) {
+      if (isOpen && isConnected && !_siweService.enabled) {
         Future.delayed(Duration(seconds: 1), () {
           if (!mounted) return;
           _service?.closeModal();
@@ -88,7 +92,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
             kNavbarHeight -
             (kPadding16 * 2);
     //
-    final walletRedirect = explorerService.instance.getWalletRedirect(
+    final walletRedirect = _explorerService.getWalletRedirect(
       _service!.selectedWallet,
     );
     final webOnlyWallet = walletRedirect?.webOnly == true;
@@ -97,7 +101,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
     final selectedWallet = _service!.selectedWallet;
     final walletName = selectedWallet?.listing.name ?? 'Wallet';
     final imageId = selectedWallet?.listing.imageId ?? '';
-    final imageUrl = explorerService.instance.getWalletImageUrl(imageId);
+    final imageUrl = _explorerService.getWalletImageUrl(imageId);
     //
     return ModalNavbar(
       title: walletName,
@@ -265,7 +269,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
                     fontSize: 14.0,
                     backgroundColor: Colors.transparent,
                     foregroundColor: themeColors.foreground200,
-                    overlayColor: MaterialStateProperty.all<Color>(
+                    overlayColor: WidgetStateProperty.all<Color>(
                       themeColors.background200,
                     ),
                     withBorder: false,
@@ -297,9 +301,10 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
   Future<void> _copyToClipboard(BuildContext context) async {
     final service = ModalProvider.of(context).instance;
     await Clipboard.setData(ClipboardData(text: service.wcUri!));
-    toastService.instance.show(
-      ToastMessage(type: ToastType.success, text: 'Link copied'),
-    );
+    GetIt.I<IToastService>().show(ToastMessage(
+      type: ToastType.success,
+      text: 'Link copied',
+    ));
   }
 }
 

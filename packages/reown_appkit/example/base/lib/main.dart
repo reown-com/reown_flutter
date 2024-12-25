@@ -1,18 +1,20 @@
 import 'dart:convert';
-import 'dart:developer';
+import 'dart:io';
+import 'dart:developer' as dev;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+// ignore: depend_on_referenced_packages
+import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:reown_appkit_dapp/models/chain_metadata.dart';
 import 'package:reown_appkit_dapp/models/page_data.dart';
 import 'package:reown_appkit_dapp/pages/connect_page.dart';
 import 'package:reown_appkit_dapp/pages/pairings_page.dart';
-import 'package:reown_appkit_dapp/pages/sessions_page.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
-import 'package:reown_appkit_dapp/utils/crypto/chain_data.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
+import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
+import 'package:reown_appkit_dapp/utils/crypto/tron.dart';
 import 'package:reown_appkit_dapp/utils/dart_defines.dart';
 import 'package:reown_appkit_dapp/utils/deep_link_handler.dart';
 import 'package:reown_appkit_dapp/utils/string_constants.dart';
@@ -24,18 +26,55 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  bool _isDarkMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        final platformDispatcher = View.of(context).platformDispatcher;
+        final platformBrightness = platformDispatcher.platformBrightness;
+        _isDarkMode = platformBrightness == Brightness.dark;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    if (mounted) {
+      setState(() {
+        final platformDispatcher = View.of(context).platformDispatcher;
+        final platformBrightness = platformDispatcher.platformBrightness;
+        _isDarkMode = platformBrightness == Brightness.dark;
+      });
+    }
+    super.didChangePlatformBrightness();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: StringConstants.appTitle,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return ReownAppKitModalTheme(
+      isDarkMode: _isDarkMode,
+      child: MaterialApp(
+        title: StringConstants.appTitle,
+        home: const MyHomePage(),
       ),
-      home: const MyHomePage(),
     );
   }
 }
@@ -48,8 +87,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool _initializing = true;
-
   ReownAppKit? _appKit;
   ReownAppKitModal? _appKitModal;
 
@@ -59,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    initializeService();
+    _initializeService();
   }
 
   String get _flavor {
@@ -97,16 +134,14 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> initializeService() async {
+  Future<void> _initializeService() async {
     _appKit = ReownAppKit(
       core: ReownCore(
         projectId: DartDefines.projectId,
-        logLevel: LogLevel.error,
+        logLevel: LogLevel.all,
       ),
       metadata: _pairingMetadata(),
     );
-
-    _appKit!.core.addLogListener(_logListener);
 
     // Register event handlers
     _appKit!.core.relayClient.onRelayClientError.subscribe(
@@ -125,13 +160,20 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKit!.onSessionAuthResponse.subscribe(_onSessionAuthResponse);
 
     // See https://docs.reown.com/appkit/flutter/core/custom-chains
-    final testNetworks = ReownAppKitModalNetworks.test['eip155'] ?? [];
-    ReownAppKitModalNetworks.addNetworks('eip155', testNetworks);
+    // final extraChains = ReownAppKitModalNetworks.extra['eip155']!;
+    // ReownAppKitModalNetworks.addSupportedNetworks('eip155', extraChains);
+    // ReownAppKitModalNetworks.removeSupportedNetworks('solana');
+    // ReownAppKitModalNetworks.removeTestNetworks();
+
+    final prefs = await SharedPreferences.getInstance();
+    final linkMode = prefs.getBool('appkit_sample_linkmode') ?? false;
+
+    _addOrRemoveNetworks(linkMode);
 
     _appKitModal = ReownAppKitModal(
       context: context,
       appKit: _appKit,
-      siweConfig: _siweConfig(),
+      siweConfig: _siweConfig(linkMode),
       enableAnalytics: true,
       featuresConfig: FeaturesConfig(
         email: true,
@@ -141,11 +183,16 @@ class _MyHomePageState extends State<MyHomePage> {
           AppKitSocialOption.Apple,
           AppKitSocialOption.Discord,
         ],
-        showMainWallets: false,
+        showMainWallets: true, // OPTIONAL - true by default
       ),
       // requiredNamespaces: {},
       // optionalNamespaces: {},
       // includedWalletIds: {},
+      getBalanceFallback: () async {
+        // This method will be triggered if getting the balance from our blockchain API fails
+        // You could place here your own getBalance method
+        return 0.0;
+      },
       featuredWalletIds: {
         'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
         '18450873727504ae9315a084fa7624b5297d2fe5880f0982979c17345a138277', // Kraken Wallet
@@ -158,6 +205,7 @@ class _MyHomePageState extends State<MyHomePage> {
       //   'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
       // },
       // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
+      optionalNamespaces: _updatedNamespaces(),
     );
 
     _appKitModal!.onModalConnect.subscribe(_onModalConnect);
@@ -166,44 +214,169 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKitModal!.onModalDisconnect.subscribe(_onModalDisconnect);
     _appKitModal!.onModalError.subscribe(_onModalError);
 
+    _pageDatas = [
+      PageData(
+        page: ConnectPage(
+          appKitModal: _appKitModal!,
+          linkMode: linkMode,
+          reinitialize: (bool linkMode) async {
+            final result = await showDialog<bool>(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  content: Text('App will be closed to apply changes'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: Text('Ok'),
+                    ),
+                  ],
+                );
+              },
+            );
+            if (result == true) {
+              await prefs.setBool('appkit_sample_linkmode', linkMode);
+              if (!kDebugMode) {
+                exit(0);
+              }
+            }
+          },
+        ),
+        title: StringConstants.connectPageTitle,
+        icon: Icons.home,
+      ),
+      PageData(
+        page: PairingsPage(appKitModal: _appKitModal!),
+        title: StringConstants.pairingsPageTitle,
+        icon: Icons.vertical_align_center_rounded,
+      ),
+      // PageData(
+      //   page: SessionsPage(appKitModal: _appKitModal!),
+      //   title: StringConstants.sessionsPageTitle,
+      //   icon: Icons.workspaces_filled,
+      // ),
+    ];
+
     await _appKitModal!.init();
     await _registerEventHandlers();
 
-    DeepLinkHandler.init(_appKit!);
+    DeepLinkHandler.init(_appKitModal!);
     DeepLinkHandler.checkInitialLink();
 
+    final allChains = ReownAppKitModalNetworks.getAllSupportedNetworks();
     // Loop through all the chain data
-    for (final ChainMetadata chain in ChainData.allChains) {
+    for (final chain in allChains) {
       // Loop through the events for that chain
-      for (final event in getChainEvents(chain.type)) {
+      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+        chain.chainId,
+      );
+      for (final event in getChainEvents(namespace)) {
         _appKit!.registerEventHandler(
           chainId: chain.chainId,
           event: event,
         );
       }
     }
+  }
 
-    setState(() {
-      _pageDatas = [
-        PageData(
-          page: ConnectPage(appKitModal: _appKitModal!),
-          title: StringConstants.connectPageTitle,
-          icon: Icons.home,
+  // Adds or remove supported networks based on linkMode
+  void _addOrRemoveNetworks(bool linkMode) {
+    if (!linkMode) {
+      ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
+        ReownAppKitModalNetworkInfo(
+          name: 'Polkadot',
+          chainId: '91b171bb158e2d3848fa23a9f1c25182',
+          chainIcon: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png',
+          currency: 'DOT',
+          rpcUrl: 'https://rpc.polkadot.io',
+          explorerUrl: 'https://polkadot.subscan.io',
         ),
-        PageData(
-          page: PairingsPage(appKitModal: _appKitModal!),
-          title: StringConstants.pairingsPageTitle,
-          icon: Icons.vertical_align_center_rounded,
+        ReownAppKitModalNetworkInfo(
+          name: 'Westend',
+          chainId: 'e143f23803ac50e8f6f8e62695d1ce9e',
+          currency: 'DOT',
+          rpcUrl: 'https://westend-rpc.polkadot.io',
+          explorerUrl: 'https://westend.subscan.io',
+          isTestNetwork: true,
         ),
-        PageData(
-          page: SessionsPage(appKitModal: _appKitModal!),
-          title: StringConstants.sessionsPageTitle,
-          icon: Icons.workspaces_filled,
+      ]);
+      ReownAppKitModalNetworks.addSupportedNetworks('tron', [
+        ReownAppKitModalNetworkInfo(
+          name: 'Tron',
+          chainId: '0x2b6653dc',
+          chainIcon: 'https://cryptologos.cc/logos/tron-trx-logo.png',
+          currency: 'TRX',
+          rpcUrl: 'https://api.trongrid.io',
+          explorerUrl: 'https://tronscan.org',
         ),
-      ];
+        ReownAppKitModalNetworkInfo(
+          name: 'Tron testnet',
+          chainId: '0xcd8690dc',
+          chainIcon: 'https://cryptologos.cc/logos/tron-trx-logo.png',
+          currency: 'TRX',
+          rpcUrl: 'https://nile.trongrid.io',
+          explorerUrl: 'https://test.tronscan.org',
+          isTestNetwork: true,
+        ),
+      ]);
+    } else {
+      ReownAppKitModalNetworks.removeSupportedNetworks('solana');
+    }
+  }
 
-      _initializing = false;
-    });
+  // Updates namespaces based on supported networks list
+  Map<String, RequiredNamespace>? _updatedNamespaces() {
+    Map<String, RequiredNamespace>? namespaces = {};
+
+    final evmChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
+      namespace: 'eip155',
+    );
+    if (evmChains.isNotEmpty) {
+      namespaces['eip155'] = RequiredNamespace(
+        chains: evmChains.map((c) => 'eip155:${c.chainId}').toList(),
+        methods: NetworkUtils.defaultNetworkMethods['eip155']!.toList(),
+        events: NetworkUtils.defaultNetworkEvents['eip155']!.toList(),
+      );
+    }
+    //
+    final solanaChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
+      namespace: 'solana',
+    );
+    if (solanaChains.isNotEmpty) {
+      namespaces['solana'] = RequiredNamespace(
+        chains: solanaChains.map((c) => 'solana:${c.chainId}').toList(),
+        methods: NetworkUtils.defaultNetworkMethods['solana']!.toList(),
+        events: NetworkUtils.defaultNetworkEvents['solana']!.toList(),
+      );
+    }
+    //
+    final polkadotChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
+      namespace: 'polkadot',
+    );
+    if (polkadotChains.isNotEmpty) {
+      namespaces['polkadot'] = RequiredNamespace(
+        chains: polkadotChains.map((c) => 'polkadot:${c.chainId}').toList(),
+        methods: Polkadot.methods.values.toList(),
+        events: Polkadot.events.values.toList(),
+      );
+    }
+    //
+    final tronChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
+      namespace: 'tron',
+    );
+    if (tronChains.isNotEmpty) {
+      namespaces['tron'] = RequiredNamespace(
+        chains: tronChains.map((c) => 'tron:${c.chainId}').toList(),
+        methods: Tron.methods.values.toList(),
+        events: Tron.events.values.toList(),
+      );
+    }
+
+    return namespaces;
   }
 
   Future<void> _registerEventHandlers() async {
@@ -215,9 +388,13 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     // Loop through all the chain data
-    for (final ChainMetadata chain in ChainData.allChains) {
+    final allChains = ReownAppKitModalNetworks.getAllSupportedNetworks();
+    for (final chain in allChains) {
       // Loop through the events for that chain
-      for (final event in getChainEvents(chain.type)) {
+      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+        chain.chainId,
+      );
+      for (final event in getChainEvents(namespace)) {
         _appKit!.registerEventHandler(
           chainId: chain.chainId,
           event: event,
@@ -227,22 +404,16 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _onSessionConnect(SessionConnect? event) {
-    debugPrint('[SampleDapp] _onSessionConnect $event');
-    Future.delayed(const Duration(milliseconds: 500), () {
-      setState(() => _selectedIndex = 2);
-    });
+    dev.log(
+      '[SampleDapp] _onSessionConnect ${jsonEncode(event?.session.toJson())}',
+    );
   }
 
   void _onSessionAuthResponse(SessionAuthResponse? response) {
     debugPrint('[SampleDapp] _onSessionAuthResponse $response');
-    if (response?.session != null) {
-      Future.delayed(const Duration(milliseconds: 500), () {
-        setState(() => _selectedIndex = 2);
-      });
-    }
   }
 
-  void _setState(dynamic args) => setState(() {});
+  void _setState(_) => setState(() {});
 
   void _relayClientError(ErrorEvent? event) {
     debugPrint('[SampleDapp] _relayClientError ${event?.error}');
@@ -252,8 +423,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     // Unregister event handlers
-    _appKit!.core.removeLogListener(_logListener);
-
     _appKit!.core.relayClient.onRelayClientError.unsubscribe(
       _relayClientError,
     );
@@ -278,26 +447,11 @@ class _MyHomePageState extends State<MyHomePage> {
     super.dispose();
   }
 
-  void _logListener(event) {
-    if ('${event.level}' == 'Level.debug' ||
-        '${event.level}' == 'Level.error') {
-      // TODO send to mixpanel
-      log('${event.message}');
-    } else {
-      debugPrint('${event.message}');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (_initializing) {
-      return const Center(
-        child: CircularProgressIndicator(
-          color: StyleConstants.primaryColor,
-        ),
-      );
+    if (_pageDatas.isEmpty) {
+      return Center(child: CircularProgressIndicator());
     }
-
     final List<Widget> navRail = [];
     if (MediaQuery.of(context).size.width >= Constants.smallScreen) {
       navRail.add(_buildNavigationRail());
@@ -423,7 +577,7 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  SIWEConfig _siweConfig() => SIWEConfig(
+  SIWEConfig _siweConfig(bool enabled) => SIWEConfig(
         getNonce: () async {
           // this has to be called at the very moment of creating the pairing uri
           return SIWEUtils.generateNonce();
@@ -467,8 +621,11 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         getSession: () async {
           // Return proper session from your Web Service
-          final address = _appKitModal!.session!.address!;
-          final chainId = _appKitModal!.session!.chainId;
+          final chainId = _appKitModal!.selectedChain?.chainId ?? '1';
+          final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+            chainId,
+          );
+          final address = _appKitModal!.session!.getAddress(namespace)!;
           return SIWESession(address: address, chains: [chainId]);
         },
         onSignIn: (SIWESession session) {
@@ -483,9 +640,9 @@ class _MyHomePageState extends State<MyHomePage> {
           // Called when disconnecting WalletConnect session was successfull
           debugPrint('[SIWEConfig] onSignOut()');
         },
-        enabled: true,
+        enabled: enabled,
         signOutOnDisconnect: true,
-        signOutOnAccountChange: true,
+        signOutOnAccountChange: false,
         signOutOnNetworkChange: false,
         // nonceRefetchIntervalMs: 300000,
         // sessionRefetchIntervalMs: 300000,

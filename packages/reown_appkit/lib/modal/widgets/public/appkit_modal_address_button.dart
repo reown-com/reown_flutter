@@ -18,10 +18,18 @@ class AppKitModalAddressButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if ((appKitModal.session?.address ?? '').isEmpty) {
+    if (appKitModal.session == null) {
       return SizedBox.shrink();
     }
-    final address = appKitModal.session!.address!;
+    final chainId = appKitModal.selectedChain?.chainId ?? '';
+    if (chainId.isEmpty) {
+      return SizedBox.shrink();
+    }
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    final address = appKitModal.session!.getAddress(namespace);
+    if ((address ?? '').isEmpty) {
+      return SizedBox.shrink();
+    }
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final textStyle = size == BaseButtonSize.small
         ? themeData.textStyles.small600
@@ -37,41 +45,35 @@ class AppKitModalAddressButton extends StatelessWidget {
       child: BaseButton(
         size: size,
         onTap: onTap,
-        overridePadding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+        overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
           EdgeInsets.only(
             left: size == BaseButtonSize.small ? 4.0 : 6.0,
             right: 8.0,
           ),
         ),
         buttonStyle: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+          backgroundColor: WidgetStateProperty.resolveWith<Color>(
             (states) {
-              if (states.contains(MaterialState.disabled)) {
-                return themeColors.grayGlass005;
+              if (states.contains(WidgetState.disabled)) {
+                return themeColors.grayGlass002;
               }
-              return themeColors.grayGlass010;
+              return themeColors.grayGlass005;
             },
           ),
-          foregroundColor: MaterialStateProperty.resolveWith<Color>(
+          foregroundColor: WidgetStateProperty.resolveWith<Color>(
             (states) {
-              if (states.contains(MaterialState.disabled)) {
+              if (states.contains(WidgetState.disabled)) {
                 return themeColors.grayGlass015;
               }
               return themeColors.foreground175;
             },
           ),
-          shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
+          shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
             (states) {
               return RoundedRectangleBorder(
-                side: states.contains(MaterialState.disabled)
-                    ? BorderSide(
-                        color: themeColors.grayGlass005,
-                        width: 1.0,
-                      )
-                    : BorderSide(
-                        color: themeColors.grayGlass010,
-                        width: 1.0,
-                      ),
+                side: states.contains(WidgetState.disabled)
+                    ? BorderSide(color: themeColors.grayGlass002, width: 1.0)
+                    : BorderSide(color: themeColors.grayGlass005, width: 1.0),
                 borderRadius: BorderRadius.circular(innerBorderRadius),
               );
             },
@@ -84,7 +86,7 @@ class AppKitModalAddressButton extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(size.iconSize),
                 border: Border.all(
-                  color: themeColors.grayGlass005,
+                  color: themeColors.grayGlass002,
                   width: 1.0,
                   strokeAlign: BorderSide.strokeAlignInside,
                 ),
@@ -98,7 +100,7 @@ class AppKitModalAddressButton extends StatelessWidget {
             const SizedBox.square(dimension: 4.0),
             Text(
               RenderUtils.truncate(
-                address,
+                address!,
                 length: size == BaseButtonSize.small ? 2 : 4,
               ),
               style: textStyle,

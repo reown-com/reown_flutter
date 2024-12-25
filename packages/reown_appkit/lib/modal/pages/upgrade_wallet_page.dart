@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
-import 'package:reown_appkit/modal/services/analytics_service/analytics_service_singleton.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
@@ -36,7 +37,7 @@ class UpgradeWalletPage extends StatelessWidget {
           SimpleIconButton(
             leftIcon: 'lib/modal/assets/icons/wc.svg',
             onTap: () {
-              analyticsService.instance.sendEvent(EmailUpgradeFromModal());
+              GetIt.I<IAnalyticsService>().sendEvent(EmailUpgradeFromModal());
               ReownCoreUtils.openURL(UrlConstants.secureDashboard);
             },
             rightIcon: 'lib/modal/assets/icons/arrow_top_right.svg',

@@ -1,55 +1,179 @@
-import 'package:flutter/material.dart';
-import 'package:reown_appkit_dapp/models/chain_metadata.dart';
-import 'package:reown_appkit_dapp/utils/crypto/chain_data.dart';
-import 'package:reown_appkit_dapp/utils/crypto/eip155.dart';
+import 'dart:convert';
+
+import 'package:bs58/bs58.dart';
+import 'package:eth_sig_util/util/utils.dart';
+import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
-import 'package:reown_appkit_dapp/utils/crypto/solana.dart';
+import 'package:reown_appkit_dapp/utils/crypto/tron.dart';
+import 'package:reown_appkit_dapp/utils/test_data.dart';
 
-String getChainName(String chain) {
-  try {
-    return ChainData.allChains
-        .where((element) => element.chainId == chain)
-        .first
-        .name;
-  } catch (e) {
-    debugPrint('[SampleDapp] Invalid chain');
-  }
-  return 'Unknown';
-}
+import 'package:solana_web3/solana_web3.dart' as solana;
 
-ChainMetadata getChainMetadataFromChain(String chain) {
-  try {
-    return ChainData.allChains
-        .where((element) => element.chainId == chain)
-        .first;
-  } catch (e) {
-    debugPrint('[SampleDapp] Invalid chain');
-  }
-  return ChainData.eip155Chains[0];
-}
-
-List<String> getChainMethods(ChainType value) {
-  switch (value) {
-    case ChainType.eip155:
-      return EIP155.methods.values.toList();
-    case ChainType.solana:
-      return Solana.methods.values.toList();
-    case ChainType.polkadot:
+List<String> getChainMethods(String namespace) {
+  switch (namespace) {
+    case 'eip155':
+      return NetworkUtils.defaultNetworkMethods['eip155']!.toList();
+    case 'solana':
+      return NetworkUtils.defaultNetworkMethods['solana']!.toList();
+    case 'polkadot':
       return Polkadot.methods.values.toList();
+    case 'tron':
+      return Tron.methods.values.toList();
     default:
       return [];
   }
 }
 
-List<String> getChainEvents(ChainType value) {
-  switch (value) {
-    case ChainType.eip155:
-      return EIP155.events.values.toList();
-    case ChainType.solana:
-      return Solana.events.values.toList();
-    case ChainType.polkadot:
+List<String> getChainEvents(String namespace) {
+  switch (namespace) {
+    case 'eip155':
+      return NetworkUtils.defaultNetworkEvents['eip155']!.toList();
+    case 'solana':
+      return NetworkUtils.defaultNetworkEvents['solana']!.toList();
+    case 'polkadot':
       return Polkadot.events.values.toList();
+    case 'tron':
+      return Tron.events.values.toList();
     default:
       return [];
+  }
+}
+
+Future<SessionRequestParams?> getParams(
+  String method,
+  String address,
+  ReownAppKitModalNetworkInfo chainData,
+) async {
+  switch (method) {
+    case 'personal_sign':
+      final bytes = utf8.encode(testSignData);
+      final encoded = bytesToHex(bytes, include0x: true);
+      return SessionRequestParams(
+        method: method,
+        params: [encoded, address],
+      );
+    case 'eth_sign':
+      return SessionRequestParams(
+        method: method,
+        params: [address, testSignData],
+      );
+    case 'eth_signTypedData':
+      return SessionRequestParams(
+        method: method,
+        params: [address, typedData],
+      );
+    case 'eth_signTransaction':
+      return SessionRequestParams(
+        method: method,
+        params: [
+          Transaction(
+            from: EthereumAddress.fromHex(address),
+            to: EthereumAddress.fromHex(
+              '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
+            ),
+            value: EtherAmount.fromInt(EtherUnit.finney, 12), // == 0.012
+          ).toJson(),
+        ],
+      );
+    case 'eth_sendTransaction':
+      return SessionRequestParams(
+        method: method,
+        params: [
+          Transaction(
+            from: EthereumAddress.fromHex(address),
+            to: EthereumAddress.fromHex(
+              '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
+            ),
+            value: EtherAmount.fromInt(EtherUnit.finney, 12), // == 0.012
+          ).toJson(),
+        ],
+      );
+    case 'solana_signMessage':
+      final bytes = utf8.encode(testSignData);
+      final message = base58.encode(bytes);
+      return SessionRequestParams(
+        method: method,
+        params: {'pubkey': address, 'message': message},
+      );
+    case 'solana_signTransaction':
+      // Create a connection to the devnet cluster.
+      final cluster = solana.Cluster.https(
+        Uri.parse(chainData.rpcUrl).authority,
+      );
+      // final cluster = solana.Cluster.devnet;
+      final connection = solana.Connection(cluster);
+
+      // Fetch the latest blockhash.
+      final blockhash = await connection.getLatestBlockhash();
+
+      // Create a System Program instruction to transfer 0.5 SOL from [address1] to [address2].
+      final transactionv0 = solana.Transaction.v0(
+        payer: solana.Pubkey.fromBase58(address),
+        recentBlockhash: blockhash.blockhash,
+        instructions: [
+          solana.TransactionInstruction.fromJson({
+            'programId': '11111111111111111111111111111111',
+            'data': [2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+            'keys': [
+              {
+                'isSigner': true,
+                'isWritable': true,
+                'pubkey': address,
+              },
+              {
+                'isSigner': false,
+                'isWritable': true,
+                'pubkey': '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
+              }
+            ]
+          }),
+          // SystemProgram.transfer(
+          //   fromPubkey: solana.Pubkey.fromBase58(address),
+          //   toPubkey: solana.Pubkey.fromBase58(
+          //     '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR',
+          //   ),
+          //   lamports: solana.solToLamports(0.5),
+          // ),
+        ],
+      );
+
+      const config = solana.TransactionSerializableConfig(
+        verifySignatures: false,
+      );
+      final bytes = transactionv0.serialize(config).asUint8List();
+      final encodedV0Trx = base64.encode(bytes);
+
+      return SessionRequestParams(
+        method: method,
+        params: {
+          'transaction': encodedV0Trx,
+          // 'pubkey': address,
+          // 'feePayer': address,
+          // ...transactionv0.message.toJson(),
+        },
+      );
+    case 'tron_signMessage':
+      return SessionRequestParams(
+        method: method,
+        params: {
+          'address': address,
+          'message': testSignData,
+        },
+      );
+    case 'tron_signTransaction':
+      //
+      final transaction = await Tron.triggerSmartContract(
+        chainData: chainData,
+        walletAdress: address,
+      );
+      return SessionRequestParams(
+        method: method,
+        params: {
+          'address': address,
+          'transaction': transaction,
+        },
+      );
+    default:
+      return null;
   }
 }

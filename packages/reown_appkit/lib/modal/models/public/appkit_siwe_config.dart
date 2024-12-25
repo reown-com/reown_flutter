@@ -47,6 +47,11 @@ class SIWEConfig {
     this.nonceRefetchIntervalMs = 300000,
     this.sessionRefetchIntervalMs = 300000,
   });
+
+  @override
+  String toString() {
+    return 'SIWEConfig(enabled: $enabled, signOutOnDisconnect: $signOutOnDisconnect, signOutOnAccountChange: $signOutOnAccountChange, signOutOnNetworkChange: $signOutOnNetworkChange, nonceRefetchIntervalMs: $nonceRefetchIntervalMs, sessionRefetchIntervalMs: $sessionRefetchIntervalMs)';
+  }
 }
 
 @freezed

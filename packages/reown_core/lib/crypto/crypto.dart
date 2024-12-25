@@ -202,6 +202,7 @@ class Crypto implements ICrypto {
       sub: sub,
       aud: aud,
       ttl: ReownConstants.ONE_DAY,
+      // iat: DateTime.now().millisecondsSinceEpoch ~/ 1000,
       keyPair: keyPair,
     );
     return jwt;

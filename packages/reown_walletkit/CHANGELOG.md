@@ -1,3 +1,8 @@
+## 1.1.0-beta02
+
+- Update to flutter version 3.24.5
+- Dependency updates
+
 ## 1.0.3
 
 - Minor dependency update

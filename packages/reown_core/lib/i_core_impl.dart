@@ -35,7 +35,7 @@ abstract class IReownCore {
 
   void confirmOnlineStateOrThrow();
 
-  Future<void> addLinkModeSupportedApp(String universalLink);
+  Future<bool> addLinkModeSupportedApp(String universalLink);
 
   List<String> getLinkModeSupportedApps();
 

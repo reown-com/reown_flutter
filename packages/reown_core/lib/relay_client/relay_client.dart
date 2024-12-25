@@ -251,14 +251,14 @@ class RelayClient implements IRelayClient {
   Future<void> _createJsonRPCProvider() async {
     _connecting = true;
     _active = true;
-    final auth = await core.crypto.signJWT(core.relayUrl);
-    core.logger.d('[$runtimeType]: Signed JWT: $auth');
+    final signedJWT = await core.crypto.signJWT(core.relayUrl);
+    core.logger.d('[$runtimeType]: Signed JWT: $signedJWT');
     final url = ReownCoreUtils.formatRelayRpcUrl(
       protocol: ReownConstants.CORE_PROTOCOL,
       version: ReownConstants.CORE_VERSION,
-      relayUrl: core.relayUrl,
       sdkVersion: ReownConstants.SDK_VERSION,
-      auth: auth,
+      relayUrl: core.relayUrl,
+      auth: signedJWT,
       projectId: core.projectId,
       packageName: (await ReownCoreUtils.getPackageName()),
     );
@@ -270,7 +270,7 @@ class RelayClient implements IRelayClient {
 
     core.logger.d('[$runtimeType]: Initializing WebSocket with $url');
     await socketHandler.setup(url: url);
-    await socketHandler.connect().timeout(Duration(seconds: 5));
+    await socketHandler.connect();
 
     jsonRPC = Peer(socketHandler.channel!);
 
@@ -330,7 +330,7 @@ class RelayClient implements IRelayClient {
     final reconnectCodes = [1001, 4008, 4010, 1002, 1005, 10002];
     if (code != null) {
       if (reconnectCodes.contains(code)) {
-        await connect();
+        await _connect();
       } else {
         await disconnect();
         final errorReason = code == 3000

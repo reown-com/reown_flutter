@@ -68,8 +68,14 @@ class _AccountAvatarState extends State<AccountAvatar> {
 
   void _modalNotifyListener() {
     setState(() {
-      _avatarUrl = widget.appKit.avatarUrl;
-      _address = widget.appKit.session?.address;
+      try {
+        _avatarUrl = widget.appKit.avatarUrl;
+        final chainId = widget.appKit.selectedChain?.chainId ?? '';
+        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+          chainId,
+        );
+        _address = widget.appKit.session?.getAddress(namespace);
+      } catch (_) {}
     });
   }
 }

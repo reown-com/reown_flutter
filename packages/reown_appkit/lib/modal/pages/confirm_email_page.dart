@@ -5,9 +5,9 @@ import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/email_login_step.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
-import 'package:reown_appkit/modal/services/toast_service/toast_service_singleton.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/content_loading.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/verify_otp_view.dart';
@@ -38,10 +38,6 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
   }
 
   void _onMagicErrorEvent(MagicErrorEvent? event) {
-    toastService.instance.show(ToastMessage(
-      type: ToastType.error,
-      text: event?.error ?? 'Something went wrong.',
-    ));
     if (event is ConnectEmailErrorEvent) {
       _goBack();
     } else {
@@ -108,7 +104,7 @@ class __VerifyDeviceViewState extends State<_VerifyDeviceView> {
   void _resendEmail() async {
     final diff = DateTime.now().difference(_resendEnabledAt).inSeconds;
     if (diff < 0) {
-      toastService.instance.show(ToastMessage(
+      GetIt.I<IToastService>().show(ToastMessage(
         type: ToastType.error,
         text: 'Try again after ${diff.abs()} seconds',
       ));
@@ -116,7 +112,7 @@ class __VerifyDeviceViewState extends State<_VerifyDeviceView> {
       final email = _magicService.email.value;
       await _magicService.connectEmail(value: email);
       _resendEnabledAt = DateTime.now().add(Duration(seconds: 30));
-      toastService.instance.show(ToastMessage(
+      GetIt.I<IToastService>().show(ToastMessage(
         type: ToastType.success,
         text: 'Link email resent',
       ));
@@ -192,10 +188,10 @@ class __VerifyDeviceViewState extends State<_VerifyDeviceView> {
                       ),
                     ),
                     style: ButtonStyle(
-                      overlayColor: MaterialStateProperty.all<Color>(
+                      overlayColor: WidgetStateProperty.all<Color>(
                         themeColors.accenGlass010,
                       ),
-                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+                      padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
                         const EdgeInsets.symmetric(horizontal: 8.0),
                       ),
                       visualDensity: VisualDensity.compact,

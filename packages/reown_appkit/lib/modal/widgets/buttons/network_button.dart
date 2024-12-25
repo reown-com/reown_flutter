@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/models/public/appkit_network_info.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/utils/public/appkit_modal_default_networks.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
@@ -24,50 +25,50 @@ class NetworkButton extends StatelessWidget {
   final ReownAppKitModalStatus serviceStatus;
   final VoidCallback? onTap;
 
-  String _getImageUrl(ReownAppKitModalNetworkInfo chainInfo) {
+  String _getImageUrl(ReownAppKitModalNetworkInfo? chainInfo) {
+    if (chainInfo == null) return '';
+
     if (chainInfo.chainIcon != null && chainInfo.chainIcon!.contains('http')) {
       return chainInfo.chainIcon!;
     }
-    final imageId =
-        ReownAppKitModalNetworks.getNetworkIconId(chainInfo.chainId);
-    return explorerService.instance.getAssetImageUrl(imageId);
+    final imageId = ReownAppKitModalNetworks.getNetworkIconId(
+      chainInfo.chainId,
+    );
+    return GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
   }
 
   @override
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    String imageUrl = '';
-    if (chainInfo != null && (chainInfo!.chainIcon ?? '').isNotEmpty) {
-      imageUrl = _getImageUrl(chainInfo!);
-    }
+    final imageUrl = _getImageUrl(chainInfo);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final borderRadius = radiuses.isSquare() ? 0.0 : size.height / 2;
     return BaseButton(
       size: size,
       onTap: serviceStatus.isInitialized ? onTap : null,
       buttonStyle: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) {
-            if (states.contains(MaterialState.disabled)) {
-              return themeColors.grayGlass005;
+            if (states.contains(WidgetState.disabled)) {
+              return themeColors.grayGlass002;
             }
-            return themeColors.grayGlass010;
+            return themeColors.grayGlass005;
           },
         ),
-        foregroundColor: MaterialStateProperty.resolveWith<Color>(
+        foregroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) {
-            if (states.contains(MaterialState.disabled)) {
+            if (states.contains(WidgetState.disabled)) {
               return themeColors.grayGlass015;
             }
             return themeColors.foreground100;
           },
         ),
-        shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
+        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
           (states) {
             return RoundedRectangleBorder(
-              side: states.contains(MaterialState.disabled)
-                  ? BorderSide(color: themeColors.grayGlass005, width: 1.0)
-                  : BorderSide(color: themeColors.grayGlass010, width: 1.0),
+              side: states.contains(WidgetState.disabled)
+                  ? BorderSide(color: themeColors.grayGlass002, width: 1.0)
+                  : BorderSide(color: themeColors.grayGlass005, width: 1.0),
               borderRadius: BorderRadius.circular(borderRadius),
             );
           },
@@ -103,7 +104,7 @@ class NetworkButton extends StatelessWidget {
           ),
         ],
       ),
-      overridePadding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+      overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
         const EdgeInsets.only(left: 6.0, right: 16.0),
       ),
     );

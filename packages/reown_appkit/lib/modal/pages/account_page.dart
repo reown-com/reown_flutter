@@ -1,14 +1,16 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/edit_email_page.dart';
 import 'package:reown_appkit/modal/pages/upgrade_wallet_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
-import 'package:reown_appkit/modal/services/explorer_service/explorer_service_singleton.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/content_loading.dart';
@@ -112,7 +114,7 @@ class _DefaultAccountView extends StatelessWidget {
                   title: 'Block Explorer',
                   backgroundColor: themeColors.background125,
                   foregroundColor: themeColors.foreground150,
-                  overlayColor: MaterialStateProperty.all<Color>(
+                  overlayColor: WidgetStateProperty.all<Color>(
                     themeColors.background200,
                   ),
                 ),
@@ -127,8 +129,12 @@ class _DefaultAccountView extends StatelessWidget {
         ),
         Visibility(
           visible: isEmailLogin,
-          child: _EmailLoginButton(),
+          child: _EmailAndSocialLoginButton(),
         ),
+        // Visibility(
+        //   visible: !isEmailLogin,
+        //   child: _ConnectedWalletButton(),
+        // ),
         const SizedBox.square(dimension: kPadding8),
         _SelectNetworkButton(),
         const SizedBox.square(dimension: kPadding8),
@@ -198,7 +204,7 @@ class _UpgradeWalletButton extends StatelessWidget {
   }
 }
 
-class _EmailLoginButton extends StatelessWidget {
+class _EmailAndSocialLoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final service = ModalProvider.of(context).instance;
@@ -208,9 +214,8 @@ class _EmailLoginButton extends StatelessWidget {
     final provider = AppKitSocialOption.values.firstWhereOrNull(
       (e) => e.name == service.session!.peer?.metadata.name,
     );
-    final title = service.session!.email.isNotEmpty
-        ? service.session!.email
-        : service.session!.userName;
+    final title =
+        provider != null ? service.session!.userName : service.session!.email;
     return Column(
       children: [
         const SizedBox.square(dimension: kPadding8),
@@ -252,6 +257,61 @@ class _EmailLoginButton extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
+class _ConnectedWalletButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final service = ModalProvider.of(context).instance;
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    String iconImage = '';
+    if ((service.session!.peer?.metadata.icons ?? []).isNotEmpty) {
+      iconImage = service.session!.peer?.metadata.icons.first ?? '';
+    }
+    final walletInfo = GetIt.I<IExplorerService>().getConnectedWallet();
+    return Column(
+      children: [
+        const SizedBox.square(dimension: kPadding8),
+        AccountListItem(
+          iconWidget: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: iconImage.isEmpty
+                ? RoundedIcon(
+                    assetPath: 'lib/modal/assets/icons/wallet.svg',
+                    assetColor: themeColors.inverse100,
+                    borderRadius: radiuses.isSquare() ? 0.0 : null,
+                  )
+                : ClipRRect(
+                    borderRadius: radiuses.isSquare()
+                        ? BorderRadius.zero
+                        : BorderRadius.circular(34),
+                    child: CachedNetworkImage(
+                      imageUrl: iconImage,
+                      height: 34,
+                      width: 34,
+                      errorWidget: (context, url, error) {
+                        return RoundedIcon(
+                          assetPath: 'lib/modal/assets/icons/wallet.svg',
+                          assetColor: themeColors.inverse100,
+                          borderRadius: radiuses.isSquare() ? 0.0 : null,
+                        );
+                      },
+                    ),
+                  ),
+          ),
+          title: service.session!.peer?.metadata.name ?? 'Connected Wallet',
+          titleStyle: themeData.textStyles.paragraph500.copyWith(
+            color: themeColors.foreground100,
+          ),
+          onTap:
+              walletInfo != null ? () => service.launchConnectedWallet() : null,
+        ),
+      ],
+    );
+  }
+}
+
 class _SelectNetworkButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -260,7 +320,7 @@ class _SelectNetworkButton extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final chainId = service.selectedChain?.chainId ?? '';
     final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-    final tokenImage = explorerService.instance.getAssetImageUrl(imageId);
+    final tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     return AccountListItem(
       iconWidget: Padding(

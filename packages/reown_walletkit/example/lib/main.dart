@@ -1,5 +1,4 @@
 import 'package:get_it/get_it.dart';
-import 'package:get_it_mixin/get_it_mixin.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/bottom_sheet_listener.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
@@ -42,14 +41,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget with GetItStatefulWidgetMixin {
+class MyHomePage extends StatefulWidget {
   MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with GetItStateMixin {
+class _MyHomePageState extends State<MyHomePage> {
   bool _initializing = true;
 
   List<PageData> _pageDatas = [];
@@ -70,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> with GetItStateMixin {
     GetIt.I.registerSingleton<IWalletKitService>(walletKitService);
 
     // Support EVM Chains
-    for (final chainData in ChainData.eip155Chains) {
+    for (final chainData in ChainsDataList.eip155Chains) {
       GetIt.I.registerSingleton<EVMService>(
         EVMService(chainSupported: chainData),
         instanceName: chainData.chainId,
@@ -78,7 +77,7 @@ class _MyHomePageState extends State<MyHomePage> with GetItStateMixin {
     }
 
     // Support Kadena Chains
-    for (final chainData in ChainData.kadenaChains) {
+    for (final chainData in ChainsDataList.kadenaChains) {
       GetIt.I.registerSingleton<KadenaService>(
         KadenaService(chainSupported: chainData),
         instanceName: chainData.chainId,
@@ -86,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> with GetItStateMixin {
     }
 
     // Support Polkadot Chains
-    for (final chainData in ChainData.polkadotChains) {
+    for (final chainData in ChainsDataList.polkadotChains) {
       GetIt.I.registerSingleton<PolkadotService>(
         PolkadotService(chainSupported: chainData),
         instanceName: chainData.chainId,
@@ -95,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> with GetItStateMixin {
 
     // Support Solana Chains
     // Change SolanaService2 to SolanaService to switch between solana_web3: ^0.1.3 to solana: ^0.30.4
-    for (final chainData in ChainData.solanaChains) {
+    for (final chainData in ChainsDataList.solanaChains) {
       GetIt.I.registerSingleton<SolanaService2>(
         SolanaService2(chainSupported: chainData),
         instanceName: chainData.chainId,
@@ -103,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> with GetItStateMixin {
     }
 
     // Support Cosmos Chains
-    for (final chainData in ChainData.cosmosChains) {
+    for (final chainData in ChainsDataList.cosmosChains) {
       GetIt.I.registerSingleton<CosmosService>(
         CosmosService(chainSupported: chainData),
         instanceName: chainData.chainId,

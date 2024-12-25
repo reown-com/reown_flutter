@@ -25,7 +25,9 @@ mixin _$ReownAppKitModalRadiuses {
   double get radiusL => throw _privateConstructorUsedError;
   double get radius3XL => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ReownAppKitModalRadiuses
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ReownAppKitModalRadiusesCopyWith<ReownAppKitModalRadiuses> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -58,6 +60,8 @@ class _$ReownAppKitModalRadiusesCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ReownAppKitModalRadiuses
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -137,6 +141,8 @@ class __$$ReownAppKitModalRadiusesImplCopyWithImpl<$Res>
       $Res Function(_$ReownAppKitModalRadiusesImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ReownAppKitModalRadiuses
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -253,7 +259,9 @@ class _$ReownAppKitModalRadiusesImpl implements _ReownAppKitModalRadiuses {
   int get hashCode => Object.hash(runtimeType, radius4XS, radius3XS, radius2XS,
       radiusXS, radiusS, radiusM, radiusL, radius3XL);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ReownAppKitModalRadiuses
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ReownAppKitModalRadiusesImplCopyWith<_$ReownAppKitModalRadiusesImpl>
@@ -288,8 +296,11 @@ abstract class _ReownAppKitModalRadiuses implements ReownAppKitModalRadiuses {
   double get radiusL;
   @override
   double get radius3XL;
+
+  /// Create a copy of ReownAppKitModalRadiuses
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ReownAppKitModalRadiusesImplCopyWith<_$ReownAppKitModalRadiusesImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

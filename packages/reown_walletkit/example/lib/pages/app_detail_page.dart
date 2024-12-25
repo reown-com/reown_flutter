@@ -168,9 +168,8 @@ class AppDetailPageState extends State<AppDetailPage> {
                         );
                       }
                       return CircleAvatar(
-                        backgroundImage:
-                            const AssetImage('assets/images/default_icon.png'),
                         radius: 40.0,
+                        backgroundColor: Colors.black12,
                       );
                     },
                   ),

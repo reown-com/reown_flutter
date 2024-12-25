@@ -1,3 +1,4 @@
+// ignore: library_annotations
 @Timeout(Duration(seconds: 45))
 
 import 'dart:async';
@@ -54,7 +55,7 @@ void main() {
       int errorCounter = 0;
       core.relayClient.onRelayClientError.subscribe((args) {
         errorCounter++;
-        expect(args!.error.message, 'No internet connection: test');
+        expect(args.error.message, 'No internet connection: test');
       });
       await core.storage.init();
       await core.crypto.init();
@@ -83,7 +84,7 @@ void main() {
 
       Completer completer = Completer();
       core.relayClient.onRelayClientError.subscribe((args) {
-        expect(args!.error, isA<ReownCoreError>());
+        expect(args.error, isA<ReownCoreError>());
         expect(args.error.code, 3000);
         completer.complete();
       });

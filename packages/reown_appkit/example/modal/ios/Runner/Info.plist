@@ -69,7 +69,6 @@
 		<string>cbwallet</string>
 		<string>okto</string>
 		<string>bitkeep</string>
-		<string>hyperPay</string>
 		<string>bitizen</string>
 		<string>ape</string>
 		<string>uniswap</string>
@@ -90,6 +89,7 @@
 		<string>wcflutterwallet</string>
 		<string>wcflutterwallet-internal</string>
 		<string>rn-web3wallet</string>
+		<string>rn-web3wallet-internal</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

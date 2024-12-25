@@ -47,32 +47,32 @@ class ConnectButton extends StatelessWidget {
               : null,
       size: size,
       buttonStyle: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) {
             if (connecting) {
               return themeColors.grayGlass010;
             }
-            if (states.contains(MaterialState.disabled)) {
+            if (states.contains(WidgetState.disabled)) {
               return themeColors.grayGlass005;
             }
             return themeColors.accent100;
           },
         ),
-        foregroundColor: MaterialStateProperty.resolveWith<Color>(
+        foregroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) {
             if (connecting) {
               return themeColors.accent100;
             }
-            if (states.contains(MaterialState.disabled)) {
+            if (states.contains(WidgetState.disabled)) {
               return themeColors.grayGlass015;
             }
             return themeColors.inverse100;
           },
         ),
-        shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
+        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
           (states) {
             return RoundedRectangleBorder(
-              side: (states.contains(MaterialState.disabled) || connecting)
+              side: (states.contains(WidgetState.disabled) || connecting)
                   ? BorderSide(color: themeColors.grayGlass010, width: 1.0)
                   : BorderSide.none,
               borderRadius: BorderRadius.circular(borderRadius),
@@ -80,7 +80,7 @@ class ConnectButton extends StatelessWidget {
           },
         ),
       ),
-      overridePadding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+      overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
         showLoading
             ? const EdgeInsets.only(left: 6.0, right: 16.0)
             : const EdgeInsets.only(left: 16.0, right: 16.0),

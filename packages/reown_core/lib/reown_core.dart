@@ -1,4 +1,4 @@
-library reown_core;
+library;
 
 export 'version.dart';
 export 'crypto/crypto_models.dart';
