@@ -134,6 +134,30 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  FeaturesConfig? _featuresConfig() {
+    return FeaturesConfig(
+      email: true,
+      socials: [
+        AppKitSocialOption.Farcaster,
+        AppKitSocialOption.X,
+        AppKitSocialOption.Apple,
+        AppKitSocialOption.Discord,
+      ],
+      showMainWallets: true, // OPTIONAL - true by default
+    );
+  }
+
+  Set<String>? _featuredWalletIds() {
+    return {
+      'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
+      '18450873727504ae9315a084fa7624b5297d2fe5880f0982979c17345a138277', // Kraken Wallet
+      'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // Metamask
+      '1ae92b26df02f0abca6304df07debccd18262fdf5fe82daa81593582dac9a369', // Rainbow
+      'c03dfee351b6fcc421b4494ea33b9d4b92a984f87aa76d1663bb28705e95034a', // Uniswap
+      '38f5d18bd8522c244bdd70cb4a68e0e718865155811c043f052fb9f1c51de662', // Bitget
+    };
+  }
+
   Future<void> _initializeService() async {
     _appKit = ReownAppKit(
       core: ReownCore(
@@ -173,39 +197,21 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKitModal = ReownAppKitModal(
       context: context,
       appKit: _appKit,
-      siweConfig: _siweConfig(linkMode),
       enableAnalytics: true,
-      featuresConfig: FeaturesConfig(
-        email: true,
-        socials: [
-          AppKitSocialOption.Farcaster,
-          AppKitSocialOption.X,
-          AppKitSocialOption.Apple,
-          AppKitSocialOption.Discord,
-        ],
-        showMainWallets: true, // OPTIONAL - true by default
-      ),
+      siweConfig: _siweConfig(linkMode),
+      featuresConfig: _featuresConfig(),
       // requiredNamespaces: {},
       // optionalNamespaces: {},
+      featuredWalletIds: _featuredWalletIds(),
+      // excludedWalletIds: {},
       // includedWalletIds: {},
+      // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
+      optionalNamespaces: _updatedNamespaces(),
       getBalanceFallback: () async {
         // This method will be triggered if getting the balance from our blockchain API fails
         // You could place here your own getBalance method
         return 0.0;
       },
-      featuredWalletIds: {
-        'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
-        '18450873727504ae9315a084fa7624b5297d2fe5880f0982979c17345a138277', // Kraken Wallet
-        'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // Metamask
-        '1ae92b26df02f0abca6304df07debccd18262fdf5fe82daa81593582dac9a369', // Rainbow
-        'c03dfee351b6fcc421b4494ea33b9d4b92a984f87aa76d1663bb28705e95034a', // Uniswap
-        '38f5d18bd8522c244bdd70cb4a68e0e718865155811c043f052fb9f1c51de662', // Bitget
-      },
-      // excludedWalletIds: {
-      //   'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
-      // },
-      // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
-      optionalNamespaces: _updatedNamespaces(),
     );
 
     _appKitModal!.onModalConnect.subscribe(_onModalConnect);
