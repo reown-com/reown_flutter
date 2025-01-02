@@ -76,20 +76,15 @@ class ConnectPageState extends State<ConnectPage> {
         horizontal: StyleConstants.linear8,
       ),
       children: <Widget>[
+        const SizedBox(height: StyleConstants.linear16),
         Text(
           widget.appKitModal.appKit!.metadata.name,
-          style: StyleConstants.subtitleText,
+          style: StyleConstants.subtitleText.copyWith(
+            color: ReownAppKitModalTheme.colorsOf(context).foreground100,
+          ),
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: StyleConstants.linear16),
-        const Divider(height: 1.0),
-        const SizedBox(height: StyleConstants.linear16),
-        const Text(
-          'Connect With AppKit Modal',
-          style: StyleConstants.buttonText,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: StyleConstants.linear8),
+        const SizedBox(height: StyleConstants.linear24),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -143,6 +138,8 @@ class ConnectPageState extends State<ConnectPage> {
                       'non-EVM\nSession Proposal',
                       textAlign: TextAlign.end,
                       style: TextStyle(
+                        color: ReownAppKitModalTheme.colorsOf(context)
+                            .foreground100,
                         fontWeight: !widget.linkMode
                             ? FontWeight.bold
                             : FontWeight.normal,
@@ -159,6 +156,8 @@ class ConnectPageState extends State<ConnectPage> {
                     child: Text(
                       'only EVM\nLink Mode',
                       style: TextStyle(
+                        color: ReownAppKitModalTheme.colorsOf(context)
+                            .foreground100,
                         fontWeight: widget.linkMode
                             ? FontWeight.bold
                             : FontWeight.normal,
@@ -207,6 +206,21 @@ class ConnectPageState extends State<ConnectPage> {
                 builder: (_, snapshot) {
                   final enabled = snapshot.data != null;
                   return ElevatedButton(
+                    style: ButtonStyle(
+                      elevation: WidgetStateProperty.all(0.0),
+                      backgroundColor: WidgetStateProperty.all<Color>(
+                        enabled
+                            ? ReownAppKitModalTheme.colorsOf(context).accent080
+                            : ReownAppKitModalTheme.colorsOf(context)
+                                .accenGlass010,
+                      ),
+                      foregroundColor: WidgetStateProperty.all<Color>(
+                        enabled
+                            ? Colors.white
+                            : ReownAppKitModalTheme.colorsOf(context)
+                                .foreground200,
+                      ),
+                    ),
                     onPressed: enabled
                         ? () {
                             widget.appKitModal.launchConnectedWallet();
@@ -275,8 +289,13 @@ class _FooterWidget extends StatefulWidget {
 class __FooterWidgetState extends State<_FooterWidget> {
   @override
   Widget build(BuildContext context) {
-    final textStyle = TextStyle(fontSize: 12.0);
-    final textStyleBold = textStyle.copyWith(fontWeight: FontWeight.bold);
+    final textStyle = TextStyle(
+      fontSize: 12.0,
+      color: ReownAppKitModalTheme.colorsOf(context).foreground100,
+    );
+    final textStyleBold = textStyle.copyWith(
+      fontWeight: FontWeight.bold,
+    );
     final redirect = widget.appKitModal.appKit!.metadata.redirect;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -343,6 +362,15 @@ class __FooterWidgetState extends State<_FooterWidget> {
               child: SizedBox(
                 height: 30.0,
                 child: ElevatedButton(
+                  style: ButtonStyle(
+                    elevation: WidgetStateProperty.all(0.0),
+                    backgroundColor: WidgetStateProperty.all<Color>(
+                      ReownAppKitModalTheme.colorsOf(context).accenGlass010,
+                    ),
+                    foregroundColor: WidgetStateProperty.all<Color>(
+                      ReownAppKitModalTheme.colorsOf(context).foreground100,
+                    ),
+                  ),
                   onPressed: () async {
                     await widget.appKitModal.appKit!.core.storage.deleteAll();
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(

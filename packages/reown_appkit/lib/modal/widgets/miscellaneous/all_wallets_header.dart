@@ -21,6 +21,7 @@ class AllWalletsHeader extends StatelessWidget {
           Expanded(
             child: ModalSearchBar(
               hint: 'Search wallet',
+              initialValue: GetIt.I<IExplorerService>().searchValue,
               onTextChanged: (value) {
                 GetIt.I<IExplorerService>().search(query: value);
               },
