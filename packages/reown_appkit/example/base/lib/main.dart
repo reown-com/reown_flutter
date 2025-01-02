@@ -143,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
         AppKitSocialOption.Apple,
         AppKitSocialOption.Discord,
       ],
-      showMainWallets: true, // OPTIONAL - true by default
+      showMainWallets: false, // OPTIONAL - true by default
     );
   }
 
@@ -203,7 +203,9 @@ class _MyHomePageState extends State<MyHomePage> {
       // requiredNamespaces: {},
       // optionalNamespaces: {},
       featuredWalletIds: _featuredWalletIds(),
-      // excludedWalletIds: {},
+      // excludedWalletIds: {
+      //   '841b1ef7139a08ee064e626f9f946154b0a80096c3417abe49ced448217fcf4c',
+      // },
       // includedWalletIds: {},
       // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
       optionalNamespaces: _updatedNamespaces(),
@@ -469,7 +471,10 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     return Scaffold(
+      backgroundColor: ReownAppKitModalTheme.colorsOf(context).background125,
       appBar: AppBar(
+        backgroundColor: ReownAppKitModalTheme.colorsOf(context).background175,
+        foregroundColor: ReownAppKitModalTheme.colorsOf(context).foreground100,
         title: Text(_pageDatas[_selectedIndex].title),
         centerTitle: true,
         actions: [
@@ -502,6 +507,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildBottomNavBar() {
     return BottomNavigationBar(
+      backgroundColor: ReownAppKitModalTheme.colorsOf(context).background175,
       currentIndex: _selectedIndex,
       unselectedItemColor: Colors.grey,
       selectedItemColor: Colors.indigoAccent,

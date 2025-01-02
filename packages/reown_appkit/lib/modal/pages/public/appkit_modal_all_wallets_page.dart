@@ -32,7 +32,9 @@ class _AppKitModalAllWalletsPageState
 
   bool _processScrollNotification(ScrollNotification notification) {
     if (notification is ScrollEndNotification) {
-      setState(() => _paginating = false);
+      if (mounted) {
+        setState(() => _paginating = false);
+      }
     } else {
       if (notification is UserScrollNotification) {
         return true;
@@ -94,11 +96,12 @@ class _AppKitModalAllWalletsPageState
                   listen: !_paginating,
                   builder: (context, initialised, items, searching) {
                     if (!initialised || searching) {
+                      final loadingCount =
+                          items.isNotEmpty ? min(16, items.length) : 16;
                       return WalletsGrid(
                         paddingTop: isSearchAvailable ? 0.0 : kPadding16,
                         showLoading: true,
-                        loadingCount:
-                            items.isNotEmpty ? min(16, items.length) : 16,
+                        loadingCount: loadingCount,
                         scrollController: _controller,
                         itemList: [],
                       );
