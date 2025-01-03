@@ -5,6 +5,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+
+import 'package:reown_core/store/i_store.dart';
+
+import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_appkit/modal/services/phantom_service/i_phantom_service.dart';
+import 'package:reown_appkit/modal/services/phantom_service/phantom_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/services/network_service/i_network_service.dart';
@@ -12,9 +18,6 @@ import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/toast_service.dart';
 import 'package:reown_appkit/modal/services/uri_service/i_url_utils.dart';
-
-import 'package:reown_core/store/i_store.dart';
-import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
@@ -230,6 +233,12 @@ class ReownAppKitModal
         enabled: _initializeCoinbaseSDK,
       ),
     );
+    GetIt.I.registerSingletonIfAbsent<IPhantomService>(
+      () => PhantomService(
+        core: _appKit.core,
+        metadata: _appKit.metadata,
+      ),
+    );
     GetIt.I.registerSingletonIfAbsent<ISiweService>(
       () => SiweService(
         appKit: _appKit,
@@ -239,14 +248,16 @@ class ReownAppKitModal
     );
   }
 
+  IMagicService get _magicService => GetIt.I<IMagicService>();
+  ICoinbaseService get _coinbaseService => GetIt.I<ICoinbaseService>();
+  IPhantomService get _phantomService => GetIt.I<IPhantomService>();
+
   IUriService get _uriService => GetIt.I<IUriService>();
   IToastService get _toastService => GetIt.I<IToastService>();
   IAnalyticsService get _analyticsService => GetIt.I<IAnalyticsService>();
   IExplorerService get _explorerService => GetIt.I<IExplorerService>();
   INetworkService get _networkService => GetIt.I<INetworkService>();
-  IMagicService get _magicService => GetIt.I<IMagicService>();
   IBlockChainService get _blockchainService => GetIt.I<IBlockChainService>();
-  ICoinbaseService get _coinbaseService => GetIt.I<ICoinbaseService>();
   ISiweService get _siweService => GetIt.I<ISiweService>();
 
   ////////* PUBLIC METHODS */////////
@@ -263,6 +274,15 @@ class ReownAppKitModal
     final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
     if (state.isNotEmpty) {
       _magicService.completeSocialLogin(url: url);
+      return true;
+    }
+
+    final phantomRequest = ReownCoreUtils.getSearchParamFromURL(
+      url,
+      'phantomRequest',
+    );
+    if (phantomRequest.isNotEmpty) {
+      _phantomService.completePhantomRequest(url: url);
       return true;
     }
 
@@ -291,6 +311,7 @@ class ReownAppKitModal
     await _networkService.init();
     await _explorerService.init();
     await _coinbaseService.init();
+    await _phantomService.init();
     await _blockchainService.init();
 
     _currentSession = await _getStoredSession();
@@ -815,6 +836,9 @@ class ReownAppKitModal
     try {
       if (_selectedWallet!.isCoinbase) {
         await _coinbaseService.getAccount();
+        await _explorerService.storeConnectedWallet(_selectedWallet);
+      } else if (_selectedWallet!.isPhantom) {
+        await _phantomService.getAccount();
         await _explorerService.storeConnectedWallet(_selectedWallet);
       } else {
         await buildConnectionUri();

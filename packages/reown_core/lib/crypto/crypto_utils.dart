@@ -11,7 +11,7 @@ import 'package:pointycastle/pointycastle.dart' show HkdfParameters;
 import 'package:reown_core/crypto/crypto_models.dart';
 import 'package:reown_core/crypto/i_crypto_utils.dart';
 import 'package:reown_core/models/basic_models.dart';
-import 'package:x25519/x25519.dart' as x;
+import 'package:x25519/x25519.dart' as x25519;
 
 class CryptoUtils extends ICryptoUtils {
   static final _random = Random.secure();
@@ -23,7 +23,7 @@ class CryptoUtils extends ICryptoUtils {
 
   @override
   CryptoKeyPair generateKeyPair() {
-    final kp = x.generateKeyPair();
+    final kp = x25519.generateKeyPair();
 
     return CryptoKeyPair(
       hex.encode(kp.privateKey),
@@ -47,7 +47,7 @@ class CryptoUtils extends ICryptoUtils {
 
   @override
   Future<String> deriveSymKey(String privKeyA, String pubKeyB) async {
-    final Uint8List sharedKey1 = x.X25519(
+    final Uint8List sharedKey1 = x25519.X25519(
       hex.decode(privKeyA),
       hex.decode(pubKeyB),
     );
