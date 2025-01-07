@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 
@@ -50,16 +47,8 @@ class PhantomService implements IPhantomService {
       );
 
   @override
-  List<String> get supportedMethods => [
-        ...MethodsConstants.requiredMethods,
-        'eth_requestAccounts',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-        'eth_signTransaction',
-        MethodsConstants.walletSwitchEthChain,
-        MethodsConstants.walletAddEthChain,
-        'wallet_watchAsset',
-      ];
+  List<String> get supportedMethods =>
+      NetworkUtils.defaultNetworkMethods['solana']!.toList();
 
   @override
   Event<PhantomConnectEvent> onPhantomConnect = Event<PhantomConnectEvent>();
@@ -116,20 +105,17 @@ class PhantomService implements IPhantomService {
   }
 
   @override
-  Future<String> get ownPublicKey async {
-    return _phantomHelper.selfPublicKey;
-  }
+  Future<String> get ownPublicKey async => _phantomHelper.publicKey;
 
   @override
-  Future<String> get peerPublicKey async {
-    return _phantomHelper.walletPublicKey;
-  }
+  Future<String> get peerPublicKey async => _phantomHelper.solanaAddress;
 
   @override
   Future<void> getAccount() async {
     await _checkInstalled();
     try {
       final phantomUri = _phantomHelper.buildConnectionUri();
+      print('[$runtimeType] $phantomUri');
       await ReownCoreUtils.openURL(phantomUri.toString());
     } on PlatformException catch (e, s) {
       _core.logger.e('[$runtimeType] getAccount PlatformException $e');
@@ -145,31 +131,23 @@ class PhantomService implements IPhantomService {
   }
 
   @override
-  void completePhantomRequest({required String url}) {
+  void completePhantomRequest({required String url}) async {
     final params = Uri.parse(url).queryParameters;
-    final phantomRequest = ReownCoreUtils.getSearchParamFromURL(
+    final request = ReownCoreUtils.getSearchParamFromURL(
       url,
       'phantomRequest',
     );
-    final phantomNonce = ReownCoreUtils.getSearchParamFromURL(url, 'nonce');
-    final phantomData = ReownCoreUtils.getSearchParamFromURL(url, 'data');
 
-    if (phantomRequest == 'connect') {
-      if (_phantomHelper.createSession(params)) {
-        _core.logger.i('[$runtimeType] Phantom Wallet connected $params');
-        // onPhantomConnect.broadcast(PhantomConnectEvent(...));
-      }
-      // TODO for testing purpose
-      final signUri = _phantomHelper.buildSignMessageUri(
-        message: 'AppKit flutter message from Solana.',
+    final payload = _phantomHelper.decryptPayload(params: params);
+    print('[$runtimeType] payload $payload');
+
+    if (request == 'connect') {
+      // TODO create session
+      final signMessageUri = _phantomHelper.buildSignMessageUri(
+        message: 'Sign this message',
       );
-      ReownCoreUtils.openURL(signUri.toString());
-    } else {
-      final payload = _phantomHelper.decryptPayload(
-        data: phantomData,
-        nonce: phantomNonce,
-      );
-      debugPrint(jsonEncode(payload));
+      print('[$runtimeType] $signMessageUri');
+      await ReownCoreUtils.openURL(signMessageUri.toString());
     }
   }
 
