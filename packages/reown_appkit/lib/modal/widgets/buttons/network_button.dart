@@ -68,18 +68,18 @@ class NetworkButton extends StatelessWidget {
             size: size,
             onTap: serviceStatus.isInitialized ? onTap : null,
             buttonStyle: ButtonStyle(
-              backgroundColor: MaterialStateProperty.resolveWith<Color>(
+              backgroundColor: WidgetStateProperty.resolveWith<Color>(
                 (states) => themeColors.grayGlass002,
               ),
-              foregroundColor: MaterialStateProperty.resolveWith<Color>(
+              foregroundColor: WidgetStateProperty.resolveWith<Color>(
                 (states) {
-                  if (states.contains(MaterialState.disabled)) {
+                  if (states.contains(WidgetState.disabled)) {
                     return themeColors.grayGlass015;
                   }
                   return themeColors.foreground100;
                 },
               ),
-              shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
+              shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
                 (states) {
                   return RoundedRectangleBorder(
                     side: BorderSide(
@@ -152,7 +152,7 @@ class NetworkButton extends StatelessWidget {
                   ),
               ],
             ),
-            overridePadding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+            overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
               !iconOnRight
                   ? const EdgeInsets.only(left: 6.0, right: 16.0)
                   : const EdgeInsets.only(left: 16.0, right: 6.0),

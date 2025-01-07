@@ -19,7 +19,7 @@ class BaseListItem extends StatelessWidget {
   final EdgeInsets? padding;
   final bool hightlighted;
   final bool flexible;
-  final MaterialStateProperty<Color?>? backgroundColor;
+  final WidgetStateProperty<Color?>? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +39,12 @@ class BaseListItem extends StatelessWidget {
               )
             : null,
         backgroundColor: backgroundColor ??
-            MaterialStateProperty.all<Color>(
+            WidgetStateProperty.all<Color>(
               hightlighted
                   ? themeColors.accenGlass015
                   : themeColors.grayGlass002,
             ),
-        overlayColor: MaterialStateProperty.all<Color>(
+        overlayColor: WidgetStateProperty.all<Color>(
           themeColors.grayGlass005,
         ),
         shape: WidgetStateProperty.all<RoundedRectangleBorder>(

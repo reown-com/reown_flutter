@@ -36,7 +36,7 @@ class AccountListItem extends StatelessWidget {
   final bool hightlighted;
   final bool flexible;
   final EdgeInsets? padding;
-  final MaterialStateProperty<Color?>? backgroundColor;
+  final WidgetStateProperty<Color?>? backgroundColor;
 
   @override
   Widget build(BuildContext context) {

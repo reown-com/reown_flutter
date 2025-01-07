@@ -66,7 +66,7 @@ class _AddressButtonState extends State<AddressButton> {
       size: widget.size,
       onTap: widget.onTap,
       buttonStyle: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) => themeColors.grayGlass002,
         ),
         foregroundColor: WidgetStateProperty.resolveWith<Color>(
@@ -89,7 +89,7 @@ class _AddressButtonState extends State<AddressButton> {
           },
         ),
       ),
-      overridePadding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+      overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
         widget.child != null
             ? const EdgeInsets.all(0.0)
             : EdgeInsets.only(

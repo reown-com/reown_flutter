@@ -44,17 +44,17 @@ class SimpleIconButton extends StatelessWidget {
       onTap: onTap,
       size: size,
       buttonStyle: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) {
-            if (states.contains(MaterialState.disabled)) {
+            if (states.contains(WidgetState.disabled)) {
               return themeColors.grayGlass005;
             }
             return backgroundColor ?? themeColors.accent100;
           },
         ),
-        foregroundColor: MaterialStateProperty.resolveWith<Color>(
+        foregroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) {
-            if (states.contains(MaterialState.disabled)) {
+            if (states.contains(WidgetState.disabled)) {
               return themeColors.grayGlass005;
             }
             return foregroundColor ?? themeColors.inverse100;

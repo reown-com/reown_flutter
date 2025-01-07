@@ -20,7 +20,7 @@ class SecondaryButton extends StatelessWidget {
       child: Text(title),
       onTap: onTap,
       buttonStyle: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) => themeColors.grayGlass002,
         ),
         foregroundColor: WidgetStateProperty.resolveWith<Color>(

@@ -50,14 +50,14 @@ class AppKitModalAddressButton extends StatelessWidget {
       child: BaseButton(
         size: size,
         onTap: appKitModal.status.isLoading ? null : onTap,
-        overridePadding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+        overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
           EdgeInsets.only(
             left: size == BaseButtonSize.small ? 4.0 : 6.0,
             right: 8.0,
           ),
         ),
         buttonStyle: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+          backgroundColor: WidgetStateProperty.resolveWith<Color>(
             (states) => themeColors.grayGlass002,
           ),
           foregroundColor: WidgetStateProperty.resolveWith<Color>(

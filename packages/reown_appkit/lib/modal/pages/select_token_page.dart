@@ -83,7 +83,7 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
             ..._tokens.mapIndexed((index, token) {
               return AccountListItem(
                 padding: const EdgeInsets.all(0.0),
-                backgroundColor: MaterialStatePropertyAll(
+                backgroundColor: WidgetStatePropertyAll(
                   Colors.transparent,
                 ),
                 iconWidget: Padding(

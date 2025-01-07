@@ -59,7 +59,7 @@ class ActivityListItem extends StatelessWidget {
     //
     return BaseListItem(
       onTap: onTap,
-      backgroundColor: MaterialStateProperty.all<Color>(
+      backgroundColor: WidgetStateProperty.all<Color>(
         themeColors.background125,
       ),
       padding: const EdgeInsets.all(0.0),
@@ -267,7 +267,7 @@ class ActivityListItemLoader extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     //
     return BaseListItem(
-      backgroundColor: MaterialStateProperty.all<Color>(
+      backgroundColor: WidgetStateProperty.all<Color>(
         Colors.transparent,
       ),
       padding: const EdgeInsets.all(0.0),

@@ -61,7 +61,7 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
       size: widget.size,
       onTap: widget.appKitModal.status.isLoading ? null : widget.onTap,
       buttonStyle: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) => themeColors.grayGlass002,
         ),
         foregroundColor: WidgetStateProperty.resolveWith<Color>(
