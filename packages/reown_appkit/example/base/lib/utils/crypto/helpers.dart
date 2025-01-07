@@ -62,6 +62,11 @@ Future<SessionRequestParams?> getParams(
         method: method,
         params: [address, typedData],
       );
+    case 'eth_signTypedData_v4':
+      return SessionRequestParams(
+        method: method,
+        params: [address, typeDataV4(int.parse(chainData.chainId))],
+      );
     case 'eth_signTransaction':
       return SessionRequestParams(
         method: method,
