@@ -41,7 +41,7 @@ class ReownAppKitModalNetworks {
         name: 'Polygon',
         chainId: '137',
         chainIcon: _networkIcons['137'],
-        currency: 'MATIC',
+        currency: 'POL',
         rpcUrl: 'https://polygon.drpc.org',
         explorerUrl: 'https://polygonscan.com',
       ),
@@ -167,7 +167,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Mumbai',
         chainId: '80001',
-        currency: 'MATIC',
+        currency: 'POL',
         rpcUrl: 'https://polygon-mumbai-bor-rpc.publicnode.com',
         extraRpcUrls: [
           'https://rpc.ankr.com/polygon_mumbai',
@@ -180,7 +180,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Amoy',
         chainId: '80002',
-        currency: 'MATIC',
+        currency: 'POL',
         rpcUrl: 'https://rpc-amoy.polygon.technology/',
         explorerUrl: 'https://amoy.polygonscan.com',
         isTestNetwork: true,
