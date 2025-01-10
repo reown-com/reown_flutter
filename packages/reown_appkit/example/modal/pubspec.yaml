@@ -21,6 +21,7 @@ dependencies:
   toastification: ^2.3.0
 
 dependency_overrides:
+  pinenacl: ^0.6.0
   # because of solana_web3 in reown_appkit
   web_socket_channel: ^3.0.1
 

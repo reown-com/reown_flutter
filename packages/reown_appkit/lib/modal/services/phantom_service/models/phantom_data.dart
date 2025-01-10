@@ -1,15 +1,15 @@
 import 'package:reown_appkit/reown_appkit.dart';
 
 class PhantomData {
+  String sessionToken; // TODO this shouldn't be here, it should be secured
   String address;
-  String chainName;
-  int chainId;
+  String chainId;
   ConnectionMetadata? self;
   ConnectionMetadata? peer;
 
   PhantomData({
+    required this.sessionToken,
     required this.address,
-    required this.chainName,
     required this.chainId,
     this.self,
     this.peer,
@@ -17,9 +17,9 @@ class PhantomData {
 
   factory PhantomData.fromJson(Map<String, dynamic> json) {
     return PhantomData(
-      address: json['address'].toString(),
-      chainName: json['chain'].toString(),
-      chainId: int.parse(json['networkId'].toString()),
+      sessionToken: json['session'].toString(),
+      address: json['public_key'].toString(),
+      chainId: json['chain_id'].toString(),
       self: (json['self'] != null)
           ? ConnectionMetadata.fromJson(json['self'])
           : null,
@@ -31,9 +31,9 @@ class PhantomData {
 
   Map<String, dynamic> toJson() {
     return {
-      'address': address,
-      'chain': chainName,
-      'networkId': chainId,
+      'session': sessionToken,
+      'public_key': address,
+      'chain_id': chainId,
       'self': self?.toJson(),
       'peer': peer?.toJson(),
     };
@@ -43,15 +43,15 @@ class PhantomData {
   String toString() => toJson().toString();
 
   PhantomData copytWith({
+    String? sessionToken,
     String? address,
-    String? chainName,
-    int? chainId,
+    String? chainId,
     ConnectionMetadata? self,
     ConnectionMetadata? peer,
   }) {
     return PhantomData(
+      sessionToken: sessionToken ?? this.sessionToken,
       address: address ?? this.address,
-      chainName: chainName ?? this.chainName,
       chainId: chainId ?? this.chainId,
       self: self ?? this.self,
       peer: peer ?? this.peer,

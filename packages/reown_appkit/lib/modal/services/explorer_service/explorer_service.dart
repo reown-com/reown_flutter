@@ -429,11 +429,13 @@ class ExplorerService implements IExplorerService {
 
   @override
   Future<ReownAppKitModalWalletInfo?> getCoinbaseWalletObject() async {
+    final walletId =
+        'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa';
     final results = await _fetchListings(
       params: RequestParams(
         page: 1,
         entries: 1,
-        search: 'coinbase wallet',
+        include: walletId,
         // platform: _getPlatformType(),
       ),
       updateCount: false,
@@ -446,6 +448,37 @@ class ExplorerService implements IExplorerService {
       bool installed = await _uriService.isInstalled(mobileLink);
       return wallet.copyWith(
         listing: wallet.listing.copyWith(mobileLink: mobileLink),
+        installed: installed,
+      );
+    }
+    return null;
+  }
+
+  @override
+  Future<ReownAppKitModalWalletInfo?> getPhantomWalletObject() async {
+    final walletId =
+        'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393';
+    final results = await _fetchListings(
+      params: RequestParams(
+        page: 1,
+        entries: 1,
+        include: walletId,
+        platform: _getPlatformType(),
+      ),
+      updateCount: false,
+    );
+
+    if (results.isNotEmpty) {
+      final wallet = ReownAppKitModalWalletInfo.fromJson(
+        results.first.toJson(),
+      );
+      final mobileLink = wallet.listing.mobileLink!;
+      bool installed = await _uriService.isInstalled(mobileLink);
+      return wallet.copyWith(
+        listing: wallet.listing.copyWith(
+          mobileLink: mobileLink,
+          linkMode: 'phantom.app',
+        ),
         installed: installed,
       );
     }
