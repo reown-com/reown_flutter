@@ -97,7 +97,6 @@ class ReownAppKitModalSession {
       return ReownAppKitModalConnector.coinbase;
     }
     if (_magicData != null) {
-      // TODO rename to ReownAppKitModalConnector.socials
       return ReownAppKitModalConnector.magic;
     }
 
