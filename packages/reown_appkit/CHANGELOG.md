@@ -1,4 +1,4 @@
-## 1.3.0-beta02
+## 1.3.0
 
 - Update to flutter version 3.24.5
 - Dependency updates
