@@ -103,6 +103,7 @@ class SignClientHelpers {
 
       Completer completer = Completer();
       b.onSessionConnect.subscribe((args) {
+        // ignore: unnecessary_null_comparison
         expect(args != null, true);
         completer.complete();
       });

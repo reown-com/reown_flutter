@@ -123,7 +123,7 @@ class _AppKitModalQRCodePageState extends State<ReownAppKitModalQRCodePage> {
                       fontSize: 14.0,
                       backgroundColor: Colors.transparent,
                       foregroundColor: themeColors.foreground200,
-                      overlayColor: MaterialStateProperty.all<Color>(
+                      overlayColor: WidgetStateProperty.all<Color>(
                         themeColors.background200,
                       ),
                       withBorder: false,

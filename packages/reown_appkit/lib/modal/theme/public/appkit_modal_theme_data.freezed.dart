@@ -22,7 +22,9 @@ mixin _$ReownAppKitModalThemeData {
       throw _privateConstructorUsedError;
   ReownAppKitModalRadiuses get radiuses => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ReownAppKitModalThemeData
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ReownAppKitModalThemeDataCopyWith<ReownAppKitModalThemeData> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -56,6 +58,8 @@ class _$ReownAppKitModalThemeDataCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ReownAppKitModalThemeData
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -84,6 +88,8 @@ class _$ReownAppKitModalThemeDataCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of ReownAppKitModalThemeData
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ReownAppKitModalColorsCopyWith<$Res> get lightColors {
@@ -92,6 +98,8 @@ class _$ReownAppKitModalThemeDataCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of ReownAppKitModalThemeData
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ReownAppKitModalColorsCopyWith<$Res> get darkColors {
@@ -100,6 +108,8 @@ class _$ReownAppKitModalThemeDataCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of ReownAppKitModalThemeData
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ReownAppKitModalTextStylesCopyWith<$Res> get textStyles {
@@ -109,6 +119,8 @@ class _$ReownAppKitModalThemeDataCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of ReownAppKitModalThemeData
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $ReownAppKitModalRadiusesCopyWith<$Res> get radiuses {
@@ -153,6 +165,8 @@ class __$$ReownAppKitModalThemeDataImplCopyWithImpl<$Res>
       $Res Function(_$ReownAppKitModalThemeDataImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ReownAppKitModalThemeData
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -228,7 +242,9 @@ class _$ReownAppKitModalThemeDataImpl implements _ReownAppKitModalThemeData {
   int get hashCode =>
       Object.hash(runtimeType, lightColors, darkColors, textStyles, radiuses);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ReownAppKitModalThemeData
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ReownAppKitModalThemeDataImplCopyWith<_$ReownAppKitModalThemeDataImpl>
@@ -252,8 +268,11 @@ abstract class _ReownAppKitModalThemeData implements ReownAppKitModalThemeData {
   ReownAppKitModalTextStyles get textStyles;
   @override
   ReownAppKitModalRadiuses get radiuses;
+
+  /// Create a copy of ReownAppKitModalThemeData
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ReownAppKitModalThemeDataImplCopyWith<_$ReownAppKitModalThemeDataImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

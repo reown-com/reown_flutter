@@ -24,6 +24,10 @@ abstract class IGenericStore<T> {
   /// The event contains the key and the value of type [T].
   abstract final Event<StoreDeleteEvent<T>> onDelete;
 
+  /// Emitted when a key is deleted from the store because of an error
+  /// The event contains the key and the error description.
+  abstract final Event<StoreErrorEvent<T>> onError;
+
   /// Emitted when the store is persisted to storage.
   /// This event can be used as a catchall for any creations, updates, or deletions.
   abstract final Event<StoreSyncEvent> onSync;

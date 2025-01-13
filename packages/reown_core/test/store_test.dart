@@ -2,19 +2,15 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:reown_core/pairing/i_json_rpc_history.dart';
-import 'package:reown_core/pairing/i_pairing_store.dart';
 import 'package:reown_core/pairing/json_rpc_history.dart';
 import 'package:reown_core/pairing/pairing_store.dart';
-import 'package:reown_core/pairing/utils/pairing_models.dart';
 import 'package:reown_core/relay_client/i_message_tracker.dart';
 import 'package:reown_core/relay_client/message_tracker.dart';
-import 'package:reown_core/relay_client/relay_client_models.dart';
+import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/generic_store.dart';
 import 'package:reown_core/store/i_generic_store.dart';
 import 'package:reown_core/store/i_store.dart';
 import 'package:reown_core/store/shared_prefs_store.dart';
-import 'package:reown_core/utils/constants.dart';
-import 'package:reown_core/utils/utils.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -153,15 +149,22 @@ void main() {
 
         // Case 4: Storage data is invalid
         // print('case 4');
+        Completer onErrorCompleter = Completer();
         genericStore = GenericStore(
           storage: store,
           context: 'invalid',
           version: 'swag',
           fromJson: (value) => value as String,
         );
+        genericStore.onError.subscribe((args) {
+          expect(args, isA<StoreErrorEvent<String>>());
+          onErrorCompleter.complete();
+        });
         await genericStore.init();
+        await onErrorCompleter.future;
 
         expect(store.get('invalid'), {'version': 'swag'});
+        expect(genericStore.has('key'), false);
         expect(genericStore.get('key') == null, true);
       });
     });

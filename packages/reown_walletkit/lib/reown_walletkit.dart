@@ -1,4 +1,4 @@
-library reown_walletkit;
+library;
 
 export 'walletkit_impl.dart';
 export 'i_walletkit_impl.dart';

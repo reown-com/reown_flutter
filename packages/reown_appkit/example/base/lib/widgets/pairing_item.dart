@@ -27,19 +27,29 @@ class PairingItem extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(12.0),
         color: pairing.active
-            ? Colors.blue.withOpacity(0.2)
-            : Colors.red.withOpacity(0.2),
+            ? ReownAppKitModalTheme.colorsOf(context).accenGlass020
+            : ReownAppKitModalTheme.colorsOf(context).error100.withOpacity(0.2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               pairing.peerMetadata?.name ?? 'Unknown',
-              style: StyleConstants.paragraph,
+              style: StyleConstants.paragraph.copyWith(
+                color: ReownAppKitModalTheme.colorsOf(context).foreground100,
+              ),
             ),
             Text(
               pairing.peerMetadata?.url ?? 'Expiry: $expiryDate ($inDays days)',
+              style: TextStyle(
+                color: ReownAppKitModalTheme.colorsOf(context).foreground100,
+              ),
             ),
-            Text(pairing.topic),
+            Text(
+              pairing.topic,
+              style: TextStyle(
+                color: ReownAppKitModalTheme.colorsOf(context).foreground100,
+              ),
+            ),
           ],
         ),
       ),

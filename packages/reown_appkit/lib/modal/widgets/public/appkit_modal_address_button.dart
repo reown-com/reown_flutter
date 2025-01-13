@@ -45,41 +45,35 @@ class AppKitModalAddressButton extends StatelessWidget {
       child: BaseButton(
         size: size,
         onTap: onTap,
-        overridePadding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+        overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
           EdgeInsets.only(
             left: size == BaseButtonSize.small ? 4.0 : 6.0,
             right: 8.0,
           ),
         ),
         buttonStyle: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+          backgroundColor: WidgetStateProperty.resolveWith<Color>(
             (states) {
-              if (states.contains(MaterialState.disabled)) {
-                return themeColors.grayGlass005;
+              if (states.contains(WidgetState.disabled)) {
+                return themeColors.grayGlass002;
               }
-              return themeColors.grayGlass010;
+              return themeColors.grayGlass005;
             },
           ),
-          foregroundColor: MaterialStateProperty.resolveWith<Color>(
+          foregroundColor: WidgetStateProperty.resolveWith<Color>(
             (states) {
-              if (states.contains(MaterialState.disabled)) {
+              if (states.contains(WidgetState.disabled)) {
                 return themeColors.grayGlass015;
               }
               return themeColors.foreground175;
             },
           ),
-          shape: MaterialStateProperty.resolveWith<RoundedRectangleBorder>(
+          shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
             (states) {
               return RoundedRectangleBorder(
-                side: states.contains(MaterialState.disabled)
-                    ? BorderSide(
-                        color: themeColors.grayGlass005,
-                        width: 1.0,
-                      )
-                    : BorderSide(
-                        color: themeColors.grayGlass010,
-                        width: 1.0,
-                      ),
+                side: states.contains(WidgetState.disabled)
+                    ? BorderSide(color: themeColors.grayGlass002, width: 1.0)
+                    : BorderSide(color: themeColors.grayGlass005, width: 1.0),
                 borderRadius: BorderRadius.circular(innerBorderRadius),
               );
             },
@@ -92,7 +86,7 @@ class AppKitModalAddressButton extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(size.iconSize),
                 border: Border.all(
-                  color: themeColors.grayGlass005,
+                  color: themeColors.grayGlass002,
                   width: 1.0,
                   strokeAlign: BorderSide.strokeAlignInside,
                 ),

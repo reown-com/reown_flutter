@@ -31,8 +31,12 @@ mixin _$CacaoRequestPayload {
   String? get requestId => throw _privateConstructorUsedError;
   List<String>? get resources => throw _privateConstructorUsedError;
 
+  /// Serializes this CacaoRequestPayload to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of CacaoRequestPayload
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $CacaoRequestPayloadCopyWith<CacaoRequestPayload> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -66,6 +70,8 @@ class _$CacaoRequestPayloadCopyWithImpl<$Res, $Val extends CacaoRequestPayload>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of CacaoRequestPayload
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -154,6 +160,8 @@ class __$$CacaoRequestPayloadImplCopyWithImpl<$Res>
       $Res Function(_$CacaoRequestPayloadImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of CacaoRequestPayload
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -286,7 +294,7 @@ class _$CacaoRequestPayloadImpl implements _CacaoRequestPayload {
                 .equals(other._resources, _resources));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -301,7 +309,9 @@ class _$CacaoRequestPayloadImpl implements _CacaoRequestPayload {
       requestId,
       const DeepCollectionEquality().hash(_resources));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of CacaoRequestPayload
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$CacaoRequestPayloadImplCopyWith<_$CacaoRequestPayloadImpl> get copyWith =>
@@ -352,8 +362,11 @@ abstract class _CacaoRequestPayload implements CacaoRequestPayload {
   String? get requestId;
   @override
   List<String>? get resources;
+
+  /// Create a copy of CacaoRequestPayload
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CacaoRequestPayloadImplCopyWith<_$CacaoRequestPayloadImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -376,8 +389,12 @@ mixin _$CacaoPayload {
   String? get requestId => throw _privateConstructorUsedError;
   List<String>? get resources => throw _privateConstructorUsedError;
 
+  /// Serializes this CacaoPayload to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of CacaoPayload
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $CacaoPayloadCopyWith<CacaoPayload> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -412,6 +429,8 @@ class _$CacaoPayloadCopyWithImpl<$Res, $Val extends CacaoPayload>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of CacaoPayload
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -506,6 +525,8 @@ class __$$CacaoPayloadImplCopyWithImpl<$Res>
       _$CacaoPayloadImpl _value, $Res Function(_$CacaoPayloadImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of CacaoPayload
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -647,7 +668,7 @@ class _$CacaoPayloadImpl implements _CacaoPayload {
                 .equals(other._resources, _resources));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -663,7 +684,9 @@ class _$CacaoPayloadImpl implements _CacaoPayload {
       requestId,
       const DeepCollectionEquality().hash(_resources));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of CacaoPayload
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$CacaoPayloadImplCopyWith<_$CacaoPayloadImpl> get copyWith =>
@@ -716,8 +739,11 @@ abstract class _CacaoPayload implements CacaoPayload {
   String? get requestId;
   @override
   List<String>? get resources;
+
+  /// Create a copy of CacaoPayload
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CacaoPayloadImplCopyWith<_$CacaoPayloadImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -730,8 +756,12 @@ CacaoHeader _$CacaoHeaderFromJson(Map<String, dynamic> json) {
 mixin _$CacaoHeader {
   String get t => throw _privateConstructorUsedError;
 
+  /// Serializes this CacaoHeader to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of CacaoHeader
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $CacaoHeaderCopyWith<CacaoHeader> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -755,6 +785,8 @@ class _$CacaoHeaderCopyWithImpl<$Res, $Val extends CacaoHeader>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of CacaoHeader
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -788,6 +820,8 @@ class __$$CacaoHeaderImplCopyWithImpl<$Res>
       _$CacaoHeaderImpl _value, $Res Function(_$CacaoHeaderImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of CacaoHeader
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -828,11 +862,13 @@ class _$CacaoHeaderImpl implements _CacaoHeader {
             (identical(other.t, t) || other.t == t));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, t);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of CacaoHeader
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$CacaoHeaderImplCopyWith<_$CacaoHeaderImpl> get copyWith =>
@@ -854,8 +890,11 @@ abstract class _CacaoHeader implements CacaoHeader {
 
   @override
   String get t;
+
+  /// Create a copy of CacaoHeader
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CacaoHeaderImplCopyWith<_$CacaoHeaderImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -870,8 +909,12 @@ mixin _$CacaoSignature {
   String get s => throw _privateConstructorUsedError;
   String? get m => throw _privateConstructorUsedError;
 
+  /// Serializes this CacaoSignature to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of CacaoSignature
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $CacaoSignatureCopyWith<CacaoSignature> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -895,6 +938,8 @@ class _$CacaoSignatureCopyWithImpl<$Res, $Val extends CacaoSignature>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of CacaoSignature
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -938,6 +983,8 @@ class __$$CacaoSignatureImplCopyWithImpl<$Res>
       _$CacaoSignatureImpl _value, $Res Function(_$CacaoSignatureImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of CacaoSignature
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -993,11 +1040,13 @@ class _$CacaoSignatureImpl implements _CacaoSignature {
             (identical(other.m, m) || other.m == m));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, t, s, m);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of CacaoSignature
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$CacaoSignatureImplCopyWith<_$CacaoSignatureImpl> get copyWith =>
@@ -1027,8 +1076,11 @@ abstract class _CacaoSignature implements CacaoSignature {
   String get s;
   @override
   String? get m;
+
+  /// Create a copy of CacaoSignature
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CacaoSignatureImplCopyWith<_$CacaoSignatureImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1043,8 +1095,12 @@ mixin _$Cacao {
   CacaoPayload get p => throw _privateConstructorUsedError;
   CacaoSignature get s => throw _privateConstructorUsedError;
 
+  /// Serializes this Cacao to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Cacao
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $CacaoCopyWith<Cacao> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -1070,6 +1126,8 @@ class _$CacaoCopyWithImpl<$Res, $Val extends Cacao>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Cacao
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1093,6 +1151,8 @@ class _$CacaoCopyWithImpl<$Res, $Val extends Cacao>
     ) as $Val);
   }
 
+  /// Create a copy of Cacao
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $CacaoHeaderCopyWith<$Res> get h {
@@ -1101,6 +1161,8 @@ class _$CacaoCopyWithImpl<$Res, $Val extends Cacao>
     });
   }
 
+  /// Create a copy of Cacao
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $CacaoPayloadCopyWith<$Res> get p {
@@ -1109,6 +1171,8 @@ class _$CacaoCopyWithImpl<$Res, $Val extends Cacao>
     });
   }
 
+  /// Create a copy of Cacao
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $CacaoSignatureCopyWith<$Res> get s {
@@ -1143,6 +1207,8 @@ class __$$CacaoImplCopyWithImpl<$Res>
       _$CacaoImpl _value, $Res Function(_$CacaoImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Cacao
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1198,11 +1264,13 @@ class _$CacaoImpl implements _Cacao {
             (identical(other.s, s) || other.s == s));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, h, p, s);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Cacao
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$CacaoImplCopyWith<_$CacaoImpl> get copyWith =>
@@ -1230,8 +1298,11 @@ abstract class _Cacao implements Cacao {
   CacaoPayload get p;
   @override
   CacaoSignature get s;
+
+  /// Create a copy of Cacao
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CacaoImplCopyWith<_$CacaoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1248,8 +1319,12 @@ mixin _$StoredCacao {
   CacaoPayload get p => throw _privateConstructorUsedError;
   CacaoSignature get s => throw _privateConstructorUsedError;
 
+  /// Serializes this StoredCacao to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of StoredCacao
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $StoredCacaoCopyWith<StoredCacao> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1282,6 +1357,8 @@ class _$StoredCacaoCopyWithImpl<$Res, $Val extends StoredCacao>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of StoredCacao
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1315,6 +1392,8 @@ class _$StoredCacaoCopyWithImpl<$Res, $Val extends StoredCacao>
     ) as $Val);
   }
 
+  /// Create a copy of StoredCacao
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $CacaoHeaderCopyWith<$Res> get h {
@@ -1323,6 +1402,8 @@ class _$StoredCacaoCopyWithImpl<$Res, $Val extends StoredCacao>
     });
   }
 
+  /// Create a copy of StoredCacao
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $CacaoPayloadCopyWith<$Res> get p {
@@ -1331,6 +1412,8 @@ class _$StoredCacaoCopyWithImpl<$Res, $Val extends StoredCacao>
     });
   }
 
+  /// Create a copy of StoredCacao
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $CacaoSignatureCopyWith<$Res> get s {
@@ -1371,6 +1454,8 @@ class __$$StoredCacaoImplCopyWithImpl<$Res>
       _$StoredCacaoImpl _value, $Res Function(_$StoredCacaoImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of StoredCacao
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1448,11 +1533,13 @@ class _$StoredCacaoImpl implements _StoredCacao {
             (identical(other.s, s) || other.s == s));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, pairingTopic, h, p, s);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of StoredCacao
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$StoredCacaoImplCopyWith<_$StoredCacaoImpl> get copyWith =>
@@ -1487,8 +1574,11 @@ abstract class _StoredCacao implements StoredCacao {
   CacaoPayload get p;
   @override
   CacaoSignature get s;
+
+  /// Create a copy of StoredCacao
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$StoredCacaoImplCopyWith<_$StoredCacaoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

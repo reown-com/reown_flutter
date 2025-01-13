@@ -28,17 +28,13 @@ class ConnectivityState implements IConnectivity {
   Future<void> _updateConnectionStatus(List<ConnectivityResult> result) async {
     final isMobileData = result.contains(ConnectivityResult.mobile);
     final isWifi = result.contains(ConnectivityResult.wifi);
-    final isOnlineStatus = isMobileData || isWifi;
+    final isEthernet = result.contains(ConnectivityResult.ethernet);
+    final isVPN = result.contains(ConnectivityResult.vpn);
+    final isOnlineStatus = isMobileData || isWifi || isEthernet || isVPN;
 
     if (isOnline.value != isOnlineStatus) {
+      _core.logger.i('[$runtimeType] Connectivity changed $result');
       isOnline.value = isOnlineStatus;
-      _core.logger.i('[$runtimeType] Connectivity changed $isOnlineStatus');
-
-      // if (isOnline.value && !_core.relayClient.isConnected) {
-      //   await _core.relayClient.connect();
-      // } else if (!isOnline.value && _core.relayClient.isConnected) {
-      //   await _core.relayClient.disconnect();
-      // }
     }
   }
 }

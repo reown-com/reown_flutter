@@ -34,7 +34,7 @@ class PairingMetadata with _$PairingMetadata {
     required String name,
     required String description,
     required String url,
-    required List<String> icons,
+    @Default(<String>[]) List<String> icons,
     String? verifyUrl,
     Redirect? redirect,
   }) = _PairingMetadata;

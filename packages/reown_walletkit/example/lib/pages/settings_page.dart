@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:fl_toast/fl_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -17,6 +16,7 @@ import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/recover_from_seed.dart';
+import 'package:toastification/toastification.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -187,7 +187,10 @@ class _EVMAccountsState extends State<_EVMAccounts> {
     GetIt.I
         .get<EVMService>(instanceName: _selectedChain!.chainId)
         .getBalance(address: chainKeys[_currentPage].address)
-        .then((value) => setState(() => _balance = value));
+        .then((value) {
+      if (!mounted) return;
+      setState(() => _balance = value);
+    });
   }
 
   @override
@@ -270,7 +273,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
             children: [
               Expanded(
                 child: Text(
-                  '${_balance.toStringAsFixed(3)} ETH',
+                  '${_balance.toStringAsFixed(4)} ETH',
                   style: TextStyle(
                     fontSize: 15.0,
                     fontWeight: FontWeight.bold,
@@ -391,13 +394,20 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
   @override
   void initState() {
     super.initState();
-    _selectedChain = ChainsDataList.solanaChains.first;
-    final keysService = GetIt.I<IKeyService>();
-    final chainKeys = keysService.getKeysForChain('solana');
-    GetIt.I
-        .get<SolanaService2>(instanceName: _selectedChain!.chainId)
-        .getBalance(address: chainKeys.first.address)
-        .then((value) => setState(() => _balance = value));
+    try {
+      _selectedChain = ChainsDataList.solanaChains.first;
+      final keysService = GetIt.I<IKeyService>();
+      final chainKeys = keysService.getKeysForChain('solana');
+      GetIt.I
+          .get<SolanaService2>(instanceName: _selectedChain!.chainId)
+          .getBalance(address: chainKeys.first.address)
+          .then((value) {
+        if (!mounted) return;
+        setState(() => _balance = value);
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override
@@ -730,9 +740,11 @@ class __DataContainerState extends State<_DataContainer> {
     final blurValue = blurred ? 5.0 : 0.0;
     return GestureDetector(
       onTap: () => Clipboard.setData(ClipboardData(text: widget.data)).then(
-        (_) => showPlatformToast(
-          child: Text('${widget.title} copied'),
+        (_) => toastification.show(
+          title: Text('${widget.title} copied'),
           context: context,
+          autoCloseDuration: Duration(seconds: 2),
+          alignment: Alignment.bottomCenter,
         ),
       ),
       onLongPress: () => setState(() {
@@ -794,10 +806,10 @@ class SizeReportingWidget extends StatefulWidget {
   final ValueChanged<Size> onSizeChange;
 
   const SizeReportingWidget({
-    Key? key,
+    super.key,
     required this.child,
     required this.onSizeChange,
-  }) : super(key: key);
+  });
 
   @override
   State<SizeReportingWidget> createState() => _SizeReportingWidgetState();
@@ -830,11 +842,11 @@ class ExpandablePageView extends StatefulWidget {
   final Function(int)? onPageChanged;
 
   const ExpandablePageView({
-    Key? key,
+    super.key,
     required this.children,
     this.controller,
     this.onPageChanged,
-  }) : super(key: key);
+  });
 
   @override
   State<ExpandablePageView> createState() => _ExpandablePageViewState();

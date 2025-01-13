@@ -59,3 +59,7 @@ class ErrorOpeningWallet extends ModalError {
 class UserRejectedConnection extends ModalError {
   UserRejectedConnection() : super('User rejected connection');
 }
+
+class UserRejectedRequest extends ModalError {
+  UserRejectedRequest() : super('User rejected request');
+}

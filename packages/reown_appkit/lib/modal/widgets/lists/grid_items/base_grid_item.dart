@@ -24,21 +24,21 @@ class BaseGridItem extends StatelessWidget {
       onPressed: onTap,
       clipBehavior: Clip.antiAlias,
       style: ButtonStyle(
-        fixedSize: MaterialStateProperty.all<Size>(
+        fixedSize: WidgetStateProperty.all<Size>(
           const Size(kGridItemWidth, kGridItemHeight),
         ),
-        backgroundColor: MaterialStateProperty.all<Color>(
+        backgroundColor: WidgetStateProperty.all<Color>(
           isSelected ? themeColors.accenGlass020 : themeColors.grayGlass002,
         ),
-        overlayColor: MaterialStateProperty.all<Color>(
+        overlayColor: WidgetStateProperty.all<Color>(
           isSelected ? themeColors.accenGlass020 : themeColors.grayGlass005,
         ),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(maxRadius),
           ),
         ),
-        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+        padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
           const EdgeInsets.all(0.0),
         ),
       ),

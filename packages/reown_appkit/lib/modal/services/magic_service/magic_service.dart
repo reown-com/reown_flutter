@@ -542,6 +542,7 @@ class MagicService implements IMagicService {
       final cid = (_connectionChainId ?? '');
       final queryParams = {
         'projectId': _core.projectId,
+        'bundleId': _packageName,
         if (cid.isNotEmpty) 'chainId': cid,
       };
       final requestUri = uri.replace(queryParameters: queryParams);

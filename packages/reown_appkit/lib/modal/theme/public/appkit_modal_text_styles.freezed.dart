@@ -35,7 +35,9 @@ mixin _$ReownAppKitModalTextStyles {
   TextStyle get micro600 => throw _privateConstructorUsedError;
   TextStyle get micro700 => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ReownAppKitModalTextStyles
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ReownAppKitModalTextStylesCopyWith<ReownAppKitModalTextStyles>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -79,6 +81,8 @@ class _$ReownAppKitModalTextStylesCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ReownAppKitModalTextStyles
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -218,6 +222,8 @@ class __$$ReownAppKitModalTextStylesImplCopyWithImpl<$Res>
       $Res Function(_$ReownAppKitModalTextStylesImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ReownAppKitModalTextStyles
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -444,7 +450,9 @@ class _$ReownAppKitModalTextStylesImpl implements _ReownAppKitModalTextStyles {
       micro600,
       micro700);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ReownAppKitModalTextStyles
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ReownAppKitModalTextStylesImplCopyWith<_$ReownAppKitModalTextStylesImpl>
@@ -510,8 +518,11 @@ abstract class _ReownAppKitModalTextStyles
   TextStyle get micro600;
   @override
   TextStyle get micro700;
+
+  /// Create a copy of ReownAppKitModalTextStyles
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ReownAppKitModalTextStylesImplCopyWith<_$ReownAppKitModalTextStylesImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

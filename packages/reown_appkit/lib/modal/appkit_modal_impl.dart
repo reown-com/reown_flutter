@@ -48,7 +48,9 @@ import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 
 /// Either a [projectId] and [metadata] must be provided or an already created [appKit].
 /// optionalNamespaces is mostly not needed, if you use it, the values set here will override every optionalNamespaces set in evey chain
-class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
+class ReownAppKitModal
+    with ChangeNotifier, WidgetsBindingObserver
+    implements IReownAppKitModal {
   String _projectId = '';
 
   Map<String, RequiredNamespace> _requiredNamespaces = {};
@@ -381,6 +383,13 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
         : ReownAppKitModalStatus.initializing;
     _appKit.core.logger.i('[$runtimeType] status $_status');
     _notify();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      reconnectRelay();
+    }
   }
 
   Future<void> _checkSIWEStatus() async {
@@ -1302,17 +1311,16 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
       );
     } catch (e) {
       if (_isUserRejectedError(e)) {
-        onModalError.broadcast(UserRejectedConnection());
+        onModalError.broadcast(UserRejectedRequest());
         if (request.method == MethodsConstants.walletSwitchEthChain ||
             request.method == MethodsConstants.walletAddEthChain) {
           rethrow;
         }
-        return 'User rejected';
+        return Errors.getSdkError(Errors.USER_REJECTED).toJson();
       } else {
         if (e is CoinbaseServiceException) {
           // If the error is due to no session on Coinbase Wallet we disconnnect the session on Modal.
           // This is the only way to detect a missing session since Coinbase Wallet is not sending any event.
-          // disconnect();
           throw ReownAppKitModalException('Coinbase Wallet Error');
         }
         rethrow;
@@ -1588,17 +1596,17 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
 
   bool _isUserRejectedError(dynamic e) {
     if (e is JsonRpcError) {
-      final stringError = e.toJson().toString().toLowerCase();
-      final userRejected = stringError.contains('rejected');
-      final userDisapproved = stringError.contains('user disapproved');
-      return userRejected || userDisapproved;
+      final code = (e.code ?? 0);
+      final match = RegExp(r'\b500[0-3]\b').hasMatch(code.toString());
+      if (match || code == Errors.getSdkError(Errors.USER_REJECTED_SIGN).code) {
+        return true;
+      }
     }
-    if (e is CoinbaseServiceException) {
-      final stringError = e.message.toLowerCase();
-      final userDenied = stringError.contains('user denied');
-      return userDenied;
-    }
-    return false;
+
+    return RegExp(
+      r'\b(rejected|cancelled|disapproved|denied)\b',
+      caseSensitive: false,
+    ).hasMatch(e.toString());
   }
 
   Future<void> _disconnectSession(String? pairingTopic, String? topic) async {
@@ -1687,6 +1695,8 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   }
 
   void _registerListeners() {
+    WidgetsBinding.instance.addObserver(this);
+
     onModalError.subscribe(_onModalError);
     // Magic
     _magicService.onMagicConnect.subscribe(_onMagicConnectEvent);
@@ -1721,6 +1731,7 @@ class ReownAppKitModal with ChangeNotifier implements IReownAppKitModal {
   }
 
   void _unregisterListeners() {
+    WidgetsBinding.instance.removeObserver(this);
     onModalError.unsubscribe(_onModalError);
 
     // Magic
