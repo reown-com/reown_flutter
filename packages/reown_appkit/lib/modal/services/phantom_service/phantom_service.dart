@@ -95,12 +95,15 @@ class PhantomService implements IPhantomService {
     // final publicKey = utf8.encode(keyPair.publicKey);
     // _keyPair = nacl.sign.keypair.sync();
 
+    // final keyPair = await _core.crypto.generateKeyPair();
+
     final redirect =
         (_metadata.redirect?.universal ?? _metadata.redirect?.native)!;
 
     _phantomHelper = PhantomHelper(
       appUrl: _metadata.url,
       redirectLink: redirect,
+      // publicKey: keyPair.publicKeyBytes,
     );
   }
 
