@@ -8,7 +8,6 @@ import 'package:reown_walletkit/reown_walletkit.dart';
 
 import 'package:solana/solana.dart' as solana;
 import 'package:solana/encoder.dart' as solana_encoder;
-import 'package:bs58/bs58.dart';
 
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';

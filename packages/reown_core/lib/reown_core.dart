@@ -18,3 +18,7 @@ export 'verify/models/verify_context.dart';
 //
 export 'i_core_impl.dart';
 export 'core_impl.dart';
+
+export 'package:bs58/bs58.dart';
+export 'package:ed25519_edwards/ed25519_edwards.dart' show PublicKey;
+export 'package:pointycastle/digests/sha256.dart';

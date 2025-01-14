@@ -5,8 +5,6 @@ import 'package:reown_appkit/reown_appkit.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:convert/convert.dart';
-// ignore: depend_on_referenced_packages
-import 'package:bs58/bs58.dart';
 
 import 'package:reown_appkit_example/services/contracts/aave_contract.dart';
 import 'package:reown_appkit_example/services/contracts/test_data.dart';

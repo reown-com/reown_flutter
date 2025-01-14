@@ -5,7 +5,6 @@ import 'dart:convert';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 import 'package:solana_web3/solana_web3.dart' as solana;
-import 'package:bs58/bs58.dart';
 
 enum TronMethods {
   tronSignTransaction,

@@ -92,10 +92,7 @@ class PhantomService implements IPhantomService {
     _iconImage = _explorerService.getWalletImageUrl(imageId);
 
     // final keyPair = _core.crypto.getUtils().generateKeyPair();
-    // final publicKey = utf8.encode(keyPair.publicKey);
     // _keyPair = nacl.sign.keypair.sync();
-
-    // final keyPair = await _core.crypto.generateKeyPair();
 
     final redirect =
         (_metadata.redirect?.universal ?? _metadata.redirect?.native)!;
@@ -103,26 +100,24 @@ class PhantomService implements IPhantomService {
     _phantomHelper = PhantomHelper(
       appUrl: _metadata.url,
       redirectLink: redirect,
-      // publicKey: keyPair.publicKeyBytes,
+      core: _core,
     );
   }
 
   @override
-  Future<String> get dappPublicKey async => _phantomHelper.publicKey;
+  Future<String> get dappPublicKey async => _phantomHelper.dappPublicKey;
 
   @override
-  Future<String> get walletPublicKey async => _phantomHelper.solanaAddress;
+  Future<String> get walletPublicKey async => _phantomHelper.walletPublicKey;
 
   @override
   Future<bool> isConnected() async {
     try {
       if (_core.storage.has(StorageConstants.phantomSession)) {
         final session = _core.storage.get(StorageConstants.phantomSession)!;
-        final sessionToken = session['session_token']!;
-        final phantomPublicKey = session['phantom_encryption_public_key']!;
         return _phantomHelper.restoreSession(
-          sessionToken,
-          phantomPublicKey,
+          session['session_token']!,
+          session['phantom_encryption_public_key']!,
         );
       }
     } catch (e, s) {
@@ -192,7 +187,7 @@ class PhantomService implements IPhantomService {
       }
 
       _core.logger.d('[$runtimeType] request  $requestUri');
-      ReownCoreUtils.openURL(requestUri.toString());
+      await ReownCoreUtils.openURL(requestUri.toString());
     } catch (e, s) {
       final errorMessage = '${walletMetadata.metadata.name} request error';
       _core.logger.e('[$runtimeType] $errorMessage', error: e, stackTrace: s);
@@ -263,11 +258,14 @@ class PhantomService implements IPhantomService {
       'phantom_encryption_public_key': phantomPublicKey,
     });
     onPhantomConnect.broadcast(PhantomConnectEvent(data));
-    _core.logger.i('[$runtimeType] $request ${jsonEncode(data.toJson())}');
+    _core.logger.i(
+      '[$runtimeType] _onConnectPhantomWallet ${jsonEncode(data.toJson())}',
+    );
   }
 
   Future<void> _onDisconnectPhantomWallet(_) async {
     await _core.storage.delete(StorageConstants.phantomSession);
+    return _phantomHelper.resetSharedSecret();
   }
 
   void _onRequestResponse(Map<String, dynamic> payload) {
