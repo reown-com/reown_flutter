@@ -91,9 +91,6 @@ class PhantomService implements IPhantomService {
     final imageId = _walletData?.listing.imageId ?? _defaultListingData.imageId;
     _iconImage = _explorerService.getWalletImageUrl(imageId);
 
-    // final keyPair = _core.crypto.getUtils().generateKeyPair();
-    // _keyPair = nacl.sign.keypair.sync();
-
     final redirect =
         (_metadata.redirect?.universal ?? _metadata.redirect?.native)!;
 
@@ -113,13 +110,7 @@ class PhantomService implements IPhantomService {
   @override
   Future<bool> isConnected() async {
     try {
-      if (_core.storage.has(StorageConstants.phantomSession)) {
-        final session = _core.storage.get(StorageConstants.phantomSession)!;
-        return _phantomHelper.restoreSession(
-          session['session_token']!,
-          session['phantom_encryption_public_key']!,
-        );
-      }
+      return _phantomHelper.restoreSession();
     } catch (e, s) {
       _core.logger.e('[$runtimeType] isConnected $e', stackTrace: s);
     }
@@ -218,7 +209,7 @@ class PhantomService implements IPhantomService {
   @override
   void completePhantomRequest({required String url}) async {
     final params = Uri.parse(url).queryParameters;
-    final payload = _phantomHelper.decryptPayload(params: params);
+    final payload = await _phantomHelper.decryptPayload(params);
     final phantomRequest = payload['phantomRequest'];
     _core.logger.d('[$runtimeType] completePhantomRequest, payload: $payload');
 
@@ -252,11 +243,7 @@ class PhantomService implements IPhantomService {
         publicKey: await dappPublicKey,
       ),
     );
-    final phantomPublicKey = payload['phantom_encryption_public_key'];
-    await _core.storage.set(StorageConstants.phantomSession, {
-      'session_token': data.sessionToken,
-      'phantom_encryption_public_key': phantomPublicKey,
-    });
+    await _phantomHelper.persistSession();
     onPhantomConnect.broadcast(PhantomConnectEvent(data));
     _core.logger.i(
       '[$runtimeType] _onConnectPhantomWallet ${jsonEncode(data.toJson())}',

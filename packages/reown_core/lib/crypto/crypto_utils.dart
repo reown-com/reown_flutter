@@ -26,6 +26,7 @@ class CryptoUtils extends ICryptoUtils {
     final kp = x25519.generateKeyPair();
 
     return CryptoKeyPair(
+      // Allow possibility to encode in different format
       hex.encode(kp.privateKey),
       hex.encode(kp.publicKey),
     );

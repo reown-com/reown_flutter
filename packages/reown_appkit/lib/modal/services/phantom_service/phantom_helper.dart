@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:convert/convert.dart';
 import 'package:pinenacl/x25519.dart' as pncl;
+import 'package:reown_appkit/modal/constants/string_constants.dart';
 
 import 'package:reown_core/reown_core.dart';
 
@@ -44,14 +46,23 @@ class PhantomHelper {
     _appUrl = appUrl;
     _redirectLink = redirectLink;
     _core = core;
+    _currentKeyPair = _core.crypto.getUtils().generateKeyPair();
   }
 
-  bool restoreSession(String sessionToken, String phantomKey) {
+  Future<bool> restoreSession() async {
     try {
-      _currentKeyPair = _core.crypto.getUtils().generateKeyPair();
-      _createSharedSecret(phantomPublicKey: phantomKey);
-      _sessionToken = sessionToken;
-      return true;
+      if (_core.storage.has(StorageConstants.phantomSession)) {
+        final session = _core.storage.get(StorageConstants.phantomSession)!;
+        _currentKeyPair = CryptoKeyPair(
+          hex.encode(_getKeyBytes('${session['self_private_key']}')),
+          hex.encode(_getKeyBytes('${session['self_public_key']}')),
+        );
+        _phantomPublicKey = session['phantom_encryption_public_key']!;
+        _sessionToken = session['session_token']!;
+        await _createSharedSecret();
+        return true;
+      }
+      return false;
     } catch (e) {
       rethrow;
     }
@@ -59,8 +70,6 @@ class PhantomHelper {
 
   /// Generate an URL to connect to Phantom Wallet
   Uri buildConnectionUri({String? cluster}) {
-    _currentKeyPair = _core.crypto.getUtils().generateKeyPair();
-
     return Uri(
       scheme: 'https',
       host: 'phantom.app',
@@ -237,8 +246,25 @@ class PhantomHelper {
     );
   }
 
+  Future<void> persistSession() async {
+    try {
+      final currentData = _core.storage.has(StorageConstants.phantomSession)
+          ? _core.storage.get(StorageConstants.phantomSession)!
+          : {};
+      await _core.storage.set(StorageConstants.phantomSession, {
+        ...currentData,
+        'session_token': _sessionToken,
+        'phantom_encryption_public_key': _phantomPublicKey,
+      });
+    } catch (e) {
+      _core.logger.d('[$runtimeType] persistSession $e');
+    }
+  }
+
   /// Decrypts the [data] payload returned by Phantom Wallet
-  Map<String, dynamic> decryptPayload({required Map<String, String> params}) {
+  Future<Map<String, dynamic>> decryptPayload(
+    Map<String, String> params,
+  ) async {
     if (params.containsKey('errorCode')) {
       return params;
     }
@@ -250,7 +276,8 @@ class PhantomHelper {
 
     if (phantomRequest == 'connect') {
       // executed only once after successful /connect
-      _createSharedSecret(phantomPublicKey: phantomKey);
+      _phantomPublicKey = phantomKey;
+      await _createSharedSecret();
     }
 
     if (phantomRequest == 'disconnect') {
@@ -273,8 +300,6 @@ class PhantomHelper {
     };
 
     _sessionToken = payload['session'] ?? _sessionToken;
-    _phantomPublicKey =
-        payload['phantom_encryption_public_key'] ?? _phantomPublicKey;
 
     return payload;
   }
@@ -294,34 +319,33 @@ class PhantomHelper {
     return encryptedPayload?.cipherText.asTypedList;
   }
 
-  void _createSharedSecret({required String phantomPublicKey}) {
-    final phPublicKey = base58.decode(phantomPublicKey);
+  Uint8List _getKeyBytes(String key) {
+    return base58.decode(key);
+  }
+
+  Future<void> _createSharedSecret() async {
     // Create a shared secret between Phantom Wallet and our DApp using our [_privateKey] and [phantom_encryption_public_key].
     _sharedSecretBox = pncl.Box(
       myPrivateKey: pncl.PrivateKey(_currentKeyPair!.getPrivateKeyBytes()),
-      theirPublicKey: pncl.PublicKey(phPublicKey),
+      theirPublicKey: pncl.PublicKey(_getKeyBytes(_phantomPublicKey)),
     );
-
-    // final String selfPubKey = await _core.crypto.generateKeyPair();
-    // print('[$runtimeType] selfPubKey $selfPubKey');
-    // final String peerPubKey = phantomPublicKey;
-    // print('[$runtimeType] peerPubKey $peerPubKey');
-    // final pk2 = base58.encode(_currentKeyPair!.publicKeyBytes);
-    // final sharedKey = await _core.crypto.generateSharedKey(
-    //   pk2,
-    //   phantomPublicKey,
-    // );
-    // print('[$runtimeType] sharedKey $sharedKey');
-
-    // final symKey = _core.crypto.keyChain.get(sharedKey)!;
-    // print('[$runtimeType] symKey $symKey');
-    // final chacha = dc.Chacha20.poly1305Aead();
-    // final secretKey = dc.SecretKey(hex.decode(symKey));
+    try {
+      final currentData = _core.storage.has(StorageConstants.phantomSession)
+          ? _core.storage.get(StorageConstants.phantomSession)!
+          : {};
+      await _core.storage.set(StorageConstants.phantomSession, {
+        ...currentData,
+        'self_private_key': _currentKeyPair!.getPrivateKeyBs58(),
+        'self_public_key': _currentKeyPair!.getPublicKeyBs58(),
+      });
+    } catch (e) {
+      _core.logger.d('[$runtimeType] _createSharedSecret $e');
+    }
   }
 
   void resetSharedSecret() {
     _currentKeyPair = null;
-    _sharedSecretBox = null;
     _sessionToken = null;
+    _sharedSecretBox = null;
   }
 }
