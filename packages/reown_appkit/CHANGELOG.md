@@ -1,3 +1,7 @@
+## 1.4.0
+
+- Phantom Wallet support
+
 ## 1.3.0
 
 - Update to flutter version 3.24.5
