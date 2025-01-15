@@ -356,7 +356,7 @@ class ReownAppKitModal
       }
     }
 
-    // There's a session stored
+    // There's a WC/Relay session stored
     if (wcSessions.isNotEmpty) {
       await _storeSession(ReownAppKitModalSession(
         sessionData: wcSessions.first,
@@ -397,7 +397,7 @@ class ReownAppKitModal
     await _selectChainFromStoredId();
 
     onModalNetworkChange.subscribe(_onNetworkChainRequireSIWE);
-    onModalConnect.subscribe(_loadAccountData);
+    // onModalConnect.subscribe(_loadAccountData);
 
     _relayConnected = _appKit.core.relayClient.isConnected;
     if (!_relayConnected) {
@@ -410,7 +410,12 @@ class ReownAppKitModal
     _status = _relayConnected
         ? ReownAppKitModalStatus.initialized
         : ReownAppKitModalStatus.initializing;
-    _appKit.core.logger.i('[$runtimeType] status $_status');
+    _appKit.core.logger.i(
+      '[$runtimeType] status $_status with session ${jsonEncode(_currentSession?.toJson())}',
+    );
+    if (_currentSession != null) {
+      onModalConnect.broadcast(ModalConnect(_currentSession!));
+    }
     _notify();
   }
 
