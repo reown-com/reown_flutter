@@ -132,6 +132,14 @@ class PhantomService implements IPhantomService {
       }
 
       _selectedChainId = chainId ?? solanaNets.first.chainId;
+
+      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+        _selectedChainId!,
+      );
+      if (namespace != NetworkUtils.solana) {
+        _selectedChainId = solanaNets.first.chainId;
+      }
+
       final selectedCluster = _clusters[_selectedChainId];
       final phantomUri = _phantomHelper.buildConnectionUri(
         cluster: selectedCluster,
@@ -145,7 +153,7 @@ class PhantomService implements IPhantomService {
 
       final errorMessage = '${walletMetadata.metadata.name} connect error';
       _core.logger.e('[$runtimeType] $errorMessage', error: e, stackTrace: s);
-      onPhantomError.broadcast(PhantomErrorEvent(errorMessage));
+      onPhantomError.broadcast(PhantomErrorEvent(-1, errorMessage));
       throw ThirdPartyWalletException(errorMessage, e, s);
     }
   }
@@ -182,7 +190,7 @@ class PhantomService implements IPhantomService {
     } catch (e, s) {
       final errorMessage = '${walletMetadata.metadata.name} request error';
       _core.logger.e('[$runtimeType] $errorMessage', error: e, stackTrace: s);
-      onPhantomError.broadcast(PhantomErrorEvent(errorMessage));
+      onPhantomError.broadcast(PhantomErrorEvent(-1, errorMessage));
       throw ThirdPartyWalletException(errorMessage, e, s);
     }
 
@@ -198,7 +206,7 @@ class PhantomService implements IPhantomService {
     } catch (e, s) {
       final errorMessage = '${walletMetadata.metadata.name} disconnect error';
       _core.logger.e('[$runtimeType] $errorMessage', error: e, stackTrace: s);
-      onPhantomError.broadcast(PhantomErrorEvent(errorMessage));
+      onPhantomError.broadcast(PhantomErrorEvent(-1, errorMessage));
       throw ThirdPartyWalletException(errorMessage, e, s);
     }
   }
@@ -235,6 +243,13 @@ class PhantomService implements IPhantomService {
   }
 
   Future<void> _onConnectPhantomWallet(Map<String, dynamic> payload) async {
+    if (payload.containsKey('errorCode')) {
+      final errorCode = int.parse(payload['errorCode']);
+      final errorMessage = payload['errorMessage'];
+      onPhantomError.broadcast(PhantomErrorEvent(errorCode, errorMessage));
+      return;
+    }
+
     final data = PhantomData.fromJson(payload).copytWith(
       chainId: _selectedChainId,
       peer: walletMetadata.copyWith(publicKey: await walletPublicKey),

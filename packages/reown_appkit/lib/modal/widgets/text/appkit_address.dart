@@ -49,10 +49,12 @@ class _AddressState extends State<Address> {
   void _modalNotifyListener() {
     setState(() {
       final chainId = widget.service.selectedChain?.chainId ?? '';
-      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-        chainId,
-      );
-      _address = widget.service.session?.getAddress(namespace);
+      if (chainId.isNotEmpty) {
+        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+          chainId,
+        );
+        _address = widget.service.session?.getAddress(namespace);
+      }
     });
   }
 }

@@ -32,8 +32,8 @@ class PhantomHelper {
   /// used to encrypt and decrypt the payload from and to Phantom Wallet
   pncl.Box? _sharedSecretBox;
 
-  late final String _phantomPublicKey;
-  String get walletPublicKey => _phantomPublicKey;
+  String? _phantomPublicKey;
+  String get walletPublicKey => _phantomPublicKey ?? '';
 
   late final IReownCore _core;
 
@@ -240,7 +240,7 @@ class PhantomHelper {
     final signatureBytes = base58.decode(signature);
 
     return ReownCoreUtils.ed25519Verify(
-      PublicKey(base58.decode(_phantomPublicKey)),
+      PublicKey(base58.decode(_phantomPublicKey!)),
       messageBytes,
       signatureBytes,
     );
@@ -320,14 +320,23 @@ class PhantomHelper {
   }
 
   Uint8List _getKeyBytes(String key) {
-    return base58.decode(key);
+    try {
+      return base58.decode(key);
+    } catch (error, stackTrace) {
+      _core.logger.e(
+        '[$runtimeType] _getKeyBytes $key',
+        error: error,
+        stackTrace: stackTrace,
+      );
+      rethrow;
+    }
   }
 
   Future<void> _createSharedSecret() async {
     // Create a shared secret between Phantom Wallet and our DApp using our [_privateKey] and [phantom_encryption_public_key].
     _sharedSecretBox = pncl.Box(
       myPrivateKey: pncl.PrivateKey(_currentKeyPair!.getPrivateKeyBytes()),
-      theirPublicKey: pncl.PublicKey(_getKeyBytes(_phantomPublicKey)),
+      theirPublicKey: pncl.PublicKey(_getKeyBytes(_phantomPublicKey!)),
     );
     try {
       final currentData = _core.storage.has(StorageConstants.phantomSession)
@@ -344,7 +353,6 @@ class PhantomHelper {
   }
 
   void resetSharedSecret() {
-    _currentKeyPair = null;
     _sessionToken = null;
     _sharedSecretBox = null;
   }

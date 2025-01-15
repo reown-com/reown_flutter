@@ -37,11 +37,12 @@ class ModalDisconnect extends EventArgs {
 /// Event fired every time an error occurs
 class ModalError extends EventArgs {
   final String message;
-  ModalError(this.message);
+  final String? description;
+  ModalError(this.message, {this.description});
 
   @override
   String toString() {
-    return 'ModalError(message: $message)';
+    return 'ModalError(message: $message, description: $description)';
   }
 }
 
@@ -52,7 +53,8 @@ class WalletNotInstalled extends ModalError {
 
 /// Error opening wallet
 class ErrorOpeningWallet extends ModalError {
-  ErrorOpeningWallet() : super('Unable to open Wallet app');
+  ErrorOpeningWallet({String? description})
+      : super('Unable to open Wallet app', description: description);
 }
 
 /// Event fired when user rejects connection in the wallet

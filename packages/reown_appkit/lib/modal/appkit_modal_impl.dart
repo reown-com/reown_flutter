@@ -860,7 +860,7 @@ class ReownAppKitModal
       if (e is ThirdPartyWalletNotInstalled) {
         onModalError.broadcast(WalletNotInstalled());
       } else {
-        onModalError.broadcast(ErrorOpeningWallet());
+        onModalError.broadcast(ErrorOpeningWallet(description: e.message));
       }
     } catch (e, s) {
       if (e is PlatformException) {
@@ -1772,7 +1772,7 @@ class ReownAppKitModal
     );
     // Phantom
     _phantomService.onPhantomConnect.subscribe(_onPhantomConnect);
-    // _phantomService.onPhantomError.subscribe(_onPhantomError);
+    _phantomService.onPhantomError.subscribe(_onPhantomError);
     //
     _appKit.onSessionAuthResponse.subscribe(_onSessionAuthResponse);
     _appKit.onSessionConnect.subscribe(_onSessionConnect);
@@ -1810,7 +1810,7 @@ class ReownAppKitModal
     );
     // Phantom
     _phantomService.onPhantomConnect.unsubscribe(_onPhantomConnect);
-    // _coinbaseService.onPhantomError.subscribe(_onPhantomError);
+    _phantomService.onPhantomError.subscribe(_onPhantomError);
     //
     _appKit.onSessionAuthResponse.unsubscribe(_onSessionAuthResponse);
     _appKit.onSessionConnect.unsubscribe(_onSessionConnect);
@@ -2031,6 +2031,22 @@ extension _PhantomConnectorExtension on ReownAppKitModal {
       onModalConnect.broadcast(ModalConnect(session));
       //
       closeModal();
+    }
+  }
+
+  void _onPhantomError(PhantomErrorEvent? args) async {
+    _appKit.core.logger.d('[$runtimeType] _onPhantomError: $args');
+    if (_isUserRejectedError(args?.toString())) {
+      onModalError.broadcast(UserRejectedConnection());
+      _analyticsService.sendEvent(ConnectErrorEvent(
+        message: 'User declined connection',
+      ));
+    } else {
+      final errorMessage = args?.error ?? 'Something went wrong';
+      onModalError.broadcast(ErrorOpeningWallet());
+      _analyticsService.sendEvent(ConnectErrorEvent(
+        message: errorMessage,
+      ));
     }
   }
 }

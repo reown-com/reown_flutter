@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:event/event.dart';
 import 'package:reown_appkit/modal/services/phantom_service/models/phantom_data.dart';
 
@@ -16,14 +18,18 @@ class PhantomConnectEvent implements EventArgs {
 }
 
 class PhantomErrorEvent implements EventArgs {
+  final int? code;
   final String? error;
-  PhantomErrorEvent(this.error);
+  PhantomErrorEvent(this.code, this.error);
 
   @override
   String? eventName;
 
   @override
   DateTime? whenOccurred;
+
+  @override
+  String toString() => jsonEncode({'code': code, 'error': error});
 }
 
 class PhantomSessionEvent implements EventArgs {
