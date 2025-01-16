@@ -83,7 +83,6 @@ class ReownAppKitModalSession {
     );
     final newPhantomData = _phantomData?.copytWith(
       address: phantomData?.address,
-      sessionToken: phantomData?.sessionToken,
       self: phantomData?.self,
       peer: phantomData?.peer,
     );

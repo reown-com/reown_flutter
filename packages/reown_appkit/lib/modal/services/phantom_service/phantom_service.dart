@@ -28,7 +28,6 @@ class PhantomService implements IPhantomService {
   );
 
   late final String _iconImage;
-  // late final solana.Ed25519Keypair _keyPair;
   late final PairingMetadata _metadata;
   late final ReownAppKitModalWalletInfo? _walletData;
   late final IReownCore _core;
