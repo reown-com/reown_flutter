@@ -37,7 +37,7 @@
         <package android:name="com.internetmoneywallet.app"/>
         <package android:name="com.bitcoin.mwallet"/>
         <package android:name="coin98.crypto.finance.media"/>
-        <package android:name="io.myabcwallet.mpc"/>
+        <package android:name="app.phantom"/>
         <package android:name="finance.ottr.android"/>
         <package android:name="co.arculus.wallet.android"/>
         <package android:name="com.huddln"/>

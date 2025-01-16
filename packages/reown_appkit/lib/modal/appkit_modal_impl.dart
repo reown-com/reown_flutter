@@ -1746,9 +1746,9 @@ class ReownAppKitModal
     }
   }
 
-  void _loadAccountData(ModalConnect? event) {
-    loadAccountData();
-  }
+  // void _loadAccountData(ModalConnect? event) {
+  //   loadAccountData();
+  // }
 
   void _checkInitialized() {
     if (_status != ReownAppKitModalStatus.initialized &&
