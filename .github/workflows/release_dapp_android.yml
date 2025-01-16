@@ -77,3 +77,4 @@ jobs:
 # Launch locally
 # Remove build: if:
 # act -j build --container-architecture linux/amd64 -P macos-latest-xlarge=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_dapp_android.yml
+# act --container-architecture linux/amd64 -P macos-latest-xlarge=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_dapp_android.yml workflow_dispatch
