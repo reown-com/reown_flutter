@@ -68,113 +68,122 @@ class ConnectPageState extends State<ConnectPage> {
     super.dispose();
   }
 
+  Future<void> _refreshData() async {
+    await widget.appKitModal.reconnectRelay();
+    await widget.appKitModal.loadAccountData();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     // Build the list of chain buttons, clear if the textnet changed
-    return ListView(
-      padding: const EdgeInsets.symmetric(
-        horizontal: StyleConstants.linear8,
+    return RefreshIndicator(
+      onRefresh: () => _refreshData(),
+      child: ListView(
+        padding: const EdgeInsets.symmetric(
+          horizontal: StyleConstants.linear16,
+        ),
+        children: <Widget>[
+          const SizedBox(height: StyleConstants.linear16),
+          Text(
+            widget.appKitModal.appKit!.metadata.name,
+            style: StyleConstants.subtitleText.copyWith(
+              color: ReownAppKitModalTheme.colorsOf(context).foreground100,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: StyleConstants.linear24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AppKitModalNetworkSelectButton(
+                appKit: widget.appKitModal,
+              ),
+              const SizedBox.square(dimension: 8.0),
+              AppKitModalConnectButton(
+                appKit: widget.appKitModal,
+              ),
+            ],
+          ),
+          const SizedBox(height: StyleConstants.linear8),
+          Visibility(
+            visible: widget.appKitModal.isConnected,
+            child: Column(
+              children: [
+                AppKitModalAccountButton(
+                  appKitModal: widget.appKitModal,
+                ),
+                const SizedBox.square(dimension: 8.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    AppKitModalBalanceButton(
+                      appKitModal: widget.appKitModal,
+                      onTap: widget.appKitModal.openNetworksView,
+                    ),
+                    const SizedBox.square(dimension: 8.0),
+                    AppKitModalAddressButton(
+                      appKitModal: widget.appKitModal,
+                      onTap: widget.appKitModal.openModalView,
+                    ),
+                  ],
+                ),
+                const SizedBox.square(dimension: 8.0),
+                ...(_buildRequestButtons()),
+              ],
+            ),
+          ),
+          const SizedBox(height: StyleConstants.linear8),
+          Visibility(
+            visible: !widget.appKitModal.isConnected,
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'non-EVM\nSession Proposal',
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                          color: ReownAppKitModalTheme.colorsOf(context)
+                              .foreground100,
+                          fontWeight: !widget.linkMode
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                    Switch(
+                      value: widget.linkMode,
+                      onChanged: (value) {
+                        widget.reinitialize(value);
+                      },
+                    ),
+                    Expanded(
+                      child: Text(
+                        'only EVM\nLink Mode',
+                        style: TextStyle(
+                          color: ReownAppKitModalTheme.colorsOf(context)
+                              .foreground100,
+                          fontWeight: widget.linkMode
+                              ? FontWeight.bold
+                              : FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: StyleConstants.linear16),
+          const Divider(height: 1.0),
+          const SizedBox(height: StyleConstants.linear8),
+          _FooterWidget(appKitModal: widget.appKitModal),
+          const SizedBox(height: StyleConstants.linear8),
+        ],
       ),
-      children: <Widget>[
-        const SizedBox(height: StyleConstants.linear16),
-        Text(
-          widget.appKitModal.appKit!.metadata.name,
-          style: StyleConstants.subtitleText.copyWith(
-            color: ReownAppKitModalTheme.colorsOf(context).foreground100,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: StyleConstants.linear24),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AppKitModalNetworkSelectButton(
-              appKit: widget.appKitModal,
-            ),
-            const SizedBox.square(dimension: 8.0),
-            AppKitModalConnectButton(
-              appKit: widget.appKitModal,
-            ),
-          ],
-        ),
-        const SizedBox(height: StyleConstants.linear8),
-        Visibility(
-          visible: widget.appKitModal.isConnected,
-          child: Column(
-            children: [
-              AppKitModalAccountButton(
-                appKitModal: widget.appKitModal,
-              ),
-              const SizedBox.square(dimension: 8.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AppKitModalBalanceButton(
-                    appKitModal: widget.appKitModal,
-                    onTap: widget.appKitModal.openNetworksView,
-                  ),
-                  const SizedBox.square(dimension: 8.0),
-                  AppKitModalAddressButton(
-                    appKitModal: widget.appKitModal,
-                    onTap: widget.appKitModal.openModalView,
-                  ),
-                ],
-              ),
-              const SizedBox.square(dimension: 8.0),
-              ...(_buildRequestButtons()),
-            ],
-          ),
-        ),
-        const SizedBox(height: StyleConstants.linear8),
-        Visibility(
-          visible: !widget.appKitModal.isConnected,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'non-EVM\nSession Proposal',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(
-                        color: ReownAppKitModalTheme.colorsOf(context)
-                            .foreground100,
-                        fontWeight: !widget.linkMode
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                      ),
-                    ),
-                  ),
-                  Switch(
-                    value: widget.linkMode,
-                    onChanged: (value) {
-                      widget.reinitialize(value);
-                    },
-                  ),
-                  Expanded(
-                    child: Text(
-                      'only EVM\nLink Mode',
-                      style: TextStyle(
-                        color: ReownAppKitModalTheme.colorsOf(context)
-                            .foreground100,
-                        fontWeight: widget.linkMode
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: StyleConstants.linear16),
-        const Divider(height: 1.0),
-        const SizedBox(height: StyleConstants.linear8),
-        _FooterWidget(appKitModal: widget.appKitModal),
-        const SizedBox(height: StyleConstants.linear8),
-      ],
     );
   }
 

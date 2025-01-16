@@ -21,6 +21,9 @@ extension ReownAppKitWalletInfoExtension on ReownAppKitModalWalletInfo {
   bool get isCoinbase =>
       listing.id ==
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa';
+  bool get isPhantom =>
+      listing.id ==
+      'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393';
 }
 
 class Listing {

@@ -54,4 +54,6 @@ abstract class IExplorerService {
   String getAssetImageUrl(String imageId);
 
   Future<ReownAppKitModalWalletInfo?> getCoinbaseWalletObject();
+
+  Future<ReownAppKitModalWalletInfo?> getPhantomWalletObject();
 }

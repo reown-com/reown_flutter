@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:bs58/bs58.dart';
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
@@ -94,11 +93,12 @@ Future<SessionRequestParams?> getParams(
         ],
       );
     case 'solana_signMessage':
-      final bytes = utf8.encode(testSignData);
-      final message = base58.encode(bytes);
       return SessionRequestParams(
         method: method,
-        params: {'pubkey': address, 'message': message},
+        params: {
+          'pubkey': address,
+          'message': 'Welcome to Flutter AppKit on Solana',
+        },
       );
     case 'solana_signTransaction':
       // Create a connection to the devnet cluster.

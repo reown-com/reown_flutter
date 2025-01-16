@@ -5,6 +5,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/phantom_service/models/phantom_events.dart';
+import 'package:reown_appkit/modal/services/third_party_wallet_service.dart';
+
+import 'package:reown_core/store/i_store.dart';
+
+import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_appkit/modal/services/phantom_service/i_phantom_service.dart';
+import 'package:reown_appkit/modal/services/phantom_service/phantom_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/services/network_service/i_network_service.dart';
@@ -12,9 +20,6 @@ import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/toast_service.dart';
 import 'package:reown_appkit/modal/services/uri_service/i_url_utils.dart';
-
-import 'package:reown_core/store/i_store.dart';
-import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
@@ -230,6 +235,12 @@ class ReownAppKitModal
         enabled: _initializeCoinbaseSDK,
       ),
     );
+    GetIt.I.registerSingletonIfAbsent<IPhantomService>(
+      () => PhantomService(
+        core: _appKit.core,
+        metadata: _appKit.metadata,
+      ),
+    );
     GetIt.I.registerSingletonIfAbsent<ISiweService>(
       () => SiweService(
         appKit: _appKit,
@@ -239,14 +250,16 @@ class ReownAppKitModal
     );
   }
 
+  IMagicService get _magicService => GetIt.I<IMagicService>();
+  ICoinbaseService get _coinbaseService => GetIt.I<ICoinbaseService>();
+  IPhantomService get _phantomService => GetIt.I<IPhantomService>();
+
   IUriService get _uriService => GetIt.I<IUriService>();
   IToastService get _toastService => GetIt.I<IToastService>();
   IAnalyticsService get _analyticsService => GetIt.I<IAnalyticsService>();
   IExplorerService get _explorerService => GetIt.I<IExplorerService>();
   INetworkService get _networkService => GetIt.I<INetworkService>();
-  IMagicService get _magicService => GetIt.I<IMagicService>();
   IBlockChainService get _blockchainService => GetIt.I<IBlockChainService>();
-  ICoinbaseService get _coinbaseService => GetIt.I<ICoinbaseService>();
   ISiweService get _siweService => GetIt.I<ISiweService>();
 
   ////////* PUBLIC METHODS */////////
@@ -263,6 +276,15 @@ class ReownAppKitModal
     final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
     if (state.isNotEmpty) {
       _magicService.completeSocialLogin(url: url);
+      return true;
+    }
+
+    final phantomRequest = ReownCoreUtils.getSearchParamFromURL(
+      url,
+      'phantomRequest',
+    );
+    if (phantomRequest.isNotEmpty) {
+      _phantomService.completePhantomRequest(url: url);
       return true;
     }
 
@@ -291,13 +313,15 @@ class ReownAppKitModal
     await _networkService.init();
     await _explorerService.init();
     await _coinbaseService.init();
+    await _phantomService.init();
     await _blockchainService.init();
 
     _currentSession = await _getStoredSession();
     _currentSelectedChainId = _getStoredChainId(null);
     final isMagic = _currentSession?.sessionService.isMagic == true;
     final isCoinbase = _currentSession?.sessionService.isCoinbase == true;
-    if (isMagic || isCoinbase) {
+    final isPhantom = _currentSession?.sessionService.isPhantom == true;
+    if (isMagic || isCoinbase || isPhantom) {
       _currentSelectedChainId ??= _currentSession!.chainId;
       await _setSesionAndChainData(_currentSession!);
       if (isMagic) {
@@ -332,7 +356,7 @@ class ReownAppKitModal
       }
     }
 
-    // There's a session stored
+    // There's a WC/Relay session stored
     if (wcSessions.isNotEmpty) {
       await _storeSession(ReownAppKitModalSession(
         sessionData: wcSessions.first,
@@ -347,8 +371,13 @@ class ReownAppKitModal
       // Check for other type of sessions stored
       if (_currentSession != null) {
         if (_currentSession!.sessionService.isCoinbase) {
-          final isCbConnected = await _coinbaseService.isConnected();
-          if (!isCbConnected) {
+          final isConnected = await _coinbaseService.isConnected();
+          if (!isConnected) {
+            await _cleanSession();
+          }
+        } else if (_currentSession!.sessionService.isPhantom) {
+          final isConnected = await _phantomService.isConnected();
+          if (!isConnected) {
             await _cleanSession();
           }
         } else if (_currentSession!.sessionService.isMagic) {
@@ -368,7 +397,7 @@ class ReownAppKitModal
     await _selectChainFromStoredId();
 
     onModalNetworkChange.subscribe(_onNetworkChainRequireSIWE);
-    onModalConnect.subscribe(_loadAccountData);
+    // onModalConnect.subscribe(_loadAccountData);
 
     _relayConnected = _appKit.core.relayClient.isConnected;
     if (!_relayConnected) {
@@ -381,7 +410,12 @@ class ReownAppKitModal
     _status = _relayConnected
         ? ReownAppKitModalStatus.initialized
         : ReownAppKitModalStatus.initializing;
-    _appKit.core.logger.i('[$runtimeType] status $_status');
+    _appKit.core.logger.i(
+      '[$runtimeType] status $_status with session ${jsonEncode(_currentSession?.toJson())}',
+    );
+    if (_currentSession != null) {
+      onModalConnect.broadcast(ModalConnect(_currentSession!));
+    }
     _notify();
   }
 
@@ -425,8 +459,8 @@ class ReownAppKitModal
     try {
       if (_storage.has(StorageConstants.modalSession)) {
         final storedSession = _storage.get(StorageConstants.modalSession);
-        _appKit.core.logger.i(
-          '[$runtimeType] _getStoredSession, storedSession: $storedSession, key: ${StorageConstants.modalSession}',
+        _appKit.core.logger.d(
+          '[$runtimeType] _getStoredSession, ${jsonEncode(storedSession)}',
         );
         if (storedSession != null) {
           return ReownAppKitModalSession.fromMap(storedSession);
@@ -544,7 +578,8 @@ class ReownAppKitModal
 
     final isMagic = _currentSession!.sessionService.isMagic;
     final isCoinbase = _currentSession!.sessionService.isCoinbase;
-    if (isMagic || isCoinbase) {
+    final isPhantom = _currentSession!.sessionService.isPhantom;
+    if (isMagic || isCoinbase || isPhantom) {
       return getApprovedChains();
     }
 
@@ -815,25 +850,22 @@ class ReownAppKitModal
     try {
       if (_selectedWallet!.isCoinbase) {
         await _coinbaseService.getAccount();
-        await _explorerService.storeConnectedWallet(_selectedWallet);
+      } else if (_selectedWallet!.isPhantom) {
+        await _phantomService.connect(chainId: _currentSelectedChainId);
       } else {
-        await buildConnectionUri();
-        final linkMode = walletRedirect.linkMode ?? '';
-        if (linkMode.isNotEmpty && _wcUri.startsWith(linkMode)) {
-          await ReownCoreUtils.openURL(_wcUri);
-        } else {
-          await _uriService.openRedirect(
-            walletRedirect,
-            wcURI: _wcUri,
-            pType: pType,
-          );
-        }
+        await _connect(walletRedirect, pType);
       }
     } on LaunchUrlException catch (e) {
       if (e is CanNotLaunchUrl) {
         onModalError.broadcast(WalletNotInstalled());
       } else {
         onModalError.broadcast(ErrorOpeningWallet());
+      }
+    } on ThirdPartyWalletException catch (e) {
+      if (e is ThirdPartyWalletNotInstalled) {
+        onModalError.broadcast(WalletNotInstalled());
+      } else {
+        onModalError.broadcast(ErrorOpeningWallet(description: e.message));
       }
     } catch (e, s) {
       if (e is PlatformException) {
@@ -871,6 +903,16 @@ class ReownAppKitModal
         );
         onModalError.broadcast(ErrorOpeningWallet());
       }
+    }
+  }
+
+  Future<void> _connect(WalletRedirect redirect, PlatformType pType) async {
+    await buildConnectionUri();
+    final linkMode = redirect.linkMode ?? '';
+    if (linkMode.isNotEmpty && _wcUri.startsWith(linkMode)) {
+      await ReownCoreUtils.openURL(_wcUri);
+    } else {
+      await _uriService.openRedirect(redirect, wcURI: _wcUri, pType: pType);
     }
   }
 
@@ -1006,8 +1048,15 @@ class ReownAppKitModal
 
     final isCoinbase = _currentSession!.sessionService.isCoinbase == true;
     if (walletInfo.isCoinbase || isCoinbase) {
-      // Coinbase Wallet is getting launched at every request by it's own SDK
-      // SO no need to do it here.
+      // Coinbase Wallet is getting launched at every request by its service
+      // So no need to do it here.
+      return;
+    }
+
+    final isPhantom = _currentSession!.sessionService.isPhantom == true;
+    if (walletInfo.isPhantom || isPhantom) {
+      // Phantom Wallet is getting launched at every request by its service
+      // So no need to do it here.
       return;
     }
 
@@ -1064,6 +1113,16 @@ class ReownAppKitModal
         await _coinbaseService.resetSession();
       } catch (e) {
         _appKit.core.logger.d('[$runtimeType] disconnect coinbase $e');
+        _status = ReownAppKitModalStatus.initialized;
+        _notify();
+        return;
+      }
+    }
+    if (_currentSession?.sessionService.isPhantom == true) {
+      try {
+        await _phantomService.disconnect();
+      } catch (e) {
+        _appKit.core.logger.d('[$runtimeType] disconnect phantom $e');
         _status = ReownAppKitModalStatus.initialized;
         _notify();
         return;
@@ -1299,8 +1358,14 @@ class ReownAppKitModal
         );
       }
       if (_currentSession!.sessionService.isCoinbase) {
-        return await await _coinbaseService.request(
+        return await _coinbaseService.request(
           chainId: switchToChainId ?? reqChainId,
+          request: request,
+        );
+      }
+      if (_currentSession!.sessionService.isPhantom) {
+        return await _phantomService.request(
+          chainId: reqChainId,
           request: request,
         );
       }
@@ -1704,13 +1769,15 @@ class ReownAppKitModal
     _magicService.onMagicError.subscribe(_onMagicErrorEvent);
     _magicService.onMagicUpdate.subscribe(_onMagicSessionUpdateEvent);
     _magicService.onMagicRpcRequest.subscribe(_onMagicRequest);
-    //
     // Coinbase
-    _coinbaseService.onCoinbaseConnect.subscribe(_onCoinbaseConnectEvent);
-    _coinbaseService.onCoinbaseError.subscribe(_onCoinbaseErrorEvent);
+    _coinbaseService.onCoinbaseConnect.subscribe(_onCoinbaseConnect);
+    _coinbaseService.onCoinbaseError.subscribe(_onCoinbaseError);
     _coinbaseService.onCoinbaseSessionUpdate.subscribe(
       _onCoinbaseSessionUpdateEvent,
     );
+    // Phantom
+    _phantomService.onPhantomConnect.subscribe(_onPhantomConnect);
+    _phantomService.onPhantomError.subscribe(_onPhantomError);
     //
     _appKit.onSessionAuthResponse.subscribe(_onSessionAuthResponse);
     _appKit.onSessionConnect.subscribe(_onSessionConnect);
@@ -1741,11 +1808,14 @@ class ReownAppKitModal
     _magicService.onMagicRpcRequest.unsubscribe(_onMagicRequest);
     //
     // Coinbase
-    _coinbaseService.onCoinbaseConnect.unsubscribe(_onCoinbaseConnectEvent);
-    _coinbaseService.onCoinbaseError.unsubscribe(_onCoinbaseErrorEvent);
+    _coinbaseService.onCoinbaseConnect.unsubscribe(_onCoinbaseConnect);
+    _coinbaseService.onCoinbaseError.unsubscribe(_onCoinbaseError);
     _coinbaseService.onCoinbaseSessionUpdate.unsubscribe(
       _onCoinbaseSessionUpdateEvent,
     );
+    // Phantom
+    _phantomService.onPhantomConnect.unsubscribe(_onPhantomConnect);
+    _phantomService.onPhantomError.subscribe(_onPhantomError);
     //
     _appKit.onSessionAuthResponse.unsubscribe(_onSessionAuthResponse);
     _appKit.onSessionConnect.unsubscribe(_onSessionConnect);
@@ -1886,14 +1956,15 @@ extension _EmailConnectorExtension on ReownAppKitModal {
 }
 
 extension _CoinbaseConnectorExtension on ReownAppKitModal {
-  void _onCoinbaseConnectEvent(CoinbaseConnectEvent? args) async {
-    _appKit.core.logger.d('[$runtimeType] _onCoinbaseConnectEvent: $args');
+  void _onCoinbaseConnect(CoinbaseConnectEvent? args) async {
+    _appKit.core.logger.d('[$runtimeType] _onCoinbaseConnect: $args');
     if (args?.data != null) {
       final newChainId = _getStoredChainId('${args!.data!.chainId}')!;
       _currentSelectedChainId = newChainId;
       //
       final session = ReownAppKitModalSession(coinbaseData: args.data!);
       await _setSesionAndChainData(session);
+      await _explorerService.storeConnectedWallet(_selectedWallet);
       onModalConnect.broadcast(ModalConnect(session));
       //
       if (_siweService.enabled) {
@@ -1943,11 +2014,44 @@ extension _CoinbaseConnectorExtension on ReownAppKitModal {
     }
   }
 
-  void _onCoinbaseErrorEvent(CoinbaseErrorEvent? args) async {
-    _appKit.core.logger.d('[$runtimeType] _onCoinbaseErrorEvent: $args');
+  void _onCoinbaseError(CoinbaseErrorEvent? args) async {
+    _appKit.core.logger.d('[$runtimeType] _onCoinbaseError: $args');
     final errorMessage = args?.error ?? 'Something went wrong';
     if (!errorMessage.toLowerCase().contains('user denied')) {
       onModalError.broadcast(ModalError(errorMessage));
+    }
+  }
+}
+
+extension _PhantomConnectorExtension on ReownAppKitModal {
+  void _onPhantomConnect(PhantomConnectEvent? args) async {
+    _appKit.core.logger.d('[$runtimeType] _onPhantomConnect: $args');
+    if (args?.data != null) {
+      final newChainId = _getStoredChainId(args!.data!.chainId)!;
+      _currentSelectedChainId = newChainId;
+      //
+      final session = ReownAppKitModalSession(phantomData: args.data!);
+      await _setSesionAndChainData(session);
+      await _explorerService.storeConnectedWallet(_selectedWallet);
+      onModalConnect.broadcast(ModalConnect(session));
+      //
+      closeModal();
+    }
+  }
+
+  void _onPhantomError(PhantomErrorEvent? args) async {
+    _appKit.core.logger.d('[$runtimeType] _onPhantomError: $args');
+    if (_isUserRejectedError(args?.toString())) {
+      onModalError.broadcast(UserRejectedConnection());
+      _analyticsService.sendEvent(ConnectErrorEvent(
+        message: 'User declined connection',
+      ));
+    } else {
+      final errorMessage = args?.error ?? 'Something went wrong';
+      onModalError.broadcast(ErrorOpeningWallet());
+      _analyticsService.sendEvent(ConnectErrorEvent(
+        message: errorMessage,
+      ));
     }
   }
 }

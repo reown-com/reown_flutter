@@ -295,10 +295,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   'events': [],
                 }),
                 'polkadot': RequiredNamespace.fromJson({
-                  'chains': [
-                    'polkadot:91b171bb158e2d3848fa23a9f1c25182',
-                    'polkadot:e143f23803ac50e8f6f8e62695d1ce9e'
-                  ],
+                  'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
+                    namespace: 'polkadot',
+                  ).map((chain) => 'polkadot:${chain.chainId}').toList(),
                   'methods': [
                     'polkadot_signMessage',
                     'polkadot_signTransaction',
