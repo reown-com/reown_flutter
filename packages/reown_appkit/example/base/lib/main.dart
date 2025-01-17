@@ -209,7 +209,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appKit: _appKit,
       enableAnalytics: true,
       siweConfig: _siweConfig(linkMode),
-      featuresConfig: _featuresConfig(),
+      // featuresConfig: _featuresConfig(),
       // requiredNamespaces: {},
       optionalNamespaces: _updatedNamespaces(),
       featuredWalletIds: _featuredWalletIds(),
