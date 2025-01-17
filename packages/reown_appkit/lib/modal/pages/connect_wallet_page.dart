@@ -78,7 +78,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
 
   bool nonInstalledMobile(ModalError? errorEvent) {
     return errorEvent is WalletNotInstalled &&
-        _selectedSegment == SegmentOption.mobile;
+        _selectedSegment == SegmentOption.option1;
   }
 
   @override

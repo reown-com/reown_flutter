@@ -53,12 +53,12 @@ class _AddressTextState extends State<AddressText> {
 
   void _modalNotifyListener() {
     setState(() {
-      final chainId = widget.service.selectedChain?.chainId ?? '';
+      final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
       if (chainId.isNotEmpty) {
         final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
           chainId,
         );
-        _address = widget.service.session?.getAddress(namespace);
+        _address = widget.appKitModal.session?.getAddress(namespace);
       }
     });
   }
