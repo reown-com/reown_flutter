@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
+import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/wallet_activity.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
@@ -65,7 +66,7 @@ class ActivityListItem extends StatelessWidget {
       padding: const EdgeInsets.all(0.0),
       child: Row(
         children: [
-          const SizedBox.square(dimension: 8.0),
+          const SizedBox.square(dimension: kPadding6),
           Stack(
             children: [
               Padding(

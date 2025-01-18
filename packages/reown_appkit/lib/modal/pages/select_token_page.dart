@@ -7,12 +7,12 @@ import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/token_balance.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/account_list_item.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class SelectTokenPage extends StatefulWidget {
@@ -58,6 +58,10 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    final appKitModal = ModalProvider.of(context).instance;
+    final chainId = appKitModal.selectedChain!.chainId;
+    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
+    final chainIcon = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
     return ModalNavbar(
       title: 'Select token',
       safeAreaLeft: true,
@@ -88,29 +92,53 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
                 ),
                 iconWidget: Padding(
                   padding: const EdgeInsets.only(left: kPadding6),
-                  child: (_tokens[index].iconUrl ?? '').isEmpty
-                      ? RoundedIcon(
-                          assetPath: 'lib/modal/assets/icons/coin.svg',
-                          assetColor: themeColors.inverse100,
-                          borderRadius: radiuses.isSquare() ? 0.0 : null,
-                        )
-                      : ClipRRect(
-                          borderRadius: radiuses.isSquare()
-                              ? BorderRadius.zero
-                              : BorderRadius.circular(34),
-                          child: CachedNetworkImage(
-                            imageUrl: _tokens[index].iconUrl!,
-                            height: 34,
-                            width: 34,
-                            errorWidget: (context, url, error) {
-                              return RoundedIcon(
-                                assetPath: 'lib/modal/assets/icons/coin.svg',
-                                assetColor: themeColors.inverse100,
-                                borderRadius: radiuses.isSquare() ? 0.0 : null,
-                              );
-                            },
+                  child: Stack(
+                    children: [
+                      (_tokens[index].iconUrl ?? '').isEmpty
+                          ? RoundedIcon(
+                              assetPath: 'lib/modal/assets/icons/coin.svg',
+                              assetColor: themeColors.inverse100,
+                              borderRadius: radiuses.isSquare() ? 0.0 : null,
+                            )
+                          : ClipRRect(
+                              borderRadius: radiuses.isSquare()
+                                  ? BorderRadius.zero
+                                  : BorderRadius.circular(34),
+                              child: CachedNetworkImage(
+                                imageUrl: _tokens[index].iconUrl!,
+                                height: 38,
+                                width: 38,
+                                errorWidget: (context, url, error) {
+                                  return RoundedIcon(
+                                    assetPath:
+                                        'lib/modal/assets/icons/coin.svg',
+                                    assetColor: themeColors.inverse100,
+                                    borderRadius:
+                                        radiuses.isSquare() ? 0.0 : null,
+                                  );
+                                },
+                              ),
+                            ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: themeColors.background150,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(30.0)),
+                          ),
+                          padding: const EdgeInsets.all(1.0),
+                          clipBehavior: Clip.antiAlias,
+                          child: RoundedIcon(
+                            imageUrl: chainIcon,
+                            padding: 2.0,
+                            size: 15.0,
                           ),
                         ),
+                      ),
+                    ],
+                  ),
                 ),
                 title: _tokens[index].name ?? '',
                 titleStyle: themeData.textStyles.paragraph500.copyWith(
@@ -133,10 +161,6 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
                     SizedBox.square(dimension: kPadding6),
                   ],
                 ),
-                onTap: () {
-                  _blockchainService.selectSendToken(_tokens[index]);
-                  widgetStack.instance.pop();
-                },
               );
             }),
             SizedBox.square(

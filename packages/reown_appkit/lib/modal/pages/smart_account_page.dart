@@ -14,6 +14,7 @@ import 'package:reown_appkit/modal/services/analytics_service/models/analytics_e
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/token_balance.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/buttons/address_button.dart';
 import 'package:reown_appkit/modal/widgets/buttons/network_button.dart';
@@ -180,6 +181,9 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    final chainId = widget.appKitModal.selectedChain!.chainId;
+    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
+    final chainIcon = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: ResponsiveData.maxHeightOf(context),
@@ -277,33 +281,57 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
                           ),
                           iconWidget: Padding(
                             padding: const EdgeInsets.only(left: kPadding6),
-                            child: (_tokens[index].iconUrl ?? '').isEmpty
-                                ? RoundedIcon(
-                                    assetPath:
-                                        'lib/modal/assets/icons/coin.svg',
-                                    assetColor: themeColors.inverse100,
-                                    borderRadius:
-                                        radiuses.isSquare() ? 0.0 : null,
-                                  )
-                                : ClipRRect(
-                                    borderRadius: radiuses.isSquare()
-                                        ? BorderRadius.zero
-                                        : BorderRadius.circular(34),
-                                    child: CachedNetworkImage(
-                                      imageUrl: _tokens[index].iconUrl!,
-                                      height: 34,
-                                      width: 34,
-                                      errorWidget: (context, url, error) {
-                                        return RoundedIcon(
-                                          assetPath:
-                                              'lib/modal/assets/icons/coin.svg',
-                                          assetColor: themeColors.inverse100,
-                                          borderRadius:
-                                              radiuses.isSquare() ? 0.0 : null,
-                                        );
-                                      },
+                            child: Stack(
+                              children: [
+                                (_tokens[index].iconUrl ?? '').isEmpty
+                                    ? RoundedIcon(
+                                        assetPath:
+                                            'lib/modal/assets/icons/coin.svg',
+                                        assetColor: themeColors.inverse100,
+                                        borderRadius:
+                                            radiuses.isSquare() ? 0.0 : null,
+                                      )
+                                    : ClipRRect(
+                                        borderRadius: radiuses.isSquare()
+                                            ? BorderRadius.zero
+                                            : BorderRadius.circular(34),
+                                        child: CachedNetworkImage(
+                                          imageUrl: _tokens[index].iconUrl!,
+                                          height: 38,
+                                          width: 38,
+                                          errorWidget: (context, url, error) {
+                                            return RoundedIcon(
+                                              assetPath:
+                                                  'lib/modal/assets/icons/coin.svg',
+                                              assetColor:
+                                                  themeColors.inverse100,
+                                              borderRadius: radiuses.isSquare()
+                                                  ? 0.0
+                                                  : null,
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                Positioned(
+                                  bottom: 0,
+                                  right: 0,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: themeColors.background150,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(30.0)),
+                                    ),
+                                    padding: const EdgeInsets.all(1.0),
+                                    clipBehavior: Clip.antiAlias,
+                                    child: RoundedIcon(
+                                      imageUrl: chainIcon,
+                                      padding: 2.0,
+                                      size: 15.0,
                                     ),
                                   ),
+                                ),
+                              ],
+                            ),
                           ),
                           title: _tokens[index].name ?? '',
                           titleStyle:

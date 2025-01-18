@@ -10,6 +10,7 @@ import 'package:reown_appkit/modal/pages/preview_send_page.dart';
 import 'package:reown_appkit/modal/pages/select_token_page.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/token_balance.dart';
+import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/buttons/network_button.dart';
 import 'package:reown_appkit/modal/widgets/buttons/primary_button.dart';
@@ -135,6 +136,9 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final appKitModal = ModalProvider.of(context).instance;
+    final chainId = appKitModal.selectedChain!.chainId;
+    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
+    final chainIcon = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final tokenPrice = _selectedToken.price ?? 0.0;
@@ -197,14 +201,36 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      NetworkButton(
-                        serviceStatus: appKitModal.status,
-                        chainInfo: appKitModal.selectedChain,
-                        title: ' ${_selectedToken.symbol}',
-                        iconUrl: _selectedToken.iconUrl,
-                        onTap: () {
-                          widgetStack.instance.push(SelectTokenPage());
-                        },
+                      Stack(
+                        children: [
+                          NetworkButton(
+                            serviceStatus: appKitModal.status,
+                            chainInfo: appKitModal.selectedChain,
+                            title: ' ${_selectedToken.symbol}',
+                            iconUrl: _selectedToken.iconUrl,
+                            onTap: () {
+                              widgetStack.instance.push(SelectTokenPage());
+                            },
+                          ),
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: themeColors.background150,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30.0)),
+                              ),
+                              padding: const EdgeInsets.all(1.0),
+                              clipBehavior: Clip.antiAlias,
+                              child: RoundedIcon(
+                                imageUrl: chainIcon,
+                                padding: 2.0,
+                                size: 16.0,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox.square(dimension: 4.0),
                       Padding(
