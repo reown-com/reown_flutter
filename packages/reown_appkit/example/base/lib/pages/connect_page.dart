@@ -129,7 +129,9 @@ class ConnectPageState extends State<ConnectPage> {
                   ],
                 ),
                 const SizedBox.square(dimension: 8.0),
-                ...(_buildRequestButtons()),
+                _RequestButtons(
+                  appKitModal: widget.appKitModal,
+                ),
               ],
             ),
           ),
@@ -187,68 +189,6 @@ class ConnectPageState extends State<ConnectPage> {
     );
   }
 
-  List<Widget> _buildRequestButtons() {
-    final chainId = widget.appKitModal.selectedChain?.chainId ?? '1';
-    final ns = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
-    return widget.appKitModal.getApprovedMethods(namespace: ns)?.map((method) {
-          final topic = widget.appKitModal.session!.topic ?? '';
-          final chainId = widget.appKitModal.selectedChain!.chainId;
-          final address = widget.appKitModal.session!.getAddress(ns)!;
-          final chainInfo = ReownAppKitModalNetworks.getNetworkById(
-            ns,
-            chainId,
-          );
-          // final requestParams = await getParams(method, address);
-          // final enabled = requestParams != null;
-          return Container(
-            height: 40.0,
-            width: double.infinity,
-            margin: const EdgeInsets.symmetric(
-              vertical: StyleConstants.linear8,
-            ),
-            child: FutureBuilder<SessionRequestParams?>(
-                future: getParams(
-                  method,
-                  address,
-                  chainInfo!,
-                ),
-                builder: (_, snapshot) {
-                  final enabled = snapshot.data != null;
-                  return ElevatedButton(
-                    style: ButtonStyle(
-                      elevation: WidgetStateProperty.all(0.0),
-                      backgroundColor: WidgetStateProperty.all<Color>(
-                        enabled
-                            ? ReownAppKitModalTheme.colorsOf(context).accent080
-                            : ReownAppKitModalTheme.colorsOf(context)
-                                .accenGlass010,
-                      ),
-                      foregroundColor: WidgetStateProperty.all<Color>(
-                        enabled
-                            ? Colors.white
-                            : ReownAppKitModalTheme.colorsOf(context)
-                                .foreground200,
-                      ),
-                    ),
-                    onPressed: enabled
-                        ? () {
-                            widget.appKitModal.launchConnectedWallet();
-                            final future = widget.appKitModal.request(
-                              topic: topic,
-                              chainId: chainId,
-                              request: snapshot.data!,
-                            );
-                            MethodDialog.show(context, method, future);
-                          }
-                        : null,
-                    child: Text(method),
-                  );
-                }),
-          );
-        }).toList() ??
-        [];
-  }
-
   void _onSessionConnect(SessionConnect? event) async {
     if (event == null) return;
 
@@ -284,6 +224,69 @@ class ConnectPageState extends State<ConnectPage> {
 
   void _onModalError(ModalError? event) {
     setState(() {});
+  }
+}
+
+class _RequestButtons extends StatefulWidget {
+  final ReownAppKitModal appKitModal;
+  const _RequestButtons({required this.appKitModal});
+
+  @override
+  State<_RequestButtons> createState() => __RequestButtonsState();
+}
+
+class __RequestButtonsState extends State<_RequestButtons> {
+  @override
+  Widget build(BuildContext context) {
+    final topic = widget.appKitModal.session!.topic ?? '';
+    final chainId = widget.appKitModal.selectedChain!.chainId;
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    final methods = widget.appKitModal.getApprovedMethods(namespace: namespace);
+    final address = widget.appKitModal.session!.getAddress(namespace)!;
+    final chainInfo = ReownAppKitModalNetworks.getNetworkById(
+      namespace,
+      chainId,
+    );
+    return Column(
+      children: (methods ?? []).map((method) {
+        return Container(
+          height: 40.0,
+          width: double.infinity,
+          margin: const EdgeInsets.symmetric(
+            vertical: StyleConstants.linear8,
+          ),
+          child: ElevatedButton(
+            style: ButtonStyle(
+              elevation: WidgetStateProperty.all(0.0),
+              backgroundColor: WidgetStateProperty.all<Color>(
+                  ReownAppKitModalTheme.colorsOf(context).accent080),
+              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+            ),
+            onPressed: () async {
+              final params = await getParams(method, address, chainInfo!);
+              if (params?.params != null) {
+                widget.appKitModal.launchConnectedWallet();
+                final future = widget.appKitModal.request(
+                  topic: topic,
+                  chainId: chainId,
+                  request: params!,
+                );
+                MethodDialog.show(context, method, future);
+              } else {
+                toastification.show(
+                  type: ToastificationType.error,
+                  title: const Text('Method not implemented'),
+                  context: context,
+                  autoCloseDuration: Duration(seconds: 2),
+                  alignment: Alignment.bottomCenter,
+                );
+              }
+            },
+            child: Text(method),
+          ),
+        );
+      }).toList(),
+    );
   }
 }
 
