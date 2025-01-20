@@ -180,6 +180,14 @@ class PhantomService implements IPhantomService {
           requestUri = _phantomHelper.buildSignTransactionUri(
             transaction: request.params['transaction'],
           );
+        case 'solana_signAllTransactions':
+          requestUri = _phantomHelper.buildUriSignAllTransactions(
+            transactions: request.params['transactions'],
+          );
+        case 'solana_signAndSendTransaction':
+          requestUri = _phantomHelper.buildSignAndSendTransactionUri(
+            transaction: request.params['transaction'],
+          );
         default:
           throw ThirdPartyWalletException('${request.method} unimplemented');
       }
