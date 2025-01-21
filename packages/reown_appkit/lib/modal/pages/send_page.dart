@@ -35,8 +35,7 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
   IBlockChainService get _blockchainService => GetIt.I<IBlockChainService>();
 
   final _amountController = TextEditingController();
-  final _addressController =
-      TextEditingController(text: '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340');
+  final _addressController = TextEditingController();
   var _sendData = SendData();
   final _addressFocus = FocusNode();
   late final TokenBalance _selectedToken;
