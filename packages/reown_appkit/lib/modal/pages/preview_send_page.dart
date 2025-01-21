@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -7,6 +8,7 @@ import 'package:get_it/get_it.dart';
 import 'dart:ui' as ui;
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
+import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/models/send_data.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/token_balance.dart';
@@ -45,80 +47,133 @@ class PreviewSendPage extends StatefulWidget {
 class _PreviewSendPageState extends State<PreviewSendPage> {
   IBlockChainService get _blockchainService => GetIt.I<IBlockChainService>();
   IToastService get _toastService => GetIt.I<IToastService>();
+  late final IReownAppKitModal _appKitModal;
+  //
+  late SendData _sendData;
+  late final String _originalSendValue;
+  late final TokenBalance _sendTokenData;
+  late final TokenBalance? _networkTokenData;
+
   Transaction? _transaction;
-  double _requiredGasInTokens = 0.0;
+  double _requiredGasInNativeToken = 0.0;
   bool _isSendEnabled = false;
   Timer? _gasEstimationTimer;
+  //
+  @override
+  void initState() {
+    super.initState();
+    _sendData = widget.sendData;
+    _originalSendValue = _sendData.amount!;
+    _sendTokenData = widget.sendTokenData;
+    _networkTokenData = widget.networkTokenData;
+    //
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _appKitModal = ModalProvider.of(context).instance;
+      await _constructTransaction();
+      await _estimateNetworkCost();
+    });
+  }
 
-  bool get _isContractCall => widget.sendTokenData.address != null;
+  Future<void> _reEstimateGas(_) async {
+    await _estimateNetworkCost();
+  }
 
-  String get _ownAddress {
+  void _log(String m) => _appKitModal.appKit!.core.logger.d(m);
+
+  bool get _isMaxSend {
+    final valueToSend = CoreUtils.formatStringBalance(
+      _originalSendValue,
+      precision: _getDecimals(nativeToken: false),
+    );
+    final maxAllowance = CoreUtils.formatStringBalance(
+      _sendTokenData.quantity!.numeric!,
+      precision: _getDecimals(nativeToken: false),
+    );
+
+    return valueToSend == maxAllowance;
+  }
+
+  // if sendTokenData.address is not null it means a contract should be called
+  bool get _shouldCallContract => _sendTokenData.address != null;
+
+  String get _senderAddress {
     final appKitModal = ModalProvider.of(context).instance;
-    final chainId = widget.sendTokenData.chainId!;
+    final chainId = _sendTokenData.chainId!;
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     return appKitModal.session!.getAddress(namespace)!;
   }
 
-  String _contractData(BigInt sendValue) {
+  String get _recipientAddress => _sendData.address!;
+
+  String _constructCallData(BigInt sendValue) {
     // Keccak256 hash of `transfer(address,uint256)`'s signature
     final transferMethodId = 'a9059cbb';
     // Remove '0x' and pad
     final paddedReceiver =
-        widget.sendData.address!.replaceFirst('0x', '').padLeft(64, '0');
+        _recipientAddress.replaceFirst('0x', '').padLeft(64, '0');
     // Amount in hex, padded
     final paddedAmount = sendValue.toRadixString(16).padLeft(64, '0');
     //
     return '0x$transferMethodId$paddedReceiver$paddedAmount';
   }
 
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _constructTransaction();
-      await _estimateNetworkCost();
-    });
-  }
-
   Future<void> _constructTransaction() async {
-    final sendValue = CoreUtils.formatStringBalance(
-      widget.sendData.amount!,
-      precision: 4,
+    final valueToSend = CoreUtils.formatStringBalance(
+      _originalSendValue,
+      precision: _getDecimals(nativeToken: false),
     );
-    final bigIntValue = _valueToBigInt(double.parse(sendValue));
-    if (_isContractCall) {
+    if (_shouldCallContract) {
       final contractAddress = NamespaceUtils.getAccount(
-        widget.sendTokenData.address!,
+        _sendTokenData.address!,
       );
-      // final chainId = widget.sendTokenData.chainId!;
-      // final allowance = await _blockchainService.checkAllowance(
-      //   senderAddress: _ownAddress,
-      //   receiverAddress: widget.sendData.address!,
-      //   contractAddress: contractAddress,
-      //   caip2Chain: chainId,
-      // );
-      // print('allowance $allowance');
-      final data = _contractData(bigIntValue);
+      final tokenPrice = _networkTokenData!.price!;
+      final cost = (_requiredGasInNativeToken * tokenPrice);
+      final networkCost = CoreUtils.formatChainBalance(
+        cost,
+        precision: _getDecimals(nativeToken: false),
+      );
+      final actualValueToSend = double.parse(valueToSend) -
+          (_isMaxSend ? double.parse(networkCost) : 0.0);
+      //
+      _sendData = _sendData.copyWith(
+        amount: max(0.000000, actualValueToSend).toString(),
+      );
       _transaction = Transaction(
-        from: EthereumAddress.fromHex(_ownAddress),
+        from: EthereumAddress.fromHex(_senderAddress),
         to: EthereumAddress.fromHex(contractAddress),
-        data: utf8.encode(data),
+        data: utf8.encode(
+          _constructCallData(
+            _valueToBigInt(
+              actualValueToSend,
+            ),
+          ),
+        ),
       );
     } else {
+      final actualValueToSend = double.parse(valueToSend) -
+          (_isMaxSend ? _requiredGasInNativeToken : 0.0);
+      _log('[$runtimeType] actualValueToSend $actualValueToSend');
+      //
+      _sendData = _sendData.copyWith(
+        amount: max(0.000000, actualValueToSend).toString(),
+      );
       _transaction = Transaction(
-        // from: EthereumAddress.fromHex(address!),
-        to: EthereumAddress.fromHex(widget.sendData.address!),
-        value: EtherAmount.fromBigInt(EtherUnit.wei, bigIntValue),
+        to: EthereumAddress.fromHex(_recipientAddress),
+        value: EtherAmount.fromBigInt(
+          EtherUnit.wei,
+          _valueToBigInt(
+            actualValueToSend,
+          ),
+        ),
         data: utf8.encode('0x'),
       );
     }
-    debugPrint('transaction first: ${jsonEncode(_transaction!.toJson())}');
-    setState(() {});
+    _log('[$runtimeType] transaction ${jsonEncode(_transaction?.toJson())}');
   }
 
   Future<void> _estimateNetworkCost() async {
     try {
-      final chainId = widget.sendTokenData.chainId!;
+      final chainId = _sendTokenData.chainId!;
       final gasPrices = await _blockchainService.gasPrice(
         caip2chain: chainId,
       );
@@ -129,39 +184,35 @@ class _PreviewSendPageState extends State<PreviewSendPage> {
         caip2Chain: chainId,
       );
       //
-      final decimals = BigInt.from(10).pow(_getDecimals(true));
-      _requiredGasInTokens = (standardGasPrice * estimatedGas) / decimals;
+      final decimals = BigInt.from(10).pow(_getDecimals(nativeToken: true));
+      _requiredGasInNativeToken = (standardGasPrice * estimatedGas) / decimals;
       // Add a little buffer of 10% more since this is just an estimation
-      _requiredGasInTokens = _requiredGasInTokens * 1.1;
-      //
-      final sendValue = double.parse(widget.sendData.amount!);
-      // TODO do this only if sending max
-      final actualValue = sendValue - _requiredGasInTokens;
-      final finalValue = _valueToBigInt(actualValue);
+      _requiredGasInNativeToken = double.parse(CoreUtils.formatChainBalance(
+        _requiredGasInNativeToken * 1.1,
+        precision: _getDecimals(nativeToken: true),
+      ));
 
-      if (_isContractCall) {
-        final data = _contractData(finalValue);
-        _transaction = _transaction!.copyWith(
-          data: utf8.encode(data),
+      await _constructTransaction();
+
+      setState(() => _isSendEnabled = double.parse(_sendData.amount!) > 0.0);
+
+      if (_isSendEnabled) {
+        _gasEstimationTimer ??= Timer.periodic(
+          Duration(seconds: 10),
+          _reEstimateGas,
         );
       } else {
-        _transaction = _transaction!.copyWith(
-          value: EtherAmount.fromBigInt(EtherUnit.wei, finalValue),
-        );
+        _toastService.show(ToastMessage(
+          type: ToastType.error,
+          text: 'Insufficient funds',
+        ));
       }
-      debugPrint('transaction then: ${jsonEncode(_transaction!.toJson())}');
-      setState(() => _isSendEnabled = true);
-
-      _gasEstimationTimer ??= Timer.periodic(
-        Duration(seconds: 10),
-        _reEstimateGas,
-      );
     } on ArgumentError catch (e) {
       _toastService.show(ToastMessage(
         type: ToastType.error,
         text: 'Invald ${e.name ?? 'argument'}',
       ));
-    } catch (e) {
+    } on Exception catch (e) {
       _toastService.show(ToastMessage(
         type: ToastType.error,
         text: e.toString(),
@@ -169,29 +220,19 @@ class _PreviewSendPageState extends State<PreviewSendPage> {
     }
   }
 
-  void _reEstimateGas(_) => _estimateNetworkCost();
-
-  @override
-  void dispose() {
-    _gasEstimationTimer?.cancel();
-    _gasEstimationTimer = null;
-    super.dispose();
-  }
-
-  int _getDecimals(bool isNetworkToken) {
-    if (isNetworkToken) {
-      final decimals = widget.networkTokenData?.quantity?.decimals ?? '18';
+  int _getDecimals({required bool nativeToken}) {
+    if (nativeToken) {
+      final decimals = _networkTokenData?.quantity?.decimals ?? '18';
       return int.parse(decimals);
     }
-    final decimals = widget.sendTokenData.quantity?.decimals ?? '18';
+    final decimals = _sendTokenData.quantity?.decimals ?? '18';
     return int.parse(decimals);
   }
 
   BigInt _valueToBigInt(double value) {
-    final amountStr = value.toStringAsFixed(_getDecimals(false));
-    // Remove the decimal point and parse as an integer
-    final normalizedAmountStr = amountStr.replaceAll('.', '');
-    return BigInt.parse(normalizedAmountStr);
+    final decimals = _getDecimals(nativeToken: false);
+    final factor = BigInt.from(pow(10, decimals));
+    return BigInt.from(value * factor.toDouble());
   }
 
   Future<void> _sendTransaction() async {
@@ -199,9 +240,9 @@ class _PreviewSendPageState extends State<PreviewSendPage> {
       final appKitModal = ModalProvider.of(context).instance;
       await appKitModal.request(
         topic: appKitModal.session!.topic,
-        chainId: widget.sendTokenData.chainId!,
+        chainId: _sendTokenData.chainId!,
         request: SessionRequestParams(
-          method: 'eth_sendTransaction',
+          method: MethodsConstants.ethSendTransaction,
           params: [
             _transaction!.toJson(),
           ],
@@ -218,6 +259,13 @@ class _PreviewSendPageState extends State<PreviewSendPage> {
         text: e.toString(),
       ));
     }
+  }
+
+  @override
+  void dispose() {
+    _gasEstimationTimer?.cancel();
+    _gasEstimationTimer = null;
+    super.dispose();
   }
 
   @override
@@ -238,8 +286,9 @@ class _PreviewSendPageState extends State<PreviewSendPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _SendRow(
-              sendTokenData: widget.sendTokenData,
-              sendData: widget.sendData,
+              sendTokenData: _sendTokenData,
+              sendData: _sendData,
+              originalSendValue: _originalSendValue,
             ),
             const SizedBox.square(dimension: kPadding6),
             Padding(
@@ -256,16 +305,15 @@ class _PreviewSendPageState extends State<PreviewSendPage> {
               ),
             ),
             _ReceiveRow(
-              sendData: widget.sendData,
+              sendData: _sendData,
             ),
             const SizedBox.square(dimension: kPadding16),
             if (_transaction != null)
               _DetailsRow(
                 transaction: _transaction!,
-                nativeTokenData:
-                    widget.networkTokenData ?? widget.sendTokenData,
-                sendData: widget.sendData,
-                requiredGasInTokens: _requiredGasInTokens,
+                nativeTokenData: _networkTokenData ?? _sendTokenData,
+                sendData: _sendData,
+                requiredGasInTokens: _requiredGasInNativeToken,
               ),
             const SizedBox.square(dimension: kPadding16),
             Center(
@@ -310,9 +358,11 @@ class _SendRow extends StatelessWidget {
   const _SendRow({
     required this.sendTokenData,
     required this.sendData,
+    required this.originalSendValue,
   });
   final TokenBalance sendTokenData;
   final SendData sendData;
+  final String originalSendValue;
 
   @override
   Widget build(BuildContext context) {
@@ -351,7 +401,7 @@ class _SendRow extends StatelessWidget {
             chainInfo: appKitModal.selectedChain,
             iconUrl: sendTokenData.iconUrl,
             title: '${CoreUtils.formatStringBalance(
-              sendData.amount!,
+              originalSendValue,
               precision: 8,
             )} ${sendTokenData.symbol} ',
             iconOnRight: true,
@@ -366,6 +416,8 @@ class _SendRow extends StatelessWidget {
 class _ReceiveRow extends StatelessWidget {
   const _ReceiveRow({required this.sendData});
   final SendData sendData;
+
+  String get _recipientAddress => sendData.address!;
 
   @override
   Widget build(BuildContext context) {
@@ -391,12 +443,12 @@ class _ReceiveRow extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 const SizedBox.square(dimension: kPadding12),
-                Text(RenderUtils.truncate(sendData.address!)),
+                Text(RenderUtils.truncate(_recipientAddress)),
                 const SizedBox.square(dimension: 6.0),
                 SizedBox.square(
                   dimension: BaseButtonSize.regular.height * 0.55,
                   child: GradientOrb(
-                    address: sendData.address!,
+                    address: _recipientAddress,
                     size: BaseButtonSize.regular.height * 0.55,
                   ),
                 ),

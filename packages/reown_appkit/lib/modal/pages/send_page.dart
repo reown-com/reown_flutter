@@ -35,7 +35,8 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
   IBlockChainService get _blockchainService => GetIt.I<IBlockChainService>();
 
   final _amountController = TextEditingController();
-  final _addressController = TextEditingController();
+  final _addressController =
+      TextEditingController(text: '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340');
   var _sendData = SendData();
   final _addressFocus = FocusNode();
   late final TokenBalance _selectedToken;
@@ -70,11 +71,7 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
   }
 
   void _setMaxAmount(String? maxAmount) {
-    final parsedAmount = CoreUtils.formatStringBalance(
-      maxAmount ?? '0.00',
-      precision: _selectedToken.quantity?.decimals.toInt() ?? 18,
-    );
-    _sendData = _sendData.copyWith(amount: parsedAmount);
+    _sendData = _sendData.copyWith(amount: maxAmount);
     _amountController.text = _sendData.amount!;
     setState(() {});
   }
@@ -141,10 +138,11 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
     final chainIcon = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final tokenPrice = _selectedToken.price ?? 0.0;
-    double balanceSend = 0.0;
+    final tokenPrice = (_selectedToken.price ?? 0.0).toStringAsFixed(2);
+    final sendAmount = _sendData.amount ?? '0.0';
+    double sendInFIAT = 0.0;
     if ((_sendData.amount ?? '').isNotEmpty) {
-      balanceSend = double.parse(_sendData.amount ?? '0.0') * tokenPrice;
+      sendInFIAT = double.parse(sendAmount) * double.parse(tokenPrice);
     }
     return ModalNavbar(
       title: 'Send',
@@ -175,6 +173,7 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
                     ),
                   ],
                 ),
+                // Middle rown down icon
                 Container(
                   decoration: BoxDecoration(
                     color: themeColors.background125,
@@ -268,7 +267,7 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
                   child: Padding(
                     padding: const EdgeInsets.only(right: 4.0),
                     child: Text(
-                      '\$${CoreUtils.formatChainBalance(balanceSend)}',
+                      '\$${CoreUtils.formatChainBalance(sendInFIAT, precision: 3)}',
                       style: themeData.textStyles.small400.copyWith(
                         color: themeColors.foreground200,
                       ),

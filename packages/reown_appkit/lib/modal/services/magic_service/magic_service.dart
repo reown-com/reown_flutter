@@ -842,13 +842,18 @@ class MagicService implements IMagicService {
         code: 0,
         message: errorEvent.error,
       ));
+      final errorMessage = (errorEvent.error ?? 'Request error').replaceFirst(
+        'Magic RPC Error: ',
+        '',
+      );
       onMagicRpcRequest.broadcast(
         MagicRequestEvent(
           request: null,
-          result: JsonRpcError(code: 0, message: errorEvent.error),
+          result: JsonRpcError(code: -32600, message: errorMessage),
           success: false,
         ),
       );
+      onMagicError.broadcast(MagicErrorEvent(errorMessage));
       return;
     }
     if (errorEvent is IsConnectedErrorEvent) {
@@ -900,6 +905,7 @@ class MagicService implements IMagicService {
   Future<void> _runJavascript() async {
     return await _webViewController.runJavaScript('''
       window.addEventListener('message', ({ data, origin }) => {
+        console.log('eventListener ' + JSON.stringify({data,origin}))
         window.w3mWebview.postMessage(JSON.stringify({data,origin}))
       })
 

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -83,19 +85,20 @@ class CoreUtils {
   }
 
   static String formatChainBalance(double? chainBalance, {int precision = 4}) {
+    final p = min(precision, 16);
     if (chainBalance == null) {
-      return '_.'.padRight(precision + 1, '_');
+      return '_.'.padRight(p + 1, '_');
     }
     if (chainBalance == 0.0) {
-      return '0.'.padRight(precision + 2, '0');
+      return '0.'.padRight(p + 2, '0');
     }
 
     if (chainBalance.toInt() > 0) {
-      return chainBalance.toStringAsFixed(precision - 1)
+      return chainBalance.toStringAsFixed(p - 1)
         ..replaceAll(RegExp(r'([.]*0+)(?!.*\d)'), '');
     }
 
-    return chainBalance.toStringAsFixed(precision)
+    return chainBalance.toStringAsFixed(p)
       ..replaceAll(RegExp(r'([.]*0+)(?!.*\d)'), '');
   }
 

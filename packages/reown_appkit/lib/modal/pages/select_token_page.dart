@@ -13,6 +13,7 @@ import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/account_list_item.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class SelectTokenPage extends StatefulWidget {
@@ -161,6 +162,10 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
                     SizedBox.square(dimension: kPadding6),
                   ],
                 ),
+                onTap: () {
+                  _blockchainService.selectSendToken(token);
+                  widgetStack.instance.pop();
+                },
               );
             }),
             SizedBox.square(
