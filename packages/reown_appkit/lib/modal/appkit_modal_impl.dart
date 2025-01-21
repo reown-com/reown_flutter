@@ -1210,6 +1210,7 @@ class ReownAppKitModal
       selectWallet(null);
     }
     _toastService.clear();
+    _blockchainService.selectSendToken(null);
     _analyticsService.sendEvent(ModalCloseEvent(
       connected: _isConnected,
     ));

@@ -41,7 +41,7 @@ class BlockChainService implements IBlockChainService {
   TokenBalance? get selectedSendToken => _selectedToken;
 
   @override
-  void selectSendToken(TokenBalance token) => _selectedToken = token;
+  void selectSendToken(TokenBalance? token) => _selectedToken = token;
 
   @override
   Future<void> init() async {

@@ -54,6 +54,7 @@ class _PreviewSendPageState extends State<PreviewSendPage> {
   late final TokenBalance _sendTokenData;
   late final TokenBalance? _networkTokenData;
 
+  Transaction? _originalTransaction;
   Transaction? _transaction;
   double _requiredGasInNativeToken = 0.0;
   bool _isSendEnabled = false;
@@ -126,21 +127,26 @@ class _PreviewSendPageState extends State<PreviewSendPage> {
       final contractAddress = NamespaceUtils.getAccount(
         _sendTokenData.address!,
       );
-      final tokenPrice = _networkTokenData!.price!;
-      final cost = (_requiredGasInNativeToken * tokenPrice);
-      final networkCost = CoreUtils.formatChainBalance(
-        cost,
-        precision: _getDecimals(nativeToken: false),
-      );
       final actualValueToSend = double.parse(valueToSend) -
-          (_isMaxSend ? double.parse(networkCost) : 0.0);
-      //
+          (_isMaxSend ? _requiredGasInNativeToken : 0.0);
       _sendData = _sendData.copyWith(
-        amount: max(0.000000, actualValueToSend).toString(),
+        amount: CoreUtils.formatChainBalance(
+          max(0.000000, actualValueToSend),
+          precision: _getDecimals(nativeToken: false),
+        ),
       );
-      _transaction = Transaction(
+      _originalTransaction ??= Transaction(
         from: EthereumAddress.fromHex(_senderAddress),
         to: EthereumAddress.fromHex(contractAddress),
+        data: utf8.encode(
+          _constructCallData(
+            _valueToBigInt(
+              actualValueToSend,
+            ),
+          ),
+        ),
+      );
+      _transaction = _originalTransaction!.copyWith(
         data: utf8.encode(
           _constructCallData(
             _valueToBigInt(
@@ -157,7 +163,7 @@ class _PreviewSendPageState extends State<PreviewSendPage> {
       _sendData = _sendData.copyWith(
         amount: max(0.000000, actualValueToSend).toString(),
       );
-      _transaction = Transaction(
+      _originalTransaction ??= Transaction(
         to: EthereumAddress.fromHex(_recipientAddress),
         value: EtherAmount.fromBigInt(
           EtherUnit.wei,
@@ -166,6 +172,14 @@ class _PreviewSendPageState extends State<PreviewSendPage> {
           ),
         ),
         data: utf8.encode('0x'),
+      );
+      _transaction = _originalTransaction!.copyWith(
+        value: EtherAmount.fromBigInt(
+          EtherUnit.wei,
+          _valueToBigInt(
+            actualValueToSend,
+          ),
+        ),
       );
     }
     _log('[$runtimeType] transaction ${jsonEncode(_transaction?.toJson())}');
@@ -180,15 +194,15 @@ class _PreviewSendPageState extends State<PreviewSendPage> {
       final standardGasPrice = gasPrices.standard ?? BigInt.zero;
       //
       final estimatedGas = await _blockchainService.estimateGas(
-        transaction: _transaction!.toJson(),
+        transaction: _originalTransaction!.toJson(),
         caip2Chain: chainId,
       );
       //
       final decimals = BigInt.from(10).pow(_getDecimals(nativeToken: true));
       _requiredGasInNativeToken = (standardGasPrice * estimatedGas) / decimals;
-      // Add a little buffer of 10% more since this is just an estimation
+      // Add a little buffer of 5% more since this is just an estimation
       _requiredGasInNativeToken = double.parse(CoreUtils.formatChainBalance(
-        _requiredGasInNativeToken * 1.1,
+        _requiredGasInNativeToken * 1.05,
         precision: _getDecimals(nativeToken: true),
       ));
 
@@ -605,11 +619,11 @@ class _DetailsRowState extends State<_DetailsRow> {
           const SizedBox.square(dimension: kPadding8),
           AccountListItem(
             title: 'Network',
-            titleStyle: themeData.textStyles.small500.copyWith(
-              color: themeColors.foreground100,
+            titleStyle: themeData.textStyles.small400.copyWith(
+              color: themeColors.foreground150,
             ),
             trailing: Padding(
-              padding: const EdgeInsets.only(right: 8.0),
+              padding: const EdgeInsets.only(right: 4.0),
               child: NetworkButton(
                 serviceStatus: appKitModal.status,
                 chainInfo: appKitModal.selectedChain,

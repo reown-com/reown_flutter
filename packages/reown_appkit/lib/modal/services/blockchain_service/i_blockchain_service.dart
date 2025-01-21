@@ -25,7 +25,7 @@ abstract class IBlockChainService {
     String? caip2chain,
   });
 
-  void selectSendToken(TokenBalance token);
+  void selectSendToken(TokenBalance? token);
 
   Future<GasPrice> gasPrice({
     required String caip2chain,
