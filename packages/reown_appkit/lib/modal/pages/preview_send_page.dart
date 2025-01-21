@@ -174,6 +174,7 @@ class _PreviewSendPageState extends State<PreviewSendPage> {
         data: utf8.encode('0x'),
       );
       _transaction = _originalTransaction!.copyWith(
+        from: EthereumAddress.fromHex(_senderAddress),
         value: EtherAmount.fromBigInt(
           EtherUnit.wei,
           _valueToBigInt(
