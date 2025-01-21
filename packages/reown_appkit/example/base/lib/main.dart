@@ -202,14 +202,11 @@ class _MyHomePageState extends State<MyHomePage> {
       siweConfig: _siweConfig(linkMode),
       featuresConfig: _featuresConfig(),
       // requiredNamespaces: {},
-      // optionalNamespaces: {},
+      optionalNamespaces: _updatedNamespaces(),
       featuredWalletIds: _featuredWalletIds(),
-      // excludedWalletIds: {
-      //   '841b1ef7139a08ee064e626f9f946154b0a80096c3417abe49ced448217fcf4c',
-      // },
+      // excludedWalletIds: {},
       // includedWalletIds: {},
       // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
-      optionalNamespaces: _updatedNamespaces(),
       getBalanceFallback: () async {
         // This method will be triggered if getting the balance from our blockchain API fails
         // You could place here your own getBalance method
