@@ -200,6 +200,19 @@ class _MyHomePageState extends State<MyHomePage> {
         // sessionRefetchIntervalMs: 300000,
       );
 
+  FeaturesConfig? _featuresConfig() {
+    return FeaturesConfig(
+      email: true,
+      socials: [
+        AppKitSocialOption.Farcaster,
+        AppKitSocialOption.X,
+        AppKitSocialOption.Apple,
+        AppKitSocialOption.Discord,
+      ],
+      showMainWallets: true, // OPTIONAL - true by default
+    );
+  }
+
   void _initializeService(SharedPreferences prefs) async {
     final analyticsValue = prefs.getBool('appkit_analytics') ?? true;
     final emailWalletValue = prefs.getBool('appkit_email_wallet') ?? true;
@@ -244,18 +257,7 @@ class _MyHomePageState extends State<MyHomePage> {
         metadata: _pairingMetadata(),
         siweConfig: _siweConfig(siweAuthValue),
         enableAnalytics: analyticsValue, // OPTIONAL - null by default
-        featuresConfig: emailWalletValue
-            ? FeaturesConfig(
-                email: true,
-                socials: [
-                  AppKitSocialOption.Farcaster,
-                  AppKitSocialOption.X,
-                  AppKitSocialOption.Apple,
-                  AppKitSocialOption.Discord,
-                ],
-                // showMainWallets: false, // OPTIONAL - true by default
-              )
-            : null,
+        featuresConfig: emailWalletValue ? _featuresConfig() : null,
         // requiredNamespaces: {},
         // optionalNamespaces: {},
         // includedWalletIds: {},
