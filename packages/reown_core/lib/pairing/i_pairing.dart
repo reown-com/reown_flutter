@@ -51,7 +51,7 @@ abstract class IPairing {
   Future sendRequest(
     String topic,
     String method,
-    dynamic params, {
+    Map<String, dynamic> params, {
     int? id,
     int? ttl,
     EncodeOptions? encodeOptions,

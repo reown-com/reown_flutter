@@ -401,7 +401,7 @@ class Pairing implements IPairing {
   Future<dynamic> sendRequest(
     String topic,
     String method,
-    dynamic params, {
+    Map<String, dynamic> params, {
     int? id,
     int? ttl,
     EncodeOptions? encodeOptions,
@@ -413,6 +413,7 @@ class Pairing implements IPairing {
       params,
       id: id,
     );
+    final requestId = payload['id'] as int;
 
     final message = await core.crypto.encode(
       topic,
@@ -424,17 +425,13 @@ class Pairing implements IPairing {
       return;
     }
 
-    // print('adding payload to pending requests: ${payload['id']}');
+    // print('adding payload to pending requests: $requestId');
     final resp = PendingRequestResponse(completer: Completer());
     resp.completer.future.catchError((err) {
       // Catch the error so that it won't throw an uncaught error
     });
-    pendingRequests[payload['id']] = resp;
+    pendingRequests[requestId] = resp;
 
-    core.logger.d(
-      '[$runtimeType] sendRequest appLink: $appLink, '
-      'id: $id topic: $topic, method: $method, params: $params, ttl: $ttl',
-    );
     if ((appLink ?? '').isNotEmpty) {
       // during wc_sessionAuthenticate we don't need to openURL as it will be done by the host dapp
       if (openUrl) {
@@ -445,8 +442,12 @@ class Pairing implements IPairing {
         );
         await ReownCoreUtils.openURL(redirectURL);
       }
+      core.logger.d(
+        '[$runtimeType] sendRequest linkMode ($appLink), '
+        'id: $requestId topic: $topic, method: $method, '
+        'params: $params, ttl: $ttl',
+      );
     } else {
-      // RpcOptions opts = MethodConstants.RPC_OPTS[method]!['req']!;
       RpcOptions opts = MethodConstants.RPC_OPTS[method]!['req']!;
       if (ttl != null) {
         opts = opts.copyWith(ttl: ttl);
@@ -457,6 +458,15 @@ class Pairing implements IPairing {
         message: message,
         ttl: ttl ?? opts.ttl,
         tag: opts.tag,
+        // correlationId is sent at every wc_sessionRequest (1108)
+        correlationId: requestId,
+        // tvf data is sent only on tvfMethods methods
+        tvf: _collectTVFdata(opts.tag, params),
+      );
+      core.logger.d(
+        '[$runtimeType] sendRequest relayClient, '
+        'id: $requestId topic: $topic, method: $method, '
+        'params: $params, ttl: ${ttl ?? opts.ttl}',
       );
     }
 
@@ -490,6 +500,7 @@ class Pairing implements IPairing {
       id,
       result,
     );
+    final resultId = payload['id'] as int;
 
     final String? message = await core.crypto.encode(
       topic,
@@ -519,6 +530,7 @@ class Pairing implements IPairing {
         message: message,
         ttl: opts.ttl,
         tag: opts.tag,
+        correlationId: resultId,
       );
     }
   }
@@ -537,6 +549,7 @@ class Pairing implements IPairing {
       id,
       error,
     );
+    final resultId = payload['id'] as int;
 
     final String? message = await core.crypto.encode(
       topic,
@@ -570,6 +583,7 @@ class Pairing implements IPairing {
         message: message,
         ttl: (rpcOptions ?? fallbackOpts).ttl,
         tag: (rpcOptions ?? fallbackOpts).tag,
+        correlationId: resultId,
       );
     }
   }
@@ -880,5 +894,81 @@ class Pairing implements IPairing {
 
     final message = Uri.decodeComponent(envelope);
     await core.relayClient.handleLinkModeMessage(topic, message);
+  }
+
+  Map<String, dynamic>? _collectTVFdata(int tag, Map<String, dynamic> params) {
+    final sessionRequest = MethodConstants.WC_SESSION_REQUEST;
+    final reqOpt = MethodConstants.RPC_OPTS[sessionRequest]!['req']!;
+    final resOpt = MethodConstants.RPC_OPTS[sessionRequest]!['res']!;
+    // check if tag is either 1108 or 1109
+    if (tag != reqOpt.tag && tag != resOpt.tag) return null;
+
+    final tvfMethods = [
+      'eth_sendTransaction',
+      'eth_sendRawTransaction',
+      'solana_signAndSendTransaction',
+      'solana_signTransaction',
+      'solana_signAllTransactions',
+      'wallet_sendCalls',
+    ];
+    // check if the rpc request is on the tvf supported methods list
+    final rpcMethod = params['request']['method'] as String;
+    if (!tvfMethods.contains(rpcMethod)) return null;
+
+    // split the method name and check if is either eth, solana or wallet (for wallet_sendCalls)
+    final ns = rpcMethod.split('_').first;
+
+    // values to add to publish method
+    final rpcMethods = List.from([rpcMethod]);
+    final chainId = params['chainId'] as String;
+    List<String>? contractAddresses;
+    List<String>? txHashes;
+
+    final rpcParams = params['request']['params'];
+    if (rpcParams is List && ns == 'eth') {
+      final paramsMap = rpcParams.first as Map<String, dynamic>;
+      final data = paramsMap['data'] as String? ?? '';
+      if (_isValidContractData(data)) {
+        final contractAddress = paramsMap['to'] as String;
+        contractAddresses = [contractAddress];
+      }
+    }
+
+    return {
+      'rpc_methods': rpcMethods,
+      'chain_id': chainId,
+      'tx_hashes': txHashes,
+      'contract_addresses': contractAddresses,
+    };
+  }
+
+  // [RelayClient] publish, tag: 110
+  bool _isValidContractData(String data) {
+    bool isValidData = false;
+
+    try {
+      // Ensure the data starts with '0x' for consistency
+      if (data.startsWith('0x')) data = data.substring(2);
+      if (data.isEmpty) return false;
+
+      // Extract method ID (first 4 bytes)
+      final methodId = data.substring(0, 8);
+      isValidData = methodId.isNotEmpty;
+
+      // Extract recipient address (next 32 bytes, right-padded with zeros)
+      final recipient = data.substring(8, 72).replaceFirst(RegExp('^0+'), '');
+      // Decode the recipient address
+      isValidData = recipient.isNotEmpty;
+
+      // Extract amount (final 32 bytes, big-endian encoded)
+      final amount = data.substring(72).replaceFirst(RegExp('^0+'), '');
+      // final amount = BigInt.parse(amountHex, radix: 16);
+      isValidData = amount.isNotEmpty;
+    } catch (e) {
+      core.logger.d('[$runtimeType] invalid contract data $data');
+      return false;
+    }
+
+    return isValidData;
   }
 }
