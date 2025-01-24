@@ -89,8 +89,11 @@ class ReownCore implements IReownCore {
   void addLogListener(Function(String) callback) {
     try {
       _logCallback = (LogEvent event) {
-        if (event.level == _logLevel.toLevel()) {
-          callback.call('[LogLevel ${event.level.name}] ${event.message}');
+        final time = DateTime.now().toString();
+        final emoji = _LogPrinter.defaultLevelEmojis[event.level];
+
+        if (event.level == _logLevel.toLevel() || _logLevel == LogLevel.all) {
+          callback.call('$time ${emoji ?? ''} ${event.message}');
         }
       };
       Logger.addLogListener(_logCallback!);

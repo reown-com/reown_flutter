@@ -293,7 +293,12 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                   GetIt.I
                       .get<EVMService>(instanceName: chain?.chainId)
                       .getBalance(address: chainKey.address)
-                      .then((value) => setState(() => _balance = value));
+                      .then((value) => setState(() => _balance = value))
+                      .onError((a, b) {
+                    debugPrint(a.toString());
+                    debugPrint(b.toString());
+                    setState(() => _balance = 0.0);
+                  });
                 },
               ),
             ],

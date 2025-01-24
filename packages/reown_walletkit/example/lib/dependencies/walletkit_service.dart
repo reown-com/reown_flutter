@@ -65,6 +65,8 @@ class WalletKitService extends IWalletKitService {
       ),
     );
 
+    _walletKit!.core.addLogListener(_logListener);
+
     // Setup our listeners
     debugPrint('[SampleWallet] create');
     _walletKit!.core.pairing.onPairingInvalid.subscribe(_onPairingInvalid);
@@ -108,6 +110,10 @@ class WalletKitService extends IWalletKitService {
     }
   }
 
+  void _logListener(String event) {
+    debugPrint('[WalletKit] $event');
+  }
+
   @override
   Future<void> init() async {
     // Await the initialization of the ReownWalletKit instance
@@ -147,6 +153,8 @@ class WalletKitService extends IWalletKitService {
 
   @override
   FutureOr onDispose() {
+    _walletKit!.core.removeLogListener(_logListener);
+
     _walletKit!.core.pairing.onPairingInvalid.unsubscribe(_onPairingInvalid);
     _walletKit!.core.pairing.onPairingCreate.unsubscribe(_onPairingCreate);
     _walletKit!.core.relayClient.onRelayClientError.unsubscribe(

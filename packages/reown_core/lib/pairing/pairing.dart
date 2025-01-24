@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:event/event.dart';
+import 'package:flutter/foundation.dart';
 import 'package:reown_core/models/json_rpc_models.dart';
 import 'package:reown_core/pairing/i_json_rpc_history.dart';
 import 'package:reown_core/store/i_generic_store.dart';
@@ -452,16 +453,16 @@ class Pairing implements IPairing {
       if (ttl != null) {
         opts = opts.copyWith(ttl: ttl);
       }
+      final tvf = _collectTVFdata(opts.tag, payload);
       //
       await core.relayClient.publish(
         topic: topic,
         message: message,
         ttl: ttl ?? opts.ttl,
         tag: opts.tag,
-        // correlationId is sent at every wc_sessionRequest (1108)
         correlationId: requestId,
         // tvf data is sent only on tvfMethods methods
-        tvf: _collectTVFdata(opts.tag, params),
+        tvf: tvf,
       );
       core.logger.d(
         '[$runtimeType] sendRequest relayClient, '
@@ -524,13 +525,17 @@ class Pairing implements IPairing {
       );
       await ReownCoreUtils.openURL(redirectURL);
     } else {
-      final RpcOptions opts = MethodConstants.RPC_OPTS[method]!['res']!;
+      final opts = MethodConstants.RPC_OPTS[method]!['res']!;
+      final tvf = _collectTVFdata(opts.tag, payload);
+      //
       await core.relayClient.publish(
         topic: topic,
         message: message,
         ttl: opts.ttl,
         tag: opts.tag,
         correlationId: resultId,
+        // tvf data is sent only on tvfMethods methods
+        tvf: tvf,
       );
     }
   }
@@ -578,12 +583,16 @@ class Pairing implements IPairing {
       final fallbackMethodOpts = MethodConstants.RPC_OPTS[fallbackMethod]!;
       final relayOpts = methodOpts ?? fallbackMethodOpts;
       final fallbackOpts = relayOpts['reject'] ?? relayOpts['res']!;
+      final ttl = (rpcOptions ?? fallbackOpts).ttl;
+      final tag = (rpcOptions ?? fallbackOpts).tag;
+      final tvf = _collectTVFdata(tag, payload);
       await core.relayClient.publish(
         topic: topic,
         message: message,
-        ttl: (rpcOptions ?? fallbackOpts).ttl,
-        tag: (rpcOptions ?? fallbackOpts).tag,
+        ttl: ttl,
+        tag: tag,
         correlationId: resultId,
+        tvf: tvf,
       );
     }
   }
@@ -896,53 +905,70 @@ class Pairing implements IPairing {
     await core.relayClient.handleLinkModeMessage(topic, message);
   }
 
-  Map<String, dynamic>? _collectTVFdata(int tag, Map<String, dynamic> params) {
+  final tvfRequestMethods = [
+    if (kDebugMode) 'eth_signTransaction',
+    'eth_sendTransaction',
+    'eth_sendRawTransaction',
+    'solana_signAndSendTransaction',
+    'solana_signTransaction',
+    'solana_signAllTransactions',
+    'wallet_sendCalls',
+  ];
+
+  Map<String, dynamic>? _collectTVFdata(int tag, Map<String, dynamic> payload) {
     final sessionRequest = MethodConstants.WC_SESSION_REQUEST;
     final reqOpt = MethodConstants.RPC_OPTS[sessionRequest]!['req']!;
     final resOpt = MethodConstants.RPC_OPTS[sessionRequest]!['res']!;
-    // check if tag is either 1108 or 1109
+    // check if tag is either 1108 or 1109, otherwise no tvf data is collected
     if (tag != reqOpt.tag && tag != resOpt.tag) return null;
 
-    final tvfMethods = [
-      'eth_sendTransaction',
-      'eth_sendRawTransaction',
-      'solana_signAndSendTransaction',
-      'solana_signTransaction',
-      'solana_signAllTransactions',
-      'wallet_sendCalls',
-    ];
-    // check if the rpc request is on the tvf supported methods list
-    final rpcMethod = params['request']['method'] as String;
-    if (!tvfMethods.contains(rpcMethod)) return null;
+    core.logger.d('[$runtimeType] tvf payload ${jsonEncode(payload)}');
 
-    // split the method name and check if is either eth, solana or wallet (for wallet_sendCalls)
-    final ns = rpcMethod.split('_').first;
+    // is request by AppKit
+    if (payload.containsKey('method')) {
+      final request = JsonRpcRequest.fromJson(payload);
+      final Map<String, dynamic> params = request.params ?? {};
 
-    // values to add to publish method
-    final rpcMethods = List.from([rpcMethod]);
-    final chainId = params['chainId'] as String;
-    List<String>? contractAddresses;
-    List<String>? txHashes;
+      // check if the rpc request is on the tvf supported methods list
+      final rpcMethod = params['request']['method'] as String;
+      if (!tvfRequestMethods.contains(rpcMethod)) return null;
 
-    final rpcParams = params['request']['params'];
-    if (rpcParams is List && ns == 'eth') {
-      final paramsMap = rpcParams.first as Map<String, dynamic>;
-      final data = paramsMap['data'] as String? ?? '';
-      if (_isValidContractData(data)) {
-        final contractAddress = paramsMap['to'] as String;
-        contractAddresses = [contractAddress];
+      // split the method name and check if is either eth, solana or wallet (for wallet_sendCalls)
+      final namespace = rpcMethod.split('_').first;
+      List<String>? contractAddresses;
+
+      // only EVM request could have `data` parameter for contract call
+      if (namespace == 'eth') {
+        final rpcParams = params['request']['params'];
+        final paramsMap = rpcParams.first as Map<String, dynamic>;
+        final data = paramsMap['data'] as String? ?? '';
+        if (_isValidContractData(data)) {
+          final contractAddress = paramsMap['to'] as String;
+          contractAddresses = [contractAddress];
+        }
+      }
+
+      final rpcMethods = List.from([rpcMethod]);
+      final chainId = params['chainId'] as String;
+      return {
+        'rpc_methods': rpcMethods,
+        'chain_id': chainId,
+        'contract_addresses': contractAddresses,
+      };
+    } else {
+      // is response by WalletKit
+      final response = JsonRpcResponse.fromJson(payload);
+      final result = response.result; // check type of result
+      if (result != null) {
+        return {
+          'tx_hashes': [result],
+        };
       }
     }
 
-    return {
-      'rpc_methods': rpcMethods,
-      'chain_id': chainId,
-      'tx_hashes': txHashes,
-      'contract_addresses': contractAddresses,
-    };
+    return null;
   }
 
-  // [RelayClient] publish, tag: 110
   bool _isValidContractData(String data) {
     bool isValidData = false;
 
@@ -957,7 +983,6 @@ class Pairing implements IPairing {
 
       // Extract recipient address (next 32 bytes, right-padded with zeros)
       final recipient = data.substring(8, 72).replaceFirst(RegExp('^0+'), '');
-      // Decode the recipient address
       isValidData = recipient.isNotEmpty;
 
       // Extract amount (final 32 bytes, big-endian encoded)
@@ -966,7 +991,7 @@ class Pairing implements IPairing {
       isValidData = amount.isNotEmpty;
     } catch (e) {
       core.logger.d('[$runtimeType] invalid contract data $data');
-      return false;
+      isValidData = false;
     }
 
     return isValidData;

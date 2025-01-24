@@ -224,6 +224,17 @@ class _MyHomePageState extends State<MyHomePage> {
     // ReownAppKitModalNetworks.addSupportedNetworks('eip155', extraChains);
     // Remove every test network
     // ReownAppKitModalNetworks.removeTestNetworks();
+
+    ReownAppKitModalNetworks.addSupportedNetworks('eip155', [
+      ReownAppKitModalNetworkInfo(
+        name: 'Base Sepolia',
+        chainId: '84531',
+        currency: 'SEP',
+        rpcUrl: 'https://sepolia.base.org',
+        explorerUrl: 'https://sepolia.basescan.org/',
+        isTestNetwork: true,
+      ),
+    ]);
     if (siweAuthValue) {
       // Remove Solana support
       ReownAppKitModalNetworks.removeSupportedNetworks('solana');
@@ -318,6 +329,7 @@ class _MyHomePageState extends State<MyHomePage> {
       debugPrint('⛔️ ${e.message}');
       return;
     }
+    _appKitModal.appKit!.core.addLogListener(_logListener);
     // modal specific subscriptions
     _appKitModal.onModalConnect.subscribe(_onModalConnect);
     _appKitModal.onModalUpdate.subscribe(_onModalUpdate);
@@ -347,8 +359,13 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {});
   }
 
+  void _logListener(String event) {
+    debugPrint('[AppKit] $event');
+  }
+
   @override
   void dispose() {
+    _appKitModal.appKit!.core.removeLogListener(_logListener);
     //
     _appKitModal.appKit!.core.relayClient.onRelayClientConnect.unsubscribe(
       _onRelayClientConnect,

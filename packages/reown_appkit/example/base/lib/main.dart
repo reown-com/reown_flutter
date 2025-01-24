@@ -169,6 +169,10 @@ class _MyHomePageState extends State<MyHomePage> {
     };
   }
 
+  void _logListener(String event) {
+    debugPrint('[AppKit] $event');
+  }
+
   Future<void> _initializeService() async {
     _appKit = ReownAppKit(
       core: ReownCore(
@@ -223,6 +227,8 @@ class _MyHomePageState extends State<MyHomePage> {
         return 0.0;
       },
     );
+
+    _appKitModal!.appKit!.core.addLogListener(_logListener);
 
     _appKitModal!.onModalConnect.subscribe(_onModalConnect);
     _appKitModal!.onModalUpdate.subscribe(_onModalUpdate);
@@ -300,6 +306,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Adds or remove supported networks based on linkMode
   void _addOrRemoveNetworks(bool linkMode) {
+    ReownAppKitModalNetworks.addSupportedNetworks('eip155', [
+      ReownAppKitModalNetworkInfo(
+        name: 'Base Sepolia',
+        chainId: '84531',
+        currency: 'SEP',
+        rpcUrl: 'https://sepolia.base.org',
+        explorerUrl: 'https://sepolia.basescan.org/',
+        isTestNetwork: true,
+      ),
+    ]);
     if (!linkMode) {
       ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
         ReownAppKitModalNetworkInfo(
@@ -438,6 +454,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     // Unregister event handlers
+    _appKitModal!.appKit!.core.removeLogListener(_logListener);
+
     _appKit!.core.relayClient.onRelayClientError.unsubscribe(
       _relayClientError,
     );

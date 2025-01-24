@@ -129,7 +129,9 @@ class RelayClient implements IRelayClient {
       ...?tvf
     };
 
-    core.logger.i('[$runtimeType] publish $tag, $correlationId, $tvf');
+    core.logger.i(
+      '[$runtimeType] publish $tag, correlation_id: $correlationId, tvf: $tvf',
+    );
 
     try {
       await messageTracker.recordMessageEvent(topic, message);
