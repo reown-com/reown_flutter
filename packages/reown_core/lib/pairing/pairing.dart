@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:event/event.dart';
-import 'package:flutter/foundation.dart';
 import 'package:reown_core/models/json_rpc_models.dart';
 import 'package:reown_core/pairing/i_json_rpc_history.dart';
 import 'package:reown_core/store/i_generic_store.dart';
@@ -408,6 +407,7 @@ class Pairing implements IPairing {
     EncodeOptions? encodeOptions,
     String? appLink,
     bool openUrl = true,
+    Map<String, dynamic>? tvf,
   }) async {
     final payload = JsonRpcUtils.formatJsonRpcRequest(
       method,
@@ -453,7 +453,6 @@ class Pairing implements IPairing {
       if (ttl != null) {
         opts = opts.copyWith(ttl: ttl);
       }
-      final tvf = _collectTVFdata(opts.tag, payload);
       //
       await core.relayClient.publish(
         topic: topic,
@@ -462,7 +461,7 @@ class Pairing implements IPairing {
         tag: opts.tag,
         correlationId: requestId,
         // tvf data is sent only on tvfMethods methods
-        tvf: tvf,
+        tvf: _shouldSendTVF(opts.tag) ? tvf : null,
       );
       core.logger.d(
         '[$runtimeType] sendRequest relayClient, '
@@ -496,6 +495,7 @@ class Pairing implements IPairing {
     dynamic result, {
     EncodeOptions? encodeOptions,
     String? appLink,
+    Map<String, dynamic>? tvf,
   }) async {
     final payload = JsonRpcUtils.formatJsonRpcResponse<dynamic>(
       id,
@@ -526,7 +526,6 @@ class Pairing implements IPairing {
       await ReownCoreUtils.openURL(redirectURL);
     } else {
       final opts = MethodConstants.RPC_OPTS[method]!['res']!;
-      final tvf = _collectTVFdata(opts.tag, payload);
       //
       await core.relayClient.publish(
         topic: topic,
@@ -535,7 +534,7 @@ class Pairing implements IPairing {
         tag: opts.tag,
         correlationId: resultId,
         // tvf data is sent only on tvfMethods methods
-        tvf: tvf,
+        tvf: _shouldSendTVF(opts.tag) ? tvf : null,
       );
     }
   }
@@ -549,6 +548,7 @@ class Pairing implements IPairing {
     EncodeOptions? encodeOptions,
     RpcOptions? rpcOptions,
     String? appLink,
+    Map<String, dynamic>? tvf,
   }) async {
     final Map<String, dynamic> payload = JsonRpcUtils.formatJsonRpcError(
       id,
@@ -585,14 +585,15 @@ class Pairing implements IPairing {
       final fallbackOpts = relayOpts['reject'] ?? relayOpts['res']!;
       final ttl = (rpcOptions ?? fallbackOpts).ttl;
       final tag = (rpcOptions ?? fallbackOpts).tag;
-      final tvf = _collectTVFdata(tag, payload);
+      //
       await core.relayClient.publish(
         topic: topic,
         message: message,
         ttl: ttl,
         tag: tag,
         correlationId: resultId,
-        tvf: tvf,
+        // tvf data is sent only on tvfMethods methods
+        tvf: _shouldSendTVF(tag) ? tvf : null,
       );
     }
   }
@@ -905,95 +906,16 @@ class Pairing implements IPairing {
     await core.relayClient.handleLinkModeMessage(topic, message);
   }
 
-  final tvfRequestMethods = [
-    if (kDebugMode) 'eth_signTransaction',
-    'eth_sendTransaction',
-    'eth_sendRawTransaction',
-    'solana_signAndSendTransaction',
-    'solana_signTransaction',
-    'solana_signAllTransactions',
-    'wallet_sendCalls',
-  ];
-
-  Map<String, dynamic>? _collectTVFdata(int tag, Map<String, dynamic> payload) {
+  bool _shouldSendTVF(int tag) {
     final sessionRequest = MethodConstants.WC_SESSION_REQUEST;
     final reqOpt = MethodConstants.RPC_OPTS[sessionRequest]!['req']!;
     final resOpt = MethodConstants.RPC_OPTS[sessionRequest]!['res']!;
+    core.logger.d(
+      '[$runtimeType] should send TVF, tag: $tag (${reqOpt.tag}, ${resOpt.tag})',
+    );
     // check if tag is either 1108 or 1109, otherwise no tvf data is collected
-    if (tag != reqOpt.tag && tag != resOpt.tag) return null;
+    if (tag != reqOpt.tag && tag != resOpt.tag) return false;
 
-    core.logger.d('[$runtimeType] tvf payload ${jsonEncode(payload)}');
-
-    // is request by AppKit
-    if (payload.containsKey('method')) {
-      final request = JsonRpcRequest.fromJson(payload);
-      final Map<String, dynamic> params = request.params ?? {};
-
-      // check if the rpc request is on the tvf supported methods list
-      final rpcMethod = params['request']['method'] as String;
-      if (!tvfRequestMethods.contains(rpcMethod)) return null;
-
-      // split the method name and check if is either eth, solana or wallet (for wallet_sendCalls)
-      final namespace = rpcMethod.split('_').first;
-      List<String>? contractAddresses;
-
-      // only EVM request could have `data` parameter for contract call
-      if (namespace == 'eth') {
-        final rpcParams = params['request']['params'];
-        final paramsMap = rpcParams.first as Map<String, dynamic>;
-        final data = paramsMap['data'] as String? ?? '';
-        if (_isValidContractData(data)) {
-          final contractAddress = paramsMap['to'] as String;
-          contractAddresses = [contractAddress];
-        }
-      }
-
-      final rpcMethods = List.from([rpcMethod]);
-      final chainId = params['chainId'] as String;
-      return {
-        'rpc_methods': rpcMethods,
-        'chain_id': chainId,
-        'contract_addresses': contractAddresses,
-      };
-    } else {
-      // is response by WalletKit
-      final response = JsonRpcResponse.fromJson(payload);
-      final result = response.result; // check type of result
-      if (result != null) {
-        return {
-          'tx_hashes': [result],
-        };
-      }
-    }
-
-    return null;
-  }
-
-  bool _isValidContractData(String data) {
-    bool isValidData = false;
-
-    try {
-      // Ensure the data starts with '0x' for consistency
-      if (data.startsWith('0x')) data = data.substring(2);
-      if (data.isEmpty) return false;
-
-      // Extract method ID (first 4 bytes)
-      final methodId = data.substring(0, 8);
-      isValidData = methodId.isNotEmpty;
-
-      // Extract recipient address (next 32 bytes, right-padded with zeros)
-      final recipient = data.substring(8, 72).replaceFirst(RegExp('^0+'), '');
-      isValidData = recipient.isNotEmpty;
-
-      // Extract amount (final 32 bytes, big-endian encoded)
-      final amount = data.substring(72).replaceFirst(RegExp('^0+'), '');
-      // final amount = BigInt.parse(amountHex, radix: 16);
-      isValidData = amount.isNotEmpty;
-    } catch (e) {
-      core.logger.d('[$runtimeType] invalid contract data $data');
-      isValidData = false;
-    }
-
-    return isValidData;
+    return true;
   }
 }

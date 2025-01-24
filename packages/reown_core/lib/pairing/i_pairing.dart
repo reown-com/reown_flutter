@@ -57,6 +57,7 @@ abstract class IPairing {
     EncodeOptions? encodeOptions,
     String? appLink,
     bool openUrl = true,
+    Map<String, dynamic>? tvf,
   });
 
   Future<void> sendResult(
@@ -66,6 +67,7 @@ abstract class IPairing {
     dynamic result, {
     EncodeOptions? encodeOptions,
     String? appLink,
+    Map<String, dynamic>? tvf,
   });
 
   Future<void> sendError(
@@ -76,6 +78,7 @@ abstract class IPairing {
     EncodeOptions? encodeOptions,
     RpcOptions? rpcOptions,
     String? appLink,
+    Map<String, dynamic>? tvf,
   });
 
   Future<void> isValidPairingTopic({
