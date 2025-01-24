@@ -8,6 +8,9 @@ import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_core/reown_core.dart';
 
 class PhantomHelper {
+  late final String _scheme;
+  late final String _host;
+
   /// (required): A url used to fetch app metadata (i.e. title, icon)
   /// We do this provinding name, description, url and icons in PairingMetadata
   /// Used in /connect URI to show the user this metadata in the approval modal
@@ -39,14 +42,21 @@ class PhantomHelper {
 
   /// Initialization of `PhantomHelper` instance
   PhantomHelper({
+    required Redirect redirect,
     required String appUrl,
     required String redirectLink,
     required IReownCore core,
   }) {
+    _scheme = redirect.linkMode == true ? 'https' : (redirect.native ?? '');
+    _host = redirect.universal ?? '';
     _appUrl = appUrl;
     _redirectLink = redirectLink;
     _core = core;
     _currentKeyPair = _core.crypto.getUtils().generateKeyPair();
+
+    _core.logger.i(
+      '[$runtimeType] init with host: $_host, callback: $_redirectLink',
+    );
   }
 
   Future<bool> restoreSession() async {
@@ -70,9 +80,11 @@ class PhantomHelper {
 
   /// Generate an URL to connect to Phantom Wallet
   Uri buildConnectionUri({String? cluster}) {
+    // https://phantom.app/ul/<version>/<method>
+    // phantom://<version>/<method>
     return Uri(
-      scheme: 'https',
-      host: 'phantom.app',
+      scheme: _scheme,
+      host: _host,
       path: '/ul/v1/connect',
       queryParameters: {
         'dapp_encryption_public_key': dappPublicKey,
@@ -91,8 +103,8 @@ class PhantomHelper {
     final encryptedPayload = encryptPayload(payLoad, requestNonce);
 
     return Uri(
-      scheme: 'https',
-      host: 'phantom.app',
+      scheme: _scheme,
+      host: _host,
       path: '/ul/v1/disconnect',
       queryParameters: {
         'redirect_link': '$_redirectLink?phantomRequest=disconnect',
@@ -128,8 +140,8 @@ class PhantomHelper {
     final encryptedPayload = encryptPayload(payload, requestNonce);
 
     return Uri(
-      scheme: 'https',
-      host: 'phantom.app',
+      scheme: _scheme,
+      host: _host,
       path: 'ul/v1/signMessage',
       queryParameters: {
         'redirect_link': '$_redirectLink?phantomRequest=signMessage',
@@ -158,8 +170,8 @@ class PhantomHelper {
     final encryptedPayload = encryptPayload(payload, requestNonce);
 
     return Uri(
-      scheme: 'https',
-      host: 'phantom.app',
+      scheme: _scheme,
+      host: _host,
       path: '/ul/v1/signAndSendTransaction',
       queryParameters: {
         'redirect_link': '$_redirectLink?phantomRequest=signAndSendTransaction',
@@ -189,8 +201,8 @@ class PhantomHelper {
     final encryptedPayload = encryptPayload(payload, requestNonce);
 
     return Uri(
-      scheme: 'https',
-      host: 'phantom.app',
+      scheme: _scheme,
+      host: _host,
       path: '/ul/v1/signTransaction',
       queryParameters: {
         'redirect_link': '$_redirectLink?phantomRequest=signTransaction',
@@ -222,8 +234,8 @@ class PhantomHelper {
     final encryptedPayload = encryptPayload(payload, requestNonce);
 
     return Uri(
-      scheme: 'https',
-      host: 'phantom.app',
+      scheme: _scheme,
+      host: _host,
       path: '/ul/v1/signAllTransactions',
       queryParameters: {
         'redirect_link': '$_redirectLink?phantomRequest=signAllTransactions',

@@ -1,4 +1,4 @@
-## 1.4.0-beta02
+## 1.4.0-beta03
 
 - Phantom Wallet support
 

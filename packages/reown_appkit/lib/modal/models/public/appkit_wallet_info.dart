@@ -40,6 +40,7 @@ class Listing {
   final String? playStore;
   final String? rdns;
   final List<Injected>? injected;
+  final String? description;
 
   const Listing({
     required this.id,
@@ -55,6 +56,7 @@ class Listing {
     this.playStore,
     this.rdns,
     this.injected,
+    this.description,
   });
 
   Listing copyWith({
@@ -71,6 +73,7 @@ class Listing {
     String? playStore,
     String? rdns,
     List<Injected>? injected,
+    String? description,
   }) =>
       Listing(
         id: id ?? this.id,
@@ -86,6 +89,7 @@ class Listing {
         playStore: playStore ?? this.playStore,
         rdns: rdns ?? this.rdns,
         injected: injected ?? this.injected,
+        description: description ?? this.description,
       );
 
   factory Listing.fromRawJson(String str) => Listing.fromJson(json.decode(str));
@@ -112,6 +116,7 @@ class Listing {
           : List<Injected>.from(
               j['injected']!.map((x) => Injected.fromJson(x)),
             ),
+      description: j['description'],
     );
   }
 
@@ -131,6 +136,7 @@ class Listing {
         'injected': injected == null
             ? []
             : List<dynamic>.from(injected!.map((x) => x.toJson())),
+        'description': description,
       };
 }
 

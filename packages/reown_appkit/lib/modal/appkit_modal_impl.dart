@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/coinbase_service/utils/coinbase_utils.dart';
 import 'package:reown_appkit/modal/services/phantom_service/models/phantom_events.dart';
 import 'package:reown_appkit/modal/services/third_party_wallet_service.dart';
 
@@ -1443,7 +1444,7 @@ class ReownAppKitModal
   void _notify() => notifyListeners();
 
   bool get _initializeCoinbaseSDK {
-    final cbId = CoinbaseService.defaultWalletData.listing.id;
+    final cbId = CoinbaseUtils.defaultListingData.id;
     final included = (_explorerService.includedWalletIds ?? <String>{});
     final excluded = (_explorerService.excludedWalletIds ?? <String>{});
 
@@ -1996,7 +1997,7 @@ extension _CoinbaseConnectorExtension on ReownAppKitModal {
             address: address,
             chainName: chainInfo?.name ?? '',
             chainId: int.parse(chainId),
-            peer: _coinbaseService.metadata,
+            peer: _coinbaseService.walletMetadata,
             self: ConnectionMetadata(
               metadata: _appKit.metadata,
               publicKey: await _coinbaseService.ownPublicKey,

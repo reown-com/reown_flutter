@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
-import 'package:reown_appkit/modal/services/coinbase_service/coinbase_service.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/i_coinbase_service.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_data.dart';
+import 'package:reown_appkit/modal/services/coinbase_service/utils/coinbase_utils.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_data.dart';
 import 'package:reown_appkit/modal/services/phantom_service/i_phantom_service.dart';
@@ -414,7 +414,7 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
 
   String? get connectedWalletName {
     if (sessionService.isCoinbase) {
-      return CoinbaseService.defaultWalletData.listing.name;
+      return CoinbaseUtils.defaultListingData.name;
     }
     if (sessionService.isPhantom) {
       return peer!.metadata.name;
