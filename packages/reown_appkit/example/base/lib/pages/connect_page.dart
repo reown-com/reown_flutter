@@ -98,10 +98,12 @@ class ConnectPageState extends State<ConnectPage> {
             children: [
               AppKitModalNetworkSelectButton(
                 appKit: widget.appKitModal,
+                size: BaseButtonSize.small,
               ),
               const SizedBox.square(dimension: 8.0),
               AppKitModalConnectButton(
                 appKit: widget.appKitModal,
+                size: BaseButtonSize.small,
               ),
             ],
           ),

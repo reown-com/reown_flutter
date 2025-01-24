@@ -36,7 +36,7 @@ abstract class ICoinbaseService {
   Future<String> get ownPublicKey;
   Future<String> get peerPublicKey;
 
-  ConnectionMetadata get metadata;
+  ConnectionMetadata get walletMetadata;
 
   abstract final Event<CoinbaseConnectEvent> onCoinbaseConnect;
   abstract final Event<CoinbaseErrorEvent> onCoinbaseError;

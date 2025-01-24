@@ -9,46 +9,26 @@ import 'package:reown_appkit/modal/services/phantom_service/i_phantom_service.da
 import 'package:reown_appkit/modal/services/phantom_service/models/phantom_data.dart';
 import 'package:reown_appkit/modal/services/phantom_service/models/phantom_events.dart';
 import 'package:reown_appkit/modal/services/phantom_service/phantom_helper.dart';
+import 'package:reown_appkit/modal/services/phantom_service/utils/phantom_utils.dart';
 import 'package:reown_appkit/modal/services/third_party_wallet_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class PhantomService implements IPhantomService {
-  static const _defaultListingData = Listing(
-    id: 'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393',
-    name: 'Phantom Wallet',
-    homepage: 'https://phantom.app/',
-    imageId: 'c38443bb-b3c1-4697-e569-408de3fcc100',
-    order: 4110,
-    mobileLink: 'phantom://',
-    webappLink: 'https://phantom.app/ul/',
-    appStore:
-        'https://apps.apple.com/us/app/phantom-crypto-wallet/id1598432977',
-    playStore:
-        'https://play.google.com/store/apps/details?id=app.phantom&hl=en',
-  );
-
   late final String _iconImage;
   late final PairingMetadata _metadata;
-  late final ReownAppKitModalWalletInfo? _walletData;
+  late final ReownAppKitModalWalletInfo _walletData;
   late final IReownCore _core;
   late final PhantomHelper _phantomHelper;
 
   String? _selectedChainId;
-
-  // mainnet-beta, testnet, or devnet
-  final Map<String, String> _clusters = {
-    '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'mainnet-beta',
-    '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'testnet',
-    'EtWTRABZaYq6iMfeYKouRu166VU2xqa1': 'devnet',
-  };
 
   IExplorerService get _explorerService => GetIt.I<IExplorerService>();
 
   @override
   ConnectionMetadata get walletMetadata => ConnectionMetadata(
         metadata: PairingMetadata(
-          name: _walletData!.listing.name,
-          description: '',
+          name: _walletData.listing.name,
+          description: _walletData.listing.description ?? '',
           url: _walletData.listing.homepage,
           icons: [_iconImage],
           redirect: Redirect(
@@ -61,12 +41,9 @@ class PhantomService implements IPhantomService {
       );
 
   @override
-  List<String> get walletSupportedMethods => [
-        'solana_signMessage',
-        'solana_signTransaction',
-        'solana_signAllTransactions',
-        'solana_signAndSendTransaction',
-      ];
+  List<String> get walletSupportedMethods =>
+      NetworkUtils.defaultNetworkMethods[NetworkUtils.solana]!
+        ..remove('solana_getAccounts');
 
   @override
   Event<PhantomConnectEvent> onPhantomConnect = Event<PhantomConnectEvent>();
@@ -86,16 +63,24 @@ class PhantomService implements IPhantomService {
 
   @override
   Future<void> init() async {
-    _walletData = await _explorerService.getPhantomWalletObject();
-    final imageId = _walletData?.listing.imageId ?? _defaultListingData.imageId;
-    _iconImage = _explorerService.getWalletImageUrl(imageId);
+    _walletData = (await _explorerService.getPhantomWalletObject()) ??
+        ReownAppKitModalWalletInfo(
+          listing: PhantomUtils.defaultListingData,
+          installed: false,
+          recent: false,
+        );
 
-    final redirect =
+    _iconImage = _explorerService.getWalletImageUrl(
+      _walletData.listing.imageId,
+    );
+
+    final dappRedirect =
         (_metadata.redirect?.universal ?? _metadata.redirect?.native)!;
 
     _phantomHelper = PhantomHelper(
+      redirect: walletMetadata.metadata.redirect!,
       appUrl: _metadata.url,
-      redirectLink: redirect,
+      redirectLink: dappRedirect,
       core: _core,
     );
   }
@@ -139,7 +124,7 @@ class PhantomService implements IPhantomService {
         _selectedChainId = solanaNets.first.chainId;
       }
 
-      final selectedCluster = _clusters[_selectedChainId];
+      final selectedCluster = PhantomUtils.walletClusters[_selectedChainId];
       final phantomUri = _phantomHelper.buildConnectionUri(
         cluster: selectedCluster,
       );

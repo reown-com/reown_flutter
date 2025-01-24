@@ -7,11 +7,12 @@ import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:reown_appkit/modal/constants/string_constants.dart';
-import 'package:reown_appkit/modal/services/coinbase_service/coinbase_service.dart';
+import 'package:reown_appkit/modal/services/coinbase_service/utils/coinbase_utils.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/native_app_data.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/redirect.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/request_params.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/wc_sample_wallets.dart';
+import 'package:reown_appkit/modal/services/phantom_service/utils/phantom_utils.dart';
 import 'package:reown_appkit/modal/services/uri_service/i_url_utils.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/utils/debouncer.dart';
@@ -429,25 +430,27 @@ class ExplorerService implements IExplorerService {
 
   @override
   Future<ReownAppKitModalWalletInfo?> getCoinbaseWalletObject() async {
-    final walletId =
-        'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa';
     final results = await _fetchListings(
       params: RequestParams(
         page: 1,
         entries: 1,
-        include: walletId,
-        // platform: _getPlatformType(),
+        include: CoinbaseUtils.walletId,
       ),
       updateCount: false,
     );
 
     if (results.isNotEmpty) {
-      final wallet =
-          ReownAppKitModalWalletInfo.fromJson(results.first.toJson());
-      final mobileLink = CoinbaseService.defaultWalletData.listing.mobileLink;
-      bool installed = await _uriService.isInstalled(mobileLink);
-      return wallet.copyWith(
-        listing: wallet.listing.copyWith(mobileLink: mobileLink),
+      final serviceData = ReownAppKitModalWalletInfo.fromJson(
+        results.first.toJson(),
+      );
+      final mobileLink = CoinbaseUtils.defaultListingData.mobileLink;
+      final linkMode = CoinbaseUtils.defaultListingData.linkMode;
+      final installed = await _uriService.isInstalled(mobileLink);
+      return serviceData.copyWith(
+        listing: serviceData.listing.copyWith(
+          mobileLink: mobileLink,
+          linkMode: linkMode,
+        ),
         installed: installed,
       );
     }
@@ -456,28 +459,26 @@ class ExplorerService implements IExplorerService {
 
   @override
   Future<ReownAppKitModalWalletInfo?> getPhantomWalletObject() async {
-    final walletId =
-        'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393';
     final results = await _fetchListings(
       params: RequestParams(
         page: 1,
         entries: 1,
-        include: walletId,
-        platform: _getPlatformType(),
+        include: PhantomUtils.walletId,
       ),
       updateCount: false,
     );
 
     if (results.isNotEmpty) {
-      final wallet = ReownAppKitModalWalletInfo.fromJson(
+      final serviceData = ReownAppKitModalWalletInfo.fromJson(
         results.first.toJson(),
       );
-      final mobileLink = wallet.listing.mobileLink!;
-      bool installed = await _uriService.isInstalled(mobileLink);
-      return wallet.copyWith(
-        listing: wallet.listing.copyWith(
+      final mobileLink = PhantomUtils.defaultListingData.linkMode;
+      final linkMode = PhantomUtils.defaultListingData.linkMode;
+      final installed = await _uriService.isInstalled(mobileLink);
+      return serviceData.copyWith(
+        listing: serviceData.listing.copyWith(
           mobileLink: mobileLink,
-          linkMode: 'phantom.app',
+          linkMode: linkMode,
         ),
         installed: installed,
       );
@@ -510,10 +511,12 @@ class ExplorerService implements IExplorerService {
   @override
   WalletRedirect? getWalletRedirect(ReownAppKitModalWalletInfo? walletInfo) {
     if (walletInfo == null) return null;
-    if (walletInfo.listing.id == CoinbaseService.defaultWalletData.listing.id) {
+
+    // TODO do we need the same for phantom or de we even need it for Coinbase?
+    if (walletInfo.listing.id == CoinbaseUtils.defaultListingData.id) {
       return WalletRedirect(
-        mobile: CoinbaseService.defaultWalletData.listing.mobileLink,
-        linkMode: null,
+        mobile: CoinbaseUtils.defaultListingData.mobileLink,
+        linkMode: CoinbaseUtils.defaultListingData.linkMode,
         desktop: null,
         web: null,
       );
