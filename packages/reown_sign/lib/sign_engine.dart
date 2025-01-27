@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:event/event.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/i_generic_store.dart';
@@ -65,7 +65,7 @@ class ReownSign implements IReownSign {
 
   List<SessionProposalCompleter> pendingProposals = [];
 
-  Map<int, Map<String, dynamic>> pendingTVFRequests = {};
+  Map<int, TVFData> pendingTVFRequests = {};
 
   @override
   late IGenericStore<AuthPublicKey> authKeys;
@@ -2859,48 +2859,39 @@ class ReownSign implements IReownSign {
 
   /// ******* TVF *********** ///
 
-  final tvfRequestMethods = [
-    if (kDebugMode) 'eth_signTransaction',
-    'eth_sendTransaction',
-    'eth_sendRawTransaction',
-    'solana_signAndSendTransaction',
-    'solana_signTransaction',
-    'solana_signAllTransactions',
-    'wallet_sendCalls',
-  ];
-
-  Map<String, dynamic>? _collectRequestTVF(
-    int id,
-    WcSessionRequestRequest request,
-  ) {
+  TVFData? _collectRequestTVF(int id, WcSessionRequestRequest request) {
     // check if the rpc request is on the tvf supported methods list
     final method = request.request.method;
-    if (!tvfRequestMethods.contains(method)) {
+    if (!TVFData.tvfRequestMethods.contains(method)) {
       return null;
     }
 
-    final params = request.request.params;
+    // params to collect
+    final rpcMethods = List<String>.from([method]);
+    final chainId = request.chainId;
     List<String>? contractAddresses;
 
-    // split the method name and check if is either eth, solana or wallet (for wallet_sendCalls)
-    final namespace = method.split('_').first;
     // only EVM request could have `data` parameter for contract call
-    if (namespace == 'eth') {
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    if (namespace == 'eip155') {
+      final params = request.request.params;
       final paramsMap = params.first as Map<String, dynamic>;
       final data = paramsMap['data'] as String? ?? '';
-      if (_isValidContractData(data)) {
-        final contractAddress = paramsMap['to'] as String;
-        contractAddresses = [contractAddress];
+      try {
+        if (ReownCoreUtils.isValidContractData(data)) {
+          final contractAddress = paramsMap['to'] as String;
+          contractAddresses = [contractAddress];
+        }
+      } catch (e) {
+        core.logger.d('[$runtimeType] invalid contract data $data');
       }
     }
 
-    final rpcMethods = List.from([method]);
-    final chainId = request.chainId;
-    final tvfData = {
-      'rpc_methods': rpcMethods,
-      'chain_id': chainId,
-      'contract_addresses': contractAddresses,
-    };
+    final tvfData = TVFData(
+      rpcMethods: rpcMethods,
+      chainId: chainId,
+      contractAddresses: contractAddresses,
+    );
 
     // pendingTVFRequests is useful for WalletKit _onSessionRequest method
     pendingTVFRequests[id] = tvfData;
@@ -2909,48 +2900,43 @@ class ReownSign implements IReownSign {
     return tvfData;
   }
 
-  Map<String, dynamic>? _collectResponseTVF(JsonRpcResponse payload) {
+  TVFData? _collectResponseTVF(JsonRpcResponse payload) {
     final id = payload.id;
     if (pendingTVFRequests.containsKey(id)) {
-      final pendingCollection = Map<String, dynamic>.from(
-        pendingTVFRequests[id]!,
+      final chainId = pendingTVFRequests[id]!.chainId!;
+      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+      final tvfData = pendingTVFRequests[id]!.copytWith(
+        txHashes: _collectHashes(namespace, payload),
       );
       pendingTVFRequests.remove(id);
-      final result = payload.result; // check type of result?
-      return {
-        ...pendingCollection,
-        'tx_hashes': result != null ? [result] : null,
-      };
+      return tvfData;
     }
 
     return null;
   }
 
-  bool _isValidContractData(String data) {
-    bool isValidData = false;
-
-    try {
-      // Ensure the data starts with '0x' for consistency
-      if (data.startsWith('0x')) data = data.substring(2);
-      if (data.isEmpty) return false;
-
-      // Extract method ID (first 4 bytes)
-      final methodId = data.substring(0, 8);
-      isValidData = methodId.isNotEmpty;
-
-      // Extract recipient address (next 32 bytes, right-padded with zeros)
-      final recipient = data.substring(8, 72).replaceFirst(RegExp('^0+'), '');
-      isValidData = recipient.isNotEmpty;
-
-      // Extract amount (final 32 bytes, big-endian encoded)
-      final amount = data.substring(72).replaceFirst(RegExp('^0+'), '');
-      // final amount = BigInt.parse(amountHex, radix: 16);
-      isValidData = amount.isNotEmpty;
-    } catch (e) {
-      core.logger.d('[$runtimeType] invalid contract data $data');
-      isValidData = false;
+  List<String>? _collectHashes(String namespace, JsonRpcResponse response) {
+    if (response.result == null) {
+      return null;
     }
 
-    return isValidData;
+    try {
+      switch (namespace) {
+        case 'solana':
+          final result = (response.result as Map<String, dynamic>);
+          if (result.containsKey('signature')) {
+            return List<String>.from([result['signature']]);
+          }
+          if (result.containsKey('transactions')) {
+            return List<String>.from(result['transactions']);
+          }
+          return null;
+        default:
+          return List<String>.from([response.result]);
+      }
+    } catch (e) {
+      core.logger.d('[$runtimeType] _collectHashes $e');
+      return null;
+    }
   }
 }

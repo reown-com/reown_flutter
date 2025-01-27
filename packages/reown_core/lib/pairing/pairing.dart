@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:event/event.dart';
 import 'package:reown_core/models/json_rpc_models.dart';
+import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/i_json_rpc_history.dart';
 import 'package:reown_core/store/i_generic_store.dart';
 import 'package:reown_core/crypto/crypto_models.dart';
@@ -407,7 +408,7 @@ class Pairing implements IPairing {
     EncodeOptions? encodeOptions,
     String? appLink,
     bool openUrl = true,
-    Map<String, dynamic>? tvf,
+    TVFData? tvf,
   }) async {
     final payload = JsonRpcUtils.formatJsonRpcRequest(
       method,
@@ -461,7 +462,7 @@ class Pairing implements IPairing {
         tag: opts.tag,
         correlationId: requestId,
         // tvf data is sent only on tvfMethods methods
-        tvf: _shouldSendTVF(opts.tag) ? tvf : null,
+        tvf: _shouldSendTVF(opts.tag) ? tvf?.toJson() : null,
       );
       core.logger.d(
         '[$runtimeType] sendRequest relayClient, '
@@ -495,7 +496,7 @@ class Pairing implements IPairing {
     dynamic result, {
     EncodeOptions? encodeOptions,
     String? appLink,
-    Map<String, dynamic>? tvf,
+    TVFData? tvf,
   }) async {
     final payload = JsonRpcUtils.formatJsonRpcResponse<dynamic>(
       id,
@@ -534,7 +535,7 @@ class Pairing implements IPairing {
         tag: opts.tag,
         correlationId: resultId,
         // tvf data is sent only on tvfMethods methods
-        tvf: _shouldSendTVF(opts.tag) ? tvf : null,
+        tvf: _shouldSendTVF(opts.tag) ? tvf?.toJson(includeAll: true) : null,
       );
     }
   }
@@ -548,7 +549,7 @@ class Pairing implements IPairing {
     EncodeOptions? encodeOptions,
     RpcOptions? rpcOptions,
     String? appLink,
-    Map<String, dynamic>? tvf,
+    TVFData? tvf,
   }) async {
     final Map<String, dynamic> payload = JsonRpcUtils.formatJsonRpcError(
       id,
@@ -593,7 +594,7 @@ class Pairing implements IPairing {
         tag: tag,
         correlationId: resultId,
         // tvf data is sent only on tvfMethods methods
-        tvf: _shouldSendTVF(tag) ? tvf : null,
+        tvf: _shouldSendTVF(tag) ? tvf?.toJson(includeAll: true) : null,
       );
     }
   }

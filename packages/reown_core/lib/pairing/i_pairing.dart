@@ -1,6 +1,7 @@
 import 'package:event/event.dart';
 import 'package:reown_core/crypto/crypto_models.dart';
 import 'package:reown_core/models/json_rpc_models.dart';
+import 'package:reown_core/models/tvf_data.dart';
 
 import 'package:reown_core/pairing/i_pairing_store.dart';
 import 'package:reown_core/pairing/utils/pairing_models.dart';
@@ -57,7 +58,7 @@ abstract class IPairing {
     EncodeOptions? encodeOptions,
     String? appLink,
     bool openUrl = true,
-    Map<String, dynamic>? tvf,
+    TVFData? tvf,
   });
 
   Future<void> sendResult(
@@ -67,7 +68,7 @@ abstract class IPairing {
     dynamic result, {
     EncodeOptions? encodeOptions,
     String? appLink,
-    Map<String, dynamic>? tvf,
+    TVFData? tvf,
   });
 
   Future<void> sendError(
@@ -78,7 +79,7 @@ abstract class IPairing {
     EncodeOptions? encodeOptions,
     RpcOptions? rpcOptions,
     String? appLink,
-    Map<String, dynamic>? tvf,
+    TVFData? tvf,
   });
 
   Future<void> isValidPairingTopic({
