@@ -4,6 +4,7 @@ import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/utils/render_utils.dart';
 import 'package:reown_appkit/modal/widgets/avatars/account_avatar.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
+import 'package:reown_appkit/modal/widgets/buttons/network_button.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class AddressButton extends StatefulWidget {
@@ -12,12 +13,14 @@ class AddressButton extends StatefulWidget {
     required this.service,
     this.size = BaseButtonSize.regular,
     this.assetPath,
+    this.showNetwork = false,
     this.onTap,
     this.child,
   });
   final IReownAppKitModal service;
   final BaseButtonSize size;
   final VoidCallback? onTap;
+  final bool showNetwork;
   final String? assetPath;
   final Widget? child;
 
@@ -101,11 +104,17 @@ class _AddressButtonState extends State<AddressButton> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              AccountAvatar(
-                appKit: widget.service,
-                size: widget.size.height * 0.6,
-                disabled: widget.onTap == null,
-              ),
+              widget.showNetwork
+                  ? NetworkButton(
+                      chainInfo: widget.service.selectedChain,
+                      size: BaseButtonSize.small,
+                      iconOnly: true,
+                    )
+                  : AccountAvatar(
+                      appKit: widget.service,
+                      size: widget.size.height * 0.6,
+                      disabled: widget.onTap == null,
+                    ),
               const SizedBox.square(dimension: 4.0),
               Text(identityName ?? RenderUtils.truncate(_address ?? '')),
               const SizedBox.square(dimension: 8.0),
