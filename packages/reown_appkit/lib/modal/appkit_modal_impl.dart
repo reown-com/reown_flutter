@@ -1529,6 +1529,9 @@ class ReownAppKitModal
       return;
     }
 
+    _status = ReownAppKitModalStatus.initializing;
+    _notify();
+
     // Get the chain balance.
     final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
       _currentSelectedChainId!,
@@ -1563,6 +1566,8 @@ class ReownAppKitModal
         );
       } catch (_) {}
     }
+
+    _status = ReownAppKitModalStatus.initialized;
     _notify();
   }
 
