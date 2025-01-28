@@ -104,7 +104,7 @@ class _AddressButtonState extends State<AddressButton> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              widget.showNetwork
+              widget.showNetwork && widget.service.selectedChain != null
                   ? NetworkButton(
                       chainInfo: widget.service.selectedChain,
                       size: BaseButtonSize.small,

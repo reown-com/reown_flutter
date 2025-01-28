@@ -13,9 +13,7 @@ import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.da
 
 class ReceiveCompatibleNetworks extends StatelessWidget {
   const ReceiveCompatibleNetworks()
-      : super(
-          key: KeyConstants.receiveCompatibleNetworks,
-        );
+      : super(key: KeyConstants.receiveNetworksKey);
 
   @override
   Widget build(BuildContext context) {
