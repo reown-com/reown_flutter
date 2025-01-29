@@ -1103,8 +1103,12 @@ class ReownAppKitModal
 
   @override
   Future<void> reconnectRelay() async {
-    if (!_appKit.core.relayClient.isConnected) {
-      await _appKit.core.relayClient.connect();
+    try {
+      if (!_appKit.core.relayClient.isConnected) {
+        await _appKit.core.relayClient.connect();
+      }
+    } catch (e) {
+      _appKit.core.logger.e('[$runtimeType] reconnectRelay $e');
     }
   }
 

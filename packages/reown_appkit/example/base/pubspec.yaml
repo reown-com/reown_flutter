@@ -28,6 +28,8 @@ dependency_overrides:
   # because of solana_web3
   pinenacl: ^0.6.0
   web_socket_channel: ^3.0.1
+  # webview_flutter_android: 4.2.0
+  # webview_flutter_wkwebview: 3.17.0
 
 dev_dependencies:
   build_runner: ^2.4.13

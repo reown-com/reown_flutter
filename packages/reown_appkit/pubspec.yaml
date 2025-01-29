@@ -36,9 +36,9 @@ dependencies:
   #   path: ../reown_sign/
   shimmer: ^3.0.0
   uuid: ^4.5.1
-  webview_flutter: ^4.10.0
-  webview_flutter_android: ^4.2.0
-  webview_flutter_wkwebview: ^3.16.3
+  webview_flutter: 4.10.0
+  webview_flutter_android: 4.2.0
+  webview_flutter_wkwebview: 3.17.0
 
 dev_dependencies:
   build_runner: ^2.4.13
