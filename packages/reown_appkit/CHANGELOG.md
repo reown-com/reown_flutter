@@ -3,6 +3,7 @@
 - Embedded Wallets Features (Send, Receive, Tokens list)
 - Phantom Wallet support
 - Minor bug fixes
+- Core update
 
 ## 1.3.0
 

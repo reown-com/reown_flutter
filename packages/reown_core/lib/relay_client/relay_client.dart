@@ -124,13 +124,13 @@ class RelayClient implements IRelayClient {
       'tag': tag,
       // new fields valid for all tags in Sign SDK
       // is the request.id of the wc_sessionRequest call
-      if (correlationId != null) 'correlation_id': correlationId,
+      if (correlationId != null) 'correlationId': correlationId,
       // tvf fields valid only for tags 1108 and 1109 and certain methods
       ...?tvf
     };
 
     core.logger.i(
-      '[$runtimeType] publish $tag, correlation_id: $correlationId, tvf: $tvf',
+      '[$runtimeType] publish $tag, correlationId: $correlationId, tvf: $tvf',
     );
 
     try {

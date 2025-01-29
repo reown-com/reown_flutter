@@ -1,6 +1,6 @@
 ## 1.1.1
 
-- Minor updates
+- Core update
 
 ## 1.1.0
 
