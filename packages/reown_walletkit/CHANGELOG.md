@@ -1,3 +1,7 @@
+## 1.1.1
+
+- Minor updates
+
 ## 1.1.0
 
 - Update to flutter version 3.24.5

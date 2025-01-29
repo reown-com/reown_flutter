@@ -15,10 +15,10 @@ class TVFData {
   });
 
   Map<String, dynamic> toJson({bool includeAll = false}) => {
-        'rpc_methods': rpcMethods,
-        'chain_id': chainId,
-        'contract_addresses': contractAddresses,
-        if (includeAll) 'tx_hashes': txHashes,
+        'rpcMethods': rpcMethods,
+        'chainId': chainId,
+        'contractAddresses': contractAddresses,
+        if (includeAll) 'txHashes': txHashes,
       };
 
   TVFData copytWith({
