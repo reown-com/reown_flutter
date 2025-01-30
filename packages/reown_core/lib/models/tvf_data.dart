@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 
 class TVFData {
   final List<String>? rpcMethods;
@@ -39,7 +38,6 @@ class TVFData {
   String toString() => jsonEncode(toJson());
 
   static final tvfRequestMethods = [
-    if (kDebugMode) 'eth_signTransaction',
     'eth_sendTransaction',
     'eth_sendRawTransaction',
     'solana_signAndSendTransaction',
