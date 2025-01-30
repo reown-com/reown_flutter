@@ -60,6 +60,8 @@ class MagicService implements IMagicService {
   late final WebViewController _webViewController;
   late final WebViewWidget _webview;
 
+  final _cookieManager = WebViewCookieManager();
+
   @override
   Map<String, List<String>> get supportedMethods => {
         NetworkUtils.eip155: [
@@ -207,6 +209,8 @@ class MagicService implements IMagicService {
       ),
     );
     await _setDebugMode();
+    await _clearCookies();
+    await _clearStorage();
     await _loadRequest();
     return await _initializedCompleter.future;
   }
@@ -959,6 +963,32 @@ class MagicService implements IMagicService {
     }
   }
 
+  Future<void> _clearCookies() async {
+    // if (!kDebugMode) return;
+    try {
+      if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+        final webKitManager =
+            _cookieManager.platform as WebKitWebViewCookieManager;
+        webKitManager.clearCookies();
+      } else if (WebViewPlatform.instance is AndroidWebViewPlatform) {
+        final androidManager =
+            _cookieManager.platform as AndroidWebViewCookieManager;
+        androidManager.clearCookies();
+        androidManager.setAcceptThirdPartyCookies(
+          _webViewController.platform as AndroidWebViewController,
+          kDebugMode,
+        );
+      }
+    } catch (e) {
+      debugPrint('[$runtimeType] _clearCookies error $e');
+    }
+  }
+
+  Future<void> _clearStorage() async {
+    await _webViewController.clearCache();
+    await _webViewController.clearLocalStorage();
+  }
+
   Future<void> _setDebugMode() async {
     if (kDebugMode) {
       try {
@@ -978,7 +1008,7 @@ class MagicService implements IMagicService {
             platform.setMediaPlaybackRequiresUserGesture(false);
 
             final cookieManager =
-                WebViewCookieManager().platform as AndroidWebViewCookieManager;
+                _cookieManager.platform as AndroidWebViewCookieManager;
             cookieManager.setAcceptThirdPartyCookies(
               _webViewController.platform as AndroidWebViewController,
               true,
