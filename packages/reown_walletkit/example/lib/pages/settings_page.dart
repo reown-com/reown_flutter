@@ -64,22 +64,22 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 //
                 const SizedBox(height: 20.0),
-                const Divider(height: 1.0),
+                const Divider(height: 1.0, color: Colors.grey),
                 _SolanaAccounts(),
                 const SizedBox(height: 20.0),
-                const Divider(height: 1.0),
+                const Divider(height: 1.0, color: Colors.grey),
                 _PolkadotAccounts(),
                 const SizedBox(height: 20.0),
-                const Divider(height: 1.0),
+                const Divider(height: 1.0, color: Colors.grey),
                 _KadenaAccounts(),
                 const SizedBox(height: 20.0),
-                const Divider(height: 1.0),
+                const Divider(height: 1.0, color: Colors.grey),
                 _DeviceData(),
                 const SizedBox(height: 20.0),
-                const Divider(height: 1.0),
+                const Divider(height: 1.0, color: Colors.grey),
                 _Metadata(),
                 const SizedBox(height: 20.0),
-                const Divider(height: 1.0),
+                const Divider(height: 1.0, color: Colors.grey),
                 _Buttons(
                   onDeleteData: () async {
                     final walletKit = GetIt.I<IWalletKitService>().walletKit;
@@ -208,7 +208,6 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                 child: Text(
                   'EVM Accounts (${_currentPage + 1}/${chainKeys.length})',
                   style: const TextStyle(
-                    color: Colors.black,
                     fontSize: 16.0,
                     fontWeight: FontWeight.w500,
                   ),
@@ -355,8 +354,9 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                     padding: const EdgeInsets.symmetric(horizontal: 2.0),
                     child: CircleAvatar(
                       radius: e.$1 == _currentPage ? 4.0 : 3.0,
-                      backgroundColor:
-                          e.$1 == _currentPage ? Colors.black : Colors.black38,
+                      backgroundColor: e.$1 == _currentPage
+                          ? StyleConstants.lightGray
+                          : StyleConstants.lightGray.withOpacity(0.5),
                     ),
                   ),
                 )
@@ -426,7 +426,6 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
                 child: Text(
                   'Solana Account',
                   style: TextStyle(
-                    color: Colors.black,
                     fontSize: 16.0,
                     fontWeight: FontWeight.w500,
                   ),
@@ -509,7 +508,6 @@ class _PolkadotAccounts extends StatelessWidget {
                 child: Text(
                   'Polkadot Account',
                   style: TextStyle(
-                    color: Colors.black,
                     fontSize: 16.0,
                     fontWeight: FontWeight.w500,
                   ),
@@ -557,7 +555,6 @@ class _KadenaAccounts extends StatelessWidget {
                 child: Text(
                   'Kadena Account',
                   style: TextStyle(
-                    color: Colors.black,
                     fontSize: 16.0,
                     fontWeight: FontWeight.w500,
                   ),
@@ -602,7 +599,6 @@ class _DeviceData extends StatelessWidget {
             child: Text(
               'Device',
               style: TextStyle(
-                color: Colors.black,
                 fontSize: 16.0,
                 fontWeight: FontWeight.w500,
               ),
@@ -656,23 +652,28 @@ class _Buttons extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 8.0),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: onDeleteData,
-              child: Text(
-                'Clear local storage',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+          Row(
+            children: [
+              CustomButton(
+                type: CustomButtonType.normal,
+                onTap: onDeleteData,
+                child: const Center(
+                  child: Text(
+                    'Clear local storage',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
           const SizedBox(height: 12.0),
           Row(
             children: [
               CustomButton(
-                type: CustomButtonType.normal,
+                type: CustomButtonType.valid,
                 onTap: onRestoreFromSeed,
                 child: const Center(
                   child: Text(
@@ -756,7 +757,7 @@ class __DataContainerState extends State<_DataContainer> {
       child: Container(
         height: widget.height,
         decoration: BoxDecoration(
-          color: StyleConstants.lightGray,
+          color: StyleConstants.lightGray.withOpacity(0.5),
           borderRadius: BorderRadius.circular(
             StyleConstants.linear16,
           ),
@@ -770,7 +771,6 @@ class __DataContainerState extends State<_DataContainer> {
                 Text(
                   widget.title,
                   style: const TextStyle(
-                    color: Colors.black,
                     fontSize: 14.0,
                     fontWeight: FontWeight.bold,
                   ),
@@ -788,7 +788,6 @@ class __DataContainerState extends State<_DataContainer> {
               child: Text(
                 widget.data,
                 style: const TextStyle(
-                  color: Colors.black87,
                   fontSize: 13.0,
                   fontWeight: FontWeight.w400,
                 ),

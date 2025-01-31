@@ -42,7 +42,7 @@ class PairingItem extends StatelessWidget {
                 height: 40.0,
                 padding: const EdgeInsets.all(1.0),
                 decoration: BoxDecoration(
-                  border: Border.all(width: 1.0, color: Colors.black38),
+                  border: Border.all(width: 1.0, color: Colors.grey),
                   borderRadius: BorderRadius.all(Radius.circular(20.0)),
                 ),
                 child: ClipRRect(
@@ -60,37 +60,20 @@ class PairingItem extends StatelessWidget {
           );
         },
       ),
-      title: Text(
-        metadata.name,
-        style: const TextStyle(color: Colors.black),
-      ),
+      title: Text(metadata.name),
       subtitle: Text(
         sessions.isEmpty
-            // ? DeepLinkHandler.waiting.value
-            //     ? 'Settling session. Wait...'
-            //     : 'No active sessions'
             ? 'No active sessions'
             : 'Active sessions: ${sessions.length}',
         style: TextStyle(
-          color: sessions.isEmpty
-              // ? DeepLinkHandler.waiting.value
-              //     ? Colors.green
-              //     : Colors.black
-              ? Colors.black
-              : Colors.blueAccent,
+          color: sessions.isEmpty ? null : Color(0xFF667DFF),
           fontSize: 13.0,
-          fontWeight: sessions.isEmpty
-              // ? DeepLinkHandler.waiting.value
-              //     ? FontWeight.bold
-              //     : FontWeight.normal
-              ? FontWeight.normal
-              : FontWeight.bold,
+          fontWeight: sessions.isEmpty ? FontWeight.normal : FontWeight.bold,
         ),
       ),
       trailing: const Icon(
         Icons.arrow_forward_ios,
         size: 20.0,
-        color: Colors.black,
       ),
       onTap: onTap,
     );

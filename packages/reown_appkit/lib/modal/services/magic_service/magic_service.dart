@@ -209,7 +209,7 @@ class MagicService implements IMagicService {
       ),
     );
     await _setDebugMode();
-    await _clearCookies();
+    // await _clearCookies();
     await _clearStorage();
     await _loadRequest();
     return await _initializedCompleter.future;
