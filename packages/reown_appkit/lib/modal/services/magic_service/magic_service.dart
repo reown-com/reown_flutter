@@ -128,6 +128,11 @@ class MagicService implements IMagicService {
   })  : _core = core,
         _metadata = metadata,
         _features = featuresConfig {
+    _connectionChainId = null;
+    _onLoadCount = 0;
+    _packageName = '';
+    _socialProvider = null;
+    _socialUsername = null;
     isEmailEnabled.value = _features.email;
     isSocialEnabled.value = _features.socials.isNotEmpty;
     //
@@ -435,6 +440,11 @@ class MagicService implements IMagicService {
       } catch (_) {
         cid = null;
       }
+    }
+    if (_socialProvider != null) {
+      _analyticsService.sendEvent(SocialLoginRequestUserData(
+        provider: _socialProvider!.name.toLowerCase(),
+      ));
     }
     final message = GetUser(chainId: cid).toString();
     return await _webViewController.runJavaScript('sendMessage($message)');

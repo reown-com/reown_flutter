@@ -70,11 +70,13 @@ class BlockChainService implements IBlockChainService {
   @override
   Future<ActivityData> getHistory({
     required String address,
+    String? caip2Chain,
     String? cursor,
   }) async {
     final uri = Uri.parse('$_baseUrl/account/$address/history');
     final queryParams = {
       ..._requiredParams,
+      if (caip2Chain != null) 'chainId': caip2Chain,
       if (cursor != null) 'cursor': cursor,
     };
     final url = uri.replace(queryParameters: queryParams);
@@ -101,13 +103,13 @@ class BlockChainService implements IBlockChainService {
   @override
   Future<List<TokenBalance>> getBalance({
     required String address,
-    String? caip2chain,
+    String? caip2Chain,
   }) async {
     final uri = Uri.parse('$_baseUrl/account/$address/balance');
     final queryParams = {
       ..._requiredParams,
       'currency': 'usd',
-      if (caip2chain != null) 'chainId': caip2chain,
+      if (caip2Chain != null) 'chainId': caip2Chain,
       // 'forceUpdate': ,
     };
     final url = uri.replace(queryParameters: queryParams);
@@ -172,9 +174,9 @@ class BlockChainService implements IBlockChainService {
   }
 
   @override
-  Future<GasPrice> gasPrice({required String caip2chain}) async {
+  Future<GasPrice> gasPrice({required String caip2Chain}) async {
     final uri = Uri.parse('$_baseUrl/convert/gas-price');
-    final queryParams = {..._requiredParams, 'chainId': caip2chain};
+    final queryParams = {..._requiredParams, 'chainId': caip2Chain};
     final url = uri.replace(queryParameters: queryParams);
     final response = await http.get(url, headers: _requiredHeaders);
     _core.logger.i('[$runtimeType] gasPrice $url => ${response.body}');

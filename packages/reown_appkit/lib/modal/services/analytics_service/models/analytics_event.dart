@@ -163,11 +163,14 @@ class SwitchNetworkEvent implements AnalyticsEvent {
 
 class SelectWalletEvent implements AnalyticsEvent {
   final String _name;
+  final String _explorerId;
   final String? _platform;
   SelectWalletEvent({
     required String name,
+    required String explorerId,
     AnalyticsPlatform? platform,
   })  : _name = name,
+        _explorerId = explorerId,
         _platform = platform?.name;
 
   @override
@@ -179,6 +182,7 @@ class SelectWalletEvent implements AnalyticsEvent {
   @override
   Map<String, dynamic>? get properties => {
         'name': _name,
+        'explorer_id': _explorerId,
         if (_platform != null) 'platform': _platform,
       };
 
@@ -192,11 +196,14 @@ class SelectWalletEvent implements AnalyticsEvent {
 
 class ConnectSuccessEvent implements AnalyticsEvent {
   final String _name;
+  final String _explorerId;
   final String? _method;
   ConnectSuccessEvent({
     required String name,
+    required String explorerId,
     AnalyticsPlatform? method,
   })  : _name = name,
+        _explorerId = explorerId,
         _method = method?.name;
 
   @override
@@ -208,6 +215,7 @@ class ConnectSuccessEvent implements AnalyticsEvent {
   @override
   Map<String, dynamic>? get properties => {
         'name': _name,
+        'explorer_id': _explorerId,
         if (_method != null) 'method': _method,
       };
 
@@ -596,7 +604,7 @@ class SocialLoginStarted implements AnalyticsEvent {
   String get type => 'track';
 
   @override
-  String get event => 'LOGIN_STARTED';
+  String get event => 'SOCIAL_LOGIN_STARTED';
 
   @override
   Map<String, dynamic>? get properties => {
@@ -619,7 +627,7 @@ class SocialLoginSuccess implements AnalyticsEvent {
   String get type => 'track';
 
   @override
-  String get event => 'LOGIN_SUCCESS';
+  String get event => 'SOCIAL_LOGIN_SUCCESS';
 
   @override
   Map<String, dynamic>? get properties => {
@@ -642,11 +650,216 @@ class SocialLoginError implements AnalyticsEvent {
   String get type => 'track';
 
   @override
-  String get event => 'LOGIN_ERROR';
+  String get event => 'SOCIAL_LOGIN_ERROR';
 
   @override
   Map<String, dynamic>? get properties => {
         'provider': _provider,
+      };
+
+  @override
+  Map<String, dynamic> toMap() => {
+        'type': type,
+        'event': event,
+        if (properties != null) 'properties': properties,
+      };
+}
+
+class SocialLoginRequestUserData implements AnalyticsEvent {
+  final String _provider;
+  SocialLoginRequestUserData({required String provider}) : _provider = provider;
+
+  @override
+  String get type => 'track';
+
+  @override
+  String get event => 'SOCIAL_LOGIN_REQUEST_USER_DATA';
+
+  @override
+  Map<String, dynamic>? get properties => {
+        'provider': _provider,
+      };
+
+  @override
+  Map<String, dynamic> toMap() => {
+        'type': type,
+        'event': event,
+        if (properties != null) 'properties': properties,
+      };
+}
+
+class SocialLoginCanceled implements AnalyticsEvent {
+  final String _provider;
+  SocialLoginCanceled({required String provider}) : _provider = provider;
+
+  @override
+  String get type => 'track';
+
+  @override
+  String get event => 'SOCIAL_LOGIN_CANCELED';
+
+  @override
+  Map<String, dynamic>? get properties => {
+        'provider': _provider,
+      };
+
+  @override
+  Map<String, dynamic> toMap() => {
+        'type': type,
+        'event': event,
+        if (properties != null) 'properties': properties,
+      };
+}
+
+class WalletFeatureOpenSend implements AnalyticsEvent {
+  final String _network;
+  WalletFeatureOpenSend({required String network}) : _network = network;
+
+  @override
+  String get type => 'track';
+
+  @override
+  String get event => 'OPEN_SEND';
+
+  @override
+  Map<String, dynamic>? get properties => {
+        'network': _network,
+      };
+
+  @override
+  Map<String, dynamic> toMap() => {
+        'type': type,
+        'event': event,
+        if (properties != null) 'properties': properties,
+      };
+}
+
+class WalletFeatureSendInitiated implements AnalyticsEvent {
+  final String _network;
+  final String _sendToken;
+  final String _sendAmount;
+
+  WalletFeatureSendInitiated({
+    required String network,
+    required String sendToken,
+    required String sendAmount,
+  })  : _network = network,
+        _sendToken = sendToken,
+        _sendAmount = sendAmount;
+
+  @override
+  String get type => 'track';
+
+  @override
+  String get event => 'SEND_INITIATED';
+
+  @override
+  Map<String, dynamic>? get properties => {
+        'network': _network,
+        'sendToken': _sendToken,
+        'sendAmount': _sendAmount,
+      };
+
+  @override
+  Map<String, dynamic> toMap() => {
+        'type': type,
+        'event': event,
+        if (properties != null) 'properties': properties,
+      };
+}
+
+class WalletFeatureSendSuccess implements AnalyticsEvent {
+  final String _network;
+  final String _sendToken;
+  final String _sendAmount;
+
+  WalletFeatureSendSuccess({
+    required String network,
+    required String sendToken,
+    required String sendAmount,
+  })  : _network = network,
+        _sendToken = sendToken,
+        _sendAmount = sendAmount;
+
+  @override
+  String get type => 'track';
+
+  @override
+  String get event => 'SEND_SUCCESS';
+
+  @override
+  Map<String, dynamic>? get properties => {
+        'network': _network,
+        'sendToken': _sendToken,
+        'sendAmount': _sendAmount,
+      };
+
+  @override
+  Map<String, dynamic> toMap() => {
+        'type': type,
+        'event': event,
+        if (properties != null) 'properties': properties,
+      };
+}
+
+class WalletFeatureSendError implements AnalyticsEvent {
+  final String _network;
+  final String _sendToken;
+  final String _sendAmount;
+
+  WalletFeatureSendError({
+    required String network,
+    required String sendToken,
+    required String sendAmount,
+  })  : _network = network,
+        _sendToken = sendToken,
+        _sendAmount = sendAmount;
+
+  @override
+  String get type => 'track';
+
+  @override
+  String get event => 'SEND_ERROR';
+
+  @override
+  Map<String, dynamic>? get properties => {
+        'network': _network,
+        'sendToken': _sendToken,
+        'sendAmount': _sendAmount,
+      };
+
+  @override
+  Map<String, dynamic> toMap() => {
+        'type': type,
+        'event': event,
+        if (properties != null) 'properties': properties,
+      };
+}
+
+class WalletFeatureSignTransaction implements AnalyticsEvent {
+  final String _network;
+  final String _sendToken;
+  final String _sendAmount;
+
+  WalletFeatureSignTransaction({
+    required String network,
+    required String sendToken,
+    required String sendAmount,
+  })  : _network = network,
+        _sendToken = sendToken,
+        _sendAmount = sendAmount;
+
+  @override
+  String get type => 'track';
+
+  @override
+  String get event => 'SIGN_TRANSACTION';
+
+  @override
+  Map<String, dynamic>? get properties => {
+        'network': _network,
+        'sendToken': _sendToken,
+        'sendAmount': _sendAmount,
       };
 
   @override

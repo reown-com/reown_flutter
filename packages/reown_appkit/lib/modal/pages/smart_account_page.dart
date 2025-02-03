@@ -157,7 +157,7 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
       try {
         _tokens = await _blockchainService.getBalance(
           address: address,
-          caip2chain: '$namespace:$chainId',
+          caip2Chain: '$namespace:$chainId',
         );
         setState(() {});
       } catch (_) {}

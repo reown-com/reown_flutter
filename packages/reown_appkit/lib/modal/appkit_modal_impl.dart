@@ -830,8 +830,10 @@ class ReownAppKitModal
     bool inBrowser = false,
   }) {
     final walletName = _selectedWallet!.listing.name;
+    final walletId = _selectedWallet!.listing.id;
     final event = SelectWalletEvent(
       name: walletName,
+      explorerId: walletId,
       platform: inBrowser ? AnalyticsPlatform.web : AnalyticsPlatform.mobile,
     );
     _analyticsService.sendEvent(event);
@@ -1569,6 +1571,8 @@ class ReownAppKitModal
           blockchainId.toJson(),
         );
       } catch (_) {}
+    } else {
+      _blockchainIdentity = null;
     }
 
     _status = ReownAppKitModalStatus.initialized;
@@ -2162,6 +2166,7 @@ extension _AppKitModalExtension on ReownAppKitModal {
     if (_selectedWallet == null) {
       _analyticsService.sendEvent(ConnectSuccessEvent(
         name: 'WalletConnect',
+        explorerId: '',
         method: AnalyticsPlatform.qrcode,
       ));
       await _storage.delete(StorageConstants.recentWalletId);
@@ -2169,8 +2174,10 @@ extension _AppKitModalExtension on ReownAppKitModal {
     } else {
       _explorerService.storeConnectedWallet(_selectedWallet);
       final walletName = _selectedWallet!.listing.name;
+      final walletId = _selectedWallet!.listing.id;
       _analyticsService.sendEvent(ConnectSuccessEvent(
         name: walletName,
+        explorerId: walletId,
         method: AnalyticsPlatform.mobile,
       ));
     }

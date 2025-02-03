@@ -12,6 +12,7 @@ import 'package:reown_appkit/modal/services/explorer_service/models/native_app_d
 import 'package:reown_appkit/modal/services/explorer_service/models/redirect.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/request_params.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/wc_sample_wallets.dart';
+import 'package:reown_appkit/modal/services/phantom_service/i_phantom_service.dart';
 import 'package:reown_appkit/modal/services/phantom_service/utils/phantom_utils.dart';
 import 'package:reown_appkit/modal/services/uri_service/i_url_utils.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
@@ -250,7 +251,6 @@ class ExplorerService implements IExplorerService {
       page: 1,
       entries: _installedWalletIds.length,
       include: _installedWalletsParam,
-      platform: _getPlatformType(),
     );
     // this query gives me a count of installedWalletsParam.length
     final installedWallets = await _fetchListings(params: params);
@@ -268,7 +268,6 @@ class ExplorerService implements IExplorerService {
       page: 1,
       entries: _featuredWalletsParam!.split(',').length,
       include: _featuredWalletsParam,
-      platform: _getPlatformType(),
     );
     return await _fetchListings(params: params);
   }
@@ -279,7 +278,6 @@ class ExplorerService implements IExplorerService {
       entries: _defaultEntriesCount,
       include: _includedWalletsParam,
       exclude: _excludedWalletsParam,
-      platform: _getPlatformType(),
     );
     return await _fetchListings(params: _requestParams);
   }
@@ -308,7 +306,14 @@ class ExplorerService implements IExplorerService {
         if (updateCount) {
           totalListings.value += apiResponse.count;
         }
-        return apiResponse.data.toList().toAppKitWalletInfo();
+        return apiResponse.data
+            .where((a) {
+              return a.mobileLink != null ||
+                  a.id == CoinbaseUtils.walletId ||
+                  a.id == PhantomUtils.walletId;
+            })
+            .toList()
+            .toAppKitWalletInfo();
       } else {
         return <ReownAppKitModalWalletInfo>[];
       }
@@ -419,7 +424,6 @@ class ExplorerService implements IExplorerService {
         search: _currentSearchValue,
         include: include,
         exclude: exclude,
-        platform: _getPlatformType(),
       ),
       updateCount: false,
     );
@@ -472,7 +476,7 @@ class ExplorerService implements IExplorerService {
       final serviceData = ReownAppKitModalWalletInfo.fromJson(
         results.first.toJson(),
       );
-      final mobileLink = PhantomUtils.defaultListingData.linkMode;
+      final mobileLink = PhantomUtils.defaultListingData.mobileLink;
       final linkMode = PhantomUtils.defaultListingData.linkMode;
       final installed = await _uriService.isInstalled(mobileLink);
       return serviceData.copyWith(
@@ -528,33 +532,25 @@ class ExplorerService implements IExplorerService {
       web: walletInfo.listing.webappLink,
     );
   }
-
-  String _getPlatformType() {
-    final type = PlatformUtils.getPlatformType();
-    final platform = type.toString().toLowerCase();
-    switch (type) {
-      case PlatformType.mobile:
-        if (Platform.isIOS) {
-          return 'ios';
-        } else if (Platform.isAndroid) {
-          return 'android';
-        } else {
-          return 'mobile';
-        }
-      default:
-        return platform;
-    }
-  }
 }
 
 extension on List<Listing> {
   List<ReownAppKitModalWalletInfo> toAppKitWalletInfo() {
     return map(
-      (item) => ReownAppKitModalWalletInfo(
-        listing: item,
-        installed: false,
-        recent: false,
-      ),
+      (item) {
+        bool isInstalled = false;
+        if (item.id == PhantomUtils.walletId) {
+          isInstalled = GetIt.I<IPhantomService>().isInstalled;
+        }
+        // if (item.id == CoinbaseUtils.walletId) {
+        //   isInstalled = GetIt.I<ICoinbaseService>().isInstalled();
+        // }
+        return ReownAppKitModalWalletInfo(
+          listing: item,
+          installed: isInstalled,
+          recent: false,
+        );
+      },
     ).toList();
   }
 }

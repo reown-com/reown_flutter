@@ -46,7 +46,7 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
         } else {
           _tokens = await _blockchainService.getBalance(
             address: address,
-            caip2chain: '$namespace:$chainId',
+            caip2Chain: '$namespace:$chainId',
           );
         }
         setState(() {});

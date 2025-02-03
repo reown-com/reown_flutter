@@ -170,8 +170,14 @@ class ReceivePage extends StatelessWidget {
     //
     List<Widget> buttons = [];
 
-    final list = appKitModal.getAvailableChains()!;
-    final subList = list.sublist(0, min(5, list.length));
+    final chainId = appKitModal.selectedChain!.chainId;
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    final available = appKitModal.getAvailableChains()!.where((c) {
+      final ns = NamespaceUtils.getNamespaceFromChain(c);
+      return namespace == ns;
+    }).toList();
+
+    final subList = available.sublist(0, min(5, available.length));
     final chainList = subList.map((c) {
       final ns = c.split(':').first;
       final cid = c.split(':').last;
@@ -179,8 +185,8 @@ class ReceivePage extends StatelessWidget {
     }).toList();
 
     final orderedList = [
-      ...(chainList.where((e) => !e!.isTestNetwork)),
       ...(chainList.where((e) => e!.isTestNetwork)),
+      ...(chainList.where((e) => !e!.isTestNetwork)),
     ];
 
     for (var chainInfo in orderedList) {

@@ -204,7 +204,7 @@ class PhantomService implements IPhantomService {
   }
 
   @override
-  Future<bool> isInstalled() async => true;
+  bool get isInstalled => _walletData.installed;
 
   @override
   void completePhantomRequest({required String url}) async {
@@ -227,8 +227,7 @@ class PhantomService implements IPhantomService {
   }
 
   Future<bool> _checkInstalled() async {
-    final installed = await isInstalled();
-    if (!installed) {
+    if (!isInstalled) {
       throw ThirdPartyWalletNotInstalled(walletName: 'Phantom Wallet');
     }
     return true;

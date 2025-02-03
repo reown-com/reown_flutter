@@ -6,8 +6,10 @@ import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/models/send_data.dart';
-import 'package:reown_appkit/modal/pages/preview_send_page.dart';
+import 'package:reown_appkit/modal/pages/preview_send/preview_send_page.dart';
 import 'package:reown_appkit/modal/pages/select_token_page.dart';
+import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
+import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/token_balance.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
@@ -33,6 +35,7 @@ class SendPage extends StatefulWidget {
 
 class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
   IBlockChainService get _blockchainService => GetIt.I<IBlockChainService>();
+  IAnalyticsService get _analyticsService => GetIt.I<IAnalyticsService>();
 
   final _amountController = TextEditingController();
   final _addressController = TextEditingController();
@@ -57,6 +60,8 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
             element.address == null &&
             element.chainId == _selectedToken.chainId,
       );
+    } else {
+      _networkToken = TokenBalance.fromJson(_selectedToken.toJson());
     }
 
     _amountController.addListener(() {
@@ -67,6 +72,10 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
       _sendData = _sendData.copyWith(address: _addressController.text);
       setState(() {});
     });
+
+    _analyticsService.sendEvent(WalletFeatureOpenSend(
+      network: _selectedToken.chainId!,
+    ));
   }
 
   void _setMaxAmount(String? maxAmount) {

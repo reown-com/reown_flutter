@@ -21,8 +21,6 @@ class SendData {
   factory SendData.fromRawJson(String str) =>
       SendData.fromJson(json.decode(str));
 
-  String toRawJson() => json.encode(toJson());
-
   factory SendData.fromJson(Map<String, dynamic> json) => SendData(
         amount: json['amount'],
         address: json['address'],
@@ -32,4 +30,7 @@ class SendData {
         'amount': amount,
         'address': address,
       };
+
+  @override
+  String toString() => json.encode(toJson());
 }

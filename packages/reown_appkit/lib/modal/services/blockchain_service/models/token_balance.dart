@@ -24,8 +24,6 @@ class TokenBalance {
   factory TokenBalance.fromRawJson(String str) =>
       TokenBalance.fromJson(json.decode(str));
 
-  String toRawJson() => json.encode(toJson());
-
   factory TokenBalance.fromJson(Map<String, dynamic> json) => TokenBalance(
         name: json['name'],
         symbol: json['symbol'],
@@ -49,6 +47,9 @@ class TokenBalance {
         'quantity': quantity?.toJson(),
         'iconUrl': iconUrl,
       };
+
+  @override
+  String toString() => json.encode(toJson());
 }
 
 class Quantity {

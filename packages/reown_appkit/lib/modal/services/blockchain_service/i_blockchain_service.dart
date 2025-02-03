@@ -17,18 +17,19 @@ abstract class IBlockChainService {
 
   Future<ActivityData> getHistory({
     required String address,
+    String? caip2Chain,
     String? cursor,
   });
 
   Future<List<TokenBalance>> getBalance({
     required String address,
-    String? caip2chain,
+    String? caip2Chain,
   });
 
   void selectSendToken(TokenBalance? token);
 
   Future<GasPrice> gasPrice({
-    required String caip2chain,
+    required String caip2Chain,
   });
 
   Future<double> getTokenBalance({

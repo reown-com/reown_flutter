@@ -37,7 +37,7 @@ class ReceiveCompatibleNetworks extends StatelessWidget {
         ),
         constraints: BoxConstraints(maxHeight: maxHeight),
         child: ListView.separated(
-          itemBuilder: (BuildContext context, int index) {
+          itemBuilder: (_, index) {
             if (index == 0) {
               return AccountListItem(
                 iconWidget: RoundedIcon(
@@ -61,7 +61,7 @@ class ReceiveCompatibleNetworks extends StatelessWidget {
           separatorBuilder: (BuildContext context, int index) {
             return SizedBox.square(dimension: kPadding6);
           },
-          itemCount: networks.length,
+          itemCount: networks.length + 1,
         ),
       ),
     );
@@ -75,7 +75,13 @@ class ReceiveCompatibleNetworks extends StatelessWidget {
     //
     List<Widget> buttons = [];
 
-    final chainList = (appKitModal.getAvailableChains()!).map((c) {
+    final chainId = appKitModal.selectedChain!.chainId;
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    final available = appKitModal.getAvailableChains()!.where((c) {
+      final ns = NamespaceUtils.getNamespaceFromChain(c);
+      return namespace == ns;
+    }).toList();
+    final chainList = available.map((c) {
       final ns = c.split(':').first;
       final cid = c.split(':').last;
       return ReownAppKitModalNetworks.getNetworkById(ns, cid);

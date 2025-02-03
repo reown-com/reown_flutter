@@ -101,6 +101,7 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
       final activityData = await _blockchainService.getHistory(
         address: _currentAddress,
         cursor: _currentCursor,
+        caip2Chain: _currentChain,
       );
       _activities.clear();
       final newItems = activityData.data ?? <Activity>[];
