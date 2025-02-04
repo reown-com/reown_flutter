@@ -102,14 +102,14 @@ class CoinbaseService implements ICoinbaseService {
     final callback = dappRedirect?.universal ?? dappRedirect?.native ?? '';
 
     _core.logger.i(
-      '[$runtimeType] init with host: $walletLink, callback: $callback',
+      '[$runtimeType] init with host: ${Uri.parse(walletLink).host}, callback: $callback',
     );
 
     if (callback.isNotEmpty || walletLink.isNotEmpty) {
       try {
         final config = Configuration(
           ios: IOSConfiguration(
-            host: Uri.parse(walletLink),
+            host: Uri.parse('$walletLink/wsegue'),
             callback: Uri.parse(callback),
           ),
           android: AndroidConfiguration(

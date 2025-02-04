@@ -15,7 +15,7 @@ class PhantomUtils {
     'order': 210,
     'mobile_link': 'phantom://',
     'desktop_link': null,
-    'link_mode': 'phantom.app',
+    'link_mode': 'https://phantom.app',
     'webapp_link': null,
     'app_store':
         'https://apps.apple.com/us/app/phantom-crypto-wallet/id1598432977',

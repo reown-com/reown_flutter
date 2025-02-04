@@ -12,7 +12,6 @@ import 'package:reown_appkit/modal/services/explorer_service/models/native_app_d
 import 'package:reown_appkit/modal/services/explorer_service/models/redirect.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/request_params.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/wc_sample_wallets.dart';
-import 'package:reown_appkit/modal/services/phantom_service/i_phantom_service.dart';
 import 'package:reown_appkit/modal/services/phantom_service/utils/phantom_utils.dart';
 import 'package:reown_appkit/modal/services/uri_service/i_url_utils.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
@@ -537,20 +536,11 @@ class ExplorerService implements IExplorerService {
 extension on List<Listing> {
   List<ReownAppKitModalWalletInfo> toAppKitWalletInfo() {
     return map(
-      (item) {
-        bool isInstalled = false;
-        if (item.id == PhantomUtils.walletId) {
-          isInstalled = GetIt.I<IPhantomService>().isInstalled;
-        }
-        // if (item.id == CoinbaseUtils.walletId) {
-        //   isInstalled = GetIt.I<ICoinbaseService>().isInstalled();
-        // }
-        return ReownAppKitModalWalletInfo(
-          listing: item,
-          installed: isInstalled,
-          recent: false,
-        );
-      },
+      (item) => ReownAppKitModalWalletInfo(
+        listing: item,
+        installed: false,
+        recent: false,
+      ),
     ).toList();
   }
 }

@@ -973,6 +973,7 @@ class MagicService implements IMagicService {
     }
   }
 
+  // ignore: unused_element
   Future<void> _clearCookies() async {
     // if (!kDebugMode) return;
     try {
