@@ -6,8 +6,8 @@ import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
 import 'package:reown_appkit_dapp/utils/crypto/tron.dart';
 import 'package:reown_appkit_dapp/utils/test_data.dart';
 
-import 'package:solana_web3/solana_web3.dart' as solana;
-import 'package:solana_web3/programs.dart' as programs;
+import 'package:reown_appkit/solana/solana_web3/solana_web3.dart' as solana;
+import 'package:reown_appkit/solana/solana_web3/programs.dart' as programs;
 
 List<String> getChainMethods(String namespace) {
   switch (namespace) {

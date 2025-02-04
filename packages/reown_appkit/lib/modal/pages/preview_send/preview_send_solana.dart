@@ -24,8 +24,8 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 
-import 'package:solana_web3/solana_web3.dart' as solana;
-import 'package:solana_web3/programs.dart' as programs;
+import 'package:reown_appkit/solana/solana_web3/solana_web3.dart' as solana;
+import 'package:reown_appkit/solana/solana_web3/programs.dart' as programs;
 
 class PreviewSendSolana extends StatefulWidget {
   const PreviewSendSolana({
