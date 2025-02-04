@@ -9,7 +9,6 @@ import 'dart:typed_data';
 import 'package:reown_appkit/solana/solana_common/validators.dart';
 // ignore: depend_on_referenced_packages
 import 'package:synchronized/synchronized.dart';
-// ignore: depend_on_referenced_packages
 import 'package:web_socket_channel/web_socket_channel.dart';
 import '../converters/json_to_bytes_codec.dart';
 import 'client.dart';
