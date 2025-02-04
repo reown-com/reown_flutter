@@ -78,7 +78,7 @@ platform :android do
     )
 
     slack(
-      message: "📱 AppKit Flutter Sample #{_app_version}-#{_flavor} (#{_new_build_number}) for 🤖 Android successfully released!\n\n",
+      message: ":reown-appkit: 🤖 AppKit Flutter Android Sample #{_app_version}-#{_flavor} (#{_new_build_number}) successfully released!\n\n",
       default_payloads: [],
       attachment_properties: {
         fields: [
