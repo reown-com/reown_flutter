@@ -343,7 +343,11 @@ class BlockChainService implements IBlockChainService {
         EtherUnit.wei,
         hexToInt(result),
       );
-      return amount.getValueInUnit(EtherUnit.ether);
+      final value = amount.getValueInUnit(EtherUnit.ether);
+      if (value < 0.00001) {
+        return 0.0;
+      }
+      return value;
     }
     return 0.0;
   }

@@ -90,6 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // ignore: unused_element
   SIWEConfig _siweConfig(bool enabled) => SIWEConfig(
         getNonce: () async {
           // this has to be called at the very moment of creating the pairing uri
@@ -200,6 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // sessionRefetchIntervalMs: 300000,
       );
 
+  // ignore: unused_element
   FeaturesConfig? _featuresConfig() {
     return FeaturesConfig(
       email: true,
@@ -215,6 +217,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _initializeService(SharedPreferences prefs) async {
     final analyticsValue = prefs.getBool('appkit_analytics') ?? true;
+    // ignore: unused_local_variable
     final emailWalletValue = prefs.getBool('appkit_email_wallet') ?? true;
     final siweAuthValue = prefs.getBool('appkit_siwe_auth') ?? true;
 
