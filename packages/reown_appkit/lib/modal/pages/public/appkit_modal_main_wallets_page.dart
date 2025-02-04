@@ -187,6 +187,7 @@ class _AppKitModalMainWalletsPageState
                                 const ReownAppKitModalQRCodePage(),
                                 event: SelectWalletEvent(
                                   name: 'WalletConnect',
+                                  explorerId: '',
                                   platform: AnalyticsPlatform.qrcode,
                                 ),
                               );

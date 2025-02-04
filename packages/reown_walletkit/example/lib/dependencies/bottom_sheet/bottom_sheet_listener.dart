@@ -54,43 +54,39 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
               }
             });
           }
-          return Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(
-                Radius.circular(StyleConstants.linear16),
+          return Material(
+            borderRadius: BorderRadius.all(
+              Radius.circular(StyleConstants.linear16),
+            ),
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: StyleConstants.linear16,
+                left: StyleConstants.linear16,
+                right: StyleConstants.linear16,
+                bottom: MediaQuery.of(context).viewInsets.bottom +
+                    StyleConstants.linear24,
               ),
-            ),
-            padding: EdgeInsets.only(
-              top: StyleConstants.linear16,
-              left: StyleConstants.linear16,
-              right: StyleConstants.linear16,
-              bottom: MediaQuery.of(context).viewInsets.bottom +
-                  StyleConstants.linear16,
-            ),
-            margin: const EdgeInsets.all(
-              StyleConstants.linear16,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      padding: const EdgeInsets.all(0.0),
-                      visualDensity: VisualDensity.compact,
-                      onPressed: () {
-                        if (Navigator.canPop(context)) {
-                          Navigator.pop(context);
-                        }
-                      },
-                      icon: const Icon(Icons.close_sharp),
-                    ),
-                  ],
-                ),
-                Flexible(child: item.widget),
-              ],
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        padding: const EdgeInsets.all(0.0),
+                        visualDensity: VisualDensity.compact,
+                        onPressed: () {
+                          if (Navigator.canPop(context)) {
+                            Navigator.pop(context);
+                          }
+                        },
+                        icon: const Icon(Icons.close_sharp),
+                      ),
+                    ],
+                  ),
+                  Flexible(child: item.widget),
+                ],
+              ),
             ),
           );
         },

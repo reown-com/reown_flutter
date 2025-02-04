@@ -250,7 +250,6 @@ class ExplorerService implements IExplorerService {
       page: 1,
       entries: _installedWalletIds.length,
       include: _installedWalletsParam,
-      platform: _getPlatformType(),
     );
     // this query gives me a count of installedWalletsParam.length
     final installedWallets = await _fetchListings(params: params);
@@ -268,7 +267,6 @@ class ExplorerService implements IExplorerService {
       page: 1,
       entries: _featuredWalletsParam!.split(',').length,
       include: _featuredWalletsParam,
-      platform: _getPlatformType(),
     );
     return await _fetchListings(params: params);
   }
@@ -279,7 +277,6 @@ class ExplorerService implements IExplorerService {
       entries: _defaultEntriesCount,
       include: _includedWalletsParam,
       exclude: _excludedWalletsParam,
-      platform: _getPlatformType(),
     );
     return await _fetchListings(params: _requestParams);
   }
@@ -308,7 +305,14 @@ class ExplorerService implements IExplorerService {
         if (updateCount) {
           totalListings.value += apiResponse.count;
         }
-        return apiResponse.data.toList().toAppKitWalletInfo();
+        return apiResponse.data
+            .where((a) {
+              return a.mobileLink != null ||
+                  a.id == CoinbaseUtils.walletId ||
+                  a.id == PhantomUtils.walletId;
+            })
+            .toList()
+            .toAppKitWalletInfo();
       } else {
         return <ReownAppKitModalWalletInfo>[];
       }
@@ -419,7 +423,6 @@ class ExplorerService implements IExplorerService {
         search: _currentSearchValue,
         include: include,
         exclude: exclude,
-        platform: _getPlatformType(),
       ),
       updateCount: false,
     );
@@ -472,7 +475,7 @@ class ExplorerService implements IExplorerService {
       final serviceData = ReownAppKitModalWalletInfo.fromJson(
         results.first.toJson(),
       );
-      final mobileLink = PhantomUtils.defaultListingData.linkMode;
+      final mobileLink = PhantomUtils.defaultListingData.mobileLink;
       final linkMode = PhantomUtils.defaultListingData.linkMode;
       final installed = await _uriService.isInstalled(mobileLink);
       return serviceData.copyWith(
@@ -527,23 +530,6 @@ class ExplorerService implements IExplorerService {
       desktop: walletInfo.listing.desktopLink,
       web: walletInfo.listing.webappLink,
     );
-  }
-
-  String _getPlatformType() {
-    final type = PlatformUtils.getPlatformType();
-    final platform = type.toString().toLowerCase();
-    switch (type) {
-      case PlatformType.mobile:
-        if (Platform.isIOS) {
-          return 'ios';
-        } else if (Platform.isAndroid) {
-          return 'android';
-        } else {
-          return 'mobile';
-        }
-      default:
-        return platform;
-    }
   }
 }
 

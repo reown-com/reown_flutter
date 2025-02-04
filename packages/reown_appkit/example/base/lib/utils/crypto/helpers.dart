@@ -94,11 +94,13 @@ Future<SessionRequestParams?> getParams(
         ],
       );
     case 'solana_signMessage':
+      final bytes = utf8.encode('Welcome to Flutter AppKit on Solana');
+      final message = base58.encode(bytes);
       return SessionRequestParams(
         method: method,
         params: {
           'pubkey': address,
-          'message': 'Welcome to Flutter AppKit on Solana',
+          'message': message,
         },
       );
     case 'solana_signTransaction':

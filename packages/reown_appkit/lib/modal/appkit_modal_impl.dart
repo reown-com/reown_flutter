@@ -14,7 +14,9 @@ import 'package:reown_core/store/i_store.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/services/phantom_service/i_phantom_service.dart';
 import 'package:reown_appkit/modal/services/phantom_service/phantom_service.dart';
+import 'package:reown_appkit/modal/pages/smart_account_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
+import 'package:reown_appkit/modal/services/blockchain_service/models/blockchain_identity.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/services/network_service/i_network_service.dart';
 import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
@@ -100,15 +102,15 @@ class ReownAppKitModal
   @override
   IReownAppKit? get appKit => _appKit;
 
-  String? _avatarUrl;
+  BlockchainIdentity? _blockchainIdentity;
   @override
-  String? get avatarUrl => _avatarUrl;
+  BlockchainIdentity? get blockchainIdentity => _blockchainIdentity;
 
-  double? _chainBalance;
   @Deprecated('Use balanceNotifier')
   @override
   String get chainBalance => CoreUtils.formatChainBalance(_chainBalance);
 
+  double? _chainBalance;
   @override
   final balanceNotifier = ValueNotifier<String>('-.--');
 
@@ -525,8 +527,9 @@ class ReownAppKitModal
       return;
     }
 
+    _chainBalance = null;
+
     try {
-      _chainBalance = null;
       final formattedBalance = CoreUtils.formatChainBalance(_chainBalance);
       balanceNotifier.value = '$formattedBalance ${chainInfo.currency}';
 
@@ -671,14 +674,17 @@ class ReownAppKitModal
   @override
   Future<void> openModalView([Widget? startWidget]) {
     final keyString = startWidget?.key?.toString() ?? '';
+    final isMagic = _currentSession?.sessionService.isMagic == true;
     if (_isConnected) {
       final connectedKeys =
           _allowedScreensWhenConnected.map((e) => e.toString()).toList();
       if (startWidget == null) {
-        startWidget = const AccountPage();
+        startWidget =
+            isMagic ? const SmartAccountPage() : const EOAccountPage();
       } else {
         if (!connectedKeys.contains(keyString)) {
-          startWidget = const AccountPage();
+          startWidget =
+              isMagic ? const SmartAccountPage() : const EOAccountPage();
         }
       }
     } else {
@@ -695,7 +701,8 @@ class ReownAppKitModal
     KeyConstants.approveTransactionPage,
     KeyConstants.confirmEmailPage,
     KeyConstants.selectNetworkPage,
-    KeyConstants.accountPage,
+    KeyConstants.eoAccountPage,
+    KeyConstants.smartAccountPage,
     KeyConstants.socialLoginPage,
   ];
 
@@ -742,7 +749,8 @@ class ReownAppKitModal
 
     Widget? showWidget = startWidget;
     if (_isConnected && showWidget == null) {
-      showWidget = const AccountPage();
+      final isMagic = _currentSession?.sessionService.isMagic == true;
+      startWidget = isMagic ? const SmartAccountPage() : const EOAccountPage();
     }
 
     final childWidget = theme == null
@@ -822,8 +830,10 @@ class ReownAppKitModal
     bool inBrowser = false,
   }) {
     final walletName = _selectedWallet!.listing.name;
+    final walletId = _selectedWallet!.listing.id;
     final event = SelectWalletEvent(
       name: walletName,
+      explorerId: walletId,
       platform: inBrowser ? AnalyticsPlatform.web : AnalyticsPlatform.mobile,
     );
     _analyticsService.sendEvent(event);
@@ -920,8 +930,6 @@ class ReownAppKitModal
   @override
   Future<void> buildConnectionUri() async {
     if (!_isConnected) {
-      /// TODO Qs: How do I handle SIWE if non-EVM chains are included?
-      /// TODO Qs: How do I handle switch to Solana from EVM chain?
       try {
         if (_siweService.enabled) {
           final walletRedirect = _explorerService.getWalletRedirect(
@@ -1097,8 +1105,12 @@ class ReownAppKitModal
 
   @override
   Future<void> reconnectRelay() async {
-    if (!_appKit.core.relayClient.isConnected) {
-      await _appKit.core.relayClient.connect();
+    try {
+      if (!_appKit.core.relayClient.isConnected) {
+        await _appKit.core.relayClient.connect();
+      }
+    } catch (e) {
+      _appKit.core.logger.e('[$runtimeType] reconnectRelay $e');
     }
   }
 
@@ -1204,6 +1216,7 @@ class ReownAppKitModal
       selectWallet(null);
     }
     _toastService.clear();
+    _blockchainService.selectSendToken(null);
     _analyticsService.sendEvent(ModalCloseEvent(
       connected: _isConnected,
     ));
@@ -1522,13 +1535,16 @@ class ReownAppKitModal
       return;
     }
 
+    _status = ReownAppKitModalStatus.initializing;
+    _notify();
+
     // Get the chain balance.
     final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
       _currentSelectedChainId!,
     );
 
     try {
-      _chainBalance = await _blockchainService.getBalance(
+      _chainBalance = await _blockchainService.getTokenBalance(
         address: _currentSession!.getAddress(namespace)!,
         namespace: namespace,
         chainId: _currentSelectedChainId!,
@@ -1547,12 +1563,19 @@ class ReownAppKitModal
     if (namespace == NetworkUtils.eip155) {
       // Get the avatar, each chainId is just a number in string form.
       try {
+        final address = _currentSession!.getAddress(namespace)!;
         final blockchainId = await _blockchainService.getIdentity(
-          _currentSession!.getAddress(namespace)!,
+          address: address,
         );
-        _avatarUrl = blockchainId.avatar;
+        _blockchainIdentity = BlockchainIdentity.fromJson(
+          blockchainId.toJson(),
+        );
       } catch (_) {}
+    } else {
+      _blockchainIdentity = null;
     }
+
+    _status = ReownAppKitModalStatus.initialized;
     _notify();
   }
 
@@ -1714,6 +1737,7 @@ class ReownAppKitModal
     _lastChainEmitted = null;
     _supportsOneClickAuth = false;
     _status = ReownAppKitModalStatus.initialized;
+    _blockchainService.dispose();
     _notify();
   }
 
@@ -1928,11 +1952,14 @@ extension _EmailConnectorExtension on ReownAppKitModal {
     }
   }
 
-  Future<void> _onMagicErrorEvent(MagicErrorEvent? args) async {
-    _appKit.core.logger.d('[$runtimeType] _onMagicErrorEvent: $args');
-    final errorMessage = args?.error ?? 'Something went wrong';
+  Future<void> _onMagicErrorEvent(MagicErrorEvent? event) async {
+    _appKit.core.logger.d('[$runtimeType] _onMagicErrorEvent: ${event?.error}');
+    final errorMessage = event?.error ?? 'Something went wrong';
     if (!errorMessage.toLowerCase().contains('user denied')) {
       onModalError.broadcast(ModalError(errorMessage));
+    }
+    if (event is IsConnectedErrorEvent && _currentSession != null) {
+      await _cleanSession();
     }
     _notify();
   }
@@ -2139,6 +2166,7 @@ extension _AppKitModalExtension on ReownAppKitModal {
     if (_selectedWallet == null) {
       _analyticsService.sendEvent(ConnectSuccessEvent(
         name: 'WalletConnect',
+        explorerId: '',
         method: AnalyticsPlatform.qrcode,
       ));
       await _storage.delete(StorageConstants.recentWalletId);
@@ -2146,8 +2174,10 @@ extension _AppKitModalExtension on ReownAppKitModal {
     } else {
       _explorerService.storeConnectedWallet(_selectedWallet);
       final walletName = _selectedWallet!.listing.name;
+      final walletId = _selectedWallet!.listing.id;
       _analyticsService.sendEvent(ConnectSuccessEvent(
         name: walletName,
+        explorerId: walletId,
         method: AnalyticsPlatform.mobile,
       ));
     }

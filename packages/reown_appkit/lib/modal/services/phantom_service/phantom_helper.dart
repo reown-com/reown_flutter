@@ -47,8 +47,10 @@ class PhantomHelper {
     required String redirectLink,
     required IReownCore core,
   }) {
-    _scheme = redirect.linkMode == true ? 'https' : (redirect.native ?? '');
-    _host = redirect.universal ?? '';
+    _scheme = redirect.linkMode == true
+        ? Uri.parse(redirect.universal ?? '').scheme
+        : (redirect.native ?? '');
+    _host = Uri.parse(redirect.universal ?? '').host;
     _appUrl = appUrl;
     _redirectLink = redirectLink;
     _core = core;

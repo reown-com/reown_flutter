@@ -59,15 +59,10 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return BaseButton(
       size: widget.size,
-      onTap: widget.onTap,
+      onTap: widget.appKitModal.status.isLoading ? null : widget.onTap,
       buttonStyle: ButtonStyle(
         backgroundColor: WidgetStateProperty.resolveWith<Color>(
-          (states) {
-            if (states.contains(WidgetState.disabled)) {
-              return themeColors.grayGlass002;
-            }
-            return themeColors.grayGlass005;
-          },
+          (states) => themeColors.grayGlass002,
         ),
         foregroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) {
@@ -80,9 +75,10 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
         shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
           (states) {
             return RoundedRectangleBorder(
-              side: states.contains(WidgetState.disabled)
-                  ? BorderSide(color: themeColors.grayGlass002, width: 1.0)
-                  : BorderSide(color: themeColors.grayGlass005, width: 1.0),
+              side: BorderSide(
+                color: themeColors.grayGlass002,
+                width: 1.0,
+              ),
               borderRadius: BorderRadius.circular(widget.size.height / 2),
             );
           },

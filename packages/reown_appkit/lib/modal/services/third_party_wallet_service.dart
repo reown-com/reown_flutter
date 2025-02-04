@@ -31,7 +31,7 @@ abstract class IThirdPartyWalletService {
   Future<void> init();
   Future<void> connect({String? chainId});
   Future<bool> isConnected();
-  Future<bool> isInstalled();
+  bool get isInstalled;
 
   Future<dynamic> request({
     required String chainId,

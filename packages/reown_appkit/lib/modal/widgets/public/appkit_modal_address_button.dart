@@ -3,9 +3,10 @@ import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/utils/render_utils.dart';
 import 'package:reown_appkit/modal/widgets/avatars/account_avatar.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
+import 'package:reown_appkit/modal/widgets/circular_loader.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
-class AppKitModalAddressButton extends StatelessWidget {
+class AppKitModalAddressButton extends StatefulWidget {
   const AppKitModalAddressButton({
     super.key,
     required this.appKitModal,
@@ -17,48 +18,72 @@ class AppKitModalAddressButton extends StatelessWidget {
   final VoidCallback? onTap;
 
   @override
+  State<AppKitModalAddressButton> createState() =>
+      _AppKitModalAddressButtonState();
+}
+
+class _AppKitModalAddressButtonState extends State<AppKitModalAddressButton> {
+  @override
+  void initState() {
+    super.initState();
+    _modalNotifyListener();
+    widget.appKitModal.addListener(_modalNotifyListener);
+  }
+
+  @override
+  void dispose() {
+    widget.appKitModal.removeListener(_modalNotifyListener);
+    super.dispose();
+  }
+
+  void _modalNotifyListener() {
+    setState(() {});
+  }
+
+  @override
   Widget build(BuildContext context) {
-    if (appKitModal.session == null) {
+    if (widget.appKitModal.session == null) {
       return SizedBox.shrink();
     }
-    final chainId = appKitModal.selectedChain?.chainId ?? '';
+    final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
     if (chainId.isEmpty) {
       return SizedBox.shrink();
     }
     final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
-    final address = appKitModal.session!.getAddress(namespace);
+    final address = widget.appKitModal.session!.getAddress(namespace);
     if ((address ?? '').isEmpty) {
       return SizedBox.shrink();
     }
+    final identityName =
+        (widget.appKitModal.blockchainIdentity?.name ?? '').isNotEmpty
+            ? widget.appKitModal.blockchainIdentity!.name!
+            : null;
     final themeData = ReownAppKitModalTheme.getDataOf(context);
-    final textStyle = size == BaseButtonSize.small
+    final textStyle = widget.size == BaseButtonSize.small
         ? themeData.textStyles.small600
         : themeData.textStyles.paragraph600;
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
-    final innerBorderRadius = radiuses.isSquare() ? 0.0 : size.height / 2;
+    final innerBorderRadius =
+        radiuses.isSquare() ? 0.0 : widget.size.height / 2;
+    // TODO replace with AddressButton()
     return Padding(
       padding: EdgeInsets.only(
-        top: size == BaseButtonSize.small ? 4.0 : 0.0,
-        bottom: size == BaseButtonSize.small ? 4.0 : 0.0,
+        top: widget.size == BaseButtonSize.small ? 4.0 : 0.0,
+        bottom: widget.size == BaseButtonSize.small ? 4.0 : 0.0,
       ),
       child: BaseButton(
-        size: size,
-        onTap: onTap,
+        size: widget.size,
+        onTap: widget.appKitModal.status.isLoading ? null : widget.onTap,
         overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
           EdgeInsets.only(
-            left: size == BaseButtonSize.small ? 4.0 : 6.0,
+            left: widget.size == BaseButtonSize.small ? 4.0 : 6.0,
             right: 8.0,
           ),
         ),
         buttonStyle: ButtonStyle(
           backgroundColor: WidgetStateProperty.resolveWith<Color>(
-            (states) {
-              if (states.contains(WidgetState.disabled)) {
-                return themeColors.grayGlass002;
-              }
-              return themeColors.grayGlass005;
-            },
+            (states) => themeColors.grayGlass002,
           ),
           foregroundColor: WidgetStateProperty.resolveWith<Color>(
             (states) {
@@ -71,9 +96,10 @@ class AppKitModalAddressButton extends StatelessWidget {
           shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
             (states) {
               return RoundedRectangleBorder(
-                side: states.contains(WidgetState.disabled)
-                    ? BorderSide(color: themeColors.grayGlass002, width: 1.0)
-                    : BorderSide(color: themeColors.grayGlass005, width: 1.0),
+                side: BorderSide(
+                  color: themeColors.grayGlass002,
+                  width: 1.0,
+                ),
                 borderRadius: BorderRadius.circular(innerBorderRadius),
               );
             },
@@ -82,28 +108,44 @@ class AppKitModalAddressButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(size.iconSize),
-                border: Border.all(
-                  color: themeColors.grayGlass002,
-                  width: 1.0,
-                  strokeAlign: BorderSide.strokeAlignInside,
-                ),
-              ),
-              child: AccountAvatar(
-                appKit: appKitModal,
-                size: size.iconSize * 0.95,
-                disabled: false,
-              ),
-            ),
+            widget.appKitModal.status.isLoading
+                ? Row(
+                    children: [
+                      const SizedBox.square(dimension: 4.0),
+                      CircularLoader(
+                        size: 16.0,
+                        strokeWidth: 1.5,
+                      ),
+                    ],
+                  )
+                : Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(widget.size.iconSize),
+                      border: Border.all(
+                        color: themeColors.grayGlass005,
+                        width: 1.0,
+                        strokeAlign: BorderSide.strokeAlignInside,
+                      ),
+                    ),
+                    child: AccountAvatar(
+                      appKit: widget.appKitModal,
+                      size: widget.size.iconSize * 0.95,
+                      disabled: false,
+                    ),
+                  ),
             const SizedBox.square(dimension: 4.0),
-            Text(
-              RenderUtils.truncate(
-                address!,
-                length: size == BaseButtonSize.small ? 2 : 4,
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 140.0),
+              child: Text(
+                identityName ??
+                    RenderUtils.truncate(
+                      address!,
+                      length: widget.size == BaseButtonSize.small ? 2 : 4,
+                    ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textStyle,
               ),
-              style: textStyle,
             ),
           ],
         ),

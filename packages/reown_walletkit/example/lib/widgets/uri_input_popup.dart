@@ -19,7 +19,6 @@ class UriInputPopup extends StatelessWidget {
       borderSide: const BorderSide(color: Colors.blue, width: 1.0),
     );
     return Container(
-      color: Colors.white,
       height: 280.0,
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -27,31 +26,26 @@ class UriInputPopup extends StatelessWidget {
         children: [
           Text(
             StringConstants.enterUri,
-            style: StyleConstants.subtitleText.copyWith(
-              color: Colors.black,
-              fontSize: 18.0,
-            ),
+            style: TextStyle(fontSize: 18.0),
           ),
           const Text(
             StringConstants.enterUriMessage,
-            style: StyleConstants.bodyText,
             textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 12.0),
           ),
           const SizedBox(height: StyleConstants.magic10),
           SizedBox(
             height: 46.0,
-            // padding: const EdgeInsets.all(3.0),
             child: TextFormField(
-              // focusNode: _focusNode,
               controller: controller,
-              // onChanged: (value) {
-              //   // _debouncer.run(() => widget.onTextChanged(value));
-              // },
               textAlignVertical: TextAlignVertical.center,
               cursorColor: Colors.blue,
               enableSuggestions: false,
               autocorrect: false,
               cursorHeight: 16.0,
+              style: TextStyle(
+                color: Colors.black,
+              ),
               decoration: InputDecoration(
                 isDense: true,
                 hintText: 'wc://as87d6...',
@@ -73,7 +67,8 @@ class UriInputPopup extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () => Navigator.of(context).pop(controller.text),
               style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                backgroundColor:
+                    WidgetStateProperty.all<Color>(Color(0xFF667DFF)),
                 foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
               ),
               child: const Text('Connect'),
@@ -86,7 +81,7 @@ class UriInputPopup extends StatelessWidget {
               onPressed: () => Navigator.of(context).pop(null),
               child: const Text(
                 'Cancel',
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(color: Color(0xFF667DFF)),
               ),
             ),
           ),

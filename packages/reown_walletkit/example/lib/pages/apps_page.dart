@@ -163,7 +163,7 @@ class AppsPageState extends State<AppsPage> {
   Widget _buildIconButton(IconData icon, void Function()? onPressed) {
     return Container(
       decoration: BoxDecoration(
-        color: StyleConstants.primaryColor,
+        color: Color(0xFF667DFF),
         borderRadius: BorderRadius.circular(
           StyleConstants.linear48,
         ),

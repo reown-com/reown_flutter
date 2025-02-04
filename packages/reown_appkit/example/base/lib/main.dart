@@ -73,6 +73,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       isDarkMode: _isDarkMode,
       child: MaterialApp(
         title: StringConstants.appTitle,
+        theme: ThemeData(
+          colorScheme: _isDarkMode
+              ? ColorScheme.dark(
+                  primary: ReownAppKitModalThemeData().darkColors.accent100,
+                )
+              : ColorScheme.light(
+                  primary: ReownAppKitModalThemeData().lightColors.accent100,
+                ),
+        ),
         home: const MyHomePage(),
       ),
     );
@@ -419,12 +428,12 @@ class _MyHomePageState extends State<MyHomePage> {
     debugPrint('[SampleDapp] _onSessionAuthResponse $response');
   }
 
-  void _setState(_) => setState(() {});
-
   void _relayClientError(ErrorEvent? event) {
     debugPrint('[SampleDapp] _relayClientError ${event?.error}');
     _setState('');
   }
+
+  void _setState(_) => setState(() {});
 
   @override
   void dispose() {
@@ -469,12 +478,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     return Scaffold(
-      backgroundColor: ReownAppKitModalTheme.colorsOf(context).background125,
       appBar: AppBar(
-        backgroundColor: ReownAppKitModalTheme.colorsOf(context).background175,
-        foregroundColor: ReownAppKitModalTheme.colorsOf(context).foreground100,
         title: Text(_pageDatas[_selectedIndex].title),
-        centerTitle: true,
         actions: [
           const Text('Relay '),
           CircleAvatar(
@@ -505,10 +510,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildBottomNavBar() {
     return BottomNavigationBar(
-      backgroundColor: ReownAppKitModalTheme.colorsOf(context).background175,
       currentIndex: _selectedIndex,
       unselectedItemColor: Colors.grey,
-      selectedItemColor: Colors.indigoAccent,
+      selectedItemColor: Color(0xFF667DFF),
       showUnselectedLabels: true,
       type: BottomNavigationBarType.fixed,
       // called when one tab is selected

@@ -37,7 +37,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
   ISiweService get _siweService => GetIt.I<ISiweService>();
 
   IReownAppKitModal? _service;
-  SegmentOption _selectedSegment = SegmentOption.mobile;
+  SegmentOption _selectedSegment = SegmentOption.option1;
   ModalError? errorEvent;
 
   @override
@@ -78,7 +78,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
 
   bool nonInstalledMobile(ModalError? errorEvent) {
     return errorEvent is WalletNotInstalled &&
-        _selectedSegment == SegmentOption.mobile;
+        _selectedSegment == SegmentOption.option1;
   }
 
   @override
@@ -190,7 +190,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
                           ? SizedBox.shrink()
                           : Text(
                               webOnlyWallet ||
-                                      _selectedSegment == SegmentOption.browser
+                                      _selectedSegment == SegmentOption.option2
                                   ? 'Open and continue in a new browser tab'
                                   : 'Accept connection request in the wallet',
                               textAlign: TextAlign.center,
@@ -202,7 +202,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
                   const SizedBox.square(dimension: kPadding16),
                   Visibility(
                     visible: isPortrait &&
-                        _selectedSegment != SegmentOption.browser &&
+                        _selectedSegment != SegmentOption.option2 &&
                         errorEvent == null,
                     child: SimpleIconButton(
                       onTap: () => _service!.connectSelectedWallet(),
@@ -215,10 +215,10 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
                   Visibility(
                     visible: isPortrait &&
                         (webOnlyWallet ||
-                            _selectedSegment == SegmentOption.browser),
+                            _selectedSegment == SegmentOption.option2),
                     child: SimpleIconButton(
                       onTap: () => _service!.connectSelectedWallet(
-                        inBrowser: _selectedSegment == SegmentOption.browser,
+                        inBrowser: _selectedSegment == SegmentOption.option2,
                       ),
                       rightIcon: 'lib/modal/assets/icons/arrow_top_right.svg',
                       title: 'Open',
@@ -238,7 +238,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
                   if (isPortrait) const SizedBox.square(dimension: kPadding12),
                   Visibility(
                     visible: !isPortrait &&
-                        _selectedSegment != SegmentOption.browser &&
+                        _selectedSegment != SegmentOption.option2 &&
                         errorEvent == null,
                     child: SimpleIconButton(
                       onTap: () => _service!.connectSelectedWallet(),
@@ -251,10 +251,10 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
                   Visibility(
                     visible: !isPortrait &&
                         (webOnlyWallet ||
-                            _selectedSegment == SegmentOption.browser),
+                            _selectedSegment == SegmentOption.option2),
                     child: SimpleIconButton(
                       onTap: () => _service!.connectSelectedWallet(
-                        inBrowser: _selectedSegment == SegmentOption.browser,
+                        inBrowser: _selectedSegment == SegmentOption.option2,
                       ),
                       leftIcon: 'lib/modal/assets/icons/arrow_top_right.svg',
                       title: 'Open',

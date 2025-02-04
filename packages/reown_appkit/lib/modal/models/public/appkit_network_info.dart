@@ -19,14 +19,14 @@ class ReownAppKitModalNetworkInfo with _$ReownAppKitModalNetworkInfo {
 extension AppKitNetworkInfoExtension on ReownAppKitModalNetworkInfo {
   String get chainHexId => '0x${int.parse(chainId).toRadixString(16)}';
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson({int? decimals}) {
     return {
       'chainId': chainHexId,
       'chainName': name,
       'nativeCurrency': {
         'name': currency,
         'symbol': currency,
-        'decimals': 18,
+        'decimals': decimals ?? 18,
       },
       'rpcUrls': [
         rpcUrl,

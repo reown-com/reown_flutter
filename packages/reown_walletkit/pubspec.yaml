@@ -34,7 +34,7 @@ dev_dependencies:
   logger: ^2.5.0
   mockito: ^5.4.4
   package_info_plus: ^8.1.2
-  reown_appkit: ^1.4.0-beta01
+  reown_appkit: ^1.4.0-beta03
   # reown_appkit:
   #   path: ../reown_appkit/
 
