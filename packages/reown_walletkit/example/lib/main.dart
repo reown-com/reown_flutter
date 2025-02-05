@@ -172,16 +172,6 @@ class _MyHomePageState extends State<MyHomePage> {
           title: StringConstants.connectPageTitle,
           icon: Icons.swap_vert_circle_outlined,
         ),
-        // PageData(
-        //   page: const Center(
-        //     child: Text(
-        //       'Inbox (Not Implemented)',
-        //       style: StyleConstants.bodyText,
-        //     ),
-        //   ),
-        //   title: 'Inbox',
-        //   icon: Icons.inbox_rounded,
-        // ),
         PageData(
           page: const SettingsPage(),
           title: 'Settings',

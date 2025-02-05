@@ -36,6 +36,8 @@ class ReceivePage extends StatelessWidget {
     final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
       chainId,
     );
+    final isDarkMode =
+        ReownAppKitModalTheme.maybeOf(context)?.isDarkMode ?? false;
     return ModalNavbar(
       title: 'Receive',
       divider: false,
@@ -66,6 +68,7 @@ class ReceivePage extends StatelessWidget {
                 ));
               },
             ),
+            if (isDarkMode) const SizedBox.square(dimension: kPadding12),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -94,6 +97,7 @@ class ReceivePage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  if (isDarkMode) const SizedBox.square(dimension: kPadding16),
                   Text(
                     'Copy your address or scan this QR code',
                     textAlign: TextAlign.center,

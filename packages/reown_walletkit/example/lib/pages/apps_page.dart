@@ -10,7 +10,6 @@ import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/pages/app_detail_page.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/utils/eth_utils.dart';
-import 'package:reown_walletkit_wallet/utils/string_constants.dart';
 import 'package:reown_walletkit_wallet/widgets/pairing_item.dart';
 import 'package:reown_walletkit_wallet/widgets/uri_input_popup.dart';
 import 'package:toastification/toastification.dart';
@@ -22,10 +21,11 @@ class AppsPage extends StatefulWidget {
   AppsPageState createState() => AppsPageState();
 }
 
-class AppsPageState extends State<AppsPage> {
+class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
   List<PairingInfo> _pairings = [];
   late IWalletKitService _walletKitService;
   late IReownWalletKit _walletKit;
+  bool _isDarkMode = false;
 
   @override
   void initState() {
@@ -38,6 +38,15 @@ class AppsPageState extends State<AppsPage> {
     _registerListeners();
     // TODO _walletKit.core.echo.register(firebaseAccessToken);
     DeepLinkHandler.checkInitialLink();
+
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        final platformDispatcher = View.of(context).platformDispatcher;
+        final platformBrightness = platformDispatcher.platformBrightness;
+        _isDarkMode = platformBrightness == Brightness.dark;
+      });
+    });
   }
 
   void _registerListeners() {
@@ -63,6 +72,7 @@ class AppsPageState extends State<AppsPage> {
   @override
   void dispose() {
     _unregisterListeners();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -93,7 +103,25 @@ class AppsPageState extends State<AppsPage> {
     _pairings = _pairings.where((p) => p.active).toList();
     return Stack(
       children: [
-        _pairings.isEmpty ? _buildNoPairingMessage() : _buildPairingList(),
+        Center(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Center(
+                child: Image.asset(
+                  'assets/walletkit-logo.png',
+                  width: 200.0,
+                ),
+              ),
+              Container(
+                color: _isDarkMode
+                    ? Colors.black.withOpacity(0.8)
+                    : Colors.white.withOpacity(0.8),
+              )
+            ],
+          ),
+        ),
+        if (_pairings.isNotEmpty) _buildPairingList(),
         Positioned(
           bottom: StyleConstants.magic20,
           right: StyleConstants.magic20,
@@ -128,16 +156,6 @@ class AppsPageState extends State<AppsPage> {
           },
         ),
       ],
-    );
-  }
-
-  Widget _buildNoPairingMessage() {
-    return const Center(
-      child: Text(
-        StringConstants.noApps,
-        textAlign: TextAlign.center,
-        style: StyleConstants.bodyText,
-      ),
     );
   }
 

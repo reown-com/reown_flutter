@@ -5,6 +5,7 @@ import 'dart:developer' as dev;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_appkit_dapp/pages/settings_page.dart';
 // ignore: depend_on_referenced_packages
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -133,8 +134,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   PairingMetadata _pairingMetadata() {
     return PairingMetadata(
-      name: 'Flutter AppKit Sample',
-      description: 'Reown\'s sample dapp with Flutter',
+      name: 'Reown\'s AppKit',
+      description: 'Reown\'s sample dApp with Flutter SDK',
       url: _universalLink(),
       icons: [
         'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/appkit-icon$_flavor.png',
@@ -231,9 +232,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _pageDatas = [
       PageData(
-        page: ConnectPage(
+        page: ConnectPage(appKitModal: _appKitModal!),
+        title: StringConstants.connectPageTitle,
+        icon: Icons.home,
+      ),
+      PageData(
+        page: PairingsPage(appKitModal: _appKitModal!),
+        title: StringConstants.pairingsPageTitle,
+        icon: Icons.vertical_align_center_rounded,
+      ),
+      PageData(
+        page: SettingsPage(
           appKitModal: _appKitModal!,
-          linkMode: linkMode,
           reinitialize: (bool linkMode) async {
             final result = await showDialog<bool>(
               context: context,
@@ -261,19 +271,9 @@ class _MyHomePageState extends State<MyHomePage> {
             }
           },
         ),
-        title: StringConstants.connectPageTitle,
-        icon: Icons.home,
+        title: StringConstants.settingsPageTitle,
+        icon: Icons.settings,
       ),
-      PageData(
-        page: PairingsPage(appKitModal: _appKitModal!),
-        title: StringConstants.pairingsPageTitle,
-        icon: Icons.vertical_align_center_rounded,
-      ),
-      // PageData(
-      //   page: SessionsPage(appKitModal: _appKitModal!),
-      //   title: StringConstants.sessionsPageTitle,
-      //   icon: Icons.workspaces_filled,
-      // ),
     ];
 
     await _appKitModal!.init();
