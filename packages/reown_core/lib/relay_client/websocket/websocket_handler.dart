@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:stream_channel/stream_channel.dart';
-import 'package:reown_core/relay_client/websocket/i_websocket_handler.dart';
 import 'package:reown_core/models/basic_models.dart';
+import 'package:reown_core/relay_client/websocket/i_websocket_handler.dart';
+import 'package:stream_channel/stream_channel.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class WebSocketHandler implements IWebSocketHandler {
@@ -51,8 +51,10 @@ class WebSocketHandler implements IWebSocketHandler {
       );
     }
 
-    _channel = _socket!.cast<String>();
-
+    _channel = StreamChannel(
+      _socket!.stream.asBroadcastStream().cast(),
+      StreamController.broadcast(sync: true)..stream.cast().pipe(_socket!.sink),
+    );
     if (_channel == null) {
       // print('Socket channel is null, waiting...');
       await Future.delayed(const Duration(milliseconds: 500));
