@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
-import 'package:reown_appkit_dapp/utils/string_constants.dart';
 import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
 import 'package:toastification/toastification.dart';
 
@@ -13,13 +9,9 @@ class ConnectPage extends StatefulWidget {
   const ConnectPage({
     super.key,
     required this.appKitModal,
-    required this.reinitialize,
-    this.linkMode = false,
   });
 
   final ReownAppKitModal appKitModal;
-  final Function(bool linkMode) reinitialize;
-  final bool linkMode;
 
   @override
   ConnectPageState createState() => ConnectPageState();
@@ -77,115 +69,87 @@ class ConnectPageState extends State<ConnectPage> {
   @override
   Widget build(BuildContext context) {
     // Build the list of chain buttons, clear if the textnet changed
+    final isDarkMode =
+        ReownAppKitModalTheme.maybeOf(context)?.isDarkMode ?? false;
     return RefreshIndicator(
       onRefresh: () => _refreshData(),
-      child: ListView(
-        padding: const EdgeInsets.symmetric(
-          horizontal: StyleConstants.linear16,
-        ),
-        children: <Widget>[
-          const SizedBox(height: StyleConstants.linear16),
-          Text(
-            widget.appKitModal.appKit!.metadata.name,
-            style: StyleConstants.subtitleText.copyWith(
-              color: ReownAppKitModalTheme.colorsOf(context).foreground100,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: StyleConstants.linear24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AppKitModalNetworkSelectButton(
-                appKit: widget.appKitModal,
-                size: BaseButtonSize.small,
-              ),
-              const SizedBox.square(dimension: 8.0),
-              AppKitModalConnectButton(
-                appKit: widget.appKitModal,
-                size: BaseButtonSize.small,
-              ),
-            ],
-          ),
-          const SizedBox(height: StyleConstants.linear8),
-          Visibility(
-            visible: widget.appKitModal.isConnected,
-            child: Column(
+      child: Stack(
+        children: [
+          Center(
+            child: Stack(
+              alignment: Alignment.center,
               children: [
-                AppKitModalAccountButton(
-                  appKitModal: widget.appKitModal,
+                Center(
+                  child: Image.asset(
+                    'assets/appkit-logo.png',
+                    width: 200.0,
+                  ),
                 ),
-                const SizedBox.square(dimension: 8.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Container(
+                  color: isDarkMode
+                      ? Colors.black.withOpacity(0.8)
+                      : Colors.white.withOpacity(0.8),
+                )
+              ],
+            ),
+          ),
+          ListView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: StyleConstants.linear16,
+            ),
+            children: <Widget>[
+              const SizedBox(height: StyleConstants.linear16),
+              _TitleSection(
+                appKitModal: widget.appKitModal,
+              ),
+              const SizedBox(height: StyleConstants.linear8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AppKitModalNetworkSelectButton(
+                    appKit: widget.appKitModal,
+                    size: BaseButtonSize.small,
+                  ),
+                  const SizedBox.square(dimension: 8.0),
+                  AppKitModalConnectButton(
+                    appKit: widget.appKitModal,
+                    size: BaseButtonSize.small,
+                  ),
+                ],
+              ),
+              const SizedBox(height: StyleConstants.linear8),
+              Visibility(
+                visible: widget.appKitModal.isConnected,
+                child: Column(
                   children: [
-                    AppKitModalBalanceButton(
+                    AppKitModalAccountButton(
                       appKitModal: widget.appKitModal,
-                      onTap: widget.appKitModal.openNetworksView,
                     ),
                     const SizedBox.square(dimension: 8.0),
-                    AppKitModalAddressButton(
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AppKitModalBalanceButton(
+                          appKitModal: widget.appKitModal,
+                          onTap: widget.appKitModal.openNetworksView,
+                        ),
+                        const SizedBox.square(dimension: 8.0),
+                        AppKitModalAddressButton(
+                          appKitModal: widget.appKitModal,
+                          onTap: widget.appKitModal.openModalView,
+                        ),
+                      ],
+                    ),
+                    const SizedBox.square(dimension: 8.0),
+                    _RequestButtons(
                       appKitModal: widget.appKitModal,
-                      onTap: widget.appKitModal.openModalView,
                     ),
                   ],
                 ),
-                const SizedBox.square(dimension: 8.0),
-                _RequestButtons(
-                  appKitModal: widget.appKitModal,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(height: StyleConstants.linear8),
+            ],
           ),
-          const SizedBox(height: StyleConstants.linear8),
-          Visibility(
-            visible: !widget.appKitModal.isConnected,
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'non-EVM\nSession Proposal',
-                        textAlign: TextAlign.end,
-                        style: TextStyle(
-                          color: ReownAppKitModalTheme.colorsOf(context)
-                              .foreground100,
-                          fontWeight: !widget.linkMode
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                        ),
-                      ),
-                    ),
-                    Switch(
-                      value: widget.linkMode,
-                      onChanged: (value) {
-                        widget.reinitialize(value);
-                      },
-                    ),
-                    Expanded(
-                      child: Text(
-                        'only EVM\nLink Mode',
-                        style: TextStyle(
-                          color: ReownAppKitModalTheme.colorsOf(context)
-                              .foreground100,
-                          fontWeight: widget.linkMode
-                              ? FontWeight.bold
-                              : FontWeight.normal,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: StyleConstants.linear16),
-          const Divider(height: 1.0),
-          const SizedBox(height: StyleConstants.linear8),
-          _FooterWidget(appKitModal: widget.appKitModal),
-          const SizedBox(height: StyleConstants.linear8),
         ],
       ),
     );
@@ -292,189 +256,28 @@ class __RequestButtonsState extends State<_RequestButtons> {
   }
 }
 
-class _FooterWidget extends StatefulWidget {
-  const _FooterWidget({required this.appKitModal});
+class _TitleSection extends StatelessWidget {
   final ReownAppKitModal appKitModal;
-
-  @override
-  State<_FooterWidget> createState() => __FooterWidgetState();
-}
-
-class __FooterWidgetState extends State<_FooterWidget> {
-  @override
-  Widget build(BuildContext context) {
-    final textStyle = TextStyle(
-      fontSize: 12.0,
-      color: ReownAppKitModalTheme.colorsOf(context).foreground100,
-    );
-    final textStyleBold = textStyle.copyWith(
-      fontWeight: FontWeight.bold,
-    );
-    final redirect = widget.appKitModal.appKit!.metadata.redirect;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: StyleConstants.linear8),
-        Text('Redirect:', style: textStyleBold),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Native: ', style: textStyle),
-            Expanded(
-              child: Text('${redirect?.native}', style: textStyleBold),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Universal: ', style: textStyle),
-            Expanded(
-              child: Text('${redirect?.universal}', style: textStyleBold),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Text('Link Mode: ', style: textStyle),
-            Text('${redirect?.linkMode}', style: textStyleBold),
-          ],
-        ),
-        FutureBuilder<PackageInfo>(
-          future: PackageInfo.fromPlatform(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const SizedBox.shrink();
-            }
-            final v = snapshot.data!.version;
-            final b = snapshot.data!.buildNumber;
-            const f = String.fromEnvironment('FLUTTER_APP_FLAVOR');
-            // return Text('App Version: $v-$f ($b) - SDK v$packageVersion');
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('App Version: ', style: textStyle),
-                Expanded(
-                  child: Text(
-                    '$v-$f ($b) - SDK v$packageVersion',
-                    style: textStyleBold,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-        const SizedBox(height: StyleConstants.linear8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Visibility(
-              visible: !widget.appKitModal.isConnected,
-              child: SizedBox(
-                height: 30.0,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    elevation: WidgetStateProperty.all(0.0),
-                    backgroundColor: WidgetStateProperty.all<Color>(
-                      ReownAppKitModalTheme.colorsOf(context).accenGlass010,
-                    ),
-                    foregroundColor: WidgetStateProperty.all<Color>(
-                      ReownAppKitModalTheme.colorsOf(context).foreground100,
-                    ),
-                  ),
-                  onPressed: () async {
-                    await widget.appKitModal.appKit!.core.storage.deleteAll();
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('Storage cleared'),
-                      duration: Duration(seconds: 1),
-                    ));
-                  },
-                  child: Text(
-                    'CLEAR STORAGE',
-                    style: TextStyle(fontSize: 10.0),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class QRCodeScreen extends StatefulWidget {
-  const QRCodeScreen({
-    super.key,
-    required this.uri,
-    this.walletScheme = '',
-  });
-  final String uri;
-  final String walletScheme;
-
-  @override
-  State<QRCodeScreen> createState() => _QRCodeScreenState();
-}
-
-class _QRCodeScreenState extends State<QRCodeScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: Scaffold(
-        appBar: AppBar(title: const Text(StringConstants.scanQrCode)),
-        body: _QRCodeView(
-          uri: widget.uri,
-          walletScheme: widget.walletScheme,
-        ),
-      ),
-    );
-  }
-}
-
-class _QRCodeView extends StatelessWidget {
-  const _QRCodeView({
-    required this.uri,
-    this.walletScheme = '',
-  });
-  final String uri;
-  final String walletScheme;
+  const _TitleSection({required this.appKitModal});
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        QrImageView(data: uri),
-        const SizedBox(
-          height: StyleConstants.linear16,
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Clipboard.setData(
-              ClipboardData(text: uri.toString()),
-            ).then(
-              (_) => toastification.show(
-                title: const Text(StringConstants.copiedToClipboard),
-                context: context,
-                autoCloseDuration: Duration(seconds: 2),
-                alignment: Alignment.bottomCenter,
-              ),
-            );
-          },
-          child: const Text('Copy URL to Clipboard'),
-        ),
-        Visibility(
-          visible: walletScheme.isNotEmpty,
-          child: ElevatedButton(
-            onPressed: () async {
-              final encodedUri = Uri.encodeComponent(uri);
-              await ReownCoreUtils.openURL('$walletScheme?uri=$encodedUri');
-            },
-            child: const Text('Open Test Wallet'),
+        Text(
+          appKitModal.appKit!.metadata.name,
+          style: StyleConstants.subtitleText.copyWith(
+            color: ReownAppKitModalTheme.colorsOf(context).foreground100,
           ),
+          textAlign: TextAlign.center,
+        ),
+        Text(
+          appKitModal.appKit!.metadata.description,
+          style: StyleConstants.paragraph.copyWith(
+            color: ReownAppKitModalTheme.colorsOf(context).foreground100,
+            fontWeight: FontWeight.normal,
+          ),
+          textAlign: TextAlign.center,
         ),
       ],
     );
