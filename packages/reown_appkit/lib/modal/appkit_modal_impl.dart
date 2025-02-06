@@ -62,7 +62,13 @@ class ReownAppKitModal
   String _projectId = '';
 
   Map<String, RequiredNamespace> _requiredNamespaces = {};
+  @override
+  Map<String, RequiredNamespace> get requiredNamespaces => _requiredNamespaces;
+
   Map<String, RequiredNamespace> _optionalNamespaces = {};
+  @override
+  Map<String, RequiredNamespace> get optionalNamespaces => _optionalNamespaces;
+
   String? _lastChainEmitted;
   bool _supportsOneClickAuth = false;
   bool _relayConnected = false;
@@ -2158,18 +2164,56 @@ extension _AppKitModalExtension on ReownAppKitModal {
       return;
     }
     if (args != null) {
-      // IF SIWE CALLBACK (1-CA NOT SUPPORTED) SIWECONGIF METHODS ARE CALLED ON ApproveSIWEPage
-      final session = await _settleSession(args.session);
-      onModalConnect.broadcast(ModalConnect(session));
-      //
-      if (_siweService.enabled) {
-        _disconnectOnClose = true;
-        widgetStack.instance.push(ApproveSIWEPage(
-          onSiweFinish: _oneSIWEFinish,
-        ));
+      if ((args.session.sessionProperties ?? {}).containsKey('email')) {
+        // is magic-like session
+        final email = args.session.sessionProperties!['email'];
+        final account = args.session.namespaces['eip155']!.accounts.first;
+        final address = NamespaceUtils.getAccount(account);
+        final chainId = args.session.namespaces['eip155']!.chains?.first;
+        final magicData = MagicData(
+          email: email,
+          chainId: chainId ?? 'eip155:1',
+          address: address,
+        );
+        final session = ReownAppKitModalSession(magicData: magicData);
+        await _setSesionAndChainData(session);
+        onModalConnect.broadcast(ModalConnect(session));
+        if (_selectedWallet == null) {
+          await _storage.delete(StorageConstants.recentWalletId);
+          await _storage.delete(StorageConstants.connectedWalletData);
+        }
+        //
+        if (_siweService.enabled) {
+          if (!_isOpen) {
+            await _checkSIWEStatus();
+            onModalUpdate.broadcast(ModalConnect(_currentSession!));
+          } else {
+            _disconnectOnClose = true;
+            final theme = ReownAppKitModalTheme.maybeOf(_context!);
+            await _magicService.syncTheme(theme);
+            widgetStack.instance.push(ApproveSIWEPage(
+              onSiweFinish: _oneSIWEFinish,
+            ));
+          }
+        } else {
+          if (_isOpen) {
+            closeModal();
+          }
+        }
       } else {
-        if (_isOpen) {
-          closeModal();
+        // IF SIWE CALLBACK (1-CA NOT SUPPORTED) SIWECONGIF METHODS ARE CALLED ON ApproveSIWEPage
+        final session = await _settleSession(args.session);
+        onModalConnect.broadcast(ModalConnect(session));
+        //
+        if (_siweService.enabled) {
+          _disconnectOnClose = true;
+          widgetStack.instance.push(ApproveSIWEPage(
+            onSiweFinish: _oneSIWEFinish,
+          ));
+        } else {
+          if (_isOpen) {
+            closeModal();
+          }
         }
       }
     }

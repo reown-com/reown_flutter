@@ -283,6 +283,9 @@ class ReownAppKitModalSession {
     return _sessionData?.peer.metadata.redirect;
   }
 
+  Map<String, dynamic> get sessionProperties =>
+      _sessionData?.sessionProperties ?? {};
+
   // toJson() would convert ReownAppKitModalSession to a SessionData kind of map
   // no matter if Coinbase Wallet or Email Wallet is connected
   Map<String, dynamic> toJson() {

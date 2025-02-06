@@ -92,30 +92,35 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
           await _continueInFarcaster(farcasterUri);
         }
       } else {
-        final schema = null; // _service?.appKit?.metadata.redirect?.universal;
-        final redirectUri = await _magicService.getSocialRedirectUri(
-          provider: option,
-          schema: schema,
-          chainId: _service?.selectedChain?.chainId,
+        final appKitModal = ModalProvider.of(context).instance;
+        // Regular Session Proposal
+        final connectResponse = await appKitModal.appKit!.connect(
+          requiredNamespaces: appKitModal.requiredNamespaces,
+          optionalNamespaces: appKitModal.optionalNamespaces,
         );
+        final wcUri = connectResponse.uri?.toString() ?? '';
+        final socialOption = option.name.toLowerCase();
+        final webWallet = 'https://web-wallet-app-omega.vercel.app';
+        final redirectUri = '$webWallet/wc?uri=$wcUri&provider=$socialOption';
+        //
 
-        if (redirectUri != null) {
-          if (schema == null && option.supportsWebView) {
-            await _continueInWebview(redirectUri);
-            // final result = await ReownSocialLogin.login(initialUrl: redirectUri);
-            // debugPrint('ReownSocialLogin $result');
-            // if (result == null) {
-            //   _cancelSocialLogin();
-            // } else {
-            //   await _completeSocialLogin(result);
-            // }
-          } else {
-            _magicService.onCompleteSocialLogin.subscribe(
-              _onCompleteSocialLogin,
-            );
-            await ReownCoreUtils.openURL(redirectUri);
-          }
-        }
+        // final schema = null; // _service?.appKit?.metadata.redirect?.universal;
+        // final redirectUri = await _magicService.getSocialRedirectUri(
+        //   provider: option,
+        //   schema: schema,
+        //   chainId: _service?.selectedChain?.chainId,
+        // );
+
+        // if (redirectUri != null) {
+        //   if (schema == null && option.supportsWebView) {
+        //     await _continueInWebview(redirectUri);
+        //   } else {
+        //     _magicService.onCompleteSocialLogin.subscribe(
+        //       _onCompleteSocialLogin,
+        //     );
+        await ReownCoreUtils.openURL(redirectUri);
+        //   }
+        // }
       }
     } catch (e) {
       debugPrint('[$runtimeType] _initSocialLogin error $e');

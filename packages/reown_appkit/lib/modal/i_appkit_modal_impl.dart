@@ -24,6 +24,10 @@ abstract class IReownAppKitModal with ChangeNotifier {
   /// Whether or not this object has been initialized.
   ReownAppKitModalStatus get status;
 
+  Map<String, RequiredNamespace> get requiredNamespaces;
+
+  Map<String, RequiredNamespace> get optionalNamespaces;
+
   bool get hasNamespaces;
 
   FeaturesConfig get featuresConfig;
