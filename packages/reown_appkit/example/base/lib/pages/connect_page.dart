@@ -141,6 +141,10 @@ class ConnectPageState extends State<ConnectPage> {
                       ],
                     ),
                     const SizedBox.square(dimension: 8.0),
+                    Text(
+                      'Connected with ${widget.appKitModal.session?.connectedWalletName ?? 'Unknown wallet'}',
+                    ),
+                    const SizedBox.square(dimension: 8.0),
                     _RequestButtons(
                       appKitModal: widget.appKitModal,
                     ),
