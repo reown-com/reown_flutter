@@ -194,10 +194,10 @@ class ReownAppKitModal
     _setRequiredNamespaces(requiredNamespaces);
     _setOptionalNamespaces(optionalNamespaces);
 
-    GetIt.I.registerSingletonIfAbsent<IUriService>(
+    _registerSingleton<IUriService>(
       () => UriService(core: _appKit.core),
     );
-    GetIt.I.registerSingletonIfAbsent<IAnalyticsService>(
+    _registerSingleton<IAnalyticsService>(
       () => AnalyticsService(
         core: _appKit.core,
         enableAnalytics: enableAnalytics,
@@ -207,7 +207,7 @@ class ReownAppKitModal
     _analyticsService.init().then(
           (_) => _analyticsService.sendEvent(ModalLoadedEvent()),
         );
-    GetIt.I.registerSingletonIfAbsent<IExplorerService>(
+    _registerSingleton<IExplorerService>(
       () => ExplorerService(
         core: _appKit.core,
         referer: _appKit.metadata.name.replaceAll(' ', ''),
@@ -217,40 +217,53 @@ class ReownAppKitModal
         namespaces: {..._requiredNamespaces, ..._optionalNamespaces},
       ),
     );
-    GetIt.I.registerSingletonIfAbsent<INetworkService>(() => NetworkService());
-    GetIt.I.registerSingletonIfAbsent<IToastService>(() => ToastService());
-    GetIt.I.registerSingletonIfAbsent<IBlockChainService>(
+    _registerSingleton<INetworkService>(() => NetworkService());
+    _registerSingleton<IToastService>(() => ToastService());
+    _registerSingleton<IBlockChainService>(
       () => BlockChainService(
         core: _appKit.core,
       ),
     );
-    GetIt.I.registerSingletonIfAbsent<IMagicService>(
+    _registerSingleton<IMagicService>(
       () => MagicService(
         core: _appKit.core,
         metadata: _appKit.metadata,
         featuresConfig: this.featuresConfig,
       ),
     );
-    GetIt.I.registerSingletonIfAbsent<ICoinbaseService>(
+    _registerSingleton<ICoinbaseService>(
       () => CoinbaseService(
         core: _appKit.core,
         metadata: _appKit.metadata,
         enabled: _initializeCoinbaseSDK,
       ),
     );
-    GetIt.I.registerSingletonIfAbsent<IPhantomService>(
+    _registerSingleton<IPhantomService>(
       () => PhantomService(
         core: _appKit.core,
         metadata: _appKit.metadata,
       ),
     );
-    GetIt.I.registerSingletonIfAbsent<ISiweService>(
+    _registerSingleton<ISiweService>(
       () => SiweService(
         appKit: _appKit,
         siweConfig: siweConfig,
         namespaces: {..._requiredNamespaces, ..._optionalNamespaces},
       ),
     );
+  }
+
+  T _registerSingleton<T extends Object>(T Function() factoryFunc) {
+    final type = T;
+    return GetIt.I.registerSingleton<T>(
+      factoryFunc(),
+      instanceName: type.toString(),
+    );
+  }
+
+  FutureOr _unregisterSingleton<T extends Object>() {
+    final type = T;
+    return GetIt.I.unregister<T>(instanceName: type.toString());
   }
 
   IMagicService get _magicService => GetIt.I<IMagicService>();
@@ -1422,6 +1435,16 @@ class ReownAppKitModal
       _lastChainEmitted = null;
       _supportsOneClickAuth = false;
       _status = ReownAppKitModalStatus.idle;
+      _unregisterSingleton<UriService>();
+      _unregisterSingleton<AnalyticsService>();
+      _unregisterSingleton<ExplorerService>();
+      _unregisterSingleton<NetworkService>();
+      _unregisterSingleton<ToastService>();
+      _unregisterSingleton<BlockChainService>();
+      _unregisterSingleton<MagicService>();
+      _unregisterSingleton<CoinbaseService>();
+      _unregisterSingleton<PhantomService>();
+      _unregisterSingleton<SiweService>();
       await Future.delayed(Duration(milliseconds: 500));
       _notify();
     }
