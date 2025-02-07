@@ -1,7 +1,8 @@
-## 1.4.0-beta06
+## 1.4.0-beta07
 
 - Embedded Wallets Features (Send, Receive, Tokens list)
 - Phantom Wallet support
+- Minor bug fixes
 
 ## 1.3.0
 
