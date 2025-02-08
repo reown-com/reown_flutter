@@ -114,6 +114,7 @@ class ReownAppKitModal
   @override
   final balanceNotifier = ValueNotifier<String>('-.--');
 
+  bool _isDisposed = false;
   bool _isOpen = false;
   @override
   bool get isOpen => _isOpen;
@@ -253,23 +254,11 @@ class ReownAppKitModal
     );
   }
 
-  T _registerSingleton<T extends Object>(T Function() factoryFunc) {
-    final type = T;
-    return GetIt.I.registerSingleton<T>(
-      factoryFunc(),
-      instanceName: type.toString(),
-    );
-  }
+  T _registerSingleton<T extends Object>(T Function() factoryFunc) => GetIt.I.registerSingletonIfAbsent<T>(factoryFunc);
 
-  T _getSingleton<T extends Object>() {
-    final type = T;
-    return GetIt.I<T>(instanceName: type.toString());
-  }
+  T _getSingleton<T extends Object>() => GetIt.I<T>();
 
-  FutureOr _unregisterSingleton<T extends Object>() {
-    final type = T;
-    return GetIt.I.unregister<T>(instanceName: type.toString());
-  }
+  FutureOr _unregisterSingleton<T extends Object>() => GetIt.I.unregister<T>();
 
   IMagicService get _magicService => _getSingleton<IMagicService>();
   ICoinbaseService get _coinbaseService => _getSingleton<ICoinbaseService>();
@@ -1440,19 +1429,20 @@ class ReownAppKitModal
       _lastChainEmitted = null;
       _supportsOneClickAuth = false;
       _status = ReownAppKitModalStatus.idle;
-      _unregisterSingleton<UriService>();
-      _unregisterSingleton<AnalyticsService>();
-      _unregisterSingleton<ExplorerService>();
-      _unregisterSingleton<NetworkService>();
-      _unregisterSingleton<ToastService>();
-      _unregisterSingleton<BlockChainService>();
-      _unregisterSingleton<MagicService>();
-      _unregisterSingleton<CoinbaseService>();
-      _unregisterSingleton<PhantomService>();
-      _unregisterSingleton<SiweService>();
+      _unregisterSingleton<IUriService>();
+      _unregisterSingleton<IAnalyticsService>();
+      _unregisterSingleton<IExplorerService>();
+      _unregisterSingleton<INetworkService>();
+      _unregisterSingleton<IToastService>();
+      _unregisterSingleton<IBlockChainService>();
+      _unregisterSingleton<IMagicService>();
+      _unregisterSingleton<ICoinbaseService>();
+      _unregisterSingleton<IPhantomService>();
+      _unregisterSingleton<ISiweService>();
       await Future.delayed(Duration(milliseconds: 500));
       _notify();
     }
+    _isDisposed = true;
     super.dispose();
   }
 
@@ -1482,7 +1472,11 @@ class ReownAppKitModal
 
   ////////* PRIVATE METHODS */////////
 
-  void _notify() => notifyListeners();
+  void _notify() {
+    if (!_isDisposed) {
+      notifyListeners();
+    }
+  }
 
   bool get _initializeCoinbaseSDK {
     final cbId = CoinbaseUtils.defaultListingData.id;
