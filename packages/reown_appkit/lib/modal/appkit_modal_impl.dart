@@ -261,22 +261,27 @@ class ReownAppKitModal
     );
   }
 
+  T _getSingleton<T extends Object>() {
+    final type = T;
+    return GetIt.I<T>(instanceName: type.toString());
+  }
+
   FutureOr _unregisterSingleton<T extends Object>() {
     final type = T;
     return GetIt.I.unregister<T>(instanceName: type.toString());
   }
 
-  IMagicService get _magicService => GetIt.I<IMagicService>();
-  ICoinbaseService get _coinbaseService => GetIt.I<ICoinbaseService>();
-  IPhantomService get _phantomService => GetIt.I<IPhantomService>();
+  IMagicService get _magicService => _getSingleton<IMagicService>();
+  ICoinbaseService get _coinbaseService => _getSingleton<ICoinbaseService>();
+  IPhantomService get _phantomService => _getSingleton<IPhantomService>();
 
-  IUriService get _uriService => GetIt.I<IUriService>();
-  IToastService get _toastService => GetIt.I<IToastService>();
-  IAnalyticsService get _analyticsService => GetIt.I<IAnalyticsService>();
-  IExplorerService get _explorerService => GetIt.I<IExplorerService>();
-  INetworkService get _networkService => GetIt.I<INetworkService>();
-  IBlockChainService get _blockchainService => GetIt.I<IBlockChainService>();
-  ISiweService get _siweService => GetIt.I<ISiweService>();
+  IUriService get _uriService => _getSingleton<IUriService>();
+  IToastService get _toastService => _getSingleton<IToastService>();
+  IAnalyticsService get _analyticsService => _getSingleton<IAnalyticsService>();
+  IExplorerService get _explorerService => _getSingleton<IExplorerService>();
+  INetworkService get _networkService => _getSingleton<INetworkService>();
+  IBlockChainService get _blockchainService => _getSingleton<IBlockChainService>();
+  ISiweService get _siweService => _getSingleton<ISiweService>();
 
   ////////* PUBLIC METHODS */////////
 
