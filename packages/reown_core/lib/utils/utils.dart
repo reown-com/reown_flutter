@@ -77,7 +77,7 @@ class ReownCoreUtils {
     String id = getId();
     return <String>[
       [protocol, version].join('-'),
-      <String>['Reown-Flutter', sdkVersion].join('-'),
+      <String>['reown-flutter', sdkVersion].join('-'),
       os,
       id,
     ].join('/');

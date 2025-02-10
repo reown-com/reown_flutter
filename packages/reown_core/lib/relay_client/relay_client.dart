@@ -16,6 +16,7 @@ import 'package:reown_core/utils/utils.dart';
 import 'package:reown_core/models/basic_models.dart';
 import 'package:reown_core/utils/constants.dart';
 import 'package:reown_core/utils/errors.dart';
+import 'package:reown_core/version.dart';
 
 class RelayClient implements IRelayClient {
   static const JSON_RPC_PUBLISH = 'publish';
@@ -256,7 +257,7 @@ class RelayClient implements IRelayClient {
     final url = ReownCoreUtils.formatRelayRpcUrl(
       protocol: ReownConstants.CORE_PROTOCOL,
       version: ReownConstants.CORE_VERSION,
-      sdkVersion: ReownConstants.SDK_VERSION,
+      sdkVersion: packageVersion,
       relayUrl: core.relayUrl,
       auth: signedJWT,
       projectId: core.projectId,

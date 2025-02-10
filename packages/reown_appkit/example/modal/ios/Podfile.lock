@@ -9,7 +9,6 @@ PODS:
     - CoinbaseWalletSDK/Client
   - connectivity_plus (0.0.1):
     - Flutter
-    - FlutterMacOS
   - Flutter (1.0.0)
   - integration_test (0.0.1):
     - Flutter
@@ -33,7 +32,7 @@ PODS:
 DEPENDENCIES:
   - appcheck (from `.symlinks/plugins/appcheck/ios`)
   - coinbase_wallet_sdk (from `.symlinks/plugins/coinbase_wallet_sdk/ios`)
-  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/darwin`)
+  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - Flutter (from `Flutter`)
   - integration_test (from `.symlinks/plugins/integration_test/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -53,7 +52,7 @@ EXTERNAL SOURCES:
   coinbase_wallet_sdk:
     :path: ".symlinks/plugins/coinbase_wallet_sdk/ios"
   connectivity_plus:
-    :path: ".symlinks/plugins/connectivity_plus/darwin"
+    :path: ".symlinks/plugins/connectivity_plus/ios"
   Flutter:
     :path: Flutter
   integration_test:
@@ -75,7 +74,7 @@ SPEC CHECKSUMS:
   appcheck: e1ab9d4e03736f03e0401554a134d1ed502d7629
   coinbase_wallet_sdk: 7ccd4e1a7940deba6ba9bd81beece999a2268c15
   CoinbaseWalletSDK: ea1f37512bbc69ebe07416e3b29bf840f5cc3152
-  connectivity_plus: 18382e7311ba19efcaee94442b23b32507b20695
+  connectivity_plus: 2a701ffec2c0ae28a48cf7540e279787e77c447d
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
   package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4

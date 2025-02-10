@@ -1,8 +1,4 @@
-import 'package:reown_core/version.dart';
-
 class ReownConstants {
-  static const SDK_VERSION = packageVersion;
-
   static const CORE_PROTOCOL = 'wc';
   static const CORE_VERSION = 2;
   static const CORE_CONTEXT = 'core';
