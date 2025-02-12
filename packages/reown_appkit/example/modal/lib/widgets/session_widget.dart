@@ -3,6 +3,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
+import 'package:reown_appkit_example/services/contracts/aave_contract.dart';
+import 'package:reown_appkit_example/services/contracts/arb_aave_contract.dart';
+import 'package:reown_appkit_example/services/contracts/contract.dart';
+import 'package:reown_appkit_example/services/contracts/usdt_contract.dart';
 
 import 'package:reown_appkit_example/utils/styles.dart';
 
@@ -302,25 +306,23 @@ class SessionWidgetState extends State<SessionWidget> {
 
   List<Widget> _addSmartContractButtons() {
     final List<Widget> children = [];
-
     children.add(const Divider());
-    final onSepolia = widget.appKit.selectedChain?.chainId == '11155111';
-    if (!onSepolia) {
-      children.add(
-        const Text(
-          'Test USDT Contract on Ethereum \nor switch to Sepolia to try a test Contract',
-          textAlign: TextAlign.center,
-        ),
-      );
+    final chainInfo = widget.appKit.selectedChain!;
+
+    late final SmartContract smartContract;
+    if (chainInfo.chainId == '11155111') {
+      smartContract = SepoliaAAVEContract();
+    } else if (chainInfo.chainId == '42161') {
+      smartContract = ArbitrumAAVEContract();
+    } else if (chainInfo.chainId == '1') {
+      smartContract = ERC20USDTContract();
     } else {
-      children.add(
-        const Text(
-          'Test AAVE Token Contract on Sepolia \nor switch to Ethereum to try USDT',
-          textAlign: TextAlign.center,
-        ),
-      );
+      return children;
     }
-    final onMainnet = widget.appKit.selectedChain?.chainId == '1';
+
+    children.add(
+      Text('Test ${smartContract.name}', textAlign: TextAlign.center),
+    );
 
     children.addAll([
       Container(
@@ -328,35 +330,20 @@ class SessionWidgetState extends State<SessionWidget> {
         width: double.infinity,
         margin: const EdgeInsets.symmetric(vertical: StyleConstants.linear8),
         child: ElevatedButton(
-          onPressed: onSepolia
-              ? () async {
-                  final future = MethodsService.callTestSmartContract(
-                    appKitModal: widget.appKit,
-                    action: 'read',
-                  );
-                  MethodDialog.show(
-                    context,
-                    'Test Contract (Read)',
-                    future,
-                  );
-                }
-              : onMainnet
-                  ? () async {
-                      final future = MethodsService.callUSDTSmartContract(
-                        appKitModal: widget.appKit,
-                        action: 'read',
-                      );
-                      MethodDialog.show(
-                        context,
-                        'Test Contract (Read)',
-                        future,
-                      );
-                    }
-                  : null,
+          onPressed: () async {
+            final future = MethodsService.callSmartContract(
+              appKitModal: widget.appKit,
+              smartContract: smartContract,
+              action: 'read',
+            );
+            MethodDialog.show(
+              context,
+              'Read on ${smartContract.name}',
+              future,
+            );
+          },
           style: buttonStyle(context),
-          child: onMainnet
-              ? const Text('USDT Contract (Read)')
-              : const Text('AAVE Contract (Read)'),
+          child: Text('Read on ${smartContract.name}'),
         ),
       ),
       Container(
@@ -364,30 +351,21 @@ class SessionWidgetState extends State<SessionWidget> {
         width: double.infinity,
         margin: const EdgeInsets.symmetric(vertical: StyleConstants.linear8),
         child: ElevatedButton(
-          onPressed: onSepolia
-              ? () async {
-                  widget.appKit.launchConnectedWallet();
-                  final future = MethodsService.callTestSmartContract(
-                    appKitModal: widget.appKit,
-                    action: 'write',
-                  );
-                  MethodDialog.show(context, 'Test Contract (Write)', future);
-                }
-              : onMainnet
-                  ? () async {
-                      widget.appKit.launchConnectedWallet();
-                      final future = MethodsService.callUSDTSmartContract(
-                        appKitModal: widget.appKit,
-                        action: 'write',
-                      );
-                      MethodDialog.show(
-                          context, 'Test Contract (Write)', future);
-                    }
-                  : null,
+          onPressed: () async {
+            widget.appKit.launchConnectedWallet();
+            final future = MethodsService.callSmartContract(
+              appKitModal: widget.appKit,
+              smartContract: smartContract,
+              action: 'write',
+            );
+            MethodDialog.show(
+              context,
+              'Write on ${smartContract.name}',
+              future,
+            );
+          },
           style: buttonStyle(context),
-          child: onMainnet
-              ? const Text('USDT Contract (Write)')
-              : const Text('AAVE Contract (Write)'),
+          child: Text('Write on ${smartContract.name}'),
         ),
       ),
     ]);

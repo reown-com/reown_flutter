@@ -1,25 +1,15 @@
 import 'package:reown_appkit_example/services/contracts/contract.dart';
 
-class SepoliaAAVEContract implements SmartContract {
+class ArbitrumAAVEContract implements SmartContract {
   @override
-  String get name => 'AAVE-Sepolia';
+  String get name => 'AAVE-Arbitrum';
 
-  // https://sepolia.etherscan.io/token/0x88541670E55cC00bEEFD87eB59EDd1b7C511AC9a
+  // https://arbiscan.io/address/0xba5ddd1f9d7f570dc94a51479a000e3bce967196
   @override
-  String get contractAddress => '0x88541670E55cC00bEEFD87eB59EDd1b7C511AC9a';
+  String get contractAddress => '0xba5ddd1f9d7f570dc94a51479a000e3bce967196';
 
   @override
   List<Map<String, dynamic>> get contractABI => [
-        {
-          'inputs': [
-            {'internalType': 'string', 'name': 'name', 'type': 'string'},
-            {'internalType': 'string', 'name': 'symbol', 'type': 'string'},
-            {'internalType': 'uint8', 'name': 'decimals', 'type': 'uint8'},
-            {'internalType': 'address', 'name': 'owner', 'type': 'address'}
-          ],
-          'stateMutability': 'nonpayable',
-          'type': 'constructor'
-        },
         {
           'anonymous': false,
           'inputs': [
@@ -51,17 +41,29 @@ class SepoliaAAVEContract implements SmartContract {
             {
               'indexed': true,
               'internalType': 'address',
-              'name': 'previousOwner',
+              'name': 'from',
               'type': 'address'
             },
             {
               'indexed': true,
               'internalType': 'address',
-              'name': 'newOwner',
+              'name': 'to',
               'type': 'address'
+            },
+            {
+              'indexed': false,
+              'internalType': 'uint256',
+              'name': 'value',
+              'type': 'uint256'
+            },
+            {
+              'indexed': false,
+              'internalType': 'bytes',
+              'name': 'data',
+              'type': 'bytes'
             }
           ],
-          'name': 'OwnershipTransferred',
+          'name': 'Transfer',
           'type': 'event'
         },
         {
@@ -92,24 +94,6 @@ class SepoliaAAVEContract implements SmartContract {
         {
           'inputs': [],
           'name': 'DOMAIN_SEPARATOR',
-          'outputs': [
-            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
-          ],
-          'stateMutability': 'view',
-          'type': 'function'
-        },
-        {
-          'inputs': [],
-          'name': 'EIP712_REVISION',
-          'outputs': [
-            {'internalType': 'bytes', 'name': '', 'type': 'bytes'}
-          ],
-          'stateMutability': 'view',
-          'type': 'function'
-        },
-        {
-          'inputs': [],
-          'name': 'PERMIT_TYPEHASH',
           'outputs': [
             {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
           ],
@@ -152,6 +136,40 @@ class SepoliaAAVEContract implements SmartContract {
           'type': 'function'
         },
         {
+          'inputs': [
+            {'internalType': 'address', 'name': 'account', 'type': 'address'},
+            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+          ],
+          'name': 'bridgeBurn',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {
+              'internalType': 'address',
+              'name': '_l1Address',
+              'type': 'address'
+            },
+            {'internalType': 'bytes', 'name': '_data', 'type': 'bytes'}
+          ],
+          'name': 'bridgeInit',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': 'account', 'type': 'address'},
+            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+          ],
+          'name': 'bridgeMint',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
           'inputs': [],
           'name': 'decimals',
           'outputs': [
@@ -189,26 +207,30 @@ class SepoliaAAVEContract implements SmartContract {
           'type': 'function'
         },
         {
-          'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
-          ],
-          'name': 'mint',
+          'inputs': [],
+          'name': 'isMaster',
           'outputs': [
             {'internalType': 'bool', 'name': '', 'type': 'bool'}
           ],
-          'stateMutability': 'nonpayable',
+          'stateMutability': 'view',
           'type': 'function'
         },
         {
-          'inputs': [
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
-          ],
-          'name': 'mint',
+          'inputs': [],
+          'name': 'l1Address',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'address', 'name': '', 'type': 'address'}
           ],
-          'stateMutability': 'nonpayable',
+          'stateMutability': 'view',
+          'type': 'function'
+        },
+        {
+          'inputs': [],
+          'name': 'l2Gateway',
+          'outputs': [
+            {'internalType': 'address', 'name': '', 'type': 'address'}
+          ],
+          'stateMutability': 'view',
           'type': 'function'
         },
         {
@@ -232,15 +254,6 @@ class SepoliaAAVEContract implements SmartContract {
           'type': 'function'
         },
         {
-          'inputs': [],
-          'name': 'owner',
-          'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
-          ],
-          'stateMutability': 'view',
-          'type': 'function'
-        },
-        {
           'inputs': [
             {'internalType': 'address', 'name': 'owner', 'type': 'address'},
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
@@ -251,13 +264,6 @@ class SepoliaAAVEContract implements SmartContract {
             {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'}
           ],
           'name': 'permit',
-          'outputs': [],
-          'stateMutability': 'nonpayable',
-          'type': 'function'
-        },
-        {
-          'inputs': [],
-          'name': 'renounceOwnership',
           'outputs': [],
           'stateMutability': 'nonpayable',
           'type': 'function'
@@ -294,6 +300,19 @@ class SepoliaAAVEContract implements SmartContract {
         },
         {
           'inputs': [
+            {'internalType': 'address', 'name': '_to', 'type': 'address'},
+            {'internalType': 'uint256', 'name': '_value', 'type': 'uint256'},
+            {'internalType': 'bytes', 'name': '_data', 'type': 'bytes'}
+          ],
+          'name': 'transferAndCall',
+          'outputs': [
+            {'internalType': 'bool', 'name': 'success', 'type': 'bool'}
+          ],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
             {'internalType': 'address', 'name': 'sender', 'type': 'address'},
             {'internalType': 'address', 'name': 'recipient', 'type': 'address'},
             {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
@@ -302,15 +321,6 @@ class SepoliaAAVEContract implements SmartContract {
           'outputs': [
             {'internalType': 'bool', 'name': '', 'type': 'bool'}
           ],
-          'stateMutability': 'nonpayable',
-          'type': 'function'
-        },
-        {
-          'inputs': [
-            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'}
-          ],
-          'name': 'transferOwnership',
-          'outputs': [],
           'stateMutability': 'nonpayable',
           'type': 'function'
         }
