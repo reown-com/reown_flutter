@@ -325,7 +325,7 @@ class MethodsService {
           appKitModal.selectedChain!.chainId,
         );
         final senderAddress = appKitModal.session!.getAddress(namespace)!;
-        return appKitModal.requestWriteContract(
+        return await appKitModal.requestWriteContract(
           topic: appKitModal.session!.topic,
           chainId: appKitModal.selectedChain!.chainId,
           deployedContract: deployedContract,
@@ -340,6 +340,22 @@ class MethodsService {
             requestValue, // == 0.23
           ],
         );
+      // return await appKitModal.requestWriteContract(
+      //   topic: appKitModal.session!.topic,
+      //   chainId: appKitModal.selectedChain!.chainId,
+      //   deployedContract: deployedContract,
+      //   functionName: 'pay',
+      //   transaction: Transaction(
+      //     from: EthereumAddress.fromHex(senderAddress),
+      //     // value: EtherAmount.fromUnitAndValue(EtherUnit.wei, weiValue),
+      //   ),
+      //   parameters: [
+      //     'cartId1',
+      //     'uid1',
+      //     EtherAmount.fromInt(EtherUnit.finney, 0).getInWei,
+      //   ],
+      // );
+      // --------
       // payable function with no parameters such as:
       // {
       //   "inputs": [],
