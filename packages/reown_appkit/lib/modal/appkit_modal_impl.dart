@@ -254,7 +254,8 @@ class ReownAppKitModal
     );
   }
 
-  T _registerSingleton<T extends Object>(T Function() factoryFunc) => GetIt.I.registerSingletonIfAbsent<T>(factoryFunc);
+  T _registerSingleton<T extends Object>(T Function() factoryFunc) =>
+      GetIt.I.registerSingletonIfAbsent<T>(factoryFunc);
 
   T _getSingleton<T extends Object>() => GetIt.I<T>();
 
@@ -269,7 +270,8 @@ class ReownAppKitModal
   IAnalyticsService get _analyticsService => _getSingleton<IAnalyticsService>();
   IExplorerService get _explorerService => _getSingleton<IExplorerService>();
   INetworkService get _networkService => _getSingleton<INetworkService>();
-  IBlockChainService get _blockchainService => _getSingleton<IBlockChainService>();
+  IBlockChainService get _blockchainService =>
+      _getSingleton<IBlockChainService>();
   ISiweService get _siweService => _getSingleton<ISiweService>();
 
   ////////* PUBLIC METHODS */////////
