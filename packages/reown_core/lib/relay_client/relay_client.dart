@@ -213,6 +213,7 @@ class RelayClient implements IRelayClient {
     if (_active) {
       await _disconnect();
     }
+    if (_connecting) return;
 
     try {
       // Connect and track the connection progress, then start the heartbeat
