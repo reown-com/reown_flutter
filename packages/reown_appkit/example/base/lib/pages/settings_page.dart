@@ -217,6 +217,15 @@ class SettingsPageState extends State<SettingsPage> {
               },
             ),
             const SizedBox(height: StyleConstants.linear8),
+            FutureBuilder(
+              future: ReownCoreUtils.getPackageName(),
+              builder: (_, snapshot) {
+                return Text(
+                  snapshot.data ?? '',
+                  style: textStyleBold,
+                );
+              },
+            ),
           ],
         ),
       ),
