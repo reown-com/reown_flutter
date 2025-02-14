@@ -206,6 +206,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final prefs = await SharedPreferences.getInstance();
     final linkMode = prefs.getBool('appkit_sample_linkmode') ?? false;
+    final socialFeatures = prefs.getBool('appkit_sample_socials') ?? false;
 
     _addOrRemoveNetworks(linkMode);
 
@@ -214,7 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appKit: _appKit,
       enableAnalytics: true,
       siweConfig: _siweConfig(linkMode),
-      // featuresConfig: _featuresConfig(),
+      featuresConfig: socialFeatures ? _featuresConfig() : null,
       // requiredNamespaces: {},
       optionalNamespaces: _updatedNamespaces(),
       featuredWalletIds: _featuredWalletIds(),
@@ -250,7 +251,9 @@ class _MyHomePageState extends State<MyHomePage> {
       PageData(
         page: SettingsPage(
           appKitModal: _appKitModal!,
-          reinitialize: (bool linkMode) async {
+          linkMode: linkMode,
+          socials: socialFeatures,
+          reinitialize: (bool value, String storageKey) async {
             final result = await showDialog<bool>(
               context: context,
               builder: (BuildContext context) {
@@ -270,7 +273,8 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             );
             if (result == true) {
-              await prefs.setBool('appkit_sample_linkmode', linkMode);
+              // appkit_sample_socials
+              await prefs.setBool(storageKey, value);
               if (!kDebugMode) {
                 exit(0);
               }
