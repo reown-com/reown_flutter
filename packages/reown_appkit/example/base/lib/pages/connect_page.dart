@@ -63,6 +63,8 @@ class ConnectPageState extends State<ConnectPage> {
   Future<void> _refreshData() async {
     await widget.appKitModal.reconnectRelay();
     await widget.appKitModal.loadAccountData();
+    final topic = widget.appKitModal.session!.topic ?? '';
+    await widget.appKitModal.appKit!.ping(topic: topic);
     setState(() {});
   }
 

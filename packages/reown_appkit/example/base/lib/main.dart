@@ -213,7 +213,7 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       appKit: _appKit,
       enableAnalytics: true,
-      // siweConfig: _siweConfig(linkMode),
+      siweConfig: _siweConfig(linkMode),
       // featuresConfig: _featuresConfig(),
       // requiredNamespaces: {},
       optionalNamespaces: _updatedNamespaces(),

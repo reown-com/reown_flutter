@@ -287,7 +287,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                     child: Text(e.name),
                   );
                 }).toList(),
-                onChanged: (ChainMetadata? chain) {
+                onChanged: (ChainMetadata? chain) async {
                   setState(() => _selectedChain = chain);
                   final chainKey = chainKeys[_currentPage];
                   GetIt.I
@@ -295,10 +295,21 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                       .getBalance(address: chainKey.address)
                       .then((value) => setState(() => _balance = value))
                       .onError((a, b) {
-                    debugPrint(a.toString());
-                    debugPrint(b.toString());
                     setState(() => _balance = 0.0);
                   });
+                  final walletKit = GetIt.I<IWalletKitService>().walletKit;
+                  final sessions = walletKit.sessions.getAll();
+                  final cid = _selectedChain!.chainId.split(':').last;
+                  for (var session in sessions) {
+                    await walletKit.emitSessionEvent(
+                      topic: session.topic,
+                      chainId: _selectedChain!.chainId,
+                      event: SessionEventParams(
+                        name: 'chainChanged',
+                        data: int.parse(cid),
+                      ),
+                    );
+                  }
                 },
               ),
             ],
