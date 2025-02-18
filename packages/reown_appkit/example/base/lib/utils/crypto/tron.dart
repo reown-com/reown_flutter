@@ -4,8 +4,8 @@ import 'package:reown_appkit/reown_appkit.dart';
 import 'dart:convert';
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
-import 'package:solana_web3/solana_web3.dart' as solana;
-import 'package:bs58/bs58.dart';
+// ignore: depend_on_referenced_packages
+import 'package:convert/convert.dart';
 
 enum TronMethods {
   tronSignTransaction,
@@ -85,7 +85,7 @@ class Tron {
 
   static String _addressToFormat(String addressValue) {
     var addres = base58.decode(addressValue);
-    var hex1 = solana.hex.encode(addres);
+    var hex1 = hex.encode(addres);
     var hex2 = hex1.substring(2);
     var finalhex = hex2.substring(0, hex2.length - 8);
     return finalhex.padLeft(64, '0');

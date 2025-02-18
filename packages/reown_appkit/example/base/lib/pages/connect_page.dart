@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
-import 'package:reown_appkit_dapp/utils/string_constants.dart';
 import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
 import 'package:toastification/toastification.dart';
 
@@ -13,13 +9,9 @@ class ConnectPage extends StatefulWidget {
   const ConnectPage({
     super.key,
     required this.appKitModal,
-    required this.reinitialize,
-    this.linkMode = false,
   });
 
   final ReownAppKitModal appKitModal;
-  final Function(bool linkMode) reinitialize;
-  final bool linkMode;
 
   @override
   ConnectPageState createState() => ConnectPageState();
@@ -68,176 +60,105 @@ class ConnectPageState extends State<ConnectPage> {
     super.dispose();
   }
 
+  Future<void> _refreshData() async {
+    await widget.appKitModal.reconnectRelay();
+    await widget.appKitModal.loadAccountData();
+    final topic = widget.appKitModal.session!.topic ?? '';
+    await widget.appKitModal.appKit!.ping(topic: topic);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     // Build the list of chain buttons, clear if the textnet changed
-    return ListView(
-      padding: const EdgeInsets.symmetric(
-        horizontal: StyleConstants.linear8,
-      ),
-      children: <Widget>[
-        const SizedBox(height: StyleConstants.linear16),
-        Text(
-          widget.appKitModal.appKit!.metadata.name,
-          style: StyleConstants.subtitleText.copyWith(
-            color: ReownAppKitModalTheme.colorsOf(context).foreground100,
+    final isDarkMode =
+        ReownAppKitModalTheme.maybeOf(context)?.isDarkMode ?? false;
+    return RefreshIndicator(
+      onRefresh: () => _refreshData(),
+      child: Stack(
+        children: [
+          Center(
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Center(
+                  child: Image.asset(
+                    'assets/appkit-logo.png',
+                    width: 200.0,
+                  ),
+                ),
+                Container(
+                  color: isDarkMode
+                      ? Colors.black.withOpacity(0.8)
+                      : Colors.white.withOpacity(0.8),
+                )
+              ],
+            ),
           ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: StyleConstants.linear24),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AppKitModalNetworkSelectButton(
-              appKit: widget.appKitModal,
+          ListView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: StyleConstants.linear16,
             ),
-            const SizedBox.square(dimension: 8.0),
-            AppKitModalConnectButton(
-              appKit: widget.appKitModal,
-            ),
-          ],
-        ),
-        const SizedBox(height: StyleConstants.linear8),
-        Visibility(
-          visible: widget.appKitModal.isConnected,
-          child: Column(
-            children: [
-              AppKitModalAccountButton(
+            children: <Widget>[
+              const SizedBox(height: StyleConstants.linear16),
+              _TitleSection(
                 appKitModal: widget.appKitModal,
               ),
-              const SizedBox.square(dimension: 8.0),
+              const SizedBox(height: StyleConstants.linear8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  AppKitModalBalanceButton(
-                    appKitModal: widget.appKitModal,
-                    onTap: widget.appKitModal.openNetworksView,
+                  AppKitModalNetworkSelectButton(
+                    appKit: widget.appKitModal,
+                    size: BaseButtonSize.small,
                   ),
                   const SizedBox.square(dimension: 8.0),
-                  AppKitModalAddressButton(
-                    appKitModal: widget.appKitModal,
-                    onTap: widget.appKitModal.openModalView,
+                  AppKitModalConnectButton(
+                    appKit: widget.appKitModal,
+                    size: BaseButtonSize.small,
                   ),
                 ],
               ),
-              const SizedBox.square(dimension: 8.0),
-              ...(_buildRequestButtons()),
-            ],
-          ),
-        ),
-        const SizedBox(height: StyleConstants.linear8),
-        Visibility(
-          visible: !widget.appKitModal.isConnected,
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'non-EVM\nSession Proposal',
-                      textAlign: TextAlign.end,
-                      style: TextStyle(
-                        color: ReownAppKitModalTheme.colorsOf(context)
-                            .foreground100,
-                        fontWeight: !widget.linkMode
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                      ),
+              const SizedBox(height: StyleConstants.linear8),
+              Visibility(
+                visible: widget.appKitModal.isConnected,
+                child: Column(
+                  children: [
+                    AppKitModalAccountButton(
+                      appKitModal: widget.appKitModal,
                     ),
-                  ),
-                  Switch(
-                    value: widget.linkMode,
-                    onChanged: (value) {
-                      widget.reinitialize(value);
-                    },
-                  ),
-                  Expanded(
-                    child: Text(
-                      'only EVM\nLink Mode',
-                      style: TextStyle(
-                        color: ReownAppKitModalTheme.colorsOf(context)
-                            .foreground100,
-                        fontWeight: widget.linkMode
-                            ? FontWeight.bold
-                            : FontWeight.normal,
-                      ),
+                    const SizedBox.square(dimension: 8.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AppKitModalBalanceButton(
+                          appKitModal: widget.appKitModal,
+                          onTap: widget.appKitModal.openNetworksView,
+                        ),
+                        const SizedBox.square(dimension: 8.0),
+                        AppKitModalAddressButton(
+                          appKitModal: widget.appKitModal,
+                          onTap: widget.appKitModal.openModalView,
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: StyleConstants.linear16),
-        const Divider(height: 1.0),
-        const SizedBox(height: StyleConstants.linear8),
-        _FooterWidget(appKitModal: widget.appKitModal),
-        const SizedBox(height: StyleConstants.linear8),
-      ],
-    );
-  }
-
-  List<Widget> _buildRequestButtons() {
-    final chainId = widget.appKitModal.selectedChain?.chainId ?? '1';
-    final ns = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
-    return widget.appKitModal.getApprovedMethods(namespace: ns)?.map((method) {
-          final topic = widget.appKitModal.session!.topic ?? '';
-          final chainId = widget.appKitModal.selectedChain!.chainId;
-          final address = widget.appKitModal.session!.getAddress(ns)!;
-          final chainInfo = ReownAppKitModalNetworks.getNetworkById(
-            ns,
-            chainId,
-          );
-          // final requestParams = await getParams(method, address);
-          // final enabled = requestParams != null;
-          return Container(
-            height: 40.0,
-            width: double.infinity,
-            margin: const EdgeInsets.symmetric(
-              vertical: StyleConstants.linear8,
-            ),
-            child: FutureBuilder<SessionRequestParams?>(
-                future: getParams(
-                  method,
-                  address,
-                  chainInfo!,
+                    const SizedBox.square(dimension: 8.0),
+                    Text(
+                      'Connected with ${widget.appKitModal.session?.connectedWalletName ?? 'Unknown wallet'}',
+                    ),
+                    const SizedBox.square(dimension: 8.0),
+                    _RequestButtons(
+                      appKitModal: widget.appKitModal,
+                    ),
+                  ],
                 ),
-                builder: (_, snapshot) {
-                  final enabled = snapshot.data != null;
-                  return ElevatedButton(
-                    style: ButtonStyle(
-                      elevation: WidgetStateProperty.all(0.0),
-                      backgroundColor: WidgetStateProperty.all<Color>(
-                        enabled
-                            ? ReownAppKitModalTheme.colorsOf(context).accent080
-                            : ReownAppKitModalTheme.colorsOf(context)
-                                .accenGlass010,
-                      ),
-                      foregroundColor: WidgetStateProperty.all<Color>(
-                        enabled
-                            ? Colors.white
-                            : ReownAppKitModalTheme.colorsOf(context)
-                                .foreground200,
-                      ),
-                    ),
-                    onPressed: enabled
-                        ? () {
-                            widget.appKitModal.launchConnectedWallet();
-                            final future = widget.appKitModal.request(
-                              topic: topic,
-                              chainId: chainId,
-                              request: snapshot.data!,
-                            );
-                            MethodDialog.show(context, method, future);
-                          }
-                        : null,
-                    child: Text(method),
-                  );
-                }),
-          );
-        }).toList() ??
-        [];
+              ),
+              const SizedBox(height: StyleConstants.linear8),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   void _onSessionConnect(SessionConnect? event) async {
@@ -278,189 +199,91 @@ class ConnectPageState extends State<ConnectPage> {
   }
 }
 
-class _FooterWidget extends StatefulWidget {
-  const _FooterWidget({required this.appKitModal});
+class _RequestButtons extends StatefulWidget {
   final ReownAppKitModal appKitModal;
+  const _RequestButtons({required this.appKitModal});
 
   @override
-  State<_FooterWidget> createState() => __FooterWidgetState();
+  State<_RequestButtons> createState() => __RequestButtonsState();
 }
 
-class __FooterWidgetState extends State<_FooterWidget> {
+class __RequestButtonsState extends State<_RequestButtons> {
   @override
   Widget build(BuildContext context) {
-    final textStyle = TextStyle(
-      fontSize: 12.0,
-      color: ReownAppKitModalTheme.colorsOf(context).foreground100,
+    final topic = widget.appKitModal.session!.topic ?? '';
+    final chainId = widget.appKitModal.selectedChain?.chainId ?? '1';
+    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    final methods = widget.appKitModal.getApprovedMethods(namespace: namespace);
+    final address = widget.appKitModal.session!.getAddress(namespace)!;
+    final chainInfo = ReownAppKitModalNetworks.getNetworkById(
+      namespace,
+      chainId,
     );
-    final textStyleBold = textStyle.copyWith(
-      fontWeight: FontWeight.bold,
-    );
-    final redirect = widget.appKitModal.appKit!.metadata.redirect;
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SizedBox(height: StyleConstants.linear8),
-        Text('Redirect:', style: textStyleBold),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Native: ', style: textStyle),
-            Expanded(
-              child: Text('${redirect?.native}', style: textStyleBold),
-            ),
-          ],
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Universal: ', style: textStyle),
-            Expanded(
-              child: Text('${redirect?.universal}', style: textStyleBold),
-            ),
-          ],
-        ),
-        Row(
-          children: [
-            Text('Link Mode: ', style: textStyle),
-            Text('${redirect?.linkMode}', style: textStyleBold),
-          ],
-        ),
-        FutureBuilder<PackageInfo>(
-          future: PackageInfo.fromPlatform(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const SizedBox.shrink();
-            }
-            final v = snapshot.data!.version;
-            final b = snapshot.data!.buildNumber;
-            const f = String.fromEnvironment('FLUTTER_APP_FLAVOR');
-            // return Text('App Version: $v-$f ($b) - SDK v$packageVersion');
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('App Version: ', style: textStyle),
-                Expanded(
-                  child: Text(
-                    '$v-$f ($b) - SDK v$packageVersion',
-                    style: textStyleBold,
-                  ),
-                ),
-              ],
-            );
-          },
-        ),
-        const SizedBox(height: StyleConstants.linear8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Visibility(
-              visible: !widget.appKitModal.isConnected,
-              child: SizedBox(
-                height: 30.0,
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    elevation: WidgetStateProperty.all(0.0),
-                    backgroundColor: WidgetStateProperty.all<Color>(
-                      ReownAppKitModalTheme.colorsOf(context).accenGlass010,
-                    ),
-                    foregroundColor: WidgetStateProperty.all<Color>(
-                      ReownAppKitModalTheme.colorsOf(context).foreground100,
-                    ),
-                  ),
-                  onPressed: () async {
-                    await widget.appKitModal.appKit!.core.storage.deleteAll();
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('Storage cleared'),
-                      duration: Duration(seconds: 1),
-                    ));
-                  },
-                  child: Text(
-                    'CLEAR STORAGE',
-                    style: TextStyle(fontSize: 10.0),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class QRCodeScreen extends StatefulWidget {
-  const QRCodeScreen({
-    super.key,
-    required this.uri,
-    this.walletScheme = '',
-  });
-  final String uri;
-  final String walletScheme;
-
-  @override
-  State<QRCodeScreen> createState() => _QRCodeScreenState();
-}
-
-class _QRCodeScreenState extends State<QRCodeScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: Scaffold(
-        appBar: AppBar(title: const Text(StringConstants.scanQrCode)),
-        body: _QRCodeView(
-          uri: widget.uri,
-          walletScheme: widget.walletScheme,
-        ),
-      ),
-    );
-  }
-}
-
-class _QRCodeView extends StatelessWidget {
-  const _QRCodeView({
-    required this.uri,
-    this.walletScheme = '',
-  });
-  final String uri;
-  final String walletScheme;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        QrImageView(data: uri),
-        const SizedBox(
-          height: StyleConstants.linear16,
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Clipboard.setData(
-              ClipboardData(text: uri.toString()),
-            ).then(
-              (_) => toastification.show(
-                title: const Text(StringConstants.copiedToClipboard),
-                context: context,
-                autoCloseDuration: Duration(seconds: 2),
-                alignment: Alignment.bottomCenter,
-              ),
-            );
-          },
-          child: const Text('Copy URL to Clipboard'),
-        ),
-        Visibility(
-          visible: walletScheme.isNotEmpty,
-          child: ElevatedButton(
-            onPressed: () async {
-              final encodedUri = Uri.encodeComponent(uri);
-              await ReownCoreUtils.openURL('$walletScheme?uri=$encodedUri');
-            },
-            child: const Text('Open Test Wallet'),
+      children: (methods ?? []).map((method) {
+        return Container(
+          height: 40.0,
+          width: double.infinity,
+          margin: const EdgeInsets.symmetric(
+            vertical: StyleConstants.linear8,
           ),
+          child: ElevatedButton(
+            style: ButtonStyle(
+              elevation: WidgetStateProperty.all(0.0),
+              backgroundColor: WidgetStateProperty.all<Color>(
+                  ReownAppKitModalTheme.colorsOf(context).accent080),
+              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+            ),
+            onPressed: () async {
+              final params = await getParams(method, address, chainInfo!);
+              if (params?.params != null) {
+                widget.appKitModal.launchConnectedWallet();
+                final future = widget.appKitModal.request(
+                  topic: topic,
+                  chainId: chainId,
+                  request: params!,
+                );
+                MethodDialog.show(context, method, future);
+              } else {
+                toastification.show(
+                  type: ToastificationType.error,
+                  title: const Text('Method not implemented'),
+                  context: context,
+                  autoCloseDuration: Duration(seconds: 2),
+                  alignment: Alignment.bottomCenter,
+                );
+              }
+            },
+            child: Text(method),
+          ),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class _TitleSection extends StatelessWidget {
+  final ReownAppKitModal appKitModal;
+  const _TitleSection({required this.appKitModal});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          appKitModal.appKit!.metadata.name,
+          style: StyleConstants.subtitleText.copyWith(
+            color: ReownAppKitModalTheme.colorsOf(context).foreground100,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        Text(
+          appKitModal.appKit!.metadata.description,
+          style: StyleConstants.paragraph.copyWith(
+            color: ReownAppKitModalTheme.colorsOf(context).foreground100,
+            fontWeight: FontWeight.normal,
+          ),
+          textAlign: TextAlign.center,
         ),
       ],
     );

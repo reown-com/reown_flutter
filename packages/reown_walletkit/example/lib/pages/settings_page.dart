@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -16,6 +18,7 @@ import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/recover_from_seed.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toastification/toastification.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -64,22 +67,22 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 //
                 const SizedBox(height: 20.0),
-                const Divider(height: 1.0),
+                const Divider(height: 1.0, color: Colors.grey),
                 _SolanaAccounts(),
                 const SizedBox(height: 20.0),
-                const Divider(height: 1.0),
+                const Divider(height: 1.0, color: Colors.grey),
                 _PolkadotAccounts(),
                 const SizedBox(height: 20.0),
-                const Divider(height: 1.0),
+                const Divider(height: 1.0, color: Colors.grey),
                 _KadenaAccounts(),
                 const SizedBox(height: 20.0),
-                const Divider(height: 1.0),
+                const Divider(height: 1.0, color: Colors.grey),
                 _DeviceData(),
                 const SizedBox(height: 20.0),
-                const Divider(height: 1.0),
+                const Divider(height: 1.0, color: Colors.grey),
                 _Metadata(),
                 const SizedBox(height: 20.0),
-                const Divider(height: 1.0),
+                const Divider(height: 1.0, color: Colors.grey),
                 _Buttons(
                   onDeleteData: () async {
                     final walletKit = GetIt.I<IWalletKitService>().walletKit;
@@ -145,13 +148,20 @@ class _Metadata extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox.square(dimension: 20.0),
           _DataContainer(
             title: 'Redirect',
             data:
                 'Native: $nativeLink\nUniversal: $universalLink\nLink Mode: $linkMode',
+          ),
+          const SizedBox.square(dimension: 10.0),
+          FutureBuilder(
+            future: ReownCoreUtils.getPackageName(),
+            builder: (_, snapshot) {
+              return Text(snapshot.data ?? '');
+            },
           ),
         ],
       ),
@@ -208,7 +218,6 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                 child: Text(
                   'EVM Accounts (${_currentPage + 1}/${chainKeys.length})',
                   style: const TextStyle(
-                    color: Colors.black,
                     fontSize: 16.0,
                     fontWeight: FontWeight.w500,
                   ),
@@ -288,13 +297,29 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                     child: Text(e.name),
                   );
                 }).toList(),
-                onChanged: (ChainMetadata? chain) {
+                onChanged: (ChainMetadata? chain) async {
                   setState(() => _selectedChain = chain);
                   final chainKey = chainKeys[_currentPage];
                   GetIt.I
                       .get<EVMService>(instanceName: chain?.chainId)
                       .getBalance(address: chainKey.address)
-                      .then((value) => setState(() => _balance = value));
+                      .then((value) => setState(() => _balance = value))
+                      .onError((a, b) {
+                    setState(() => _balance = 0.0);
+                  });
+                  final walletKit = GetIt.I<IWalletKitService>().walletKit;
+                  final sessions = walletKit.sessions.getAll();
+                  final cid = _selectedChain!.chainId.split(':').last;
+                  for (var session in sessions) {
+                    await walletKit.emitSessionEvent(
+                      topic: session.topic,
+                      chainId: _selectedChain!.chainId,
+                      event: SessionEventParams(
+                        name: 'chainChanged',
+                        data: int.parse(cid),
+                      ),
+                    );
+                  }
                 },
               ),
             ],
@@ -355,8 +380,9 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                     padding: const EdgeInsets.symmetric(horizontal: 2.0),
                     child: CircleAvatar(
                       radius: e.$1 == _currentPage ? 4.0 : 3.0,
-                      backgroundColor:
-                          e.$1 == _currentPage ? Colors.black : Colors.black38,
+                      backgroundColor: e.$1 == _currentPage
+                          ? StyleConstants.lightGray
+                          : StyleConstants.lightGray.withOpacity(0.5),
                     ),
                   ),
                 )
@@ -426,7 +452,6 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
                 child: Text(
                   'Solana Account',
                   style: TextStyle(
-                    color: Colors.black,
                     fontSize: 16.0,
                     fontWeight: FontWeight.w500,
                   ),
@@ -509,7 +534,6 @@ class _PolkadotAccounts extends StatelessWidget {
                 child: Text(
                   'Polkadot Account',
                   style: TextStyle(
-                    color: Colors.black,
                     fontSize: 16.0,
                     fontWeight: FontWeight.w500,
                   ),
@@ -557,7 +581,6 @@ class _KadenaAccounts extends StatelessWidget {
                 child: Text(
                   'Kadena Account',
                   style: TextStyle(
-                    color: Colors.black,
                     fontSize: 16.0,
                     fontWeight: FontWeight.w500,
                   ),
@@ -602,7 +625,6 @@ class _DeviceData extends StatelessWidget {
             child: Text(
               'Device',
               style: TextStyle(
-                color: Colors.black,
                 fontSize: 16.0,
                 fontWeight: FontWeight.w500,
               ),
@@ -655,24 +677,85 @@ class _Buttons extends StatelessWidget {
       padding: const EdgeInsets.all(12.0),
       child: Column(
         children: [
+          FutureBuilder(
+            future: SharedPreferences.getInstance(),
+            builder: (_, snapshot) {
+              if (snapshot.hasData) {
+                final prefs = snapshot.data!;
+                final linkModeEnabled =
+                    prefs.getBool('appkit_sample_linkmode') ?? false;
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Link Mode',
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                    Switch(
+                      value: linkModeEnabled,
+                      onChanged: (value) async {
+                        await prefs.setBool('appkit_sample_linkmode', value);
+                        final result = await showDialog<bool>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content:
+                                  Text('App will be closed to apply changes'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(false),
+                                  child: Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(true),
+                                  child: Text('Ok'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                        if (result == true) {
+                          // appkit_sample_socials
+                          await prefs.setBool('appkit_sample_linkmode', value);
+                          if (!kDebugMode) {
+                            exit(0);
+                          }
+                        }
+                      },
+                    ),
+                    Expanded(child: SizedBox.shrink()),
+                  ],
+                );
+              }
+              return SizedBox.shrink();
+            },
+          ),
           const SizedBox(height: 8.0),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: onDeleteData,
-              child: Text(
-                'Clear local storage',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
+          Row(
+            children: [
+              CustomButton(
+                type: CustomButtonType.normal,
+                onTap: onDeleteData,
+                child: const Center(
+                  child: Text(
+                    'Clear local storage',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
-            ),
+            ],
           ),
           const SizedBox(height: 12.0),
           Row(
             children: [
               CustomButton(
-                type: CustomButtonType.normal,
+                type: CustomButtonType.valid,
                 onTap: onRestoreFromSeed,
                 child: const Center(
                   child: Text(
@@ -756,7 +839,7 @@ class __DataContainerState extends State<_DataContainer> {
       child: Container(
         height: widget.height,
         decoration: BoxDecoration(
-          color: StyleConstants.lightGray,
+          color: StyleConstants.lightGray.withOpacity(0.5),
           borderRadius: BorderRadius.circular(
             StyleConstants.linear16,
           ),
@@ -770,7 +853,6 @@ class __DataContainerState extends State<_DataContainer> {
                 Text(
                   widget.title,
                   style: const TextStyle(
-                    color: Colors.black,
                     fontSize: 14.0,
                     fontWeight: FontWeight.bold,
                   ),
@@ -788,7 +870,6 @@ class __DataContainerState extends State<_DataContainer> {
               child: Text(
                 widget.data,
                 style: const TextStyle(
-                  color: Colors.black87,
                   fontSize: 13.0,
                   fontWeight: FontWeight.w400,
                 ),

@@ -7,11 +7,12 @@ import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:reown_appkit/modal/constants/string_constants.dart';
-import 'package:reown_appkit/modal/services/coinbase_service/coinbase_service.dart';
+import 'package:reown_appkit/modal/services/coinbase_service/utils/coinbase_utils.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/native_app_data.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/redirect.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/request_params.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/wc_sample_wallets.dart';
+import 'package:reown_appkit/modal/services/phantom_service/utils/phantom_utils.dart';
 import 'package:reown_appkit/modal/services/uri_service/i_url_utils.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/utils/debouncer.dart';
@@ -249,7 +250,6 @@ class ExplorerService implements IExplorerService {
       page: 1,
       entries: _installedWalletIds.length,
       include: _installedWalletsParam,
-      platform: _getPlatformType(),
     );
     // this query gives me a count of installedWalletsParam.length
     final installedWallets = await _fetchListings(params: params);
@@ -267,7 +267,6 @@ class ExplorerService implements IExplorerService {
       page: 1,
       entries: _featuredWalletsParam!.split(',').length,
       include: _featuredWalletsParam,
-      platform: _getPlatformType(),
     );
     return await _fetchListings(params: params);
   }
@@ -278,7 +277,6 @@ class ExplorerService implements IExplorerService {
       entries: _defaultEntriesCount,
       include: _includedWalletsParam,
       exclude: _excludedWalletsParam,
-      platform: _getPlatformType(),
     );
     return await _fetchListings(params: _requestParams);
   }
@@ -307,7 +305,14 @@ class ExplorerService implements IExplorerService {
         if (updateCount) {
           totalListings.value += apiResponse.count;
         }
-        return apiResponse.data.toList().toAppKitWalletInfo();
+        return apiResponse.data
+            .where((a) {
+              return a.mobileLink != null ||
+                  a.id == CoinbaseUtils.walletId ||
+                  a.id == PhantomUtils.walletId;
+            })
+            .toList()
+            .toAppKitWalletInfo();
       } else {
         return <ReownAppKitModalWalletInfo>[];
       }
@@ -418,7 +423,6 @@ class ExplorerService implements IExplorerService {
         search: _currentSearchValue,
         include: include,
         exclude: exclude,
-        platform: _getPlatformType(),
       ),
       updateCount: false,
     );
@@ -433,19 +437,52 @@ class ExplorerService implements IExplorerService {
       params: RequestParams(
         page: 1,
         entries: 1,
-        search: 'coinbase wallet',
-        // platform: _getPlatformType(),
+        include: CoinbaseUtils.walletId,
       ),
       updateCount: false,
     );
 
     if (results.isNotEmpty) {
-      final wallet =
-          ReownAppKitModalWalletInfo.fromJson(results.first.toJson());
-      final mobileLink = CoinbaseService.defaultWalletData.listing.mobileLink;
-      bool installed = await _uriService.isInstalled(mobileLink);
-      return wallet.copyWith(
-        listing: wallet.listing.copyWith(mobileLink: mobileLink),
+      final serviceData = ReownAppKitModalWalletInfo.fromJson(
+        results.first.toJson(),
+      );
+      final mobileLink = CoinbaseUtils.defaultListingData.mobileLink;
+      final linkMode = CoinbaseUtils.defaultListingData.linkMode;
+      final installed = await _uriService.isInstalled(mobileLink);
+      return serviceData.copyWith(
+        listing: serviceData.listing.copyWith(
+          mobileLink: mobileLink,
+          linkMode: linkMode,
+        ),
+        installed: installed,
+      );
+    }
+    return null;
+  }
+
+  @override
+  Future<ReownAppKitModalWalletInfo?> getPhantomWalletObject() async {
+    final results = await _fetchListings(
+      params: RequestParams(
+        page: 1,
+        entries: 1,
+        include: PhantomUtils.walletId,
+      ),
+      updateCount: false,
+    );
+
+    if (results.isNotEmpty) {
+      final serviceData = ReownAppKitModalWalletInfo.fromJson(
+        results.first.toJson(),
+      );
+      final mobileLink = PhantomUtils.defaultListingData.mobileLink;
+      final linkMode = PhantomUtils.defaultListingData.linkMode;
+      final installed = await _uriService.isInstalled(mobileLink);
+      return serviceData.copyWith(
+        listing: serviceData.listing.copyWith(
+          mobileLink: mobileLink,
+          linkMode: linkMode,
+        ),
         installed: installed,
       );
     }
@@ -477,10 +514,12 @@ class ExplorerService implements IExplorerService {
   @override
   WalletRedirect? getWalletRedirect(ReownAppKitModalWalletInfo? walletInfo) {
     if (walletInfo == null) return null;
-    if (walletInfo.listing.id == CoinbaseService.defaultWalletData.listing.id) {
+
+    // TODO do we need the same for phantom or de we even need it for Coinbase?
+    if (walletInfo.listing.id == CoinbaseUtils.defaultListingData.id) {
       return WalletRedirect(
-        mobile: CoinbaseService.defaultWalletData.listing.mobileLink,
-        linkMode: null,
+        mobile: CoinbaseUtils.defaultListingData.mobileLink,
+        linkMode: CoinbaseUtils.defaultListingData.linkMode,
         desktop: null,
         web: null,
       );
@@ -491,23 +530,6 @@ class ExplorerService implements IExplorerService {
       desktop: walletInfo.listing.desktopLink,
       web: walletInfo.listing.webappLink,
     );
-  }
-
-  String _getPlatformType() {
-    final type = PlatformUtils.getPlatformType();
-    final platform = type.toString().toLowerCase();
-    switch (type) {
-      case PlatformType.mobile:
-        if (Platform.isIOS) {
-          return 'ios';
-        } else if (Platform.isAndroid) {
-          return 'android';
-        } else {
-          return 'mobile';
-        }
-      default:
-        return platform;
-    }
   }
 }
 

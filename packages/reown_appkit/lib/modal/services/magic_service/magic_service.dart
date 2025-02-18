@@ -60,6 +60,8 @@ class MagicService implements IMagicService {
   late final WebViewController _webViewController;
   late final WebViewWidget _webview;
 
+  final _cookieManager = WebViewCookieManager();
+
   @override
   Map<String, List<String>> get supportedMethods => {
         NetworkUtils.eip155: [
@@ -126,6 +128,11 @@ class MagicService implements IMagicService {
   })  : _core = core,
         _metadata = metadata,
         _features = featuresConfig {
+    _connectionChainId = null;
+    _onLoadCount = 0;
+    _packageName = '';
+    _socialProvider = null;
+    _socialUsername = null;
     isEmailEnabled.value = _features.email;
     isSocialEnabled.value = _features.socials.isNotEmpty;
     //
@@ -207,6 +214,8 @@ class MagicService implements IMagicService {
       ),
     );
     await _setDebugMode();
+    // await _clearCookies();
+    await _clearStorage();
     await _loadRequest();
     return await _initializedCompleter.future;
   }
@@ -431,6 +440,11 @@ class MagicService implements IMagicService {
       } catch (_) {
         cid = null;
       }
+    }
+    if (_socialProvider != null) {
+      _analyticsService.sendEvent(SocialLoginRequestUserData(
+        provider: _socialProvider!.name.toLowerCase(),
+      ));
     }
     final message = GetUser(chainId: cid).toString();
     return await _webViewController.runJavaScript('sendMessage($message)');
@@ -842,13 +856,18 @@ class MagicService implements IMagicService {
         code: 0,
         message: errorEvent.error,
       ));
+      final errorMessage = (errorEvent.error ?? 'Request error').replaceFirst(
+        'Magic RPC Error: ',
+        '',
+      );
       onMagicRpcRequest.broadcast(
         MagicRequestEvent(
           request: null,
-          result: JsonRpcError(code: 0, message: errorEvent.error),
+          result: JsonRpcError(code: -32600, message: errorMessage),
           success: false,
         ),
       );
+      onMagicError.broadcast(MagicErrorEvent(errorMessage));
       return;
     }
     if (errorEvent is IsConnectedErrorEvent) {
@@ -900,6 +919,7 @@ class MagicService implements IMagicService {
   Future<void> _runJavascript() async {
     return await _webViewController.runJavaScript('''
       window.addEventListener('message', ({ data, origin }) => {
+        console.log('eventListener ' + JSON.stringify({data,origin}))
         window.w3mWebview.postMessage(JSON.stringify({data,origin}))
       })
 
@@ -953,6 +973,33 @@ class MagicService implements IMagicService {
     }
   }
 
+  // ignore: unused_element
+  Future<void> _clearCookies() async {
+    // if (!kDebugMode) return;
+    try {
+      if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+        final webKitManager =
+            _cookieManager.platform as WebKitWebViewCookieManager;
+        webKitManager.clearCookies();
+      } else if (WebViewPlatform.instance is AndroidWebViewPlatform) {
+        final androidManager =
+            _cookieManager.platform as AndroidWebViewCookieManager;
+        androidManager.clearCookies();
+        androidManager.setAcceptThirdPartyCookies(
+          _webViewController.platform as AndroidWebViewController,
+          kDebugMode,
+        );
+      }
+    } catch (e) {
+      debugPrint('[$runtimeType] _clearCookies error $e');
+    }
+  }
+
+  Future<void> _clearStorage() async {
+    await _webViewController.clearCache();
+    await _webViewController.clearLocalStorage();
+  }
+
   Future<void> _setDebugMode() async {
     if (kDebugMode) {
       try {
@@ -972,7 +1019,7 @@ class MagicService implements IMagicService {
             platform.setMediaPlaybackRequiresUserGesture(false);
 
             final cookieManager =
-                WebViewCookieManager().platform as AndroidWebViewCookieManager;
+                _cookieManager.platform as AndroidWebViewCookieManager;
             cookieManager.setAcceptThirdPartyCookies(
               _webViewController.platform as AndroidWebViewController,
               true,

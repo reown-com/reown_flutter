@@ -20,8 +20,6 @@ class NetworksGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final service = ModalProvider.of(context).instance;
     final itemSize = ResponsiveData.gridItemSzieOf(context);
-    // final themeData = ReownAppKitModalTheme.getDataOf(context);
-    // final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final children = itemList
         .map(
           (info) => WalletGridItem(
@@ -30,16 +28,6 @@ class NetworksGrid extends StatelessWidget {
             imageUrl: info.image,
             title: info.title,
             isNetwork: true,
-            // info.data.isTestNetwork
-            // bottom: info.data.isTestNetwork
-            //     ? Text(
-            //         'Test',
-            //         style: themeData.textStyles.tiny400.copyWith(
-            //           color: themeColors.accent100,
-            //           height: 1.0,
-            //         ),
-            //       )
-            //     : null,
           ),
         )
         .toList();

@@ -48,8 +48,8 @@ class BaseButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final textStyle = size == BaseButtonSize.small
-        ? themeData.textStyles.small600
-        : themeData.textStyles.paragraph600;
+        ? themeData.textStyles.small500
+        : themeData.textStyles.paragraph500;
     return FilledButton(
       onPressed: onTap,
       child: child,

@@ -1,3 +1,11 @@
+## 1.1.2
+
+- General security improvements and verify API V4 readiness
+
+## 1.1.1
+
+- Minor changes
+
 ## 1.1.0
 
 - Update to flutter version 3.24.5

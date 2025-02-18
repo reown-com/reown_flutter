@@ -18,6 +18,8 @@ import 'utils.dart';
 /// communication channel and expects to connect to a peer that does the same.
 class Peer implements Client, Server {
   final StreamChannel<dynamic> _channel;
+  late final _stream = _channel.stream.asBroadcastStream();
+  final _channelSubscriptions = <StreamSubscription<dynamic>>{};
 
   /// The underlying client that handles request-sending and response-receiving
   /// logic.
@@ -59,12 +61,17 @@ class Peer implements Client, Server {
   /// some requests which are not conformant with the JSON-RPC 2.0
   /// specification. In particular, requests missing the `jsonrpc` parameter
   /// will be accepted.
-  Peer(StreamChannel<String> channel,
-      {ErrorCallback? onUnhandledError, bool strictProtocolChecks = true})
-      : this.withoutJson(
-            jsonDocument.bind(channel).transform(respondToFormatExceptions),
-            onUnhandledError: onUnhandledError,
-            strictProtocolChecks: strictProtocolChecks);
+  factory Peer(
+    StreamChannel<String> channel, {
+    ErrorCallback? onUnhandledError,
+    bool strictProtocolChecks = true,
+  }) {
+    return Peer.withoutJson(
+      jsonDocument.bind(channel).transform(respondToFormatExceptions),
+      onUnhandledError: onUnhandledError,
+      strictProtocolChecks: strictProtocolChecks,
+    );
+  }
 
   /// Creates a [Peer] that communicates using decoded messages over [channel].
   ///
@@ -81,14 +88,22 @@ class Peer implements Client, Server {
   /// some requests which are not conformant with the JSON-RPC 2.0
   /// specification. In particular, requests missing the `jsonrpc` parameter
   /// will be accepted.
-  Peer.withoutJson(this._channel,
-      {ErrorCallback? onUnhandledError, bool strictProtocolChecks = true}) {
+  Peer.withoutJson(
+    this._channel, {
+    ErrorCallback? onUnhandledError,
+    bool strictProtocolChecks = true,
+  }) {
     _server = Server.withoutJson(
-        StreamChannel(_serverIncomingForwarder.stream, _channel.sink),
-        onUnhandledError: onUnhandledError,
-        strictProtocolChecks: strictProtocolChecks);
+      StreamChannel(
+        _serverIncomingForwarder.stream,
+        _channel.sink,
+      ),
+      onUnhandledError: onUnhandledError,
+      strictProtocolChecks: strictProtocolChecks,
+    );
     _client = Client.withoutJson(
-        StreamChannel(_clientIncomingForwarder.stream, _channel.sink));
+      StreamChannel(_clientIncomingForwarder.stream, _channel.sink),
+    );
   }
 
   // Client methods.
@@ -120,7 +135,8 @@ class Peer implements Client, Server {
   Future listen() {
     _client.listen();
     _server.listen();
-    _channel.stream.listen((message) {
+    late final StreamSubscription<dynamic> subscription;
+    subscription = _stream.listen((message) {
       if (message is Map) {
         if (message.containsKey('result') || message.containsKey('error')) {
           _clientIncomingForwarder.add(message);
@@ -143,7 +159,12 @@ class Peer implements Client, Server {
       }
     }, onError: (error, stackTrace) {
       _serverIncomingForwarder.addError(error, stackTrace);
-    }, onDone: close);
+    }, onDone: () {
+      subscription.cancel();
+      _channelSubscriptions.remove(subscription);
+      close();
+    });
+    _channelSubscriptions.add(subscription);
     return done;
   }
 
@@ -151,6 +172,13 @@ class Peer implements Client, Server {
   Future close() {
     _client.close();
     _server.close();
+    Future.forEach(
+      _channelSubscriptions.toSet(),
+      (subscription) async {
+        _channelSubscriptions.remove(subscription);
+        await subscription.cancel();
+      },
+    );
     return done;
   }
 }

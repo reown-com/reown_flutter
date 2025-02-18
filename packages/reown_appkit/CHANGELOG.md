@@ -1,3 +1,10 @@
+## 1.4.0
+
+- Embedded Wallets Features (Send, Receive, Tokens list)
+- Phantom Wallet support
+- General security improvements and verify API V4 readiness
+- Core and Sign Update
+
 ## 1.3.0
 
 - Update to flutter version 3.24.5

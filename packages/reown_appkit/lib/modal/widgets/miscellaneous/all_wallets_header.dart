@@ -42,6 +42,7 @@ class AllWalletsHeader extends StatelessWidget {
                 const ReownAppKitModalQRCodePage(),
                 event: SelectWalletEvent(
                   name: 'WalletConnect',
+                  explorerId: '',
                   platform: AnalyticsPlatform.qrcode,
                 ),
               );

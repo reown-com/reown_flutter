@@ -16,6 +16,7 @@ import 'package:reown_core/utils/utils.dart';
 import 'package:reown_core/models/basic_models.dart';
 import 'package:reown_core/utils/constants.dart';
 import 'package:reown_core/utils/errors.dart';
+import 'package:reown_core/version.dart';
 
 class RelayClient implements IRelayClient {
   static const JSON_RPC_PUBLISH = 'publish';
@@ -111,17 +112,26 @@ class RelayClient implements IRelayClient {
     required String message,
     required int ttl,
     required int tag,
+    int? correlationId,
+    Map<String, dynamic>? tvf,
   }) async {
     _checkInitialized();
-
-    core.logger.i('[$runtimeType] publish, $topic, $message');
 
     Map<String, dynamic> data = {
       'message': message,
       'ttl': ttl,
       'topic': topic,
       'tag': tag,
+      // new fields valid for all tags in Sign SDK
+      // is the request.id of the wc_sessionRequest call
+      if (correlationId != null) 'correlationId': correlationId,
+      // tvf fields valid only for tags 1108 and 1109 and certain methods
+      ...?tvf
     };
+
+    core.logger.i(
+      '[$runtimeType] publish, topic: $topic, tag: $tag, correlationId: $correlationId, tvf: $tvf',
+    );
 
     try {
       await messageTracker.recordMessageEvent(topic, message);
@@ -256,7 +266,7 @@ class RelayClient implements IRelayClient {
     final url = ReownCoreUtils.formatRelayRpcUrl(
       protocol: ReownConstants.CORE_PROTOCOL,
       version: ReownConstants.CORE_VERSION,
-      sdkVersion: ReownConstants.SDK_VERSION,
+      sdkVersion: packageVersion,
       relayUrl: core.relayUrl,
       auth: signedJWT,
       projectId: core.projectId,

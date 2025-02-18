@@ -9,7 +9,6 @@ import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:solana_web3/solana_web3.dart' as solana;
 // ignore: implementation_imports
 import 'package:solana_web3/src/crypto/nacl.dart' as nacl;
-import 'package:bs58/bs58.dart';
 
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';

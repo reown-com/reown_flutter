@@ -223,10 +223,9 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
   }
 
   void _cancelSocialLogin() {
-    debugPrint('[$runtimeType] _cancelSocialLogin');
     errorEvent = ModalError('User canceled');
     setState(() => _retrievingData = false);
-    _analyticsService.sendEvent(SocialLoginError(
+    _analyticsService.sendEvent(SocialLoginCanceled(
       provider: widget.socialOption.name.toLowerCase(),
     ));
   }

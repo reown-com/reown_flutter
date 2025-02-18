@@ -96,7 +96,7 @@ class UriService extends IUriService {
       }
       return true;
     } catch (e) {
-      rethrow;
+      throw CanNotLaunchUrl();
     }
   }
 

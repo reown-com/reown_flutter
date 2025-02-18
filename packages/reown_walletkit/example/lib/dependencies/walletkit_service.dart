@@ -18,6 +18,7 @@ import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_request/wc_connection_request_widget.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_request_widget.dart/wc_request_widget.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_request_widget.dart/wc_session_auth_request_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WalletKitService extends IWalletKitService {
   final _bottomSheetHandler = GetIt.I<IBottomSheetService>();
@@ -36,18 +37,21 @@ class WalletKitService extends IWalletKitService {
     return link.toString();
   }
 
-  Redirect _constructRedirect() {
+  Redirect _constructRedirect(bool linkModeEnabled) {
     return Redirect(
       native: 'wcflutterwallet$_flavor://',
       universal: _universalLink(),
       // enable linkMode on Wallet so Dapps can use relay-less connection
       // universal: value must be set on cloud config as well
-      linkMode: true,
+      linkMode: linkModeEnabled,
     );
   }
 
   @override
   Future<void> create() async {
+    final prefs = await SharedPreferences.getInstance();
+    final linkModeEnabled = prefs.getBool('appkit_sample_linkmode') ?? false;
+
     // Create the ReownWalletKit instance
     _walletKit = ReownWalletKit(
       core: ReownCore(
@@ -61,9 +65,11 @@ class WalletKitService extends IWalletKitService {
         icons: [
           'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/walletkit-icon$_flavor.png'
         ],
-        redirect: _constructRedirect(),
+        redirect: _constructRedirect(linkModeEnabled),
       ),
     );
+
+    _walletKit!.core.addLogListener(_logListener);
 
     // Setup our listeners
     debugPrint('[SampleWallet] create');
@@ -108,6 +114,10 @@ class WalletKitService extends IWalletKitService {
     }
   }
 
+  void _logListener(String event) {
+    debugPrint('[WalletKit] $event');
+  }
+
   @override
   Future<void> init() async {
     // Await the initialization of the ReownWalletKit instance
@@ -147,6 +157,8 @@ class WalletKitService extends IWalletKitService {
 
   @override
   FutureOr onDispose() {
+    _walletKit!.core.removeLogListener(_logListener);
+
     _walletKit!.core.pairing.onPairingInvalid.unsubscribe(_onPairingInvalid);
     _walletKit!.core.pairing.onPairingCreate.unsubscribe(_onPairingCreate);
     _walletKit!.core.relayClient.onRelayClientError.unsubscribe(

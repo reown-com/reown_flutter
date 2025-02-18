@@ -28,14 +28,60 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  bool _isDarkMode = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        final platformDispatcher = View.of(context).platformDispatcher;
+        final platformBrightness = platformDispatcher.platformBrightness;
+        _isDarkMode = platformBrightness == Brightness.dark;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    if (mounted) {
+      setState(() {
+        final platformDispatcher = View.of(context).platformDispatcher;
+        final platformBrightness = platformDispatcher.platformBrightness;
+        _isDarkMode = platformBrightness == Brightness.dark;
+      });
+    }
+    super.didChangePlatformBrightness();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: StringConstants.appTitle,
+      theme: ThemeData(
+        colorScheme: _isDarkMode
+            ? ColorScheme.dark(
+                primary: Color(0xFF667DFF),
+              )
+            : ColorScheme.light(
+                primary: Color(0xFF667DFF),
+              ),
+      ),
       home: MyHomePage(),
     );
   }
@@ -126,16 +172,6 @@ class _MyHomePageState extends State<MyHomePage> {
           title: StringConstants.connectPageTitle,
           icon: Icons.swap_vert_circle_outlined,
         ),
-        // PageData(
-        //   page: const Center(
-        //     child: Text(
-        //       'Inbox (Not Implemented)',
-        //       style: StyleConstants.bodyText,
-        //     ),
-        //   ),
-        //   title: 'Inbox',
-        //   icon: Icons.inbox_rounded,
-        // ),
         PageData(
           page: const SettingsPage(),
           title: 'Settings',
@@ -176,7 +212,6 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(
           _pageDatas[_selectedIndex].title,
-          style: const TextStyle(color: Colors.black),
         ),
         actions: [
           const Text('Relay '),
@@ -206,7 +241,9 @@ class _MyHomePageState extends State<MyHomePage> {
     return BottomNavigationBar(
       currentIndex: _selectedIndex,
       unselectedItemColor: Colors.grey,
-      selectedItemColor: Colors.black,
+      selectedItemColor: Color(0xFF667DFF),
+      showUnselectedLabels: true,
+      type: BottomNavigationBarType.fixed,
       // called when one tab is selected
       onTap: (int index) {
         setState(() {

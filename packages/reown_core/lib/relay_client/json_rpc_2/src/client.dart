@@ -17,6 +17,8 @@ import 'utils.dart';
 /// [sendNotification] if no response is expected.
 class Client {
   final StreamChannel<dynamic> _channel;
+  late final _stream = _channel.stream.asBroadcastStream();
+  final _channelSubscriptions = <StreamSubscription<dynamic>>{};
 
   /// The next request id.
   var _id = 0;
@@ -49,9 +51,11 @@ class Client {
   ///
   /// Note that the client won't begin listening to [responses] until
   /// [Client.listen] is called.
-  Client(StreamChannel<String> channel)
-      : this.withoutJson(
-            jsonDocument.bind(channel).transformStream(ignoreFormatExceptions));
+  factory Client(StreamChannel<String> channel) {
+    return Client.withoutJson(
+      jsonDocument.bind(channel).transformStream(ignoreFormatExceptions),
+    );
+  }
 
   /// Creates a [Client] that communicates using decoded messages over
   /// [channel].
@@ -80,13 +84,22 @@ class Client {
   ///
   /// [listen] may only be called once.
   Future listen() {
-    _channel.stream.listen(_handleResponse, onError: (error, stackTrace) {
-      _done.completeError(error, stackTrace);
-      _channel.sink.close();
-    }, onDone: () {
-      if (!_done.isCompleted) _done.complete();
-      close();
-    });
+    late final StreamSubscription<dynamic> subscription;
+    subscription = _stream.listen(
+      _handleResponse,
+      onError: (error, stackTrace) {
+        _done.completeError(error, stackTrace);
+        _channel.sink.close();
+      },
+      onDone: () {
+        if (!_done.isCompleted) {
+          _done.complete();
+        }
+        subscription.cancel();
+        _channelSubscriptions.remove(subscription);
+        close();
+      },
+    );
     return done;
   }
 
@@ -97,6 +110,13 @@ class Client {
   Future close() {
     _channel.sink.close();
     if (!_done.isCompleted) _done.complete();
+    Future.forEach(
+      _channelSubscriptions.toSet(),
+      (subscription) async {
+        _channelSubscriptions.remove(subscription);
+        await subscription.cancel();
+      },
+    );
     return done;
   }
 

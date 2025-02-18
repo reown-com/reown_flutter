@@ -50,7 +50,7 @@ class AnalyticsService implements IAnalyticsService {
       _bundleId = await ReownCoreUtils.getPackageName();
       _core.logger.i('[$runtimeType] enabled: $_isEnabled');
     } catch (e, _) {
-      _core.logger.e('[$runtimeType] init error', error: e);
+      _core.logger.e('[$runtimeType] init error $e');
     }
   }
 
@@ -66,7 +66,7 @@ class AnalyticsService implements IAnalyticsService {
       _core.logger.i('[$runtimeType] fetch result $enabled');
       return enabled ?? false;
     } catch (e, s) {
-      _core.logger.e('[$runtimeType] fetch error', error: e, stackTrace: s);
+      _core.logger.e('[$runtimeType] fetch error $e', stackTrace: s);
       return false;
     }
   }
@@ -93,7 +93,7 @@ class AnalyticsService implements IAnalyticsService {
       }
       _core.logger.i('[$runtimeType] send event $code: $body');
     } catch (e, _) {
-      _core.logger.e('[$runtimeType] send event error', error: e);
+      _core.logger.e('[$runtimeType] send event error $e');
     }
   }
 }

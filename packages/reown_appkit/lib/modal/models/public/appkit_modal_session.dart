@@ -1,20 +1,25 @@
 import 'package:get_it/get_it.dart';
-import 'package:reown_appkit/modal/services/coinbase_service/coinbase_service.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/i_coinbase_service.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_data.dart';
+import 'package:reown_appkit/modal/services/coinbase_service/utils/coinbase_utils.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_data.dart';
+import 'package:reown_appkit/modal/services/phantom_service/i_phantom_service.dart';
+import 'package:reown_appkit/modal/services/phantom_service/models/phantom_data.dart';
+import 'package:reown_appkit/modal/services/phantom_service/utils/phantom_utils.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 // TODO ReownAppKitModal this should be hidden
 enum ReownAppKitModalConnector {
   wc,
   coinbase,
+  phantom,
   magic,
   none;
 
   bool get isWC => this == ReownAppKitModalConnector.wc;
   bool get isCoinbase => this == ReownAppKitModalConnector.coinbase;
+  bool get isPhantom => this == ReownAppKitModalConnector.phantom;
   bool get isMagic => this == ReownAppKitModalConnector.magic;
   bool get noSession => this == ReownAppKitModalConnector.none;
 }
@@ -23,16 +28,19 @@ enum ReownAppKitModalConnector {
 class ReownAppKitModalSession {
   SessionData? _sessionData;
   CoinbaseData? _coinbaseData;
+  PhantomData? _phantomData;
   MagicData? _magicData;
   SIWESession? _siweSession;
 
   ReownAppKitModalSession({
     SessionData? sessionData,
     CoinbaseData? coinbaseData,
+    PhantomData? phantomData,
     MagicData? magicData,
     SIWESession? siweSession,
   })  : _sessionData = sessionData,
         _coinbaseData = coinbaseData,
+        _phantomData = phantomData,
         _magicData = magicData,
         _siweSession = siweSession;
 
@@ -40,6 +48,7 @@ class ReownAppKitModalSession {
   factory ReownAppKitModalSession.fromMap(Map<String, dynamic> map) {
     final sessionDataString = map['sessionData'];
     final coinbaseDataString = map['coinbaseData'];
+    final phantomDataString = map['phantomData'];
     final magicDataString = map['magicData'];
     final siweSession = map['siweSession'];
     return ReownAppKitModalSession(
@@ -48,6 +57,9 @@ class ReownAppKitModalSession {
           : null,
       coinbaseData: coinbaseDataString != null
           ? CoinbaseData.fromJson(coinbaseDataString)
+          : null,
+      phantomData: phantomDataString != null
+          ? PhantomData.fromJson(phantomDataString)
           : null,
       magicData:
           magicDataString != null ? MagicData.fromJson(magicDataString) : null,
@@ -59,6 +71,7 @@ class ReownAppKitModalSession {
   ReownAppKitModalSession copyWith({
     SessionData? sessionData,
     CoinbaseData? coinbaseData,
+    PhantomData? phantomData,
     MagicData? magicData,
     SIWESession? siweSession,
   }) {
@@ -68,6 +81,11 @@ class ReownAppKitModalSession {
       chainId: coinbaseData?.chainId,
       self: coinbaseData?.self,
       peer: coinbaseData?.peer,
+    );
+    final newPhantomData = _phantomData?.copytWith(
+      address: phantomData?.address,
+      self: phantomData?.self,
+      peer: phantomData?.peer,
     );
     final newMagicData = _magicData?.copytWith(
       email: magicData?.email,
@@ -83,6 +101,7 @@ class ReownAppKitModalSession {
     return ReownAppKitModalSession(
       sessionData: sessionData ?? _sessionData,
       coinbaseData: newCoinbaseData ?? _coinbaseData,
+      phantomData: newPhantomData ?? _phantomData,
       magicData: newMagicData ?? _magicData,
       siweSession: siweSession ?? _siweSession,
     );
@@ -95,6 +114,9 @@ class ReownAppKitModalSession {
     }
     if (_coinbaseData != null) {
       return ReownAppKitModalConnector.coinbase;
+    }
+    if (_phantomData != null) {
+      return ReownAppKitModalConnector.phantom;
     }
     if (_magicData != null) {
       return ReownAppKitModalConnector.magic;
@@ -109,6 +131,11 @@ class ReownAppKitModalSession {
     }
     if (sessionService.isCoinbase) {
       return true;
+    }
+    if (sessionService.isPhantom) {
+      // Phantom Wallet can only use one cluster (network) at a time
+      // it will connect to mainnet-beta by default if no network is selected beforehand
+      return false;
     }
     if (sessionService.isMagic) {
       return true;
@@ -130,6 +157,9 @@ class ReownAppKitModalSession {
     if (sessionService.isCoinbase) {
       return GetIt.I<ICoinbaseService>().supportedMethods;
     }
+    if (sessionService.isPhantom) {
+      return GetIt.I<IPhantomService>().walletSupportedMethods;
+    }
     if (sessionService.isMagic) {
       final ns = namespace ?? NetworkUtils.eip155;
       return GetIt.I<IMagicService>().supportedMethods[ns];
@@ -149,18 +179,16 @@ class ReownAppKitModalSession {
   }
 
   List<String>? getApprovedEvents({String? namespace}) {
-    final eventsList = <String>[];
-
     if (sessionService.noSession) {
       return null;
     }
-    if (sessionService.isCoinbase) {
-      return eventsList;
-    }
-    if (sessionService.isMagic) {
-      return eventsList;
+    if (sessionService.isCoinbase ||
+        sessionService.isPhantom ||
+        sessionService.isMagic) {
+      return <String>[];
     }
 
+    final eventsList = <String>[];
     final sessionNamespaces = _sessionData!.namespaces;
     if ((namespace ?? '').isEmpty) {
       for (var namespace in sessionNamespaces.keys) {
@@ -193,6 +221,11 @@ class ReownAppKitModalSession {
       namespace: NetworkUtils.solana,
     ).map((e) => '${NetworkUtils.solana}:${e.chainId}').toList();
 
+    if (sessionService.isPhantom) {
+      return ['${NetworkUtils.solana}:${_phantomData!.chainId}'];
+      // return [...allSolana];
+    }
+
     if (sessionService.isMagic) {
       return [...allEIP155, ...allSolana];
     }
@@ -210,6 +243,13 @@ class ReownAppKitModalSession {
 
     if (sessionService.isCoinbase) {
       final ns = NetworkUtils.eip155;
+      return ReownAppKitModalNetworks.getAllSupportedNetworks(namespace: ns)
+          .map((e) => '$ns:${e.chainId}:${getAddress(ns)}')
+          .toList();
+    }
+
+    if (sessionService.isPhantom) {
+      final ns = namespace ?? NetworkUtils.solana;
       return ReownAppKitModalNetworks.getAllSupportedNetworks(namespace: ns)
           .map((e) => '$ns:${e.chainId}:${getAddress(ns)}')
           .toList();
@@ -283,6 +323,9 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     if (sessionService.isCoinbase) {
       return _coinbaseData?.self;
     }
+    if (sessionService.isPhantom) {
+      return _phantomData?.self;
+    }
     if (sessionService.isMagic) {
       return _magicData?.self ??
           ConnectionMetadata(
@@ -301,6 +344,9 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
   ConnectionMetadata? get peer {
     if (sessionService.isCoinbase) {
       return _coinbaseData?.peer;
+    }
+    if (sessionService.isPhantom) {
+      return _phantomData?.peer;
     }
     if (sessionService.isMagic) {
       return _magicData?.peer ??
@@ -332,6 +378,9 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     if (sessionService.isCoinbase) {
       return _coinbaseData!.address;
     }
+    if (sessionService.isPhantom) {
+      return _phantomData!.address;
+    }
     if (sessionService.isMagic) {
       return _magicData!.address;
     }
@@ -355,26 +404,31 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     if (sessionService.isCoinbase) {
       return _coinbaseData!.chainId.toString();
     }
+    if (sessionService.isPhantom) {
+      return _phantomData!.chainId;
+    }
     if (sessionService.isMagic) {
-      return _magicData!.chainId.toString();
+      return _magicData!.chainId;
     }
     return '1';
   }
 
   String? get connectedWalletName {
     if (sessionService.isCoinbase) {
-      return CoinbaseService.defaultWalletData.listing.name;
+      return CoinbaseUtils.defaultListingData.name;
     }
-    if (sessionService.isWC) {
-      return peer?.metadata.name;
+    if (sessionService.isPhantom) {
+      return PhantomUtils.defaultListingData.name;
     }
-    return null;
+
+    return peer?.metadata.name;
   }
 
   Map<String, dynamic> toRawJson() {
     return {
       ...(_sessionData?.toJson() ?? {}),
       ...(_coinbaseData?.toJson() ?? {}),
+      ...(_phantomData?.toJson() ?? {}),
       ...(_magicData?.toJson() ?? {}),
     };
   }
@@ -383,15 +437,34 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     if (sessionService.isCoinbase) {
       // Coinbase only supports eip155 chains
       final eip155 = NetworkUtils.eip155;
-      final allEIP155 = ReownAppKitModalNetworks.getAllSupportedNetworks(
+      final allEIP155 = getApprovedChains(
         namespace: eip155,
-      ).map((e) => '$eip155:${e.chainId}').toList();
+      )!
+          .map((e) => '$eip155:$e')
+          .toList();
       return {
         eip155: Namespace(
           chains: [...allEIP155],
           accounts: [...getAccounts(namespace: eip155)!],
           methods: [...GetIt.I<ICoinbaseService>().supportedMethods],
           // Coinbase does not have events as it doesn't use WC protocol
+          events: [],
+        ),
+      };
+    }
+
+    if (sessionService.isPhantom) {
+      // Phantom only supports solana chains through the deeplink API
+      final solana = NetworkUtils.solana;
+      final allSolana = getApprovedChains(namespace: solana)!
+          .map((e) => '$solana:$e')
+          .toList();
+      return {
+        solana: Namespace(
+          chains: [...allSolana],
+          accounts: [...getAccounts(namespace: solana)!],
+          methods: [...GetIt.I<IPhantomService>().walletSupportedMethods],
+          // Phantom does not have events as it doesn't use WC protocol
           events: [],
         ),
       };
@@ -423,6 +496,7 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     return {
       if (_sessionData != null) 'sessionData': _sessionData!.toJson(),
       if (_coinbaseData != null) 'coinbaseData': _coinbaseData?.toJson(),
+      if (_phantomData != null) 'phantomData': _phantomData?.toJson(),
       if (_magicData != null) 'magicData': _magicData?.toJson(),
       if (_siweSession != null) 'siweSession': _siweSession?.toJson(),
     };

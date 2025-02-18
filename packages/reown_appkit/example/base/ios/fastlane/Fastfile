@@ -103,12 +103,14 @@ platform :ios do
       clean: true,
       xcargs: "PROJECT_ID='#{options[:project_id]}'"
     )
+
+    _app_version = "3.0.0" #"options[:app_version]"
     
     changelog = read_changelog
 
     upload_to_testflight(
       apple_id: options[:app_id],
-      app_version: options[:app_version],
+      app_version: "#{_app_version}",
       build_number: "#{new_build_number}",
       app_identifier: "#{app_identifier}",
       changelog: changelog,
@@ -121,7 +123,7 @@ platform :ios do
     )
 
     slack(
-      message: "📱 AppKit Flutter Sample #{options[:app_version]}-#{_flavor} (#{new_build_number}) for 🍎 iOS successfully released!\n\n",
+      message: ":reown-appkit: 🍎 AppKit Flutter iOS Sample #{_app_version}-#{_flavor} (#{new_build_number}) successfully released!\n\n",
       default_payloads: [],
       attachment_properties: {
         fields: [

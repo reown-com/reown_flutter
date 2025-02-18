@@ -20,7 +20,6 @@ class StringConstants {
   static const String testnetsOnly = 'Testnets only?';
   static const String scanQrCode = 'Scan QR Code';
   static const String copiedToClipboard = 'Copied to clipboard';
-  static const String connect = 'Connect';
   static const String connectionEstablished = 'Session established';
   static const String connectionFailed = 'Session setup failed';
   static const String connectionRejected = 'Connection rejected by user';

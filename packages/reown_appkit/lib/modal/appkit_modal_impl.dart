@@ -5,16 +5,24 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/coinbase_service/utils/coinbase_utils.dart';
+import 'package:reown_appkit/modal/services/phantom_service/models/phantom_events.dart';
+import 'package:reown_appkit/modal/services/third_party_wallet_service.dart';
+
+import 'package:reown_core/store/i_store.dart';
+
+import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_appkit/modal/services/phantom_service/i_phantom_service.dart';
+import 'package:reown_appkit/modal/services/phantom_service/phantom_service.dart';
+import 'package:reown_appkit/modal/pages/smart_account_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
+import 'package:reown_appkit/modal/services/blockchain_service/models/blockchain_identity.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/services/network_service/i_network_service.dart';
 import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/toast_service.dart';
 import 'package:reown_appkit/modal/services/uri_service/i_url_utils.dart';
-
-import 'package:reown_core/store/i_store.dart';
-import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
@@ -94,18 +102,19 @@ class ReownAppKitModal
   @override
   IReownAppKit? get appKit => _appKit;
 
-  String? _avatarUrl;
+  BlockchainIdentity? _blockchainIdentity;
   @override
-  String? get avatarUrl => _avatarUrl;
+  BlockchainIdentity? get blockchainIdentity => _blockchainIdentity;
 
-  double? _chainBalance;
   @Deprecated('Use balanceNotifier')
   @override
   String get chainBalance => CoreUtils.formatChainBalance(_chainBalance);
 
+  double? _chainBalance;
   @override
   final balanceNotifier = ValueNotifier<String>('-.--');
 
+  bool _isDisposed = false;
   bool _isOpen = false;
   @override
   bool get isOpen => _isOpen;
@@ -186,10 +195,10 @@ class ReownAppKitModal
     _setRequiredNamespaces(requiredNamespaces);
     _setOptionalNamespaces(optionalNamespaces);
 
-    GetIt.I.registerSingletonIfAbsent<IUriService>(
+    _registerSingleton<IUriService>(
       () => UriService(core: _appKit.core),
     );
-    GetIt.I.registerSingletonIfAbsent<IAnalyticsService>(
+    _registerSingleton<IAnalyticsService>(
       () => AnalyticsService(
         core: _appKit.core,
         enableAnalytics: enableAnalytics,
@@ -199,7 +208,7 @@ class ReownAppKitModal
     _analyticsService.init().then(
           (_) => _analyticsService.sendEvent(ModalLoadedEvent()),
         );
-    GetIt.I.registerSingletonIfAbsent<IExplorerService>(
+    _registerSingleton<IExplorerService>(
       () => ExplorerService(
         core: _appKit.core,
         referer: _appKit.metadata.name.replaceAll(' ', ''),
@@ -209,28 +218,34 @@ class ReownAppKitModal
         namespaces: {..._requiredNamespaces, ..._optionalNamespaces},
       ),
     );
-    GetIt.I.registerSingletonIfAbsent<INetworkService>(() => NetworkService());
-    GetIt.I.registerSingletonIfAbsent<IToastService>(() => ToastService());
-    GetIt.I.registerSingletonIfAbsent<IBlockChainService>(
+    _registerSingleton<INetworkService>(() => NetworkService());
+    _registerSingleton<IToastService>(() => ToastService());
+    _registerSingleton<IBlockChainService>(
       () => BlockChainService(
         core: _appKit.core,
       ),
     );
-    GetIt.I.registerSingletonIfAbsent<IMagicService>(
+    _registerSingleton<IMagicService>(
       () => MagicService(
         core: _appKit.core,
         metadata: _appKit.metadata,
         featuresConfig: this.featuresConfig,
       ),
     );
-    GetIt.I.registerSingletonIfAbsent<ICoinbaseService>(
+    _registerSingleton<ICoinbaseService>(
       () => CoinbaseService(
         core: _appKit.core,
         metadata: _appKit.metadata,
         enabled: _initializeCoinbaseSDK,
       ),
     );
-    GetIt.I.registerSingletonIfAbsent<ISiweService>(
+    _registerSingleton<IPhantomService>(
+      () => PhantomService(
+        core: _appKit.core,
+        metadata: _appKit.metadata,
+      ),
+    );
+    _registerSingleton<ISiweService>(
       () => SiweService(
         appKit: _appKit,
         siweConfig: siweConfig,
@@ -239,15 +254,25 @@ class ReownAppKitModal
     );
   }
 
-  IUriService get _uriService => GetIt.I<IUriService>();
-  IToastService get _toastService => GetIt.I<IToastService>();
-  IAnalyticsService get _analyticsService => GetIt.I<IAnalyticsService>();
-  IExplorerService get _explorerService => GetIt.I<IExplorerService>();
-  INetworkService get _networkService => GetIt.I<INetworkService>();
-  IMagicService get _magicService => GetIt.I<IMagicService>();
-  IBlockChainService get _blockchainService => GetIt.I<IBlockChainService>();
-  ICoinbaseService get _coinbaseService => GetIt.I<ICoinbaseService>();
-  ISiweService get _siweService => GetIt.I<ISiweService>();
+  T _registerSingleton<T extends Object>(T Function() factoryFunc) =>
+      GetIt.I.registerSingletonIfAbsent<T>(factoryFunc);
+
+  T _getSingleton<T extends Object>() => GetIt.I<T>();
+
+  FutureOr _unregisterSingleton<T extends Object>() => GetIt.I.unregister<T>();
+
+  IMagicService get _magicService => _getSingleton<IMagicService>();
+  ICoinbaseService get _coinbaseService => _getSingleton<ICoinbaseService>();
+  IPhantomService get _phantomService => _getSingleton<IPhantomService>();
+
+  IUriService get _uriService => _getSingleton<IUriService>();
+  IToastService get _toastService => _getSingleton<IToastService>();
+  IAnalyticsService get _analyticsService => _getSingleton<IAnalyticsService>();
+  IExplorerService get _explorerService => _getSingleton<IExplorerService>();
+  INetworkService get _networkService => _getSingleton<INetworkService>();
+  IBlockChainService get _blockchainService =>
+      _getSingleton<IBlockChainService>();
+  ISiweService get _siweService => _getSingleton<ISiweService>();
 
   ////////* PUBLIC METHODS */////////
 
@@ -263,6 +288,15 @@ class ReownAppKitModal
     final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
     if (state.isNotEmpty) {
       _magicService.completeSocialLogin(url: url);
+      return true;
+    }
+
+    final phantomRequest = ReownCoreUtils.getSearchParamFromURL(
+      url,
+      'phantomRequest',
+    );
+    if (phantomRequest.isNotEmpty) {
+      _phantomService.completePhantomRequest(url: url);
       return true;
     }
 
@@ -291,13 +325,15 @@ class ReownAppKitModal
     await _networkService.init();
     await _explorerService.init();
     await _coinbaseService.init();
+    await _phantomService.init();
     await _blockchainService.init();
 
     _currentSession = await _getStoredSession();
     _currentSelectedChainId = _getStoredChainId(null);
     final isMagic = _currentSession?.sessionService.isMagic == true;
     final isCoinbase = _currentSession?.sessionService.isCoinbase == true;
-    if (isMagic || isCoinbase) {
+    final isPhantom = _currentSession?.sessionService.isPhantom == true;
+    if (isMagic || isCoinbase || isPhantom) {
       _currentSelectedChainId ??= _currentSession!.chainId;
       await _setSesionAndChainData(_currentSession!);
       if (isMagic) {
@@ -332,7 +368,7 @@ class ReownAppKitModal
       }
     }
 
-    // There's a session stored
+    // There's a WC/Relay session stored
     if (wcSessions.isNotEmpty) {
       await _storeSession(ReownAppKitModalSession(
         sessionData: wcSessions.first,
@@ -347,8 +383,13 @@ class ReownAppKitModal
       // Check for other type of sessions stored
       if (_currentSession != null) {
         if (_currentSession!.sessionService.isCoinbase) {
-          final isCbConnected = await _coinbaseService.isConnected();
-          if (!isCbConnected) {
+          final isConnected = await _coinbaseService.isConnected();
+          if (!isConnected) {
+            await _cleanSession();
+          }
+        } else if (_currentSession!.sessionService.isPhantom) {
+          final isConnected = await _phantomService.isConnected();
+          if (!isConnected) {
             await _cleanSession();
           }
         } else if (_currentSession!.sessionService.isMagic) {
@@ -368,7 +409,7 @@ class ReownAppKitModal
     await _selectChainFromStoredId();
 
     onModalNetworkChange.subscribe(_onNetworkChainRequireSIWE);
-    onModalConnect.subscribe(_loadAccountData);
+    // onModalConnect.subscribe(_loadAccountData);
 
     _relayConnected = _appKit.core.relayClient.isConnected;
     if (!_relayConnected) {
@@ -381,7 +422,12 @@ class ReownAppKitModal
     _status = _relayConnected
         ? ReownAppKitModalStatus.initialized
         : ReownAppKitModalStatus.initializing;
-    _appKit.core.logger.i('[$runtimeType] status $_status');
+    _appKit.core.logger.i(
+      '[$runtimeType] status $_status with session ${jsonEncode(_currentSession?.toJson())}',
+    );
+    if (_currentSession != null) {
+      onModalConnect.broadcast(ModalConnect(_currentSession!));
+    }
     _notify();
   }
 
@@ -425,8 +471,8 @@ class ReownAppKitModal
     try {
       if (_storage.has(StorageConstants.modalSession)) {
         final storedSession = _storage.get(StorageConstants.modalSession);
-        _appKit.core.logger.i(
-          '[$runtimeType] _getStoredSession, storedSession: $storedSession, key: ${StorageConstants.modalSession}',
+        _appKit.core.logger.d(
+          '[$runtimeType] _getStoredSession, ${jsonEncode(storedSession)}',
         );
         if (storedSession != null) {
           return ReownAppKitModalSession.fromMap(storedSession);
@@ -490,8 +536,9 @@ class ReownAppKitModal
       return;
     }
 
+    _chainBalance = null;
+
     try {
-      _chainBalance = null;
       final formattedBalance = CoreUtils.formatChainBalance(_chainBalance);
       balanceNotifier.value = '$formattedBalance ${chainInfo.currency}';
 
@@ -544,7 +591,8 @@ class ReownAppKitModal
 
     final isMagic = _currentSession!.sessionService.isMagic;
     final isCoinbase = _currentSession!.sessionService.isCoinbase;
-    if (isMagic || isCoinbase) {
+    final isPhantom = _currentSession!.sessionService.isPhantom;
+    if (isMagic || isCoinbase || isPhantom) {
       return getApprovedChains();
     }
 
@@ -635,14 +683,17 @@ class ReownAppKitModal
   @override
   Future<void> openModalView([Widget? startWidget]) {
     final keyString = startWidget?.key?.toString() ?? '';
+    final isMagic = _currentSession?.sessionService.isMagic == true;
     if (_isConnected) {
       final connectedKeys =
           _allowedScreensWhenConnected.map((e) => e.toString()).toList();
       if (startWidget == null) {
-        startWidget = const AccountPage();
+        startWidget =
+            isMagic ? const SmartAccountPage() : const EOAccountPage();
       } else {
         if (!connectedKeys.contains(keyString)) {
-          startWidget = const AccountPage();
+          startWidget =
+              isMagic ? const SmartAccountPage() : const EOAccountPage();
         }
       }
     } else {
@@ -659,7 +710,8 @@ class ReownAppKitModal
     KeyConstants.approveTransactionPage,
     KeyConstants.confirmEmailPage,
     KeyConstants.selectNetworkPage,
-    KeyConstants.accountPage,
+    KeyConstants.eoAccountPage,
+    KeyConstants.smartAccountPage,
     KeyConstants.socialLoginPage,
   ];
 
@@ -706,7 +758,8 @@ class ReownAppKitModal
 
     Widget? showWidget = startWidget;
     if (_isConnected && showWidget == null) {
-      showWidget = const AccountPage();
+      final isMagic = _currentSession?.sessionService.isMagic == true;
+      startWidget = isMagic ? const SmartAccountPage() : const EOAccountPage();
     }
 
     final childWidget = theme == null
@@ -786,8 +839,10 @@ class ReownAppKitModal
     bool inBrowser = false,
   }) {
     final walletName = _selectedWallet!.listing.name;
+    final walletId = _selectedWallet!.listing.id;
     final event = SelectWalletEvent(
       name: walletName,
+      explorerId: walletId,
       platform: inBrowser ? AnalyticsPlatform.web : AnalyticsPlatform.mobile,
     );
     _analyticsService.sendEvent(event);
@@ -815,25 +870,22 @@ class ReownAppKitModal
     try {
       if (_selectedWallet!.isCoinbase) {
         await _coinbaseService.getAccount();
-        await _explorerService.storeConnectedWallet(_selectedWallet);
+      } else if (_selectedWallet!.isPhantom) {
+        await _phantomService.connect(chainId: _currentSelectedChainId);
       } else {
-        await buildConnectionUri();
-        final linkMode = walletRedirect.linkMode ?? '';
-        if (linkMode.isNotEmpty && _wcUri.startsWith(linkMode)) {
-          await ReownCoreUtils.openURL(_wcUri);
-        } else {
-          await _uriService.openRedirect(
-            walletRedirect,
-            wcURI: _wcUri,
-            pType: pType,
-          );
-        }
+        await _connect(walletRedirect, pType);
       }
     } on LaunchUrlException catch (e) {
       if (e is CanNotLaunchUrl) {
         onModalError.broadcast(WalletNotInstalled());
       } else {
         onModalError.broadcast(ErrorOpeningWallet());
+      }
+    } on ThirdPartyWalletException catch (e) {
+      if (e is ThirdPartyWalletNotInstalled) {
+        onModalError.broadcast(WalletNotInstalled());
+      } else {
+        onModalError.broadcast(ErrorOpeningWallet(description: e.message));
       }
     } catch (e, s) {
       if (e is PlatformException) {
@@ -874,11 +926,19 @@ class ReownAppKitModal
     }
   }
 
+  Future<void> _connect(WalletRedirect redirect, PlatformType pType) async {
+    await buildConnectionUri();
+    final linkMode = redirect.linkMode ?? '';
+    if (linkMode.isNotEmpty && _wcUri.startsWith(linkMode)) {
+      await ReownCoreUtils.openURL(_wcUri);
+    } else {
+      await _uriService.openRedirect(redirect, wcURI: _wcUri, pType: pType);
+    }
+  }
+
   @override
   Future<void> buildConnectionUri() async {
     if (!_isConnected) {
-      /// TODO Qs: How do I handle SIWE if non-EVM chains are included?
-      /// TODO Qs: How do I handle switch to Solana from EVM chain?
       try {
         if (_siweService.enabled) {
           final walletRedirect = _explorerService.getWalletRedirect(
@@ -1006,8 +1066,15 @@ class ReownAppKitModal
 
     final isCoinbase = _currentSession!.sessionService.isCoinbase == true;
     if (walletInfo.isCoinbase || isCoinbase) {
-      // Coinbase Wallet is getting launched at every request by it's own SDK
-      // SO no need to do it here.
+      // Coinbase Wallet is getting launched at every request by its service
+      // So no need to do it here.
+      return;
+    }
+
+    final isPhantom = _currentSession!.sessionService.isPhantom == true;
+    if (walletInfo.isPhantom || isPhantom) {
+      // Phantom Wallet is getting launched at every request by its service
+      // So no need to do it here.
       return;
     }
 
@@ -1036,10 +1103,9 @@ class ReownAppKitModal
 
     try {
       final link = metadataRedirect?.native ?? metadataRedirect?.universal;
-      _uriService.openRedirect(
-        walletRedirect.copyWith(mobile: link),
-        pType: PlatformUtils.getPlatformType(),
-      );
+      final redirect = walletRedirect.copyWith(mobile: link);
+      final platform = PlatformUtils.getPlatformType();
+      _uriService.openRedirect(redirect, pType: platform);
     } catch (e) {
       onModalError.broadcast(ErrorOpeningWallet());
     }
@@ -1047,8 +1113,12 @@ class ReownAppKitModal
 
   @override
   Future<void> reconnectRelay() async {
-    if (!_appKit.core.relayClient.isConnected) {
-      await _appKit.core.relayClient.connect();
+    try {
+      if (!_appKit.core.relayClient.isConnected) {
+        await _appKit.core.relayClient.connect();
+      }
+    } catch (e) {
+      _appKit.core.logger.e('[$runtimeType] reconnectRelay $e');
     }
   }
 
@@ -1064,6 +1134,16 @@ class ReownAppKitModal
         await _coinbaseService.resetSession();
       } catch (e) {
         _appKit.core.logger.d('[$runtimeType] disconnect coinbase $e');
+        _status = ReownAppKitModalStatus.initialized;
+        _notify();
+        return;
+      }
+    }
+    if (_currentSession?.sessionService.isPhantom == true) {
+      try {
+        await _phantomService.disconnect();
+      } catch (e) {
+        _appKit.core.logger.d('[$runtimeType] disconnect phantom $e');
         _status = ReownAppKitModalStatus.initialized;
         _notify();
         return;
@@ -1144,6 +1224,7 @@ class ReownAppKitModal
       selectWallet(null);
     }
     _toastService.clear();
+    _blockchainService.selectSendToken(null);
     _analyticsService.sendEvent(ModalCloseEvent(
       connected: _isConnected,
     ));
@@ -1299,8 +1380,14 @@ class ReownAppKitModal
         );
       }
       if (_currentSession!.sessionService.isCoinbase) {
-        return await await _coinbaseService.request(
+        return await _coinbaseService.request(
           chainId: switchToChainId ?? reqChainId,
+          request: request,
+        );
+      }
+      if (_currentSession!.sessionService.isPhantom) {
+        return await _phantomService.request(
+          chainId: reqChainId,
           request: request,
         );
       }
@@ -1343,9 +1430,20 @@ class ReownAppKitModal
       _lastChainEmitted = null;
       _supportsOneClickAuth = false;
       _status = ReownAppKitModalStatus.idle;
+      _unregisterSingleton<IUriService>();
+      _unregisterSingleton<IAnalyticsService>();
+      _unregisterSingleton<IExplorerService>();
+      _unregisterSingleton<INetworkService>();
+      _unregisterSingleton<IToastService>();
+      _unregisterSingleton<IBlockChainService>();
+      _unregisterSingleton<IMagicService>();
+      _unregisterSingleton<ICoinbaseService>();
+      _unregisterSingleton<IPhantomService>();
+      _unregisterSingleton<ISiweService>();
       await Future.delayed(Duration(milliseconds: 500));
       _notify();
     }
+    _isDisposed = true;
     super.dispose();
   }
 
@@ -1375,10 +1473,14 @@ class ReownAppKitModal
 
   ////////* PRIVATE METHODS */////////
 
-  void _notify() => notifyListeners();
+  void _notify() {
+    if (!_isDisposed) {
+      notifyListeners();
+    }
+  }
 
   bool get _initializeCoinbaseSDK {
-    final cbId = CoinbaseService.defaultWalletData.listing.id;
+    final cbId = CoinbaseUtils.defaultListingData.id;
     final included = (_explorerService.includedWalletIds ?? <String>{});
     final excluded = (_explorerService.excludedWalletIds ?? <String>{});
 
@@ -1456,13 +1558,16 @@ class ReownAppKitModal
       return;
     }
 
+    _status = ReownAppKitModalStatus.initializing;
+    _notify();
+
     // Get the chain balance.
     final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
       _currentSelectedChainId!,
     );
 
     try {
-      _chainBalance = await _blockchainService.getBalance(
+      _chainBalance = await _blockchainService.getTokenBalance(
         address: _currentSession!.getAddress(namespace)!,
         namespace: namespace,
         chainId: _currentSelectedChainId!,
@@ -1481,12 +1586,19 @@ class ReownAppKitModal
     if (namespace == NetworkUtils.eip155) {
       // Get the avatar, each chainId is just a number in string form.
       try {
+        final address = _currentSession!.getAddress(namespace)!;
         final blockchainId = await _blockchainService.getIdentity(
-          _currentSession!.getAddress(namespace)!,
+          address: address,
         );
-        _avatarUrl = blockchainId.avatar;
+        _blockchainIdentity = BlockchainIdentity.fromJson(
+          blockchainId.toJson(),
+        );
       } catch (_) {}
+    } else {
+      _blockchainIdentity = null;
     }
+
+    _status = ReownAppKitModalStatus.initialized;
     _notify();
   }
 
@@ -1648,6 +1760,7 @@ class ReownAppKitModal
     _lastChainEmitted = null;
     _supportsOneClickAuth = false;
     _status = ReownAppKitModalStatus.initialized;
+    _blockchainService.dispose();
     _notify();
   }
 
@@ -1681,9 +1794,9 @@ class ReownAppKitModal
     }
   }
 
-  void _loadAccountData(ModalConnect? event) {
-    loadAccountData();
-  }
+  // void _loadAccountData(ModalConnect? event) {
+  //   loadAccountData();
+  // }
 
   void _checkInitialized() {
     if (_status != ReownAppKitModalStatus.initialized &&
@@ -1704,13 +1817,15 @@ class ReownAppKitModal
     _magicService.onMagicError.subscribe(_onMagicErrorEvent);
     _magicService.onMagicUpdate.subscribe(_onMagicSessionUpdateEvent);
     _magicService.onMagicRpcRequest.subscribe(_onMagicRequest);
-    //
     // Coinbase
-    _coinbaseService.onCoinbaseConnect.subscribe(_onCoinbaseConnectEvent);
-    _coinbaseService.onCoinbaseError.subscribe(_onCoinbaseErrorEvent);
+    _coinbaseService.onCoinbaseConnect.subscribe(_onCoinbaseConnect);
+    _coinbaseService.onCoinbaseError.subscribe(_onCoinbaseError);
     _coinbaseService.onCoinbaseSessionUpdate.subscribe(
       _onCoinbaseSessionUpdateEvent,
     );
+    // Phantom
+    _phantomService.onPhantomConnect.subscribe(_onPhantomConnect);
+    _phantomService.onPhantomError.subscribe(_onPhantomError);
     //
     _appKit.onSessionAuthResponse.subscribe(_onSessionAuthResponse);
     _appKit.onSessionConnect.subscribe(_onSessionConnect);
@@ -1741,11 +1856,14 @@ class ReownAppKitModal
     _magicService.onMagicRpcRequest.unsubscribe(_onMagicRequest);
     //
     // Coinbase
-    _coinbaseService.onCoinbaseConnect.unsubscribe(_onCoinbaseConnectEvent);
-    _coinbaseService.onCoinbaseError.unsubscribe(_onCoinbaseErrorEvent);
+    _coinbaseService.onCoinbaseConnect.unsubscribe(_onCoinbaseConnect);
+    _coinbaseService.onCoinbaseError.unsubscribe(_onCoinbaseError);
     _coinbaseService.onCoinbaseSessionUpdate.unsubscribe(
       _onCoinbaseSessionUpdateEvent,
     );
+    // Phantom
+    _phantomService.onPhantomConnect.unsubscribe(_onPhantomConnect);
+    _phantomService.onPhantomError.subscribe(_onPhantomError);
     //
     _appKit.onSessionAuthResponse.unsubscribe(_onSessionAuthResponse);
     _appKit.onSessionConnect.unsubscribe(_onSessionConnect);
@@ -1857,11 +1975,14 @@ extension _EmailConnectorExtension on ReownAppKitModal {
     }
   }
 
-  Future<void> _onMagicErrorEvent(MagicErrorEvent? args) async {
-    _appKit.core.logger.d('[$runtimeType] _onMagicErrorEvent: $args');
-    final errorMessage = args?.error ?? 'Something went wrong';
+  Future<void> _onMagicErrorEvent(MagicErrorEvent? event) async {
+    _appKit.core.logger.d('[$runtimeType] _onMagicErrorEvent: ${event?.error}');
+    final errorMessage = event?.error ?? 'Something went wrong';
     if (!errorMessage.toLowerCase().contains('user denied')) {
       onModalError.broadcast(ModalError(errorMessage));
+    }
+    if (event is IsConnectedErrorEvent && _currentSession != null) {
+      await _cleanSession();
     }
     _notify();
   }
@@ -1886,14 +2007,15 @@ extension _EmailConnectorExtension on ReownAppKitModal {
 }
 
 extension _CoinbaseConnectorExtension on ReownAppKitModal {
-  void _onCoinbaseConnectEvent(CoinbaseConnectEvent? args) async {
-    _appKit.core.logger.d('[$runtimeType] _onCoinbaseConnectEvent: $args');
+  void _onCoinbaseConnect(CoinbaseConnectEvent? args) async {
+    _appKit.core.logger.d('[$runtimeType] _onCoinbaseConnect: $args');
     if (args?.data != null) {
       final newChainId = _getStoredChainId('${args!.data!.chainId}')!;
       _currentSelectedChainId = newChainId;
       //
       final session = ReownAppKitModalSession(coinbaseData: args.data!);
       await _setSesionAndChainData(session);
+      await _explorerService.storeConnectedWallet(_selectedWallet);
       onModalConnect.broadcast(ModalConnect(session));
       //
       if (_siweService.enabled) {
@@ -1925,7 +2047,7 @@ extension _CoinbaseConnectorExtension on ReownAppKitModal {
             address: address,
             chainName: chainInfo?.name ?? '',
             chainId: int.parse(chainId),
-            peer: _coinbaseService.metadata,
+            peer: _coinbaseService.walletMetadata,
             self: ConnectionMetadata(
               metadata: _appKit.metadata,
               publicKey: await _coinbaseService.ownPublicKey,
@@ -1943,11 +2065,44 @@ extension _CoinbaseConnectorExtension on ReownAppKitModal {
     }
   }
 
-  void _onCoinbaseErrorEvent(CoinbaseErrorEvent? args) async {
-    _appKit.core.logger.d('[$runtimeType] _onCoinbaseErrorEvent: $args');
+  void _onCoinbaseError(CoinbaseErrorEvent? args) async {
+    _appKit.core.logger.d('[$runtimeType] _onCoinbaseError: $args');
     final errorMessage = args?.error ?? 'Something went wrong';
     if (!errorMessage.toLowerCase().contains('user denied')) {
       onModalError.broadcast(ModalError(errorMessage));
+    }
+  }
+}
+
+extension _PhantomConnectorExtension on ReownAppKitModal {
+  void _onPhantomConnect(PhantomConnectEvent? args) async {
+    _appKit.core.logger.d('[$runtimeType] _onPhantomConnect: $args');
+    if (args?.data != null) {
+      final newChainId = _getStoredChainId(args!.data!.chainId)!;
+      _currentSelectedChainId = newChainId;
+      //
+      final session = ReownAppKitModalSession(phantomData: args.data!);
+      await _setSesionAndChainData(session);
+      await _explorerService.storeConnectedWallet(_selectedWallet);
+      onModalConnect.broadcast(ModalConnect(session));
+      //
+      closeModal();
+    }
+  }
+
+  void _onPhantomError(PhantomErrorEvent? args) async {
+    _appKit.core.logger.d('[$runtimeType] _onPhantomError: $args');
+    if (_isUserRejectedError(args?.toString())) {
+      onModalError.broadcast(UserRejectedConnection());
+      _analyticsService.sendEvent(ConnectErrorEvent(
+        message: 'User declined connection',
+      ));
+    } else {
+      final errorMessage = args?.error ?? 'Something went wrong';
+      onModalError.broadcast(ErrorOpeningWallet());
+      _analyticsService.sendEvent(ConnectErrorEvent(
+        message: errorMessage,
+      ));
     }
   }
 }
@@ -2034,6 +2189,7 @@ extension _AppKitModalExtension on ReownAppKitModal {
     if (_selectedWallet == null) {
       _analyticsService.sendEvent(ConnectSuccessEvent(
         name: 'WalletConnect',
+        explorerId: '',
         method: AnalyticsPlatform.qrcode,
       ));
       await _storage.delete(StorageConstants.recentWalletId);
@@ -2041,8 +2197,10 @@ extension _AppKitModalExtension on ReownAppKitModal {
     } else {
       _explorerService.storeConnectedWallet(_selectedWallet);
       final walletName = _selectedWallet!.listing.name;
+      final walletId = _selectedWallet!.listing.id;
       _analyticsService.sendEvent(ConnectSuccessEvent(
         name: walletName,
+        explorerId: walletId,
         method: AnalyticsPlatform.mobile,
       ));
     }

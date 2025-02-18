@@ -29,6 +29,8 @@ typedef ErrorCallback = void Function(dynamic error, dynamic stackTrace);
 /// time, or even for a single method to be invoked multiple times at once.
 class Server {
   final StreamChannel<dynamic> _channel;
+  late final _stream = _channel.stream.asBroadcastStream();
+  final _channelSubscriptions = <StreamSubscription<dynamic>>{};
 
   /// The methods registered for this server.
   final _methods = <String, Function>{};
@@ -81,12 +83,17 @@ class Server {
   /// If [strictProtocolChecks] is false, this [Server] will accept some
   /// requests which are not conformant with the JSON-RPC 2.0 specification. In
   /// particular, requests missing the `jsonrpc` parameter will be accepted.
-  Server(StreamChannel<String> channel,
-      {ErrorCallback? onUnhandledError, bool strictProtocolChecks = true})
-      : this.withoutJson(
-            jsonDocument.bind(channel).transform(respondToFormatExceptions),
-            onUnhandledError: onUnhandledError,
-            strictProtocolChecks: strictProtocolChecks);
+  factory Server(
+    StreamChannel<String> channel, {
+    ErrorCallback? onUnhandledError,
+    bool strictProtocolChecks = true,
+  }) {
+    return Server.withoutJson(
+      jsonDocument.bind(channel).transform(respondToFormatExceptions),
+      onUnhandledError: onUnhandledError,
+      strictProtocolChecks: strictProtocolChecks,
+    );
+  }
 
   /// Creates a [Server] that communicates using decoded messages over
   /// [channel].
@@ -103,8 +110,11 @@ class Server {
   /// If [strictProtocolChecks] is false, this [Server] will accept some
   /// requests which are not conformant with the JSON-RPC 2.0 specification. In
   /// particular, requests missing the `jsonrpc` parameter will be accepted.
-  Server.withoutJson(this._channel,
-      {this.onUnhandledError, this.strictProtocolChecks = true});
+  Server.withoutJson(
+    this._channel, {
+    this.onUnhandledError,
+    this.strictProtocolChecks = true,
+  });
 
   /// Starts listening to the underlying stream.
   ///
@@ -113,12 +123,23 @@ class Server {
   ///
   /// [listen] may only be called once.
   Future listen() {
-    _channel.stream.listen(_handleRequest, onError: (error, stackTrace) {
-      _done.completeError(error, stackTrace);
-      _channel.sink.close();
-    }, onDone: () {
-      if (!_done.isCompleted) _done.complete();
-    });
+    late final StreamSubscription<dynamic> subscription;
+    subscription = _stream.listen(
+      _handleRequest,
+      onError: (error, stackTrace) {
+        _done.completeError(error, stackTrace);
+        _channel.sink.close();
+      },
+      onDone: () {
+        if (!_done.isCompleted) {
+          _done.complete();
+        }
+        subscription.cancel();
+        _channelSubscriptions.remove(subscription);
+        close();
+      },
+    );
+    _channelSubscriptions.add(subscription);
     return done;
   }
 
@@ -129,6 +150,13 @@ class Server {
   Future close() {
     _channel.sink.close();
     if (!_done.isCompleted) _done.complete();
+    Future.forEach(
+      _channelSubscriptions.toSet(),
+      (subscription) async {
+        _channelSubscriptions.remove(subscription);
+        await subscription.cancel();
+      },
+    );
     return done;
   }
 

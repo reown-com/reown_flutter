@@ -39,6 +39,7 @@ class StorageConstants {
   static const String connectedWalletData = '${prefix}walletData';
   static const String selectedChainId = '${prefix}selectedChainId';
   static const String modalSession = '${prefix}session';
+  static const String phantomSession = '${prefix}phantomSession';
 }
 
 class UrlConstants {

@@ -83,6 +83,65 @@ class AppDetailPageState extends State<AppDetailPage> {
               type: CustomButtonType.normal,
               onTap: () async {
                 try {
+                  await _walletKit.extendSession(
+                    topic: session.topic,
+                  );
+                  setState(() {});
+                } catch (e) {
+                  debugPrint('[SampleWallet] ${e.toString()}');
+                }
+              },
+              child: const Center(
+                child: Text(
+                  'Extend Session',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+      sessionWidgets.add(const SizedBox.square(dimension: 10.0));
+      sessionWidgets.add(
+        Row(
+          children: [
+            CustomButton(
+              type: CustomButtonType.normal,
+              onTap: () async {
+                try {
+                  await _walletKit.updateSession(
+                    topic: session.topic,
+                    namespaces: session.namespaces,
+                  );
+                  setState(() {});
+                } catch (e) {
+                  debugPrint('[SampleWallet] ${e.toString()}');
+                }
+              },
+              child: const Center(
+                child: Text(
+                  'Update Session',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+      sessionWidgets.add(const SizedBox.square(dimension: 10.0));
+      sessionWidgets.add(
+        Row(
+          children: [
+            CustomButton(
+              type: CustomButtonType.normal,
+              onTap: () async {
+                try {
                   await _walletKit.disconnectSession(
                     topic: session.topic,
                     reason: Errors.getSdkError(Errors.USER_DISCONNECTED)

@@ -1,14 +1,11 @@
 import 'dart:convert';
 import 'package:intl/intl.dart';
-import 'package:reown_appkit_example/services/contracts/usdt_contract.dart';
+import 'package:reown_appkit_example/services/contracts/contract.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:convert/convert.dart';
-// ignore: depend_on_referenced_packages
-import 'package:bs58/bs58.dart';
 
-import 'package:reown_appkit_example/services/contracts/aave_contract.dart';
 import 'package:reown_appkit_example/services/contracts/test_data.dart';
 
 enum SupportedMethods {
@@ -288,18 +285,18 @@ class MethodsService {
     );
   }
 
-  // Example of calling `transfer` function from AAVE token Smart Contract
-  static Future<dynamic> callTestSmartContract({
+  static Future<dynamic> callSmartContract({
     required ReownAppKitModal appKitModal,
+    required SmartContract smartContract,
     required String action,
   }) async {
     // Create DeployedContract object using contract's ABI and address
     final deployedContract = DeployedContract(
       ContractAbi.fromJson(
-        jsonEncode(AAVESepoliaContract.contractABI),
-        'AAVE Token (Sepolia)',
+        jsonEncode(smartContract.contractABI),
+        smartContract.name,
       ),
-      EthereumAddress.fromHex(AAVESepoliaContract.contractAddress),
+      EthereumAddress.fromHex(smartContract.contractAddress),
     );
 
     switch (action) {
@@ -309,17 +306,7 @@ class MethodsService {
           contract: deployedContract,
         );
       case 'write':
-        // return await appKit.requestWriteContract(
-        //   topic: appKit.session?.topic ?? '',
-        //   chainId: 'eip155:11155111',
-        //   deployedContract: deployedContract,
-        //   functionName: 'subscribe',
-        //   parameters: [],
-        //   transaction: Transaction(
-        //     from: EthereumAddress.fromHex(appKit.session!.address!),
-        //     value: EtherAmount.fromInt(EtherUnit.finney, 1),
-        //   ),
-        // );
+        final transferValue = 0.011; //EtherAmount.fromInt(EtherUnit.finney, 11)
         // we first call `decimals` function, which is a read function,
         // to check how much decimal we need to use to parse the amount value
         final decimals = await appKitModal.requestReadContract(
@@ -328,98 +315,23 @@ class MethodsService {
           deployedContract: deployedContract,
           functionName: 'decimals',
         );
-        final d = (decimals.first as BigInt);
-        final requestValue = _formatValue(0.01, decimals: d);
+
+        final requestValue = _formatValue(
+          transferValue,
+          decimals: (decimals.first as BigInt),
+        );
         // now we call `transfer` write function with the parsed value.
         final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
           appKitModal.selectedChain!.chainId,
         );
-        return appKitModal.requestWriteContract(
+        final senderAddress = appKitModal.session!.getAddress(namespace)!;
+        return await appKitModal.requestWriteContract(
           topic: appKitModal.session!.topic,
           chainId: appKitModal.selectedChain!.chainId,
           deployedContract: deployedContract,
           functionName: 'transfer',
           transaction: Transaction(
-            from: EthereumAddress.fromHex(
-              appKitModal.session!.getAddress(namespace)!,
-            ),
-          ),
-          parameters: [
-            EthereumAddress.fromHex(
-              '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
-            ),
-            requestValue, // == 0.12
-          ],
-        );
-      // payable function with no parameters such as:
-      // {
-      //   "inputs": [],
-      //   "name": "functionName",
-      //   "outputs": [],
-      //   "stateMutability": "payable",
-      //   "type": "function"
-      // },
-      // return appKit.requestWriteContract(
-      //   topic: appKit.session?.topic ?? '',
-      //   chainId: 'eip155:11155111',
-      //   rpcUrl: 'https://ethereum-sepolia.publicnode.com',
-      //   deployedContract: deployedContract,
-      //   functionName: 'functionName',
-      //   transaction: Transaction(
-      //     from: EthereumAddress.fromHex(appKit.session!.address!),
-      //     value: EtherAmount.fromInt(EtherUnit.finney, 1),
-      //   ),
-      //   parameters: [],
-      // );
-      default:
-        return Future.value();
-    }
-  }
-
-  // Example of calling `transfer` function from USDT token Smart Contract
-  static Future<dynamic> callUSDTSmartContract({
-    required ReownAppKitModal appKitModal,
-    required String action,
-  }) async {
-    // Create DeployedContract object using contract's ABI and address
-    final deployedContract = DeployedContract(
-      ContractAbi.fromJson(
-        jsonEncode(USDTContract.contractABI),
-        'Tether USD',
-      ),
-      EthereumAddress.fromHex(USDTContract.contractAddress),
-    );
-
-    switch (action) {
-      case 'read':
-        return _readSmartContract(
-          appKitModal: appKitModal,
-          contract: deployedContract,
-        );
-      case 'write':
-        // we first call `decimals` function, which is a read function,
-        // to check how much decimal we need to use to parse the amount value
-        final decimals = await appKitModal.requestReadContract(
-          topic: appKitModal.session!.topic,
-          chainId: appKitModal.selectedChain!.chainId,
-          deployedContract: deployedContract,
-          functionName: 'decimals',
-        );
-        final d = (decimals.first as BigInt);
-        final requestValue = _formatValue(0.23, decimals: d);
-        // now we call `transfer` write function with the parsed value.
-        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-          appKitModal.selectedChain!.chainId,
-        );
-        return appKitModal.requestWriteContract(
-          topic: appKitModal.session!.topic,
-          chainId: appKitModal.selectedChain!.chainId,
-          deployedContract: deployedContract,
-          functionName: 'transfer',
-          transaction: Transaction(
-            from: EthereumAddress.fromHex(
-              appKitModal.session!.getAddress(namespace)!,
-            ),
+            from: EthereumAddress.fromHex(senderAddress),
           ),
           parameters: [
             EthereumAddress.fromHex(
@@ -428,6 +340,72 @@ class MethodsService {
             requestValue, // == 0.23
           ],
         );
+      // return await appKitModal.requestWriteContract(
+      //   topic: appKitModal.session!.topic,
+      //   chainId: appKitModal.selectedChain!.chainId,
+      //   deployedContract: deployedContract,
+      //   functionName: 'pay',
+      //   transaction: Transaction(
+      //     from: EthereumAddress.fromHex(senderAddress),
+      //     // value: EtherAmount.fromUnitAndValue(EtherUnit.wei, weiValue),
+      //   ),
+      //   parameters: [
+      //     'cartId1',
+      //     'uid1',
+      //     EtherAmount.fromInt(EtherUnit.finney, 0).getInWei,
+      //   ],
+      // );
+      // --------
+      // payable function with no parameters such as:
+      // {
+      //   "inputs": [],
+      //   "name": "functionName",
+      //   "outputs": [],
+      //   "stateMutability": "payable",
+      //   "type": "function"
+      // },
+      // return appKitModal.requestWriteContract(
+      //   topic: appKitModal.session?.topic ?? '',
+      //   chainId: 'eip155:11155111',
+      //   rpcUrl: 'https://ethereum-sepolia.publicnode.com',
+      //   deployedContract: deployedContract,
+      //   functionName: 'functionName',
+      //   transaction: Transaction(
+      //     from: EthereumAddress.fromHex(appKitModal.session!.address!),
+      //     value: EtherAmount.fromInt(EtherUnit.finney, 1),
+      //   ),
+      //   parameters: [],
+      // );
+      // ------
+      // return await appKitModal.requestWriteContract(
+      //   topic: appKitModal.session?.topic ?? '',
+      //   chainId: 'eip155:11155111',
+      //   deployedContract: deployedContract,
+      //   functionName: 'subscribe',
+      //   parameters: [],
+      //   transaction: Transaction(
+      //     from: EthereumAddress.fromHex(appKitModal.session!.address!),
+      //     value: EtherAmount.fromInt(EtherUnit.finney, 1),
+      //   ),
+      // );
+      // ------
+      // return await appKitModal.requestWriteContract(
+      //   topic: appKitModal.session?.topic ?? '',
+      //   chainId: 'eip155:11155111',
+      //   deployedContract: deployedContract,
+      //   functionName: 'transfer',
+      //   parameters: [
+      //     EthereumAddress.fromHex(
+      //       '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
+      //     ),
+      //     requestValue, // == 0.12
+      //   ],
+      //   transaction: Transaction(
+      //     from: EthereumAddress.fromHex(
+      //       appKitModal.session!.getAddress(namespace)!,
+      //     ),
+      //   ),
+      // );
       default:
         return Future.value();
     }
@@ -476,13 +454,15 @@ class MethodsService {
 
     //
     final name = (results[0].first as String);
-    final multiplier = _multiplier(results[3].first);
+    final decimals = results[3].first;
+    final multiplier = _multiplier(decimals);
     final total = (results[1].first as BigInt) / BigInt.from(multiplier);
     final balance = (results[2].first as BigInt) / BigInt.from(multiplier);
     final formatter = NumberFormat('#,##0.00000', 'en_US');
 
     return {
       'name': name,
+      'decimals': '$decimals',
       'totalSupply': formatter.format(total),
       'balance': formatter.format(balance),
     };

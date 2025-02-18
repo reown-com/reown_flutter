@@ -1,5 +1,6 @@
 // ignore: library_annotations
 @Timeout(Duration(seconds: 45))
+library;
 
 import 'dart:async';
 
@@ -309,6 +310,15 @@ void main() {
       //   expect(counterA, 1);
       //   expect(counterB, 1);
       // });
+
+      test('Does not throws when calling listen() multiple times', () async {
+        await Future.wait([
+          coreA.relayClient.init(),
+          coreA.relayClient.init(),
+          coreB.relayClient.init(),
+          coreB.relayClient.init(),
+        ]);
+      });
     });
   });
 }

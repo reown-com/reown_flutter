@@ -1,7 +1,9 @@
 import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
+import 'package:reown_core/reown_core.dart';
 
+/// key pairs hex encoded
 class CryptoKeyPair {
   final String privateKey;
   final String publicKey;
@@ -12,8 +14,16 @@ class CryptoKeyPair {
     return Uint8List.fromList(hex.decode(privateKey));
   }
 
+  String getPrivateKeyBs58() {
+    return base58.encode(getPrivateKeyBytes());
+  }
+
   Uint8List getPublicKeyBytes() {
     return Uint8List.fromList(hex.decode(publicKey));
+  }
+
+  String getPublicKeyBs58() {
+    return base58.encode(getPublicKeyBytes());
   }
 }
 

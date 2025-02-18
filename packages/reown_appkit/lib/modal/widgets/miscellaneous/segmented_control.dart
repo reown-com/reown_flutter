@@ -1,26 +1,36 @@
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 
 enum SegmentOption {
-  mobile,
-  browser,
+  option1,
+  option2,
 }
 
 class SegmentedControl extends StatefulWidget {
   const SegmentedControl({
     super.key,
+    this.width,
     this.onChange,
+    this.option1Title = 'Mobile',
+    this.option1Icon = 'lib/modal/assets/icons/mobile.svg',
+    this.option2Title = 'Browser',
+    this.option2Icon = 'lib/modal/assets/icons/extension.svg',
   });
   final Function(SegmentOption option)? onChange;
+  final double? width;
+  final String option1Title, option2Title;
+  final String option1Icon, option2Icon;
 
   @override
   State<SegmentedControl> createState() => _SegmentedControlState();
 }
 
 class _SegmentedControlState extends State<SegmentedControl> {
-  SegmentOption _selectedSegment = SegmentOption.mobile;
+  SegmentOption _selectedSegment = SegmentOption.option1;
 
   @override
   Widget build(BuildContext context) {
@@ -30,55 +40,59 @@ class _SegmentedControlState extends State<SegmentedControl> {
     return SizedBox(
       height: 32.0,
       child: CustomSlidingSegmentedControl<SegmentOption>(
-        initialValue: SegmentOption.mobile,
-        fixedWidth: 100.0,
+        initialValue: SegmentOption.option1,
+        fixedWidth: widget.width ?? 100.0,
         children: {
-          SegmentOption.mobile: Row(
+          SegmentOption.option1: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SvgPicture.asset(
-                'lib/modal/assets/icons/mobile.svg',
-                package: 'reown_appkit',
-                colorFilter: ColorFilter.mode(
-                  _selectedSegment == SegmentOption.mobile
-                      ? themeColors.foreground100
-                      : themeColors.foreground200,
-                  BlendMode.srcIn,
+              Visibility(
+                visible: widget.option1Icon.isNotEmpty,
+                child: SvgPicture.asset(
+                  widget.option1Icon,
+                  package: 'reown_appkit',
+                  colorFilter: ColorFilter.mode(
+                    _selectedSegment == SegmentOption.option1
+                        ? themeColors.foreground100
+                        : themeColors.foreground200,
+                    BlendMode.srcIn,
+                  ),
+                  height: 14.0,
                 ),
-                height: 14.0,
               ),
-              const SizedBox.square(dimension: 4.0),
               Text(
-                'Mobile',
+                ' ${widget.option1Title}',
                 style: themeData.textStyles.small500.copyWith(
-                  color: _selectedSegment == SegmentOption.mobile
+                  color: _selectedSegment == SegmentOption.option1
                       ? themeColors.foreground100
                       : themeColors.foreground200,
                 ),
               ),
             ],
           ),
-          SegmentOption.browser: Row(
+          SegmentOption.option2: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SvgPicture.asset(
-                'lib/modal/assets/icons/extension.svg',
-                package: 'reown_appkit',
-                colorFilter: ColorFilter.mode(
-                  _selectedSegment == SegmentOption.browser
-                      ? themeColors.foreground100
-                      : themeColors.foreground200,
-                  BlendMode.srcIn,
+              Visibility(
+                visible: widget.option2Icon.isNotEmpty,
+                child: SvgPicture.asset(
+                  widget.option2Icon,
+                  package: 'reown_appkit',
+                  colorFilter: ColorFilter.mode(
+                    _selectedSegment == SegmentOption.option2
+                        ? themeColors.foreground100
+                        : themeColors.foreground200,
+                    BlendMode.srcIn,
+                  ),
+                  height: 14.0,
                 ),
-                height: 14.0,
               ),
-              const SizedBox.square(dimension: 4.0),
               Text(
-                'Browser',
+                ' ${widget.option2Title}',
                 style: themeData.textStyles.small500.copyWith(
-                  color: _selectedSegment == SegmentOption.browser
+                  color: _selectedSegment == SegmentOption.option2
                       ? themeColors.foreground100
                       : themeColors.foreground200,
                 ),

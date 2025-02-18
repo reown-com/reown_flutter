@@ -5,6 +5,7 @@ import 'dart:developer' as dev;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_appkit_dapp/pages/settings_page.dart';
 // ignore: depend_on_referenced_packages
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -73,6 +74,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       isDarkMode: _isDarkMode,
       child: MaterialApp(
         title: StringConstants.appTitle,
+        theme: ThemeData(
+          colorScheme: _isDarkMode
+              ? ColorScheme.dark(
+                  primary: ReownAppKitModalThemeData().darkColors.accent100,
+                )
+              : ColorScheme.light(
+                  primary: ReownAppKitModalThemeData().lightColors.accent100,
+                ),
+        ),
         home: const MyHomePage(),
       ),
     );
@@ -112,25 +122,25 @@ class _MyHomePageState extends State<MyHomePage> {
     return link.toString();
   }
 
-  Redirect _constructRedirect() {
+  Redirect _constructRedirect(bool linkModeEnabled) {
     return Redirect(
       native: 'wcflutterdapp$_flavor://',
       universal: _universalLink(),
       // enable linkMode on Wallet so Dapps can use relay-less connection
       // universal: value must be set on cloud config as well
-      linkMode: true,
+      linkMode: linkModeEnabled,
     );
   }
 
-  PairingMetadata _pairingMetadata() {
+  PairingMetadata _pairingMetadata(bool linkModeEnabled) {
     return PairingMetadata(
-      name: 'Flutter AppKit Sample',
-      description: 'Reown\'s sample dapp with Flutter',
+      name: 'Reown\'s AppKit',
+      description: 'Reown\'s sample dApp with Flutter SDK',
       url: _universalLink(),
       icons: [
         'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/appkit-icon$_flavor.png',
       ],
-      redirect: _constructRedirect(),
+      redirect: _constructRedirect(linkModeEnabled),
     );
   }
 
@@ -143,12 +153,13 @@ class _MyHomePageState extends State<MyHomePage> {
         AppKitSocialOption.Apple,
         AppKitSocialOption.Discord,
       ],
-      showMainWallets: false, // OPTIONAL - true by default
+      showMainWallets: true, // OPTIONAL - true by default
     );
   }
 
   Set<String>? _featuredWalletIds() {
     return {
+      'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393', // Phantom
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
       '18450873727504ae9315a084fa7624b5297d2fe5880f0982979c17345a138277', // Kraken Wallet
       'c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96', // Metamask
@@ -158,13 +169,21 @@ class _MyHomePageState extends State<MyHomePage> {
     };
   }
 
+  void _logListener(String event) {
+    debugPrint('[AppKit] $event');
+  }
+
   Future<void> _initializeService() async {
+    final prefs = await SharedPreferences.getInstance();
+    final linkModeEnabled = prefs.getBool('appkit_sample_linkmode') ?? false;
+    final socialsEnabled = prefs.getBool('appkit_sample_socials') ?? false;
+
     _appKit = ReownAppKit(
       core: ReownCore(
         projectId: DartDefines.projectId,
         logLevel: LogLevel.all,
       ),
-      metadata: _pairingMetadata(),
+      metadata: _pairingMetadata(linkModeEnabled),
     );
 
     // Register event handlers
@@ -189,32 +208,28 @@ class _MyHomePageState extends State<MyHomePage> {
     // ReownAppKitModalNetworks.removeSupportedNetworks('solana');
     // ReownAppKitModalNetworks.removeTestNetworks();
 
-    final prefs = await SharedPreferences.getInstance();
-    final linkMode = prefs.getBool('appkit_sample_linkmode') ?? false;
-
-    _addOrRemoveNetworks(linkMode);
+    _addOrRemoveNetworks(linkModeEnabled);
 
     _appKitModal = ReownAppKitModal(
       context: context,
       appKit: _appKit,
       enableAnalytics: true,
-      siweConfig: _siweConfig(linkMode),
-      featuresConfig: _featuresConfig(),
+      siweConfig: _siweConfig(linkModeEnabled),
+      featuresConfig: socialsEnabled ? _featuresConfig() : null,
       // requiredNamespaces: {},
-      // optionalNamespaces: {},
+      optionalNamespaces: _updatedNamespaces(),
       featuredWalletIds: _featuredWalletIds(),
-      // excludedWalletIds: {
-      //   '841b1ef7139a08ee064e626f9f946154b0a80096c3417abe49ced448217fcf4c',
-      // },
+      // excludedWalletIds: {},
       // includedWalletIds: {},
       // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
-      optionalNamespaces: _updatedNamespaces(),
       getBalanceFallback: () async {
         // This method will be triggered if getting the balance from our blockchain API fails
         // You could place here your own getBalance method
         return 0.0;
       },
     );
+
+    _appKitModal!.appKit!.core.addLogListener(_logListener);
 
     _appKitModal!.onModalConnect.subscribe(_onModalConnect);
     _appKitModal!.onModalUpdate.subscribe(_onModalUpdate);
@@ -224,10 +239,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _pageDatas = [
       PageData(
-        page: ConnectPage(
+        page: ConnectPage(appKitModal: _appKitModal!),
+        title: StringConstants.connectPageTitle,
+        icon: Icons.home,
+      ),
+      PageData(
+        page: PairingsPage(appKitModal: _appKitModal!),
+        title: StringConstants.pairingsPageTitle,
+        icon: Icons.vertical_align_center_rounded,
+      ),
+      PageData(
+        page: SettingsPage(
           appKitModal: _appKitModal!,
-          linkMode: linkMode,
-          reinitialize: (bool linkMode) async {
+          linkMode: linkModeEnabled,
+          socials: socialsEnabled,
+          reinitialize: (bool value, String storageKey) async {
             final result = await showDialog<bool>(
               context: context,
               builder: (BuildContext context) {
@@ -247,26 +273,17 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             );
             if (result == true) {
-              await prefs.setBool('appkit_sample_linkmode', linkMode);
+              // appkit_sample_socials
+              await prefs.setBool(storageKey, value);
               if (!kDebugMode) {
                 exit(0);
               }
             }
           },
         ),
-        title: StringConstants.connectPageTitle,
-        icon: Icons.home,
+        title: StringConstants.settingsPageTitle,
+        icon: Icons.settings,
       ),
-      PageData(
-        page: PairingsPage(appKitModal: _appKitModal!),
-        title: StringConstants.pairingsPageTitle,
-        icon: Icons.vertical_align_center_rounded,
-      ),
-      // PageData(
-      //   page: SessionsPage(appKitModal: _appKitModal!),
-      //   title: StringConstants.sessionsPageTitle,
-      //   icon: Icons.workspaces_filled,
-      // ),
     ];
 
     await _appKitModal!.init();
@@ -293,6 +310,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Adds or remove supported networks based on linkMode
   void _addOrRemoveNetworks(bool linkMode) {
+    ReownAppKitModalNetworks.addSupportedNetworks('eip155', [
+      ReownAppKitModalNetworkInfo(
+        name: 'Base Sepolia',
+        chainId: '84531',
+        currency: 'SEP',
+        rpcUrl: 'https://sepolia.base.org',
+        explorerUrl: 'https://sepolia.basescan.org/',
+        isTestNetwork: true,
+      ),
+    ]);
     if (!linkMode) {
       ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
         ReownAppKitModalNetworkInfo(
@@ -421,16 +448,18 @@ class _MyHomePageState extends State<MyHomePage> {
     debugPrint('[SampleDapp] _onSessionAuthResponse $response');
   }
 
-  void _setState(_) => setState(() {});
-
   void _relayClientError(ErrorEvent? event) {
     debugPrint('[SampleDapp] _relayClientError ${event?.error}');
     _setState('');
   }
 
+  void _setState(_) => setState(() {});
+
   @override
   void dispose() {
     // Unregister event handlers
+    _appKitModal!.appKit!.core.removeLogListener(_logListener);
+
     _appKit!.core.relayClient.onRelayClientError.unsubscribe(
       _relayClientError,
     );
@@ -471,12 +500,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     return Scaffold(
-      backgroundColor: ReownAppKitModalTheme.colorsOf(context).background125,
       appBar: AppBar(
-        backgroundColor: ReownAppKitModalTheme.colorsOf(context).background175,
-        foregroundColor: ReownAppKitModalTheme.colorsOf(context).foreground100,
         title: Text(_pageDatas[_selectedIndex].title),
-        centerTitle: true,
         actions: [
           const Text('Relay '),
           CircleAvatar(
@@ -507,10 +532,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildBottomNavBar() {
     return BottomNavigationBar(
-      backgroundColor: ReownAppKitModalTheme.colorsOf(context).background175,
       currentIndex: _selectedIndex,
       unselectedItemColor: Colors.grey,
-      selectedItemColor: Colors.indigoAccent,
+      selectedItemColor: Color(0xFF667DFF),
       showUnselectedLabels: true,
       type: BottomNavigationBarType.fixed,
       // called when one tab is selected
