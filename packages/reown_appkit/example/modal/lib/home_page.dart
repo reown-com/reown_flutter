@@ -90,6 +90,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // ignore: unused_element
   SIWEConfig _siweConfig(bool enabled) => SIWEConfig(
         getNonce: () async {
           // this has to be called at the very moment of creating the pairing uri
@@ -200,6 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // sessionRefetchIntervalMs: 300000,
       );
 
+  // ignore: unused_element
   FeaturesConfig? _featuresConfig() {
     return FeaturesConfig(
       email: true,
@@ -215,6 +217,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _initializeService(SharedPreferences prefs) async {
     final analyticsValue = prefs.getBool('appkit_analytics') ?? true;
+    // ignore: unused_local_variable
     final emailWalletValue = prefs.getBool('appkit_email_wallet') ?? true;
     final siweAuthValue = prefs.getBool('appkit_siwe_auth') ?? true;
 
@@ -224,6 +227,17 @@ class _MyHomePageState extends State<MyHomePage> {
     // ReownAppKitModalNetworks.addSupportedNetworks('eip155', extraChains);
     // Remove every test network
     // ReownAppKitModalNetworks.removeTestNetworks();
+
+    ReownAppKitModalNetworks.addSupportedNetworks('eip155', [
+      ReownAppKitModalNetworkInfo(
+        name: 'Base Sepolia',
+        chainId: '84531',
+        currency: 'SEP',
+        rpcUrl: 'https://sepolia.base.org',
+        explorerUrl: 'https://sepolia.basescan.org/',
+        isTestNetwork: true,
+      ),
+    ]);
     if (siweAuthValue) {
       // Remove Solana support
       ReownAppKitModalNetworks.removeSupportedNetworks('solana');
@@ -255,9 +269,9 @@ class _MyHomePageState extends State<MyHomePage> {
         projectId: DartDefines.projectId,
         logLevel: LogLevel.all,
         metadata: _pairingMetadata(),
-        siweConfig: _siweConfig(siweAuthValue),
+        // siweConfig: _siweConfig(siweAuthValue),
+        // featuresConfig: emailWalletValue ? _featuresConfig() : null,
         enableAnalytics: analyticsValue, // OPTIONAL - null by default
-        featuresConfig: emailWalletValue ? _featuresConfig() : null,
         // requiredNamespaces: {},
         // optionalNamespaces: {},
         // includedWalletIds: {},
@@ -318,6 +332,7 @@ class _MyHomePageState extends State<MyHomePage> {
       debugPrint('⛔️ ${e.message}');
       return;
     }
+    _appKitModal.appKit!.core.addLogListener(_logListener);
     // modal specific subscriptions
     _appKitModal.onModalConnect.subscribe(_onModalConnect);
     _appKitModal.onModalUpdate.subscribe(_onModalUpdate);
@@ -347,8 +362,13 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {});
   }
 
+  void _logListener(String event) {
+    debugPrint('[AppKit] $event');
+  }
+
   @override
   void dispose() {
+    _appKitModal.appKit!.core.removeLogListener(_logListener);
     //
     _appKitModal.appKit!.core.relayClient.onRelayClientConnect.unsubscribe(
       _onRelayClientConnect,

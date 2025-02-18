@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -16,6 +18,7 @@ import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/recover_from_seed.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toastification/toastification.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -145,13 +148,20 @@ class _Metadata extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox.square(dimension: 20.0),
           _DataContainer(
             title: 'Redirect',
             data:
                 'Native: $nativeLink\nUniversal: $universalLink\nLink Mode: $linkMode',
+          ),
+          const SizedBox.square(dimension: 10.0),
+          FutureBuilder(
+            future: ReownCoreUtils.getPackageName(),
+            builder: (_, snapshot) {
+              return Text(snapshot.data ?? '');
+            },
           ),
         ],
       ),
@@ -287,13 +297,29 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                     child: Text(e.name),
                   );
                 }).toList(),
-                onChanged: (ChainMetadata? chain) {
+                onChanged: (ChainMetadata? chain) async {
                   setState(() => _selectedChain = chain);
                   final chainKey = chainKeys[_currentPage];
                   GetIt.I
                       .get<EVMService>(instanceName: chain?.chainId)
                       .getBalance(address: chainKey.address)
-                      .then((value) => setState(() => _balance = value));
+                      .then((value) => setState(() => _balance = value))
+                      .onError((a, b) {
+                    setState(() => _balance = 0.0);
+                  });
+                  final walletKit = GetIt.I<IWalletKitService>().walletKit;
+                  final sessions = walletKit.sessions.getAll();
+                  final cid = _selectedChain!.chainId.split(':').last;
+                  for (var session in sessions) {
+                    await walletKit.emitSessionEvent(
+                      topic: session.topic,
+                      chainId: _selectedChain!.chainId,
+                      event: SessionEventParams(
+                        name: 'chainChanged',
+                        data: int.parse(cid),
+                      ),
+                    );
+                  }
                 },
               ),
             ],
@@ -651,6 +677,62 @@ class _Buttons extends StatelessWidget {
       padding: const EdgeInsets.all(12.0),
       child: Column(
         children: [
+          FutureBuilder(
+            future: SharedPreferences.getInstance(),
+            builder: (_, snapshot) {
+              if (snapshot.hasData) {
+                final prefs = snapshot.data!;
+                final linkModeEnabled =
+                    prefs.getBool('appkit_sample_linkmode') ?? false;
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Link Mode',
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                    Switch(
+                      value: linkModeEnabled,
+                      onChanged: (value) async {
+                        await prefs.setBool('appkit_sample_linkmode', value);
+                        final result = await showDialog<bool>(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content:
+                                  Text('App will be closed to apply changes'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(false),
+                                  child: Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(true),
+                                  child: Text('Ok'),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                        if (result == true) {
+                          // appkit_sample_socials
+                          await prefs.setBool('appkit_sample_linkmode', value);
+                          if (!kDebugMode) {
+                            exit(0);
+                          }
+                        }
+                      },
+                    ),
+                    Expanded(child: SizedBox.shrink()),
+                  ],
+                );
+              }
+              return SizedBox.shrink();
+            },
+          ),
           const SizedBox(height: 8.0),
           Row(
             children: [

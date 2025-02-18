@@ -112,17 +112,26 @@ class RelayClient implements IRelayClient {
     required String message,
     required int ttl,
     required int tag,
+    int? correlationId,
+    Map<String, dynamic>? tvf,
   }) async {
     _checkInitialized();
-
-    core.logger.i('[$runtimeType] publish, $topic, $message');
 
     Map<String, dynamic> data = {
       'message': message,
       'ttl': ttl,
       'topic': topic,
       'tag': tag,
+      // new fields valid for all tags in Sign SDK
+      // is the request.id of the wc_sessionRequest call
+      if (correlationId != null) 'correlationId': correlationId,
+      // tvf fields valid only for tags 1108 and 1109 and certain methods
+      ...?tvf
     };
+
+    core.logger.i(
+      '[$runtimeType] publish, topic: $topic, tag: $tag, correlationId: $correlationId, tvf: $tvf',
+    );
 
     try {
       await messageTracker.recordMessageEvent(topic, message);

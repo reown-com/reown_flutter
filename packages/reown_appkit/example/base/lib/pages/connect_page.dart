@@ -63,6 +63,8 @@ class ConnectPageState extends State<ConnectPage> {
   Future<void> _refreshData() async {
     await widget.appKitModal.reconnectRelay();
     await widget.appKitModal.loadAccountData();
+    final topic = widget.appKitModal.session!.topic ?? '';
+    await widget.appKitModal.appKit!.ping(topic: topic);
     setState(() {});
   }
 
@@ -209,7 +211,7 @@ class __RequestButtonsState extends State<_RequestButtons> {
   @override
   Widget build(BuildContext context) {
     final topic = widget.appKitModal.session!.topic ?? '';
-    final chainId = widget.appKitModal.selectedChain!.chainId;
+    final chainId = widget.appKitModal.selectedChain?.chainId ?? '1';
     final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
     final methods = widget.appKitModal.getApprovedMethods(namespace: namespace);
     final address = widget.appKitModal.session!.getAddress(namespace)!;

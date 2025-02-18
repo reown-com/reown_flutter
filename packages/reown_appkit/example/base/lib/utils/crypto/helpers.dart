@@ -68,18 +68,6 @@ Future<SessionRequestParams?> getParams(
         params: [address, typeDataV4(int.parse(chainData.chainId))],
       );
     case 'eth_signTransaction':
-      return SessionRequestParams(
-        method: method,
-        params: [
-          Transaction(
-            from: EthereumAddress.fromHex(address),
-            to: EthereumAddress.fromHex(
-              '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
-            ),
-            value: EtherAmount.fromInt(EtherUnit.finney, 12), // == 0.012
-          ).toJson(),
-        ],
-      );
     case 'eth_sendTransaction':
       return SessionRequestParams(
         method: method,
@@ -90,6 +78,7 @@ Future<SessionRequestParams?> getParams(
               '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
             ),
             value: EtherAmount.fromInt(EtherUnit.finney, 12), // == 0.012
+            data: utf8.encode('0x'), // to make it work with some wallets
           ).toJson(),
         ],
       );

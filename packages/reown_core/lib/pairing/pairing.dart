@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:event/event.dart';
 import 'package:reown_core/models/json_rpc_models.dart';
+import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/i_json_rpc_history.dart';
 import 'package:reown_core/store/i_generic_store.dart';
 import 'package:reown_core/crypto/crypto_models.dart';
@@ -401,18 +402,20 @@ class Pairing implements IPairing {
   Future<dynamic> sendRequest(
     String topic,
     String method,
-    dynamic params, {
+    Map<String, dynamic> params, {
     int? id,
     int? ttl,
     EncodeOptions? encodeOptions,
     String? appLink,
     bool openUrl = true,
+    TVFData? tvf,
   }) async {
     final payload = JsonRpcUtils.formatJsonRpcRequest(
       method,
       params,
       id: id,
     );
+    final requestId = payload['id'] as int;
 
     final message = await core.crypto.encode(
       topic,
@@ -424,17 +427,13 @@ class Pairing implements IPairing {
       return;
     }
 
-    // print('adding payload to pending requests: ${payload['id']}');
+    // print('adding payload to pending requests: $requestId');
     final resp = PendingRequestResponse(completer: Completer());
     resp.completer.future.catchError((err) {
       // Catch the error so that it won't throw an uncaught error
     });
-    pendingRequests[payload['id']] = resp;
+    pendingRequests[requestId] = resp;
 
-    core.logger.d(
-      '[$runtimeType] sendRequest appLink: $appLink, '
-      'id: $id topic: $topic, method: $method, params: $params, ttl: $ttl',
-    );
     if ((appLink ?? '').isNotEmpty) {
       // during wc_sessionAuthenticate we don't need to openURL as it will be done by the host dapp
       if (openUrl) {
@@ -445,8 +444,12 @@ class Pairing implements IPairing {
         );
         await ReownCoreUtils.openURL(redirectURL);
       }
+      core.logger.d(
+        '[$runtimeType] sendRequest linkMode ($appLink), '
+        'id: $requestId topic: $topic, method: $method, '
+        'params: $params, ttl: $ttl',
+      );
     } else {
-      // RpcOptions opts = MethodConstants.RPC_OPTS[method]!['req']!;
       RpcOptions opts = MethodConstants.RPC_OPTS[method]!['req']!;
       if (ttl != null) {
         opts = opts.copyWith(ttl: ttl);
@@ -457,6 +460,14 @@ class Pairing implements IPairing {
         message: message,
         ttl: ttl ?? opts.ttl,
         tag: opts.tag,
+        correlationId: requestId,
+        // tvf data is sent only on tvfMethods methods
+        tvf: _shouldSendTVF(opts.tag) ? tvf?.toJson() : null,
+      );
+      core.logger.d(
+        '[$runtimeType] sendRequest relayClient, '
+        'id: $requestId topic: $topic, method: $method, '
+        'params: $params, ttl: ${ttl ?? opts.ttl}',
       );
     }
 
@@ -485,11 +496,13 @@ class Pairing implements IPairing {
     dynamic result, {
     EncodeOptions? encodeOptions,
     String? appLink,
+    TVFData? tvf,
   }) async {
     final payload = JsonRpcUtils.formatJsonRpcResponse<dynamic>(
       id,
       result,
     );
+    final resultId = payload['id'] as int;
 
     final String? message = await core.crypto.encode(
       topic,
@@ -513,12 +526,16 @@ class Pairing implements IPairing {
       );
       await ReownCoreUtils.openURL(redirectURL);
     } else {
-      final RpcOptions opts = MethodConstants.RPC_OPTS[method]!['res']!;
+      final opts = MethodConstants.RPC_OPTS[method]!['res']!;
+      //
       await core.relayClient.publish(
         topic: topic,
         message: message,
         ttl: opts.ttl,
         tag: opts.tag,
+        correlationId: resultId,
+        // tvf data is sent only on tvfMethods methods
+        tvf: _shouldSendTVF(opts.tag) ? tvf?.toJson(includeAll: true) : null,
       );
     }
   }
@@ -532,11 +549,13 @@ class Pairing implements IPairing {
     EncodeOptions? encodeOptions,
     RpcOptions? rpcOptions,
     String? appLink,
+    TVFData? tvf,
   }) async {
     final Map<String, dynamic> payload = JsonRpcUtils.formatJsonRpcError(
       id,
       error,
     );
+    final resultId = payload['id'] as int;
 
     final String? message = await core.crypto.encode(
       topic,
@@ -565,11 +584,17 @@ class Pairing implements IPairing {
       final fallbackMethodOpts = MethodConstants.RPC_OPTS[fallbackMethod]!;
       final relayOpts = methodOpts ?? fallbackMethodOpts;
       final fallbackOpts = relayOpts['reject'] ?? relayOpts['res']!;
+      final ttl = (rpcOptions ?? fallbackOpts).ttl;
+      final tag = (rpcOptions ?? fallbackOpts).tag;
+      //
       await core.relayClient.publish(
         topic: topic,
         message: message,
-        ttl: (rpcOptions ?? fallbackOpts).ttl,
-        tag: (rpcOptions ?? fallbackOpts).tag,
+        ttl: ttl,
+        tag: tag,
+        correlationId: resultId,
+        // tvf data is sent only on tvfMethods methods
+        tvf: _shouldSendTVF(tag) ? tvf?.toJson(includeAll: true) : null,
       );
     }
   }
@@ -880,5 +905,18 @@ class Pairing implements IPairing {
 
     final message = Uri.decodeComponent(envelope);
     await core.relayClient.handleLinkModeMessage(topic, message);
+  }
+
+  bool _shouldSendTVF(int tag) {
+    final sessionRequest = MethodConstants.WC_SESSION_REQUEST;
+    final reqOpt = MethodConstants.RPC_OPTS[sessionRequest]!['req']!;
+    final resOpt = MethodConstants.RPC_OPTS[sessionRequest]!['res']!;
+    core.logger.d(
+      '[$runtimeType] should send TVF, tag: $tag (${reqOpt.tag}, ${resOpt.tag})',
+    );
+    // check if tag is either 1108 or 1109, otherwise no tvf data is collected
+    if (tag != reqOpt.tag && tag != resOpt.tag) return false;
+
+    return true;
   }
 }

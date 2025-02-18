@@ -10,11 +10,13 @@ class SettingsPage extends StatefulWidget {
     required this.appKitModal,
     required this.reinitialize,
     this.linkMode = false,
+    this.socials = false,
   });
 
   final ReownAppKitModal appKitModal;
-  final Function(bool linkMode) reinitialize;
+  final Function(bool value, String storageKey) reinitialize;
   final bool linkMode;
+  final bool socials;
 
   @override
   SettingsPageState createState() => SettingsPageState();
@@ -63,7 +65,7 @@ class SettingsPageState extends State<SettingsPage> {
                       Switch(
                         value: widget.linkMode,
                         onChanged: (value) {
-                          widget.reinitialize(value);
+                          widget.reinitialize(value, 'appkit_sample_linkmode');
                         },
                       ),
                       Expanded(
@@ -73,6 +75,42 @@ class SettingsPageState extends State<SettingsPage> {
                             color: ReownAppKitModalTheme.colorsOf(context)
                                 .foreground100,
                             fontWeight: widget.linkMode
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          'Without Socials',
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            color: ReownAppKitModalTheme.colorsOf(context)
+                                .foreground100,
+                            fontWeight: !widget.socials
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                          ),
+                        ),
+                      ),
+                      Switch(
+                        value: widget.socials,
+                        onChanged: (value) {
+                          widget.reinitialize(value, 'appkit_sample_socials');
+                        },
+                      ),
+                      Expanded(
+                        child: Text(
+                          'With Socials',
+                          style: TextStyle(
+                            color: ReownAppKitModalTheme.colorsOf(context)
+                                .foreground100,
+                            fontWeight: widget.socials
                                 ? FontWeight.bold
                                 : FontWeight.normal,
                           ),
@@ -179,6 +217,15 @@ class SettingsPageState extends State<SettingsPage> {
               },
             ),
             const SizedBox(height: StyleConstants.linear8),
+            FutureBuilder(
+              future: ReownCoreUtils.getPackageName(),
+              builder: (_, snapshot) {
+                return Text(
+                  snapshot.data ?? '',
+                  style: textStyleBold,
+                );
+              },
+            ),
           ],
         ),
       ),

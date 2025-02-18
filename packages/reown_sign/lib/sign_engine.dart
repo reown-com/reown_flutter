@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:event/event.dart';
 import 'package:http/http.dart' as http;
+import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/i_generic_store.dart';
@@ -63,6 +64,8 @@ class ReownSign implements IReownSign {
   final IGenericStore<SessionRequest> pendingRequests;
 
   List<SessionProposalCompleter> pendingProposals = [];
+
+  Map<int, TVFData> pendingTVFRequests = {};
 
   @override
   late IGenericStore<AuthPublicKey> authKeys;
@@ -512,11 +515,17 @@ class ReownSign implements IReownSign {
       request: request,
     );
 
+    final id = JsonRpcUtils.payloadId();
+    final tvf = _collectRequestTVF(id, sessionRequest);
+    core.logger.d('[$runtimeType] _collect Request TVF, id: $id, $tvf');
+
     return await core.pairing.sendRequest(
+      id: id,
       topic,
       MethodConstants.WC_SESSION_REQUEST,
       sessionRequest.toJson(),
       appLink: _getAppLinkIfEnabled(session?.peer.metadata),
+      tvf: tvf,
     );
   }
 
@@ -593,6 +602,11 @@ class ReownSign implements IReownSign {
     _checkInitialized();
     await _isValidResponse(topic, response);
 
+    final tvf = _collectResponseTVF(response);
+    core.logger.d(
+      '[$runtimeType] _collect Response TVF, id: ${response.id}, $tvf',
+    );
+
     final session = sessions.get(topic);
     final isLinkModeSession = session?.transportType.isLinkMode ?? false;
     if (!isLinkModeSession) {
@@ -608,6 +622,7 @@ class ReownSign implements IReownSign {
         MethodConstants.WC_SESSION_REQUEST,
         response.result,
         appLink: appLink,
+        tvf: tvf,
       );
     } else {
       await core.pairing.sendError(
@@ -616,6 +631,7 @@ class ReownSign implements IReownSign {
         MethodConstants.WC_SESSION_REQUEST,
         response.error!,
         appLink: appLink,
+        tvf: tvf,
       );
     }
 
@@ -1361,6 +1377,11 @@ class ReownSign implements IReownSign {
         request.request,
       );
 
+      final tvf = _collectRequestTVF(payload.id, request);
+      core.logger.d(
+        '[$runtimeType] _collect Request TVF, id: ${payload.id}, $tvf',
+      );
+
       final session = sessions.get(topic)!;
       final verifyContext = await _getVerifyContext(
         payload,
@@ -1408,6 +1429,7 @@ class ReownSign implements IReownSign {
             JsonRpcError.fromJson(
               e.toJson(),
             ),
+            tvf: tvf,
           );
           await _deletePendingRequest(payload.id);
         } on ReownSignErrorSilent catch (_) {
@@ -1421,6 +1443,7 @@ class ReownSign implements IReownSign {
             JsonRpcError.invalidParams(
               err.toString(),
             ),
+            tvf: tvf,
           );
           await _deletePendingRequest(payload.id);
         }
@@ -2831,6 +2854,89 @@ class ReownSign implements IReownSign {
       return true;
     } catch (e) {
       rethrow;
+    }
+  }
+
+  /// ******* TVF *********** ///
+
+  TVFData? _collectRequestTVF(int id, WcSessionRequestRequest request) {
+    // check if the rpc request is on the tvf supported methods list
+    final method = request.request.method;
+    if (!TVFData.tvfRequestMethods.contains(method)) {
+      return null;
+    }
+
+    // params to collect
+    final rpcMethods = List<String>.from([method]);
+    final chainId = request.chainId;
+    List<String>? contractAddresses;
+
+    // only EVM request could have `data` parameter for contract call
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    if (namespace == 'eip155') {
+      final params = request.request.params;
+      final paramsMap = params.first as Map<String, dynamic>;
+      final data = paramsMap['data'] as String? ?? '';
+      try {
+        if (ReownCoreUtils.isValidContractData(data)) {
+          final contractAddress = paramsMap['to'] as String;
+          contractAddresses = [contractAddress];
+        }
+      } catch (e) {
+        core.logger.d('[$runtimeType] invalid contract data $data');
+      }
+    }
+
+    final tvfData = TVFData(
+      rpcMethods: rpcMethods,
+      chainId: chainId,
+      contractAddresses: contractAddresses,
+    );
+
+    // pendingTVFRequests is useful for WalletKit _onSessionRequest method
+    pendingTVFRequests[id] = tvfData;
+
+    // return is useful for AppKit's request() method
+    return tvfData;
+  }
+
+  TVFData? _collectResponseTVF(JsonRpcResponse payload) {
+    final id = payload.id;
+    if (pendingTVFRequests.containsKey(id)) {
+      final chainId = pendingTVFRequests[id]!.chainId!;
+      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+      final tvfData = pendingTVFRequests[id]!.copytWith(
+        txHashes: _collectHashes(namespace, payload),
+      );
+      pendingTVFRequests.remove(id);
+      return tvfData;
+    }
+
+    return null;
+  }
+
+  List<String>? _collectHashes(String namespace, JsonRpcResponse response) {
+    if (response.result == null) {
+      return null;
+    }
+
+    try {
+      switch (namespace) {
+        case 'solana':
+          final result = (response.result as Map<String, dynamic>);
+          if (result.containsKey('signature')) {
+            return List<String>.from([result['signature']]);
+          }
+          if (result.containsKey('transactions')) {
+            return List<String>.from(result['transactions']);
+          }
+          return null;
+        default:
+          return List<String>.from([response.result]);
+      }
+    } catch (e) {
+      core.logger.d('[$runtimeType] _collectHashes $e');
+      return null;
     }
   }
 }

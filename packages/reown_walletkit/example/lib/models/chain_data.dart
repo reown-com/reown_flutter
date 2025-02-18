@@ -78,11 +78,20 @@ class ChainsDataList {
     ChainMetadata(
       type: ChainType.eip155,
       chainId: 'eip155:11155111',
-      name: 'Sepolia',
+      name: 'Eth Sepolia',
       logo: '/chain-logos/eip155-1.png',
       color: Colors.blue.shade300,
       isTestnet: true,
       rpc: ['https://ethereum-sepolia.publicnode.com'],
+    ),
+    ChainMetadata(
+      type: ChainType.eip155,
+      chainId: 'eip155:84531',
+      name: 'Base Sepolia',
+      logo: '/chain-logos/eip155-1.png',
+      color: Colors.blue.shade300,
+      isTestnet: true,
+      rpc: ['https://sepolia.base.org'],
     ),
     ChainMetadata(
       type: ChainType.eip155,

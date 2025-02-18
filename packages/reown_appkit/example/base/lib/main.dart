@@ -122,17 +122,17 @@ class _MyHomePageState extends State<MyHomePage> {
     return link.toString();
   }
 
-  Redirect _constructRedirect() {
+  Redirect _constructRedirect(bool linkModeEnabled) {
     return Redirect(
       native: 'wcflutterdapp$_flavor://',
       universal: _universalLink(),
       // enable linkMode on Wallet so Dapps can use relay-less connection
       // universal: value must be set on cloud config as well
-      linkMode: true,
+      linkMode: linkModeEnabled,
     );
   }
 
-  PairingMetadata _pairingMetadata() {
+  PairingMetadata _pairingMetadata(bool linkModeEnabled) {
     return PairingMetadata(
       name: 'Reown\'s AppKit',
       description: 'Reown\'s sample dApp with Flutter SDK',
@@ -140,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
       icons: [
         'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/appkit-icon$_flavor.png',
       ],
-      redirect: _constructRedirect(),
+      redirect: _constructRedirect(linkModeEnabled),
     );
   }
 
@@ -169,13 +169,21 @@ class _MyHomePageState extends State<MyHomePage> {
     };
   }
 
+  void _logListener(String event) {
+    debugPrint('[AppKit] $event');
+  }
+
   Future<void> _initializeService() async {
+    final prefs = await SharedPreferences.getInstance();
+    final linkModeEnabled = prefs.getBool('appkit_sample_linkmode') ?? false;
+    final socialsEnabled = prefs.getBool('appkit_sample_socials') ?? false;
+
     _appKit = ReownAppKit(
       core: ReownCore(
         projectId: DartDefines.projectId,
         logLevel: LogLevel.all,
       ),
-      metadata: _pairingMetadata(),
+      metadata: _pairingMetadata(linkModeEnabled),
     );
 
     // Register event handlers
@@ -200,17 +208,14 @@ class _MyHomePageState extends State<MyHomePage> {
     // ReownAppKitModalNetworks.removeSupportedNetworks('solana');
     // ReownAppKitModalNetworks.removeTestNetworks();
 
-    final prefs = await SharedPreferences.getInstance();
-    final linkMode = prefs.getBool('appkit_sample_linkmode') ?? false;
-
-    _addOrRemoveNetworks(linkMode);
+    _addOrRemoveNetworks(linkModeEnabled);
 
     _appKitModal = ReownAppKitModal(
       context: context,
       appKit: _appKit,
       enableAnalytics: true,
-      siweConfig: _siweConfig(linkMode),
-      featuresConfig: _featuresConfig(),
+      siweConfig: _siweConfig(linkModeEnabled),
+      featuresConfig: socialsEnabled ? _featuresConfig() : null,
       // requiredNamespaces: {},
       optionalNamespaces: _updatedNamespaces(),
       featuredWalletIds: _featuredWalletIds(),
@@ -223,6 +228,8 @@ class _MyHomePageState extends State<MyHomePage> {
         return 0.0;
       },
     );
+
+    _appKitModal!.appKit!.core.addLogListener(_logListener);
 
     _appKitModal!.onModalConnect.subscribe(_onModalConnect);
     _appKitModal!.onModalUpdate.subscribe(_onModalUpdate);
@@ -244,7 +251,9 @@ class _MyHomePageState extends State<MyHomePage> {
       PageData(
         page: SettingsPage(
           appKitModal: _appKitModal!,
-          reinitialize: (bool linkMode) async {
+          linkMode: linkModeEnabled,
+          socials: socialsEnabled,
+          reinitialize: (bool value, String storageKey) async {
             final result = await showDialog<bool>(
               context: context,
               builder: (BuildContext context) {
@@ -264,7 +273,8 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             );
             if (result == true) {
-              await prefs.setBool('appkit_sample_linkmode', linkMode);
+              // appkit_sample_socials
+              await prefs.setBool(storageKey, value);
               if (!kDebugMode) {
                 exit(0);
               }
@@ -300,6 +310,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Adds or remove supported networks based on linkMode
   void _addOrRemoveNetworks(bool linkMode) {
+    ReownAppKitModalNetworks.addSupportedNetworks('eip155', [
+      ReownAppKitModalNetworkInfo(
+        name: 'Base Sepolia',
+        chainId: '84531',
+        currency: 'SEP',
+        rpcUrl: 'https://sepolia.base.org',
+        explorerUrl: 'https://sepolia.basescan.org/',
+        isTestNetwork: true,
+      ),
+    ]);
     if (!linkMode) {
       ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
         ReownAppKitModalNetworkInfo(
@@ -438,6 +458,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void dispose() {
     // Unregister event handlers
+    _appKitModal!.appKit!.core.removeLogListener(_logListener);
+
     _appKit!.core.relayClient.onRelayClientError.unsubscribe(
       _relayClientError,
     );

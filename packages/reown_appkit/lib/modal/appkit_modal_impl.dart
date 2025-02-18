@@ -1103,10 +1103,9 @@ class ReownAppKitModal
 
     try {
       final link = metadataRedirect?.native ?? metadataRedirect?.universal;
-      _uriService.openRedirect(
-        walletRedirect.copyWith(mobile: link),
-        pType: PlatformUtils.getPlatformType(),
-      );
+      final redirect = walletRedirect.copyWith(mobile: link);
+      final platform = PlatformUtils.getPlatformType();
+      _uriService.openRedirect(redirect, pType: platform);
     } catch (e) {
       onModalError.broadcast(ErrorOpeningWallet());
     }
