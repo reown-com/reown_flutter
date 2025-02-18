@@ -1,7 +1,7 @@
-## 1.1.1
+## 1.1.2
 
-- TVF
-- Core update
+- General security improvements and verify API V4 readiness
+- Core and Sign Update
 
 ## 1.1.0
 

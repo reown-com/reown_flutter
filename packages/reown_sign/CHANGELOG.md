@@ -1,7 +1,11 @@
 ## 1.1.2
+
+- General security improvements and verify API V4 readiness
+- Core Update
+
 ## 1.1.1
 
-- Update Core
+- Core Update
 
 ## 1.1.0
 

@@ -1,10 +1,9 @@
-## 1.4.0-beta07
+## 1.4.0
 
-- TVF
 - Embedded Wallets Features (Send, Receive, Tokens list)
 - Phantom Wallet support
-- Minor bug fixes
-- Core update
+- General security improvements and verify API V4 readiness
+- Core and Sign Update
 
 ## 1.3.0
 
