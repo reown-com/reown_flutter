@@ -52,16 +52,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/yttrium_dart/ios"
 
 SPEC CHECKSUMS:
-  connectivity_plus: 4c41c08fc6d7c91f63bc7aec70ffe3730b04f563
+  connectivity_plus: 2256d3e20624a7749ed21653aafe291a46446fee
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
-  package_info_plus: c0502532a26c7662a62a356cebe2692ec5fe4ec4
-  qr_bar_code_scanner_dialog: d59c27f37c96ef8649711e6eee8033a69191f907
-  qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
-  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
-  url_launcher_ios: 5334b05cef931de560670eeae103fd3e431ac3fe
-  yttrium_dart: cb6f67f890b21a386f8653329e92db9826b48770
+  package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
+  qr_bar_code_scanner_dialog: a4cb7ad7201cbf8b888f3e6e58972b611ac43b28
+  qr_code_scanner: d77f94ecc9abf96d9b9b8fc04ef13f611e5a147a
+  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
+  url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
+  yttrium_dart: b16ad59444d7389da6423b3b30ea302e438d4394
 
 PODFILE CHECKSUM: 0772a2bd8cd4c7aaeb2576ddfaf6b03be722593b
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
