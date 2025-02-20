@@ -358,6 +358,16 @@ class _MyHomePageState extends State<MyHomePage> {
           isTestNetwork: true,
         ),
       ]);
+      ReownAppKitModalNetworks.addSupportedNetworks('mvx', [
+        ReownAppKitModalNetworkInfo(
+          name: 'MultiversX',
+          chainId: '1',
+          currency: 'EGLD',
+          rpcUrl: 'https//api.multiversx.com',
+          explorerUrl: 'https://explorer.multiversx.com',
+          chainIcon: 'https://avatars.githubusercontent.com/u/114073177',
+        ),
+      ]);
     } else {
       ReownAppKitModalNetworks.removeSupportedNetworks('solana');
     }
@@ -408,6 +418,17 @@ class _MyHomePageState extends State<MyHomePage> {
         chains: tronChains.map((c) => 'tron:${c.chainId}').toList(),
         methods: Tron.methods.values.toList(),
         events: Tron.events.values.toList(),
+      );
+    }
+    //
+    final mvxChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
+      namespace: 'mvx',
+    );
+    if (mvxChains.isNotEmpty) {
+      namespaces['mvx'] = RequiredNamespace(
+        chains: mvxChains.map((c) => 'mvx:${c.chainId}').toList(),
+        methods: ['mvx_signMessage', 'mvx_signTransaction'],
+        events: [],
       );
     }
 
