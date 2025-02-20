@@ -1,19 +1,13 @@
-import 'package:event/event.dart';
+// import 'package:event/event.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
-import 'package:dylib/dylib.dart' as dylib;
-import 'dart:ffi' as ffi;
-import 'package:flutter_rust_bridge/flutter_rust_bridge_for_generated.dart';
-
 import 'package:reown_core/relay_client/websocket/http_client.dart';
 import 'package:reown_core/relay_client/websocket/i_http_client.dart';
-import 'package:reown_core/reown_core.dart';
+// import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/generic_store.dart';
 import 'package:reown_core/store/i_generic_store.dart';
-import 'package:reown_sign/reown_sign.dart';
-import 'package:reown_walletkit/i_walletkit_impl.dart';
-import 'package:yttrium_dart/generated/lib.dart';
-import 'package:yttrium_dart/yttrium_dart.dart';
+// import 'package:reown_sign/reown_sign.dart';
+// import 'package:reown_walletkit/i_walletkit_impl.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
 
 class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   bool _initialized = false;
@@ -124,33 +118,14 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     await core.start();
     await reOwnSign.init();
 
-    WidgetsBinding.instance.addObserver(this);
     try {
-      // Locate the native library file
-    } catch (e) {
-      print(e);
-    }
-    // Locate the native library file
-    final yttrium = ExternalLibrary.open('libyttrium_dart_universal.dylib');
-    // Initialize the Rust library
-    await YttriumDart.init(externalLibrary: yttrium);
-    // Create ChainAbstractionClient instance
-    _chainAbstraction = await ChainAbstractionClient.newInstance(
-      projectId: core.projectId,
-    );
-    try {
-      // Locate the native library file
-    } catch (e) {
-      print(e);
-    try {
-      await YttriumDart.instance.init(
-        projectId: core.projectId,
-      );
+      await YttriumDart.instance.init(projectId: core.projectId);
     } catch (e) {
       core.logger.e('[$runtimeType] $e');
     }
 
     _initialized = true;
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -529,35 +504,66 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
 
   ///---------- CHAIN ABSTRACTION ----------///
 
-  // @override
-  // late ChainAbstractionClient chainAbstraction;
-  ///---------- CHAIN ABSTRACTION ----------///
-
   @override
-  Future<Eip1559Estimation> estimateFees({required String chainId}) async {
-    return await YttriumDart.instance.estimateFees(chainId: chainId);
-  }
-
-  @override
-  Future<RouteResponse> route({required InitTransaction transaction}) async {
-    return await YttriumDart.instance.route(transaction: transaction);
-  }
-
-  @override
-  Future<StatusResponse> status({required String orchestrationId}) async {
-    return await YttriumDart.instance.status(orchestrationId: orchestrationId);
-  }
-
-  @override
-  Future<StatusResponseCompleted> waitForSuccessWithTimeout({
-    required String orchestrationId,
-    required BigInt checkIn,
-    required BigInt timeout,
+  Future<String> erc20TokenBalance({
+    required String chainId,
+    required String token,
+    required String owner,
   }) async {
-    return await YttriumDart.instance.waitForSuccessWithTimeout(
-      orchestrationId: orchestrationId,
-      checkIn: checkIn,
-      timeout: timeout,
+    return await YttriumDart.instance.erc20TokenBalance(
+      chainId: chainId,
+      token: token,
+      owner: owner,
+    );
+  }
+
+  @override
+  Future<Eip1559EstimationCompat> estimateFees({
+    required String chainId,
+  }) async {
+    return await YttriumDart.instance.estimateFees(
+      chainId: chainId,
+    );
+  }
+
+  @override
+  Future<PrepareResponseCompat> prepare({
+    required String chainId,
+    required String from,
+    required CallCompat call,
+  }) async {
+    return await YttriumDart.instance.prepare(
+      chainId: chainId,
+      from: from,
+      call: call,
+    );
+  }
+
+  @override
+  Future<PrepareDetailedResponseCompat> prepareDetailed({
+    required String chainId,
+    required String from,
+    required CallCompat call,
+    required Currency localCurrency,
+  }) async {
+    return await YttriumDart.instance.prepareDetailed(
+      chainId: chainId,
+      from: from,
+      call: call,
+      localCurrency: localCurrency,
+    );
+  }
+
+  @override
+  Future<ExecuteDetailsCompat> execute({
+    required UiFieldsCompat uiFields,
+    required List<PrimitiveSignatureCompat> routeTxnSigs,
+    required PrimitiveSignatureCompat initialTxnSig,
+  }) async {
+    return await YttriumDart.instance.execute(
+      uiFields: uiFields,
+      routeTxnSigs: routeTxnSigs,
+      initialTxnSig: initialTxnSig,
     );
   }
 }
