@@ -35,7 +35,7 @@ dependencies:
   toastification: ^2.3.0
 
 dependency_overrides:
-  pinenacl: ^0.6.0
+  pinenacl: 0.6.0
   # because of solana
   shelf_web_socket: ^2.0.1
   web_socket_channel: ^3.0.1
@@ -47,7 +47,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   json_serializable: ^6.9.0
-
+  
 flutter:
   uses-material-design: true
 

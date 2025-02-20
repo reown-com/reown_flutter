@@ -2,14 +2,14 @@ group 'com.northladder.qr_bar_code_scanner_dialog'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '2.0.21'
+    ext.kotlin_version = '1.6.10'
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.7.3'
+        classpath 'com.android.tools.build:gradle:7.1.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -37,6 +37,15 @@ android {
     }
 
     kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
         jvmTarget = '1.8'
     }
 
@@ -47,8 +56,4 @@ android {
     defaultConfig {
         minSdkVersion 23
     }
-}
-
-dependencies {
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.3'
 }

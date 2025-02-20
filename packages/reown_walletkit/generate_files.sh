@@ -27,3 +27,5 @@ pod install
 
 cd ..
 cd ..
+
+# dart run yttrium_dart:setup
