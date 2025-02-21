@@ -84,7 +84,9 @@ class UriService extends IUriService {
       _core.logger.e('Error opening redirect', error: e);
       return false;
     }
-    _core.logger.i('[$runtimeType] openRedirect $uriToOpen');
+    _core.logger.i(
+      '[$runtimeType] openRedirect ${Uri.decodeFull('$uriToOpen')}',
+    );
     return await _launchUrlFunc(uriToOpen!);
   }
 

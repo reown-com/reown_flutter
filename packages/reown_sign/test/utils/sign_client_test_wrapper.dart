@@ -203,6 +203,7 @@ class SignClientTestWrapper implements IReownSign {
 
   @override
   Future<dynamic> request({
+    int? requestId,
     required String topic,
     required String chainId,
     required SessionRequestParams request,

@@ -100,7 +100,10 @@ abstract class IReownAppKitModal with ChangeNotifier {
   Future<void> buildConnectionUri();
 
   /// Connects the [selectedWallet] previously selected
-  Future<void> connectSelectedWallet({bool inBrowser = false});
+  Future<void> connectSelectedWallet({
+    bool inBrowser = false,
+    AppKitSocialOption? socialOption,
+  });
 
   /// Opens the native wallet [selectedWallet] after connected
   void launchConnectedWallet();

@@ -5,12 +5,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+
+import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
+import 'package:reown_core/store/i_store.dart';
+
 import 'package:reown_appkit/modal/services/coinbase_service/utils/coinbase_utils.dart';
 import 'package:reown_appkit/modal/services/phantom_service/models/phantom_events.dart';
 import 'package:reown_appkit/modal/services/third_party_wallet_service.dart';
-
-import 'package:reown_core/store/i_store.dart';
-
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/services/phantom_service/i_phantom_service.dart';
 import 'package:reown_appkit/modal/services/phantom_service/phantom_service.dart';
@@ -855,11 +856,14 @@ class ReownAppKitModal
   }
 
   @override
-  Future<void> connectSelectedWallet({bool inBrowser = false}) async {
+  Future<void> connectSelectedWallet({
+    bool inBrowser = false,
+    AppKitSocialOption? socialOption,
+  }) async {
     _checkInitialized();
 
     final walletRedirect = _explorerService.getWalletRedirect(
-      selectedWallet,
+      _selectedWallet,
     );
 
     if (walletRedirect == null) {
@@ -879,7 +883,7 @@ class ReownAppKitModal
       } else if (_selectedWallet!.isPhantom) {
         await _phantomService.connect(chainId: _currentSelectedChainId);
       } else {
-        await _connect(walletRedirect, pType);
+        await _connect(walletRedirect, pType, socialOption);
       }
     } on LaunchUrlException catch (e) {
       if (e is CanNotLaunchUrl) {
@@ -932,11 +936,19 @@ class ReownAppKitModal
     }
   }
 
-  Future<void> _connect(WalletRedirect redirect, PlatformType pType) async {
+  Future<void> _connect(
+    WalletRedirect redirect,
+    PlatformType pType,
+    AppKitSocialOption? socialOption,
+  ) async {
     await buildConnectionUri();
     final linkMode = redirect.linkMode ?? '';
     if (linkMode.isNotEmpty && _wcUri.startsWith(linkMode)) {
       await ReownCoreUtils.openURL(_wcUri);
+    } else if (socialOption != null) {
+      final url = CoreUtils.formatWebUrl(redirect.web, _wcUri);
+      final social = socialOption.name.toLowerCase();
+      await ReownCoreUtils.openURL('$url&provider=$social');
     } else {
       await _uriService.openRedirect(redirect, wcURI: _wcUri, pType: pType);
     }
@@ -948,7 +960,7 @@ class ReownAppKitModal
       try {
         if (_siweService.enabled) {
           final walletRedirect = _explorerService.getWalletRedirect(
-            selectedWallet,
+            _selectedWallet,
           );
           final nonce = await _siweService.getNonce();
           final p1 = await _siweService.config!.getMessageParams();
@@ -1104,6 +1116,11 @@ class ReownAppKitModal
     );
 
     if (walletRedirect == null) {
+      return;
+    }
+
+    if (walletRedirect.webOnly) {
+      // Web wallet request will be triggered elsewhere
       return;
     }
 
@@ -1353,6 +1370,7 @@ class ReownAppKitModal
 
   @override
   Future<dynamic> request({
+    // int? requestId,
     required String? topic,
     required String chainId,
     required SessionRequestParams request,
@@ -1397,7 +1415,28 @@ class ReownAppKitModal
           request: request,
         );
       }
+
+      final walletInfo = _explorerService.getConnectedWallet();
+      final walletRedirect = _explorerService.getWalletRedirect(
+        walletInfo,
+      );
+
+      int? requestId;
+      if (walletRedirect?.webOnly == true) {
+        requestId = JsonRpcUtils.payloadId();
+        final redirect = _currentSession!.peer!.metadata.redirect!;
+        final url = Uri.parse(redirect.native!).replace(
+          queryParameters: {
+            'requestId': requestId.toString(),
+            'sessionTopic': _currentSession!.topic!,
+          },
+        );
+        _appKit.core.logger.d('[$runtimeType] request web wallet url $url');
+        await ReownCoreUtils.openURL(url.toString());
+      }
+
       return await _appKit.request(
+        requestId: requestId,
         topic: topic!,
         chainId: reqChainId,
         request: request,
@@ -2164,56 +2203,18 @@ extension _AppKitModalExtension on ReownAppKitModal {
       return;
     }
     if (args != null) {
-      if ((args.session.sessionProperties ?? {}).containsKey('email')) {
-        // is magic-like session
-        final email = args.session.sessionProperties!['email'];
-        final account = args.session.namespaces['eip155']!.accounts.first;
-        final address = NamespaceUtils.getAccount(account);
-        final chainId = args.session.namespaces['eip155']!.chains?.first;
-        final magicData = MagicData(
-          email: email,
-          chainId: chainId ?? 'eip155:1',
-          address: address,
-        );
-        final session = ReownAppKitModalSession(magicData: magicData);
-        await _setSesionAndChainData(session);
-        onModalConnect.broadcast(ModalConnect(session));
-        if (_selectedWallet == null) {
-          await _storage.delete(StorageConstants.recentWalletId);
-          await _storage.delete(StorageConstants.connectedWalletData);
-        }
-        //
-        if (_siweService.enabled) {
-          if (!_isOpen) {
-            await _checkSIWEStatus();
-            onModalUpdate.broadcast(ModalConnect(_currentSession!));
-          } else {
-            _disconnectOnClose = true;
-            final theme = ReownAppKitModalTheme.maybeOf(_context!);
-            await _magicService.syncTheme(theme);
-            widgetStack.instance.push(ApproveSIWEPage(
-              onSiweFinish: _oneSIWEFinish,
-            ));
-          }
-        } else {
-          if (_isOpen) {
-            closeModal();
-          }
-        }
+      // IF SIWE CALLBACK (1-CA NOT SUPPORTED) SIWECONGIF METHODS ARE CALLED ON ApproveSIWEPage
+      final session = await _settleSession(args.session);
+      onModalConnect.broadcast(ModalConnect(session));
+      //
+      if (_siweService.enabled) {
+        _disconnectOnClose = true;
+        widgetStack.instance.push(ApproveSIWEPage(
+          onSiweFinish: _oneSIWEFinish,
+        ));
       } else {
-        // IF SIWE CALLBACK (1-CA NOT SUPPORTED) SIWECONGIF METHODS ARE CALLED ON ApproveSIWEPage
-        final session = await _settleSession(args.session);
-        onModalConnect.broadcast(ModalConnect(session));
-        //
-        if (_siweService.enabled) {
-          _disconnectOnClose = true;
-          widgetStack.instance.push(ApproveSIWEPage(
-            onSiweFinish: _oneSIWEFinish,
-          ));
-        } else {
-          if (_isOpen) {
-            closeModal();
-          }
+        if (_isOpen) {
+          closeModal();
         }
       }
     }

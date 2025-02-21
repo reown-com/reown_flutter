@@ -12,6 +12,7 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/farcaster_qrcode_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
+import 'package:reown_appkit/modal/services/explorer_service/models/wc_sample_wallets.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
@@ -93,15 +94,14 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
         }
       } else {
         final appKitModal = ModalProvider.of(context).instance;
-        // Regular Session Proposal
-        final connectResponse = await appKitModal.appKit!.connect(
-          requiredNamespaces: appKitModal.requiredNamespaces,
-          optionalNamespaces: appKitModal.optionalNamespaces,
+        final webWallet = WCSampleWallets.getSampleWallet(
+          '123456789012345678901234567888',
         );
-        final wcUri = connectResponse.uri?.toString() ?? '';
-        final socialOption = option.name.toLowerCase();
-        final webWallet = 'https://web-wallet-app-omega.vercel.app';
-        final redirectUri = '$webWallet/wc?uri=$wcUri&provider=$socialOption';
+        appKitModal.selectWallet(webWallet);
+        await _service?.connectSelectedWallet(
+          inBrowser: true,
+          socialOption: option,
+        );
         //
 
         // final schema = null; // _service?.appKit?.metadata.redirect?.universal;
@@ -118,7 +118,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
         //     _magicService.onCompleteSocialLogin.subscribe(
         //       _onCompleteSocialLogin,
         //     );
-        await ReownCoreUtils.openURL(redirectUri);
+        // await ReownCoreUtils.openURL(redirectUri);
         //   }
         // }
       }
