@@ -245,9 +245,10 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
                   size: BaseButtonSize.big,
                   iconSize: 20.0,
                   fontSize: 1.0,
-                  onTap: _tokens.isEmpty
-                      ? null
-                      : () => widgetStack.instance.push(SendPage()),
+                  // onTap: _tokens.isEmpty
+                  //     ? null
+                  //     : () => widgetStack.instance.push(SendPage()),
+                  onTap: null,
                 ),
               ),
             ],

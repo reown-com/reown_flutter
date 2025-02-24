@@ -6,7 +6,6 @@ import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_data.dart';
 import 'package:reown_appkit/modal/services/phantom_service/i_phantom_service.dart';
 import 'package:reown_appkit/modal/services/phantom_service/models/phantom_data.dart';
-import 'package:reown_appkit/modal/services/phantom_service/utils/phantom_utils.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 // TODO ReownAppKitModal this should be hidden
@@ -421,10 +420,12 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
       return CoinbaseUtils.defaultListingData.name;
     }
     if (sessionService.isPhantom) {
-      return PhantomUtils.defaultListingData.name;
+      return peer!.metadata.name;
     }
-
-    return peer?.metadata.name;
+    if (sessionService.isWC) {
+      return peer?.metadata.name;
+    }
+    return null;
   }
 
   Map<String, dynamic> toRawJson() {

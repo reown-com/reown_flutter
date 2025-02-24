@@ -268,7 +268,7 @@ class ReownAppKitModal
 
   FutureOr _unregisterSingleton<T extends Object>() => GetIt.I.unregister<T>();
 
-  IMagicService get _magicService => _getSingleton<IMagicService>();
+  // IMagicService get _magicService => _getSingleton<IMagicService>();
   ICoinbaseService get _coinbaseService => _getSingleton<ICoinbaseService>();
   IPhantomService get _phantomService => _getSingleton<IPhantomService>();
 
@@ -292,11 +292,11 @@ class ReownAppKitModal
       return true;
     }
 
-    final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
-    if (state.isNotEmpty) {
-      _magicService.completeSocialLogin(url: url);
-      return true;
-    }
+    // final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
+    // if (state.isNotEmpty) {
+    //   _magicService.completeSocialLogin(url: url);
+    //   return true;
+    // }
 
     final phantomRequest = ReownCoreUtils.getSearchParamFromURL(
       url,
@@ -343,14 +343,14 @@ class ReownAppKitModal
     if (isMagic || isCoinbase || isPhantom) {
       _currentSelectedChainId ??= _currentSession!.chainId;
       await _setSesionAndChainData(_currentSession!);
-      if (isMagic) {
-        final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
-          _currentSelectedChainId!,
-        );
-        await _magicService.init(chainId: caip2Chain);
-      }
+      // if (isMagic) {
+      //   final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
+      //     _currentSelectedChainId!,
+      //   );
+      //   await _magicService.init(chainId: caip2Chain);
+      // }
     } else {
-      _magicService.init();
+      // _magicService.init();
     }
 
     await expirePreviousInactivePairings();
@@ -399,14 +399,16 @@ class ReownAppKitModal
           if (!isConnected) {
             await _cleanSession();
           }
-        } else if (_currentSession!.sessionService.isMagic) {
-          // Every time the app gets killed Magic service will treat the user as disconnected
-          // So we will need to treat magic session differently
-          final email = _currentSession!.email;
-          _magicService.setEmail(email);
-          final provider = _currentSession!.socialProvider;
-          _magicService.setProvider(provider);
-        } else {
+        }
+        // else if (_currentSession!.sessionService.isMagic) {
+        //   // Every time the app gets killed Magic service will treat the user as disconnected
+        //   // So we will need to treat magic session differently
+        //   final email = _currentSession!.email;
+        //   _magicService.setEmail(email);
+        //   final provider = _currentSession!.socialProvider;
+        //   _magicService.setProvider(provider);
+        // }
+        else {
           await _cleanSession();
         }
       }
@@ -690,7 +692,10 @@ class ReownAppKitModal
   @override
   Future<void> openModalView([Widget? startWidget]) {
     final keyString = startWidget?.key?.toString() ?? '';
-    final isMagic = _currentSession?.sessionService.isMagic == true;
+    final provider = _currentSession?.sessionProperties['provider'] as String?;
+    // final email = _currentSession?.sessionProperties['email'] as String?;
+    final isMagic =
+        _currentSession?.sessionService.isMagic == true || provider != null;
     if (_isConnected) {
       final connectedKeys =
           _allowedScreensWhenConnected.map((e) => e.toString()).toList();
@@ -760,7 +765,7 @@ class ReownAppKitModal
 
     final isBottomSheet = PlatformUtils.isBottomSheet();
     final theme = ReownAppKitModalTheme.maybeOf(_context!);
-    await _magicService.syncTheme(theme);
+    // await _magicService.syncTheme(theme);
     final themeData = theme?.themeData ?? const ReownAppKitModalThemeData();
 
     Widget? showWidget = startWidget;
@@ -1172,17 +1177,17 @@ class ReownAppKitModal
         return;
       }
     }
-    if (_currentSession?.sessionService.isMagic == true) {
-      try {
-        await Future.delayed(Duration(milliseconds: 300));
-        await _magicService.disconnect();
-      } catch (e) {
-        _appKit.core.logger.d('[$runtimeType] disconnect magic $e');
-        _status = ReownAppKitModalStatus.initialized;
-        _notify();
-        return;
-      }
-    }
+    // if (_currentSession?.sessionService.isMagic == true) {
+    //   try {
+    //     await Future.delayed(Duration(milliseconds: 300));
+    //     await _magicService.disconnect();
+    //   } catch (e) {
+    //     _appKit.core.logger.d('[$runtimeType] disconnect magic $e');
+    //     _status = ReownAppKitModalStatus.initialized;
+    //     _notify();
+    //     return;
+    //   }
+    // }
 
     try {
       // If we want to disconnect all sessions, loop through them and disconnect them
@@ -1397,12 +1402,12 @@ class ReownAppKitModal
       '${jsonEncode(request.toJson())}',
     );
     try {
-      if (_currentSession!.sessionService.isMagic) {
-        return await _magicService.request(
-          chainId: reqChainId,
-          request: request,
-        );
-      }
+      // if (_currentSession!.sessionService.isMagic) {
+      //   return await _magicService.request(
+      //     chainId: reqChainId,
+      //     request: request,
+      //   );
+      // }
       if (_currentSession!.sessionService.isCoinbase) {
         return await _coinbaseService.request(
           chainId: switchToChainId ?? reqChainId,
@@ -1432,7 +1437,7 @@ class ReownAppKitModal
           },
         );
         _appKit.core.logger.d('[$runtimeType] request web wallet url $url');
-        await ReownCoreUtils.openURL(url.toString());
+        ReownCoreUtils.openURL(url.toString());
       }
 
       return await _appKit.request(
@@ -1820,10 +1825,10 @@ class ReownAppKitModal
     if (_siweService.config?.enabled != true) return;
     try {
       if (_siweService.signOutOnNetworkChange) {
-        final caip2chain = ReownAppKitModalNetworks.getCaip2Chain(
-          _currentSelectedChainId!,
-        );
-        await _magicService.getUser(chainId: caip2chain, isUpdate: true);
+        // final caip2chain = ReownAppKitModalNetworks.getCaip2Chain(
+        //   _currentSelectedChainId!,
+        // );
+        // await _magicService.getUser(chainId: caip2chain, isUpdate: true);
         await _siweService.signOut();
         _disconnectOnClose = true;
         widgetStack.instance.push(ApproveSIWEPage(
@@ -1857,11 +1862,11 @@ class ReownAppKitModal
 
     onModalError.subscribe(_onModalError);
     // Magic
-    _magicService.onMagicConnect.subscribe(_onMagicConnectEvent);
-    _magicService.onMagicLoginSuccess.subscribe(_onMagicLoginEvent);
-    _magicService.onMagicError.subscribe(_onMagicErrorEvent);
-    _magicService.onMagicUpdate.subscribe(_onMagicSessionUpdateEvent);
-    _magicService.onMagicRpcRequest.subscribe(_onMagicRequest);
+    // _magicService.onMagicConnect.subscribe(_onMagicConnectEvent);
+    // _magicService.onMagicLoginSuccess.subscribe(_onMagicLoginEvent);
+    // _magicService.onMagicError.subscribe(_onMagicErrorEvent);
+    // _magicService.onMagicUpdate.subscribe(_onMagicSessionUpdateEvent);
+    // _magicService.onMagicRpcRequest.subscribe(_onMagicRequest);
     // Coinbase
     _coinbaseService.onCoinbaseConnect.subscribe(_onCoinbaseConnect);
     _coinbaseService.onCoinbaseError.subscribe(_onCoinbaseError);
@@ -1895,10 +1900,10 @@ class ReownAppKitModal
     onModalError.unsubscribe(_onModalError);
 
     // Magic
-    _magicService.onMagicLoginSuccess.unsubscribe(_onMagicLoginEvent);
-    _magicService.onMagicError.unsubscribe(_onMagicErrorEvent);
-    _magicService.onMagicUpdate.unsubscribe(_onMagicSessionUpdateEvent);
-    _magicService.onMagicRpcRequest.unsubscribe(_onMagicRequest);
+    // _magicService.onMagicLoginSuccess.unsubscribe(_onMagicLoginEvent);
+    // _magicService.onMagicError.unsubscribe(_onMagicErrorEvent);
+    // _magicService.onMagicUpdate.unsubscribe(_onMagicSessionUpdateEvent);
+    // _magicService.onMagicRpcRequest.unsubscribe(_onMagicRequest);
     //
     // Coinbase
     _coinbaseService.onCoinbaseConnect.unsubscribe(_onCoinbaseConnect);
@@ -1969,8 +1974,8 @@ extension _EmailConnectorExtension on ReownAppKitModal {
           onModalUpdate.broadcast(ModalConnect(_currentSession!));
         } else {
           _disconnectOnClose = true;
-          final theme = ReownAppKitModalTheme.maybeOf(_context!);
-          await _magicService.syncTheme(theme);
+          // final theme = ReownAppKitModalTheme.maybeOf(_context!);
+          // await _magicService.syncTheme(theme);
           widgetStack.instance.push(ApproveSIWEPage(
             onSiweFinish: _oneSIWEFinish,
           ));

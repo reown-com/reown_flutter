@@ -1,3 +1,7 @@
+## 1.4.1-alpha
+
+- Web Wallet test
+
 ## 1.4.0
 
 - Embedded Wallets Features (Send, Receive, Tokens list)

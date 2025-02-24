@@ -78,15 +78,15 @@ class MagicService implements IMagicService {
   @override
   WebViewWidget get webview => _webview;
   @override
-  final isReady = ValueNotifier(false);
+  final isReady = ValueNotifier(true);
   @override
-  final isConnected = ValueNotifier(false);
+  final isConnected = ValueNotifier(true);
   @override
   final isTimeout = ValueNotifier(false);
   @override
-  final isEmailEnabled = ValueNotifier(false);
+  final isEmailEnabled = ValueNotifier(true);
   @override
-  final isSocialEnabled = ValueNotifier(false);
+  final isSocialEnabled = ValueNotifier(true);
   @override
   final email = ValueNotifier<String>('');
   @override
@@ -161,6 +161,7 @@ class MagicService implements IMagicService {
       _isConnectedCompleter.complete(false);
       return;
     }
+    return;
     _packageName = await ReownCoreUtils.getPackageName();
     await _init();
     await _isConnected();

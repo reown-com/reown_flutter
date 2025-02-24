@@ -14,8 +14,6 @@ import 'package:reown_appkit_dapp/pages/connect_page.dart';
 import 'package:reown_appkit_dapp/pages/pairings_page.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
-import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
-import 'package:reown_appkit_dapp/utils/crypto/tron.dart';
 import 'package:reown_appkit_dapp/utils/dart_defines.dart';
 import 'package:reown_appkit_dapp/utils/deep_link_handler.dart';
 import 'package:reown_appkit_dapp/utils/string_constants.dart';
@@ -140,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
       icons: [
         'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/appkit-icon$_flavor.png',
       ],
-      redirect: _constructRedirect(linkModeEnabled),
+      // redirect: _constructRedirect(linkModeEnabled),
     );
   }
 
@@ -383,8 +381,8 @@ class _MyHomePageState extends State<MyHomePage> {
     if (evmChains.isNotEmpty) {
       namespaces['eip155'] = RequiredNamespace(
         chains: evmChains.map((c) => 'eip155:${c.chainId}').toList(),
-        methods: NetworkUtils.defaultNetworkMethods['eip155']!.toList(),
-        events: NetworkUtils.defaultNetworkEvents['eip155']!.toList(),
+        methods: getChainMethods('eip155'),
+        events: getChainEvents('eip155'),
       );
     }
     //
@@ -394,8 +392,8 @@ class _MyHomePageState extends State<MyHomePage> {
     if (solanaChains.isNotEmpty) {
       namespaces['solana'] = RequiredNamespace(
         chains: solanaChains.map((c) => 'solana:${c.chainId}').toList(),
-        methods: NetworkUtils.defaultNetworkMethods['solana']!.toList(),
-        events: NetworkUtils.defaultNetworkEvents['solana']!.toList(),
+        methods: getChainMethods('solana'),
+        events: getChainEvents('solana'),
       );
     }
     //
@@ -405,8 +403,8 @@ class _MyHomePageState extends State<MyHomePage> {
     if (polkadotChains.isNotEmpty) {
       namespaces['polkadot'] = RequiredNamespace(
         chains: polkadotChains.map((c) => 'polkadot:${c.chainId}').toList(),
-        methods: Polkadot.methods.values.toList(),
-        events: Polkadot.events.values.toList(),
+        methods: getChainMethods('polkadot'),
+        events: getChainEvents('polkadot'),
       );
     }
     //
@@ -416,8 +414,8 @@ class _MyHomePageState extends State<MyHomePage> {
     if (tronChains.isNotEmpty) {
       namespaces['tron'] = RequiredNamespace(
         chains: tronChains.map((c) => 'tron:${c.chainId}').toList(),
-        methods: Tron.methods.values.toList(),
-        events: Tron.events.values.toList(),
+        methods: getChainMethods('tron'),
+        events: getChainEvents('tron'),
       );
     }
     //
@@ -427,8 +425,8 @@ class _MyHomePageState extends State<MyHomePage> {
     if (mvxChains.isNotEmpty) {
       namespaces['mvx'] = RequiredNamespace(
         chains: mvxChains.map((c) => 'mvx:${c.chainId}').toList(),
-        methods: ['mvx_signMessage', 'mvx_signTransaction'],
-        events: [],
+        methods: getChainMethods('mvx'),
+        events: getChainEvents('mvx'),
       );
     }
 

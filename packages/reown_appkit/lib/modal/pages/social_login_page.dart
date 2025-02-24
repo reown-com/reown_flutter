@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:math';
+// import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +16,7 @@ import 'package:reown_appkit/modal/services/explorer_service/models/wc_sample_wa
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
-import 'package:reown_appkit/modal/utils/platform_utils.dart';
+// import 'package:reown_appkit/modal/utils/platform_utils.dart';
 import 'package:reown_appkit/modal/widgets/buttons/simple_icon_button.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/content_loading.dart';
@@ -127,48 +127,48 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
     }
   }
 
-  Future<void> _continueInWebview(String redirectUri) async {
-    final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
-    final bottomSheet = PlatformUtils.isBottomSheet();
-    final isTabletSize = PlatformUtils.isTablet(context);
-    final maxRadius = min(radiuses.radiusM, 36.0);
-    final innerContainerBorderRadius = bottomSheet && !isTabletSize
-        ? BorderRadius.only(
-            topLeft: Radius.circular(maxRadius),
-            topRight: Radius.circular(maxRadius),
-          )
-        : BorderRadius.all(Radius.circular(maxRadius));
-    final result = await showModalBottomSheet(
-      backgroundColor: Colors.black.withOpacity(0.5),
-      isDismissible: false,
-      isScrollControlled: true,
-      enableDrag: false,
-      useRootNavigator: false,
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.9,
-      ),
-      context: context,
-      builder: (context) => Container(
-        decoration: BoxDecoration(
-          color: themeColors.background125,
-          borderRadius: innerContainerBorderRadius,
-        ),
-        child: _WebViewLoginWidget(
-          url: redirectUri,
-          onCancel: () {
-            Navigator.of(context).pop(false);
-          },
-        ),
-      ),
-    );
+  // Future<void> _continueInWebview(String redirectUri) async {
+  //   final themeColors = ReownAppKitModalTheme.colorsOf(context);
+  //   final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+  //   final bottomSheet = PlatformUtils.isBottomSheet();
+  //   final isTabletSize = PlatformUtils.isTablet(context);
+  //   final maxRadius = min(radiuses.radiusM, 36.0);
+  //   final innerContainerBorderRadius = bottomSheet && !isTabletSize
+  //       ? BorderRadius.only(
+  //           topLeft: Radius.circular(maxRadius),
+  //           topRight: Radius.circular(maxRadius),
+  //         )
+  //       : BorderRadius.all(Radius.circular(maxRadius));
+  //   final result = await showModalBottomSheet(
+  //     backgroundColor: Colors.black.withOpacity(0.5),
+  //     isDismissible: false,
+  //     isScrollControlled: true,
+  //     enableDrag: false,
+  //     useRootNavigator: false,
+  //     constraints: BoxConstraints(
+  //       maxHeight: MediaQuery.of(context).size.height * 0.9,
+  //     ),
+  //     context: context,
+  //     builder: (context) => Container(
+  //       decoration: BoxDecoration(
+  //         color: themeColors.background125,
+  //         borderRadius: innerContainerBorderRadius,
+  //       ),
+  //       child: _WebViewLoginWidget(
+  //         url: redirectUri,
+  //         onCancel: () {
+  //           Navigator.of(context).pop(false);
+  //         },
+  //       ),
+  //     ),
+  //   );
 
-    if (result == false) {
-      _cancelSocialLogin();
-    } else {
-      await _completeSocialLogin(result);
-    }
-  }
+  //   if (result == false) {
+  //     _cancelSocialLogin();
+  //   } else {
+  //     await _completeSocialLogin(result);
+  //   }
+  // }
 
   void _onCompleteSocialLogin(CompleteSocialLoginEvent? event) async {
     if (event != null) {
