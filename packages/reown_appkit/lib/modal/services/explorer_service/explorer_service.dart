@@ -155,13 +155,11 @@ class ExplorerService implements IExplorerService {
     // final platformName = platform.toString().toLowerCase();
     List<ReownAppKitModalWalletInfo> sampleWallets = [];
     for (var sampleWallet in WCSampleWallets.getSampleWallets()) {
-      // final data = WCSampleWallets.nativeData[sampleWallet.listing.id];
-      // final schema = (data?[platformName]! as NativeAppData).schema ?? '';
-      final schema = WCSampleWallets.getSampleWalletScheme(
+      final schema = WCSampleWallets.getSampleWalletMobileLink(
         sampleWallet.listing.id,
       );
       final installed = await _uriService.isInstalled(schema);
-      if (installed) {
+      if (installed || sampleWallet.listing.webappLink != null) {
         sampleWallet = sampleWallet.copyWith(installed: true);
         sampleWallets.add(sampleWallet);
       }
