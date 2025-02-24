@@ -219,8 +219,13 @@ class __RequestButtonsState extends State<_RequestButtons> {
       namespace,
       chainId,
     );
+    final implemented = getChainMethods(namespace);
     return Column(
       children: (methods ?? []).map((method) {
+        final enabled = implemented.contains(method);
+        if (!enabled) {
+          return SizedBox.shrink();
+        }
         return Container(
           height: 40.0,
           width: double.infinity,
@@ -231,7 +236,8 @@ class __RequestButtonsState extends State<_RequestButtons> {
             style: ButtonStyle(
               elevation: WidgetStateProperty.all(0.0),
               backgroundColor: WidgetStateProperty.all<Color>(
-                  ReownAppKitModalTheme.colorsOf(context).accent080),
+                ReownAppKitModalTheme.colorsOf(context).accent080,
+              ),
               foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
             ),
             onPressed: () async {
