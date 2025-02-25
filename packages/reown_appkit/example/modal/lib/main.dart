@@ -69,6 +69,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: StringConstants.pageTitle,
+        // home: FirstPage(),
         home: FutureBuilder<List<Object>>(
           future: _initDeps(),
           builder: (context, snapshot) {

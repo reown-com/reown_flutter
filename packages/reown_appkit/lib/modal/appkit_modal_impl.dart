@@ -143,6 +143,8 @@ class ReownAppKitModal
   late final Future<double> Function()? _getBalance;
   Completer<bool> _awaitRelayOnce = Completer<bool>();
 
+  bool _disconnectOnDispose = true;
+
   ReownAppKitModal({
     required BuildContext context,
     IReownAppKit? appKit,
@@ -158,6 +160,7 @@ class ReownAppKitModal
     Set<String>? excludedWalletIds,
     Future<double> Function()? getBalanceFallback,
     LogLevel logLevel = LogLevel.nothing,
+    bool disconnectOnDispose = true,
   }) {
     if (appKit == null) {
       if (projectId == null) {
@@ -176,6 +179,7 @@ class ReownAppKitModal
 
     _context = context;
     _getBalance = getBalanceFallback;
+    _disconnectOnDispose = disconnectOnDispose;
 
     _appKit = appKit ??
         ReownAppKit(
@@ -1385,17 +1389,23 @@ class ReownAppKitModal
   Future<void> dispose() async {
     if (_status == ReownAppKitModalStatus.initialized) {
       _unregisterListeners();
-      await expirePreviousInactivePairings();
-      await disconnect();
-      await _appKit.core.relayClient.disconnect();
-      _relayConnected = false;
-      _isConnected = false;
-      _selectedChainID = null;
-      _requiredNamespaces = {};
-      _optionalNamespaces = {};
-      _lastChainEmitted = null;
-      _supportsOneClickAuth = false;
-      _status = ReownAppKitModalStatus.idle;
+      if (_disconnectOnDispose) {
+        try {
+          await expirePreviousInactivePairings();
+          await disconnect();
+          await _appKit.core.relayClient.disconnect();
+          _relayConnected = false;
+          _isConnected = false;
+          _selectedChainID = null;
+          _requiredNamespaces = {};
+          _optionalNamespaces = {};
+          _lastChainEmitted = null;
+          _supportsOneClickAuth = false;
+          _status = ReownAppKitModalStatus.idle;
+        } catch (e) {
+          _appKit.core.logger.e('[$runtimeType] disconnectOnDispose $e');
+        }
+      }
       _unregisterSingleton<IUriService>();
       _unregisterSingleton<IAnalyticsService>();
       _unregisterSingleton<IExplorerService>();
@@ -1503,7 +1513,7 @@ class ReownAppKitModal
           namespace: ns,
         );
         _optionalNamespaces[ns] = RequiredNamespace(
-          chains: networks.map((e) => '$ns:${e.chainId}').toList(),
+          chains: networks.map((e) => e.chainId).toList(),
           methods: NetworkUtils.defaultNetworkMethods[ns] ?? [],
           events: NetworkUtils.defaultNetworkEvents[ns] ?? [],
         );
@@ -1705,6 +1715,7 @@ class ReownAppKitModal
       final walletId = storedWalletId?['walletId'];
       await _deleteStorage();
       await _explorerService.storeRecentWalletId(walletId);
+      _blockchainService.dispose();
     } catch (_) {
       await _deleteStorage();
     }
@@ -1720,7 +1731,6 @@ class ReownAppKitModal
     _lastChainEmitted = null;
     _supportsOneClickAuth = false;
     _status = ReownAppKitModalStatus.initialized;
-    _blockchainService.dispose();
     _notify();
   }
 
