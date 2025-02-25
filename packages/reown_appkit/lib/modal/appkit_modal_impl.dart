@@ -1981,7 +1981,7 @@ extension _CoinbaseConnectorExtension on ReownAppKitModal {
     _appKit.core.logger.d('[$runtimeType] _onCoinbaseConnect: $args');
     if (args?.data != null) {
       // TODO change coinbase chainId into CAIP-2 String
-      final newChainId = _getStoredChainId('${args!.data!.chainId}')!;
+      final newChainId = _getStoredChainId(args!.data!.chainId)!;
       _selectedChainID = newChainId;
       //
       final session = ReownAppKitModalSession(coinbaseData: args.data!);

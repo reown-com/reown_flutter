@@ -215,7 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appKit: _appKit,
       enableAnalytics: true,
       siweConfig: _siweConfig(linkModeEnabled),
-      featuresConfig: socialsEnabled ? _featuresConfig() : null,
+      // featuresConfig: socialsEnabled ? _featuresConfig() : null,
       // requiredNamespaces: {},
       optionalNamespaces: _updatedNamespaces(),
       featuredWalletIds: _featuredWalletIds(),
@@ -446,7 +446,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final allChains = ReownAppKitModalNetworks.getAllSupportedNetworks();
     for (final chain in allChains) {
       // Loop through the events for that chain
-      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+      final namespace = NamespaceUtils.getNamespaceFromChain(
         chain.chainId,
       );
       for (final event in getChainEvents(namespace)) {

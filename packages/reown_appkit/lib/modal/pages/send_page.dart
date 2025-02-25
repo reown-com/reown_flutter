@@ -105,7 +105,7 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
   bool _isValidAddress(String input) {
     final appKitModal = ModalProvider.of(context).instance;
     final chainId = appKitModal.selectedChain!.chainId;
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final regex = RegExp(r'^(0x)?[0-9a-fA-F]{40}$');
     if (namespace == 'eip155') {
       return regex.hasMatch(input);
