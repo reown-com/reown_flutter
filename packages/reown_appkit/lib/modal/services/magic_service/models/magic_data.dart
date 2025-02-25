@@ -44,11 +44,11 @@ class MagicData {
   }
 
   static String _parseChainId(String value) {
-    String chainId = value.toString();
-    if (chainId.contains(':')) {
-      return chainId.split(':').last;
+    if (!NamespaceUtils.isValidChainId(value)) {
+      // we know that the secure-site can respond with invalid chain ids only for EVM
+      return 'eip155:$value';
     }
-    return chainId;
+    return value;
   }
 
   Map<String, dynamic> toJson() {

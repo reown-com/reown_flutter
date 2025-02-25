@@ -209,11 +209,12 @@ class _MyHomePageState extends State<MyHomePage> {
     _addOrRemoveNetworks(linkModeEnabled);
 
     _appKitModal = ReownAppKitModal(
+      logLevel: LogLevel.all,
       context: context,
       appKit: _appKit,
       enableAnalytics: true,
       siweConfig: _siweConfig(linkModeEnabled),
-      // featuresConfig: socialsEnabled ? _featuresConfig() : null,
+      featuresConfig: socialsEnabled ? _featuresConfig() : null,
       // requiredNamespaces: {},
       optionalNamespaces: _updatedNamespaces(),
       featuredWalletIds: _featuredWalletIds(),
@@ -294,9 +295,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // Loop through all the chain data
     for (final chain in allChains) {
       // Loop through the events for that chain
-      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-        chain.chainId,
-      );
+      final namespace = NamespaceUtils.getNamespaceFromChain(chain.chainId);
       for (final event in getChainEvents(namespace)) {
         _appKit!.registerEventHandler(
           chainId: chain.chainId,
@@ -361,7 +360,7 @@ class _MyHomePageState extends State<MyHomePage> {
           name: 'MultiversX',
           chainId: '1',
           currency: 'EGLD',
-          rpcUrl: 'https//api.multiversx.com',
+          rpcUrl: 'https://api.multiversx.com',
           explorerUrl: 'https://explorer.multiversx.com',
           chainIcon: 'https://avatars.githubusercontent.com/u/114073177',
         ),
@@ -380,7 +379,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     if (evmChains.isNotEmpty) {
       namespaces['eip155'] = RequiredNamespace(
-        chains: evmChains.map((c) => 'eip155:${c.chainId}').toList(),
+        // TODO breaking change?
+        chains: evmChains.map((c) => c.chainId).toList(),
         methods: getChainMethods('eip155'),
         events: getChainEvents('eip155'),
       );
@@ -391,7 +391,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     if (solanaChains.isNotEmpty) {
       namespaces['solana'] = RequiredNamespace(
-        chains: solanaChains.map((c) => 'solana:${c.chainId}').toList(),
+        chains: solanaChains.map((c) => c.chainId).toList(),
         methods: getChainMethods('solana'),
         events: getChainEvents('solana'),
       );
@@ -402,7 +402,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     if (polkadotChains.isNotEmpty) {
       namespaces['polkadot'] = RequiredNamespace(
-        chains: polkadotChains.map((c) => 'polkadot:${c.chainId}').toList(),
+        chains: polkadotChains.map((c) => c.chainId).toList(),
         methods: getChainMethods('polkadot'),
         events: getChainEvents('polkadot'),
       );
@@ -413,7 +413,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     if (tronChains.isNotEmpty) {
       namespaces['tron'] = RequiredNamespace(
-        chains: tronChains.map((c) => 'tron:${c.chainId}').toList(),
+        chains: tronChains.map((c) => c.chainId).toList(),
         methods: getChainMethods('tron'),
         events: getChainEvents('tron'),
       );
@@ -424,7 +424,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     if (mvxChains.isNotEmpty) {
       namespaces['mvx'] = RequiredNamespace(
-        chains: mvxChains.map((c) => 'mvx:${c.chainId}').toList(),
+        chains: mvxChains.map((c) => c.chainId).toList(),
         methods: getChainMethods('mvx'),
         events: getChainEvents('mvx'),
       );
@@ -676,10 +676,8 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         getSession: () async {
           // Return proper session from your Web Service
-          final chainId = _appKitModal!.selectedChain?.chainId ?? '1';
-          final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-            chainId,
-          );
+          final chainId = _appKitModal!.selectedChain!.chainId;
+          final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
           final address = _appKitModal!.session!.getAddress(namespace)!;
           return SIWESession(address: address, chains: [chainId]);
         },

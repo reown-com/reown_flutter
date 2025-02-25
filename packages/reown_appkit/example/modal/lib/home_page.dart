@@ -165,10 +165,8 @@ class _MyHomePageState extends State<MyHomePage> {
           } catch (error) {
             debugPrint('[SIWEConfig] getSession error: $error');
             // Fallback patch for testing purposes in case SIWE backend has issues
-            final chainId = _appKitModal.selectedChain?.chainId ?? '1';
-            final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-              chainId,
-            );
+            final chainId = _appKitModal.selectedChain!.chainId;
+            final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
             final address = _appKitModal.session!.getAddress(namespace)!;
             return SIWESession(address: address, chains: [chainId]);
           }

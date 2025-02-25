@@ -70,10 +70,8 @@ class _AccountAvatarState extends State<AccountAvatar> {
     setState(() {
       try {
         _avatarUrl = widget.appKit.blockchainIdentity?.avatar;
-        final chainId = widget.appKit.selectedChain?.chainId ?? '';
-        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-          chainId,
-        );
+        final chainId = widget.appKit.selectedChain!.chainId;
+        final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
         _address = widget.appKit.session?.getAddress(namespace);
       } catch (_) {}
     });

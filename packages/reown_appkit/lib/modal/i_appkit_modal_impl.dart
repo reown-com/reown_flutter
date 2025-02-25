@@ -49,10 +49,6 @@ abstract class IReownAppKitModal with ChangeNotifier {
   BlockchainIdentity? get blockchainIdentity;
 
   /// Returns the balance of the currently connected wallet on the selected chain.
-  @Deprecated('Use balanceNotifier')
-  String get chainBalance;
-
-  /// Returns the balance of the currently connected wallet on the selected chain.
   ValueNotifier<String> get balanceNotifier;
 
   /// The currently selected chain.

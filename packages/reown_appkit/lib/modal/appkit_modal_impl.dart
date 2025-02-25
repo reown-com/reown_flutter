@@ -63,7 +63,6 @@ class ReownAppKitModal
 
   Map<String, RequiredNamespace> _requiredNamespaces = {};
   Map<String, RequiredNamespace> _optionalNamespaces = {};
-  String? _lastChainEmitted;
   bool _supportsOneClickAuth = false;
   bool _relayConnected = false;
 
@@ -71,17 +70,18 @@ class ReownAppKitModal
   @override
   ReownAppKitModalStatus get status => _status;
 
-  String? _currentSelectedChainId;
+  /// CAIP-2 chain id
+  String? _lastChainEmitted;
+  String? _selectedChainID;
   @override
   ReownAppKitModalNetworkInfo? get selectedChain {
-    if (_currentSelectedChainId != null) {
-      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-        _currentSelectedChainId!,
-      );
-      return ReownAppKitModalNetworks.getNetworkById(
-        namespace,
-        _currentSelectedChainId!,
-      );
+    if (_selectedChainID != null) {
+      if (!NamespaceUtils.isValidChainId(_selectedChainID!)) {
+        return null;
+      }
+      final namespace = NamespaceUtils.getNamespaceFromChain(_selectedChainID!);
+      final id = ReownAppKitModalNetworks.getIdFromChain(_selectedChainID!);
+      return ReownAppKitModalNetworks.getNetworkInfo(namespace, id);
     }
     return null;
   }
@@ -105,10 +105,6 @@ class ReownAppKitModal
   BlockchainIdentity? _blockchainIdentity;
   @override
   BlockchainIdentity? get blockchainIdentity => _blockchainIdentity;
-
-  @Deprecated('Use balanceNotifier')
-  @override
-  String get chainBalance => CoreUtils.formatChainBalance(_chainBalance);
 
   double? _chainBalance;
   @override
@@ -329,18 +325,15 @@ class ReownAppKitModal
     await _blockchainService.init();
 
     _currentSession = await _getStoredSession();
-    _currentSelectedChainId = _getStoredChainId(null);
+    _selectedChainID = _getStoredChainId();
     final isMagic = _currentSession?.sessionService.isMagic == true;
     final isCoinbase = _currentSession?.sessionService.isCoinbase == true;
     final isPhantom = _currentSession?.sessionService.isPhantom == true;
     if (isMagic || isCoinbase || isPhantom) {
-      _currentSelectedChainId ??= _currentSession!.chainId;
+      _selectedChainID ??= _currentSession!.chainId;
       await _setSesionAndChainData(_currentSession!);
       if (isMagic) {
-        final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
-          _currentSelectedChainId!,
-        );
-        await _magicService.init(chainId: caip2Chain);
+        await _magicService.init(chainId: _selectedChainID!);
       }
     } else {
       _magicService.init();
@@ -354,9 +347,7 @@ class ReownAppKitModal
     // Loop through all the chain data
     final allNetworks = ReownAppKitModalNetworks.getAllSupportedNetworks();
     for (final chain in allNetworks) {
-      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-        chain.chainId,
-      );
+      final namespace = NamespaceUtils.getNamespaceFromChain(chain.chainId);
       final requiredEvents = _requiredNamespaces[namespace]?.events ?? [];
       final optionalEvents = _optionalNamespaces[namespace]?.events ?? [];
       final events = [...requiredEvents, ...optionalEvents];
@@ -460,8 +451,8 @@ class ReownAppKitModal
   Future<void> _setSesionAndChainData(ReownAppKitModalSession mSession) async {
     try {
       await _storeSession(mSession);
-      _currentSelectedChainId = _currentSelectedChainId ?? mSession.chainId;
-      await _setLocalEthChain(_currentSelectedChainId!, logEvent: false);
+      _selectedChainID = _selectedChainID ?? mSession.chainId;
+      await _setLocalEthChain(_selectedChainID!, logEvent: false);
     } catch (e) {
       _appKit.core.logger.e('[$runtimeType] _setSesionAndChainData error $e');
     }
@@ -500,12 +491,10 @@ class ReownAppKitModal
 
   Future<void> _selectChainFromStoredId() async {
     if (_currentSession != null) {
-      final chainId = _getStoredChainId(null);
+      final chainId = _getStoredChainId();
       if (chainId != null) {
-        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-          chainId,
-        );
-        final chain = ReownAppKitModalNetworks.getNetworkById(
+        final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+        final chain = ReownAppKitModalNetworks.getNetworkInfo(
           namespace,
           chainId,
         );
@@ -513,7 +502,7 @@ class ReownAppKitModal
           await _setLocalEthChain(chainId, logEvent: false);
         }
       } else {
-        _currentSelectedChainId = chainId;
+        _selectedChainID = chainId;
       }
     }
   }
@@ -526,7 +515,7 @@ class ReownAppKitModal
   }) async {
     _checkInitialized();
 
-    if (chainInfo?.chainId == _currentSelectedChainId) {
+    if (chainInfo?.chainId == _selectedChainID) {
       return;
     }
 
@@ -543,17 +532,16 @@ class ReownAppKitModal
       balanceNotifier.value = '$formattedBalance ${chainInfo.currency}';
 
       final hasValidSession = _isConnected && _currentSession != null;
-      if (switchChain && hasValidSession && _currentSelectedChainId != null) {
-        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+      if (switchChain && hasValidSession && _selectedChainID != null) {
+        final namespace = NamespaceUtils.getNamespaceFromChain(
           chainInfo.chainId,
         );
         final approvedChains = _currentSession!.getApprovedChains(
           namespace: namespace,
         );
-        final newCaip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
+        final hasChainAlready = (approvedChains ?? []).contains(
           chainInfo.chainId,
         );
-        final hasChainAlready = (approvedChains ?? []).contains(newCaip2Chain);
         if (!hasChainAlready) {
           requestSwitchToChain(chainInfo);
           final hasSwitchMethod = _currentSession!.hasSwitchMethod();
@@ -638,15 +626,14 @@ class ReownAppKitModal
   }
 
   Future<void> _setLocalEthChain(String chainId, {bool? logEvent}) async {
-    _currentSelectedChainId = chainId;
-    final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(chainId);
-    _appKit.core.logger.d('[$runtimeType] _setLocalEthChain $caip2Chain');
+    _appKit.core.logger.d('[$runtimeType] _setLocalEthChain $chainId');
+    _selectedChainID = chainId;
     _notify();
     try {
       if (isConnected) {
         await _storage.set(
           StorageConstants.selectedChainId,
-          {'chainId': _currentSelectedChainId ?? '1'},
+          {'chainId': _selectedChainID},
         );
       }
     } catch (e) {
@@ -654,16 +641,16 @@ class ReownAppKitModal
     }
     if (_isConnected && logEvent == true) {
       _analyticsService.sendEvent(SwitchNetworkEvent(
-        network: _currentSelectedChainId!,
+        network: _selectedChainID!,
       ));
     }
-    if (_lastChainEmitted != caip2Chain && _isConnected) {
+    if (_lastChainEmitted != _selectedChainID && _isConnected) {
       if (_lastChainEmitted != null) {
         onModalNetworkChange.broadcast(ModalNetworkChange(
-          chainId: caip2Chain,
+          chainId: _selectedChainID!,
         ));
       }
-      _lastChainEmitted = caip2Chain;
+      _lastChainEmitted = _selectedChainID;
     }
     loadAccountData();
   }
@@ -871,7 +858,7 @@ class ReownAppKitModal
       if (_selectedWallet!.isCoinbase) {
         await _coinbaseService.getAccount();
       } else if (_selectedWallet!.isPhantom) {
-        await _phantomService.connect(chainId: _currentSelectedChainId);
+        await _phantomService.connect(chainId: _selectedChainID);
       } else {
         await _connect(walletRedirect, pType);
       }
@@ -950,10 +937,8 @@ class ReownAppKitModal
               p1.methods ?? NetworkUtils.defaultNetworkMethods['eip155'];
           //
           final networks = ReownAppKitModalNetworks.getAllSupportedNetworks();
-          final chains = networks.map((chain) {
-            return ReownAppKitModalNetworks.getCaip2Chain(chain.chainId);
-          }).toList();
-          final p2 = {'nonce': nonce, 'chains': chains, 'methods': methods};
+          final chainIds = networks.map((chain) => chain.chainId).toList();
+          final p2 = {'nonce': nonce, 'chains': chainIds, 'methods': methods};
           final authParams = SessionAuthRequestParams.fromJson({
             ...p1.toJson(),
             ...p2,
@@ -1217,7 +1202,7 @@ class ReownAppKitModal
       _disconnectOnClose = false;
       if (currentKey == KeyConstants.approveSiwePageKey) {
         _analyticsService.sendEvent(ClickCancelSiwe(
-          network: _currentSelectedChainId ?? '',
+          network: _selectedChainID ?? '',
         ));
       }
       await disconnect();
@@ -1239,10 +1224,10 @@ class ReownAppKitModal
   void launchBlockExplorer() async {
     if ((selectedChain?.explorerUrl ?? '').isNotEmpty) {
       final blockExplorer = selectedChain!.explorerUrl;
-      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+      final namespace = NamespaceUtils.getNamespaceFromChain(
         selectedChain!.chainId,
       );
-      final address = _currentSession?.getAddress(namespace) ?? '';
+      final address = _currentSession?.getAddress(namespace);
       final explorerUrl = '$blockExplorer/address/$address';
       await ReownCoreUtils.openURL(explorerUrl);
     }
@@ -1260,27 +1245,20 @@ class ReownAppKitModal
     if (_currentSession == null) {
       throw ReownAppKitModalException('Session is null');
     }
-    String reqChainId = chainId;
-    final isValidChainId = NamespaceUtils.isValidChainId(chainId);
-    if (!isValidChainId) {
-      if (selectedChain!.chainId == chainId) {
-        reqChainId = ReownAppKitModalNetworks.getCaip2Chain(chainId);
-      } else {
-        throw Errors.getSdkError(
-          Errors.UNSUPPORTED_CHAINS,
-          context: 'chainId should conform to "CAIP-2" format',
-        );
-      }
+    if (!NamespaceUtils.isValidChainId(chainId)) {
+      throw Errors.getSdkError(
+        Errors.UNSUPPORTED_CHAINS,
+        context: 'chainId should conform to "CAIP-2" format',
+      ).toSignError();
     }
     //
     _appKit.core.logger.i(
-      '[$runtimeType] requestReadContract, chainId: $reqChainId',
+      '[$runtimeType] requestReadContract, chainId: $chainId',
     );
 
-    final networkInfo = ReownAppKitModalNetworks.getNetworkById(
-      reqChainId.split(':').first,
-      reqChainId.split(':').last,
-    )!;
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    final id = ReownAppKitModalNetworks.getIdFromChain(chainId);
+    final networkInfo = ReownAppKitModalNetworks.getNetworkInfo(namespace, id)!;
 
     try {
       if (selectedChain == null) {
@@ -1313,27 +1291,21 @@ class ReownAppKitModal
     if (_currentSession == null) {
       throw ReownAppKitModalException('Session is null');
     }
-    String reqChainId = chainId;
-    final isValidChainId = NamespaceUtils.isValidChainId(chainId);
-    if (!isValidChainId) {
-      if (selectedChain!.chainId == chainId) {
-        reqChainId = ReownAppKitModalNetworks.getCaip2Chain(chainId);
-      } else {
-        throw Errors.getSdkError(
-          Errors.UNSUPPORTED_CHAINS,
-          context: 'chainId should conform to "CAIP-2" format',
-        );
-      }
+    if (!NamespaceUtils.isValidChainId(chainId)) {
+      throw Errors.getSdkError(
+        Errors.UNSUPPORTED_CHAINS,
+        context: 'chainId should conform to "CAIP-2" format',
+      ).toSignError();
     }
     //
     _appKit.core.logger.i(
-      '[$runtimeType] requestWriteContract, chainId: $reqChainId',
+      '[$runtimeType] requestWriteContract, chainId: $chainId',
     );
 
     try {
       return await _appKit.requestWriteContract(
         topic: topic ?? '',
-        chainId: reqChainId,
+        chainId: chainId,
         deployedContract: deployedContract,
         functionName: functionName,
         transaction: transaction,
@@ -1355,45 +1327,39 @@ class ReownAppKitModal
     if (_currentSession == null) {
       throw ReownAppKitModalException('Session is null');
     }
-    String reqChainId = chainId;
-    final isValidChainId = NamespaceUtils.isValidChainId(chainId);
-    if (!isValidChainId) {
-      if (selectedChain!.chainId == chainId) {
-        reqChainId = ReownAppKitModalNetworks.getCaip2Chain(chainId);
-      } else {
-        throw Errors.getSdkError(
-          Errors.UNSUPPORTED_CHAINS,
-          context: 'chainId should conform to "CAIP-2" format',
-        );
-      }
+    if (!NamespaceUtils.isValidChainId(chainId)) {
+      throw Errors.getSdkError(
+        Errors.UNSUPPORTED_CHAINS,
+        context: 'chainId should conform to "CAIP-2" format',
+      ).toSignError();
     }
     //
     _appKit.core.logger.d(
-      '[$runtimeType] request, chainId: $reqChainId, '
+      '[$runtimeType] request, chainId: $chainId, '
       '${jsonEncode(request.toJson())}',
     );
     try {
       if (_currentSession!.sessionService.isMagic) {
         return await _magicService.request(
-          chainId: reqChainId,
+          chainId: chainId,
           request: request,
         );
       }
       if (_currentSession!.sessionService.isCoinbase) {
         return await _coinbaseService.request(
-          chainId: switchToChainId ?? reqChainId,
+          chainId: switchToChainId ?? chainId,
           request: request,
         );
       }
       if (_currentSession!.sessionService.isPhantom) {
         return await _phantomService.request(
-          chainId: reqChainId,
+          chainId: chainId,
           request: request,
         );
       }
       return await _appKit.request(
         topic: topic!,
-        chainId: reqChainId,
+        chainId: chainId,
         request: request,
       );
     } catch (e) {
@@ -1424,7 +1390,7 @@ class ReownAppKitModal
       await _appKit.core.relayClient.disconnect();
       _relayConnected = false;
       _isConnected = false;
-      _currentSelectedChainId = null;
+      _selectedChainID = null;
       _requiredNamespaces = {};
       _optionalNamespaces = {};
       _lastChainEmitted = null;
@@ -1554,7 +1520,7 @@ class ReownAppKitModal
   @override
   Future<void> loadAccountData() async {
     // If there is no selected chain or session, stop. No account to load in.
-    if (_currentSelectedChainId == null || _currentSession == null) {
+    if (_selectedChainID == null || _currentSession == null) {
       return;
     }
 
@@ -1562,15 +1528,13 @@ class ReownAppKitModal
     _notify();
 
     // Get the chain balance.
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-      _currentSelectedChainId!,
-    );
+    final namespace = NamespaceUtils.getNamespaceFromChain(_selectedChainID!);
 
     try {
       _chainBalance = await _blockchainService.getTokenBalance(
         address: _currentSession!.getAddress(namespace)!,
         namespace: namespace,
-        chainId: _currentSelectedChainId!,
+        chainId: _selectedChainID!,
       );
       final tokenName = selectedChain?.currency ?? '';
       final formattedBalance = CoreUtils.formatChainBalance(_chainBalance);
@@ -1606,9 +1570,7 @@ class ReownAppKitModal
   Future<void> requestSwitchToChain(
     ReownAppKitModalNetworkInfo newChain,
   ) async {
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-      newChain.chainId,
-    );
+    final namespace = NamespaceUtils.getNamespaceFromChain(newChain.chainId);
     if (namespace != NetworkUtils.eip155) {
       // If chain is not EVM then there's no need to request a switch since it doesn't exist such method for non-EVM chains
       // Therefor at this point the selected non-EVM chain is either already approved, invalidating the need of a switch call, or not approved, failing with the following error.
@@ -1618,20 +1580,14 @@ class ReownAppKitModal
       await selectChain(newChain);
       return;
     }
-    final currentCaip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
-      _currentSelectedChainId!,
-    );
-    final newCaip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
-      newChain.chainId,
-    );
     _appKit.core.logger.i(
-      '[$runtimeType] requesting switch to chain $newCaip2Chain',
+      '[$runtimeType] requesting switch to chain ${newChain.chainId}',
     );
     try {
       await request(
         topic: _currentSession?.topic ?? '',
-        chainId: currentCaip2Chain,
-        switchToChainId: newCaip2Chain,
+        chainId: _selectedChainID!,
+        switchToChainId: newChain.chainId,
         request: SessionRequestParams(
           method: MethodsConstants.walletSwitchEthChain,
           params: [
@@ -1639,14 +1595,14 @@ class ReownAppKitModal
           ],
         ),
       );
-      _currentSelectedChainId = newChain.chainId;
+      _selectedChainID = newChain.chainId;
       await _setSesionAndChainData(_currentSession!);
       return;
     } catch (e) {
       // if request errors due to user rejection then set the previous chain
       if (_isUserRejectedError(e)) {
         // fallback to current chain if rejected by user
-        await _setLocalEthChain(_currentSelectedChainId!);
+        await _setLocalEthChain(_selectedChainID!);
         throw JsonRpcError(code: 5002, message: 'User rejected methods.');
       } else {
         try {
@@ -1677,36 +1633,37 @@ class ReownAppKitModal
   @override
   Future<void> requestAddChain(ReownAppKitModalNetworkInfo newChain) async {
     final topic = _currentSession?.topic ?? '';
-    final currentCaip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
-      _currentSelectedChainId!,
+    _appKit.core.logger.i(
+      '[$runtimeType] requesting add chain ${newChain.chainId}',
     );
-    final newCaip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
-      newChain.chainId,
-    );
-    _appKit.core.logger.i('[$runtimeType] requesting add chain $newCaip2Chain');
     try {
       await request(
         topic: topic,
-        chainId: currentCaip2Chain,
-        switchToChainId: newCaip2Chain,
+        chainId: _selectedChainID!,
+        switchToChainId: newChain.chainId,
         request: SessionRequestParams(
           method: MethodsConstants.walletAddEthChain,
-          params: [newChain.toJson()],
+          params: [newChain.toRawJson()],
         ),
       );
-      _currentSelectedChainId = newChain.chainId;
+      _selectedChainID = newChain.chainId;
       await _setSesionAndChainData(_currentSession!);
       return;
     } on JsonRpcError {
-      await _setLocalEthChain(_currentSelectedChainId!);
+      await _setLocalEthChain(_selectedChainID!);
       rethrow;
     } catch (e, s) {
-      await _setLocalEthChain(_currentSelectedChainId!);
+      await _setLocalEthChain(_selectedChainID!);
       throw ReownAppKitModalException(e.toString(), s);
     }
   }
 
   bool _isUserRejectedError(dynamic e) {
+    final regexp = RegExp(
+      r'\b(rejected|cancelled|disapproved|denied)\b',
+      caseSensitive: false,
+    );
+
     if (e is JsonRpcError) {
       final code = (e.code ?? 0);
       final match = RegExp(r'\b500[0-3]\b').hasMatch(code.toString());
@@ -1714,11 +1671,14 @@ class ReownAppKitModal
         return true;
       }
     }
+    if (e is CoinbaseServiceException) {
+      if (regexp.hasMatch(e.error.toString()) ||
+          regexp.hasMatch(e.message.toString())) {
+        return true;
+      }
+    }
 
-    return RegExp(
-      r'\b(rejected|cancelled|disapproved|denied)\b',
-      caseSensitive: false,
-    ).hasMatch(e.toString());
+    return regexp.hasMatch(e.toString());
   }
 
   Future<void> _disconnectSession(String? pairingTopic, String? topic) async {
@@ -1754,7 +1714,7 @@ class ReownAppKitModal
         id: args?.id,
       ));
     }
-    _currentSelectedChainId = null;
+    _selectedChainID = null;
     _isConnected = false;
     _currentSession = null;
     _lastChainEmitted = null;
@@ -1775,10 +1735,7 @@ class ReownAppKitModal
     if (_siweService.config?.enabled != true) return;
     try {
       if (_siweService.signOutOnNetworkChange) {
-        final caip2chain = ReownAppKitModalNetworks.getCaip2Chain(
-          _currentSelectedChainId!,
-        );
-        await _magicService.getUser(chainId: caip2chain, isUpdate: true);
+        await _magicService.getUser(chainId: _selectedChainID!, isUpdate: true);
         await _siweService.signOut();
         _disconnectOnClose = true;
         widgetStack.instance.push(ApproveSIWEPage(
@@ -1882,10 +1839,14 @@ class ReownAppKitModal
     );
   }
 
-  String? _getStoredChainId(String? defaultValue) {
+  String? _getStoredChainId([String? defaultValue]) {
     if (_storage.has(StorageConstants.selectedChainId)) {
       final storedChain = _storage.get(StorageConstants.selectedChainId);
-      return storedChain?['chainId'] as String? ?? defaultValue;
+      final chainId = storedChain?['chainId'] as String?;
+      if (NamespaceUtils.isValidChainId(chainId ?? '')) {
+        return chainId!;
+      }
+      return defaultValue;
     }
     return defaultValue;
   }
@@ -1898,14 +1859,13 @@ extension _EmailConnectorExtension on ReownAppKitModal {
       _appKit.core.logger.d(
         '[$runtimeType] _onMagicLoginEvent ${args.data?.toJson()}',
       );
-      final newChainId = _getStoredChainId(args.data!.chainId)!;
-      _currentSelectedChainId = newChainId;
+      _selectedChainID = _getStoredChainId(args.data!.chainId)!;
       //
       final email = args.data?.email ?? _currentSession?.toRawJson()['email'];
       final userName =
           args.data?.userName ?? _currentSession?.toRawJson()['userName'];
       final magicData = args.data?.copytWith(
-        chainId: newChainId,
+        chainId: _selectedChainID,
         email: email,
         userName: userName,
       );
@@ -1950,9 +1910,9 @@ extension _EmailConnectorExtension on ReownAppKitModal {
         final newUsername = args.userName ?? currentUsername;
         final newProvider = args.provider ?? _currentSession?.socialProvider;
         final newChainId = args.chainId?.toString() ?? _currentSession!.chainId;
-        final ns = ReownAppKitModalNetworks.getNamespaceForChainId(newChainId);
+        final ns = NamespaceUtils.getNamespaceFromChain(newChainId);
         final newAddress = args.address ?? _currentSession!.getAddress(ns)!;
-        _currentSelectedChainId = newChainId;
+        _selectedChainID = newChainId;
         //
         final magicData = MagicData(
           email: newEmail,
@@ -2010,8 +1970,9 @@ extension _CoinbaseConnectorExtension on ReownAppKitModal {
   void _onCoinbaseConnect(CoinbaseConnectEvent? args) async {
     _appKit.core.logger.d('[$runtimeType] _onCoinbaseConnect: $args');
     if (args?.data != null) {
+      // TODO change coinbase chainId into CAIP-2 String
       final newChainId = _getStoredChainId('${args!.data!.chainId}')!;
-      _currentSelectedChainId = newChainId;
+      _selectedChainID = newChainId;
       //
       final session = ReownAppKitModalSession(coinbaseData: args.data!);
       await _setSesionAndChainData(session);
@@ -2038,15 +1999,15 @@ extension _CoinbaseConnectorExtension on ReownAppKitModal {
     if (args != null) {
       try {
         final chainId = args.chainId ?? _currentSession!.chainId;
-        final ns = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+        final ns = NamespaceUtils.getNamespaceFromChain(chainId);
         final address = args.address ?? _currentSession!.getAddress(ns)!;
-        final chainInfo = ReownAppKitModalNetworks.getNetworkById(ns, chainId);
-        _currentSelectedChainId = chainId;
+        final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(ns, chainId);
+        _selectedChainID = chainId;
         final session = _currentSession!.copyWith(
           coinbaseData: CoinbaseData(
             address: address,
             chainName: chainInfo?.name ?? '',
-            chainId: int.parse(chainId),
+            chainId: chainId,
             peer: _coinbaseService.walletMetadata,
             self: ConnectionMetadata(
               metadata: _appKit.metadata,
@@ -2078,8 +2039,8 @@ extension _PhantomConnectorExtension on ReownAppKitModal {
   void _onPhantomConnect(PhantomConnectEvent? args) async {
     _appKit.core.logger.d('[$runtimeType] _onPhantomConnect: $args');
     if (args?.data != null) {
-      final newChainId = _getStoredChainId(args!.data!.chainId)!;
-      _currentSelectedChainId = newChainId;
+      // TODO make sure phantom chain id is CAIP-2 string
+      _selectedChainID = _getStoredChainId(args!.data!.chainId)!;
       //
       final session = ReownAppKitModalSession(phantomData: args.data!);
       await _setSesionAndChainData(session);
@@ -2152,8 +2113,9 @@ extension _AppKitModalExtension on ReownAppKitModal {
   }
 
   void _onSessionConnect(SessionConnect? args) async {
-    final debugString = jsonEncode(args?.session.toJson());
-    _appKit.core.logger.d('[$runtimeType] _onSessionConnect: $debugString');
+    _appKit.core.logger.d(
+      '[$runtimeType] _onSessionConnect: ${jsonEncode(args?.session.toJson())}',
+    );
     if (_supportsOneClickAuth && _siweService.enabled) {
       return;
     }
@@ -2177,13 +2139,10 @@ extension _AppKitModalExtension on ReownAppKitModal {
 
   // HAS TO BE CALLED JUST ONCE ON CONNECTION
   Future<ReownAppKitModalSession> _settleSession(SessionData mSession) async {
-    if (_currentSelectedChainId == null) {
-      final chains = NamespaceUtils.getChainIdsFromNamespaces(
-        namespaces: mSession.namespaces,
-      );
-      final chainId = chains.first.split(':').last.toString();
-      _currentSelectedChainId = chainId;
-    }
+    _selectedChainID ??= NamespaceUtils.getChainIdsFromNamespaces(
+      namespaces: mSession.namespaces,
+    ).first;
+
     final session = ReownAppKitModalSession(sessionData: mSession);
     await _setSesionAndChainData(session);
     if (_selectedWallet == null) {
@@ -2215,7 +2174,7 @@ extension _AppKitModalExtension on ReownAppKitModal {
     try {
       await _storage.set(
         StorageConstants.selectedChainId,
-        {'chainId': _currentSelectedChainId!},
+        {'chainId': _selectedChainID!},
       );
     } catch (e, s) {
       _appKit.core.logger.e(
@@ -2225,16 +2184,14 @@ extension _AppKitModalExtension on ReownAppKitModal {
     }
     onModalUpdate.broadcast(ModalConnect(updatedSession));
     closeModal();
-    _analyticsService.sendEvent(SiweAuthSuccess(
-      network: _currentSelectedChainId!,
-    ));
+    _analyticsService.sendEvent(SiweAuthSuccess(network: _selectedChainID!));
   }
 
   void _onSessionEvent(SessionEvent? args) async {
     _appKit.core.logger.d('[$runtimeType] _onSessionEvent $args');
     onSessionEventEvent.broadcast(args);
     if (args?.name == EventsConstants.chainChanged) {
-      _currentSelectedChainId = args?.data?.toString();
+      _selectedChainID = args?.chainId;
     }
     if (args?.name == EventsConstants.accountsChanged) {
       if (_siweService.enabled && _siweService.signOutOnAccountChange) {

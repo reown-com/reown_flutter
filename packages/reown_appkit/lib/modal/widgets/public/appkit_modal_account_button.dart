@@ -63,9 +63,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
   void _modalNotifyListener() {
     final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
     if (chainId.isNotEmpty) {
-      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-        chainId,
-      );
+      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
       _address = widget.appKitModal.session?.getAddress(namespace) ?? '';
     }
     setState(() {});

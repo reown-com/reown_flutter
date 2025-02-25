@@ -292,7 +292,9 @@ class ExplorerService implements IExplorerService {
     final uri = Uri.parse('${UrlConstants.apiService}/getWallets').replace(
       queryParameters: params?.toJson(),
     );
-    _core.logger.d('[$runtimeType] _fetchListings, $uri');
+    _core.logger.d(
+      '[$runtimeType] _fetchListings, ${Uri.decodeFull(uri.toString())}',
+    );
     try {
       final response = await _client.get(uri, headers: headers);
       if (response.statusCode == 200 || response.statusCode == 202) {
