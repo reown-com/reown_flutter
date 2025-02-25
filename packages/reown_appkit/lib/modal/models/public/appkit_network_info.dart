@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:reown_appkit/reown_appkit.dart';
 
 part 'appkit_network_info.freezed.dart';
 part 'appkit_network_info.g.dart';
@@ -23,7 +24,8 @@ class ReownAppKitModalNetworkInfo with _$ReownAppKitModalNetworkInfo {
 extension AppKitNetworkInfoExtension on ReownAppKitModalNetworkInfo {
   String get chainHexId {
     try {
-      return '0x${int.parse(chainId.split(':').last).toRadixString(16)}';
+      final id = ReownAppKitModalNetworks.getIdFromChain(chainId);
+      return '0x${int.parse(id).toRadixString(16)}';
     } catch (e) {
       return chainId;
     }

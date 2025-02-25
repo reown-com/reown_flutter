@@ -266,6 +266,7 @@ class _MyHomePageState extends State<MyHomePage> {
         context: context,
         projectId: DartDefines.projectId,
         logLevel: LogLevel.all,
+        // TODO document this
         // disconnectOnDispose: false,
         metadata: _pairingMetadata(),
         // siweConfig: _siweConfig(siweAuthValue),
@@ -389,7 +390,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKitModal.onSessionUpdateEvent.unsubscribe(_onSessionUpdate);
     _appKitModal.onSessionEventEvent.unsubscribe(_onSessionEvent);
     //
-    _appKitModal.dispose();
+    // _appKitModal.dispose();
     super.dispose();
   }
 

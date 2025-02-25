@@ -181,8 +181,8 @@ class ReceivePage extends StatelessWidget {
 
     final subList = available.sublist(0, min(5, available.length));
     final chainList = subList.map((c) {
-      final ns = c.split(':').first;
-      final cid = c.split(':').last;
+      final ns = NamespaceUtils.getNamespaceFromChain(c);
+      final cid = ReownAppKitModalNetworks.getIdFromChain(c);
       return ReownAppKitModalNetworks.getNetworkInfo(ns, cid);
     }).toList();
 

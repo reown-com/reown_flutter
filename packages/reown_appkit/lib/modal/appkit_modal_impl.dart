@@ -70,15 +70,13 @@ class ReownAppKitModal
   @override
   ReownAppKitModalStatus get status => _status;
 
+  // TODO convert into a Record
   /// CAIP-2 chain id
   String? _lastChainEmitted;
   String? _selectedChainID;
   @override
   ReownAppKitModalNetworkInfo? get selectedChain {
-    if (_selectedChainID != null) {
-      if (!NamespaceUtils.isValidChainId(_selectedChainID!)) {
-        return null;
-      }
+    if (NamespaceUtils.isValidChainId(_selectedChainID ?? '')) {
       final namespace = NamespaceUtils.getNamespaceFromChain(_selectedChainID!);
       final id = ReownAppKitModalNetworks.getIdFromChain(_selectedChainID!);
       return ReownAppKitModalNetworks.getNetworkInfo(namespace, id);
