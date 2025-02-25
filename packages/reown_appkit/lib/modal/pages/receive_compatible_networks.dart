@@ -82,8 +82,8 @@ class ReceiveCompatibleNetworks extends StatelessWidget {
       return namespace == ns;
     }).toList();
     final chainList = available.map((c) {
-      final ns = c.split(':').first;
-      final cid = c.split(':').last;
+      final ns = NamespaceUtils.getNamespaceFromChain(c);
+      final cid = ReownAppKitModalNetworks.getIdFromChain(c);
       return ReownAppKitModalNetworks.getNetworkInfo(ns, cid);
     }).toList();
 

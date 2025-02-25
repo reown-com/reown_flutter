@@ -7,5 +7,8 @@
 		<string>applinks:lab.web3modal.com</string>
 		<string>applinks:dev.lab.web3modal.com</string>
 		<string>applinks:appkit-lab.reown.com</string>
+	</array>
+    <key>aps-environment</key>
+    <string>production</string>
 </dict>
 </plist>
