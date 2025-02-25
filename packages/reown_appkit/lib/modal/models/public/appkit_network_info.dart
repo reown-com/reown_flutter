@@ -1,10 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'appkit_network_info.freezed.dart';
+part 'appkit_network_info.g.dart';
 
 @freezed
 class ReownAppKitModalNetworkInfo with _$ReownAppKitModalNetworkInfo {
-  factory ReownAppKitModalNetworkInfo({
+  const factory ReownAppKitModalNetworkInfo({
     required String name,
     required String chainId,
     required String currency,
@@ -13,13 +14,22 @@ class ReownAppKitModalNetworkInfo with _$ReownAppKitModalNetworkInfo {
     @Default(<String>[]) List<String> extraRpcUrls,
     @Default(false) bool isTestNetwork,
     String? chainIcon,
-  }) = _AppKitNetworkInfo;
+  }) = _ReownAppKitModalNetworkInfo;
+
+  factory ReownAppKitModalNetworkInfo.fromJson(Map<String, dynamic> json) =>
+      _$$ReownAppKitModalNetworkInfoImplFromJson(json);
 }
 
 extension AppKitNetworkInfoExtension on ReownAppKitModalNetworkInfo {
-  String get chainHexId => '0x${int.parse(chainId).toRadixString(16)}';
+  String get chainHexId {
+    try {
+      return '0x${int.parse(chainId.split(':').last).toRadixString(16)}';
+    } catch (e) {
+      return chainId;
+    }
+  }
 
-  Map<String, dynamic> toJson({int? decimals}) {
+  Map<String, dynamic> toRawJson({int? decimals}) {
     return {
       'chainId': chainHexId,
       'chainName': name,

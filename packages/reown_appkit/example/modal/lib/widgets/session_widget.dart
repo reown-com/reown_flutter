@@ -121,8 +121,8 @@ class SessionWidgetState extends State<SessionWidget> {
     ];
 
     // Get current active account
-    final chainId = widget.appKit.selectedChain?.chainId ?? '';
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    final chainId = widget.appKit.selectedChain!.chainId;
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final accounts = session.getAccounts(namespace: namespace) ?? [];
     final chainsNamespaces = NamespaceUtils.getChainsFromAccounts(accounts);
     if (chainsNamespaces.contains('$namespace:$chainId')) {

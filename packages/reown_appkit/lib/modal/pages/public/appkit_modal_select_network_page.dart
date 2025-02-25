@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
+import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/pages/about_networks.dart';
 import 'package:reown_appkit/modal/pages/connet_network_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
@@ -35,15 +36,12 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
       appKitModal.balanceNotifier.value = '$formattedBalance $tokenName';
 
       final chainId = chainInfo.chainId;
-      final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(chainId);
-      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-        chainId,
-      );
+      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
       final approvedChains = appKitModal.session!.getApprovedChains(
         namespace: namespace,
       );
       final isMagic = appKitModal.session!.sessionService.isMagic;
-      final isChainApproved = (approvedChains ?? []).contains(caip2Chain);
+      final isChainApproved = (approvedChains ?? []).contains(chainId);
       if (chainInfo.chainId == appKitModal.selectedChain?.chainId) {
         if (widgetStack.instance.canPop()) {
           widgetStack.instance.pop();
@@ -81,7 +79,7 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
     final isPortrait = ResponsiveData.isPortrait(context);
 
     return ModalNavbar(
-      title: isSwitch ? 'Change network' : 'Select network',
+      title: isSwitch ? UIConstants.changeNetwork : UIConstants.selectNetwork,
       safeAreaLeft: true,
       safeAreaRight: true,
       body: Column(

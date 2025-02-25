@@ -153,7 +153,9 @@ class MagicService implements IMagicService {
   Completer<bool> _initializedCompleter = Completer<bool>();
   @override
   Future<void> init({String? chainId}) async {
-    _connectionChainId = chainId;
+    if (NamespaceUtils.isValidChainId(chainId ?? '')) {
+      _connectionChainId = chainId;
+    }
     _initializedCompleter = Completer<bool>();
     _isConnectedCompleter = Completer<bool>();
     if (!isEmailEnabled.value && !isSocialEnabled.value) {
@@ -275,8 +277,10 @@ class MagicService implements IMagicService {
       throw Exception('Service is not ready');
     }
     //
+    if (NamespaceUtils.isValidChainId(chainId ?? '')) {
+      _connectionChainId = chainId;
+    }
     _getSocialRedirectUri = Completer<String?>();
-    _connectionChainId = chainId ?? _connectionChainId;
     _socialProvider = provider;
     final message = GetSocialRedirectUri(
       provider: _socialProvider!.name.toLowerCase(),
@@ -314,8 +318,10 @@ class MagicService implements IMagicService {
       return await _getFarcasterUri.future;
     }
     //
+    if (NamespaceUtils.isValidChainId(chainId ?? '')) {
+      _connectionChainId = chainId;
+    }
     _getFarcasterUri = Completer<String?>();
-    _connectionChainId = chainId ?? _connectionChainId;
     _socialProvider = AppKitSocialOption.Farcaster;
     final message = GetFarcasterUri().toString();
     await _webViewController.runJavaScript('sendMessage($message)');
@@ -343,8 +349,10 @@ class MagicService implements IMagicService {
       throw Exception('Service is not ready');
     }
     //
+    if (NamespaceUtils.isValidChainId(chainId ?? '')) {
+      _connectionChainId = chainId;
+    }
     _socialProvider = null;
-    _connectionChainId = chainId ?? _connectionChainId;
     final message = ConnectEmail(email: value).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
   }
@@ -433,13 +441,9 @@ class MagicService implements IMagicService {
   Future<void> _getUser(String? chainId, bool isUpdate) async {
     _isUpdateUser = isUpdate;
     _getUserCompleter = Completer<bool>();
-    String? cid = chainId ?? _connectionChainId;
-    if (cid != null && !NamespaceUtils.isValidChainId(cid)) {
-      try {
-        cid = ReownAppKitModalNetworks.getCaip2Chain(cid);
-      } catch (_) {
-        cid = null;
-      }
+    String? cid;
+    if (NamespaceUtils.isValidChainId(chainId ?? '')) {
+      cid = chainId;
     }
     if (_socialProvider != null) {
       _analyticsService.sendEvent(SocialLoginRequestUserData(
@@ -454,7 +458,13 @@ class MagicService implements IMagicService {
   @override
   Future<bool> switchNetwork({required String chainId}) async {
     if (_serviceNotReady) {
-      throw Exception('Service is not ready');
+      throw ReownAppKitModalException('Service is not ready');
+    }
+    if (!NamespaceUtils.isValidChainId(chainId)) {
+      throw Errors.getSdkError(
+        Errors.UNSUPPORTED_CHAINS,
+        context: 'chainId should conform to "CAIP-2" format',
+      ).toSignError();
     }
     //
     await _awaitReadyness.future;
@@ -553,7 +563,7 @@ class MagicService implements IMagicService {
         'x-bundle-id': _packageName,
       };
       final uri = Uri.parse(UrlConstants.secureService);
-      final cid = (_connectionChainId ?? '');
+      final cid = _connectionChainId ?? '';
       final queryParams = {
         'projectId': _core.projectId,
         'bundleId': _packageName,
@@ -671,28 +681,23 @@ class MagicService implements IMagicService {
     }
     // ****** SWITCH_NETWORK_SUCCESS
     if (messageData.switchNetworkSuccess) {
-      final chainId = messageData.getPayloadMapKey<dynamic>('chainId');
-      if (chainId is String && chainId.contains(':')) {
-        final cid = chainId.split(':').last;
-        onMagicUpdate.broadcast(MagicSessionEvent(chainId: cid.toString()));
-        _connectionChainId = cid.toString();
-      } else {
-        onMagicUpdate.broadcast(MagicSessionEvent(
-          chainId: chainId?.toString(),
-        ));
-        _connectionChainId = chainId?.toString();
+      String chainId = '${messageData.getPayloadMapKey<dynamic>('chainId')}';
+      if (!NamespaceUtils.isValidChainId(chainId)) {
+        // we know that the secure-site can respond with invalid chain ids only for EVM
+        chainId = 'eip155:$chainId';
       }
+      _connectionChainId = chainId;
+      onMagicUpdate.broadcast(MagicSessionEvent(chainId: _connectionChainId));
       _switchNetworkCompleter.complete(true);
     }
     // ****** GET_CHAIN_ID
     if (messageData.getChainIdSuccess) {
-      final chainId = messageData.getPayloadMapKey<dynamic>('chainId');
-      if (chainId is String && chainId.contains(':')) {
-        final cid = chainId.split(':').last;
-        _connectionChainId = cid.toString();
-      } else {
-        _connectionChainId = chainId?.toString();
+      String chainId = '${messageData.getPayloadMapKey<dynamic>('chainId')}';
+      if (!NamespaceUtils.isValidChainId(chainId)) {
+        // we know that the secure-site can respond with invalid chain ids only for EVM
+        chainId = 'eip155:$chainId';
       }
+      _connectionChainId = chainId;
       _getChainIdCompleter.complete(_connectionChainId);
     }
     // ****** RPC_REQUEST_SUCCESS

@@ -32,7 +32,7 @@ List<String> getChainMethods(String namespace) {
     case 'tron':
       return Tron.methods.values.toList();
     case 'mvx':
-      return []; //'mvx_signMessage', 'mvx_signTransaction'
+      return ['mvx_signMessage', 'mvx_signTransaction'];
     default:
       return [];
   }

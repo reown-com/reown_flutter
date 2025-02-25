@@ -78,10 +78,7 @@ class ReownCore implements IReownCore {
   @override
   late ILinkModeStore linkModeStore;
 
-  Logger _logger = Logger(
-    level: Level.off,
-    printer: PrettyPrinter(),
-  );
+  late final Logger _logger;
   @override
   Logger get logger => _logger;
 
@@ -123,16 +120,15 @@ class ReownCore implements IReownCore {
     IHttpClient httpClient = const HttpWrapper(),
     IWebSocketHandler? webSocketHandler,
   }) {
-    PrettyPrinter();
     _logLevel = logLevel;
     _logger = Logger(
       level: _logLevel.toLevel(),
       printer: _LogPrinter(
-        stackTraceBeginIndex: 0,
-        methodCount:
-            _logLevel == LogLevel.debug || _logLevel == LogLevel.error ? 8 : 0,
-        errorMethodCount: 8,
-      ),
+          // stackTraceBeginIndex: 0,
+          // methodCount:
+          //     _logLevel == LogLevel.debug || _logLevel == LogLevel.error ? 8 : 0,
+          // errorMethodCount: 8,
+          ),
     );
     heartbeat = HeartBeat();
     storage = SharedPrefsStores(
