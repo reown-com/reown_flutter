@@ -48,9 +48,7 @@ class _AddressButtonState extends State<AddressButton> {
     setState(() {
       try {
         final chainId = widget.service.selectedChain!.chainId;
-        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-          chainId,
-        );
+        final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
         _address = widget.service.session?.getAddress(namespace);
       } catch (e) {
         widget.service.appKit!.core.logger.e('[$runtimeType] $e');

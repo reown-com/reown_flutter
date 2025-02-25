@@ -252,12 +252,19 @@ class __RequestButtonsState extends State<_RequestButtons> {
               foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
             ),
             onPressed: () async {
-              final params = await getParams(method, address, chainInfo!);
+              final chainInfos = ReownAppKitModalNetworkInfo(
+                name: 'Optimism',
+                chainId: '10',
+                currency: 'ETH',
+                rpcUrl: 'https://mainnet.optimism.io/',
+                explorerUrl: 'https://optimistic.etherscan.io',
+              );
+              final params = await getParams(method, address, chainInfos);
               if (params?.params != null) {
                 widget.appKitModal.launchConnectedWallet();
                 final future = widget.appKitModal.request(
                   topic: topic,
-                  chainId: chainId,
+                  chainId: 'eip155:${chainInfos.chainId}',
                   request: params!,
                 );
                 MethodDialog.show(context, method, future);

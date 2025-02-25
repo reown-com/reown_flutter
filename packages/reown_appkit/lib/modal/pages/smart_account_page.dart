@@ -141,9 +141,7 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
   void initState() {
     super.initState();
     final chainId = widget.appKitModal.selectedChain!.chainId;
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-      chainId,
-    );
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final address = widget.appKitModal.session!.getAddress(namespace)!;
 
     // cached items

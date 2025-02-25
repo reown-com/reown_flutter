@@ -33,9 +33,7 @@ class ReceivePage extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final isPortrait = ResponsiveData.isPortrait(context);
     final chainId = appKitModal.selectedChain!.chainId;
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-      chainId,
-    );
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final isDarkMode =
         ReownAppKitModalTheme.maybeOf(context)?.isDarkMode ?? false;
     return ModalNavbar(

@@ -21,9 +21,7 @@ class AddressCopyButton extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         final chainId = appKitModal.selectedChain!.chainId;
-        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-          chainId,
-        );
+        final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
         final address = appKitModal.session!.getAddress(namespace)!;
         await Clipboard.setData(ClipboardData(text: address));
         GetIt.I<IToastService>().show(ToastMessage(
