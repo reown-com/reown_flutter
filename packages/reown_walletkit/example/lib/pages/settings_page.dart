@@ -87,6 +87,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   onDeleteData: () async {
                     final walletKit = GetIt.I<IWalletKitService>().walletKit;
                     await walletKit.core.storage.deleteAll();
+                    await keysService.clearAll();
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text('Storage cleared'),
                       duration: Duration(seconds: 1),
@@ -183,24 +184,61 @@ class _EVMAccounts extends StatefulWidget {
 
 class _EVMAccountsState extends State<_EVMAccounts> {
   int _currentPage = 0;
+  late final ReownWalletKit _walletKit;
   late final PageController _pageController;
-  ChainMetadata? _selectedChain;
+  late ChainMetadata _selectedChain;
   double _balance = 0.0;
 
   @override
   void initState() {
     super.initState();
-    _selectedChain = ChainsDataList.eip155Chains.first;
+    _walletKit = GetIt.I<IWalletKitService>().walletKit;
     _pageController = PageController();
+    _selectedChain = GetIt.I<IWalletKitService>().currentSelectedChain.value!;
+    GetIt.I<IWalletKitService>().currentSelectedChain.addListener(
+          _onChainChanged,
+        );
+    _updateBalance();
+  }
+
+  Future<void> _onChainChanged() async {
+    final chain = GetIt.I<IWalletKitService>().currentSelectedChain.value;
+    await _switchToChain(chain);
+  }
+
+  Future<void> _switchToChain(ChainMetadata? chainMetadata) async {
+    try {
+      final sessions = _walletKit.sessions.getAll();
+      final chainId = chainMetadata!.chainId.split(':').last;
+      for (var session in sessions) {
+        _walletKit.emitSessionEvent(
+          topic: session.topic,
+          chainId: chainMetadata.chainId,
+          event: SessionEventParams(
+            name: 'chainChanged',
+            data: int.parse(chainId),
+          ),
+        );
+      }
+      setState(() => _selectedChain = chainMetadata);
+      await _updateBalance();
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> _updateBalance() async {
     final keysService = GetIt.I<IKeyService>();
     final chainKeys = keysService.getKeysForChain('eip155');
-    GetIt.I
-        .get<EVMService>(instanceName: _selectedChain!.chainId)
-        .getBalance(address: chainKeys[_currentPage].address)
-        .then((value) {
-      if (!mounted) return;
-      setState(() => _balance = value);
-    });
+    final chainKey = chainKeys[_currentPage];
+    final evmService = GetIt.I.get<EVMService>(
+      instanceName: _selectedChain.chainId,
+    );
+    setState(() => {});
+    evmService
+        .getBalance(address: chainKey.address)
+        .then((value) => setState(() => _balance = value))
+        .onError((a, b) => setState(() => _balance = 0.0));
   }
 
   @override
@@ -297,29 +335,9 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                     child: Text(e.name),
                   );
                 }).toList(),
-                onChanged: (ChainMetadata? chain) async {
-                  setState(() => _selectedChain = chain);
-                  final chainKey = chainKeys[_currentPage];
-                  GetIt.I
-                      .get<EVMService>(instanceName: chain?.chainId)
-                      .getBalance(address: chainKey.address)
-                      .then((value) => setState(() => _balance = value))
-                      .onError((a, b) {
-                    setState(() => _balance = 0.0);
-                  });
-                  final walletKit = GetIt.I<IWalletKitService>().walletKit;
-                  final sessions = walletKit.sessions.getAll();
-                  final cid = _selectedChain!.chainId.split(':').last;
-                  for (var session in sessions) {
-                    await walletKit.emitSessionEvent(
-                      topic: session.topic,
-                      chainId: _selectedChain!.chainId,
-                      event: SessionEventParams(
-                        name: 'chainChanged',
-                        data: int.parse(cid),
-                      ),
-                    );
-                  }
+                onChanged: (ChainMetadata? chainMetadata) {
+                  GetIt.I<IWalletKitService>().currentSelectedChain.value =
+                      chainMetadata;
                 },
               ),
             ],
@@ -344,7 +362,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                     const SizedBox(height: 12.0),
                     _DataContainer(
                       title: 'CAIP-10',
-                      data: '${_selectedChain?.chainId}:${chainKey.address}',
+                      data: '${_selectedChain.chainId}:${chainKey.address}',
                       height: 84.0,
                     ),
                     const SizedBox(height: 12.0),
