@@ -44,6 +44,7 @@ class AccountListItem extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     return BaseListItem(
+      semanticsLabel: title,
       onTap: onTap,
       hightlighted: hightlighted,
       padding: padding,

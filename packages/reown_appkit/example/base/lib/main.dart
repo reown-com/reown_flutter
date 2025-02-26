@@ -561,14 +561,21 @@ class _MyHomePageState extends State<MyHomePage> {
       // called when one tab is selected
       onTap: (index) => setState(() => _selectedIndex = index),
       // bottom tab items
-      items: _pageDatas
-          .map(
-            (e) => BottomNavigationBarItem(
-              icon: Icon(e.icon),
-              label: e.title,
+      items: _pageDatas.map(
+        (e) {
+          print('BottomNavigationBarItem ${e.title} page');
+          return BottomNavigationBarItem(
+            icon: Semantics(
+              label: '${e.title} page button',
+              child: Icon(
+                e.icon,
+                semanticLabel: '${e.title} page icon',
+              ),
             ),
-          )
-          .toList(),
+            label: e.title,
+          );
+        },
+      ).toList(),
     );
   }
 

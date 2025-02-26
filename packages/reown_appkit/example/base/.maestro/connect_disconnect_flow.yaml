@@ -1,0 +1,82 @@
+appId: com.walletconnect.flutterdapp.internal
+---
+# Launch and verify initial state
+- launchApp
+- assertVisible: "AppKitModalConnectButton disabled"
+- waitForAnimationToEnd
+
+# Wait for connect button to become enabled and verify UI
+- waitForAnimationToEnd  # Wait for the enabled state to render (if there’s an animation)
+- assertVisible: "AppKitModalConnectButton enabled"
+- assertVisible: "Connect"
+- assertVisible: "Network"
+
+# Initiate connection and handle modal
+- tapOn: "AppKitModalConnectButton enabled"
+- waitForAnimationToEnd  # Wait for the "Sign in" modal to appear
+- assertVisible: "Sign in"
+- assertVisible: "FL Wallet (internal) enabled"
+- waitForAnimationToEnd:
+    timeout: 30000  # Reduced timeout for most animations (10 seconds)
+
+# Select wallet and approve
+- tapOn: "FL Wallet (internal) enabled"
+- waitForAnimationToEnd
+- tapOn: "Approve"
+- waitForAnimationToEnd
+
+# Verify account and disconnect
+- assertVisible: "AppKitModalAccountButton enabled"
+- waitForAnimationToEnd
+- tapOn: "Disconnect"
+- waitForAnimationToEnd  # Wait for "Connect" and "Network" to reappear
+
+# Confirm app returns to initial state
+- assertVisible: "Connect"
+- assertVisible: "Network"
+
+
+# - tapOn: |-
+#     Settings page button
+#     Settings page icon
+#     Settings
+#     Tab 3 of 3
+
+# - runFlow:
+#     when:
+#       visible: "With Socials Switch false"
+#     commands:
+#         - tapOn: "With Socials Switch false"
+#         - waitForAnimationToEnd
+#         - assertVisible: "App will be closed to apply changes"
+#         - tapOn: "Ok"
+#         - killApp # Kills the app (adb shell am kill)
+#         - launchApp
+#         - tapOn: |-
+#             Settings page button
+#             Settings page icon
+#             Settings
+#             Tab 3 of 3
+#         - assertVisible: "With Socials Switch true"
+# - runFlow:
+#     when:
+#       visible: "With Socials Switch true"
+#     commands:
+#         - tapOn: "With Socials Switch true"
+#         - waitForAnimationToEnd
+#         - assertVisible: "App will be closed to apply changes"
+#         - tapOn: "Ok"
+#         - killApp # Kills the app (adb shell am kill)
+#         - launchApp
+#         - tapOn: |-
+#             Settings page button
+#             Settings page icon
+#             Settings
+#             Tab 3 of 3
+#         - assertVisible: "With Socials Switch false"
+
+# - tapOn: |-
+#     Connect page button
+#     Connect page icon
+#     Connect
+#     Tab 1 of 3
