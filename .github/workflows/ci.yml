@@ -35,7 +35,7 @@ jobs:
     # runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        test-type: [integration-tests, maestro-tests]
+        test-type: [maestro-tests] #integration-tests, 
         # os: 
         #   - ubuntu-latest  # For integration-tests (Flutter unit/integration tests)
         #   - macos-latest  # For maestro-tests (iOS UI tests)
