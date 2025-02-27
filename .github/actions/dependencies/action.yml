@@ -1,11 +1,6 @@
 name: ci
 description: Installs dependencies
 
-# inputs:
-#   working-directory:
-#     description: 'Package directory'
-#     required: true
-
 runs:
   using: composite
   steps:
@@ -34,5 +29,3 @@ runs:
           dart format --output=none --set-exit-if-changed .
 
     # add flutter analyze when packages are published
-
-    
