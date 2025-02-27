@@ -72,6 +72,7 @@ runs:
       run: |
         # Install Maestro CLI
         curl -Ls "https://get.maestro.mobile.dev" | bash
+        export PATH=$PATH:$HOME/.maestro/bin
 
         # Install IDB (iOS Device Bridge) for iOS simulator support
         brew tap facebook/fb
