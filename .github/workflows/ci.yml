@@ -56,10 +56,11 @@ jobs:
         project-id: ${{ github.event.inputs.project-id || secrets.DAPP_PROJECT_ID }}
     
     - uses: ./.github/actions/ci
-      if: matrix.test-type == 'integration-tests'
+      if: matrix.test-type == 'maestro-tests'
       with:
         type: ${{ matrix.test-type }}
         project-id: ${{ github.event.inputs.project-id || secrets.DAPP_PROJECT_ID }}
+        wallet-project-id: ${{ secrets.WALLET_PROJECT_ID }}
 
 
 # Launch locally

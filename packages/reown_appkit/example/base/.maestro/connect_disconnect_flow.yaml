@@ -2,6 +2,7 @@ appId: com.walletconnect.flutterdapp.internal
 ---
 # Launch and verify initial state
 - launchApp
+# - startRecording: flutterdapp_test_recording
 - assertVisible: "AppKitModalConnectButton disabled"
 - waitForAnimationToEnd
 
@@ -16,11 +17,13 @@ appId: com.walletconnect.flutterdapp.internal
 - assertVisible: "Sign in"
 - assertVisible: "FL Wallet (internal) enabled"
 - waitForAnimationToEnd:
-    timeout: 30000  # Reduced timeout for most animations (10 seconds)
+    timeout: 30000  # Social/Email loading could take up to 30 secs
 
 # Select wallet and approve
 - tapOn: "FL Wallet (internal) enabled"
-- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: "Reown's AppKit would like to connect"
+    timeout: 15000
 - tapOn: "Approve"
 - waitForAnimationToEnd
 
@@ -33,6 +36,7 @@ appId: com.walletconnect.flutterdapp.internal
 # Confirm app returns to initial state
 - assertVisible: "Connect"
 - assertVisible: "Network"
+# - stopRecording
 
 
 # - tapOn: |-
