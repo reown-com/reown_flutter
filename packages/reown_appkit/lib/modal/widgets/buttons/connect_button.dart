@@ -40,6 +40,7 @@ class ConnectButton extends StatelessWidget {
     final borderRadius = radiuses.isSquare() ? 0.0 : size.height / 2;
     final showLoading = connecting || serviceStatus.isLoading;
     return BaseButton(
+      semanticsLabel: 'AppKitModalConnectButton',
       onTap: disabled || connecting
           ? null
           : serviceStatus.isInitialized

@@ -29,6 +29,7 @@ class WalletListItem extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     return BaseListItem(
+      semanticsLabel: title,
       onTap: onTap,
       padding: const EdgeInsets.all(0.0),
       child: Row(

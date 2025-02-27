@@ -65,6 +65,7 @@ class NetworkButton extends StatelessWidget {
             ],
           )
         : BaseButton(
+            semanticsLabel: 'AppKitModalNetworkButton',
             size: size,
             onTap: serviceStatus.isInitialized ? onTap : null,
             buttonStyle: ButtonStyle(

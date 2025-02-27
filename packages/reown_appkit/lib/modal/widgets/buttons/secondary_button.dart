@@ -16,6 +16,7 @@ class SecondaryButton extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     return BaseButton(
+      semanticsLabel: 'SecondaryButton',
       size: BaseButtonSize.big,
       child: Text(title),
       onTap: onTap,

@@ -35,8 +35,8 @@ jobs:
     
     # Install Flutter and Dependencies
     - uses: ./.github/actions/dependencies
-      with:
-        working-directory: packages/reown_appkit/example/base
+      # with:
+      #   working-directory: packages/reown_appkit/example/base
   
     # Build App
     - name: Build App

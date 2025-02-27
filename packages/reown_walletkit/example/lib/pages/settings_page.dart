@@ -736,7 +736,6 @@ class _Buttons extends StatelessWidget {
                           },
                         );
                         if (result == true) {
-                          // appkit_sample_socials
                           await prefs.setBool('appkit_sample_linkmode', value);
                           if (!kDebugMode) {
                             exit(0);

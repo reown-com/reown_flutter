@@ -43,8 +43,8 @@ jobs:
     
     # Install Flutter and Dependencies
     - uses: ./.github/actions/dependencies
-      with:
-        working-directory: packages/reown_walletkit/example
+      # with:
+      #   working-directory: packages/reown_walletkit/example
 
     - name: Add Secrets file
       working-directory: packages/reown_walletkit/example/android
