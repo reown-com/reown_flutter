@@ -6,7 +6,6 @@ appId: com.walletconnect.flutterdapp.internal
 - waitForAnimationToEnd
 
 # Wait for connect button to become enabled and verify UI
-- waitForAnimationToEnd  # Wait for the enabled state to render (if there’s an animation)
 - assertVisible: "AppKitModalConnectButton enabled"
 - assertVisible: "Connect"
 - assertVisible: "Network"

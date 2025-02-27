@@ -159,6 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Set<String>? _featuredWalletIds() {
     return {
+      // '2c81da3add65899baeac53758a07e652eea46dbb5195b8074772c62a77bbf568', // Ambire Wallet
       'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393', // Phantom
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
       '18450873727504ae9315a084fa7624b5297d2fe5880f0982979c17345a138277', // Kraken Wallet
@@ -176,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _initializeService() async {
     final prefs = await SharedPreferences.getInstance();
     final linkModeEnabled = prefs.getBool('appkit_sample_linkmode') ?? false;
-    final socialsEnabled = prefs.getBool('appkit_sample_socials') ?? false;
+    final socialsEnabled = prefs.getBool('appkit_sample_socials') ?? true;
 
     _appKit = ReownAppKit(
       core: ReownCore(

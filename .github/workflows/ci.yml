@@ -20,7 +20,6 @@ on:
         description: 'Reown project id'
         required: true
 
-
 concurrency:
   # Support push/pr as event types with different behaviors each:
   # 1. push: queue up builds by branch
@@ -30,13 +29,16 @@ concurrency:
   # For non-PR triggers queue up builds
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
+    # runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        test-type: [integration-tests]
+        test-type: [integration-tests, maestro-tests]
+        # os: 
+        #   - ubuntu-latest  # For integration-tests (Flutter unit/integration tests)
+        #   - macos-latest  # For maestro-tests (iOS UI tests)
 
     steps:
     - uses: actions/checkout@v3
@@ -46,7 +48,20 @@ jobs:
       with:
         flutter-version: '3.24.5'
 
-    - uses: ./.github/actions/ci 
+    - uses: ./.github/actions/ci
+      if: matrix.test-type == 'integration-tests'
       with:
         type: ${{ matrix.test-type }}
-        project-id: ${{ secrets.PROJECT_ID }}
+        relay-endpoint: ${{ github.event.inputs.relay-endpoint || 'wss://relay.walletconnect.org' }}
+        project-id: ${{ github.event.inputs.project-id || secrets.DAPP_PROJECT_ID }}
+    
+    - uses: ./.github/actions/ci
+      if: matrix.test-type == 'integration-tests'
+      with:
+        type: ${{ matrix.test-type }}
+        project-id: ${{ github.event.inputs.project-id || secrets.DAPP_PROJECT_ID }}
+
+
+# Launch locally
+# act -j build --container-architecture linux/amd64 -P macos-latest-xlarge=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml
+# act --container-architecture linux/amd64 -P macos-latest-xlarge=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch

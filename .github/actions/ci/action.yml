@@ -6,11 +6,11 @@ inputs:
     description: The type of CI to run.
     required: true
   relay-endpoint:
-    description: 'The endpoint of the relay e.g. relay.walletconnect.org'
+    description: "The endpoint of the relay e.g. relay.walletconnect.org"
     required: false
-    default: 'wss://relay.walletconnect.org'
+    default: "wss://relay.walletconnect.org"
   project-id:
-    description: 'Reown project id'
+    description: "Reown project id"
     required: true
 
 runs:
@@ -28,7 +28,7 @@ runs:
         RELAY_ENDPOINT: ${{ inputs.relay-endpoint }}
         PROJECT_ID: ${{ inputs.project-id }}
       run: flutter test --dart-define=RELAY_ENDPOINT=$RELAY_ENDPOINT --dart-define=PROJECT_ID=$PROJECT_ID
-    
+
     # Run Sign Unit and Integration Tests
     - name: Run Sign tests
       if: inputs.type == 'integration-tests'
@@ -48,7 +48,7 @@ runs:
         RELAY_ENDPOINT: ${{ inputs.relay-endpoint }}
         PROJECT_ID: ${{ inputs.project-id }}
       run: flutter test --dart-define=RELAY_ENDPOINT=$RELAY_ENDPOINT --dart-define=PROJECT_ID=$PROJECT_ID
-    
+
     # Run WalletKit Unit and Integration Tests
     - name: Run WalletKit tests
       if: inputs.type == 'integration-tests'
@@ -58,4 +58,49 @@ runs:
         RELAY_ENDPOINT: ${{ inputs.relay-endpoint }}
         PROJECT_ID: ${{ inputs.project-id }}
       run: flutter test --dart-define=RELAY_ENDPOINT=$RELAY_ENDPOINT --dart-define=PROJECT_ID=$PROJECT_ID
-    
+
+    # Run Maestro tests on iOS
+    - name: Run Maestro tests on iOS
+      # if: matrix.test-type == 'maestro-tests' && matrix.os == 'macos-latest'
+      if: inputs.type == 'maestro-tests'
+      shell: bash
+      working-directory: packages/reown_appkit/example/base
+      env:
+        PROJECT_ID: ${{ inputs.project-id }}
+      run: |
+        # Install Maestro CLI
+        curl -Ls "https://get.maestro.mobile.dev" | bash
+
+        # Install IDB (iOS Device Bridge) for iOS simulator support
+        brew tap facebook/fb
+        brew install facebook/fb/idb-companion
+
+        # Get the first simulator in the list of simulators
+        SIMULATOR_UDID=$(xcrun simctl list devices available | grep "iPhone" | sort -rV | head -n 1 | awk -F '[()]' '{print $2}')
+        echo $SIMULATOR_UDID
+        # xcrun simctl boot "$SIMULATOR_UDID"
+        if xcrun simctl list devices | grep "$SIMULATOR_UDID" | grep -q "(Booted)"; then
+            echo "$SIMULATOR_UDID is booted."
+            # # shutdown devices
+            # xcrun simctl shutdown $SIMULATOR_UDID
+            # echo "$SIMULATOR_UDID shut down"
+        else
+            echo "$SIMULATOR_UDID is not booted."
+            # boot devices
+            xcrun simctl boot "$SIMULATOR_UDID"
+            echo "$SIMULATOR_UDID booted"
+        fi
+
+        # Build and install the Flutter iOS app
+        # flutter build ios --simulator --no-codesign
+        # flutter build ios --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --config-only --release
+        flutter build ios --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --simulator --debug
+        xcrun simctl install "$SIMULATOR_UDID" build/ios/iphonesimulator/Runner.app
+
+        # Run Maestro tests
+        maestro test .maestro/connect_disconnect_flow.yaml
+
+    - name: Handle test results
+      if: matrix.test-type == 'maestro-tests' && failure()
+      shell: bash
+      run: echo "Maestro tests failed. Check logs for details."
