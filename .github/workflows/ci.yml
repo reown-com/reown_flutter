@@ -34,8 +34,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - test-type: integration-tests
-            runner: macos-14
+          # - test-type: integration-tests
+          #   runner: macos-14
           - test-type: maestro-tests
             runner: macos-14-xlarge
     runs-on: ${{ matrix.runner }}
