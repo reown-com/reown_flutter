@@ -22,6 +22,7 @@ class SolanaService2 {
   Map<String, dynamic Function(String, dynamic)> get solanaRequestHandlers => {
         'solana_signMessage': solanaSignMessage,
         'solana_signTransaction': solanaSignTransaction,
+        'solana_signAllTransactions': solanaSignAllTransaction,
       };
 
   final _walletKit = GetIt.I<IWalletKitService>().walletKit;
@@ -184,6 +185,76 @@ class SolanaService2 {
     _handleResponseForTopic(topic, response);
   }
 
+  Future<void> solanaSignAllTransaction(
+    String topic,
+    dynamic parameters,
+  ) async {
+    debugPrint(
+        '[SampleWallet] solanaSignAllTransactions: ${jsonEncode(parameters)}');
+    final pRequest = _walletKit.pendingRequests.getAll().last;
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
+
+    try {
+      final params = parameters as Map<String, dynamic>;
+      final beautifiedTrx = const JsonEncoder.withIndent('  ').convert(params);
+
+      final keyPair = await _getKeyPair();
+
+      if (await MethodsUtils.requestApproval(
+        // Show Approval Modal
+        beautifiedTrx,
+        method: pRequest.method,
+        chainId: pRequest.chainId,
+        address: keyPair.pubkey.toBase58(),
+        transportType: pRequest.transportType.name,
+      )) {
+        if (params.containsKey('transactions')) {
+          final txsList = params['transactions'] as List;
+          final decodedTxsList = txsList.map((encodedTx) {
+            return solana.Transaction.fromBase64(encodedTx);
+          }).toList();
+
+          List<String> signatures = [];
+          for (var decodedTx in decodedTxsList) {
+            // Sign the transaction.
+            decodedTx.sign([keyPair]);
+            signatures.add(decodedTx.signatures.first.toBase58());
+          }
+
+          response = response.copyWith(
+            result: {
+              'transactions': signatures,
+            },
+          );
+        }
+      } else {
+        final error = Errors.getSdkError(Errors.USER_REJECTED);
+        response = response.copyWith(
+          error: JsonRpcError(
+            code: error.code,
+            message: error.message,
+          ),
+        );
+      }
+    } catch (e, s) {
+      debugPrint('[SampleWallet] solanaSignAllTransactions error $e, $s');
+      final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
+      response = response.copyWith(
+        error: JsonRpcError(
+          code: error.code,
+          message: error.message,
+        ),
+      );
+    }
+
+    await _walletKit.respondSessionRequest(
+      topic: topic,
+      response: response,
+    );
+
+    _handleResponseForTopic(topic, response);
+  }
+
   Future<solana.Keypair> _getKeyPair() async {
     final keys = GetIt.I<IKeyService>().getKeysForChain(
       chainSupported.chainId,
@@ -202,6 +273,7 @@ class SolanaService2 {
     final session = _walletKit.sessions.get(topic);
 
     try {
+      debugPrint('[SampleWallet] response: ${jsonEncode(response.result)}');
       await _walletKit.respondSessionRequest(
         topic: topic,
         response: response,

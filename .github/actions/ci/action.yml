@@ -119,6 +119,7 @@ runs:
       env:
         PROJECT_ID: ${{ inputs.project-id }}
         SIMULATOR_UDID: ${{ env.SIMULATOR_UDID }}
+        MAESTRO_DRIVER_STARTUP_TIMEOUT: 30000  # Increase timeout to 30 seconds
       run: |
         # Build and install the Flutter iOS dapp
         flutter build ios --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --simulator --debug
