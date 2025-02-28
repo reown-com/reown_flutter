@@ -3,6 +3,8 @@ appId: com.walletconnect.flutterdapp.internal
 # Launch and verify initial state
 - launchApp
 # - startRecording: flutterdapp_test_recording
+- waitForAnimationToEnd
+- takeScreenshot: MainScreen # screenshot will be stored as MainScreen.png
 - assertVisible: "AppKitModalConnectButton disabled"
 - waitForAnimationToEnd
 
