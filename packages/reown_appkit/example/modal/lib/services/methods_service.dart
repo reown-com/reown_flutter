@@ -148,7 +148,7 @@ class MethodsService {
   }) async {
     final bytes = utf8.encode(message);
     final encoded = hex.encode(bytes);
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+    final namespace = NamespaceUtils.getNamespaceFromChain(
       appKitModal.selectedChain!.chainId,
     );
 
@@ -171,7 +171,7 @@ class MethodsService {
   }) async {
     final bytes = utf8.encode(testSignData);
     final message = base58.encode(bytes);
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+    final namespace = NamespaceUtils.getNamespaceFromChain(
       appKitModal.selectedChain!.chainId,
     );
     final address = appKitModal.session!.getAddress(namespace)!;
@@ -190,7 +190,7 @@ class MethodsService {
     required ReownAppKitModal appKitModal,
     required String data,
   }) async {
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+    final namespace = NamespaceUtils.getNamespaceFromChain(
       appKitModal.selectedChain!.chainId,
     );
     return await appKitModal.request(
@@ -210,7 +210,7 @@ class MethodsService {
     required ReownAppKitModal appKitModal,
     required String data,
   }) async {
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+    final namespace = NamespaceUtils.getNamespaceFromChain(
       appKitModal.selectedChain!.chainId,
     );
     return await appKitModal.request(
@@ -230,7 +230,7 @@ class MethodsService {
     required ReownAppKitModal appKitModal,
     required String data,
   }) async {
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+    final namespace = NamespaceUtils.getNamespaceFromChain(
       appKitModal.selectedChain!.chainId,
     );
     return await appKitModal.request(
@@ -321,7 +321,7 @@ class MethodsService {
           decimals: (decimals.first as BigInt),
         );
         // now we call `transfer` write function with the parsed value.
-        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+        final namespace = NamespaceUtils.getNamespaceFromChain(
           appKitModal.selectedChain!.chainId,
         );
         final senderAddress = appKitModal.session!.getAddress(namespace)!;
@@ -415,7 +415,7 @@ class MethodsService {
     required ReownAppKitModal appKitModal,
     required DeployedContract contract,
   }) async {
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+    final namespace = NamespaceUtils.getNamespaceFromChain(
       appKitModal.selectedChain!.chainId,
     );
     final results = await Future.wait([

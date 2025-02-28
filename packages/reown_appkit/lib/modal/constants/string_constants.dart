@@ -15,6 +15,7 @@ class CoreConstants {
 class UIConstants {
   // UI
   static const String selectNetwork = 'Select network';
+  static const String changeNetwork = 'Change network';
   static const String selectNetworkShort = 'Network';
   static const String connected = 'Connected';
   static const String error = 'Error';

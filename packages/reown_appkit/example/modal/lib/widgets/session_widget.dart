@@ -120,8 +120,8 @@ class SessionWidgetState extends State<SessionWidget> {
     ];
 
     // Get current active account
-    final chainId = widget.appKit.selectedChain?.chainId ?? '';
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    final chainId = widget.appKit.selectedChain!.chainId;
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final accounts = session.getAccounts(namespace: namespace) ?? [];
     final chainsNamespaces = NamespaceUtils.getChainsFromAccounts(accounts);
     if (chainsNamespaces.contains('$namespace:$chainId')) {
@@ -389,8 +389,10 @@ class SessionWidgetState extends State<SessionWidget> {
         ),
       ],
     );
-    final ns = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
-    final approvedChains = widget.appKit.getApprovedChains(namespace: ns);
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    final approvedChains = widget.appKit.getApprovedChains(
+      namespace: namespace,
+    );
     children.add(
       Text(
         (approvedChains ?? []).join(', '),
@@ -458,7 +460,7 @@ class SessionWidgetState extends State<SessionWidget> {
   Future<dynamic> callChainMethod(String method) {
     final session = widget.appKit.session!;
     final chainId = widget.appKit.selectedChain!.chainId;
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final address = session.getAddress(namespace)!;
     return MethodsService.callMethod(
       appKitModal: widget.appKit,

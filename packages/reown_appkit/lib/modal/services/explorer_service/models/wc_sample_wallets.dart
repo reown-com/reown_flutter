@@ -8,42 +8,34 @@ class WCSampleWallets {
           'name': 'SW Wallet (internal)',
           'platform': ['ios'],
           'id': '123456789012345678901234567890',
-          'schema': 'walletapp://',
-          'bundleId': 'com.walletconnect.sample.wallet',
-          'universal': 'https://appkit-lab.reown.com/wallet',
+          'mobile_link': 'walletapp://',
+          'bundle_id': 'com.walletconnect.sample.wallet',
+          'link_mode': 'https://appkit-lab.reown.com/wallet',
         },
         {
           'name': 'FL Wallet (internal)',
           'platform': ['ios', 'android'],
           'id': '123456789012345678901234567895',
-          'schema': 'wcflutterwallet-internal://',
-          'bundleId': 'com.walletconnect.flutterwallet.internal',
-          'universal':
+          'mobile_link': 'wcflutterwallet-internal://',
+          'bundle_id': 'com.walletconnect.flutterwallet.internal',
+          'link_mode':
               'https://appkit-lab.reown.com/flutter_walletkit_internal',
         },
         {
           'name': 'RN Wallet (internal)',
           'platform': ['ios', 'android'],
           'id': '1234567890123456789012345678922',
-          'schema': 'rn-web3wallet-internal://',
-          'bundleId': 'com.walletconnect.web3wallet.rnsample.internal',
-          'universal': 'https://appkit-lab.reown.com/rn_walletkit_internal',
+          'mobile_link': 'rn-web3wallet-internal://',
+          'bundle_id': 'com.walletconnect.web3wallet.rnsample.internal',
+          'link_mode': 'https://appkit-lab.reown.com/rn_walletkit_internal',
         },
-        // {
-        //   'name': 'KT Wallet (Internal)',
-        //   'platform': ['android'],
-        //   'id': '123456789012345678901234567894',
-        //   'schema': 'kotlin-web3wallet://wc',
-        //   'bundleId': 'com.reown.sample.wallet.internal',
-        //   'universal': 'https://appkit-lab.reown.com/wallet_internal',
-        // },
         {
           'name': 'KT Wallet (Internal)',
           'platform': ['android'],
           'id': '123456789012345678901234567894',
-          'schema': 'kotlin-web3wallet://wc',
-          'bundleId': 'com.walletconnect.sample.wallet.internal',
-          'universal': 'https://appkit-lab.reown.com/wallet_internal',
+          'mobile_link': 'kotlin-web3wallet://wc',
+          'bundle_id': 'com.walletconnect.sample.wallet.internal',
+          'link_mode': 'https://appkit-lab.reown.com/wallet_internal',
         },
       ];
 
@@ -52,41 +44,33 @@ class WCSampleWallets {
           'name': 'SW Wallet',
           'platform': ['ios'],
           'id': '123456789012345678901234567890',
-          'schema': 'walletapp://',
-          'bundleId': 'com.walletconnect.sample.wallet',
-          'universal': 'https://appkit-lab.reown.com/wallet',
+          'mobile_link': 'walletapp://',
+          'bundle_id': 'com.walletconnect.sample.wallet',
+          'link_mode': 'https://appkit-lab.reown.com/wallet',
         },
         {
           'name': 'FL Wallet',
           'platform': ['ios', 'android'],
           'id': '123456789012345678901234567891',
-          'schema': 'wcflutterwallet://',
-          'bundleId': 'com.walletconnect.flutterwallet',
-          'universal': 'https://appkit-lab.reown.com/flutter_walletkit',
+          'mobile_link': 'wcflutterwallet://',
+          'bundle_id': 'com.walletconnect.flutterwallet',
+          'link_mode': 'https://appkit-lab.reown.com/flutter_walletkit',
         },
         {
           'name': 'RN Wallet',
           'platform': ['ios', 'android'],
           'id': '123456789012345678901234567892',
-          'schema': 'rn-web3wallet://',
-          'bundleId': 'com.walletconnect.web3wallet.rnsample',
-          'universal': 'https://appkit-lab.reown.com/rn_walletkit',
+          'mobile_link': 'rn-web3wallet://',
+          'bundle_id': 'com.walletconnect.web3wallet.rnsample',
+          'link_mode': 'https://appkit-lab.reown.com/rn_walletkit',
         },
-        // {
-        //   'name': 'KT Wallet',
-        //   'platform': ['android'],
-        //   'id': '123456789012345678901234567893',
-        //   'schema': 'kotlin-web3wallet://wc',
-        //   'bundleId': 'com.reown.sample.wallet',
-        //   'universal': 'https://appkit-lab.reown.com/wallet_release',
-        // },
         {
           'name': 'KT Wallet',
           'platform': ['android'],
           'id': '123456789012345678901234567893',
-          'schema': 'kotlin-web3wallet://wc',
-          'bundleId': 'com.walletconnect.sample.wallet',
-          'universal': 'https://appkit-lab.reown.com/wallet_release',
+          'mobile_link': 'kotlin-web3wallet://wc',
+          'bundle_id': 'com.walletconnect.sample.wallet',
+          'link_mode': 'https://appkit-lab.reown.com/wallet_release',
         },
       ];
 
@@ -94,9 +78,11 @@ class WCSampleWallets {
     final wallets = _sampleWallets().map((entry) {
       final id = entry['id'] as String?;
       final name = entry['name'] as String?;
-      final schema = entry['schema'] as String?;
-      final universal = entry['universal'] as String?;
-      final bundleId = entry['universal'] as String?;
+      final mobileLink = entry['mobile_link'] as String?;
+      final desktopLink = entry['desktop_link'] as String?;
+      final linkMode = entry['link_mode'] as String?;
+      final bundle_id = entry['bundle_id'] as String?;
+      final webAppLink = entry['webapp_link'] as String?;
       return ReownAppKitModalWalletInfo(
         listing: Listing.fromJson({
           'id': id,
@@ -104,12 +90,16 @@ class WCSampleWallets {
           'homepage': 'https://reown.com',
           'image_id':
               'https://raw.githubusercontent.com/reown-com/reown_flutter/develop/assets/walletkit_logo.png',
-          'order': 10,
-          'mobile_link': schema,
-          'link_mode': universal,
+          'order': 1,
+          'mobile_link': mobileLink,
+          'desktop_link': desktopLink,
+          'link_mode': linkMode,
+          'webapp_link': webAppLink,
           'app_store': 'https://apps.apple.com/app/apple-store/id$id',
           'play_store':
-              'https://play.google.com/store/apps/details?id=$bundleId',
+              'https://play.google.com/store/apps/details?id=$bundle_id',
+          'description': 'Reown sample Wallet',
+          'badge_type': 'certified',
         }),
         installed: false,
         recent: false,
@@ -135,12 +125,16 @@ class WCSampleWallets {
     }).toList();
   }
 
-  static String? getSampleWalletScheme(String id) {
+  static ReownAppKitModalWalletInfo? getSampleWallet(String id) {
+    return getSampleWallets().firstWhereOrNull((e) => e.listing.id == id);
+  }
+
+  static String? getSampleWalletMobileLink(String id) {
     final wallet = _sampleWallets().firstWhereOrNull((e) => e['id'] == id);
     final platform = PlatformUtils.getPlatformExact();
     if (platform == PlatformExact.android) {
-      return wallet?['bundleId'] as String?;
+      return wallet?['bundle_id'] as String?;
     }
-    return wallet?['schema'] as String?;
+    return wallet?['mobile_link'] as String?;
   }
 }

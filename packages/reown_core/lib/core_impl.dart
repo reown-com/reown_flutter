@@ -78,10 +78,9 @@ class ReownCore implements IReownCore {
   @override
   late ILinkModeStore linkModeStore;
 
-  Logger _logger = Logger(
-    level: Level.off,
-    printer: PrettyPrinter(),
-  );
+  late final LogLevel _logLevel;
+  late final LogCallback? _logCallback;
+  late final Logger _logger;
   @override
   Logger get logger => _logger;
 
@@ -99,9 +98,6 @@ class ReownCore implements IReownCore {
       Logger.addLogListener(_logCallback!);
     } catch (_) {}
   }
-
-  late final LogLevel _logLevel;
-  late final LogCallback? _logCallback;
 
   @override
   bool removeLogListener(Function(String) callback) {
@@ -123,7 +119,6 @@ class ReownCore implements IReownCore {
     IHttpClient httpClient = const HttpWrapper(),
     IWebSocketHandler? webSocketHandler,
   }) {
-    PrettyPrinter();
     _logLevel = logLevel;
     _logger = Logger(
       level: _logLevel.toLevel(),

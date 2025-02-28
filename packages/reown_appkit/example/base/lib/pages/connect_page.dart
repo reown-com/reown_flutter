@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
@@ -64,7 +66,9 @@ class ConnectPageState extends State<ConnectPage> {
     await widget.appKitModal.reconnectRelay();
     await widget.appKitModal.loadAccountData();
     final topic = widget.appKitModal.session!.topic ?? '';
-    await widget.appKitModal.appKit!.ping(topic: topic);
+    if (topic.isNotEmpty) {
+      await widget.appKitModal.appKit!.ping(topic: topic);
+    }
     setState(() {});
   }
 
@@ -82,10 +86,7 @@ class ConnectPageState extends State<ConnectPage> {
               alignment: Alignment.center,
               children: [
                 Center(
-                  child: Image.asset(
-                    'assets/appkit-logo.png',
-                    width: 200.0,
-                  ),
+                  child: Image.asset('assets/appkit-logo.png', width: 200.0),
                 ),
                 Container(
                   color: isDarkMode
@@ -150,6 +151,11 @@ class ConnectPageState extends State<ConnectPage> {
                     _RequestButtons(
                       appKitModal: widget.appKitModal,
                     ),
+                    Text(
+                      const JsonEncoder.withIndent('    ').convert(
+                        widget.appKitModal.session?.toJson(),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -211,16 +217,26 @@ class __RequestButtonsState extends State<_RequestButtons> {
   @override
   Widget build(BuildContext context) {
     final topic = widget.appKitModal.session!.topic ?? '';
-    final chainId = widget.appKitModal.selectedChain?.chainId ?? '1';
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
-    final methods = widget.appKitModal.getApprovedMethods(namespace: namespace);
+    final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
+    if (chainId.isEmpty) {
+      return SizedBox.shrink();
+    }
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    final approvedMethods = widget.appKitModal.getApprovedMethods(
+      namespace: namespace,
+    );
     final address = widget.appKitModal.session!.getAddress(namespace)!;
-    final chainInfo = ReownAppKitModalNetworks.getNetworkById(
+    final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
       namespace,
       chainId,
     );
+    final implemented = getChainMethods(namespace);
     return Column(
-      children: (methods ?? []).map((method) {
+      children: (approvedMethods ?? []).map((method) {
+        final enabled = implemented.contains(method);
+        if (!enabled) {
+          return SizedBox.shrink();
+        }
         return Container(
           height: 40.0,
           width: double.infinity,
@@ -231,7 +247,8 @@ class __RequestButtonsState extends State<_RequestButtons> {
             style: ButtonStyle(
               elevation: WidgetStateProperty.all(0.0),
               backgroundColor: WidgetStateProperty.all<Color>(
-                  ReownAppKitModalTheme.colorsOf(context).accent080),
+                ReownAppKitModalTheme.colorsOf(context).accent080,
+              ),
               foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
             ),
             onPressed: () async {

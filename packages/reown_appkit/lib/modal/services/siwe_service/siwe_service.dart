@@ -93,7 +93,6 @@ class SiweService implements ISiweService {
     if (!enabled) throw Exception('siweConfig not enabled');
     //
     final chainId = AuthSignature.getChainIdFromMessage(message);
-    final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(chainId);
     final address = AuthSignature.getAddressFromMessage(message);
     final bytes = utf8.encode(message);
     final encoded = hex.encode(bytes);
@@ -101,7 +100,7 @@ class SiweService implements ISiweService {
     _appKit.core.logger.d('[$runtimeType] signMessageRequest() called');
     if (session.sessionService.isMagic) {
       return await _magicService.request(
-        chainId: caip2Chain,
+        chainId: 'eip155:$chainId',
         request: SessionRequestParams(
           method: 'personal_sign',
           params: ['0x$encoded', address],
@@ -110,7 +109,7 @@ class SiweService implements ISiweService {
     }
     if (session.sessionService.isCoinbase) {
       return await _coinbaseService.request(
-        chainId: caip2Chain,
+        chainId: 'eip155:$chainId',
         request: SessionRequestParams(
           method: 'personal_sign',
           params: ['0x$encoded', address],
@@ -119,7 +118,7 @@ class SiweService implements ISiweService {
     }
     return await _appKit.request(
       topic: session.topic!,
-      chainId: caip2Chain,
+      chainId: 'eip155:$chainId',
       request: SessionRequestParams(
         method: 'personal_sign',
         params: ['0x$encoded', address],

@@ -195,9 +195,7 @@ class _DetailsRowState extends State<DetailsRow> {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final chainId = appKitModal.selectedChain!.chainId;
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-      chainId,
-    );
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final address = appKitModal.session!.getAddress(namespace);
     return Container(
       width: double.infinity,
