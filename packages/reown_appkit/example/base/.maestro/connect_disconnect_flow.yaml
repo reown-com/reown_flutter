@@ -11,7 +11,6 @@ appId: com.walletconnect.flutterdapp.internal
     path: .maestro/screenshots/2
 
 # Wait for connect button to become enabled and verify UI
-# - assertVisible: "AppKitModalConnectButton enabled"
 - assertVisible: "Connect"
 - assertVisible: "Network"
 

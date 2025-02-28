@@ -137,6 +137,5 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: maestro-screenshots
-        path: |
-          .maestro/screenshots/
-          if-no-files-found: warn
+        path: .maestro/**
+        if-no-files-found: warn
