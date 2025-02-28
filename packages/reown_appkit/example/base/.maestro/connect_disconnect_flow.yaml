@@ -30,13 +30,16 @@ appId: com.walletconnect.flutterdapp.internal
     visible: "Reown's AppKit would like to connect"
     timeout: 15000
 - tapOn: "Approve"
-- waitForAnimationToEnd
+- extendedWaitUntil:
+    visible: "Connected with FL WalletKit Sample"
+    timeout: 15000      # Timeout in milliseconds
 
 # Verify account and disconnect
 - assertVisible: "AppKitModalAccountButton enabled"
-- waitForAnimationToEnd
 - tapOn: "Disconnect"
-- waitForAnimationToEnd  # Wait for "Connect" and "Network" to reappear
+- extendedWaitUntil:
+    notVisible: "Connected with FL WalletKit Sample"
+    timeout: 15000      # Timeout in milliseconds
 
 # Confirm app returns to initial state
 - assertVisible: "Connect"
