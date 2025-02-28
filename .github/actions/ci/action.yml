@@ -135,7 +135,6 @@ runs:
     - name: Upload test recordings from .maestro
       if: inputs.type == 'maestro-tests' && failure()
       uses: actions/upload-artifact@v4
-      working-directory: packages/reown_appkit/example/base
       with:
         name: maestro-screenshots
         path: |
