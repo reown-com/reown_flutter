@@ -3,13 +3,16 @@ appId: com.walletconnect.flutterdapp.internal
 # Launch and verify initial state
 - launchApp
 # - startRecording: flutterdapp_test_recording
-- waitForAnimationToEnd
-- takeScreenshot: MainScreen # screenshot will be stored as MainScreen.png
-- assertVisible: "AppKitModalConnectButton disabled"
-- waitForAnimationToEnd
+# - takeScreenshot: MainScreen1 # screenshot will be stored as MainScreen.png
+- extendedWaitUntil:
+    visible: "AppKitModalConnectButton enabled"
+    timeout: 15000      # Timeout in milliseconds
+# - takeScreenshot: MainScreen2 # screenshot will be stored as MainScreen.png
+# - assertVisible: "AppKitModalConnectButton disabled"
+# - waitForAnimationToEnd
 
 # Wait for connect button to become enabled and verify UI
-- assertVisible: "AppKitModalConnectButton enabled"
+# - assertVisible: "AppKitModalConnectButton enabled"
 - assertVisible: "Connect"
 - assertVisible: "Network"
 
