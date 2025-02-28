@@ -14,7 +14,7 @@ on:
 jobs:
   build:
     # if: (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'develop') || github.event_name == 'workflow_dispatch'
-    runs-on: macos-latest-xlarge
+    runs-on: macos-14
 
     steps:
     # Checkout the repo
@@ -76,5 +76,5 @@ jobs:
 
 # Launch locally
 # Remove build: if:
-# act -j build --container-architecture linux/amd64 -P macos-latest-xlarge=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_dapp_android_internal.yml
-# act --container-architecture linux/amd64 -P macos-latest-xlarge=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_dapp_android_internal.yml workflow_dispatch
+# act -j build --container-architecture linux/amd64 -P macos-14=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_dapp_android_internal.yml
+# act --container-architecture linux/amd64 -P macos-14=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_dapp_android_internal.yml workflow_dispatch

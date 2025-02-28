@@ -80,7 +80,7 @@ runs:
         brew tap facebook/fb
         brew install facebook/fb/idb-companion
 
-        # Ensure Xcode Command Line Tools are available (rarely needed on macos-latest)
+        # Ensure Xcode Command Line Tools are available (rarely needed on macos-14)
         xcode-select --install || true
 
         # Get the first available iPhone simulator
@@ -131,3 +131,13 @@ runs:
       if: inputs.type == 'maestro-tests' && failure()
       shell: bash
       run: echo "Maestro tests failed. Check logs for details."
+    
+    - name: Upload test recordings from .maestro
+      if: inputs.type == 'maestro-tests' && failure()
+      uses: actions/upload-artifact@v4
+      working-directory: packages/reown_appkit/example/base
+      with:
+        name: maestro-screenshots
+        path: |
+          .maestro/screenshots/
+          if-no-files-found: warn

@@ -31,14 +31,14 @@ concurrency:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-14
     # runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         test-type: [maestro-tests] #integration-tests, 
         # os: 
         #   - ubuntu-latest  # For integration-tests (Flutter unit/integration tests)
-        #   - macos-latest  # For maestro-tests (iOS UI tests)
+        #   - macos-14  # For maestro-tests (iOS UI tests)
 
     steps:
     - uses: actions/checkout@v3
@@ -64,5 +64,5 @@ jobs:
 
 
 # Launch locally
-# act -j build --container-architecture linux/amd64 -P macos-latest-xlarge=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml
-# act --container-architecture linux/amd64 -P macos-latest-xlarge=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch
+# act -j build --container-architecture linux/amd64 -P macos-14=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml
+# act --container-architecture linux/amd64 -P macos-14=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch
