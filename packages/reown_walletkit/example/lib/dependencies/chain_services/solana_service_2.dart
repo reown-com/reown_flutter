@@ -126,10 +126,14 @@ class SolanaService2 {
 
           // Sign the transaction.
           decodedTx.sign([keyPair]);
+          // reserialize and re-encode transaction including signature
+          const config = solana.TransactionSerializableConfig();
+          final bytes = decodedTx.serialize(config).asUint8List();
+          final reencodedTx = base64.encode(bytes);
 
           response = response.copyWith(
             result: {
-              'signature': decodedTx.signatures.first.toBase58(),
+              'signature': reencodedTx,
             },
           );
         } else {
@@ -221,7 +225,7 @@ class SolanaService2 {
             // reserialize and re-encode transaction including signature
             const config = solana.TransactionSerializableConfig();
             final bytes = decodedTx.serialize(config).asUint8List();
-            final encodedTx = base58.encode(bytes);
+            final encodedTx = base64.encode(bytes);
             signedTransactions.add(encodedTx);
           }
 
