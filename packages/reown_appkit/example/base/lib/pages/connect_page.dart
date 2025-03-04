@@ -203,6 +203,38 @@ class ConnectPageState extends State<ConnectPage> {
   void _onModalError(ModalError? event) {
     setState(() {});
   }
+
+  // ignore: unused_element
+  ButtonStyle get _buttonStyle => ButtonStyle(
+        backgroundColor: WidgetStateProperty.resolveWith<Color>(
+          (states) {
+            if (states.contains(WidgetState.disabled)) {
+              return StyleConstants.grayColor;
+            }
+            return Colors.blue;
+          },
+        ),
+        textStyle: WidgetStateProperty.resolveWith<TextStyle>(
+          (states) => TextStyle(
+            fontSize: 8.0,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        padding: WidgetStateProperty.resolveWith<EdgeInsetsGeometry>(
+          (states) => EdgeInsets.all(0.0),
+        ),
+        minimumSize: WidgetStateProperty.all<Size>(const Size(
+          1000.0,
+          StyleConstants.linear48,
+        )),
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              StyleConstants.linear8,
+            ),
+          ),
+        ),
+      );
 }
 
 class _RequestButtons extends StatefulWidget {
