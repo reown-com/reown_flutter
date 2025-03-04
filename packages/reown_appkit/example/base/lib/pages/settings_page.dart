@@ -98,11 +98,16 @@ class SettingsPageState extends State<SettingsPage> {
                           ),
                         ),
                       ),
-                      Switch(
-                        value: widget.socials,
-                        onChanged: (value) {
-                          widget.reinitialize(value, 'appkit_sample_socials');
-                        },
+                      Semantics(
+                        label: 'With Socials Switch ${widget.socials}',
+                        // toggled: widget.socials,
+                        checked: widget.socials,
+                        child: Switch(
+                          value: widget.socials,
+                          onChanged: (value) {
+                            widget.reinitialize(value, 'appkit_sample_socials');
+                          },
+                        ),
                       ),
                       Expanded(
                         child: Text(

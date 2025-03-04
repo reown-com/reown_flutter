@@ -12,6 +12,7 @@ import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
+import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 import 'package:reown_walletkit_wallet/utils/eth_utils.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
@@ -46,6 +47,13 @@ class WalletKitService extends IWalletKitService {
       linkMode: linkModeEnabled,
     );
   }
+
+  @override
+  final ValueNotifier<ChainMetadata?> currentSelectedChain = ValueNotifier(
+    ChainsDataList.eip155Chains.firstWhere(
+      (e) => e.chainId == 'eip155:1',
+    ),
+  );
 
   @override
   Future<void> create() async {

@@ -1,3 +1,7 @@
+## 1.4.1
+
+- Core and Sign Update
+
 ## 1.4.0
 
 - Embedded Wallets Features (Send, Receive, Tokens list)

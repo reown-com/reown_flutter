@@ -41,6 +41,7 @@ class SimpleIconButton extends StatelessWidget {
             ? 100.0
             : borderRadius ?? (size.height / 2);
     return BaseButton(
+      semanticsLabel: 'SimpleIconButton',
       onTap: onTap,
       size: size,
       buttonStyle: ButtonStyle(

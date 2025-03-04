@@ -9,6 +9,7 @@ import 'package:reown_walletkit/reown_walletkit.dart';
 
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
+import 'package:reown_walletkit_wallet/models/chain_data.dart';
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/eth_utils.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
@@ -20,6 +21,7 @@ enum SupportedEVMMethods {
   ethSignTypedData,
   ethSignTypedDataV4,
   switchChain,
+  addChain,
   personalSign,
   ethSendTransaction;
 
@@ -35,6 +37,8 @@ enum SupportedEVMMethods {
         return 'eth_signTypedData_v4';
       case switchChain:
         return 'wallet_switchEthereumChain';
+      case addChain:
+        return 'wallet_addEthereumChain';
       case personalSign:
         return 'personal_sign';
       case ethSendTransaction:
@@ -55,7 +59,7 @@ class EVMService {
         SupportedEVMMethods.ethSignTypedData.name: ethSignTypedData,
         SupportedEVMMethods.ethSignTypedDataV4.name: ethSignTypedDataV4,
         SupportedEVMMethods.switchChain.name: switchChain,
-        // 'wallet_addEthereumChain': addChain,
+        SupportedEVMMethods.addChain.name: addChain,
       };
 
   Map<String, dynamic Function(String, dynamic)> get methodRequestHandlers => {
@@ -447,14 +451,11 @@ class EVMService {
       final params = (parameters as List).first as Map<String, dynamic>;
       final hexChainId = params['chainId'].toString().replaceFirst('0x', '');
       final chainId = int.parse(hexChainId, radix: 16);
-      await _walletKit.emitSessionEvent(
-        topic: topic,
-        chainId: 'eip155:$chainId',
-        event: SessionEventParams(
-          name: 'chainChanged',
-          data: chainId,
-        ),
+      final chainInfo = ChainsDataList.eip155Chains.firstWhere(
+        (e) => e.chainId == 'eip155:$chainId',
       );
+      // this change will handle the session event emit, see settings_page
+      GetIt.I<IWalletKitService>().currentSelectedChain.value = chainInfo;
       response = response.copyWith(result: true);
     } on ReownSignError catch (e) {
       debugPrint('[SampleWallet] switchChain error $e');
@@ -467,6 +468,93 @@ class EVMService {
     } catch (e) {
       debugPrint('[SampleWallet] switchChain error $e');
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
+      response = response.copyWith(
+        error: JsonRpcError(
+          code: error.code,
+          message: error.message,
+        ),
+      );
+    }
+
+    _handleResponseForTopic(topic, response);
+  }
+
+  Future<void> addChain(String topic, dynamic parameters) async {
+    debugPrint('[SampleWallet] addChain request: $topic $parameters');
+    final pRequest = _walletKit.pendingRequests.getAll().last;
+    var response = JsonRpcResponse(
+      id: pRequest.id,
+      jsonrpc: '2.0',
+    );
+
+    if (await MethodsUtils.requestApproval(
+      jsonEncode(parameters),
+      method: pRequest.method,
+      chainId: pRequest.chainId,
+      transportType: pRequest.transportType.name,
+      verifyContext: pRequest.verifyContext,
+    )) {
+      try {
+        final params = (parameters as List).first as Map<String, dynamic>;
+        final hexChainId = params['chainId'].toString().replaceFirst('0x', '');
+        final decimalChainId = int.parse(hexChainId, radix: 16);
+        final chainId = 'eip155:$decimalChainId';
+        final chainData = ChainMetadata(
+          type: ChainType.eip155,
+          chainId: chainId,
+          name: params['chainName'],
+          logo: '/chain-logos/eip155-$decimalChainId.png',
+          color: Colors.blue.shade300,
+          rpc: (params['rpcUrls'] as List).map((e) => e.toString()).toList(),
+        );
+
+        // Register the corresponding singleton for the new chain
+        // This will also call registerEventEmitter and registerRequestHandler
+        GetIt.I.registerSingleton<EVMService>(
+          EVMService(chainSupported: chainData),
+          instanceName: chainData.chainId,
+        );
+
+        // register the new account
+        final keysService = GetIt.I<IKeyService>();
+        final chainKeys = keysService.getKeysForChain('eip155');
+        final address = chainKeys.first.address;
+        _walletKit.registerAccount(chainId: chainId, accountAddress: address);
+
+        // update session's namespaces
+        final currentSession = _walletKit.sessions.get(topic)!;
+        final namespaces = updateNamespaces(
+          currentSession.namespaces,
+          'eip155',
+          [chainId],
+        );
+        await _walletKit.updateSession(topic: topic, namespaces: namespaces);
+        // add the new chain to the list
+        ChainsDataList.eip155Chains.add(chainData);
+        // this change will handle the session event emit, see settings_page
+        GetIt.I<IWalletKitService>().currentSelectedChain.value = chainData;
+
+        response = response.copyWith(result: true);
+      } on ReownSignError catch (e) {
+        debugPrint('[SampleWallet] addChain error $e');
+        response = response.copyWith(
+          error: JsonRpcError(
+            code: e.code,
+            message: e.message,
+          ),
+        );
+      } catch (e) {
+        debugPrint('[SampleWallet] addChain error $e');
+        final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
+        response = response.copyWith(
+          error: JsonRpcError(
+            code: error.code,
+            message: error.message,
+          ),
+        );
+      }
+    } else {
+      final error = Errors.getSdkError(Errors.USER_REJECTED);
       response = response.copyWith(
         error: JsonRpcError(
           code: error.code,
@@ -500,19 +588,6 @@ class EVMService {
       );
     }
   }
-
-  // Future<void> addChain(String topic, dynamic parameters) async {
-  //   final pRequest = _walletKit.pendingRequests.getAll().last;
-  //   await _walletKit.respondSessionRequest(
-  //     topic: topic,
-  //     response: JsonRpcResponse(
-  //       id: pRequest.id,
-  //       jsonrpc: '2.0',
-  //       result: true,
-  //     ),
-  //   );
-  //   CommonMethods.goBackToDapp(topic, true);
-  // }
 
   Future<dynamic> _approveTransaction(
     Map<String, dynamic> tJson, {
@@ -659,5 +734,24 @@ class EVMService {
     } catch (e) {
       rethrow;
     }
+  }
+
+  // TODO add this method inside NamespaceUtils
+  static Map<String, Namespace> updateNamespaces(
+    Map<String, Namespace> currentNamespaces,
+    String namespace,
+    List<String> newChains,
+  ) {
+    final updatedNamespaces = Map<String, Namespace>.from(currentNamespaces);
+    final accounts = currentNamespaces[namespace]!.accounts;
+    final address = NamespaceUtils.getAccount(accounts.first);
+    final newAccounts = newChains.map((c) => '$c:$address').toList();
+
+    final newNamespaces = currentNamespaces[namespace]!.copyWith(
+      chains: NamespaceUtils.getChainsFromAccounts(accounts)..addAll(newChains),
+      accounts: List<String>.from(accounts)..addAll(newAccounts),
+    );
+    updatedNamespaces[namespace] = newNamespaces;
+    return updatedNamespaces;
   }
 }

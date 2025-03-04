@@ -22,6 +22,7 @@ class PrimaryButton extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     return BaseButton(
+      semanticsLabel: 'PrimaryButton',
       size: BaseButtonSize.big,
       child: loading
           ? SizedBox(

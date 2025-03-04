@@ -57,8 +57,11 @@ class ActivityListItem extends StatelessWidget {
     final leftIcon = _leftIconImage(transfers);
     final rightIcon = _rightIconImage(transfers);
     final stops = _iconsStops(leftIcon, rightIcon);
+    final semantics = 'ActivityListItem ${activity.id}';
+    print('[$runtimeType] semanticsLabel: $semantics');
     //
     return BaseListItem(
+      semanticsLabel: semantics,
       onTap: onTap,
       backgroundColor: WidgetStateProperty.all<Color>(
         themeColors.background125,
@@ -268,6 +271,7 @@ class ActivityListItemLoader extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     //
     return BaseListItem(
+      semanticsLabel: 'ActivityListItemLoader',
       backgroundColor: WidgetStateProperty.all<Color>(
         Colors.transparent,
       ),

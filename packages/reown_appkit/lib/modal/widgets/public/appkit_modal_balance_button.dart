@@ -58,6 +58,7 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return BaseButton(
+      semanticsLabel: 'AppKitModalBalanceButton',
       size: widget.size,
       onTap: widget.appKitModal.status.isLoading ? null : widget.onTap,
       buttonStyle: ButtonStyle(

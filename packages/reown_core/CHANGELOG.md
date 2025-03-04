@@ -1,3 +1,7 @@
+## 1.1.3
+
+- Minor improvements
+
 ## 1.1.2
 
 - General security improvements and verify API V4 readiness

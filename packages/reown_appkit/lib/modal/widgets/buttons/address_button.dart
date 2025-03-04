@@ -66,6 +66,7 @@ class _AddressButtonState extends State<AddressButton> {
             ? widget.service.blockchainIdentity!.name!
             : null;
     return BaseButton(
+      semanticsLabel: 'AddressButton',
       size: widget.size,
       onTap: widget.onTap,
       buttonStyle: ButtonStyle(

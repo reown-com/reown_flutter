@@ -2928,7 +2928,12 @@ class ReownSign implements IReownSign {
             return List<String>.from([result['signature']]);
           }
           if (result.containsKey('transactions')) {
-            return List<String>.from(result['transactions']);
+            // Decode transactions and extract signature to send as TVF data
+            final transactions = result['transactions'] as List;
+            final signatures = transactions.map((encodedTx) {
+              return ReownCoreUtils.extractSolanaSignature(encodedTx);
+            }).toList();
+            return signatures;
           }
           return null;
         default:
