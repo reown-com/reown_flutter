@@ -58,7 +58,6 @@ class ActivityListItem extends StatelessWidget {
     final rightIcon = _rightIconImage(transfers);
     final stops = _iconsStops(leftIcon, rightIcon);
     final semantics = 'ActivityListItem ${activity.id}';
-    print('[$runtimeType] semanticsLabel: $semantics');
     //
     return BaseListItem(
       semanticsLabel: semantics,

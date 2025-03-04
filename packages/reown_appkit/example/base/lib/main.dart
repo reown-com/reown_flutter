@@ -562,7 +562,6 @@ class _MyHomePageState extends State<MyHomePage> {
       // bottom tab items
       items: _pageDatas.map(
         (e) {
-          print('BottomNavigationBarItem ${e.title} page');
           return BottomNavigationBarItem(
             icon: Semantics(
               label: '${e.title} page button',
