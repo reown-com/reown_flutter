@@ -6,8 +6,8 @@ import 'package:reown_walletkit_wallet/dependencies/chain_services/cosmos_servic
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/polkadot_service.dart';
-// ignore: unused_import
 import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
+// ignore: unused_import
 import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service_2.dart';
 import 'package:reown_walletkit_wallet/dependencies/deep_link_handler.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
@@ -139,10 +139,10 @@ class _MyHomePageState extends State<MyHomePage> {
     }
 
     // Support Solana Chains
-    // Change SolanaService2 to SolanaService to switch between solana_web3: ^0.1.3 to solana: ^0.30.4
+    // Change SolanaService to SolanaService2 to switch between `solana` package and `solana_web3` package
     for (final chainData in ChainsDataList.solanaChains) {
-      GetIt.I.registerSingleton<SolanaService2>(
-        SolanaService2(chainSupported: chainData),
+      GetIt.I.registerSingleton<SolanaService>(
+        SolanaService(chainSupported: chainData),
         instanceName: chainData.chainId,
       );
     }
