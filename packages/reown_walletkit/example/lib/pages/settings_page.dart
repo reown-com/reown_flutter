@@ -287,7 +287,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
     final keysService = GetIt.I<IKeyService>();
     final walletKit = GetIt.I<IWalletKitService>().walletKit;
     final chainKeys = keysService.getKeysForChain('eip155');
-    final tokenAddress = _usdcTokens[_selectedChain!.chainId]?['address'] ?? '';
+    final tokenAddress = _usdcTokens[_selectedChain.chainId]?['address'] ?? '';
     return Column(
       children: [
         Padding(
@@ -379,7 +379,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                     ),
                     FutureBuilder(
                       future: walletKit.erc20TokenBalance(
-                        chainId: _selectedChain!.chainId,
+                        chainId: _selectedChain.chainId,
                         token: tokenAddress,
                         owner: chainKeys[_currentPage].address,
                       ),
@@ -398,7 +398,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                     ),
                     FutureBuilder(
                       future: walletKit.estimateFees(
-                        chainId: _selectedChain!.chainId,
+                        chainId: _selectedChain.chainId,
                       ),
                       builder: (_, snapshot) {
                         final mfees = snapshot.data?.maxFeePerGas ?? '0';
@@ -444,7 +444,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                         );
                       }).toList(),
                       onChanged: (ChainMetadata? chain) async {
-                        setState(() => _selectedChain = chain);
+                        setState(() => _selectedChain = chain!);
                         final chainKey = chainKeys[_currentPage];
                         GetIt.I
                             .get<EVMService>(instanceName: chain?.chainId)
@@ -456,11 +456,11 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                         final walletKit =
                             GetIt.I<IWalletKitService>().walletKit;
                         final sessions = walletKit.sessions.getAll();
-                        final cid = _selectedChain!.chainId.split(':').last;
+                        final cid = _selectedChain.chainId.split(':').last;
                         for (var session in sessions) {
                           await walletKit.emitSessionEvent(
                             topic: session.topic,
-                            chainId: _selectedChain!.chainId,
+                            chainId: _selectedChain.chainId,
                             event: SessionEventParams(
                               name: 'chainChanged',
                               data: int.parse(cid),
@@ -647,8 +647,8 @@ class _EVMAccountsState extends State<_EVMAccounts> {
     final keysService = GetIt.I<IKeyService>();
     final chainKeys = keysService.getKeysForChain('eip155');
     final myAddress = chainKeys[_currentPage].address;
-    final chainId = _selectedChain!.chainId;
-    final tokenAddress = _usdcTokens[_selectedChain!.chainId]!['address']!;
+    final chainId = _selectedChain.chainId;
+    final tokenAddress = _usdcTokens[_selectedChain.chainId]!['address']!;
     final amount = _valueToBridge.toDouble();
     final rawAmount = _formattedAmount(amount);
     final hexData = _constructCallData(myAddress, rawAmount);
@@ -782,7 +782,7 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
                     setState(() => _selectedChain = chain);
                     final chainKey = chainKeys.first;
                     GetIt.I
-                        .get<SolanaService2>(instanceName: chain?.chainId)
+                        .get<SolanaService>(instanceName: chain?.chainId)
                         .getBalance(address: chainKey.address)
                         .then((value) => setState(() => _balance = value));
                   },

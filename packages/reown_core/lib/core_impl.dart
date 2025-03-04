@@ -84,9 +84,6 @@ class ReownCore implements IReownCore {
   @override
   Logger get logger => _logger;
 
-  late final LogLevel _logLevel;
-  late final LogCallback? _logCallback;
-
   @override
   void addLogListener(Function(String) callback) {
     try {

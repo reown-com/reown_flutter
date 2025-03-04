@@ -18,12 +18,6 @@ dependencies:
   reown_sign: ^1.1.3
   # reown_sign:
   #   path: ../reown_sign/
-  # reown_core: ^1.1.2
-  reown_core:
-    path: ../reown_core/
-  # reown_sign: ^1.1.2
-  reown_sign:
-    path: ../reown_sign/
   yttrium_dart:
     path: /Users/alfreedom/Development/Reown/yttrium/crates/yttrium_dart
     # git:
