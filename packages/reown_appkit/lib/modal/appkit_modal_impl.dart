@@ -355,7 +355,7 @@ class ReownAppKitModal
       final events = [...requiredEvents, ...optionalEvents];
       for (final event in events) {
         _appKit.registerEventHandler(
-          chainId: '$namespace:${chain.chainId}',
+          chainId: chain.chainId,
           event: event,
         );
       }
@@ -588,11 +588,10 @@ class ReownAppKitModal
 
     List<String> availableChains = [];
     final namespaces = ReownAppKitModalNetworks.getAllSupportedNamespaces();
-    for (var ns in namespaces) {
-      final chains =
-          ReownAppKitModalNetworks.getAllSupportedNetworks(namespace: ns)
-              .map((e) => '$ns:${e.chainId}')
-              .toList();
+    for (var namespace in namespaces) {
+      final chains = ReownAppKitModalNetworks.getAllSupportedNetworks(
+        namespace: namespace,
+      ).map((e) => e.chainId).toList();
       availableChains.addAll(chains);
     }
     if (availableChains.isEmpty) {
@@ -1850,9 +1849,13 @@ class ReownAppKitModal
   String? _getStoredChainId([String? defaultValue]) {
     if (_storage.has(StorageConstants.selectedChainId)) {
       final storedChain = _storage.get(StorageConstants.selectedChainId);
-      final chainId = storedChain?['chainId'] as String?;
-      if (NamespaceUtils.isValidChainId(chainId ?? '')) {
-        return chainId!;
+      final chainId = storedChain?['chainId'] as String? ?? '';
+      if (chainId.isNotEmpty) {
+        if (NamespaceUtils.isValidChainId(chainId)) {
+          return chainId;
+        }
+        // if there is a chain id stored with no namespace we know it's an EVM chain
+        return 'eip155:$chainId';
       }
       return defaultValue;
     }

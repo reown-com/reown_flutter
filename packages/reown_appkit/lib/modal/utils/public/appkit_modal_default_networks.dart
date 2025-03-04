@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class ReownAppKitModalNetworks {
@@ -231,13 +232,13 @@ class ReownAppKitModalNetworks {
     if (chainId.isEmpty) {
       throw ReownAppKitModalException('`chainId` can not be empty');
     }
-    if (chainId.contains(':')) {
+    if (NamespaceUtils.isValidChainId(chainId)) {
       final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-      return getAllSupportedNetworks(namespace: namespace).firstWhere(
+      return getAllSupportedNetworks(namespace: namespace).firstWhereOrNull(
         (e) => e.chainId == chainId,
       );
     }
-    return getAllSupportedNetworks(namespace: namespace).firstWhere(
+    return getAllSupportedNetworks(namespace: namespace).firstWhereOrNull(
       (e) => e.chainId == '$namespace:$chainId',
     );
   }
@@ -309,7 +310,9 @@ class ReownAppKitModalNetworks {
           final ns = e.key;
           final chains = e.value;
           return chains.map(
-            (c) => c.copyWith(chainId: '$ns:${c.chainId}'),
+            (c) => c.copyWith(
+              chainId: '$ns:${c.chainId}',
+            ),
           );
         })
         .expand((e) => e)
@@ -322,12 +325,14 @@ class ReownAppKitModalNetworks {
         })
         .toList();
 
-    final testnets = _mainnets.entries
+    final testnets = _testnets.entries
         .map((e) {
           final ns = e.key;
           final chains = e.value;
           return chains.map(
-            (c) => c.copyWith(chainId: '$ns:${c.chainId}'),
+            (c) => c.copyWith(
+              chainId: '$ns:${c.chainId}',
+            ),
           );
         })
         .expand((e) => e)
