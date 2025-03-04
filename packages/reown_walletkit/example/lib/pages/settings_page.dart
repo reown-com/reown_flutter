@@ -10,7 +10,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
-import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service_2.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
@@ -443,7 +443,7 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
       final keysService = GetIt.I<IKeyService>();
       final chainKeys = keysService.getKeysForChain('solana');
       GetIt.I
-          .get<SolanaService2>(instanceName: _selectedChain!.chainId)
+          .get<SolanaService>(instanceName: _selectedChain!.chainId)
           .getBalance(address: chainKeys.first.address)
           .then((value) {
         if (!mounted) return;
@@ -505,7 +505,7 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
                   setState(() => _selectedChain = chain);
                   final chainKey = chainKeys.first;
                   GetIt.I
-                      .get<SolanaService2>(instanceName: chain?.chainId)
+                      .get<SolanaService>(instanceName: chain?.chainId)
                       .getBalance(address: chainKey.address)
                       .then((value) => setState(() => _balance = value));
                 },

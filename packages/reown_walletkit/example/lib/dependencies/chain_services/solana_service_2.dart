@@ -126,10 +126,14 @@ class SolanaService2 {
 
           // Sign the transaction.
           decodedTx.sign([keyPair]);
+          // reserialize and re-encode transaction including signature
+          const config = solana.TransactionSerializableConfig();
+          final bytes = decodedTx.serialize(config).asUint8List();
+          final reencodedTx = base64.encode(bytes);
 
           response = response.copyWith(
             result: {
-              'signature': decodedTx.signatures.first.toBase58(),
+              'signature': reencodedTx,
             },
           );
         } else {
@@ -209,21 +213,25 @@ class SolanaService2 {
         transportType: pRequest.transportType.name,
       )) {
         if (params.containsKey('transactions')) {
-          final txsList = params['transactions'] as List;
-          final decodedTxsList = txsList.map((encodedTx) {
-            return solana.Transaction.fromBase64(encodedTx);
-          }).toList();
+          final transactions = params['transactions'] as List;
+          final decodedTxsList = transactions
+              .map((encodedTx) => solana.Transaction.fromBase64(encodedTx))
+              .toList();
 
-          List<String> signatures = [];
+          List<String> signedTransactions = [];
           for (var decodedTx in decodedTxsList) {
             // Sign the transaction.
             decodedTx.sign([keyPair]);
-            signatures.add(decodedTx.signatures.first.toBase58());
+            // reserialize and re-encode transaction including signature
+            const config = solana.TransactionSerializableConfig();
+            final bytes = decodedTx.serialize(config).asUint8List();
+            final encodedTx = base64.encode(bytes);
+            signedTransactions.add(encodedTx);
           }
 
           response = response.copyWith(
             result: {
-              'transactions': signatures,
+              'transactions': signedTransactions,
             },
           );
         }

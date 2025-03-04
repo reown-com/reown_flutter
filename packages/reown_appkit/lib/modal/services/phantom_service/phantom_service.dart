@@ -74,13 +74,14 @@ class PhantomService implements IPhantomService {
       _walletData.listing.imageId,
     );
 
-    final dappRedirect =
-        (_metadata.redirect?.universal ?? _metadata.redirect?.native)!;
+    final dappRedirect = (_metadata.redirect?.linkMode == true)
+        ? _metadata.redirect?.universal
+        : _metadata.redirect?.native;
 
     _phantomHelper = PhantomHelper(
       redirect: walletMetadata.metadata.redirect!,
       appUrl: _metadata.url,
-      redirectLink: dappRedirect,
+      redirectLink: dappRedirect ?? '',
       core: _core,
     );
   }
