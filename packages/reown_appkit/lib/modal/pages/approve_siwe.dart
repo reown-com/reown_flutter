@@ -71,13 +71,12 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
   void _signIn() async {
     setState(() => _waitingSign = true);
     try {
-      String chainId = _appKitModal!.selectedChain?.chainId ?? '1';
-      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+      final chainId = _appKitModal!.selectedChain!.chainId;
+      final namespace = NamespaceUtils.getNamespaceFromChain(
         chainId,
       );
       final address = _appKitModal!.session!.getAddress(namespace)!;
       _analyticsService.sendEvent(ClickSignSiweMessage(network: chainId));
-      chainId = ReownAppKitModalNetworks.getCaip2Chain(chainId);
       //
       final message = await _siweService.createMessage(
         chainId: chainId,
@@ -114,7 +113,7 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
   }
 
   void _handleError(String? error) {
-    final chainId = _appKitModal!.selectedChain?.chainId ?? '1';
+    final chainId = _appKitModal!.selectedChain!.chainId;
     _analyticsService.sendEvent(SiweAuthError(network: chainId));
     GetIt.I<IToastService>().show(ToastMessage(
       type: ToastType.error,

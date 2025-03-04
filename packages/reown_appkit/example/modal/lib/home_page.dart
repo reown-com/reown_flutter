@@ -165,10 +165,8 @@ class _MyHomePageState extends State<MyHomePage> {
           } catch (error) {
             debugPrint('[SIWEConfig] getSession error: $error');
             // Fallback patch for testing purposes in case SIWE backend has issues
-            final chainId = _appKitModal.selectedChain?.chainId ?? '1';
-            final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-              chainId,
-            );
+            final chainId = _appKitModal.selectedChain!.chainId;
+            final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
             final address = _appKitModal.session!.getAddress(namespace)!;
             return SIWESession(address: address, chains: [chainId]);
           }
@@ -268,6 +266,8 @@ class _MyHomePageState extends State<MyHomePage> {
         context: context,
         projectId: DartDefines.projectId,
         logLevel: LogLevel.all,
+        // TODO document this
+        // disconnectOnDispose: false,
         metadata: _pairingMetadata(),
         // siweConfig: _siweConfig(siweAuthValue),
         // featuresConfig: emailWalletValue ? _featuresConfig() : null,
@@ -296,7 +296,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 'eip155': RequiredNamespace.fromJson({
                   'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
                     namespace: 'eip155',
-                  ).map((chain) => 'eip155:${chain.chainId}').toList(),
+                  ).map((chain) => chain.chainId).toList(),
                   'methods':
                       NetworkUtils.defaultNetworkMethods['eip155']!.toList(),
                   'events':
@@ -305,7 +305,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 'solana': RequiredNamespace.fromJson({
                   'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
                     namespace: 'solana',
-                  ).map((chain) => 'solana:${chain.chainId}').toList(),
+                  ).map((chain) => chain.chainId).toList(),
                   'methods':
                       NetworkUtils.defaultNetworkMethods['solana']!.toList(),
                   'events': [],
@@ -313,7 +313,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 'polkadot': RequiredNamespace.fromJson({
                   'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
                     namespace: 'polkadot',
-                  ).map((chain) => 'polkadot:${chain.chainId}').toList(),
+                  ).map((chain) => chain.chainId).toList(),
                   'methods': [
                     'polkadot_signMessage',
                     'polkadot_signTransaction',
@@ -390,6 +390,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKitModal.onSessionUpdateEvent.unsubscribe(_onSessionUpdate);
     _appKitModal.onSessionEventEvent.unsubscribe(_onSessionEvent);
     //
+    // _appKitModal.dispose();
     super.dispose();
   }
 

@@ -3,7 +3,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 class CoinbaseData {
   String address;
   String chainName;
-  int chainId;
+  String chainId;
   ConnectionMetadata? self;
   ConnectionMetadata? peer;
 
@@ -19,7 +19,7 @@ class CoinbaseData {
     return CoinbaseData(
       address: json['address'].toString(),
       chainName: json['chain'].toString(),
-      chainId: int.parse(json['networkId'].toString()),
+      chainId: _parseChainId(json['networkId'].toString()),
       self: (json['self'] != null)
           ? ConnectionMetadata.fromJson(json['self'])
           : null,
@@ -45,7 +45,7 @@ class CoinbaseData {
   CoinbaseData copytWith({
     String? address,
     String? chainName,
-    int? chainId,
+    String? chainId,
     ConnectionMetadata? self,
     ConnectionMetadata? peer,
   }) {
@@ -56,5 +56,12 @@ class CoinbaseData {
       self: self ?? this.self,
       peer: peer ?? this.peer,
     );
+  }
+
+  static String _parseChainId(String value) {
+    if (!NamespaceUtils.isValidChainId(value)) {
+      return 'eip155:$value';
+    }
+    return value;
   }
 }

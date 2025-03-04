@@ -44,7 +44,7 @@ class PhantomHelper {
   PhantomHelper({
     required Redirect redirect,
     required String appUrl,
-    required String redirectLink,
+    required String? redirectLink,
     required IReownCore core,
   }) {
     _scheme = redirect.linkMode == true
@@ -52,7 +52,7 @@ class PhantomHelper {
         : (redirect.native ?? '');
     _host = Uri.parse(redirect.universal ?? '').host;
     _appUrl = appUrl;
-    _redirectLink = redirectLink;
+    _redirectLink = redirectLink ?? '';
     _core = core;
     _currentKeyPair = _core.crypto.getUtils().generateKeyPair();
 

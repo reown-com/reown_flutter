@@ -137,7 +137,7 @@ class BlockChainService implements IBlockChainService {
     required String chainId,
   }) async {
     final uri = Uri.parse(_baseUrl);
-    final queryParams = {..._requiredParams, 'chainId': '$namespace:$chainId'};
+    final queryParams = {..._requiredParams, 'chainId': chainId};
     final url = uri.replace(queryParameters: queryParams);
     final body = jsonEncode({
       'id': 1,

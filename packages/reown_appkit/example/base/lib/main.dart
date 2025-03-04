@@ -14,8 +14,6 @@ import 'package:reown_appkit_dapp/pages/connect_page.dart';
 import 'package:reown_appkit_dapp/pages/pairings_page.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
-import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
-import 'package:reown_appkit_dapp/utils/crypto/tron.dart';
 import 'package:reown_appkit_dapp/utils/dart_defines.dart';
 import 'package:reown_appkit_dapp/utils/deep_link_handler.dart';
 import 'package:reown_appkit_dapp/utils/string_constants.dart';
@@ -212,6 +210,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _addOrRemoveNetworks(linkModeEnabled);
 
     _appKitModal = ReownAppKitModal(
+      logLevel: LogLevel.all,
       context: context,
       appKit: _appKit,
       enableAnalytics: true,
@@ -297,9 +296,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // Loop through all the chain data
     for (final chain in allChains) {
       // Loop through the events for that chain
-      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-        chain.chainId,
-      );
+      final namespace = NamespaceUtils.getNamespaceFromChain(chain.chainId);
       for (final event in getChainEvents(namespace)) {
         _appKit!.registerEventHandler(
           chainId: chain.chainId,
@@ -364,7 +361,7 @@ class _MyHomePageState extends State<MyHomePage> {
           name: 'MultiversX',
           chainId: '1',
           currency: 'EGLD',
-          rpcUrl: 'https//api.multiversx.com',
+          rpcUrl: 'https://api.multiversx.com',
           explorerUrl: 'https://explorer.multiversx.com',
           chainIcon: 'https://avatars.githubusercontent.com/u/114073177',
         ),
@@ -383,9 +380,10 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     if (evmChains.isNotEmpty) {
       namespaces['eip155'] = RequiredNamespace(
-        chains: evmChains.map((c) => 'eip155:${c.chainId}').toList(),
-        methods: NetworkUtils.defaultNetworkMethods['eip155']!.toList(),
-        events: NetworkUtils.defaultNetworkEvents['eip155']!.toList(),
+        // TODO breaking change?
+        chains: evmChains.map((c) => c.chainId).toList(),
+        methods: getChainMethods('eip155'),
+        events: getChainEvents('eip155'),
       );
     }
     //
@@ -394,9 +392,9 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     if (solanaChains.isNotEmpty) {
       namespaces['solana'] = RequiredNamespace(
-        chains: solanaChains.map((c) => 'solana:${c.chainId}').toList(),
-        methods: NetworkUtils.defaultNetworkMethods['solana']!.toList(),
-        events: NetworkUtils.defaultNetworkEvents['solana']!.toList(),
+        chains: solanaChains.map((c) => c.chainId).toList(),
+        methods: getChainMethods('solana'),
+        events: getChainEvents('solana'),
       );
     }
     //
@@ -405,9 +403,9 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     if (polkadotChains.isNotEmpty) {
       namespaces['polkadot'] = RequiredNamespace(
-        chains: polkadotChains.map((c) => 'polkadot:${c.chainId}').toList(),
-        methods: Polkadot.methods.values.toList(),
-        events: Polkadot.events.values.toList(),
+        chains: polkadotChains.map((c) => c.chainId).toList(),
+        methods: getChainMethods('polkadot'),
+        events: getChainEvents('polkadot'),
       );
     }
     //
@@ -416,9 +414,9 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     if (tronChains.isNotEmpty) {
       namespaces['tron'] = RequiredNamespace(
-        chains: tronChains.map((c) => 'tron:${c.chainId}').toList(),
-        methods: Tron.methods.values.toList(),
-        events: Tron.events.values.toList(),
+        chains: tronChains.map((c) => c.chainId).toList(),
+        methods: getChainMethods('tron'),
+        events: getChainEvents('tron'),
       );
     }
     //
@@ -427,9 +425,9 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     if (mvxChains.isNotEmpty) {
       namespaces['mvx'] = RequiredNamespace(
-        chains: mvxChains.map((c) => 'mvx:${c.chainId}').toList(),
-        methods: ['mvx_signMessage', 'mvx_signTransaction'],
-        events: [],
+        chains: mvxChains.map((c) => c.chainId).toList(),
+        methods: getChainMethods('mvx'),
+        events: getChainEvents('mvx'),
       );
     }
 
@@ -448,7 +446,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final allChains = ReownAppKitModalNetworks.getAllSupportedNetworks();
     for (final chain in allChains) {
       // Loop through the events for that chain
-      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+      final namespace = NamespaceUtils.getNamespaceFromChain(
         chain.chainId,
       );
       for (final event in getChainEvents(namespace)) {
@@ -564,7 +562,6 @@ class _MyHomePageState extends State<MyHomePage> {
       // bottom tab items
       items: _pageDatas.map(
         (e) {
-          print('BottomNavigationBarItem ${e.title} page');
           return BottomNavigationBarItem(
             icon: Semantics(
               label: '${e.title} page button',
@@ -686,10 +683,8 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         getSession: () async {
           // Return proper session from your Web Service
-          final chainId = _appKitModal!.selectedChain?.chainId ?? '1';
-          final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-            chainId,
-          );
+          final chainId = _appKitModal!.selectedChain!.chainId;
+          final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
           final address = _appKitModal!.session!.getAddress(namespace)!;
           return SIWESession(address: address, chains: [chainId]);
         },

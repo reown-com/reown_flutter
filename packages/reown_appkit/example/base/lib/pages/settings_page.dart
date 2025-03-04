@@ -70,7 +70,7 @@ class SettingsPageState extends State<SettingsPage> {
                       ),
                       Expanded(
                         child: Text(
-                          'only EVM\nLink Mode',
+                          'Link Mode\nonly EVM',
                           style: TextStyle(
                             color: ReownAppKitModalTheme.colorsOf(context)
                                 .foreground100,

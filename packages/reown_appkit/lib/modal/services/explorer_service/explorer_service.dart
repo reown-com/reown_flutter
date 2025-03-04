@@ -155,13 +155,11 @@ class ExplorerService implements IExplorerService {
     // final platformName = platform.toString().toLowerCase();
     List<ReownAppKitModalWalletInfo> sampleWallets = [];
     for (var sampleWallet in WCSampleWallets.getSampleWallets()) {
-      // final data = WCSampleWallets.nativeData[sampleWallet.listing.id];
-      // final schema = (data?[platformName]! as NativeAppData).schema ?? '';
-      final schema = WCSampleWallets.getSampleWalletScheme(
+      final schema = WCSampleWallets.getSampleWalletMobileLink(
         sampleWallet.listing.id,
       );
       final installed = await _uriService.isInstalled(schema);
-      if (installed) {
+      if (installed || sampleWallet.listing.webappLink != null) {
         sampleWallet = sampleWallet.copyWith(installed: true);
         sampleWallets.add(sampleWallet);
       }
@@ -294,7 +292,9 @@ class ExplorerService implements IExplorerService {
     final uri = Uri.parse('${UrlConstants.apiService}/getWallets').replace(
       queryParameters: params?.toJson(),
     );
-    _core.logger.d('[$runtimeType] _fetchListings, $uri');
+    _core.logger.d(
+      '[$runtimeType] _fetchListings, ${Uri.decodeFull(uri.toString())}',
+    );
     try {
       final response = await _client.get(uri, headers: headers);
       if (response.statusCode == 200 || response.statusCode == 202) {

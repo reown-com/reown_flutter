@@ -34,9 +34,7 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
       try {
         final appKitModal = ModalProvider.of(context).instance;
         final chainId = appKitModal.selectedChain!.chainId;
-        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-          chainId,
-        );
+        final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
         final address = appKitModal.session!.getAddress(namespace)!;
 
         // cached items

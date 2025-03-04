@@ -12,13 +12,27 @@ import 'package:reown_appkit/solana/solana_web3/programs.dart' as programs;
 List<String> getChainMethods(String namespace) {
   switch (namespace) {
     case 'eip155':
-      return NetworkUtils.defaultNetworkMethods['eip155']!.toList();
+      return [
+        'personal_sign',
+        'eth_sign',
+        'eth_signTypedData',
+        'eth_signTypedData_v4',
+        'eth_signTransaction',
+        'eth_sendTransaction',
+      ];
     case 'solana':
-      return NetworkUtils.defaultNetworkMethods['solana']!.toList();
+      return [
+        'solana_signMessage',
+        'solana_signTransaction',
+        'solana_signAndSendTransaction',
+        'solana_signAllTransactions',
+      ];
     case 'polkadot':
       return Polkadot.methods.values.toList();
     case 'tron':
       return Tron.methods.values.toList();
+    case 'mvx':
+      return ['mvx_signMessage', 'mvx_signTransaction'];
     default:
       return [];
   }
@@ -34,6 +48,8 @@ List<String> getChainEvents(String namespace) {
       return Polkadot.events.values.toList();
     case 'tron':
       return Tron.events.values.toList();
+    case 'mvx':
+      return [];
     default:
       return [];
   }
@@ -65,7 +81,10 @@ Future<SessionRequestParams?> getParams(
     case 'eth_signTypedData_v4':
       return SessionRequestParams(
         method: method,
-        params: [address, typeDataV4(int.parse(chainData.chainId))],
+        params: [
+          address,
+          typeDataV4(int.parse(chainData.chainId)),
+        ],
       );
     case 'eth_signTransaction':
     case 'eth_sendTransaction':

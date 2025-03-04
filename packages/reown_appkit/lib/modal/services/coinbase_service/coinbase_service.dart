@@ -99,17 +99,19 @@ class CoinbaseService implements ICoinbaseService {
         '';
 
     final dappRedirect = _metadata.redirect;
-    final callback = dappRedirect?.universal ?? dappRedirect?.native ?? '';
+    final callback = dappRedirect?.linkMode == true
+        ? (dappRedirect?.universal ?? dappRedirect?.native ?? '')
+        : (dappRedirect?.native ?? '');
 
     _core.logger.i(
-      '[$runtimeType] init with host: ${Uri.parse(walletLink).host}, callback: $callback',
+      '[$runtimeType] init with host: $walletLink, callback: $callback',
     );
 
     if (callback.isNotEmpty || walletLink.isNotEmpty) {
       try {
         final config = Configuration(
           ios: IOSConfiguration(
-            host: Uri.parse('$walletLink/wsegue'),
+            host: Uri.parse('${walletLink}wsegue'),
             callback: Uri.parse(callback),
           ),
           android: AndroidConfiguration(
@@ -327,10 +329,8 @@ extension on SessionRequestParams {
       case MethodsConstants.walletSwitchEthChain:
       case MethodsConstants.walletAddEthChain:
         try {
-          final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-            chainId!,
-          );
-          final chainInfo = ReownAppKitModalNetworks.getNetworkById(
+          final namespace = NamespaceUtils.getNamespaceFromChain(chainId!);
+          final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
             namespace,
             chainId,
           )!;
