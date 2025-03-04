@@ -124,8 +124,8 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
       core.logger.e('[$runtimeType] $e');
     }
 
-    _initialized = true;
     WidgetsBinding.instance.addObserver(this);
+    _initialized = true;
   }
 
   @override
