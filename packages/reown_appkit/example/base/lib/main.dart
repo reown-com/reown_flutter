@@ -380,7 +380,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
     if (evmChains.isNotEmpty) {
       namespaces['eip155'] = RequiredNamespace(
-        // TODO breaking change?
         chains: evmChains.map((c) => c.chainId).toList(),
         methods: getChainMethods('eip155'),
         events: getChainEvents('eip155'),

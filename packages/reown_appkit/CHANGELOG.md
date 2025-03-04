@@ -1,3 +1,7 @@
+## 1.4.2-beta01
+
+- Bug fixes
+
 ## 1.4.1
 
 - Core and Sign Update

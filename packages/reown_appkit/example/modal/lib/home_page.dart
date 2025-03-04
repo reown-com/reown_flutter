@@ -266,7 +266,6 @@ class _MyHomePageState extends State<MyHomePage> {
         context: context,
         projectId: DartDefines.projectId,
         logLevel: LogLevel.all,
-        // TODO document this
         // disconnectOnDispose: false,
         metadata: _pairingMetadata(),
         // siweConfig: _siweConfig(siweAuthValue),
