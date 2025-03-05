@@ -113,12 +113,12 @@ Future<SessionRequestParams?> getParams(
       );
     case 'solana_signTransaction':
     case 'solana_signAndSendTransaction':
-      final transactionV0 = await _contructSolanaTX(address, chainData);
+      final transactionV0_2 = await _contructSolanaTX_2(address, chainData);
 
       const config = solana.TransactionSerializableConfig(
         verifySignatures: false,
       );
-      final bytes = transactionV0.serialize(config).asUint8List();
+      final bytes = transactionV0_2.serialize(config).asUint8List();
       final encodedV0Trx = base64.encode(bytes);
 
       return SessionRequestParams(
@@ -127,7 +127,7 @@ Future<SessionRequestParams?> getParams(
           'transaction': encodedV0Trx,
           'pubkey': address,
           'feePayer': address,
-          ...transactionV0.message.toJson(),
+          ...transactionV0_2.message.toJson(),
         },
       );
     case 'solana_signAllTransactions':
@@ -233,8 +233,8 @@ Future<solana.Transaction> _contructSolanaTX_2(
   final blockhash = await connection.getLatestBlockhash();
 
   // Define transfer amount in lamports (1 SOL = 1,000,000,000 lamports)
-  // Amount to send in lamports (0.001 SOL)
-  final lamports = BigInt.from(1000000);
+  // Amount to send in lamports (0.01 SOL)
+  final lamports = BigInt.from(10000000);
 
   // Create the transfer instruction
   final transferInstruction = programs.SystemProgram.transfer(

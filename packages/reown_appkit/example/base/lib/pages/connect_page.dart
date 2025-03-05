@@ -63,13 +63,17 @@ class ConnectPageState extends State<ConnectPage> {
   }
 
   Future<void> _refreshData() async {
-    await widget.appKitModal.reconnectRelay();
-    await widget.appKitModal.loadAccountData();
-    final topic = widget.appKitModal.session!.topic ?? '';
-    if (topic.isNotEmpty) {
-      await widget.appKitModal.appKit!.ping(topic: topic);
+    try {
+      await widget.appKitModal.reconnectRelay();
+      await widget.appKitModal.loadAccountData();
+      final topic = widget.appKitModal.session!.topic ?? '';
+      if (topic.isNotEmpty) {
+        await widget.appKitModal.appKit!.ping(topic: topic);
+      }
+      setState(() {});
+    } catch (e) {
+      debugPrint(e.toString());
     }
-    setState(() {});
   }
 
   @override
@@ -78,7 +82,7 @@ class ConnectPageState extends State<ConnectPage> {
     final isDarkMode =
         ReownAppKitModalTheme.maybeOf(context)?.isDarkMode ?? false;
     return RefreshIndicator(
-      onRefresh: () => _refreshData(),
+      onRefresh: _refreshData,
       child: Stack(
         children: [
           Center(
