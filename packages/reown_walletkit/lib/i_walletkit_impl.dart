@@ -19,11 +19,11 @@ abstract class IReownWalletKit implements IReownSignWallet {
     required String owner,
   });
 
-  Future<PrepareResponseCompat> prepare({
-    required String chainId,
-    required String from,
-    required CallCompat call,
-  });
+  // Future<PrepareResponseCompat> prepare({
+  //   required String chainId,
+  //   required String from,
+  //   required CallCompat call,
+  // });
 
   Future<PrepareDetailedResponseCompat> prepareDetailed({
     required String chainId,

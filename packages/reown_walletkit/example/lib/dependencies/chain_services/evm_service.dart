@@ -1,5 +1,7 @@
 import 'dart:convert';
-import 'package:eth_sig_util/util/utils.dart';
+
+import 'package:eth_sig_util/model/ecdsa_signature.dart';
+import 'package:eth_sig_util/util/utils.dart' as sig_util;
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
@@ -95,6 +97,46 @@ class EVMService {
     _walletKit.onSessionRequest.subscribe(_onSessionRequest);
   }
 
+  EthPrivateKey get _credentials {
+    final keys = GetIt.I<IKeyService>().getKeysForChain(
+      chainSupported.chainId,
+    );
+    final pk = '0x${keys[0].privateKey}';
+    return EthPrivateKey.fromHex(pk);
+  }
+
+  String signHash(String hashToSign) {
+    final dataToSign = hashToSign.startsWith('0x')
+        ? sig_util.hexToBytes(hashToSign)
+        : utf8.encode(hashToSign);
+
+    final signature = EthSigUtil.signMessage(
+      message: dataToSign,
+      privateKeyInBytes: _credentials.privateKey,
+    );
+
+    return signature;
+
+    // final signature = sign(dataToSign, _credentials.privateKey);
+
+    // final rHex = sig_util.bytesToHex(intToBytes(signature.r), include0x: false);
+    // final sHex = sig_util.bytesToHex(intToBytes(signature.s), include0x: false);
+    // final vHex = signature.v.toRadixString(16);
+
+    // return '0x$rHex$sHex$vHex';
+  }
+
+  ECDSASignature signHashToRaw(String hashToSign) {
+    final dataToSign = hashToSign.startsWith('0x')
+        ? sig_util.hexToBytes(hashToSign)
+        : utf8.encode(hashToSign);
+
+    return SignatureUtil.signToSignature(
+      dataToSign,
+      _credentials.privateKey,
+    );
+  }
+
   // personal_sign is handled using onSessionRequest event for demo purposes
   Future<void> personalSign(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] personalSign request: $parameters');
@@ -116,19 +158,12 @@ class EVMService {
       verifyContext: pRequest.verifyContext,
     )) {
       try {
-        // Load the private key
-        final keys = GetIt.I<IKeyService>().getKeysForChain(
-          chainSupported.chainId,
-        );
-
-        final pk = '0x${keys[0].privateKey}';
-        final credentials = EthPrivateKey.fromHex(pk);
-        final signature = credentials.signPersonalMessageToUint8List(
+        final signature = _credentials.signPersonalMessageToUint8List(
           utf8.encode(message),
         );
-        final signedTx = bytesToHex(signature, include0x: true);
+        final signedTx = sig_util.bytesToHex(signature, include0x: true);
 
-        isValidSignature(signedTx, message, credentials.address.hex);
+        isValidSignature(signedTx, message);
 
         response = response.copyWith(result: signedTx);
       } catch (e) {
@@ -175,19 +210,12 @@ class EVMService {
       verifyContext: pRequest.verifyContext,
     )) {
       try {
-        // Load the private key
-        final keys = GetIt.I<IKeyService>().getKeysForChain(
-          chainSupported.chainId,
-        );
-
-        final pk = '0x${keys[0].privateKey}';
-        final credentials = EthPrivateKey.fromHex(pk);
-        final signature = credentials.signPersonalMessageToUint8List(
+        final signature = _credentials.signToUint8List(
           utf8.encode(message),
         );
-        final signedTx = bytesToHex(signature, include0x: true);
+        final signedTx = sig_util.bytesToHex(signature, include0x: true);
 
-        isValidSignature(signedTx, message, credentials.address.hex);
+        isValidSignature(signedTx, message);
 
         response = response.copyWith(result: signedTx);
       } catch (e) {
@@ -338,22 +366,15 @@ class EVMService {
     );
     if (transaction is Transaction) {
       try {
-        // Load the private key
-        final keys = GetIt.I<IKeyService>().getKeysForChain(
-          chainSupported.chainId,
-        );
-
-        final pk = '0x${keys[0].privateKey}';
-        final credentials = EthPrivateKey.fromHex(pk);
         final chainId = chainSupported.chainId.split(':').last;
 
         final signature = await ethClient.signTransaction(
-          credentials,
+          _credentials,
           transaction,
           chainId: int.parse(chainId),
         );
         // Sign the transaction
-        final signedTx = bytesToHex(signature, include0x: true);
+        final signedTx = sig_util.bytesToHex(signature, include0x: true);
 
         response = response.copyWith(result: signedTx);
       } on RPCError catch (e) {
@@ -402,17 +423,10 @@ class EVMService {
     );
     if (transaction is Transaction) {
       try {
-        // Load the private key
-        final keys = GetIt.I<IKeyService>().getKeysForChain(
-          chainSupported.chainId,
-        );
-
-        final pk = '0x${keys[0].privateKey}';
-        final credentials = EthPrivateKey.fromHex(pk);
         final chainId = chainSupported.chainId.split(':').last;
 
         final signedTx = await ethClient.sendTransaction(
-          credentials,
+          _credentials,
           transaction,
           chainId: int.parse(chainId),
         );
@@ -655,29 +669,46 @@ class EVMService {
     }
   }
 
-  bool isValidSignature(
-    String hexSignature,
-    String message,
-    String hexAddress,
-  ) {
+  bool isValidSignature(String signature, String message) {
     try {
-      debugPrint(
-          '[SampleWallet] isValidSignature: $hexSignature, $message, $hexAddress');
+      final expectedAddress = _credentials.address.hex;
+
+      // Prepare the data to verify
+      final dataToVerify = message.startsWith('0x')
+          ? sig_util.hexToBytes(message)
+          : utf8.encode(message);
+
       final recoveredAddress = EthSigUtil.recoverPersonalSignature(
-        signature: hexSignature,
-        message: utf8.encode(message),
+        signature: signature,
+        message: dataToVerify,
       );
       debugPrint('[SampleWallet] recoveredAddress: $recoveredAddress');
 
-      final recoveredAddress2 = EthSigUtil.recoverSignature(
-        signature: hexSignature,
-        message: utf8.encode(message),
-      );
-      debugPrint('[SampleWallet] recoveredAddress2: $recoveredAddress2');
-
-      final isValid = recoveredAddress == hexAddress;
-      return isValid;
+      return recoveredAddress.toLowerCase() == expectedAddress.toLowerCase();
     } catch (e) {
+      debugPrint('[SampleWallet] $e');
+      return false;
+    }
+  }
+
+  // Validates a signature for a given hash and recovers the signer's address
+  bool isValidHashSignature(hashToVerify, signature) {
+    try {
+      final expectedAddress = _credentials.address.hex;
+
+      // Prepare the data to verify
+      final dataToVerify = hashToVerify.startsWith('0x')
+          ? sig_util.hexToBytes(hashToVerify)
+          : utf8.encode(hashToVerify);
+
+      final recoveredAddress = EthSigUtil.recoverSignature(
+        signature: signature,
+        message: dataToVerify,
+      );
+
+      return recoveredAddress.toLowerCase() == expectedAddress.toLowerCase();
+    } catch (e) {
+      debugPrint('[SampleWallet] $e');
       return false;
     }
   }

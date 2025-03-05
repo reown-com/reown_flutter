@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
@@ -661,34 +662,55 @@ class _EVMAccountsState extends State<_EVMAccounts> {
       call: CallCompat(
         to: tokenAddress,
         value: BigInt.zero,
-        input: _hexToBytes(hexData),
+        input: hexData,
       ),
     );
     response.when(
       success: (PrepareDetailedResponseSuccessCompat deatailResponse) {
         deatailResponse.when(
-          available: (uiFieldsCompat) {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => DetailsAndExecute(
-                uiFieldsCompat: uiFieldsCompat,
+          available: (uiFieldsCompat) async {
+            final response = await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => DetailsAndExecute(
+                  uiFieldsCompat: uiFieldsCompat,
+                ),
+                fullscreenDialog: true,
               ),
-              fullscreenDialog: true,
-            ));
+            );
+            if (response is ErrorCompat) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('❌ ${response.message}'),
+                duration: const Duration(seconds: 4),
+              ));
+            } else if (response is Exception) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('❌ Response error: $response'),
+                duration: const Duration(seconds: 4),
+              ));
+            } else {
+              debugPrint(jsonEncode(response.toJson()));
+              // it means that no bridging is required
+              // proceeds as normal transaction with initial transaction
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text('✅ Success'),
+                duration: Duration(seconds: 2),
+              ));
+            }
           },
           notRequired: (notRequired) {
             // it means that no bridging is required
             // proceeds as normal transaction with initial transaction
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text('Routing not required'),
-              duration: Duration(seconds: 1),
+              content: Text('✅ Routing not required'),
+              duration: Duration(seconds: 2),
             ));
           },
         );
       },
       error: (PrepareResponseError error) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Error ${error.error.name}'),
-          duration: const Duration(seconds: 1),
+          content: Text('❌ Prepare Error ${error.reason}'),
+          duration: const Duration(seconds: 4),
         ));
       },
     );

@@ -526,18 +526,18 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     );
   }
 
-  @override
-  Future<PrepareResponseCompat> prepare({
-    required String chainId,
-    required String from,
-    required CallCompat call,
-  }) async {
-    return await YttriumDart.instance.prepare(
-      chainId: chainId,
-      from: from,
-      call: call,
-    );
-  }
+  // @override
+  // Future<PrepareResponseCompat> prepare({
+  //   required String chainId,
+  //   required String from,
+  //   required CallCompat call,
+  // }) async {
+  //   return await YttriumDart.instance.prepare(
+  //     chainId: chainId,
+  //     from: from,
+  //     call: call,
+  //   );
+  // }
 
   @override
   Future<PrepareDetailedResponseCompat> prepareDetailed({

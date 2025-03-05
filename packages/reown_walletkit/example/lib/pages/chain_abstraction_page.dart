@@ -1,5 +1,8 @@
+import 'package:eth_sig_util/model/ecdsa_signature.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 
 class DetailsAndExecute extends StatefulWidget {
@@ -21,14 +24,6 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
 
   List<FundingMetadataCompat> get fundingFrom {
     return uiFields.routeResponse.metadata.fundingFrom;
-  }
-
-  InitialTransactionMetadataCompat get initialTransaction {
-    return uiFields.routeResponse.metadata.initialTransaction;
-  }
-
-  String get initialTxHash {
-    return uiFields.initial.transactionHashToSign;
   }
 
   String get estimatedFees {
@@ -211,16 +206,6 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
               const Expanded(child: SizedBox.shrink()),
               Column(
                 children: [
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //       child: ElevatedButton(
-                  //         onPressed: _execute,
-                  //         child: const Text('Execute'),
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
                   Row(
                     children: [
                       CustomButton(
@@ -260,11 +245,39 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
   }
 
   Future<void> _execute() async {
-    // final response = await YttriumDart.instance.execute(
-    //   uiFields: null,
-    //   routeTxnSigs: [],
-    //   initialTxnSig: null,
+    final TxnDetailsCompat initial = uiFields.initial;
+    final String chainId = initial.transaction.chainId;
+    // print('init ${initial.transaction.toJson()}');
+    final List<TxnDetailsCompat> route = uiFields.route;
+    // print('route ${route.length}');
+
+    final evmService = GetIt.I.get<EVMService>(instanceName: chainId);
+    final initialSignature = evmService.signHashToRaw(
+      initial.transactionHashToSign,
+    );
+    // final isValidSignature = evmService.isValidHashSignature(
+    //   initial.transactionHashToSign,
+    //   initialSignature,
     // );
+    // if (isValidSignature) {
+    final initialPrimitive = _toPrimitiveSignature(initialSignature);
+    final routePrimitives = route.map((r) {
+      final rSignature = evmService.signHashToRaw(r.transactionHashToSign);
+      final rPrimitive = _toPrimitiveSignature(rSignature);
+      return rPrimitive;
+    }).toList();
+    try {
+      final response = await YttriumDart.instance.execute(
+        uiFields: uiFields,
+        initialTxnSig: initialPrimitive,
+        routeTxnSigs: routePrimitives,
+      );
+      Navigator.of(context).pop(response);
+    } on Exception catch (e) {
+      debugPrint(e.toString());
+      Navigator.of(context).pop(e);
+    }
+    // }
   }
 
   String _formattedStringBalance(String rawBalance, [int? decimals]) {
@@ -275,5 +288,21 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
     final d = uiFields.routeResponse.metadata.initialTransaction.decimals;
     final balance = rawBalance / BigInt.from(10).pow(decimals ?? d);
     return balance.toStringAsFixed(4);
+  }
+
+  PrimitiveSignatureCompat _toPrimitiveSignature(ECDSASignature signature) {
+    // Extract r, s, and v
+    final String rHex = signature.r.toString();
+    final String sHex = signature.s.toString();
+    final int v = signature.v;
+
+    // Convert v to yParity (Ethereum EIP-1559 format)
+    final bool yParity = (v == 28);
+
+    return PrimitiveSignatureCompat(
+      yParity: yParity,
+      r: rHex,
+      s: sHex,
+    );
   }
 }
