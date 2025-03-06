@@ -141,8 +141,12 @@ class _MyHomePageState extends State<MyHomePage> {
     // Support Solana Chains
     // Change SolanaService to SolanaService2 to switch between `solana` package and `solana_web3` package
     for (final chainData in ChainsDataList.solanaChains) {
-      GetIt.I.registerSingleton<SolanaService>(
-        SolanaService(chainSupported: chainData),
+      GetIt.I.registerSingletonAsync<SolanaService>(
+        () async {
+          final service = SolanaService(chainSupported: chainData);
+          await service.init();
+          return service;
+        },
         instanceName: chainData.chainId,
       );
     }
