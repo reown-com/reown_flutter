@@ -101,19 +101,25 @@ class _SettingsPageState extends State<SettingsPage> {
                       widget: RecoverFromSeed(),
                     );
                     if (mnemonic is String) {
-                      await keysService.restoreWalletFromSeed(
-                        mnemonic: mnemonic,
+                      await keysService.restoreWallet(
+                        mnemonicOrPrivate: mnemonic,
                       );
                       await keysService.loadKeys();
                       await showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return const AlertDialog(
-                            content: Text('Wallet from seed restored'),
+                            content: Text(
+                              'Wallet restored. Restart app',
+                            ),
                           );
                         },
                       );
-                      setState(() {});
+                      if (!kDebugMode) {
+                        exit(0);
+                      } else {
+                        setState(() {});
+                      }
                     }
                   },
                   onRestoreDefault: () async {
@@ -325,7 +331,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                       return AlertDialog(
                         title: const Text('Create new account'),
                         content: const Text(
-                          'This will create a new address out from the same seed phrase',
+                          'This will create a new address out from the same private key',
                         ),
                         actions: [
                           TextButton(
@@ -1105,7 +1111,7 @@ class _Buttons extends StatelessWidget {
                 onTap: onRestoreFromSeed,
                 child: const Center(
                   child: Text(
-                    'Restore wallet from seed',
+                    'Restore wallet',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,

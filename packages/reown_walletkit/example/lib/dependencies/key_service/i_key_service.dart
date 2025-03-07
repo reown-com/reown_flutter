@@ -23,5 +23,5 @@ abstract class IKeyService {
 
   Future<String> getMnemonic();
 
-  Future<void> restoreWalletFromSeed({required String mnemonic});
+  Future<void> restoreWallet({required String mnemonicOrPrivate});
 }
