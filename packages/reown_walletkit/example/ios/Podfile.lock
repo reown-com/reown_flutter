@@ -16,6 +16,8 @@ PODS:
     - FlutterMacOS
   - url_launcher_ios (0.0.1):
     - Flutter
+  - yttrium_dart (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/darwin`)
@@ -25,6 +27,7 @@ DEPENDENCIES:
   - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - yttrium_dart (from `.symlinks/plugins/yttrium_dart/ios`)
 
 SPEC REPOS:
   trunk:
@@ -45,6 +48,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
+  yttrium_dart:
+    :path: ".symlinks/plugins/yttrium_dart/ios"
 
 SPEC CHECKSUMS:
   connectivity_plus: 2256d3e20624a7749ed21653aafe291a46446fee
@@ -55,6 +60,7 @@ SPEC CHECKSUMS:
   qr_code_scanner: d77f94ecc9abf96d9b9b8fc04ef13f611e5a147a
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
+  yttrium_dart: 4d319bf9303da6fd3dba72f62636042395b326fc
 
 PODFILE CHECKSUM: 0772a2bd8cd4c7aaeb2576ddfaf6b03be722593b
 
