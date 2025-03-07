@@ -31,6 +31,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  final _walletKit = GetIt.I<IWalletKitService>().walletKit;
+
   @override
   Widget build(BuildContext context) {
     final keysService = GetIt.I<IKeyService>();
@@ -52,10 +54,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     setState(() {});
                   },
                   onAccountChanged: (address) async {
-                    final walletKit = GetIt.I<IWalletKitService>().walletKit;
-                    final sessions = walletKit.sessions.getAll();
+                    final sessions = _walletKit.sessions.getAll();
                     for (var session in sessions) {
-                      await walletKit.emitSessionEvent(
+                      await _walletKit.emitSessionEvent(
                         topic: session.topic,
                         chainId: 'eip155:1',
                         event: SessionEventParams(
@@ -87,8 +88,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 const Divider(height: 1.0, color: Colors.grey),
                 _Buttons(
                   onDeleteData: () async {
-                    final walletKit = GetIt.I<IWalletKitService>().walletKit;
-                    await walletKit.core.storage.deleteAll();
+                    await _walletKit.core.storage.deleteAll();
                     await keysService.clearAll();
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text('Storage cleared'),
@@ -186,15 +186,17 @@ class _EVMAccounts extends StatefulWidget {
 
 class _EVMAccountsState extends State<_EVMAccounts> {
   int _currentPage = 0;
-  late final ReownWalletKit _walletKit;
   late final PageController _pageController;
   late ChainMetadata _selectedChain;
   double _balance = 0.0;
+  String _usdcBalance = '0.0';
+  int _valueToBridge = 0;
+
+  final _walletKit = GetIt.I<IWalletKitService>().walletKit;
 
   @override
   void initState() {
     super.initState();
-    _walletKit = GetIt.I<IWalletKitService>().walletKit;
     _pageController = PageController();
     _selectedChain = GetIt.I<IWalletKitService>().currentSelectedChain.value!;
     GetIt.I<IWalletKitService>().currentSelectedChain.addListener(
@@ -241,6 +243,20 @@ class _EVMAccountsState extends State<_EVMAccounts> {
         .getBalance(address: chainKey.address)
         .then((value) => setState(() => _balance = value))
         .onError((a, b) => setState(() => _balance = 0.0));
+
+    //
+    final tokenAddress = _usdcTokens[_selectedChain.chainId]?['address'] ?? '';
+    _walletKit
+        .erc20TokenBalance(
+          chainId: _selectedChain.chainId,
+          token: tokenAddress,
+          owner: chainKeys[_currentPage].address,
+        )
+        .then((value) => setState(() {
+              final rawBalance = BigInt.parse(value);
+              _usdcBalance = _formattedBalance(rawBalance, 3);
+            }))
+        .onError((a, b) => setState(() => _usdcBalance = '0.0'));
   }
 
   final Map<String, Map<String, dynamic>> _usdcTokens = {
@@ -281,14 +297,11 @@ class _EVMAccountsState extends State<_EVMAccounts> {
   //   },
   // };
 
-  int _valueToBridge = 0;
-
   @override
   Widget build(BuildContext context) {
     final keysService = GetIt.I<IKeyService>();
-    final walletKit = GetIt.I<IWalletKitService>().walletKit;
     final chainKeys = keysService.getKeysForChain('eip155');
-    final tokenAddress = _usdcTokens[_selectedChain.chainId]?['address'] ?? '';
+    // final tokenAddress = _usdcTokens[_selectedChain.chainId]?['address'] ?? '';
     return Column(
       children: [
         Padding(
@@ -372,33 +385,22 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${_balance.toStringAsFixed(6)} ETH',
+                      '${_balance.toStringAsFixed(3)} ETH',
+                      style: TextStyle(
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '$_usdcBalance USDC',
+                      maxLines: 1,
                       style: TextStyle(
                         fontSize: 15.0,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     FutureBuilder(
-                      future: walletKit.erc20TokenBalance(
-                        chainId: _selectedChain.chainId,
-                        token: tokenAddress,
-                        owner: chainKeys[_currentPage].address,
-                      ),
-                      builder: (_, snapshot) {
-                        final rawBalance = BigInt.parse(snapshot.data ?? '0');
-                        final balance = _formattedBalance(rawBalance);
-                        return Text(
-                          '$balance USDC',
-                          maxLines: 1,
-                          style: TextStyle(
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        );
-                      },
-                    ),
-                    FutureBuilder(
-                      future: walletKit.estimateFees(
+                      future: _walletKit.estimateFees(
                         chainId: _selectedChain.chainId,
                       ),
                       builder: (_, snapshot) {
@@ -412,12 +414,12 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'max fees ~$mgWeiFees Gwei',
+                              '~$mgWeiFees Gwei',
                               style: TextStyle(fontSize: 13.0),
                               maxLines: 1,
                             ),
                             Text(
-                              'max prio ~$pgWeiFees Gwei',
+                              '~$pgWeiFees Gwei',
                               maxLines: 1,
                               style: TextStyle(fontSize: 13.0),
                             ),
@@ -430,7 +432,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
               ),
               Container(
                 // color: Colors.red,
-                width: 160.0,
+                width: 220.0,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -466,20 +468,10 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                       }).toList(),
                       onChanged: (ChainMetadata? chain) async {
                         setState(() => _selectedChain = chain!);
-                        final chainKey = chainKeys[_currentPage];
-                        GetIt.I
-                            .get<EVMService>(instanceName: chain?.chainId)
-                            .getBalance(address: chainKey.address)
-                            .then((value) => setState(() => _balance = value))
-                            .onError((a, b) {
-                          setState(() => _balance = 0.0);
-                        });
-                        final walletKit =
-                            GetIt.I<IWalletKitService>().walletKit;
-                        final sessions = walletKit.sessions.getAll();
+                        final sessions = _walletKit.sessions.getAll();
                         final cid = _selectedChain.chainId.split(':').last;
                         for (var session in sessions) {
-                          await walletKit.emitSessionEvent(
+                          await _walletKit.emitSessionEvent(
                             topic: session.topic,
                             chainId: _selectedChain.chainId,
                             event: SessionEventParams(
@@ -488,6 +480,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                             ),
                           );
                         }
+                        _updateBalance();
                       },
                     ),
                     Row(
@@ -506,7 +499,12 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                           },
                           icon: Icon(Icons.exposure_minus_1),
                         ),
-                        Text(_valueToBridge.toString()),
+                        Expanded(
+                          child: Text(
+                            '$_valueToBridge USDC',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
                         IconButton(
                           padding: const EdgeInsets.all(0.0),
                           visualDensity: VisualDensity.compact,
@@ -521,14 +519,17 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                         IconButton(
                           icon: CircleAvatar(
                             radius: 20.0,
+                            backgroundColor:
+                                _valueToBridge == 0 ? Colors.grey : null,
                             child: _preparing
                                 ? CircularProgressIndicator.adaptive(
                                     backgroundColor: Colors.white,
                                   )
                                 : Icon(Icons.move_up_outlined),
                           ),
-                          onPressed:
-                              _preparing ? null : () => _prepareDetailed(),
+                          onPressed: _preparing || _valueToBridge == 0
+                              ? null
+                              : () => _prepareDetailed(),
                         ),
                       ],
                     )
@@ -659,8 +660,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
     final rawAmount = _formattedAmount(amount);
     final hexData = _constructCallData(myAddress, rawAmount);
 
-    final walletKit = GetIt.I<IWalletKitService>().walletKit;
-    final response = await walletKit.prepare(
+    final response = await _walletKit.prepare(
       chainId: chainId,
       from: myAddress,
       localCurrency: Currency.usd,
@@ -701,6 +701,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                 duration: Duration(seconds: 2),
               ));
             }
+            _updateBalance();
           },
           notRequired: (notRequired) {
             // it means that no bridging is required
@@ -789,7 +790,7 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
             children: [
               Expanded(
                 child: Text(
-                  '${_balance.toStringAsFixed(6)} SOL',
+                  '${_balance.toStringAsFixed(3)} SOL',
                   style: TextStyle(
                     fontSize: 15.0,
                     fontWeight: FontWeight.bold,
