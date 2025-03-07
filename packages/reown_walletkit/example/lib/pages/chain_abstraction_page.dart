@@ -1,8 +1,9 @@
-import 'package:eth_sig_util/model/ecdsa_signature.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
+import 'package:reown_walletkit_wallet/models/chain_data.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 
 class DetailsAndExecute extends StatefulWidget {
@@ -15,6 +16,7 @@ class DetailsAndExecute extends StatefulWidget {
 
 class _DetailsAndExecuteState extends State<DetailsAndExecute> {
   late final UiFieldsCompat uiFields;
+  bool _executing = false;
 
   @override
   void initState() {
@@ -31,16 +33,16 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
   }
 
   String get bridgeFee {
-    // return uiFields.localBridgeTotal.formattedAlt
     return uiFields.bridge.first.localFee.formattedAlt;
   }
 
-  String get payingAmount {
+  String get fundingAmount {
     return uiFields.routeResponse.metadata.initialTransaction.amount;
   }
 
   @override
   Widget build(BuildContext context) {
+    final walletKit = GetIt.I<IWalletKitService>().walletKit;
     return Scaffold(
       appBar: AppBar(title: const Text('Review Transaction')),
       body: SafeArea(
@@ -57,8 +59,41 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text('Paying'),
-                  Text('${_formattedStringBalance(payingAmount)} USDC'),
+                  RichText(
+                    text: TextSpan(
+                      children: [
+                        const TextSpan(
+                          text: 'Funding on ',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.black,
+                          ),
+                        ),
+                        TextSpan(
+                          text:
+                              '${ChainsDataList.eip155Chains.firstWhere((e) => e.chainId == uiFields.routeResponse.initialTransaction.chainId).name} ',
+                          style: const TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        WidgetSpan(
+                          child: Image.network(
+                            width: 20.0,
+                            height: 20.0,
+                            ChainsDataList.eip155Chains
+                                .firstWhere((e) =>
+                                    e.chainId ==
+                                    uiFields.routeResponse.initialTransaction
+                                        .chainId)
+                                .logo,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text('${_formattedStringBalance(fundingAmount)} USDC'),
                 ],
               ),
               const Divider(height: 20.0, thickness: 0.5),
@@ -88,18 +123,30 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
                         ),
                         TextSpan(
                           text:
-                              uiFields.routeResponse.initialTransaction.chainId,
+                              '${ChainsDataList.eip155Chains.firstWhere((e) => e.chainId == uiFields.routeResponse.initialTransaction.chainId).name} ',
                           style: const TextStyle(
                             fontSize: 14.0,
                             color: Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
+                        WidgetSpan(
+                          child: Image.network(
+                            width: 20.0,
+                            height: 20.0,
+                            ChainsDataList.eip155Chains
+                                .firstWhere((e) =>
+                                    e.chainId ==
+                                    uiFields.routeResponse.initialTransaction
+                                        .chainId)
+                                .logo,
+                          ),
+                        ),
                       ],
                     ),
                   ),
                   FutureBuilder(
-                    future: YttriumDart.instance.erc20TokenBalance(
+                    future: walletKit.erc20TokenBalance(
                       chainId:
                           uiFields.routeResponse.initialTransaction.chainId,
                       token: uiFields.routeResponse.metadata.initialTransaction
@@ -132,11 +179,22 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
                               ),
                             ),
                             TextSpan(
-                              text: from.chainId,
+                              text:
+                                  '${ChainsDataList.eip155Chains.firstWhere((e) => e.chainId == from.chainId).name} ',
                               style: const TextStyle(
                                 fontSize: 14.0,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            WidgetSpan(
+                              child: Image.network(
+                                width: 20.0,
+                                height: 20.0,
+                                ChainsDataList.eip155Chains
+                                    .firstWhere(
+                                        (e) => e.chainId == from.chainId)
+                                    .logo,
                               ),
                             ),
                           ],
@@ -191,7 +249,6 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
                   Text(bridgeFee),
                 ],
               ),
-              // Text('(${uiFields.localBridgeTotal.formatted})'),
               const Divider(height: 20.0, thickness: 0.5),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -200,9 +257,6 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
                   Text('Fast (~20 sec)'),
                 ],
               ),
-              // const Divider(height: 20.0, thickness: 0.5),
-              // Text(uiFields.localRouteTotal.formattedAlt),
-              // Text(uiFields.localRouteTotal.formatted),
               const Expanded(child: SizedBox.shrink()),
               Column(
                 children: [
@@ -210,15 +264,19 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
                     children: [
                       CustomButton(
                         type: CustomButtonType.normal,
-                        onTap: _execute,
-                        child: const Center(
-                          child: Text(
-                            'Execute',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                        onTap: _executing ? null : () => _execute(),
+                        child: Center(
+                          child: _executing
+                              ? CircularProgressIndicator.adaptive(
+                                  backgroundColor: Colors.white,
+                                )
+                              : Text(
+                                  'Execute',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                         ),
                       ),
                     ],
@@ -245,39 +303,44 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
   }
 
   Future<void> _execute() async {
+    setState(() => _executing = true);
     final TxnDetailsCompat initial = uiFields.initial;
     final String chainId = initial.transaction.chainId;
-    // print('init ${initial.transaction.toJson()}');
     final List<TxnDetailsCompat> route = uiFields.route;
-    // print('route ${route.length}');
 
     final evmService = GetIt.I.get<EVMService>(instanceName: chainId);
-    final initialSignature = evmService.signHashToRaw(
+    final initialSignature = evmService.signHash(
       initial.transactionHashToSign,
     );
-    // final isValidSignature = evmService.isValidHashSignature(
-    //   initial.transactionHashToSign,
-    //   initialSignature,
-    // );
-    // if (isValidSignature) {
-    final initialPrimitive = _toPrimitiveSignature(initialSignature);
-    final routePrimitives = route.map((r) {
-      final rSignature = evmService.signHashToRaw(r.transactionHashToSign);
-      final rPrimitive = _toPrimitiveSignature(rSignature);
-      return rPrimitive;
-    }).toList();
-    try {
-      final response = await YttriumDart.instance.execute(
-        uiFields: uiFields,
-        initialTxnSig: initialPrimitive,
-        routeTxnSigs: routePrimitives,
-      );
-      Navigator.of(context).pop(response);
-    } on Exception catch (e) {
-      debugPrint(e.toString());
-      Navigator.of(context).pop(e);
+    debugPrint('init hash ${initial.transactionHashToSign}');
+    debugPrint('init signature $initialSignature');
+    final isValidSignature = evmService.isValidSignature(
+      initial.transactionHashToSign,
+      initialSignature,
+    );
+    if (isValidSignature) {
+      final iPrim = initialSignature.toPrimitiveSignature();
+      debugPrint('iPrim ${iPrim.r}, ${iPrim.s}, ${iPrim.yParity}');
+      final routePrimitives = route.map((r) {
+        final rSignature = evmService.signHash(r.transactionHashToSign);
+        final rPrim = rSignature.toPrimitiveSignature();
+        debugPrint('rPrim ${rPrim.r}, ${rPrim.s}, ${rPrim.yParity}');
+        return rPrim;
+      }).toList();
+      try {
+        final walletKit = GetIt.I<IWalletKitService>().walletKit;
+        final response = await walletKit.execute(
+          uiFields: uiFields,
+          initialTxnSig: iPrim,
+          routeTxnSigs: routePrimitives,
+        );
+        Navigator.of(context).pop(response);
+      } on Exception catch (e) {
+        Navigator.of(context).pop(e);
+      }
+    } else {
+      Navigator.of(context).pop(Exception('Invalid signature'));
     }
-    // }
   }
 
   String _formattedStringBalance(String rawBalance, [int? decimals]) {
@@ -288,21 +351,5 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
     final d = uiFields.routeResponse.metadata.initialTransaction.decimals;
     final balance = rawBalance / BigInt.from(10).pow(decimals ?? d);
     return balance.toStringAsFixed(4);
-  }
-
-  PrimitiveSignatureCompat _toPrimitiveSignature(ECDSASignature signature) {
-    // Extract r, s, and v
-    final String rHex = signature.r.toString();
-    final String sHex = signature.s.toString();
-    final int v = signature.v;
-
-    // Convert v to yParity (Ethereum EIP-1559 format)
-    final bool yParity = (v == 28);
-
-    return PrimitiveSignatureCompat(
-      yParity: yParity,
-      r: rHex,
-      s: sHex,
-    );
   }
 }

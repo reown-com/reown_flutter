@@ -441,7 +441,27 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                       items: ChainsDataList.eip155Chains.map((e) {
                         return DropdownMenuItem<ChainMetadata>(
                           value: e,
-                          child: Text(e.name),
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                WidgetSpan(
+                                  child: Image.network(
+                                    width: 20.0,
+                                    height: 20.0,
+                                    e.logo,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: ' ${e.name}',
+                                  style: const TextStyle(
+                                    fontSize: 14.0,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         );
                       }).toList(),
                       onChanged: (ChainMetadata? chain) async {
@@ -626,21 +646,6 @@ class _EVMAccountsState extends State<_EVMAccounts> {
     return '0x$transferMethodId$paddedReceiver$paddedAmount';
   }
 
-  Uint8List _hexToBytes(String hex) {
-    // Remove "0x" if present
-    if (hex.startsWith('0x')) {
-      hex = hex.substring(2);
-    }
-
-    // Convert hex string to bytes
-    List<int> bytes = [];
-    for (int i = 0; i < hex.length; i += 2) {
-      bytes.add(int.parse(hex.substring(i, i + 2), radix: 16));
-    }
-
-    return Uint8List.fromList(bytes);
-  }
-
   bool _preparing = false;
 
   Future<void> _prepareDetailed() async {
@@ -655,7 +660,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
     final hexData = _constructCallData(myAddress, rawAmount);
 
     final walletKit = GetIt.I<IWalletKitService>().walletKit;
-    final response = await walletKit.prepareDetailed(
+    final response = await walletKit.prepare(
       chainId: chainId,
       from: myAddress,
       localCurrency: Currency.usd,
@@ -687,7 +692,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                 content: Text('❌ Response error: $response'),
                 duration: const Duration(seconds: 4),
               ));
-            } else {
+            } else if (response != null) {
               debugPrint(jsonEncode(response.toJson()));
               // it means that no bridging is required
               // proceeds as normal transaction with initial transaction
@@ -708,6 +713,8 @@ class _EVMAccountsState extends State<_EVMAccounts> {
         );
       },
       error: (PrepareResponseError error) {
+        debugPrint(error.error.name);
+        debugPrint(error.reason);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('❌ Prepare Error ${error.reason}'),
           duration: const Duration(seconds: 4),
@@ -797,7 +804,27 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
                   items: ChainsDataList.solanaChains.map((e) {
                     return DropdownMenuItem<ChainMetadata>(
                       value: e,
-                      child: Text(e.name),
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            WidgetSpan(
+                              child: Image.network(
+                                width: 20.0,
+                                height: 20.0,
+                                e.logo,
+                              ),
+                            ),
+                            TextSpan(
+                              text: ' ${e.name}',
+                              style: const TextStyle(
+                                fontSize: 14.0,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     );
                   }).toList(),
                   onChanged: (ChainMetadata? chain) {

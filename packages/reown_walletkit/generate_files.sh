@@ -28,4 +28,4 @@ pod install
 cd ..
 cd ..
 
-# dart run yttrium_dart:setup
+# dart run yttrium_dart:setup --sim --version=0.0.1
