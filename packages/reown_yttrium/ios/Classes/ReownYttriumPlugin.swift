@@ -34,146 +34,149 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
     }
     
     func initialize(_ params: Any, result: @escaping FlutterResult) {
-        let dict = params as? [String: Any]
-        
-        if let projectId = dict?["projectId"] as? String,
-           let pulseMetadata = dict?["pulseMetadata"] as? [String: Any],
-           let url = pulseMetadata["url"] as? String,
-           let bundleId = pulseMetadata["bundleId"] as? String,
-           let sdkVersion = pulseMetadata["sdkVersion"] as? String,
-           let sdkPlatform = pulseMetadata["sdkPlatform"] as? String {
-            let bundleID = Bundle.main.bundleIdentifier ?? bundleId
-            let pulseMetadata = PulseMetadata(url: url, bundleId: bundleID, sdkVersion: sdkVersion, sdkPlatform: sdkPlatform)
-            client = ChainAbstractionClient(projectId: projectId, pulseMetadata: pulseMetadata)
-            result(true)
-        } else {
-            result(FlutterError(code: "initialize", message: "invalid params", details: nil))
+        guard let dict = params as? [String: Any],
+              let projectId = dict["projectId"] as? String,
+              let pulseMetadataDict = dict["pulseMetadata"] as? [String: Any],
+              let url = pulseMetadataDict["url"] as? String,
+              let bundleId = pulseMetadataDict["bundleId"] as? String,
+              let sdkVersion = pulseMetadataDict["sdkVersion"] as? String,
+              let sdkPlatform = pulseMetadataDict["sdkPlatform"] as? String else {
+            result(FlutterError(code: "initialize", message: "Invalid parameters", details: params))
+            return
         }
+        
+        let bundleID = Bundle.main.bundleIdentifier ?? bundleId
+        let pulseMetadata = PulseMetadata(url: url, bundleId: bundleID, sdkVersion: sdkVersion, sdkPlatform: sdkPlatform)
+        
+        client = ChainAbstractionClient(projectId: projectId, pulseMetadata: pulseMetadata)
+        
+        result(true)
     }
     
     func erc20TokenBalance(_ params: Any, result: @escaping FlutterResult) {
         print("erc20TokenBalance called with ", params)
-        let dict = params as? [String: Any]
         
-        if let chainId = dict?["chainId"] as? String,
-           let token = dict?["token"] as? FfiAddress, // aka String
-           let owner = dict?["owner"] as? FfiAddress {
-            
-            Task {
-                do {
-                    let balanceResponse = try await client?.erc20TokenBalance(chainId: chainId, token: token, owner: owner)
-                    print("balanceResponse", balanceResponse ?? "")
-                    result(balanceResponse)
-                    if (balanceResponse != nil) {
-                        result(balanceResponse!)
-                    } else {
-                        result(FlutterError(code: "erc20TokenBalance", message: "response error", details: balanceResponse))
-                    }
-                } catch {
-                    result(FlutterError(code: "erc20TokenBalance", message: error.localizedDescription, details: nil))
+        guard let dict = params as? [String: Any],
+              let chainId = dict["chainId"] as? String,
+              let token = dict["token"] as? FfiAddress,  // aka String
+              let owner = dict["owner"] as? FfiAddress,
+              let client = client else {
+            result(FlutterError(code: "erc20TokenBalance", message: "Invalid parameters", details: params))
+            return
+        }
+        
+        Task {
+            do {
+                let balanceResponse = try await client.erc20TokenBalance(chainId: chainId, token: token, owner: owner)
+                
+                if let balance = balanceResponse as String? {
+                    print("balanceResponse", balance)
+                    result(balance)
+                } else {
+                    result(FlutterError(code: "erc20TokenBalance", message: "Response error: balance is nil", details: nil))
                 }
+            } catch {
+                result(FlutterError(code: "erc20TokenBalance", message: error.localizedDescription, details: nil))
             }
-        } else {
-            result(FlutterError(code: "erc20TokenBalance", message: "invalid params", details: nil))
         }
     }
     
     func estimateFees(_ params: Any, result: @escaping FlutterResult) {
-        print("erc20TokenBalance called with ", params)
-        let dict = params as? [String: Any]
+        print("estimateFees called with ", params)
         
-        if let chainId = dict?["chainId"] as? String {
-            Task {
-                do {
-                    let feesResponse = try await client?.estimateFees(chainId: chainId)
-                    print("feesResponse", feesResponse ?? "")
-                    if (feesResponse != nil) {
-                        result(feesResponse!.toJson())
-                    } else {
-                        result(FlutterError(code: "estimateFees", message: "response error", details: feesResponse))
-                    }
-                } catch {
-                    result(FlutterError(code: "estimateFees", message: error.localizedDescription, details: nil))
+        guard let dict = params as? [String: Any],
+              let chainId = dict["chainId"] as? String,
+              let client = client else {
+            result(FlutterError(code: "estimateFees", message: "Invalid parameters", details: params))
+            return
+        }
+        
+        Task {
+            do {
+                let feesResponse = try await client.estimateFees(chainId: chainId)
+                
+                if let fees = feesResponse as Eip1559Estimation? {
+                    print("feesResponse", fees)
+                    result(fees.toJson())
+                } else {
+                    result(FlutterError(code: "estimateFees", message: "Response error: fees is nil", details: nil))
                 }
+            } catch {
+                result(FlutterError(code: "estimateFees", message: error.localizedDescription, details: nil))
             }
-        } else {
-            result(FlutterError(code: "estimateFees", message: "invalid params", details: nil))
         }
     }
     
     func prepareDetailed(_ params: Any, result: @escaping FlutterResult) {
         print("prepareDetailed called with ", params)
-        let dict = params as? [String: Any]
         
-        if let chainId = dict?["chainId"] as? String,
-           let from = dict?["from"] as? String,
-           let call = dict?["call"] as? [String: Any],
-           let to = call["to"] as? Address, // aka String
-           let value = call["value"] as? U256, // aka String
-           let input = call["input"] as? Bytes, // aka String
-           let localCurrency = dict?["localCurrency"] as? String {
-            
-            print("created client, checking route...")
-            Task {
-                do {
-                    let currency = Currency.fromString(value: localCurrency)
-                    let call = Call(to: to, value: value, input: input)
-                    let prepareResponse = try await client?.prepareDetailed(chainId: chainId,
-                                                                            from: from,
-                                                                            call: call,
-                                                                            localCurrency: currency)
-                    
-                    switch prepareResponse {
-                    case .success(let successData):
-                        if case .available(let uiFields) = successData {
-                            pendingPrepareDetailed[uiFields.routeResponse.orchestrationId] = uiFields
-                            result(["available": uiFields.toJson()])
-                        } else if case .notRequired(let prepareResponseNotRequired) = successData {
-                            result(["notRequired": prepareResponseNotRequired.toJson()])
-                        } else {
-                            result(FlutterError(code: "prepareDetailed", message: "response error (.success)", details: nil))
-                        }
-                    case .error(let errorData):
-                        result(errorData.toJson())
-                    case .none:
-                        result(FlutterError(code: "prepareDetailed", message: "response error (.none)", details: nil))
+        guard let dict = params as? [String: Any],
+              let chainId = dict["chainId"] as? String,
+              let from = dict["from"] as? String,
+              let call = dict["call"] as? [String: Any],
+              let to = call["to"] as? String,  // Address (String)
+              let value = call["value"] as? String,  // U256 (String)
+              let input = call["input"] as? String,  // Bytes (String)
+              let localCurrency = dict["localCurrency"] as? String,
+              let client = client else {
+            result(FlutterError(code: "prepareDetailed", message: "Invalid parameters", details: nil))
+            return
+        }
+        
+        Task {
+            do {
+                let currency = Currency.fromString(value: localCurrency)
+                let call = Call(to: to, value: value, input: input)
+                let prepareResponse = try await client.prepareDetailed(chainId: chainId, from: from, call: call, localCurrency: currency)
+                
+                switch prepareResponse {
+                case .success(let successData):
+                    switch successData {
+                    case .available(let uiFields):
+                        pendingPrepareDetailed[uiFields.routeResponse.orchestrationId] = uiFields
+                        result(["available": uiFields.toJson()])
+                    case .notRequired(let prepareResponseNotRequired):
+                        result(["notRequired": prepareResponseNotRequired.toJson()])
                     }
-                } catch {
-                    result(FlutterError(code: "prepareDetailed", message: error.localizedDescription, details: nil))
+                case .error(let errorData):
+                    result(errorData.toJson())
                 }
+            } catch {
+                result(FlutterError(code: "prepareDetailed", message: error.localizedDescription, details: nil))
             }
-        } else {
-            result(FlutterError(code: "prepareDetailed", message: "invalid params", details: nil))
         }
     }
     
     func execute(_ params: Any, result: @escaping FlutterResult) {
         print("execute called with ", params)
-        let dict = params as? [String: Any]
         
+        guard let dict = params as? [String: Any],
+              let orchestrationId = dict["orchestrationId"] as? String,
+              let routeTxnSigs = dict["routeTxnSigs"] as? [String],
+              let initialTxnSig = dict["initialTxnSig"] as? String,
+              let client = client else {
+            result(FlutterError(code: "execute", message: "Invalid parameters", details: params))
+            return
+        }
         
-        if let orchestrationId = dict?["orchestrationId"] as? String,
-           let routeTxnSigs = dict?["routeTxnSigs"] as? Array<String>,
-           let initialTxnSig = dict?["initialTxnSig"] as? String {
-            
-            Task {
-                do {
-                    guard let uiFields = pendingPrepareDetailed[orchestrationId] else {
-                        throw CustomError(message: "prepareDetailed result not found, try again")
-                    }
-                    
-                    let executeResponse = try await client?.execute(uiFields: uiFields,
-                                                           routeTxnSigs: routeTxnSigs,
-                                                           initialTxnSig: initialTxnSig)
-                    pendingPrepareDetailed.removeValue(forKey: orchestrationId)
-                    print("execute success", executeResponse!.toJson())
-                    result(executeResponse!.toJson())
-                } catch {
-                    result(FlutterError(code: "execute", message: error.localizedDescription, details: nil))
+        Task {
+            do {
+                guard let uiFields = pendingPrepareDetailed[orchestrationId] else {
+                    throw CustomError(message: "prepareDetailed result not found, try again")
                 }
+                
+                let executeResponse = try await client.execute(uiFields: uiFields,
+                                                               routeTxnSigs: routeTxnSigs,
+                                                               initialTxnSig: initialTxnSig)
+                
+                pendingPrepareDetailed.removeValue(forKey: orchestrationId)
+                
+                let jsonResponse = executeResponse.toJson()
+                print("execute success", jsonResponse)
+                result(jsonResponse)
+            } catch {
+                result(FlutterError(code: "execute", message: error.localizedDescription, details: nil))
             }
-        } else {
-            result(FlutterError(code: "execute", message: "invalid params", details: params))
         }
     }
     
