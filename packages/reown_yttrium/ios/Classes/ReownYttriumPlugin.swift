@@ -88,7 +88,7 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
                     let feesResponse = try await client?.estimateFees(chainId: chainId)
                     print("feesResponse", feesResponse ?? "")
                     if (feesResponse != nil) {
-                        result(feesResponse!.toMap())
+                        result(feesResponse!.toJson())
                     } else {
                         result(FlutterError(code: "estimateFees", message: "response error", details: feesResponse))
                     }
@@ -166,8 +166,8 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
                                                            routeTxnSigs: routeTxnSigs,
                                                            initialTxnSig: initialTxnSig)
                     pendingPrepareDetailed.removeValue(forKey: orchestrationId)
-                    print("execute success", executeResponse!.toMap())
-                    result(executeResponse!.toMap())
+                    print("execute success", executeResponse!.toJson())
+                    result(executeResponse!.toJson())
                 } catch {
                     result(FlutterError(code: "execute", message: error.localizedDescription, details: nil))
                 }

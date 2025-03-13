@@ -1,7 +1,7 @@
 import YttriumWrapper
 
 extension Eip1559Estimation {
-    func toMap() -> [String: Any] {
+    func toJson() -> [String: Any] {
         return [
             "maxFeePerGas": self.maxFeePerGas,
             "maxPriorityFeePerGas": self.maxPriorityFeePerGas
@@ -161,7 +161,7 @@ extension Amount {
 }
 
 extension ExecuteDetails {
-    func toMap() -> [String: Any] {
+    func toJson() -> [String: Any] {
         return [
             "initialTxnReceipt": initialTxnReceipt,
             "initialTxnHash": initialTxnHash
