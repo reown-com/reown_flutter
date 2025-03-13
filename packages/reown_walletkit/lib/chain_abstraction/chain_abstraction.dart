@@ -8,13 +8,13 @@ class ChainAbstraction implements IChainAbstraction {
   ChainAbstraction({required this.core, required this.pulseMetadata});
 
   // YttriumClient get _yttrium => YttriumClient.instance;
-  ReownYttrium get _yttrium => ReownYttrium();
+  ReownYttrium get _reownYttrium => ReownYttrium();
 
   @override
   Future<void> init() async {
     try {
       final packageName = await ReownCoreUtils.getPackageName();
-      await _yttrium.init(
+      await _reownYttrium.init(
         projectId: core.projectId,
         pulseMetadata: pulseMetadata.copyWith(
           packageName:
@@ -33,7 +33,7 @@ class ChainAbstraction implements IChainAbstraction {
     required String token,
     required String owner,
   }) async {
-    return await _yttrium.erc20TokenBalance(
+    return await _reownYttrium.erc20TokenBalance(
       chainId: chainId,
       token: token,
       owner: owner,
@@ -44,7 +44,7 @@ class ChainAbstraction implements IChainAbstraction {
   Future<Eip1559EstimationCompat> estimateFees({
     required String chainId,
   }) async {
-    return await _yttrium.estimateFees(
+    return await _reownYttrium.estimateFees(
       chainId: chainId,
     );
   }
@@ -56,7 +56,7 @@ class ChainAbstraction implements IChainAbstraction {
     required CallCompat call,
     required Currency localCurrency,
   }) async {
-    return await _yttrium.prepareDetailed(
+    return await _reownYttrium.prepareDetailed(
       chainId: chainId,
       from: from,
       call: call,
@@ -67,13 +67,19 @@ class ChainAbstraction implements IChainAbstraction {
   @override
   Future<ExecuteDetailsCompat> execute({
     required UiFieldsCompat uiFields,
-    required List<PrimitiveSignatureCompat> routeTxnSigs,
-    required PrimitiveSignatureCompat initialTxnSig,
+    required List<String> routeTxnSigs,
+    required String initialTxnSig,
   }) async {
-    return await _yttrium.execute(
+    // This conversion is useless while using swift YttriumWrapper swift pod
+    // But used if we decide to go back to flutter_rust_bridge approach
+    final initialTxnSigPrimitive = initialTxnSig.toPrimitiveSignature();
+    final routeTxnSigsPrimitive = routeTxnSigs.map((signature) {
+      return signature.toPrimitiveSignature();
+    }).toList();
+    return await _reownYttrium.execute(
       uiFields: uiFields,
-      routeTxnSigs: routeTxnSigs,
-      initialTxnSig: initialTxnSig,
+      routeTxnSigs: routeTxnSigsPrimitive,
+      initialTxnSig: initialTxnSigPrimitive,
     );
   }
 }

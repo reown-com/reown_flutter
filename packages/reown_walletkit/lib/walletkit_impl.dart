@@ -551,8 +551,8 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   @override
   Future<ExecuteDetailsCompat> execute({
     required UiFieldsCompat uiFields,
-    required List<PrimitiveSignatureCompat> routeTxnSigs,
-    required PrimitiveSignatureCompat initialTxnSig,
+    required List<String> routeTxnSigs,
+    required String initialTxnSig,
   }) async {
     return await chainAbstraction.execute(
       uiFields: uiFields,

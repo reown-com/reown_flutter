@@ -327,16 +327,15 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
       initialSignature,
     );
     if (isValidSignature) {
-      final initialPrimitive = initialSignature.toPrimitiveSignature();
       final routePrimitives = route.map((r) {
         final rSignature = evmService.signHash(r.transactionHashToSign);
-        return rSignature.toPrimitiveSignature();
+        return rSignature;
       }).toList();
       try {
         final walletKit = GetIt.I<IWalletKitService>().walletKit;
         final response = await walletKit.execute(
           uiFields: uiFields,
-          initialTxnSig: initialPrimitive,
+          initialTxnSig: initialSignature,
           routeTxnSigs: routePrimitives,
         );
         Navigator.of(context).pop(response);
