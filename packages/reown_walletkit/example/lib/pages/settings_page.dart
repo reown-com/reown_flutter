@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
+import 'dart:developer' as dev;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -252,17 +253,18 @@ class _EVMAccountsState extends State<_EVMAccounts> {
 
     //
     final tokenAddress = _usdcTokens[_selectedChain.chainId]?['address'] ?? '';
-    _walletKit
-        .erc20TokenBalance(
-          chainId: _selectedChain.chainId,
-          token: tokenAddress,
-          owner: chainKeys[_currentPage].address,
-        )
-        .then((value) => setState(() {
-              final rawBalance = BigInt.parse(value);
-              _usdcBalance = _formattedBalance(rawBalance, 3);
-            }))
-        .onError((a, b) => setState(() => _usdcBalance = '0.0'));
+    try {
+      final value = await _walletKit.erc20TokenBalance(
+        chainId: _selectedChain.chainId,
+        token: tokenAddress,
+        owner: chainKeys[_currentPage].address,
+      );
+      final rawBalance = BigInt.parse(value);
+      _usdcBalance = _formattedBalance(rawBalance, 3);
+    } catch (e) {
+      debugPrint(e.toString());
+      _usdcBalance = '0.0';
+    }
   }
 
   final Map<String, Map<String, dynamic>> _usdcTokens = {
@@ -659,76 +661,145 @@ class _EVMAccountsState extends State<_EVMAccounts> {
     setState(() => _preparing = true);
     final keysService = GetIt.I<IKeyService>();
     final chainKeys = keysService.getKeysForChain('eip155');
-    final myAddress = chainKeys[_currentPage].address;
-    final chainId = _selectedChain.chainId;
-    final tokenAddress = _usdcTokens[_selectedChain.chainId]!['address']!;
-    final amount = _valueToBridge.toDouble();
-    final rawAmount = _formattedAmount(amount);
-    final hexData = _constructCallData(myAddress, rawAmount);
+    final senderAddress = chainKeys[_currentPage].address; // my address
+    final receiverAddress = await _setReceiverAddress();
+    if (receiverAddress.isNotEmpty) {
+      final chainId = _selectedChain.chainId;
+      final tokenAddress = _usdcTokens[_selectedChain.chainId]!['address']!;
+      final amount = _valueToBridge.toDouble();
+      final rawAmount = _formattedAmount(amount);
+      final hexData = _constructCallData(receiverAddress, rawAmount);
 
-    final response = await _walletKit.prepare(
-      chainId: chainId,
-      from: myAddress,
-      localCurrency: Currency.usd,
-      call: CallCompat(
-        to: tokenAddress,
-        value: BigInt.zero,
-        input: hexData,
-      ),
-    );
-    response.when(
-      success: (PrepareDetailedResponseSuccessCompat deatailResponse) {
-        deatailResponse.when(
-          available: (uiFieldsCompat) async {
-            final response = await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => DetailsAndExecute(
-                  uiFieldsCompat: uiFieldsCompat,
-                ),
-                fullscreenDialog: true,
-              ),
+      try {
+        final response = await _walletKit.prepare(
+          chainId: chainId,
+          from: senderAddress,
+          localCurrency: Currency.usd,
+          call: CallCompat(
+            to: tokenAddress,
+            value: BigInt.zero,
+            input: hexData,
+          ),
+        );
+        response.when(
+          success: (PrepareDetailedResponseSuccessCompat deatailResponse) {
+            deatailResponse.when(
+              available: (uiFieldsCompat) async {
+                dev.log(jsonEncode(uiFieldsCompat.toJson()));
+                final response = await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => DetailsAndExecute(
+                      uiFieldsCompat: uiFieldsCompat,
+                    ),
+                    fullscreenDialog: true,
+                  ),
+                );
+                if (response is ErrorCompat) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('❌ ${response.message}'),
+                    duration: const Duration(seconds: 4),
+                  ));
+                } else if (response is Exception) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('❌ Response error: $response'),
+                    duration: const Duration(seconds: 4),
+                  ));
+                } else if (response != null) {
+                  debugPrint(jsonEncode(response.toJson()));
+                  // it means that no bridging is required
+                  // proceeds as normal transaction with initial transaction
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('✅ Success'),
+                    duration: Duration(seconds: 2),
+                  ));
+                }
+                _updateBalance();
+              },
+              notRequired: (notRequired) {
+                // it means that no bridging is required
+                // proceeds as normal transaction with initial transaction
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text('✅ Routing not required'),
+                  duration: Duration(seconds: 2),
+                ));
+              },
             );
-            if (response is ErrorCompat) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('❌ ${response.message}'),
-                duration: const Duration(seconds: 4),
-              ));
-            } else if (response is Exception) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('❌ Response error: $response'),
-                duration: const Duration(seconds: 4),
-              ));
-            } else if (response != null) {
-              debugPrint(jsonEncode(response.toJson()));
-              // it means that no bridging is required
-              // proceeds as normal transaction with initial transaction
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('✅ Success'),
-                duration: Duration(seconds: 2),
-              ));
-            }
-            _updateBalance();
           },
-          notRequired: (notRequired) {
-            // it means that no bridging is required
-            // proceeds as normal transaction with initial transaction
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text('✅ Routing not required'),
-              duration: Duration(seconds: 2),
+          error: (PrepareResponseError error) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('❌ Prepare Error ${error.error.name}'),
+              duration: const Duration(seconds: 4),
             ));
           },
         );
-      },
-      error: (PrepareResponseError error) {
-        debugPrint(error.error.name);
-        debugPrint(error.reason);
+      } catch (e) {
+        debugPrint(e.toString());
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('❌ Prepare Error ${error.reason}'),
+          content: Text('❌ Prepare Error $e'),
           duration: const Duration(seconds: 4),
         ));
+      }
+    }
+    setState(() => _preparing = false);
+  }
+
+  Future<String> _setReceiverAddress() async {
+    final address = await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        final keysService = GetIt.I<IKeyService>();
+        final chainKeys = keysService.getKeysForChain('eip155');
+        final myAddress = chainKeys[_currentPage].address;
+        final controller = TextEditingController();
+        return AlertDialog(
+          title: Text('Receiver address'),
+          insetPadding: EdgeInsets.symmetric(horizontal: 12.0),
+          content: Material(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: 'Receiver address',
+                    hintStyle: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      color: Colors.black45,
+                    ),
+                  ),
+                  controller: controller,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: TextButton(
+                    onPressed: () => setState(
+                      () => controller.text = myAddress,
+                    ),
+                    child: Text('Set my address'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(''),
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(controller.text),
+              child: Text(
+                'Continue',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
       },
     );
-    setState(() => _preparing = false);
+    return address;
   }
 }
 

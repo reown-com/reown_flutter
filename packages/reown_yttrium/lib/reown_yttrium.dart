@@ -1,33 +1,21 @@
-import 'package:reown_walletkit/chain_abstraction/i_chain_abstraction.dart';
-import 'package:reown_walletkit/reown_walletkit.dart';
+import 'package:reown_yttrium/models/chain_abstraction.dart';
+import 'reown_yttrium_platform_interface.dart';
 
-class ChainAbstraction implements IChainAbstraction {
-  final IReownCore core;
-  final PulseMetadataCompat pulseMetadata;
+export 'utils/signature_utils.dart';
 
-  ChainAbstraction({required this.core, required this.pulseMetadata});
+class ReownYttrium {
+  ReownYttriumPlatform get _yttrium => ReownYttriumPlatform.instance;
 
-  // YttriumClient get _yttrium => YttriumClient.instance;
-  ReownYttrium get _yttrium => ReownYttrium();
-
-  @override
-  Future<void> init() async {
-    try {
-      final packageName = await ReownCoreUtils.getPackageName();
-      await _yttrium.init(
-        projectId: core.projectId,
-        pulseMetadata: pulseMetadata.copyWith(
-          packageName:
-              pulseMetadata.sdkPlatform == 'android' ? packageName : null,
-          bundleId: pulseMetadata.sdkPlatform == 'ios' ? packageName : null,
-        ),
-      );
-    } catch (e) {
-      core.logger.e('[$runtimeType] $e');
-    }
+  Future<bool> init({
+    required String projectId,
+    required PulseMetadataCompat pulseMetadata,
+  }) async {
+    return await _yttrium.init(
+      projectId: projectId,
+      pulseMetadata: pulseMetadata,
+    );
   }
 
-  @override
   Future<String> erc20TokenBalance({
     required String chainId,
     required String token,
@@ -40,7 +28,6 @@ class ChainAbstraction implements IChainAbstraction {
     );
   }
 
-  @override
   Future<Eip1559EstimationCompat> estimateFees({
     required String chainId,
   }) async {
@@ -49,8 +36,7 @@ class ChainAbstraction implements IChainAbstraction {
     );
   }
 
-  @override
-  Future<PrepareDetailedResponseCompat> prepare({
+  Future<PrepareDetailedResponseCompat> prepareDetailed({
     required String chainId,
     required String from,
     required CallCompat call,
@@ -64,7 +50,6 @@ class ChainAbstraction implements IChainAbstraction {
     );
   }
 
-  @override
   Future<ExecuteDetailsCompat> execute({
     required UiFieldsCompat uiFields,
     required List<PrimitiveSignatureCompat> routeTxnSigs,

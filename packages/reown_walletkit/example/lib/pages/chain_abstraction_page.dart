@@ -40,6 +40,10 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
     return uiFields.routeResponse.metadata.initialTransaction.amount;
   }
 
+  String get recipient {
+    return uiFields.routeResponse.metadata.initialTransaction.transferTo;
+  }
+
   @override
   Widget build(BuildContext context) {
     final walletKit = GetIt.I<IWalletKitService>().walletKit;
@@ -49,13 +53,8 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                'orchestrationId\n${uiFields.routeResponse.orchestrationId}',
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox.square(dimension: 20.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -63,7 +62,7 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
                     text: TextSpan(
                       children: [
                         const TextSpan(
-                          text: 'Funding on ',
+                          text: 'Paying on ',
                           style: TextStyle(
                             fontSize: 14.0,
                             color: Colors.black,
@@ -97,6 +96,17 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
                 ],
               ),
               const Divider(height: 20.0, thickness: 0.5),
+              Text(
+                'To:\n$recipient',
+                textAlign: TextAlign.start,
+                style: TextStyle(fontSize: 12.0),
+              ),
+              const SizedBox.square(dimension: 8.0),
+              Text(
+                'Orchestration id:\n${uiFields.routeResponse.orchestrationId}',
+                textAlign: TextAlign.start,
+                style: TextStyle(fontSize: 12.0),
+              ),
               const SizedBox.square(dimension: 40.0),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -312,26 +322,21 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
     final initialSignature = evmService.signHash(
       initial.transactionHashToSign,
     );
-    debugPrint('init hash ${initial.transactionHashToSign}');
-    debugPrint('init signature $initialSignature');
     final isValidSignature = evmService.isValidSignature(
       initial.transactionHashToSign,
       initialSignature,
     );
     if (isValidSignature) {
-      final iPrim = initialSignature.toPrimitiveSignature();
-      debugPrint('iPrim ${iPrim.r}, ${iPrim.s}, ${iPrim.yParity}');
+      final initialPrimitive = initialSignature.toPrimitiveSignature();
       final routePrimitives = route.map((r) {
         final rSignature = evmService.signHash(r.transactionHashToSign);
-        final rPrim = rSignature.toPrimitiveSignature();
-        debugPrint('rPrim ${rPrim.r}, ${rPrim.s}, ${rPrim.yParity}');
-        return rPrim;
+        return rSignature.toPrimitiveSignature();
       }).toList();
       try {
         final walletKit = GetIt.I<IWalletKitService>().walletKit;
         final response = await walletKit.execute(
           uiFields: uiFields,
-          initialTxnSig: iPrim,
+          initialTxnSig: initialPrimitive,
           routeTxnSigs: routePrimitives,
         );
         Navigator.of(context).pop(response);
