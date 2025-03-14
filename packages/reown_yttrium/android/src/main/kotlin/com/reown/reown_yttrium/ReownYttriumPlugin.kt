@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.annotation.NonNull
 import com.google.gson.Gson
 import com.google.gson.JsonElement
+import com.google.gson.reflect.TypeToken
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -17,6 +18,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.uniffi_yttrium.ChainAbstractionClient
+import uniffi.uniffi_yttrium.Eip1559Estimation
 import uniffi.yttrium.Call
 import uniffi.yttrium.Currency
 import uniffi.yttrium.PrepareDetailedResponse
@@ -24,6 +26,7 @@ import uniffi.yttrium.PrepareDetailedResponseSuccess
 import uniffi.yttrium.PrepareResponseAvailable
 import uniffi.yttrium.PulseMetadata
 import uniffi.yttrium.UiFields
+import java.util.Locale
 
 /** ReownYttriumPlugin */
 class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
@@ -80,36 +83,33 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
     result.error("initialize", "Invalid parameters", params)
   }
 
-  private fun erc20TokenBalance(params: Any?, result: MethodChannel.Result) {
+  private fun erc20TokenBalance(params: Any?, result: Result) {
     println("erc20TokenBalance called with $params")
 
     (params as? Map<*, *>)?.let { dict ->
-      val tokenAddress = dict["tokenAddress"] as? String
-      val ownerAddress = dict["ownerAddress"] as? String
+      val tokenAddress = dict["token"] as? String
+      val ownerAddress = dict["owner"] as? String
       val chainId = dict["chainId"] as? String
 
       if (tokenAddress != null && ownerAddress != null && chainId != null) {
         CoroutineScope(Dispatchers.IO).launch {
           try {
             val balanceResponse = client.erc20TokenBalance(chainId, tokenAddress, ownerAddress)
-
-            val gson = Gson()
-            val resultJson: JsonElement = gson.toJsonTree(balanceResponse)
-            result.success(gson.toJson(resultJson))
+            println("erc20TokenBalance response $balanceResponse")
+            result.success(balanceResponse)
 
           } catch (e: Exception) {
-            result.error("getERC20Balance", "Yttrium getERC20Balance Error: ${e.message}", null)
+            result.error("erc20TokenBalance", "Yttrium erc20TokenBalance Error: ${e.message}", null)
           }
         }
         return
       }
     }
 
-
-    result.error("getERC20Balance", "Invalid parameters", params)
+    result.error("erc20TokenBalance", "Invalid parameters", params)
   }
 
-  private fun estimateFees(params: Any?, result: MethodChannel.Result) {
+  private fun estimateFees(params: Any?, result: Result) {
     println("estimateFees called with $params")
 
     (params as? Map<*, *>)?.let { dict ->
@@ -118,12 +118,9 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
       if (chainId != null) {
         CoroutineScope(Dispatchers.IO).launch {
           try {
-            val feesResponse = client.estimateFees(chainId)
-
-            val gson = Gson()
-            val resultJson: JsonElement = gson.toJsonTree(feesResponse)
-            result.success(gson.toJson(resultJson))
-
+            val feesResponse: Eip1559Estimation = client.estimateFees(chainId)
+            println("estimateFees response $feesResponse")
+            result.success(feesResponse.toMap())
           } catch (e: Exception) {
             result.error("estimateFees", "Yttrium estimateFees Error: ${e.message}", null)
           }
@@ -132,13 +129,12 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
       }
     }
 
-
-    // If any parameter is missing, return an error
-    result.error("estimateFees", "Invalid parameters", params)
+    result.error("estimateFees", "Invalid parameters $params", null)
   }
 
-  private fun prepareDetailed(params: Any?, result: MethodChannel.Result) {
-    println("prepareDetailed: Hello from YttriumPlugin")
+  private fun prepareDetailed(params: Any?, result: Result) {
+    println("prepareDetailed called with $params")
+
     (params as? Map<*, *>)?.let { dict ->
       val chainId = dict["chainId"] as? String
       val from = dict["from"] as? String
@@ -155,63 +151,64 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
               to = to,
               value = value,
               input = input
-            ), Currency.valueOf(localCurrency),
+            ), Currency.valueOf(localCurrency.uppercase()),
           )
 
           when (response) {
             is PrepareDetailedResponse.Success -> {
               when (response.v1) {
                 is PrepareDetailedResponseSuccess.Available -> {
-                  val availableResult = (response.v1 as PrepareDetailedResponseSuccess.Available).v1
-                  pendingPrepareDetailed[availableResult.routeResponse.orchestrationId] =  availableResult
+                  val uiFields: UiFields = (response.v1 as PrepareDetailedResponseSuccess.Available).v1
+                  pendingPrepareDetailed[uiFields.routeResponse.orchestrationId] =  uiFields
+                  println("prepareDetailed response $uiFields")
+                  result.success(mapOf("available" to uiFields.toMap()))
                 }
                 is PrepareDetailedResponseSuccess.NotRequired -> {
-                  println("prepareDetailed: NotRequired")
+                  val notRequired = (response.v1 as PrepareDetailedResponseSuccess.NotRequired).v1
+                  println("prepareDetailed notRequired $notRequired")
+                  result.success(mapOf("notRequired" to notRequired.toMap()))
                 }
               }
             }
-
             is PrepareDetailedResponse.Error -> {
-              println("prepareDetailed: error -> ${response.v1.error}")
+              println("prepareDetailed: error -> ${response.v1}")
+              result.success(response.v1.toMap())
             }
           }
-
-          val gson = Gson()
-          val jsonResult = gson.toJson(response)
-          result.success(jsonResult)
         }
         return
       }
     }
+
+    result.error("prepareDetailed", "Invalid parameters $params", null)
   }
 
-  private fun execute(params: Any?, result: MethodChannel.Result) {
-    println("execute: Hello from YttriumPlugin")
+  private fun execute(params: Any?, result: Result) {
+    println("execute called with $params")
 
     (params as? Map<*, *>)?.let { dict ->
       val orchestrationId = dict["orchestrationId"] as? String
-      val bridgeSignedTransactions = (dict["bridgeSignedTransactions"] as? List<*>)?.filterIsInstance<String>()
-      val initialSignedTransaction = dict["initialSignedTransaction"] as? String
+      val routeTxnSigs = (dict["routeTxnSigs"] as? List<*>)?.filterIsInstance<String>()
+      val initialTxnSig = dict["initialTxnSig"] as? String
 
-      if (orchestrationId != null && bridgeSignedTransactions != null && initialSignedTransaction != null) {
+      if (orchestrationId != null && routeTxnSigs != null && initialTxnSig != null) {
         CoroutineScope(Dispatchers.IO).launch {
           try {
             val prepareDetailedResult = pendingPrepareDetailed[orchestrationId]
-            pendingPrepareDetailed.remove(orchestrationId)
-
             val executionResult = prepareDetailedResult?.let {
               client.execute(
                 uiFields = it,
-                routeTxnSigs = bridgeSignedTransactions,
-                initialTxnSig = initialSignedTransaction
+                routeTxnSigs = routeTxnSigs,
+                initialTxnSig = initialTxnSig
               )
             }
 
-            val gson = Gson()
-            val resultJson: JsonElement = gson.toJsonTree(executionResult)
-            result.success(gson.toJson(resultJson))
+            println("execute response $executionResult")
+            pendingPrepareDetailed.remove(orchestrationId)
+            result.success(executionResult?.toMap())
 
           } catch (e: Exception) {
+            println("execute response $e")
             result.error("execute", "Yttrium execute Error: ${e.message}", null)
           }
         }

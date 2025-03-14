@@ -88,7 +88,9 @@ class MethodChannelReownYttrium extends ReownYttriumPlatform {
         final responseData = _handlePlatformResult(response['available']);
         return PrepareDetailedResponseCompat.success(
           value: PrepareDetailedResponseSuccessCompat.available(
-            value: UiFieldsCompat.fromJson(responseData),
+            value: UiFieldsCompat.fromJson(
+              responseData,
+            ),
           ),
         );
       }
