@@ -21,6 +21,14 @@ sh generate_files.sh
 cd ..
 cd ..
 
+echo "******* GENERATING YTTRIUM *******"
+
+cd packages/reown_yttrium/
+sh generate_files.sh
+
+cd ..
+cd ..
+
 echo "******* GENERATING WALLETKIT *******"
 
 cd packages/reown_walletkit/

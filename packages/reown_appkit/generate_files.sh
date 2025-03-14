@@ -24,7 +24,7 @@ cd ios
 
 # rm Podfile.lock
 # pod deintegrate
-# pod cache clean -all
+# pod cache clean --all
 pod install
 
 cd ..
@@ -48,7 +48,7 @@ cd ios
 
 # rm Podfile.lock
 # pod deintegrate
-# pod cache clean -all
+# pod cache clean --all
 pod install
 
 cd ..

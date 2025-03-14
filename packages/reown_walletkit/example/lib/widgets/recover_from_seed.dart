@@ -25,7 +25,7 @@ class RecoverFromSeed extends StatelessWidget {
       child: Column(
         children: [
           Text(
-            'Insert Seed Phrase',
+            'Insert Mnemonic or Private Key',
             style: StyleConstants.subtitleText.copyWith(
               color: Colors.black,
               fontSize: 18.0,
@@ -45,7 +45,6 @@ class RecoverFromSeed extends StatelessWidget {
               cursorHeight: 16.0,
               decoration: InputDecoration(
                 isDense: true,
-                hintText: 'your seed phrase here',
                 hintStyle: const TextStyle(color: Colors.grey),
                 border: unfocusedBorder,
                 errorBorder: unfocusedBorder,
