@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
@@ -61,11 +63,17 @@ class ConnectPageState extends State<ConnectPage> {
   }
 
   Future<void> _refreshData() async {
-    await widget.appKitModal.reconnectRelay();
-    await widget.appKitModal.loadAccountData();
-    final topic = widget.appKitModal.session!.topic ?? '';
-    await widget.appKitModal.appKit!.ping(topic: topic);
-    setState(() {});
+    try {
+      await widget.appKitModal.reconnectRelay();
+      await widget.appKitModal.loadAccountData();
+      final topic = widget.appKitModal.session!.topic ?? '';
+      if (topic.isNotEmpty) {
+        await widget.appKitModal.appKit!.ping(topic: topic);
+      }
+      setState(() {});
+    } catch (e) {
+      debugPrint(e.toString());
+    }
   }
 
   @override
@@ -74,7 +82,7 @@ class ConnectPageState extends State<ConnectPage> {
     final isDarkMode =
         ReownAppKitModalTheme.maybeOf(context)?.isDarkMode ?? false;
     return RefreshIndicator(
-      onRefresh: () => _refreshData(),
+      onRefresh: _refreshData,
       child: Stack(
         children: [
           Center(
@@ -82,10 +90,7 @@ class ConnectPageState extends State<ConnectPage> {
               alignment: Alignment.center,
               children: [
                 Center(
-                  child: Image.asset(
-                    'assets/appkit-logo.png',
-                    width: 200.0,
-                  ),
+                  child: Image.asset('assets/appkit-logo.png', width: 200.0),
                 ),
                 Container(
                   color: isDarkMode
@@ -150,6 +155,11 @@ class ConnectPageState extends State<ConnectPage> {
                     _RequestButtons(
                       appKitModal: widget.appKitModal,
                     ),
+                    Text(
+                      const JsonEncoder.withIndent('    ').convert(
+                        widget.appKitModal.session?.toJson(),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -211,17 +221,22 @@ class __RequestButtonsState extends State<_RequestButtons> {
   @override
   Widget build(BuildContext context) {
     final topic = widget.appKitModal.session!.topic ?? '';
-    final chainId = widget.appKitModal.selectedChain?.chainId ?? '1';
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
-    final methods = widget.appKitModal.getApprovedMethods(namespace: namespace);
+    final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
+    if (chainId.isEmpty) {
+      return SizedBox.shrink();
+    }
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    final approvedMethods = widget.appKitModal.getApprovedMethods(
+      namespace: namespace,
+    );
     final address = widget.appKitModal.session!.getAddress(namespace)!;
-    final chainInfo = ReownAppKitModalNetworks.getNetworkById(
+    final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
       namespace,
       chainId,
     );
     final implemented = getChainMethods(namespace);
     return Column(
-      children: (methods ?? []).map((method) {
+      children: (approvedMethods ?? []).map((method) {
         final enabled = implemented.contains(method);
         if (!enabled) {
           return SizedBox.shrink();

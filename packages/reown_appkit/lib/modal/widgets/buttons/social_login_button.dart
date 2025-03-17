@@ -23,7 +23,9 @@ class SocialLoginButton extends StatelessWidget {
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final semantics = title ?? 'SocialLoginButton';
     return BaseListItem(
+      semanticsLabel: semantics,
       onTap: onTap,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -76,6 +78,7 @@ class ShimmerSocialLoginButton extends StatelessWidget {
       baseColor: themeColors.grayGlass005,
       highlightColor: themeColors.grayGlass020,
       child: BaseListItem(
+        semanticsLabel: 'ShimmerSocialLoginButton',
         child: Row(
           children: [
             LayoutBuilder(builder: (_, constraints) {

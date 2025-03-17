@@ -24,6 +24,7 @@ class AllWalletsItem extends StatelessWidget {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return BaseListItem(
+      semanticsLabel: title,
       onTap: onTap,
       child: LayoutBuilder(builder: (_, constraints) {
         return Row(

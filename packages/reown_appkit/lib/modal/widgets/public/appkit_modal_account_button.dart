@@ -63,9 +63,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
   void _modalNotifyListener() {
     final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
     if (chainId.isNotEmpty) {
-      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-        chainId,
-      );
+      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
       _address = widget.appKitModal.session?.getAddress(namespace) ?? '';
     }
     setState(() {});
@@ -124,6 +122,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
       alignment: AlignmentDirectional.center,
       children: [
         BaseButton(
+          semanticsLabel: 'AppKitModalAccountButton',
           size: widget.size,
           onTap: enabled ? _onTap : null,
           overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
@@ -200,6 +199,7 @@ class _BalanceButton extends StatelessWidget {
       tokenImage = '';
     }
     return BaseButton(
+      semanticsLabel: 'BalanceButton',
       size: BaseButtonSize.small,
       onTap: onTap,
       overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(

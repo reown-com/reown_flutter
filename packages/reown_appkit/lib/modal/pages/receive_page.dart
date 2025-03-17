@@ -33,9 +33,7 @@ class ReceivePage extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final isPortrait = ResponsiveData.isPortrait(context);
     final chainId = appKitModal.selectedChain!.chainId;
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-      chainId,
-    );
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final isDarkMode =
         ReownAppKitModalTheme.maybeOf(context)?.isDarkMode ?? false;
     return ModalNavbar(
@@ -175,7 +173,7 @@ class ReceivePage extends StatelessWidget {
     List<Widget> buttons = [];
 
     final chainId = appKitModal.selectedChain!.chainId;
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final available = appKitModal.getAvailableChains()!.where((c) {
       final ns = NamespaceUtils.getNamespaceFromChain(c);
       return namespace == ns;
@@ -183,9 +181,9 @@ class ReceivePage extends StatelessWidget {
 
     final subList = available.sublist(0, min(5, available.length));
     final chainList = subList.map((c) {
-      final ns = c.split(':').first;
-      final cid = c.split(':').last;
-      return ReownAppKitModalNetworks.getNetworkById(ns, cid);
+      final ns = NamespaceUtils.getNamespaceFromChain(c);
+      final cid = ReownAppKitModalNetworks.getIdFromChain(c);
+      return ReownAppKitModalNetworks.getNetworkInfo(ns, cid);
     }).toList();
 
     final orderedList = [

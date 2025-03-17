@@ -67,9 +67,7 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
   void initState() {
     super.initState();
     final chainId = widget.appKitModal.selectedChain!.chainId;
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-      chainId,
-    );
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     _currentChain = '$namespace:$chainId';
     _currentAddress = widget.appKitModal.session!.getAddress(namespace)!;
 

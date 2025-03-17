@@ -32,6 +32,7 @@ class WalletListItem extends StatelessWidget {
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     print('imageUrl $imageUrl');
     return BaseListItem(
+      semanticsLabel: title,
       onTap: onTap,
       padding: const EdgeInsets.all(0.0),
       child: Row(

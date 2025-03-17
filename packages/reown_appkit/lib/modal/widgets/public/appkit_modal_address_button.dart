@@ -49,7 +49,7 @@ class _AppKitModalAddressButtonState extends State<AppKitModalAddressButton> {
     if (chainId.isEmpty) {
       return SizedBox.shrink();
     }
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final address = widget.appKitModal.session!.getAddress(namespace);
     if ((address ?? '').isEmpty) {
       return SizedBox.shrink();
@@ -73,6 +73,7 @@ class _AppKitModalAddressButtonState extends State<AppKitModalAddressButton> {
         bottom: widget.size == BaseButtonSize.small ? 4.0 : 0.0,
       ),
       child: BaseButton(
+        semanticsLabel: 'AppKitModalAddressButton',
         size: widget.size,
         onTap: widget.appKitModal.status.isLoading ? null : widget.onTap,
         overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(

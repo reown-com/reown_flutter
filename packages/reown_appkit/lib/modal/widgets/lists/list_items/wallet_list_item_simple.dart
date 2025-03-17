@@ -20,6 +20,7 @@ class WalletListItemSimple extends StatelessWidget {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return BaseListItem(
+      semanticsLabel: title,
       onTap: onTap,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

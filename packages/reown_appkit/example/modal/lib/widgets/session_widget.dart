@@ -7,6 +7,7 @@ import 'package:reown_appkit_example/services/contracts/aave_contract.dart';
 import 'package:reown_appkit_example/services/contracts/arb_aave_contract.dart';
 import 'package:reown_appkit_example/services/contracts/contract.dart';
 import 'package:reown_appkit_example/services/contracts/usdt_contract.dart';
+import 'package:reown_appkit_example/services/contracts/wct_contract.dart';
 
 import 'package:reown_appkit_example/utils/styles.dart';
 
@@ -120,8 +121,8 @@ class SessionWidgetState extends State<SessionWidget> {
     ];
 
     // Get current active account
-    final chainId = widget.appKit.selectedChain?.chainId ?? '';
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    final chainId = widget.appKit.selectedChain!.chainId;
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final accounts = session.getAccounts(namespace: namespace) ?? [];
     final chainsNamespaces = NamespaceUtils.getChainsFromAccounts(accounts);
     if (chainsNamespaces.contains('$namespace:$chainId')) {
@@ -314,6 +315,8 @@ class SessionWidgetState extends State<SessionWidget> {
       smartContract = SepoliaAAVEContract();
     } else if (chainInfo.chainId == '42161') {
       smartContract = ArbitrumAAVEContract();
+    } else if (chainInfo.chainId == '10') {
+      smartContract = WCTOPETHContract();
     } else if (chainInfo.chainId == '1') {
       smartContract = ERC20USDTContract();
     } else {
@@ -346,26 +349,29 @@ class SessionWidgetState extends State<SessionWidget> {
           child: Text('Read on ${smartContract.name}'),
         ),
       ),
-      Container(
-        height: StyleConstants.linear40,
-        width: double.infinity,
-        margin: const EdgeInsets.symmetric(vertical: StyleConstants.linear8),
-        child: ElevatedButton(
-          onPressed: () async {
-            widget.appKit.launchConnectedWallet();
-            final future = MethodsService.callSmartContract(
-              appKitModal: widget.appKit,
-              smartContract: smartContract,
-              action: 'write',
-            );
-            MethodDialog.show(
-              context,
-              'Write on ${smartContract.name}',
-              future,
-            );
-          },
-          style: buttonStyle(context),
-          child: Text('Write on ${smartContract.name}'),
+      Visibility(
+        visible: chainInfo.chainId != '10',
+        child: Container(
+          height: StyleConstants.linear40,
+          width: double.infinity,
+          margin: const EdgeInsets.symmetric(vertical: StyleConstants.linear8),
+          child: ElevatedButton(
+            onPressed: () async {
+              widget.appKit.launchConnectedWallet();
+              final future = MethodsService.callSmartContract(
+                appKitModal: widget.appKit,
+                smartContract: smartContract,
+                action: 'write',
+              );
+              MethodDialog.show(
+                context,
+                'Write on ${smartContract.name}',
+                future,
+              );
+            },
+            style: buttonStyle(context),
+            child: Text('Write on ${smartContract.name}'),
+          ),
         ),
       ),
     ]);
@@ -389,8 +395,10 @@ class SessionWidgetState extends State<SessionWidget> {
         ),
       ],
     );
-    final ns = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
-    final approvedChains = widget.appKit.getApprovedChains(namespace: ns);
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    final approvedChains = widget.appKit.getApprovedChains(
+      namespace: namespace,
+    );
     children.add(
       Text(
         (approvedChains ?? []).join(', '),
@@ -458,7 +466,7 @@ class SessionWidgetState extends State<SessionWidget> {
   Future<dynamic> callChainMethod(String method) {
     final session = widget.appKit.session!;
     final chainId = widget.appKit.selectedChain!.chainId;
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final address = session.getAddress(namespace)!;
     return MethodsService.callMethod(
       appKitModal: widget.appKit,

@@ -1,15 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
-
-// class UpdateEvent extends EventArgs {
-//   final bool loading;
-
-//   UpdateEvent({required this.loading});
-// }
+import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 
 abstract class IWalletKitService extends Disposable {
   Future<void> create();
   Future<void> init();
 
+  abstract final ValueNotifier<ChainMetadata?> currentSelectedChain;
   ReownWalletKit get walletKit;
 }

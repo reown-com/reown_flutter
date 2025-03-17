@@ -185,9 +185,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
         uri: '?${Uri.parse(url).query}',
       );
       if (success == true) {
-        final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
-          _service?.selectedChain?.chainId ?? '1',
-        );
+        final caip2Chain = _service!.selectedChain?.chainId;
         await _magicService.getUser(chainId: caip2Chain, isUpdate: false);
         _analyticsService.sendEvent(SocialLoginSuccess(
           provider: widget.socialOption.name.toLowerCase(),
@@ -220,9 +218,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
       _cancelSocialLogin();
     } else {
       setState(() => _retrievingData = true);
-      final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
-        _service?.selectedChain?.chainId ?? '1',
-      );
+      final caip2Chain = _service?.selectedChain?.chainId;
       await _magicService.getUser(chainId: caip2Chain, isUpdate: false);
     }
   }

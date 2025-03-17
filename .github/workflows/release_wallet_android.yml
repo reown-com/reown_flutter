@@ -14,7 +14,7 @@ on:
 jobs:
   build:
     # if: (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master') || github.event_name == 'workflow_dispatch'
-    runs-on: macos-latest-xlarge
+    runs-on: macos-14
 
     steps:
     # Checkout the repo
@@ -43,8 +43,8 @@ jobs:
     
     # Install Flutter and Dependencies
     - uses: ./.github/actions/dependencies
-      with:
-        working-directory: packages/reown_walletkit/example
+      # with:
+      #   working-directory: packages/reown_walletkit/example
 
     - name: Add Secrets file
       working-directory: packages/reown_walletkit/example/android
@@ -76,4 +76,4 @@ jobs:
 
 # Launch locally
 # Remove build: if:
-# act -j build --container-architecture linux/amd64 -P macos-latest-xlarge=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_wallet_android.yml
+# act -j build --container-architecture linux/amd64 -P macos-14=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_wallet_android.yml

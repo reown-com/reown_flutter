@@ -1,6 +1,10 @@
-## 1.4.1-alpha
+## 1.4.2-beta02
 
-- Web Wallet test
+- Bug fixes
+
+## 1.4.1
+
+- Core and Sign Update
 
 ## 1.4.0
 
