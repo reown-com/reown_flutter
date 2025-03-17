@@ -13,12 +13,14 @@ class ListAvatar extends StatelessWidget {
     this.isNetwork = false,
     this.color,
     this.disabled = false,
+    this.sampleWallet = false,
   });
   final String? imageUrl;
   final double? borderRadius;
   final bool isNetwork;
   final Color? color;
   final bool disabled;
+  final bool sampleWallet;
 
   @override
   Widget build(BuildContext context) {
@@ -79,15 +81,23 @@ class ListAvatar extends StatelessWidget {
                               ? BlendMode.saturation
                               : BlendMode.saturation,
                         ),
-                        child: CachedNetworkImage(
-                          imageUrl: imageUrl!,
-                          httpHeaders: CoreUtils.getAPIHeaders(projectId),
-                          fadeInDuration: const Duration(milliseconds: 500),
-                          fadeOutDuration: const Duration(milliseconds: 500),
-                          errorWidget: (context, url, error) => ColoredBox(
-                            color: themeColors.grayGlass005,
-                          ),
-                        ),
+                        child: sampleWallet
+                            ? Image.asset(
+                                'lib/modal/assets/$imageUrl',
+                                package: 'reown_appkit',
+                              )
+                            : CachedNetworkImage(
+                                imageUrl: imageUrl!,
+                                httpHeaders: CoreUtils.getAPIHeaders(projectId),
+                                fadeInDuration:
+                                    const Duration(milliseconds: 500),
+                                fadeOutDuration:
+                                    const Duration(milliseconds: 500),
+                                errorWidget: (context, url, error) =>
+                                    ColoredBox(
+                                  color: themeColors.grayGlass005,
+                                ),
+                              ),
                       )
                     : isNetwork
                         ? Padding(

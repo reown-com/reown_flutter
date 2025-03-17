@@ -26,11 +26,11 @@ class WalletsList extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final loadingList = [
-      const WalletListItem(title: ''),
-      const WalletListItem(title: ''),
-      const WalletListItem(title: ''),
-      const WalletListItem(title: ''),
-      const WalletListItem(title: ''),
+      const WalletListItem(title: '', isSample: false),
+      const WalletListItem(title: '', isSample: false),
+      const WalletListItem(title: '', isSample: false),
+      const WalletListItem(title: '', isSample: false),
+      const WalletListItem(title: '', isSample: false),
     ].map(
       (e) => Shimmer.fromColors(
         baseColor: themeColors.grayGlass100,
@@ -51,8 +51,10 @@ class WalletsList extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 4.0),
               child: WalletListItem(
                 onTap: () => onTapWallet?.call(listItem.data),
-                showCheckmark: listItem.data.installed,
+                showCheckmark:
+                    listItem.data.installed && !listItem.data.listing.isSample,
                 imageUrl: listItem.image,
+                isSample: listItem.data.listing.isSample,
                 title: listItem.title,
                 trailing: listItem.data.recent
                     ? const WalletItemChip(value: ' RECENT ')

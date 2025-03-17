@@ -213,7 +213,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appKit: _appKit,
       enableAnalytics: true,
       siweConfig: _siweConfig(linkModeEnabled),
-      featuresConfig: socialsEnabled ? _featuresConfig() : null,
+      // featuresConfig: socialsEnabled ? _featuresConfig() : null,
       // requiredNamespaces: {},
       optionalNamespaces: _updatedNamespaces(),
       featuredWalletIds: _featuredWalletIds(),

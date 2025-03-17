@@ -38,6 +38,7 @@ class DownloadWalletItem extends StatelessWidget {
     return WalletListItem(
       hideAvatar: true,
       title: 'Don\'t have ${walletInfo.listing.name}?',
+      isSample: false,
       trailing: SimpleIconButton(
         onTap: () => _downloadApp(context),
         title: 'Get',

@@ -13,6 +13,7 @@ class WalletListItem extends StatelessWidget {
     this.trailing,
     this.hideAvatar = false,
     this.showCheckmark = false,
+    required this.isSample,
     this.onTap,
   });
 
@@ -21,6 +22,7 @@ class WalletListItem extends StatelessWidget {
   final Widget? trailing;
   final bool hideAvatar;
   final bool showCheckmark;
+  final bool isSample;
   final VoidCallback? onTap;
 
   @override
@@ -28,6 +30,7 @@ class WalletListItem extends StatelessWidget {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    print('imageUrl $imageUrl');
     return BaseListItem(
       onTap: onTap,
       padding: const EdgeInsets.all(0.0),
@@ -47,6 +50,7 @@ class WalletListItem extends StatelessWidget {
                   child: ListAvatar(
                     borderRadius: radiuses.radius2XS,
                     imageUrl: imageUrl,
+                    sampleWallet: isSample,
                   ),
                 ),
                 Visibility(
