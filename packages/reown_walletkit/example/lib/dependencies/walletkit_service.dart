@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:eth_sig_util/util/utils.dart';
+import 'package:eth_sig_util/util/utils.dart' as eth_sig_util_util;
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
@@ -355,7 +355,10 @@ class WalletKitService extends IWalletKitService {
           final signature = credentials.signPersonalMessageToUint8List(
             Uint8List.fromList(message.codeUnits),
           );
-          final hexSignature = bytesToHex(signature, include0x: true);
+          final hexSignature = eth_sig_util_util.bytesToHex(
+            signature,
+            include0x: true,
+          );
           cacaos.add(
             AuthSignature.buildAuthObject(
               requestPayload: cacaoRequestPayload,

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:convert/convert.dart';
 import 'package:flutter/foundation.dart';
+import 'package:pointycastle/ecc/curves/secp256k1.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 
 import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
@@ -85,7 +86,7 @@ class KeyService extends IKeyService {
   @override
   Future<void> loadDefaultWallet() async {
     const mnemonic = DartDefines.ethereumSecretKey;
-    await restoreWalletFromSeed(mnemonic: mnemonic);
+    await _restoreFromMnemonic(mnemonic);
   }
 
   @override
@@ -104,8 +105,41 @@ class KeyService extends IKeyService {
     await _saveKeys();
   }
 
+  bool _isPrivateKey(String privateKeyHex) {
+    final regex = RegExp(r'^[0-9a-fA-F]{64}$');
+    return regex.hasMatch(privateKeyHex);
+  }
+
   @override
-  Future<void> restoreWalletFromSeed({required String mnemonic}) async {
+  Future<void> restoreWallet({required String mnemonicOrPrivate}) async {
+    if (_isPrivateKey(mnemonicOrPrivate)) {
+      await _restoreWalletFromPrivateKey(mnemonicOrPrivate);
+    } else {
+      await _restoreFromMnemonic(mnemonicOrPrivate);
+    }
+  }
+
+  Future<void> _restoreWalletFromPrivateKey(privateKey) async {
+    // ⚠️ WARNING: SharedPreferences is not the best way to store your keys! This is just for example purposes!
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('rwkt_chain_keys');
+    await prefs.remove('rwkt_mnemonic');
+
+    final ecDomain = ECCurve_secp256k1();
+    final bigIntPrivateKey = BigInt.parse(privateKey, radix: 16);
+
+    final ecPoint = ecDomain.G * bigIntPrivateKey;
+    final public = ecPoint!.getEncoded(false);
+
+    final publicKey = hex.encode(public);
+    final chainKey = _eip155ChainKey(CryptoKeyPair(privateKey, publicKey));
+
+    _keys = List<ChainKey>.from([chainKey]);
+
+    await _saveKeys();
+  }
+
+  Future<void> _restoreFromMnemonic(String mnemonic) async {
     // ⚠️ WARNING: SharedPreferences is not the best way to store your keys! This is just for example purposes!
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('rwkt_chain_keys');

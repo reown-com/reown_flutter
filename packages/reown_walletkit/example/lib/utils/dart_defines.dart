@@ -1,5 +1,8 @@
 class DartDefines {
-  static const projectId = String.fromEnvironment('PROJECT_ID');
+  static const projectId = String.fromEnvironment(
+    'PROJECT_ID',
+    defaultValue: '07429c7285515de0715980519ef2e148',
+  );
   // HARDCODED TEST KEYS
   // ETHEREUM
   static const ethereumSecretKey = String.fromEnvironment(
