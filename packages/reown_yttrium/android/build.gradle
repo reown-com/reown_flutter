@@ -51,13 +51,15 @@ android {
         minSdk = 21
     }
 
-    dependencies {
-        implementation 'net.java.dev.jna:jna:5.12.1@aar'
-        implementation 'com.google.code.gson:gson:2.10.1'
-        implementation 'com.github.reown-com:yttrium:0.8.19'
-        testImplementation("org.jetbrains.kotlin:kotlin-test")
-        testImplementation("org.mockito:mockito-core:5.0.0")
-    }
+   buildTypes {
+       release {
+           minifyEnabled true
+           debuggable true
+           // shrinkResources false
+//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+           consumerProguardFiles 'consumer-rules.pro'
+       }
+   }
 
     testOptions {
         unitTests.all {
@@ -70,4 +72,12 @@ android {
             }
         }
     }
+}
+
+dependencies {
+    implementation 'net.java.dev.jna:jna:5.12.1@aar'
+    implementation 'com.github.reown-com:yttrium:0.8.19'
+
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation("org.mockito:mockito-core:5.0.0")
 }

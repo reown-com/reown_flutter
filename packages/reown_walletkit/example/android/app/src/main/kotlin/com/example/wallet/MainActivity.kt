@@ -6,12 +6,15 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.annotation.NonNull
+import com.reown.reown_yttrium.ReownYttriumPlugin
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugins.GeneratedPluginRegistrant
+import io.flutter.plugins.sharedpreferences.SharedPreferencesPlugin
 
 class MainActivity: FlutterActivity() {
     private val eventsChannel = "com.walletconnect.flutterwallet/events"
@@ -62,4 +65,11 @@ class MainActivity: FlutterActivity() {
             }
         }
     }
+
+//     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+//         super.configureFlutterEngine(flutterEngine)
+// //        GeneratedPluginRegistrant.registerWith(flutterEngine);
+//         flutterEngine.plugins.add(SharedPreferencesPlugin())
+//         flutterEngine.plugins.add(ReownYttriumPlugin())
+//     }
 }

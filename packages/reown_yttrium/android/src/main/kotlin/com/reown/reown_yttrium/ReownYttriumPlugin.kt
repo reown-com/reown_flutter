@@ -1,10 +1,6 @@
 package com.reown.reown_yttrium
 
 import android.content.Context
-import androidx.annotation.NonNull
-import com.google.gson.Gson
-import com.google.gson.JsonElement
-import com.google.gson.reflect.TypeToken
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -12,21 +8,16 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import uniffi.uniffi_yttrium.ChainAbstractionClient
 import uniffi.uniffi_yttrium.Eip1559Estimation
 import uniffi.yttrium.Call
 import uniffi.yttrium.Currency
 import uniffi.yttrium.PrepareDetailedResponse
 import uniffi.yttrium.PrepareDetailedResponseSuccess
-import uniffi.yttrium.PrepareResponseAvailable
 import uniffi.yttrium.PulseMetadata
 import uniffi.yttrium.UiFields
-import java.util.Locale
 
 /** ReownYttriumPlugin */
 class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
