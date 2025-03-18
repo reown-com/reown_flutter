@@ -275,21 +275,30 @@ class ReownAppKitModalNetworks {
 
   static void addSupportedNetworks(
     String namespace,
-    List<ReownAppKitModalNetworkInfo> chains,
+    List<ReownAppKitModalNetworkInfo> chainsToAdd,
   ) {
     if (namespace.isEmpty) {
       throw ReownAppKitModalException('`namespace` can not be empty');
     }
 
+    // clean chains
+    final parsedChainsToAdd = chainsToAdd.map((e) {
+      if (e.chainId.contains(':')) {
+        final cid = getIdFromChain(e.chainId);
+        return e.copyWith(chainId: cid);
+      }
+      return e;
+    }).toList();
+
     final List<ReownAppKitModalNetworkInfo> mainnets = [
       ...List.from(_mainnets[namespace] ?? []),
-      ...(chains.where((e) => e.isTestNetwork == false)),
+      ...(parsedChainsToAdd.where((e) => e.isTestNetwork == false)),
     ];
     _mainnets[namespace] = mainnets;
 
     final List<ReownAppKitModalNetworkInfo> testnets = [
       ...List.from(_testnets[namespace] ?? []),
-      ...(chains.where((e) => e.isTestNetwork == true)),
+      ...(parsedChainsToAdd.where((e) => e.isTestNetwork == true)),
     ];
     _testnets[namespace] = testnets;
   }
