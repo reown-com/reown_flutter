@@ -70,7 +70,6 @@ class ReownAppKitModal
   @override
   Map<String, RequiredNamespace> get optionalNamespaces => _optionalNamespaces;
 
-  String? _lastChainEmitted;
   bool _supportsOneClickAuth = false;
   bool _relayConnected = false;
 
