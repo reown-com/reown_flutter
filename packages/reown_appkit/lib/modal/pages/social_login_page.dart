@@ -12,7 +12,6 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/farcaster_qrcode_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
-import 'package:reown_appkit/modal/services/explorer_service/models/wc_sample_wallets.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
@@ -94,8 +93,10 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
         }
       } else {
         final appKitModal = ModalProvider.of(context).instance;
-        final webWallet = WCSampleWallets.getSampleWallet(
-          '123456789012345678901234567888',
+        final webWallet = ReownAppKitModalWalletInfo(
+          listing: _webWalletListing,
+          installed: true,
+          recent: false,
         );
         appKitModal.selectWallet(webWallet);
         await _service?.connectSelectedWallet(
@@ -518,3 +519,24 @@ extension _AppKitSocialOptionExtension on AppKitSocialOption {
     }
   }
 }
+
+final _webWalletListing = Listing.fromJson(
+  {
+    // 'platform': ['ios', 'android'], // added only for local purposes
+    'id': '00006',
+    'name': 'Social Login Wallet',
+    'homepage': 'https://reown.com',
+    'image_id': 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
+    'order': 10,
+    'mobile_link': null,
+    'desktop_link': null,
+    'link_mode': null,
+    'webapp_link': 'http://web-wallet.walletconnect.org/',
+    'app_store': null,
+    'play_store': null,
+    'rdns': null,
+    'chrome_store': null,
+    'description': 'Social Login Wallet',
+    'badge_type': 'certified'
+  },
+);

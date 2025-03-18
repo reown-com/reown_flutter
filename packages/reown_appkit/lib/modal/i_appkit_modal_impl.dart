@@ -102,6 +102,7 @@ abstract class IReownAppKitModal with ChangeNotifier {
   });
 
   /// Opens the native wallet [selectedWallet] after connected
+  @Deprecated('This is not needed anymore and shouldn\'t be used')
   void launchConnectedWallet();
 
   /// List of available chains to be added in connected wallet

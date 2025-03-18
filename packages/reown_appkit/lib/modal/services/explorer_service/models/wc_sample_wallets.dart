@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
 import 'package:reown_appkit/modal/models/public/appkit_wallet_info.dart';
 import 'package:reown_appkit/modal/utils/platform_utils.dart';
 
@@ -12,7 +9,8 @@ class WCSampleWallets {
           'id': '00001',
           'name': 'Swift Wallet (internal)',
           'homepage': 'https://docs.reown.com',
-          'image_id': 'wallet_swift',
+          'image_id':
+              'https://raw.githubusercontent.com/reown-com/reown_flutter/3d3dd152433104adae8a50671c062733abdc9fe3/packages/reown_appkit/lib/modal/assets/wallet_swift.png',
           'order': 10,
           'mobile_link': 'walletapp://',
           'desktop_link': null,
@@ -22,9 +20,6 @@ class WCSampleWallets {
           'play_store': null,
           'rdns': 'com.walletconnect.sample.wallet',
           'chrome_store': null,
-          // 'injected': null,
-          // 'chains': [],
-          // 'categories': [],
           'description': 'Reown\'s Swift sample wallet',
           'badge_type': 'certified'
         },
@@ -33,7 +28,8 @@ class WCSampleWallets {
           'id': '00002',
           'name': 'Flutter Wallet (internal)',
           'homepage': 'https://docs.reown.com',
-          'image_id': 'wallet_flutter',
+          'image_id':
+              'https://raw.githubusercontent.com/reown-com/reown_flutter/3d3dd152433104adae8a50671c062733abdc9fe3/packages/reown_appkit/lib/modal/assets/wallet_flutter.png',
           'order': 10,
           'mobile_link': 'wcflutterwallet-internal://',
           'desktop_link': null,
@@ -44,9 +40,6 @@ class WCSampleWallets {
           'play_store': null,
           'rdns': 'com.walletconnect.flutterwallet.internal',
           'chrome_store': null,
-          // 'injected': null,
-          // 'chains': [],
-          // 'categories': [],
           'description': 'Reown\'s Flutter sample wallet',
           'badge_type': 'certified'
         },
@@ -55,7 +48,8 @@ class WCSampleWallets {
           'id': '00003',
           'name': 'React Native Wallet (internal)',
           'homepage': 'https://docs.reown.com',
-          'image_id': 'wallet_react_native',
+          'image_id':
+              'https://raw.githubusercontent.com/reown-com/reown_flutter/3d3dd152433104adae8a50671c062733abdc9fe3/packages/reown_appkit/lib/modal/assets/wallet_react_native.png',
           'order': 10,
           'mobile_link': 'rn-web3wallet-internal://',
           'desktop_link': null,
@@ -65,9 +59,6 @@ class WCSampleWallets {
           'play_store': null,
           'rdns': 'com.walletconnect.web3wallet.rnsample.internal',
           'chrome_store': null,
-          // 'injected': null,
-          // 'chains': [],
-          // 'categories': [],
           'description': 'Reown\'s React Native sample wallet',
           'badge_type': 'certified'
         },
@@ -76,7 +67,8 @@ class WCSampleWallets {
           'id': '00004',
           'name': 'Kotlin Wallet (Internal)',
           'homepage': 'https://docs.reown.com',
-          'image_id': 'wallet_kotlin',
+          'image_id':
+              'https://raw.githubusercontent.com/reown-com/reown_flutter/3d3dd152433104adae8a50671c062733abdc9fe3/packages/reown_appkit/lib/modal/assets/wallet_kotlin.png',
           'order': 10,
           'mobile_link': 'kotlin-web3wallet://wc',
           'desktop_link': null,
@@ -86,9 +78,6 @@ class WCSampleWallets {
           'play_store': null,
           'rdns': 'com.walletconnect.sample.wallet.internal',
           'chrome_store': null,
-          // 'injected': null,
-          // 'chains': [],
-          // 'categories': [],
           'description': 'Reown\'s Kotlin sample wallet',
           'badge_type': 'certified'
         },
@@ -105,7 +94,8 @@ class WCSampleWallets {
           'id': '00005',
           'name': 'React Web Wallet',
           'homepage': 'https://react-wallet.walletconnect.com',
-          'image_id': 'wallet_react',
+          'image_id':
+              'https://raw.githubusercontent.com/reown-com/reown_flutter/3d3dd152433104adae8a50671c062733abdc9fe3/packages/reown_appkit/lib/modal/assets/wallet_react.png',
           'order': 10,
           'mobile_link': null,
           'desktop_link': null,
@@ -115,9 +105,6 @@ class WCSampleWallets {
           'play_store': null,
           'rdns': null,
           'chrome_store': null,
-          // 'injected': null,
-          // 'chains': [],
-          // 'categories': [],
           'description': 'Reown\'s React Web sample wallet',
           'badge_type': 'certified'
         },
@@ -129,7 +116,8 @@ class WCSampleWallets {
           'id': '00001',
           'name': 'Swift Wallet (internal)',
           'homepage': 'https://docs.reown.com',
-          'image_id': 'wallet_swift',
+          'image_id':
+              'https://raw.githubusercontent.com/reown-com/reown_flutter/3d3dd152433104adae8a50671c062733abdc9fe3/packages/reown_appkit/lib/modal/assets/wallet_swift.png',
           'order': 10,
           'mobile_link': 'walletapp://',
           'desktop_link': null,
@@ -139,9 +127,6 @@ class WCSampleWallets {
           'play_store': null,
           'rdns': 'com.walletconnect.sample.wallet',
           'chrome_store': null,
-          // 'injected': null,
-          // 'chains': [],
-          // 'categories': [],
           'description': 'Reown\'s Swift sample wallet',
           'badge_type': 'certified'
         },
@@ -150,7 +135,8 @@ class WCSampleWallets {
           'id': '00002',
           'name': 'Flutter Wallet',
           'homepage': 'https://docs.reown.com',
-          'image_id': 'wallet_flutter',
+          'image_id':
+              'https://raw.githubusercontent.com/reown-com/reown_flutter/3d3dd152433104adae8a50671c062733abdc9fe3/packages/reown_appkit/lib/modal/assets/wallet_flutter.png',
           'order': 10,
           'mobile_link': 'wcflutterwallet://',
           'desktop_link': null,
@@ -160,9 +146,6 @@ class WCSampleWallets {
           'play_store': null,
           'rdns': 'com.walletconnect.flutterwallet',
           'chrome_store': null,
-          // 'injected': null,
-          // 'chains': [],
-          // 'categories': [],
           'description': 'Reown\'s Flutter sample wallet',
           'badge_type': 'certified'
         },
@@ -171,7 +154,8 @@ class WCSampleWallets {
           'id': '00003',
           'name': 'React Native Wallet',
           'homepage': 'https://docs.reown.com',
-          'image_id': 'wallet_react_native',
+          'image_id':
+              'https://raw.githubusercontent.com/reown-com/reown_flutter/3d3dd152433104adae8a50671c062733abdc9fe3/packages/reown_appkit/lib/modal/assets/wallet_react_native.png',
           'order': 10,
           'mobile_link': 'rn-web3wallet://',
           'desktop_link': null,
@@ -181,9 +165,6 @@ class WCSampleWallets {
           'play_store': null,
           'rdns': 'com.walletconnect.web3wallet.rnsample',
           'chrome_store': null,
-          // 'injected': null,
-          // 'chains': [],
-          // 'categories': [],
           'description': 'Reown\'s React Native sample wallet',
           'badge_type': 'certified'
         },
@@ -192,7 +173,8 @@ class WCSampleWallets {
           'id': '00004',
           'name': 'Kotlin Wallet',
           'homepage': 'https://docs.reown.com',
-          'image_id': 'wallet_kotlin',
+          'image_id':
+              'https://raw.githubusercontent.com/reown-com/reown_flutter/3d3dd152433104adae8a50671c062733abdc9fe3/packages/reown_appkit/lib/modal/assets/wallet_kotlin.png',
           'order': 10,
           'mobile_link': 'kotlin-web3wallet://wc',
           'desktop_link': null,
@@ -202,9 +184,6 @@ class WCSampleWallets {
           'play_store': null,
           'rdns': 'com.walletconnect.sample.wallet',
           'chrome_store': null,
-          // 'injected': null,
-          // 'chains': [],
-          // 'categories': [],
           'description': 'Reown\'s Kotlin sample wallet',
           'badge_type': 'certified'
         },
@@ -221,7 +200,8 @@ class WCSampleWallets {
           'id': '00005',
           'name': 'React Web Wallet',
           'homepage': 'https://react-wallet.walletconnect.com',
-          'image_id': 'wallet_react',
+          'image_id':
+              'https://raw.githubusercontent.com/reown-com/reown_flutter/3d3dd152433104adae8a50671c062733abdc9fe3/packages/reown_appkit/lib/modal/assets/wallet_react.png',
           'order': 10,
           'mobile_link': null,
           'desktop_link': null,
@@ -231,9 +211,6 @@ class WCSampleWallets {
           'play_store': null,
           'rdns': null,
           'chrome_store': null,
-          // 'injected': null,
-          // 'chains': [],
-          // 'categories': [],
           'description': 'Reown\'s React Web sample wallet',
           'badge_type': 'certified'
         },
@@ -241,7 +218,6 @@ class WCSampleWallets {
 
   static List<ReownAppKitModalWalletInfo> getSampleWallets() {
     final wallets = _sampleWallets().map((entry) {
-      debugPrint(jsonEncode(entry));
       final listing = Listing.fromJson(entry);
       return ReownAppKitModalWalletInfo(
         listing: listing.copyWith(isSample: true),

@@ -62,8 +62,11 @@ class CoreUtils {
       return Uri.parse(safeAppUrl);
     }
 
-    final encodedWcUrl = Uri.encodeComponent(wcUri);
+    if (wcUri.contains('requestId')) {
+      return Uri.parse('${safeAppUrl}wc?$wcUri');
+    }
 
+    final encodedWcUrl = Uri.encodeComponent(wcUri);
     return Uri.parse('${safeAppUrl}wc?uri=$encodedWcUrl');
   }
 
@@ -79,8 +82,11 @@ class CoreUtils {
       return Uri.parse(plainAppUrl);
     }
 
-    final encodedWcUrl = Uri.encodeComponent(wcUri);
+    if (wcUri.contains('requestId')) {
+      return Uri.parse('${plainAppUrl}wc?$wcUri');
+    }
 
+    final encodedWcUrl = Uri.encodeComponent(wcUri);
     return Uri.parse('${plainAppUrl}wc?uri=$encodedWcUrl');
   }
 

@@ -138,7 +138,7 @@ class _MyHomePageState extends State<MyHomePage> {
       icons: [
         'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/appkit-icon$_flavor.png',
       ],
-      // redirect: _constructRedirect(linkModeEnabled),
+      redirect: _constructRedirect(linkModeEnabled),
     );
   }
 
@@ -215,7 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appKit: _appKit,
       enableAnalytics: true,
       siweConfig: _siweConfig(linkModeEnabled),
-      // featuresConfig: socialsEnabled ? _featuresConfig() : null,
+      featuresConfig: socialsEnabled ? _featuresConfig() : null,
       // requiredNamespaces: {},
       optionalNamespaces: _updatedNamespaces(),
       featuredWalletIds: _featuredWalletIds(),

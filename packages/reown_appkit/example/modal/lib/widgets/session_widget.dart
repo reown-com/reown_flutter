@@ -73,7 +73,9 @@ class SessionWidgetState extends State<SessionWidget> {
                   visible: !session.sessionService.isMagic,
                   child: IconButton(
                     onPressed: () {
-                      widget.appKit.launchConnectedWallet();
+                      final redirect = widget
+                          .appKit.session!.peer!.metadata.redirect!.native!;
+                      ReownCoreUtils.openURL(redirect);
                     },
                     icon: const Icon(Icons.open_in_new),
                   ),
@@ -286,7 +288,7 @@ class SessionWidgetState extends State<SessionWidget> {
           child: ElevatedButton(
             onPressed: implemented
                 ? () async {
-                    widget.appKit.launchConnectedWallet();
+                    // widget.appKit.launchConnectedWallet();
                     final future = callChainMethod(method);
                     MethodDialog.show(context, method, future);
                   }
@@ -357,7 +359,7 @@ class SessionWidgetState extends State<SessionWidget> {
           margin: const EdgeInsets.symmetric(vertical: StyleConstants.linear8),
           child: ElevatedButton(
             onPressed: () async {
-              widget.appKit.launchConnectedWallet();
+              // widget.appKit.launchConnectedWallet();
               final future = MethodsService.callSmartContract(
                 appKitModal: widget.appKit,
                 smartContract: smartContract,

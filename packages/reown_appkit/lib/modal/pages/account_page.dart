@@ -295,8 +295,14 @@ class _ConnectedWalletButton extends StatelessWidget {
           titleStyle: themeData.textStyles.paragraph500.copyWith(
             color: themeColors.foreground100,
           ),
-          onTap:
-              walletInfo != null ? () => service.launchConnectedWallet() : null,
+          onTap: walletInfo != null
+              ? () {
+                  // service.launchConnectedWallet();
+                  final redirect =
+                      service.session!.peer!.metadata.redirect!.native!;
+                  ReownCoreUtils.openURL(redirect);
+                }
+              : null,
         ),
       ],
     );

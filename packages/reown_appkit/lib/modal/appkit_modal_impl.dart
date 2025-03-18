@@ -560,7 +560,9 @@ class ReownAppKitModal
           requestSwitchToChain(chainInfo);
           final hasSwitchMethod = _currentSession!.hasSwitchMethod();
           if (hasSwitchMethod) {
-            launchConnectedWallet();
+            // launchConnectedWallet();
+            final redirect = _currentSession!.peer!.metadata.redirect!.native!;
+            ReownCoreUtils.openURL(redirect);
           }
         } else {
           await _setLocalEthChain(chainInfo.chainId, logEvent: logEvent);
@@ -1079,8 +1081,19 @@ class ReownAppKitModal
     return await expirePreviousInactivePairings();
   }
 
+  bool get _isLinkMode {
+    final metadataRedirect = _currentSession!.peer?.metadata.redirect;
+    final appLink = (metadataRedirect?.universal ?? '');
+    final supportedApps = _appKit.core.getLinkModeSupportedApps();
+    final isLinkMode = appLink.isNotEmpty && supportedApps.contains(appLink);
+    return isLinkMode;
+  }
+
+  @Deprecated('This is not needed anymore and shouldn\'t be used')
   @override
-  void launchConnectedWallet() async {
+  void launchConnectedWallet() async {}
+
+  void _launchRequestOnWallet(int requestId) async {
     _checkInitialized();
 
     final walletInfo = _explorerService.getConnectedWallet();
@@ -1107,37 +1120,37 @@ class ReownAppKitModal
 
     if (_currentSession!.sessionService.isMagic) {
       // There's no wallet to launch when connected with Email
+      // TODO check if this is still relevant with web-wallet
       return;
     }
 
-    final metadataRedirect = _currentSession!.peer?.metadata.redirect;
-
-    final appLink = (metadataRedirect?.universal ?? '');
-    final supportedApps = _appKit.core.getLinkModeSupportedApps();
-    final isLinkMode = appLink.isNotEmpty && supportedApps.contains(appLink);
-    if (isLinkMode) {
+    if (_isLinkMode) {
       // Opening peers during Link Mode requests is handled in Sign Engine
       return;
     }
 
-    final walletRedirect = _explorerService.getWalletRedirect(
-      walletInfo,
-    );
-
+    final walletRedirect = _explorerService.getWalletRedirect(walletInfo);
     if (walletRedirect == null) {
       return;
     }
 
-    if (walletRedirect.webOnly) {
-      // Web wallet request will be triggered elsewhere
-      return;
-    }
+    // if (walletRedirect.webOnly) {
+    //   // Web wallet request will be triggered elsewhere
+    //   // TODO check if this is still relevant with web-wallet
+    //   return;
+    // }
 
     try {
+      final topic = _currentSession!.topic!;
+      final metadataRedirect = _currentSession!.peer?.metadata.redirect;
       final link = metadataRedirect?.native ?? metadataRedirect?.universal;
       final redirect = walletRedirect.copyWith(mobile: link);
       final platform = PlatformUtils.getPlatformType();
-      _uriService.openRedirect(redirect, pType: platform);
+      _uriService.openRedirect(
+        redirect,
+        pType: platform,
+        wcURI: 'requestId=$requestId&sessionTopic=$topic',
+      );
     } catch (e) {
       onModalError.broadcast(ErrorOpeningWallet());
     }
@@ -1406,31 +1419,38 @@ class ReownAppKitModal
         );
       }
 
-      final walletInfo = _explorerService.getConnectedWallet();
-      final walletRedirect = _explorerService.getWalletRedirect(
-        walletInfo,
-      );
+      // final walletInfo = _explorerService.getConnectedWallet();
+      // final walletRedirect = _explorerService.getWalletRedirect(
+      //   walletInfo,
+      // );
 
-      int? requestId;
-      if (walletRedirect?.webOnly == true) {
-        requestId = JsonRpcUtils.payloadId();
-        final redirect = _currentSession!.peer!.metadata.redirect!;
-        final url = Uri.parse(redirect.native!).replace(
-          queryParameters: {
-            'requestId': requestId.toString(),
-            'sessionTopic': _currentSession!.topic!,
-          },
-        );
-        _appKit.core.logger.d('[$runtimeType] request web wallet url $url');
-        ReownCoreUtils.openURL(url.toString());
-      }
+      // print(walletRedirect.toString());
 
-      return await _appKit.request(
+      // int? requestId;
+      // if (walletRedirect?.webOnly == true) {
+      //   requestId = JsonRpcUtils.payloadId();
+      //   // final redirect = _currentSession!.peer!.metadata.redirect!;
+      //   final url = Uri.parse('${walletRedirect!.web!}/wc').replace(
+      //     queryParameters: {
+      //       'requestId': requestId.toString(),
+      //       'sessionTopic': _currentSession!.topic!,
+      //     },
+      //   );
+      //   _appKit.core.logger.d('[$runtimeType] request web wallet url $url');
+      //   ReownCoreUtils.openURL(url.toString());
+      // }
+
+      final requestId = JsonRpcUtils.payloadId();
+      final pendingRequest = _appKit.request(
         requestId: requestId,
         topic: topic!,
         chainId: chainId,
         request: request,
       );
+
+      _launchRequestOnWallet(requestId);
+
+      return await pendingRequest;
     } catch (e) {
       if (_isUserRejectedError(e)) {
         onModalError.broadcast(UserRejectedRequest());
