@@ -1,4 +1,4 @@
-## 1.4.2-beta02
+## 1.4.2-beta03
 
 - Bug fixes
 
