@@ -83,7 +83,7 @@ class ListAvatar extends StatelessWidget {
                         ),
                         child: sampleWallet
                             ? Image.asset(
-                                'lib/modal/assets/$imageUrl',
+                                'lib/modal/assets/$imageUrl.png',
                                 package: 'reown_appkit',
                               )
                             : CachedNetworkImage(
