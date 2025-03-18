@@ -297,7 +297,6 @@ class _ConnectedWalletButton extends StatelessWidget {
           ),
           onTap: walletInfo != null
               ? () {
-                  // service.launchConnectedWallet();
                   final redirect =
                       service.session!.peer!.metadata.redirect!.native!;
                   ReownCoreUtils.openURL(redirect);

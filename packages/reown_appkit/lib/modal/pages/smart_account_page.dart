@@ -9,6 +9,7 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/activity_page.dart';
 import 'package:reown_appkit/modal/pages/account_page.dart';
 import 'package:reown_appkit/modal/pages/receive_page.dart';
+import 'package:reown_appkit/modal/pages/send_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
@@ -242,10 +243,9 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
                   size: BaseButtonSize.big,
                   iconSize: 20.0,
                   fontSize: 1.0,
-                  // onTap: _tokens.isEmpty
-                  //     ? null
-                  //     : () => widgetStack.instance.push(SendPage()),
-                  onTap: null,
+                  onTap: _tokens.isEmpty
+                      ? null
+                      : () => widgetStack.instance.push(SendPage()),
                 ),
               ),
             ],

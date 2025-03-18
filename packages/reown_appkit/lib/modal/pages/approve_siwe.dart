@@ -83,7 +83,6 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
         address: address,
       );
       //
-      // _appKitModal!.launchConnectedWallet();
       final redirect = _appKitModal!.session!.peer!.metadata.redirect!.native!;
       ReownCoreUtils.openURL(redirect);
       final signature = await _siweService.signMessageRequest(

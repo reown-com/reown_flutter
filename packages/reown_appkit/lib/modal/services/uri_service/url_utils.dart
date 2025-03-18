@@ -53,6 +53,7 @@ class UriService extends IUriService {
     WalletRedirect redirect, {
     String? wcURI,
     PlatformType? pType,
+    AppKitSocialOption? socialOption,
   }) async {
     //
     Uri? uriToOpen;
@@ -74,6 +75,10 @@ class UriService extends IUriService {
     } catch (e) {
       _core.logger.e('Error opening redirect', error: e);
       return false;
+    }
+    if (socialOption != null) {
+      final social = socialOption.name.toLowerCase();
+      uriToOpen = Uri.parse('${uriToOpen.toString()}&provider=$social');
     }
     _core.logger.i('[$runtimeType] openRedirect $uriToOpen');
     return await _launchUrlFunc(uriToOpen!);

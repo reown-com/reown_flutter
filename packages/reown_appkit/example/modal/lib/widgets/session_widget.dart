@@ -288,7 +288,6 @@ class SessionWidgetState extends State<SessionWidget> {
           child: ElevatedButton(
             onPressed: implemented
                 ? () async {
-                    // widget.appKit.launchConnectedWallet();
                     final future = callChainMethod(method);
                     MethodDialog.show(context, method, future);
                   }
@@ -359,7 +358,6 @@ class SessionWidgetState extends State<SessionWidget> {
           margin: const EdgeInsets.symmetric(vertical: StyleConstants.linear8),
           child: ElevatedButton(
             onPressed: () async {
-              // widget.appKit.launchConnectedWallet();
               final future = MethodsService.callSmartContract(
                 appKitModal: widget.appKit,
                 smartContract: smartContract,

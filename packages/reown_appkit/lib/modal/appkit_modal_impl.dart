@@ -560,7 +560,6 @@ class ReownAppKitModal
           requestSwitchToChain(chainInfo);
           final hasSwitchMethod = _currentSession!.hasSwitchMethod();
           if (hasSwitchMethod) {
-            // launchConnectedWallet();
             final redirect = _currentSession!.peer!.metadata.redirect!.native!;
             ReownCoreUtils.openURL(redirect);
           }
@@ -896,7 +895,11 @@ class ReownAppKitModal
       } else if (_selectedWallet!.isPhantom) {
         await _phantomService.connect(chainId: _selectedChainID);
       } else {
-        await _connect(walletRedirect, pType, socialOption);
+        await _connect(
+          walletRedirect,
+          pType,
+          socialOption,
+        );
       }
     } on LaunchUrlException catch (e) {
       if (e is CanNotLaunchUrl) {
@@ -958,12 +961,19 @@ class ReownAppKitModal
     final linkMode = redirect.linkMode ?? '';
     if (linkMode.isNotEmpty && _wcUri.startsWith(linkMode)) {
       await ReownCoreUtils.openURL(_wcUri);
-    } else if (socialOption != null) {
-      final url = CoreUtils.formatWebUrl(redirect.web, _wcUri);
-      final social = socialOption.name.toLowerCase();
-      await ReownCoreUtils.openURL('$url&provider=$social');
-    } else {
-      await _uriService.openRedirect(redirect, wcURI: _wcUri, pType: pType);
+    }
+    // else if (socialOption != null) {
+    //   final url = CoreUtils.formatWebUrl(redirect.web, _wcUri);
+    //   final social = socialOption.name.toLowerCase();
+    //   await ReownCoreUtils.openURL('$url&provider=$social');
+    // }
+    else {
+      await _uriService.openRedirect(
+        redirect,
+        wcURI: _wcUri,
+        pType: pType,
+        socialOption: socialOption,
+      );
     }
   }
 
@@ -1134,17 +1144,14 @@ class ReownAppKitModal
       return;
     }
 
-    // if (walletRedirect.webOnly) {
-    //   // Web wallet request will be triggered elsewhere
-    //   // TODO check if this is still relevant with web-wallet
-    //   return;
-    // }
-
     try {
       final topic = _currentSession!.topic!;
       final metadataRedirect = _currentSession!.peer?.metadata.redirect;
       final link = metadataRedirect?.native ?? metadataRedirect?.universal;
-      final redirect = walletRedirect.copyWith(mobile: link);
+      final redirect = walletRedirect.copyWith(
+        // /wc path will be added in CoreUtils
+        mobile: link != null ? _removeWcPath(link) : null,
+      );
       final platform = PlatformUtils.getPlatformType();
       _uriService.openRedirect(
         redirect,
@@ -1154,6 +1161,14 @@ class ReownAppKitModal
     } catch (e) {
       onModalError.broadcast(ErrorOpeningWallet());
     }
+  }
+
+  String _removeWcPath(String url) {
+    var uri = Uri.parse(url);
+    if (uri.pathSegments.isNotEmpty && uri.pathSegments.first == 'wc') {
+      uri = uri.replace(pathSegments: uri.pathSegments.skip(1).toList());
+    }
+    return uri.toString();
   }
 
   @override
@@ -1418,27 +1433,6 @@ class ReownAppKitModal
           request: request,
         );
       }
-
-      // final walletInfo = _explorerService.getConnectedWallet();
-      // final walletRedirect = _explorerService.getWalletRedirect(
-      //   walletInfo,
-      // );
-
-      // print(walletRedirect.toString());
-
-      // int? requestId;
-      // if (walletRedirect?.webOnly == true) {
-      //   requestId = JsonRpcUtils.payloadId();
-      //   // final redirect = _currentSession!.peer!.metadata.redirect!;
-      //   final url = Uri.parse('${walletRedirect!.web!}/wc').replace(
-      //     queryParameters: {
-      //       'requestId': requestId.toString(),
-      //       'sessionTopic': _currentSession!.topic!,
-      //     },
-      //   );
-      //   _appKit.core.logger.d('[$runtimeType] request web wallet url $url');
-      //   ReownCoreUtils.openURL(url.toString());
-      // }
 
       final requestId = JsonRpcUtils.payloadId();
       final pendingRequest = _appKit.request(

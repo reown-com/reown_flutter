@@ -72,7 +72,6 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
       }
     } else {
       try {
-        // _appKitModal!.launchConnectedWallet();
         final redirect =
             _appKitModal!.session!.peer!.metadata.redirect!.native!;
         ReownCoreUtils.openURL(redirect);

@@ -99,10 +99,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
           recent: false,
         );
         appKitModal.selectWallet(webWallet);
-        await _service?.connectSelectedWallet(
-          inBrowser: true,
-          socialOption: option,
-        );
+        await _service?.connectSelectedWallet(socialOption: option);
         //
 
         // final schema = null; // _service?.appKit?.metadata.redirect?.universal;
