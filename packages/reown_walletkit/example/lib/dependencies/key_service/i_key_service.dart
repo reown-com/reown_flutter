@@ -19,7 +19,7 @@ abstract class IKeyService {
 
   Future<void> createAddressFromSeed();
 
-  Future<void> loadDefaultWallet();
+  Future<void> createRandomWallet();
 
   Future<String> getMnemonic();
 

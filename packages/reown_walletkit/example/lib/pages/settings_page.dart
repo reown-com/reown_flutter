@@ -87,7 +87,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   onDeleteData: () async {
                     final walletKit = GetIt.I<IWalletKitService>().walletKit;
                     await walletKit.core.storage.deleteAll();
-                    await keysService.clearAll();
+                    // await keysService.clearAll();
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text('Storage cleared'),
                       duration: Duration(seconds: 1),
@@ -114,19 +114,40 @@ class _SettingsPageState extends State<SettingsPage> {
                       setState(() {});
                     }
                   },
-                  onRestoreDefault: () async {
-                    await keysService.clearAll();
-                    await keysService.loadDefaultWallet();
-                    await keysService.loadKeys();
-                    await showDialog(
+                  onCreateNewWallet: () async {
+                    final response = await showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return const AlertDialog(
-                          content: Text('Default wallet restored'),
+                        return AlertDialog(
+                          content: Text(
+                              'This will delete the current wallet and create a new one'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: const Text('Proceed'),
+                            ),
+                          ],
                         );
                       },
                     );
-                    setState(() {});
+                    if (response == true) {
+                      await keysService.clearAll();
+                      await keysService.createRandomWallet();
+                      await keysService.loadKeys();
+                      await showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return const AlertDialog(
+                            content: Text('New wallet created'),
+                          );
+                        },
+                      );
+                      setState(() {});
+                    }
                   },
                 ),
                 //
@@ -681,11 +702,11 @@ class _DeviceData extends StatelessWidget {
 
 class _Buttons extends StatelessWidget {
   final VoidCallback onRestoreFromSeed;
-  final VoidCallback onRestoreDefault;
+  final VoidCallback onCreateNewWallet;
   final VoidCallback onDeleteData;
   const _Buttons({
     required this.onRestoreFromSeed,
-    required this.onRestoreDefault,
+    required this.onCreateNewWallet,
     required this.onDeleteData,
   });
 
@@ -791,10 +812,10 @@ class _Buttons extends StatelessWidget {
             children: [
               CustomButton(
                 type: CustomButtonType.invalid,
-                onTap: onRestoreDefault,
+                onTap: onCreateNewWallet,
                 child: const Center(
                   child: Text(
-                    'Restore default wallet',
+                    'Create new wallet',
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
