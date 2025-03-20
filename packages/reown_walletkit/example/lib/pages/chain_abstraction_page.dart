@@ -61,19 +61,25 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
                   RichText(
                     text: TextSpan(
                       children: [
-                        const TextSpan(
+                        TextSpan(
                           text: 'Paying on ',
                           style: TextStyle(
                             fontSize: 14.0,
-                            color: Colors.black,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
                           ),
                         ),
                         TextSpan(
                           text:
                               '${ChainsDataList.eip155Chains.firstWhere((e) => e.chainId == uiFields.routeResponse.initialTransaction.chainId).name} ',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14.0,
-                            color: Colors.black,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -124,19 +130,25 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
                   RichText(
                     text: TextSpan(
                       children: [
-                        const TextSpan(
+                        TextSpan(
                           text: 'Balance on ',
                           style: TextStyle(
                             fontSize: 14.0,
-                            color: Colors.black,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
                           ),
                         ),
                         TextSpan(
                           text:
                               '${ChainsDataList.eip155Chains.firstWhere((e) => e.chainId == uiFields.routeResponse.initialTransaction.chainId).name} ',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14.0,
-                            color: Colors.black,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -181,19 +193,25 @@ class _DetailsAndExecuteState extends State<DetailsAndExecute> {
                       RichText(
                         text: TextSpan(
                           children: [
-                            const TextSpan(
+                            TextSpan(
                               text: 'Bridging from ',
                               style: TextStyle(
                                 fontSize: 14.0,
-                                color: Colors.black,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
                               ),
                             ),
                             TextSpan(
                               text:
                                   '${ChainsDataList.eip155Chains.firstWhere((e) => e.chainId == from.chainId).name} ',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 14.0,
-                                color: Colors.black,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),

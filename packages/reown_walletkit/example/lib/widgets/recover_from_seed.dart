@@ -18,7 +18,6 @@ class RecoverFromSeed extends StatelessWidget {
       borderSide: const BorderSide(color: Colors.blue, width: 1.0),
     );
     return Container(
-      color: Colors.white,
       height: 282.0,
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -27,7 +26,9 @@ class RecoverFromSeed extends StatelessWidget {
           Text(
             'Insert Mnemonic or Private Key',
             style: StyleConstants.subtitleText.copyWith(
-              color: Colors.black,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
               fontSize: 18.0,
             ),
           ),
@@ -52,7 +53,9 @@ class RecoverFromSeed extends StatelessWidget {
                 disabledBorder: unfocusedBorder,
                 focusedBorder: focusedBorder,
                 filled: true,
-                fillColor: Colors.grey[200],
+                fillColor: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white24
+                    : Colors.black12,
                 contentPadding: const EdgeInsets.all(8.0),
               ),
             ),

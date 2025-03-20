@@ -463,9 +463,12 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                                 ),
                                 TextSpan(
                                   text: ' ${e.name}',
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14.0,
-                                    color: Colors.black,
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
