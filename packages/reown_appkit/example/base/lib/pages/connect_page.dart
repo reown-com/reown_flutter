@@ -74,6 +74,7 @@ class ConnectPageState extends State<ConnectPage> {
     } catch (e) {
       debugPrint(e.toString());
     }
+    return;
   }
 
   @override

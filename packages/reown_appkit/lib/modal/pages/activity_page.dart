@@ -66,9 +66,8 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
   @override
   void initState() {
     super.initState();
-    final chainId = widget.appKitModal.selectedChain!.chainId;
-    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-    _currentChain = '$namespace:$chainId';
+    _currentChain = widget.appKitModal.selectedChain!.chainId;
+    final namespace = NamespaceUtils.getNamespaceFromChain(_currentChain);
     _currentAddress = widget.appKitModal.session!.getAddress(namespace)!;
 
     _scrollController.addListener(() {
@@ -93,8 +92,6 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
   }
 
   Future<void> _fetchActivities() async {
-    setState(() => _isLoadingActivities = _activities.isEmpty);
-
     try {
       final activityData = await _blockchainService.getHistory(
         address: _currentAddress,
@@ -113,7 +110,10 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
       _currentCursor = activityData.next;
       _hasMoreActivities = _currentCursor != null;
       _core.logger.d(
-        '[$runtimeType] fetch data, items: ${activityList.length}, cursor: $_currentCursor, _hasMoreActivities: $_hasMoreActivities',
+        '[$runtimeType] fetch data, \n'
+        'items: ${activityList.length}, \n'
+        'cursor: $_currentCursor, \n'
+        '_hasMoreActivities: $_hasMoreActivities',
       );
     } catch (e) {
       _isLoadingActivities = false;
@@ -126,6 +126,7 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
 
   Future<void> _loadMoreActivities() async {
     if (_isLoadingActivities || !_hasMoreActivities) return;
+    setState(() => _isLoadingActivities = true);
     await _fetchActivities();
   }
 

@@ -26,15 +26,14 @@ import 'package:reown_appkit/modal/widgets/lists/list_items/account_list_item.da
 import 'package:reown_appkit/modal/widgets/text/appkit_balance.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
-class EOAccountPage extends StatefulWidget {
-  const EOAccountPage() : super(key: KeyConstants.eoAccountPage);
+class AccountPage extends StatefulWidget {
+  const AccountPage() : super(key: KeyConstants.eoAccountPage);
 
   @override
-  State<EOAccountPage> createState() => _EOAccountPageState();
+  State<AccountPage> createState() => _AccountPageState();
 }
 
-class _EOAccountPageState extends State<EOAccountPage>
-    with WidgetsBindingObserver {
+class _AccountPageState extends State<AccountPage> with WidgetsBindingObserver {
   IReownAppKitModal? _appKitModal;
 
   @override
@@ -95,7 +94,9 @@ class _DefaultAccountView extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final isEmailLogin = _appKitMoldal.session?.sessionService.isMagic ?? false;
+    final isMagicService =
+        _appKitMoldal.session?.sessionService.isMagic ?? false;
+    final smartAccounts = _appKitMoldal.session?.sessionSmartAccounts != null;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -130,21 +131,25 @@ class _DefaultAccountView extends StatelessWidget {
         ),
         const SizedBox.square(dimension: kPadding12),
         Visibility(
-          visible: isEmailLogin,
+          visible: isMagicService || smartAccounts,
           child: _UpgradeWalletButton(),
         ),
         Visibility(
-          visible: isEmailLogin,
+          visible: isMagicService || smartAccounts,
           child: _EmailAndSocialLoginButton(),
         ),
         // Visibility(
-        //   visible: !isEmailLogin,
+        //   visible: !isMagicService && !smartAccounts,
         //   child: _ConnectedWalletButton(),
         // ),
         _SelectNetworkButton(),
         Visibility(
-          visible: !isEmailLogin,
+          visible: !isMagicService && !smartAccounts,
           child: _ActivityButton(),
+        ),
+        Visibility(
+          visible: smartAccounts,
+          child: _SwitchAccountButton(),
         ),
         _DisconnectButton(),
       ],
@@ -203,10 +208,19 @@ class _EmailAndSocialLoginButton extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final provider = AppKitSocialOption.values.firstWhereOrNull(
-      (e) => e.name == service.session!.peer?.metadata.name,
+      (e) {
+        final isMagicService = service.session!.sessionService.isMagic;
+        final providerMagic = service.session!.socialProvider?.name;
+        final providerSession = service.session!.sessionProvider;
+        if (isMagicService) {
+          return e.name.toLowerCase() == providerMagic?.toLowerCase();
+        }
+        return e.name.toLowerCase() == providerSession.toString().toLowerCase();
+      },
     );
-    final title =
-        provider != null ? service.session!.userName : service.session!.email;
+    final title = provider != null
+        ? (service.session!.userName ?? service.session!.sessionEmail)
+        : (service.session!.email ?? service.session!.sessionEmail);
     return Column(
       children: [
         const SizedBox.square(dimension: kPadding8),
@@ -353,6 +367,7 @@ class _SelectNetworkButton extends StatelessWidget {
 class _ActivityButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return Column(
       children: [
@@ -363,10 +378,70 @@ class _ActivityButton extends StatelessWidget {
           iconBGColor: themeColors.accenGlass015,
           iconBorderColor: themeColors.accenGlass005,
           title: 'Activity',
-          // titleStyle: themeData.textStyles.paragraph500.copyWith(
-          //   color: themeColors.foreground200,
-          // ),
+          titleStyle: themeData.textStyles.paragraph500.copyWith(
+            color: themeColors.foreground100,
+          ),
           onTap: () => widgetStack.instance.push(ActivityPage()),
+        ),
+      ],
+    );
+  }
+}
+
+class _SwitchAccountButton extends StatefulWidget {
+  @override
+  State<_SwitchAccountButton> createState() => _SwitchAccountButtonState();
+}
+
+class _SwitchAccountButtonState extends State<_SwitchAccountButton> {
+  bool _loading = false;
+
+  bool get _isSmartAccountSelected {
+    try {
+      final modalInstance = ModalProvider.of(context).instance;
+      final chainId = modalInstance.selectedChain!.chainId;
+      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+      final address = modalInstance.session!.getAddress(namespace);
+      final account = '$chainId:$address';
+      final sessionSmartAccounts = modalInstance.session!.sessionSmartAccounts;
+      return sessionSmartAccounts.contains(account);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final service = ModalProvider.of(context).instance;
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    return Column(
+      children: [
+        const SizedBox.square(dimension: kPadding8),
+        AccountListItem(
+          iconPath: 'lib/modal/assets/icons/swap_horizontal.svg',
+          iconColor: themeColors.accent100,
+          iconBGColor: themeColors.accenGlass015,
+          iconBorderColor: themeColors.accenGlass005,
+          title: _isSmartAccountSelected
+              ? 'Switch to your EOA'
+              : 'Switch to your smart account',
+          titleStyle: themeData.textStyles.paragraph500.copyWith(
+            color: themeColors.foreground100,
+          ),
+          trailing: _loading
+              ? Row(
+                  children: [
+                    CircularLoader(size: 18.0, strokeWidth: 2.0),
+                    SizedBox.square(dimension: kPadding12),
+                  ],
+                )
+              : const SizedBox.shrink(),
+          onTap: () async {
+            setState(() => _loading = !_loading);
+            await service.switchSmartAccounts();
+            setState(() => _loading = !_loading);
+          },
         ),
       ],
     );

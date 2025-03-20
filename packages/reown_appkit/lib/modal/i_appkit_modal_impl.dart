@@ -89,6 +89,8 @@ abstract class IReownAppKitModal with ChangeNotifier {
   /// Launch blockchain explorer for the current chain in external browser
   void launchBlockExplorer();
 
+  Future<void> switchSmartAccounts();
+
   /// Used to expire and delete any inactive pairing
   Future<void> expirePreviousInactivePairings();
 

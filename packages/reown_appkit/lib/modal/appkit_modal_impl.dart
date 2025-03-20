@@ -15,7 +15,7 @@ import 'package:reown_appkit/modal/services/third_party_wallet_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/services/phantom_service/i_phantom_service.dart';
 import 'package:reown_appkit/modal/services/phantom_service/phantom_service.dart';
-import 'package:reown_appkit/modal/pages/smart_account_page.dart';
+import 'package:reown_appkit/modal/pages/wallet_features_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/blockchain_identity.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
@@ -89,6 +89,12 @@ class ReownAppKitModal
       return ReownAppKitModalNetworks.getNetworkInfo(namespace, id);
     }
     return null;
+  }
+
+  @override
+  Future<void> switchSmartAccounts() async {
+    _currentSession!.switchSmartAccounts();
+    await loadAccountData();
   }
 
   ReownAppKitModalWalletInfo? _selectedWallet;
@@ -266,7 +272,7 @@ class ReownAppKitModal
 
   FutureOr _unregisterSingleton<T extends Object>() => GetIt.I.unregister<T>();
 
-  // IMagicService get _magicService => _getSingleton<IMagicService>();
+  IMagicService get _magicService => _getSingleton<IMagicService>();
   ICoinbaseService get _coinbaseService => _getSingleton<ICoinbaseService>();
   IPhantomService get _phantomService => _getSingleton<IPhantomService>();
 
@@ -290,11 +296,12 @@ class ReownAppKitModal
       return true;
     }
 
-    // final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
-    // if (state.isNotEmpty) {
-    //   _magicService.completeSocialLogin(url: url);
-    //   return true;
-    // }
+    // TODO check if this is needed for Farcaster
+    final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
+    if (state.isNotEmpty) {
+      _magicService.completeSocialLogin(url: url);
+      return true;
+    }
 
     final phantomRequest = ReownCoreUtils.getSearchParamFromURL(
       url,
@@ -341,14 +348,11 @@ class ReownAppKitModal
     if (isMagic || isCoinbase || isPhantom) {
       _selectedChainID ??= _currentSession!.chainId;
       await _setSesionAndChainData(_currentSession!);
-      // if (isMagic) {
-      //   final caip2Chain = ReownAppKitModalNetworks.getCaip2Chain(
-      //     _currentSelectedChainId!,
-      //   );
-      //   await _magicService.init(chainId: caip2Chain);
-      // }
+      if (isMagic) {
+        await _magicService.init(chainId: _selectedChainID);
+      }
     } else {
-      // _magicService.init();
+      _magicService.init();
     }
 
     await expirePreviousInactivePairings();
@@ -395,16 +399,15 @@ class ReownAppKitModal
           if (!isConnected) {
             await _cleanSession();
           }
-        }
-        // else if (_currentSession!.sessionService.isMagic) {
-        //   // Every time the app gets killed Magic service will treat the user as disconnected
-        //   // So we will need to treat magic session differently
-        //   final email = _currentSession!.email;
-        //   _magicService.setEmail(email);
-        //   final provider = _currentSession!.socialProvider;
-        //   _magicService.setProvider(provider);
-        // }
-        else {
+        } else if (_currentSession!.sessionService.isMagic) {
+          // TODO check if this is needed for Farcaster
+          // Every time the app gets killed Magic service will treat the user as disconnected
+          // So we will need to treat magic session differently
+          final email = _currentSession!.email!;
+          _magicService.setEmail(email);
+          final provider = _currentSession!.socialProvider;
+          _magicService.setProvider(provider);
+        } else {
           await _cleanSession();
         }
       }
@@ -560,7 +563,9 @@ class ReownAppKitModal
           requestSwitchToChain(chainInfo);
           final hasSwitchMethod = _currentSession!.hasSwitchMethod();
           if (hasSwitchMethod) {
-            final redirect = _currentSession!.peer!.metadata.redirect!.native!;
+            final redirect = _currentSession!.peer!.metadata.redirect!.linkMode
+                ? _currentSession!.peer!.metadata.redirect!.universal!
+                : _currentSession!.peer!.metadata.redirect!.native!;
             ReownCoreUtils.openURL(redirect);
           }
         } else {
@@ -699,20 +704,19 @@ class ReownAppKitModal
   @override
   Future<void> openModalView([Widget? startWidget]) {
     final keyString = startWidget?.key?.toString() ?? '';
-    final provider = _currentSession?.sessionProperties['provider'] as String?;
-    // final email = _currentSession?.sessionProperties['email'] as String?;
-    final isMagic =
-        _currentSession?.sessionService.isMagic == true || provider != null;
+    final smartAccounts = _currentSession?.sessionSmartAccounts;
+    final isMagic = _currentSession?.sessionService.isMagic == true;
+    final embeddedWallet = isMagic || smartAccounts != null;
     if (_isConnected) {
       final connectedKeys =
           _allowedScreensWhenConnected.map((e) => e.toString()).toList();
       if (startWidget == null) {
         startWidget =
-            isMagic ? const SmartAccountPage() : const EOAccountPage();
+            embeddedWallet ? const WalletFeaturesPage() : const AccountPage();
       } else {
         if (!connectedKeys.contains(keyString)) {
           startWidget =
-              isMagic ? const SmartAccountPage() : const EOAccountPage();
+              embeddedWallet ? const WalletFeaturesPage() : const AccountPage();
         }
       }
     } else {
@@ -730,7 +734,7 @@ class ReownAppKitModal
     KeyConstants.confirmEmailPage,
     KeyConstants.selectNetworkPage,
     KeyConstants.eoAccountPage,
-    KeyConstants.smartAccountPage,
+    KeyConstants.walletFeaturesPage,
     KeyConstants.socialLoginPage,
   ];
 
@@ -772,13 +776,13 @@ class ReownAppKitModal
 
     final isBottomSheet = PlatformUtils.isBottomSheet();
     final theme = ReownAppKitModalTheme.maybeOf(_context!);
-    // await _magicService.syncTheme(theme);
+    await _magicService.syncTheme(theme);
     final themeData = theme?.themeData ?? const ReownAppKitModalThemeData();
 
     Widget? showWidget = startWidget;
     if (_isConnected && showWidget == null) {
       final isMagic = _currentSession?.sessionService.isMagic == true;
-      startWidget = isMagic ? const SmartAccountPage() : const EOAccountPage();
+      startWidget = isMagic ? const WalletFeaturesPage() : const AccountPage();
     }
 
     final childWidget = theme == null
@@ -895,11 +899,7 @@ class ReownAppKitModal
       } else if (_selectedWallet!.isPhantom) {
         await _phantomService.connect(chainId: _selectedChainID);
       } else {
-        await _connect(
-          walletRedirect,
-          pType,
-          socialOption,
-        );
+        await _connect(walletRedirect, pType, socialOption);
       }
     } on LaunchUrlException catch (e) {
       if (e is CanNotLaunchUrl) {
@@ -1209,17 +1209,18 @@ class ReownAppKitModal
         return;
       }
     }
-    // if (_currentSession?.sessionService.isMagic == true) {
-    //   try {
-    //     await Future.delayed(Duration(milliseconds: 300));
-    //     await _magicService.disconnect();
-    //   } catch (e) {
-    //     _appKit.core.logger.d('[$runtimeType] disconnect magic $e');
-    //     _status = ReownAppKitModalStatus.initialized;
-    //     _notify();
-    //     return;
-    //   }
-    // }
+    // TODO only needed to support Farcaster
+    if (_currentSession?.sessionService.isMagic == true) {
+      try {
+        await Future.delayed(Duration(milliseconds: 300));
+        await _magicService.disconnect();
+      } catch (e) {
+        _appKit.core.logger.d('[$runtimeType] disconnect magic $e');
+        _status = ReownAppKitModalStatus.initialized;
+        _notify();
+        return;
+      }
+    }
 
     try {
       // If we want to disconnect all sessions, loop through them and disconnect them
@@ -1415,12 +1416,13 @@ class ReownAppKitModal
       '${jsonEncode(request.toJson())}',
     );
     try {
-      // if (_currentSession!.sessionService.isMagic) {
-      //   return await _magicService.request(
-      //     chainId: reqChainId,
-      //     request: request,
-      //   );
-      // }
+      // TODO only needed to support Farcaster
+      if (_currentSession!.sessionService.isMagic) {
+        return await _magicService.request(
+          chainId: chainId,
+          request: request,
+        );
+      }
       if (_currentSession!.sessionService.isCoinbase) {
         return await _coinbaseService.request(
           chainId: switchToChainId ?? chainId,
@@ -1613,8 +1615,8 @@ class ReownAppKitModal
       return;
     }
 
-    _status = ReownAppKitModalStatus.initializing;
-    _notify();
+    // _status = ReownAppKitModalStatus.initializing;
+    // _notify();
 
     // Get the chain balance.
     final namespace = NamespaceUtils.getNamespaceFromChain(_selectedChainID!);
@@ -1651,7 +1653,7 @@ class ReownAppKitModal
       _blockchainIdentity = null;
     }
 
-    _status = ReownAppKitModalStatus.initialized;
+    // _status = ReownAppKitModalStatus.initialized;
     _notify();
   }
 
@@ -1827,7 +1829,8 @@ class ReownAppKitModal
         // final caip2chain = ReownAppKitModalNetworks.getCaip2Chain(
         //   _currentSelectedChainId!,
         // );
-        // await _magicService.getUser(chainId: caip2chain, isUpdate: true);
+        // TODO check if relevant for Farcaster
+        await _magicService.getUser(chainId: _selectedChainID, isUpdate: true);
         await _siweService.signOut();
         _disconnectOnClose = true;
         widgetStack.instance.push(ApproveSIWEPage(
@@ -1861,11 +1864,11 @@ class ReownAppKitModal
 
     onModalError.subscribe(_onModalError);
     // Magic
-    // _magicService.onMagicConnect.subscribe(_onMagicConnectEvent);
-    // _magicService.onMagicLoginSuccess.subscribe(_onMagicLoginEvent);
-    // _magicService.onMagicError.subscribe(_onMagicErrorEvent);
-    // _magicService.onMagicUpdate.subscribe(_onMagicSessionUpdateEvent);
-    // _magicService.onMagicRpcRequest.subscribe(_onMagicRequest);
+    _magicService.onMagicConnect.subscribe(_onMagicConnectEvent);
+    _magicService.onMagicLoginSuccess.subscribe(_onMagicLoginEvent);
+    _magicService.onMagicError.subscribe(_onMagicErrorEvent);
+    _magicService.onMagicUpdate.subscribe(_onMagicSessionUpdateEvent);
+    _magicService.onMagicRpcRequest.subscribe(_onMagicRequest);
     // Coinbase
     _coinbaseService.onCoinbaseConnect.subscribe(_onCoinbaseConnect);
     _coinbaseService.onCoinbaseError.subscribe(_onCoinbaseError);
@@ -1899,11 +1902,11 @@ class ReownAppKitModal
     onModalError.unsubscribe(_onModalError);
 
     // Magic
-    // _magicService.onMagicLoginSuccess.unsubscribe(_onMagicLoginEvent);
-    // _magicService.onMagicError.unsubscribe(_onMagicErrorEvent);
-    // _magicService.onMagicUpdate.unsubscribe(_onMagicSessionUpdateEvent);
-    // _magicService.onMagicRpcRequest.unsubscribe(_onMagicRequest);
-    //
+    _magicService.onMagicConnect.unsubscribe(_onMagicConnectEvent);
+    _magicService.onMagicLoginSuccess.unsubscribe(_onMagicLoginEvent);
+    _magicService.onMagicError.unsubscribe(_onMagicErrorEvent);
+    _magicService.onMagicUpdate.unsubscribe(_onMagicSessionUpdateEvent);
+    _magicService.onMagicRpcRequest.unsubscribe(_onMagicRequest);
     // Coinbase
     _coinbaseService.onCoinbaseConnect.unsubscribe(_onCoinbaseConnect);
     _coinbaseService.onCoinbaseError.unsubscribe(_onCoinbaseError);
@@ -1980,8 +1983,9 @@ extension _EmailConnectorExtension on ReownAppKitModal {
           onModalUpdate.broadcast(ModalConnect(_currentSession!));
         } else {
           _disconnectOnClose = true;
-          // final theme = ReownAppKitModalTheme.maybeOf(_context!);
-          // await _magicService.syncTheme(theme);
+          // TODO Check if this is still relevant
+          final theme = ReownAppKitModalTheme.maybeOf(_context!);
+          await _magicService.syncTheme(theme);
           widgetStack.instance.push(ApproveSIWEPage(
             onSiweFinish: _oneSIWEFinish,
           ));

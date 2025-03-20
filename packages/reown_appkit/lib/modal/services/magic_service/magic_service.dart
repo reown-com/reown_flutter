@@ -78,15 +78,15 @@ class MagicService implements IMagicService {
   @override
   WebViewWidget get webview => _webview;
   @override
-  final isReady = ValueNotifier(true);
+  final isReady = ValueNotifier(false);
   @override
-  final isConnected = ValueNotifier(true);
+  final isConnected = ValueNotifier(false);
   @override
   final isTimeout = ValueNotifier(false);
   @override
-  final isEmailEnabled = ValueNotifier(true);
+  final isEmailEnabled = ValueNotifier(false);
   @override
-  final isSocialEnabled = ValueNotifier(true);
+  final isFarcasterIncluded = ValueNotifier(false);
   @override
   final email = ValueNotifier<String>('');
   @override
@@ -134,9 +134,11 @@ class MagicService implements IMagicService {
     _socialProvider = null;
     _socialUsername = null;
     isEmailEnabled.value = _features.email;
-    isSocialEnabled.value = _features.socials.isNotEmpty;
+    isFarcasterIncluded.value = _features.socials.contains(
+      AppKitSocialOption.Farcaster,
+    );
     //
-    if (isEmailEnabled.value || isSocialEnabled.value) {
+    if (isEmailEnabled.value || isFarcasterIncluded.value) {
       _webViewController = WebViewController();
       _webview = WebViewWidget(controller: _webViewController);
       isReady.addListener(_readyListener);
@@ -158,12 +160,15 @@ class MagicService implements IMagicService {
     }
     _initializedCompleter = Completer<bool>();
     _isConnectedCompleter = Completer<bool>();
-    if (!isEmailEnabled.value && !isSocialEnabled.value) {
+    if (!isEmailEnabled.value && !isFarcasterIncluded.value) {
       _initializedCompleter.complete(false);
       _isConnectedCompleter.complete(false);
+      if (socials.isNotEmpty) {
+        isReady.value = true;
+        isConnected.value = true;
+      }
       return;
     }
-    return;
     _packageName = await ReownCoreUtils.getPackageName();
     await _init();
     await _isConnected();
@@ -258,10 +263,10 @@ class MagicService implements IMagicService {
     _socialProvider = provider;
   }
 
-  bool get _socialsNotReady => (!isSocialEnabled.value || !isReady.value);
+  bool get _socialsNotReady => (!isFarcasterIncluded.value || !isReady.value);
   bool get _emailNotReady => (!isEmailEnabled.value || !isReady.value);
   bool get _serviceNotReady =>
-      (!isEmailEnabled.value && !isSocialEnabled.value) || !isReady.value;
+      (!isEmailEnabled.value && !isFarcasterIncluded.value) || !isReady.value;
 
   // ****** W3mFrameProvider public methods ******* //
 

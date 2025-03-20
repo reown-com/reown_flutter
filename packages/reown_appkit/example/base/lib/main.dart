@@ -144,12 +144,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   FeaturesConfig? _featuresConfig() {
     return FeaturesConfig(
-      email: true,
+      email: false,
       socials: [
-        AppKitSocialOption.Farcaster,
         AppKitSocialOption.X,
         AppKitSocialOption.Apple,
         AppKitSocialOption.Discord,
+        AppKitSocialOption.GitHub,
+        AppKitSocialOption.Facebook,
+        AppKitSocialOption.Google,
+        AppKitSocialOption.Twitch,
+        AppKitSocialOption.Telegram,
+        // AppKitSocialOption.Farcaster,
       ],
       showMainWallets: true, // OPTIONAL - true by default
     );
