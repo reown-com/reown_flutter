@@ -21,6 +21,10 @@ A command-line interface for creating Flutter projects with Reown SDKs integrati
 - Automatically sets up project structure and dependencies
 - Configures platform-specific settings
 - Supports Android, iOS, and web platforms
+- Automatically fetches the latest stable version of Reown AppKit from pub.dev
+- Configures iOS platform version (13.0) in Podfile (when iOS is enabled)
+- Integrates project ID into the generated code
+- Sets up proper analysis options and linting rules
 
 ## Installation
 
@@ -33,6 +37,20 @@ dart pub global activate reown_cli
 ```bash
 reown create --appkit --name my_awesome_app --projectId your_reown_project_id
 ```
+
+### What the command does
+
+When you run the create command, it will:
+1. Create a new Flutter project with the specified name and organization
+2. Set up the project structure with proper navigation
+3. Configure dependencies with the latest stable version of Reown AppKit
+4. Set up platform-specific settings:
+   - iOS: Configures minimum platform version (13.0) in Podfile (only when iOS is enabled)
+   - Android: Sets up proper configuration
+   - Web: Configures web support
+5. Integrate your project ID into the generated code
+6. Set up analysis options and linting rules
+7. Run `flutter pub get` to install dependencies
 
 ### Options
 
