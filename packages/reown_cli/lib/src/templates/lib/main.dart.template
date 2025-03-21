@@ -57,6 +57,7 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       // If you enable features you will have to whitelist your bundleId/packageName under the Mobile Application IDs secion in https://cloud.reown.com/app
+      // Please also follow carefully the relevant doc section https://docs.reown.com/appkit/flutter/core/email
       // featuresConfig: FeaturesConfig(
       //   email: true,
       //   socials: [
@@ -69,6 +70,8 @@ class _HomePageState extends State<HomePage> {
     );
 
     _appKitModal.init().then((value) => setState(() {}));
+
+    // More events at https://docs.reown.com/appkit/flutter/core/events
     _appKitModal.onModalConnect.subscribe((ModalConnect? event) {
       setState(() {});
     });
@@ -110,6 +113,12 @@ class _HomePageState extends State<HomePage> {
                   AppKitModalBalanceButton(
                     appKitModal: _appKitModal,
                     onTap: () {},
+                  ),
+                  ValueListenableBuilder<String>(
+                    valueListenable: _appKitModal.balanceNotifier,
+                    builder: (_, balance, __) {
+                      return Text('My balance: $balance');
+                    },
                   ),
                 ],
               ),
