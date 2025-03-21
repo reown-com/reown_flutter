@@ -554,7 +554,22 @@ class ReownAppKitModal
           await _setLocalEthChain(chainInfo.chainId, logEvent: logEvent);
         }
       } else {
-        await _setLocalEthChain(chainInfo.chainId, logEvent: logEvent);
+        final namespace = NamespaceUtils.getNamespaceFromChain(
+          chainInfo.chainId,
+        );
+        final approvedChains = _currentSession!.getApprovedChains(
+          namespace: namespace,
+        );
+        final isApproved = (approvedChains ?? []).contains(
+          chainInfo.chainId,
+        );
+        if (isApproved) {
+          await _setLocalEthChain(chainInfo.chainId, logEvent: logEvent);
+        } else {
+          throw ReownAppKitModalException(
+            'Chain is not approved, try switch to it',
+          );
+        }
       }
     } on JsonRpcError catch (e) {
       onModalError.broadcast(ModalError(e.message ?? 'An error occurred'));

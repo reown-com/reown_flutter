@@ -98,7 +98,7 @@ class WalletKitService extends IWalletKitService {
     // Setup our accounts
     List<ChainKey> chainKeys = await GetIt.I<IKeyService>().loadKeys();
     if (chainKeys.isEmpty) {
-      await GetIt.I<IKeyService>().loadDefaultWallet();
+      await GetIt.I<IKeyService>().createRandomWallet();
       chainKeys = await GetIt.I<IKeyService>().loadKeys();
     }
     for (final chainKey in chainKeys) {
