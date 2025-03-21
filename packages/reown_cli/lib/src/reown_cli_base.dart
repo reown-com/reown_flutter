@@ -268,6 +268,14 @@ Run "reown help create" for more information about the create command.
           RegExp(r'{{#each-additional-chain}}.*?{{/each-additional-chain}}',
               multiLine: true, dotAll: true),
           '');
+      content = content.replaceAll(
+          RegExp(r'{{#if-not-last}}.*?{{/if-not-last}}',
+              multiLine: true, dotAll: true),
+          '');
+      content = content.replaceAll(
+          RegExp(r'{{#if-chain:.*? \|\| .*?}}.*?{{/if-chain}}',
+              multiLine: true, dotAll: true),
+          '');
       return content;
     }
 
@@ -280,6 +288,25 @@ Run "reown help create" for more information about the create command.
       final blockContent = match.group(1) ?? '';
       // Process the content inside the if-chains-specified block
       String processedContent = blockContent;
+
+      // Process if-chain blocks with OR conditions
+      final ifChainOrPattern = RegExp(
+          r'{{#if-chain:([^}]+ \|\| [^}]+)}}(.*?){{/if-chain}}',
+          multiLine: true,
+          dotAll: true);
+      processedContent =
+          processedContent.replaceAllMapped(ifChainOrPattern, (match) {
+        final conditions =
+            match.group(1)?.split('||').map((e) => e.trim()).toList() ?? [];
+        final blockContent = match.group(2)?.trim() ?? '';
+        final shouldInclude = conditions.any((condition) {
+          if (condition == 'additional_chains') {
+            return chains.any((chain) => !['eip155', 'solana'].contains(chain));
+          }
+          return chains.contains(condition);
+        });
+        return shouldInclude ? blockContent : '';
+      });
 
       // Process if-chain blocks
       final ifChainPattern = RegExp(r'{{#if-chain:([^}]+)}}(.*?){{/if-chain}}',
@@ -332,9 +359,23 @@ Run "reown help create" for more information about the create command.
         processedBlock = processedBlock
             .replaceAllMapped(eachAdditionalChainPattern, (match) {
           final template = match.group(1)?.trim() ?? '';
-          return additionalChains
-              .map((chain) => template.replaceAll('{{chain}}', chain))
-              .join('\n');
+          return additionalChains.asMap().entries.map((entry) {
+            final isLast = entry.key == additionalChains.length - 1;
+            final chain = entry.value;
+            String chainContent = template.replaceAll('{{chain}}', chain);
+
+            // Process if-not-last blocks
+            final ifNotLastPattern = RegExp(
+                r'{{#if-not-last}}(.*?){{/if-not-last}}',
+                multiLine: true,
+                dotAll: true);
+            chainContent =
+                chainContent.replaceAllMapped(ifNotLastPattern, (match) {
+              return isLast ? '' : match.group(1) ?? '';
+            });
+
+            return chainContent;
+          }).join('\n');
         });
 
         return processedBlock;
@@ -345,6 +386,12 @@ Run "reown help create" for more information about the create command.
 
     // Remove any remaining empty lines that were left by the conditions
     content = content.replaceAll(RegExp(r'\n\s*\n\s*\n'), '\n\n');
+
+    // Remove any remaining template conditions that weren't processed
+    content = content.replaceAll(
+        RegExp(r'{{#.*?}}.*?{{/.*?}}', multiLine: true, dotAll: true), '');
+    content = content.replaceAll(
+        RegExp(r'{{.*?}}', multiLine: true, dotAll: true), '');
 
     return content;
   }
