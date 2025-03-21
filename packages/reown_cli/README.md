@@ -25,7 +25,11 @@ A command-line interface for creating Flutter projects with Reown SDKs integrati
 - Configures iOS platform version (13.0) in Podfile (when iOS is enabled)
 - Integrates project ID into the generated code
 - Sets up proper analysis options and linting rules
-- Configures supported blockchains (e.g., eip155, solana, bitcoin)
+- Flexible blockchain support configuration:
+  - Configure which blockchains to support (eip155, solana, polkadot, etc.)
+  - Automatically removes unsupported networks
+  - Generates appropriate namespace configurations
+  - Supports custom chain configurations
 
 ## Installation
 
@@ -50,7 +54,11 @@ When you run the create command, it will:
    - Android: Sets up proper configuration
    - Web: Configures web support
 5. Integrate your project ID into the generated code
-6. Configure supported blockchains in the generated code
+6. Configure blockchain support:
+   - If no chains are specified, no chain-specific code is included
+   - If chains are specified, appropriate network configurations are generated
+   - Automatically removes unsupported networks
+   - Sets up namespace configurations for each supported chain
 7. Set up analysis options and linting rules
 8. Run `flutter pub get` to install dependencies
 
@@ -61,13 +69,23 @@ When you run the create command, it will:
 - `--org, -o`: The organization name (e.g., com.example) (default: com.example)
 - `--projectId, -i`: The Reown project ID (required)
 - `--platforms, -p`: Platforms to support (android,ios,web) (default: android,ios)
-- `--chains, -c`: Blockchains to support (e.g., eip155,solana,bitcoin) (default: eip155)
+- `--chains, -c`: Blockchains to support (e.g., eip155,solana,bitcoin)
 - `--verbose, -v`: Enable verbose output (default: false)
 
-### Example
+### Examples
 
 ```bash
-reown create --appkit --name my_awesome_app --projectId 123456 --org com.testing --platforms ios,android --chains eip155,solana,bitcoin --verbose
+# Create a basic project without chain-specific code
+reown create --appkit --name my_awesome_app --projectId 123456
+
+# Create a project with EIP-155 and Solana support
+reown create --appkit --name my_awesome_app --projectId 123456 --chains eip155,solana
+
+# Create a project with custom chain support
+reown create --appkit --name my_awesome_app --projectId 123456 --chains eip155,solana,bitcoin,polkadot
+
+# Create a project with all options
+reown create --appkit --name my_awesome_app --projectId 123456 --org com.testing --platforms ios,android --chains eip155,solana --verbose
 ```
 
 ## Development

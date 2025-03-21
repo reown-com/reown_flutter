@@ -264,6 +264,10 @@ Run "reown help create" for more information about the create command.
           RegExp(r'{{#if-chain-not-in:.*?}}.*?{{/if-chain-not-in}}',
               multiLine: true, dotAll: true),
           '');
+      content = content.replaceAll(
+          RegExp(r'{{#each-additional-chain}}.*?{{/each-additional-chain}}',
+              multiLine: true, dotAll: true),
+          '');
       return content;
     }
 
@@ -310,10 +314,30 @@ Run "reown help create" for more information about the create command.
             match.group(1)?.split(',').map((e) => e.trim()).toList() ?? [];
         final blockContent = match.group(2)?.trim() ?? '';
         final additionalChains =
-            chains.where((chain) => !excludedChains.contains(chain)).join(', ');
-        return additionalChains.isNotEmpty
-            ? blockContent.replaceAll('{{additional_chains}}', additionalChains)
-            : '';
+            chains.where((chain) => !excludedChains.contains(chain)).toList();
+
+        if (additionalChains.isEmpty) {
+          return '';
+        }
+
+        // Replace the additional_chains placeholder
+        String processedBlock = blockContent.replaceAll(
+            '{{additional_chains}}', additionalChains.join(', '));
+
+        // Process each-additional-chain blocks
+        final eachAdditionalChainPattern = RegExp(
+            r'{{#each-additional-chain}}(.*?){{/each-additional-chain}}',
+            multiLine: true,
+            dotAll: true);
+        processedBlock = processedBlock
+            .replaceAllMapped(eachAdditionalChainPattern, (match) {
+          final template = match.group(1)?.trim() ?? '';
+          return additionalChains
+              .map((chain) => template.replaceAll('{{chain}}', chain))
+              .join('\n');
+        });
+
+        return processedBlock;
       });
 
       return processedContent;

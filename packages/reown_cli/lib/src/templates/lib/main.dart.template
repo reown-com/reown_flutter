@@ -44,16 +44,30 @@ class _HomePageState extends State<HomePage> {
     // check the docs at https://docs.reown.com/appkit/flutter/core/installation
 
     {{#if-chains-specified}}
-    {{#if-not-chain:eip155}}
-    ReownAppKitModalNetworks.removeSupportedNetworks('eip155');
-    {{/if-not-chain}}
-    {{#if-not-chain:solana}}
-    ReownAppKitModalNetworks.removeSupportedNetworks('solana');
-    {{/if-not-chain}}
-    {{#if-chain-not-in:eip155,solana}}
-    // Additional blockchain support detected: {{additional_chains}}
-    // TODO: Add support for additional chains
-    {{/if-chain-not-in}}
+      {{#if-not-chain:eip155}}
+        ReownAppKitModalNetworks.removeSupportedNetworks('eip155');
+      {{/if-not-chain}}
+      {{#if-not-chain:solana}}
+        ReownAppKitModalNetworks.removeSupportedNetworks('solana');
+      {{/if-not-chain}}
+      {{#if-chain-not-in:eip155,solana}}
+        // Additional blockchain support detected: {{additional_chains}}
+        // Add support for your supported networks by following this doc https://docs.reown.com/appkit/flutter/core/custom-chains
+        {{#each-additional-chain}}
+          // TODO: Add support for {{chain}} networks
+          ReownAppKitModalNetworks.addSupportedNetworks('{{chain}}', [
+            // TODO add your {{chain}} chains
+            // ReownAppKitModalNetworkInfo(
+            //   name: 'Polkadot',
+            //   chainId: '91b171bb158e2d3848fa23a9f1c25182',
+            //   chainIcon: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png',
+            //   currency: 'DOT',
+            //   rpcUrl: 'https://rpc.polkadot.io',
+            //   explorerUrl: 'https://polkadot.subscan.io',
+            // ),
+          ]);
+        {{/each-additional-chain}}
+      {{/if-chain-not-in}}
     {{/if-chains-specified}}
 
     _appKitModal = ReownAppKitModal(
@@ -98,26 +112,18 @@ class _HomePageState extends State<HomePage> {
           'methods': NetworkUtils.defaultNetworkMethods['solana']!.toList(),
           'events': [],
         }),
-        'polkadot': RequiredNamespace.fromJson({
+        {{#each-additional-chain}}
+        '{{chain}}': RequiredNamespace.fromJson({
           'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
-            namespace: 'polkadot',
+            namespace: '{{chain}}',
           ).map((chain) => chain.chainId).toList(),
           'methods': [
-            'polkadot_signMessage',
-            'polkadot_signTransaction',
+            '{{chain}}_signMessage',
+            '{{chain}}_signTransaction',
           ],
           'events': []
         }),
-        'tron': RequiredNamespace.fromJson({
-          'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
-            namespace: 'tron',
-          ).map((chain) => chain.chainId).toList(),
-          'methods': [
-            'tron_signMessage',
-            'tron_signTransaction',
-          ],
-          'events': []
-        }),
+        {{/each-additional-chain}}
       },
       {{/if-chain-not-in}}
       {{/if-chains-specified}}
