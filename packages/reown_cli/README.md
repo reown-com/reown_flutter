@@ -25,6 +25,7 @@ A command-line interface for creating Flutter projects with Reown SDKs integrati
 - Configures iOS platform version (13.0) in Podfile (when iOS is enabled)
 - Integrates project ID into the generated code
 - Sets up proper analysis options and linting rules
+- Configures supported blockchains (e.g., eip155, solana, bitcoin)
 
 ## Installation
 
@@ -49,8 +50,9 @@ When you run the create command, it will:
    - Android: Sets up proper configuration
    - Web: Configures web support
 5. Integrate your project ID into the generated code
-6. Set up analysis options and linting rules
-7. Run `flutter pub get` to install dependencies
+6. Configure supported blockchains in the generated code
+7. Set up analysis options and linting rules
+8. Run `flutter pub get` to install dependencies
 
 ### Options
 
@@ -59,12 +61,13 @@ When you run the create command, it will:
 - `--org, -o`: The organization name (e.g., com.example) (default: com.example)
 - `--projectId, -i`: The Reown project ID (required)
 - `--platforms, -p`: Platforms to support (android,ios,web) (default: android,ios)
+- `--chains, -c`: Blockchains to support (e.g., eip155,solana,bitcoin) (default: eip155)
 - `--verbose, -v`: Enable verbose output (default: false)
 
 ### Example
 
 ```bash
-reown create --appkit --name my_awesome_app --projectId 123456 --org com.testing --platforms ios,android --verbose
+reown create --appkit --name my_awesome_app --projectId 123456 --org com.testing --platforms ios,android --chains eip155,solana,bitcoin --verbose
 ```
 
 ## Development

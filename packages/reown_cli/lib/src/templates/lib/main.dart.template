@@ -42,6 +42,20 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     // check the docs at https://docs.reown.com/appkit/flutter/core/installation
+
+    {{#if-chains-specified}}
+    {{#if-not-chain:eip155}}
+    ReownAppKitModalNetworks.removeSupportedNetworks('eip155');
+    {{/if-not-chain}}
+    {{#if-not-chain:solana}}
+    ReownAppKitModalNetworks.removeSupportedNetworks('solana');
+    {{/if-not-chain}}
+    {{#if-chain-not-in:eip155,solana}}
+    // Additional blockchain support detected: {{additional_chains}}
+    // TODO: Add support for additional chains
+    {{/if-chain-not-in}}
+    {{/if-chains-specified}}
+
     _appKitModal = ReownAppKitModal(
       context: context,
       logLevel: LogLevel.all,
@@ -56,7 +70,7 @@ class _HomePageState extends State<HomePage> {
           universal: 'https://{{project_name}}.com/app',
         ),
       ),
-      // If you enable features you will have to whitelist your bundleId/packageName under the Mobile Application IDs secion in https://cloud.reown.com/app
+      // If you enable social features you will have to whitelist your bundleId/packageName under the Mobile Application IDs secion in https://cloud.reown.com/app
       // Please also follow carefully the relevant doc section https://docs.reown.com/appkit/flutter/core/email
       // featuresConfig: FeaturesConfig(
       //   email: true,
@@ -67,6 +81,46 @@ class _HomePageState extends State<HomePage> {
       //     AppKitSocialOption.Farcaster,
       //   ],
       // ),
+      {{#if-chains-specified}}
+      {{#if-chain-not-in:eip155,solana}}
+      optionalNamespaces: {
+        'eip155': RequiredNamespace.fromJson({
+          'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
+            namespace: 'eip155',
+          ).map((chain) => chain.chainId).toList(),
+          'methods': NetworkUtils.defaultNetworkMethods['eip155']!.toList(),
+          'events': NetworkUtils.defaultNetworkEvents['eip155']!.toList(),
+        }),
+        'solana': RequiredNamespace.fromJson({
+          'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
+            namespace: 'solana',
+          ).map((chain) => chain.chainId).toList(),
+          'methods': NetworkUtils.defaultNetworkMethods['solana']!.toList(),
+          'events': [],
+        }),
+        'polkadot': RequiredNamespace.fromJson({
+          'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
+            namespace: 'polkadot',
+          ).map((chain) => chain.chainId).toList(),
+          'methods': [
+            'polkadot_signMessage',
+            'polkadot_signTransaction',
+          ],
+          'events': []
+        }),
+        'tron': RequiredNamespace.fromJson({
+          'chains': ReownAppKitModalNetworks.getAllSupportedNetworks(
+            namespace: 'tron',
+          ).map((chain) => chain.chainId).toList(),
+          'methods': [
+            'tron_signMessage',
+            'tron_signTransaction',
+          ],
+          'events': []
+        }),
+      },
+      {{/if-chain-not-in}}
+      {{/if-chains-specified}}
     );
 
     _appKitModal.init().then((value) => setState(() {}));

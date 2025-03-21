@@ -55,6 +55,11 @@ class ReownCli {
           help: 'Platforms to support (android,ios,web)',
           defaultsTo: 'android,ios',
         )
+        ..addOption(
+          'chains',
+          abbr: 'c',
+          help: 'Blockchains to support (e.g., eip155,solana,bitcoin)',
+        )
         ..addFlag(
           'verbose',
           abbr: 'v',
@@ -130,6 +135,8 @@ Run "reown help create" for more information about the create command.
     final org = _args.command!['org'] as String;
     final projectId = _args.command!['projectId'] as String;
     final platforms = (_args.command!['platforms'] as String).split(',');
+    final chains = (_args.command!['chains'] as String?)?.split(',') ??
+        ['eip155', 'solana'];
     final verbose = _args.command!['verbose'] as bool;
 
     if (verbose) {
@@ -137,6 +144,7 @@ Run "reown help create" for more information about the create command.
       print('Organization: $org');
       print('Project ID: $projectId');
       print('Platforms: ${platforms.join(', ')}');
+      print('Chains: ${chains.join(', ')}');
     }
 
     // Create Flutter project
@@ -158,7 +166,7 @@ Run "reown help create" for more information about the create command.
           'flutter create --org $org --platforms ${platforms.join(',')} $projectName');
 
       // Copy template files
-      await _copyTemplateFiles(projectName, latestVersion);
+      await _copyTemplateFiles(projectName, latestVersion, chains);
 
       // Update pubspec.yaml
       await _updatePubspec(projectName, latestVersion);
@@ -176,6 +184,9 @@ Run "reown help create" for more information about the create command.
             'Command failed: flutter pub get\n${result.first.stderr}');
       }
 
+      // Format code
+      await projectShell.run('dart format .');
+
       // Update Podfile if iOS is enabled
       if (platforms.contains('ios')) {
         await _updatePodfile(projectName);
@@ -183,10 +194,13 @@ Run "reown help create" for more information about the create command.
 
       print('\nProject created successfully!');
       print('\nNext steps:');
+      print('1. cd $projectName');
+      print('2. flutter pub get');
+      print('3. flutter run');
       print(
-          '1. Check the docs at https://docs.reown.com/appkit/flutter/core/installation');
+          '4. Check the docs at https://docs.reown.com/appkit/flutter/core/installation');
       print(
-          '2. Open any issue at https://github.com/reown-com/reown_flutter/issues');
+          '5. Open any issue at https://github.com/reown-com/reown_flutter/issues');
     } catch (e) {
       print('Error creating project: $e');
       exit(1);
@@ -200,7 +214,8 @@ Run "reown help create" for more information about the create command.
     }
   }
 
-  Future<void> _copyTemplateFiles(String projectName, String version) async {
+  Future<void> _copyTemplateFiles(
+      String projectName, String version, List<String> chains) async {
     final scriptPath = Platform.script.path;
     final packageRoot = path.dirname(
         path.dirname(path.dirname(path.dirname(path.dirname(scriptPath)))));
@@ -213,10 +228,101 @@ Run "reown help create" for more information about the create command.
         File(path.join(templatesDir.path, 'lib', 'main.dart.template'));
     final mainTarget = File(path.join(projectDir.path, 'lib', 'main.dart'));
     final projectId = _args.command!['projectId'] as String;
-    await mainTarget.writeAsString(mainTemplate
-        .readAsStringSync()
+
+    // Process template with chain conditions
+    String content = mainTemplate.readAsStringSync();
+
+    // Replace basic placeholders
+    content = content
         .replaceAll('{{project_name}}', projectName)
-        .replaceAll('{{project_id}}', projectId));
+        .replaceAll('{{project_id}}', projectId)
+        .replaceAll('{{chains}}', chains.join(', '));
+
+    // Process chain-specific conditions
+    content = _processChainConditions(content, chains);
+
+    await mainTarget.writeAsString(content);
+  }
+
+  String _processChainConditions(String content, List<String> chains) {
+    // If no chains are specified, remove all chain-related condition blocks
+    if (chains.isEmpty || (chains.length == 1 && chains.first.isEmpty)) {
+      // Remove all chain-related condition blocks
+      content = content.replaceAll(
+          RegExp(r'{{#if-chains-specified}}.*?{{/if-chains-specified}}',
+              multiLine: true, dotAll: true),
+          '');
+      content = content.replaceAll(
+          RegExp(r'{{#if-chain:.*?}}.*?{{/if-chain}}',
+              multiLine: true, dotAll: true),
+          '');
+      content = content.replaceAll(
+          RegExp(r'{{#if-not-chain:.*?}}.*?{{/if-not-chain}}',
+              multiLine: true, dotAll: true),
+          '');
+      content = content.replaceAll(
+          RegExp(r'{{#if-chain-not-in:.*?}}.*?{{/if-chain-not-in}}',
+              multiLine: true, dotAll: true),
+          '');
+      return content;
+    }
+
+    // Process if-chains-specified blocks
+    final ifChainsSpecifiedPattern = RegExp(
+        r'{{#if-chains-specified}}(.*?){{/if-chains-specified}}',
+        multiLine: true,
+        dotAll: true);
+    content = content.replaceAllMapped(ifChainsSpecifiedPattern, (match) {
+      final blockContent = match.group(1) ?? '';
+      // Process the content inside the if-chains-specified block
+      String processedContent = blockContent;
+
+      // Process if-chain blocks
+      final ifChainPattern = RegExp(r'{{#if-chain:([^}]+)}}(.*?){{/if-chain}}',
+          multiLine: true, dotAll: true);
+      processedContent =
+          processedContent.replaceAllMapped(ifChainPattern, (match) {
+        final chain = match.group(1)?.trim();
+        final blockContent = match.group(2)?.trim() ?? '';
+        return chains.contains(chain) ? blockContent : '';
+      });
+
+      // Process if-not-chain blocks
+      final ifNotChainPattern = RegExp(
+          r'{{#if-not-chain:([^}]+)}}(.*?){{/if-not-chain}}',
+          multiLine: true,
+          dotAll: true);
+      processedContent =
+          processedContent.replaceAllMapped(ifNotChainPattern, (match) {
+        final chain = match.group(1)?.trim();
+        final blockContent = match.group(2)?.trim() ?? '';
+        return !chains.contains(chain) ? blockContent : '';
+      });
+
+      // Process if-chain-not-in blocks
+      final ifChainNotInPattern = RegExp(
+          r'{{#if-chain-not-in:([^}]+)}}(.*?){{/if-chain-not-in}}',
+          multiLine: true,
+          dotAll: true);
+      processedContent =
+          processedContent.replaceAllMapped(ifChainNotInPattern, (match) {
+        final excludedChains =
+            match.group(1)?.split(',').map((e) => e.trim()).toList() ?? [];
+        final blockContent = match.group(2)?.trim() ?? '';
+        final additionalChains =
+            chains.where((chain) => !excludedChains.contains(chain)).join(', ');
+        return additionalChains.isNotEmpty
+            ? blockContent.replaceAll('{{additional_chains}}', additionalChains)
+            : '';
+      });
+
+      return processedContent;
+    });
+
+    // Remove any remaining empty lines that were left by the conditions
+    content = content.replaceAll(RegExp(r'\n\s*\n\s*\n'), '\n\n');
+
+    return content;
   }
 
   Future<void> _updatePubspec(String projectName, String version) async {
