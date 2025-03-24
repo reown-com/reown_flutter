@@ -84,7 +84,6 @@ class KeyService extends IKeyService {
 
   @override
   Future<void> createRandomWallet() async {
-    // const mnemonic = DartDefines.ethereumSecretKey;
     final mnemonic = bip39.generateMnemonic();
     await restoreWalletFromSeed(mnemonic: mnemonic);
   }
