@@ -18,6 +18,7 @@ abstract class IReownSignDapp extends IReownSignCommon {
     List<List<String>>? methods,
   });
   Future<dynamic> request({
+    int? requestId,
     required String topic,
     required String chainId,
     required SessionRequestParams request,

@@ -74,6 +74,7 @@ class ConnectPageState extends State<ConnectPage> {
     } catch (e) {
       debugPrint(e.toString());
     }
+    return;
   }
 
   @override
@@ -258,7 +259,6 @@ class __RequestButtonsState extends State<_RequestButtons> {
             onPressed: () async {
               final params = await getParams(method, address, chainInfo!);
               if (params?.params != null) {
-                widget.appKitModal.launchConnectedWallet();
                 final future = widget.appKitModal.request(
                   topic: topic,
                   chainId: chainId,
