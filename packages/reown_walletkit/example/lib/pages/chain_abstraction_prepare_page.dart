@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:math';
-import 'dart:developer' as dev;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +10,6 @@ import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
-import 'package:reown_walletkit_wallet/pages/chain_abstraction_execute_page.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 
 class ChainAbstractionPreparePage extends StatefulWidget {
@@ -373,102 +370,31 @@ class _ChainAbstractionPreparePageState
       final hexData = _constructCallData(_receiverAddress.text, rawAmount);
 
       try {
-        final response = await _walletKit.prepare(
-          chainId: chainId,
-          from: _myAddress,
-          call: CallCompat(
-            to: tokenAddress,
-            input: hexData,
-          ),
+        final evmService = GetIt.I.get<EVMService>(instanceName: chainId);
+        final response = await evmService.handleChainAbstractionIfNeeded(
+          JsonRpcResponse(id: -1, jsonrpc: '2.0'),
+          chainId,
+          {'from': _myAddress, 'to': tokenAddress, 'input': hexData},
         );
-        response.when(
-          success: (PrepareDetailedResponseSuccessCompat deatailResponse) {
-            deatailResponse.when(
-              available: (uiFieldsCompat) async {
-                dev.log(jsonEncode(uiFieldsCompat.toJson()));
-                final response = await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ChainAbstractionDetailsAndExecute(
-                      uiFieldsCompat: uiFieldsCompat,
-                    ),
-                    fullscreenDialog: true,
-                  ),
-                );
-                if (response is ErrorCompat) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('❌ ${response.message}'),
-                    duration: const Duration(seconds: 4),
-                  ));
-                } else if (response is Exception) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('❌ Response error: $response'),
-                    duration: const Duration(seconds: 4),
-                  ));
-                } else if (response != null) {
-                  debugPrint(jsonEncode(response.toJson()));
-                  // it means that no bridging is required
-                  // proceeds as normal transaction with initial transaction
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text('✅ Success'),
-                    duration: Duration(seconds: 2),
-                  ));
-                }
-                _updateBalance();
-              },
-              notRequired: (notRequired) async {
-                // it means that no bridging is required
-                // proceeds as normal transaction with initial transaction
-                final evmService = GetIt.I.get<EVMService>(
-                  instanceName: chainId,
-                );
-                final transaction = await evmService.approveTransaction(
-                  notRequired.initialTransaction.toJson(),
-                  method: 'eth_sendTransaction',
-                  chainId: chainId,
-                  transportType: TransportType.relay.name,
-                );
-                if (transaction is Transaction) {
-                  try {
-                    final cid = chainId.split(':').last;
-                    final signedTx = await evmService.sendTransaction(
-                      transaction,
-                      int.parse(cid),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('✅ success: $signedTx'),
-                      duration: Duration(seconds: 2),
-                    ));
-                  } on RPCError catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('❌ error: ${e.message}'),
-                      duration: Duration(seconds: 2),
-                    ));
-                  } catch (e) {
-                    final error = Errors.getSdkError(
-                      Errors.MALFORMED_REQUEST_PARAMS,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('❌ error: ${error.message}'),
-                      duration: Duration(seconds: 2),
-                    ));
-                  }
-                } else {
-                  final message = (transaction as JsonRpcError).message;
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('❌ error: $message'),
-                    duration: Duration(seconds: 2),
-                  ));
-                }
-              },
-            );
-          },
-          error: (PrepareResponseError error) {
+        if (response != null) {
+          if (response.result != null) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('✅ Success'),
+              duration: Duration(seconds: 2),
+            ));
+            _updateBalance();
+          } else {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('❌ Prepare Error ${error.error.name}'),
+              content: Text('❌ ${response.error?.message}'),
               duration: const Duration(seconds: 4),
             ));
-          },
-        );
+          }
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('❌ something went wrong'),
+            duration: const Duration(seconds: 4),
+          ));
+        }
       } catch (e) {
         debugPrint(e.toString());
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

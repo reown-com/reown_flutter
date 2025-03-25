@@ -430,20 +430,16 @@ class _EVMAccountsState extends State<_EVMAccounts> {
             children: [
               CustomButton(
                 type: CustomButtonType.normal,
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    enableDrag: false,
-                    showDragHandle: false,
-                    isDismissible: false,
-                    useRootNavigator: true,
-                    useSafeArea: true,
-                    builder: (BuildContext context) {
-                      return ChainAbstractionPreparePage();
-                    },
-                  );
-                },
+                onTap: () => showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  enableDrag: false,
+                  showDragHandle: false,
+                  isDismissible: false,
+                  useRootNavigator: true,
+                  useSafeArea: true,
+                  builder: (context) => ChainAbstractionPreparePage(),
+                ),
                 child: const Center(
                   child: Text(
                     'Chain Abstraction',

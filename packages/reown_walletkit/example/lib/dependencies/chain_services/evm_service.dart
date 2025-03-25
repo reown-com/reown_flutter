@@ -11,8 +11,10 @@ import 'package:reown_walletkit/reown_walletkit.dart';
 
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
+import 'package:reown_walletkit_wallet/main.dart';
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
+import 'package:reown_walletkit_wallet/pages/chain_abstraction_execute_page.dart';
 import 'package:reown_walletkit_wallet/utils/eth_utils.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_model.dart';
@@ -393,16 +395,30 @@ class EVMService {
     debugPrint('[SampleWallet] ethSendTransaction request: $parameters');
     final SessionRequest pRequest = _walletKit.pendingRequests.getAll().last;
 
-    final data = EthUtils.getTransactionFromSessionRequest(pRequest);
-    if (data == null) return;
+    final txParams = EthUtils.getTransactionFromSessionRequest(pRequest);
+    if (txParams == null) {
+      return;
+    }
 
+    // evaluate if the transsaction requires Chain Abstraction
+    final caResponse = await handleChainAbstractionIfNeeded(
+      JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0'),
+      pRequest.chainId,
+      txParams,
+    );
+    // if response is not null it means it had been handled by Chain Abstraction logic and we return that
+    if (caResponse != null) {
+      return _handleResponseForTopic(topic, caResponse);
+    }
+
+    // otherwise we continue with regular flow for eth_sendTransaction
     var response = JsonRpcResponse(
       id: pRequest.id,
       jsonrpc: '2.0',
     );
 
     final transaction = await approveTransaction(
-      data,
+      txParams,
       method: pRequest.method,
       chainId: pRequest.chainId,
       transportType: pRequest.transportType.name,
@@ -438,6 +454,122 @@ class EVMService {
     }
 
     _handleResponseForTopic(topic, response);
+  }
+
+  Future<JsonRpcResponse?> handleChainAbstractionIfNeeded(
+    JsonRpcResponse response,
+    String chainId,
+    Map<String, dynamic> txParams,
+  ) async {
+    if (txParams.containsKey('input') || txParams.containsKey('data')) {
+      final txFrom = txParams['from'];
+      final txTo = txParams['to'];
+      final txData = txParams['input'] ?? txParams['data'];
+      final prepareResponse = await chainAbstractionPrepareHandler(
+        chainId,
+        txFrom,
+        txTo,
+        txData,
+      );
+      debugPrint(
+        '[SampleWallet] prepareResponse ${prepareResponse.runtimeType}',
+      );
+      if (prepareResponse is UiFieldsCompat) {
+        final context = navigatorKey.currentState!.context;
+        final executeResponse = await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ChainAbstractionDetailsAndExecute(
+              uiFieldsCompat: prepareResponse,
+            ),
+            fullscreenDialog: true,
+          ),
+        );
+        if (executeResponse is ErrorCompat) {
+          response = response.copyWith(
+            error: JsonRpcError(
+              code: -1,
+              message: executeResponse.message,
+            ),
+          );
+        } else if (executeResponse is Exception) {
+          response = response.copyWith(
+            error: JsonRpcError(
+              code: -1,
+              message: executeResponse.toString(),
+            ),
+          );
+        } else if (executeResponse is ExecuteDetailsCompat) {
+          response = response.copyWith(
+            result: jsonEncode(executeResponse.toJson()),
+          );
+        }
+        return response;
+      }
+    }
+    return null;
+  }
+
+  Future<dynamic> chainAbstractionPrepareHandler(
+    String chainId,
+    String from,
+    String to,
+    String input,
+  ) async {
+    dynamic prepareResponse;
+    final response = await _walletKit.prepare(
+      chainId: chainId,
+      from: from,
+      call: CallCompat(to: to, input: input),
+    );
+    response.when(
+      success: (PrepareDetailedResponseSuccessCompat deatailResponse) {
+        deatailResponse.when(
+          available: (UiFieldsCompat uiFieldsCompat) {
+            prepareResponse = uiFieldsCompat;
+          },
+          notRequired: (PrepareResponseNotRequiredCompat notRequired) {
+            // it means that no bridging is required
+            // proceeds as normal transaction with initial transaction
+            prepareResponse = notRequired;
+          },
+        );
+      },
+      error: (PrepareResponseError error) {
+        prepareResponse = error.error;
+      },
+    );
+
+    return prepareResponse;
+  }
+
+  Future<dynamic> chainAbstractionExecuteHandler(
+    UiFieldsCompat uiFields,
+  ) async {
+    final TxnDetailsCompat initial = uiFields.initial;
+    final List<TxnDetailsCompat> route = uiFields.route;
+
+    final initialSignature = signHash(initial.transactionHashToSign);
+    final isValid = isValidSignature(
+      initial.transactionHashToSign,
+      initialSignature,
+    );
+    if (isValid) {
+      final routeSignatures = route.map((route) {
+        final rSignature = signHash(route.transactionHashToSign);
+        return rSignature;
+      }).toList();
+      try {
+        return await _walletKit.execute(
+          uiFields: uiFields,
+          initialTxnSig: initialSignature,
+          routeTxnSigs: routeSignatures,
+        );
+      } catch (e) {
+        rethrow;
+      }
+    } else {
+      throw Exception('invalid signature');
+    }
   }
 
   Future<void> switchChainHandler(String topic, dynamic parameters) async {
@@ -760,7 +892,6 @@ class EVMService {
 
   void _handleResponseForTopic(String topic, JsonRpcResponse response) async {
     final session = _walletKit.sessions.get(topic);
-
     try {
       await _walletKit.respondSessionRequest(
         topic: topic,

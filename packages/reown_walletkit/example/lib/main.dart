@@ -22,6 +22,8 @@ import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   DeepLinkHandler.initListener();
@@ -72,6 +74,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: StringConstants.appTitle,
       theme: ThemeData(
         colorScheme: _isDarkMode

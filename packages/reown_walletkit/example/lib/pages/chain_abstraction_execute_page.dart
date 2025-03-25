@@ -315,34 +315,15 @@ class _ChainAbstractionDetailsAndExecuteState
     setState(() => _executing = true);
     final TxnDetailsCompat initial = uiFields.initial;
     final String chainId = initial.transaction.chainId;
-    final List<TxnDetailsCompat> route = uiFields.route;
 
-    final evmService = GetIt.I.get<EVMService>(instanceName: chainId);
-    final initialSignature = evmService.signHash(
-      initial.transactionHashToSign,
-    );
-    final isValidSignature = evmService.isValidSignature(
-      initial.transactionHashToSign,
-      initialSignature,
-    );
-    if (isValidSignature) {
-      final routePrimitives = route.map((r) {
-        final rSignature = evmService.signHash(r.transactionHashToSign);
-        return rSignature;
-      }).toList();
-      try {
-        final walletKit = GetIt.I<IWalletKitService>().walletKit;
-        final response = await walletKit.execute(
-          uiFields: uiFields,
-          initialTxnSig: initialSignature,
-          routeTxnSigs: routePrimitives,
-        );
-        Navigator.of(context).pop(response);
-      } on Exception catch (e) {
-        Navigator.of(context).pop(e);
-      }
-    } else {
-      Navigator.of(context).pop(Exception('Invalid signature'));
+    try {
+      final evmService = GetIt.I.get<EVMService>(instanceName: chainId);
+      final executeResponse = await evmService.chainAbstractionExecuteHandler(
+        uiFields,
+      );
+      Navigator.of(context).pop(executeResponse);
+    } on Exception catch (e) {
+      Navigator.of(context).pop(e);
     }
   }
 
