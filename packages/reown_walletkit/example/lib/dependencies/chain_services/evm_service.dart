@@ -56,17 +56,17 @@ class EVMService {
   late final Web3Client ethClient;
 
   Map<String, dynamic Function(String, dynamic)> get sessionRequestHandlers => {
-        SupportedEVMMethods.ethSign.name: ethSign,
-        SupportedEVMMethods.ethSignTransaction.name: ethSignTransaction,
-        SupportedEVMMethods.ethSignTypedData.name: ethSignTypedData,
-        SupportedEVMMethods.ethSignTypedDataV4.name: ethSignTypedDataV4,
-        SupportedEVMMethods.switchChain.name: switchChain,
-        SupportedEVMMethods.addChain.name: addChain,
+        SupportedEVMMethods.ethSign.name: ethSignHandler,
+        SupportedEVMMethods.ethSignTransaction.name: ethSignTransactionHandler,
+        SupportedEVMMethods.ethSignTypedData.name: ethSignTypedDataHandler,
+        SupportedEVMMethods.ethSignTypedDataV4.name: ethSignTypedDataV4Handler,
+        SupportedEVMMethods.switchChain.name: switchChainHandler,
+        SupportedEVMMethods.addChain.name: addChainHandler,
       };
 
   Map<String, dynamic Function(String, dynamic)> get methodRequestHandlers => {
-        SupportedEVMMethods.personalSign.name: personalSign,
-        SupportedEVMMethods.ethSendTransaction.name: ethSendTransaction,
+        SupportedEVMMethods.personalSign.name: personalSignHandler,
+        SupportedEVMMethods.ethSendTransaction.name: ethSendTransactionHandler,
       };
 
   EVMService({required this.chainSupported}) {
@@ -105,24 +105,9 @@ class EVMService {
     return EthPrivateKey.fromHex(pk);
   }
 
-  String signHash(String hashToSign, [String? privateKey]) {
-    final credentials =
-        privateKey != null ? EthPrivateKey.fromHex(privateKey) : _credentials;
+  // Handler methods
 
-    final Uint8List dataToSign = hashToSign.startsWith('0x')
-        ? eth_sig_util_util.hexToBytes(hashToSign.substring(2))
-        : utf8.encode(hashToSign);
-
-    final String signature = eth_sig_util.EthSigUtil.signMessage(
-      message: dataToSign,
-      privateKeyInBytes: credentials.privateKey,
-    );
-
-    return signature;
-  }
-
-  // personal_sign is handled using onSessionRequest event for demo purposes
-  Future<void> personalSign(String topic, dynamic parameters) async {
+  Future<void> personalSignHandler(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] personalSign request: $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
     final address = EthUtils.getAddressFromSessionRequest(pRequest);
@@ -150,7 +135,7 @@ class EVMService {
           include0x: true,
         );
 
-        isValidPersonalSignature(signedTx, message);
+        _isValidPersonalSignature(signedTx, message);
 
         response = response.copyWith(result: signedTx);
       } catch (e) {
@@ -177,7 +162,7 @@ class EVMService {
     _handleResponseForTopic(topic, response);
   }
 
-  Future<void> ethSign(String topic, dynamic parameters) async {
+  Future<void> ethSignHandler(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] ethSign request: $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
     final address = EthUtils.getAddressFromSessionRequest(pRequest);
@@ -205,7 +190,7 @@ class EVMService {
           include0x: true,
         );
 
-        isValidPersonalSignature(signedTx, message);
+        _isValidPersonalSignature(signedTx, message);
 
         response = response.copyWith(result: signedTx);
       } catch (e) {
@@ -231,7 +216,7 @@ class EVMService {
     _handleResponseForTopic(topic, response);
   }
 
-  Future<void> ethSignTypedData(String topic, dynamic parameters) async {
+  Future<void> ethSignTypedDataHandler(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] ethSignTypedData request: $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
     final address = EthUtils.getAddressFromSessionRequest(pRequest);
@@ -284,7 +269,10 @@ class EVMService {
     _handleResponseForTopic(topic, response);
   }
 
-  Future<void> ethSignTypedDataV4(String topic, dynamic parameters) async {
+  Future<void> ethSignTypedDataV4Handler(
+    String topic,
+    dynamic parameters,
+  ) async {
     debugPrint('[SampleWallet] ethSignTypedDataV4 request: $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
     final address = EthUtils.getAddressFromSessionRequest(pRequest);
@@ -333,7 +321,10 @@ class EVMService {
     _handleResponseForTopic(topic, response);
   }
 
-  Future<void> ethSignTransaction(String topic, dynamic parameters) async {
+  Future<void> ethSignTransactionHandler(
+    String topic,
+    dynamic parameters,
+  ) async {
     debugPrint('[SampleWallet] ethSignTransaction request: $parameters');
     final SessionRequest pRequest = _walletKit.pendingRequests.getAll().last;
 
@@ -346,7 +337,7 @@ class EVMService {
       jsonrpc: '2.0',
     );
 
-    final transaction = await _approveTransaction(
+    final transaction = await approveTransaction(
       data,
       method: pRequest.method,
       chainId: pRequest.chainId,
@@ -395,7 +386,10 @@ class EVMService {
     _handleResponseForTopic(topic, response);
   }
 
-  Future<void> ethSendTransaction(String topic, dynamic parameters) async {
+  Future<void> ethSendTransactionHandler(
+    String topic,
+    dynamic parameters,
+  ) async {
     debugPrint('[SampleWallet] ethSendTransaction request: $parameters');
     final SessionRequest pRequest = _walletKit.pendingRequests.getAll().last;
 
@@ -407,7 +401,7 @@ class EVMService {
       jsonrpc: '2.0',
     );
 
-    final transaction = await _approveTransaction(
+    final transaction = await approveTransaction(
       data,
       method: pRequest.method,
       chainId: pRequest.chainId,
@@ -418,11 +412,7 @@ class EVMService {
       try {
         final chainId = chainSupported.chainId.split(':').last;
 
-        final signedTx = await ethClient.sendTransaction(
-          _credentials,
-          transaction,
-          chainId: int.parse(chainId),
-        );
+        final signedTx = await sendTransaction(transaction, int.parse(chainId));
 
         response = response.copyWith(result: signedTx);
       } on RPCError catch (e) {
@@ -450,65 +440,7 @@ class EVMService {
     _handleResponseForTopic(topic, response);
   }
 
-  bool isValidPersonalSignature(
-    String signature,
-    String message, [
-    String? privateKey,
-  ]) {
-    try {
-      final credentials =
-          privateKey != null ? EthPrivateKey.fromHex(privateKey) : _credentials;
-
-      final expectedAddress = credentials.address.hex;
-
-      // Prepare the data to verify
-      final dataToVerify = message.startsWith('0x')
-          ? eth_sig_util_util.hexToBytes(message)
-          : utf8.encode(message);
-
-      final recoveredAddress = eth_sig_util.EthSigUtil.recoverPersonalSignature(
-        signature: signature,
-        message: dataToVerify,
-      );
-      debugPrint('[SampleWallet] recoveredAddress: $recoveredAddress');
-
-      return recoveredAddress.toLowerCase() == expectedAddress.toLowerCase();
-    } catch (e) {
-      debugPrint('[SampleWallet] $e');
-      return false;
-    }
-  }
-
-  // Validates a signature for a given hash and recovers the signer's address
-  bool isValidSignature(
-    String hashToVerify,
-    String signature, [
-    String? privateKey,
-  ]) {
-    try {
-      final credentials =
-          privateKey != null ? EthPrivateKey.fromHex(privateKey) : _credentials;
-
-      final expectedAddress = credentials.address.hex;
-
-      // Prepare the data to verify
-      final dataToVerify = hashToVerify.startsWith('0x')
-          ? eth_sig_util_util.hexToBytes(hashToVerify)
-          : utf8.encode(hashToVerify);
-
-      final recoveredAddress = eth_sig_util.EthSigUtil.recoverSignature(
-        signature: signature,
-        message: dataToVerify,
-      );
-
-      return recoveredAddress.toLowerCase() == expectedAddress.toLowerCase();
-    } catch (e) {
-      debugPrint('[SampleWallet] $e');
-      return false;
-    }
-  }
-
-  Future<void> switchChain(String topic, dynamic parameters) async {
+  Future<void> switchChainHandler(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] switchChain request: $topic $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
@@ -544,7 +476,7 @@ class EVMService {
     _handleResponseForTopic(topic, response);
   }
 
-  Future<void> addChain(String topic, dynamic parameters) async {
+  Future<void> addChainHandler(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] addChain request: $topic $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
     var response = JsonRpcResponse(
@@ -588,7 +520,7 @@ class EVMService {
 
         // update session's namespaces
         final currentSession = _walletKit.sessions.get(topic)!;
-        final namespaces = updateNamespaces(
+        final namespaces = _updateNamespaces(
           currentSession.namespaces,
           'eip155',
           [chainId],
@@ -631,30 +563,17 @@ class EVMService {
     _handleResponseForTopic(topic, response);
   }
 
-  void _handleResponseForTopic(String topic, JsonRpcResponse response) async {
-    final session = _walletKit.sessions.get(topic);
+  // Support methods
 
-    try {
-      await _walletKit.respondSessionRequest(
-        topic: topic,
-        response: response,
-      );
-      MethodsUtils.handleRedirect(
-        topic,
-        session!.peer.metadata.redirect,
-        response.error?.message,
-        response.error == null,
-      );
-    } on ReownSignError catch (error) {
-      MethodsUtils.handleRedirect(
-        topic,
-        session!.peer.metadata.redirect,
-        error.message,
-      );
-    }
+  Future<String> sendTransaction(dynamic transaction, int chainId) async {
+    return await ethClient.sendTransaction(
+      _credentials,
+      transaction,
+      chainId: chainId,
+    );
   }
 
-  Future<dynamic> _approveTransaction(
+  Future<dynamic> approveTransaction(
     Map<String, dynamic> tJson, {
     String? title,
     String? method,
@@ -710,14 +629,20 @@ class EVMService {
     return const JsonRpcError(code: 5002, message: 'User rejected method');
   }
 
-  void _onSessionRequest(SessionRequestEvent? args) async {
-    if (args != null && args.chainId == chainSupported.chainId) {
-      debugPrint('[SampleWallet] _onSessionRequest ${args.toString()}');
-      final handler = sessionRequestHandlers[args.method];
-      if (handler != null) {
-        await handler(args.topic, args.params);
-      }
-    }
+  String signHash(String hashToSign, [String? privateKey]) {
+    final credentials =
+        privateKey != null ? EthPrivateKey.fromHex(privateKey) : _credentials;
+
+    final Uint8List dataToSign = hashToSign.startsWith('0x')
+        ? eth_sig_util_util.hexToBytes(hashToSign.substring(2))
+        : utf8.encode(hashToSign);
+
+    final String signature = eth_sig_util.EthSigUtil.signMessage(
+      message: dataToSign,
+      privateKeyInBytes: credentials.privateKey,
+    );
+
+    return signature;
   }
 
   Future<dynamic> getBalance({required String address}) async {
@@ -760,6 +685,65 @@ class EVMService {
     }
   }
 
+  // Validate signatures
+
+  bool isValidSignature(
+    String hashToVerify,
+    String signature, [
+    String? privateKey,
+  ]) {
+    try {
+      final credentials =
+          privateKey != null ? EthPrivateKey.fromHex(privateKey) : _credentials;
+
+      final expectedAddress = credentials.address.hex;
+
+      // Prepare the data to verify
+      final dataToVerify = hashToVerify.startsWith('0x')
+          ? eth_sig_util_util.hexToBytes(hashToVerify)
+          : utf8.encode(hashToVerify);
+
+      final recoveredAddress = eth_sig_util.EthSigUtil.recoverSignature(
+        signature: signature,
+        message: dataToVerify,
+      );
+
+      return recoveredAddress.toLowerCase() == expectedAddress.toLowerCase();
+    } catch (e) {
+      debugPrint('[SampleWallet] $e');
+      return false;
+    }
+  }
+
+  bool _isValidPersonalSignature(
+    String signature,
+    String message, [
+    String? privateKey,
+  ]) {
+    try {
+      final credentials =
+          privateKey != null ? EthPrivateKey.fromHex(privateKey) : _credentials;
+
+      final expectedAddress = credentials.address.hex;
+
+      // Prepare the data to verify
+      final dataToVerify = message.startsWith('0x')
+          ? eth_sig_util_util.hexToBytes(message)
+          : utf8.encode(message);
+
+      final recoveredAddress = eth_sig_util.EthSigUtil.recoverPersonalSignature(
+        signature: signature,
+        message: dataToVerify,
+      );
+      debugPrint('[SampleWallet] recoveredAddress: $recoveredAddress');
+
+      return recoveredAddress.toLowerCase() == expectedAddress.toLowerCase();
+    } catch (e) {
+      debugPrint('[SampleWallet] $e');
+      return false;
+    }
+  }
+
   T _parseRpcResultAs<T>(String body) {
     try {
       final result = Map<String, dynamic>.from({...jsonDecode(body), 'id': 1});
@@ -774,8 +758,41 @@ class EVMService {
     }
   }
 
+  void _handleResponseForTopic(String topic, JsonRpcResponse response) async {
+    final session = _walletKit.sessions.get(topic);
+
+    try {
+      await _walletKit.respondSessionRequest(
+        topic: topic,
+        response: response,
+      );
+      MethodsUtils.handleRedirect(
+        topic,
+        session!.peer.metadata.redirect,
+        response.error?.message,
+        response.error == null,
+      );
+    } on ReownSignError catch (error) {
+      MethodsUtils.handleRedirect(
+        topic,
+        session!.peer.metadata.redirect,
+        error.message,
+      );
+    }
+  }
+
+  void _onSessionRequest(SessionRequestEvent? args) async {
+    if (args != null && args.chainId == chainSupported.chainId) {
+      debugPrint('[SampleWallet] _onSessionRequest ${args.toString()}');
+      final handler = sessionRequestHandlers[args.method];
+      if (handler != null) {
+        await handler(args.topic, args.params);
+      }
+    }
+  }
+
   // TODO add this method inside NamespaceUtils
-  static Map<String, Namespace> updateNamespaces(
+  static Map<String, Namespace> _updateNamespaces(
     Map<String, Namespace> currentNamespaces,
     String namespace,
     List<String> newChains,
@@ -793,22 +810,3 @@ class EVMService {
     return updatedNamespaces;
   }
 }
-
-// extension SignatureExtension on String {
-//   PrimitiveSignatureCompat toPrimitive() {
-//     final ecdsaSignature = SignatureUtil.fromRpcSig(this);
-
-//     // Extract r, s, and v
-//     final rHex = bytesToHex(encodeBigInt(ecdsaSignature.r));
-//     final sHex = bytesToHex(encodeBigInt(ecdsaSignature.s));
-
-//     // Convert v to yParity (Ethereum EIP-1559 format)
-//     final bool yParity = (ecdsaSignature.v == 28);
-
-//     return PrimitiveSignatureCompat(
-//       r: rHex,
-//       s: sHex,
-//       yParity: yParity,
-//     );
-//   }
-// }

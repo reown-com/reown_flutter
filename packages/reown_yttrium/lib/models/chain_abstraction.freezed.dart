@@ -257,8 +257,8 @@ CallCompat _$CallCompatFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$CallCompat {
   String get to => throw _privateConstructorUsedError;
-  BigInt get value => throw _privateConstructorUsedError;
   String get input => throw _privateConstructorUsedError;
+  BigInt? get value => throw _privateConstructorUsedError;
 
   /// Serializes this CallCompat to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -276,7 +276,7 @@ abstract class $CallCompatCopyWith<$Res> {
           CallCompat value, $Res Function(CallCompat) then) =
       _$CallCompatCopyWithImpl<$Res, CallCompat>;
   @useResult
-  $Res call({String to, BigInt value, String input});
+  $Res call({String to, String input, BigInt? value});
 }
 
 /// @nodoc
@@ -295,22 +295,22 @@ class _$CallCompatCopyWithImpl<$Res, $Val extends CallCompat>
   @override
   $Res call({
     Object? to = null,
-    Object? value = null,
     Object? input = null,
+    Object? value = freezed,
   }) {
     return _then(_value.copyWith(
       to: null == to
           ? _value.to
           : to // ignore: cast_nullable_to_non_nullable
               as String,
-      value: null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as BigInt,
       input: null == input
           ? _value.input
           : input // ignore: cast_nullable_to_non_nullable
               as String,
+      value: freezed == value
+          ? _value.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as BigInt?,
     ) as $Val);
   }
 }
@@ -323,7 +323,7 @@ abstract class _$$CallCompatImplCopyWith<$Res>
       __$$CallCompatImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String to, BigInt value, String input});
+  $Res call({String to, String input, BigInt? value});
 }
 
 /// @nodoc
@@ -340,22 +340,22 @@ class __$$CallCompatImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? to = null,
-    Object? value = null,
     Object? input = null,
+    Object? value = freezed,
   }) {
     return _then(_$CallCompatImpl(
       to: null == to
           ? _value.to
           : to // ignore: cast_nullable_to_non_nullable
               as String,
-      value: null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as BigInt,
       input: null == input
           ? _value.input
           : input // ignore: cast_nullable_to_non_nullable
               as String,
+      value: freezed == value
+          ? _value.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as BigInt?,
     ));
   }
 }
@@ -363,8 +363,7 @@ class __$$CallCompatImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$CallCompatImpl implements _CallCompat {
-  const _$CallCompatImpl(
-      {required this.to, required this.value, required this.input});
+  const _$CallCompatImpl({required this.to, required this.input, this.value});
 
   factory _$CallCompatImpl.fromJson(Map<String, dynamic> json) =>
       _$$CallCompatImplFromJson(json);
@@ -372,13 +371,13 @@ class _$CallCompatImpl implements _CallCompat {
   @override
   final String to;
   @override
-  final BigInt value;
-  @override
   final String input;
+  @override
+  final BigInt? value;
 
   @override
   String toString() {
-    return 'CallCompat(to: $to, value: $value, input: $input)';
+    return 'CallCompat(to: $to, input: $input, value: $value)';
   }
 
   @override
@@ -387,13 +386,13 @@ class _$CallCompatImpl implements _CallCompat {
         (other.runtimeType == runtimeType &&
             other is _$CallCompatImpl &&
             (identical(other.to, to) || other.to == to) &&
-            (identical(other.value, value) || other.value == value) &&
-            (identical(other.input, input) || other.input == input));
+            (identical(other.input, input) || other.input == input) &&
+            (identical(other.value, value) || other.value == value));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, to, value, input);
+  int get hashCode => Object.hash(runtimeType, to, input, value);
 
   /// Create a copy of CallCompat
   /// with the given fields replaced by the non-null parameter values.
@@ -414,8 +413,8 @@ class _$CallCompatImpl implements _CallCompat {
 abstract class _CallCompat implements CallCompat {
   const factory _CallCompat(
       {required final String to,
-      required final BigInt value,
-      required final String input}) = _$CallCompatImpl;
+      required final String input,
+      final BigInt? value}) = _$CallCompatImpl;
 
   factory _CallCompat.fromJson(Map<String, dynamic> json) =
       _$CallCompatImpl.fromJson;
@@ -423,9 +422,9 @@ abstract class _CallCompat implements CallCompat {
   @override
   String get to;
   @override
-  BigInt get value;
-  @override
   String get input;
+  @override
+  BigInt? get value;
 
   /// Create a copy of CallCompat
   /// with the given fields replaced by the non-null parameter values.

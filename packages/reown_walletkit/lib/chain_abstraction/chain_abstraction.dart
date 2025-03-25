@@ -49,21 +49,30 @@ class ChainAbstraction implements IChainAbstraction {
     );
   }
 
+  /// ---------------------------------
+  /// ⚠️ This method is experimental. Use with caution.
+  /// ---------------------------------
   @override
   Future<PrepareDetailedResponseCompat> prepare({
     required String chainId,
     required String from,
     required CallCompat call,
-    required Currency localCurrency,
+    Currency? localCurrency,
   }) async {
+    if (call.value == null) {
+      call = call.copyWith(value: BigInt.zero);
+    }
     return await _reownYttrium.prepareDetailed(
       chainId: chainId,
       from: from,
       call: call,
-      localCurrency: localCurrency,
+      localCurrency: localCurrency ?? Currency.usd,
     );
   }
 
+  /// ---------------------------------
+  /// ⚠️ This method is experimental. Use with caution.
+  /// ---------------------------------
   @override
   Future<ExecuteDetailsCompat> execute({
     required UiFieldsCompat uiFields,

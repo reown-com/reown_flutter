@@ -533,12 +533,15 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     );
   }
 
+  /// ---------------------------------
+  /// ⚠️ This method is experimental. Use with caution.
+  /// ---------------------------------
   @override
   Future<PrepareDetailedResponseCompat> prepare({
     required String chainId,
     required String from,
     required CallCompat call,
-    required Currency localCurrency,
+    Currency? localCurrency,
   }) async {
     return await chainAbstraction.prepare(
       chainId: chainId,
@@ -548,6 +551,9 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     );
   }
 
+  /// ---------------------------------
+  /// ⚠️ This method is experimental. Use with caution.
+  /// ---------------------------------
   @override
   Future<ExecuteDetailsCompat> execute({
     required UiFieldsCompat uiFields,

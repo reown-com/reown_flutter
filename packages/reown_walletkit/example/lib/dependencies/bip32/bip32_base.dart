@@ -339,7 +339,7 @@ class BitcoinAddress {
 
     int checksum = _polymod([...combined, 0, 0, 0, 0, 0, 0]) ^ 1;
 
-    var result = StringBuffer(hrp + '1');
+    var result = StringBuffer('${hrp}1');
     for (var v in values) {
       result.write(BECH32_ALPHABET[v]);
     }

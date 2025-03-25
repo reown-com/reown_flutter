@@ -75,8 +75,8 @@ class AmountCompat with _$AmountCompat {
 class CallCompat with _$CallCompat {
   const factory CallCompat({
     required String to,
-    required BigInt value,
     required String input,
+    BigInt? value,
   }) = _CallCompat;
 
   factory CallCompat.fromJson(Map<String, dynamic> json) =>

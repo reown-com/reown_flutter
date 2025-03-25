@@ -17,7 +17,7 @@ abstract class IChainAbstraction {
     required String chainId,
     required String from,
     required CallCompat call,
-    required Currency localCurrency,
+    Currency? localCurrency,
   });
 
   Future<ExecuteDetailsCompat> execute({

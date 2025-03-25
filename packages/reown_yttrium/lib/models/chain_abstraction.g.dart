@@ -27,15 +27,16 @@ Map<String, dynamic> _$$AmountCompatImplToJson(_$AmountCompatImpl instance) =>
 _$CallCompatImpl _$$CallCompatImplFromJson(Map<String, dynamic> json) =>
     _$CallCompatImpl(
       to: json['to'] as String,
-      value: BigInt.parse(json['value'] as String),
       input: json['input'] as String,
+      value:
+          json['value'] == null ? null : BigInt.parse(json['value'] as String),
     );
 
 Map<String, dynamic> _$$CallCompatImplToJson(_$CallCompatImpl instance) =>
     <String, dynamic>{
       'to': instance.to,
-      'value': instance.value.toString(),
       'input': instance.input,
+      'value': instance.value?.toString(),
     };
 
 _$Eip1559EstimationCompatImpl _$$Eip1559EstimationCompatImplFromJson(

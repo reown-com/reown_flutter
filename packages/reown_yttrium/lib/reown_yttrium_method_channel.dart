@@ -127,6 +127,9 @@ class MethodChannelReownYttrium extends ReownYttriumPlatform {
     }
   }
 
+  /// ---------------------------------
+  /// ⚠️ This method is experimental. Use with caution.
+  /// ---------------------------------
   @override
   Future<ExecuteDetailsCompat> execute({
     required UiFieldsCompat uiFields,

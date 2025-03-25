@@ -19,31 +19,7 @@ class ChainsDataList {
       color: Colors.purple.shade300,
       rpc: ['https://polygon-rpc.com/'],
     ),
-    const ChainMetadata(
-      type: ChainType.eip155,
-      chainId: 'eip155:42161',
-      name: 'Arbitrum',
-      logo: 'https://cryptologos.cc/logos/arbitrum-arb-logo.png',
-      color: Colors.blue,
-      rpc: ['https://arbitrum.blockpi.network/v1/rpc/public'],
-    ),
-    const ChainMetadata(
-      type: ChainType.eip155,
-      chainId: 'eip155:10',
-      name: 'OP Mainnet',
-      logo: 'https://cryptologos.cc/logos/optimism-ethereum-op-logo.png',
-      color: Colors.red,
-      rpc: ['https://mainnet.optimism.io/'],
-    ),
-    const ChainMetadata(
-      type: ChainType.eip155,
-      chainId: 'eip155:8453',
-      name: 'Base',
-      logo:
-          'https://images.mirror-media.xyz/publication-images/cgqxxPdUFBDjgKna_dDir.png',
-      color: Colors.lightBlue,
-      rpc: ['https://mainnet.base.org'],
-    ),
+    ...chainAbstraction,
     const ChainMetadata(
       type: ChainType.eip155,
       chainId: 'eip155:43114',
@@ -110,6 +86,34 @@ class ChainsDataList {
       color: Colors.purple.shade300,
       isTestnet: true,
       rpc: ['https://matic-mumbai.chainstacklabs.com'],
+    ),
+  ];
+
+  static final List<ChainMetadata> chainAbstraction = [
+    const ChainMetadata(
+      type: ChainType.eip155,
+      chainId: 'eip155:42161',
+      name: 'Arbitrum',
+      logo: 'https://cryptologos.cc/logos/arbitrum-arb-logo.png',
+      color: Colors.blue,
+      rpc: ['https://arbitrum.blockpi.network/v1/rpc/public'],
+    ),
+    const ChainMetadata(
+      type: ChainType.eip155,
+      chainId: 'eip155:10',
+      name: 'OP Mainnet',
+      logo: 'https://cryptologos.cc/logos/optimism-ethereum-op-logo.png',
+      color: Colors.red,
+      rpc: ['https://mainnet.optimism.io/'],
+    ),
+    const ChainMetadata(
+      type: ChainType.eip155,
+      chainId: 'eip155:8453',
+      name: 'Base',
+      logo:
+          'https://images.mirror-media.xyz/publication-images/cgqxxPdUFBDjgKna_dDir.png',
+      color: Colors.lightBlue,
+      rpc: ['https://mainnet.base.org'],
     ),
   ];
 
