@@ -142,7 +142,7 @@ class RelayClient implements IRelayClient {
       );
     } catch (e, s) {
       core.logger.e('[$runtimeType], publish: $e', stackTrace: s);
-      onRelayClientError.broadcast(ErrorEvent(e));
+      onRelayClientError.broadcast(ErrorEvent(e, s));
     }
   }
 
@@ -176,7 +176,7 @@ class RelayClient implements IRelayClient {
       );
     } catch (e, s) {
       core.logger.e('[$runtimeType], unsubscribe: $e', stackTrace: s);
-      onRelayClientError.broadcast(ErrorEvent(e));
+      onRelayClientError.broadcast(ErrorEvent(e, s));
     }
 
     // Remove the subscription
@@ -232,12 +232,12 @@ class RelayClient implements IRelayClient {
       //
     } on TimeoutException catch (e, s) {
       core.logger.e('[$runtimeType], _connect timeout: $e', stackTrace: s);
-      onRelayClientError.broadcast(ErrorEvent('Connection to relay timeout'));
+      onRelayClientError.broadcast(ErrorEvent(e, s));
       _connecting = false;
       _connect();
     } catch (e, s) {
       core.logger.e('[$runtimeType], _connect error: $e', stackTrace: s);
-      onRelayClientError.broadcast(ErrorEvent(e));
+      onRelayClientError.broadcast(ErrorEvent(e, s));
       _connecting = false;
     }
   }
@@ -347,10 +347,13 @@ class RelayClient implements IRelayClient {
             ? reason ?? WebSocketErrors.INVALID_PROJECT_ID_OR_JWT
             : '';
         onRelayClientError.broadcast(
-          ErrorEvent(ReownCoreError(
-            code: code,
-            message: errorReason,
-          )),
+          ErrorEvent(
+            ReownCoreError(
+              code: code,
+              message: errorReason,
+            ),
+            StackTrace.current,
+          ),
         );
         core.logger.e('[$runtimeType], _handleRelayClose: $core, $errorReason');
       }
@@ -489,7 +492,7 @@ class RelayClient implements IRelayClient {
         '[$runtimeType], _onSubscribe: Topic, $topic, Error: $e',
         stackTrace: s,
       );
-      onRelayClientError.broadcast(ErrorEvent(e));
+      onRelayClientError.broadcast(ErrorEvent(e, s));
     }
 
     if (requestId == null) {
