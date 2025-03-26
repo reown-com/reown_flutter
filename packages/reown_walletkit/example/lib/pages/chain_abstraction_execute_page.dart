@@ -53,7 +53,11 @@ class _ChainAbstractionDetailsAndExecuteState
   Widget build(BuildContext context) {
     final walletKit = GetIt.I<IWalletKitService>().walletKit;
     return Scaffold(
-      appBar: AppBar(title: const Text('Review Transaction')),
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: false,
+        title: const Text('Review Transaction'),
+      ),
       body: SafeArea(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -296,7 +300,10 @@ class _ChainAbstractionDetailsAndExecuteState
                         child: TextButton(
                           child: const Text('Reject'),
                           onPressed: () {
-                            Navigator.of(context).pop();
+                            final error = Errors.getSdkError(
+                              Errors.USER_REJECTED,
+                            ).toSignError();
+                            Navigator.of(context).pop(error);
                           },
                         ),
                       ),
@@ -322,8 +329,11 @@ class _ChainAbstractionDetailsAndExecuteState
         uiFields,
       );
       Navigator.of(context).pop(executeResponse);
-    } on Exception catch (e) {
-      Navigator.of(context).pop(e);
+    } catch (_) {
+      final error = Errors.getSdkError(
+        Errors.MALFORMED_REQUEST_PARAMS,
+      ).toSignError();
+      Navigator.of(context).pop(error);
     }
   }
 

@@ -400,36 +400,70 @@ class EVMService {
       return;
     }
 
-    // evaluate if the transsaction requires Chain Abstraction
-    final caResponse = await handleChainAbstractionIfNeeded(
-      JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0'),
-      pRequest.chainId,
-      txParams,
-    );
-    // if response is not null it means it had been handled by Chain Abstraction logic and we return that
-    if (caResponse != null) {
-      return _handleResponseForTopic(topic, caResponse);
+    // ************
+    // Intercept to check if Chain Abstraction is required
+    // Otherwise continue with regular send transaction flow
+    // ************
+    if (txParams.containsKey('input') || txParams.containsKey('data')) {
+      final caResponse = await handleChainAbstractionIfNeeded(
+        pRequest.id,
+        pRequest.chainId,
+        txParams,
+      );
+      // caResponse could be JsonRpcResponse, TransactionCompat, BridgingError
+      // if chainAbstractionResponse?.result is not null it means it had been handled by Chain Abstraction
+      // We return that response and stop the flow
+      if (caResponse is JsonRpcResponse) {
+        return _handleResponseForTopic(
+          topic,
+          caResponse,
+        );
+      } else {
+        if (caResponse is BridgingError) {
+          final error = caResponse.name;
+          return _handleResponseForTopic(
+            topic,
+            JsonRpcResponse(
+              id: pRequest.id,
+              jsonrpc: '2.0',
+              error: JsonRpcError(code: -1, message: error),
+            ),
+          );
+        }
+      }
     }
 
     // otherwise we continue with regular flow for eth_sendTransaction
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
+    await approveAndSendTransaction(
+      pRequest.id,
+      txParams,
+      pRequest.chainId,
+      pRequest.transportType.name,
+      pRequest.verifyContext,
+      topic,
     );
+  }
 
+  Future<void> approveAndSendTransaction(
+    int requestId,
+    Map<String, dynamic> txParams,
+    String chainId,
+    String transportType,
+    VerifyContext? verifyContext,
+    String topic,
+  ) async {
+    var response = JsonRpcResponse(id: requestId, jsonrpc: '2.0');
     final transaction = await approveTransaction(
       txParams,
-      method: pRequest.method,
-      chainId: pRequest.chainId,
-      transportType: pRequest.transportType.name,
-      verifyContext: pRequest.verifyContext,
+      method: 'eth_sendTransaction',
+      chainId: chainId,
+      transportType: transportType,
+      verifyContext: verifyContext,
     );
     if (transaction is Transaction) {
       try {
         final chainId = chainSupported.chainId.split(':').last;
-
         final signedTx = await sendTransaction(transaction, int.parse(chainId));
-
         response = response.copyWith(result: signedTx);
       } on RPCError catch (e) {
         debugPrint('[SampleWallet] ethSendTransaction error $e');
@@ -456,60 +490,62 @@ class EVMService {
     _handleResponseForTopic(topic, response);
   }
 
-  Future<JsonRpcResponse?> handleChainAbstractionIfNeeded(
-    JsonRpcResponse response,
+  Future<dynamic> handleChainAbstractionIfNeeded(
+    int requestId,
     String chainId,
     Map<String, dynamic> txParams,
   ) async {
-    if (txParams.containsKey('input') || txParams.containsKey('data')) {
-      final txFrom = txParams['from'];
-      final txTo = txParams['to'];
-      final txData = txParams['input'] ?? txParams['data'];
-      final prepareResponse = await chainAbstractionPrepareHandler(
-        chainId,
-        txFrom,
-        txTo,
-        txData,
+    final txData = txParams['input'] ?? txParams['data'];
+    final prepareResponse = await _chainAbstractionPrepareHandler(
+      chainId,
+      txParams['from'],
+      txParams['to'],
+      txData,
+    );
+    if (prepareResponse is UiFieldsCompat) {
+      final context = navigatorKey.currentState!.context;
+      final executeResponse = await Navigator.of(context).push(
+        MaterialPageRoute(
+          fullscreenDialog: true,
+          builder: (context) => ChainAbstractionDetailsAndExecute(
+            uiFieldsCompat: prepareResponse,
+          ),
+        ),
       );
-      debugPrint(
-        '[SampleWallet] prepareResponse ${prepareResponse.runtimeType}',
-      );
-      if (prepareResponse is UiFieldsCompat) {
-        final context = navigatorKey.currentState!.context;
-        final executeResponse = await Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => ChainAbstractionDetailsAndExecute(
-              uiFieldsCompat: prepareResponse,
-            ),
-            fullscreenDialog: true,
+      var rpcResponse = JsonRpcResponse(id: requestId, jsonrpc: '2.0');
+      if (executeResponse is ReownSignError) {
+        // Error from execution fron-end
+        rpcResponse = rpcResponse.copyWith(
+          error: JsonRpcError(
+            code: executeResponse.code,
+            message: executeResponse.message,
           ),
         );
-        if (executeResponse is ErrorCompat) {
-          response = response.copyWith(
-            error: JsonRpcError(
-              code: -1,
-              message: executeResponse.message,
-            ),
-          );
-        } else if (executeResponse is Exception) {
-          response = response.copyWith(
-            error: JsonRpcError(
-              code: -1,
-              message: executeResponse.toString(),
-            ),
-          );
-        } else if (executeResponse is ExecuteDetailsCompat) {
-          response = response.copyWith(
-            result: jsonEncode(executeResponse.toJson()),
-          );
-        }
-        return response;
+      } else if (executeResponse is ErrorCompat) {
+        // Error from execution back-end
+        rpcResponse = rpcResponse.copyWith(
+          error: JsonRpcError(
+            code: -1,
+            message: executeResponse.message,
+          ),
+        );
+      } else if (executeResponse is ExecuteDetailsCompat) {
+        // Success response
+        rpcResponse = rpcResponse.copyWith(
+          result: executeResponse.initialTxnReceipt,
+        );
       }
+      return rpcResponse; // JsonRpcResponse
+    } else if (prepareResponse is PrepareResponseNotRequiredCompat) {
+      // chain abstraction notRequired, continue with initialTransaction
+      return prepareResponse.initialTransaction; // TransactionCompat
+    } else if (prepareResponse is PrepareResponseError) {
+      // chain abstraction error
+      return prepareResponse.error; // BridgingError
     }
-    return null;
   }
 
-  Future<dynamic> chainAbstractionPrepareHandler(
+  Future<dynamic> _chainAbstractionPrepareHandler(
     String chainId,
     String from,
     String to,
@@ -535,7 +571,7 @@ class EVMService {
         );
       },
       error: (PrepareResponseError error) {
-        prepareResponse = error.error;
+        prepareResponse = error;
       },
     );
 
@@ -548,14 +584,14 @@ class EVMService {
     final TxnDetailsCompat initial = uiFields.initial;
     final List<TxnDetailsCompat> route = uiFields.route;
 
-    final initialSignature = signHash(initial.transactionHashToSign);
+    final String initialSignature = signHash(initial.transactionHashToSign);
     final isValid = isValidSignature(
       initial.transactionHashToSign,
       initialSignature,
     );
     if (isValid) {
-      final routeSignatures = route.map((route) {
-        final rSignature = signHash(route.transactionHashToSign);
+      final List<String> routeSignatures = route.map((route) {
+        final String rSignature = signHash(route.transactionHashToSign);
         return rSignature;
       }).toList();
       try {
@@ -568,7 +604,9 @@ class EVMService {
         rethrow;
       }
     } else {
-      throw Exception('invalid signature');
+      return Errors.getSdkError(
+        Errors.SIGNATURE_VERIFICATION_FAILED,
+      ).toSignError();
     }
   }
 
@@ -891,6 +929,14 @@ class EVMService {
   }
 
   void _handleResponseForTopic(String topic, JsonRpcResponse response) async {
+    if (topic.isEmpty) {
+      return MethodsUtils.handleRedirect(
+        topic,
+        null,
+        response.error?.message,
+        response.error == null,
+      );
+    }
     final session = _walletKit.sessions.get(topic);
     try {
       await _walletKit.respondSessionRequest(

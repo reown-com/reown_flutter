@@ -90,14 +90,8 @@ class _ChainAbstractionPreparePageState
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Chain Abstraction'),
         centerTitle: false,
-        actions: [
-          IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: Icon(Icons.close),
-          )
-        ],
+        title: Text('Chain Abstraction'),
       ),
       body: SafeArea(
         child: Padding(
@@ -331,22 +325,43 @@ class _ChainAbstractionPreparePageState
                 controller: _receiverAddress,
               ),
               Expanded(child: SizedBox()),
-              Row(
+              Column(
                 children: [
-                  CustomButton(
-                    type: CustomButtonType.normal,
-                    onTap: _preparing ? null : _prepareDetailed,
-                    child: Center(
-                      child: _preparing
-                          ? CircularProgressIndicator.adaptive()
-                          : Text(
-                              'Prepare',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _valueToBridge == 0.0
+                          ? TextButton(
+                              child: const Text(
+                                'Prepare',
+                                style: TextStyle(
+                                  color: Colors.black45,
+                                ),
+                              ),
+                              onPressed: () => Navigator.of(context).pop(),
+                            )
+                          : CustomButton(
+                              type: CustomButtonType.normal,
+                              onTap: _preparing || _valueToBridge == 0.0
+                                  ? null
+                                  : _prepareDetailed,
+                              child: Center(
+                                child: _preparing
+                                    ? CircularProgressIndicator.adaptive()
+                                    : Text(
+                                        'Prepare',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                               ),
                             ),
-                    ),
+                    ],
+                  ),
+                  TextButton(
+                    child: const Text('Cancel'),
+                    onPressed: () => Navigator.of(context).pop(),
                   ),
                 ],
               ),
@@ -363,40 +378,52 @@ class _ChainAbstractionPreparePageState
       final chainId = _selectedChain.chainId;
       final tokenAddress = _ChainAbstractionTokens.getTokenDataAddress(
         _selectedToken.first,
-        _selectedChain.chainId,
+        chainId,
       );
-      final amount = _valueToBridge.toDouble();
-      final rawAmount = _formattedAmount(amount);
-      final hexData = _constructCallData(_receiverAddress.text, rawAmount);
+      final rawAmount = _formattedAmount(_valueToBridge.toDouble());
+      final input = _constructCallData(_receiverAddress.text, rawAmount);
+      final txParams = {'from': _myAddress, 'to': tokenAddress, 'input': input};
 
       try {
         final evmService = GetIt.I.get<EVMService>(instanceName: chainId);
-        final response = await evmService.handleChainAbstractionIfNeeded(
-          JsonRpcResponse(id: -1, jsonrpc: '2.0'),
+        final caResponse = await evmService.handleChainAbstractionIfNeeded(
+          1,
           chainId,
-          {'from': _myAddress, 'to': tokenAddress, 'input': hexData},
+          txParams,
         );
-        if (response != null) {
-          if (response.result != null) {
+        if (caResponse is JsonRpcResponse) {
+          if (caResponse.error != null) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('❌ ${caResponse.error!.message}'),
+              duration: const Duration(seconds: 4),
+            ));
+          } else {
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text('✅ Success'),
               duration: Duration(seconds: 2),
             ));
             _updateBalance();
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('❌ ${response.error?.message}'),
-              duration: const Duration(seconds: 4),
-            ));
           }
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text('❌ something went wrong'),
-            duration: const Duration(seconds: 4),
-          ));
+          if (caResponse is BridgingError) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('❌ ${caResponse.name}'),
+              duration: const Duration(seconds: 4),
+            ));
+          } else {
+            // regular flow for eth_sendTransaction
+            await evmService.approveAndSendTransaction(
+              1,
+              txParams,
+              chainId,
+              TransportType.relay.name,
+              null,
+              '',
+            );
+            _updateBalance();
+          }
         }
       } catch (e) {
-        debugPrint(e.toString());
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('❌ Prepare Error $e'),
           duration: const Duration(seconds: 4),
