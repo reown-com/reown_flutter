@@ -55,7 +55,7 @@ _NB: WalletKit sample is intended to be used just as an explanatory project_
 
 - Sample Wallet:
   - [Sample Wallet for iOS](https://testflight.apple.com/join/Uv0XoBuD)
-  - [Sample Wallet for Android](https://appdistribution.firebase.dev/i/2b8b3dce9e2831cd)
+  - [Sample Wallet for Android](https://appdistribution.firebase.dev/i/8e6452c6bbd68911)
 - AppKit DApp:
   - [AppKit Dapp for iOS](https://testflight.apple.com/join/6aRJSllc)
-  - [AppKit Dapp for Android](https://appdistribution.firebase.dev/i/2c6573f6956fa7b5)
+  - [AppKit Dapp for Android](https://appdistribution.firebase.dev/i/52c9b87bbf5fbe01)
