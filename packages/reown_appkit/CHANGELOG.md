@@ -1,5 +1,6 @@
-## 1.4.2-beta03
+## 1.4.2
 
+- Dependency updates
 - Bug fixes
 
 ## 1.4.1

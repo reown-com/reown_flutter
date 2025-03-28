@@ -1,6 +1,6 @@
-## 1.1.4-alpha01
+## 1.1.4
 
-- Chain Abstraction
+- Chain Abstraction Experimental APIs
 
 ## 1.1.3
 
