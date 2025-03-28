@@ -4,7 +4,6 @@ import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/deep_link_handler.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
-import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_model.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_widget.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_request_widget.dart/wc_request_widget.dart';
@@ -33,7 +32,7 @@ class MethodsUtils {
                   title: 'Method: $method\n'
                       'Transport Type: ${transportType.toUpperCase()}\n'
                       'Chain ID: $chainId\n'
-                      'Address: $address\n\n'
+                      '${address != null ? 'Address: $address\n\n' : ''}\n'
                       'Message:',
                   elements: [
                     text,
@@ -95,8 +94,7 @@ class MethodsUtils {
     await GetIt.I<IBottomSheetService>().queueBottomSheet(
       closeAfter: success ? 3 : 0,
       widget: Container(
-        color: Colors.white,
-        height: 280.0,
+        height: 320.0,
         width: double.infinity,
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -108,10 +106,7 @@ class MethodsUtils {
             ),
             Text(
               title ?? 'Connected',
-              style: StyleConstants.subtitleText.copyWith(
-                color: Colors.black,
-                fontSize: 18.0,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
             Text(message ?? 'You can go back to your dApp now'),
           ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
+import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 
 class ChainsDataList {
   static final List<ChainMetadata> eip155Chains = [
@@ -7,7 +8,7 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:1',
       name: 'Ethereum',
-      logo: '/chain-logos/eip155-1.png',
+      logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png',
       color: Colors.blue.shade300,
       rpc: ['https://eth.drpc.org'],
     ),
@@ -15,39 +16,24 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:137',
       name: 'Polygon',
-      logo: '/chain-logos/eip155-137.png',
+      logo: 'https://cryptologos.cc/logos/polygon-matic-logo.png',
       color: Colors.purple.shade300,
       rpc: ['https://polygon-rpc.com/'],
     ),
-    const ChainMetadata(
-      type: ChainType.eip155,
-      chainId: 'eip155:42161',
-      name: 'Arbitrum',
-      logo: '/chain-logos/eip155-42161.png',
-      color: Colors.blue,
-      rpc: ['https://arbitrum.blockpi.network/v1/rpc/public'],
-    ),
-    const ChainMetadata(
-      type: ChainType.eip155,
-      chainId: 'eip155:10',
-      name: 'OP Mainnet',
-      logo: '/chain-logos/eip155-10.png',
-      color: Colors.red,
-      rpc: ['https://mainnet.optimism.io/'],
-    ),
+    ...chainAbstraction,
     const ChainMetadata(
       type: ChainType.eip155,
       chainId: 'eip155:43114',
       name: 'Avalanche',
-      logo: '/chain-logos/eip155-43114.png',
+      logo: 'https://cryptologos.cc/logos/avalanche-avax-logo.png',
       color: Colors.orange,
       rpc: ['https://api.avax.network/ext/bc/C/rpc'],
     ),
     const ChainMetadata(
       type: ChainType.eip155,
       chainId: 'eip155:56',
-      name: 'BNB Smart Chain Mainnet',
-      logo: '/chain-logos/eip155-56.png',
+      name: 'BNB Smart Chain',
+      logo: 'https://cryptologos.cc/logos/bnb-bnb-logo.png',
       color: Colors.orange,
       rpc: ['https://bsc-dataseed1.bnbchain.org'],
     ),
@@ -55,7 +41,7 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:42220',
       name: 'Celo',
-      logo: '/chain-logos/eip155-42220.png',
+      logo: 'https://cryptologos.cc/logos/celo-celo-logo.png',
       color: Colors.green,
       rpc: ['https://forno.celo.org/'],
     ),
@@ -63,7 +49,7 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:100',
       name: 'Gnosis',
-      logo: '/chain-logos/eip155-100.png',
+      logo: 'https://cryptologos.cc/logos/gnosis-gno-gno-logo.png',
       color: Colors.greenAccent,
       rpc: ['https://rpc.gnosischain.com/'],
     ),
@@ -71,7 +57,7 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:324',
       name: 'zkSync',
-      logo: '/chain-logos/eip155-324.png',
+      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
       color: Colors.black,
       rpc: ['https://mainnet.era.zksync.io'],
     ),
@@ -79,7 +65,7 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:11155111',
       name: 'Eth Sepolia',
-      logo: '/chain-logos/eip155-1.png',
+      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
       color: Colors.blue.shade300,
       isTestnet: true,
       rpc: ['https://ethereum-sepolia.publicnode.com'],
@@ -88,7 +74,7 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:84531',
       name: 'Base Sepolia',
-      logo: '/chain-logos/eip155-1.png',
+      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
       color: Colors.blue.shade300,
       isTestnet: true,
       rpc: ['https://sepolia.base.org'],
@@ -97,10 +83,38 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:80001',
       name: 'Polygon Mumbai',
-      logo: '/chain-logos/eip155-137.png',
+      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
       color: Colors.purple.shade300,
       isTestnet: true,
       rpc: ['https://matic-mumbai.chainstacklabs.com'],
+    ),
+  ];
+
+  static final List<ChainMetadata> chainAbstraction = [
+    const ChainMetadata(
+      type: ChainType.eip155,
+      chainId: 'eip155:42161',
+      name: 'Arbitrum',
+      logo: 'https://cryptologos.cc/logos/arbitrum-arb-logo.png',
+      color: Colors.blue,
+      rpc: ['https://arbitrum.blockpi.network/v1/rpc/public'],
+    ),
+    const ChainMetadata(
+      type: ChainType.eip155,
+      chainId: 'eip155:10',
+      name: 'OP Mainnet',
+      logo: 'https://cryptologos.cc/logos/optimism-ethereum-op-logo.png',
+      color: Colors.red,
+      rpc: ['https://mainnet.optimism.io/'],
+    ),
+    const ChainMetadata(
+      type: ChainType.eip155,
+      chainId: 'eip155:8453',
+      name: 'Base',
+      logo:
+          'https://images.mirror-media.xyz/publication-images/cgqxxPdUFBDjgKna_dDir.png',
+      color: Colors.lightBlue,
+      rpc: ['https://mainnet.base.org'],
     ),
   ];
 
@@ -108,8 +122,8 @@ class ChainsDataList {
     const ChainMetadata(
       type: ChainType.solana,
       chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      name: 'Solana Mainnet',
-      logo: '/chain-logos/solana.png',
+      name: 'Solana',
+      logo: 'https://cryptologos.cc/logos/solana-sol-logo.png',
       color: Color.fromARGB(255, 247, 0, 255),
       rpc: ['https://api.mainnet-beta.solana.com'],
     ),
@@ -117,7 +131,7 @@ class ChainsDataList {
       type: ChainType.solana,
       chainId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
       name: 'Solana Devnet',
-      logo: '/chain-logos/solana.png',
+      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
       color: Color.fromARGB(255, 247, 0, 255),
       rpc: ['https://api.devnet.solana.com'],
     ),
@@ -125,10 +139,34 @@ class ChainsDataList {
       type: ChainType.solana,
       chainId: 'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
       name: 'Solana Testnet',
-      logo: '/chain-logos/solana.png',
+      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
       color: Colors.black,
       isTestnet: true,
       rpc: ['https://api.testnet.solana.com'],
+    ),
+  ];
+
+  static final List<ChainMetadata> bitcoinChains = [
+    const ChainMetadata(
+      type: ChainType.bitcoin,
+      chainId: 'bip122:000000000019d6689c085ae165831e93',
+      name: 'Bitcoin Mainnet',
+      logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=040',
+      color: Color.fromARGB(255, 255, 157, 0),
+      rpc: [
+        'https://rpc.walletconnect.com/v1?chainId=bip122:000000000019d6689c085ae165831e93&projectId=${DartDefines.projectId}'
+      ],
+    ),
+    const ChainMetadata(
+      type: ChainType.bitcoin,
+      chainId: 'bip122:000000000933ea01ad0ee984209779ba',
+      name: 'Bitcoin Testnet',
+      logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=040',
+      color: Color.fromARGB(255, 255, 157, 0),
+      rpc: [
+        'https://rpc.walletconnect.com/v1?chainId=bip122:000000000933ea01ad0ee984209779ba&projectId=${DartDefines.projectId}'
+      ],
+      isTestnet: true,
     ),
   ];
 
@@ -138,7 +176,7 @@ class ChainsDataList {
       type: ChainType.cosmos,
       chainId: 'cosmos:cosmoshub-4',
       name: 'Cosmos Mainnet',
-      logo: '/chain-logos/cosmos.png',
+      logo: 'https://cryptologos.cc/logos/cosmos-atom-logo.png',
       color: Colors.purple,
       rpc: [
         'https://cosmos-rpc.polkachu.com:443',
@@ -153,7 +191,7 @@ class ChainsDataList {
       type: ChainType.kadena,
       chainId: 'kadena:mainnet01',
       name: 'Kadena Mainnet',
-      logo: '/chain-logos/kadena.png',
+      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
       color: Colors.green,
       rpc: [
         'https://api.chainweb.com',
@@ -163,7 +201,7 @@ class ChainsDataList {
       type: ChainType.kadena,
       chainId: 'kadena:testnet04',
       name: 'Kadena Testnet',
-      logo: '/chain-logos/kadena.png',
+      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
       color: Colors.green,
       isTestnet: true,
       rpc: [
@@ -177,7 +215,7 @@ class ChainsDataList {
       type: ChainType.polkadot,
       chainId: 'polkadot:91b171bb158e2d3848fa23a9f1c25182',
       name: 'Polkadot Mainnet',
-      logo: '/chain-logos/polkadot.png',
+      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
       color: Color.fromARGB(255, 174, 57, 220),
       rpc: [
         'wss://rpc.polkadot.io',
@@ -188,7 +226,7 @@ class ChainsDataList {
       type: ChainType.polkadot,
       chainId: 'polkadot:e143f23803ac50e8f6f8e62695d1ce9e',
       name: 'Polkadot Testnet (Westend)',
-      logo: '/chain-logos/polkadot.png',
+      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
       color: Color.fromARGB(255, 174, 57, 220),
       isTestnet: true,
       rpc: [

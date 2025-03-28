@@ -15,7 +15,11 @@ import 'package:reown_walletkit_wallet/widgets/uri_input_popup.dart';
 import 'package:toastification/toastification.dart';
 
 class AppsPage extends StatefulWidget {
-  AppsPage({super.key});
+  AppsPage({
+    super.key,
+    required this.isDarkMode,
+  });
+  final bool isDarkMode;
 
   @override
   AppsPageState createState() => AppsPageState();
@@ -25,7 +29,6 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
   List<PairingInfo> _pairings = [];
   late IWalletKitService _walletKitService;
   late IReownWalletKit _walletKit;
-  bool _isDarkMode = false;
 
   @override
   void initState() {
@@ -38,15 +41,6 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
     _registerListeners();
     // TODO _walletKit.core.echo.register(firebaseAccessToken);
     DeepLinkHandler.checkInitialLink();
-
-    WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        final platformDispatcher = View.of(context).platformDispatcher;
-        final platformBrightness = platformDispatcher.platformBrightness;
-        _isDarkMode = platformBrightness == Brightness.dark;
-      });
-    });
   }
 
   void _registerListeners() {
@@ -114,7 +108,7 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
                 ),
               ),
               Container(
-                color: _isDarkMode
+                color: widget.isDarkMode
                     ? Colors.black.withOpacity(0.8)
                     : Colors.white.withOpacity(0.8),
               )

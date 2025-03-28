@@ -3,6 +3,8 @@ import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
 abstract class IKeyService {
   Future<void> clearAll();
 
+  List<ChainKey> get keys;
+
   /// Returns a list of all the keys.
   Future<List<ChainKey>> loadKeys();
 
@@ -23,5 +25,5 @@ abstract class IKeyService {
 
   Future<String> getMnemonic();
 
-  Future<void> restoreWalletFromSeed({required String mnemonic});
+  Future<void> restoreWallet({required String mnemonicOrPrivate});
 }
