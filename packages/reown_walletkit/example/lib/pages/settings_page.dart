@@ -849,7 +849,9 @@ class _Buttons extends StatelessWidget {
                           value: linkModeEnabled,
                           onChanged: (value) async {
                             await prefs.setBool(
-                                'appkit_sample_linkmode', value);
+                              'rwkt_sample_linkmode',
+                              value,
+                            );
                             final result = await showDialog<bool>(
                               context: context,
                               builder: (BuildContext context) {
@@ -873,7 +875,9 @@ class _Buttons extends StatelessWidget {
                             );
                             if (result == true) {
                               await prefs.setBool(
-                                  'appkit_sample_linkmode', value);
+                                'rwkt_sample_linkmode',
+                                value,
+                              );
                               if (!kDebugMode) {
                                 exit(0);
                               }

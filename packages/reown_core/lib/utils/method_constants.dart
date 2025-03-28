@@ -14,10 +14,6 @@ class MethodConstants {
   static const WC_SESSION_EVENT = 'wc_sessionEvent';
   static const WC_SESSION_DELETE = 'wc_sessionDelete';
   static const WC_SESSION_PING = 'wc_sessionPing';
-
-  // Deprecated method but still supported for retrocompatibility
-  // static const WC_AUTH_REQUEST = 'wc_authRequest';
-
   static const WC_SESSION_AUTHENTICATE = 'wc_sessionAuthenticate';
 
   static const Map<String, Map<String, RpcOptions>> RPC_OPTS = {
@@ -184,18 +180,6 @@ class MethodConstants {
         prompt: false,
         tag: 1119,
       ),
-    },
-    // WC_AUTH_REQUEST: {
-    //   'req': RpcOptions(
-    //     ttl: ReownConstants.ONE_DAY,
-    //     prompt: true,
-    //     tag: 3000,
-    //   ),
-    //   'res': RpcOptions(
-    //     ttl: ReownConstants.ONE_DAY,
-    //     prompt: false,
-    //     tag: 3001,
-    //   ),
-    // },
+    }
   };
 }
