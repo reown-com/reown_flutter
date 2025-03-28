@@ -16,7 +16,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 class PhantomService implements IPhantomService {
   late final String _iconImage;
   late final PairingMetadata _metadata;
-  late final ReownAppKitModalWalletInfo _walletData;
+  late final ReownAppKitModalWalletInfo _phantomWalletData;
   late final IReownCore _core;
   late final PhantomHelper _phantomHelper;
 
@@ -27,14 +27,14 @@ class PhantomService implements IPhantomService {
   @override
   ConnectionMetadata get walletMetadata => ConnectionMetadata(
         metadata: PairingMetadata(
-          name: _walletData.listing.name,
-          description: _walletData.listing.description ?? '',
-          url: _walletData.listing.homepage,
+          name: _phantomWalletData.listing.name,
+          description: _phantomWalletData.listing.description ?? '',
+          url: _phantomWalletData.listing.homepage,
           icons: [_iconImage],
           redirect: Redirect(
-            native: _walletData.listing.mobileLink,
-            universal: _walletData.listing.linkMode,
-            linkMode: _walletData.listing.linkMode != null,
+            native: _phantomWalletData.listing.mobileLink,
+            universal: _phantomWalletData.listing.linkMode,
+            linkMode: _phantomWalletData.listing.linkMode != null,
           ),
         ),
         publicKey: '',
@@ -63,7 +63,7 @@ class PhantomService implements IPhantomService {
 
   @override
   Future<void> init() async {
-    _walletData = (await _explorerService.getPhantomWalletObject()) ??
+    _phantomWalletData = (await _explorerService.getPhantomWalletObject()) ??
         ReownAppKitModalWalletInfo(
           listing: PhantomUtils.defaultListingData,
           installed: false,
@@ -71,7 +71,7 @@ class PhantomService implements IPhantomService {
         );
 
     _iconImage = _explorerService.getWalletImageUrl(
-      _walletData.listing.imageId,
+      _phantomWalletData.listing.imageId,
     );
 
     final dappRedirect = (_metadata.redirect?.linkMode == true)
@@ -118,9 +118,7 @@ class PhantomService implements IPhantomService {
 
       _selectedChainId = chainId ?? solanaNets.first.chainId;
 
-      final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
-        _selectedChainId!,
-      );
+      final namespace = NamespaceUtils.getNamespaceFromChain(_selectedChainId!);
       if (namespace != NetworkUtils.solana) {
         _selectedChainId = solanaNets.first.chainId;
       }
@@ -205,7 +203,7 @@ class PhantomService implements IPhantomService {
   }
 
   @override
-  bool get isInstalled => _walletData.installed;
+  bool get isInstalled => _phantomWalletData.installed;
 
   @override
   void completePhantomRequest({required String url}) async {

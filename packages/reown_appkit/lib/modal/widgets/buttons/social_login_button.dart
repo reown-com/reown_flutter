@@ -24,7 +24,6 @@ class SocialLoginButton extends StatelessWidget {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final semantics = title ?? 'SocialLoginButton';
-    print('[$runtimeType] semanticsLabel: $semantics');
     return BaseListItem(
       semanticsLabel: semantics,
       onTap: onTap,

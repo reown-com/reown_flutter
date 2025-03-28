@@ -49,7 +49,7 @@ class _AppKitModalAddressButtonState extends State<AppKitModalAddressButton> {
     if (chainId.isEmpty) {
       return SizedBox.shrink();
     }
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(chainId);
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final address = widget.appKitModal.session!.getAddress(namespace);
     if ((address ?? '').isEmpty) {
       return SizedBox.shrink();

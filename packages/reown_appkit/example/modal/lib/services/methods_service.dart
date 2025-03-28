@@ -110,9 +110,8 @@ class MethodsService {
           method: method,
           transaction: Transaction(
             from: EthereumAddress.fromHex(address),
-            to: EthereumAddress.fromHex(
-              '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
-            ),
+            // to: should be the recipient address
+            to: EthereumAddress.fromHex(address),
             value: EtherAmount.fromInt(EtherUnit.finney, 11), // == 0.011
             data: utf8.encode('0x'), // to make it work with some wallets
           ),
@@ -148,7 +147,7 @@ class MethodsService {
   }) async {
     final bytes = utf8.encode(message);
     final encoded = hex.encode(bytes);
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+    final namespace = NamespaceUtils.getNamespaceFromChain(
       appKitModal.selectedChain!.chainId,
     );
 
@@ -171,7 +170,7 @@ class MethodsService {
   }) async {
     final bytes = utf8.encode(testSignData);
     final message = base58.encode(bytes);
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+    final namespace = NamespaceUtils.getNamespaceFromChain(
       appKitModal.selectedChain!.chainId,
     );
     final address = appKitModal.session!.getAddress(namespace)!;
@@ -190,7 +189,7 @@ class MethodsService {
     required ReownAppKitModal appKitModal,
     required String data,
   }) async {
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+    final namespace = NamespaceUtils.getNamespaceFromChain(
       appKitModal.selectedChain!.chainId,
     );
     return await appKitModal.request(
@@ -210,7 +209,7 @@ class MethodsService {
     required ReownAppKitModal appKitModal,
     required String data,
   }) async {
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+    final namespace = NamespaceUtils.getNamespaceFromChain(
       appKitModal.selectedChain!.chainId,
     );
     return await appKitModal.request(
@@ -230,7 +229,7 @@ class MethodsService {
     required ReownAppKitModal appKitModal,
     required String data,
   }) async {
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+    final namespace = NamespaceUtils.getNamespaceFromChain(
       appKitModal.selectedChain!.chainId,
     );
     return await appKitModal.request(
@@ -321,7 +320,7 @@ class MethodsService {
           decimals: (decimals.first as BigInt),
         );
         // now we call `transfer` write function with the parsed value.
-        final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+        final namespace = NamespaceUtils.getNamespaceFromChain(
           appKitModal.selectedChain!.chainId,
         );
         final senderAddress = appKitModal.session!.getAddress(namespace)!;
@@ -334,9 +333,8 @@ class MethodsService {
             from: EthereumAddress.fromHex(senderAddress),
           ),
           parameters: [
-            EthereumAddress.fromHex(
-              '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
-            ),
+            // should be the recipient address
+            EthereumAddress.fromHex(senderAddress),
             requestValue, // == 0.23
           ],
         );
@@ -396,7 +394,7 @@ class MethodsService {
       //   functionName: 'transfer',
       //   parameters: [
       //     EthereumAddress.fromHex(
-      //       '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
+      //       appKitModal.session!.getAddress(namespace)!,
       //     ),
       //     requestValue, // == 0.12
       //   ],
@@ -415,7 +413,7 @@ class MethodsService {
     required ReownAppKitModal appKitModal,
     required DeployedContract contract,
   }) async {
-    final namespace = ReownAppKitModalNetworks.getNamespaceForChainId(
+    final namespace = NamespaceUtils.getNamespaceFromChain(
       appKitModal.selectedChain!.chainId,
     );
     final results = await Future.wait([

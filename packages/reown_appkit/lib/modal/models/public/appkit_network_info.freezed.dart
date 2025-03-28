@@ -14,6 +14,11 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+ReownAppKitModalNetworkInfo _$ReownAppKitModalNetworkInfoFromJson(
+    Map<String, dynamic> json) {
+  return _ReownAppKitModalNetworkInfo.fromJson(json);
+}
+
 /// @nodoc
 mixin _$ReownAppKitModalNetworkInfo {
   String get name => throw _privateConstructorUsedError;
@@ -24,6 +29,9 @@ mixin _$ReownAppKitModalNetworkInfo {
   List<String> get extraRpcUrls => throw _privateConstructorUsedError;
   bool get isTestNetwork => throw _privateConstructorUsedError;
   String? get chainIcon => throw _privateConstructorUsedError;
+
+  /// Serializes this ReownAppKitModalNetworkInfo to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of ReownAppKitModalNetworkInfo
   /// with the given fields replaced by the non-null parameter values.
@@ -114,11 +122,12 @@ class _$ReownAppKitModalNetworkInfoCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$AppKitNetworkInfoImplCopyWith<$Res>
+abstract class _$$ReownAppKitModalNetworkInfoImplCopyWith<$Res>
     implements $ReownAppKitModalNetworkInfoCopyWith<$Res> {
-  factory _$$AppKitNetworkInfoImplCopyWith(_$AppKitNetworkInfoImpl value,
-          $Res Function(_$AppKitNetworkInfoImpl) then) =
-      __$$AppKitNetworkInfoImplCopyWithImpl<$Res>;
+  factory _$$ReownAppKitModalNetworkInfoImplCopyWith(
+          _$ReownAppKitModalNetworkInfoImpl value,
+          $Res Function(_$ReownAppKitModalNetworkInfoImpl) then) =
+      __$$ReownAppKitModalNetworkInfoImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -133,12 +142,13 @@ abstract class _$$AppKitNetworkInfoImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$AppKitNetworkInfoImplCopyWithImpl<$Res>
+class __$$ReownAppKitModalNetworkInfoImplCopyWithImpl<$Res>
     extends _$ReownAppKitModalNetworkInfoCopyWithImpl<$Res,
-        _$AppKitNetworkInfoImpl>
-    implements _$$AppKitNetworkInfoImplCopyWith<$Res> {
-  __$$AppKitNetworkInfoImplCopyWithImpl(_$AppKitNetworkInfoImpl _value,
-      $Res Function(_$AppKitNetworkInfoImpl) _then)
+        _$ReownAppKitModalNetworkInfoImpl>
+    implements _$$ReownAppKitModalNetworkInfoImplCopyWith<$Res> {
+  __$$ReownAppKitModalNetworkInfoImplCopyWithImpl(
+      _$ReownAppKitModalNetworkInfoImpl _value,
+      $Res Function(_$ReownAppKitModalNetworkInfoImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of ReownAppKitModalNetworkInfo
@@ -155,7 +165,7 @@ class __$$AppKitNetworkInfoImplCopyWithImpl<$Res>
     Object? isTestNetwork = null,
     Object? chainIcon = freezed,
   }) {
-    return _then(_$AppKitNetworkInfoImpl(
+    return _then(_$ReownAppKitModalNetworkInfoImpl(
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -193,9 +203,10 @@ class __$$AppKitNetworkInfoImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
-class _$AppKitNetworkInfoImpl implements _AppKitNetworkInfo {
-  _$AppKitNetworkInfoImpl(
+@JsonSerializable()
+class _$ReownAppKitModalNetworkInfoImpl
+    implements _ReownAppKitModalNetworkInfo {
+  const _$ReownAppKitModalNetworkInfoImpl(
       {required this.name,
       required this.chainId,
       required this.currency,
@@ -205,6 +216,10 @@ class _$AppKitNetworkInfoImpl implements _AppKitNetworkInfo {
       this.isTestNetwork = false,
       this.chainIcon})
       : _extraRpcUrls = extraRpcUrls;
+
+  factory _$ReownAppKitModalNetworkInfoImpl.fromJson(
+          Map<String, dynamic> json) =>
+      _$$ReownAppKitModalNetworkInfoImplFromJson(json);
 
   @override
   final String name;
@@ -240,7 +255,7 @@ class _$AppKitNetworkInfoImpl implements _AppKitNetworkInfo {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$AppKitNetworkInfoImpl &&
+            other is _$ReownAppKitModalNetworkInfoImpl &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.chainId, chainId) || other.chainId == chainId) &&
             (identical(other.currency, currency) ||
@@ -256,6 +271,7 @@ class _$AppKitNetworkInfoImpl implements _AppKitNetworkInfo {
                 other.chainIcon == chainIcon));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -273,13 +289,21 @@ class _$AppKitNetworkInfoImpl implements _AppKitNetworkInfo {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$AppKitNetworkInfoImplCopyWith<_$AppKitNetworkInfoImpl> get copyWith =>
-      __$$AppKitNetworkInfoImplCopyWithImpl<_$AppKitNetworkInfoImpl>(
-          this, _$identity);
+  _$$ReownAppKitModalNetworkInfoImplCopyWith<_$ReownAppKitModalNetworkInfoImpl>
+      get copyWith => __$$ReownAppKitModalNetworkInfoImplCopyWithImpl<
+          _$ReownAppKitModalNetworkInfoImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ReownAppKitModalNetworkInfoImplToJson(
+      this,
+    );
+  }
 }
 
-abstract class _AppKitNetworkInfo implements ReownAppKitModalNetworkInfo {
-  factory _AppKitNetworkInfo(
+abstract class _ReownAppKitModalNetworkInfo
+    implements ReownAppKitModalNetworkInfo {
+  const factory _ReownAppKitModalNetworkInfo(
       {required final String name,
       required final String chainId,
       required final String currency,
@@ -287,7 +311,10 @@ abstract class _AppKitNetworkInfo implements ReownAppKitModalNetworkInfo {
       required final String explorerUrl,
       final List<String> extraRpcUrls,
       final bool isTestNetwork,
-      final String? chainIcon}) = _$AppKitNetworkInfoImpl;
+      final String? chainIcon}) = _$ReownAppKitModalNetworkInfoImpl;
+
+  factory _ReownAppKitModalNetworkInfo.fromJson(Map<String, dynamic> json) =
+      _$ReownAppKitModalNetworkInfoImpl.fromJson;
 
   @override
   String get name;
@@ -310,6 +337,6 @@ abstract class _AppKitNetworkInfo implements ReownAppKitModalNetworkInfo {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$AppKitNetworkInfoImplCopyWith<_$AppKitNetworkInfoImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$ReownAppKitModalNetworkInfoImplCopyWith<_$ReownAppKitModalNetworkInfoImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }

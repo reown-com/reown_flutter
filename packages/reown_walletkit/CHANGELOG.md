@@ -1,3 +1,7 @@
+## 1.1.4
+
+- Chain Abstraction Experimental APIs
+
 ## 1.1.3
 
 - Core and Sign Update

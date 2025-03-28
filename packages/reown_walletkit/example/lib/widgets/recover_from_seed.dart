@@ -18,22 +18,32 @@ class RecoverFromSeed extends StatelessWidget {
       borderSide: const BorderSide(color: Colors.blue, width: 1.0),
     );
     return Container(
-      color: Colors.white,
-      height: 282.0,
+      height: 340.0,
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Column(
         children: [
           Text(
-            'Insert Seed Phrase',
+            'Insert Mnemonic or Private Key',
             style: StyleConstants.subtitleText.copyWith(
-              color: Colors.black,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
               fontSize: 18.0,
             ),
           ),
           const SizedBox(height: StyleConstants.magic10),
+          Text(
+            'Only Ethereum private key is supported for now, if you want to restore other chains as well please use mnemonic phrase',
+            style: StyleConstants.bodyText.copyWith(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
+          ),
+          const SizedBox(height: StyleConstants.magic20),
           SizedBox(
-            height: 90.0,
+            height: 60.0,
             // padding: const EdgeInsets.all(3.0),
             child: TextFormField(
               controller: controller,
@@ -45,7 +55,6 @@ class RecoverFromSeed extends StatelessWidget {
               cursorHeight: 16.0,
               decoration: InputDecoration(
                 isDense: true,
-                hintText: 'your seed phrase here',
                 hintStyle: const TextStyle(color: Colors.grey),
                 border: unfocusedBorder,
                 errorBorder: unfocusedBorder,
@@ -53,7 +62,9 @@ class RecoverFromSeed extends StatelessWidget {
                 disabledBorder: unfocusedBorder,
                 focusedBorder: focusedBorder,
                 filled: true,
-                fillColor: Colors.grey[200],
+                fillColor: Theme.of(context).brightness == Brightness.dark
+                    ? Colors.white24
+                    : Colors.black12,
                 contentPadding: const EdgeInsets.all(8.0),
               ),
             ),

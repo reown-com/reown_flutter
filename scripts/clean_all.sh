@@ -22,6 +22,15 @@ flutter clean
 cd ..
 cd ..
 
+echo "******* CLEAN YTTRIUM *******"
+
+cd packages/reown_yttrium/
+
+flutter clean
+
+cd ..
+cd ..
+
 echo "******* CLEAN WALLETKIT *******"
 
 cd packages/reown_walletkit/

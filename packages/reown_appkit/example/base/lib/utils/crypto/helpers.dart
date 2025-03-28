@@ -12,13 +12,27 @@ import 'package:reown_appkit/solana/solana_web3/programs.dart' as programs;
 List<String> getChainMethods(String namespace) {
   switch (namespace) {
     case 'eip155':
-      return NetworkUtils.defaultNetworkMethods['eip155']!.toList();
+      return [
+        'personal_sign',
+        'eth_sign',
+        'eth_signTypedData',
+        'eth_signTypedData_v4',
+        'eth_signTransaction',
+        'eth_sendTransaction',
+      ];
     case 'solana':
-      return NetworkUtils.defaultNetworkMethods['solana']!.toList();
+      return [
+        'solana_signMessage',
+        'solana_signTransaction',
+        'solana_signAndSendTransaction',
+        'solana_signAllTransactions',
+      ];
     case 'polkadot':
       return Polkadot.methods.values.toList();
     case 'tron':
       return Tron.methods.values.toList();
+    case 'mvx':
+      return ['mvx_signMessage', 'mvx_signTransaction'];
     default:
       return [];
   }
@@ -34,6 +48,8 @@ List<String> getChainEvents(String namespace) {
       return Polkadot.events.values.toList();
     case 'tron':
       return Tron.events.values.toList();
+    case 'mvx':
+      return [];
     default:
       return [];
   }
@@ -65,7 +81,10 @@ Future<SessionRequestParams?> getParams(
     case 'eth_signTypedData_v4':
       return SessionRequestParams(
         method: method,
-        params: [address, typeDataV4(int.parse(chainData.chainId))],
+        params: [
+          address,
+          typeDataV4(int.parse(chainData.chainId)),
+        ],
       );
     case 'eth_signTransaction':
     case 'eth_sendTransaction':
@@ -74,9 +93,8 @@ Future<SessionRequestParams?> getParams(
         params: [
           Transaction(
             from: EthereumAddress.fromHex(address),
-            to: EthereumAddress.fromHex(
-              '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
-            ),
+            // to: should be the recipient address
+            to: EthereumAddress.fromHex(address),
             value: EtherAmount.fromInt(EtherUnit.finney, 12), // == 0.012
             data: utf8.encode('0x'), // to make it work with some wallets
           ).toJson(),
@@ -94,12 +112,12 @@ Future<SessionRequestParams?> getParams(
       );
     case 'solana_signTransaction':
     case 'solana_signAndSendTransaction':
-      final transactionV0 = await _contructSolanaTX(address, chainData);
+      final transactionV0_2 = await _contructSolanaTX_2(address, chainData);
 
       const config = solana.TransactionSerializableConfig(
         verifySignatures: false,
       );
-      final bytes = transactionV0.serialize(config).asUint8List();
+      final bytes = transactionV0_2.serialize(config).asUint8List();
       final encodedV0Trx = base64.encode(bytes);
 
       return SessionRequestParams(
@@ -108,7 +126,7 @@ Future<SessionRequestParams?> getParams(
           'transaction': encodedV0Trx,
           'pubkey': address,
           'feePayer': address,
-          ...transactionV0.message.toJson(),
+          ...transactionV0_2.message.toJson(),
         },
       );
     case 'solana_signAllTransactions':
@@ -214,8 +232,8 @@ Future<solana.Transaction> _contructSolanaTX_2(
   final blockhash = await connection.getLatestBlockhash();
 
   // Define transfer amount in lamports (1 SOL = 1,000,000,000 lamports)
-  // Amount to send in lamports (0.001 SOL)
-  final lamports = BigInt.from(1000000);
+  // Amount to send in lamports (0.01 SOL)
+  final lamports = BigInt.from(10000000);
 
   // Create the transfer instruction
   final transferInstruction = programs.SystemProgram.transfer(
