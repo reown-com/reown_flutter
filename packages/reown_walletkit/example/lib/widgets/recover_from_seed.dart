@@ -18,7 +18,7 @@ class RecoverFromSeed extends StatelessWidget {
       borderSide: const BorderSide(color: Colors.blue, width: 1.0),
     );
     return Container(
-      height: 282.0,
+      height: 340.0,
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Column(
@@ -33,8 +33,17 @@ class RecoverFromSeed extends StatelessWidget {
             ),
           ),
           const SizedBox(height: StyleConstants.magic10),
+          Text(
+            'Only Ethereum private key is supported for now, if you want to restore other chains as well please use mnemonic phrase',
+            style: StyleConstants.bodyText.copyWith(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black,
+            ),
+          ),
+          const SizedBox(height: StyleConstants.magic20),
           SizedBox(
-            height: 90.0,
+            height: 60.0,
             // padding: const EdgeInsets.all(3.0),
             child: TextFormField(
               controller: controller,

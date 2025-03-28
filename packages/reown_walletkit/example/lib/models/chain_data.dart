@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
+import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 
 class ChainsDataList {
   static final List<ChainMetadata> eip155Chains = [
@@ -142,6 +143,30 @@ class ChainsDataList {
       color: Colors.black,
       isTestnet: true,
       rpc: ['https://api.testnet.solana.com'],
+    ),
+  ];
+
+  static final List<ChainMetadata> bitcoinChains = [
+    const ChainMetadata(
+      type: ChainType.bitcoin,
+      chainId: 'bip122:000000000019d6689c085ae165831e93',
+      name: 'Bitcoin Mainnet',
+      logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=040',
+      color: Color.fromARGB(255, 255, 157, 0),
+      rpc: [
+        'https://rpc.walletconnect.com/v1?chainId=bip122:000000000019d6689c085ae165831e93&projectId=${DartDefines.projectId}'
+      ],
+    ),
+    const ChainMetadata(
+      type: ChainType.bitcoin,
+      chainId: 'bip122:000000000933ea01ad0ee984209779ba',
+      name: 'Bitcoin Testnet',
+      logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=040',
+      color: Color.fromARGB(255, 255, 157, 0),
+      rpc: [
+        'https://rpc.walletconnect.com/v1?chainId=bip122:000000000933ea01ad0ee984209779ba&projectId=${DartDefines.projectId}'
+      ],
+      isTestnet: true,
     ),
   ];
 

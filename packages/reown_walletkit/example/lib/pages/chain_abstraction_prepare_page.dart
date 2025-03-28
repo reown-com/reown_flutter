@@ -134,7 +134,10 @@ class _ChainAbstractionPreparePageState
                         );
                       }).toList(),
                       onChanged: (ChainMetadata? chain) async {
-                        setState(() => _selectedChain = chain!);
+                        if (chain!.chainId == 'eip155:8453') {
+                          _selectedToken = {'USDC'};
+                        }
+                        setState(() => _selectedChain = chain);
                         _updateBalance();
                       },
                     ),
@@ -142,7 +145,7 @@ class _ChainAbstractionPreparePageState
                 ],
               ),
               const SizedBox.square(dimension: 10.0),
-              RichTextWidget(text1: 'ACCOUNT\n', text2: _myAddress),
+              RichTextWidget(text1: 'ADDRESS\n', text2: _myAddress),
               const SizedBox.square(dimension: 10.0),
               RichTextWidget(text1: 'BALANCE ', text2: _totalBalance),
               Row(
@@ -162,8 +165,18 @@ class _ChainAbstractionPreparePageState
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  RichTextWidget(text1: 'USDS', text2: '', fontSize: 12),
-                  RichTextWidget(text1: '', text2: 'Soon...', fontSize: 12),
+                  RichTextWidget(
+                    text1: 'USDS',
+                    text2: '',
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                  RichTextWidget(
+                    text1: '',
+                    text2: '[Unavailable]',
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
                 ],
               ),
               const SizedBox.square(dimension: 10.0),
@@ -232,9 +245,13 @@ class _ChainAbstractionPreparePageState
                       },
                     ),
                   ),
-                  segments: const <ButtonSegment<String>>[
+                  segments: <ButtonSegment<String>>[
                     ButtonSegment<String>(value: 'USDC', label: Text('USDC')),
-                    ButtonSegment<String>(value: 'USDT', label: Text('USDT')),
+                    ButtonSegment<String>(
+                      value: 'USDT',
+                      label: Text('USDT'),
+                      enabled: _selectedChain.chainId != 'eip155:8453',
+                    ),
                     ButtonSegment<String>(
                       value: 'USDS',
                       label: Text('USDS'),
@@ -338,7 +355,7 @@ class _ChainAbstractionPreparePageState
                                   color: Colors.black45,
                                 ),
                               ),
-                              onPressed: () => Navigator.of(context).pop(),
+                              onPressed: null,
                             )
                           : CustomButton(
                               type: CustomButtonType.normal,
@@ -412,6 +429,10 @@ class _ChainAbstractionPreparePageState
             ));
           } else {
             // regular flow for eth_sendTransaction
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('⚠️ Chain Abstraction notRequired'),
+              duration: const Duration(seconds: 2),
+            ));
             await evmService.approveAndSendTransaction(
               1,
               txParams,
@@ -466,10 +487,12 @@ class RichTextWidget extends StatelessWidget {
     required this.text1,
     required this.text2,
     this.fontSize = 14.0,
+    this.color,
   });
   final String text1;
   final String text2;
   final double fontSize;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -481,18 +504,20 @@ class RichTextWidget extends StatelessWidget {
             style: TextStyle(
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
+              color: color ??
+                  (Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black),
             ),
           ),
           TextSpan(
             text: text2,
             style: TextStyle(
               fontSize: fontSize,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
+              color: color ??
+                  (Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white
+                      : Colors.black),
             ),
           ),
         ],

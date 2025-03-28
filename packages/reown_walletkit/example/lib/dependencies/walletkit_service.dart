@@ -58,7 +58,7 @@ class WalletKitService extends IWalletKitService {
   @override
   Future<void> create() async {
     final prefs = await SharedPreferences.getInstance();
-    final linkModeEnabled = prefs.getBool('appkit_sample_linkmode') ?? false;
+    final linkModeEnabled = prefs.getBool('rwkt_sample_linkmode') ?? false;
 
     // Create the ReownWalletKit instance
     _walletKit = ReownWalletKit(

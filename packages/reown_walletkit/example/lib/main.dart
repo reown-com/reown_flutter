@@ -7,8 +7,6 @@ import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.d
 import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/polkadot_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
-// ignore: unused_import
-import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service_2.dart';
 import 'package:reown_walletkit_wallet/dependencies/deep_link_handler.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
@@ -85,13 +83,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 primary: Color(0xFF667DFF),
               ),
       ),
-      home: MyHomePage(),
+      home: MyHomePage(
+        isDarkMode: _isDarkMode,
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({super.key});
+  MyHomePage({
+    super.key,
+    required this.isDarkMode,
+  });
+  final bool isDarkMode;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -168,25 +172,33 @@ class _MyHomePageState extends State<MyHomePage> {
       _setState,
     );
 
-    setState(() {
-      _pageDatas = [
-        PageData(
-          page: AppsPage(),
-          title: StringConstants.connectPageTitle,
-          icon: Icons.swap_vert_circle_outlined,
-        ),
-        PageData(
-          page: const SettingsPage(),
-          title: 'Settings',
-          icon: Icons.settings_outlined,
-        ),
-      ];
-
-      _initializing = false;
-    });
+    _setPages();
   }
 
   void _setState(dynamic args) => setState(() {});
+
+  void _setPages() => setState(() {
+        _pageDatas = [
+          PageData(
+            page: AppsPage(isDarkMode: widget.isDarkMode),
+            title: StringConstants.connectPageTitle,
+            icon: Icons.swap_vert_circle_outlined,
+          ),
+          PageData(
+            page: const SettingsPage(),
+            title: 'Settings',
+            icon: Icons.settings_outlined,
+          ),
+        ];
+
+        _initializing = false;
+      });
+
+  @override
+  void didUpdateWidget(covariant MyHomePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _setPages();
+  }
 
   @override
   Widget build(BuildContext context) {
