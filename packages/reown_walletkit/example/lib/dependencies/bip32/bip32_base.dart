@@ -1,12 +1,10 @@
 import 'dart:typed_data';
 import 'package:bs58/bs58.dart';
-import 'package:pointycastle/digests/ripemd160.dart';
 
 import 'utils/crypto.dart';
 import 'utils/ecurve.dart' as ecc;
 import 'utils/wif.dart' as wif;
 import 'dart:convert';
-import 'package:crypto/crypto.dart' show sha256;
 
 class Bip32Type {
   int public;
@@ -265,88 +263,5 @@ class BIP32 {
     final IL = I.sublist(0, 32);
     final IR = I.sublist(32);
     return BIP32.fromPrivateKey(IL, IR, network);
-  }
-}
-
-class BitcoinAddress {
-  static Uint8List _getPubKeyHash(Uint8List publicKey) {
-    // Ensure public key is compressed (33 bytes starting with 02 or 03)
-    final sha256Hash = sha256.convert(publicKey).bytes;
-    final ripemd160 = RIPEMD160Digest();
-    return ripemd160.process(Uint8List.fromList(sha256Hash));
-  }
-
-  static String generateSegwitAddress(Uint8List publicKey) {
-    // Get public key hash
-    Uint8List pubKeyHash = _getPubKeyHash(publicKey);
-
-    // Create witness program (version 0 + pubkey hash)
-    Uint8List witnessProgram = Uint8List.fromList([0x00, ...pubKeyHash]);
-
-    // Encode as Bech32 with 'bc' prefix for mainnet
-    return _bech32Encode('bc', witnessProgram);
-  }
-
-  static final String BECH32_ALPHABET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
-  static final List<int> GENERATOR = [
-    0x3b6a57b2,
-    0x26508e6d,
-    0x1ea119fa,
-    0x3d4233dd,
-    0x2a1462b3
-  ];
-
-  static Uint8List _convertBits(
-      Uint8List data, int fromBits, int toBits, bool pad) {
-    int acc = 0;
-    int bits = 0;
-    final result = <int>[];
-    int maxv = (1 << toBits) - 1;
-
-    for (var value in data) {
-      acc = (acc << fromBits) | value;
-      bits += fromBits;
-      while (bits >= toBits) {
-        bits -= toBits;
-        result.add((acc >> bits) & maxv);
-      }
-    }
-
-    if (pad && bits > 0) {
-      result.add((acc << (toBits - bits)) & maxv);
-    }
-
-    return Uint8List.fromList(result);
-  }
-
-  static int _polymod(List<int> values) {
-    int chk = 1;
-    for (var v in values) {
-      int b = (chk >> 25);
-      chk = (chk & 0x1ffffff) << 5 ^ v;
-      for (int i = 0; i < 5; i++) {
-        if ((b >> i) & 1 == 1) {
-          chk ^= GENERATOR[i];
-        }
-      }
-    }
-    return chk;
-  }
-
-  static String _bech32Encode(String hrp, Uint8List data) {
-    var values = _convertBits(data, 8, 5, true);
-    var combined = Uint8List.fromList([...hrp.codeUnits, 0, ...values]);
-
-    int checksum = _polymod([...combined, 0, 0, 0, 0, 0, 0]) ^ 1;
-
-    var result = StringBuffer(hrp + '1');
-    for (var v in values) {
-      result.write(BECH32_ALPHABET[v]);
-    }
-    for (int i = 0; i < 6; i++) {
-      result.write(BECH32_ALPHABET[(checksum >> (5 * (5 - i))) & 31]);
-    }
-
-    return result.toString();
   }
 }

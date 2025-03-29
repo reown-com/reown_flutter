@@ -12,9 +12,11 @@ import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
+import 'package:reown_walletkit_wallet/pages/chain_abstraction_prepare_page.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/recover_from_seed.dart';
@@ -29,9 +31,88 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  final _keysService = GetIt.I<IKeyService>();
+
+  Future<void> _onDeleteData() async {
+    final walletKit = GetIt.I<IWalletKitService>().walletKit;
+    await walletKit.core.storage.deleteAll();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Storage cleared'),
+      duration: Duration(seconds: 1),
+    ));
+  }
+
+  Future<void> _onRestoreFromSeed() async {
+    final mnemonic = await GetIt.I<IBottomSheetService>().queueBottomSheet(
+      widget: RecoverFromSeed(),
+    );
+    if (mnemonic is String) {
+      await _keysService.clearAll();
+      await _keysService.restoreWallet(
+        mnemonicOrPrivate: mnemonic,
+      );
+      await _keysService.loadKeys();
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return const AlertDialog(
+            content: Text(
+              'Wallet restored. App will close.',
+            ),
+          );
+        },
+      );
+      if (!kDebugMode) {
+        exit(0);
+      } else {
+        setState(() {});
+      }
+    }
+  }
+
+  Future<void> _onCreateNewWallet() async {
+    final response = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: Text(
+            'This will delete the current wallet and create a new one',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Proceed'),
+            ),
+          ],
+        );
+      },
+    );
+    if (response == true) {
+      await _keysService.clearAll();
+      await _keysService.createRandomWallet();
+      await _keysService.loadKeys();
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return const AlertDialog(
+            content: Text('New wallet created. App will close.'),
+          );
+        },
+      );
+      if (!kDebugMode) {
+        exit(0);
+      } else {
+        setState(() {});
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final keysService = GetIt.I<IKeyService>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -40,115 +121,32 @@ class _SettingsPageState extends State<SettingsPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _EVMAccounts(
-                  onCreateAddress: () async {
-                    await keysService.createAddressFromSeed();
-                    await keysService.loadKeys();
-                    if (Navigator.canPop(context)) {
-                      Navigator.pop(context);
+                FutureBuilder<List<ChainKey>>(
+                  future: _keysService.loadKeys(),
+                  initialData: _keysService.keys,
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const SizedBox.shrink();
                     }
-                    setState(() {});
-                  },
-                  onAccountChanged: (address) async {
-                    final walletKit = GetIt.I<IWalletKitService>().walletKit;
-                    final sessions = walletKit.sessions.getAll();
-                    for (var session in sessions) {
-                      await walletKit.emitSessionEvent(
-                        topic: session.topic,
-                        chainId: 'eip155:1',
-                        event: SessionEventParams(
-                          name: 'accountsChanged',
-                          data: [address],
-                        ),
-                      );
-                    }
-                    setState(() {});
+                    return Column(
+                      children: snapshot.data!.map((e) {
+                        if (e.namespace == 'eip155') {
+                          return _EVMAccounts();
+                        }
+                        if (e.namespace == 'solana') {
+                          return _SolanaAccounts();
+                        }
+                        return _ChainKeyView(chain: e.namespace);
+                      }).toList(),
+                    );
                   },
                 ),
-                //
-                const SizedBox(height: 20.0),
-                const Divider(height: 1.0, color: Colors.grey),
-                _SolanaAccounts(),
-                const SizedBox(height: 20.0),
-                const Divider(height: 1.0, color: Colors.grey),
-                _PolkadotAccounts(),
-                const SizedBox(height: 20.0),
-                const Divider(height: 1.0, color: Colors.grey),
-                _KadenaAccounts(),
-                const SizedBox(height: 20.0),
-                const Divider(height: 1.0, color: Colors.grey),
                 _DeviceData(),
-                const SizedBox(height: 20.0),
-                const Divider(height: 1.0, color: Colors.grey),
                 _Metadata(),
-                const SizedBox(height: 20.0),
-                const Divider(height: 1.0, color: Colors.grey),
                 _Buttons(
-                  onDeleteData: () async {
-                    final walletKit = GetIt.I<IWalletKitService>().walletKit;
-                    await walletKit.core.storage.deleteAll();
-                    // await keysService.clearAll();
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('Storage cleared'),
-                      duration: Duration(seconds: 1),
-                    ));
-                  },
-                  onRestoreFromSeed: () async {
-                    final mnemonic =
-                        await GetIt.I<IBottomSheetService>().queueBottomSheet(
-                      widget: RecoverFromSeed(),
-                    );
-                    if (mnemonic is String) {
-                      await keysService.restoreWalletFromSeed(
-                        mnemonic: mnemonic,
-                      );
-                      await keysService.loadKeys();
-                      await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const AlertDialog(
-                            content: Text('Wallet from seed restored'),
-                          );
-                        },
-                      );
-                      setState(() {});
-                    }
-                  },
-                  onCreateNewWallet: () async {
-                    final response = await showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          content: Text(
-                              'This will delete the current wallet and create a new one'),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(false),
-                              child: const Text('Cancel'),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(true),
-                              child: const Text('Proceed'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                    if (response == true) {
-                      await keysService.clearAll();
-                      await keysService.createRandomWallet();
-                      await keysService.loadKeys();
-                      await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const AlertDialog(
-                            content: Text('New wallet created'),
-                          );
-                        },
-                      );
-                      setState(() {});
-                    }
-                  },
+                  onDeleteData: _onDeleteData,
+                  onRestoreFromSeed: _onRestoreFromSeed,
+                  onCreateNewWallet: _onCreateNewWallet,
                 ),
                 //
               ],
@@ -167,63 +165,62 @@ class _Metadata extends StatelessWidget {
     final nativeLink = walletKit.metadata.redirect?.native;
     final universalLink = walletKit.metadata.redirect?.universal;
     final linkMode = walletKit.metadata.redirect?.linkMode;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox.square(dimension: 20.0),
-          _DataContainer(
-            title: 'Redirect',
-            data:
-                'Native: $nativeLink\nUniversal: $universalLink\nLink Mode: $linkMode',
+    return Column(
+      children: [
+        const SizedBox(height: 20.0),
+        const Divider(height: 1.0, color: Colors.grey),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox.square(dimension: 20.0),
+              _DataContainer(
+                title: 'Redirect',
+                data:
+                    'Native: $nativeLink\nUniversal: $universalLink\nLink Mode: $linkMode',
+              ),
+              const SizedBox.square(dimension: 10.0),
+              FutureBuilder(
+                future: ReownCoreUtils.getPackageName(),
+                builder: (_, snapshot) {
+                  return Text(snapshot.data ?? '');
+                },
+              ),
+            ],
           ),
-          const SizedBox.square(dimension: 10.0),
-          FutureBuilder(
-            future: ReownCoreUtils.getPackageName(),
-            builder: (_, snapshot) {
-              return Text(snapshot.data ?? '');
-            },
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
 class _EVMAccounts extends StatefulWidget {
-  final VoidCallback onCreateAddress;
-  final Function(String) onAccountChanged;
-  const _EVMAccounts({
-    required this.onCreateAddress,
-    required this.onAccountChanged,
-  });
-
   @override
   State<_EVMAccounts> createState() => _EVMAccountsState();
 }
 
 class _EVMAccountsState extends State<_EVMAccounts> {
-  int _currentPage = 0;
-  late final ReownWalletKit _walletKit;
+  final _walletKitService = GetIt.I<IWalletKitService>();
+  final _walletKit = GetIt.I<IWalletKitService>().walletKit;
+  final _keysService = GetIt.I<IKeyService>();
   late final PageController _pageController;
   late ChainMetadata _selectedChain;
+
+  int _currentPage = 0;
   double _balance = 0.0;
 
   @override
   void initState() {
     super.initState();
-    _walletKit = GetIt.I<IWalletKitService>().walletKit;
     _pageController = PageController();
-    _selectedChain = GetIt.I<IWalletKitService>().currentSelectedChain.value!;
-    GetIt.I<IWalletKitService>().currentSelectedChain.addListener(
-          _onChainChanged,
-        );
+    _selectedChain = _walletKitService.currentSelectedChain.value!;
+    _walletKitService.currentSelectedChain.addListener(_onChainChanged);
     _updateBalance();
   }
 
   Future<void> _onChainChanged() async {
-    final chain = GetIt.I<IWalletKitService>().currentSelectedChain.value;
+    final chain = _walletKitService.currentSelectedChain.value;
     await _switchToChain(chain);
   }
 
@@ -232,13 +229,16 @@ class _EVMAccountsState extends State<_EVMAccounts> {
       final sessions = _walletKit.sessions.getAll();
       final chainId = chainMetadata!.chainId.split(':').last;
       for (var session in sessions) {
-        _walletKit.emitSessionEvent(
+        await _walletKit.emitSessionEvent(
           topic: session.topic,
           chainId: chainMetadata.chainId,
           event: SessionEventParams(
             name: 'chainChanged',
             data: int.parse(chainId),
           ),
+        );
+        debugPrint(
+          '[SampleWallet] chainChanged event sent for session ${session.topic}',
         );
       }
       setState(() => _selectedChain = chainMetadata);
@@ -249,24 +249,45 @@ class _EVMAccountsState extends State<_EVMAccounts> {
   }
 
   Future<void> _updateBalance() async {
-    final keysService = GetIt.I<IKeyService>();
-    final chainKeys = keysService.getKeysForChain('eip155');
+    final chainKeys = _keysService.getKeysForChain('eip155');
     final chainKey = chainKeys[_currentPage];
     final evmService = GetIt.I.get<EVMService>(
       instanceName: _selectedChain.chainId,
     );
-    setState(() => {});
     evmService
         .getBalance(address: chainKey.address)
         .then((value) => setState(() => _balance = value))
         .onError((a, b) => setState(() => _balance = 0.0));
+    setState(() => {});
+  }
+
+  Future<void> _onCreateEVMAddress() async {
+    await _keysService.createAddressFromSeed();
+    await _keysService.loadKeys();
+    if (Navigator.canPop(context)) {
+      Navigator.pop(context);
+    }
+    setState(() {});
+  }
+
+  Future<void> _onEVMAccountChanged(String address) async {
+    final sessions = _walletKit.sessions.getAll();
+    for (var session in sessions) {
+      await _walletKit.emitSessionEvent(
+        topic: session.topic,
+        chainId: 'eip155:1',
+        event: SessionEventParams(
+          name: 'accountsChanged',
+          data: [address],
+        ),
+      );
+    }
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    final keysService = GetIt.I<IKeyService>();
-    final chainKeys = keysService.getKeysForChain('eip155');
-    debugPrint('[$runtimeType] chainKeys ${chainKeys.length}');
+    final chainKeys = _keysService.getKeysForChain('eip155');
     return Column(
       children: [
         Padding(
@@ -290,7 +311,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                       return AlertDialog(
                         title: const Text('Create new account'),
                         content: const Text(
-                          'This will create a new address out from the same seed phrase',
+                          'This will create a new address out from the seed',
                         ),
                         actions: [
                           TextButton(
@@ -298,7 +319,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                             child: const Text('Cancel'),
                           ),
                           TextButton(
-                            onPressed: widget.onCreateAddress,
+                            onPressed: _onCreateEVMAddress,
                             child: const Text('Proceed'),
                           ),
                         ],
@@ -313,9 +334,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
               IconButton(
                 onPressed: (_currentPage == 0)
                     ? null
-                    : () {
-                        _pageController.jumpToPage(_currentPage - 1);
-                      },
+                    : () => _pageController.jumpToPage(_currentPage - 1),
                 icon: const Icon(Icons.arrow_back),
                 padding: const EdgeInsets.all(0.0),
                 visualDensity: VisualDensity.compact,
@@ -334,32 +353,115 @@ class _EVMAccountsState extends State<_EVMAccounts> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          padding: const EdgeInsets.only(
+            left: 12.0,
+            right: 12.0,
+            top: 10.0,
+            bottom: 8.0,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
                 child: Text(
-                  '${_balance.toStringAsFixed(4)} ETH',
+                  '${_balance.toStringAsFixed(6)} ETH',
                   style: TextStyle(
                     fontSize: 15.0,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-              DropdownButton(
-                value: _selectedChain,
-                items: ChainsDataList.eip155Chains.map((e) {
-                  return DropdownMenuItem<ChainMetadata>(
-                    value: e,
-                    child: Text(e.name),
-                  );
-                }).toList(),
-                onChanged: (ChainMetadata? chainMetadata) {
-                  GetIt.I<IWalletKitService>().currentSelectedChain.value =
-                      chainMetadata;
-                },
+              SizedBox(
+                width: 200.0,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    DropdownButton(
+                      key: Key('evm_chains'),
+                      isExpanded: true,
+                      value: _selectedChain,
+                      items: ChainsDataList.eip155Chains.map((e) {
+                        return DropdownMenuItem<ChainMetadata>(
+                          value: e,
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                WidgetSpan(
+                                  child: Image.network(
+                                    width: 20.0,
+                                    height: 20.0,
+                                    e.logo,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: ' ${e.name}',
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                      onChanged: (ChainMetadata? chain) async {
+                        setState(() => _selectedChain = chain!);
+                        final sessions = _walletKit.sessions.getAll();
+                        final cid = _selectedChain.chainId.split(':').last;
+                        for (var session in sessions) {
+                          await _walletKit.emitSessionEvent(
+                            topic: session.topic,
+                            chainId: _selectedChain.chainId,
+                            event: SessionEventParams(
+                              name: 'chainChanged',
+                              data: int.parse(cid),
+                            ),
+                          );
+                        }
+                        _updateBalance();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(
+            left: 12.0,
+            right: 12.0,
+          ),
+          child: Row(
+            children: [
+              CustomButton(
+                type: CustomButtonType.normal,
+                onTap: () => showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  enableDrag: false,
+                  showDragHandle: false,
+                  isDismissible: false,
+                  useRootNavigator: true,
+                  useSafeArea: true,
+                  builder: (context) => ChainAbstractionPreparePage(),
+                ),
+                child: const Center(
+                  child: Text(
+                    'Chain Abstraction',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
@@ -372,7 +474,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
             onPageChanged: (value) async {
               setState(() => _currentPage = value);
               final chainKey = chainKeys[_currentPage];
-              widget.onAccountChanged(chainKey.address);
+              _onEVMAccountChanged(chainKey.address);
             },
             itemBuilder: (BuildContext context, int index) {
               final chainKey = chainKeys[index];
@@ -428,19 +530,27 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                 .toList(),
           ),
         ),
-        const SizedBox(height: 20.0),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: FutureBuilder<String>(
-            future: keysService.getMnemonic(),
-            builder: (context, snapshot) {
-              return _DataContainer(
-                title: 'Seed phrase',
-                data: snapshot.data ?? '',
-                blurred: true,
-              );
-            },
-          ),
+        FutureBuilder<String>(
+          future: _keysService.getMnemonic(),
+          builder: (context, snapshot) {
+            final value = snapshot.data ?? '';
+            return Visibility(
+              visible: value.isNotEmpty,
+              child: Column(
+                children: [
+                  const SizedBox(height: 20.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                    child: _DataContainer(
+                      title: 'Mnemonic phrase',
+                      data: snapshot.data ?? '',
+                      blurred: true,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ],
     );
@@ -469,6 +579,8 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
           .then((value) {
         if (!mounted) return;
         setState(() => _balance = value);
+      }).catchError((error) {
+        debugPrint(error);
       });
     } catch (e) {
       debugPrint(e.toString());
@@ -482,14 +594,15 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
     if (chainKeys.isEmpty) return const SizedBox.shrink();
     return Column(
       children: [
+        const SizedBox(height: 20.0),
+        const Divider(height: 1.0, color: Colors.grey),
         const Padding(
-          padding: EdgeInsets.all(12.0),
+          padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 12.0),
           child: Row(
             children: [
-              SizedBox.square(dimension: 8.0),
               Expanded(
                 child: Text(
-                  'Solana Account',
+                  'solana Accounts',
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.w500,
@@ -500,7 +613,12 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          padding: const EdgeInsets.only(
+            left: 12.0,
+            right: 12.0,
+            top: 10.0,
+            bottom: 8.0,
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -514,26 +632,55 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
                   ),
                 ),
               ),
-              DropdownButton(
-                value: _selectedChain,
-                items: ChainsDataList.solanaChains.map((e) {
-                  return DropdownMenuItem<ChainMetadata>(
-                    value: e,
-                    child: Text(e.name),
-                  );
-                }).toList(),
-                onChanged: (ChainMetadata? chain) {
-                  setState(() => _selectedChain = chain);
-                  final chainKey = chainKeys.first;
-                  GetIt.I
-                      .get<SolanaService>(instanceName: chain?.chainId)
-                      .getBalance(address: chainKey.address)
-                      .then((value) => setState(() => _balance = value));
-                },
+              SizedBox(
+                width: 150.0,
+                child: DropdownButton(
+                  key: Key('solana_chains'),
+                  isExpanded: true,
+                  value: _selectedChain,
+                  items: ChainsDataList.solanaChains.map((e) {
+                    return DropdownMenuItem<ChainMetadata>(
+                      value: e,
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            WidgetSpan(
+                              child: Image.network(
+                                width: 20.0,
+                                height: 20.0,
+                                e.logo,
+                              ),
+                            ),
+                            TextSpan(
+                              text: ' ${e.name}',
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (ChainMetadata? chain) {
+                    setState(() => _selectedChain = chain);
+                    final chainKey = chainKeys.first;
+                    GetIt.I
+                        .get<SolanaService>(instanceName: chain?.chainId)
+                        .getBalance(address: chainKey.address)
+                        .then((value) => setState(() => _balance = value));
+                  },
+                ),
               ),
             ],
           ),
         ),
+        const SizedBox.square(dimension: 8.0),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Column(
@@ -556,69 +703,26 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
   }
 }
 
-class _PolkadotAccounts extends StatelessWidget {
+class _ChainKeyView extends StatelessWidget {
+  const _ChainKeyView({required this.chain});
+  final String chain;
   @override
   Widget build(BuildContext context) {
     final keysService = GetIt.I<IKeyService>();
-    final chainKeys = keysService.getKeysForChain('polkadot');
+    final chainKeys = keysService.getKeysForChain(chain);
     if (chainKeys.isEmpty) return const SizedBox.shrink();
     return Column(
       children: [
-        const Padding(
-          padding: EdgeInsets.all(12.0),
-          child: Row(
-            children: [
-              SizedBox.square(dimension: 8.0),
-              Expanded(
-                child: Text(
-                  'Polkadot Account',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        const SizedBox(height: 20.0),
+        const Divider(height: 1.0, color: Colors.grey),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: Column(
-            children: [
-              _DataContainer(
-                title: 'Address',
-                data: chainKeys.first.address,
-              ),
-              const SizedBox(height: 12.0),
-              _DataContainer(
-                title: 'Mnemonic',
-                data: chainKeys.first.privateKey,
-                blurred: true,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _KadenaAccounts extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final keysService = GetIt.I<IKeyService>();
-    final chainKeys = keysService.getKeysForChain('kadena');
-    if (chainKeys.isEmpty) return const SizedBox.shrink();
-    return Column(
-      children: [
-        const Padding(
           padding: EdgeInsets.all(12.0),
           child: Row(
             children: [
               SizedBox.square(dimension: 8.0),
               Expanded(
                 child: Text(
-                  'Kadena Account',
+                  '$chain account',
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.w500,
@@ -654,48 +758,54 @@ class _DeviceData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final walletKit = GetIt.I<IWalletKitService>().walletKit;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 8.0, bottom: 8.0, top: 12.0),
-            child: Text(
-              'Device',
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w500,
+    return Column(
+      children: [
+        const SizedBox(height: 20.0),
+        const Divider(height: 1.0, color: Colors.grey),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(bottom: 8.0, top: 12.0, left: 10.0),
+                child: Text(
+                  'device info',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
-            ),
+              FutureBuilder<String>(
+                future: walletKit.core.crypto.getClientId(),
+                builder: (context, snapshot) {
+                  return _DataContainer(
+                    title: 'Client ID',
+                    data: snapshot.data ?? '',
+                  );
+                },
+              ),
+              const SizedBox(height: 12.0),
+              FutureBuilder<PackageInfo>(
+                future: PackageInfo.fromPlatform(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const SizedBox.shrink();
+                  }
+                  final v = snapshot.data!.version;
+                  final b = snapshot.data!.buildNumber;
+                  const f = String.fromEnvironment('FLUTTER_APP_FLAVOR');
+                  return _DataContainer(
+                    title: 'App version',
+                    data: '$v-$f ($b) - SDK v$packageVersion',
+                  );
+                },
+              ),
+            ],
           ),
-          FutureBuilder<String>(
-            future: walletKit.core.crypto.getClientId(),
-            builder: (context, snapshot) {
-              return _DataContainer(
-                title: 'Client ID',
-                data: snapshot.data ?? '',
-              );
-            },
-          ),
-          const SizedBox(height: 12.0),
-          FutureBuilder<PackageInfo>(
-            future: PackageInfo.fromPlatform(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const SizedBox.shrink();
-              }
-              final v = snapshot.data!.version;
-              final b = snapshot.data!.buildNumber;
-              const f = String.fromEnvironment('FLUTTER_APP_FLAVOR');
-              return _DataContainer(
-                title: 'App version',
-                data: '$v-$f ($b) - SDK v$packageVersion',
-              );
-            },
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -712,121 +822,133 @@ class _Buttons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(12.0),
-      child: Column(
-        children: [
-          FutureBuilder(
-            future: SharedPreferences.getInstance(),
-            builder: (_, snapshot) {
-              if (snapshot.hasData) {
-                final prefs = snapshot.data!;
-                final linkModeEnabled =
-                    prefs.getBool('appkit_sample_linkmode') ?? false;
-                return Row(
-                  children: [
-                    Expanded(
+    return Column(
+      children: [
+        const SizedBox(height: 20.0),
+        const Divider(height: 1.0, color: Colors.grey),
+        Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Column(
+            children: [
+              FutureBuilder(
+                future: SharedPreferences.getInstance(),
+                builder: (_, snapshot) {
+                  if (snapshot.hasData) {
+                    final prefs = snapshot.data!;
+                    final linkModeEnabled =
+                        prefs.getBool('rwkt_sample_linkmode') ?? false;
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Link Mode',
+                            textAlign: TextAlign.right,
+                          ),
+                        ),
+                        Switch(
+                          value: linkModeEnabled,
+                          onChanged: (value) async {
+                            await prefs.setBool(
+                              'rwkt_sample_linkmode',
+                              value,
+                            );
+                            final result = await showDialog<bool>(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  content: Text(
+                                      'App will be closed to apply changes'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
+                                      child: Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(true),
+                                      child: Text('Ok'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                            if (result == true) {
+                              await prefs.setBool(
+                                'rwkt_sample_linkmode',
+                                value,
+                              );
+                              if (!kDebugMode) {
+                                exit(0);
+                              }
+                            }
+                          },
+                        ),
+                        Expanded(child: SizedBox.shrink()),
+                      ],
+                    );
+                  }
+                  return SizedBox.shrink();
+                },
+              ),
+              const SizedBox(height: 8.0),
+              Row(
+                children: [
+                  CustomButton(
+                    type: CustomButtonType.normal,
+                    onTap: onDeleteData,
+                    child: const Center(
                       child: Text(
-                        'Link Mode',
-                        textAlign: TextAlign.right,
+                        'Clear local storage',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                    Switch(
-                      value: linkModeEnabled,
-                      onChanged: (value) async {
-                        await prefs.setBool('appkit_sample_linkmode', value);
-                        final result = await showDialog<bool>(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              content:
-                                  Text('App will be closed to apply changes'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.of(context).pop(false),
-                                  child: Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.of(context).pop(true),
-                                  child: Text('Ok'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                        if (result == true) {
-                          await prefs.setBool('appkit_sample_linkmode', value);
-                          if (!kDebugMode) {
-                            exit(0);
-                          }
-                        }
-                      },
-                    ),
-                    Expanded(child: SizedBox.shrink()),
-                  ],
-                );
-              }
-              return SizedBox.shrink();
-            },
-          ),
-          const SizedBox(height: 8.0),
-          Row(
-            children: [
-              CustomButton(
-                type: CustomButtonType.normal,
-                onTap: onDeleteData,
-                child: const Center(
-                  child: Text(
-                    'Clear local storage',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12.0),
+              Row(
+                children: [
+                  CustomButton(
+                    type: CustomButtonType.valid,
+                    onTap: onRestoreFromSeed,
+                    child: const Center(
+                      child: Text(
+                        'Restore wallet',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                ],
+              ),
+              const SizedBox(height: 12.0),
+              Row(
+                children: [
+                  CustomButton(
+                    type: CustomButtonType.invalid,
+                    onTap: onCreateNewWallet,
+                    child: const Center(
+                      child: Text(
+                        'Create new wallet',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
-          const SizedBox(height: 12.0),
-          Row(
-            children: [
-              CustomButton(
-                type: CustomButtonType.valid,
-                onTap: onRestoreFromSeed,
-                child: const Center(
-                  child: Text(
-                    'Restore wallet from seed',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12.0),
-          Row(
-            children: [
-              CustomButton(
-                type: CustomButtonType.invalid,
-                onTap: onCreateNewWallet,
-                child: const Center(
-                  child: Text(
-                    'Create new wallet',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

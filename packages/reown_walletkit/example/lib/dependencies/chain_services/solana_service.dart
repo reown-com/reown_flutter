@@ -19,12 +19,10 @@ class SolanaService {
         'solana_signMessage': solanaSignMessage,
         'solana_signTransaction': solanaSignTransaction,
         'solana_signAllTransactions': solanaSignAllTransaction,
-        'solana_signAndSendTransaction': solanaSignAndSendTransaction,
       };
 
   final _walletKit = GetIt.I<IWalletKitService>().walletKit;
   final ChainMetadata chainSupported;
-  late final solana.Wallet _solanaWallet;
 
   SolanaService({required this.chainSupported}) {
     for (var handler in solanaRequestHandlers.entries) {
@@ -36,10 +34,6 @@ class SolanaService {
     }
   }
 
-  Future<void> init() async {
-    _solanaWallet = await _getSolanaWallet();
-  }
-
   Future<void> solanaSignMessage(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] solanaSignMessage request: $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
@@ -49,6 +43,8 @@ class SolanaService {
       final params = parameters as Map<String, dynamic>;
       final message = params['message'].toString();
 
+      final keyPair = await _getKeyPair();
+
       // it's being sent encoded from dapp
       final base58Decoded = base58.decode(message);
       final decodedMessage = utf8.decode(base58Decoded);
@@ -56,10 +52,10 @@ class SolanaService {
         decodedMessage,
         method: pRequest.method,
         chainId: pRequest.chainId,
-        address: _solanaWallet.address,
+        address: keyPair.address,
         transportType: pRequest.transportType.name,
       )) {
-        final signature = await _solanaWallet.sign(base58Decoded.toList());
+        final signature = await keyPair.sign(base58Decoded.toList());
 
         response = response.copyWith(
           result: {
@@ -97,8 +93,7 @@ class SolanaService {
 
   Future<void> solanaSignTransaction(String topic, dynamic parameters) async {
     debugPrint(
-      '[SampleWallet] solanaSignTransaction: ${jsonEncode(parameters)}',
-    );
+        '[SampleWallet] solanaSignTransaction: ${jsonEncode(parameters)}');
     final pRequest = _walletKit.pendingRequests.getAll().last;
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
@@ -106,12 +101,14 @@ class SolanaService {
       final params = parameters as Map<String, dynamic>;
       final beautifiedTrx = const JsonEncoder.withIndent('  ').convert(params);
 
+      final keyPair = await _getKeyPair();
+
       if (await MethodsUtils.requestApproval(
         // Show Approval Modal
         beautifiedTrx,
         method: pRequest.method,
         chainId: pRequest.chainId,
-        address: _solanaWallet.address,
+        address: keyPair.address,
         transportType: pRequest.transportType.name,
       )) {
         // Sign the transaction.
@@ -124,7 +121,7 @@ class SolanaService {
           );
 
           // Sign the transaction.
-          final signature = await _solanaWallet.sign(
+          final signature = await keyPair.sign(
             signedTx.compiledMessage.toByteArray(),
           );
 
@@ -150,7 +147,7 @@ class SolanaService {
           );
 
           // Sign the transaction.
-          final signature = await _solanaWallet.sign(
+          final signature = await keyPair.sign(
             compiledMessage.toByteArray(),
           );
 
@@ -202,12 +199,14 @@ class SolanaService {
       final params = parameters as Map<String, dynamic>;
       final beautifiedTrx = const JsonEncoder.withIndent('  ').convert(params);
 
+      final keyPair = await _getKeyPair();
+
       if (await MethodsUtils.requestApproval(
         // Show Approval Modal
         beautifiedTrx,
         method: pRequest.method,
         chainId: pRequest.chainId,
-        address: _solanaWallet.address,
+        address: keyPair.address,
         transportType: pRequest.transportType.name,
       )) {
         if (params.containsKey('transactions')) {
@@ -215,24 +214,24 @@ class SolanaService {
 
           List<String> signedTransactions = [];
           for (var transaction in transactions) {
-            final signedAndEncodedTx = await _signAndReencodeTransaction(
-              transaction,
+            final transactionBytes = base64.decode(transaction);
+            final unsignedTx = solana_encoder.SignedTx.fromBytes(
+              transactionBytes,
             );
-            signedTransactions.add(signedAndEncodedTx);
+            final signature = await keyPair.sign(
+              unsignedTx.compiledMessage.toByteArray(),
+            );
+            final signedTx = unsignedTx.copyWith(signatures: [
+              signature,
+            ]);
+            final reEncodedTx = signedTx.encode();
+            signedTransactions.add(reEncodedTx);
           }
 
           response = response.copyWith(
             result: {
               'transactions': signedTransactions,
             },
-          );
-        } else {
-          final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
-          response = response.copyWith(
-            error: JsonRpcError(
-              code: error.code,
-              message: error.message,
-            ),
           );
         }
       } else {
@@ -263,125 +262,12 @@ class SolanaService {
     _handleResponseForTopic(topic, response);
   }
 
-  Future<void> solanaSignAndSendTransaction(
-    String topic,
-    dynamic parameters,
-  ) async {
-    debugPrint(
-      '[SampleWallet] solanaSignAndSendTransaction: ${jsonEncode(parameters)}',
-    );
-    final pRequest = _walletKit.pendingRequests.getAll().last;
-    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
-
-    try {
-      final params = parameters as Map<String, dynamic>;
-      final beautifiedTrx = const JsonEncoder.withIndent('  ').convert(params);
-
-      if (await MethodsUtils.requestApproval(
-        // Show Approval Modal
-        beautifiedTrx,
-        method: pRequest.method,
-        chainId: pRequest.chainId,
-        address: _solanaWallet.address,
-        transportType: pRequest.transportType.name,
-      )) {
-        // Sign the transaction.
-        // if params contains `transaction` key we should parse that one and disregard the rest
-        if (params.containsKey('transaction')) {
-          try {
-            final transaction = params['transaction'] as String;
-            final signedAndEncodedTx = await _signAndReencodeTransaction(
-              transaction,
-            );
-
-            final rpcUrl = chainSupported.rpc.first;
-            final transactionId =
-                await solana.RpcClient(rpcUrl).sendTransaction(
-              signedAndEncodedTx,
-            );
-
-            response = response.copyWith(
-              result: {
-                'signature': transactionId,
-              },
-            );
-          } on solana.JsonRpcException catch (e) {
-            response = response.copyWith(
-              error: JsonRpcError(
-                code: e.code,
-                message: e.message,
-              ),
-            );
-          }
-        } else {
-          // else we parse the other key/values, see https://docs.walletconnect.com/advanced/multichain/rpc-reference/solana-rpc#solana_signtransaction
-          final instructionsList = params['instructions'] as List<dynamic>;
-          final instructions = instructionsList.map((json) {
-            return (json as Map<String, dynamic>).toInstruction();
-          }).toList();
-
-          final message = solana.Message(instructions: instructions);
-
-          final rpcUrl = chainSupported.rpc.first;
-          final trxId = await solana.RpcClient(rpcUrl).signAndSendTransaction(
-            message,
-            [_solanaWallet],
-          );
-
-          response = response.copyWith(
-            result: {
-              'signature': trxId,
-            },
-          );
-        }
-      } else {
-        final error = Errors.getSdkError(Errors.USER_REJECTED);
-        response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
-        );
-      }
-    } catch (e, s) {
-      debugPrint('[SampleWallet] solanaSignTransaction error $e, $s');
-      final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
-      response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
-      );
-    }
-
-    await _walletKit.respondSessionRequest(
-      topic: topic,
-      response: response,
-    );
-
-    _handleResponseForTopic(topic, response);
-  }
-
-  Future<String> _signAndReencodeTransaction(String encodedTx) async {
-    final transactionBytes = base64.decode(encodedTx);
-    final unsignedTx = solana_encoder.SignedTx.fromBytes(
-      transactionBytes,
-    );
-    final signature = await _solanaWallet.sign(
-      unsignedTx.compiledMessage.toByteArray(),
-    );
-    final signedTx = unsignedTx.copyWith(signatures: [
-      signature,
-    ]);
-    return signedTx.encode();
-  }
-
-  Future<solana.Wallet> _getSolanaWallet() async {
+  Future<solana.Ed25519HDKeyPair> _getKeyPair() async {
     final keys = GetIt.I<IKeyService>().getKeysForChain(
       chainSupported.chainId,
     );
     final secKeyBytes = keys[0].privateKey.parse32Bytes();
-    return await solana.Wallet.fromPrivateKeyBytes(
+    return await solana.Ed25519HDKeyPair.fromPrivateKeyBytes(
       privateKey: secKeyBytes,
     );
   }
