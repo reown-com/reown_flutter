@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart' as path;
@@ -5,11 +7,6 @@ import 'package:process_run/process_run.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
-/// Checks if you are awesome. Spoiler: you are.
-class Awesome {
-  bool get isAwesome => true;
-}
 
 class ReownCli {
   final ArgParser _parser;
