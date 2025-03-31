@@ -110,9 +110,8 @@ class MethodsService {
           method: method,
           transaction: Transaction(
             from: EthereumAddress.fromHex(address),
-            to: EthereumAddress.fromHex(
-              '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
-            ),
+            // to: should be the recipient address
+            to: EthereumAddress.fromHex(address),
             value: EtherAmount.fromInt(EtherUnit.finney, 11), // == 0.011
             data: utf8.encode('0x'), // to make it work with some wallets
           ),
@@ -334,9 +333,8 @@ class MethodsService {
             from: EthereumAddress.fromHex(senderAddress),
           ),
           parameters: [
-            EthereumAddress.fromHex(
-              '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
-            ),
+            // should be the recipient address
+            EthereumAddress.fromHex(senderAddress),
             requestValue, // == 0.23
           ],
         );
@@ -396,7 +394,7 @@ class MethodsService {
       //   functionName: 'transfer',
       //   parameters: [
       //     EthereumAddress.fromHex(
-      //       '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
+      //       appKitModal.session!.getAddress(namespace)!,
       //     ),
       //     requestValue, // == 0.12
       //   ],

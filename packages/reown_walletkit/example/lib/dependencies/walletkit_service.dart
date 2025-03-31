@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:eth_sig_util/util/utils.dart';
+import 'package:eth_sig_util/util/utils.dart' as eth_sig_util_util;
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
@@ -58,7 +58,7 @@ class WalletKitService extends IWalletKitService {
   @override
   Future<void> create() async {
     final prefs = await SharedPreferences.getInstance();
-    final linkModeEnabled = prefs.getBool('appkit_sample_linkmode') ?? false;
+    final linkModeEnabled = prefs.getBool('rwkt_sample_linkmode') ?? false;
 
     // Create the ReownWalletKit instance
     _walletKit = ReownWalletKit(
@@ -98,7 +98,7 @@ class WalletKitService extends IWalletKitService {
     // Setup our accounts
     List<ChainKey> chainKeys = await GetIt.I<IKeyService>().loadKeys();
     if (chainKeys.isEmpty) {
-      await GetIt.I<IKeyService>().loadDefaultWallet();
+      await GetIt.I<IKeyService>().createRandomWallet();
       chainKeys = await GetIt.I<IKeyService>().loadKeys();
     }
     for (final chainKey in chainKeys) {
@@ -355,7 +355,10 @@ class WalletKitService extends IWalletKitService {
           final signature = credentials.signPersonalMessageToUint8List(
             Uint8List.fromList(message.codeUnits),
           );
-          final hexSignature = bytesToHex(signature, include0x: true);
+          final hexSignature = eth_sig_util_util.bytesToHex(
+            signature,
+            include0x: true,
+          );
           cacaos.add(
             AuthSignature.buildAuthObject(
               requestPayload: cacaoRequestPayload,

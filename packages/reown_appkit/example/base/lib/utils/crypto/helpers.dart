@@ -93,9 +93,8 @@ Future<SessionRequestParams?> getParams(
         params: [
           Transaction(
             from: EthereumAddress.fromHex(address),
-            to: EthereumAddress.fromHex(
-              '0x59e2f66C0E96803206B6486cDb39029abAE834c0',
-            ),
+            // to: should be the recipient address
+            to: EthereumAddress.fromHex(address),
             value: EtherAmount.fromInt(EtherUnit.finney, 12), // == 0.012
             data: utf8.encode('0x'), // to make it work with some wallets
           ).toJson(),

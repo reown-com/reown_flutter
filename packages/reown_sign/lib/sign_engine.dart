@@ -2877,14 +2877,20 @@ class ReownSign implements IReownSign {
     if (namespace == 'eip155') {
       final params = request.request.params;
       final paramsMap = params.first as Map<String, dynamic>;
-      final data = paramsMap['data'] as String? ?? '';
+      final input = paramsMap['input'] as String? ?? '';
       try {
-        if (ReownCoreUtils.isValidContractData(data)) {
+        if (ReownCoreUtils.isValidContractData(input)) {
           final contractAddress = paramsMap['to'] as String;
           contractAddresses = [contractAddress];
+        } else {
+          final data = paramsMap['data'] as String? ?? '';
+          if (ReownCoreUtils.isValidContractData(data)) {
+            final contractAddress = paramsMap['to'] as String;
+            contractAddresses = [contractAddress];
+          }
         }
       } catch (e) {
-        core.logger.d('[$runtimeType] invalid contract data $data');
+        core.logger.d('[$runtimeType] invalid contract data');
       }
     }
 

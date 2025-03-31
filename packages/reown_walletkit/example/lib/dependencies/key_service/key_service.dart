@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:convert/convert.dart';
+import 'package:eth_sig_util/util/utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:pointycastle/ecc/curves/secp256k1.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
-
+import 'package:reown_walletkit_wallet/dependencies/bip32/bip32_base.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
@@ -11,11 +13,15 @@ import 'package:reown_walletkit_wallet/dependencies/bip39/bip39_base.dart'
     as bip39;
 import 'package:reown_walletkit_wallet/dependencies/bip32/bip32_base.dart'
     as bip32;
-import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:solana/solana.dart' as solana;
+import 'package:bitcoin_base/bitcoin_base.dart' as bitcoin;
 
 class KeyService extends IKeyService {
   List<ChainKey> _keys = [];
+
+  @override
+  List<ChainKey> get keys => _keys;
 
   @override
   Future<void> clearAll() async {
@@ -83,9 +89,24 @@ class KeyService extends IKeyService {
   // ** bip39/bip32 - EIP155 **
 
   @override
-  Future<void> loadDefaultWallet() async {
-    const mnemonic = DartDefines.ethereumSecretKey;
-    await restoreWalletFromSeed(mnemonic: mnemonic);
+  Future<void> createRandomWallet() async {
+    final mnemonic = bip39.generateMnemonic();
+    await restoreWallet(mnemonicOrPrivate: mnemonic);
+  }
+
+  bool _isPrivateKey(String privateKeyHex) {
+    final regex = RegExp(r'^[0-9a-fA-F]{64}$');
+    return regex.hasMatch(privateKeyHex);
+  }
+
+  @override
+  Future<void> restoreWallet({required String mnemonicOrPrivate}) async {
+    _keys.clear();
+    if (_isPrivateKey(mnemonicOrPrivate)) {
+      await _restoreWalletFromPrivateKey(mnemonicOrPrivate);
+    } else {
+      await _restoreFromMnemonic(mnemonicOrPrivate);
+    }
   }
 
   @override
@@ -104,8 +125,27 @@ class KeyService extends IKeyService {
     await _saveKeys();
   }
 
-  @override
-  Future<void> restoreWalletFromSeed({required String mnemonic}) async {
+  Future<void> _restoreWalletFromPrivateKey(privateKey) async {
+    // ⚠️ WARNING: SharedPreferences is not the best way to store your keys! This is just for example purposes!
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('rwkt_chain_keys');
+    await prefs.remove('rwkt_mnemonic');
+
+    final ecDomain = ECCurve_secp256k1();
+    final bigIntPrivateKey = BigInt.parse(privateKey, radix: 16);
+
+    final ecPoint = ecDomain.G * bigIntPrivateKey;
+    final public = ecPoint!.getEncoded(false);
+
+    final publicKey = hex.encode(public);
+    final chainKey = _eip155ChainKey(CryptoKeyPair(privateKey, publicKey));
+
+    _keys = List<ChainKey>.from([chainKey]);
+
+    await _saveKeys();
+  }
+
+  Future<void> _restoreFromMnemonic(String mnemonic) async {
     // ⚠️ WARNING: SharedPreferences is not the best way to store your keys! This is just for example purposes!
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('rwkt_chain_keys');
@@ -160,42 +200,141 @@ class KeyService extends IKeyService {
   // ** extra derivations **
 
   Future<List<ChainKey>> _extraChainKeys() async {
-    // HARDCODED VALUES
-    final kadenaChainKey = _kadenaChainKey();
-    final polkadotChainKey = _polkadotChainKey();
-    final solanaChainKeys = _solanaChainKey();
-    //
-    return [
-      kadenaChainKey,
-      polkadotChainKey,
-      solanaChainKeys,
-    ];
+    final mnemonic = await getMnemonic();
+    if (mnemonic.isNotEmpty) {
+      // final bitcoinChainKeys = await _bitcoinChainKey(mnemonic);
+      final solanaChainKeys = await _solanaChainKey(mnemonic);
+      final polkadotChainKey = await _polkadotChainKey(mnemonic);
+      final kadenaChainKey = await _kadenaChainKey(mnemonic);
+      //
+      return [
+        // bitcoinChainKeys,
+        solanaChainKeys,
+        polkadotChainKey,
+        kadenaChainKey,
+      ];
+    }
+    return [];
   }
 
-  ChainKey _kadenaChainKey() {
-    return ChainKey(
-      chains: ChainsDataList.kadenaChains.map((e) => e.chainId).toList(),
-      privateKey: DartDefines.kadenaSecretKey,
-      publicKey: DartDefines.kadenaAddress,
-      address: DartDefines.kadenaAddress,
+  Future<ChainKey> _solanaChainKey(String mnemonic) async {
+    final seed = bip39.mnemonicToSeed(mnemonic);
+
+    final solanaKeyPair = await solana.Ed25519HDKeyPair.fromSeedWithHdPath(
+      seed: seed,
+      hdPath: "m/44'/501'/0'/0'",
     );
-  }
+    final publicBytes = solanaKeyPair.publicKey.bytes;
+    final privateBytes = (await solanaKeyPair.extract()).bytes;
 
-  ChainKey _polkadotChainKey() {
-    return ChainKey(
-      chains: ChainsDataList.polkadotChains.map((e) => e.chainId).toList(),
-      privateKey: DartDefines.polkadotMnemonic,
-      publicKey: '',
-      address: DartDefines.polkadotAddress,
-    );
-  }
-
-  ChainKey _solanaChainKey() {
     return ChainKey(
       chains: ChainsDataList.solanaChains.map((e) => e.chainId).toList(),
-      privateKey: DartDefines.solanaSecretKey,
-      publicKey: DartDefines.solanaAddress,
-      address: DartDefines.solanaAddress,
+      privateKey: base58.encode(Uint8List.fromList(privateBytes + publicBytes)),
+      publicKey: solanaKeyPair.publicKey.toString(),
+      address: solanaKeyPair.address,
     );
+  }
+
+  Future<ChainKey> _polkadotChainKey(String mnemonic) async {
+    final mnemonic = await getMnemonic();
+    final seed = bip39.mnemonicToSeed(mnemonic);
+    final root = bip32.BIP32.fromSeed(seed);
+    final polkadotNode = root.derivePath("m/44'/354'/0'/0'");
+
+    // Step 4: Extract Private and Public Keys
+    Uint8List privateKey = polkadotNode.privateKey!;
+    Uint8List publicKey = polkadotNode.publicKey;
+
+    // Step 5: Manually Encode SS58 Address
+    final ss58Address = _encodeSS58(publicKey, prefix: 0); // 0 = Polkadot
+
+    return ChainKey(
+      chains: ChainsDataList.polkadotChains.map((e) => e.chainId).toList(),
+      privateKey: base58.encode(privateKey),
+      publicKey: base58.encode(publicKey),
+      address: ss58Address,
+    );
+  }
+
+  Future<ChainKey> _kadenaChainKey(String mnemonic) async {
+    final mnemonic = await getMnemonic();
+    final seed = bip39.mnemonicToSeed(mnemonic);
+    final root = bip32.BIP32.fromSeed(seed);
+    // 626' is Kadena's BIP44 Coin Type
+    final kadenaNode = root.derivePath("m/44'/626'/0'/0/0");
+
+    // Step 4: Extract Private and Public Keys
+    Uint8List privateKey = kadenaNode.privateKey!;
+    Uint8List publicKey = kadenaNode.publicKey;
+
+    // Step 5: Convert to String Formats
+    String privateKeyHex = bytesToHex(privateKey);
+    String publicKeyHex = bytesToHex(publicKey);
+
+    return ChainKey(
+      chains: ChainsDataList.kadenaChains.map((e) => e.chainId).toList(),
+      privateKey: privateKeyHex,
+      publicKey: publicKeyHex,
+      address: publicKeyHex,
+    );
+  }
+
+  // ignore: unused_element
+  Future<ChainKey> _bitcoinChainKey(String mnemonic) async {
+    final mnemonic = await getMnemonic();
+    final seed = bip39.mnemonicToSeed(mnemonic);
+    final root = bip32.BIP32.fromSeed(seed, BITCOIN);
+    final bitcoinNode = root.derivePath("m/84'/0'/0'/0/0");
+
+    final privateKeyBytes = bitcoinNode.privateKey!;
+    final privateKey = bitcoin.ECPrivate.fromBytes(privateKeyBytes);
+    final publicKey = privateKey.getPublic();
+    final address = publicKey.toSegwitAddress().toAddress(
+          bitcoin.BitcoinNetwork.mainnet,
+        );
+
+    return ChainKey(
+      chains: ChainsDataList.bitcoinChains.map((e) => e.chainId).toList(),
+      privateKey: privateKey.toWif(),
+      publicKey: base58.encode(Uint8List.fromList(publicKey.toBytes())),
+      address: address,
+    );
+  }
+
+  // Function to encode a public key into an SS58 address (Pure Dart Implementation)
+  String _encodeSS58(Uint8List publicKey, {int prefix = 0}) {
+    // Step 1: Prefix + Public Key
+    final List<int> data = [prefix, ...publicKey];
+
+    // Step 2: Compute the Blake2b hash manually (checksum)
+    final checksum = _blake2bMini(Uint8List.fromList(data));
+    final List<int> checksumPrefix = checksum.sublist(0, 2); // First 2 bytes
+
+    // Step 3: Concatenate Data + Checksum
+    final List<int> addressBytes = [...data, ...checksumPrefix];
+
+    // Step 4: Encode in Base58
+    return base58.encode(Uint8List.fromList(addressBytes));
+  }
+
+  // Minimal Blake2b Implementation in Pure Dart
+  Uint8List _blake2bMini(Uint8List input) {
+    final h = utf8.encode('SS58PRE'); // Prefix for Blake2b
+    final combined = Uint8List.fromList([...h, ...input]);
+
+    // Using SHA-256 as a simplified Blake2b substitute
+    final hash = _sha256Hash(combined);
+    return Uint8List.fromList(hash);
+  }
+
+  // SHA-256 hash function (acts as a placeholder for Blake2b)
+  List<int> _sha256Hash(Uint8List data) {
+    int hash = 0;
+    for (int byte in data) {
+      hash = (hash * 31 + byte) & 0xFFFFFFFF; // Simple hash function
+    }
+    final hashBytes = ByteData(32);
+    hashBytes.setUint32(0, hash, Endian.little);
+    return hashBytes.buffer.asUint8List();
   }
 }

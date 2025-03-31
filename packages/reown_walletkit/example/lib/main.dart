@@ -7,8 +7,6 @@ import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.d
 import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/polkadot_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
-// ignore: unused_import
-import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service_2.dart';
 import 'package:reown_walletkit_wallet/dependencies/deep_link_handler.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
@@ -21,6 +19,8 @@ import 'package:reown_walletkit_wallet/pages/settings_page.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -72,6 +72,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: StringConstants.appTitle,
       theme: ThemeData(
         colorScheme: _isDarkMode
@@ -82,13 +83,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 primary: Color(0xFF667DFF),
               ),
       ),
-      home: MyHomePage(),
+      home: MyHomePage(
+        isDarkMode: _isDarkMode,
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({super.key});
+  MyHomePage({
+    super.key,
+    required this.isDarkMode,
+  });
+  final bool isDarkMode;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -141,12 +148,8 @@ class _MyHomePageState extends State<MyHomePage> {
     // Support Solana Chains
     // Change SolanaService to SolanaService2 to switch between `solana` package and `solana_web3` package
     for (final chainData in ChainsDataList.solanaChains) {
-      GetIt.I.registerSingletonAsync<SolanaService>(
-        () async {
-          final service = SolanaService(chainSupported: chainData);
-          await service.init();
-          return service;
-        },
+      GetIt.I.registerSingleton<SolanaService>(
+        SolanaService(chainSupported: chainData),
         instanceName: chainData.chainId,
       );
     }
@@ -169,25 +172,33 @@ class _MyHomePageState extends State<MyHomePage> {
       _setState,
     );
 
-    setState(() {
-      _pageDatas = [
-        PageData(
-          page: AppsPage(),
-          title: StringConstants.connectPageTitle,
-          icon: Icons.swap_vert_circle_outlined,
-        ),
-        PageData(
-          page: const SettingsPage(),
-          title: 'Settings',
-          icon: Icons.settings_outlined,
-        ),
-      ];
-
-      _initializing = false;
-    });
+    _setPages();
   }
 
   void _setState(dynamic args) => setState(() {});
+
+  void _setPages() => setState(() {
+        _pageDatas = [
+          PageData(
+            page: AppsPage(isDarkMode: widget.isDarkMode),
+            title: StringConstants.connectPageTitle,
+            icon: Icons.swap_vert_circle_outlined,
+          ),
+          PageData(
+            page: const SettingsPage(),
+            title: 'Settings',
+            icon: Icons.settings_outlined,
+          ),
+        ];
+
+        _initializing = false;
+      });
+
+  @override
+  void didUpdateWidget(covariant MyHomePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _setPages();
+  }
 
   @override
   Widget build(BuildContext context) {

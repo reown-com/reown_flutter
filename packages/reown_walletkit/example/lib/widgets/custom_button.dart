@@ -6,7 +6,7 @@ enum CustomButtonType { normal, valid, invalid }
 class CustomButton extends StatelessWidget {
   final Widget child;
   final CustomButtonType? type;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   const CustomButton({
     super.key,
