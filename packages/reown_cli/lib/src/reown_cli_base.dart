@@ -220,16 +220,27 @@ Run "reown help create" for more information about the create command.
         Directory(path.join(packageRoot, 'lib', 'src', 'templates'));
     final projectDir = Directory(projectName);
 
+    // Determine which template to use based on chains
+    final hasAdditionalChains = chains.any(
+        (chain) => chain.isNotEmpty && !['eip155', 'solana'].contains(chain));
+    final templateName = hasAdditionalChains
+        ? 'main.dart.template.custom'
+        : 'main.dart.template.default';
+
     // Copy main.dart
     final mainTemplate =
-        File(path.join(templatesDir.path, 'lib', 'main.dart.template'));
+        File(path.join(templatesDir.path, 'lib', templateName));
     final mainTarget = File(path.join(projectDir.path, 'lib', 'main.dart'));
     final projectId = _args.command!['projectId'] as String;
 
-    // Process template with chain conditions
+    // Process template with basic replacements
     String content = mainTemplate.readAsStringSync();
 
-    // Replace basic placeholders
+    // // For default template, always include both eip155 and solana
+    // final chainsToUse = hasAdditionalChains
+    //     ? chains.where((chain) => chain.isNotEmpty).toList()
+    //     : ['eip155', 'solana'];
+
     content = content
         .replaceAll('{{project_name}}', projectName)
         .replaceAll('{{project_id}}', projectId)
