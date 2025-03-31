@@ -1,7 +1,8 @@
 name: reown_cli
 description: A command-line tool for creating Flutter projects with Reown AppKit SDK integration.
 version: 0.0.1
-# repository: https://github.com/my_org/my_repo
+homepage: https://github.com/reown-com/reown_flutter
+repository: https://github.com/reown-com/reown_flutter/tree/master/packages/reown_cli
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
