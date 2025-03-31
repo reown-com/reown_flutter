@@ -94,9 +94,9 @@ class _DefaultAccountView extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final isMagicService =
-        _appKitMoldal.session?.sessionService.isMagic ?? false;
-    final smartAccounts = _appKitMoldal.session?.sessionSmartAccounts != null;
+    final isMagicService = _appKitMoldal.session!.sessionService.isMagic;
+    final smartAccounts =
+        _appKitMoldal.session!.sessionSmartAccounts.isNotEmpty;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -149,7 +149,7 @@ class _DefaultAccountView extends StatelessWidget {
         ),
         Visibility(
           visible: smartAccounts,
-          child: _SwitchAccountButton(),
+          child: _SwitchSmartAccountButton(),
         ),
         _DisconnectButton(),
       ],
@@ -248,7 +248,7 @@ class _EmailAndSocialLoginButton extends StatelessWidget {
                     ),
                   ),
           ),
-          title: title,
+          title: title ?? '',
           titleStyle: themeData.textStyles.paragraph500.copyWith(
             color: themeColors.foreground100,
           ),
@@ -388,12 +388,13 @@ class _ActivityButton extends StatelessWidget {
   }
 }
 
-class _SwitchAccountButton extends StatefulWidget {
+class _SwitchSmartAccountButton extends StatefulWidget {
   @override
-  State<_SwitchAccountButton> createState() => _SwitchAccountButtonState();
+  State<_SwitchSmartAccountButton> createState() =>
+      _SwitchSmartAccountButtonState();
 }
 
-class _SwitchAccountButtonState extends State<_SwitchAccountButton> {
+class _SwitchSmartAccountButtonState extends State<_SwitchSmartAccountButton> {
   bool _loading = false;
 
   bool get _isSmartAccountSelected {

@@ -390,8 +390,8 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     }
   }
 
-  String get sessionEmail => sessionProperties['email'];
-  String get sessionProvider => sessionProperties['provider'];
+  String? get sessionEmail => sessionProperties['email'];
+  String? get sessionProvider => sessionProperties['provider'];
 
   //
   String? getAddress(String namespace) {

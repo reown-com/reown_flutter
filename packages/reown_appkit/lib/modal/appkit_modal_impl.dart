@@ -296,12 +296,12 @@ class ReownAppKitModal
       return true;
     }
 
-    // TODO check if this is needed for Farcaster
-    final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
-    if (state.isNotEmpty) {
-      _magicService.completeSocialLogin(url: url);
-      return true;
-    }
+    // // TODO check if this is needed for Farcaster
+    // final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
+    // if (state.isNotEmpty) {
+    //   _magicService.completeSocialLogin(url: url);
+    //   return true;
+    // }
 
     final phantomRequest = ReownCoreUtils.getSearchParamFromURL(
       url,

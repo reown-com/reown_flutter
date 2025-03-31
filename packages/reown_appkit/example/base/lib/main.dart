@@ -154,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
         AppKitSocialOption.Google,
         AppKitSocialOption.Twitch,
         AppKitSocialOption.Telegram,
-        // AppKitSocialOption.Farcaster,
+        AppKitSocialOption.Farcaster,
       ],
       showMainWallets: true, // OPTIONAL - true by default
     );
