@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+const String customTemplate = '''import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 void main() {
@@ -180,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                   ValueListenableBuilder<String>(
                     valueListenable: _appKitModal.balanceNotifier,
                     builder: (_, balance, __) {
-                      return Text('My balance: $balance');
+                      return Text('My balance: \$balance');
                     },
                   ),
                 ],
@@ -192,3 +192,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+''';

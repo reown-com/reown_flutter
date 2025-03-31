@@ -8,10 +8,12 @@ import 'package:pub_semver/pub_semver.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:reown_cli/src/templates/reown_cli_main_custom_template.dart';
+import 'package:reown_cli/src/templates/reown_cli_main_default_template.dart';
+
 class ReownCli {
   final ArgParser _parser;
   late final ArgResults _args;
-  final Shell _shell = Shell();
 
   ReownCli(List<String> arguments) : _parser = ArgParser() {
     _setupCommands();
@@ -108,8 +110,9 @@ Run "reown help create" for more information about the create command.
 
   Future<String> _getLatestVersion(String package) async {
     try {
-      final response =
-          await http.get(Uri.parse('https://pub.dev/api/packages/$package'));
+      final response = await http.get(
+        Uri.parse('https://pub.dev/api/packages/$package'),
+      );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final versions = data['versions'] as List;
@@ -159,30 +162,21 @@ Run "reown help create" for more information about the create command.
       }
 
       // Create Flutter project
-      await _runCommand(
-          'flutter create --org $org --platforms ${platforms.join(',')} $projectName');
+      final flutterCreateCommand = 'flutter create '
+          '--org $org '
+          '--platforms ${platforms.join(',')} '
+          '$projectName';
+      await _runCommand(flutterCreateCommand);
 
       // Copy template files
       await _copyTemplateFiles(projectName, latestVersion, chains);
 
-      // Update pubspec.yaml
-      await _updatePubspec(projectName, latestVersion);
-
-      // Update analysis options
-      await _updateAnalysisOptions(projectName);
-
       // Create a new shell with the project directory as working directory
-      final projectShell = Shell(workingDirectory: projectName);
-
-      // Run flutter pub get in the project directory
-      final result = await projectShell.run('flutter pub get');
-      if (result.first.exitCode != 0) {
-        throw Exception(
-            'Command failed: flutter pub get\n${result.first.stderr}');
-      }
+      final addAppKitCommand = 'flutter pub add reown_appkit';
+      await _runCommand(addAppKitCommand, workingDirectory: projectName);
 
       // Format code
-      await projectShell.run('dart format .');
+      await _runCommand('dart format .', workingDirectory: projectName);
 
       // Update Podfile if iOS is enabled
       if (platforms.contains('ios')) {
@@ -204,44 +198,32 @@ Run "reown help create" for more information about the create command.
     }
   }
 
-  Future<void> _runCommand(String command) async {
-    final result = await _shell.run(command);
+  Future<void> _runCommand(String command, {String? workingDirectory}) async {
+    final shell = Shell(workingDirectory: workingDirectory);
+    final result = await shell.run(command);
     if (result.first.exitCode != 0) {
       throw Exception('Command failed: $command\n${result.first.stderr}');
     }
   }
 
   Future<void> _copyTemplateFiles(
-      String projectName, String version, List<String> chains) async {
-    final scriptPath = Platform.script.path;
-    final packageRoot = path.dirname(
-        path.dirname(path.dirname(path.dirname(path.dirname(scriptPath)))));
-    final templatesDir =
-        Directory(path.join(packageRoot, 'lib', 'src', 'templates'));
+    String projectName,
+    String version,
+    List<String> chains,
+  ) async {
     final projectDir = Directory(projectName);
 
     // Determine which template to use based on chains
     final hasAdditionalChains = chains.any(
         (chain) => chain.isNotEmpty && !['eip155', 'solana'].contains(chain));
-    final templateName = hasAdditionalChains
-        ? 'main.dart.template.custom'
-        : 'main.dart.template.default';
+    final template = hasAdditionalChains ? customTemplate : defaultTemplate;
 
     // Copy main.dart
-    final mainTemplate =
-        File(path.join(templatesDir.path, 'lib', templateName));
     final mainTarget = File(path.join(projectDir.path, 'lib', 'main.dart'));
     final projectId = _args.command!['projectId'] as String;
 
     // Process template with basic replacements
-    String content = mainTemplate.readAsStringSync();
-
-    // // For default template, always include both eip155 and solana
-    // final chainsToUse = hasAdditionalChains
-    //     ? chains.where((chain) => chain.isNotEmpty).toList()
-    //     : ['eip155', 'solana'];
-
-    content = content
+    String content = template
         .replaceAll('{{project_name}}', projectName)
         .replaceAll('{{project_id}}', projectId)
         .replaceAll('{{chains}}', chains.join(', '));
@@ -402,38 +384,6 @@ Run "reown help create" for more information about the create command.
         RegExp(r'{{.*?}}', multiLine: true, dotAll: true), '');
 
     return content;
-  }
-
-  Future<void> _updatePubspec(String projectName, String version) async {
-    final scriptPath = Platform.script.path;
-    final packageRoot = path.dirname(
-        path.dirname(path.dirname(path.dirname(path.dirname(scriptPath)))));
-    final templatesDir =
-        Directory(path.join(packageRoot, 'lib', 'src', 'templates'));
-    final pubspecTemplate =
-        File(path.join(templatesDir.path, 'pubspec.yaml.template'));
-    final pubspecTarget = File(path.join(projectName, 'pubspec.yaml'));
-
-    final content = pubspecTemplate
-        .readAsStringSync()
-        .replaceAll('{{project_name}}', projectName)
-        .replaceAll('^1.4.1', version);
-
-    await pubspecTarget.writeAsString(content);
-  }
-
-  Future<void> _updateAnalysisOptions(String projectName) async {
-    final scriptPath = Platform.script.path;
-    final packageRoot = path.dirname(
-        path.dirname(path.dirname(path.dirname(path.dirname(scriptPath)))));
-    final templatesDir =
-        Directory(path.join(packageRoot, 'lib', 'src', 'templates'));
-    final analysisTemplate =
-        File(path.join(templatesDir.path, 'analysis_options.yaml.template'));
-    final analysisTarget =
-        File(path.join(projectName, 'analysis_options.yaml'));
-
-    await analysisTarget.writeAsString(analysisTemplate.readAsStringSync());
   }
 
   Future<void> _updatePodfile(String projectName) async {
