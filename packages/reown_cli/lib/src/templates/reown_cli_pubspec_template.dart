@@ -1,4 +1,4 @@
-name: {{project_name}}
+const String pubspecTemplate = '''name: {{project_name}}
 description: A new Flutter project with Reown AppKit SDK integration.
 publish_to: 'none'
 version: 1.0.0+1
@@ -19,3 +19,4 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true 
+''';
