@@ -479,7 +479,7 @@ class _$PairingMetadataImpl implements _PairingMetadata {
   const _$PairingMetadataImpl(
       {required this.name,
       required this.description,
-      required this.url,
+      this.url = '',
       final List<String> icons = const <String>[],
       this.verifyUrl,
       this.redirect})
@@ -493,6 +493,7 @@ class _$PairingMetadataImpl implements _PairingMetadata {
   @override
   final String description;
   @override
+  @JsonKey()
   final String url;
   final List<String> _icons;
   @override
@@ -555,7 +556,7 @@ abstract class _PairingMetadata implements PairingMetadata {
   const factory _PairingMetadata(
       {required final String name,
       required final String description,
-      required final String url,
+      final String url,
       final List<String> icons,
       final String? verifyUrl,
       final Redirect? redirect}) = _$PairingMetadataImpl;
