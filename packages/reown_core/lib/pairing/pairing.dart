@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:event/event.dart';
+import 'package:reown_core/events/models/link_mode_events.dart';
 import 'package:reown_core/models/json_rpc_models.dart';
 import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/i_json_rpc_history.dart';
@@ -22,11 +23,13 @@ import 'package:reown_core/utils/method_constants.dart';
 
 class PendingRequestResponse {
   Completer completer;
+  String method;
   dynamic response;
   JsonRpcError? error;
 
   PendingRequestResponse({
     required this.completer,
+    required this.method,
     this.response,
     this.error,
   });
@@ -428,7 +431,10 @@ class Pairing implements IPairing {
     }
 
     // print('adding payload to pending requests: $requestId');
-    final resp = PendingRequestResponse(completer: Completer());
+    final resp = PendingRequestResponse(
+      completer: Completer(),
+      method: method,
+    );
     resp.completer.future.catchError((err) {
       // Catch the error so that it won't throw an uncaught error
     });
@@ -444,6 +450,12 @@ class Pairing implements IPairing {
         );
         await ReownCoreUtils.openURL(redirectURL);
       }
+      // Send Event through Events SDK
+      core.events.sendEvent(LinkModeRequestEvent(
+        direction: 'sent',
+        correlationId: requestId,
+        method: method,
+      ));
       core.logger.d(
         '[$runtimeType] sendRequest linkMode ($appLink), '
         'id: $requestId topic: $topic, method: $method, '
@@ -514,10 +526,6 @@ class Pairing implements IPairing {
       return;
     }
 
-    core.logger.d(
-      '[$runtimeType] sendRequest appLink: $appLink, '
-      'id: $id topic: $topic, method: $method, result: $result',
-    );
     if ((appLink ?? '').isNotEmpty) {
       final redirectURL = ReownCoreUtils.getLinkModeURL(
         appLink!,
@@ -525,6 +533,16 @@ class Pairing implements IPairing {
         message,
       );
       await ReownCoreUtils.openURL(redirectURL);
+      // Send Event through Events SDK
+      core.events.sendEvent(LinkModeResponseEvent(
+        direction: 'sent',
+        correlationId: resultId,
+        method: method,
+      ));
+      core.logger.d(
+        '[$runtimeType] sendResult linkMode ($appLink), '
+        'id: $id topic: $topic, method: $method, result: $result',
+      );
     } else {
       final opts = MethodConstants.RPC_OPTS[method]!['res']!;
       //
@@ -536,6 +554,10 @@ class Pairing implements IPairing {
         correlationId: resultId,
         // tvf data is sent only on tvfMethods methods
         tvf: _shouldSendTVF(opts.tag) ? tvf?.toJson(includeAll: true) : null,
+      );
+      core.logger.d(
+        '[$runtimeType] sendResult relayClient, '
+        'id: $id topic: $topic, method: $method, result: $result',
       );
     }
   }
@@ -567,10 +589,6 @@ class Pairing implements IPairing {
       return;
     }
 
-    core.logger.d(
-      '[$runtimeType] sendRequest appLink: $appLink, '
-      'id: $id topic: $topic, method: $method, error: $error',
-    );
     if ((appLink ?? '').isNotEmpty) {
       final redirectURL = ReownCoreUtils.getLinkModeURL(
         appLink!,
@@ -578,6 +596,17 @@ class Pairing implements IPairing {
         message,
       );
       await ReownCoreUtils.openURL(redirectURL);
+      // Send Event through Events SDK
+      core.events.sendEvent(LinkModeResponseEvent(
+        direction: 'sent',
+        correlationId: resultId,
+        method: method,
+        isRejected: _isSessionAuthRejectedError(method, error),
+      ));
+      core.logger.d(
+        '[$runtimeType] sendError linkMode ($appLink), '
+        'id: $id topic: $topic, method: $method, error: $error',
+      );
     } else {
       final fallbackMethod = MethodConstants.UNREGISTERED_METHOD;
       final methodOpts = MethodConstants.RPC_OPTS[method];
@@ -595,6 +624,10 @@ class Pairing implements IPairing {
         correlationId: resultId,
         // tvf data is sent only on tvfMethods methods
         tvf: _shouldSendTVF(tag) ? tvf?.toJson(includeAll: true) : null,
+      );
+      core.logger.d(
+        '[$runtimeType] sendError relayClient, '
+        'id: $id topic: $topic, method: $method, error: $error',
       );
     }
   }
@@ -673,9 +706,9 @@ class Pairing implements IPairing {
   Map<String, RegisteredFunction> routerMapRequest = {};
 
   void _registerRelayEvents() {
-    core.relayClient.onRelayClientConnect.subscribe(_onRelayConnect);
-    core.relayClient.onRelayClientMessage.subscribe(_onMessageEvent);
-    core.relayClient.onLinkModeMessage.subscribe(_onMessageEvent);
+    core.relayClient.onRelayClientConnect.subscribe(_onRelayConnectEvent);
+    core.relayClient.onRelayClientMessage.subscribe(_onRelayMessageEvent);
+    core.relayClient.onLinkModeMessage.subscribe(_onLinkModeMessageEvent);
 
     register(
       method: MethodConstants.WC_PAIRING_PING,
@@ -689,22 +722,36 @@ class Pairing implements IPairing {
     );
   }
 
-  Future<void> _onRelayConnect(EventArgs? args) async {
+  Future<void> _onRelayConnectEvent(EventArgs? args) async {
     // print('Pairing: Relay connected');
     await _resubscribeAll();
   }
 
-  void _onMessageEvent(MessageEvent? event) async {
+  void _onLinkModeMessageEvent(MessageEvent? event) async {
     if (event == null) {
       return;
     }
 
+    _processEvent(event, isLinkMode: true);
+  }
+
+  void _onRelayMessageEvent(MessageEvent? event) async {
+    if (event == null) {
+      return;
+    }
+
+    _processEvent(event, isLinkMode: false);
+  }
+
+  void _processEvent(MessageEvent event, {bool isLinkMode = false}) async {
     // If we have a reciever public key for the topic, use it
     ReceiverPublicKey? receiverPublicKey = topicToReceiverPublicKey.get(
       event.topic,
     );
     core.logger.d(
-      '[$runtimeType] _onMessageEvent, receiverPublicKey: $receiverPublicKey',
+      '[$runtimeType] '
+      '{$isLinkMode ? "_onLinkModeMessageEvent" : "_onRelayMessageEvent"}, '
+      'receiverPublicKey: $receiverPublicKey',
     );
     // If there was a public key, delete it. One use.
     if (receiverPublicKey != null) {
@@ -721,7 +768,9 @@ class Pairing implements IPairing {
     );
 
     core.logger.d(
-      '[$runtimeType] _onMessageEvent, payloadString: $payloadString',
+      '[$runtimeType] '
+      '{$isLinkMode ? "_onLinkModeMessageEvent" : "_onRelayMessageEvent"}, '
+      'payloadString: $payloadString',
     );
 
     if (payloadString == null) {
@@ -743,23 +792,50 @@ class Pairing implements IPairing {
       } else {
         _onUnkownRpcMethodRequest(event.topic, request);
       }
+
+      if (isLinkMode) {
+        // Send Event through Events SDK
+        core.events.sendEvent(LinkModeRequestEvent(
+          direction: 'received',
+          correlationId: request.id,
+          method: request.method,
+        ));
+      }
       // Otherwise handle it as a response
     } else {
       final response = JsonRpcResponse.fromJson(data);
-      core.logger.d('[$runtimeType] Relay event response ${jsonEncode(data)}');
 
       if (pendingRequests.containsKey(response.id)) {
+        final pendingRequest = pendingRequests[response.id]!;
         if (response.error != null) {
-          pendingRequests[response.id]!.error = response.error;
-          pendingRequests[response.id]!.completer.completeError(
-                response.error!,
-              );
+          pendingRequest.error = response.error;
+          pendingRequest.completer.completeError(response.error!);
         } else {
-          pendingRequests[response.id]!.response = response.result;
-          pendingRequests[response.id]!.completer.complete(response.result);
+          pendingRequest.response = response.result;
+          pendingRequest.completer.complete(response.result);
+        }
+
+        if (isLinkMode) {
+          // Send Event through Events SDK
+          core.events.sendEvent(LinkModeResponseEvent(
+            direction: 'received',
+            correlationId: response.id,
+            method: pendingRequest.method,
+            isRejected: _isSessionAuthRejectedError(
+              pendingRequest.method,
+              response.error,
+            ),
+          ));
         }
       }
     }
+  }
+
+  bool _isSessionAuthRejectedError(String method, JsonRpcError? error) {
+    final errorCode = error?.code ?? 0;
+    final sessionRejected = method == MethodConstants.WC_SESSION_AUTHENTICATE &&
+        (errorCode == 12001 || (errorCode >= 5000 && errorCode <= 5003));
+    return sessionRejected;
   }
 
   Future<void> _onPairingPingRequest(

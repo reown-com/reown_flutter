@@ -9,6 +9,8 @@ import 'package:reown_core/crypto/i_crypto.dart';
 import 'package:reown_core/echo/echo.dart';
 import 'package:reown_core/echo/echo_client.dart';
 import 'package:reown_core/echo/i_echo.dart';
+import 'package:reown_core/events/events.dart';
+import 'package:reown_core/events/i_events.dart';
 import 'package:reown_core/heartbit/heartbeat.dart';
 import 'package:reown_core/heartbit/i_heartbeat.dart';
 import 'package:reown_core/i_core_impl.dart';
@@ -65,6 +67,9 @@ class ReownCore implements IReownCore {
 
   @override
   late IEcho echo;
+
+  @override
+  late IEvents events;
 
   @override
   late IHeartBeat heartbeat;
@@ -196,6 +201,10 @@ class ReownCore implements IReownCore {
         httpClient: httpClient,
       ),
     );
+    events = Events(
+      core: this,
+      httpClient: httpClient,
+    );
     verify = Verify(
       core: this,
       httpClient: httpClient,
@@ -218,6 +227,7 @@ class ReownCore implements IReownCore {
     await relayClient.init();
     await expirer.init();
     await pairing.init();
+    await events.init();
     await connectivity.init();
     await linkModeStore.init();
     heartbeat.init();
