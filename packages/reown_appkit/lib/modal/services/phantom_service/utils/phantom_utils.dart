@@ -19,9 +19,8 @@ class PhantomUtils {
     'webapp_link': null,
     'app_store':
         'https://apps.apple.com/us/app/phantom-crypto-wallet/id1598432977',
-    'play_store':
-        'https://play.google.com/store/apps/details?id=app.phantom&hl=en',
-    'rdns': 'app.phantom',
+    'play_store': 'https://play.google.com/store/apps/details?id=$packageName',
+    'rdns': packageName,
     'chrome_store':
         'https://chrome.google.com/webstore/detail/phantom/bfnaelmomeimhlpmgjnjophhpkkoljpa',
     'injected': [

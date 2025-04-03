@@ -34,7 +34,7 @@ class WCSampleWallets {
           'platform': ['android'],
           'id': '123456789012345678901234567894',
           'mobile_link': 'kotlin-web3wallet://wc',
-          'bundle_id': 'com.walletconnect.sample.wallet.internal',
+          'bundle_id': 'com.reown.sample.wallet.internal',
           'link_mode': 'https://appkit-lab.reown.com/wallet_internal',
         },
       ];
@@ -69,7 +69,7 @@ class WCSampleWallets {
           'platform': ['android'],
           'id': '123456789012345678901234567893',
           'mobile_link': 'kotlin-web3wallet://wc',
-          'bundle_id': 'com.walletconnect.sample.wallet',
+          'bundle_id': 'com.reown.sample.wallet',
           'link_mode': 'https://appkit-lab.reown.com/wallet_release',
         },
       ];
