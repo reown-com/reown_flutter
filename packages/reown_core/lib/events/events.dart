@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:reown_core/relay_client/websocket/http_client.dart';
 import 'package:uuid/uuid.dart';
 
@@ -13,12 +12,11 @@ class Events implements IEvents {
   late final String _bundleId;
   late final String _clientId;
   late final String _endpoint;
-  late final Map<String, String> _queryParams;
+  late final Map<String, String> _params;
 
   Map<String, String> get _requiredParams => {
         'st': 'events_sdk',
         'sv': ReownCoreUtils.coreSdkVersion(packageVersion),
-        'sp': Platform.operatingSystem,
       };
 
   final IReownCore core;
@@ -30,7 +28,7 @@ class Events implements IEvents {
   @override
   Future<void> init({String? eventsUrl}) async {
     _endpoint = eventsUrl ?? ReownConstants.EVENTS_SERVER;
-    _queryParams = {..._requiredParams, 'projectId': core.projectId};
+    _params = {'projectId': core.projectId, ..._requiredParams};
     _bundleId = await ReownCoreUtils.getPackageName();
     _clientId = await core.crypto.getClientId();
     core.logger.i('[$runtimeType] event init');
@@ -53,16 +51,15 @@ class Events implements IEvents {
         },
       });
 
-      final response = await _httpClient.post(
-        Uri.parse('$_endpoint/e').replace(queryParameters: _queryParams),
-        body: body,
-      );
-      core.logger.d('[$runtimeType] ${response.request?.url}');
+      final url = Uri.parse('$_endpoint/e').replace(queryParameters: _params);
+      final response = await _httpClient.post(url, body: body);
       final code = response.statusCode;
       if (code == 200 || code == 202) {
-        core.logger.i('[$runtimeType] ${event.runtimeType} $code: $body');
+        core.logger.i('[$runtimeType] ✅ ${event.runtimeType} $code: $body');
       } else {
-        core.logger.i('[$runtimeType] ❌ ${event.runtimeType} $code: $response');
+        core.logger.i(
+          '[$runtimeType] ❌ ${event.runtimeType} $code: ${response.body}',
+        );
       }
     } catch (e, _) {
       core.logger.e('[$runtimeType] ❌ ${event.runtimeType} error $e');
