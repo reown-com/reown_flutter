@@ -202,10 +202,6 @@ class ReownAppKitModal
         enableAnalytics: enableAnalytics,
       ),
     );
-    // TODO should be moved to init()
-    _analyticsService.init().then(
-          (_) => _analyticsService.sendEvent(ModalLoadedEvent()),
-        );
     _registerSingleton<IExplorerService>(
       () => ExplorerService(
         core: _appKit.core,
@@ -275,33 +271,6 @@ class ReownAppKitModal
   ////////* PUBLIC METHODS */////////
 
   @override
-  Future<bool> dispatchEnvelope(String url) async {
-    _appKit.core.logger.d('[$runtimeType] dispatchEnvelope $url');
-    final envelope = ReownCoreUtils.getSearchParamFromURL(url, 'wc_ev');
-    if (envelope.isNotEmpty) {
-      await _appKit.dispatchEnvelope(url);
-      return true;
-    }
-
-    final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
-    if (state.isNotEmpty) {
-      _magicService.completeSocialLogin(url: url);
-      return true;
-    }
-
-    final phantomRequest = ReownCoreUtils.getSearchParamFromURL(
-      url,
-      'phantomRequest',
-    );
-    if (phantomRequest.isNotEmpty) {
-      _phantomService.completePhantomRequest(url: url);
-      return true;
-    }
-
-    return false;
-  }
-
-  @override
   Future<void> init() async {
     _relayConnected = false;
     _awaitRelayOnce = Completer<bool>();
@@ -325,6 +294,9 @@ class ReownAppKitModal
     await _coinbaseService.init();
     await _phantomService.init();
     await _blockchainService.init();
+    await _analyticsService.init();
+
+    _analyticsService.sendEvent(ModalLoadedEvent());
 
     _currentSession = await _getStoredSession();
     _selectedChainID = _getStoredChainId();
@@ -429,6 +401,33 @@ class ReownAppKitModal
     if (state == AppLifecycleState.resumed) {
       reconnectRelay();
     }
+  }
+
+  @override
+  Future<bool> dispatchEnvelope(String url) async {
+    _appKit.core.logger.d('[$runtimeType] dispatchEnvelope $url');
+    final envelope = ReownCoreUtils.getSearchParamFromURL(url, 'wc_ev');
+    if (envelope.isNotEmpty) {
+      await _appKit.dispatchEnvelope(url);
+      return true;
+    }
+
+    final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
+    if (state.isNotEmpty) {
+      _magicService.completeSocialLogin(url: url);
+      return true;
+    }
+
+    final phantomRequest = ReownCoreUtils.getSearchParamFromURL(
+      url,
+      'phantomRequest',
+    );
+    if (phantomRequest.isNotEmpty) {
+      _phantomService.completePhantomRequest(url: url);
+      return true;
+    }
+
+    return false;
   }
 
   Future<void> _checkSIWEStatus() async {
@@ -2174,7 +2173,6 @@ extension _AppKitModalExtension on ReownAppKitModal {
     if (_selectedWallet == null) {
       _analyticsService.sendEvent(ConnectSuccessEvent(
         name: 'WalletConnect',
-        explorerId: '',
         method: AnalyticsPlatform.qrcode,
       ));
       await _storage.delete(StorageConstants.recentWalletId);

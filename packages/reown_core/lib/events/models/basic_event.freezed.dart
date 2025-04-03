@@ -36,6 +36,9 @@ mixin _$CoreEventProperties {
   String? get userAgent => throw _privateConstructorUsedError;
   String? get sendToken => throw _privateConstructorUsedError;
   String? get sendAmount => throw _privateConstructorUsedError;
+  String? get address => throw _privateConstructorUsedError;
+  String? get project_id => throw _privateConstructorUsedError;
+  String? get cursor => throw _privateConstructorUsedError;
 
   /// Serializes this CoreEventProperties to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -69,7 +72,10 @@ abstract class $CoreEventPropertiesCopyWith<$Res> {
       String? direction,
       String? userAgent,
       String? sendToken,
-      String? sendAmount});
+      String? sendAmount,
+      String? address,
+      String? project_id,
+      String? cursor});
 }
 
 /// @nodoc
@@ -103,6 +109,9 @@ class _$CoreEventPropertiesCopyWithImpl<$Res, $Val extends CoreEventProperties>
     Object? userAgent = freezed,
     Object? sendToken = freezed,
     Object? sendAmount = freezed,
+    Object? address = freezed,
+    Object? project_id = freezed,
+    Object? cursor = freezed,
   }) {
     return _then(_value.copyWith(
       message: freezed == message
@@ -169,6 +178,18 @@ class _$CoreEventPropertiesCopyWithImpl<$Res, $Val extends CoreEventProperties>
           ? _value.sendAmount
           : sendAmount // ignore: cast_nullable_to_non_nullable
               as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String?,
+      project_id: freezed == project_id
+          ? _value.project_id
+          : project_id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      cursor: freezed == cursor
+          ? _value.cursor
+          : cursor // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -197,7 +218,10 @@ abstract class _$$CoreEventPropertiesImplCopyWith<$Res>
       String? direction,
       String? userAgent,
       String? sendToken,
-      String? sendAmount});
+      String? sendAmount,
+      String? address,
+      String? project_id,
+      String? cursor});
 }
 
 /// @nodoc
@@ -229,6 +253,9 @@ class __$$CoreEventPropertiesImplCopyWithImpl<$Res>
     Object? userAgent = freezed,
     Object? sendToken = freezed,
     Object? sendAmount = freezed,
+    Object? address = freezed,
+    Object? project_id = freezed,
+    Object? cursor = freezed,
   }) {
     return _then(_$CoreEventPropertiesImpl(
       message: freezed == message
@@ -295,6 +322,18 @@ class __$$CoreEventPropertiesImplCopyWithImpl<$Res>
           ? _value.sendAmount
           : sendAmount // ignore: cast_nullable_to_non_nullable
               as String?,
+      address: freezed == address
+          ? _value.address
+          : address // ignore: cast_nullable_to_non_nullable
+              as String?,
+      project_id: freezed == project_id
+          ? _value.project_id
+          : project_id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      cursor: freezed == cursor
+          ? _value.cursor
+          : cursor // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -319,7 +358,10 @@ class _$CoreEventPropertiesImpl implements _CoreEventProperties {
       this.direction,
       this.userAgent,
       this.sendToken,
-      this.sendAmount})
+      this.sendAmount,
+      this.address,
+      this.project_id,
+      this.cursor})
       : _trace = trace;
 
   factory _$CoreEventPropertiesImpl.fromJson(Map<String, dynamic> json) =>
@@ -365,10 +407,16 @@ class _$CoreEventPropertiesImpl implements _CoreEventProperties {
   final String? sendToken;
   @override
   final String? sendAmount;
+  @override
+  final String? address;
+  @override
+  final String? project_id;
+  @override
+  final String? cursor;
 
   @override
   String toString() {
-    return 'CoreEventProperties(message: $message, name: $name, method: $method, connected: $connected, network: $network, explorer_id: $explorer_id, provider: $provider, platform: $platform, trace: $trace, topic: $topic, correlation_id: $correlation_id, client_id: $client_id, direction: $direction, userAgent: $userAgent, sendToken: $sendToken, sendAmount: $sendAmount)';
+    return 'CoreEventProperties(message: $message, name: $name, method: $method, connected: $connected, network: $network, explorer_id: $explorer_id, provider: $provider, platform: $platform, trace: $trace, topic: $topic, correlation_id: $correlation_id, client_id: $client_id, direction: $direction, userAgent: $userAgent, sendToken: $sendToken, sendAmount: $sendAmount, address: $address, project_id: $project_id, cursor: $cursor)';
   }
 
   @override
@@ -401,29 +449,37 @@ class _$CoreEventPropertiesImpl implements _CoreEventProperties {
             (identical(other.sendToken, sendToken) ||
                 other.sendToken == sendToken) &&
             (identical(other.sendAmount, sendAmount) ||
-                other.sendAmount == sendAmount));
+                other.sendAmount == sendAmount) &&
+            (identical(other.address, address) || other.address == address) &&
+            (identical(other.project_id, project_id) ||
+                other.project_id == project_id) &&
+            (identical(other.cursor, cursor) || other.cursor == cursor));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      message,
-      name,
-      method,
-      connected,
-      network,
-      explorer_id,
-      provider,
-      platform,
-      const DeepCollectionEquality().hash(_trace),
-      topic,
-      correlation_id,
-      client_id,
-      direction,
-      userAgent,
-      sendToken,
-      sendAmount);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        message,
+        name,
+        method,
+        connected,
+        network,
+        explorer_id,
+        provider,
+        platform,
+        const DeepCollectionEquality().hash(_trace),
+        topic,
+        correlation_id,
+        client_id,
+        direction,
+        userAgent,
+        sendToken,
+        sendAmount,
+        address,
+        project_id,
+        cursor
+      ]);
 
   /// Create a copy of CoreEventProperties
   /// with the given fields replaced by the non-null parameter values.
@@ -459,7 +515,10 @@ abstract class _CoreEventProperties implements CoreEventProperties {
       final String? direction,
       final String? userAgent,
       final String? sendToken,
-      final String? sendAmount}) = _$CoreEventPropertiesImpl;
+      final String? sendAmount,
+      final String? address,
+      final String? project_id,
+      final String? cursor}) = _$CoreEventPropertiesImpl;
 
   factory _CoreEventProperties.fromJson(Map<String, dynamic> json) =
       _$CoreEventPropertiesImpl.fromJson;
@@ -496,6 +555,12 @@ abstract class _CoreEventProperties implements CoreEventProperties {
   String? get sendToken;
   @override
   String? get sendAmount;
+  @override
+  String? get address;
+  @override
+  String? get project_id;
+  @override
+  String? get cursor;
 
   /// Create a copy of CoreEventProperties
   /// with the given fields replaced by the non-null parameter values.

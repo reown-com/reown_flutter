@@ -26,6 +26,9 @@ _$CoreEventPropertiesImpl _$$CoreEventPropertiesImplFromJson(
       userAgent: json['userAgent'] as String?,
       sendToken: json['sendToken'] as String?,
       sendAmount: json['sendAmount'] as String?,
+      address: json['address'] as String?,
+      project_id: json['project_id'] as String?,
+      cursor: json['cursor'] as String?,
     );
 
 Map<String, dynamic> _$$CoreEventPropertiesImplToJson(
@@ -47,4 +50,7 @@ Map<String, dynamic> _$$CoreEventPropertiesImplToJson(
       if (instance.userAgent case final value?) 'userAgent': value,
       if (instance.sendToken case final value?) 'sendToken': value,
       if (instance.sendAmount case final value?) 'sendAmount': value,
+      if (instance.address case final value?) 'address': value,
+      if (instance.project_id case final value?) 'project_id': value,
+      if (instance.cursor case final value?) 'cursor': value,
     };

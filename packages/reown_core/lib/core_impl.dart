@@ -93,11 +93,9 @@ class ReownCore implements IReownCore {
   void addLogListener(Function(String) callback) {
     try {
       _logCallback = (LogEvent event) {
-        final time = DateTime.now().toString();
         final emoji = _LogPrinter.defaultLevelEmojis[event.level];
-
         if (event.level == _logLevel.toLevel() || _logLevel == LogLevel.all) {
-          callback.call('$time ${emoji ?? ''} ${event.message}');
+          callback.call('${emoji ?? ''} ${event.message}');
         }
       };
       Logger.addLogListener(_logCallback!);
@@ -487,7 +485,7 @@ class _LogPrinter extends LogPrinter {
     var emoji = _getEmoji(level);
     for (var line in message.split('\n')) {
       if (line.isNotEmpty) {
-        buffer.add('$verticalLineAtLevel$time $emoji$line');
+        buffer.add('$verticalLineAtLevel$emoji$line');
       }
     }
     if (_includeBox[level]! && hasBorders) buffer.add(_bottomBorder);

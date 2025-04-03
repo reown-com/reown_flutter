@@ -1,9 +1,10 @@
-import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
+import 'package:reown_core/events/i_events.dart';
+import 'package:reown_core/events/models/basic_event.dart';
 
-abstract class IAnalyticsService {
-  bool? get enableAnalytics;
-  Stream<dynamic> get events;
-  Future<void> init();
-  void sendEvent(AnalyticsEvent analyticsEvent);
-  Future<bool> fetchAnalyticsConfig();
+abstract class IAnalyticsService extends IEvents {
+  @override
+  Future<void> init({String? eventsUrl});
+
+  @override
+  Future<void> sendEvent(BasicCoreEvent event);
 }

@@ -3,9 +3,9 @@ import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/pages/public/appkit_modal_main_wallets_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
-import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/utils/platform_utils.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
+import 'package:reown_core/events/models/basic_event.dart';
 
 class WidgetStack extends IWidgetStack {
   final List<Widget> _stack = [];
@@ -21,7 +21,7 @@ class WidgetStack extends IWidgetStack {
     Widget widget, {
     bool replace = false,
     bool renderScreen = false,
-    AnalyticsEvent? event,
+    BasicCoreEvent? event,
   }) {
     if (event != null) {
       GetIt.I<IAnalyticsService>().sendEvent(event);
