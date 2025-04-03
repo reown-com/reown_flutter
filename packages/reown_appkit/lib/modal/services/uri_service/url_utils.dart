@@ -102,7 +102,9 @@ class UriService extends IUriService {
 
   Future<bool> _androidAppCheck(String uri) async {
     try {
-      return await AppCheck().isAppEnabled(uri);
+      final installed = await AppCheck().isAppInstalled(uri);
+      final enabled = await AppCheck().isAppEnabled(uri);
+      return installed || enabled;
     } catch (e) {
       return false;
     }
