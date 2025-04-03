@@ -1,3 +1,7 @@
+## 1.1.4+1
+
+- Dependency updates
+
 ## 1.1.4
 
 - Dependency updates
