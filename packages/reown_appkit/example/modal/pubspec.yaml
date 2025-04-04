@@ -20,6 +20,13 @@ dependencies:
   shared_preferences: ^2.3.4
   toastification: ^2.3.0
 
+dependency_overrides:
+  coinbase_wallet_sdk:
+    git:
+      url: https://github.com/WalletConnect/wallet-mobile-sdk.git
+      ref: "2.0"
+      path: flutter
+
 dev_dependencies:
   build_runner: ^2.4.13
   flutter_launcher_icons: ^0.14.1

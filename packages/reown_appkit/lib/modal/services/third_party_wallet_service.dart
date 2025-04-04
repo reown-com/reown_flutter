@@ -23,8 +23,13 @@ class ThirdPartyWalletNotEnabled extends ThirdPartyWalletException {
 }
 
 class ThirdPartyWalletUnsupportedChains extends ThirdPartyWalletException {
-  ThirdPartyWalletUnsupportedChains({required String walletName})
-      : super('The current configured chains are not supported by $walletName');
+  ThirdPartyWalletUnsupportedChains({
+    required String walletName,
+    String? message,
+  }) : super(
+          message ??
+              'The current configured chains are not supported by $walletName',
+        );
 }
 
 abstract class IThirdPartyWalletService {

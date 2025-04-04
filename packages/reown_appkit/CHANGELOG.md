@@ -1,6 +1,6 @@
 ## 1.4.2+1
 
-- Dependency updates
+- Fix an bug where Phantom Wallet was not detected as installed
 
 ## 1.4.2
 

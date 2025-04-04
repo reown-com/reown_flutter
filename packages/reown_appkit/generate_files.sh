@@ -3,9 +3,9 @@
 flutter clean
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs
-dart pub outdated --no-dev-dependencies --up-to-date --no-dependency-overrides
-dart format .
-dart run dependency_validator
+# dart pub outdated --no-dev-dependencies --up-to-date --no-dependency-overrides
+# dart format .
+# dart run dependency_validator
 
 cd example/base
 
@@ -20,9 +20,9 @@ dart run build_runner build --delete-conflicting-outputs
 
 cd ios
 
-# rm Podfile.lock
-# pod deintegrate
-# pod cache clean --all
+rm Podfile.lock
+pod deintegrate
+pod cache clean --all
 pod install
 
 cd ..
@@ -43,9 +43,9 @@ dart run build_runner build --delete-conflicting-outputs
 
 cd ios
 
-# rm Podfile.lock
-# pod deintegrate
-# pod cache clean --all
+rm Podfile.lock
+pod deintegrate
+pod cache clean --all
 pod install
 
 cd ..

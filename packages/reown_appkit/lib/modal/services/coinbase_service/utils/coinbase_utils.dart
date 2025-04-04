@@ -18,8 +18,8 @@ class CoinbaseUtils {
     'link_mode': 'https://wallet.coinbase.com/',
     'webapp_link': null,
     'app_store': 'https://apps.apple.com/app/apple-store/id1278383455',
-    'play_store': 'https://play.google.com/store/apps/details?id=org.toshi',
-    'rdns': 'com.coinbase.wallet',
+    'play_store': 'https://play.google.com/store/apps/details?id=$packageName',
+    'rdns': packageName,
     'chrome_store':
         'https://chrome.google.com/webstore/detail/coinbase-wallet-extension/hnfanknocfeofbddgcijnmhnfnkdnaad?hl=en',
     'injected': [

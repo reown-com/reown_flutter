@@ -1,33 +1,7 @@
-const String defaultTemplate = '''import 'package:flutter/material.dart';
-import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_cli/src/templates/shared_template.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return ReownAppKitModalTheme(
-      // isDarkMode: false | true,
-      // themeData: ReownAppKitModalThemeData(
-      //   lightColors: ReownAppKitModalColors.lightMode.copyWith(),
-      //   darkColors: ReownAppKitModalColors.darkMode.copyWith(),
-      //   radiuses: ReownAppKitModalRadiuses.circular,
-      // ),
-      child: MaterialApp(
-        title: '{{project_name}}',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: const HomePage(),
-      ),
-    );
-  }
-}
+const String defaultTemplate = '''
+$myApp
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -38,105 +12,32 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late ReownAppKitModal _appKitModal;
+
   @override
   void initState() {
     super.initState();
-    // check the docs at https://docs.reown.com/appkit/flutter/core/installation
+    // TODO check the docs at https://docs.reown.com/appkit/flutter/core/installation
 
     {{#if-chains-specified}}
-      {{#if-not-chain:eip155}}
-        ReownAppKitModalNetworks.removeSupportedNetworks('eip155');
-      {{/if-not-chain}}
-      {{#if-not-chain:solana}}
-        ReownAppKitModalNetworks.removeSupportedNetworks('solana');
-      {{/if-not-chain}}
+    {{#if-not-chain:eip155}}
+      ReownAppKitModalNetworks.removeSupportedNetworks('eip155');
+    {{/if-not-chain}}
+    {{#if-not-chain:solana}}
+      ReownAppKitModalNetworks.removeSupportedNetworks('solana');
+    {{/if-not-chain}}
     {{/if-chains-specified}}
 
     _appKitModal = ReownAppKitModal(
-      context: context,
-      logLevel: LogLevel.all,
-      projectId: '{{project_id}}',
-      metadata: const PairingMetadata(
-        name: '{{project_name}}',
-        description: '{{project_name}} description',
-        url: 'https://{{project_name}}.com',
-        icons: ['https://{{project_name}}.com/logo.png'],
-        redirect: Redirect(
-          native: '{{project_name}}://',
-          universal: 'https://{{project_name}}.com/app',
-        ),
-      ),
-      // If you enable social features you will have to whitelist your bundleId/packageName under the Mobile Application IDs secion in https://cloud.reown.com/app
-      // Please also follow carefully the relevant doc section https://docs.reown.com/appkit/flutter/core/email
-      // featuresConfig: FeaturesConfig(
-      //   email: true,
-      //   socials: [
-      //     AppKitSocialOption.X,
-      //     AppKitSocialOption.Apple,
-      //     AppKitSocialOption.Discord,
-      //     AppKitSocialOption.Farcaster,
-      //   ],
-      // ),
+      $instanceParams
     );
 
     _appKitModal.init().then((value) => setState(() {}));
 
     // More events at https://docs.reown.com/appkit/flutter/core/events
-    _appKitModal.onModalConnect.subscribe((ModalConnect? event) {
-      setState(() {});
-    });
-    _appKitModal.onModalDisconnect.subscribe((ModalDisconnect? event) {
-      setState(() {});
-    });
+    _appKitModal.onModalConnect.subscribe(_onModalConnect);
+    _appKitModal.onModalDisconnect.subscribe(_onModalDisconnect);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('{{project_name}}'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            AppKitModalNetworkSelectButton(
-              appKit: _appKitModal,
-              context: context,
-            ),
-            AppKitModalConnectButton(
-              appKit: _appKitModal,
-              context: context,
-            ),
-            Visibility(
-              visible: _appKitModal.isConnected,
-              child: Column(
-                children: [
-                  AppKitModalAccountButton(
-                    appKitModal: _appKitModal,
-                    context: context,
-                  ),
-                  AppKitModalAddressButton(
-                    appKitModal: _appKitModal,
-                    onTap: () {},
-                  ),
-                  AppKitModalBalanceButton(
-                    appKitModal: _appKitModal,
-                    onTap: () {},
-                  ),
-                  ValueListenableBuilder<String>(
-                    valueListenable: _appKitModal.balanceNotifier,
-                    builder: (_, balance, __) {
-                      return Text('My balance: \$balance');
-                    },
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
+  $body
 }
 ''';
