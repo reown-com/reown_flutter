@@ -42,7 +42,7 @@ class _AppKitModalMainWalletsPageState
   void initState() {
     super.initState();
     _magicService.isEmailEnabled.addListener(_enabledListener);
-    _magicService.isSocialEnabled.addListener(_enabledListener);
+    _magicService.isFarcasterIncluded.addListener(_enabledListener);
   }
 
   void _enabledListener() {
@@ -51,7 +51,7 @@ class _AppKitModalMainWalletsPageState
 
   @override
   void dispose() {
-    _magicService.isSocialEnabled.removeListener(_enabledListener);
+    _magicService.isFarcasterIncluded.removeListener(_enabledListener);
     _magicService.isEmailEnabled.removeListener(_enabledListener);
     super.dispose();
   }
@@ -66,8 +66,8 @@ class _AppKitModalMainWalletsPageState
         ? (kListItemHeight * 6)
         : ResponsiveData.maxHeightOf(context);
 
-    final isSignIn = _magicService.isEmailEnabled.value ||
-        _magicService.isSocialEnabled.value;
+    final isSignIn =
+        _magicService.isEmailEnabled.value || _magicService.socials.isNotEmpty;
     return ModalNavbar(
       title: isSignIn ? 'Sign in' : 'Connect wallet',
       leftAction: NavbarActionButton(
@@ -107,7 +107,7 @@ class _AppKitModalMainWalletsPageState
           } else {
             maxHeight -= 10.0;
           }
-          final socialEnabled = _magicService.isSocialEnabled.value;
+          final socialEnabled = _magicService.socials.isNotEmpty;
           if (socialEnabled) {
             final length = socials.length;
             if (length <= 4) {

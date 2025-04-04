@@ -53,36 +53,32 @@ class UriService extends IUriService {
     WalletRedirect redirect, {
     String? wcURI,
     PlatformType? pType,
+    AppKitSocialOption? socialOption,
   }) async {
     //
     Uri? uriToOpen;
     try {
       final isMobile = (redirect.mobileOnly || pType == PlatformType.mobile);
       if (isMobile && redirect.mobile != null) {
-        uriToOpen = CoreUtils.formatCustomSchemeUri(
-          redirect.mobile,
-          wcURI,
-        );
-      }
-      //
-      final isWeb = (redirect.webOnly || pType == PlatformType.web);
-      if (isWeb && redirect.web != null) {
-        uriToOpen = CoreUtils.formatWebUrl(
-          redirect.web,
-          wcURI,
-        );
+        uriToOpen = CoreUtils.formatCustomSchemeUri(redirect.mobile, wcURI);
       }
       //
       final isDesktop = (redirect.desktopOnly || pType == PlatformType.desktop);
       if (isDesktop && redirect.desktop != null) {
-        uriToOpen = CoreUtils.formatCustomSchemeUri(
-          redirect.desktop,
-          wcURI,
-        );
+        uriToOpen = CoreUtils.formatCustomSchemeUri(redirect.desktop, wcURI);
+      }
+      //
+      final isWeb = (redirect.webOnly || pType == PlatformType.web);
+      if (isWeb && redirect.web != null) {
+        uriToOpen = CoreUtils.formatWebUrl(redirect.web, wcURI);
       }
     } catch (e) {
       _core.logger.e('Error opening redirect', error: e);
       return false;
+    }
+    if (socialOption != null) {
+      final social = socialOption.name.toLowerCase();
+      uriToOpen = Uri.parse('${uriToOpen.toString()}&provider=$social');
     }
     _core.logger.i('[$runtimeType] openRedirect $uriToOpen');
     return await _launchUrlFunc(uriToOpen!);

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class KeyConstants {
   static const Key selectNetworkPage = Key('selectNetworkPage');
   static const Key eoAccountPage = Key('eoAccountPage');
-  static const Key smartAccountPage = Key('smartAccountPage');
+  static const Key walletFeaturesPage = Key('walletFeaturesPage');
   static const Key selectTokenPage = Key('selectTokenPage');
   static const Key embeddedWalletPage = Key('embeddedWalletPage');
   static const Key addressCopyButton = Key('addressCopyButton');

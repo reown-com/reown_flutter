@@ -30,14 +30,14 @@ import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/account_list_item.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
-class SmartAccountPage extends StatefulWidget {
-  const SmartAccountPage() : super(key: KeyConstants.smartAccountPage);
+class WalletFeaturesPage extends StatefulWidget {
+  const WalletFeaturesPage() : super(key: KeyConstants.walletFeaturesPage);
 
   @override
-  State<SmartAccountPage> createState() => _SmartAccountPageState();
+  State<WalletFeaturesPage> createState() => _WalletFeaturesPageState();
 }
 
-class _SmartAccountPageState extends State<SmartAccountPage>
+class _WalletFeaturesPageState extends State<WalletFeaturesPage>
     with WidgetsBindingObserver {
   IReownAppKitModal? _appKitModal;
 
@@ -192,7 +192,7 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
           AddressButton(
             service: widget.appKitModal,
             onTap: () {
-              widgetStack.instance.push(EOAccountPage());
+              widgetStack.instance.push(AccountPage());
             },
           ),
           const SizedBox.square(dimension: kPadding8),

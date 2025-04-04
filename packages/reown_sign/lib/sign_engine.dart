@@ -493,6 +493,7 @@ class ReownSign implements IReownSign {
 
   @override
   Future<dynamic> request({
+    int? requestId,
     required String topic,
     required String chainId,
     required SessionRequestParams request,
@@ -515,7 +516,7 @@ class ReownSign implements IReownSign {
       request: request,
     );
 
-    final id = JsonRpcUtils.payloadId();
+    final id = requestId ?? JsonRpcUtils.payloadId();
     final tvf = _collectRequestTVF(id, sessionRequest);
     core.logger.d('[$runtimeType] _collect Request TVF, id: $id, $tvf');
 

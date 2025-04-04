@@ -194,12 +194,14 @@ class ReownAppKit implements IReownAppKit {
 
   @override
   Future<dynamic> request({
+    int? requestId,
     required String topic,
     required String chainId,
     required SessionRequestParams request,
   }) async {
     try {
       return await reOwnSign.request(
+        requestId: requestId,
         topic: topic,
         chainId: chainId,
         request: request,

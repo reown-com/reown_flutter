@@ -13,7 +13,7 @@ abstract class IMagicService {
   ValueNotifier<bool> get isConnected;
   ValueNotifier<bool> get isTimeout;
   ValueNotifier<bool> get isEmailEnabled;
-  ValueNotifier<bool> get isSocialEnabled;
+  ValueNotifier<bool> get isFarcasterIncluded;
   ValueNotifier<String> get email;
   ValueNotifier<String> get newEmail;
   ValueNotifier<EmailLoginStep> get step;

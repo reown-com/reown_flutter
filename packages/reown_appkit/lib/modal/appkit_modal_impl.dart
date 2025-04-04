@@ -5,16 +5,17 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+
+import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
+import 'package:reown_core/store/i_store.dart';
+
 import 'package:reown_appkit/modal/services/coinbase_service/utils/coinbase_utils.dart';
 import 'package:reown_appkit/modal/services/phantom_service/models/phantom_events.dart';
 import 'package:reown_appkit/modal/services/third_party_wallet_service.dart';
-
-import 'package:reown_core/store/i_store.dart';
-
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/services/phantom_service/i_phantom_service.dart';
 import 'package:reown_appkit/modal/services/phantom_service/phantom_service.dart';
-import 'package:reown_appkit/modal/pages/smart_account_page.dart';
+import 'package:reown_appkit/modal/pages/wallet_features_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/blockchain_identity.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
@@ -62,7 +63,13 @@ class ReownAppKitModal
   String _projectId = '';
 
   Map<String, RequiredNamespace> _requiredNamespaces = {};
+  @override
+  Map<String, RequiredNamespace> get requiredNamespaces => _requiredNamespaces;
+
   Map<String, RequiredNamespace> _optionalNamespaces = {};
+  @override
+  Map<String, RequiredNamespace> get optionalNamespaces => _optionalNamespaces;
+
   bool _supportsOneClickAuth = false;
   bool _relayConnected = false;
 
@@ -82,6 +89,12 @@ class ReownAppKitModal
       return ReownAppKitModalNetworks.getNetworkInfo(namespace, id);
     }
     return null;
+  }
+
+  @override
+  Future<void> switchSmartAccounts() async {
+    _currentSession!.switchSmartAccounts();
+    await loadAccountData();
   }
 
   ReownAppKitModalWalletInfo? _selectedWallet;
@@ -283,11 +296,12 @@ class ReownAppKitModal
       return true;
     }
 
-    final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
-    if (state.isNotEmpty) {
-      _magicService.completeSocialLogin(url: url);
-      return true;
-    }
+    // // TODO check if this is needed for Farcaster
+    // final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
+    // if (state.isNotEmpty) {
+    //   _magicService.completeSocialLogin(url: url);
+    //   return true;
+    // }
 
     final phantomRequest = ReownCoreUtils.getSearchParamFromURL(
       url,
@@ -335,7 +349,7 @@ class ReownAppKitModal
       _selectedChainID ??= _currentSession!.chainId;
       await _setSesionAndChainData(_currentSession!);
       if (isMagic) {
-        await _magicService.init(chainId: _selectedChainID!);
+        await _magicService.init(chainId: _selectedChainID);
       }
     } else {
       _magicService.init();
@@ -386,9 +400,10 @@ class ReownAppKitModal
             await _cleanSession();
           }
         } else if (_currentSession!.sessionService.isMagic) {
+          // TODO check if this is needed for Farcaster
           // Every time the app gets killed Magic service will treat the user as disconnected
           // So we will need to treat magic session differently
-          final email = _currentSession!.email;
+          final email = _currentSession!.email!;
           _magicService.setEmail(email);
           final provider = _currentSession!.socialProvider;
           _magicService.setProvider(provider);
@@ -548,7 +563,10 @@ class ReownAppKitModal
           requestSwitchToChain(chainInfo);
           final hasSwitchMethod = _currentSession!.hasSwitchMethod();
           if (hasSwitchMethod) {
-            launchConnectedWallet();
+            final redirect = _currentSession!.peer!.metadata.redirect!.linkMode
+                ? _currentSession!.peer!.metadata.redirect!.universal!
+                : _currentSession!.peer!.metadata.redirect!.native!;
+            ReownCoreUtils.openURL(redirect);
           }
         } else {
           await _setLocalEthChain(chainInfo.chainId, logEvent: logEvent);
@@ -686,17 +704,19 @@ class ReownAppKitModal
   @override
   Future<void> openModalView([Widget? startWidget]) {
     final keyString = startWidget?.key?.toString() ?? '';
+    final smartAccounts = _currentSession?.sessionSmartAccounts;
     final isMagic = _currentSession?.sessionService.isMagic == true;
+    final embeddedWallet = isMagic || smartAccounts != null;
     if (_isConnected) {
       final connectedKeys =
           _allowedScreensWhenConnected.map((e) => e.toString()).toList();
       if (startWidget == null) {
         startWidget =
-            isMagic ? const SmartAccountPage() : const EOAccountPage();
+            embeddedWallet ? const WalletFeaturesPage() : const AccountPage();
       } else {
         if (!connectedKeys.contains(keyString)) {
           startWidget =
-              isMagic ? const SmartAccountPage() : const EOAccountPage();
+              embeddedWallet ? const WalletFeaturesPage() : const AccountPage();
         }
       }
     } else {
@@ -714,7 +734,7 @@ class ReownAppKitModal
     KeyConstants.confirmEmailPage,
     KeyConstants.selectNetworkPage,
     KeyConstants.eoAccountPage,
-    KeyConstants.smartAccountPage,
+    KeyConstants.walletFeaturesPage,
     KeyConstants.socialLoginPage,
   ];
 
@@ -762,7 +782,7 @@ class ReownAppKitModal
     Widget? showWidget = startWidget;
     if (_isConnected && showWidget == null) {
       final isMagic = _currentSession?.sessionService.isMagic == true;
-      startWidget = isMagic ? const SmartAccountPage() : const EOAccountPage();
+      startWidget = isMagic ? const WalletFeaturesPage() : const AccountPage();
     }
 
     final childWidget = theme == null
@@ -852,11 +872,14 @@ class ReownAppKitModal
   }
 
   @override
-  Future<void> connectSelectedWallet({bool inBrowser = false}) async {
+  Future<void> connectSelectedWallet({
+    bool inBrowser = false,
+    AppKitSocialOption? socialOption,
+  }) async {
     _checkInitialized();
 
     final walletRedirect = _explorerService.getWalletRedirect(
-      selectedWallet,
+      _selectedWallet,
     );
 
     if (walletRedirect == null) {
@@ -876,7 +899,7 @@ class ReownAppKitModal
       } else if (_selectedWallet!.isPhantom) {
         await _phantomService.connect(chainId: _selectedChainID);
       } else {
-        await _connect(walletRedirect, pType);
+        await _connect(walletRedirect, pType, socialOption);
       }
     } on LaunchUrlException catch (e) {
       if (e is CanNotLaunchUrl) {
@@ -929,13 +952,28 @@ class ReownAppKitModal
     }
   }
 
-  Future<void> _connect(WalletRedirect redirect, PlatformType pType) async {
+  Future<void> _connect(
+    WalletRedirect redirect,
+    PlatformType pType,
+    AppKitSocialOption? socialOption,
+  ) async {
     await buildConnectionUri();
     final linkMode = redirect.linkMode ?? '';
     if (linkMode.isNotEmpty && _wcUri.startsWith(linkMode)) {
       await ReownCoreUtils.openURL(_wcUri);
-    } else {
-      await _uriService.openRedirect(redirect, wcURI: _wcUri, pType: pType);
+    }
+    // else if (socialOption != null) {
+    //   final url = CoreUtils.formatWebUrl(redirect.web, _wcUri);
+    //   final social = socialOption.name.toLowerCase();
+    //   await ReownCoreUtils.openURL('$url&provider=$social');
+    // }
+    else {
+      await _uriService.openRedirect(
+        redirect,
+        wcURI: _wcUri,
+        pType: pType,
+        socialOption: socialOption,
+      );
     }
   }
 
@@ -945,7 +983,7 @@ class ReownAppKitModal
       try {
         if (_siweService.enabled) {
           final walletRedirect = _explorerService.getWalletRedirect(
-            selectedWallet,
+            _selectedWallet,
           );
           final nonce = await _siweService.getNonce();
           final p1 = await _siweService.config!.getMessageParams();
@@ -1053,8 +1091,19 @@ class ReownAppKitModal
     return await expirePreviousInactivePairings();
   }
 
+  bool get _isLinkMode {
+    final metadataRedirect = _currentSession!.peer?.metadata.redirect;
+    final appLink = (metadataRedirect?.universal ?? '');
+    final supportedApps = _appKit.core.getLinkModeSupportedApps();
+    final isLinkMode = appLink.isNotEmpty && supportedApps.contains(appLink);
+    return isLinkMode;
+  }
+
+  @Deprecated('This is not needed anymore and shouldn\'t be used')
   @override
-  void launchConnectedWallet() async {
+  void launchConnectedWallet() async {}
+
+  void _launchRequestOnWallet(int requestId) async {
     _checkInitialized();
 
     final walletInfo = _explorerService.getConnectedWallet();
@@ -1081,35 +1130,45 @@ class ReownAppKitModal
 
     if (_currentSession!.sessionService.isMagic) {
       // There's no wallet to launch when connected with Email
+      // TODO check if this is still relevant with web-wallet
       return;
     }
 
-    final metadataRedirect = _currentSession!.peer?.metadata.redirect;
-
-    final appLink = (metadataRedirect?.universal ?? '');
-    final supportedApps = _appKit.core.getLinkModeSupportedApps();
-    final isLinkMode = appLink.isNotEmpty && supportedApps.contains(appLink);
-    if (isLinkMode) {
+    if (_isLinkMode) {
       // Opening peers during Link Mode requests is handled in Sign Engine
       return;
     }
 
-    final walletRedirect = _explorerService.getWalletRedirect(
-      walletInfo,
-    );
-
+    final walletRedirect = _explorerService.getWalletRedirect(walletInfo);
     if (walletRedirect == null) {
       return;
     }
 
     try {
+      final topic = _currentSession!.topic!;
+      final metadataRedirect = _currentSession!.peer?.metadata.redirect;
       final link = metadataRedirect?.native ?? metadataRedirect?.universal;
-      final redirect = walletRedirect.copyWith(mobile: link);
+      final redirect = walletRedirect.copyWith(
+        // /wc path will be added in CoreUtils
+        mobile: link != null ? _removeWcPath(link) : null,
+      );
       final platform = PlatformUtils.getPlatformType();
-      _uriService.openRedirect(redirect, pType: platform);
+      _uriService.openRedirect(
+        redirect,
+        pType: platform,
+        wcURI: 'requestId=$requestId&sessionTopic=$topic',
+      );
     } catch (e) {
       onModalError.broadcast(ErrorOpeningWallet());
     }
+  }
+
+  String _removeWcPath(String url) {
+    var uri = Uri.parse(url);
+    if (uri.pathSegments.isNotEmpty && uri.pathSegments.first == 'wc') {
+      uri = uri.replace(pathSegments: uri.pathSegments.skip(1).toList());
+    }
+    return uri.toString();
   }
 
   @override
@@ -1150,6 +1209,7 @@ class ReownAppKitModal
         return;
       }
     }
+    // TODO only needed to support Farcaster
     if (_currentSession?.sessionService.isMagic == true) {
       try {
         await Future.delayed(Duration(milliseconds: 300));
@@ -1335,6 +1395,7 @@ class ReownAppKitModal
 
   @override
   Future<dynamic> request({
+    // int? requestId,
     required String? topic,
     required String chainId,
     required SessionRequestParams request,
@@ -1355,6 +1416,7 @@ class ReownAppKitModal
       '${jsonEncode(request.toJson())}',
     );
     try {
+      // TODO only needed to support Farcaster
       if (_currentSession!.sessionService.isMagic) {
         return await _magicService.request(
           chainId: chainId,
@@ -1373,11 +1435,18 @@ class ReownAppKitModal
           request: request,
         );
       }
-      return await _appKit.request(
+
+      final requestId = JsonRpcUtils.payloadId();
+      final pendingRequest = _appKit.request(
+        requestId: requestId,
         topic: topic!,
         chainId: chainId,
         request: request,
       );
+
+      _launchRequestOnWallet(requestId);
+
+      return await pendingRequest;
     } catch (e) {
       if (_isUserRejectedError(e)) {
         onModalError.broadcast(UserRejectedRequest());
@@ -1546,8 +1615,8 @@ class ReownAppKitModal
       return;
     }
 
-    _status = ReownAppKitModalStatus.initializing;
-    _notify();
+    // _status = ReownAppKitModalStatus.initializing;
+    // _notify();
 
     // Get the chain balance.
     final namespace = NamespaceUtils.getNamespaceFromChain(_selectedChainID!);
@@ -1584,7 +1653,7 @@ class ReownAppKitModal
       _blockchainIdentity = null;
     }
 
-    _status = ReownAppKitModalStatus.initialized;
+    // _status = ReownAppKitModalStatus.initialized;
     _notify();
   }
 
@@ -1757,7 +1826,11 @@ class ReownAppKitModal
     if (_siweService.config?.enabled != true) return;
     try {
       if (_siweService.signOutOnNetworkChange) {
-        await _magicService.getUser(chainId: _selectedChainID!, isUpdate: true);
+        // final caip2chain = ReownAppKitModalNetworks.getCaip2Chain(
+        //   _currentSelectedChainId!,
+        // );
+        // TODO check if relevant for Farcaster
+        await _magicService.getUser(chainId: _selectedChainID, isUpdate: true);
         await _siweService.signOut();
         _disconnectOnClose = true;
         widgetStack.instance.push(ApproveSIWEPage(
@@ -1829,11 +1902,11 @@ class ReownAppKitModal
     onModalError.unsubscribe(_onModalError);
 
     // Magic
+    _magicService.onMagicConnect.unsubscribe(_onMagicConnectEvent);
     _magicService.onMagicLoginSuccess.unsubscribe(_onMagicLoginEvent);
     _magicService.onMagicError.unsubscribe(_onMagicErrorEvent);
     _magicService.onMagicUpdate.unsubscribe(_onMagicSessionUpdateEvent);
     _magicService.onMagicRpcRequest.unsubscribe(_onMagicRequest);
-    //
     // Coinbase
     _coinbaseService.onCoinbaseConnect.unsubscribe(_onCoinbaseConnect);
     _coinbaseService.onCoinbaseError.unsubscribe(_onCoinbaseError);
@@ -1910,6 +1983,7 @@ extension _EmailConnectorExtension on ReownAppKitModal {
           onModalUpdate.broadcast(ModalConnect(_currentSession!));
         } else {
           _disconnectOnClose = true;
+          // TODO Check if this is still relevant
           final theme = ReownAppKitModalTheme.maybeOf(_context!);
           await _magicService.syncTheme(theme);
           widgetStack.instance.push(ApproveSIWEPage(

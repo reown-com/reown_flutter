@@ -41,6 +41,7 @@ class Listing {
   final String? rdns;
   final List<Injected>? injected;
   final String? description;
+  final bool isSample;
 
   const Listing({
     required this.id,
@@ -57,6 +58,7 @@ class Listing {
     this.rdns,
     this.injected,
     this.description,
+    this.isSample = false,
   });
 
   Listing copyWith({
@@ -74,6 +76,7 @@ class Listing {
     String? rdns,
     List<Injected>? injected,
     String? description,
+    bool? isSample,
   }) =>
       Listing(
         id: id ?? this.id,
@@ -90,6 +93,7 @@ class Listing {
         rdns: rdns ?? this.rdns,
         injected: injected ?? this.injected,
         description: description ?? this.description,
+        isSample: isSample ?? this.isSample,
       );
 
   factory Listing.fromRawJson(String str) => Listing.fromJson(json.decode(str));
