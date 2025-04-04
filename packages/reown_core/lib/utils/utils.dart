@@ -78,10 +78,14 @@ class ReownCoreUtils {
     String id = getId();
     return <String>[
       [protocol, version].join('-'),
-      <String>['reown-flutter', sdkVersion].join('-'),
+      coreSdkVersion(sdkVersion),
       os,
       id,
     ].join('/').toLowerCase();
+  }
+
+  static String coreSdkVersion(String sdkVersion) {
+    return <String>['reown-flutter', sdkVersion].join('-');
   }
 
   static String formatRelayRpcUrl({

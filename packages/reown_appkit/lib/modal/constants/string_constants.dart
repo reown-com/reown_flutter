@@ -1,13 +1,13 @@
 // ignore_for_file: public_member_api_docs
 
-import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_appkit/reown_appkit.dart' as reown_appkit;
 import 'package:reown_core/version.dart' as reown_core;
 import 'package:reown_sign/version.dart' as reown_sign;
 
 class CoreConstants {
   // Request Headers
   static const X_SDK_TYPE = 'appkit';
-  static const X_SDK_VERSION = 'flutter-$packageVersion';
+  static const X_SDK_VERSION = 'flutter-${reown_appkit.packageVersion}';
   static const X_CORE_SDK_VERSION = 'core-${reown_core.packageVersion}';
   static const X_SIGN_SDK_VERSION = 'sign-${reown_sign.packageVersion}';
 }
@@ -34,7 +34,8 @@ class UIConstants {
 
 class StorageConstants {
   // Storage
-  static const prefix = '${CoreConstants.X_SDK_TYPE}:$packageVersion//';
+  static const prefix =
+      '${CoreConstants.X_SDK_TYPE}:${CoreConstants.X_SDK_VERSION}//';
 
   static const String recentWalletId = '${prefix}recentWallet';
   static const String connectedWalletData = '${prefix}walletData';
@@ -46,7 +47,6 @@ class StorageConstants {
 class UrlConstants {
   static const apiService = 'https://api.web3modal.com';
   static const blockChainService = 'https://rpc.walletconnect.org';
-  static const analyticsService = 'https://pulse.walletconnect.org';
   static const exploreWallets =
       'https://explorer.walletconnect.com/?type=wallet';
   //

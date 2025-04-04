@@ -9,6 +9,7 @@ import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/blockchain_identity.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
 
+// TODO move to Core SDK
 class BlockChainService implements IBlockChainService {
   late final IReownCore _core;
   late final String _baseUrl;
@@ -25,7 +26,7 @@ class BlockChainService implements IBlockChainService {
 
   Map<String, String> get _requiredHeaders => {
         'x-sdk-type': CoreConstants.X_SDK_TYPE,
-        'x-sdk-version': CoreConstants.X_SDK_VERSION,
+        'x-sdk-version': ReownCoreUtils.coreSdkVersion(packageVersion),
       };
 
   ActivityData? _activityData;

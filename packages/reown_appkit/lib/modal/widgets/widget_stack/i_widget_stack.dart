@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
+import 'package:reown_core/events/models/basic_event.dart';
 
 abstract class IWidgetStack with ChangeNotifier {
   abstract final ValueNotifier<bool> onRenderScreen;
@@ -12,7 +12,7 @@ abstract class IWidgetStack with ChangeNotifier {
     Widget widget, {
     bool renderScreen = false,
     bool replace = false,
-    AnalyticsEvent? event,
+    BasicCoreEvent? event,
   });
 
   /// Removes a widget from the stack.

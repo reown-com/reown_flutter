@@ -33,7 +33,7 @@ class PairingMetadata with _$PairingMetadata {
   const factory PairingMetadata({
     required String name,
     required String description,
-    required String url,
+    @Default('') String url,
     @Default(<String>[]) List<String> icons,
     String? verifyUrl,
     Redirect? redirect,

@@ -9,6 +9,7 @@ class ReownConstants {
   static const DEFAULT_RELAY_URL = 'wss://relay.walletconnect.org';
   static const DEFAULT_PUSH_URL = 'https://echo.walletconnect.org';
   static const VERIFY_SERVER = 'https://verify.walletconnect.org';
+  static const EVENTS_SERVER = 'https://pulse.walletconnect.org';
   static const TRUSTED_VERIFY_URLS = [VERIFY_SERVER];
 
   static const RELAYER_DEFAULT_PROTOCOL = 'irn';

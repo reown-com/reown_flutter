@@ -2,6 +2,7 @@ import 'package:logger/logger.dart';
 import 'package:reown_core/connectivity/i_connectivity.dart';
 import 'package:reown_core/crypto/i_crypto.dart';
 import 'package:reown_core/echo/i_echo.dart';
+import 'package:reown_core/events/i_events.dart';
 import 'package:reown_core/heartbit/i_heartbeat.dart';
 import 'package:reown_core/pairing/i_expirer.dart';
 import 'package:reown_core/pairing/i_pairing.dart';
@@ -27,6 +28,7 @@ abstract class IReownCore {
   abstract IExpirer expirer;
   abstract IPairing pairing;
   abstract IEcho echo;
+  abstract IEvents events;
   abstract final Logger logger;
   abstract IVerify verify;
   abstract ILinkModeStore linkModeStore;

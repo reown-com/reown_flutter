@@ -1906,9 +1906,9 @@ class ReownSign implements IReownSign {
     final defaultVerifyUrl = ReownConstants.VERIFY_SERVER;
     final verifyUrl = proposerMetada.verifyUrl ?? defaultVerifyUrl;
 
-    final metadataUri = Uri.tryParse(proposerMetada.url);
-
     try {
+      final metadataUri = Uri.tryParse(proposerMetada.url);
+
       final jsonStringify = jsonEncode(payload.toJson());
       final hash = core.crypto.getUtils().hashMessage(jsonStringify);
       final attestation = await core.verify.resolve(attestationId: hash);
@@ -1926,13 +1926,12 @@ class ReownSign implements IReownSign {
         isScam: validation == Validation.SCAM,
       );
     } catch (e, s) {
-      if (e is! AttestationNotFound) {
-        core.logger.e('[$runtimeType] verify error', error: e, stackTrace: s);
-      } else {
-        core.logger.d('[$runtimeType] attestation not found');
-      }
+      core.logger.e(
+        '[$runtimeType] VerifyContext error ${e.runtimeType}: $e',
+        stackTrace: s,
+      );
       return VerifyContext(
-        origin: metadataUri?.origin ?? proposerMetada.url,
+        origin: proposerMetada.url,
         verifyUrl: verifyUrl,
         validation: Validation.UNKNOWN,
       );
