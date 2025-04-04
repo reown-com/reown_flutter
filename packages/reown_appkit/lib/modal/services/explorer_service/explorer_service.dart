@@ -221,7 +221,21 @@ class ExplorerService implements IExplorerService {
           jsonDecode(response.body),
           (json) => NativeAppData.fromJson(json),
         );
-        return apiResponse.data.toList();
+        return [
+          NativeAppData(
+            id: CoinbaseUtils.defaultListingData.id,
+            schema: Platform.isAndroid
+                ? CoinbaseUtils.defaultListingData.rdns
+                : CoinbaseUtils.defaultListingData.mobileLink,
+          ),
+          NativeAppData(
+            id: PhantomUtils.defaultListingData.id,
+            schema: Platform.isAndroid
+                ? PhantomUtils.defaultListingData.rdns
+                : PhantomUtils.defaultListingData.mobileLink,
+          ),
+          ...apiResponse.data,
+        ];
       } else {
         return <NativeAppData>[];
       }
@@ -252,8 +266,7 @@ class ExplorerService implements IExplorerService {
     // this query gives me a count of installedWalletsParam.length
     final installedWallets = await _fetchListings(params: params);
     _core.logger.d(
-      '[$runtimeType] ${installedWallets.length} installed wallets',
-    );
+        '[$runtimeType] installed wallets: ${installedWallets.map((e) => e.listing.name).join(', ')}');
     return installedWallets.setInstalledFlag();
   }
 
@@ -447,8 +460,11 @@ class ExplorerService implements IExplorerService {
         results.first.toJson(),
       );
       final mobileLink = CoinbaseUtils.defaultListingData.mobileLink;
+      final rdns = CoinbaseUtils.defaultListingData.rdns;
       final linkMode = CoinbaseUtils.defaultListingData.linkMode;
-      final installed = await _uriService.isInstalled(mobileLink);
+      final installed = Platform.isAndroid
+          ? await _uriService.isInstalled(rdns)
+          : await _uriService.isInstalled(mobileLink);
       return serviceData.copyWith(
         listing: serviceData.listing.copyWith(
           mobileLink: mobileLink,
@@ -476,8 +492,11 @@ class ExplorerService implements IExplorerService {
         results.first.toJson(),
       );
       final mobileLink = PhantomUtils.defaultListingData.mobileLink;
+      final rdns = PhantomUtils.defaultListingData.rdns;
       final linkMode = PhantomUtils.defaultListingData.linkMode;
-      final installed = await _uriService.isInstalled(mobileLink);
+      final installed = Platform.isAndroid
+          ? await _uriService.isInstalled(rdns)
+          : await _uriService.isInstalled(mobileLink);
       return serviceData.copyWith(
         listing: serviceData.listing.copyWith(
           mobileLink: mobileLink,

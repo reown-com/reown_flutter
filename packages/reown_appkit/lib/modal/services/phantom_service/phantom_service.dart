@@ -113,6 +113,8 @@ class PhantomService implements IPhantomService {
       if (solanaNets.isEmpty) {
         throw ThirdPartyWalletUnsupportedChains(
           walletName: walletMetadata.metadata.name,
+          message:
+              '${walletMetadata.metadata.name} requires Solana network to connect',
         );
       }
 
