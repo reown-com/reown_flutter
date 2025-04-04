@@ -8,7 +8,6 @@ import 'package:reown_appkit/modal/pages/farcaster_qrcode_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
-import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
 import 'package:reown_appkit/modal/widgets/buttons/simple_icon_button.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
@@ -77,50 +76,15 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
         final farcasterUri = await _magicService.getFarcasterUri(
           chainId: _service?.selectedChain?.chainId,
         );
-
         if (farcasterUri != null) {
           await _continueInFarcaster(farcasterUri);
         }
       } else {
-        final appKitModal = ModalProvider.of(context).instance;
-        appKitModal.selectWallet(_webWallet);
+        _service?.selectWallet(_webWallet);
         await _service?.connectSelectedWallet(socialOption: option);
       }
     } catch (e) {
       debugPrint('[$runtimeType] _initSocialLogin error $e');
-    }
-  }
-
-  void _onCompleteSocialLogin(CompleteSocialLoginEvent? event) async {
-    if (event != null) {
-      await _completeSocialLogin(event.url);
-    } else {
-      _cancelSocialLogin();
-    }
-  }
-
-  Future<void> _completeSocialLogin(String url) async {
-    try {
-      setState(() => _retrievingData = true);
-      final success = await _magicService.connectSocial(
-        uri: '?${Uri.parse(url).query}',
-      );
-      if (success == true) {
-        final caip2Chain = _service!.selectedChain?.chainId;
-        await _magicService.getUser(chainId: caip2Chain, isUpdate: false);
-        _analyticsService.sendEvent(SocialLoginSuccess(
-          provider: widget.socialOption.name.toLowerCase(),
-        ));
-        _magicService.onCompleteSocialLogin.unsubscribe(
-          _onCompleteSocialLogin,
-        );
-      } else {
-        _cancelSocialLogin();
-      }
-    } catch (e) {
-      debugPrint('[$runtimeType] _completeSocialLogin error $e');
-      _cancelSocialLogin();
-      setState(() => _retrievingData = false);
     }
   }
 
@@ -136,20 +100,16 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
 
   Future<void> _completeFarcasterLogin(bool success) async {
     if (success == false) {
-      _cancelSocialLogin();
+      errorEvent = ModalError('User canceled');
+      setState(() => _retrievingData = false);
+      _analyticsService.sendEvent(SocialLoginCanceled(
+        provider: widget.socialOption.name.toLowerCase(),
+      ));
     } else {
       setState(() => _retrievingData = true);
       final caip2Chain = _service?.selectedChain?.chainId;
       await _magicService.getUser(chainId: caip2Chain, isUpdate: false);
     }
-  }
-
-  void _cancelSocialLogin() {
-    errorEvent = ModalError('User canceled');
-    setState(() => _retrievingData = false);
-    _analyticsService.sendEvent(SocialLoginCanceled(
-      provider: widget.socialOption.name.toLowerCase(),
-    ));
   }
 
   @override
