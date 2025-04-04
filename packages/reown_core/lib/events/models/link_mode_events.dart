@@ -51,7 +51,7 @@ class LinkModeRequestEvent extends _LinkModeEvent {
 
 ///
 /// Link Mode Authenticate/Session responses
-/// Covers tags 1123 and 1126
+/// Covers tags 1123,1124 and 1126
 ///
 @protected
 class LinkModeResponseEvent extends _LinkModeEvent {
