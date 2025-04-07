@@ -24,13 +24,13 @@ class _EmailLoginInputFieldState extends State<EmailLoginInputField> {
   @override
   void initState() {
     super.initState();
-    _magicService.step.addListener(_stepListener);
+    _magicService.loginStep.addListener(_stepListener);
   }
 
   void _stepListener() {
-    if ((_magicService.step.value == EmailLoginStep.verifyDevice ||
-            _magicService.step.value == EmailLoginStep.verifyOtp ||
-            _magicService.step.value == EmailLoginStep.verifyOtp2) &&
+    if ((_magicService.loginStep.value == EmailLoginStep.verifyDevice ||
+            _magicService.loginStep.value == EmailLoginStep.verifyOtp ||
+            _magicService.loginStep.value == EmailLoginStep.verifyOtp2) &&
         _submitted) {
       widgetStack.instance.push(ConfirmEmailPage());
       _submitted = false;
@@ -39,7 +39,7 @@ class _EmailLoginInputFieldState extends State<EmailLoginInputField> {
 
   @override
   void dispose() {
-    _magicService.step.removeListener(_stepListener);
+    _magicService.loginStep.removeListener(_stepListener);
     super.dispose();
   }
 

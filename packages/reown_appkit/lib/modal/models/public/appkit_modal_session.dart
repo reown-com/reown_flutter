@@ -97,7 +97,7 @@ class ReownAppKitModalSession {
       email: magicData?.email,
       address: magicData?.address,
       chainId: magicData?.chainId,
-      userName: magicData?.userName,
+      farcasterUserName: magicData?.farcasterUserName,
       smartAccountDeployed: magicData?.smartAccountDeployed,
       preferredAccountType: magicData?.preferredAccountType,
       self: magicData?.self,
@@ -317,7 +317,11 @@ class ReownAppKitModalSession {
       authentication: _sessionData?.authentication,
       transportType: _sessionData?.transportType ?? TransportType.relay,
     );
-    return sessionData.toJson();
+    return {
+      ...sessionData.toJson(),
+      'transportType':
+          sessionService.isMagic ? 'secureSite' : sessionData.transportType,
+    };
   }
 }
 
@@ -375,9 +379,6 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
   }
 
   //
-  String? get email => _magicData?.email;
-  String? get userName => _magicData?.userName;
-  AppKitSocialOption? get socialProvider => _magicData?.provider;
   Map<String, dynamic> get sessionProperties =>
       _sessionData?.sessionProperties ?? {};
 
@@ -390,8 +391,13 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     }
   }
 
-  String? get sessionEmail => sessionProperties['email'];
-  String? get sessionProvider => sessionProperties['provider'];
+  String? get socialProvider =>
+      sessionProperties['provider'] ?? _magicData?.provider?.name;
+  String? get sessionEmail => sessionProperties['email'] ?? _magicData?.email;
+  String? get sessionUsername =>
+      sessionProperties['username'] ??
+      _magicData?.farcasterUserName ??
+      sessionEmail;
 
   //
   String? getAddress(String namespace) {
@@ -412,7 +418,8 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     }
 
     final ns = namespaces?[namespace];
-    final accounts = ns?.accounts ?? [];
+    final accounts = List<String>.from(ns?.accounts ?? [])
+      ..removeWhere((item) => sessionSmartAccounts.contains(item));
     if (accounts.isNotEmpty) {
       return NamespaceUtils.getAccount(accounts.first);
     }

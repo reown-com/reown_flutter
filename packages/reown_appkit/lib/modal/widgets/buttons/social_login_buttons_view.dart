@@ -9,6 +9,7 @@ import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
 import 'package:reown_appkit/modal/widgets/buttons/social_login_button.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
+import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -25,10 +26,10 @@ class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
   @override
   Widget build(BuildContext context) {
     final isPortrait = ResponsiveData.isPortrait(context);
-    return ValueListenableBuilder<bool>(
-      valueListenable: _magicService.isReady,
-      builder: (context, isReady, _) {
-        final options = _magicService.socials;
+    final modalInstance = ModalProvider.of(context).instance;
+    return Builder(
+      builder: (context) {
+        final options = modalInstance.featuresConfig.socials;
         final count = options.length;
         if (count == 0) {
           return SizedBox.shrink();
@@ -37,16 +38,17 @@ class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
           return Column(
             children: [
               const SizedBox.square(dimension: kListViewSeparatorHeight),
-              isReady
-                  ? SocialLoginButton(
+              (options.first == AppKitSocialOption.Farcaster)
+                  ? FarcasterLoginButton(
+                      onTap: () => _initSocialLogin(options.first),
+                      title: 'Continue with ${options.first.name}',
+                    )
+                  : SocialLoginButton(
                       logoPath: AssetUtils.getThemedAsset(
                         context,
                         '${options.first.name.toLowerCase()}_logo.svg',
                       ),
                       onTap: () => _initSocialLogin(options.first),
-                      title: 'Continue with ${options.first.name}',
-                    )
-                  : ShimmerSocialLoginButton(
                       title: 'Continue with ${options.first.name}',
                     ),
               const SizedBox.square(dimension: kListViewSeparatorHeight),
@@ -68,37 +70,37 @@ class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
         final secondRowList = [
           ...restItems.map(
             (item) => Expanded(
-              child: isReady
-                  ? SocialLoginButton(
+              child: (options.first == AppKitSocialOption.Farcaster)
+                  ? FarcasterLoginButton(
+                      onTap: () => _initSocialLogin(options.first),
+                    )
+                  : SocialLoginButton(
                       logoPath: AssetUtils.getThemedAsset(
                         context,
                         '${item.name.toLowerCase()}_logo.svg',
                       ),
                       onTap: () => _initSocialLogin(item),
-                    )
-                  : ShimmerSocialLoginButton(),
+                    ),
             ),
           ),
           if (exceeds)
             Expanded(
-              child: isReady
-                  ? SocialLoginButton(
-                      logoPath: AssetUtils.getThemedAsset(
-                        context,
-                        'more_social_icon.svg',
-                      ),
-                      onTap: () {
-                        widgetStack.instance.push(
-                          AllSocialLoginsPage(
-                            onSelect: (selected) {
-                              widgetStack.instance.pop();
-                              _initSocialLogin(selected);
-                            },
-                          ),
-                        );
+              child: SocialLoginButton(
+                logoPath: AssetUtils.getThemedAsset(
+                  context,
+                  'more_social_icon.svg',
+                ),
+                onTap: () {
+                  widgetStack.instance.push(
+                    AllSocialLoginsPage(
+                      onSelect: (selected) {
+                        widgetStack.instance.pop();
+                        _initSocialLogin(selected);
                       },
-                    )
-                  : ShimmerSocialLoginButton(),
+                    ),
+                  );
+                },
+              ),
             ),
         ];
         return Column(
@@ -108,23 +110,29 @@ class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
                 if (firstItem == null) {
                   return SizedBox.shrink();
                 }
-                return Column(
-                  children: [
-                    const SizedBox.square(dimension: kListViewSeparatorHeight),
-                    isReady
-                        ? SocialLoginButton(
-                            logoPath: AssetUtils.getThemedAsset(
-                              context,
-                              '${firstItem.name.toLowerCase()}_logo.svg',
-                            ),
-                            onTap: () => _initSocialLogin(firstItem),
-                            title: 'Continue with ${firstItem.name}',
-                          )
-                        : ShimmerSocialLoginButton(
-                            title: 'Continue with ${firstItem.name}',
-                          ),
-                  ],
-                );
+                return ValueListenableBuilder<bool>(
+                    valueListenable: _magicService.isReady,
+                    builder: (context, isReady, _) {
+                      return Column(
+                        children: [
+                          const SizedBox.square(
+                              dimension: kListViewSeparatorHeight),
+                          (options.first == AppKitSocialOption.Farcaster)
+                              ? FarcasterLoginButton(
+                                  onTap: () => _initSocialLogin(options.first),
+                                  title: 'Continue with ${firstItem.name}',
+                                )
+                              : SocialLoginButton(
+                                  logoPath: AssetUtils.getThemedAsset(
+                                    context,
+                                    '${firstItem.name.toLowerCase()}_logo.svg',
+                                  ),
+                                  onTap: () => _initSocialLogin(firstItem),
+                                  title: 'Continue with ${firstItem.name}',
+                                ),
+                        ],
+                      );
+                    });
               },
             ),
             Column(

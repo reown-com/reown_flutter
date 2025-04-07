@@ -168,13 +168,13 @@ class RpcRequestErrorEvent extends MagicErrorEvent {
       : super(message ?? 'Error during request');
 }
 
-class CompleteSocialLoginEvent implements EventArgs {
-  final String url;
-  CompleteSocialLoginEvent(this.url);
+// class CompleteSocialLoginEvent implements EventArgs {
+//   final String url;
+//   CompleteSocialLoginEvent(this.url);
 
-  @override
-  String? eventName;
+//   @override
+//   String? eventName;
 
-  @override
-  DateTime? whenOccurred;
-}
+//   @override
+//   DateTime? whenOccurred;
+// }

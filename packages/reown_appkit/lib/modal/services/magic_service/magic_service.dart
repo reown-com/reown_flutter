@@ -77,25 +77,33 @@ class MagicService implements IMagicService {
 
   @override
   WebViewWidget get webview => _webview;
-  @override
-  final isReady = ValueNotifier(false);
-  @override
-  final isConnected = ValueNotifier(false);
-  @override
-  final isTimeout = ValueNotifier(false);
-  @override
-  final isEmailEnabled = ValueNotifier(false);
-  @override
-  final isFarcasterIncluded = ValueNotifier(false);
-  @override
-  final email = ValueNotifier<String>('');
-  @override
-  final newEmail = ValueNotifier<String>('');
-  @override
-  final step = ValueNotifier<EmailLoginStep>(EmailLoginStep.idle);
 
   @override
-  List<AppKitSocialOption> get socials => _features.socials;
+  final isReady = ValueNotifier(false);
+
+  @override
+  final isConnected = ValueNotifier(false);
+
+  @override
+  final isTimeout = ValueNotifier(false);
+
+  @override
+  final isEmailEnabled = ValueNotifier(false);
+
+  @override
+  final isFarcasterEnabled = ValueNotifier(false);
+
+  @override
+  final email = ValueNotifier<String>('');
+
+  @override
+  final newEmail = ValueNotifier<String>('');
+
+  @override
+  final loginStep = ValueNotifier<EmailLoginStep>(EmailLoginStep.idle);
+
+  // @override
+  // List<AppKitSocialOption> get socials => _features.socials;
 
   @override
   Event<MagicSessionEvent> onMagicLoginRequest = Event<MagicSessionEvent>();
@@ -115,9 +123,9 @@ class MagicService implements IMagicService {
   @override
   Event<MagicRequestEvent> onMagicRpcRequest = Event<MagicRequestEvent>();
 
-  @override
-  Event<CompleteSocialLoginEvent> onCompleteSocialLogin =
-      Event<CompleteSocialLoginEvent>();
+  // @override
+  // Event<CompleteSocialLoginEvent> onCompleteSocialLogin =
+  //     Event<CompleteSocialLoginEvent>();
 
   IAnalyticsService get _analyticsService => GetIt.I<IAnalyticsService>();
 
@@ -134,11 +142,11 @@ class MagicService implements IMagicService {
     _socialProvider = null;
     _socialUsername = null;
     isEmailEnabled.value = _features.email;
-    isFarcasterIncluded.value = _features.socials.contains(
+    isFarcasterEnabled.value = _features.socials.contains(
       AppKitSocialOption.Farcaster,
     );
     //
-    if (isEmailEnabled.value || isFarcasterIncluded.value) {
+    if (isEmailEnabled.value || isFarcasterEnabled.value) {
       _webViewController = WebViewController();
       _webview = WebViewWidget(controller: _webViewController);
       isReady.addListener(_readyListener);
@@ -160,13 +168,13 @@ class MagicService implements IMagicService {
     }
     _initializedCompleter = Completer<bool>();
     _isConnectedCompleter = Completer<bool>();
-    if (!isEmailEnabled.value && !isFarcasterIncluded.value) {
+    if (!isEmailEnabled.value && !isFarcasterEnabled.value) {
       _initializedCompleter.complete(false);
       _isConnectedCompleter.complete(false);
-      if (socials.isNotEmpty) {
-        isReady.value = true;
-        isConnected.value = true;
-      }
+      // if (socials.isNotEmpty) {
+      //   isReady.value = true;
+      //   isConnected.value = true;
+      // }
       return;
     }
     _packageName = await ReownCoreUtils.getPackageName();
@@ -263,61 +271,61 @@ class MagicService implements IMagicService {
     _socialProvider = provider;
   }
 
-  bool get _socialsNotReady => (!isFarcasterIncluded.value || !isReady.value);
+  bool get _farcasterNotReady => (!isFarcasterEnabled.value || !isReady.value);
   bool get _emailNotReady => (!isEmailEnabled.value || !isReady.value);
   bool get _serviceNotReady =>
-      (!isEmailEnabled.value && !isFarcasterIncluded.value) || !isReady.value;
+      (!isEmailEnabled.value && !isFarcasterEnabled.value) || !isReady.value;
 
   // ****** W3mFrameProvider public methods ******* //
 
   // SOCIAL LOGIN RELATED METHODS
 
-  Completer<String?> _getSocialRedirectUri = Completer<String?>();
-  @override
-  Future<String?> getSocialRedirectUri({
-    required AppKitSocialOption provider,
-    String? schema,
-    String? chainId,
-  }) async {
-    if (_socialsNotReady) {
-      throw Exception('Service is not ready');
-    }
-    //
-    if (NamespaceUtils.isValidChainId(chainId ?? '')) {
-      _connectionChainId = chainId;
-    }
-    _getSocialRedirectUri = Completer<String?>();
-    _socialProvider = provider;
-    final message = GetSocialRedirectUri(
-      provider: _socialProvider!.name.toLowerCase(),
-      schema: schema,
-    ).toString();
-    await _webViewController.runJavaScript('sendMessage($message)');
-    return await _getSocialRedirectUri.future;
-  }
+  // Completer<String?> _getSocialRedirectUri = Completer<String?>();
+  // @override
+  // Future<String?> getSocialRedirectUri({
+  //   required AppKitSocialOption provider,
+  //   String? schema,
+  //   String? chainId,
+  // }) async {
+  //   if (_farcasterNotReady) {
+  //     throw Exception('Service is not ready');
+  //   }
+  //   //
+  //   if (NamespaceUtils.isValidChainId(chainId ?? '')) {
+  //     _connectionChainId = chainId;
+  //   }
+  //   _getSocialRedirectUri = Completer<String?>();
+  //   _socialProvider = provider;
+  //   final message = GetSocialRedirectUri(
+  //     provider: _socialProvider!.name.toLowerCase(),
+  //     schema: schema,
+  //   ).toString();
+  //   await _webViewController.runJavaScript('sendMessage($message)');
+  //   return await _getSocialRedirectUri.future;
+  // }
 
-  Completer<bool> _connectSocial = Completer<bool>();
-  @override
-  Future<dynamic> connectSocial({required String uri}) async {
-    if (_socialsNotReady) {
-      throw Exception('Service is not ready');
-    }
-    //
-    _connectSocial = Completer<bool>();
-    final message = ConnectSocial(uri: uri).toString();
-    await _webViewController.runJavaScript('sendMessage($message)');
-    return await _connectSocial.future;
-  }
+  // Completer<bool> _connectSocial = Completer<bool>();
+  // @override
+  // Future<dynamic> connectSocial({required String uri}) async {
+  //   if (_farcasterNotReady) {
+  //     throw Exception('Service is not ready');
+  //   }
+  //   //
+  //   _connectSocial = Completer<bool>();
+  //   final message = ConnectSocial(uri: uri).toString();
+  //   await _webViewController.runJavaScript('sendMessage($message)');
+  //   return await _connectSocial.future;
+  // }
 
-  @override
-  void completeSocialLogin({required String url}) {
-    onCompleteSocialLogin.broadcast(CompleteSocialLoginEvent(url));
-  }
+  // @override
+  // void completeSocialLogin({required String url}) {
+  //   onCompleteSocialLogin.broadcast(CompleteSocialLoginEvent(url));
+  // }
 
   Completer<String?> _getFarcasterUri = Completer<String?>();
   @override
   Future<String?> getFarcasterUri({String? chainId}) async {
-    if (_socialsNotReady) {
+    if (_farcasterNotReady) {
       throw Exception('Service is not ready');
     }
     if (_getFarcasterUri.isCompleted) {
@@ -337,7 +345,7 @@ class MagicService implements IMagicService {
   Completer<bool> _connectFarcaster = Completer<bool>();
   @override
   Future<bool> awaitFarcasterResponse() async {
-    if (_socialsNotReady) {
+    if (_farcasterNotReady) {
       throw Exception('Service is not ready');
     }
     //
@@ -369,7 +377,7 @@ class MagicService implements IMagicService {
       throw Exception('Service is not ready');
     }
     //
-    step.value = EmailLoginStep.loading;
+    loginStep.value = EmailLoginStep.loading;
     final message = UpdateEmail(email: value).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
   }
@@ -380,7 +388,7 @@ class MagicService implements IMagicService {
       throw Exception('Service is not ready');
     }
     //
-    step.value = EmailLoginStep.loading;
+    loginStep.value = EmailLoginStep.loading;
     final message = UpdateEmailPrimaryOtp(otp: otp).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
   }
@@ -391,7 +399,7 @@ class MagicService implements IMagicService {
       throw Exception('Service is not ready');
     }
     //
-    step.value = EmailLoginStep.loading;
+    loginStep.value = EmailLoginStep.loading;
     final message = UpdateEmailSecondaryOtp(otp: otp).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
   }
@@ -402,7 +410,7 @@ class MagicService implements IMagicService {
       throw Exception('Service is not ready');
     }
     //
-    step.value = EmailLoginStep.loading;
+    loginStep.value = EmailLoginStep.loading;
     final message = ConnectOtp(otp: otp).toString();
     await _webViewController.runJavaScript('sendMessage($message)');
   }
@@ -619,17 +627,17 @@ class MagicService implements IMagicService {
         await _getUser(_connectionChainId, false);
       }
     }
-    if (messageData.getSocialRedirectUriSuccess) {
-      final uri = messageData.getPayloadMapKey<String>('uri');
-      _getSocialRedirectUri.complete(uri);
-    }
+    // if (messageData.getSocialRedirectUriSuccess) {
+    //   final uri = messageData.getPayloadMapKey<String>('uri');
+    //   _getSocialRedirectUri.complete(uri);
+    // }
     // ****** CONNECT_SOCIAL_SUCCESS
-    if (messageData.connectSocialSuccess) {
-      final username = messageData.getPayloadMapKey<String?>('userName');
-      final email = messageData.getPayloadMapKey<String?>('email');
-      _socialUsername = username ?? email;
-      _connectSocial.complete(true);
-    }
+    // if (messageData.connectSocialSuccess) {
+    //   final username = messageData.getPayloadMapKey<String?>('userName');
+    //   final email = messageData.getPayloadMapKey<String?>('email');
+    //   _socialUsername = username ?? email;
+    //   _connectSocial.complete(true);
+    // }
     // ****** GET_FARCASTER_URI_SUCCESS
     if (messageData.getFarcasterUriSuccess) {
       final url = messageData.getPayloadMapKey<String>('url');
@@ -644,43 +652,43 @@ class MagicService implements IMagicService {
     }
     // ****** CONNECT_EMAIL
     if (messageData.connectEmailSuccess) {
-      if (step.value != EmailLoginStep.loading) {
+      if (loginStep.value != EmailLoginStep.loading) {
         final action = messageData.getPayloadMapKey<String>('action');
         final value = action.toString().toUpperCase();
         final newStep = EmailLoginStep.fromAction(value);
         if (newStep == EmailLoginStep.verifyOtp) {
-          if (step.value == EmailLoginStep.verifyDevice) {
+          if (loginStep.value == EmailLoginStep.verifyDevice) {
             _analyticsService.sendEvent(DeviceRegisteredForEmail());
           }
           _analyticsService.sendEvent(EmailVerificationCodeSent());
         }
-        step.value = newStep;
+        loginStep.value = newStep;
       }
     }
     // ****** CONNECT_OTP
     if (messageData.connectOtpSuccess) {
       _analyticsService.sendEvent(EmailVerificationCodePass());
-      step.value = EmailLoginStep.idle;
+      loginStep.value = EmailLoginStep.idle;
       await _getUser(_connectionChainId, false);
     }
     // ****** UPDAET_EMAIL
     if (messageData.updateEmailSuccess) {
       final action = messageData.getPayloadMapKey<String>('action');
       if (action == 'VERIFY_SECONDARY_OTP') {
-        step.value = EmailLoginStep.verifyOtp2;
+        loginStep.value = EmailLoginStep.verifyOtp2;
       } else {
-        step.value = EmailLoginStep.verifyOtp;
+        loginStep.value = EmailLoginStep.verifyOtp;
       }
       _analyticsService.sendEvent(EmailEdit());
     }
     // ****** UPDATE_EMAIL_PRIMARY_OTP
     if (messageData.updateEmailPrimarySuccess) {
-      step.value = EmailLoginStep.verifyOtp2;
+      loginStep.value = EmailLoginStep.verifyOtp2;
     }
     // ****** UPDATE_EMAIL_SECONDARY_OTP
     if (messageData.updateEmailSecondarySuccess) {
       _analyticsService.sendEvent(EmailEditComplete());
-      step.value = EmailLoginStep.idle;
+      loginStep.value = EmailLoginStep.idle;
       setEmail(newEmail.value);
       setNewEmail('');
       await _getUser(_connectionChainId, true);
@@ -722,12 +730,12 @@ class MagicService implements IMagicService {
     if (messageData.getUserSuccess) {
       isConnected.value = true;
       final magicData = MagicData.fromJson(messageData.payload!).copytWith(
-        userName: _socialUsername,
+        farcasterUserName: _socialUsername,
       );
       if (!_isConnectedCompleter.isCompleted) {
         final event = MagicSessionEvent(
           email: magicData.email,
-          userName: magicData.userName,
+          userName: magicData.farcasterUserName,
           address: magicData.address,
           chainId: magicData.chainId,
           provider: magicData.provider,
@@ -737,7 +745,7 @@ class MagicService implements IMagicService {
       } else if (_isUpdateUser) {
         final event = MagicSessionEvent(
           email: magicData.email,
-          userName: magicData.userName,
+          userName: magicData.farcasterUserName,
           address: magicData.address,
           chainId: magicData.chainId,
           provider: magicData.provider,
@@ -800,24 +808,24 @@ class MagicService implements IMagicService {
       final message = messageData.getPayloadMapKey<String?>('message');
       _error(ConnectOtpErrorEvent(message: message));
     }
-    if (messageData.getSocialRedirectUriError) {
-      String? message = messageData.getPayloadMapKey<String?>('message');
-      message = message?.replaceFirst(
-        'Error: Magic RPC Error: [-32600] ',
-        '',
-      );
-      _error(MagicErrorEvent(message));
-      _getSocialRedirectUri.complete(null);
-    }
-    if (messageData.connectSocialError) {
-      String? message = messageData.getPayloadMapKey<String?>('message');
-      message = message?.replaceFirst(
-        'Error: Magic RPC Error: [-32600] ',
-        '',
-      );
-      _error(MagicErrorEvent(message));
-      _connectSocial.complete(false);
-    }
+    // if (messageData.getSocialRedirectUriError) {
+    //   String? message = messageData.getPayloadMapKey<String?>('message');
+    //   message = message?.replaceFirst(
+    //     'Error: Magic RPC Error: [-32600] ',
+    //     '',
+    //   );
+    //   _error(MagicErrorEvent(message));
+    //   _getSocialRedirectUri.complete(null);
+    // }
+    // if (messageData.connectSocialError) {
+    //   String? message = messageData.getPayloadMapKey<String?>('message');
+    //   message = message?.replaceFirst(
+    //     'Error: Magic RPC Error: [-32600] ',
+    //     '',
+    //   );
+    //   _error(MagicErrorEvent(message));
+    //   _connectSocial.complete(false);
+    // }
     if (messageData.getFarcasterUriError) {
       String? message = messageData.getPayloadMapKey<String?>('message');
       message = message?.replaceFirst(
@@ -884,25 +892,25 @@ class MagicService implements IMagicService {
     if (errorEvent is IsConnectedErrorEvent) {
       isReady.value = false;
       isConnected.value = false;
-      step.value = EmailLoginStep.idle;
+      loginStep.value = EmailLoginStep.idle;
     }
     if (errorEvent is ConnectEmailErrorEvent) {
       isConnected.value = false;
-      step.value = EmailLoginStep.idle;
+      loginStep.value = EmailLoginStep.idle;
     }
     if (errorEvent is UpdateEmailErrorEvent) {
       isConnected.value = false;
-      step.value = EmailLoginStep.verifyOtp;
+      loginStep.value = EmailLoginStep.verifyOtp;
     }
     if (errorEvent is UpdateEmailPrimaryOtpErrorEvent) {
-      step.value = EmailLoginStep.verifyOtp;
+      loginStep.value = EmailLoginStep.verifyOtp;
     }
     if (errorEvent is UpdateEmailSecondaryOtpErrorEvent) {
-      step.value = EmailLoginStep.verifyOtp2;
+      loginStep.value = EmailLoginStep.verifyOtp2;
     }
     if (errorEvent is ConnectOtpErrorEvent) {
       isConnected.value = false;
-      step.value = EmailLoginStep.verifyOtp;
+      loginStep.value = EmailLoginStep.verifyOtp;
     }
     if (errorEvent is SignOutErrorEvent) {
       isConnected.value = true;
@@ -950,7 +958,7 @@ class MagicService implements IMagicService {
     if (error.isForMainFrame == true) {
       isReady.value = false;
       isConnected.value = false;
-      step.value = EmailLoginStep.idle;
+      loginStep.value = EmailLoginStep.idle;
       debugPrint('''
               [$runtimeType] Page resource error:
               code: ${error.errorCode}

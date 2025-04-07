@@ -54,13 +54,13 @@ class _EditEmailPageState extends State<EditEmailPage> {
     _magicService.setEmail(_currentEmailValue);
     _magicService.setNewEmail('');
     widgetStack.instance.pop();
-    _magicService.step.value = EmailLoginStep.idle;
+    _magicService.loginStep.value = EmailLoginStep.idle;
   }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<EmailLoginStep>(
-      valueListenable: _magicService.step,
+      valueListenable: _magicService.loginStep,
       builder: (context, action, _) {
         String title = 'Edit Email';
         if (action == EmailLoginStep.verifyOtp) {

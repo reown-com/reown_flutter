@@ -25,7 +25,6 @@ import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/toast_service.dart';
 import 'package:reown_appkit/modal/services/uri_service/i_url_utils.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
-import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
 import 'package:reown_appkit/modal/services/network_service/network_service.dart';
 import 'package:reown_appkit/modal/services/uri_service/launch_url_exception.dart';
@@ -45,6 +44,7 @@ import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_dat
 import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_events.dart';
 import 'package:reown_appkit/modal/services/explorer_service/explorer_service.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/redirect.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_data.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
@@ -403,10 +403,12 @@ class ReownAppKitModal
           // TODO check if this is needed for Farcaster
           // Every time the app gets killed Magic service will treat the user as disconnected
           // So we will need to treat magic session differently
-          final email = _currentSession!.email!;
+          final email = _currentSession!.sessionEmail!;
           _magicService.setEmail(email);
           final provider = _currentSession!.socialProvider;
-          _magicService.setProvider(provider);
+          if (provider != null) {
+            _magicService.setProvider(AppKitSocialOption.fromString(provider));
+          }
         } else {
           await _cleanSession();
         }
@@ -417,7 +419,6 @@ class ReownAppKitModal
     await _selectChainFromStoredId();
 
     onModalNetworkChange.subscribe(_onNetworkChainRequireSIWE);
-    // onModalConnect.subscribe(_loadAccountData);
 
     _relayConnected = _appKit.core.relayClient.isConnected;
     if (!_relayConnected) {
@@ -1209,7 +1210,6 @@ class ReownAppKitModal
         return;
       }
     }
-    // TODO only needed to support Farcaster
     if (_currentSession?.sessionService.isMagic == true) {
       try {
         await Future.delayed(Duration(milliseconds: 300));
@@ -1416,7 +1416,6 @@ class ReownAppKitModal
       '${jsonEncode(request.toJson())}',
     );
     try {
-      // TODO only needed to support Farcaster
       if (_currentSession!.sessionService.isMagic) {
         return await _magicService.request(
           chainId: chainId,
@@ -1826,9 +1825,6 @@ class ReownAppKitModal
     if (_siweService.config?.enabled != true) return;
     try {
       if (_siweService.signOutOnNetworkChange) {
-        // final caip2chain = ReownAppKitModalNetworks.getCaip2Chain(
-        //   _currentSelectedChainId!,
-        // );
         // TODO check if relevant for Farcaster
         await _magicService.getUser(chainId: _selectedChainID, isUpdate: true);
         await _siweService.signOut();
@@ -1845,10 +1841,6 @@ class ReownAppKitModal
       );
     }
   }
-
-  // void _loadAccountData(ModalConnect? event) {
-  //   loadAccountData();
-  // }
 
   void _checkInitialized() {
     if (_status != ReownAppKitModalStatus.initialized &&
@@ -1960,13 +1952,13 @@ extension _EmailConnectorExtension on ReownAppKitModal {
       );
       _selectedChainID = _getStoredChainId(args.data!.chainId)!;
       //
-      final email = args.data?.email ?? _currentSession?.toRawJson()['email'];
+      final email = args.data?.email ?? _currentSession?.sessionEmail;
       final userName =
-          args.data?.userName ?? _currentSession?.toRawJson()['userName'];
+          args.data?.farcasterUserName ?? _currentSession?.sessionUsername;
       final magicData = args.data?.copytWith(
         chainId: _selectedChainID,
         email: email,
-        userName: userName,
+        farcasterUserName: userName,
       );
 
       final session = ReownAppKitModalSession(magicData: magicData);
@@ -2004,11 +1996,15 @@ extension _EmailConnectorExtension on ReownAppKitModal {
         '[$runtimeType] _onMagicSessionUpdateEvent ${args.toJson()}',
       );
       try {
-        final currentUsername = _currentSession?.userName;
-        final currentEmail = _currentSession?.email;
+        final currentUsername = _currentSession?.sessionUsername;
+        final currentEmail = _currentSession?.sessionEmail;
         final newEmail = args.email ?? currentEmail ?? currentUsername;
         final newUsername = args.userName ?? currentUsername;
-        final newProvider = args.provider ?? _currentSession?.socialProvider;
+        final newProvider = args.provider ??
+            (_currentSession?.socialProvider != null
+                ? AppKitSocialOption.fromString(
+                    _currentSession!.socialProvider!)
+                : null);
         final newChainId = args.chainId?.toString() ?? _currentSession!.chainId;
         final ns = NamespaceUtils.getNamespaceFromChain(newChainId);
         final newAddress = args.address ?? _currentSession!.getAddress(ns)!;
@@ -2017,7 +2013,7 @@ extension _EmailConnectorExtension on ReownAppKitModal {
         final magicData = MagicData(
           email: newEmail,
           address: newAddress,
-          userName: newUsername,
+          farcasterUserName: newUsername,
           provider: newProvider,
           chainId: newChainId,
         );
@@ -2245,23 +2241,30 @@ extension _AppKitModalExtension on ReownAppKitModal {
 
     final session = ReownAppKitModalSession(sessionData: mSession);
     await _setSesionAndChainData(session);
-    if (_selectedWallet == null) {
-      _analyticsService.sendEvent(ConnectSuccessEvent(
-        name: 'WalletConnect',
-        explorerId: '',
-        method: AnalyticsPlatform.qrcode,
-      ));
-      await _storage.delete(StorageConstants.recentWalletId);
-      await _storage.delete(StorageConstants.connectedWalletData);
-    } else {
-      _explorerService.storeConnectedWallet(_selectedWallet);
-      final walletName = _selectedWallet!.listing.name;
-      final walletId = _selectedWallet!.listing.id;
-      _analyticsService.sendEvent(ConnectSuccessEvent(
-        name: walletName,
-        explorerId: walletId,
-        method: AnalyticsPlatform.mobile,
-      ));
+    try {
+      if (_selectedWallet == null) {
+        _analyticsService.sendEvent(ConnectSuccessEvent(
+          name: 'WalletConnect',
+          explorerId: '',
+          method: AnalyticsPlatform.qrcode,
+        ));
+        await _storage.delete(StorageConstants.recentWalletId);
+        await _storage.delete(StorageConstants.connectedWalletData);
+      } else {
+        _explorerService.storeConnectedWallet(_selectedWallet);
+        final walletName = _selectedWallet!.listing.name;
+        final walletId = _selectedWallet!.listing.id;
+        _analyticsService.sendEvent(ConnectSuccessEvent(
+          name: walletName,
+          explorerId: walletId,
+          method: AnalyticsPlatform.mobile,
+        ));
+      }
+      _appKit.core.logger.d(
+        '[$runtimeType] _settleSession ${jsonEncode(session.toJson())}',
+      );
+    } catch (e) {
+      _appKit.core.logger.d('[$runtimeType] _settleSession $e');
     }
     return session;
   }

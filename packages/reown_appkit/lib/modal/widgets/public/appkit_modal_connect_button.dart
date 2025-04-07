@@ -137,7 +137,7 @@ class _WebViewWidgetState extends State<_WebViewWidget> {
   @override
   Widget build(BuildContext context) {
     final emailEnabled = _magicService.isEmailEnabled.value;
-    final farcasterIncluded = _magicService.isFarcasterIncluded.value;
+    final farcasterIncluded = _magicService.isFarcasterEnabled.value;
     if ((emailEnabled || farcasterIncluded) && _show) {
       return SizedBox(
         width: 0.5,

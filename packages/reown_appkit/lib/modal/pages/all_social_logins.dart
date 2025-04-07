@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:get_it/get_it.dart';
-import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
 import 'package:reown_appkit/modal/widgets/buttons/social_login_button.dart';
+import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -23,17 +22,23 @@ class AllSocialLoginsPage extends StatefulWidget {
 class _AppKitModalMainWalletsPageState extends State<AllSocialLoginsPage> {
   @override
   Widget build(BuildContext context) {
-    final listItems = GetIt.I<IMagicService>()
-        .socials
-        .map((item) => SocialLoginButton(
-              logoPath: AssetUtils.getThemedAsset(
-                context,
-                '${item.name.toLowerCase()}_logo.svg',
-              ),
-              textAlign: TextAlign.left,
-              onTap: () => widget.onSelect(item),
-              title: item.name,
-            ))
+    final modalInstance = ModalProvider.of(context).instance;
+    final listItems = modalInstance.featuresConfig.socials
+        .map((item) => (item == AppKitSocialOption.Farcaster)
+            ? FarcasterLoginButton(
+                textAlign: TextAlign.left,
+                onTap: () => widget.onSelect(item),
+                title: item.name,
+              )
+            : SocialLoginButton(
+                logoPath: AssetUtils.getThemedAsset(
+                  context,
+                  '${item.name.toLowerCase()}_logo.svg',
+                ),
+                textAlign: TextAlign.left,
+                onTap: () => widget.onSelect(item),
+                title: item.name,
+              ))
         .toList();
     return ModalNavbar(
       title: 'All socials',

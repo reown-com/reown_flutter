@@ -209,18 +209,11 @@ class _EmailAndSocialLoginButton extends StatelessWidget {
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final provider = AppKitSocialOption.values.firstWhereOrNull(
       (e) {
-        final isMagicService = service.session!.sessionService.isMagic;
-        final providerMagic = service.session!.socialProvider?.name;
-        final providerSession = service.session!.sessionProvider;
-        if (isMagicService) {
-          return e.name.toLowerCase() == providerMagic?.toLowerCase();
-        }
-        return e.name.toLowerCase() == providerSession.toString().toLowerCase();
+        final socialProvider = service.session!.socialProvider ?? '';
+        return e.name.toLowerCase() == socialProvider.toString().toLowerCase();
       },
     );
-    final title = provider != null
-        ? (service.session!.userName ?? service.session!.sessionEmail)
-        : (service.session!.email ?? service.session!.sessionEmail);
+    final title = service.session!.sessionUsername;
     return Column(
       children: [
         const SizedBox.square(dimension: kPadding8),

@@ -154,9 +154,9 @@ class _MyHomePageState extends State<MyHomePage> {
         AppKitSocialOption.Google,
         AppKitSocialOption.Twitch,
         AppKitSocialOption.Telegram,
-        AppKitSocialOption.Farcaster,
+        // AppKitSocialOption.Farcaster,
       ],
-      showMainWallets: true, // OPTIONAL - true by default
+      showMainWallets: false, // OPTIONAL - true by default
     );
   }
 
@@ -496,7 +496,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKit!.onSessionPing.unsubscribe(_onSessionPing);
     _appKit!.onSessionEvent.unsubscribe(_onSessionEvent);
     _appKit!.onSessionUpdate.unsubscribe(_onSessionUpdate);
-    _appKit!.onSessionConnect.subscribe(_onSessionConnect);
+    _appKit!.onSessionConnect.unsubscribe(_onSessionConnect);
     _appKit!.onSessionAuthResponse.subscribe(_onSessionAuthResponse);
     //
     _appKitModal!.onModalConnect.unsubscribe(_onModalConnect);

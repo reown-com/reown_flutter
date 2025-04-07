@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
+import 'package:reown_appkit/modal/utils/asset_util.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/base_list_item.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -65,8 +68,91 @@ class SocialLoginButton extends StatelessWidget {
   }
 }
 
-class ShimmerSocialLoginButton extends StatelessWidget {
-  const ShimmerSocialLoginButton({super.key, this.title});
+class FarcasterLoginButton extends StatelessWidget {
+  const FarcasterLoginButton({
+    super.key,
+    required this.onTap,
+    this.title,
+    this.textAlign = TextAlign.center,
+  });
+  IMagicService get _magicService => GetIt.I<IMagicService>();
+
+  final VoidCallback onTap;
+  final String? title;
+  final TextAlign textAlign;
+
+  @override
+  Widget build(BuildContext context) {
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final semantics = title ?? 'SocialLoginButton';
+    return ValueListenableBuilder<bool>(
+      valueListenable: _magicService.isReady,
+      builder: (context, isReady, _) {
+        return ValueListenableBuilder<bool>(
+          valueListenable: _magicService.isTimeout,
+          builder: (context, isTimeout, _) {
+            if (!isReady) {
+              return _ShimmerSocialLoginButton(
+                title: ' $title',
+              );
+            }
+            if (isTimeout) {
+              return _ShimmerSocialLoginButton(
+                title: ' $title',
+              );
+            }
+            return BaseListItem(
+              semanticsLabel: semantics,
+              onTap: onTap,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LayoutBuilder(builder: (_, constraints) {
+                    return ClipRRect(
+                      borderRadius: radiuses.isSquare()
+                          ? BorderRadius.zero
+                          : BorderRadius.circular(constraints.maxHeight),
+                      child: SvgPicture.asset(
+                        AssetUtils.getThemedAsset(
+                          context,
+                          'farcaster_logo.svg',
+                        ),
+                        package: 'reown_appkit',
+                        height: constraints.maxHeight,
+                        width: constraints.maxHeight,
+                      ),
+                    );
+                  }),
+                  if (title != null)
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 12.0,
+                          right: kListItemHeight - 12.0,
+                        ),
+                        child: Text(
+                          title!,
+                          textAlign: textAlign,
+                          style: themeData.textStyles.paragraph500.copyWith(
+                            color: themeColors.foreground100,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _ShimmerSocialLoginButton extends StatelessWidget {
+  const _ShimmerSocialLoginButton({this.title});
   final String? title;
 
   @override
@@ -89,14 +175,17 @@ class ShimmerSocialLoginButton extends StatelessWidget {
                 child: Container(
                   width: constraints.maxHeight,
                   height: constraints.maxHeight,
-                  color: Colors.black.withOpacity(0.2),
+                  color: Colors.black.withOpacity(0.6),
                 ),
               );
             }),
             if (title != null)
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.only(right: kListItemHeight - 12.0),
+                  padding: const EdgeInsets.only(
+                    right: kListItemHeight - 12.0,
+                    left: 8.0,
+                  ),
                   child: Text(
                     title!,
                     style: themeData.textStyles.paragraph500.copyWith(

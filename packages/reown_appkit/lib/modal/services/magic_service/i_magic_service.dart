@@ -6,17 +6,17 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 abstract class IMagicService {
   Map<String, List<String>> get supportedMethods;
-  List<AppKitSocialOption> get socials;
+  // List<AppKitSocialOption> get socials;
 
   WebViewWidget get webview;
   ValueNotifier<bool> get isReady;
   ValueNotifier<bool> get isConnected;
   ValueNotifier<bool> get isTimeout;
   ValueNotifier<bool> get isEmailEnabled;
-  ValueNotifier<bool> get isFarcasterIncluded;
+  ValueNotifier<bool> get isFarcasterEnabled;
   ValueNotifier<String> get email;
   ValueNotifier<String> get newEmail;
-  ValueNotifier<EmailLoginStep> get step;
+  ValueNotifier<EmailLoginStep> get loginStep;
 
   Future<void> init({String? chainId});
 
@@ -24,20 +24,23 @@ abstract class IMagicService {
   void setNewEmail(String value);
   void setProvider(AppKitSocialOption? provider);
 
-  Future<String?> getSocialRedirectUri({
-    required AppKitSocialOption provider,
-    String? schema,
-    String? chainId,
-  });
-  Future<dynamic> connectSocial({required String uri});
-  void completeSocialLogin({required String url});
-  Future<String?> getFarcasterUri({String? chainId});
-  Future<bool> awaitFarcasterResponse();
+  // Future<String?> getSocialRedirectUri({
+  //   required AppKitSocialOption provider,
+  //   String? schema,
+  //   String? chainId,
+  // });
+  // Future<dynamic> connectSocial({required String uri});
+  // void completeSocialLogin({required String url});
+
   Future<void> connectEmail({required String value, String? chainId});
   Future<void> updateEmail({required String value});
   Future<void> updateEmailPrimaryOtp({required String otp});
   Future<void> updateEmailSecondaryOtp({required String otp});
   Future<void> connectOtp({required String otp});
+
+  Future<String?> getFarcasterUri({String? chainId});
+  Future<bool> awaitFarcasterResponse();
+
   Future<void> syncTheme(ReownAppKitModalTheme? theme);
   Future<String?> getChainId();
   Future<bool> getUser({required String? chainId, required bool isUpdate});
@@ -54,5 +57,5 @@ abstract class IMagicService {
   abstract final Event<MagicSessionEvent> onMagicUpdate;
   abstract final Event<MagicErrorEvent> onMagicError;
   abstract final Event<MagicRequestEvent> onMagicRpcRequest;
-  abstract final Event<CompleteSocialLoginEvent> onCompleteSocialLogin;
+  // abstract final Event<CompleteSocialLoginEvent> onCompleteSocialLogin;
 }

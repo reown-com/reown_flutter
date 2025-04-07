@@ -33,7 +33,7 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
   @override
   void dispose() {
     _magicService.onMagicError.unsubscribe(_onMagicErrorEvent);
-    _magicService.step.value = EmailLoginStep.idle;
+    _magicService.loginStep.value = EmailLoginStep.idle;
     super.dispose();
   }
 
@@ -46,7 +46,7 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
   }
 
   void _goBack() {
-    _magicService.step.value = EmailLoginStep.idle;
+    _magicService.loginStep.value = EmailLoginStep.idle;
     _magicService.setEmail('');
     FocusManager.instance.primaryFocus?.unfocus();
     widgetStack.instance.pop();
@@ -55,7 +55,7 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<EmailLoginStep>(
-      valueListenable: _magicService.step,
+      valueListenable: _magicService.loginStep,
       builder: (context, action, _) {
         final title = (action == EmailLoginStep.verifyDevice)
             ? 'Register device'
