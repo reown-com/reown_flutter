@@ -11,7 +11,7 @@ environment:
 dependencies:
   appcheck: ^1.5.2
   cached_network_image: ^3.4.1
-  # coinbase_wallet_sdk: ^1.0.10
+  coinbase_wallet_sdk: ^1.0.10
   collection: ^1.18.0
   convert: ^3.1.2
   crypto: ^3.0.6
@@ -37,7 +37,6 @@ dependencies:
     path: ../reown_sign/
   shimmer: ^3.0.0
   synchronized: ^3.3.0+3
-  # uuid: ^4.5.1
   web_socket_channel: ^3.0.1
   webview_flutter: 4.10.0
   webview_flutter_android: 4.2.0
