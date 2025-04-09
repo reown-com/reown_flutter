@@ -52,6 +52,10 @@ jobs:
 
         flutter build ios --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --config-only --release
     
+    # - name: Remove hidden files from archive
+    #   working-directory: packages/reown_appkit/example/base
+    #   run: find ios/build/Runner.xcarchive -name "._*" -exec rm -f {} \;
+    
     # Fastlane
     - name: Fastlane
       working-directory: packages/reown_appkit/example/base/ios

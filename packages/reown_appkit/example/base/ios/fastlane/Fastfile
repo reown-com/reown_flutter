@@ -101,8 +101,13 @@ platform :ios do
       scheme: _flavor,
       export_method: "app-store",
       clean: true,
-      xcargs: "PROJECT_ID='#{options[:project_id]}'"
+      xcargs: "PROJECT_ID='#{options[:project_id]}'",
+      output_directory: "build/ios", # Explicitly set output directory
+      archive_path: "build/ios/Runner.xcarchive" # Explicitly set archive path
     )
+
+    # Add step to remove macOS hidden files from the archive
+    sh("find ../build/ios/Runner.xcarchive -name '._*' -exec rm -f {} \\;")
 
     _app_version = "3.0.0" #"options[:app_version]"
     

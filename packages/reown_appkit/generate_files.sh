@@ -20,9 +20,9 @@ dart run build_runner build --delete-conflicting-outputs
 
 cd ios
 
-rm Podfile.lock
-pod deintegrate
-pod cache clean --all
+# rm Podfile.lock
+# pod deintegrate
+# pod cache clean --all
 pod install
 
 cd ..
@@ -43,9 +43,9 @@ dart run build_runner build --delete-conflicting-outputs
 
 cd ios
 
-rm Podfile.lock
-pod deintegrate
-pod cache clean --all
+# rm Podfile.lock
+# pod deintegrate
+# pod cache clean --all
 pod install
 
 cd ..

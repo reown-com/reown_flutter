@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer' as dev;
 
 import 'package:convert/convert.dart';
 import 'package:eth_sig_util/util/utils.dart';
@@ -19,17 +20,19 @@ import 'package:bitcoin_base/bitcoin_base.dart' as bitcoin;
 
 class KeyService extends IKeyService {
   List<ChainKey> _keys = [];
+  late final SharedPreferences _prefs;
 
   @override
   List<ChainKey> get keys => _keys;
 
+  KeyService({required SharedPreferences prefs}) : _prefs = prefs;
+
   @override
   Future<void> clearAll() async {
-    final prefs = await SharedPreferences.getInstance();
-    final keys = prefs.getKeys();
+    final keys = _prefs.getKeys();
     for (var key in keys) {
       if (key.startsWith('rwkt_')) {
-        await prefs.remove(key);
+        await _prefs.remove(key);
       }
     }
   }
@@ -37,17 +40,14 @@ class KeyService extends IKeyService {
   @override
   Future<List<ChainKey>> loadKeys() async {
     // ⚠️ WARNING: SharedPreferences is not the best way to store your keys! This is just for example purposes!
-    final prefs = await SharedPreferences.getInstance();
     try {
-      final savedKeys = prefs.getStringList('rwkt_chain_keys')!;
+      final savedKeys = _prefs.getStringList('rwkt_chain_keys')!;
       final chainKeys = savedKeys.map((e) => ChainKey.fromJson(jsonDecode(e)));
       _keys = List<ChainKey>.from(chainKeys.toList());
       //
-      final extraKeys = await _extraChainKeys();
-      _keys.addAll(extraKeys);
     } catch (_) {}
 
-    debugPrint('[$runtimeType] _keys $_keys');
+    dev.log('[$runtimeType] _keys ${_keys.map((k) => k.toString()).toList()}');
     return _keys;
   }
 
@@ -82,8 +82,7 @@ class KeyService extends IKeyService {
 
   @override
   Future<String> getMnemonic() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('rwkt_mnemonic') ?? '';
+    return _prefs.getString('rwkt_mnemonic') ?? '';
   }
 
   // ** bip39/bip32 - EIP155 **
@@ -111,14 +110,13 @@ class KeyService extends IKeyService {
 
   @override
   Future<void> createAddressFromSeed() async {
-    final prefs = await SharedPreferences.getInstance();
-    final mnemonic = prefs.getString('rwkt_mnemonic')!;
+    final mnemonic = _prefs.getString('rwkt_mnemonic')!;
 
     final chainKeys = getKeysForChain('eip155');
     final index = chainKeys.length;
 
     final keyPair = _keyPairFromMnemonic(mnemonic, index: index);
-    final chainKey = _eip155ChainKey(keyPair);
+    final chainKey = _chainKeyFromPrivate(keyPair);
 
     _keys.add(chainKey);
 
@@ -127,9 +125,8 @@ class KeyService extends IKeyService {
 
   Future<void> _restoreWalletFromPrivateKey(privateKey) async {
     // ⚠️ WARNING: SharedPreferences is not the best way to store your keys! This is just for example purposes!
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('rwkt_chain_keys');
-    await prefs.remove('rwkt_mnemonic');
+    await _prefs.remove('rwkt_chain_keys');
+    await _prefs.remove('rwkt_mnemonic');
 
     final ecDomain = ECCurve_secp256k1();
     final bigIntPrivateKey = BigInt.parse(privateKey, radix: 16);
@@ -138,7 +135,7 @@ class KeyService extends IKeyService {
     final public = ecPoint!.getEncoded(false);
 
     final publicKey = hex.encode(public);
-    final chainKey = _eip155ChainKey(CryptoKeyPair(privateKey, publicKey));
+    final chainKey = _chainKeyFromPrivate(CryptoKeyPair(privateKey, publicKey));
 
     _keys = List<ChainKey>.from([chainKey]);
 
@@ -147,26 +144,33 @@ class KeyService extends IKeyService {
 
   Future<void> _restoreFromMnemonic(String mnemonic) async {
     // ⚠️ WARNING: SharedPreferences is not the best way to store your keys! This is just for example purposes!
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('rwkt_chain_keys');
-    await prefs.setString('rwkt_mnemonic', mnemonic);
+    await _prefs.remove('rwkt_chain_keys');
+    await _prefs.setString('rwkt_mnemonic', mnemonic);
 
-    final keyPair = _keyPairFromMnemonic(mnemonic);
-    final chainKey = _eip155ChainKey(keyPair);
+    final eip155ChainKey = await _evmChainKey(mnemonic);
+    final solanaChainKey = await _solanaChainKey(mnemonic);
+    final polkadotChainKey = await _polkadotChainKey(mnemonic);
+    final kadenaChainKey = await _kadenaChainKey(mnemonic);
+    // final bitcoinChainKeys = await _bitcoinChainKey(mnemonic);
 
-    _keys = List<ChainKey>.from([chainKey]);
+    _keys = List<ChainKey>.from([
+      eip155ChainKey,
+      solanaChainKey,
+      polkadotChainKey,
+      kadenaChainKey,
+    ]);
 
     await _saveKeys();
   }
 
   Future<void> _saveKeys() async {
-    final prefs = await SharedPreferences.getInstance();
-    // Store only eip155 keys
-    final chainKeys = _keys
-        .where((k) => k.namespace == 'eip155')
-        .map((e) => jsonEncode(e.toJson()))
-        .toList();
-    await prefs.setStringList('rwkt_chain_keys', chainKeys);
+    final chainKeys = _keys.map((e) => jsonEncode(e.toJson())).toList();
+    await _prefs.setStringList('rwkt_chain_keys', chainKeys);
+  }
+
+  Future<ChainKey> _evmChainKey(String mnemonic) async {
+    final keyPair = _keyPairFromMnemonic(mnemonic);
+    return _chainKeyFromPrivate(keyPair);
   }
 
   CryptoKeyPair _keyPairFromMnemonic(String mnemonic, {int index = 0}) {
@@ -184,7 +188,7 @@ class KeyService extends IKeyService {
     return CryptoKeyPair(private, public);
   }
 
-  ChainKey _eip155ChainKey(CryptoKeyPair keyPair) {
+  ChainKey _chainKeyFromPrivate(CryptoKeyPair keyPair) {
     final private = EthPrivateKey.fromHex(keyPair.privateKey);
     final address = private.address.hex;
     final evmChainKey = ChainKey(
@@ -192,29 +196,9 @@ class KeyService extends IKeyService {
       privateKey: keyPair.privateKey,
       publicKey: keyPair.publicKey,
       address: address,
+      namespace: 'eip155',
     );
-    debugPrint('[SampleWallet] evmChainKey ${evmChainKey.toString()}');
     return evmChainKey;
-  }
-
-  // ** extra derivations **
-
-  Future<List<ChainKey>> _extraChainKeys() async {
-    final mnemonic = await getMnemonic();
-    if (mnemonic.isNotEmpty) {
-      // final bitcoinChainKeys = await _bitcoinChainKey(mnemonic);
-      final solanaChainKeys = await _solanaChainKey(mnemonic);
-      final polkadotChainKey = await _polkadotChainKey(mnemonic);
-      final kadenaChainKey = await _kadenaChainKey(mnemonic);
-      //
-      return [
-        // bitcoinChainKeys,
-        solanaChainKeys,
-        polkadotChainKey,
-        kadenaChainKey,
-      ];
-    }
-    return [];
   }
 
   Future<ChainKey> _solanaChainKey(String mnemonic) async {
@@ -232,6 +216,7 @@ class KeyService extends IKeyService {
       privateKey: base58.encode(Uint8List.fromList(privateBytes + publicBytes)),
       publicKey: solanaKeyPair.publicKey.toString(),
       address: solanaKeyPair.address,
+      namespace: 'solana',
     );
   }
 
@@ -253,6 +238,7 @@ class KeyService extends IKeyService {
       privateKey: base58.encode(privateKey),
       publicKey: base58.encode(publicKey),
       address: ss58Address,
+      namespace: 'polkadot',
     );
   }
 
@@ -276,6 +262,7 @@ class KeyService extends IKeyService {
       privateKey: privateKeyHex,
       publicKey: publicKeyHex,
       address: publicKeyHex,
+      namespace: 'kadena',
     );
   }
 
@@ -298,6 +285,7 @@ class KeyService extends IKeyService {
       privateKey: privateKey.toWif(),
       publicKey: base58.encode(Uint8List.fromList(publicKey.toBytes())),
       address: address,
+      namespace: 'bip122',
     );
   }
 

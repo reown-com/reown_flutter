@@ -103,7 +103,8 @@ platform :ios do
       xcargs: "PROJECT_ID='#{options[:project_id]}'"
     )
 
-    _app_version = "3.0.0" #"options[:app_version]"
+    # Remove invalid resource fork files before uploading
+    sh "find ./build -name '._*' -delete"
     
     _app_version = "3.0.0" #"options[:app_version]"
     

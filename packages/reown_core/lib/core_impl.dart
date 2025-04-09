@@ -10,6 +10,7 @@ import 'package:reown_core/echo/echo.dart';
 import 'package:reown_core/echo/echo_client.dart';
 import 'package:reown_core/echo/i_echo.dart';
 import 'package:reown_core/events/events.dart';
+import 'package:reown_core/events/events_tracker.dart';
 import 'package:reown_core/events/i_events.dart';
 import 'package:reown_core/heartbit/heartbeat.dart';
 import 'package:reown_core/heartbit/i_heartbeat.dart';
@@ -202,6 +203,12 @@ class ReownCore implements IReownCore {
     events = Events(
       core: this,
       httpClient: httpClient,
+      eventsTracker: EventsTracker(
+        storage: storage,
+        context: StoreVersions.CONTEXT_EVENTS_TRACKER,
+        version: StoreVersions.VERSION_EVENTS_TRACKER,
+        fromJson: (dynamic value) => value as List<String>,
+      ),
     );
     verify = Verify(
       core: this,

@@ -132,7 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   PairingMetadata _pairingMetadata(bool linkModeEnabled) {
     return PairingMetadata(
-      name: 'Reown\'s AppKit',
+      name: 'Reown\'s AppKit ${_flavor.replaceFirst('-', '')}',
       description: 'Reown\'s sample dApp with Flutter SDK',
       url: _universalLink(),
       icons: [
@@ -174,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _initializeService() async {
     final prefs = await SharedPreferences.getInstance();
-    final linkModeEnabled = prefs.getBool('appkit_sample_linkmode') ?? false;
+    final linkModeEnabled = prefs.getBool('appkit_sample_linkmode') ?? true;
     final socialsEnabled = prefs.getBool('appkit_sample_socials') ?? true;
 
     _appKit = ReownAppKit(
@@ -253,7 +253,7 @@ class _MyHomePageState extends State<MyHomePage> {
           appKitModal: _appKitModal!,
           linkMode: linkModeEnabled,
           socials: socialsEnabled,
-          reinitialize: (bool value, String storageKey) async {
+          reinitialize: (String storageKey, bool value) async {
             final result = await showDialog<bool>(
               context: context,
               builder: (BuildContext context) {
@@ -273,8 +273,10 @@ class _MyHomePageState extends State<MyHomePage> {
               },
             );
             if (result == true) {
-              // appkit_sample_socials
               await prefs.setBool(storageKey, value);
+              if (storageKey == 'appkit_sample_linkmode' && !value) {
+                await _appKitModal!.appKit!.core.storage.deleteAll();
+              }
               if (!kDebugMode) {
                 exit(0);
               }

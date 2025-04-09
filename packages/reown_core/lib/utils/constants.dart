@@ -35,6 +35,8 @@ class StoreVersions {
   static const VERSION_EXPIRER = '0.3';
   static const CONTEXT_MESSAGE_TRACKER = 'messageTracker';
   static const VERSION_MESSAGE_TRACKER = '1.0';
+  static const CONTEXT_EVENTS_TRACKER = 'eventsTracker';
+  static const VERSION_EVENTS_TRACKER = '1.0';
   static const CONTEXT_TOPIC_MAP = 'topicMap';
   static const VERSION_TOPIC_MAP = '1.0';
   static const CONTEXT_TOPIC_TO_RECEIVER_PUBLIC_KEY =

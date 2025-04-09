@@ -39,8 +39,6 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
     _pairings = _pairings.where((p) => p.active).toList();
     //
     _registerListeners();
-    // TODO _walletKit.core.echo.register(firebaseAccessToken);
-    DeepLinkHandler.checkInitialLink();
   }
 
   void _registerListeners() {
@@ -129,26 +127,6 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
             ],
           ),
         ),
-        ValueListenableBuilder(
-          valueListenable: DeepLinkHandler.waiting,
-          builder: (context, value, _) {
-            return Visibility(
-              visible: value,
-              child: Center(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.black38,
-                    borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                  ),
-                  padding: const EdgeInsets.all(12.0),
-                  child: const CircularProgressIndicator(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
       ],
     );
   }
@@ -226,9 +204,9 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
     }
   }
 
-  void _showErrorDialog(String message) {
+  void _showErrorDialog(String message) async {
     DeepLinkHandler.waiting.value = false;
-    showDialog(
+    await showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(

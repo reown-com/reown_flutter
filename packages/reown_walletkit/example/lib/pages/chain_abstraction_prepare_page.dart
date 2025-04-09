@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -116,10 +117,12 @@ class _ChainAbstractionPreparePageState
                             text: TextSpan(
                               children: [
                                 WidgetSpan(
-                                  child: Image.network(
+                                  child: CachedNetworkImage(
                                     width: 20.0,
                                     height: 20.0,
-                                    e.logo,
+                                    imageUrl: e.logo,
+                                    errorWidget: (context, url, error) =>
+                                        const SizedBox.shrink(),
                                   ),
                                 ),
                                 WidgetSpan(

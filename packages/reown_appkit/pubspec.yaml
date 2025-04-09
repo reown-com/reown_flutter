@@ -37,7 +37,7 @@ dependencies:
     path: ../reown_sign/
   shimmer: ^3.0.0
   synchronized: ^3.3.0+3
-  uuid: ^4.5.1
+  # uuid: ^4.5.1
   web_socket_channel: ^3.0.1
   webview_flutter: 4.10.0
   webview_flutter_android: 4.2.0

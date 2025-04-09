@@ -16,7 +16,7 @@ abstract class _AnalyticsEvent implements BasicCoreEvent {
   CoreEventProperties? get properties => null;
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toJson() => {
         'type': type,
         'event': event,
         if (properties != null) 'properties': properties?.toJson(),

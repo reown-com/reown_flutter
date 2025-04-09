@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
@@ -222,7 +223,9 @@ class AppDetailPageState extends State<AppDetailPage> {
                           );
                         }
                         return CircleAvatar(
-                          backgroundImage: NetworkImage(imageUrl),
+                          backgroundImage: CachedNetworkImageProvider(
+                            imageUrl,
+                          ),
                           radius: 40.0,
                         );
                       }

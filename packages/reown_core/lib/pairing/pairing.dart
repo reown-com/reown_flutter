@@ -451,7 +451,7 @@ class Pairing implements IPairing {
         await ReownCoreUtils.openURL(redirectURL);
       }
       // Send Event through Events SDK
-      core.events.sendEvent(LinkModeRequestEvent(
+      core.events.recordEvent(LinkModeRequestEvent(
         direction: 'sent',
         correlationId: requestId,
         method: method,
@@ -534,7 +534,7 @@ class Pairing implements IPairing {
       );
       await ReownCoreUtils.openURL(redirectURL);
       // Send Event through Events SDK
-      core.events.sendEvent(LinkModeResponseEvent(
+      core.events.recordEvent(LinkModeResponseEvent(
         direction: 'sent',
         correlationId: resultId,
         method: method,
@@ -597,7 +597,7 @@ class Pairing implements IPairing {
       );
       await ReownCoreUtils.openURL(redirectURL);
       // Send Event through Events SDK
-      core.events.sendEvent(LinkModeResponseEvent(
+      core.events.recordEvent(LinkModeResponseEvent(
         direction: 'sent',
         correlationId: resultId,
         method: method,
@@ -795,7 +795,7 @@ class Pairing implements IPairing {
 
       if (isLinkMode) {
         // Send Event through Events SDK
-        core.events.sendEvent(LinkModeRequestEvent(
+        core.events.recordEvent(LinkModeRequestEvent(
           direction: 'received',
           correlationId: request.id,
           method: request.method,
@@ -817,7 +817,7 @@ class Pairing implements IPairing {
 
         if (isLinkMode) {
           // Send Event through Events SDK
-          core.events.sendEvent(LinkModeResponseEvent(
+          core.events.recordEvent(LinkModeResponseEvent(
             direction: 'received',
             correlationId: response.id,
             method: pendingRequest.method,

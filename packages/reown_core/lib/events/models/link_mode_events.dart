@@ -2,11 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:reown_core/events/models/basic_event.dart';
 import 'package:reown_core/utils/method_constants.dart';
 
-abstract class _LinkModeEvent implements BasicCoreEvent {
+abstract class LinkModeEvent implements BasicCoreEvent {
   final int _correlationId;
   final String _direction;
 
-  _LinkModeEvent({
+  LinkModeEvent({
     required String direction,
     required int correlationId,
   })  : _direction = direction,
@@ -22,7 +22,7 @@ abstract class _LinkModeEvent implements BasicCoreEvent {
       );
 
   @override
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toJson() => {
         'type': type,
         'event': event,
         if (properties != null) 'properties': properties?.toJson(),
@@ -34,7 +34,7 @@ abstract class _LinkModeEvent implements BasicCoreEvent {
 /// Covers tags 1122 and 1125
 ///
 @protected
-class LinkModeRequestEvent extends _LinkModeEvent {
+class LinkModeRequestEvent extends LinkModeEvent {
   final String method;
   LinkModeRequestEvent({
     required this.method,
@@ -54,7 +54,7 @@ class LinkModeRequestEvent extends _LinkModeEvent {
 /// Covers tags 1123,1124 and 1126
 ///
 @protected
-class LinkModeResponseEvent extends _LinkModeEvent {
+class LinkModeResponseEvent extends LinkModeEvent {
   final String method;
   final bool isRejected;
   LinkModeResponseEvent({

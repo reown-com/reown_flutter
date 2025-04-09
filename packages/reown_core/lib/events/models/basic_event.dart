@@ -3,12 +3,22 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'basic_event.g.dart';
 part 'basic_event.freezed.dart';
 
-abstract class BasicCoreEvent {
-  abstract final String type;
-  abstract final String event;
-  abstract final CoreEventProperties? properties;
+class BasicCoreEvent {
+  final String type;
+  final String event;
+  final CoreEventProperties? properties;
 
-  Map<String, dynamic> toMap();
+  BasicCoreEvent({
+    required this.type,
+    required this.event,
+    required this.properties,
+  });
+
+  Map<String, dynamic> toJson() => {
+        'type': type,
+        'event': event,
+        if (properties != null) 'properties': properties?.toJson(),
+      };
 }
 
 @freezed

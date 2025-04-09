@@ -47,6 +47,12 @@ class DeepLinkHandler {
     try {
       return await _walletKit.dispatchEnvelope('$link');
     } catch (e) {
+      _relayConnetionUri(link);
+    }
+  }
+
+  static void _relayConnetionUri(dynamic link) async {
+    try {
       final decodedUri = Uri.parse(Uri.decodeFull('$link'));
       if (decodedUri.isScheme('wc')) {
         debugPrint('[SampleWallet] is legacy uri $decodedUri');
@@ -64,6 +70,10 @@ class DeepLinkHandler {
           await _walletKit.pair(uri: Uri.parse(pairingUri));
         }
       }
+    } catch (e) {
+      //
+      debugPrint('[SampleWallet] $link error: $e');
+      waiting.value = false;
     }
   }
 
