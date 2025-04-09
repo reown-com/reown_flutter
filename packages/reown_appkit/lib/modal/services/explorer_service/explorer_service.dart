@@ -429,7 +429,7 @@ class ExplorerService implements IExplorerService {
     final exclude = excludedIds.isNotEmpty ? excludedIds.join(',') : null;
 
     _currentSearchValue = query;
-    final newListins = await _fetchListings(
+    List<ReownAppKitModalWalletInfo> newListings = await _fetchListings(
       params: RequestParams(
         page: 1,
         entries: 100,
@@ -440,7 +440,14 @@ class ExplorerService implements IExplorerService {
       updateCount: false,
     );
 
-    listings.value = newListins;
+    if (_currentSearchValue != null) {
+      final samples = (await _loadWCSampleWallets()).where(
+        (e) => e.listing.name.toLowerCase().contains(query!.toLowerCase()),
+      );
+      newListings = [...samples, ...newListings];
+    }
+
+    listings.value = newListings;
     _debouncer.run(() => isSearching.value = false);
   }
 
