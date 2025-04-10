@@ -420,10 +420,14 @@ class Pairing implements IPairing {
     );
     final requestId = payload['id'] as int;
 
+    final isLinkMode = (appLink ?? '').isNotEmpty;
+
     final message = await core.crypto.encode(
       topic,
       payload,
-      options: encodeOptions,
+      options: isLinkMode
+          ? EncodeOptions(type: EncodeOptions.TYPE_2)
+          : encodeOptions,
     );
 
     if (message == null) {
@@ -440,7 +444,7 @@ class Pairing implements IPairing {
     });
     pendingRequests[requestId] = resp;
 
-    if ((appLink ?? '').isNotEmpty) {
+    if (isLinkMode) {
       // during wc_sessionAuthenticate we don't need to openURL as it will be done by the host dapp
       if (openUrl) {
         final redirectURL = ReownCoreUtils.getLinkModeURL(
@@ -516,17 +520,21 @@ class Pairing implements IPairing {
     );
     final resultId = payload['id'] as int;
 
+    final isLinkMode = (appLink ?? '').isNotEmpty;
+
     final String? message = await core.crypto.encode(
       topic,
       payload,
-      options: encodeOptions,
+      options: isLinkMode
+          ? EncodeOptions(type: EncodeOptions.TYPE_2)
+          : encodeOptions,
     );
 
     if (message == null) {
       return;
     }
 
-    if ((appLink ?? '').isNotEmpty) {
+    if (isLinkMode) {
       final redirectURL = ReownCoreUtils.getLinkModeURL(
         appLink!,
         topic,
@@ -579,17 +587,21 @@ class Pairing implements IPairing {
     );
     final resultId = payload['id'] as int;
 
+    final isLinkMode = (appLink ?? '').isNotEmpty;
+
     final String? message = await core.crypto.encode(
       topic,
       payload,
-      options: encodeOptions,
+      options: isLinkMode
+          ? EncodeOptions(type: EncodeOptions.TYPE_2)
+          : encodeOptions,
     );
 
     if (message == null) {
       return;
     }
 
-    if ((appLink ?? '').isNotEmpty) {
+    if (isLinkMode) {
       final redirectURL = ReownCoreUtils.getLinkModeURL(
         appLink!,
         topic,

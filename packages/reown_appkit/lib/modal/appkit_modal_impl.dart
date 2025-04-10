@@ -913,17 +913,25 @@ class ReownAppKitModal
             ));
           }
         }
-      } else if (_isUserRejectedError(e)) {
-        onModalError.broadcast(UserRejectedConnection());
-        _analyticsService.sendEvent(ConnectErrorEvent(
-          message: 'User declined connection',
-        ));
       } else {
-        _appKit.core.logger.e(
-          '[$runtimeType] connectSelectedWallet error: $e',
-          stackTrace: s,
-        );
-        onModalError.broadcast(ErrorOpeningWallet());
+        if (_isUserRejectedError(e)) {
+          onModalError.broadcast(UserRejectedConnection());
+          _analyticsService.sendEvent(ConnectErrorEvent(
+            message: 'User declined connection',
+          ));
+        } else if (e is ReownCoreError) {
+          onModalError.broadcast(ErrorOpeningWallet(description: e.message));
+          _appKit.core.logger.e(
+            '[$runtimeType] connectSelectedWallet error: $e',
+            stackTrace: s,
+          );
+        } else {
+          onModalError.broadcast(ErrorOpeningWallet());
+          _appKit.core.logger.e(
+            '[$runtimeType] connectSelectedWallet error: $e',
+            stackTrace: s,
+          );
+        }
       }
     }
   }
@@ -981,6 +989,7 @@ class ReownAppKitModal
         }
       } catch (e) {
         _appKit.core.logger.e('[$runtimeType] buildConnectionUri error: $e');
+        rethrow;
       }
     }
   }
@@ -1187,6 +1196,7 @@ class ReownAppKitModal
       }
       return;
     } catch (e) {
+      await _cleanSession();
       _analyticsService.sendEvent(DisconnectErrorEvent());
       _status = ReownAppKitModalStatus.initialized;
       _notify();
@@ -1821,6 +1831,8 @@ class ReownAppKitModal
     _appKit.core.relayClient.onRelayClientDisconnect.subscribe(
       _onRelayClientDisconnect,
     );
+
+    _appKit.core.connectivity.isOnline.addListener(_connectivityListener);
   }
 
   void _unregisterListeners() {
@@ -1858,6 +1870,8 @@ class ReownAppKitModal
     _appKit.core.relayClient.onRelayClientDisconnect.unsubscribe(
       _onRelayClientDisconnect,
     );
+
+    _appKit.core.connectivity.isOnline.removeListener(_connectivityListener);
   }
 
   String? _getStoredChainId([String? defaultValue]) {
@@ -2271,23 +2285,31 @@ extension _AppKitModalExtension on ReownAppKitModal {
     }
   }
 
+  void _connectivityListener() {
+    final isOnline = _appKit.core.connectivity.isOnline.value;
+    _appKit.core.logger.i('[$runtimeType] connectivity isOnline: $isOnline');
+    if (isOnline && !_appKit.core.relayClient.isConnected) {
+      reconnectRelay();
+    }
+  }
+
   void _onRelayClientDisconnect(EventArgs? args) {
     _appKit.core.logger.i('[$runtimeType] relay client disconnected');
-    final service =
-        _currentSession?.sessionService ?? ReownAppKitModalConnector.wc;
-    if (service.isWC && _relayConnected) {
-      _status = ReownAppKitModalStatus.idle;
-      _notify();
-    }
+    // final service =
+    //     _currentSession?.sessionService ?? ReownAppKitModalConnector.wc;
+    // if (service.isWC && _relayConnected) {
+    //   _status = ReownAppKitModalStatus.idle;
+    //   _notify();
+    // }
   }
 
   void _onRelayClientError(ErrorEvent? args) {
     _appKit.core.logger.i('[$runtimeType] relay client error: ${args?.error}');
-    final service =
-        _currentSession?.sessionService ?? ReownAppKitModalConnector.wc;
-    if (service.isWC) {
-      _status = ReownAppKitModalStatus.error;
-      _notify();
-    }
+    // final service =
+    //     _currentSession?.sessionService ?? ReownAppKitModalConnector.wc;
+    // if (service.isWC) {
+    //   _status = ReownAppKitModalStatus.error;
+    //   _notify();
+    // }
   }
 }

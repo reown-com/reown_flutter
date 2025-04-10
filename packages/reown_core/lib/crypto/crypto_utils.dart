@@ -157,7 +157,7 @@ class CryptoUtils extends ICryptoUtils {
   }) {
     List<int> l = [type];
 
-    if (type == EncodeOptions.TYPE_2 || type == EncodeOptions.TYPE_0) {
+    if (type == EncodeOptions.TYPE_2) {
       l.addAll(sealed);
       return base64Url.encode(l);
     }
