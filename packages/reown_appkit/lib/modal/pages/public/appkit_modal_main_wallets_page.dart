@@ -92,7 +92,9 @@ class _AppKitModalMainWalletsPageState
               ),
             );
           }
-          final emailEnabled = _magicService.isEmailEnabled.value;
+          final isOnline =
+              modalInstance.appKit!.core.connectivity.isOnline.value;
+          final emailEnabled = _magicService.isEmailEnabled.value && isOnline;
           final socials = _magicService.socials;
           if (!modalInstance.featuresConfig.showMainWallets &&
               (emailEnabled || socials.isNotEmpty)) {

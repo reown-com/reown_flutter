@@ -42,6 +42,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    DeepLinkHandler.errorStream.listen(
+      (message) => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(content: Text(message)),
+      ),
+    );
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
@@ -174,6 +180,8 @@ class _MyHomePageState extends State<MyHomePage> {
       _setState,
     );
 
+    walletKitService.walletKit.core.connectivity.isOnline.addListener(_onLine);
+
     _setPages();
 
     // TODO _walletKit.core.echo.register(firebaseAccessToken);
@@ -181,6 +189,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _setState(dynamic args) => setState(() {});
+
+  void _onLine() => setState(() {});
 
   void _setPages() => setState(() {
         _pageDatas = [
@@ -239,7 +249,8 @@ class _MyHomePageState extends State<MyHomePage> {
               final walletKit = GetIt.I<IWalletKitService>().walletKit;
               return CircleAvatar(
                 radius: 6.0,
-                backgroundColor: walletKit.core.relayClient.isConnected
+                backgroundColor: walletKit.core.relayClient.isConnected &&
+                        walletKit.core.connectivity.isOnline.value
                     ? Colors.green
                     : Colors.red,
               );

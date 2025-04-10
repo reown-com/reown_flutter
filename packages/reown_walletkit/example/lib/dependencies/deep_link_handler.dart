@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
@@ -13,6 +15,9 @@ class DeepLinkHandler {
     'com.walletconnect.flutterwallet/events',
   );
   static final waiting = ValueNotifier<bool>(false);
+
+  static final _errorStream = StreamController<String>();
+  static Stream<String> get errorStream => _errorStream.stream;
 
   static void initListener() {
     if (kIsWeb) return;
@@ -30,7 +35,7 @@ class DeepLinkHandler {
         _onLink(initialLink);
       }
     } catch (e) {
-      debugPrint('[SampleWallet] [DeepLinkHandler] checkInitialLink $e');
+      debugPrint('[WalletKit] [DeepLinkHandler] checkInitialLink $e');
     }
   }
 
@@ -43,7 +48,7 @@ class DeepLinkHandler {
   static String get host => universalUri.host;
 
   static void _onLink(dynamic link) async {
-    debugPrint('[SampleWallet] _onLink $link');
+    debugPrint('[WalletKit] [DeepLinkHandler] _onLink $link');
     try {
       return await _walletKit.dispatchEnvelope('$link');
     } catch (e) {
@@ -55,7 +60,7 @@ class DeepLinkHandler {
     try {
       final decodedUri = Uri.parse(Uri.decodeFull('$link'));
       if (decodedUri.isScheme('wc')) {
-        debugPrint('[SampleWallet] is legacy uri $decodedUri');
+        debugPrint('[WalletKit] [DeepLinkHandler] is legacy uri $decodedUri');
         waiting.value = true;
         await _walletKit.pair(uri: decodedUri);
       } else {
@@ -64,7 +69,7 @@ class DeepLinkHandler {
           'uri',
         );
         if (decodedUri.isScheme(nativeUri.scheme) && uriParam.isNotEmpty) {
-          debugPrint('[SampleWallet] is custom uri $decodedUri');
+          debugPrint('[WalletKit] [DeepLinkHandler] is custom uri $decodedUri');
           waiting.value = true;
           final pairingUri = decodedUri.query.replaceFirst('uri=', '');
           await _walletKit.pair(uri: Uri.parse(pairingUri));
@@ -72,13 +77,15 @@ class DeepLinkHandler {
       }
     } catch (e) {
       //
-      debugPrint('[SampleWallet] $link error: $e');
+      debugPrint('[WalletKit] [DeepLinkHandler] $link error: $e');
       waiting.value = false;
+      _errorStream.sink.add(e.toString());
     }
   }
 
   static void _onError(Object error) {
     waiting.value = false;
-    debugPrint('[SampleWallet] [DeepLinkHandler] _onError $error');
+    debugPrint('[WalletKit] [DeepLinkHandler] _onError $error');
+    _errorStream.sink.add(error.toString());
   }
 }

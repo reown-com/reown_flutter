@@ -377,7 +377,7 @@ class ReownAppKitModal
     // onModalConnect.subscribe(_loadAccountData);
 
     _relayConnected = _appKit.core.relayClient.isConnected;
-    if (!_relayConnected) {
+    if (!_relayConnected && _appKit.core.connectivity.isOnline.value) {
       _relayConnected = await _awaitRelayOnce.future;
     } else {
       if (!_awaitRelayOnce.isCompleted) {
@@ -392,6 +392,11 @@ class ReownAppKitModal
     );
     if (_currentSession != null) {
       onModalConnect.broadcast(ModalConnect(_currentSession!));
+    }
+
+    if (!_appKit.core.connectivity.isOnline.value) {
+      // We enable buttons anyway in case we want to use LM
+      _status = ReownAppKitModalStatus.initialized;
     }
     _notify();
   }
@@ -840,14 +845,16 @@ class ReownAppKitModal
     WalletRedirect? walletRedirect, {
     bool inBrowser = false,
   }) {
-    final walletName = _selectedWallet!.listing.name;
-    final walletId = _selectedWallet!.listing.id;
-    final event = SelectWalletEvent(
-      name: walletName,
-      explorerId: walletId,
-      platform: inBrowser ? AnalyticsPlatform.web : AnalyticsPlatform.mobile,
-    );
-    _analyticsService.sendEvent(event);
+    try {
+      final walletName = _selectedWallet!.listing.name;
+      final walletId = _selectedWallet!.listing.id;
+      final event = SelectWalletEvent(
+        name: walletName,
+        explorerId: walletId,
+        platform: inBrowser ? AnalyticsPlatform.web : AnalyticsPlatform.mobile,
+      );
+      _analyticsService.sendEvent(event);
+    } catch (_) {}
   }
 
   @override
@@ -1196,6 +1203,9 @@ class ReownAppKitModal
       }
       return;
     } catch (e) {
+      if (_currentSession?.topic != null) {
+        _appKit.sessions.delete(_currentSession!.topic!);
+      }
       await _cleanSession();
       _analyticsService.sendEvent(DisconnectErrorEvent());
       _status = ReownAppKitModalStatus.initialized;

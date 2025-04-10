@@ -45,10 +45,12 @@ class _EmailLoginInputFieldState extends State<EmailLoginInputField> {
 
   @override
   Widget build(BuildContext context) {
+    final modalInstance = ModalProvider.of(context).instance;
     return ValueListenableBuilder<bool>(
       valueListenable: _magicService.isEmailEnabled,
       builder: (context, emailEnabled, _) {
-        if (!emailEnabled) {
+        if (!emailEnabled ||
+            !modalInstance.appKit!.core.connectivity.isOnline.value) {
           return const SizedBox.shrink();
         }
         return InputEmailWidget(
