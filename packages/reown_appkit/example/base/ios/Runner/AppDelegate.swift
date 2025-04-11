@@ -37,7 +37,7 @@ import CoinbaseWalletSDK
         if let url = launchOptions?[.url] as? URL {
             self.initialLink = url.absoluteString
         }
-        
+
         if let userActivityDictionary = launchOptions?[.userActivityDictionary] as? [String: Any],
            let userActivity = userActivityDictionary["UIApplicationLaunchOptionsUserActivityKey"] as? NSUserActivity,
            userActivity.activityType == NSUserActivityTypeBrowsingWeb {

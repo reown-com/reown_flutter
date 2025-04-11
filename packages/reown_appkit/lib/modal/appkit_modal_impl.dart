@@ -125,6 +125,8 @@ class ReownAppKitModal
 
   bool _disconnectOnClose = false;
 
+  bool get _isOnline => _appKit.core.connectivity.isOnline.value;
+
   BuildContext? _context;
   @override
   BuildContext? get modalContext {
@@ -377,7 +379,7 @@ class ReownAppKitModal
     // onModalConnect.subscribe(_loadAccountData);
 
     _relayConnected = _appKit.core.relayClient.isConnected;
-    if (!_relayConnected && _appKit.core.connectivity.isOnline.value) {
+    if (!_relayConnected && _isOnline) {
       _relayConnected = await _awaitRelayOnce.future;
     } else {
       if (!_awaitRelayOnce.isCompleted) {
@@ -394,7 +396,7 @@ class ReownAppKitModal
       onModalConnect.broadcast(ModalConnect(_currentSession!));
     }
 
-    if (!_appKit.core.connectivity.isOnline.value) {
+    if (!_isOnline) {
       // We enable buttons anyway in case we want to use LM
       _status = ReownAppKitModalStatus.initialized;
     }
