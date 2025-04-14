@@ -371,7 +371,6 @@ class _SelectNetworkButton extends StatelessWidget {
 class _ActivityButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return Column(
       children: [

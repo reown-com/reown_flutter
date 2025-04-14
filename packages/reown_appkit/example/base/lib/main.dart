@@ -584,19 +584,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _onSessionPing(SessionPing? args) {
-    debugPrint('[SampleDapp] _onSessionPing $args');
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return EventWidget(
-          title: StringConstants.receivedPing,
-          content: 'Topic: ${args!.topic}',
-        );
-      },
-    );
-  }
-
   void _onSessionEvent(SessionEvent? args) {
     debugPrint('[SampleDapp] _onSessionEvent $args');
     showDialog(

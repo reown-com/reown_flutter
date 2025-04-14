@@ -438,12 +438,6 @@ class ReownAppKitModal
       return true;
     }
 
-    final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
-    if (state.isNotEmpty) {
-      _magicService.completeSocialLogin(url: url);
-      return true;
-    }
-
     final phantomRequest = ReownCoreUtils.getSearchParamFromURL(
       url,
       'phantomRequest',
