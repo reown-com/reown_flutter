@@ -1,6 +1,6 @@
 name: reown_appkit
 description: "Reown is the onchain UX platform that provides toolkits built on top of the WalletConnect Network"
-version: 1.4.2+1
+version: 1.4.3
 homepage: https://github.com/reown-com/reown_flutter
 repository: https://github.com/reown-com/reown_flutter/tree/master/packages/reown_appkit
 documentation: https://docs.reown.com/appkit/flutter/core/installation
@@ -29,12 +29,12 @@ dependencies:
   pinenacl: ^0.6.0
   plugin_platform_interface: ^2.1.8
   qr_flutter_wc: ^0.0.3
-  # reown_core: ^1.1.4
-  reown_core:
-    path: ../reown_core/
-  # reown_sign: ^1.1.4
-  reown_sign:
-    path: ../reown_sign/
+  reown_core: ^1.1.4+1
+  # reown_core:
+  #   path: ../reown_core/
+  reown_sign: ^1.1.4+1
+  # reown_sign:
+  #   path: ../reown_sign/
   shimmer: ^3.0.0
   synchronized: ^3.3.0+3
   web_socket_channel: ^3.0.1

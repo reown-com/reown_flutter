@@ -1,6 +1,6 @@
 ## 1.1.4+1
 
-- Dependency updates
+- Core dependency update
 
 ## 1.1.4
 
