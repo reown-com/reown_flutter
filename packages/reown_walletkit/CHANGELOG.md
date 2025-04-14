@@ -1,3 +1,7 @@
+## 1.1.4+1
+
+- Core dependency update
+
 ## 1.1.4
 
 - Chain Abstraction Experimental APIs

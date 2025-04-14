@@ -1,6 +1,6 @@
 name: reown_sign
 description: "Reown is the onchain UX platform that provides toolkits built on top of the WalletConnect Network"
-version: 1.1.4
+version: 1.1.4+1
 homepage: https://github.com/reown-com/reown_flutter
 repository: https://github.com/reown-com/reown_flutter/tree/master/packages/reown_sign
 
@@ -15,9 +15,9 @@ dependencies:
   freezed_annotation: ^2.4.4
   http: ^1.2.2
   pointycastle: ^3.9.1
-  # reown_core: ^1.1.4
-  reown_core:
-    path: ../reown_core/
+  reown_core: ^1.1.4+1
+  # reown_core:
+  #   path: ../reown_core/
   web3dart: ^2.7.3
 
 dev_dependencies:

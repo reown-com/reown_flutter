@@ -19,6 +19,7 @@ import 'package:reown_walletkit_wallet/pages/settings_page.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -41,6 +42,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    DeepLinkHandler.errorStream.listen(
+      (message) => showDialog(
+        context: context,
+        builder: (context) => AlertDialog(content: Text(message)),
+      ),
+    );
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
@@ -115,7 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> initialize() async {
     GetIt.I.registerSingleton<IBottomSheetService>(BottomSheetService());
-    GetIt.I.registerSingleton<IKeyService>(KeyService());
+    final prefs = await SharedPreferences.getInstance();
+    GetIt.I.registerSingleton<IKeyService>(KeyService(prefs: prefs));
 
     final walletKitService = WalletKitService();
     await walletKitService.create();
@@ -172,10 +180,17 @@ class _MyHomePageState extends State<MyHomePage> {
       _setState,
     );
 
+    walletKitService.walletKit.core.connectivity.isOnline.addListener(_onLine);
+
     _setPages();
+
+    // TODO _walletKit.core.echo.register(firebaseAccessToken);
+    DeepLinkHandler.checkInitialLink();
   }
 
   void _setState(dynamic args) => setState(() {});
+
+  void _onLine() => setState(() {});
 
   void _setPages() => setState(() {
         _pageDatas = [
@@ -197,7 +212,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void didUpdateWidget(covariant MyHomePage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _setPages();
+    if (GetIt.I.isRegistered<IWalletKitService>()) {
+      _setPages();
+    }
   }
 
   @override
@@ -222,28 +239,55 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
-    final walletKit = GetIt.I<IWalletKitService>().walletKit;
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          _pageDatas[_selectedIndex].title,
-        ),
+        title: Text(_pageDatas[_selectedIndex].title),
         actions: [
           const Text('Relay '),
-          CircleAvatar(
-            radius: 6.0,
-            backgroundColor: walletKit.core.relayClient.isConnected
-                ? Colors.green
-                : Colors.red,
+          Builder(
+            builder: (context) {
+              final walletKit = GetIt.I<IWalletKitService>().walletKit;
+              return CircleAvatar(
+                radius: 6.0,
+                backgroundColor: walletKit.core.relayClient.isConnected &&
+                        walletKit.core.connectivity.isOnline.value
+                    ? Colors.green
+                    : Colors.red,
+              );
+            },
           ),
           const SizedBox(width: 16.0),
         ],
       ),
-      body: BottomSheetListener(
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          children: navRail,
-        ),
+      body: Stack(
+        children: [
+          BottomSheetListener(
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              children: navRail,
+            ),
+          ),
+          ValueListenableBuilder(
+            valueListenable: DeepLinkHandler.waiting,
+            builder: (context, value, _) {
+              return Visibility(
+                visible: value,
+                child: Center(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.black38,
+                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
+                    ),
+                    padding: const EdgeInsets.all(12.0),
+                    child: const CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
       bottomNavigationBar:
           MediaQuery.of(context).size.width < Constants.smallScreen
@@ -260,11 +304,9 @@ class _MyHomePageState extends State<MyHomePage> {
       showUnselectedLabels: true,
       type: BottomNavigationBarType.fixed,
       // called when one tab is selected
-      onTap: (int index) {
-        setState(() {
-          _selectedIndex = index;
-        });
-      },
+      onTap: (int index) => setState(
+        () => _selectedIndex = index,
+      ),
       // bottom tab items
       items: _pageDatas
           .map(
@@ -279,13 +321,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildNavigationRail() {
     return NavigationRail(
-      // backgroundColor: StyleConstants.backgroundColor,
       selectedIndex: _selectedIndex,
-      onDestinationSelected: (int index) {
-        setState(() {
-          _selectedIndex = index;
-        });
-      },
+      onDestinationSelected: (int index) => setState(
+        () => _selectedIndex = index,
+      ),
       labelType: NavigationRailLabelType.selected,
       destinations: _pageDatas
           .map(

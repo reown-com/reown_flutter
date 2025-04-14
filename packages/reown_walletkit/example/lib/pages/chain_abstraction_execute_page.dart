@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
@@ -93,15 +94,17 @@ class _ChainAbstractionDetailsAndExecuteState
                           ),
                         ),
                         WidgetSpan(
-                          child: Image.network(
+                          child: CachedNetworkImage(
                             width: 20.0,
                             height: 20.0,
-                            ChainsDataList.eip155Chains
+                            imageUrl: ChainsDataList.eip155Chains
                                 .firstWhere((e) =>
                                     e.chainId ==
                                     uiFields.routeResponse.initialTransaction
                                         .chainId)
                                 .logo,
+                            errorWidget: (context, url, error) =>
+                                const SizedBox.shrink(),
                           ),
                         ),
                       ],
@@ -162,15 +165,17 @@ class _ChainAbstractionDetailsAndExecuteState
                           ),
                         ),
                         WidgetSpan(
-                          child: Image.network(
+                          child: CachedNetworkImage(
                             width: 20.0,
                             height: 20.0,
-                            ChainsDataList.eip155Chains
+                            imageUrl: ChainsDataList.eip155Chains
                                 .firstWhere((e) =>
                                     e.chainId ==
                                     uiFields.routeResponse.initialTransaction
                                         .chainId)
                                 .logo,
+                            errorWidget: (context, url, error) =>
+                                const SizedBox.shrink(),
                           ),
                         ),
                       ],
@@ -225,13 +230,15 @@ class _ChainAbstractionDetailsAndExecuteState
                               ),
                             ),
                             WidgetSpan(
-                              child: Image.network(
+                              child: CachedNetworkImage(
                                 width: 20.0,
                                 height: 20.0,
-                                ChainsDataList.eip155Chains
+                                imageUrl: ChainsDataList.eip155Chains
                                     .firstWhere(
                                         (e) => e.chainId == from.chainId)
                                     .logo,
+                                errorWidget: (context, url, error) =>
+                                    const SizedBox.shrink(),
                               ),
                             ),
                           ],

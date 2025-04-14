@@ -1,7 +1,7 @@
 import 'dart:io';
-import 'dart:math';
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -113,47 +113,104 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                FutureBuilder<List<ChainKey>>(
-                  future: _keysService.loadKeys(),
-                  initialData: _keysService.keys,
-                  builder: (context, snapshot) {
-                    if (!snapshot.hasData) {
-                      return const SizedBox.shrink();
-                    }
-                    return Column(
-                      children: snapshot.data!.map((e) {
-                        if (e.namespace == 'eip155') {
-                          return _EVMAccounts();
-                        }
-                        if (e.namespace == 'solana') {
-                          return _SolanaAccounts();
-                        }
-                        return _ChainKeyView(chain: e.namespace);
-                      }).toList(),
-                    );
-                  },
-                ),
-                _DeviceData(),
-                _Metadata(),
-                _Buttons(
-                  onDeleteData: _onDeleteData,
-                  onRestoreFromSeed: _onRestoreFromSeed,
-                  onCreateNewWallet: _onCreateNewWallet,
-                ),
-                //
-              ],
+    return Scaffold(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  FutureBuilder<List<ChainKey>>(
+                    future: _keysService.loadKeys(),
+                    initialData: _keysService.keys,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const SizedBox.shrink();
+                      }
+                      return Column(
+                        children: snapshot.data!.map((e) {
+                          if (e.namespace == 'eip155') {
+                            return _EVMAccounts();
+                          }
+                          if (e.namespace == 'solana') {
+                            return _SolanaAccounts();
+                          }
+                          return _ChainKeyView(chain: e.namespace);
+                        }).toList(),
+                      );
+                    },
+                  ),
+                  _DeviceData(),
+                  _Metadata(),
+                  _Buttons(
+                    onDeleteData: _onDeleteData,
+                    onRestoreFromSeed: _onRestoreFromSeed,
+                    onCreateNewWallet: _onCreateNewWallet,
+                  ),
+                  //
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
+      // floatingActionButton: _LinkModeButton(),
+    );
+  }
+}
+
+// ignore: unused_element
+class _LinkModeButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: SharedPreferences.getInstance(),
+      builder: (_, snapshot) {
+        if (snapshot.hasData) {
+          final prefs = snapshot.data!;
+          final linkModeEnabled = prefs.getBool('rwkt_sample_linkmode') ?? true;
+          return FloatingActionButton.extended(
+            backgroundColor: Colors.blue,
+            label: Row(
+              children: [
+                Text('Link Mode: ${linkModeEnabled ? 'True' : 'False'}'),
+              ],
+            ),
+            onPressed: () async {
+              final value = !linkModeEnabled;
+              await prefs.setBool('rwkt_sample_linkmode', value);
+              final result = await showDialog<bool>(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    content: Text(
+                        'To ${value ? 'enable' : 'disable'} Link mode app will be closed'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(false),
+                        child: Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(true),
+                        child: Text('Ok'),
+                      ),
+                    ],
+                  );
+                },
+              );
+              if (result == true) {
+                await prefs.setBool('rwkt_sample_linkmode', value);
+                if (!kDebugMode) {
+                  exit(0);
+                }
+              }
+            },
+          );
+        }
+        return SizedBox.shrink();
+      },
     );
   }
 }
@@ -249,15 +306,19 @@ class _EVMAccountsState extends State<_EVMAccounts> {
   }
 
   Future<void> _updateBalance() async {
+    if (!mounted) return;
     final chainKeys = _keysService.getKeysForChain('eip155');
     final chainKey = chainKeys[_currentPage];
     final evmService = GetIt.I.get<EVMService>(
       instanceName: _selectedChain.chainId,
     );
-    evmService
-        .getBalance(address: chainKey.address)
-        .then((value) => setState(() => _balance = value))
-        .onError((a, b) => setState(() => _balance = 0.0));
+    evmService.getBalance(address: chainKey.address).then((value) {
+      if (!mounted) return;
+      setState(() => _balance = value);
+    }).onError((a, b) {
+      if (!mounted) return;
+      setState(() => _balance = 0.0);
+    });
     setState(() => {});
   }
 
@@ -389,10 +450,12 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                             text: TextSpan(
                               children: [
                                 WidgetSpan(
-                                  child: Image.network(
+                                  child: CachedNetworkImage(
+                                    imageUrl: e.logo,
                                     width: 20.0,
                                     height: 20.0,
-                                    e.logo,
+                                    errorWidget: (context, url, error) =>
+                                        const SizedBox.shrink(),
                                   ),
                                 ),
                                 TextSpan(
@@ -645,10 +708,12 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
                         text: TextSpan(
                           children: [
                             WidgetSpan(
-                              child: Image.network(
+                              child: CachedNetworkImage(
+                                imageUrl: e.logo,
                                 width: 20.0,
                                 height: 20.0,
-                                e.logo,
+                                errorWidget: (context, url, error) =>
+                                    const SizedBox.shrink(),
                               ),
                             ),
                             TextSpan(
@@ -830,67 +895,6 @@ class _Buttons extends StatelessWidget {
           padding: const EdgeInsets.all(12.0),
           child: Column(
             children: [
-              FutureBuilder(
-                future: SharedPreferences.getInstance(),
-                builder: (_, snapshot) {
-                  if (snapshot.hasData) {
-                    final prefs = snapshot.data!;
-                    final linkModeEnabled =
-                        prefs.getBool('rwkt_sample_linkmode') ?? false;
-                    return Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            'Link Mode',
-                            textAlign: TextAlign.right,
-                          ),
-                        ),
-                        Switch(
-                          value: linkModeEnabled,
-                          onChanged: (value) async {
-                            await prefs.setBool(
-                              'rwkt_sample_linkmode',
-                              value,
-                            );
-                            final result = await showDialog<bool>(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  content: Text(
-                                      'App will be closed to apply changes'),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(false),
-                                      child: Text('Cancel'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.of(context).pop(true),
-                                      child: Text('Ok'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                            if (result == true) {
-                              await prefs.setBool(
-                                'rwkt_sample_linkmode',
-                                value,
-                              );
-                              if (!kDebugMode) {
-                                exit(0);
-                              }
-                            }
-                          },
-                        ),
-                        Expanded(child: SizedBox.shrink()),
-                      ],
-                    );
-                  }
-                  return SizedBox.shrink();
-                },
-              ),
               const SizedBox(height: 8.0),
               Row(
                 children: [
@@ -1040,143 +1044,4 @@ class __DataContainerState extends State<_DataContainer> {
       ),
     );
   }
-}
-
-class SizeReportingWidget extends StatefulWidget {
-  final Widget child;
-  final ValueChanged<Size> onSizeChange;
-
-  const SizeReportingWidget({
-    super.key,
-    required this.child,
-    required this.onSizeChange,
-  });
-
-  @override
-  State<SizeReportingWidget> createState() => _SizeReportingWidgetState();
-}
-
-class _SizeReportingWidgetState extends State<SizeReportingWidget> {
-  Size? _oldSize;
-
-  @override
-  Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _notifySize());
-    return widget.child;
-  }
-
-  void _notifySize() {
-    if (!mounted) {
-      return;
-    }
-    final size = context.size;
-    if (_oldSize != size && size != null) {
-      _oldSize = size;
-      widget.onSizeChange(size);
-    }
-  }
-}
-
-class ExpandablePageView extends StatefulWidget {
-  final List<Widget> children;
-  final PageController? controller;
-  final Function(int)? onPageChanged;
-
-  const ExpandablePageView({
-    super.key,
-    required this.children,
-    this.controller,
-    this.onPageChanged,
-  });
-
-  @override
-  State<ExpandablePageView> createState() => _ExpandablePageViewState();
-}
-
-class _ExpandablePageViewState extends State<ExpandablePageView>
-    with TickerProviderStateMixin {
-  late PageController _pageController;
-  late List<double> _heights;
-  int _currentPage = 0;
-
-  double get _currentHeight => _heights[_currentPage];
-
-  @override
-  void initState() {
-    super.initState();
-    _heights = widget.children.map((e) => 0.0).toList();
-    _pageController = widget.controller ?? PageController()
-      ..addListener(() {
-        final newPage = _pageController.page?.round() ?? 0;
-        if (_currentPage != newPage) {
-          setState(() => _currentPage = newPage);
-        }
-      });
-  }
-
-  @override
-  void didUpdateWidget(covariant ExpandablePageView oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    final diff = widget.children.length - oldWidget.children.length;
-    if (diff > 0) {
-      for (var i = 0; i < diff; i++) {
-        final lastHeight = _heights.last;
-        _heights.add(lastHeight);
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    debugPrint('${_heights[0]} $_currentHeight');
-    return TweenAnimationBuilder<double>(
-      curve: Curves.easeInOutCubic,
-      duration: const Duration(milliseconds: 50),
-      tween: Tween<double>(
-        begin: max(_heights[0], 200.0),
-        end: max(_currentHeight, 200.0),
-      ),
-      builder: (context, value, child) => SizedBox(
-        height: value,
-        child: child,
-      ),
-      child: PageView(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: _pageController,
-        onPageChanged: widget.onPageChanged,
-        children: _sizeReportingChildren
-            .asMap() //
-            .map((index, child) => MapEntry(index, child))
-            .values
-            .toList(),
-      ),
-    );
-  }
-
-  List<Widget> get _sizeReportingChildren => widget.children
-      .asMap() //
-      .map(
-        (index, child) => MapEntry(
-          index,
-          OverflowBox(
-            //needed, so that parent won't impose its constraints on the children, thus skewing the measurement results.
-            minHeight: 0,
-            maxHeight: double.infinity,
-            alignment: Alignment.topCenter,
-            child: SizeReportingWidget(
-              onSizeChange: (size) =>
-                  setState(() => _heights[index] = size.height),
-              child: Align(child: child),
-            ),
-          ),
-        ),
-      )
-      .values
-      .toList();
 }

@@ -3,6 +3,7 @@
 - New Social Logins functionality
   - Enhanced reliability
   - Added more social options
+- Core dependency update
 
 ## 1.4.2+1
 

@@ -113,6 +113,7 @@ class CoreUtils {
     return formatChainBalance(value, precision: precision);
   }
 
+  // TODO move to Core SDK
   static String getUserAgent() {
     String userAgent = '${CoreConstants.X_SDK_TYPE}/'
         '${CoreConstants.X_SDK_VERSION}/'
@@ -122,6 +123,7 @@ class CoreUtils {
     return userAgent;
   }
 
+  // TODO move to Core SDK
   static Map<String, String> getAPIHeaders(
     String projectId, [
     String? referer,

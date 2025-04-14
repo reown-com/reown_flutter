@@ -14,7 +14,7 @@ class SettingsPage extends StatefulWidget {
   });
 
   final ReownAppKitModal appKitModal;
-  final Function(bool value, String storageKey) reinitialize;
+  final Function(String storageKey, bool value) reinitialize;
   final bool linkMode;
   final bool socials;
 
@@ -65,7 +65,7 @@ class SettingsPageState extends State<SettingsPage> {
                       Switch(
                         value: widget.linkMode,
                         onChanged: (value) {
-                          widget.reinitialize(value, 'appkit_sample_linkmode');
+                          widget.reinitialize('appkit_sample_linkmode', value);
                         },
                       ),
                       Expanded(
@@ -105,7 +105,7 @@ class SettingsPageState extends State<SettingsPage> {
                         child: Switch(
                           value: widget.socials,
                           onChanged: (value) {
-                            widget.reinitialize(value, 'appkit_sample_socials');
+                            widget.reinitialize('appkit_sample_socials', value);
                           },
                         ),
                       ),
