@@ -125,6 +125,8 @@ class ReownAppKitModal
 
   bool _disconnectOnClose = false;
 
+  bool get _isOnline => _appKit.core.connectivity.isOnline.value;
+
   BuildContext? _context;
   @override
   BuildContext? get modalContext {
@@ -202,10 +204,6 @@ class ReownAppKitModal
         enableAnalytics: enableAnalytics,
       ),
     );
-    // TODO should be moved to init()
-    _analyticsService.init().then(
-          (_) => _analyticsService.sendEvent(ModalLoadedEvent()),
-        );
     _registerSingleton<IExplorerService>(
       () => ExplorerService(
         core: _appKit.core,
@@ -275,33 +273,6 @@ class ReownAppKitModal
   ////////* PUBLIC METHODS */////////
 
   @override
-  Future<bool> dispatchEnvelope(String url) async {
-    _appKit.core.logger.d('[$runtimeType] dispatchEnvelope $url');
-    final envelope = ReownCoreUtils.getSearchParamFromURL(url, 'wc_ev');
-    if (envelope.isNotEmpty) {
-      await _appKit.dispatchEnvelope(url);
-      return true;
-    }
-
-    final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
-    if (state.isNotEmpty) {
-      _magicService.completeSocialLogin(url: url);
-      return true;
-    }
-
-    final phantomRequest = ReownCoreUtils.getSearchParamFromURL(
-      url,
-      'phantomRequest',
-    );
-    if (phantomRequest.isNotEmpty) {
-      _phantomService.completePhantomRequest(url: url);
-      return true;
-    }
-
-    return false;
-  }
-
-  @override
   Future<void> init() async {
     _relayConnected = false;
     _awaitRelayOnce = Completer<bool>();
@@ -325,6 +296,9 @@ class ReownAppKitModal
     await _coinbaseService.init();
     await _phantomService.init();
     await _blockchainService.init();
+    await _analyticsService.init();
+
+    _analyticsService.sendEvent(ModalLoadedEvent());
 
     _currentSession = await _getStoredSession();
     _selectedChainID = _getStoredChainId();
@@ -405,7 +379,7 @@ class ReownAppKitModal
     // onModalConnect.subscribe(_loadAccountData);
 
     _relayConnected = _appKit.core.relayClient.isConnected;
-    if (!_relayConnected) {
+    if (!_relayConnected && _isOnline) {
       _relayConnected = await _awaitRelayOnce.future;
     } else {
       if (!_awaitRelayOnce.isCompleted) {
@@ -421,6 +395,11 @@ class ReownAppKitModal
     if (_currentSession != null) {
       onModalConnect.broadcast(ModalConnect(_currentSession!));
     }
+
+    if (!_isOnline) {
+      // We enable buttons anyway in case we want to use LM
+      _status = ReownAppKitModalStatus.initialized;
+    }
     _notify();
   }
 
@@ -429,6 +408,33 @@ class ReownAppKitModal
     if (state == AppLifecycleState.resumed) {
       reconnectRelay();
     }
+  }
+
+  @override
+  Future<bool> dispatchEnvelope(String url) async {
+    _appKit.core.logger.d('[$runtimeType] dispatchEnvelope $url');
+    final envelope = ReownCoreUtils.getSearchParamFromURL(url, 'wc_ev');
+    if (envelope.isNotEmpty) {
+      await _appKit.dispatchEnvelope(url);
+      return true;
+    }
+
+    final state = ReownCoreUtils.getSearchParamFromURL(url, 'state');
+    if (state.isNotEmpty) {
+      _magicService.completeSocialLogin(url: url);
+      return true;
+    }
+
+    final phantomRequest = ReownCoreUtils.getSearchParamFromURL(
+      url,
+      'phantomRequest',
+    );
+    if (phantomRequest.isNotEmpty) {
+      _phantomService.completePhantomRequest(url: url);
+      return true;
+    }
+
+    return false;
   }
 
   Future<void> _checkSIWEStatus() async {
@@ -841,14 +847,16 @@ class ReownAppKitModal
     WalletRedirect? walletRedirect, {
     bool inBrowser = false,
   }) {
-    final walletName = _selectedWallet!.listing.name;
-    final walletId = _selectedWallet!.listing.id;
-    final event = SelectWalletEvent(
-      name: walletName,
-      explorerId: walletId,
-      platform: inBrowser ? AnalyticsPlatform.web : AnalyticsPlatform.mobile,
-    );
-    _analyticsService.sendEvent(event);
+    try {
+      final walletName = _selectedWallet!.listing.name;
+      final walletId = _selectedWallet!.listing.id;
+      final event = SelectWalletEvent(
+        name: walletName,
+        explorerId: walletId,
+        platform: inBrowser ? AnalyticsPlatform.web : AnalyticsPlatform.mobile,
+      );
+      _analyticsService.sendEvent(event);
+    } catch (_) {}
   }
 
   @override
@@ -914,17 +922,25 @@ class ReownAppKitModal
             ));
           }
         }
-      } else if (_isUserRejectedError(e)) {
-        onModalError.broadcast(UserRejectedConnection());
-        _analyticsService.sendEvent(ConnectErrorEvent(
-          message: 'User declined connection',
-        ));
       } else {
-        _appKit.core.logger.e(
-          '[$runtimeType] connectSelectedWallet error: $e',
-          stackTrace: s,
-        );
-        onModalError.broadcast(ErrorOpeningWallet());
+        if (_isUserRejectedError(e)) {
+          onModalError.broadcast(UserRejectedConnection());
+          _analyticsService.sendEvent(ConnectErrorEvent(
+            message: 'User declined connection',
+          ));
+        } else if (e is ReownCoreError) {
+          onModalError.broadcast(ErrorOpeningWallet(description: e.message));
+          _appKit.core.logger.e(
+            '[$runtimeType] connectSelectedWallet error: $e',
+            stackTrace: s,
+          );
+        } else {
+          onModalError.broadcast(ErrorOpeningWallet());
+          _appKit.core.logger.e(
+            '[$runtimeType] connectSelectedWallet error: $e',
+            stackTrace: s,
+          );
+        }
       }
     }
   }
@@ -982,6 +998,7 @@ class ReownAppKitModal
         }
       } catch (e) {
         _appKit.core.logger.e('[$runtimeType] buildConnectionUri error: $e');
+        rethrow;
       }
     }
   }
@@ -1188,6 +1205,10 @@ class ReownAppKitModal
       }
       return;
     } catch (e) {
+      if (_currentSession?.topic != null) {
+        _appKit.sessions.delete(_currentSession!.topic!);
+      }
+      await _cleanSession();
       _analyticsService.sendEvent(DisconnectErrorEvent());
       _status = ReownAppKitModalStatus.initialized;
       _notify();
@@ -1822,6 +1843,8 @@ class ReownAppKitModal
     _appKit.core.relayClient.onRelayClientDisconnect.subscribe(
       _onRelayClientDisconnect,
     );
+
+    _appKit.core.connectivity.isOnline.addListener(_connectivityListener);
   }
 
   void _unregisterListeners() {
@@ -1859,6 +1882,8 @@ class ReownAppKitModal
     _appKit.core.relayClient.onRelayClientDisconnect.unsubscribe(
       _onRelayClientDisconnect,
     );
+
+    _appKit.core.connectivity.isOnline.removeListener(_connectivityListener);
   }
 
   String? _getStoredChainId([String? defaultValue]) {
@@ -2174,7 +2199,6 @@ extension _AppKitModalExtension on ReownAppKitModal {
     if (_selectedWallet == null) {
       _analyticsService.sendEvent(ConnectSuccessEvent(
         name: 'WalletConnect',
-        explorerId: '',
         method: AnalyticsPlatform.qrcode,
       ));
       await _storage.delete(StorageConstants.recentWalletId);
@@ -2273,23 +2297,31 @@ extension _AppKitModalExtension on ReownAppKitModal {
     }
   }
 
+  void _connectivityListener() {
+    final isOnline = _appKit.core.connectivity.isOnline.value;
+    _appKit.core.logger.i('[$runtimeType] connectivity isOnline: $isOnline');
+    if (isOnline && !_appKit.core.relayClient.isConnected) {
+      reconnectRelay();
+    }
+  }
+
   void _onRelayClientDisconnect(EventArgs? args) {
     _appKit.core.logger.i('[$runtimeType] relay client disconnected');
-    final service =
-        _currentSession?.sessionService ?? ReownAppKitModalConnector.wc;
-    if (service.isWC && _relayConnected) {
-      _status = ReownAppKitModalStatus.idle;
-      _notify();
-    }
+    // final service =
+    //     _currentSession?.sessionService ?? ReownAppKitModalConnector.wc;
+    // if (service.isWC && _relayConnected) {
+    //   _status = ReownAppKitModalStatus.idle;
+    //   _notify();
+    // }
   }
 
   void _onRelayClientError(ErrorEvent? args) {
     _appKit.core.logger.i('[$runtimeType] relay client error: ${args?.error}');
-    final service =
-        _currentSession?.sessionService ?? ReownAppKitModalConnector.wc;
-    if (service.isWC) {
-      _status = ReownAppKitModalStatus.error;
-      _notify();
-    }
+    // final service =
+    //     _currentSession?.sessionService ?? ReownAppKitModalConnector.wc;
+    // if (service.isWC) {
+    //   _status = ReownAppKitModalStatus.error;
+    //   _notify();
+    // }
   }
 }

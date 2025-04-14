@@ -66,8 +66,9 @@ void main() {
   late final String chainId;
 
   Future<void> initialize() async {
+    final prefs = await SharedPreferences.getInstance();
     GetIt.I.registerSingleton<IBottomSheetService>(BottomSheetService());
-    GetIt.I.registerSingleton<IKeyService>(KeyService());
+    GetIt.I.registerSingleton<IKeyService>(KeyService(prefs: prefs));
 
     final walletKitService = WalletKitService();
     await walletKitService.create();

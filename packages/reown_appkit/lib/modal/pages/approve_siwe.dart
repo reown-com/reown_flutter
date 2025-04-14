@@ -130,6 +130,7 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
   @override
   Widget build(BuildContext context) {
     if (_appKitModal == null) return ContentLoading();
+    if (_appKitModal!.session == null) return ContentLoading();
 
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);

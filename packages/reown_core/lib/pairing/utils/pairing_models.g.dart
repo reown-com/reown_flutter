@@ -35,7 +35,7 @@ _$PairingMetadataImpl _$$PairingMetadataImplFromJson(
     _$PairingMetadataImpl(
       name: json['name'] as String,
       description: json['description'] as String,
-      url: json['url'] as String,
+      url: json['url'] as String? ?? '',
       icons:
           (json['icons'] as List<dynamic>?)?.map((e) => e as String).toList() ??
               const <String>[],

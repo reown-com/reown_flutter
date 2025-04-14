@@ -9,6 +9,7 @@ class ReownConstants {
   static const DEFAULT_RELAY_URL = 'wss://relay.walletconnect.org';
   static const DEFAULT_PUSH_URL = 'https://echo.walletconnect.org';
   static const VERIFY_SERVER = 'https://verify.walletconnect.org';
+  static const EVENTS_SERVER = 'https://pulse.walletconnect.org';
   static const TRUSTED_VERIFY_URLS = [VERIFY_SERVER];
 
   static const RELAYER_DEFAULT_PROTOCOL = 'irn';
@@ -34,6 +35,8 @@ class StoreVersions {
   static const VERSION_EXPIRER = '0.3';
   static const CONTEXT_MESSAGE_TRACKER = 'messageTracker';
   static const VERSION_MESSAGE_TRACKER = '1.0';
+  static const CONTEXT_EVENTS_TRACKER = 'eventsTracker';
+  static const VERSION_EVENTS_TRACKER = '1.0';
   static const CONTEXT_TOPIC_MAP = 'topicMap';
   static const VERSION_TOPIC_MAP = '1.0';
   static const CONTEXT_TOPIC_TO_RECEIVER_PUBLIC_KEY =
