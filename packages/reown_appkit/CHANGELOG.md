@@ -1,3 +1,9 @@
+## 1.4.3
+
+- New Social Logins functionality
+  - Enhanced reliability
+  - Added more social options
+
 ## 1.4.2+1
 
 - Fix an bug where Phantom Wallet was not detected as installed

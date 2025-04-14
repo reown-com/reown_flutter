@@ -1,4 +1,5 @@
 enum AppKitSocialOption {
+  Email,
   X,
   Apple,
   Discord,

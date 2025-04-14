@@ -7,7 +7,6 @@ import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/activity_page.dart';
-import 'package:reown_appkit/modal/pages/edit_email_page.dart';
 import 'package:reown_appkit/modal/pages/upgrade_wallet_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
@@ -203,24 +202,27 @@ class _UpgradeWalletButton extends StatelessWidget {
 class _EmailAndSocialLoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final service = ModalProvider.of(context).instance;
+    final modalInstance = ModalProvider.of(context).instance;
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final provider = AppKitSocialOption.values.firstWhereOrNull(
       (e) {
-        final socialProvider = service.session!.socialProvider ?? '';
+        final socialProvider = modalInstance.session!.socialProvider ?? '';
         return e.name.toLowerCase() == socialProvider.toString().toLowerCase();
       },
     );
-    final title = service.session!.sessionUsername;
+    final title = modalInstance.session!.sessionUsername;
+    if (provider == null) {
+      return SizedBox.shrink();
+    }
     return Column(
       children: [
         const SizedBox.square(dimension: kPadding8),
         AccountListItem(
           iconWidget: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: provider == null
+            child: provider == AppKitSocialOption.Email
                 ? RoundedIcon(
                     assetPath: 'lib/modal/assets/icons/mail.svg',
                     assetColor: themeColors.foreground100,
@@ -245,10 +247,18 @@ class _EmailAndSocialLoginButton extends StatelessWidget {
           titleStyle: themeData.textStyles.paragraph500.copyWith(
             color: themeColors.foreground100,
           ),
-          onTap: provider == null
-              ? () => widgetStack.instance.push(EditEmailPage())
+          onTap: provider == AppKitSocialOption.Email
+              ? () {
+                  final walletInfo =
+                      GetIt.I<IExplorerService>().getConnectedWallet();
+                  final url = walletInfo!.listing.webappLink;
+                  final topic = modalInstance.session!.topic;
+                  ReownCoreUtils.openURL('${url}emailUpdate/$topic');
+                }
               : null,
-          trailing: provider != null ? const SizedBox.shrink() : null,
+          trailing: provider == AppKitSocialOption.Email
+              ? null
+              : const SizedBox.shrink(),
         ),
       ],
     );

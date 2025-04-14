@@ -186,7 +186,7 @@ class ReownAppKitModal
       }
     }
 
-    this.featuresConfig = featuresConfig ?? FeaturesConfig(email: false);
+    this.featuresConfig = featuresConfig ?? FeaturesConfig();
 
     _context = context;
     _getBalance = getBalanceFallback;
@@ -373,6 +373,10 @@ class ReownAppKitModal
           event: event,
         );
       }
+      _appKit.registerEventHandler(
+        chainId: chain.chainId,
+        event: 'reown_updateEmail',
+      );
     }
 
     // There's a WC/Relay session stored
@@ -403,12 +407,12 @@ class ReownAppKitModal
           // TODO check if this is needed for Farcaster
           // Every time the app gets killed Magic service will treat the user as disconnected
           // So we will need to treat magic session differently
-          final email = _currentSession!.sessionEmail!;
-          _magicService.setEmail(email);
-          final provider = _currentSession!.socialProvider;
-          if (provider != null) {
-            _magicService.setProvider(AppKitSocialOption.fromString(provider));
-          }
+          // final email = _currentSession!.sessionEmail!;
+          // _magicService.setEmail(email);
+          // final provider = _currentSession!.socialProvider;
+          // if (provider != null) {
+          //   _magicService.setProvider(AppKitSocialOption.fromString(provider));
+          // }
         } else {
           await _cleanSession();
         }
@@ -2292,6 +2296,27 @@ extension _AppKitModalExtension on ReownAppKitModal {
 
   void _onSessionEvent(SessionEvent? args) async {
     _appKit.core.logger.d('[$runtimeType] _onSessionEvent $args');
+    if (args?.name == 'reown_updateEmail') {
+      if (_currentSession?.topic == args?.topic) {
+        try {
+          final newEmail = args!.data['email'];
+          await _storeSession(ReownAppKitModalSession(
+            sessionData:
+                SessionData.fromJson(_currentSession!.toJson()).copyWith(
+              sessionProperties: {
+                ..._currentSession!.sessionProperties,
+                'email': newEmail,
+              },
+            ),
+          ));
+          _notify();
+          return;
+        } catch (e) {
+          _appKit.core.logger.e('[$runtimeType] _onSessionEvent error: $e');
+        }
+      }
+    }
+
     onSessionEventEvent.broadcast(args);
     if (args?.name == EventsConstants.chainChanged) {
       _selectedChainID = args?.chainId;
@@ -2300,11 +2325,8 @@ extension _AppKitModalExtension on ReownAppKitModal {
       if (_siweService.enabled && _siweService.signOutOnAccountChange) {
         try {
           await _siweService.signOut();
-        } catch (e, s) {
-          _appKit.core.logger.e(
-            '[$runtimeType] _onSessionEvent error: $e',
-            stackTrace: s,
-          );
+        } catch (e) {
+          _appKit.core.logger.e('[$runtimeType] _onSessionEvent error: $e');
         }
       }
     }

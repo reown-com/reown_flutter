@@ -10,7 +10,6 @@ import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
-import 'package:reown_appkit/modal/widgets/buttons/email_login_input_field.dart';
 import 'package:reown_appkit/modal/widgets/buttons/social_login_buttons_view.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
@@ -41,7 +40,6 @@ class _AppKitModalMainWalletsPageState
   @override
   void initState() {
     super.initState();
-    _magicService.isEmailEnabled.addListener(_enabledListener);
     _magicService.isFarcasterEnabled.addListener(_enabledListener);
   }
 
@@ -49,16 +47,36 @@ class _AppKitModalMainWalletsPageState
     setState(() {});
   }
 
+  List<AppKitSocialOption> get _socials {
+    final modalInstance = ModalProvider.of(context).instance;
+    List<AppKitSocialOption> socials =
+        List.from(modalInstance.featuresConfig.socials)
+          ..remove(AppKitSocialOption.Email);
+    return socials;
+  }
+
+  bool get _socialsEnabled => _socials.isNotEmpty;
+
+  bool get _emailEnabled {
+    final modalInstance = ModalProvider.of(context).instance;
+    return modalInstance.featuresConfig.socials.contains(
+      AppKitSocialOption.Email,
+    );
+  }
+
+  bool get _showMainWallets {
+    final modalInstance = ModalProvider.of(context).instance;
+    return modalInstance.featuresConfig.showMainWallets;
+  }
+
   @override
   void dispose() {
     _magicService.isFarcasterEnabled.removeListener(_enabledListener);
-    _magicService.isEmailEnabled.removeListener(_enabledListener);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final modalInstance = ModalProvider.of(context).instance;
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final service = ModalProvider.of(context).instance;
     final isPortrait = ResponsiveData.isPortrait(context);
@@ -66,18 +84,15 @@ class _AppKitModalMainWalletsPageState
         ? (kListItemHeight * 6)
         : ResponsiveData.maxHeightOf(context);
 
-    final isSignIn = _magicService.isEmailEnabled.value ||
-        modalInstance.featuresConfig.socials.isNotEmpty;
+    final isSignIn = _emailEnabled || _socialsEnabled;
     return ModalNavbar(
       title: isSignIn ? 'Sign in' : 'Connect wallet',
       leftAction: NavbarActionButton(
         asset: 'lib/modal/assets/icons/help.svg',
-        action: () {
-          widgetStack.instance.push(
-            const AboutWallets(),
-            event: ClickWalletHelpEvent(),
-          );
-        },
+        action: () => widgetStack.instance.push(
+          const AboutWallets(),
+          event: ClickWalletHelpEvent(),
+        ),
       ),
       safeAreaLeft: true,
       safeAreaRight: true,
@@ -92,24 +107,20 @@ class _AppKitModalMainWalletsPageState
               ),
             );
           }
-          final emailEnabled = _magicService.isEmailEnabled.value;
-          final socials = modalInstance.featuresConfig.socials;
-          if (!modalInstance.featuresConfig.showMainWallets &&
-              (emailEnabled || socials.isNotEmpty)) {
+          if (!_showMainWallets && (_emailEnabled || _socialsEnabled)) {
             items.clear();
           }
           final itemsCount = min(kShortWalletListCount, items.length);
           if (itemsCount < kShortWalletListCount) {
             maxHeight = kListItemHeight * (itemsCount + 1.5);
           }
-          if (emailEnabled) {
+          if (_emailEnabled) {
             maxHeight += kListItemHeight;
           } else {
             maxHeight -= 10.0;
           }
-          final socialEnabled = socials.isNotEmpty;
-          if (socialEnabled) {
-            final length = socials.length;
+          if (_socialsEnabled) {
+            final length = _socials.length;
             if (length <= 4) {
               maxHeight += (kListItemHeight * 2);
             } else {
@@ -126,79 +137,72 @@ class _AppKitModalMainWalletsPageState
                 service.selectWallet(data);
                 widgetStack.instance.push(const ConnectWalletPage());
               },
-              firstItem: Column(
-                children: [
-                  EmailLoginInputField(),
-                  Visibility(
-                    visible: emailEnabled || socialEnabled,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 4.0,
-                      ),
-                      child: Column(
-                        children: [
-                          SocialLoginButtonsView(),
-                          _LoginDivider(),
-                        ],
-                      ),
-                    ),
+              firstItem: Visibility(
+                visible: _emailEnabled || _socialsEnabled,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Column(
+                    children: [
+                      SocialLoginButtonsView(),
+                      _LoginDivider(),
+                    ],
                   ),
-                ],
+                ),
               ),
               itemList: itemsToShow.toList(),
               bottomItems: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: (!modalInstance.featuresConfig.showMainWallets &&
-                          (emailEnabled || socials.isNotEmpty))
-                      ? AllWalletsItem(
-                          title: 'Continue with a wallet',
-                          titleAlign: TextAlign.center,
-                          leading: RoundedIcon(
-                            padding: 10.0,
-                            assetPath:
-                                'lib/modal/assets/icons/regular/wallet.svg',
-                            assetColor: themeColors.foreground100,
-                            circleColor: Colors.transparent,
-                            borderColor: Colors.transparent,
-                          ),
-                          onTap: () {
-                            widgetStack.instance.push(
-                              const ReownAppKitModalAllWalletsPage(),
-                              event: ClickAllWalletsEvent(),
-                            );
-                          },
-                        )
-                      : AllWalletsItem(
-                          trailing: (items.length <= kShortWalletListCount)
-                              ? null
-                              : ValueListenableBuilder<int>(
-                                  valueListenable:
-                                      _explorerService.totalListings,
-                                  builder: (context, value, _) {
-                                    return WalletItemChip(
-                                      value: value.lazyCount,
-                                    );
-                                  },
-                                ),
-                          onTap: () {
-                            if (items.length <= kShortWalletListCount) {
-                              widgetStack.instance.push(
-                                const ReownAppKitModalQRCodePage(),
-                                event: SelectWalletEvent(
-                                  name: 'WalletConnect',
-                                  explorerId: '',
-                                  platform: AnalyticsPlatform.qrcode,
-                                ),
-                              );
-                            } else {
-                              widgetStack.instance.push(
-                                const ReownAppKitModalAllWalletsPage(),
-                                event: ClickAllWalletsEvent(),
-                              );
-                            }
-                          },
-                        ),
+                  child:
+                      (!_showMainWallets && (_emailEnabled || _socialsEnabled))
+                          ? AllWalletsItem(
+                              title: 'Continue with a wallet',
+                              titleAlign: TextAlign.center,
+                              leading: RoundedIcon(
+                                padding: 10.0,
+                                assetPath:
+                                    'lib/modal/assets/icons/regular/wallet.svg',
+                                assetColor: themeColors.foreground100,
+                                circleColor: Colors.transparent,
+                                borderColor: Colors.transparent,
+                              ),
+                              onTap: () {
+                                widgetStack.instance.push(
+                                  const ReownAppKitModalAllWalletsPage(),
+                                  event: ClickAllWalletsEvent(),
+                                );
+                              },
+                            )
+                          : AllWalletsItem(
+                              trailing: (items.length <= kShortWalletListCount)
+                                  ? null
+                                  : ValueListenableBuilder<int>(
+                                      valueListenable:
+                                          _explorerService.totalListings,
+                                      builder: (context, value, _) {
+                                        return WalletItemChip(
+                                          value: value.lazyCount,
+                                        );
+                                      },
+                                    ),
+                              onTap: () {
+                                if (items.length <= kShortWalletListCount) {
+                                  widgetStack.instance.push(
+                                    const ReownAppKitModalQRCodePage(),
+                                    event: SelectWalletEvent(
+                                      name: 'WalletConnect',
+                                      explorerId: '',
+                                      platform: AnalyticsPlatform.qrcode,
+                                    ),
+                                  );
+                                } else {
+                                  widgetStack.instance.push(
+                                    const ReownAppKitModalAllWalletsPage(),
+                                    event: ClickAllWalletsEvent(),
+                                  );
+                                }
+                              },
+                            ),
                 ),
               ],
             ),

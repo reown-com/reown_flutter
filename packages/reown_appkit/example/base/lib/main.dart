@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:developer' as dev;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -144,19 +143,19 @@ class _MyHomePageState extends State<MyHomePage> {
 
   FeaturesConfig? _featuresConfig() {
     return FeaturesConfig(
-      email: false,
       socials: [
+        AppKitSocialOption.Email,
         AppKitSocialOption.X,
+        AppKitSocialOption.Google,
         AppKitSocialOption.Apple,
         AppKitSocialOption.Discord,
         AppKitSocialOption.GitHub,
         AppKitSocialOption.Facebook,
-        AppKitSocialOption.Google,
         AppKitSocialOption.Twitch,
         AppKitSocialOption.Telegram,
         // AppKitSocialOption.Farcaster,
       ],
-      showMainWallets: false, // OPTIONAL - true by default
+      showMainWallets: true, // OPTIONAL - true by default
     );
   }
 
@@ -200,12 +199,6 @@ class _MyHomePageState extends State<MyHomePage> {
       _onRelayMessage,
     );
 
-    _appKit!.onSessionPing.subscribe(_onSessionPing);
-    _appKit!.onSessionEvent.subscribe(_onSessionEvent);
-    _appKit!.onSessionUpdate.subscribe(_onSessionUpdate);
-    _appKit!.onSessionConnect.subscribe(_onSessionConnect);
-    _appKit!.onSessionAuthResponse.subscribe(_onSessionAuthResponse);
-
     // See https://docs.reown.com/appkit/flutter/core/custom-chains
     // final extraChains = ReownAppKitModalNetworks.extra['eip155']!;
     // ReownAppKitModalNetworks.addSupportedNetworks('eip155', extraChains);
@@ -245,6 +238,8 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKitModal!.onModalNetworkChange.subscribe(_onModalNetworkChange);
     _appKitModal!.onModalDisconnect.subscribe(_onModalDisconnect);
     _appKitModal!.onModalError.subscribe(_onModalError);
+    _appKitModal!.onSessionEventEvent.subscribe(_onSessionEvent);
+    _appKitModal!.onSessionUpdateEvent.subscribe(_onSessionUpdate);
 
     _pageDatas = [
       PageData(
@@ -466,16 +461,6 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
-  void _onSessionConnect(SessionConnect? event) {
-    dev.log(
-      '[SampleDapp] _onSessionConnect ${jsonEncode(event?.session.toJson())}',
-    );
-  }
-
-  void _onSessionAuthResponse(SessionAuthResponse? response) {
-    debugPrint('[SampleDapp] _onSessionAuthResponse $response');
-  }
-
   void _relayClientError(ErrorEvent? event) {
     debugPrint('[SampleDapp] _relayClientError ${event?.error}');
     _setState('');
@@ -497,17 +482,13 @@ class _MyHomePageState extends State<MyHomePage> {
       _onRelayMessage,
     );
     //
-    _appKit!.onSessionPing.unsubscribe(_onSessionPing);
-    _appKit!.onSessionEvent.unsubscribe(_onSessionEvent);
-    _appKit!.onSessionUpdate.unsubscribe(_onSessionUpdate);
-    _appKit!.onSessionConnect.unsubscribe(_onSessionConnect);
-    _appKit!.onSessionAuthResponse.subscribe(_onSessionAuthResponse);
-    //
     _appKitModal!.onModalConnect.unsubscribe(_onModalConnect);
     _appKitModal!.onModalUpdate.unsubscribe(_onModalUpdate);
     _appKitModal!.onModalNetworkChange.unsubscribe(_onModalNetworkChange);
     _appKitModal!.onModalDisconnect.unsubscribe(_onModalDisconnect);
     _appKitModal!.onModalError.unsubscribe(_onModalError);
+    _appKitModal!.onSessionEventEvent.unsubscribe(_onSessionEvent);
+    _appKitModal!.onSessionUpdateEvent.unsubscribe(_onSessionUpdate);
     //
     super.dispose();
   }

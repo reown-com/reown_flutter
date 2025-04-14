@@ -5,6 +5,7 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
+import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/base_list_item.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -37,12 +38,12 @@ class SocialLoginButton extends StatelessWidget {
             return ClipRRect(
               borderRadius: radiuses.isSquare()
                   ? BorderRadius.zero
-                  : BorderRadius.circular(constraints.maxHeight),
+                  : BorderRadius.circular(constraints.maxHeight * 0.9),
               child: SvgPicture.asset(
                 logoPath,
                 package: 'reown_appkit',
-                height: constraints.maxHeight,
-                width: constraints.maxHeight,
+                height: constraints.maxHeight * 0.9,
+                width: constraints.maxHeight * 0.9,
               ),
             );
           }),
@@ -197,6 +198,65 @@ class _ShimmerSocialLoginButton extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class EmailLoginButton extends StatelessWidget {
+  const EmailLoginButton({
+    super.key,
+    this.title = 'Continue with email',
+    this.titleAlign = TextAlign.center,
+    this.leading,
+    this.trailing,
+    this.onTap,
+  });
+  final String title;
+  final TextAlign titleAlign;
+  final Widget? leading;
+  final Widget? trailing;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    return BaseListItem(
+      semanticsLabel: title,
+      onTap: onTap,
+      child: LayoutBuilder(builder: (_, constraints) {
+        return Row(
+          children: [
+            SizedBox.square(
+              dimension: constraints.maxHeight,
+              child: RoundedIcon(
+                padding: 10.0,
+                assetPath: 'lib/modal/assets/icons/mail.svg',
+                assetColor: themeColors.foreground100,
+                circleColor: Colors.transparent,
+                borderColor: Colors.transparent,
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                child: Text(
+                  title,
+                  textAlign: titleAlign,
+                  style: themeData.textStyles.paragraph500.copyWith(
+                    color: themeColors.foreground100,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox.square(
+              dimension: constraints.maxHeight,
+              child: Container(),
+            ),
+          ],
+        );
+      }),
+      trailing: trailing,
     );
   }
 }

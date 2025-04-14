@@ -23,7 +23,10 @@ class _AppKitModalMainWalletsPageState extends State<AllSocialLoginsPage> {
   @override
   Widget build(BuildContext context) {
     final modalInstance = ModalProvider.of(context).instance;
-    final listItems = modalInstance.featuresConfig.socials
+    final socialOptions =
+        List<AppKitSocialOption>.from(modalInstance.featuresConfig.socials)
+          ..remove(AppKitSocialOption.Email);
+    final listItems = socialOptions
         .map((item) => (item == AppKitSocialOption.Farcaster)
             ? FarcasterLoginButton(
                 textAlign: TextAlign.left,

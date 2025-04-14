@@ -149,13 +149,23 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
                             borderRadius: radiuses.isSquare()
                                 ? BorderRadius.zero
                                 : BorderRadius.circular(maxWidth),
-                            child: SvgPicture.asset(
-                              AssetUtils.getThemedAsset(
-                                context,
-                                '${widget.socialOption.name.toLowerCase()}_logo.svg',
-                              ),
-                              package: 'reown_appkit',
-                            ),
+                            child: (widget.socialOption ==
+                                    AppKitSocialOption.Email)
+                                ? RoundedIcon(
+                                    padding: 20.0,
+                                    assetPath:
+                                        'lib/modal/assets/icons/mail.svg',
+                                    assetColor: themeColors.foreground100,
+                                    circleColor: Colors.transparent,
+                                    borderColor: Colors.transparent,
+                                  )
+                                : SvgPicture.asset(
+                                    AssetUtils.getThemedAsset(
+                                      context,
+                                      '${widget.socialOption.name.toLowerCase()}_logo.svg',
+                                    ),
+                                    package: 'reown_appkit',
+                                  ),
                           ),
                         )
                       : Stack(
@@ -247,9 +257,8 @@ final _webWallet = ReownAppKitModalWalletInfo(
 
 final _webWalletListing = Listing.fromJson(
   {
-    // 'platform': ['ios', 'android'], // added only for local purposes
-    'id': '00006',
-    'name': 'Social Login Wallet',
+    'id': '0000000000000001',
+    'name': 'Reown Web Wallet',
     'homepage': 'https://reown.com',
     'image_id': 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
     'order': 10,
@@ -261,7 +270,7 @@ final _webWalletListing = Listing.fromJson(
     'play_store': null,
     'rdns': null,
     'chrome_store': null,
-    'description': 'Social Login Wallet',
+    'description': 'Reown Web Wallet',
     'badge_type': 'certified'
   },
 );

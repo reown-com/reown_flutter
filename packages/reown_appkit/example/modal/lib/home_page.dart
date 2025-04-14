@@ -202,7 +202,6 @@ class _MyHomePageState extends State<MyHomePage> {
   // ignore: unused_element
   FeaturesConfig? _featuresConfig() {
     return FeaturesConfig(
-      email: true,
       socials: [
         AppKitSocialOption.Farcaster,
         AppKitSocialOption.X,
