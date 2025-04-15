@@ -235,6 +235,31 @@ class __RequestButtonsState extends State<_RequestButtons> {
       chainId,
     );
     final implemented = getChainMethods(namespace);
+    if ((approvedMethods ?? []).isEmpty) {
+      // if no methods where registered by the wallet...
+      return Container(
+        height: 40.0,
+        width: double.infinity,
+        margin: const EdgeInsets.symmetric(vertical: StyleConstants.linear8),
+        child: ElevatedButton(
+          onPressed: () async {
+            final params = await getParams(
+              'personal_sign',
+              address,
+              chainInfo!,
+            );
+            widget.appKitModal.launchConnectedWallet();
+            final future = widget.appKitModal.request(
+              topic: topic,
+              chainId: chainId,
+              request: params!,
+            );
+            MethodDialog.show(context, 'personal_sign', future);
+          },
+          child: Text('personal_sign'),
+        ),
+      );
+    }
     return Column(
       children: (approvedMethods ?? []).map((method) {
         final enabled = implemented.contains(method);

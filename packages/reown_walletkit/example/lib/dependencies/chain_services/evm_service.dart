@@ -57,16 +57,13 @@ class EVMService {
   final ChainMetadata chainSupported;
   late final Web3Client ethClient;
 
-  Map<String, dynamic Function(String, dynamic)> get sessionRequestHandlers => {
+  Map<String, dynamic Function(String, dynamic)> get methodRequestHandlers => {
         SupportedEVMMethods.ethSign.name: ethSignHandler,
         SupportedEVMMethods.ethSignTransaction.name: ethSignTransactionHandler,
         SupportedEVMMethods.ethSignTypedData.name: ethSignTypedDataHandler,
         SupportedEVMMethods.ethSignTypedDataV4.name: ethSignTypedDataV4Handler,
         SupportedEVMMethods.switchChain.name: switchChainHandler,
         SupportedEVMMethods.addChain.name: addChainHandler,
-      };
-
-  Map<String, dynamic Function(String, dynamic)> get methodRequestHandlers => {
         SupportedEVMMethods.personalSign.name: personalSignHandler,
         SupportedEVMMethods.ethSendTransaction.name: ethSendTransactionHandler,
       };
@@ -81,6 +78,7 @@ class EVMService {
       );
     }
 
+    // comment out this section if onSessionRequest subscription is wanted to be used instead
     for (var handler in methodRequestHandlers.entries) {
       _walletKit.registerRequestHandler(
         chainId: chainSupported.chainId,
@@ -88,14 +86,8 @@ class EVMService {
         handler: handler.value,
       );
     }
-    for (var handler in sessionRequestHandlers.entries) {
-      _walletKit.registerRequestHandler(
-        chainId: chainSupported.chainId,
-        method: handler.key,
-        handler: handler.value,
-      );
-    }
 
+    // in order for onSessionRequest to handle request then registerRequestHandler should not be used
     _walletKit.onSessionRequest.subscribe(_onSessionRequest);
   }
 
@@ -959,11 +951,24 @@ class EVMService {
   }
 
   void _onSessionRequest(SessionRequestEvent? args) async {
-    if (args != null && args.chainId == chainSupported.chainId) {
-      debugPrint('[SampleWallet] _onSessionRequest ${args.toString()}');
-      final handler = sessionRequestHandlers[args.method];
+    if (args == null) return;
+
+    debugPrint('[SampleWallet] _onSessionRequest ${args.toString()}');
+    if (args.chainId == chainSupported.chainId) {
+      final handler = methodRequestHandlers[args.method];
       if (handler != null) {
         await handler(args.topic, args.params);
+      } else {
+        final error = Errors.getSdkError(Errors.UNSUPPORTED_METHODS);
+        final response = JsonRpcResponse(
+          id: args.id,
+          jsonrpc: '2.0',
+          error: JsonRpcError(
+            code: error.code,
+            message: error.message,
+          ),
+        );
+        _handleResponseForTopic(args.topic, response);
       }
     }
   }
