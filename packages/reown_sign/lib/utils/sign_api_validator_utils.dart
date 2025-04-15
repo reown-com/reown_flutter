@@ -159,6 +159,10 @@ class SignApiValidatorUtils {
       chainId: chainId,
     );
 
+    // if methods is empty it means no request handlers were registered by the wallet usin `registerRequestHandler`
+    // so by returnig `true` here we make sure the request is still sent through onSessionRequest event
+    if (methods.isEmpty) return true;
+
     if (!methods.contains(method)) {
       throw Errors.getSdkError(
         Errors.UNSUPPORTED_METHODS,

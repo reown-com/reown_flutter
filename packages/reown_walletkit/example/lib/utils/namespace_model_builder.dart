@@ -22,18 +22,16 @@ class ConnectionWidgetBuilder {
       );
       models.add(
         WCConnectionModel(
+          title: StringConstants.events,
+          elements: namespaces.events,
+        ),
+      );
+      models.add(
+        WCConnectionModel(
           title: StringConstants.methods,
           elements: namespaces.methods,
         ),
       );
-      if (namespaces.events.isNotEmpty) {
-        models.add(
-          WCConnectionModel(
-            title: StringConstants.events,
-            elements: namespaces.events,
-          ),
-        );
-      }
 
       views.add(
         WCConnectionWidget(
@@ -64,19 +62,16 @@ class ConnectionWidgetBuilder {
       );
       models.add(
         WCConnectionModel(
+          title: StringConstants.events,
+          elements: ns.events,
+        ),
+      );
+      models.add(
+        WCConnectionModel(
           title: StringConstants.methods,
           elements: ns.methods,
         ),
       );
-
-      if (ns.events.isNotEmpty) {
-        models.add(
-          WCConnectionModel(
-            title: StringConstants.events,
-            elements: ns.events,
-          ),
-        );
-      }
 
       views.add(
         WCConnectionWidget(
