@@ -78,14 +78,16 @@ class EVMService {
       );
     }
 
-    // for (var handler in methodRequestHandlers.entries) {
-    //   _walletKit.registerRequestHandler(
-    //     chainId: chainSupported.chainId,
-    //     method: handler.key,
-    //     handler: handler.value,
-    //   );
-    // }
+    // comment out this section if onSessionRequest subscription is wanted to be used instead
+    for (var handler in methodRequestHandlers.entries) {
+      _walletKit.registerRequestHandler(
+        chainId: chainSupported.chainId,
+        method: handler.key,
+        handler: handler.value,
+      );
+    }
 
+    // in order for onSessionRequest to handle request then registerRequestHandler should not be used
     _walletKit.onSessionRequest.subscribe(_onSessionRequest);
   }
 

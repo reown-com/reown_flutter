@@ -1068,7 +1068,7 @@ class ReownSign implements IReownSign {
 
       // If there are accounts and event emitters, then handle the Namespace generate automatically
       Map<String, Namespace>? namespaces;
-      if (_accounts.isNotEmpty) {
+      if (_accounts.isNotEmpty || _eventEmitters.isNotEmpty) {
         namespaces = NamespaceUtils.constructNamespaces(
           availableAccounts: _accounts,
           availableMethods: _methodHandlers.keys.toSet(),
