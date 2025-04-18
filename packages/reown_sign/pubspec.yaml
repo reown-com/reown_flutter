@@ -18,7 +18,7 @@ dependencies:
   reown_core: ^1.1.4+1
   # reown_core:
   #   path: ../reown_core/
-  web3dart: ^2.7.3
+  webthree: ^2.7.5
 
 dev_dependencies:
   build_runner: ^2.4.13

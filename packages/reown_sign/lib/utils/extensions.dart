@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
-import 'package:web3dart/crypto.dart' as crypto;
-import 'package:web3dart/web3dart.dart';
+import 'package:webthree/crypto.dart' as crypto;
+import 'package:webthree/webthree.dart';
 
 import 'package:reown_core/reown_core.dart';
 import 'package:reown_sign/models/basic_models.dart';

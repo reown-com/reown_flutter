@@ -25,6 +25,6 @@ export 'sign_client.dart';
 export 'i_sign_engine.dart';
 export 'sign_engine.dart';
 
-export 'package:web3dart/web3dart.dart';
-export 'package:web3dart/crypto.dart' hide bytesToHex;
-export 'package:web3dart/json_rpc.dart';
+export 'package:webthree/webthree.dart';
+export 'package:webthree/crypto.dart' hide bytesToHex;
+export 'package:webthree/json_rpc.dart';
