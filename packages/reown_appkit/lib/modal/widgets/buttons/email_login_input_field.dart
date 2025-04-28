@@ -1,3 +1,4 @@
+// TODO DELETE FILE
 // import 'package:flutter/material.dart';
 // import 'package:get_it/get_it.dart';
 // import 'package:reown_appkit/modal/pages/confirm_email_page.dart';
@@ -32,7 +33,7 @@
 //             _magicService.loginStep.value == EmailLoginStep.verifyOtp ||
 //             _magicService.loginStep.value == EmailLoginStep.verifyOtp2) &&
 //         _submitted) {
-//       widgetStack.instance.push(ConfirmEmailPage());
+//       _widgetStack.push(ConfirmEmailPage());
 //       _submitted = false;
 //     }
 //   }

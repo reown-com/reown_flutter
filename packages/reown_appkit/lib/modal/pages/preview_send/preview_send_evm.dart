@@ -19,7 +19,7 @@ import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart' hide TransactionExtension;
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
@@ -54,6 +54,7 @@ class _PreviewSendEvmState extends State<PreviewSendEvm> {
   IBlockChainService get _blockchainService => GetIt.I<IBlockChainService>();
   IAnalyticsService get _analyticsService => GetIt.I<IAnalyticsService>();
   IToastService get _toastService => GetIt.I<IToastService>();
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
 
   late final IReownAppKitModal _appKitModal;
   late SendData _sendData;
@@ -356,7 +357,7 @@ class _PreviewSendEvmState extends State<PreviewSendEvm> {
             ),
             const SizedBox.square(dimension: kPadding16),
             SendButtonRow(
-              onCancel: () => widgetStack.instance.pop(),
+              onCancel: () => _widgetStack.pop(),
               onSend: _isSendEnabled ? _sendTransaction : null,
             ),
             const SizedBox.square(dimension: kPadding12),

@@ -760,11 +760,11 @@ class Pairing implements IPairing {
     ReceiverPublicKey? receiverPublicKey = topicToReceiverPublicKey.get(
       event.topic,
     );
-    core.logger.d(
-      '[$runtimeType] '
-      '{$isLinkMode ? "_onLinkModeMessageEvent" : "_onRelayMessageEvent"}, '
-      'receiverPublicKey: $receiverPublicKey',
-    );
+    isLinkMode
+        ? core.logger.d(
+            '[$runtimeType] _onLinkModeMessageEvent, receiverPublicKey: $receiverPublicKey')
+        : core.logger.d(
+            '[$runtimeType] _onRelayMessageEvent, receiverPublicKey: $receiverPublicKey');
     // If there was a public key, delete it. One use.
     if (receiverPublicKey != null) {
       await topicToReceiverPublicKey.delete(event.topic);
@@ -779,11 +779,11 @@ class Pairing implements IPairing {
       ),
     );
 
-    core.logger.d(
-      '[$runtimeType] '
-      '{$isLinkMode ? "_onLinkModeMessageEvent" : "_onRelayMessageEvent"}, '
-      'payloadString: $payloadString',
-    );
+    isLinkMode
+        ? core.logger.d(
+            '[$runtimeType] _onLinkModeMessageEvent, payloadString: $payloadString')
+        : core.logger.d(
+            '[$runtimeType] _onRelayMessageEvent, payloadString: $payloadString');
 
     if (payloadString == null) {
       return;

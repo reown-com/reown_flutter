@@ -5,6 +5,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack.dart';
 
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:reown_core/store/i_store.dart';
@@ -34,7 +36,6 @@ import 'package:reown_appkit/modal/utils/platform_utils.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/pages/account_page.dart';
-import 'package:reown_appkit/modal/pages/approve_magic_request_page.dart';
 import 'package:reown_appkit/modal/pages/approve_siwe.dart';
 import 'package:reown_appkit/modal/services/analytics_service/analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
@@ -49,7 +50,6 @@ import 'package:reown_appkit/modal/services/magic_service/magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_data.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/modal/services/siwe_service/siwe_service.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/blockchain_service.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/widgets/modal_container.dart';
@@ -205,9 +205,17 @@ class ReownAppKitModal
     _projectId = _appKit.core.projectId;
 
     // TODO should be moved to init()
-    _setRequiredNamespaces(requiredNamespaces);
-    _setOptionalNamespaces(optionalNamespaces);
+    _setRequiredNamespaces({});
+    _setOptionalNamespaces(
+      {
+        ...(requiredNamespaces ?? {}),
+        ...(optionalNamespaces ?? {}),
+      },
+    );
 
+    _registerSingleton<IWidgetStack>(
+      () => WidgetStack(core: _appKit.core),
+    );
     _registerSingleton<IUriService>(
       () => UriService(core: _appKit.core),
     );
@@ -274,6 +282,7 @@ class ReownAppKitModal
   ICoinbaseService get _coinbaseService => _getSingleton<ICoinbaseService>();
   IPhantomService get _phantomService => _getSingleton<IPhantomService>();
 
+  IWidgetStack get _widgetStack => _getSingleton<IWidgetStack>();
   IUriService get _uriService => _getSingleton<IUriService>();
   IToastService get _toastService => _getSingleton<IToastService>();
   IAnalyticsService get _analyticsService => _getSingleton<IAnalyticsService>();
@@ -411,15 +420,15 @@ class ReownAppKitModal
     _appKit.core.logger.i(
       '[$runtimeType] status $_status with session ${jsonEncode(_currentSession?.toJson())}',
     );
-    if (_currentSession != null) {
-      onModalConnect.broadcast(ModalConnect(_currentSession!));
-    }
-
     if (!_isOnline) {
       // We enable buttons anyway in case we want to use LM
       _status = ReownAppKitModalStatus.initialized;
     }
     _notify();
+
+    if (_currentSession != null) {
+      onModalConnect.broadcast(ModalConnect(_currentSession!));
+    }
   }
 
   @override
@@ -553,38 +562,17 @@ class ReownAppKitModal
       balanceNotifier.value = '$formattedBalance ${chainInfo.currency}';
 
       final hasValidSession = _isConnected && _currentSession != null;
+      final ns = NamespaceUtils.getNamespaceFromChain(chainInfo.chainId);
+      final approvedChains = _currentSession!.getApprovedChains(namespace: ns);
+      final isApproved = (approvedChains ?? []).contains(chainInfo.chainId);
+
       if (switchChain && hasValidSession && _selectedChainID != null) {
-        final namespace = NamespaceUtils.getNamespaceFromChain(
-          chainInfo.chainId,
-        );
-        final approvedChains = _currentSession!.getApprovedChains(
-          namespace: namespace,
-        );
-        final hasChainAlready = (approvedChains ?? []).contains(
-          chainInfo.chainId,
-        );
-        if (!hasChainAlready) {
-          requestSwitchToChain(chainInfo);
-          final hasSwitchMethod = _currentSession!.hasSwitchMethod();
-          if (hasSwitchMethod) {
-            final redirect = _currentSession!.peer!.metadata.redirect!.linkMode
-                ? _currentSession!.peer!.metadata.redirect!.universal!
-                : _currentSession!.peer!.metadata.redirect!.native!;
-            ReownCoreUtils.openURL(redirect);
-          }
+        if (!isApproved) {
+          await requestSwitchToChain(chainInfo);
         } else {
           await _setLocalEthChain(chainInfo.chainId, logEvent: logEvent);
         }
       } else {
-        final namespace = NamespaceUtils.getNamespaceFromChain(
-          chainInfo.chainId,
-        );
-        final approvedChains = _currentSession!.getApprovedChains(
-          namespace: namespace,
-        );
-        final isApproved = (approvedChains ?? []).contains(
-          chainInfo.chainId,
-        );
         if (isApproved) {
           await _setLocalEthChain(chainInfo.chainId, logEvent: logEvent);
         } else {
@@ -699,7 +687,7 @@ class ReownAppKitModal
       startWidget: ReownAppKitModalSelectNetworkPage(
         onTapNetwork: (info) {
           selectChain(info);
-          widgetStack.instance.addDefault();
+          _widgetStack.addDefault();
         },
       ),
     );
@@ -776,7 +764,7 @@ class ReownAppKitModal
 
     // Reset the explorer
     _explorerService.search(query: null);
-    widgetStack.instance.clear();
+    _widgetStack.clear();
 
     final isBottomSheet = PlatformUtils.isBottomSheet();
     final theme = ReownAppKitModalTheme.maybeOf(_context!);
@@ -801,22 +789,19 @@ class ReownAppKitModal
       child: childWidget,
     );
 
-    final isApprovePage = startWidget is ApproveTransactionPage;
     final isTabletSize = PlatformUtils.isTablet(_context!);
 
     if (isBottomSheet && !isTabletSize) {
       final mqData = MediaQueryData.fromView(View.of(_context!));
       final safeGap = mqData.viewPadding.bottom;
       final maxHeight = mqData.size.height - safeGap - 20.0;
-      final modalHeight = isApprovePage ? 600.0 : maxHeight;
       await showModalBottomSheet(
         backgroundColor: Colors.transparent,
-        isDismissible: !isApprovePage,
         isScrollControlled: true,
         enableDrag: false,
         elevation: 0.0,
         useRootNavigator: true,
-        constraints: BoxConstraints(maxHeight: modalHeight),
+        constraints: BoxConstraints(maxHeight: maxHeight),
         context: _context!,
         builder: (_) => rootWidget,
       );
@@ -1291,7 +1276,7 @@ class ReownAppKitModal
       return;
     }
     _isOpen = false;
-    final currentKey = widgetStack.instance.getCurrent().key;
+    final currentKey = _widgetStack.getCurrent().key;
     if (_disconnectOnClose) {
       _disconnectOnClose = false;
       if (currentKey == KeyConstants.approveSiwePageKey) {
@@ -1514,6 +1499,7 @@ class ReownAppKitModal
       _unregisterSingleton<ICoinbaseService>();
       _unregisterSingleton<IPhantomService>();
       _unregisterSingleton<ISiweService>();
+      _unregisterSingleton<IWidgetStack>();
       await Future.delayed(Duration(milliseconds: 500));
       _notify();
     }
@@ -1817,12 +1803,6 @@ class ReownAppKitModal
     } catch (_) {
       await _deleteStorage();
     }
-    if (event) {
-      onModalDisconnect.broadcast(ModalDisconnect(
-        topic: args?.topic ?? _currentSession?.topic,
-        id: args?.id,
-      ));
-    }
     _selectedChainID = null;
     _isConnected = false;
     _currentSession = null;
@@ -1830,6 +1810,13 @@ class ReownAppKitModal
     _supportsOneClickAuth = false;
     _status = ReownAppKitModalStatus.initialized;
     _notify();
+
+    if (event) {
+      onModalDisconnect.broadcast(ModalDisconnect(
+        topic: args?.topic ?? _currentSession?.topic,
+        id: args?.id,
+      ));
+    }
   }
 
   void _onModalError(ModalError? event) {
@@ -1847,7 +1834,7 @@ class ReownAppKitModal
         await _magicService.getUser(chainId: _selectedChainID, isUpdate: true);
         await _siweService.signOut();
         _disconnectOnClose = true;
-        widgetStack.instance.push(ApproveSIWEPage(
+        _widgetStack.push(ApproveSIWEPage(
           onSiweFinish: _oneSIWEFinish,
         ));
       }
@@ -1911,39 +1898,35 @@ class ReownAppKitModal
 
   void _unregisterListeners() {
     WidgetsBinding.instance.removeObserver(this);
-    onModalError.unsubscribe(_onModalError);
+    onModalError.unsubscribeAll();
+    onModalDisconnect.unsubscribeAll();
+    onModalConnect.unsubscribeAll();
+    onModalUpdate.unsubscribeAll();
+    onModalNetworkChange.unsubscribeAll();
 
     // Magic
-    _magicService.onMagicConnect.unsubscribe(_onMagicConnectEvent);
-    _magicService.onMagicLoginSuccess.unsubscribe(_onMagicLoginEvent);
-    _magicService.onMagicError.unsubscribe(_onMagicErrorEvent);
-    _magicService.onMagicUpdate.unsubscribe(_onMagicSessionUpdateEvent);
-    _magicService.onMagicRpcRequest.unsubscribe(_onMagicRequest);
+    _magicService.onMagicConnect.unsubscribeAll();
+    _magicService.onMagicLoginSuccess.unsubscribeAll();
+    _magicService.onMagicError.unsubscribeAll();
+    _magicService.onMagicUpdate.unsubscribeAll();
+    _magicService.onMagicRpcRequest.unsubscribeAll();
     // Coinbase
-    _coinbaseService.onCoinbaseConnect.unsubscribe(_onCoinbaseConnect);
-    _coinbaseService.onCoinbaseError.unsubscribe(_onCoinbaseError);
-    _coinbaseService.onCoinbaseSessionUpdate.unsubscribe(
-      _onCoinbaseSessionUpdateEvent,
-    );
+    _coinbaseService.onCoinbaseConnect.unsubscribeAll();
+    _coinbaseService.onCoinbaseError.unsubscribeAll();
+    _coinbaseService.onCoinbaseSessionUpdate.unsubscribeAll();
     // Phantom
-    _phantomService.onPhantomConnect.unsubscribe(_onPhantomConnect);
-    _phantomService.onPhantomError.subscribe(_onPhantomError);
+    _phantomService.onPhantomConnect.unsubscribeAll();
+    _phantomService.onPhantomError.unsubscribeAll();
     //
-    _appKit.onSessionAuthResponse.unsubscribe(_onSessionAuthResponse);
-    _appKit.onSessionConnect.unsubscribe(_onSessionConnect);
-    _appKit.onSessionDelete.unsubscribe(_onSessionDelete);
-    _appKit.onSessionEvent.unsubscribe(_onSessionEvent);
-    _appKit.onSessionUpdate.unsubscribe(_onSessionUpdate);
+    _appKit.onSessionAuthResponse.unsubscribeAll();
+    _appKit.onSessionConnect.unsubscribeAll();
+    _appKit.onSessionDelete.unsubscribeAll();
+    _appKit.onSessionEvent.unsubscribeAll();
+    _appKit.onSessionUpdate.unsubscribeAll();
     // Core
-    _appKit.core.relayClient.onRelayClientConnect.unsubscribe(
-      _onRelayClientConnect,
-    );
-    _appKit.core.relayClient.onRelayClientError.unsubscribe(
-      _onRelayClientError,
-    );
-    _appKit.core.relayClient.onRelayClientDisconnect.unsubscribe(
-      _onRelayClientDisconnect,
-    );
+    _appKit.core.relayClient.onRelayClientConnect.unsubscribeAll();
+    _appKit.core.relayClient.onRelayClientError.unsubscribeAll();
+    _appKit.core.relayClient.onRelayClientDisconnect.unsubscribeAll();
 
     _appKit.core.connectivity.isOnline.removeListener(_connectivityListener);
   }
@@ -1985,11 +1968,11 @@ extension _EmailConnectorExtension on ReownAppKitModal {
 
       final session = ReownAppKitModalSession(magicData: magicData);
       await _setSesionAndChainData(session);
-      onModalConnect.broadcast(ModalConnect(session));
       if (_selectedWallet == null) {
         await _storage.delete(StorageConstants.recentWalletId);
         await _storage.delete(StorageConstants.connectedWalletData);
       }
+      onModalConnect.broadcast(ModalConnect(session));
       //
       if (_siweService.enabled) {
         if (!_isOpen) {
@@ -2000,7 +1983,7 @@ extension _EmailConnectorExtension on ReownAppKitModal {
           // TODO Check if this is still relevant
           final theme = ReownAppKitModalTheme.maybeOf(_context!);
           await _magicService.syncTheme(theme);
-          widgetStack.instance.push(ApproveSIWEPage(
+          _widgetStack.push(ApproveSIWEPage(
             onSiweFinish: _oneSIWEFinish,
           ));
         }
@@ -2067,8 +2050,8 @@ extension _EmailConnectorExtension on ReownAppKitModal {
 
   void _onMagicRequest(MagicRequestEvent? args) {
     if (args?.result != null) {
-      if (args!.result is JsonRpcError && widgetStack.instance.canPop()) {
-        widgetStack.instance.pop();
+      if (args!.result is JsonRpcError && _widgetStack.canPop()) {
+        _widgetStack.pop();
       } else {
         closeModal();
       }
@@ -2099,7 +2082,7 @@ extension _CoinbaseConnectorExtension on ReownAppKitModal {
       //
       if (_siweService.enabled) {
         _disconnectOnClose = true;
-        widgetStack.instance.push(ApproveSIWEPage(
+        _widgetStack.push(ApproveSIWEPage(
           onSiweFinish: _oneSIWEFinish,
         ));
       } else {
@@ -2165,7 +2148,9 @@ extension _PhantomConnectorExtension on ReownAppKitModal {
       await _explorerService.storeConnectedWallet(_selectedWallet);
       onModalConnect.broadcast(ModalConnect(session));
       //
-      closeModal();
+      if (_isOpen) {
+        closeModal();
+      }
     }
   }
 
@@ -2231,26 +2216,23 @@ extension _AppKitModalExtension on ReownAppKitModal {
   }
 
   void _onSessionConnect(SessionConnect? args) async {
-    _appKit.core.logger.d(
-      '[$runtimeType] _onSessionConnect: ${jsonEncode(args?.session.toJson())}',
-    );
-    if (_supportsOneClickAuth && _siweService.enabled) {
+    if (args == null || (_supportsOneClickAuth && _siweService.enabled)) {
       return;
     }
-    if (args != null) {
-      // IF SIWE CALLBACK (1-CA NOT SUPPORTED) SIWECONGIF METHODS ARE CALLED ON ApproveSIWEPage
-      final session = await _settleSession(args.session);
-      onModalConnect.broadcast(ModalConnect(session));
-      //
-      if (_siweService.enabled) {
-        _disconnectOnClose = true;
-        widgetStack.instance.push(ApproveSIWEPage(
-          onSiweFinish: _oneSIWEFinish,
-        ));
-      } else {
-        if (_isOpen) {
-          closeModal();
-        }
+
+    // IF SIWE CALLBACK (1-CA NOT SUPPORTED) SIWECONGIF METHODS ARE CALLED ON ApproveSIWEPage
+    _appKit.core.logger.d(
+      '[$runtimeType] _onSessionConnect: ${jsonEncode(args.session.toJson())}',
+    );
+    final session = await _settleSession(args.session);
+    onModalConnect.broadcast(ModalConnect(session));
+    //
+    if (_siweService.enabled) {
+      _disconnectOnClose = true;
+      _widgetStack.push(ApproveSIWEPage(onSiweFinish: _oneSIWEFinish));
+    } else {
+      if (_isOpen) {
+        closeModal();
       }
     }
   }

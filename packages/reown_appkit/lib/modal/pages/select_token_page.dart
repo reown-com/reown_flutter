@@ -13,7 +13,7 @@ import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/account_list_item.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class SelectTokenPage extends StatefulWidget {
@@ -25,6 +25,8 @@ class SelectTokenPage extends StatefulWidget {
 
 class _SelectTokenPageState extends State<SelectTokenPage> {
   IBlockChainService get _blockchainService => GetIt.I<IBlockChainService>();
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
   List<TokenBalance> _tokens = [];
 
   @override
@@ -162,7 +164,7 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
                 ),
                 onTap: () {
                   _blockchainService.selectSendToken(token);
-                  widgetStack.instance.pop();
+                  _widgetStack.pop();
                 },
               );
             }),

@@ -214,14 +214,9 @@ class _MyHomePageState extends State<MyHomePage> {
       enableAnalytics: true,
       siweConfig: _siweConfig(linkModeEnabled),
       featuresConfig: socialsEnabled ? _featuresConfig() : null,
-      // requiredNamespaces: {},
       optionalNamespaces: _updatedNamespaces(),
       featuredWalletIds: _featuredWalletIds(),
-      excludedWalletIds: {
-        'c16e0e172fe80ebdc26bcdc9d24d962b7a9474b6db8ce9e6b2022e86195728cd',
-        '6880782cf8ff712bf8772b585960346290fd2499c1f1c51df9fe713d9d2e9384',
-        '7f3449afd0516845236c4f15f73cf3e106cb5706a349a8d6d7e1490b9c2cb0da',
-      },
+      // excludedWalletIds: {},
       // includedWalletIds: {},
       // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
       getBalanceFallback: () async {
@@ -229,6 +224,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // You could place here your own getBalance method
         return 0.0;
       },
+      disconnectOnDispose: true,
     );
 
     _appKitModal!.appKit!.core.addLogListener(_logListener);

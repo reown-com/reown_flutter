@@ -83,11 +83,9 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
         address: address,
       );
       //
-      // final redirect = _appKitModal!.session!.peer!.metadata.redirect!.native!;
-      // ReownCoreUtils.openURL(redirect);
       final signature = await _siweService.signMessageRequest(
         message,
-        session: _appKitModal!.session!,
+        modalService: ModalProvider.of(context).instance,
       );
       //
       final clientId = await _appKitModal!.appKit!.core.crypto.getClientId();

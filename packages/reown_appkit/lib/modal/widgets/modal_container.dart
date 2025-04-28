@@ -1,12 +1,13 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/utils/platform_utils.dart';
 import 'package:reown_appkit/modal/widgets/toast/toast_presenter.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/transition_container.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/content_loading.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
 
@@ -20,18 +21,19 @@ class ModalContainer extends StatefulWidget {
 }
 
 class _ModalContainerState extends State<ModalContainer> {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
   bool _initialized = false;
   Widget? _currentScreen;
 
   @override
   void initState() {
     super.initState();
-    widgetStack.instance.addListener(_widgetStackUpdated);
+    _widgetStack.addListener(_widgetStackUpdated);
 
     if (widget.startWidget != null) {
-      widgetStack.instance.push(widget.startWidget!, renderScreen: true);
+      _widgetStack.push(widget.startWidget!, renderScreen: true);
     } else {
-      widgetStack.instance.addDefault();
+      _widgetStack.addDefault();
     }
 
     _initialize();
@@ -39,7 +41,7 @@ class _ModalContainerState extends State<ModalContainer> {
 
   @override
   void dispose() {
-    widgetStack.instance.removeListener(_widgetStackUpdated);
+    _widgetStack.removeListener(_widgetStackUpdated);
     super.dispose();
   }
 
@@ -48,7 +50,7 @@ class _ModalContainerState extends State<ModalContainer> {
   void _widgetStackUpdated() {
     //
     try {
-      _currentScreen = widgetStack.instance.getCurrent();
+      _currentScreen = _widgetStack.getCurrent();
     } catch (_) {}
     setState(() {});
   }

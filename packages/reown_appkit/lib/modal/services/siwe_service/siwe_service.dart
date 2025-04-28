@@ -2,16 +2,11 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:convert/convert.dart';
-import 'package:get_it/get_it.dart';
-import 'package:reown_appkit/modal/services/coinbase_service/i_coinbase_service.dart';
-import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
+import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class SiweService implements ISiweService {
-  IMagicService get _magicService => GetIt.I<IMagicService>();
-  ICoinbaseService get _coinbaseService => GetIt.I<ICoinbaseService>();
-
   late final SIWEConfig? _siweConfig;
   late final IReownAppKit _appKit;
   late final Map<String, RequiredNamespace> _namespaces;
@@ -88,37 +83,23 @@ class SiweService implements ISiweService {
   @override
   Future<String> signMessageRequest(
     String message, {
-    required ReownAppKitModalSession session,
+    required IReownAppKitModal modalService,
   }) async {
     if (!enabled) throw Exception('siweConfig not enabled');
     //
-    final chainId = AuthSignature.getChainIdFromMessage(message);
+    String chainId = AuthSignature.getChainIdFromMessage(message);
+    if (!NamespaceUtils.isValidChainId(chainId)) {
+      chainId = 'eip155:$chainId';
+    }
     final address = AuthSignature.getAddressFromMessage(message);
     final bytes = utf8.encode(message);
     final encoded = hex.encode(bytes);
     //
     _appKit.core.logger.d('[$runtimeType] signMessageRequest() called');
-    if (session.sessionService.isMagic) {
-      return await _magicService.request(
-        chainId: 'eip155:$chainId',
-        request: SessionRequestParams(
-          method: 'personal_sign',
-          params: ['0x$encoded', address],
-        ),
-      );
-    }
-    if (session.sessionService.isCoinbase) {
-      return await _coinbaseService.request(
-        chainId: 'eip155:$chainId',
-        request: SessionRequestParams(
-          method: 'personal_sign',
-          params: ['0x$encoded', address],
-        ),
-      );
-    }
-    return await _appKit.request(
-      topic: session.topic!,
-      chainId: 'eip155:$chainId',
+
+    return await modalService.request(
+      topic: modalService.session!.topic,
+      chainId: chainId,
       request: SessionRequestParams(
         method: 'personal_sign',
         params: ['0x$encoded', address],

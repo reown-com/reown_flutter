@@ -6,7 +6,7 @@ import 'package:reown_appkit/modal/pages/public/appkit_modal_select_network_page
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
 import 'package:reown_appkit/modal/widgets/buttons/network_button.dart';
 
@@ -31,6 +31,7 @@ class AppKitModalNetworkSelectButton extends StatefulWidget {
 
 class _AppKitModalNetworkSelectButtonState
     extends State<AppKitModalNetworkSelectButton> {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
   ReownAppKitModalNetworkInfo? _selectedChain;
 
   @override
@@ -63,7 +64,7 @@ class _AppKitModalNetworkSelectButtonState
       ReownAppKitModalSelectNetworkPage(
         onTapNetwork: (info) {
           widget.appKit.selectChain(info);
-          widgetStack.instance.addDefault();
+          _widgetStack.addDefault();
         },
       ),
     );

@@ -6,9 +6,10 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/widgets/icons/themed_icon.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/searchbar.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 
 class AllWalletsHeader extends StatelessWidget {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
   const AllWalletsHeader({super.key});
 
   @override
@@ -38,7 +39,7 @@ class AllWalletsHeader extends StatelessWidget {
             size: kSearchFieldHeight,
             iconPath: 'lib/modal/assets/icons/code.svg',
             onPressed: () {
-              widgetStack.instance.push(
+              _widgetStack.push(
                 const ReownAppKitModalQRCodePage(),
                 event: SelectWalletEvent(
                   name: 'WalletConnect',

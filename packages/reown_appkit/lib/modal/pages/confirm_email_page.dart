@@ -1,3 +1,4 @@
+// TODO DELETE FILE
 // import 'package:flutter/material.dart';
 // import 'package:get_it/get_it.dart';
 // import 'package:reown_appkit/modal/constants/key_constants.dart';
@@ -49,7 +50,7 @@
 //     _magicService.loginStep.value = EmailLoginStep.idle;
 //     _magicService.setEmail('');
 //     FocusManager.instance.primaryFocus?.unfocus();
-//     widgetStack.instance.pop();
+//     _widgetStack.pop();
 //   }
 
 //   @override

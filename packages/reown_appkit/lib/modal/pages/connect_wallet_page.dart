@@ -14,7 +14,7 @@ import 'package:reown_appkit/modal/services/toast_service/models/toast_message.d
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/content_loading.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/segmented_control.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/avatars/wallet_avatar.dart';
@@ -35,6 +35,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
     with WidgetsBindingObserver {
   IExplorerService get _explorerService => GetIt.I<IExplorerService>();
   ISiweService get _siweService => GetIt.I<ISiweService>();
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
 
   IReownAppKitModal? _service;
   SegmentOption _selectedSegment = SegmentOption.option1;
@@ -120,7 +121,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
       title: walletName,
       onBack: () {
         _service?.selectWallet(null);
-        widgetStack.instance.pop();
+        _widgetStack.pop();
       },
       body: SingleChildScrollView(
         scrollDirection: isPortrait ? Axis.vertical : Axis.horizontal,

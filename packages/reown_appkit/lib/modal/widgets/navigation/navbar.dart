@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar_action_button.dart';
 
 class ModalNavbar extends StatelessWidget {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
   const ModalNavbar({
     super.key,
     this.onBack,
@@ -56,16 +58,16 @@ class ModalNavbar extends StatelessWidget {
             child: SizedBox(
               height: kNavbarHeight,
               child: ValueListenableBuilder(
-                valueListenable: widgetStack.instance.onRenderScreen,
+                valueListenable: _widgetStack.onRenderScreen,
                 builder: (context, render, _) {
                   if (!render) return SizedBox.shrink();
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      widgetStack.instance.canPop() && !noBack
+                      _widgetStack.canPop() && !noBack
                           ? NavbarActionButton(
                               asset: 'lib/modal/assets/icons/chevron_left.svg',
-                              action: onBack ?? widgetStack.instance.pop,
+                              action: onBack ?? _widgetStack.pop,
                             )
                           : (leftAction ??
                               const SizedBox.square(dimension: kNavbarHeight)),

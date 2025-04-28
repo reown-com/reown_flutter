@@ -306,21 +306,16 @@ class ReownAppKitModalSession {
       pairingTopic: pairingTopic ?? '',
       relay: relay ?? Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
       expiry: expiry ?? 0,
-      acknowledged: acknowledged ?? false,
-      controller: controller ?? '',
+      acknowledged: true,
+      controller: sessionService.name,
       namespaces: _namespaces() ?? {},
       self: self!,
       peer: peer!,
-      requiredNamespaces: _sessionData?.requiredNamespaces,
-      optionalNamespaces: _sessionData?.optionalNamespaces,
-      sessionProperties: _sessionData?.sessionProperties,
-      authentication: _sessionData?.authentication,
-      transportType: _sessionData?.transportType ?? TransportType.relay,
     );
     return {
       ...sessionData.toJson(),
-      'transportType':
-          sessionService.isMagic ? 'secureSite' : sessionData.transportType,
+      'relay': null,
+      'transportType': sessionService.name,
     };
   }
 }

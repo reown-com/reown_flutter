@@ -23,7 +23,7 @@ import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.da
 import 'package:reown_appkit/modal/widgets/miscellaneous/segmented_control.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar_action_button.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/buttons/simple_icon_button.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
@@ -39,6 +39,7 @@ class WalletFeaturesPage extends StatefulWidget {
 
 class _WalletFeaturesPageState extends State<WalletFeaturesPage>
     with WidgetsBindingObserver {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
   IReownAppKitModal? _appKitModal;
 
   @override
@@ -83,7 +84,7 @@ class _WalletFeaturesPageState extends State<WalletFeaturesPage>
       divider: false,
       leftAction: NavbarActionButton(
         child: GestureDetector(
-          onTap: () => widgetStack.instance.push(
+          onTap: () => _widgetStack.push(
             ReownAppKitModalSelectNetworkPage(),
             event: ClickNetworksEvent(),
           ),
@@ -134,6 +135,8 @@ class _SmartAccountView extends StatefulWidget {
 
 class _SmartAccountViewState extends State<_SmartAccountView> {
   IBlockChainService get _blockchainService => GetIt.I<IBlockChainService>();
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
   SegmentOption _selectedSegment = SegmentOption.option1;
   List<TokenBalance> _tokens = [];
 
@@ -192,7 +195,7 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
           AddressButton(
             service: widget.appKitModal,
             onTap: () {
-              widgetStack.instance.push(AccountPage());
+              _widgetStack.push(AccountPage());
             },
           ),
           const SizedBox.square(dimension: kPadding8),
@@ -229,7 +232,7 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
                   size: BaseButtonSize.big,
                   iconSize: 20.0,
                   fontSize: 1.0,
-                  onTap: () => widgetStack.instance.push(ReceivePage()),
+                  onTap: () => _widgetStack.push(ReceivePage()),
                 ),
               ),
               const SizedBox.square(dimension: kPadding8),
@@ -245,7 +248,7 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
                   fontSize: 1.0,
                   onTap: _tokens.isEmpty
                       ? null
-                      : () => widgetStack.instance.push(SendPage()),
+                      : () => _widgetStack.push(SendPage()),
                 ),
               ),
             ],
@@ -380,6 +383,8 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
 }
 
 class _ReceiveFundsEmptyStateButton extends StatelessWidget {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
   @override
   Widget build(BuildContext context) {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
@@ -411,7 +416,7 @@ class _ReceiveFundsEmptyStateButton extends StatelessWidget {
           subtitleStyle: themeData.textStyles.tiny400.copyWith(
             color: themeColors.foreground150,
           ),
-          onTap: () => widgetStack.instance.push(ReceivePage()),
+          onTap: () => _widgetStack.push(ReceivePage()),
         ),
         SizedBox.square(
           dimension: MediaQuery.of(context).padding.bottom + kPadding6,

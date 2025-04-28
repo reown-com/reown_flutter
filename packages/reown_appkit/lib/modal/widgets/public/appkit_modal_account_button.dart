@@ -10,7 +10,7 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class AppKitModalAccountButton extends StatefulWidget {
@@ -39,6 +39,7 @@ class AppKitModalAccountButton extends StatefulWidget {
 
 class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
   IMagicService get _magicService => GetIt.I<IMagicService>();
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
   String _address = '';
 
   @override
@@ -75,7 +76,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
   void _approveSign(MagicRequestEvent? args) async {
     if (args?.request != null) {
       if (widget.appKitModal.isOpen) {
-        widgetStack.instance.push(ApproveTransactionPage());
+        _widgetStack.push(ApproveTransactionPage());
       } else {
         widget.appKitModal.openModalView(ApproveTransactionPage());
       }
@@ -86,7 +87,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
     if (args == null) return;
     final isOpen = widget.appKitModal.isOpen;
     if (isOpen) {
-      widgetStack.instance.popAllAndPush(SocialLoginPage(
+      _widgetStack.popAllAndPush(SocialLoginPage(
         socialOption: AppKitSocialOption.Farcaster,
       ));
     } else {

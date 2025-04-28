@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/all_social_logins.dart';
@@ -9,7 +10,7 @@ import 'package:reown_appkit/modal/utils/asset_util.dart';
 import 'package:reown_appkit/modal/widgets/buttons/social_login_button.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class SocialLoginButtonsView extends StatefulWidget {
@@ -20,6 +21,8 @@ class SocialLoginButtonsView extends StatefulWidget {
 }
 
 class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
   @override
   Widget build(BuildContext context) {
     final isPortrait = ResponsiveData.isPortrait(context);
@@ -115,10 +118,10 @@ class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
                   'more_social_icon.svg',
                 ),
                 onTap: () {
-                  widgetStack.instance.push(
+                  _widgetStack.push(
                     AllSocialLoginsPage(
                       onSelect: (selected) {
-                        widgetStack.instance.pop();
+                        _widgetStack.pop();
                         _initSocialLogin(selected);
                       },
                     ),
@@ -181,7 +184,7 @@ class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
     );
   }
 
-  void _initSocialLogin(AppKitSocialOption option) => widgetStack.instance.push(
+  void _initSocialLogin(AppKitSocialOption option) => _widgetStack.push(
         SocialLoginPage(socialOption: option),
       );
 

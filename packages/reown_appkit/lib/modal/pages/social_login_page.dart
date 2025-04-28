@@ -16,7 +16,7 @@ import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.da
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/avatars/loading_border.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class SocialLoginPage extends StatefulWidget {
@@ -34,6 +34,7 @@ class SocialLoginPage extends StatefulWidget {
 class _SocialLoginPageState extends State<SocialLoginPage> {
   IMagicService get _magicService => GetIt.I<IMagicService>();
   IAnalyticsService get _analyticsService => GetIt.I<IAnalyticsService>();
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
 
   IReownAppKitModal? _service;
   ModalError? errorEvent;
@@ -89,7 +90,7 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
   }
 
   Future<void> _continueInFarcaster(String farcasterUri) async {
-    widgetStack.instance.push(
+    _widgetStack.push(
       replace: true,
       FarcasterQRCodePage(
         farcasterUri: farcasterUri,
@@ -265,7 +266,9 @@ final _webWalletListing = Listing.fromJson(
     'mobile_link': null,
     'desktop_link': null,
     'link_mode': null,
-    'webapp_link': 'http://web-wallet.walletconnect.org/',
+    'webapp_link': String.fromEnvironment('FLUTTER_APP_FLAVOR') == 'internal'
+        ? 'http://develop.appkit-web-wallet.pages.dev/'
+        : 'http://web-wallet.walletconnect.org/',
     'app_store': null,
     'play_store': null,
     'rdns': null,

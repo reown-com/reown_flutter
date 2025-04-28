@@ -1,3 +1,4 @@
+// TODO DELETE FILE
 // import 'package:flutter/material.dart';
 // import 'package:get_it/get_it.dart';
 // import 'package:reown_appkit/modal/constants/key_constants.dart';
@@ -34,7 +35,7 @@
 //       _currentEmailValue = _magicService.email.value;
 //       if (!_magicService.isConnected.value) {
 //         _magicService.connectEmail(value: _currentEmailValue);
-//         widgetStack.instance.popAllAndPush(ConfirmEmailPage());
+//         _widgetStack.popAllAndPush(ConfirmEmailPage());
 //       }
 //     });
 //   }
@@ -53,7 +54,7 @@
 //     FocusManager.instance.primaryFocus?.unfocus();
 //     _magicService.setEmail(_currentEmailValue);
 //     _magicService.setNewEmail('');
-//     widgetStack.instance.pop();
+//     _widgetStack.pop();
 //     _magicService.loginStep.value = EmailLoginStep.idle;
 //   }
 
@@ -142,7 +143,7 @@
 //     FocusManager.instance.primaryFocus?.unfocus();
 //     _magicService.setEmail(_currentEmailValue);
 //     _magicService.setNewEmail('');
-//     widgetStack.instance.pop();
+//     _widgetStack.pop();
 //   }
 
 //   @override

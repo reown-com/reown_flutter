@@ -8,7 +8,6 @@ import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/activity_page.dart';
 import 'package:reown_appkit/modal/pages/upgrade_wallet_page.dart';
-import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
@@ -16,7 +15,7 @@ import 'package:reown_appkit/modal/utils/asset_util.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/content_loading.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/avatars/account_orb.dart';
 import 'package:reown_appkit/modal/widgets/buttons/address_copy_button.dart';
@@ -158,6 +157,8 @@ class _DefaultAccountView extends StatelessWidget {
 }
 
 class _UpgradeWalletButton extends StatelessWidget {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
   @override
   Widget build(BuildContext context) {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
@@ -193,7 +194,7 @@ class _UpgradeWalletButton extends StatelessWidget {
           titleStyle: themeData.textStyles.paragraph500.copyWith(
             color: themeColors.foreground100,
           ),
-          onTap: () => widgetStack.instance.push(UpgradeWalletPage()),
+          onTap: () => _widgetStack.push(UpgradeWalletPage()),
         ),
       ],
     );
@@ -327,6 +328,8 @@ class _ConnectedWalletButton extends StatelessWidget {
 }
 
 class _SelectNetworkButton extends StatelessWidget {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
   @override
   Widget build(BuildContext context) {
     final service = ModalProvider.of(context).instance;
@@ -358,7 +361,7 @@ class _SelectNetworkButton extends StatelessWidget {
           titleStyle: themeData.textStyles.paragraph500.copyWith(
             color: themeColors.foreground100,
           ),
-          onTap: () => widgetStack.instance.push(
+          onTap: () => _widgetStack.push(
             ReownAppKitModalSelectNetworkPage(),
             event: ClickNetworksEvent(),
           ),
@@ -369,6 +372,8 @@ class _SelectNetworkButton extends StatelessWidget {
 }
 
 class _ActivityButton extends StatelessWidget {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
   @override
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
@@ -381,10 +386,10 @@ class _ActivityButton extends StatelessWidget {
           iconBGColor: themeColors.accenGlass015,
           iconBorderColor: themeColors.accenGlass005,
           title: 'Activity',
-          onTap: () {
-            GetIt.I<IAnalyticsService>().sendEvent(ClickTransactionsEvent());
-            widgetStack.instance.push(ActivityPage());
-          },
+          onTap: () => _widgetStack.push(
+            ActivityPage(),
+            event: ClickTransactionsEvent(),
+          ),
         ),
       ],
     );

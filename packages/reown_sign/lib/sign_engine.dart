@@ -1160,7 +1160,9 @@ class ReownSign implements IReownSign {
     JsonRpcRequest payload, [
     _,
   ]) async {
-    // print('wc session settle');
+    core.logger.d(
+      '_onSessionSettleRequest, topic: $topic, payload: $payload',
+    );
     final request = WcSessionSettleRequest.fromJson(payload.params);
     try {
       await _isValidSessionSettleRequest(request.namespaces, request.expiry);

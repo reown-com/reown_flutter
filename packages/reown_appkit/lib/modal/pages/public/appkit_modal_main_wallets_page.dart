@@ -12,7 +12,7 @@ import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/widgets/buttons/social_login_buttons_view.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/all_wallets_item.dart';
@@ -36,6 +36,7 @@ class _AppKitModalMainWalletsPageState
     extends State<ReownAppKitModalMainWalletsPage> {
   IMagicService get _magicService => GetIt.I<IMagicService>();
   IExplorerService get _explorerService => GetIt.I<IExplorerService>();
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
 
   @override
   void initState() {
@@ -89,7 +90,7 @@ class _AppKitModalMainWalletsPageState
       title: isSignIn ? 'Sign in' : 'Connect wallet',
       leftAction: NavbarActionButton(
         asset: 'lib/modal/assets/icons/help.svg',
-        action: () => widgetStack.instance.push(
+        action: () => _widgetStack.push(
           const AboutWallets(),
           event: ClickWalletHelpEvent(),
         ),
@@ -135,7 +136,7 @@ class _AppKitModalMainWalletsPageState
             child: WalletsList(
               onTapWallet: (data) {
                 service.selectWallet(data);
-                widgetStack.instance.push(const ConnectWalletPage());
+                _widgetStack.push(const ConnectWalletPage());
               },
               firstItem: Visibility(
                 visible: _emailEnabled || _socialsEnabled,
@@ -167,7 +168,7 @@ class _AppKitModalMainWalletsPageState
                                 borderColor: Colors.transparent,
                               ),
                               onTap: () {
-                                widgetStack.instance.push(
+                                _widgetStack.push(
                                   const ReownAppKitModalAllWalletsPage(),
                                   event: ClickAllWalletsEvent(),
                                 );
@@ -187,7 +188,7 @@ class _AppKitModalMainWalletsPageState
                                     ),
                               onTap: () {
                                 if (items.length <= kShortWalletListCount) {
-                                  widgetStack.instance.push(
+                                  _widgetStack.push(
                                     const ReownAppKitModalQRCodePage(),
                                     event: SelectWalletEvent(
                                       name: 'WalletConnect',
@@ -195,7 +196,7 @@ class _AppKitModalMainWalletsPageState
                                     ),
                                   );
                                 } else {
-                                  widgetStack.instance.push(
+                                  _widgetStack.push(
                                     const ReownAppKitModalAllWalletsPage(),
                                     event: ClickAllWalletsEvent(),
                                   );

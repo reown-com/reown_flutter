@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element, dead_code
+
 import 'package:collection/collection.dart';
 import 'package:reown_appkit/modal/models/public/appkit_wallet_info.dart';
 import 'package:reown_appkit/modal/utils/platform_utils.dart';
@@ -85,25 +87,6 @@ class WCSampleWallets {
           'description': 'Reown\'s Kotlin sample wallet',
           'badge_type': 'certified'
         },
-        {
-          'platform': ['ios', 'android'], // added only for local purposes
-          'id': '00005',
-          'name': 'React Web Sample',
-          'homepage': 'https://react-wallet.walletconnect.com',
-          'image_id':
-              'https://raw.githubusercontent.com/reown-com/reown_flutter/3d3dd152433104adae8a50671c062733abdc9fe3/packages/reown_appkit/lib/modal/assets/wallet_react.png',
-          'order': 10,
-          'mobile_link': null,
-          'desktop_link': null,
-          'link_mode': null,
-          'webapp_link': 'https://react-wallet.walletconnect.com',
-          'app_store': null,
-          'play_store': null,
-          'rdns': null,
-          'chrome_store': null,
-          'description': 'Reown\'s React Web sample wallet',
-          'badge_type': 'certified'
-        },
       ];
 
   static List<Map<String, dynamic>> _sampleWalletsProduction() => [
@@ -186,26 +169,27 @@ class WCSampleWallets {
           'description': 'Reown\'s Kotlin sample wallet',
           'badge_type': 'certified'
         },
-        {
-          'platform': ['ios', 'android'], // added only for local purposes
-          'id': '00005',
-          'name': 'React Web Sample',
-          'homepage': 'https://react-wallet.walletconnect.com',
-          'image_id':
-              'https://raw.githubusercontent.com/reown-com/reown_flutter/3d3dd152433104adae8a50671c062733abdc9fe3/packages/reown_appkit/lib/modal/assets/wallet_react.png',
-          'order': 10,
-          'mobile_link': null,
-          'desktop_link': null,
-          'link_mode': null,
-          'webapp_link': 'https://react-wallet.walletconnect.com',
-          'app_store': null,
-          'play_store': null,
-          'rdns': null,
-          'chrome_store': null,
-          'description': 'Reown\'s React Web sample wallet',
-          'badge_type': 'certified'
-        },
       ];
+
+  static Map<String, dynamic> _webSampleWallet() => {
+        'platform': ['ios', 'android'], // added only for local purposes
+        'id': '00005',
+        'name': 'React Web Sample',
+        'homepage': 'https://react-wallet.walletconnect.com',
+        'image_id':
+            'https://raw.githubusercontent.com/reown-com/reown_flutter/3d3dd152433104adae8a50671c062733abdc9fe3/packages/reown_appkit/lib/modal/assets/wallet_react.png',
+        'order': 10,
+        'mobile_link': null,
+        'desktop_link': null,
+        'link_mode': null,
+        'webapp_link': 'https://react-wallet.walletconnect.com',
+        'app_store': null,
+        'play_store': null,
+        'rdns': null,
+        'chrome_store': null,
+        'description': 'Reown\'s React Web sample wallet',
+        'badge_type': 'certified'
+      };
 
   static List<ReownAppKitModalWalletInfo> getSampleWallets() {
     final wallets = _sampleWallets().map((entry) {
@@ -220,6 +204,8 @@ class WCSampleWallets {
   }
 
   static List<Map<String, dynamic>> _sampleWallets() {
+    return [_webSampleWallet()];
+
     String flavor = '-${const String.fromEnvironment('FLUTTER_APP_FLAVOR')}';
     flavor = flavor.replaceAll('-production', '');
 

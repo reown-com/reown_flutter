@@ -21,7 +21,6 @@ class ConnectPage extends StatefulWidget {
 
 class ConnectPageState extends State<ConnectPage> {
   final List<ReownAppKitModalNetworkInfo> _selectedChains = [];
-  bool _shouldDismissQrCode = true;
 
   @override
   void initState() {
@@ -174,13 +173,7 @@ class ConnectPageState extends State<ConnectPage> {
 
   void _onSessionConnect(SessionConnect? event) async {
     if (event == null) return;
-
     setState(() => _selectedChains.clear());
-
-    if (_shouldDismissQrCode && Navigator.canPop(context)) {
-      _shouldDismissQrCode = false;
-      Navigator.pop(context);
-    }
   }
 
   void _onSessionAuthResponse(SessionAuthResponse? response) {
@@ -201,8 +194,10 @@ class ConnectPageState extends State<ConnectPage> {
     setState(() {});
   }
 
-  void _onModalDisconnect(ModalDisconnect? event) {
+  void _onModalDisconnect(ModalDisconnect? event) async {
     setState(() {});
+    // await widget.appKitModal.dispose();
+    // await widget.appKitModal.init();
   }
 
   void _onModalError(ModalError? event) {
@@ -236,6 +231,44 @@ class __RequestButtonsState extends State<_RequestButtons> {
       chainId,
     );
     final implemented = getChainMethods(namespace);
+    // return TextButton(
+    //   onPressed: () async {
+    //     // Chain is our BE chain data
+    //     final targetChain = ReownAppKitModalNetworkInfo(
+    //       name: 'Base',
+    //       chainId: 'eip155:8453',
+    //       currency: 'ETH',
+    //       rpcUrl: 'https://mainnet.base.org',
+    //       explorerUrl: 'https://basescan.org',
+    //     );
+
+    //     // await widget.appKitModal.requestSwitchToChain(targetChain);
+    //     await widget.appKitModal.selectChain(
+    //       targetChain,
+    //       switchChain: true,
+    //     );
+
+    //     final bytes = utf8.encode('testSignData');
+    //     final encoded = bytesToHex(bytes, include0x: true);
+    //     final transactionId = await widget.appKitModal.request(
+    //       topic: widget.appKitModal.session?.topic,
+    //       chainId: widget.appKitModal.selectedChain!.chainId,
+    //       request: SessionRequestParams(
+    //         method: 'personal_sign',
+    //         params: [
+    //           encoded,
+    //           widget.appKitModal.session!.getAddress('eip155'),
+    //         ],
+    //       ),
+    //     );
+    //     if (transactionId is! String) {
+    //       throw Exception(
+    //           'Failed to send transaction ${transactionId.toString()}');
+    //     }
+    //     print(transactionId);
+    //   },
+    //   child: Text('Test'),
+    // );
     return Column(
       children: (approvedMethods ?? []).map((method) {
         final enabled = implemented.contains(method);

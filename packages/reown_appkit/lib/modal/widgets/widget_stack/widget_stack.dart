@@ -6,8 +6,12 @@ import 'package:reown_appkit/modal/services/analytics_service/i_analytics_servic
 import 'package:reown_appkit/modal/utils/platform_utils.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_core/events/models/basic_event.dart';
+import 'package:reown_core/i_core_impl.dart';
 
 class WidgetStack extends IWidgetStack {
+  WidgetStack({required IReownCore core}) : _core = core;
+  final IReownCore _core;
+
   final List<Widget> _stack = [];
 
   @override
@@ -23,6 +27,9 @@ class WidgetStack extends IWidgetStack {
     bool renderScreen = false,
     BasicCoreEvent? event,
   }) {
+    _core.logger.d(
+      '[$runtimeType] push ${widget.key}, replace: $replace, renderScreen: $renderScreen, event: $event',
+    );
     if (event != null) {
       GetIt.I<IAnalyticsService>().sendEvent(event);
     }
@@ -36,6 +43,7 @@ class WidgetStack extends IWidgetStack {
 
   @override
   void pop() {
+    _core.logger.d('[$runtimeType] pop');
     if (_stack.isNotEmpty) {
       onRenderScreen.value = false;
       _stack.removeLast();
@@ -50,6 +58,7 @@ class WidgetStack extends IWidgetStack {
 
   @override
   void popUntil(Key key) {
+    _core.logger.d('[$runtimeType] popUntil $key');
     if (_stack.isEmpty) {
       throw Exception('The stack is empty. No widget to pop.');
     } else {
@@ -68,17 +77,22 @@ class WidgetStack extends IWidgetStack {
 
   @override
   void popAllAndPush(Widget widget, {bool renderScreen = false}) {
+    _core.logger.d(
+      '[$runtimeType] popAllAndPush ${widget.key}, renderScreen: $renderScreen',
+    );
     _stack.clear();
     push(widget, renderScreen: renderScreen);
   }
 
   @override
   bool containsKey(Key key) {
+    _core.logger.d('[$runtimeType] containsKey $key');
     return _stack.any((element) => element.key == key);
   }
 
   @override
   void clear() {
+    _core.logger.d('[$runtimeType] clear');
     onRenderScreen.value = false;
     _stack.clear();
     notifyListeners();
@@ -86,6 +100,7 @@ class WidgetStack extends IWidgetStack {
 
   @override
   void addDefault() {
+    _core.logger.d('[$runtimeType] addDefault');
     final pType = PlatformUtils.getPlatformType();
 
     // Choose the state based on platform

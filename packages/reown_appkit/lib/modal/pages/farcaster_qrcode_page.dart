@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/pages/social_login_page.dart';
 import 'package:reown_appkit/modal/widgets/buttons/primary_button.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
@@ -24,6 +25,8 @@ class FarcasterQRCodePage extends StatefulWidget {
 }
 
 class _FarcasterQRCodePageState extends State<FarcasterQRCodePage> {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
   Widget? _qrQodeWidget;
 
   @override
@@ -36,7 +39,7 @@ class _FarcasterQRCodePageState extends State<FarcasterQRCodePage> {
       );
       setState(() {});
       widget.farcasterCompleter?.then((value) {
-        widgetStack.instance.push(
+        _widgetStack.push(
           SocialLoginPage(
             socialOption: AppKitSocialOption.Farcaster,
             farcasterCompleter: widget.farcasterCompleter,

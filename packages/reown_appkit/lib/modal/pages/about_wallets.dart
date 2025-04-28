@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/pages/get_wallet_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/widgets/buttons/simple_icon_button.dart';
 import 'package:reown_appkit/modal/widgets/help/help_section.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 
 class AboutWallets extends StatelessWidget {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
   const AboutWallets() : super(key: KeyConstants.helpPageKey);
 
   @override
@@ -57,7 +59,7 @@ class AboutWallets extends StatelessWidget {
             const SizedBox(height: 8),
             SimpleIconButton(
               onTap: () {
-                widgetStack.instance.push(
+                _widgetStack.push(
                   const GetWalletPage(),
                   event: ClickGetWalletEvent(),
                 );
