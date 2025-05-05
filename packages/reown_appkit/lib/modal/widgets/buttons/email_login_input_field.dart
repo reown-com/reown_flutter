@@ -39,7 +39,9 @@ class _EmailLoginInputFieldState extends State<EmailLoginInputField> {
 
   @override
   void dispose() {
-    _magicService.step.removeListener(_stepListener);
+    try {
+      _magicService.step.removeListener(_stepListener);
+    } catch (_) {}
     super.dispose();
   }
 

@@ -725,9 +725,9 @@ class ReownAppKitModal
   ];
 
   final List<Key> _allowedScreensWhenDisconnected = [
-    KeyConstants.qrCodePageKey,
-    KeyConstants.walletListLongPageKey,
     KeyConstants.walletListShortPageKey,
+    KeyConstants.walletListLongPageKey,
+    KeyConstants.qrCodePageKey,
     KeyConstants.selectNetworkPage,
   ];
 
@@ -1143,6 +1143,11 @@ class ReownAppKitModal
   @override
   Future<void> disconnect({bool disconnectAllSessions = true}) async {
     _checkInitialized();
+
+    if (!_appKit.core.relayClient.isConnected) {
+      onModalError.broadcast(ModalError('Websocket is not connected'));
+      return;
+    }
 
     _status = ReownAppKitModalStatus.initializing;
     _notify();
@@ -1743,15 +1748,8 @@ class ReownAppKitModal
   }
 
   Future<void> _cleanSession({SessionDelete? args, bool event = true}) async {
-    try {
-      final storedWalletId = _storage.get(StorageConstants.recentWalletId);
-      final walletId = storedWalletId?['walletId'];
-      await _deleteStorage();
-      await _explorerService.storeRecentWalletId(walletId);
-      _blockchainService.dispose();
-    } catch (_) {
-      await _deleteStorage();
-    }
+    _blockchainService.dispose();
+    await _deleteStorage();
     if (event) {
       onModalDisconnect.broadcast(ModalDisconnect(
         topic: args?.topic ?? _currentSession?.topic,
@@ -1849,39 +1847,36 @@ class ReownAppKitModal
 
   void _unregisterListeners() {
     WidgetsBinding.instance.removeObserver(this);
-    onModalError.unsubscribe(_onModalError);
+    onModalError.unsubscribeAll();
+    onModalDisconnect.unsubscribeAll();
+    onModalConnect.unsubscribeAll();
+    onModalUpdate.unsubscribeAll();
+    onModalNetworkChange.unsubscribeAll();
 
     // Magic
-    _magicService.onMagicLoginSuccess.unsubscribe(_onMagicLoginEvent);
-    _magicService.onMagicError.unsubscribe(_onMagicErrorEvent);
-    _magicService.onMagicUpdate.unsubscribe(_onMagicSessionUpdateEvent);
-    _magicService.onMagicRpcRequest.unsubscribe(_onMagicRequest);
+    _magicService.onMagicConnect.unsubscribeAll();
+    _magicService.onMagicLoginSuccess.unsubscribeAll();
+    _magicService.onMagicError.unsubscribeAll();
+    _magicService.onMagicUpdate.unsubscribeAll();
+    _magicService.onMagicRpcRequest.unsubscribeAll();
     //
     // Coinbase
-    _coinbaseService.onCoinbaseConnect.unsubscribe(_onCoinbaseConnect);
-    _coinbaseService.onCoinbaseError.unsubscribe(_onCoinbaseError);
-    _coinbaseService.onCoinbaseSessionUpdate.unsubscribe(
-      _onCoinbaseSessionUpdateEvent,
-    );
+    _coinbaseService.onCoinbaseConnect.unsubscribeAll();
+    _coinbaseService.onCoinbaseError.unsubscribeAll();
+    _coinbaseService.onCoinbaseSessionUpdate.unsubscribeAll();
     // Phantom
-    _phantomService.onPhantomConnect.unsubscribe(_onPhantomConnect);
-    _phantomService.onPhantomError.subscribe(_onPhantomError);
+    _phantomService.onPhantomConnect.unsubscribeAll();
+    _phantomService.onPhantomError.unsubscribeAll();
     //
-    _appKit.onSessionAuthResponse.unsubscribe(_onSessionAuthResponse);
-    _appKit.onSessionConnect.unsubscribe(_onSessionConnect);
-    _appKit.onSessionDelete.unsubscribe(_onSessionDelete);
-    _appKit.onSessionEvent.unsubscribe(_onSessionEvent);
-    _appKit.onSessionUpdate.unsubscribe(_onSessionUpdate);
+    _appKit.onSessionAuthResponse.unsubscribeAll();
+    _appKit.onSessionConnect.unsubscribeAll();
+    _appKit.onSessionDelete.unsubscribeAll();
+    _appKit.onSessionEvent.unsubscribeAll();
+    _appKit.onSessionUpdate.unsubscribeAll();
     // Core
-    _appKit.core.relayClient.onRelayClientConnect.unsubscribe(
-      _onRelayClientConnect,
-    );
-    _appKit.core.relayClient.onRelayClientError.unsubscribe(
-      _onRelayClientError,
-    );
-    _appKit.core.relayClient.onRelayClientDisconnect.unsubscribe(
-      _onRelayClientDisconnect,
-    );
+    _appKit.core.relayClient.onRelayClientConnect.unsubscribeAll();
+    _appKit.core.relayClient.onRelayClientError.unsubscribeAll();
+    _appKit.core.relayClient.onRelayClientDisconnect.unsubscribeAll();
 
     _appKit.core.connectivity.isOnline.removeListener(_connectivityListener);
   }
@@ -1925,7 +1920,6 @@ extension _EmailConnectorExtension on ReownAppKitModal {
       await _setSesionAndChainData(session);
       onModalConnect.broadcast(ModalConnect(session));
       if (_selectedWallet == null) {
-        await _storage.delete(StorageConstants.recentWalletId);
         await _storage.delete(StorageConstants.connectedWalletData);
       }
       //
@@ -2201,7 +2195,6 @@ extension _AppKitModalExtension on ReownAppKitModal {
         name: 'WalletConnect',
         method: AnalyticsPlatform.qrcode,
       ));
-      await _storage.delete(StorageConstants.recentWalletId);
       await _storage.delete(StorageConstants.connectedWalletData);
     } else {
       _explorerService.storeConnectedWallet(_selectedWallet);

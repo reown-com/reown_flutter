@@ -48,7 +48,10 @@ abstract class IRelayClient {
     Map<String, dynamic>? tvf,
   });
 
-  Future<String> subscribe({required String topic});
+  Future<String> subscribe({
+    required String topic,
+    required TransportType transportType,
+  });
 
   Future<void> unsubscribe({required String topic});
 

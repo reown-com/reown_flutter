@@ -1,3 +1,7 @@
+## 1.1.5
+
+- Link Mode enhancements
+
 ## 1.1.4+1
 
 - Dependency updates

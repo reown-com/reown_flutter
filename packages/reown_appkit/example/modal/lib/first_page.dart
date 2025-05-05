@@ -5,7 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class FirstPage extends StatefulWidget {
-  const FirstPage({super.key});
+  const FirstPage({
+    super.key,
+    required this.toggleTheme,
+    required this.toggleBrightness,
+  });
+
+  final VoidCallback toggleTheme;
+  final VoidCallback toggleBrightness;
 
   @override
   State<FirstPage> createState() => _FirstPageState();
@@ -36,8 +43,8 @@ class _FirstPageState extends State<FirstPage> {
                         return MyHomePage(
                           prefs: snapshot.data!.first as SharedPreferences,
                           bundleId: snapshot.data!.last as String,
-                          toggleBrightness: () {},
-                          toggleTheme: () {},
+                          toggleBrightness: widget.toggleBrightness,
+                          toggleTheme: widget.toggleTheme,
                         );
                       },
                     ),

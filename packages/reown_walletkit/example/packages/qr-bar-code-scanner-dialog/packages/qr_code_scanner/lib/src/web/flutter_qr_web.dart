@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_web_libraries_in_flutter, library_private_types_in_public_api
+// ignore_for_file: avoid_web_libraries_in_flutter, library_private_types_in_public_api, deprecated_member_use
 
 import 'dart:async';
 import 'dart:core';

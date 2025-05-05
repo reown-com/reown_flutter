@@ -102,7 +102,10 @@ class Pairing implements IPairing {
   }
 
   @override
-  Future<CreateResponse> create({List<List<String>>? methods}) async {
+  Future<CreateResponse> create({
+    List<List<String>>? methods,
+    TransportType transportType = TransportType.relay,
+  }) async {
     _checkInitialized();
     final String symKey = core.crypto.getUtils().generateRandomBytes32();
     final String topic = await core.crypto.setSymKey(symKey);
@@ -134,7 +137,10 @@ class Pairing implements IPairing {
     );
 
     await pairings.set(topic, pairing);
-    await core.relayClient.subscribe(topic: topic);
+    await core.relayClient.subscribe(
+      topic: topic,
+      transportType: transportType,
+    );
     await core.expirer.set(topic, expiry);
 
     return CreateResponse(
@@ -199,7 +205,10 @@ class Pairing implements IPairing {
     try {
       await pairings.set(topic, pairing);
       await core.crypto.setSymKey(symKey, overrideTopic: topic);
-      await core.relayClient.subscribe(topic: topic);
+      await core.relayClient.subscribe(
+        topic: topic,
+        transportType: TransportType.relay,
+      );
       await core.expirer.set(topic, expiry);
 
       onPairingCreate.broadcast(
@@ -655,7 +664,10 @@ class Pairing implements IPairing {
     // Resubscribe to all active pairings
     for (final PairingInfo pairing in pairings.getAll()) {
       core.logger.i('[$runtimeType] Resubscribe to pairing: ${pairing.topic}');
-      await core.relayClient.subscribe(topic: pairing.topic);
+      await core.relayClient.subscribe(
+        topic: pairing.topic,
+        transportType: TransportType.relay,
+      );
     }
   }
 
@@ -760,11 +772,15 @@ class Pairing implements IPairing {
     ReceiverPublicKey? receiverPublicKey = topicToReceiverPublicKey.get(
       event.topic,
     );
-    core.logger.d(
-      '[$runtimeType] '
-      '{$isLinkMode ? "_onLinkModeMessageEvent" : "_onRelayMessageEvent"}, '
-      'receiverPublicKey: $receiverPublicKey',
-    );
+    isLinkMode
+        ? core.logger.d(
+            '[$runtimeType] '
+            '_onLinkModeMessageEvent, receiverPublicKey: $receiverPublicKey',
+          )
+        : core.logger.d(
+            '[$runtimeType] '
+            '_onRelayMessageEvent, receiverPublicKey: $receiverPublicKey',
+          );
     // If there was a public key, delete it. One use.
     if (receiverPublicKey != null) {
       await topicToReceiverPublicKey.delete(event.topic);
@@ -779,11 +795,15 @@ class Pairing implements IPairing {
       ),
     );
 
-    core.logger.d(
-      '[$runtimeType] '
-      '{$isLinkMode ? "_onLinkModeMessageEvent" : "_onRelayMessageEvent"}, '
-      'payloadString: $payloadString',
-    );
+    isLinkMode
+        ? core.logger.d(
+            '[$runtimeType] '
+            '_onLinkModeMessageEvent, payloadString: $payloadString',
+          )
+        : core.logger.d(
+            '[$runtimeType] '
+            '_onRelayMessageEvent, payloadString: $payloadString',
+          );
 
     if (payloadString == null) {
       return;
