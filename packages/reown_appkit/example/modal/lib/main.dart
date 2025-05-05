@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:reown_appkit_example/home_page.dart';
+import 'package:reown_appkit_example/first_page.dart';
 import 'package:reown_appkit_example/services/deep_link_handler.dart';
 import 'package:reown_appkit_example/utils/constants.dart';
 import 'package:reown_appkit/reown_appkit.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,14 +52,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.didChangePlatformBrightness();
   }
 
-  Future<List<Object>> _initDeps() async {
-    final deps = await Future.wait([
-      SharedPreferences.getInstance(),
-      ReownCoreUtils.getPackageName(),
-    ]);
-    return deps;
-  }
-
   @override
   Widget build(BuildContext context) {
     return ReownAppKitModalTheme(
@@ -69,22 +60,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: StringConstants.pageTitle,
-        // home: FirstPage(),
-        home: FutureBuilder<List<Object>>(
-          future: _initDeps(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return MyHomePage(
-                prefs: snapshot.data!.first as SharedPreferences,
-                bundleId: snapshot.data!.last as String,
-                toggleTheme: () => _toggleTheme(),
-                toggleBrightness: () => _toggleBrightness(),
-              );
-            }
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          },
+        home: FirstPage(
+          toggleTheme: _toggleTheme,
+          toggleBrightness: _toggleBrightness,
         ),
       ),
     );

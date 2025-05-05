@@ -34,16 +34,17 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late OverlayController overlay;
-  late ReownAppKitModal _appKitModal;
+  ReownAppKitModal? _appKitModal;
   late SIWESampleWebService _siweTestService;
   bool _initialized = false;
+  bool _initializing = false;
 
   @override
   void initState() {
     super.initState();
     _siweTestService = SIWESampleWebService();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _initializeService(widget.prefs);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _initializeService(widget.prefs);
     });
   }
 
@@ -165,9 +166,9 @@ class _MyHomePageState extends State<MyHomePage> {
           } catch (error) {
             debugPrint('[SIWEConfig] getSession error: $error');
             // Fallback patch for testing purposes in case SIWE backend has issues
-            final chainId = _appKitModal.selectedChain!.chainId;
+            final chainId = _appKitModal!.selectedChain!.chainId;
             final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-            final address = _appKitModal.session!.getAddress(namespace)!;
+            final address = _appKitModal!.session!.getAddress(namespace)!;
             return SIWESession(address: address, chains: [chainId]);
           }
         },
@@ -213,7 +214,9 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _initializeService(SharedPreferences prefs) async {
+  Future<void> _initializeService(SharedPreferences prefs) async {
+    _initialized = false;
+    _initializing = true;
     final analyticsValue = prefs.getBool('appkit_analytics') ?? true;
     // ignore: unused_local_variable
     final emailWalletValue = prefs.getBool('appkit_email_wallet') ?? true;
@@ -266,7 +269,7 @@ class _MyHomePageState extends State<MyHomePage> {
         context: context,
         projectId: DartDefines.projectId,
         logLevel: LogLevel.all,
-        // disconnectOnDispose: false,
+        disconnectOnDispose: false,
         metadata: _pairingMetadata(),
         // siweConfig: _siweConfig(siweAuthValue),
         // featuresConfig: emailWalletValue ? _featuresConfig() : null,
@@ -323,7 +326,7 @@ class _MyHomePageState extends State<MyHomePage> {
       );
       overlay = OverlayController(
         const Duration(milliseconds: 200),
-        appKitModal: _appKitModal,
+        appKitModal: _appKitModal!,
       );
       _toggleOverlay();
       setState(() => _initialized = true);
@@ -331,32 +334,11 @@ class _MyHomePageState extends State<MyHomePage> {
       debugPrint('⛔️ ${e.message}');
       return;
     }
-    _appKitModal.appKit!.core.addLogListener(_logListener);
-    // modal specific subscriptions
-    _appKitModal.onModalConnect.subscribe(_onModalConnect);
-    _appKitModal.onModalUpdate.subscribe(_onModalUpdate);
-    _appKitModal.onModalNetworkChange.subscribe(_onModalNetworkChange);
-    _appKitModal.onModalDisconnect.subscribe(_onModalDisconnect);
-    _appKitModal.onModalError.subscribe(_onModalError);
-    // session related subscriptions
-    _appKitModal.onSessionExpireEvent.subscribe(_onSessionExpired);
-    _appKitModal.onSessionUpdateEvent.subscribe(_onSessionUpdate);
-    _appKitModal.onSessionEventEvent.subscribe(_onSessionEvent);
-    // relayClient subscriptions
-    _appKitModal.appKit!.core.relayClient.onRelayClientConnect.subscribe(
-      _onRelayClientConnect,
-    );
-    _appKitModal.appKit!.core.relayClient.onRelayClientError.subscribe(
-      _onRelayClientError,
-    );
-    _appKitModal.appKit!.core.relayClient.onRelayClientDisconnect.subscribe(
-      _onRelayClientDisconnect,
-    );
-    //
-    await _appKitModal.init();
+    await _attachListenersAndInit();
 
-    DeepLinkHandler.init(_appKitModal);
+    DeepLinkHandler.init(_appKitModal!);
     DeepLinkHandler.checkInitialLink();
+    _initializing = false;
 
     setState(() {});
   }
@@ -365,31 +347,77 @@ class _MyHomePageState extends State<MyHomePage> {
     debugPrint('[AppKit] $event');
   }
 
-  @override
-  void dispose() {
-    _appKitModal.appKit!.core.removeLogListener(_logListener);
-    //
-    _appKitModal.appKit!.core.relayClient.onRelayClientConnect.unsubscribe(
+  void _connectivity() async {
+    final connected = _appKitModal!.appKit!.core.connectivity.isOnline.value;
+    if (connected && !_appKitModal!.status.isInitialized && !_initializing) {
+      debugPrint('connected: $connected, ${_appKitModal!.status}');
+      _initializing = true;
+      await _removeListenersAndDispose();
+      await _initializeService(widget.prefs);
+    }
+  }
+
+  Future<void> _attachListenersAndInit() async {
+    _appKitModal!.appKit!.core.addLogListener(_logListener);
+    // modal specific subscriptions
+    _appKitModal!.onModalConnect.subscribe(_onModalConnect);
+    _appKitModal!.onModalUpdate.subscribe(_onModalUpdate);
+    _appKitModal!.onModalNetworkChange.subscribe(_onModalNetworkChange);
+    _appKitModal!.onModalDisconnect.subscribe(_onModalDisconnect);
+    _appKitModal!.onModalError.subscribe(_onModalError);
+    // session related subscriptions
+    _appKitModal!.onSessionExpireEvent.subscribe(_onSessionExpired);
+    _appKitModal!.onSessionUpdateEvent.subscribe(_onSessionUpdate);
+    _appKitModal!.onSessionEventEvent.subscribe(_onSessionEvent);
+    // relayClient subscriptions
+    _appKitModal!.appKit!.core.relayClient.onRelayClientConnect.subscribe(
       _onRelayClientConnect,
     );
-    _appKitModal.appKit!.core.relayClient.onRelayClientError.unsubscribe(
+    _appKitModal!.appKit!.core.relayClient.onRelayClientError.subscribe(
       _onRelayClientError,
     );
-    _appKitModal.appKit!.core.relayClient.onRelayClientDisconnect.unsubscribe(
+    _appKitModal!.appKit!.core.relayClient.onRelayClientDisconnect.subscribe(
+      _onRelayClientDisconnect,
+    );
+    _appKitModal!.appKit!.core.connectivity.isOnline.addListener(_connectivity);
+    //
+    await _appKitModal!.init();
+  }
+
+  Future<void> _removeListenersAndDispose() async {
+    _appKitModal!.appKit!.core.removeLogListener(_logListener);
+    //
+    _appKitModal!.appKit!.core.relayClient.onRelayClientConnect.unsubscribe(
+      _onRelayClientConnect,
+    );
+    _appKitModal!.appKit!.core.relayClient.onRelayClientError.unsubscribe(
+      _onRelayClientError,
+    );
+    _appKitModal!.appKit!.core.relayClient.onRelayClientDisconnect.unsubscribe(
       _onRelayClientDisconnect,
     );
     //
-    _appKitModal.onModalConnect.unsubscribe(_onModalConnect);
-    _appKitModal.onModalUpdate.unsubscribe(_onModalUpdate);
-    _appKitModal.onModalNetworkChange.unsubscribe(_onModalNetworkChange);
-    _appKitModal.onModalDisconnect.unsubscribe(_onModalDisconnect);
-    _appKitModal.onModalError.unsubscribe(_onModalError);
+    _appKitModal!.onModalConnect.unsubscribe(_onModalConnect);
+    _appKitModal!.onModalUpdate.unsubscribe(_onModalUpdate);
+    _appKitModal!.onModalNetworkChange.unsubscribe(_onModalNetworkChange);
+    _appKitModal!.onModalDisconnect.unsubscribe(_onModalDisconnect);
+    _appKitModal!.onModalError.unsubscribe(_onModalError);
     //
-    _appKitModal.onSessionExpireEvent.unsubscribe(_onSessionExpired);
-    _appKitModal.onSessionUpdateEvent.unsubscribe(_onSessionUpdate);
-    _appKitModal.onSessionEventEvent.unsubscribe(_onSessionEvent);
+    _appKitModal!.onSessionExpireEvent.unsubscribe(_onSessionExpired);
+    _appKitModal!.onSessionUpdateEvent.unsubscribe(_onSessionUpdate);
+    _appKitModal!.onSessionEventEvent.unsubscribe(_onSessionEvent);
     //
-    // _appKitModal.dispose();
+    _appKitModal!.appKit!.core.connectivity.isOnline.removeListener(
+      _connectivity,
+    );
+    await _appKitModal!.dispose();
+    _appKitModal = null;
+    _initialized = false;
+  }
+
+  @override
+  void dispose() {
+    _removeListenersAndDispose();
     super.dispose();
   }
 
@@ -418,7 +446,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // (for instance if user disconnected the dapp directly within Coinbase Wallet)
     // Then Coinbase Wallet won't emit any event
     if ((event?.message ?? '').contains('Coinbase Wallet Error')) {
-      _appKitModal.disconnect();
+      _appKitModal!.disconnect();
     }
     setState(() {});
   }
@@ -490,8 +518,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     const SizedBox.square(dimension: 6.0),
-                    _ButtonsView(appKit: _appKitModal),
-                    _ConnectedView(appKit: _appKitModal),
+                    _ButtonsView(appKit: _appKitModal!),
+                    _ConnectedView(appKit: _appKitModal!),
                   ],
                 ),
               ),
@@ -502,7 +530,7 @@ class _MyHomePageState extends State<MyHomePage> {
           toggleOverlay: _toggleOverlay,
           toggleBrightness: widget.toggleBrightness,
           toggleTheme: widget.toggleTheme,
-          appKitModal: _appKitModal,
+          appKitModal: _appKitModal!,
         ),
       ),
       onEndDrawerChanged: (isOpen) {
@@ -522,7 +550,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // floatingActionButton: CircleAvatar(
       //   radius: 6.0,
       //   backgroundColor: _initialized &&
-      //           _appKitModal.appKit?.core.relayClient.isConnected == true
+      //           _appKitModal!.appKit?.core.relayClient.isConnected == true
       //       ? Colors.green
       //       : Colors.red,
       // ),
@@ -530,8 +558,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> _refreshData() async {
-    await _appKitModal.reconnectRelay();
-    await _appKitModal.loadAccountData();
+    await _appKitModal!.reconnectRelay();
+    await _appKitModal!.loadAccountData();
     setState(() {});
   }
 }
@@ -563,17 +591,18 @@ class _ButtonsView extends StatelessWidget {
               appKit: appKit,
               // UNCOMMENT TO USE A CUSTOM BUTTON
               // TO HIDE AppKitModalConnectButton BUT STILL RENDER IT (NEEDED) JUST USE SizedBox.shrink()
-              // custom: ElevatedButton(
-              //   onPressed: () {
-              //     // appKit.openModalView(ReownAppKitModalQRCodePage());
-              //     // appKit.openModalView(ReownAppKitModalSelectNetworkPage());
-              //     // appKit.openModalView(ReownAppKitModalAllWalletsPage());
-              //     // appKit.openModalView(ReownAppKitModalMainWalletsPage());
-              //   },
-              //   child: appKit.isConnected
-              //       ? Text('${appKit.session!.address!.substring(0, 7)}...')
-              //       : const Text('CONNECT WALLET'),
-              // ),
+              custom: ElevatedButton(
+                onPressed: () {
+                  // appKit.openModalView(ReownAppKitModalQRCodePage());
+                  // appKit.openModalView(ReownAppKitModalSelectNetworkPage());
+                  // appKit.openModalView(ReownAppKitModalAllWalletsPage());
+                  appKit.openModalView(ReownAppKitModalMainWalletsPage());
+                },
+                child: appKit.isConnected
+                    ? Text(
+                        '${appKit.session!.getAddress('eip155')!.substring(0, 7)}...')
+                    : const Text('CONNECT WALLET'),
+              ),
             ),
           ],
         ),

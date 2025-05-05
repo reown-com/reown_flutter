@@ -1,6 +1,7 @@
-## 1.4.3
+## 1.4.2+2
 
-- Core dependency update
+- Link Mode enhancements
+- Bug fixes and enhancements
 
 ## 1.4.2+1
 

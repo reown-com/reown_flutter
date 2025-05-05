@@ -18,25 +18,24 @@ import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.
 import 'package:reown_appkit/reown_appkit.dart';
 
 class CoinbaseService implements ICoinbaseService {
-  late final String _iconImage;
+  String _iconImage = '';
+  ReownAppKitModalWalletInfo? _coinbaseWalletData;
+
   late final PairingMetadata _metadata;
-  late final ReownAppKitModalWalletInfo _walletData;
   late final IReownCore _core;
   late bool _enabled;
 
   @override
   ConnectionMetadata get walletMetadata => ConnectionMetadata(
         metadata: PairingMetadata(
-          name: _walletData.listing.name,
-          description: _walletData.listing.description ?? '',
-          url: _walletData.listing.homepage,
-          icons: [
-            _iconImage,
-          ],
+          name: _coinbaseWalletData?.listing.name ?? 'Coinbase Wallet',
+          description: _coinbaseWalletData?.listing.description ?? '',
+          url: _coinbaseWalletData?.listing.homepage ?? '',
+          icons: [_iconImage],
           redirect: Redirect(
-            native: _walletData.listing.mobileLink,
-            universal: _walletData.listing.linkMode,
-            linkMode: _walletData.listing.linkMode != null,
+            native: _coinbaseWalletData?.listing.mobileLink,
+            universal: _coinbaseWalletData?.listing.linkMode,
+            linkMode: _coinbaseWalletData?.listing.linkMode != null,
           ),
         ),
         publicKey: '',
@@ -82,20 +81,19 @@ class CoinbaseService implements ICoinbaseService {
   Future<void> init() async {
     if (!_enabled) return;
     // Configure SDK for each platform
-    _walletData = (await _explorerService.getCoinbaseWalletObject()) ??
+    _coinbaseWalletData = (await _explorerService.getCoinbaseWalletObject()) ??
         ReownAppKitModalWalletInfo(
           listing: CoinbaseUtils.defaultListingData,
           installed: false,
           recent: false,
         );
 
-    _iconImage = _explorerService.getWalletImageUrl(
-      _walletData.listing.imageId,
-    );
+    final imageId = _coinbaseWalletData?.listing.imageId ?? '';
+    _iconImage = _explorerService.getWalletImageUrl(imageId);
 
     final walletLink = (walletMetadata.metadata.redirect?.linkMode == true
-            ? _walletData.listing.linkMode
-            : _walletData.listing.mobileLink) ??
+            ? _coinbaseWalletData?.listing.linkMode
+            : _coinbaseWalletData?.listing.mobileLink) ??
         '';
 
     final dappRedirect = _metadata.redirect;

@@ -37,6 +37,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>2</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSApplicationQueriesSchemes</key>
@@ -64,7 +66,6 @@
 		<string>halowallet</string>
 		<string>spotonchain</string>
 		<string>rainbow</string>
-		<string>obvious</string>
 		<string>robinhood-wallet</string>
 		<string>cbwallet</string>
 		<string>okto</string>
@@ -89,8 +90,6 @@
 		<string>wcflutterwallet-internal</string>
 		<string>rn-web3wallet-internal</string>
 	</array>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
@@ -99,20 +98,20 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
-	<key>UISupportedInterfaceOrientations</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UISupportedInterfaceOrientations~ipad</key>
-	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-		<string>UIInterfaceOrientationPortraitUpsideDown</string>
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+    <key>UISupportedInterfaceOrientations~ipad</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+    <false/>
 </dict>
 </plist>

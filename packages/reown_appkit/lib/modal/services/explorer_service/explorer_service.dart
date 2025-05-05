@@ -90,8 +90,8 @@ class ExplorerService implements IExplorerService {
   @override
   bool get canPaginate => _canPaginate;
 
-  late final String _bundleId;
-  late final Set<String> _chains;
+  String _bundleId = '';
+  Set<String> _chains = {};
   late final Map<String, RequiredNamespace> namespaces;
 
   ExplorerService({
@@ -175,16 +175,10 @@ class ExplorerService implements IExplorerService {
       );
       if (walletData != null) {
         walletInfo = ReownAppKitModalWalletInfo.fromJson(walletData);
-        if (!walletInfo.installed) {
-          walletInfo = null;
+        if (walletInfo.installed) {
+          await _updateRecentWallet(walletInfo);
         }
       }
-    }
-
-    if (_core.storage.has(StorageConstants.recentWalletId)) {
-      final storedWalletId = _core.storage.get(StorageConstants.recentWalletId);
-      final walletId = storedWalletId?['walletId'];
-      await _updateRecentWalletId(walletInfo, walletId: walletId);
     }
   }
 
@@ -340,21 +334,18 @@ class ExplorerService implements IExplorerService {
 
   @override
   Future<void> storeConnectedWallet(
-      ReownAppKitModalWalletInfo? walletInfo) async {
+    ReownAppKitModalWalletInfo? walletInfo,
+  ) async {
     if (walletInfo == null) return;
+
+    final walletData = walletInfo.copyWith(installed: true, recent: true);
     await _core.storage.set(
       StorageConstants.connectedWalletData,
-      walletInfo.toJson(),
+      walletData.toJson(),
     );
-    await _updateRecentWalletId(walletInfo, walletId: walletInfo.listing.id);
-  }
-
-  @override
-  Future<void> storeRecentWalletId(String? walletId) async {
-    if (walletId == null) return;
-    await _core.storage.set(
-      StorageConstants.recentWalletId,
-      {'walletId': walletId},
+    await _updateRecentWallet(walletInfo);
+    _core.logger.d(
+      '[$runtimeType] storeConnectedWallet ${walletData.toJson()}',
     );
   }
 
@@ -379,25 +370,23 @@ class ExplorerService implements IExplorerService {
     return null;
   }
 
-  Future<void> _updateRecentWalletId(
-    ReownAppKitModalWalletInfo? walletInfo, {
-    String? walletId,
-  }) async {
+  Future<void> _updateRecentWallet(ReownAppKitModalWalletInfo? wallet) async {
     try {
-      final recentId = walletInfo?.listing.id ?? walletId;
-      await storeRecentWalletId(recentId);
-
       final currentListings = List<ReownAppKitModalWalletInfo>.from(
         _listings.map((e) => e.copyWith(recent: false)).toList(),
       );
-      final recentWallet = currentListings.firstWhereOrNull(
-        (e) => e.listing.id == recentId,
+      final walletData = wallet!.copyWith(recent: true, installed: true);
+
+      final position = currentListings.indexWhere(
+        (e) => e.listing.id == walletData.listing.id,
       );
-      if (recentWallet != null) {
-        final rw = recentWallet.copyWith(recent: true);
-        currentListings.removeWhere((e) => e.listing.id == rw.listing.id);
-        currentListings.insert(0, rw);
+      if (position >= 0) {
+        currentListings.removeWhere(
+          (e) => e.listing.id == walletData.listing.id,
+        );
       }
+      currentListings.insert(0, walletData);
+
       _listings = currentListings;
       listings.value = _listings;
     } catch (e, s) {
@@ -429,7 +418,7 @@ class ExplorerService implements IExplorerService {
     final exclude = excludedIds.isNotEmpty ? excludedIds.join(',') : null;
 
     _currentSearchValue = query;
-    final newListins = await _fetchListings(
+    List<ReownAppKitModalWalletInfo> newListings = await _fetchListings(
       params: RequestParams(
         page: 1,
         entries: 100,
@@ -440,7 +429,14 @@ class ExplorerService implements IExplorerService {
       updateCount: false,
     );
 
-    listings.value = newListins;
+    if (_currentSearchValue != null) {
+      final samples = (await _loadWCSampleWallets()).where(
+        (e) => e.listing.name.toLowerCase().contains(query!.toLowerCase()),
+      );
+      newListings = [...samples, ...newListings];
+    }
+
+    listings.value = newListings;
     _debouncer.run(() => isSearching.value = false);
   }
 
