@@ -152,6 +152,7 @@ class ReownSign implements IReownSign {
     if (pTopic == null) {
       final CreateResponse newTopicAndUri = await core.pairing.create(
         methods: methods,
+        transportType: TransportType.relay,
       );
       pTopic = newTopicAndUri.topic;
       uri = newTopicAndUri.uri;
@@ -248,7 +249,10 @@ class ReownSign implements IReownSign {
       // Delete the proposal, we are done with it
       await _deleteProposal(requestId);
 
-      await core.relayClient.subscribe(topic: sessionTopic);
+      await core.relayClient.subscribe(
+        topic: sessionTopic,
+        transportType: TransportType.relay,
+      );
       await core.pairing.activate(topic: topic);
     } catch (e) {
       // Get the completer and finish it with an error
@@ -324,7 +328,10 @@ class ReownSign implements IReownSign {
       metadata: proposal.proposer.metadata,
     );
 
-    await core.relayClient.subscribe(topic: sessionTopic);
+    await core.relayClient.subscribe(
+      topic: sessionTopic,
+      transportType: TransportType.relay,
+    );
 
     final int expiry = ReownCoreUtils.calculateExpiry(
       ReownConstants.SEVEN_DAYS,
@@ -865,7 +872,10 @@ class ReownSign implements IReownSign {
     // Subscribe to all the sessions
     for (final SessionData session in sessions.getAll()) {
       core.logger.i('[$runtimeType] Resubscribe to session: ${session.topic}');
-      await core.relayClient.subscribe(topic: session.topic);
+      await core.relayClient.subscribe(
+        topic: session.topic,
+        transportType: session.transportType,
+      );
     }
   }
 
@@ -2081,15 +2091,16 @@ class ReownSign implements IReownSign {
     final walletUniversalLink = (walletLink ?? '');
     final linkModeApps = core.getLinkModeSupportedApps();
     final containsLink = linkModeApps.contains(walletLink);
-    core.logger.d(
-      '[$runtimeType] _isLinkModeAuthenticate, selfLinkMode: $selfLinkMode, '
-      'selfLink: $selfLink, walletUniversalLink: $walletUniversalLink '
-      'linkModeApps: $linkModeApps, containsLink: $containsLink',
-    );
-    return selfLinkMode &&
+    final isLinkMode = selfLinkMode &&
         selfLink.isNotEmpty &&
         walletUniversalLink.isNotEmpty &&
         containsLink;
+    core.logger.d(
+      '[$runtimeType] _isLinkModeAuthenticate: $isLinkMode, selfLinkMode: $selfLinkMode, '
+      'selfLink: $selfLink, walletUniversalLink: $walletUniversalLink '
+      'linkModeApps: $linkModeApps, containsLink: $containsLink',
+    );
+    return isLinkMode;
   }
 
   @override
@@ -2121,6 +2132,7 @@ class ReownSign implements IReownSign {
     if (pTopic == null) {
       final CreateResponse pairing = await core.pairing.create(
         methods: methods,
+        transportType: transportType,
       );
       pTopic = pairing.topic;
       connectionUri = pairing.uri;
@@ -2158,7 +2170,10 @@ class ReownSign implements IReownSign {
     }
 
     // Subscribe to the responseTopic because we expect the response to use this topic
-    await core.relayClient.subscribe(topic: responseTopic);
+    await core.relayClient.subscribe(
+      topic: responseTopic,
+      transportType: transportType,
+    );
 
     final id = JsonRpcUtils.payloadId();
     final fallbackId = JsonRpcUtils.payloadId();
@@ -2418,7 +2433,11 @@ class ReownSign implements IReownSign {
             isLinkMode ? TransportType.linkMode : TransportType.relay,
       );
 
-      await core.relayClient.subscribe(topic: sessionTopic);
+      await core.relayClient.subscribe(
+        topic: sessionTopic,
+        transportType:
+            isLinkMode ? TransportType.linkMode : TransportType.relay,
+      );
       await sessions.set(sessionTopic, session);
       await core.pairing.updateMetadata(
         topic: pairingTopic,
@@ -2463,6 +2482,11 @@ class ReownSign implements IReownSign {
             transportType: TransportType.linkMode,
           );
         }
+      }
+      if (!matchesLink) {
+        core.logger.i(
+          '[$runtimeType] universal link set in redirect metadata object does not match wallet\'s universal link',
+        );
       }
     }
   }
@@ -2576,7 +2600,10 @@ class ReownSign implements IReownSign {
         transportType: pendingRequest.transportType,
       );
 
-      await core.relayClient.subscribe(topic: sessionTopic);
+      await core.relayClient.subscribe(
+        topic: sessionTopic,
+        transportType: pendingRequest.transportType,
+      );
       await sessions.set(sessionTopic, session);
       await core.pairing.updateMetadata(
         topic: pendingRequest.pairingTopic,

@@ -685,6 +685,10 @@ class _MyHomePageState extends State<MyHomePage> {
   void _onModalConnect(ModalConnect? event) async {
     debugPrint('[ExampleApp] _onModalConnect ${event?.session.toJson()}');
     setState(() {});
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('AppKit is connected'),
+      duration: Duration(seconds: 2),
+    ));
   }
 
   void _onModalUpdate(ModalConnect? event) {
@@ -711,5 +715,11 @@ class _MyHomePageState extends State<MyHomePage> {
       _appKitModal!.disconnect();
     }
     setState(() {});
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(
+        event?.message ?? event?.description ?? 'An error occurred',
+      ),
+      duration: Duration(seconds: 2),
+    ));
   }
 }

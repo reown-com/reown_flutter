@@ -11,7 +11,7 @@ import 'qr_bar_code_scanner_dialog_platform_interface.dart';
 class MethodChannelQrBarCodeScannerDialog
     extends QrBarCodeScannerDialogPlatform {
   /// The method channel used to interact with the native platform.
-  @visibleForTesting
+  // @visibleForTesting
   final methodChannel = const MethodChannel('qr_bar_code_scanner_dialog');
 
   @override

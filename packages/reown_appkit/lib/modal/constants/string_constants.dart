@@ -37,8 +37,7 @@ class StorageConstants {
   static const prefix =
       '${CoreConstants.X_SDK_TYPE}:${CoreConstants.X_SDK_VERSION}//';
 
-  static const String recentWalletId = '${prefix}recentWallet';
-  static const String connectedWalletData = '${prefix}walletData';
+  static const String connectedWalletData = '${prefix}connectedwalletData';
   static const String selectedChainId = '${prefix}selectedChainId';
   static const String modalSession = '${prefix}session';
   static const String phantomSession = '${prefix}phantomSession';

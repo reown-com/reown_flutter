@@ -14,11 +14,12 @@ import 'package:reown_appkit/modal/services/third_party_wallet_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class PhantomService implements IPhantomService {
-  late final String _iconImage;
+  String _iconImage = '';
+  ReownAppKitModalWalletInfo? _phantomWalletData;
+  PhantomHelper? _phantomHelper;
+
   late final PairingMetadata _metadata;
-  late final ReownAppKitModalWalletInfo _phantomWalletData;
   late final IReownCore _core;
-  late final PhantomHelper _phantomHelper;
 
   String? _selectedChainId;
 
@@ -27,14 +28,14 @@ class PhantomService implements IPhantomService {
   @override
   ConnectionMetadata get walletMetadata => ConnectionMetadata(
         metadata: PairingMetadata(
-          name: _phantomWalletData.listing.name,
-          description: _phantomWalletData.listing.description ?? '',
-          url: _phantomWalletData.listing.homepage,
+          name: _phantomWalletData?.listing.name ?? 'Phantom Wallet',
+          description: _phantomWalletData?.listing.description ?? '',
+          url: _phantomWalletData?.listing.homepage ?? '',
           icons: [_iconImage],
           redirect: Redirect(
-            native: _phantomWalletData.listing.mobileLink,
-            universal: _phantomWalletData.listing.linkMode,
-            linkMode: _phantomWalletData.listing.linkMode != null,
+            native: _phantomWalletData?.listing.mobileLink,
+            universal: _phantomWalletData?.listing.linkMode,
+            linkMode: _phantomWalletData?.listing.linkMode != null,
           ),
         ),
         publicKey: '',
@@ -70,9 +71,8 @@ class PhantomService implements IPhantomService {
           recent: false,
         );
 
-    _iconImage = _explorerService.getWalletImageUrl(
-      _phantomWalletData.listing.imageId,
-    );
+    final imageId = _phantomWalletData?.listing.imageId ?? '';
+    _iconImage = _explorerService.getWalletImageUrl(imageId);
 
     final dappRedirect = (_metadata.redirect?.linkMode == true)
         ? _metadata.redirect?.universal
@@ -87,15 +87,16 @@ class PhantomService implements IPhantomService {
   }
 
   @override
-  Future<String> get dappPublicKey async => _phantomHelper.dappPublicKey;
+  Future<String> get dappPublicKey async => _phantomHelper?.dappPublicKey ?? '';
 
   @override
-  Future<String> get walletPublicKey async => _phantomHelper.walletPublicKey;
+  Future<String> get walletPublicKey async =>
+      _phantomHelper?.walletPublicKey ?? '';
 
   @override
   Future<bool> isConnected() async {
     try {
-      return _phantomHelper.restoreSession();
+      return _phantomHelper!.restoreSession();
     } catch (e, s) {
       _core.logger.e('[$runtimeType] isConnected $e', stackTrace: s);
     }
@@ -126,7 +127,7 @@ class PhantomService implements IPhantomService {
       }
 
       final selectedCluster = PhantomUtils.walletClusters[_selectedChainId];
-      final phantomUri = _phantomHelper.buildConnectionUri(
+      final phantomUri = _phantomHelper?.buildConnectionUri(
         cluster: selectedCluster,
       );
       await ReownCoreUtils.openURL(phantomUri.toString());
@@ -159,19 +160,19 @@ class PhantomService implements IPhantomService {
       late final Uri requestUri;
       switch (request.method) {
         case 'solana_signMessage':
-          requestUri = _phantomHelper.buildSignMessageUri(
+          requestUri = _phantomHelper!.buildSignMessageUri(
             message: request.params['message'],
           );
         case 'solana_signTransaction':
-          requestUri = _phantomHelper.buildSignTransactionUri(
+          requestUri = _phantomHelper!.buildSignTransactionUri(
             transaction: request.params['transaction'],
           );
         case 'solana_signAllTransactions':
-          requestUri = _phantomHelper.buildUriSignAllTransactions(
+          requestUri = _phantomHelper!.buildUriSignAllTransactions(
             transactions: request.params['transactions'],
           );
         case 'solana_signAndSendTransaction':
-          requestUri = _phantomHelper.buildSignAndSendTransactionUri(
+          requestUri = _phantomHelper!.buildSignAndSendTransactionUri(
             transaction: request.params['transaction'],
           );
         default:
@@ -194,7 +195,7 @@ class PhantomService implements IPhantomService {
   Future<void> disconnect() async {
     await _checkInstalled();
     try {
-      final disconnectUri = _phantomHelper.buildDisconnectUri();
+      final disconnectUri = _phantomHelper?.buildDisconnectUri();
       await ReownCoreUtils.openURL(disconnectUri.toString());
     } catch (e, s) {
       final errorMessage = '${walletMetadata.metadata.name} disconnect error';
@@ -205,12 +206,12 @@ class PhantomService implements IPhantomService {
   }
 
   @override
-  bool get isInstalled => _phantomWalletData.installed;
+  bool get isInstalled => _phantomWalletData?.installed ?? false;
 
   @override
   void completePhantomRequest({required String url}) async {
     final params = Uri.parse(url).queryParameters;
-    final payload = await _phantomHelper.decryptPayload(params);
+    final payload = await _phantomHelper!.decryptPayload(params);
     final phantomRequest = payload['phantomRequest'];
     _core.logger.d('[$runtimeType] completePhantomRequest, payload: $payload');
 
@@ -250,7 +251,7 @@ class PhantomService implements IPhantomService {
         publicKey: await dappPublicKey,
       ),
     );
-    await _phantomHelper.persistSession();
+    await _phantomHelper?.persistSession();
     onPhantomConnect.broadcast(PhantomConnectEvent(data));
     _core.logger.i(
       '[$runtimeType] _onConnectPhantomWallet ${jsonEncode(data.toJson())}',
@@ -259,7 +260,7 @@ class PhantomService implements IPhantomService {
 
   Future<void> _onDisconnectPhantomWallet(_) async {
     await _core.storage.delete(StorageConstants.phantomSession);
-    return _phantomHelper.resetSharedSecret();
+    return _phantomHelper?.resetSharedSecret();
   }
 
   void _onRequestResponse(Map<String, dynamic> payload) {

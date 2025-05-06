@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:connectivity_plus/connectivity_plus.dart' show Connectivity;
 import 'package:logger/logger.dart';
 import 'package:reown_core/connectivity/connectivity.dart';
 import 'package:reown_core/connectivity/i_connectivity.dart';
@@ -216,6 +217,7 @@ class ReownCore implements IReownCore {
     );
     connectivity = ConnectivityState(
       core: this,
+      connectivity: Connectivity(),
     );
     linkModeStore = LinkModeStore(
       storage: storage,

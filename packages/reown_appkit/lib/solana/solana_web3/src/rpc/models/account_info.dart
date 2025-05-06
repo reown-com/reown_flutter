@@ -30,6 +30,7 @@ class AccountInfo<T> extends BorshObject with DataSerializableMixin {
   final String owner;
 
   /// The data associated with the account, either as encoded binary data (string, encoding) or
+  // ignore: unintended_html_in_doc_comment
   /// JSON format ({<program>: <state>}).
   final T? data;
 

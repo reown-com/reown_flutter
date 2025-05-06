@@ -22,6 +22,7 @@ abstract class IPairing {
   });
   Future<CreateResponse> create({
     List<List<String>>? methods,
+    TransportType transportType = TransportType.relay,
   });
   Future<void> activate({required String topic});
   void register({

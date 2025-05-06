@@ -137,8 +137,8 @@ class RelayClient implements IRelayClient {
       await messageTracker.recordMessageEvent(topic, message);
       var _ = await _sendJsonRpcRequest(
         _buildMethod(JSON_RPC_PUBLISH),
-        data,
-        JsonRpcUtils.payloadId(entropy: 6),
+        parameters: data,
+        id: JsonRpcUtils.payloadId(entropy: 6),
       );
     } catch (e, s) {
       core.logger.e('[$runtimeType], publish: $e', stackTrace: s);
@@ -147,12 +147,15 @@ class RelayClient implements IRelayClient {
   }
 
   @override
-  Future<String> subscribe({required String topic}) async {
+  Future<String> subscribe({
+    required String topic,
+    required TransportType transportType,
+  }) async {
     _checkInitialized();
 
     core.logger.i('[$runtimeType] subscribe, $topic');
 
-    pendingSubscriptions[topic] = _onSubscribe(topic);
+    pendingSubscriptions[topic] = _onSubscribe(topic, transportType);
 
     return await pendingSubscriptions[topic];
   }
@@ -168,11 +171,8 @@ class RelayClient implements IRelayClient {
     try {
       await _sendJsonRpcRequest(
         _buildMethod(JSON_RPC_UNSUBSCRIBE),
-        {
-          'topic': topic,
-          'id': id,
-        },
-        JsonRpcUtils.payloadId(entropy: 6),
+        parameters: {'topic': topic, 'id': id},
+        id: JsonRpcUtils.payloadId(entropy: 6),
       );
     } catch (e, s) {
       core.logger.e('[$runtimeType], unsubscribe: $e', stackTrace: s);
@@ -448,11 +448,11 @@ class RelayClient implements IRelayClient {
 
   /// SUBSCRIPTION HANDLING
 
-  Future _sendJsonRpcRequest(
-    String method, [
+  Future<dynamic> _sendJsonRpcRequest(
+    String method, {
     dynamic parameters,
     int? id,
-  ]) async {
+  }) async {
     // If we are connected and we know it send the message!
     if (isConnected) {
       // Here so we dont return null
@@ -476,14 +476,16 @@ class RelayClient implements IRelayClient {
     );
   }
 
-  Future<String> _onSubscribe(String topic) async {
+  Future<String> _onSubscribe(String topic, TransportType transportType) async {
     String? requestId;
     try {
-      requestId = await _sendJsonRpcRequest(
-        _buildMethod(JSON_RPC_SUBSCRIBE),
-        {'topic': topic},
-        JsonRpcUtils.payloadId(entropy: 6),
-      );
+      if (transportType == TransportType.relay) {
+        requestId = await _sendJsonRpcRequest(
+          _buildMethod(JSON_RPC_SUBSCRIBE),
+          parameters: {'topic': topic},
+          id: JsonRpcUtils.payloadId(entropy: 6),
+        );
+      }
     } catch (e, s) {
       core.logger.e(
         '[$runtimeType], _onSubscribe: Topic, $topic, Error: $e',

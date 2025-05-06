@@ -731,9 +731,9 @@ class ReownAppKitModal
   ];
 
   final List<Key> _allowedScreensWhenDisconnected = [
-    KeyConstants.qrCodePageKey,
-    KeyConstants.walletListLongPageKey,
     KeyConstants.walletListShortPageKey,
+    KeyConstants.walletListLongPageKey,
+    KeyConstants.qrCodePageKey,
     KeyConstants.selectNetworkPage,
   ];
 
@@ -1185,6 +1185,11 @@ class ReownAppKitModal
   @override
   Future<void> disconnect({bool disconnectAllSessions = true}) async {
     _checkInitialized();
+
+    if (!_appKit.core.relayClient.isConnected) {
+      onModalError.broadcast(ModalError('Websocket is not connected'));
+      return;
+    }
 
     _status = ReownAppKitModalStatus.initializing;
     _notify();
@@ -1794,14 +1799,13 @@ class ReownAppKitModal
   }
 
   Future<void> _cleanSession({SessionDelete? args, bool event = true}) async {
-    try {
-      final storedWalletId = _storage.get(StorageConstants.recentWalletId);
-      final walletId = storedWalletId?['walletId'];
-      await _deleteStorage();
-      await _explorerService.storeRecentWalletId(walletId);
-      _blockchainService.dispose();
-    } catch (_) {
-      await _deleteStorage();
+    _blockchainService.dispose();
+    await _deleteStorage();
+    if (event) {
+      onModalDisconnect.broadcast(ModalDisconnect(
+        topic: args?.topic ?? _currentSession?.topic,
+        id: args?.id,
+      ));
     }
     _selectedChainID = null;
     _isConnected = false;
@@ -1910,6 +1914,7 @@ class ReownAppKitModal
     _magicService.onMagicError.unsubscribeAll();
     _magicService.onMagicUpdate.unsubscribeAll();
     _magicService.onMagicRpcRequest.unsubscribeAll();
+    //
     // Coinbase
     _coinbaseService.onCoinbaseConnect.unsubscribeAll();
     _coinbaseService.onCoinbaseError.unsubscribeAll();
@@ -1969,7 +1974,6 @@ extension _EmailConnectorExtension on ReownAppKitModal {
       final session = ReownAppKitModalSession(magicData: magicData);
       await _setSesionAndChainData(session);
       if (_selectedWallet == null) {
-        await _storage.delete(StorageConstants.recentWalletId);
         await _storage.delete(StorageConstants.connectedWalletData);
       }
       onModalConnect.broadcast(ModalConnect(session));
@@ -2250,7 +2254,6 @@ extension _AppKitModalExtension on ReownAppKitModal {
         name: 'WalletConnect',
         method: AnalyticsPlatform.qrcode,
       ));
-      await _storage.delete(StorageConstants.recentWalletId);
       await _storage.delete(StorageConstants.connectedWalletData);
     } else {
       _explorerService.storeConnectedWallet(_selectedWallet);
