@@ -12,7 +12,7 @@ import 'package:reown_sign/models/basic_models.dart';
 import 'package:reown_sign/utils/address_utils.dart';
 import 'package:reown_sign/utils/constants.dart';
 import 'package:reown_sign/utils/recaps_utils.dart';
-import 'package:web3dart/crypto.dart' as crypto;
+import 'package:webthree/crypto.dart' as crypto;
 
 class AuthSignature {
   static final KeccakDigest keccakDigest = KeccakDigest(256);

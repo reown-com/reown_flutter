@@ -1,4 +1,4 @@
-// import 'package:web3dart/web3dart.dart';
+// import 'package:webthree/webthree.dart';
 
 class AddressUtils {
   static String getDidAddress(String iss) {
