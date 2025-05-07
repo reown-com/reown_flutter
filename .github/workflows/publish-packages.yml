@@ -70,6 +70,11 @@ jobs:
         run: |
           chmod +x generate_files.sh
           sh ./generate_files.sh
+      
+      - name: Check Publish Warnings
+        shell: bash
+        run: flutter pub publish --dry-run
+        continue-on-error: false
 
       - name: Publish reown_core to pub.dev
         working-directory: packages/reown_core
@@ -141,6 +146,11 @@ jobs:
         run: |
           chmod +x generate_files.sh
           sh ./generate_files.sh
+
+      - name: Check Publish Warnings
+        shell: bash
+        run: flutter pub publish --dry-run
+        continue-on-error: false
 
       - name: Publish reown_sign to pub.dev
         working-directory: packages/reown_sign
@@ -224,6 +234,11 @@ jobs:
           chmod +x generate_files.sh
           sh ./generate_files.sh
 
+      - name: Check Publish Warnings
+        shell: bash
+        run: flutter pub publish --dry-run
+        continue-on-error: false
+
       - name: Publish reown_appkit to pub.dev
         working-directory: packages/reown_appkit
         run: flutter pub publish --force
@@ -298,6 +313,11 @@ jobs:
         run: |
           chmod +x generate_files.sh
           sh ./generate_files.sh
+
+      - name: Check Publish Warnings
+        shell: bash
+        run: flutter pub publish --dry-run
+        continue-on-error: false
 
       - name: Publish reown_walletkit to pub.dev
         working-directory: packages/reown_walletkit
