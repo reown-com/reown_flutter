@@ -23,22 +23,6 @@ abstract class IReownSignDapp extends IReownSignCommon {
     required String chainId,
     required SessionRequestParams request,
   });
-  Future<List<dynamic>> requestReadContract({
-    required DeployedContract deployedContract,
-    required String functionName,
-    required String rpcUrl,
-    EthereumAddress? sender,
-    List<dynamic> parameters = const [],
-  });
-  Future<dynamic> requestWriteContract({
-    required String topic,
-    required String chainId,
-    required DeployedContract deployedContract,
-    required String functionName,
-    required Transaction transaction,
-    String? method,
-    List<dynamic> parameters = const [],
-  });
 
   void registerEventHandler({
     required String chainId,

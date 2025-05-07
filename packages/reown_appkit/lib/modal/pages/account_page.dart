@@ -67,6 +67,9 @@ class _AccountPageState extends State<AccountPage> with WidgetsBindingObserver {
     if (_appKitModal == null) {
       return ContentLoading(viewHeight: 400.0);
     }
+    if (_appKitModal?.session == null) {
+      return ContentLoading(viewHeight: 400.0);
+    }
 
     return ModalNavbar(
       title: '',

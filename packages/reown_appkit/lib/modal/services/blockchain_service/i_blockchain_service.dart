@@ -4,7 +4,6 @@ import 'package:reown_appkit/modal/services/blockchain_service/models/token_bala
 import 'package:reown_appkit/modal/services/blockchain_service/models/wallet_activity.dart';
 
 abstract class IBlockChainService {
-  ActivityData? get activityData;
   List<TokenBalance>? get tokensList;
   TokenBalance? get selectedSendToken;
 

@@ -29,10 +29,6 @@ class BlockChainService implements IBlockChainService {
         'x-sdk-version': ReownCoreUtils.coreSdkVersion(packageVersion),
       };
 
-  ActivityData? _activityData;
-  @override
-  ActivityData? get activityData => _activityData;
-
   List<TokenBalance>? _tokensList;
   @override
   List<TokenBalance>? get tokensList => _tokensList;
@@ -85,8 +81,7 @@ class BlockChainService implements IBlockChainService {
     _core.logger.i('[$runtimeType] getHistory $url => ${response.body}');
     if (response.statusCode == 200 && response.body.isNotEmpty) {
       try {
-        _activityData = ActivityData.fromRawJson(response.body);
-        return _activityData!;
+        return ActivityData.fromRawJson(response.body);
       } catch (e) {
         _core.logger.e('[$runtimeType] getHistory, parse result error => $e');
         throw Exception('Failed to load wallet activity. $e');
@@ -298,7 +293,6 @@ class BlockChainService implements IBlockChainService {
 
   @override
   void dispose() {
-    _activityData = null;
     _selectedToken = null;
     _tokensList?.clear();
   }

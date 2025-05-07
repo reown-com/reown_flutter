@@ -8,6 +8,7 @@ class PrimaryButton extends StatelessWidget {
   final bool loading;
   final Color? color;
   final BorderRadiusGeometry? borderRadius;
+  final BaseButtonSize buttonSize;
   const PrimaryButton({
     super.key,
     required this.title,
@@ -15,6 +16,7 @@ class PrimaryButton extends StatelessWidget {
     this.loading = false,
     this.color,
     this.borderRadius,
+    this.buttonSize = BaseButtonSize.big,
   });
 
   @override
@@ -23,7 +25,7 @@ class PrimaryButton extends StatelessWidget {
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     return BaseButton(
       semanticsLabel: 'PrimaryButton',
-      size: BaseButtonSize.big,
+      size: buttonSize,
       child: loading
           ? SizedBox(
               height: BaseButtonSize.big.height * 0.4,

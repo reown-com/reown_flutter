@@ -1,8 +1,10 @@
+## 1.4.3
+
+- New Social Logins functionality: Enhanced reliability, added more social options
+- Bug fixes
+
 ## 1.4.2+2
 
-- New Social Logins functionality
-  - Enhanced reliability
-  - Added more social options
 - Core dependency update
 - Link Mode enhancements
 - Bug fixes and enhancements

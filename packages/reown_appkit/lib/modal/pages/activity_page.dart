@@ -79,35 +79,27 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
       }
     });
 
-    // cached items
-    final cachedItems = _blockchainService.activityData?.data ?? <Activity>[];
-    if (cachedItems.isNotEmpty) {
-      final activityList = cachedItems.where((data) {
-        return data.metadata?.chain == _currentChain &&
-            (data.transfers ?? []).isNotEmpty;
-      }).toList();
-      _activities.addAll(activityList);
-    }
-    setState(() {});
-
-    _fetchActivities();
+    _fetchActivities(isFirstQuery: true);
   }
 
-  Future<void> _fetchActivities() async {
+  Future<void> _fetchActivities({bool isFirstQuery = false}) async {
+    setState(() => _isLoadingActivities = true);
     try {
       final activityData = await _blockchainService.getHistory(
         address: _currentAddress,
         cursor: _currentCursor,
         caip2Chain: _currentChain,
       );
-      _activities.clear();
       final newItems = activityData.data ?? <Activity>[];
       final activityList = newItems.where((data) {
         return data.metadata?.chain == _currentChain &&
             (data.transfers ?? []).isNotEmpty;
       }).toList();
-
+      if (isFirstQuery) {
+        _activities.clear();
+      }
       _activities.addAll(activityList);
+
       _isLoadingActivities = false;
       _currentCursor = activityData.next;
       _hasMoreActivities = _currentCursor != null;
@@ -137,9 +129,8 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
   Future<void> _loadMoreActivities() async {
     if (_isLoadingActivities || !_hasMoreActivities) return;
 
-    final namespace = NamespaceUtils.getNamespaceFromChain(
-      widget.appKitModal.selectedChain?.chainId ?? '',
-    );
+    final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     GetIt.I<IAnalyticsService>().sendEvent(LoadMoreTransactionsEvent(
       address: widget.appKitModal.session!.getAddress(namespace),
       projectId: widget.appKitModal.appKit!.core.projectId,

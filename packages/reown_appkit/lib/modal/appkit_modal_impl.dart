@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -698,7 +699,7 @@ class ReownAppKitModal
     final keyString = startWidget?.key?.toString() ?? '';
     final smartAccounts = _currentSession?.sessionSmartAccounts;
     final isMagic = _currentSession?.sessionService.isMagic == true;
-    final embeddedWallet = isMagic || smartAccounts != null;
+    final embeddedWallet = isMagic || (smartAccounts ?? []).isNotEmpty;
     if (_isConnected) {
       final connectedKeys =
           _allowedScreensWhenConnected.map((e) => e.toString()).toList();
@@ -1335,6 +1336,12 @@ class ReownAppKitModal
         context: 'chainId should conform to "CAIP-2" format',
       ).toSignError();
     }
+    if (selectedChain == null) {
+      throw Errors.getSdkError(
+        Errors.MALFORMED_REQUEST_PARAMS,
+        context: 'You must select a chain before reading a contract',
+      ).toSignError();
+    }
     //
     _appKit.core.logger.i(
       '[$runtimeType] requestReadContract, chainId: $chainId',
@@ -1345,19 +1352,16 @@ class ReownAppKitModal
     final networkInfo = ReownAppKitModalNetworks.getNetworkInfo(namespace, id)!;
 
     try {
-      if (selectedChain == null) {
-        throw ReownAppKitModalException(
-          'You must select a chain before reading a contract',
-        );
-      }
-      return await _appKit.requestReadContract(
-        deployedContract: deployedContract,
-        functionName: functionName,
-        rpcUrl: networkInfo.rpcUrl,
+      return await Web3Client(networkInfo.rpcUrl, http.Client()).call(
         sender: sender,
-        parameters: parameters,
+        contract: deployedContract,
+        function: deployedContract.function(functionName),
+        params: parameters,
       );
-    } catch (e) {
+    } catch (e, s) {
+      _appKit.core.logger.e(
+        '[$runtimeType] requestReadContract, error: $e, $s',
+      );
       rethrow;
     }
   }
@@ -1381,29 +1385,49 @@ class ReownAppKitModal
         context: 'chainId should conform to "CAIP-2" format',
       ).toSignError();
     }
+    if (transaction.from == null) {
+      throw Errors.getSdkError(
+        Errors.MALFORMED_REQUEST_PARAMS,
+        context: 'transaction must include `from` value',
+      ).toSignError();
+    }
     //
     _appKit.core.logger.i(
       '[$runtimeType] requestWriteContract, chainId: $chainId',
     );
 
     try {
-      return await _appKit.requestWriteContract(
-        topic: topic ?? '',
-        chainId: chainId,
-        deployedContract: deployedContract,
-        functionName: functionName,
-        transaction: transaction,
+      final trx = Transaction.callContract(
+        contract: deployedContract,
+        function: deployedContract.function(functionName),
+        from: transaction.from!,
+        value: transaction.value,
+        maxGas: transaction.maxGas,
+        gasPrice: transaction.gasPrice,
+        nonce: transaction.nonce,
+        maxFeePerGas: transaction.maxFeePerGas,
+        maxPriorityFeePerGas: transaction.maxPriorityFeePerGas,
         parameters: parameters,
-        method: method,
       );
-    } catch (e) {
+
+      return await request(
+        topic: topic,
+        chainId: chainId,
+        request: SessionRequestParams(
+          method: method ?? MethodsConstants.ethSendTransaction,
+          params: [trx.toJson()],
+        ),
+      );
+    } catch (e, s) {
+      _appKit.core.logger.e(
+        '[$runtimeType] requestWriteContract, error: $e, $s',
+      );
       rethrow;
     }
   }
 
   @override
   Future<dynamic> request({
-    // int? requestId,
     required String? topic,
     required String chainId,
     required SessionRequestParams request,

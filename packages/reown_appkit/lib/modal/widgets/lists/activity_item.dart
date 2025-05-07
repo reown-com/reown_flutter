@@ -92,8 +92,6 @@ class ActivityListItem extends StatelessWidget {
                           isLeft: true,
                           isNFT: _isNFT,
                           stops: stops,
-                          // placeHolder:
-                          //     transfers.first.fungibleInfo?.symbol ?? '',
                         ),
                       ),
                       // right-side icon
@@ -107,8 +105,6 @@ class ActivityListItem extends StatelessWidget {
                           isLeft: false,
                           isNFT: _isNFT,
                           stops: stops,
-                          // placeHolder:
-                          //     transfers.first.fungibleInfo?.symbol ?? '',
                         ),
                       ),
                     ],
@@ -121,13 +117,14 @@ class ActivityListItem extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: themeColors.background150,
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(30.0),
+                    ),
                   ),
                   padding: const EdgeInsets.all(1.0),
                   clipBehavior: Clip.antiAlias,
                   child: RoundedIcon(
                     imageUrl: tokenImage,
-                    padding: 2.0,
                     size: 15.0,
                   ),
                 ),
@@ -207,29 +204,35 @@ class ActivityListItem extends StatelessWidget {
     //
     final transfers = activity.transfers ?? <Transfer>[];
     final transferValue1 = transfers.isNotEmpty
-        ? CoreUtils.formatStringBalance(transfers.first.quantity?.numeric ?? '')
+        ? CoreUtils.formatStringBalance(
+            transfers.first.quantity?.numeric ?? '',
+            precision: 3,
+          )
         : null;
     final transferSymbol1 =
         transfers.isNotEmpty ? transfers.first.fungibleInfo?.symbol : null;
     //
-    final transferValue2 = transfers.isNotEmpty
-        ? CoreUtils.formatStringBalance(transfers.last.quantity?.numeric ?? '')
+    final transferValue2 = transfers.length > 1
+        ? CoreUtils.formatStringBalance(
+            transfers.last.quantity?.numeric ?? '',
+            precision: 3,
+          )
         : null;
     final transferSymbol2 =
-        transfers.isNotEmpty ? transfers.last.fungibleInfo?.symbol : null;
+        transfers.length > 1 ? transfers.last.fungibleInfo?.symbol : null;
     //
     switch (operationType) {
       case OperationType.execute:
         return '$transferValue1 $transferSymbol1';
       case OperationType.trade:
-        return '$transferValue1 $transferSymbol1 → '
-            '$transferValue2 $transferSymbol2';
+        return '$transferValue1 $transferSymbol1 → $transferValue2 $transferSymbol2';
       case OperationType.send:
-        return '$transferValue1 $transferSymbol1 → '
-            '${RenderUtils.truncate(activity.metadata?.sentTo ?? '')}';
+        if (transfers.length > 1) {
+          return '-$transferValue1 $transferSymbol1, -$transferValue2 $transferSymbol2 → ${RenderUtils.truncate(activity.metadata?.sentTo ?? '')}';
+        }
+        return '-$transferValue1 $transferSymbol1 → ${RenderUtils.truncate(activity.metadata?.sentTo ?? '')}';
       case OperationType.receive:
-        return '$transferValue1 $transferSymbol1 ← '
-            '${RenderUtils.truncate(activity.metadata?.sentFrom ?? '')}';
+        return '+$transferValue1 $transferSymbol1 ← ${RenderUtils.truncate(activity.metadata?.sentFrom ?? '')}';
       case OperationType.mint:
         return '$transferValue1 $transferSymbol1';
     }
@@ -405,6 +408,7 @@ class _HalfIconImage extends StatelessWidget {
               borderColor: themeColors.background275,
               assetColor: themeColors.foreground200,
               padding: 10.0,
+              assetPath: isNFT ? 'lib/modal/assets/icons/nft.svg' : null,
             ),
           ),
         ),
@@ -446,7 +450,7 @@ enum OperationType {
       case receive:
         return 'lib/modal/assets/icons/receive.svg';
       case mint:
-        return 'lib/modal/assets/icons/swap_vertical.svg';
+        return 'lib/modal/assets/icons/receive.svg';
     }
   }
 }

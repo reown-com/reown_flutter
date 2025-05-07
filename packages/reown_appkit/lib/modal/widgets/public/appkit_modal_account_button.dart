@@ -180,8 +180,8 @@ class _BalanceButton extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final textStyle = buttonSize == BaseButtonSize.small
-        ? themeData.textStyles.small600
-        : themeData.textStyles.paragraph600;
+        ? themeData.textStyles.small500
+        : themeData.textStyles.paragraph500;
     final chainId = appKit.selectedChain?.chainId ?? '';
     final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
     String tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);

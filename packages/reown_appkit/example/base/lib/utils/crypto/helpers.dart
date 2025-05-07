@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:eth_sig_util/util/utils.dart';
+import 'package:intl/intl.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
 import 'package:reown_appkit_dapp/utils/crypto/tron.dart';
+import 'package:reown_appkit_dapp/utils/smart_contracts.dart';
 import 'package:reown_appkit_dapp/utils/test_data.dart';
 
 import 'package:reown_appkit/solana/solana_web3/solana_web3.dart' as solana;
@@ -174,6 +176,212 @@ Future<SessionRequestParams?> getParams(
         params: null,
       );
   }
+}
+
+Future<dynamic> callSmartContract({
+  required ReownAppKitModal appKitModal,
+  required SmartContract smartContract,
+  required String action,
+}) async {
+  // Create DeployedContract object using contract's ABI and address
+  final deployedContract = DeployedContract(
+    ContractAbi.fromJson(
+      jsonEncode(smartContract.contractABI),
+      smartContract.name,
+    ),
+    EthereumAddress.fromHex(smartContract.contractAddress),
+  );
+
+  switch (action) {
+    case 'read':
+      return _readSmartContract(
+        appKitModal: appKitModal,
+        contract: deployedContract,
+      );
+    case 'write':
+      final transferValue = 0.01; //EtherAmount.fromInt(EtherUnit.finney, 11)
+      // we first call `decimals` function, which is a read function,
+      // to check how much decimal we need to use to parse the amount value
+      final decimals = await appKitModal.requestReadContract(
+        topic: appKitModal.session!.topic,
+        chainId: appKitModal.selectedChain!.chainId,
+        deployedContract: deployedContract,
+        functionName: 'decimals',
+      );
+
+      final requestValue = _formatValue(
+        transferValue,
+        decimals: (decimals.first as BigInt),
+      );
+      // now we call `transfer` write function with the parsed value.
+      final namespace = NamespaceUtils.getNamespaceFromChain(
+        appKitModal.selectedChain!.chainId,
+      );
+      final senderAddress = appKitModal.session!.getAddress(namespace)!;
+      return await appKitModal.requestWriteContract(
+        topic: appKitModal.session!.topic,
+        chainId: appKitModal.selectedChain!.chainId,
+        deployedContract: deployedContract,
+        functionName: 'transfer',
+        transaction: Transaction(
+          from: EthereumAddress.fromHex(senderAddress),
+        ),
+        parameters: [
+          // should be the recipient address
+          EthereumAddress.fromHex(senderAddress),
+          requestValue, // == 0.23
+        ],
+      );
+    // return await appKitModal.requestWriteContract(
+    //   topic: appKitModal.session!.topic,
+    //   chainId: appKitModal.selectedChain!.chainId,
+    //   deployedContract: deployedContract,
+    //   functionName: 'pay',
+    //   transaction: Transaction(
+    //     from: EthereumAddress.fromHex(senderAddress),
+    //     // value: EtherAmount.fromUnitAndValue(EtherUnit.wei, weiValue),
+    //   ),
+    //   parameters: [
+    //     'cartId1',
+    //     'uid1',
+    //     EtherAmount.fromInt(EtherUnit.finney, 0).getInWei,
+    //   ],
+    // );
+    // --------
+    // payable function with no parameters such as:
+    // {
+    //   "inputs": [],
+    //   "name": "functionName",
+    //   "outputs": [],
+    //   "stateMutability": "payable",
+    //   "type": "function"
+    // },
+    // return appKitModal.requestWriteContract(
+    //   topic: appKitModal.session?.topic ?? '',
+    //   chainId: 'eip155:11155111',
+    //   rpcUrl: 'https://ethereum-sepolia.publicnode.com',
+    //   deployedContract: deployedContract,
+    //   functionName: 'functionName',
+    //   transaction: Transaction(
+    //     from: EthereumAddress.fromHex(appKitModal.session!.address!),
+    //     value: EtherAmount.fromInt(EtherUnit.finney, 1),
+    //   ),
+    //   parameters: [],
+    // );
+    // ------
+    // return await appKitModal.requestWriteContract(
+    //   topic: appKitModal.session?.topic ?? '',
+    //   chainId: 'eip155:11155111',
+    //   deployedContract: deployedContract,
+    //   functionName: 'subscribe',
+    //   parameters: [],
+    //   transaction: Transaction(
+    //     from: EthereumAddress.fromHex(appKitModal.session!.address!),
+    //     value: EtherAmount.fromInt(EtherUnit.finney, 1),
+    //   ),
+    // );
+    // ------
+    // return await appKitModal.requestWriteContract(
+    //   topic: appKitModal.session?.topic ?? '',
+    //   chainId: 'eip155:11155111',
+    //   deployedContract: deployedContract,
+    //   functionName: 'transfer',
+    //   parameters: [
+    //     EthereumAddress.fromHex(
+    //       appKitModal.session!.getAddress(namespace)!,
+    //     ),
+    //     requestValue, // == 0.12
+    //   ],
+    //   transaction: Transaction(
+    //     from: EthereumAddress.fromHex(
+    //       appKitModal.session!.getAddress(namespace)!,
+    //     ),
+    //   ),
+    // );
+    default:
+      return Future.value();
+  }
+}
+
+Future<dynamic> _readSmartContract({
+  required ReownAppKitModal appKitModal,
+  required DeployedContract contract,
+}) async {
+  final namespace = NamespaceUtils.getNamespaceFromChain(
+    appKitModal.selectedChain!.chainId,
+  );
+  final results = await Future.wait([
+    // results[0]
+    appKitModal.requestReadContract(
+      topic: appKitModal.session!.topic,
+      chainId: appKitModal.selectedChain!.chainId,
+      deployedContract: contract,
+      functionName: 'name',
+    ),
+    // results[1]
+    appKitModal.requestReadContract(
+      topic: appKitModal.session!.topic,
+      chainId: appKitModal.selectedChain!.chainId,
+      deployedContract: contract,
+      functionName: 'symbol',
+    ),
+    // results[2]
+    appKitModal.requestReadContract(
+      topic: appKitModal.session!.topic,
+      chainId: appKitModal.selectedChain!.chainId,
+      deployedContract: contract,
+      functionName: 'totalSupply',
+    ),
+    // results[3]
+    appKitModal.requestReadContract(
+      topic: appKitModal.session!.topic,
+      chainId: appKitModal.selectedChain!.chainId,
+      deployedContract: contract,
+      functionName: 'balanceOf',
+      parameters: [
+        EthereumAddress.fromHex(appKitModal.session!.getAddress(namespace)!),
+      ],
+    ),
+    // results[4]
+    appKitModal.requestReadContract(
+      topic: appKitModal.session!.topic,
+      chainId: appKitModal.selectedChain!.chainId,
+      deployedContract: contract,
+      functionName: 'decimals',
+    ),
+  ]);
+
+  //
+  final name = (results[0].first as String);
+  final symbol = (results[1].first as String);
+  final decimals = results[4].first;
+  final multiplier = _multiplier(decimals);
+  final total = (results[2].first as BigInt) / BigInt.from(multiplier);
+  final balance = (results[3].first as BigInt) / BigInt.from(multiplier);
+  final formatter = NumberFormat('#,##0.00000', 'en_US');
+
+  return {
+    'name': name,
+    'symbol': symbol,
+    'decimals': '$decimals',
+    'totalSupply': formatter.format(total),
+    'balance': formatter.format(balance),
+  };
+}
+
+BigInt _formatValue(num value, {required BigInt decimals}) {
+  final multiplier = _multiplier(decimals);
+  final result = EtherAmount.fromInt(
+    EtherUnit.ether,
+    (value * multiplier).toInt(),
+  );
+  return result.getInEther;
+}
+
+int _multiplier(BigInt decimals) {
+  final d = decimals.toInt();
+  final pad = '1'.padRight(d + 1, '0');
+  return int.parse(pad);
 }
 
 Future<solana.Transaction> _contructSolanaTX(

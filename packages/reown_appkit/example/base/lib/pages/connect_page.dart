@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:reown_appkit/modal/widgets/buttons/primary_button.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
+import 'package:reown_appkit_dapp/utils/smart_contracts.dart';
 import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
 import 'package:toastification/toastification.dart';
 
@@ -64,15 +66,15 @@ class ConnectPageState extends State<ConnectPage> {
   Future<void> _refreshData() async {
     try {
       await widget.appKitModal.reconnectRelay();
-      await widget.appKitModal.loadAccountData();
       final topic = widget.appKitModal.session!.topic ?? '';
       if (topic.isNotEmpty) {
-        await widget.appKitModal.appKit!.ping(topic: topic);
+        await widget.appKitModal.loadAccountData();
+        widget.appKitModal.appKit!.ping(topic: topic);
       }
-      setState(() {});
     } catch (e) {
       debugPrint(e.toString());
     }
+    setState(() {});
     return;
   }
 
@@ -155,6 +157,11 @@ class ConnectPageState extends State<ConnectPage> {
                     _RequestButtons(
                       appKitModal: widget.appKitModal,
                     ),
+                    const SizedBox.square(dimension: 8.0),
+                    _SmartAccountButtons(
+                      appKitModal: widget.appKitModal,
+                    ),
+                    const SizedBox.square(dimension: 8.0),
                     Text(
                       const JsonEncoder.withIndent('    ').convert(
                         widget.appKitModal.session?.toJson(),
@@ -269,49 +276,127 @@ class __RequestButtonsState extends State<_RequestButtons> {
     //   },
     //   child: Text('Test'),
     // );
-    return Column(
-      children: (approvedMethods ?? []).map((method) {
-        final enabled = implemented.contains(method);
-        if (!enabled) {
-          return SizedBox.shrink();
-        }
-        return Container(
-          height: 40.0,
-          width: double.infinity,
-          margin: const EdgeInsets.symmetric(
-            vertical: StyleConstants.linear8,
-          ),
-          child: ElevatedButton(
-            style: ButtonStyle(
-              elevation: WidgetStateProperty.all(0.0),
-              backgroundColor: WidgetStateProperty.all<Color>(
-                ReownAppKitModalTheme.colorsOf(context).accent080,
-              ),
-              foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 8.0,
+      children: (approvedMethods ?? [])
+          .toSet()
+          .intersection(implemented.toSet())
+          .map(
+            (method) => PrimaryButton(
+              title: method,
+              borderRadius: BorderRadius.all(Radius.circular(30.0)),
+              buttonSize: BaseButtonSize.regular,
+              onTap: () async {
+                final params = await getParams(method, address, chainInfo!);
+                if (params?.params != null) {
+                  final future = widget.appKitModal.request(
+                    topic: topic,
+                    chainId: chainId,
+                    request: params!,
+                  );
+                  MethodDialog.show(context, method, future);
+                } else {
+                  toastification.show(
+                    type: ToastificationType.error,
+                    title: const Text('Method not implemented'),
+                    context: context,
+                    autoCloseDuration: Duration(seconds: 2),
+                    alignment: Alignment.bottomCenter,
+                  );
+                }
+              },
             ),
-            onPressed: () async {
-              final params = await getParams(method, address, chainInfo!);
-              if (params?.params != null) {
-                final future = widget.appKitModal.request(
-                  topic: topic,
-                  chainId: chainId,
-                  request: params!,
+          )
+          .toList(),
+    );
+  }
+}
+
+class _SmartAccountButtons extends StatefulWidget {
+  final ReownAppKitModal appKitModal;
+  const _SmartAccountButtons({required this.appKitModal});
+
+  @override
+  State<_SmartAccountButtons> createState() => __SmartAccountButtonsState();
+}
+
+class __SmartAccountButtonsState extends State<_SmartAccountButtons> {
+  @override
+  Widget build(BuildContext context) {
+    final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
+    if (chainId.isEmpty) {
+      return SizedBox.shrink();
+    }
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    if (namespace != 'eip155') {
+      return SizedBox.shrink();
+    }
+
+    final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
+      namespace,
+      chainId,
+    )!;
+
+    late final SmartContract smartContract;
+    if (chainInfo.chainId == 'eip155:11155111') {
+      smartContract = SepoliaAAVEContract();
+    } else if (chainInfo.chainId == 'eip155:42161') {
+      smartContract = ArbitrumAAVEContract();
+    } else if (chainInfo.chainId == 'eip155:8453') {
+      smartContract = BASEUSDCContract();
+    } else if (chainInfo.chainId == 'eip155:10') {
+      smartContract = WCTOPETHContract();
+    } else if (chainInfo.chainId == 'eip155:1') {
+      smartContract = ERC20USDTContract();
+    } else {
+      return SizedBox.shrink();
+    }
+
+    return Column(
+      children: [
+        Text('Smart Contract interaction'),
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 8.0,
+          children: [
+            PrimaryButton(
+              title: 'Read on ${smartContract.name}',
+              borderRadius: BorderRadius.all(Radius.circular(30.0)),
+              buttonSize: BaseButtonSize.regular,
+              onTap: () async {
+                final future = callSmartContract(
+                  appKitModal: widget.appKitModal,
+                  smartContract: smartContract,
+                  action: 'read',
                 );
-                MethodDialog.show(context, method, future);
-              } else {
-                toastification.show(
-                  type: ToastificationType.error,
-                  title: const Text('Method not implemented'),
-                  context: context,
-                  autoCloseDuration: Duration(seconds: 2),
-                  alignment: Alignment.bottomCenter,
+                MethodDialog.show(
+                  context,
+                  'Read on ${smartContract.name}',
+                  future,
                 );
-              }
-            },
-            child: Text(method),
-          ),
-        );
-      }).toList(),
+              },
+            ),
+            PrimaryButton(
+              title: 'Transfer 0.01 ${smartContract.name} to Yourself',
+              borderRadius: BorderRadius.all(Radius.circular(30.0)),
+              buttonSize: BaseButtonSize.regular,
+              onTap: () async {
+                final future = callSmartContract(
+                  appKitModal: widget.appKitModal,
+                  smartContract: smartContract,
+                  action: 'write',
+                );
+                MethodDialog.show(
+                  context,
+                  'Transfer 0.01 ${smartContract.name} to Yourself',
+                  future,
+                );
+              },
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

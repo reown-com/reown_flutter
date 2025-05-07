@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:event/event.dart';
-import 'package:http/http.dart' as http;
 import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:reown_core/reown_core.dart';
@@ -541,65 +540,6 @@ class ReownSign implements IReownSign {
     final appLink = (session?.peer.metadata.redirect?.universal ?? '');
     final supportedApps = core.getLinkModeSupportedApps();
     return appLink.isNotEmpty && supportedApps.contains(appLink);
-  }
-
-  @override
-  Future<List<dynamic>> requestReadContract({
-    required DeployedContract deployedContract,
-    required String functionName,
-    required String rpcUrl,
-    EthereumAddress? sender,
-    List<dynamic> parameters = const [],
-  }) async {
-    try {
-      final results = await Web3Client(rpcUrl, http.Client()).call(
-        sender: sender,
-        contract: deployedContract,
-        function: deployedContract.function(functionName),
-        params: parameters,
-      );
-
-      return results;
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  @override
-  Future<dynamic> requestWriteContract({
-    required String topic,
-    required String chainId,
-    required DeployedContract deployedContract,
-    required String functionName,
-    required Transaction transaction,
-    List<dynamic> parameters = const [],
-    String? method,
-  }) async {
-    if (transaction.from == null) {
-      throw Exception('Transaction must include `from` value');
-    }
-
-    final trx = Transaction.callContract(
-      contract: deployedContract,
-      function: deployedContract.function(functionName),
-      from: transaction.from!,
-      value: transaction.value,
-      maxGas: transaction.maxGas,
-      gasPrice: transaction.gasPrice,
-      nonce: transaction.nonce,
-      maxFeePerGas: transaction.maxFeePerGas,
-      maxPriorityFeePerGas: transaction.maxPriorityFeePerGas,
-      parameters: parameters,
-    );
-
-    return await request(
-      topic: topic,
-      chainId: chainId,
-      request: SessionRequestParams(
-        method: method ?? MethodsConstants.ethSendTransaction,
-        params: [trx.toJson()],
-      ),
-    );
   }
 
   @override

@@ -220,52 +220,6 @@ class SignClientTestWrapper implements IReownSign {
   }
 
   @override
-  Future<List<dynamic>> requestReadContract({
-    required DeployedContract deployedContract,
-    required String functionName,
-    required String rpcUrl,
-    EthereumAddress? sender,
-    List<dynamic> parameters = const [],
-  }) async {
-    try {
-      return await client.requestReadContract(
-        sender: sender,
-        deployedContract: deployedContract,
-        functionName: functionName,
-        rpcUrl: rpcUrl,
-        parameters: parameters,
-      );
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  @override
-  Future<dynamic> requestWriteContract({
-    required String topic,
-    required String chainId,
-    required DeployedContract deployedContract,
-    required String functionName,
-    required Transaction transaction,
-    String? method,
-    List<dynamic> parameters = const [],
-  }) async {
-    try {
-      return await client.requestWriteContract(
-        topic: topic,
-        chainId: chainId,
-        deployedContract: deployedContract,
-        functionName: functionName,
-        transaction: transaction,
-        method: method,
-        parameters: parameters,
-      );
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  @override
   Future<void> respondSessionRequest({
     required String topic,
     required JsonRpcResponse response,
