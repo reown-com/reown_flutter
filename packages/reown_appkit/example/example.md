@@ -75,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Visibility(
               visible: _appKitModal.isConnected,
               child: AppKitModalAccountButton(
-                appKit: _appKitModal,
+                appKitModal: _appKitModal,
                 context: context,
               ),
             )
