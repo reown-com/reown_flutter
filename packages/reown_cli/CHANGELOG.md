@@ -1,3 +1,7 @@
+## 0.0.4
+
+- Updates according to new changes in AppKit
+
 ## 0.0.3
 
 - Minor fixes

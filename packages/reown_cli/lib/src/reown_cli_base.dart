@@ -126,7 +126,7 @@ Run "reown help create" for more information about the create command.
       throw Exception('Failed to fetch package version');
     } catch (e) {
       print('Warning: Could not fetch latest version of $package: $e');
-      return '^1.4.1'; // Fallback to current stable version
+      return '^1.4.3'; // Fallback to current stable version
     }
   }
 

@@ -103,18 +103,30 @@ const String instanceParams = '''
     redirect: Redirect(
       native: '{{project_name}}://',
       universal: 'https://{{project_name}}.com/app',
+      // See https://docs.reown.com/appkit/flutter/core/link-mode on how to enable Link Mode
+      // linkMode: true,
     ),
   ),
+  // enableAnalytics: true,
+  // See https://docs.reown.com/appkit/flutter/core/siwe on how to enable SIWE
+  // siweConfig: SIWEConfig(...),
   // If you enable social features you will have to whitelist your bundleId/packageName under the Mobile Application IDs secion in https://cloud.reown.com/app
   // Please also follow carefully the relevant doc section https://docs.reown.com/appkit/flutter/core/email
   // You can delete this commented section if you don't want to enable Email/Social login
   // featuresConfig: FeaturesConfig(
-  //   email: true,
   //   socials: [
+  //     AppKitSocialOption.Email,
   //     AppKitSocialOption.X,
+  //     AppKitSocialOption.Google,
   //     AppKitSocialOption.Apple,
   //     AppKitSocialOption.Discord,
-  //     AppKitSocialOption.Farcaster,
+  //     AppKitSocialOption.Facebook,
+  //     AppKitSocialOption.GitHub,
+  //     AppKitSocialOption.Telegram,
+  //     AppKitSocialOption.Twitch,
   //   ],
   // ),
+  // https://docs.reown.com/appkit/flutter/core/options#getbalancefallback%3A
+  // getBalanceFallback: () async {},
+  // disconnectOnDispose: true,
 ''';
