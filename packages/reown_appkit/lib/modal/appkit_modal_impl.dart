@@ -179,12 +179,14 @@ class ReownAppKitModal
     if (appKit == null) {
       if (projectId == null) {
         throw ReownAppKitModalException(
-          'Either a `projectId` and `metadata` must be provided or an already created `appKit`',
+          'Either a `projectId` and `metadata` must be provided or an already created `appKit` instance. '
+          'See https://docs.reown.com/appkit/flutter/core/usage#initialization',
         );
       }
       if (metadata == null) {
         throw ReownAppKitModalException(
-          '`metadata:` parameter is required when using `projectId:`',
+          '`metadata:` parameter is required when using `projectId:`. '
+          'See https://docs.reown.com/appkit/flutter/core/usage#initialization',
         );
       }
     }
@@ -205,14 +207,11 @@ class ReownAppKitModal
         );
     _projectId = _appKit.core.projectId;
 
-    // TODO should be moved to init()
-    _setRequiredNamespaces({});
-    _setOptionalNamespaces(
-      {
-        ...(requiredNamespaces ?? {}),
-        ...(optionalNamespaces ?? {}),
-      },
-    );
+    _setRequiredNamespaces(null);
+    _setOptionalNamespaces(_buildNamespaces(
+      requiredNamespaces,
+      optionalNamespaces,
+    ));
 
     _registerSingleton<IWidgetStack>(
       () => WidgetStack(core: _appKit.core),
@@ -293,6 +292,38 @@ class ReownAppKitModal
       _getSingleton<IBlockChainService>();
   ISiweService get _siweService => _getSingleton<ISiweService>();
 
+  bool _isValidProjectID() {
+    if (!CoreUtils.isValidProjectID(_projectId)) {
+      _appKit.core.logger.e(
+        '[$runtimeType] Please provide a valid projectId ($_projectId). '
+        'See ${UrlConstants.docsUrl}/appkit/flutter/core/usage for details.',
+      );
+      _status = ReownAppKitModalStatus.error;
+      _notify();
+      return false;
+    }
+    return true;
+  }
+
+  bool _hasValidNamespaces() {
+    if (!hasNamespaces) {
+      final supportedChains = ReownAppKitModalNetworks.getAllSupportedNetworks()
+          .map((e) => e.chainId)
+          .join(', ');
+      _appKit.core.logger.d(
+        '[$runtimeType] supported networks: $supportedChains',
+      );
+      _appKit.core.logger.e(
+        '[$runtimeType] You are configuring AppKit without any namespaces. '
+        'Try adding `optionalNamespaces` parameter or support chains with `ReownAppKitModalNetworks`',
+      );
+      _status = ReownAppKitModalStatus.error;
+      _notify();
+      return false;
+    }
+    return true;
+  }
+
   ////////* PUBLIC METHODS */////////
 
   @override
@@ -300,14 +331,17 @@ class ReownAppKitModal
     _relayConnected = false;
     _awaitRelayOnce = Completer<bool>();
 
-    if (!CoreUtils.isValidProjectID(_projectId)) {
-      throw 'Please provide a valid projectId ($_projectId).'
-          'See ${UrlConstants.docsUrl}/appkit/flutter/core/usage for details.';
+    if (!_isValidProjectID()) {
+      return;
+    }
+    if (!_hasValidNamespaces()) {
+      return;
     }
     if (_status == ReownAppKitModalStatus.initializing ||
         _status == ReownAppKitModalStatus.initialized) {
       return;
     }
+
     _status = ReownAppKitModalStatus.initializing;
     _notify();
 
@@ -386,16 +420,6 @@ class ReownAppKitModal
           if (!isConnected) {
             await _cleanSession();
           }
-        } else if (_currentSession!.sessionService.isMagic) {
-          // TODO check if this is needed for Farcaster
-          // Every time the app gets killed Magic service will treat the user as disconnected
-          // So we will need to treat magic session differently
-          // final email = _currentSession!.sessionEmail!;
-          // _magicService.setEmail(email);
-          // final provider = _currentSession!.socialProvider;
-          // if (provider != null) {
-          //   _magicService.setProvider(AppKitSocialOption.fromString(provider));
-          // }
         } else {
           await _cleanSession();
         }
@@ -1581,6 +1605,24 @@ class ReownAppKitModal
     }
 
     return true;
+  }
+
+  Map<String, RequiredNamespace>? _buildNamespaces(
+    Map<String, RequiredNamespace>? requiredNS,
+    Map<String, RequiredNamespace>? optionalNS,
+  ) {
+    Map<String, RequiredNamespace>? totalNS;
+    if (requiredNS != null) {
+      totalNS = Map<String, RequiredNamespace>.from(requiredNS);
+    }
+    if (optionalNS != null) {
+      if (totalNS != null) {
+        totalNS = {...totalNS, ...optionalNS};
+      } else {
+        totalNS = Map<String, RequiredNamespace>.from(optionalNS);
+      }
+    }
+    return totalNS;
   }
 
   void _setRequiredNamespaces(Map<String, RequiredNamespace>? requiredNSpaces) {
