@@ -203,8 +203,6 @@ class ConnectPageState extends State<ConnectPage> {
 
   void _onModalDisconnect(ModalDisconnect? event) async {
     setState(() {});
-    // await widget.appKitModal.dispose();
-    // await widget.appKitModal.init();
   }
 
   void _onModalError(ModalError? event) {
