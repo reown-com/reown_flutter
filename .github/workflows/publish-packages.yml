@@ -72,6 +72,8 @@ jobs:
       - name: Checkout code
         if: github.event.inputs.core == 'true'
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for git push
 
       - name: Set up Flutter
         if: github.event.inputs.core == 'true'
@@ -105,8 +107,18 @@ jobs:
       - name: Check Publish Warnings
         if: github.event.inputs.core == 'true'
         shell: bash
-        run: flutter pub publish --dry-run
-        continue-on-error: false
+        run: |
+          set -eo pipefail
+
+          OUTPUT=$(flutter pub publish --dry-run 2>&1)
+          echo "$OUTPUT"
+
+          if echo "$OUTPUT" | grep -iE "error|failed"; then
+            echo "❌ Real error(s) detected in pub publish dry-run"
+            exit 1
+          else
+            echo "✅ No real errors, only warnings (if any)"
+          fi
 
       - name: Publish reown_core to pub.dev
         if: github.event.inputs.core == 'true'
@@ -195,8 +207,18 @@ jobs:
       - name: Check Publish Warnings
         if: github.event.inputs.sign == 'true'
         shell: bash
-        run: flutter pub publish --dry-run
-        continue-on-error: false
+        run: |
+          set -eo pipefail
+
+          OUTPUT=$(flutter pub publish --dry-run 2>&1)
+          echo "$OUTPUT"
+
+          if echo "$OUTPUT" | grep -iE "error|failed"; then
+            echo "❌ Real error(s) detected in pub publish dry-run"
+            exit 1
+          else
+            echo "✅ No real errors, only warnings (if any)"
+          fi
 
       - name: Publish reown_sign to pub.dev
         if: github.event.inputs.sign == 'true'
@@ -293,8 +315,18 @@ jobs:
       - name: Check Publish Warnings
         if: github.event.inputs.appkit == 'true'
         shell: bash
-        run: flutter pub publish --dry-run
-        continue-on-error: false
+        run: |
+          set -eo pipefail
+
+          OUTPUT=$(flutter pub publish --dry-run 2>&1)
+          echo "$OUTPUT"
+
+          if echo "$OUTPUT" | grep -iE "error|failed"; then
+            echo "❌ Real error(s) detected in pub publish dry-run"
+            exit 1
+          else
+            echo "✅ No real errors, only warnings (if any)"
+          fi
 
       - name: Publish reown_appkit to pub.dev
         if: github.event.inputs.appkit == 'true'
@@ -383,8 +415,18 @@ jobs:
       - name: Check Publish Warnings
         if: github.event.inputs.walletkit == 'true'
         shell: bash
-        run: flutter pub publish --dry-run
-        continue-on-error: false
+        run: |
+          set -eo pipefail
+
+          OUTPUT=$(flutter pub publish --dry-run 2>&1)
+          echo "$OUTPUT"
+
+          if echo "$OUTPUT" | grep -iE "error|failed"; then
+            echo "❌ Real error(s) detected in pub publish dry-run"
+            exit 1
+          else
+            echo "✅ No real errors, only warnings (if any)"
+          fi
 
       - name: Publish reown_walletkit to pub.dev
         if: github.event.inputs.walletkit == 'true'
