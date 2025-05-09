@@ -2,9 +2,9 @@ name: Publish Reown Flutter Packages
 
 on:
   workflow_dispatch: # Allows manual triggering
-  push:
-    branches:
-      - main # TODO: Adjust to your release branch, e.g., 'develop' or 'release/**'
+  # push:
+  #   branches:
+  #     - main # TODO: Adjust to your release branch, e.g., 'develop' or 'release/**'
 
 permissions:
   contents: write # Required to commit pubspec.yaml changes back to the repo
@@ -322,3 +322,6 @@ jobs:
       - name: Publish reown_walletkit to pub.dev
         working-directory: packages/reown_walletkit
         run: flutter pub publish --force
+
+# Launch locally
+# act --container-architecture linux/amd64 -P ubuntu-latest=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/publish-packages.yml workflow_dispatch
