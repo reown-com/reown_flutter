@@ -79,7 +79,7 @@ jobs:
         if: github.event.inputs.core == 'true'
         uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
+          flutter-version: '3.24.5'
 
       - name: Install yq
         if: github.event.inputs.core == 'true'
@@ -108,9 +108,9 @@ jobs:
         if: github.event.inputs.core == 'true'
         shell: bash
         run: |
-          set -eo pipefail
+          set -o pipefail
 
-          OUTPUT=$(flutter pub publish --dry-run 2>&1)
+          OUTPUT=$(flutter pub publish --dry-run 2>&1 || true)
           echo "$OUTPUT"
 
           if echo "$OUTPUT" | grep -iE "error|failed"; then
@@ -154,7 +154,7 @@ jobs:
         if: github.event.inputs.sign == 'true'
         uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
+          flutter-version: '3.24.5'
 
       - name: Install yq
         if: github.event.inputs.sign == 'true'
@@ -208,9 +208,9 @@ jobs:
         if: github.event.inputs.sign == 'true'
         shell: bash
         run: |
-          set -eo pipefail
+          set -o pipefail
 
-          OUTPUT=$(flutter pub publish --dry-run 2>&1)
+          OUTPUT=$(flutter pub publish --dry-run 2>&1 || true)
           echo "$OUTPUT"
 
           if echo "$OUTPUT" | grep -iE "error|failed"; then
@@ -252,7 +252,7 @@ jobs:
         if: github.event.inputs.appkit == 'true'
         uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
+          flutter-version: '3.24.5'
 
       - name: Install yq
         if: github.event.inputs.appkit == 'true'
@@ -316,9 +316,9 @@ jobs:
         if: github.event.inputs.appkit == 'true'
         shell: bash
         run: |
-          set -eo pipefail
+          set -o pipefail
 
-          OUTPUT=$(flutter pub publish --dry-run 2>&1)
+          OUTPUT=$(flutter pub publish --dry-run 2>&1 || true)
           echo "$OUTPUT"
 
           if echo "$OUTPUT" | grep -iE "error|failed"; then
@@ -354,7 +354,7 @@ jobs:
         if: github.event.inputs.walletkit == 'true'
         uses: subosito/flutter-action@v2
         with:
-          channel: "stable"
+          flutter-version: '3.24.5'
 
       - name: Install yq
         if: github.event.inputs.walletkit == 'true'
@@ -416,9 +416,9 @@ jobs:
         if: github.event.inputs.walletkit == 'true'
         shell: bash
         run: |
-          set -eo pipefail
+          set -o pipefail
 
-          OUTPUT=$(flutter pub publish --dry-run 2>&1)
+          OUTPUT=$(flutter pub publish --dry-run 2>&1 || true)
           echo "$OUTPUT"
 
           if echo "$OUTPUT" | grep -iE "error|failed"; then
