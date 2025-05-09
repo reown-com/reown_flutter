@@ -56,7 +56,6 @@ permissions:
   contents: write # Required to commit pubspec.yaml changes back to the repo
 
 jobs:
-
   publish-core:
     name: Publish reown_core
     runs-on: ubuntu-latest
