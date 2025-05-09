@@ -11,7 +11,7 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/content_loading.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/avatars/wallet_avatar.dart';
@@ -34,6 +34,7 @@ class ConnectNetworkPage extends StatefulWidget {
 
 class _ConnectNetworkPageState extends State<ConnectNetworkPage>
     with WidgetsBindingObserver {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
   IReownAppKitModal? _appKitModal;
   ModalError? errorEvent;
 
@@ -67,12 +68,14 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
             chainId: widget.chainInfo.chainId,
             isUpdate: true,
           );
-          widgetStack.instance.pop();
+          _widgetStack.pop();
         }
       }
     } else {
       try {
-        _appKitModal!.launchConnectedWallet();
+        final redirect =
+            _appKitModal!.session!.peer!.metadata.redirect!.native!;
+        ReownCoreUtils.openURL(redirect);
         await _appKitModal!.requestSwitchToChain(widget.chainInfo);
         final chainId = widget.chainInfo.chainId;
         final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
@@ -83,7 +86,7 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
         if (chainInfo != null) {
           Future.delayed(const Duration(milliseconds: 300), () {
             if (!_siweService.enabled) {
-              widgetStack.instance.pop();
+              _widgetStack.pop();
             }
           });
         }
@@ -105,7 +108,7 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
       if (_appKitModal?.session?.sessionService.isCoinbase == true) {
         if (_appKitModal?.selectedChain?.chainId == widget.chainInfo.chainId) {
           if (!_siweService.enabled) {
-            widgetStack.instance.pop();
+            _widgetStack.pop();
           }
         }
       }

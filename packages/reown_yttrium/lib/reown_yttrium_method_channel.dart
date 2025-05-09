@@ -106,10 +106,11 @@ class MethodChannelReownYttrium extends ReownYttriumPlatform {
       }
       if ((response ?? {}).containsKey('error')) {
         final error = response!['error']!['error'];
+        final reason = response!['error']?['reason'];
         return PrepareDetailedResponseCompat.error(
           value: PrepareResponseError(
             error: BridgingError.fromString(error),
-            reason: '', //response['reason'],
+            reason: reason ?? response['reason'] ?? '',
           ),
         );
       }

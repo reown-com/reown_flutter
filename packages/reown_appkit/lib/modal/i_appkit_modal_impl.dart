@@ -24,6 +24,10 @@ abstract class IReownAppKitModal with ChangeNotifier {
   /// Whether or not this object has been initialized.
   ReownAppKitModalStatus get status;
 
+  Map<String, RequiredNamespace> get requiredNamespaces;
+
+  Map<String, RequiredNamespace> get optionalNamespaces;
+
   bool get hasNamespaces;
 
   FeaturesConfig get featuresConfig;
@@ -85,6 +89,8 @@ abstract class IReownAppKitModal with ChangeNotifier {
   /// Launch blockchain explorer for the current chain in external browser
   void launchBlockExplorer();
 
+  Future<void> switchSmartAccounts();
+
   /// Used to expire and delete any inactive pairing
   Future<void> expirePreviousInactivePairings();
 
@@ -92,9 +98,13 @@ abstract class IReownAppKitModal with ChangeNotifier {
   Future<void> buildConnectionUri();
 
   /// Connects the [selectedWallet] previously selected
-  Future<void> connectSelectedWallet({bool inBrowser = false});
+  Future<void> connectSelectedWallet({
+    bool inBrowser = false,
+    AppKitSocialOption? socialOption,
+  });
 
   /// Opens the native wallet [selectedWallet] after connected
+  @Deprecated('This is not needed anymore and shouldn\'t be used')
   void launchConnectedWallet();
 
   /// List of available chains to be added in connected wallet
@@ -121,7 +131,6 @@ abstract class IReownAppKitModal with ChangeNotifier {
     required String chainId,
     required DeployedContract deployedContract,
     required String functionName,
-    EthereumAddress? sender,
     List parameters = const [],
   });
 

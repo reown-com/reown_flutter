@@ -194,9 +194,9 @@ class CoinbaseService implements ICoinbaseService {
   }) async {
     await _checkInstalled();
     final cid = chainId.contains(':') ? chainId.split(':').last : chainId;
-    _core.logger.i('[$runtimeType] request $chainId, ${request.toJson()}');
     try {
       final req = Request(actions: [request.toCoinbaseRequest(cid)]);
+      _core.logger.i('[$runtimeType] request ${jsonEncode(req.toJson())}');
       final result = (await CoinbaseWalletSDK.shared.makeRequest(req)).first;
       if (result.error != null) {
         final errorCode = result.error?.code;
@@ -231,14 +231,18 @@ class CoinbaseService implements ICoinbaseService {
       _core.logger.i('[$runtimeType] request result $value');
       return value;
     } on CoinbaseServiceException catch (e) {
-      _core.logger.e('[$runtimeType] request CoinbaseServiceException $e');
+      _core.logger.e(
+        '[$runtimeType] request CoinbaseServiceException ${e.error}, ${e.message}',
+      );
       onCoinbaseError.broadcast(CoinbaseErrorEvent(e.message));
       rethrow;
     } on PlatformException catch (e, s) {
-      _core.logger.e('[$runtimeType] request PlatformException $e');
       final message = 'Coinbase Wallet Error: (${e.code}) ${e.message}';
+      _core.logger.e('[$runtimeType] request PlatformException $message');
       onCoinbaseError.broadcast(CoinbaseErrorEvent(message));
       throw CoinbaseServiceException(message, e, s);
+    } catch (e) {
+      _core.logger.e('[$runtimeType] request $e');
     }
   }
 

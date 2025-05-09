@@ -256,61 +256,17 @@ class ReownSignClient implements IReownSignClient {
 
   @override
   Future<dynamic> request({
+    int? requestId,
     required String topic,
     required String chainId,
     required SessionRequestParams request,
   }) async {
     try {
       return await engine.request(
+        requestId: requestId,
         topic: topic,
         chainId: chainId,
         request: request,
-      );
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  @override
-  Future<List<dynamic>> requestReadContract({
-    required DeployedContract deployedContract,
-    required String functionName,
-    required String rpcUrl,
-    EthereumAddress? sender,
-    List<dynamic> parameters = const [],
-  }) async {
-    try {
-      return await engine.requestReadContract(
-        sender: sender,
-        deployedContract: deployedContract,
-        functionName: functionName,
-        rpcUrl: rpcUrl,
-        parameters: parameters,
-      );
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  @override
-  Future<dynamic> requestWriteContract({
-    required String topic,
-    required String chainId,
-    required DeployedContract deployedContract,
-    required String functionName,
-    required Transaction transaction,
-    List parameters = const [],
-    String? method,
-  }) async {
-    try {
-      return await engine.requestWriteContract(
-        topic: topic,
-        chainId: chainId,
-        deployedContract: deployedContract,
-        functionName: functionName,
-        transaction: transaction,
-        method: method,
-        parameters: parameters,
       );
     } catch (e) {
       rethrow;

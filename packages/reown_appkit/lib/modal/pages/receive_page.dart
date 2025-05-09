@@ -14,7 +14,7 @@ import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/widgets/avatars/wallet_avatar.dart';
 import 'package:reown_appkit/modal/widgets/buttons/address_button.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/account_list_item.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/widgets/qr_code_view.dart';
@@ -24,6 +24,8 @@ import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
 
 class ReceivePage extends StatelessWidget {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
   const ReceivePage() : super(key: KeyConstants.receivePageKey);
 
   @override
@@ -155,7 +157,7 @@ class ReceivePage extends StatelessWidget {
                     color: themeColors.foreground200,
                   ),
                   onTap: () {
-                    widgetStack.instance.push(ReceiveCompatibleNetworks());
+                    _widgetStack.push(ReceiveCompatibleNetworks());
                   },
                 ),
               ),

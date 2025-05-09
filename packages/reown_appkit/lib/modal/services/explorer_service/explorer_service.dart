@@ -385,7 +385,10 @@ class ExplorerService implements IExplorerService {
           (e) => e.listing.id == walletData.listing.id,
         );
       }
-      currentListings.insert(0, walletData);
+      if (walletData.listing.id != '0000000000000001') {
+        // is web-wallet
+        currentListings.insert(0, walletData);
+      }
 
       _listings = currentListings;
       listings.value = _listings;

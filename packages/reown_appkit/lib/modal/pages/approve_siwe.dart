@@ -83,10 +83,9 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
         address: address,
       );
       //
-      _appKitModal!.launchConnectedWallet();
       final signature = await _siweService.signMessageRequest(
         message,
-        session: _appKitModal!.session!,
+        modalService: ModalProvider.of(context).instance,
       );
       //
       final clientId = await _appKitModal!.appKit!.core.crypto.getClientId();

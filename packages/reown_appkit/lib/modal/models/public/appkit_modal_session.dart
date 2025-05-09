@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/i_coinbase_service.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_data.dart';
@@ -30,6 +32,7 @@ class ReownAppKitModalSession {
   PhantomData? _phantomData;
   MagicData? _magicData;
   SIWESession? _siweSession;
+  bool _isSmartAccount = false;
 
   ReownAppKitModalSession({
     SessionData? sessionData,
@@ -37,11 +40,13 @@ class ReownAppKitModalSession {
     PhantomData? phantomData,
     MagicData? magicData,
     SIWESession? siweSession,
+    bool isSmartAccount = false,
   })  : _sessionData = sessionData,
         _coinbaseData = coinbaseData,
         _phantomData = phantomData,
         _magicData = magicData,
-        _siweSession = siweSession;
+        _siweSession = siweSession,
+        _isSmartAccount = isSmartAccount;
 
   /// USED TO READ THE SESSION FROM LOCAL STORAGE
   factory ReownAppKitModalSession.fromMap(Map<String, dynamic> map) {
@@ -50,6 +55,7 @@ class ReownAppKitModalSession {
     final phantomDataString = map['phantomData'];
     final magicDataString = map['magicData'];
     final siweSession = map['siweSession'];
+    final smartAccount = map['isSmartAccount'] ?? false;
     return ReownAppKitModalSession(
       sessionData: sessionDataString != null
           ? SessionData.fromJson(sessionDataString)
@@ -64,6 +70,7 @@ class ReownAppKitModalSession {
           magicDataString != null ? MagicData.fromJson(magicDataString) : null,
       siweSession:
           siweSession != null ? SIWESession.fromJson(siweSession) : null,
+      isSmartAccount: smartAccount,
     );
   }
 
@@ -90,7 +97,7 @@ class ReownAppKitModalSession {
       email: magicData?.email,
       address: magicData?.address,
       chainId: magicData?.chainId,
-      userName: magicData?.userName,
+      farcasterUserName: magicData?.farcasterUserName,
       smartAccountDeployed: magicData?.smartAccountDeployed,
       preferredAccountType: magicData?.preferredAccountType,
       self: magicData?.self,
@@ -123,6 +130,8 @@ class ReownAppKitModalSession {
 
     return ReownAppKitModalConnector.none;
   }
+
+  void switchSmartAccounts() => _isSmartAccount = !_isSmartAccount;
 
   bool hasSwitchMethod() {
     if (sessionService.noSession) {
@@ -260,6 +269,10 @@ class ReownAppKitModalSession {
           .toList();
     }
 
+    if (_isSmartAccount) {
+      return sessionSmartAccounts;
+    }
+
     final sessionNamespaces = _sessionData!.namespaces;
     if ((namespace ?? '').isEmpty) {
       for (var namespace in sessionNamespaces.keys) {
@@ -281,9 +294,6 @@ class ReownAppKitModalSession {
     return _sessionData?.peer.metadata.redirect;
   }
 
-  Map<String, dynamic> get sessionProperties =>
-      _sessionData?.sessionProperties ?? {};
-
   // toJson() would convert ReownAppKitModalSession to a SessionData kind of map
   // no matter if Coinbase Wallet or Email Wallet is connected
   Map<String, dynamic> toJson() {
@@ -296,18 +306,17 @@ class ReownAppKitModalSession {
       pairingTopic: pairingTopic ?? '',
       relay: relay ?? Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
       expiry: expiry ?? 0,
-      acknowledged: acknowledged ?? false,
-      controller: controller ?? '',
+      acknowledged: true,
+      controller: sessionService.name,
       namespaces: _namespaces() ?? {},
       self: self!,
       peer: peer!,
-      requiredNamespaces: _sessionData?.requiredNamespaces,
-      optionalNamespaces: _sessionData?.optionalNamespaces,
-      sessionProperties: _sessionData?.sessionProperties,
-      authentication: _sessionData?.authentication,
-      transportType: _sessionData?.transportType ?? TransportType.relay,
     );
-    return sessionData.toJson();
+    return {
+      ...sessionData.toJson(),
+      'relay': null,
+      'transportType': sessionService.name,
+    };
   }
 }
 
@@ -365,11 +374,25 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
   }
 
   //
-  String get email => _magicData?.email ?? '';
+  Map<String, dynamic> get sessionProperties =>
+      _sessionData?.sessionProperties ?? {};
 
-  String get userName => _magicData?.userName ?? '';
+  //
+  List<String> get sessionSmartAccounts {
+    try {
+      return List<String>.from(jsonDecode(sessionProperties['smartAccounts']));
+    } catch (_) {
+      return [];
+    }
+  }
 
-  AppKitSocialOption? get socialProvider => _magicData?.provider;
+  String? get socialProvider =>
+      sessionProperties['provider'] ?? _magicData?.provider?.name;
+  String? get sessionEmail => sessionProperties['email'] ?? _magicData?.email;
+  String? get sessionUsername =>
+      sessionProperties['username'] ??
+      _magicData?.farcasterUserName ??
+      sessionEmail;
 
   //
   String? getAddress(String namespace) {
@@ -385,8 +408,13 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     if (sessionService.isMagic) {
       return _magicData!.address;
     }
+    if (_isSmartAccount) {
+      return NamespaceUtils.getAccount(sessionSmartAccounts.first);
+    }
+
     final ns = namespaces?[namespace];
-    final accounts = ns?.accounts ?? [];
+    final accounts = List<String>.from(ns?.accounts ?? [])
+      ..removeWhere((item) => sessionSmartAccounts.contains(item));
     if (accounts.isNotEmpty) {
       return NamespaceUtils.getAccount(accounts.first);
     }
@@ -493,6 +521,7 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
       if (_phantomData != null) 'phantomData': _phantomData?.toJson(),
       if (_magicData != null) 'magicData': _magicData?.toJson(),
       if (_siweSession != null) 'siweSession': _siweSession?.toJson(),
+      'isSmartAccount': _isSmartAccount,
     };
   }
 }

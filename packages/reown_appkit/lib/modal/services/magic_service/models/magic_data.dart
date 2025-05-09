@@ -4,7 +4,7 @@ class MagicData {
   String? email;
   String address;
   String chainId;
-  String? userName;
+  String? farcasterUserName;
   bool? smartAccountDeployed;
   String? preferredAccountType;
   ConnectionMetadata? self;
@@ -15,7 +15,7 @@ class MagicData {
     required this.email,
     required this.chainId,
     required this.address,
-    this.userName,
+    this.farcasterUserName,
     this.smartAccountDeployed,
     this.preferredAccountType,
     this.self,
@@ -28,7 +28,7 @@ class MagicData {
       email: json['email']?.toString(),
       address: json['address'].toString(),
       chainId: _parseChainId(json['chainId'].toString()),
-      userName: json['userName']?.toString(),
+      farcasterUserName: json['userName']?.toString(),
       smartAccountDeployed: json['smartAccountDeployed'] as bool?,
       preferredAccountType: json['preferredAccountType']?.toString(),
       self: (json['self'] != null)
@@ -56,7 +56,7 @@ class MagicData {
       'email': email,
       'address': address,
       'chainId': chainId,
-      'userName': userName,
+      'userName': farcasterUserName,
       'smartAccountDeployed': smartAccountDeployed,
       'preferredAccountType': preferredAccountType,
       'self': self?.toJson(),
@@ -72,7 +72,7 @@ class MagicData {
     String? email,
     String? address,
     String? chainId,
-    String? userName,
+    String? farcasterUserName,
     bool? smartAccountDeployed,
     String? preferredAccountType,
     ConnectionMetadata? self,
@@ -86,7 +86,7 @@ class MagicData {
       email: email ?? this.email,
       address: address ?? this.address,
       chainId: chainId ?? this.chainId,
-      userName: userName ?? this.userName,
+      farcasterUserName: farcasterUserName ?? this.farcasterUserName,
       smartAccountDeployed: smartAccountDeployed ?? this.smartAccountDeployed,
       preferredAccountType: preferredAccountType ?? this.preferredAccountType,
       self: self ?? this.self,

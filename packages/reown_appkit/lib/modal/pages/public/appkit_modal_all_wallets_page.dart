@@ -7,7 +7,7 @@ import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/pages/connect_wallet_page.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/lists/wallets_grid.dart';
@@ -27,6 +27,8 @@ class ReownAppKitModalAllWalletsPage extends StatefulWidget {
 class _AppKitModalAllWalletsPageState
     extends State<ReownAppKitModalAllWalletsPage> {
   IExplorerService get _explorerService => GetIt.I<IExplorerService>();
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
   bool _paginating = false;
   final _controller = ScrollController();
 
@@ -75,7 +77,7 @@ class _AppKitModalAllWalletsPageState
       onBack: () {
         FocusManager.instance.primaryFocus?.unfocus();
         _explorerService.search(query: null);
-        widgetStack.instance.pop();
+        _widgetStack.pop();
       },
       safeAreaBottom: false,
       safeAreaLeft: true,
@@ -114,7 +116,7 @@ class _AppKitModalAllWalletsPageState
                       scrollController: _controller,
                       onTapWallet: (data) async {
                         service.selectWallet(data);
-                        widgetStack.instance.push(const ConnectWalletPage());
+                        _widgetStack.push(const ConnectWalletPage());
                       },
                       itemList: items,
                     );

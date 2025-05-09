@@ -7,9 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/activity_page.dart';
-import 'package:reown_appkit/modal/pages/edit_email_page.dart';
 import 'package:reown_appkit/modal/pages/upgrade_wallet_page.dart';
-import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
@@ -17,7 +15,7 @@ import 'package:reown_appkit/modal/utils/asset_util.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/content_loading.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/avatars/account_orb.dart';
 import 'package:reown_appkit/modal/widgets/buttons/address_copy_button.dart';
@@ -27,15 +25,14 @@ import 'package:reown_appkit/modal/widgets/lists/list_items/account_list_item.da
 import 'package:reown_appkit/modal/widgets/text/appkit_balance.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
-class EOAccountPage extends StatefulWidget {
-  const EOAccountPage() : super(key: KeyConstants.eoAccountPage);
+class AccountPage extends StatefulWidget {
+  const AccountPage() : super(key: KeyConstants.eoAccountPage);
 
   @override
-  State<EOAccountPage> createState() => _EOAccountPageState();
+  State<AccountPage> createState() => _AccountPageState();
 }
 
-class _EOAccountPageState extends State<EOAccountPage>
-    with WidgetsBindingObserver {
+class _AccountPageState extends State<AccountPage> with WidgetsBindingObserver {
   IReownAppKitModal? _appKitModal;
 
   @override
@@ -70,6 +67,9 @@ class _EOAccountPageState extends State<EOAccountPage>
     if (_appKitModal == null) {
       return ContentLoading(viewHeight: 400.0);
     }
+    if (_appKitModal?.session == null) {
+      return ContentLoading(viewHeight: 400.0);
+    }
 
     return ModalNavbar(
       title: '',
@@ -96,7 +96,9 @@ class _DefaultAccountView extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final isEmailLogin = _appKitMoldal.session?.sessionService.isMagic ?? false;
+    final isMagicService = _appKitMoldal.session!.sessionService.isMagic;
+    final smartAccounts =
+        _appKitMoldal.session!.sessionSmartAccounts.isNotEmpty;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -131,21 +133,25 @@ class _DefaultAccountView extends StatelessWidget {
         ),
         const SizedBox.square(dimension: kPadding12),
         Visibility(
-          visible: isEmailLogin,
+          visible: isMagicService || smartAccounts,
           child: _UpgradeWalletButton(),
         ),
         Visibility(
-          visible: isEmailLogin,
+          visible: isMagicService || smartAccounts,
           child: _EmailAndSocialLoginButton(),
         ),
         // Visibility(
-        //   visible: !isEmailLogin,
+        //   visible: !isMagicService && !smartAccounts,
         //   child: _ConnectedWalletButton(),
         // ),
         _SelectNetworkButton(),
         Visibility(
-          visible: !isEmailLogin,
+          visible: !isMagicService && !smartAccounts,
           child: _ActivityButton(),
+        ),
+        Visibility(
+          visible: smartAccounts,
+          child: _SwitchSmartAccountButton(),
         ),
         _DisconnectButton(),
       ],
@@ -154,6 +160,8 @@ class _DefaultAccountView extends StatelessWidget {
 }
 
 class _UpgradeWalletButton extends StatelessWidget {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
   @override
   Widget build(BuildContext context) {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
@@ -189,7 +197,7 @@ class _UpgradeWalletButton extends StatelessWidget {
           titleStyle: themeData.textStyles.paragraph500.copyWith(
             color: themeColors.foreground100,
           ),
-          onTap: () => widgetStack.instance.push(UpgradeWalletPage()),
+          onTap: () => _widgetStack.push(UpgradeWalletPage()),
         ),
       ],
     );
@@ -199,22 +207,27 @@ class _UpgradeWalletButton extends StatelessWidget {
 class _EmailAndSocialLoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final service = ModalProvider.of(context).instance;
+    final modalInstance = ModalProvider.of(context).instance;
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final provider = AppKitSocialOption.values.firstWhereOrNull(
-      (e) => e.name == service.session!.peer?.metadata.name,
+      (e) {
+        final socialProvider = modalInstance.session!.socialProvider ?? '';
+        return e.name.toLowerCase() == socialProvider.toString().toLowerCase();
+      },
     );
-    final title =
-        provider != null ? service.session!.userName : service.session!.email;
+    final title = modalInstance.session!.sessionUsername;
+    if (provider == null) {
+      return SizedBox.shrink();
+    }
     return Column(
       children: [
         const SizedBox.square(dimension: kPadding8),
         AccountListItem(
           iconWidget: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: provider == null
+            child: provider == AppKitSocialOption.Email
                 ? RoundedIcon(
                     assetPath: 'lib/modal/assets/icons/mail.svg',
                     assetColor: themeColors.foreground100,
@@ -235,14 +248,22 @@ class _EmailAndSocialLoginButton extends StatelessWidget {
                     ),
                   ),
           ),
-          title: title,
+          title: title ?? '',
           titleStyle: themeData.textStyles.paragraph500.copyWith(
             color: themeColors.foreground100,
           ),
-          onTap: provider == null
-              ? () => widgetStack.instance.push(EditEmailPage())
+          onTap: provider == AppKitSocialOption.Email
+              ? () {
+                  final walletInfo =
+                      GetIt.I<IExplorerService>().getConnectedWallet();
+                  final url = walletInfo!.listing.webappLink;
+                  final topic = modalInstance.session!.topic;
+                  ReownCoreUtils.openURL('${url}emailUpdate/$topic');
+                }
               : null,
-          trailing: provider != null ? const SizedBox.shrink() : null,
+          trailing: provider == AppKitSocialOption.Email
+              ? null
+              : const SizedBox.shrink(),
         ),
       ],
     );
@@ -296,8 +317,13 @@ class _ConnectedWalletButton extends StatelessWidget {
           titleStyle: themeData.textStyles.paragraph500.copyWith(
             color: themeColors.foreground100,
           ),
-          onTap:
-              walletInfo != null ? () => service.launchConnectedWallet() : null,
+          onTap: walletInfo != null
+              ? () {
+                  final redirect =
+                      service.session!.peer!.metadata.redirect!.native!;
+                  ReownCoreUtils.openURL(redirect);
+                }
+              : null,
         ),
       ],
     );
@@ -305,6 +331,8 @@ class _ConnectedWalletButton extends StatelessWidget {
 }
 
 class _SelectNetworkButton extends StatelessWidget {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
   @override
   Widget build(BuildContext context) {
     final service = ModalProvider.of(context).instance;
@@ -336,7 +364,7 @@ class _SelectNetworkButton extends StatelessWidget {
           titleStyle: themeData.textStyles.paragraph500.copyWith(
             color: themeColors.foreground100,
           ),
-          onTap: () => widgetStack.instance.push(
+          onTap: () => _widgetStack.push(
             ReownAppKitModalSelectNetworkPage(),
             event: ClickNetworksEvent(),
           ),
@@ -347,6 +375,8 @@ class _SelectNetworkButton extends StatelessWidget {
 }
 
 class _ActivityButton extends StatelessWidget {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
   @override
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
@@ -359,9 +389,70 @@ class _ActivityButton extends StatelessWidget {
           iconBGColor: themeColors.accenGlass015,
           iconBorderColor: themeColors.accenGlass005,
           title: 'Activity',
-          onTap: () {
-            GetIt.I<IAnalyticsService>().sendEvent(ClickTransactionsEvent());
-            widgetStack.instance.push(ActivityPage());
+          onTap: () => _widgetStack.push(
+            ActivityPage(),
+            event: ClickTransactionsEvent(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SwitchSmartAccountButton extends StatefulWidget {
+  @override
+  State<_SwitchSmartAccountButton> createState() =>
+      _SwitchSmartAccountButtonState();
+}
+
+class _SwitchSmartAccountButtonState extends State<_SwitchSmartAccountButton> {
+  bool _loading = false;
+
+  bool get _isSmartAccountSelected {
+    try {
+      final modalInstance = ModalProvider.of(context).instance;
+      final chainId = modalInstance.selectedChain!.chainId;
+      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+      final address = modalInstance.session!.getAddress(namespace);
+      final account = '$chainId:$address';
+      final sessionSmartAccounts = modalInstance.session!.sessionSmartAccounts;
+      return sessionSmartAccounts.contains(account);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final service = ModalProvider.of(context).instance;
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    return Column(
+      children: [
+        const SizedBox.square(dimension: kPadding8),
+        AccountListItem(
+          iconPath: 'lib/modal/assets/icons/swap_horizontal.svg',
+          iconColor: themeColors.accent100,
+          iconBGColor: themeColors.accenGlass015,
+          iconBorderColor: themeColors.accenGlass005,
+          title: _isSmartAccountSelected
+              ? 'Switch to your EOA'
+              : 'Switch to your smart account',
+          titleStyle: themeData.textStyles.paragraph500.copyWith(
+            color: themeColors.foreground100,
+          ),
+          trailing: _loading
+              ? Row(
+                  children: [
+                    CircularLoader(size: 18.0, strokeWidth: 2.0),
+                    SizedBox.square(dimension: kPadding12),
+                  ],
+                )
+              : const SizedBox.shrink(),
+          onTap: () async {
+            setState(() => _loading = !_loading);
+            await service.switchSmartAccounts();
+            setState(() => _loading = !_loading);
           },
         ),
       ],

@@ -1,5 +1,11 @@
+## 1.4.3-beta01
+
+- New Social Logins functionality: Enhanced reliability, added more social options
+- Bug fixes
+
 ## 1.4.2+2
 
+- Core dependency update
 - Link Mode enhancements
 - Bug fixes and enhancements
 

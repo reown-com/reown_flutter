@@ -200,15 +200,18 @@ class _MyHomePageState extends State<MyHomePage> {
         // sessionRefetchIntervalMs: 300000,
       );
 
-  // ignore: unused_element
   FeaturesConfig? _featuresConfig() {
     return FeaturesConfig(
-      email: true,
       socials: [
-        AppKitSocialOption.Farcaster,
+        AppKitSocialOption.Email,
         AppKitSocialOption.X,
+        AppKitSocialOption.Google,
         AppKitSocialOption.Apple,
         AppKitSocialOption.Discord,
+        AppKitSocialOption.GitHub,
+        AppKitSocialOption.Facebook,
+        AppKitSocialOption.Twitch,
+        AppKitSocialOption.Telegram,
       ],
       showMainWallets: true, // OPTIONAL - true by default
     );
@@ -271,11 +274,9 @@ class _MyHomePageState extends State<MyHomePage> {
         logLevel: LogLevel.all,
         disconnectOnDispose: false,
         metadata: _pairingMetadata(),
-        // siweConfig: _siweConfig(siweAuthValue),
-        // featuresConfig: emailWalletValue ? _featuresConfig() : null,
+        siweConfig: _siweConfig(siweAuthValue),
+        featuresConfig: emailWalletValue ? _featuresConfig() : null,
         enableAnalytics: analyticsValue, // OPTIONAL - null by default
-        // requiredNamespaces: {},
-        // optionalNamespaces: {},
         // includedWalletIds: {},
         featuredWalletIds: {
           'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa', // Coinbase
@@ -292,6 +293,7 @@ class _MyHomePageState extends State<MyHomePage> {
         //   // You could place here your own getBalance method
         //   return 0.123;
         // },
+        // requiredNamespaces: {},
         optionalNamespaces: siweAuthValue
             ? null
             : {
@@ -320,7 +322,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     'polkadot_signMessage',
                     'polkadot_signTransaction',
                   ],
-                  'events': []
+                  'events': [],
                 }),
               },
       );

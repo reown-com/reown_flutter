@@ -48,6 +48,9 @@ class UrlConstants {
   static const blockChainService = 'https://rpc.walletconnect.org';
   static const exploreWallets =
       'https://explorer.walletconnect.com/?type=wallet';
+  static const webWalletUrl = 'http://web-wallet.walletconnect.org/';
+  static const webWalletUrlInternal =
+      'http://develop.appkit-web-wallet.pages.dev/';
   //
   static const secureOrigin1 = 'secure-mobile.walletconnect.com';
   static const secureOrigin2 = 'secure.walletconnect.com';

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/pages/approve_magic_request_page.dart';
-import 'package:reown_appkit/modal/pages/confirm_email_page.dart';
 import 'package:reown_appkit/modal/pages/social_login_page.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
@@ -11,7 +10,7 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class AppKitModalAccountButton extends StatefulWidget {
@@ -40,6 +39,7 @@ class AppKitModalAccountButton extends StatefulWidget {
 
 class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
   IMagicService get _magicService => GetIt.I<IMagicService>();
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
   String _address = '';
 
   @override
@@ -76,7 +76,7 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
   void _approveSign(MagicRequestEvent? args) async {
     if (args?.request != null) {
       if (widget.appKitModal.isOpen) {
-        widgetStack.instance.push(ApproveTransactionPage());
+        _widgetStack.push(ApproveTransactionPage());
       } else {
         widget.appKitModal.openModalView(ApproveTransactionPage());
       }
@@ -85,24 +85,15 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
 
   void _loginRequested(MagicSessionEvent? args) {
     if (args == null) return;
-    final provider = args.provider;
     final isOpen = widget.appKitModal.isOpen;
     if (isOpen) {
-      if (provider != null) {
-        widgetStack.instance.popAllAndPush(SocialLoginPage(
-          socialOption: provider,
-        ));
-      } else {
-        widgetStack.instance.popAllAndPush(ConfirmEmailPage());
-      }
+      _widgetStack.popAllAndPush(SocialLoginPage(
+        socialOption: AppKitSocialOption.Farcaster,
+      ));
     } else {
-      if (provider != null) {
-        widget.appKitModal.openModalView(SocialLoginPage(
-          socialOption: provider,
-        ));
-      } else {
-        widget.appKitModal.openModalView(ConfirmEmailPage());
-      }
+      widget.appKitModal.openModalView(SocialLoginPage(
+        socialOption: AppKitSocialOption.Farcaster,
+      ));
     }
   }
 
@@ -189,8 +180,8 @@ class _BalanceButton extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final textStyle = buttonSize == BaseButtonSize.small
-        ? themeData.textStyles.small600
-        : themeData.textStyles.paragraph600;
+        ? themeData.textStyles.small500
+        : themeData.textStyles.paragraph500;
     final chainId = appKit.selectedChain?.chainId ?? '';
     final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
     String tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);

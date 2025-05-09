@@ -20,7 +20,7 @@ import 'package:reown_appkit/modal/widgets/buttons/secondary_button.dart';
 import 'package:reown_appkit/modal/widgets/buttons/simple_icon_button.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/searchbar.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
@@ -36,6 +36,7 @@ class SendPage extends StatefulWidget {
 class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
   IBlockChainService get _blockchainService => GetIt.I<IBlockChainService>();
   IAnalyticsService get _analyticsService => GetIt.I<IAnalyticsService>();
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
 
   final _amountController = TextEditingController();
   final _addressController = TextEditingController();
@@ -216,7 +217,7 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
                             title: ' ${_selectedToken.symbol}',
                             iconUrl: _selectedToken.iconUrl,
                             onTap: () {
-                              widgetStack.instance.push(SelectTokenPage());
+                              _widgetStack.push(SelectTokenPage());
                             },
                           ),
                           Positioned(
@@ -323,7 +324,7 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
                         ? PrimaryButton(
                             title: 'Review send',
                             onTap: () {
-                              widgetStack.instance.push(PreviewSendPage(
+                              _widgetStack.push(PreviewSendPage(
                                 sendData: _sendData,
                                 sendTokenData: _selectedToken,
                                 networkTokenData: _networkToken,

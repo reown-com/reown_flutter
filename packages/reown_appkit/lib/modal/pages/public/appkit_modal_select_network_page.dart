@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/pages/about_networks.dart';
@@ -9,7 +10,7 @@ import 'package:reown_appkit/modal/services/analytics_service/models/analytics_e
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/modal/widgets/buttons/simple_icon_button.dart';
 import 'package:reown_appkit/modal/widgets/lists/networks_grid.dart';
 import 'package:reown_appkit/modal/widgets/value_listenable_builders/network_service_items_listener.dart';
@@ -19,6 +20,8 @@ import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
   const ReownAppKitModalSelectNetworkPage({
     this.onTapNetwork,
   }) : super(key: KeyConstants.selectNetworkPage);
@@ -43,27 +46,27 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
       final isMagic = appKitModal.session!.sessionService.isMagic;
       final isChainApproved = (approvedChains ?? []).contains(chainId);
       if (chainInfo.chainId == appKitModal.selectedChain?.chainId) {
-        if (widgetStack.instance.canPop()) {
-          widgetStack.instance.pop();
+        if (_widgetStack.canPop()) {
+          _widgetStack.pop();
         } else {
           appKitModal.closeModal();
         }
       } else if (isChainApproved || isMagic) {
         if (isMagic) {
-          widgetStack.instance.push(ConnectNetworkPage(
+          _widgetStack.push(ConnectNetworkPage(
             chainInfo: chainInfo,
             isMagic: true,
           ));
         } else {
           await appKitModal.selectChain(chainInfo, switchChain: true);
-          if (widgetStack.instance.canPop()) {
-            widgetStack.instance.pop();
+          if (_widgetStack.canPop()) {
+            _widgetStack.pop();
           } else {
             appKitModal.closeModal();
           }
         }
       } else {
-        widgetStack.instance.push(ConnectNetworkPage(chainInfo: chainInfo));
+        _widgetStack.push(ConnectNetworkPage(chainInfo: chainInfo));
       }
     } else {
       onTapNetwork?.call(chainInfo);
@@ -119,7 +122,7 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
           ),
           SimpleIconButton(
             onTap: () {
-              widgetStack.instance.push(
+              _widgetStack.push(
                 const AboutNetworks(),
                 event: ClickNetworkHelpEvent(),
               );

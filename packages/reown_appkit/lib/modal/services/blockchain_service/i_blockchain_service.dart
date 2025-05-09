@@ -4,7 +4,6 @@ import 'package:reown_appkit/modal/services/blockchain_service/models/token_bala
 import 'package:reown_appkit/modal/services/blockchain_service/models/wallet_activity.dart';
 
 abstract class IBlockChainService {
-  ActivityData? get activityData;
   List<TokenBalance>? get tokensList;
   TokenBalance? get selectedSendToken;
 
@@ -48,6 +47,11 @@ abstract class IBlockChainService {
     required String receiverAddress,
     required String contractAddress,
     required String caip2Chain,
+  });
+
+  Future<String> rawCall({
+    required String chainId,
+    required Map params,
   });
 
   void dispose();

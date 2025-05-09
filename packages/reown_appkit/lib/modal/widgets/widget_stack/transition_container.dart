@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack_singleton.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 
 class TransitionContainer extends StatefulWidget {
   const TransitionContainer({
@@ -15,6 +16,7 @@ class TransitionContainer extends StatefulWidget {
 
 class _TransitionContainerState extends State<TransitionContainer>
     with TickerProviderStateMixin {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
   static const fadeDuration = Duration(milliseconds: 150);
   static const resizeDuration = Duration(milliseconds: 150);
   late AnimationController _fadeController;
@@ -60,8 +62,8 @@ class _TransitionContainerState extends State<TransitionContainer>
     if (previousScreen.child.key != widget.child.key) {
       _fadeController.forward().then((_) {
         setState(() => _currentScreen = widget.child);
-        if (!widgetStack.instance.onRenderScreen.value) {
-          widgetStack.instance.onRenderScreen.value = true;
+        if (!_widgetStack.onRenderScreen.value) {
+          _widgetStack.onRenderScreen.value = true;
         }
         Future.delayed(fadeDuration).then((value) {
           if (mounted) {

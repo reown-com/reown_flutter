@@ -2,21 +2,20 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:reown_appkit_example/services/contracts/base_usdc_contract.dart';
+import 'package:toastification/toastification.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
+import 'package:reown_appkit/reown_appkit.dart';
+
 import 'package:reown_appkit_example/services/contracts/aave_contract.dart';
 import 'package:reown_appkit_example/services/contracts/arb_aave_contract.dart';
 import 'package:reown_appkit_example/services/contracts/contract.dart';
 import 'package:reown_appkit_example/services/contracts/usdt_contract.dart';
 import 'package:reown_appkit_example/services/contracts/wct_contract.dart';
-
 import 'package:reown_appkit_example/utils/styles.dart';
-
-import 'package:reown_appkit/reown_appkit.dart';
-
 import 'package:reown_appkit_example/utils/constants.dart';
 import 'package:reown_appkit_example/services/methods_service.dart';
 import 'package:reown_appkit_example/widgets/method_dialog.dart';
-import 'package:toastification/toastification.dart';
 
 class SessionWidget extends StatefulWidget {
   const SessionWidget({super.key, required this.appKit});
@@ -73,7 +72,9 @@ class SessionWidgetState extends State<SessionWidget> {
                   visible: !session.sessionService.isMagic,
                   child: IconButton(
                     onPressed: () {
-                      widget.appKit.launchConnectedWallet();
+                      final redirect = widget
+                          .appKit.session!.peer!.metadata.redirect!.native!;
+                      ReownCoreUtils.openURL(redirect);
                     },
                     icon: const Icon(Icons.open_in_new),
                   ),
@@ -125,9 +126,9 @@ class SessionWidgetState extends State<SessionWidget> {
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final accounts = session.getAccounts(namespace: namespace) ?? [];
     final chainsNamespaces = NamespaceUtils.getChainsFromAccounts(accounts);
-    if (chainsNamespaces.contains('$namespace:$chainId')) {
+    if (chainsNamespaces.contains(chainId)) {
       final account = accounts.firstWhere(
-        (account) => account.contains('$namespace:$chainId'),
+        (account) => account.contains(chainId),
       );
       children.add(_buildAccountWidget(account));
     }
@@ -181,10 +182,6 @@ class SessionWidgetState extends State<SessionWidget> {
 
   Widget _buildAccountWidget(String account) {
     final chainId = NamespaceUtils.getChainFromAccount(account);
-    // final chainMetadata = ChainDataWrapper.getChainMetadataFromChain(
-    //   chainId.split(':').first,
-    //   chainId.split(':').last,
-    // );
 
     final List<Widget> children = [
       Text(
@@ -257,10 +254,9 @@ class SessionWidgetState extends State<SessionWidget> {
     // Add Methods
     final chainId = NamespaceUtils.getChainFromAccount(address);
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-    final approvedMethods = widget.appKit.getApprovedMethods(
-      namespace: namespace,
-    );
-    if ((approvedMethods ?? []).isEmpty) {
+    final approvedMethods =
+        widget.appKit.getApprovedMethods(namespace: namespace) ?? [];
+    if (approvedMethods.isEmpty) {
       return [
         Text(
           'No methods approved',
@@ -273,24 +269,25 @@ class SessionWidgetState extends State<SessionWidget> {
         )
       ];
     }
-    final usableMethods = SupportedMethods.values.map((e) => e.name).toList();
+    final implementedMethods =
+        SupportedMethods.values.map((e) => e.name).toList();
+    final usableMethods = implementedMethods
+        .toSet()
+        .intersection(approvedMethods.toSet())
+        .toList();
     //
     final List<Widget> children = [];
-    for (final method in (approvedMethods ?? <String>[])) {
-      final implemented = usableMethods.contains(method);
+    for (final method in usableMethods) {
       children.add(
         Container(
           height: StyleConstants.linear40,
           width: double.infinity,
           margin: const EdgeInsets.symmetric(vertical: StyleConstants.linear8),
           child: ElevatedButton(
-            onPressed: implemented
-                ? () async {
-                    widget.appKit.launchConnectedWallet();
-                    final future = callChainMethod(method);
-                    MethodDialog.show(context, method, future);
-                  }
-                : null,
+            onPressed: () {
+              final future = callChainMethod(method);
+              MethodDialog.show(context, method, future);
+            },
             style: buttonStyle(context),
             child: Text(method),
           ),
@@ -311,20 +308,25 @@ class SessionWidgetState extends State<SessionWidget> {
     final chainInfo = widget.appKit.selectedChain!;
 
     late final SmartContract smartContract;
-    if (chainInfo.chainId == '11155111') {
+    if (chainInfo.chainId == 'eip155:11155111') {
       smartContract = SepoliaAAVEContract();
-    } else if (chainInfo.chainId == '42161') {
+    } else if (chainInfo.chainId == 'eip155:42161') {
       smartContract = ArbitrumAAVEContract();
-    } else if (chainInfo.chainId == '10') {
+    } else if (chainInfo.chainId == 'eip155:8453') {
+      smartContract = BASEUSDCContract();
+    } else if (chainInfo.chainId == 'eip155:10') {
       smartContract = WCTOPETHContract();
-    } else if (chainInfo.chainId == '1') {
+    } else if (chainInfo.chainId == 'eip155:1') {
       smartContract = ERC20USDTContract();
     } else {
       return children;
     }
 
     children.add(
-      Text('Test ${smartContract.name}', textAlign: TextAlign.center),
+      Text(
+        'Test ${smartContract.name}',
+        textAlign: TextAlign.center,
+      ),
     );
 
     children.addAll([
@@ -350,14 +352,13 @@ class SessionWidgetState extends State<SessionWidget> {
         ),
       ),
       Visibility(
-        visible: chainInfo.chainId != '10',
+        visible: chainInfo.chainId != 'eip155:10',
         child: Container(
           height: StyleConstants.linear40,
           width: double.infinity,
           margin: const EdgeInsets.symmetric(vertical: StyleConstants.linear8),
           child: ElevatedButton(
             onPressed: () async {
-              widget.appKit.launchConnectedWallet();
               final future = MethodsService.callSmartContract(
                 appKitModal: widget.appKit,
                 smartContract: smartContract,
