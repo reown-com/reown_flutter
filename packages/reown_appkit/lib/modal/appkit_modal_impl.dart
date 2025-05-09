@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
-import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -1348,7 +1347,6 @@ class ReownAppKitModal
     required String chainId,
     required DeployedContract deployedContract,
     required String functionName,
-    EthereumAddress? sender,
     List parameters = const [],
   }) async {
     if (_currentSession == null) {
@@ -1371,23 +1369,33 @@ class ReownAppKitModal
       '[$runtimeType] requestReadContract, chainId: $chainId',
     );
 
-    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-    final id = ReownAppKitModalNetworks.getIdFromChain(chainId);
-    final networkInfo = ReownAppKitModalNetworks.getNetworkInfo(namespace, id)!;
-
     try {
-      return await Web3Client(networkInfo.rpcUrl, http.Client()).call(
-        sender: sender,
-        contract: deployedContract,
-        function: deployedContract.function(functionName),
-        params: parameters,
+      final data = deployedContract.function(functionName).encodeCall(
+            parameters,
+          );
+      final params = {
+        'from': _currentSession!.getAddress('eip155'),
+        'to': deployedContract.address.hex,
+        'data': '0x${_bytesToHex(data)}',
+      };
+
+      final rawCallResponse = await _blockchainService.rawCall(
+        chainId: chainId,
+        params: params,
       );
+      return deployedContract.function(functionName).decodeReturnValues(
+            rawCallResponse,
+          );
     } catch (e, s) {
       _appKit.core.logger.e(
         '[$runtimeType] requestReadContract, error: $e, $s',
       );
       rethrow;
     }
+  }
+
+  String _bytesToHex(List<int> bytes) {
+    return bytes.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
   }
 
   @override

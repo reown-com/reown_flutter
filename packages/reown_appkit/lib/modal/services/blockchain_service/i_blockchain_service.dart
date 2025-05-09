@@ -49,5 +49,10 @@ abstract class IBlockChainService {
     required String caip2Chain,
   });
 
+  Future<String> rawCall({
+    required String chainId,
+    required Map params,
+  });
+
   void dispose();
 }

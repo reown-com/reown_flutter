@@ -131,7 +131,6 @@ abstract class IReownAppKitModal with ChangeNotifier {
     required String chainId,
     required DeployedContract deployedContract,
     required String functionName,
-    EthereumAddress? sender,
     List parameters = const [],
   });
 
