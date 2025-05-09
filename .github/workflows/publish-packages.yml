@@ -56,76 +56,65 @@ permissions:
   contents: write # Required to commit pubspec.yaml changes back to the repo
 
 jobs:
-  # detect-changes:
-  #   name: Detect Changed Packages
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     core_changed: ${{ steps.filter.outputs.core_changed }}
-  #     sign_changed: ${{ steps.filter.outputs.sign_changed }}
-  #     appkit_changed: ${{ steps.filter.outputs.appkit_changed }}
-  #     walletkit_changed: ${{ steps.filter.outputs.walletkit_changed }}
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-
-  #     - name: Identify changed files
-  #       uses: dorny/paths-filter@v3
-  #       id: filter
-  #       with:
-  #         filters: |
-  #           core_changed:
-  #             - 'packages/reown_core/**'
-  #           sign_changed:
-  #             - 'packages/reown_sign/**'
-  #           appkit_changed:
-  #             - 'packages/reown_appkit/**'
-  #           walletkit_changed:
-  #             - 'packages/reown_walletkit/**'
 
   publish-core:
     name: Publish reown_core
-    if: github.event.inputs.core == 'true'
     runs-on: ubuntu-latest
     outputs:
       package_version: ${{ steps.get_version.outputs.version }}
     steps:
+      - name: Check if core should be published
+        if: github.event.inputs.core == 'false'
+        run: |
+          echo "Skipping reown_core publishing because input was false."
+        continue-on-error: false
+
       - name: Checkout code
+        if: github.event.inputs.core == 'true'
         uses: actions/checkout@v4
 
       - name: Set up Flutter
+        if: github.event.inputs.core == 'true'
         uses: subosito/flutter-action@v2
         with:
-          channel: "stable" # Or your preferred channel
+          channel: "stable"
 
       - name: Install yq
+        if: github.event.inputs.core == 'true'
         run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
 
       - name: Get package version from reown_core/pubspec.yaml
+        if: github.event.inputs.core == 'true'
         id: get_version
         working-directory: packages/reown_core
         run: echo "version=$(yq e '.version' pubspec.yaml)" >> $GITHUB_OUTPUT
 
       - name: Configure pub.dev credentials
+        if: github.event.inputs.core == 'true'
         run: |
           mkdir -p $HOME/.config/dart
           echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json
 
       - name: Run generate_files.sh for reown_core
+        if: github.event.inputs.core == 'true'
         working-directory: packages/reown_core
         run: |
           chmod +x generate_files.sh
           sh ./generate_files.sh
       
       - name: Check Publish Warnings
+        if: github.event.inputs.core == 'true'
         shell: bash
         run: flutter pub publish --dry-run
         continue-on-error: false
 
       - name: Publish reown_core to pub.dev
+        if: github.event.inputs.core == 'true'
         working-directory: packages/reown_core
         run: flutter pub publish --force
 
       - name: Wait for reown_core to be available on pub.dev
+        if: github.event.inputs.core == 'true'
         run: |
           chmod +x .github/scripts/wait_for_package.sh
           .github/scripts/wait_for_package.sh reown_core ${{ steps.get_version.outputs.version }}
@@ -133,26 +122,34 @@ jobs:
   publish-sign:
     name: Publish reown_sign
     needs: [publish-core]
-    if: github.event.inputs.core == 'true' || github.event.inputs.sign == 'true'
     runs-on: ubuntu-latest
     outputs:
       package_version: ${{ steps.get_version.outputs.version }}
     steps:
+      - name: Check if sign should be published
+        if: github.event.inputs.sign == 'false'
+        run: |
+          echo "Skipping reown_sign publishing because input was false."
+        continue-on-error: false
+
       - name: Checkout code
+        if: github.event.inputs.sign == 'true'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Required for git push
 
       - name: Set up Flutter
+        if: github.event.inputs.sign == 'true'
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
 
       - name: Install yq
+        if: github.event.inputs.sign == 'true'
         run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
 
       - name: Update reown_core dependency in reown_sign/pubspec.yaml
-        if: github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != ''
+        if: github.event.inputs.sign == 'true' && github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != ''
         working-directory: packages/reown_sign
         run: |
           CORE_VERSION=${{ needs.publish-core.outputs.package_version }}
@@ -160,7 +157,7 @@ jobs:
           yq e '.dependencies.reown_core = "^" + env(CORE_VERSION)' -i pubspec.yaml
 
       - name: Commit and push pubspec.yaml changes for reown_sign
-        if: github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != ''
+        if: github.event.inputs.sign == 'true' && github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != ''
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -177,31 +174,37 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get package version from reown_sign/pubspec.yaml
+        if: github.event.inputs.sign == 'true'
         id: get_version
         working-directory: packages/reown_sign
         run: echo "version=$(yq e '.version' pubspec.yaml)" >> $GITHUB_OUTPUT
 
       - name: Configure pub.dev credentials
+        if: github.event.inputs.sign == 'true'
         run: |
           mkdir -p $HOME/.config/dart
           echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json
 
       - name: Run generate_files.sh for reown_sign
+        if: github.event.inputs.sign == 'true'
         working-directory: packages/reown_sign
         run: |
           chmod +x generate_files.sh
           sh ./generate_files.sh
 
       - name: Check Publish Warnings
+        if: github.event.inputs.sign == 'true'
         shell: bash
         run: flutter pub publish --dry-run
         continue-on-error: false
 
       - name: Publish reown_sign to pub.dev
+        if: github.event.inputs.sign == 'true'
         working-directory: packages/reown_sign
         run: flutter pub publish --force
 
       - name: Wait for reown_sign to be available on pub.dev
+        if: github.event.inputs.sign == 'true'
         run: |
           chmod +x .github/scripts/wait_for_package.sh
           .github/scripts/wait_for_package.sh reown_sign ${{ steps.get_version.outputs.version }}
@@ -209,24 +212,32 @@ jobs:
   publish-appkit:
     name: Publish reown_appkit
     needs: [publish-core, publish-sign]
-    if: github.event.inputs.appkit == 'true' || github.event.inputs.sign == 'true' || github.event.inputs.core == 'true'
     runs-on: ubuntu-latest
     steps:
+      - name: Check if core should be published
+        if: github.event.inputs.appkit == 'false'
+        run: |
+          echo "Skipping reown_appkit publishing because input was false."
+        continue-on-error: false
+
       - name: Checkout code
+        if: github.event.inputs.appkit == 'true'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Set up Flutter
+        if: github.event.inputs.appkit == 'true'
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
 
       - name: Install yq
+        if: github.event.inputs.appkit == 'true'
         run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
 
       - name: Update dependencies in reown_appkit/pubspec.yaml
-        if: (github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != '')
+        if: github.event.inputs.appkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != ''))
         working-directory: packages/reown_appkit
         env:
           CORE_VERSION: ${{ needs.publish-core.outputs.package_version }}
@@ -245,7 +256,7 @@ jobs:
           fi
 
       - name: Commit and push pubspec.yaml changes for reown_appkit
-        if: (github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != '')
+        if: github.event.inputs.appkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != ''))
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -261,51 +272,64 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get package version from reown_appkit/pubspec.yaml
+        if: github.event.inputs.appkit == 'true'
         id: get_version
         working-directory: packages/reown_appkit
         run: echo "version=$(yq e '.version' pubspec.yaml)" >> $GITHUB_OUTPUT
 
       - name: Configure pub.dev credentials
+        if: github.event.inputs.appkit == 'true'
         run: |
           mkdir -p $HOME/.config/dart
           echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json
 
       - name: Run generate_files.sh for reown_appkit
+        if: github.event.inputs.appkit == 'true'
         working-directory: packages/reown_appkit
         run: |
           chmod +x generate_files.sh
           sh ./generate_files.sh
 
       - name: Check Publish Warnings
+        if: github.event.inputs.appkit == 'true'
         shell: bash
         run: flutter pub publish --dry-run
         continue-on-error: false
 
       - name: Publish reown_appkit to pub.dev
+        if: github.event.inputs.appkit == 'true'
         working-directory: packages/reown_appkit
         run: flutter pub publish --force
 
   publish-walletkit:
     name: Publish reown_walletkit
     needs: [publish-core, publish-sign]
-    if: github.event.inputs.walletkit == 'true' || github.event.inputs.sign == 'true' || github.event.inputs.core == 'true'
     runs-on: ubuntu-latest
     steps:
+      - name: Check if core should be published
+        if: github.event.inputs.walletkit == 'false'
+        run: |
+          echo "Skipping reown_core publishing because input was false."
+        continue-on-error: false
+
       - name: Checkout code
+        if: github.event.inputs.walletkit == 'true'
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Set up Flutter
+        if: github.event.inputs.walletkit == 'true'
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
 
       - name: Install yq
+        if: github.event.inputs.walletkit == 'true'
         run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
 
       - name: Update dependencies in reown_walletkit/pubspec.yaml
-        if: (github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != '')
+        if: github.event.inputs.walletkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != ''))
         working-directory: packages/reown_walletkit
         env:
           CORE_VERSION: ${{ needs.publish-core.outputs.package_version }}
@@ -322,7 +346,7 @@ jobs:
           fi
 
       - name: Commit and push pubspec.yaml changes for reown_walletkit
-        if: (github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != '')
+        if: github.event.inputs.walletkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != ''))
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -338,27 +362,32 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get package version from reown_walletkit/pubspec.yaml
+        if: github.event.inputs.walletkit == 'true'
         id: get_version
         working-directory: packages/reown_walletkit
         run: echo "version=$(yq e '.version' pubspec.yaml)" >> $GITHUB_OUTPUT
 
       - name: Configure pub.dev credentials
+        if: github.event.inputs.walletkit == 'true'
         run: |
           mkdir -p $HOME/.config/dart
           echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json
 
       - name: Run generate_files.sh for reown_walletkit
+        if: github.event.inputs.walletkit == 'true'
         working-directory: packages/reown_walletkit
         run: |
           chmod +x generate_files.sh
           sh ./generate_files.sh
 
       - name: Check Publish Warnings
+        if: github.event.inputs.walletkit == 'true'
         shell: bash
         run: flutter pub publish --dry-run
         continue-on-error: false
 
       - name: Publish reown_walletkit to pub.dev
+        if: github.event.inputs.walletkit == 'true'
         working-directory: packages/reown_walletkit
         run: flutter pub publish --force
 
