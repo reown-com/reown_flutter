@@ -37,25 +37,11 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     return walletKit;
   }
 
-  ///---------- GENERIC ----------///
-
-  @override
-  final String protocol = 'wc';
-
-  @override
-  final int version = 2;
-
-  @override
-  final IReownCore core;
-
-  @override
-  final PairingMetadata metadata;
-
-  ReownWalletKit({
-    required this.core,
-    required this.metadata,
+  static ReownSign createReOwnSignInstance({
+    required IReownCore core,
+    required PairingMetadata metadata,
   }) {
-    reOwnSign = ReownSign(
+    return ReownSign(
       core: core,
       metadata: metadata,
       proposals: GenericStore(
@@ -107,8 +93,13 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
         },
       ),
     );
+  }
 
-    chainAbstraction = ChainAbstraction(
+  static ChainAbstraction createChainAbstraction({
+    required IReownCore core,
+    required PairingMetadata metadata,
+  }) {
+    return ChainAbstraction(
       core: core,
       pulseMetadata: PulseMetadataCompat(
         url: metadata.url,
@@ -116,6 +107,31 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
         sdkPlatform: ReownCoreUtils.getId(),
       ),
     );
+  }
+
+  ///---------- GENERIC ----------///
+
+  @override
+  final String protocol = 'wc';
+
+  @override
+  final int version = 2;
+
+  @override
+  final IReownCore core;
+
+  @override
+  final PairingMetadata metadata;
+
+  ReownWalletKit(
+      {required this.core,
+      required this.metadata,
+      ReownSign? overrideReOwnSign,
+      ChainAbstraction? overrideChainAbstraction}) {
+    reOwnSign = overrideReOwnSign ??
+        createReOwnSignInstance(core: core, metadata: metadata);
+    chainAbstraction = overrideChainAbstraction ??
+        createChainAbstraction(core: core, metadata: metadata);
   }
 
   @override
