@@ -113,11 +113,11 @@ jobs:
           OUTPUT=$(flutter pub publish --dry-run 2>&1 || true)
           echo "$OUTPUT"
 
-          if echo "$OUTPUT" | grep -iE "error|failed"; then
+          if echo "$OUTPUT" | grep -iE "^Error:|validation.*error|validation.*failed"; then
             echo "❌ Real error(s) detected in pub publish dry-run"
             exit 1
           else
-            echo "✅ No real errors, only warnings (if any)"
+            echo "✅ No real errors, only warnings (e.g. missing CHANGELOG.md)"
           fi
 
       - name: Publish reown_core to pub.dev
@@ -213,11 +213,11 @@ jobs:
           OUTPUT=$(flutter pub publish --dry-run 2>&1 || true)
           echo "$OUTPUT"
 
-          if echo "$OUTPUT" | grep -iE "error|failed"; then
+          if echo "$OUTPUT" | grep -iE "^Error:|validation.*error|validation.*failed"; then
             echo "❌ Real error(s) detected in pub publish dry-run"
             exit 1
           else
-            echo "✅ No real errors, only warnings (if any)"
+            echo "✅ No real errors, only warnings (e.g. missing CHANGELOG.md)"
           fi
 
       - name: Publish reown_sign to pub.dev
@@ -321,11 +321,11 @@ jobs:
           OUTPUT=$(flutter pub publish --dry-run 2>&1 || true)
           echo "$OUTPUT"
 
-          if echo "$OUTPUT" | grep -iE "error|failed"; then
+          if echo "$OUTPUT" | grep -iE "^Error:|validation.*error|validation.*failed"; then
             echo "❌ Real error(s) detected in pub publish dry-run"
             exit 1
           else
-            echo "✅ No real errors, only warnings (if any)"
+            echo "✅ No real errors, only warnings (e.g. missing CHANGELOG.md)"
           fi
 
       - name: Publish reown_appkit to pub.dev
@@ -421,11 +421,11 @@ jobs:
           OUTPUT=$(flutter pub publish --dry-run 2>&1 || true)
           echo "$OUTPUT"
 
-          if echo "$OUTPUT" | grep -iE "error|failed"; then
+          if echo "$OUTPUT" | grep -iE "^Error:|validation.*error|validation.*failed"; then
             echo "❌ Real error(s) detected in pub publish dry-run"
             exit 1
           else
-            echo "✅ No real errors, only warnings (if any)"
+            echo "✅ No real errors, only warnings (e.g. missing CHANGELOG.md)"
           fi
 
       - name: Publish reown_walletkit to pub.dev
