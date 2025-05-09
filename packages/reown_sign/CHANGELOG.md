@@ -1,3 +1,7 @@
+## 1.1.6
+
+- Removed unnecessary methods
+
 ## 1.1.5
 
 - Link Mode enhancements

@@ -1,4 +1,4 @@
-## 1.4.3-beta01
+## 1.4.3
 
 - New Social Logins functionality: Enhanced reliability, added more social options
 - Bug fixes
