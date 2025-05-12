@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_appkit_dapp/utils/crypto/near.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
 import 'package:reown_appkit_dapp/utils/crypto/tron.dart';
 import 'package:reown_appkit_dapp/utils/smart_contracts.dart';
@@ -35,6 +36,8 @@ List<String> getChainMethods(String namespace) {
       return Tron.methods.values.toList();
     case 'mvx':
       return ['mvx_signMessage', 'mvx_signTransaction'];
+    case 'near':
+      return Near.methods.values.toList();
     default:
       return [];
   }
@@ -52,6 +55,8 @@ List<String> getChainEvents(String namespace) {
       return Tron.events.values.toList();
     case 'mvx':
       return [];
+    case 'near':
+      return Near.events.values.toList();
     default:
       return [];
   }
@@ -158,7 +163,6 @@ Future<SessionRequestParams?> getParams(
         },
       );
     case 'tron_signTransaction':
-      //
       final transaction = await Tron.triggerSmartContract(
         chainData: chainData,
         walletAdress: address,
@@ -168,6 +172,26 @@ Future<SessionRequestParams?> getParams(
         params: {
           'address': address,
           'transaction': transaction,
+        },
+      );
+    case 'near_signMessage':
+      // https://github.com/near/wallet-selector/blob/dd19db77feee3941b4f53d2e3e1e4b74420f11c6/packages/wallet-connect/src/lib/wallet-connect.ts#L313
+      final bytes = utf8.encode('Welcome to Flutter AppKit on Near');
+      final encoded = bytesToHex(bytes, include0x: true);
+      return SessionRequestParams(
+        method: method,
+        params: {
+          'message': encoded,
+          // 'accountId': transaction,
+          // 'publicKey': transaction,
+        },
+      );
+    case 'near_signTransaction':
+      // https://github.com/near/wallet-selector/blob/dd19db77feee3941b4f53d2e3e1e4b74420f11c6/packages/wallet-connect/src/lib/wallet-connect.ts#L333
+      return SessionRequestParams(
+        method: method,
+        params: {
+          'transaction': 'base64_encodedTx',
         },
       );
     default:
