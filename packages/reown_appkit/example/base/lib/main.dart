@@ -325,7 +325,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ReownAppKitModalNetworkInfo(
           name: 'Polkadot',
           chainId: '91b171bb158e2d3848fa23a9f1c25182',
-          chainIcon: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.png',
+          chainIcon:
+              'https://cdn-icons-png.flaticon.com/128/12114/12114230.png',
           currency: 'DOT',
           rpcUrl: 'https://rpc.polkadot.io',
           explorerUrl: 'https://polkadot.subscan.io',
@@ -343,7 +344,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ReownAppKitModalNetworkInfo(
           name: 'Tron',
           chainId: '0x2b6653dc',
-          chainIcon: 'https://cryptologos.cc/logos/tron-trx-logo.png',
+          chainIcon:
+              'https://cdn-icons-png.flaticon.com/512/12114/12114250.png',
           currency: 'TRX',
           rpcUrl: 'https://api.trongrid.io',
           explorerUrl: 'https://tronscan.org',
@@ -351,7 +353,6 @@ class _MyHomePageState extends State<MyHomePage> {
         ReownAppKitModalNetworkInfo(
           name: 'Tron testnet',
           chainId: '0xcd8690dc',
-          chainIcon: 'https://cryptologos.cc/logos/tron-trx-logo.png',
           currency: 'TRX',
           rpcUrl: 'https://nile.trongrid.io',
           explorerUrl: 'https://test.tronscan.org',
