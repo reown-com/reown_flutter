@@ -158,6 +158,8 @@ class ReownAppKitModal
 
   bool _disconnectOnDispose = true;
 
+  late final List<ReownAppKitModalWalletInfo> _customWallets;
+
   ReownAppKitModal({
     required BuildContext context,
     IReownAppKit? appKit,
@@ -174,6 +176,7 @@ class ReownAppKitModal
     Future<double> Function()? getBalanceFallback,
     LogLevel logLevel = LogLevel.nothing,
     bool disconnectOnDispose = true,
+    List<ReownAppKitModalWalletInfo> customWallets = const [],
   }) {
     if (appKit == null) {
       if (projectId == null) {
@@ -195,6 +198,7 @@ class ReownAppKitModal
     _context = context;
     _getBalance = getBalanceFallback;
     _disconnectOnDispose = disconnectOnDispose;
+    _customWallets = customWallets;
 
     _appKit = appKit ??
         ReownAppKit(
@@ -232,6 +236,7 @@ class ReownAppKitModal
         includedWalletIds: includedWalletIds,
         excludedWalletIds: excludedWalletIds,
         namespaces: {..._requiredNamespaces, ..._optionalNamespaces},
+        customWallets: _customWallets,
       ),
     );
     _registerSingleton<INetworkService>(() => NetworkService());

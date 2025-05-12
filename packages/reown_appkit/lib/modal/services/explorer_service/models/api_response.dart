@@ -26,8 +26,8 @@ class ApiResponse<T> {
         'count': count,
         'data': List<T>.from(data.map(
           (x) {
-            if (T is Listing) {
-              return (x as Listing).toJson();
+            if (T is AppKitModalWalletListing) {
+              return (x as AppKitModalWalletListing).toJson();
             } else if (T is NativeAppData) {
               return (x as NativeAppData).toJson();
             } else {
