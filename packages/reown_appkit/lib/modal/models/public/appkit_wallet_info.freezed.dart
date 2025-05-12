@@ -21,7 +21,7 @@ ReownAppKitModalWalletInfo _$ReownAppKitModalWalletInfoFromJson(
 
 /// @nodoc
 mixin _$ReownAppKitModalWalletInfo {
-  Listing get listing => throw _privateConstructorUsedError;
+  AppKitModalWalletListing get listing => throw _privateConstructorUsedError;
   bool get installed => throw _privateConstructorUsedError;
   bool get recent => throw _privateConstructorUsedError;
 
@@ -42,7 +42,7 @@ abstract class $ReownAppKitModalWalletInfoCopyWith<$Res> {
       _$ReownAppKitModalWalletInfoCopyWithImpl<$Res,
           ReownAppKitModalWalletInfo>;
   @useResult
-  $Res call({Listing listing, bool installed, bool recent});
+  $Res call({AppKitModalWalletListing listing, bool installed, bool recent});
 }
 
 /// @nodoc
@@ -69,7 +69,7 @@ class _$ReownAppKitModalWalletInfoCopyWithImpl<$Res,
       listing: null == listing
           ? _value.listing
           : listing // ignore: cast_nullable_to_non_nullable
-              as Listing,
+              as AppKitModalWalletListing,
       installed: null == installed
           ? _value.installed
           : installed // ignore: cast_nullable_to_non_nullable
@@ -91,7 +91,7 @@ abstract class _$$ReownAppKitModalWalletInfoImplCopyWith<$Res>
       __$$ReownAppKitModalWalletInfoImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({Listing listing, bool installed, bool recent});
+  $Res call({AppKitModalWalletListing listing, bool installed, bool recent});
 }
 
 /// @nodoc
@@ -117,7 +117,7 @@ class __$$ReownAppKitModalWalletInfoImplCopyWithImpl<$Res>
       listing: null == listing
           ? _value.listing
           : listing // ignore: cast_nullable_to_non_nullable
-              as Listing,
+              as AppKitModalWalletListing,
       installed: null == installed
           ? _value.installed
           : installed // ignore: cast_nullable_to_non_nullable
@@ -134,17 +134,19 @@ class __$$ReownAppKitModalWalletInfoImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ReownAppKitModalWalletInfoImpl implements _ReownAppKitModalWalletInfo {
   const _$ReownAppKitModalWalletInfoImpl(
-      {required this.listing, required this.installed, required this.recent});
+      {required this.listing, this.installed = false, this.recent = false});
 
   factory _$ReownAppKitModalWalletInfoImpl.fromJson(
           Map<String, dynamic> json) =>
       _$$ReownAppKitModalWalletInfoImplFromJson(json);
 
   @override
-  final Listing listing;
+  final AppKitModalWalletListing listing;
   @override
+  @JsonKey()
   final bool installed;
   @override
+  @JsonKey()
   final bool recent;
 
   @override
@@ -187,15 +189,15 @@ class _$ReownAppKitModalWalletInfoImpl implements _ReownAppKitModalWalletInfo {
 abstract class _ReownAppKitModalWalletInfo
     implements ReownAppKitModalWalletInfo {
   const factory _ReownAppKitModalWalletInfo(
-      {required final Listing listing,
-      required final bool installed,
-      required final bool recent}) = _$ReownAppKitModalWalletInfoImpl;
+      {required final AppKitModalWalletListing listing,
+      final bool installed,
+      final bool recent}) = _$ReownAppKitModalWalletInfoImpl;
 
   factory _ReownAppKitModalWalletInfo.fromJson(Map<String, dynamic> json) =
       _$ReownAppKitModalWalletInfoImpl.fromJson;
 
   @override
-  Listing get listing;
+  AppKitModalWalletListing get listing;
   @override
   bool get installed;
   @override

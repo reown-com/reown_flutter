@@ -5,7 +5,8 @@ class CoinbaseUtils {
   static final walletId =
       'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa';
 
-  static final defaultListingData = Listing.fromJson(defaultWalletData);
+  static final defaultListingData =
+      AppKitModalWalletListing.fromJson(defaultWalletData);
 
   static final Map<String, dynamic> defaultWalletData = {
     'id': walletId,

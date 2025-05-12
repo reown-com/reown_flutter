@@ -257,7 +257,7 @@ final _webWallet = ReownAppKitModalWalletInfo(
   recent: false,
 );
 
-final _webWalletListing = Listing.fromJson(
+final _webWalletListing = AppKitModalWalletListing.fromJson(
   {
     'id': '0000000000000001',
     'name': 'Reown Web Wallet',

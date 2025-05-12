@@ -1,3 +1,7 @@
+## 1.4.3+1
+
+- Custom Wallets!
+
 ## 1.4.3
 
 - New Social Logins functionality: Enhanced reliability, added more social options
