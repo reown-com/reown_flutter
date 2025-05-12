@@ -225,6 +225,19 @@ class _MyHomePageState extends State<MyHomePage> {
         return 0.0;
       },
       disconnectOnDispose: true,
+      customWallets: [
+        ReownAppKitModalWalletInfo(
+          listing: AppKitModalWalletListing(
+            id: '00001',
+            name: 'Reown Web Sample',
+            homepage: 'https://react-wallet.walletconnect.com',
+            imageId:
+                'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
+            order: 1,
+            webappLink: 'https://react-wallet.walletconnect.com',
+          ),
+        ),
+      ],
     );
 
     _appKitModal!.appKit!.core.addLogListener(_logListener);

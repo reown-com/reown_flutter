@@ -51,8 +51,7 @@ class WalletsList extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 4.0),
               child: WalletListItem(
                 onTap: () => onTapWallet?.call(listItem.data),
-                showCheckmark:
-                    listItem.data.installed && !listItem.data.listing.isSample,
+                showCheckmark: listItem.data.installed,
                 imageUrl: listItem.image,
                 title: listItem.title,
                 trailing: listItem.data.recent

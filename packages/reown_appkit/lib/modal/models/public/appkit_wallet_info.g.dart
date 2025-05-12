@@ -9,9 +9,9 @@ part of 'appkit_wallet_info.dart';
 _$ReownAppKitModalWalletInfoImpl _$$ReownAppKitModalWalletInfoImplFromJson(
         Map<String, dynamic> json) =>
     _$ReownAppKitModalWalletInfoImpl(
-      listing: Listing.fromJson(json['listing']),
-      installed: json['installed'] as bool,
-      recent: json['recent'] as bool,
+      listing: AppKitModalWalletListing.fromJson(json['listing']),
+      installed: json['installed'] as bool? ?? false,
+      recent: json['recent'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$$ReownAppKitModalWalletInfoImplToJson(

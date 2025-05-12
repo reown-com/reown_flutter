@@ -11,7 +11,6 @@ import 'package:reown_appkit/modal/services/coinbase_service/utils/coinbase_util
 import 'package:reown_appkit/modal/services/explorer_service/models/native_app_data.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/redirect.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/request_params.dart';
-import 'package:reown_appkit/modal/services/explorer_service/models/wc_sample_wallets.dart';
 import 'package:reown_appkit/modal/services/phantom_service/utils/phantom_utils.dart';
 import 'package:reown_appkit/modal/services/uri_service/i_url_utils.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
@@ -94,6 +93,8 @@ class ExplorerService implements IExplorerService {
   Set<String> _chains = {};
   late final Map<String, RequiredNamespace> namespaces;
 
+  late final List<ReownAppKitModalWalletInfo> _customWallets;
+
   ExplorerService({
     required IReownCore core,
     required String referer,
@@ -101,8 +102,10 @@ class ExplorerService implements IExplorerService {
     this.includedWalletIds,
     this.excludedWalletIds,
     this.namespaces = const {},
+    List<ReownAppKitModalWalletInfo> customWallets = const [],
   })  : _core = core,
         _referer = referer,
+        _customWallets = customWallets,
         _client = http.Client();
 
   @override
@@ -129,7 +132,7 @@ class ExplorerService implements IExplorerService {
   Future<void> _fetchInitialWallets() async {
     totalListings.value = 0;
     final allListings = await Future.wait([
-      _loadWCSampleWallets(),
+      _loadCustomWallets(),
       _fetchInstalledListings(),
       _fetchFeaturedListings(),
       _fetchOtherListings(),
@@ -150,21 +153,18 @@ class ExplorerService implements IExplorerService {
     await _getRecentWalletAndOrder();
   }
 
-  Future<List<ReownAppKitModalWalletInfo>> _loadWCSampleWallets() async {
-    // final platform = platformUtils.instance.getPlatformExact().name;
-    // final platformName = platform.toString().toLowerCase();
-    List<ReownAppKitModalWalletInfo> sampleWallets = [];
-    for (var sampleWallet in WCSampleWallets.getSampleWallets()) {
-      final schema = WCSampleWallets.getSampleWalletMobileLink(
-        sampleWallet.listing.id,
+  Future<List<ReownAppKitModalWalletInfo>> _loadCustomWallets() async {
+    List<ReownAppKitModalWalletInfo> customWallets = [];
+    for (var customWallet in _customWallets) {
+      final installed = await _uriService.isInstalled(
+        customWallet.listing.mobileLink,
       );
-      final installed = await _uriService.isInstalled(schema);
-      if (installed || sampleWallet.listing.webappLink != null) {
-        sampleWallet = sampleWallet.copyWith(installed: true);
-        sampleWallets.add(sampleWallet);
+      if (installed || customWallet.listing.webappLink != null) {
+        customWallet = customWallet.copyWith(installed: true);
+        customWallets.add(customWallet);
       }
     }
-    return sampleWallets;
+    return customWallets;
   }
 
   Future<void> _getRecentWalletAndOrder() async {
@@ -305,9 +305,9 @@ class ExplorerService implements IExplorerService {
     try {
       final response = await _client.get(uri, headers: headers);
       if (response.statusCode == 200 || response.statusCode == 202) {
-        final apiResponse = ApiResponse<Listing>.fromJson(
+        final apiResponse = ApiResponse<AppKitModalWalletListing>.fromJson(
           jsonDecode(response.body),
-          (json) => Listing.fromJson(json),
+          (json) => AppKitModalWalletListing.fromJson(json),
         );
         if (updateCount) {
           totalListings.value += apiResponse.count;
@@ -433,7 +433,7 @@ class ExplorerService implements IExplorerService {
     );
 
     if (_currentSearchValue != null) {
-      final samples = (await _loadWCSampleWallets()).where(
+      final samples = (await _loadCustomWallets()).where(
         (e) => e.listing.name.toLowerCase().contains(query!.toLowerCase()),
       );
       newListings = [...samples, ...newListings];
@@ -551,7 +551,7 @@ class ExplorerService implements IExplorerService {
   }
 }
 
-extension on List<Listing> {
+extension on List<AppKitModalWalletListing> {
   List<ReownAppKitModalWalletInfo> toAppKitWalletInfo() {
     return map(
       (item) => ReownAppKitModalWalletInfo(

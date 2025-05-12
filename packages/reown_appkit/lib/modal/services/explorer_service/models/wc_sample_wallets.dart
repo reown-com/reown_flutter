@@ -193,9 +193,9 @@ class WCSampleWallets {
 
   static List<ReownAppKitModalWalletInfo> getSampleWallets() {
     final wallets = _sampleWallets().map((entry) {
-      final listing = Listing.fromJson(entry);
+      final listing = AppKitModalWalletListing.fromJson(entry);
       return ReownAppKitModalWalletInfo(
-        listing: listing.copyWith(isSample: true),
+        listing: listing,
         installed: false,
         recent: false,
       );
