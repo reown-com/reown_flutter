@@ -61,7 +61,7 @@ class Solana {
             {
               'isSigner': false,
               'isWritable': true,
-              'pubkey': '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
+              'pubkey': address, // should be recipient address
             }
           ]
         }),
