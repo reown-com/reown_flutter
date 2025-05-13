@@ -186,6 +186,31 @@ Future<SessionRequestParams?> getParams(
           'transactionPayload': transactionPayload,
         },
       );
+    case 'near_signMessage':
+      return SessionRequestParams(
+        method: method,
+        params: Near.demoMessage,
+      );
+    case 'near_signTransaction':
+      final jsonTransaction = jsonEncode(Near.demoTransaction);
+      final base64Transaction = base64Encode(utf8.encode(jsonTransaction));
+      return SessionRequestParams(
+        method: method,
+        params: {
+          'transaction': base64Transaction,
+        },
+      );
+    case 'near_signTransactions':
+      final jsonTransaction = jsonEncode(Near.demoTransaction);
+      final base64Transaction = base64Encode(utf8.encode(jsonTransaction));
+      return SessionRequestParams(
+        method: method,
+        params: {
+          'transactions': [
+            base64Transaction,
+          ],
+        },
+      );
     default:
       return SessionRequestParams(
         method: method,
