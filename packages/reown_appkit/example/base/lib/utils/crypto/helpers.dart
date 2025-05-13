@@ -1,19 +1,17 @@
 import 'dart:convert';
 
-import 'package:eth_sig_util/util/utils.dart';
 import 'package:intl/intl.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_appkit_dapp/utils/crypto/eip155.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
+import 'package:reown_appkit_dapp/utils/crypto/solana.dart';
 import 'package:reown_appkit_dapp/utils/crypto/tron.dart';
 import 'package:reown_appkit_dapp/utils/smart_contracts.dart';
-import 'package:reown_appkit_dapp/utils/test_data.dart';
-
-import 'package:reown_appkit/solana/solana_web3/solana_web3.dart' as solana;
-import 'package:reown_appkit/solana/solana_web3/programs.dart' as programs;
 
 List<String> getChainMethods(String namespace) {
   switch (namespace) {
     case 'eip155':
+      // TODO move to eip155.dart
       return [
         'personal_sign',
         'eth_sign',
@@ -23,17 +21,13 @@ List<String> getChainMethods(String namespace) {
         'eth_sendTransaction',
       ];
     case 'solana':
-      return [
-        'solana_signMessage',
-        'solana_signTransaction',
-        'solana_signAndSendTransaction',
-        'solana_signAllTransactions',
-      ];
+      return Solana.methods.values.toList();
     case 'polkadot':
       return Polkadot.methods.values.toList();
     case 'tron':
       return Tron.methods.values.toList();
     case 'mvx':
+      // TODO move to mvx.dart
       return ['mvx_signMessage', 'mvx_signTransaction'];
     default:
       return [];
@@ -64,28 +58,28 @@ Future<SessionRequestParams?> getParams(
 ) async {
   switch (method) {
     case 'personal_sign':
-      final bytes = utf8.encode(testSignData);
-      final encoded = bytesToHex(bytes, include0x: true);
+      final encodedMessage = EIP155.personalSignMessage(chainData.name);
       return SessionRequestParams(
         method: method,
-        params: [encoded, address],
+        params: [encodedMessage, address],
       );
     case 'eth_sign':
       return SessionRequestParams(
         method: method,
-        params: [address, testSignData],
+        params: [address, 'Welcome to Flutter AppKit on ${chainData.name}'],
       );
     case 'eth_signTypedData':
       return SessionRequestParams(
         method: method,
-        params: [address, typedData],
+        params: [address, EIP155.typedData],
       );
+    case 'eth_signTypedData_v3':
     case 'eth_signTypedData_v4':
       return SessionRequestParams(
         method: method,
         params: [
           address,
-          typeDataV4(int.parse(chainData.chainId)),
+          EIP155.typeDataV4(int.parse(chainData.chainId)),
         ],
       );
     case 'eth_signTransaction':
@@ -103,8 +97,7 @@ Future<SessionRequestParams?> getParams(
         ],
       );
     case 'solana_signMessage':
-      final bytes = utf8.encode('Welcome to Flutter AppKit on Solana');
-      final message = base58.encode(bytes);
+      final message = Solana.personalSignMessage();
       return SessionRequestParams(
         method: method,
         params: {
@@ -114,13 +107,11 @@ Future<SessionRequestParams?> getParams(
       );
     case 'solana_signTransaction':
     case 'solana_signAndSendTransaction':
-      final transactionV0_2 = await _contructSolanaTX_2(address, chainData);
-
-      const config = solana.TransactionSerializableConfig(
-        verifySignatures: false,
+      final transactionV0_2 = await Solana.constructSolanaTX2(
+        address,
+        chainData,
       );
-      final bytes = transactionV0_2.serialize(config).asUint8List();
-      final encodedV0Trx = base64.encode(bytes);
+      final encodedV0Trx = Solana.serializeTransaction(transactionV0_2);
 
       return SessionRequestParams(
         method: method,
@@ -132,21 +123,24 @@ Future<SessionRequestParams?> getParams(
         },
       );
     case 'solana_signAllTransactions':
-      final transactionV0_1 = await _contructSolanaTX(address, chainData);
-      final transactionV0_2 = await _contructSolanaTX_2(address, chainData);
-
-      const config = solana.TransactionSerializableConfig(
-        verifySignatures: false,
+      final transactionV0_1 = await Solana.constructSolanaTX(
+        address,
+        chainData,
       );
-      final bytes_1 = transactionV0_1.serialize(config).asUint8List();
-      final encodedV0Trx_1 = base64.encode(bytes_1);
-      final bytes_2 = transactionV0_2.serialize(config).asUint8List();
-      final encodedV0Trx_2 = base64.encode(bytes_2);
+      final transactionV0_2 = await Solana.constructSolanaTX2(
+        address,
+        chainData,
+      );
+      final encodedV0Trx_1 = Solana.serializeTransaction(transactionV0_1);
+      final encodedV0Trx_2 = Solana.serializeTransaction(transactionV0_2);
 
       return SessionRequestParams(
         method: method,
         params: {
-          'transactions': [encodedV0Trx_1, encodedV0Trx_2],
+          'transactions': [
+            encodedV0Trx_1,
+            encodedV0Trx_2,
+          ],
         },
       );
     case 'tron_signMessage':
@@ -154,7 +148,7 @@ Future<SessionRequestParams?> getParams(
         method: method,
         params: {
           'address': address,
-          'message': testSignData,
+          'message': 'Welcome to Flutter AppKit on Tron',
         },
       );
     case 'tron_signTransaction':
@@ -168,6 +162,24 @@ Future<SessionRequestParams?> getParams(
         params: {
           'address': address,
           'transaction': transaction,
+        },
+      );
+    case 'polkadot_signMessage':
+      return SessionRequestParams(
+        method: method,
+        params: {
+          'address': address,
+          'message': 'Welcome to Flutter AppKit on Polkadot',
+        },
+      );
+    case 'polkadot_signTransaction':
+      //
+      final transactionPayload = Polkadot.transactionPayload(address);
+      return SessionRequestParams(
+        method: method,
+        params: {
+          'address': address,
+          'transactionPayload': transactionPayload,
         },
       );
     default:
@@ -382,81 +394,4 @@ int _multiplier(BigInt decimals) {
   final d = decimals.toInt();
   final pad = '1'.padRight(d + 1, '0');
   return int.parse(pad);
-}
-
-Future<solana.Transaction> _contructSolanaTX(
-  String address,
-  ReownAppKitModalNetworkInfo chainData,
-) async {
-  // Create a connection to the devnet cluster.
-  final cluster = solana.Cluster.https(
-    Uri.parse(chainData.rpcUrl).authority,
-  );
-  // final cluster = solana.Cluster.devnet;
-  final connection = solana.Connection(cluster);
-
-  // Fetch the latest blockhash.
-  final blockhash = await connection.getLatestBlockhash();
-
-  // Create a System Program instruction to transfer 0.5 SOL from [address1] to [address2].
-  final transactionv0 = solana.Transaction.v0(
-    payer: solana.Pubkey.fromBase58(address),
-    recentBlockhash: blockhash.blockhash,
-    instructions: [
-      solana.TransactionInstruction.fromJson({
-        'programId': '11111111111111111111111111111111',
-        'data': [2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
-        'keys': [
-          {
-            'isSigner': true,
-            'isWritable': true,
-            'pubkey': address,
-          },
-          {
-            'isSigner': false,
-            'isWritable': true,
-            'pubkey': '8vCyX7oB6Pc3pbWMGYYZF5pbSnAdQ7Gyr32JqxqCy8ZR'
-          }
-        ]
-      }),
-    ],
-  );
-
-  return transactionv0;
-}
-
-Future<solana.Transaction> _contructSolanaTX_2(
-  String address,
-  ReownAppKitModalNetworkInfo chainData,
-) async {
-  // Create a connection to the devnet cluster.
-  final cluster = solana.Cluster.https(
-    Uri.parse(chainData.rpcUrl).authority,
-  );
-  // final cluster = solana.Cluster.devnet;
-  final connection = solana.Connection(cluster);
-
-  // Fetch the latest blockhash.
-  final blockhash = await connection.getLatestBlockhash();
-
-  // Define transfer amount in lamports (1 SOL = 1,000,000,000 lamports)
-  // Amount to send in lamports (0.01 SOL)
-  final lamports = BigInt.from(10000000);
-
-  // Create the transfer instruction
-  final transferInstruction = programs.SystemProgram.transfer(
-    fromPubkey: solana.Pubkey.fromBase58(address),
-    toPubkey: solana.Pubkey.fromBase58(address),
-    lamports: lamports,
-  );
-
-  final transactionv0 = solana.Transaction.v0(
-    payer: solana.Pubkey.fromBase58(address),
-    recentBlockhash: blockhash.blockhash,
-    instructions: [
-      transferInstruction,
-    ],
-  );
-
-  return transactionv0;
 }
