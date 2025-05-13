@@ -336,12 +336,10 @@ class _MyHomePageState extends State<MyHomePage> {
     if (linkMode) {
       // When linkMode is true, the application operates in "Link Mode",
       // which is designed to support only EVM-compatible networks.
-      // As a result, non-EVM networks like Solana are removed.
+      // As a result, non-EVM networks like Solana should be removed
       ReownAppKitModalNetworks.removeSupportedNetworks('solana');
     } else {
-      // When linkMode is false, the application supports a broader range
-      // of networks, including non-EVM networks like Polkadot, Tron, and NEAR.
-      // NEAR networks are added here because they are not compatible with Link Mode.
+      // When linkMode is false, the application supports a broader range of networks
       ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
         ReownAppKitModalNetworkInfo(
           name: 'Polkadot',
