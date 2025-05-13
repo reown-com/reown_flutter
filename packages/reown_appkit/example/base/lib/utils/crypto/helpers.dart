@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:intl/intl.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_appkit_dapp/utils/crypto/near.dart';
 import 'package:reown_appkit_dapp/utils/crypto/eip155.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
 import 'package:reown_appkit_dapp/utils/crypto/solana.dart';
@@ -29,6 +30,8 @@ List<String> getChainMethods(String namespace) {
     case 'mvx':
       // TODO move to mvx.dart
       return ['mvx_signMessage', 'mvx_signTransaction'];
+    case 'near':
+      return Near.methods.values.toList();
     default:
       return [];
   }
@@ -46,6 +49,8 @@ List<String> getChainEvents(String namespace) {
       return Tron.events.values.toList();
     case 'mvx':
       return [];
+    case 'near':
+      return Near.events.values.toList();
     default:
       return [];
   }
@@ -152,7 +157,6 @@ Future<SessionRequestParams?> getParams(
         },
       );
     case 'tron_signTransaction':
-      //
       final transaction = await Tron.triggerSmartContract(
         chainData: chainData,
         walletAdress: address,
@@ -180,6 +184,31 @@ Future<SessionRequestParams?> getParams(
         params: {
           'address': address,
           'transactionPayload': transactionPayload,
+        },
+      );
+    case 'near_signMessage':
+      return SessionRequestParams(
+        method: method,
+        params: Near.demoMessage,
+      );
+    case 'near_signTransaction':
+      final jsonTransaction = jsonEncode(Near.demoTransaction);
+      final base64Transaction = base64Encode(utf8.encode(jsonTransaction));
+      return SessionRequestParams(
+        method: method,
+        params: {
+          'transaction': base64Transaction,
+        },
+      );
+    case 'near_signTransactions':
+      final jsonTransaction = jsonEncode(Near.demoTransaction);
+      final base64Transaction = base64Encode(utf8.encode(jsonTransaction));
+      return SessionRequestParams(
+        method: method,
+        params: {
+          'transactions': [
+            base64Transaction,
+          ],
         },
       );
     default:
