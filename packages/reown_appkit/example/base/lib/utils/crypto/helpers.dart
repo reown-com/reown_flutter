@@ -175,23 +175,28 @@ Future<SessionRequestParams?> getParams(
         },
       );
     case 'near_signMessage':
-      // https://github.com/near/wallet-selector/blob/dd19db77feee3941b4f53d2e3e1e4b74420f11c6/packages/wallet-connect/src/lib/wallet-connect.ts#L313
-      final bytes = utf8.encode('Welcome to Flutter AppKit on Near');
-      final encoded = bytesToHex(bytes, include0x: true);
       return SessionRequestParams(
         method: method,
-        params: {
-          'message': encoded,
-          // 'accountId': transaction,
-          // 'publicKey': transaction,
-        },
+        params: Near.demoMessage,
       );
     case 'near_signTransaction':
-      // https://github.com/near/wallet-selector/blob/dd19db77feee3941b4f53d2e3e1e4b74420f11c6/packages/wallet-connect/src/lib/wallet-connect.ts#L333
+      final jsonTransaction = jsonEncode(Near.demoTransaction);
+      final base64Transaction = base64Encode(utf8.encode(jsonTransaction));
       return SessionRequestParams(
         method: method,
         params: {
-          'transaction': 'base64_encodedTx',
+          'transaction': base64Transaction,
+        },
+      );
+    case 'near_signTransactions':
+      final jsonTransaction = jsonEncode(Near.demoTransaction);
+      final base64Transaction = base64Encode(utf8.encode(jsonTransaction));
+      return SessionRequestParams(
+        method: method,
+        params: {
+          'transactions': [
+            base64Transaction,
+          ],
         },
       );
     default:

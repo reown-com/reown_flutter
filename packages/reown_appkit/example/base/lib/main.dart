@@ -333,7 +333,10 @@ class _MyHomePageState extends State<MyHomePage> {
         isTestNetwork: true,
       ),
     ]);
-    if (!linkMode) {
+    if (linkMode) {
+      // Link Mode is supported only on EVM
+      ReownAppKitModalNetworks.removeSupportedNetworks('solana');
+    } else {
       ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
         ReownAppKitModalNetworkInfo(
           name: 'Polkadot',
@@ -381,8 +384,25 @@ class _MyHomePageState extends State<MyHomePage> {
           chainIcon: 'https://avatars.githubusercontent.com/u/114073177',
         ),
       ]);
-    } else {
-      ReownAppKitModalNetworks.removeSupportedNetworks('solana');
+      ReownAppKitModalNetworks.addSupportedNetworks('near', [
+        ReownAppKitModalNetworkInfo(
+          name: 'Near Mainnet',
+          chainId: 'mainnet',
+          currency: 'NEAR',
+          rpcUrl: 'https://rpc.mainnet.near.org',
+          explorerUrl: 'https://nearblocks.io',
+          chainIcon:
+              'https://pages.near.org/wp-content/uploads/2023/11/NEAR_token.png',
+        ),
+        ReownAppKitModalNetworkInfo(
+          name: 'Near Testnet',
+          chainId: 'testnet',
+          currency: 'NEAR',
+          rpcUrl: 'https://rpc.testnet.near.org',
+          explorerUrl: 'https://testnet.nearblocks.io',
+          isTestNetwork: true,
+        ),
+      ]);
     }
   }
 
@@ -390,59 +410,18 @@ class _MyHomePageState extends State<MyHomePage> {
   Map<String, RequiredNamespace>? _updatedNamespaces() {
     Map<String, RequiredNamespace>? namespaces = {};
 
-    final evmChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
-      namespace: 'eip155',
-    );
-    if (evmChains.isNotEmpty) {
-      namespaces['eip155'] = RequiredNamespace(
-        chains: evmChains.map((c) => c.chainId).toList(),
-        methods: getChainMethods('eip155'),
-        events: getChainEvents('eip155'),
+    final supportedNS = ReownAppKitModalNetworks.getAllSupportedNamespaces();
+    for (var ns in supportedNS) {
+      final chains = ReownAppKitModalNetworks.getAllSupportedNetworks(
+        namespace: ns,
       );
-    }
-    //
-    final solanaChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
-      namespace: 'solana',
-    );
-    if (solanaChains.isNotEmpty) {
-      namespaces['solana'] = RequiredNamespace(
-        chains: solanaChains.map((c) => c.chainId).toList(),
-        methods: getChainMethods('solana'),
-        events: getChainEvents('solana'),
-      );
-    }
-    //
-    final polkadotChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
-      namespace: 'polkadot',
-    );
-    if (polkadotChains.isNotEmpty) {
-      namespaces['polkadot'] = RequiredNamespace(
-        chains: polkadotChains.map((c) => c.chainId).toList(),
-        methods: getChainMethods('polkadot'),
-        events: getChainEvents('polkadot'),
-      );
-    }
-    //
-    final tronChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
-      namespace: 'tron',
-    );
-    if (tronChains.isNotEmpty) {
-      namespaces['tron'] = RequiredNamespace(
-        chains: tronChains.map((c) => c.chainId).toList(),
-        methods: getChainMethods('tron'),
-        events: getChainEvents('tron'),
-      );
-    }
-    //
-    final mvxChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
-      namespace: 'mvx',
-    );
-    if (mvxChains.isNotEmpty) {
-      namespaces['mvx'] = RequiredNamespace(
-        chains: mvxChains.map((c) => c.chainId).toList(),
-        methods: getChainMethods('mvx'),
-        events: getChainEvents('mvx'),
-      );
+      if (chains.isNotEmpty) {
+        namespaces[ns] = RequiredNamespace(
+          chains: chains.map((c) => c.chainId).toList(),
+          methods: getChainMethods(ns),
+          events: getChainEvents(ns),
+        );
+      }
     }
 
     return namespaces;
