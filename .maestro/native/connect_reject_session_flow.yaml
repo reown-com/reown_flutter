@@ -1,5 +1,6 @@
 appId: com.walletconnect.flutterdapp.internal
 ---
+
 # Launch and verify initial state
 - launchApp
 - extendedWaitUntil:
@@ -16,17 +17,38 @@ appId: com.walletconnect.flutterdapp.internal
     Settings
     Tab 3 of 3"
 - tapOn: "CLEAR STORAGE"
-- tapOn: "Connect page button
-    Connect page icon
-    Connect
-    Tab 1 of 3"
+
+# Check if Link Mode is enabled
+- runFlow:
+    when:
+      visible: "appkit_sample_linkmode_true"
+    commands:
+        - tapOn: "Connect page button
+            Connect page icon
+            Connect
+            Tab 1 of 3"
+        - waitForAnimationToEnd:
+            timeout: 10000
+- runFlow:
+    when:
+      visible: "appkit_sample_linkmode_false"
+    commands:
+        - tapOn:
+            id: "appkit_sample_linkmode_false"
+        - waitForAnimationToEnd:
+            timeout: 10000
+        - tapOn: "Ok"
+        - launchApp
+        - extendedWaitUntil:
+            visible: "AppKitModalConnectButton enabled"
+            timeout: 15000
 
 # Initiate connection and handle modal
 - tapOn: "AppKitModalConnectButton enabled"
 - extendedWaitUntil:
     visible: "Sign in"
     timeout: 15000
-- waitForAnimationToEnd: # Social/Email is loadinging at this point and could take up to 30 secs
+- waitForAnimationToEnd:
     timeout: 30000
 - assertVisible: "Continue with email"
 - assertVisible: "Continue with X"
