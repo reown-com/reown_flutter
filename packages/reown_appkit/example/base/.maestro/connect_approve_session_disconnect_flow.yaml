@@ -62,6 +62,7 @@ appId: com.walletconnect.flutterdapp.internal
 # Confirm app returns to initial state
 - assertVisible: "Disconnect"
 - assertVisible: "Ethereum"
+
 - tapOn: "Disconnect"
 - extendedWaitUntil:
     visible: "Connect"

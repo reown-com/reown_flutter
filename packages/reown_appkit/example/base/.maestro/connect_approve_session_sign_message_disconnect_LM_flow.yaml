@@ -1,0 +1,122 @@
+appId: com.walletconnect.flutterdapp.internal
+---
+# Launch and verify initial state
+- launchApp
+- extendedWaitUntil:
+    visible: "AppKitModalConnectButton enabled"
+    timeout: 15000
+
+# Wait for connect button to become enabled and verify UI
+- assertVisible: "Network"
+- assertVisible: "Connect"
+
+# Delete storage so Link Mode is not triggered
+- tapOn: "Settings page button
+    Settings page icon
+    Settings
+    Tab 3 of 3"
+- tapOn: "CLEAR STORAGE"
+
+# Check if Link Mode is enabled
+- runFlow:
+    when:
+      visible: "appkit_sample_linkmode_true"
+    commands:
+        - tapOn: "Connect page button
+            Connect page icon
+            Connect
+            Tab 1 of 3"
+        - waitForAnimationToEnd:
+            timeout: 10000
+- runFlow:
+    when:
+      visible: "appkit_sample_linkmode_false"
+    commands:
+        - tapOn:
+            id: "appkit_sample_linkmode_false"
+        - waitForAnimationToEnd:
+            timeout: 10000
+        - tapOn: "Ok"
+        - launchApp
+        - extendedWaitUntil:
+            visible: "AppKitModalConnectButton enabled"
+            timeout: 15000
+
+# Initiate connection and handle modal
+- tapOn: "AppKitModalConnectButton enabled"
+- extendedWaitUntil:
+    visible: "Sign in"
+    timeout: 15000
+- waitForAnimationToEnd: # Social/Email is loadinging at this point and could take up to 30 secs
+    timeout: 30000
+- assertVisible: "Continue with email"
+- assertVisible: "Continue with X"
+- assertVisible: "AllWallets enabled"
+
+# Tap All wallets and Search for Flutter Sample Wallet
+- tapOn: "AllWallets enabled"
+- waitForAnimationToEnd
+- tapOn: "Search wallet"
+- inputText: "Flutter Sample"
+- extendedWaitUntil:
+    visible: "Flutter Sample Wallet"
+    timeout: 15000
+
+# Select wallet and approve
+- tapOn: "Flutter Sample Wallet"
+- extendedWaitUntil:
+    visible: "Reown's AppKit internal would like to connect"
+    timeout: 15000
+
+- runFlow:
+    when:
+      visible: "Sign All"
+    commands:
+        - tapOn: "Sign All"
+- runFlow:
+    when:
+      visible: "Approve"
+    commands:
+        - tapOn: "Approve"
+
+- extendedWaitUntil:
+    visible: "Disconnect"
+    timeout: 15000
+
+# Confirm app returns to initial state
+- assertVisible: "Disconnect"
+- assertVisible: "Ethereum"
+
+# Request personal sign
+- tapOn: "personal_sign"
+- extendedWaitUntil:
+    visible: "Approve Request"
+    timeout: 15000      # Timeout in milliseconds
+# Approve on wallet and await for success
+- tapOn: "Approve"
+- extendedWaitUntil:
+    visible: "personal_sign success"
+    timeout: 15000      # Timeout in milliseconds
+
+- tapOn: "Close"
+
+# Request personal sign
+- tapOn: "personal_sign"
+- extendedWaitUntil:
+    visible: "Approve Request"
+    timeout: 15000      # Timeout in milliseconds
+# Approve on wallet and await for success
+- tapOn: "Reject"
+- extendedWaitUntil:
+    visible: "personal_sign error"
+    timeout: 15000      # Timeout in milliseconds
+
+- tapOn: "Close"
+
+- tapOn: "Disconnect"
+- extendedWaitUntil:
+    visible: "Connect"
+    timeout: 15000      # Timeout in milliseconds
+
+- assertVisible: "Network"
+- assertVisible: "Connect"

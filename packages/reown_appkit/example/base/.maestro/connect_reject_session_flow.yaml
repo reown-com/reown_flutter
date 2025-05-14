@@ -5,8 +5,6 @@ appId: com.walletconnect.flutterdapp.internal
 - extendedWaitUntil:
     visible: "AppKitModalConnectButton enabled"
     timeout: 15000
-- takeScreenshot:
-    path: Capture_2
 
 # Wait for connect button to become enabled and verify UI
 - assertVisible: "Network"
@@ -28,8 +26,6 @@ appId: com.walletconnect.flutterdapp.internal
 - extendedWaitUntil:
     visible: "Sign in"
     timeout: 15000
-- takeScreenshot:
-    path: Capture_3
 - waitForAnimationToEnd: # Social/Email is loadinging at this point and could take up to 30 secs
     timeout: 30000
 - assertVisible: "Continue with email"
@@ -50,14 +46,10 @@ appId: com.walletconnect.flutterdapp.internal
 - extendedWaitUntil:
     visible: "Reown's AppKit internal would like to connect"
     timeout: 15000
-- takeScreenshot:
-    path: Capture_4
 - tapOn: "Cancel"
 - extendedWaitUntil:
     visible: "Connection declined"
     timeout: 15000
-- takeScreenshot:
-    path: Capture_5
 
 - tapOn: "Scrim"
 
