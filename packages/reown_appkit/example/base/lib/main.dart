@@ -7,6 +7,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/pages/settings_page.dart';
 // ignore: depend_on_referenced_packages
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:reown_appkit_dapp/models/page_data.dart';
 import 'package:reown_appkit_dapp/pages/connect_page.dart';
@@ -18,10 +19,33 @@ import 'package:reown_appkit_dapp/utils/deep_link_handler.dart';
 import 'package:reown_appkit_dapp/utils/string_constants.dart';
 import 'package:reown_appkit_dapp/widgets/event_widget.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  DeepLinkHandler.initListener();
-  runApp(const MyApp());
+Future<void> main() async {
+  await SentryFlutter.init(
+    (options) {
+      options.dsn =
+          'https://ea72e9d174d242301e5f38ffb1241d98@o1095249.ingest.us.sentry.io/4509316143251456';
+      options.environment = kDebugMode ? 'development' : 'production';
+      options.attachScreenshot = true;
+      // Adds request headers and IP for users,
+      // visit: https://docs.sentry.io/platforms/dart/data-management/data-collected/ for more info
+      options.sendDefaultPii = true;
+      // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+      // We recommend adjusting this value in production.
+      options.tracesSampleRate = 1.0;
+      // The sampling rate for profiling is relative to tracesSampleRate
+      // Setting to 1.0 will profile 100% of sampled transactions:
+      options.profilesSampleRate = 1.0;
+    },
+    appRunner: () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      DeepLinkHandler.initListener();
+      runApp(
+        SentryWidget(
+          child: const MyApp(),
+        ),
+      );
+    },
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -70,6 +94,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     return ReownAppKitModalTheme(
       isDarkMode: _isDarkMode,
       child: MaterialApp(
+        navigatorObservers: [
+          SentryNavigatorObserver(),
+        ],
         title: StringConstants.appTitle,
         theme: ThemeData(
           colorScheme: _isDarkMode
