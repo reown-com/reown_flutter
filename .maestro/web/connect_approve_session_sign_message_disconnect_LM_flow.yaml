@@ -5,4 +5,4 @@ appId: com.walletconnect.flutterdapp.internal
     file: ../shared/launch_and_check_link_mode.yaml
 
 - runFlow:
-    file: ../shared/native_connect_wallet_and_sign_message.yaml
+    file: ../shared/web_connect_wallet_and_sign_message.yaml
