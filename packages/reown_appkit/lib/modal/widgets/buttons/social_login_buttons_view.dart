@@ -136,7 +136,6 @@ class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
               visible: emailEnabled,
               child: Column(
                 children: [
-                  const SizedBox.square(dimension: kListViewSeparatorHeight),
                   EmailLoginButton(
                     onTap: () => _initSocialLogin(AppKitSocialOption.Email),
                     title: 'Continue with email',

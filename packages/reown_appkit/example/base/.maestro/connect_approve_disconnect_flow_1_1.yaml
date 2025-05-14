@@ -2,17 +2,26 @@ appId: com.walletconnect.flutterdapp.internal
 ---
 # Launch and verify initial state
 - launchApp
-- takeScreenshot:
-    path: .maestro/screenshots/1
 - extendedWaitUntil:
     visible: "AppKitModalConnectButton enabled"
     timeout: 15000
 - takeScreenshot:
-    path: .maestro/screenshots/2
+    path: Capture_2
 
 # Wait for connect button to become enabled and verify UI
-- assertVisible: "Connect"
 - assertVisible: "Network"
+- assertVisible: "Connect"
+
+# Delete storage so Link Mode is not triggered
+- tapOn: "Settings page button
+    Settings page icon
+    Settings
+    Tab 3 of 3"
+- tapOn: "CLEAR STORAGE"
+- tapOn: "Connect page button
+    Connect page icon
+    Connect
+    Tab 1 of 3"
 
 # Initiate connection and handle modal
 - tapOn: "AppKitModalConnectButton enabled"
@@ -20,39 +29,46 @@ appId: com.walletconnect.flutterdapp.internal
     visible: "Sign in"
     timeout: 15000
 - takeScreenshot:
-    path: .maestro/screenshots/3
+    path: Capture_3
 - waitForAnimationToEnd: # Social/Email is loadinging at this point and could take up to 30 secs
     timeout: 30000
-- takeScreenshot:
-    path: .maestro/screenshots/4
-- assertVisible: "FL Wallet (internal) enabled"
+- assertVisible: "Continue with email"
+- assertVisible: "Continue with X"
+- assertVisible: "AllWallets enabled"
+
+# Tap All wallets and Search for Flutter Sample Wallet
+- tapOn: "AllWallets enabled"
+- waitForAnimationToEnd
+- tapOn: "Search wallet"
+- inputText: "Flutter Sample"
+- extendedWaitUntil:
+    visible: "Flutter Sample Wallet"
+    timeout: 15000
 
 # Select wallet and approve
-- tapOn: "FL Wallet (internal) enabled"
+- tapOn: "Flutter Sample Wallet"
 - extendedWaitUntil:
-    visible: "Reown's AppKit would like to connect"
+    visible: "Reown's AppKit internal would like to connect"
     timeout: 15000
 - takeScreenshot:
-    path: .maestro/screenshots/5
-- tapOn: "Approve" # on Approve the flow is redirected back to the initiaing dapp
+    path: Capture_4
+- tapOn: "Sign All"
 - extendedWaitUntil:
-    visible: "Connected with FL WalletKit Sample"
+    visible: "Disconnect"
     timeout: 15000
 - takeScreenshot:
-    path: .maestro/screenshots/6
-
-# Verify account and disconnect
-- assertVisible: "AppKitModalAccountButton enabled"
-- tapOn: "Disconnect"
-- extendedWaitUntil:
-    notVisible: "Connected with FL WalletKit Sample"
-    timeout: 15000      # Timeout in milliseconds
+    path: Capture_5
 
 # Confirm app returns to initial state
-- assertVisible: "Connect"
-- assertVisible: "Network"
-# - stopRecording
+- assertVisible: "Disconnect"
+- assertVisible: "Ethereum"
+- tapOn: "Disconnect"
+- extendedWaitUntil:
+    visible: "Connect"
+    timeout: 15000      # Timeout in milliseconds
 
+- assertVisible: "Network"
+- assertVisible: "Connect"
 
 # - tapOn: |-
 #     Settings page button

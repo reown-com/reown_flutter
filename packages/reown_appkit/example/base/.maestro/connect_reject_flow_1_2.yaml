@@ -1,0 +1,65 @@
+appId: com.walletconnect.flutterdapp.internal
+---
+# Launch and verify initial state
+- launchApp
+- extendedWaitUntil:
+    visible: "AppKitModalConnectButton enabled"
+    timeout: 15000
+- takeScreenshot:
+    path: Capture_2
+
+# Wait for connect button to become enabled and verify UI
+- assertVisible: "Network"
+- assertVisible: "Connect"
+
+# Delete storage so Link Mode is not triggered
+- tapOn: "Settings page button
+    Settings page icon
+    Settings
+    Tab 3 of 3"
+- tapOn: "CLEAR STORAGE"
+- tapOn: "Connect page button
+    Connect page icon
+    Connect
+    Tab 1 of 3"
+
+# Initiate connection and handle modal
+- tapOn: "AppKitModalConnectButton enabled"
+- extendedWaitUntil:
+    visible: "Sign in"
+    timeout: 15000
+- takeScreenshot:
+    path: Capture_3
+- waitForAnimationToEnd: # Social/Email is loadinging at this point and could take up to 30 secs
+    timeout: 30000
+- assertVisible: "Continue with email"
+- assertVisible: "Continue with X"
+- assertVisible: "AllWallets enabled"
+
+# Tap All wallets and Search for Flutter Sample Wallet
+- tapOn: "AllWallets enabled"
+- waitForAnimationToEnd
+- tapOn: "Search wallet"
+- inputText: "Flutter Sample"
+- extendedWaitUntil:
+    visible: "Flutter Sample Wallet"
+    timeout: 15000
+
+# Select wallet and reject
+- tapOn: "Flutter Sample Wallet"
+- extendedWaitUntil:
+    visible: "Reown's AppKit internal would like to connect"
+    timeout: 15000
+- takeScreenshot:
+    path: Capture_4
+- tapOn: "Cancel"
+- extendedWaitUntil:
+    visible: "Connection declined"
+    timeout: 15000
+- takeScreenshot:
+    path: Capture_5
+
+- tapOn: "Scrim"
+
+- assertVisible: "Network"
+- assertVisible: "Connect"

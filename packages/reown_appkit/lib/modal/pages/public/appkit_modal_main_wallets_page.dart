@@ -158,6 +158,7 @@ class _AppKitModalMainWalletsPageState
                       (!_showMainWallets && (_emailEnabled || _socialsEnabled))
                           ? AllWalletsItem(
                               title: 'Continue with a wallet',
+                              semanticsLabel: 'ContinueWithWallet',
                               titleAlign: TextAlign.center,
                               leading: RoundedIcon(
                                 padding: 10.0,
@@ -175,6 +176,7 @@ class _AppKitModalMainWalletsPageState
                               },
                             )
                           : AllWalletsItem(
+                              semanticsLabel: 'AllWallets',
                               trailing: (items.length <= kShortWalletListCount)
                                   ? null
                                   : ValueListenableBuilder<int>(
