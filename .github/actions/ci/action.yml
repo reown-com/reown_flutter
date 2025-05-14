@@ -61,7 +61,8 @@ runs:
         RELAY_ENDPOINT: ${{ inputs.relay-endpoint }}
         PROJECT_ID: ${{ inputs.project-id }}
       run: flutter test --dart-define=RELAY_ENDPOINT=$RELAY_ENDPOINT --dart-define=PROJECT_ID=$PROJECT_ID
-
+    
+    # MAESTRO TESTS
     # Install Maestro and boot iOS simulator
     - name: Install Maestro and boot iOS simulator
       if: inputs.type == 'maestro-tests'
@@ -111,22 +112,32 @@ runs:
         flutter build ios --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --simulator --debug
         xcrun simctl install "$SIMULATOR_UDID" build/ios/iphonesimulator/Runner.app
 
-    # Build and install Flutter Dapp and run Maestro tests
-    - name: Build and install Flutter Dapp and run Maestro tests
+    # Build and install Flutter Dapp to be used on testing
+    - name: Build and install Flutter Dapp to be used on testing
       if: inputs.type == 'maestro-tests'
       shell: bash
       working-directory: packages/reown_appkit/example/base
       env:
         PROJECT_ID: ${{ inputs.project-id }}
         SIMULATOR_UDID: ${{ env.SIMULATOR_UDID }}
-        MAESTRO_DRIVER_STARTUP_TIMEOUT: 30000  # Increase timeout to 30 seconds
       run: |
         # Build and install the Flutter iOS dapp
         flutter build ios --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --simulator --debug
         xcrun simctl install "$SIMULATOR_UDID" build/ios/iphonesimulator/Runner.app
 
-        # Run Maestro tests
-        maestro test .maestro/connect_disconnect_flow.yaml
+    # Run connect reject session flow
+    - name: Run connect reject session flow
+      if: inputs.type == 'maestro-tests'
+      shell: bash
+      env:
+        MAESTRO_DRIVER_STARTUP_TIMEOUT: 30000  # Increase timeout to 30 seconds
+      run: |
+        mkdir -p .maestro/videos/
+        maestro test .maestro/native/connect_reject_session_flow.yaml
+        maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
+        maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
+        # Move any remaining MP4 files from root to videos directory
+        find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
 
     - name: Handle test results
       if: inputs.type == 'maestro-tests' && failure()
@@ -134,9 +145,10 @@ runs:
       run: echo "Maestro tests failed. Check logs for details."
     
     - name: Upload test recordings from .maestro
-      if: inputs.type == 'maestro-tests' && failure()
+      if: inputs.type == 'maestro-tests'
       uses: actions/upload-artifact@v4
       with:
-        name: maestro-screenshots
-        path: .maestro/**
-        if-no-files-found: warn
+        name: maestro-videos
+        path: |
+          .maestro/videos/
+          if-no-files-found: warn

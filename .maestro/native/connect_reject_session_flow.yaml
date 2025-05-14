@@ -1,6 +1,8 @@
 appId: com.walletconnect.flutterdapp.internal
 ---
 
+- startRecording: "native_connection_rejected"
+
 - runFlow:
     file: ../shared/launch_and_check_link_mode.yaml
 
@@ -16,3 +18,5 @@ appId: com.walletconnect.flutterdapp.internal
 
 - assertVisible: "Network"
 - assertVisible: "Connect"
+
+- stopRecording

@@ -1,8 +1,12 @@
 appId: com.walletconnect.flutterdapp.internal
 ---
 
+- startRecording: "native_connection_sign_message_relay"
+
 - runFlow:
     file: ../shared/launch_and_check_relay_mode.yaml
 
 - runFlow:
     file: ../shared/native_connect_wallet_and_sign_message.yaml
+
+- stopRecording

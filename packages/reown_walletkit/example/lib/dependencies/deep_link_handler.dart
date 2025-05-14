@@ -41,8 +41,8 @@ class DeepLinkHandler {
 
   static IReownWalletKit get _walletKit =>
       GetIt.I<IWalletKitService>().walletKit;
-  static Uri get nativeUri =>
-      Uri.parse(_walletKit.metadata.redirect?.native ?? '');
+  // static Uri get nativeUri =>
+  //     Uri.parse(_walletKit.metadata.redirect?.native ?? '');
   static Uri get universalUri =>
       Uri.parse(_walletKit.metadata.redirect?.universal ?? '');
   static String get host => universalUri.host;
@@ -68,7 +68,9 @@ class DeepLinkHandler {
           decodedUri.toString(),
           'uri',
         );
-        if (decodedUri.isScheme(nativeUri.scheme) && uriParam.isNotEmpty) {
+        if ((decodedUri.isScheme('wcflutterwallet') ||
+                decodedUri.isScheme('wcflutterwallet-internal')) &&
+            uriParam.isNotEmpty) {
           debugPrint('[WalletKit] [DeepLinkHandler] is custom uri $decodedUri');
           waiting.value = true;
           final pairingUri = decodedUri.query.replaceFirst('uri=', '');
