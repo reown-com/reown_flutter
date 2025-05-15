@@ -18,12 +18,12 @@ inputs:
   wallet-project-id:
     description: "Reown wallet project id"
     required: true
-  secrets-file:
-    description: "Secrets file"
-    required: true
-  keystore:
-    description: "Keystore"
-    required: true
+  # secrets-file:
+  #   description: "Secrets file"
+  #   required: true
+  # keystore:
+  #   description: "Keystore"
+  #   required: true
 
 runs:
   using: composite
