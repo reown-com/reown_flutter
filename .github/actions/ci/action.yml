@@ -104,7 +104,7 @@ runs:
         WALLET_PROJECT_ID: ${{ inputs.wallet-project-id }}
       run: |
         flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --debug
-        mv build/app/outputs/flutter-apk/app-internal-debug.apk ../../../../dapp-debug.apk
+        mv build/app/outputs/flutter-apk/app-internal-debug.apk $GITHUB_WORKSPACE/wallet-debug.apk
 
     # Build and install Flutter Dapp to be used on Android emulator
     - name: Build and install Flutter Dapp to be used on Android emulator
@@ -115,7 +115,7 @@ runs:
         PROJECT_ID: ${{ inputs.project-id }}
       run: |
         flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --debug
-        mv build/app/outputs/flutter-apk/app-internal-debug.apk ../../../../dapp-debug.apk
+        mv build/app/outputs/flutter-apk/app-internal-debug.apk $GITHUB_WORKSPACE/dapp-debug.apk
 
     # Start Android Emulator
     - name: Start Android Emulator
@@ -140,13 +140,13 @@ runs:
           avdmanager list device
           
           echo "Listing available APKs:"
-          find apks -name "*.apk"
+          find $GITHUB_WORKSPACE -name "*.apk"
           
           # verify emulator is running
           adb devices
           
           echo "Installing APKs:"
-          find apks -name "*.apk" -exec adb install -r {} \;
+          find $GITHUB_WORKSPACE -name "*.apk" -exec adb install -r {} \;
           
           echo "Installed apps:"
           adb shell pm list packages
