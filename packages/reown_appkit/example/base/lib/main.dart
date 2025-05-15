@@ -22,9 +22,8 @@ import 'package:reown_appkit_dapp/widgets/event_widget.dart';
 Future<void> main() async {
   await SentryFlutter.init(
     (options) {
-      options.dsn =
-          'https://ea72e9d174d242301e5f38ffb1241d98@o1095249.ingest.us.sentry.io/4509316143251456';
-      options.environment = kDebugMode ? 'development' : 'production';
+      options.dsn = DartDefines.sentryDSN;
+      options.environment = kDebugMode ? 'debug_app' : 'deployed_app';
       options.attachScreenshot = true;
       // Adds request headers and IP for users,
       // visit: https://docs.sentry.io/platforms/dart/data-management/data-collected/ for more info
