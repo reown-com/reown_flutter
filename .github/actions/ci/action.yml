@@ -125,9 +125,10 @@ runs:
         api-level: 33
         target: google_apis
         arch: x86_64
-        ram-size: 2048M
+        ram-size: 1536M             # Reduced RAM to avoid resource limits
+        disk-size: 4G               # Cap disk usage to avoid userdata allocation crash
         emulator-boot-timeout: 600 # 10min
-        profile: pixel_7
+        profile: Nexus_5            # Optional: lighter device than pixel_7
         avd-name: test_device
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         disable-animations: true
