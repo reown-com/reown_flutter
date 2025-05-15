@@ -144,13 +144,22 @@ runs:
         echo "🔄 Waiting for emulator to boot..."
         adb wait-for-device
         boot_completed=""
-        until [ "$boot_completed" = "1" ]; do
+        timeout=60
+        elapsed=0
+        while [ "$boot_completed" != "1" ] && [ "$elapsed" -lt "$timeout" ]; do
           boot_completed=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
-          echo "⏳ boot_completed = $boot_completed"
+          echo "⏳ boot_completed = $boot_completed (after ${elapsed}s)"
           sleep 2
+          elapsed=$((elapsed + 2))
         done
-        echo "✅ Emulator is fully booted. Installing APK..."
     
+        if [ "$boot_completed" != "1" ]; then
+          echo "❌ Emulator did not boot within ${timeout}s."
+          adb devices
+          exit 1
+        fi
+    
+        echo "✅ Emulator ready. Installing Wallet APK..."
         adb install -r build/app/outputs/flutter-apk/app-internal-debug.apk
 
     # Build and install Flutter Dapp to be used on Android emulator
@@ -166,13 +175,22 @@ runs:
         echo "🔄 Waiting for emulator to boot..."
         adb wait-for-device
         boot_completed=""
-        until [ "$boot_completed" = "1" ]; do
+        timeout=60
+        elapsed=0
+        while [ "$boot_completed" != "1" ] && [ "$elapsed" -lt "$timeout" ]; do
           boot_completed=$(adb shell getprop sys.boot_completed 2>/dev/null | tr -d '\r')
-          echo "⏳ boot_completed = $boot_completed"
+          echo "⏳ boot_completed = $boot_completed (after ${elapsed}s)"
           sleep 2
+          elapsed=$((elapsed + 2))
         done
-        echo "✅ Emulator is fully booted. Installing APK..."
 
+        if [ "$boot_completed" != "1" ]; then
+          echo "❌ Emulator did not boot within ${timeout}s."
+          adb devices
+          exit 1
+        fi
+
+        echo "✅ Emulator ready. Installing Dapp APK..."
         adb install -r build/app/outputs/flutter-apk/app-internal-debug.apk
 
     # Run Maestro flows on Android emulator
