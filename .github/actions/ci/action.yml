@@ -132,25 +132,25 @@ runs:
           # verify emulator is running
           adb devices
     
-    - name: Add Secrets file
-      shell: bash
-      working-directory: packages/reown_walletkit/example/android
-      run: touch secrets.properties && echo "${{ inputs.secrets-file }}" >> secrets.properties
+    # - name: Add Secrets file
+    #   shell: bash
+    #   working-directory: packages/reown_walletkit/example/android
+    #   run: touch secrets.properties && echo "${{ inputs.secrets-file }}" >> secrets.properties
   
-    - name: Add Keystore file
-      shell: bash
-      working-directory: packages/reown_walletkit/example/android
-      run: echo "${{ inputs.keystore }}" | base64 --decode >> app/debug.keystore
+    # - name: Add Keystore file
+    #   shell: bash
+    #   working-directory: packages/reown_walletkit/example/android
+    #   run: echo "${{ inputs.keystore }}" | base64 --decode >> app/debug.keystore
 
-    - name: Add Secrets file
-      shell: bash
-      working-directory: packages/reown_appkit/example/base/android
-      run: touch secrets.properties && echo "${{ inputs.secrets-file }}" >> secrets.properties
+    # - name: Add Secrets file
+    #   shell: bash
+    #   working-directory: packages/reown_appkit/example/base/android
+    #   run: touch secrets.properties && echo "${{ inputs.secrets-file }}" >> secrets.properties
 
-    - name: Add Keystore file
-      shell: bash
-      working-directory: packages/reown_appkit/example/base/android
-      run: echo "${{ inputs.keystore }}" | base64 --decode >> app/debug.keystore
+    # - name: Add Keystore file
+    #   shell: bash
+    #   working-directory: packages/reown_appkit/example/base/android
+    #   run: echo "${{ inputs.keystore }}" | base64 --decode >> app/debug.keystore
 
     # Build and install Flutter Wallet to be used on Android emulator
     - name: Build and install Flutter Wallet to be used on Android emulator
@@ -161,7 +161,7 @@ runs:
         WALLET_PROJECT_ID: ${{ inputs.wallet-project-id }}
       run: |
         # Build and install the Flutter Android wallet
-        flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --release
+        flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --debug
         adb install -r build/app/outputs/flutter-apk/app-internal-release.apk
 
     # Build and install Flutter Dapp to be used on Android emulator
@@ -173,7 +173,7 @@ runs:
         PROJECT_ID: ${{ inputs.project-id }}
       run: |
         # Build and install the Flutter Android dapp
-        flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --release
+        flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --debug
         adb install -r build/app/outputs/flutter-apk/app-internal-release.apk
 
     # Run Maestro flows on Android emulator
