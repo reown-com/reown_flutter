@@ -21,6 +21,7 @@ dependencies:
   qr_flutter: ^4.1.0
   reown_appkit:
     path: ../..
+  sentry_flutter: ^8.14.2
   toastification: ^2.3.0
 
 # dependency_overrides:
