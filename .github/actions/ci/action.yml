@@ -1,9 +1,12 @@
 name: ci
-description: Executes Dart specific CI steps.
+description: Executes Tests
 
 inputs:
   type:
     description: The type of CI to run.
+    required: true
+  platform:
+    description: Platform where to run tests (ios/android)
     required: true
   relay-endpoint:
     description: "The endpoint of the relay e.g. relay.walletconnect.org"
@@ -19,8 +22,7 @@ inputs:
 runs:
   using: composite
   steps:
-    # Setup Dependencies
-    - uses: ./.github/actions/dependencies
+    # INTEGRATION TESTS
 
     # Run Core Unit and Integration Tests
     - name: Run Core tests
@@ -63,20 +65,110 @@ runs:
       run: flutter test --dart-define=RELAY_ENDPOINT=$RELAY_ENDPOINT --dart-define=PROJECT_ID=$PROJECT_ID
     
     # MAESTRO TESTS
-    # Install Maestro and boot iOS simulator
-    - name: Install Maestro and boot iOS simulator
-      if: inputs.type == 'maestro-tests'
+
+    # Install Maestro
+    - name: Install Maestro
+      if: ${{ inputs.type == 'maestro-tests' }}
       shell: bash
-      working-directory: packages/reown_appkit/example/base
-      env:
-        PROJECT_ID: ${{ inputs.project-id }}
       run: |
         # Install Maestro CLI
         curl -Ls "https://get.maestro.mobile.dev" | bash
         # Update PATH to include Maestro
         export PATH="$PATH":"$HOME/.maestro/bin"
         echo "PATH=$PATH" >> $GITHUB_ENV
+    
+    # Setup Android Emulator
+    # - name: Setup Android Emulator
+    #   if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+    #   shell: bash
+    #   run: |
+    #     # Check for connected Android devices
+    #     adb devices
+    #     if ! adb devices | grep -q "device$"; then
+    #       echo "No Android device found. Please connect a device and enable USB debugging."
+    #       exit 1
+    #     fi
 
+    - name: Enable KVM
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      shell: bash
+      run: |
+        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+        sudo udevadm control --reload-rules
+        sudo udevadm trigger --name-match=kvm
+
+    # Setup Android SDK
+    - name: Setup Android SDK
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      uses: android-actions/setup-android@v2
+
+    # Start Android Emulator
+    - name: Start Android Emulator
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 33
+        target: google_apis
+        arch: x86_64
+        ram-size: 2048M
+        emulator-boot-timeout: 600 # 10min
+        profile: pixel_7
+        avd-name: test_device
+        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        disable-animations: true
+        pre-emulator-launch-script: |
+          echo "Running pre emulator launch script. Printing the working directory now:"
+          pwd
+        script: |
+          echo "Listing available devices:"
+          avdmanager list device
+          
+          # verify emulator is running
+          adb devices
+
+    # Build and install Flutter Wallet to be used on Android emulator
+    - name: Build and install Flutter Wallet to be used on Android emulator
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      shell: bash
+      working-directory: packages/reown_walletkit/example
+      env:
+        WALLET_PROJECT_ID: ${{ inputs.wallet-project-id }}
+      run: |
+        # Build and install the Flutter Android wallet
+        flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --release
+        adb install -r build/app/outputs/flutter-apk/app-internal-release.apk
+
+    # Build and install Flutter Dapp to be used on Android emulator
+    - name: Build and install Flutter Dapp to be used on Android emulator
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      shell: bash
+      working-directory: packages/reown_appkit/example/base
+      env:
+        PROJECT_ID: ${{ inputs.project-id }}
+      run: |
+        # Build and install the Flutter Android dapp
+        flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --release
+        adb install -r build/app/outputs/flutter-apk/app-internal-release.apk
+
+    # Run Maestro flows on Android emulator
+    - name: Run Maestro flows on Android emulator
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      shell: bash
+      env:
+        MAESTRO_DRIVER_STARTUP_TIMEOUT: 30000  # Increase timeout to 30 seconds
+      run: |
+        mkdir -p .maestro/videos/
+        maestro test .maestro/native/connect_reject_session_flow.yaml
+        maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
+        maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
+        # Move any remaining MP4 files from root to videos directory
+        find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
+
+    # Start iOS Simulator
+    - name: Start iOS Simulator
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'ios' || inputs.platform == 'both') }}
+      shell: bash
+      run: |
         # Install IDB (iOS Device Bridge) for iOS simulator support
         brew tap facebook/fb
         brew install facebook/fb/idb-companion
@@ -99,9 +191,9 @@ runs:
         # Output the simulator UDID for the next step
         echo "SIMULATOR_UDID=$SIMULATOR_UDID" >> $GITHUB_ENV
 
-    # Build and install Flutter Wallet to be used on testing
-    - name: Build and install Flutter Wallet to be used on testing
-      if: inputs.type == 'maestro-tests'
+    # Build and install Flutter Wallet to be used on iOS simulator
+    - name: Build and install Flutter Wallet to be used on iOS simulator
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'ios' || inputs.platform == 'both') }}
       shell: bash
       working-directory: packages/reown_walletkit/example
       env:
@@ -112,9 +204,9 @@ runs:
         flutter build ios --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --simulator --debug
         xcrun simctl install "$SIMULATOR_UDID" build/ios/iphonesimulator/Runner.app
 
-    # Build and install Flutter Dapp to be used on testing
-    - name: Build and install Flutter Dapp to be used on testing
-      if: inputs.type == 'maestro-tests'
+    # Build and install Flutter Dapp to be used on iOS simulator
+    - name: Build and install Flutter Dapp to be used on iOS simulator
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'ios' || inputs.platform == 'both') }}
       shell: bash
       working-directory: packages/reown_appkit/example/base
       env:
@@ -125,9 +217,9 @@ runs:
         flutter build ios --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --simulator --debug
         xcrun simctl install "$SIMULATOR_UDID" build/ios/iphonesimulator/Runner.app
 
-    # Run connect reject session flow
-    - name: Run connect reject session flow
-      if: inputs.type == 'maestro-tests'
+    # Run Maestro flows on iOS simulator
+    - name: Run Maestro flows on iOS simulator
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'ios' || inputs.platform == 'both') }}
       shell: bash
       env:
         MAESTRO_DRIVER_STARTUP_TIMEOUT: 30000  # Increase timeout to 30 seconds
@@ -144,6 +236,30 @@ runs:
       shell: bash
       run: echo "Maestro tests failed. Check logs for details."
     
+    - name: Find video files in project root
+      if: inputs.type == 'maestro-tests'
+      shell: bash
+      run: |
+        echo "Looking for video files in project root:"
+        find . -maxdepth 1 -type f -name "*.mp4" -o -name "*.mov"
+        
+        # Create videos directory if it doesn't exist
+        mkdir -p videos
+        
+        # Move any video files from root to videos directory
+        find . -maxdepth 1 -type f \( -name "*.mp4" -o -name "*.mov" \) -exec mv {} videos/ \;
+
+    - name: Upload test recordings from root
+      if: inputs.type == 'maestro-tests'
+      uses: actions/upload-artifact@v4
+      with:
+        name: maestro-root-recordings
+        path: |
+          videos/
+          *.mp4
+          *.mov
+        if-no-files-found: warn
+
     - name: Upload test recordings from .maestro
       if: inputs.type == 'maestro-tests'
       uses: actions/upload-artifact@v4
