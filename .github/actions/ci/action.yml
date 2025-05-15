@@ -125,6 +125,26 @@ runs:
           
           # verify emulator is running
           adb devices
+    
+    - name: Add Secrets file
+      shell: bash
+      working-directory: packages/reown_walletkit/example/android
+      run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
+  
+    - name: Add Keystore file
+      shell: bash
+      working-directory: packages/reown_walletkit/example/android
+      run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
+
+    - name: Add Secrets file
+      shell: bash
+      working-directory: packages/reown_appkit/example/base/android
+      run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
+
+    - name: Add Keystore file
+      shell: bash
+      working-directory: packages/reown_appkit/example/base/android
+      run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
 
     # Build and install Flutter Wallet to be used on Android emulator
     - name: Build and install Flutter Wallet to be used on Android emulator
