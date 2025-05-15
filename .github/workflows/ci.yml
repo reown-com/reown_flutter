@@ -80,6 +80,22 @@ jobs:
       
       # Install Flutter and Dependencies
       - uses: ./.github/actions/dependencies
+      
+      - name: Add Secrets file
+        working-directory: packages/reown_appkit/example/base/android
+        run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
+
+      - name: Add Keystore file
+        working-directory: packages/reown_appkit/example/base/android
+        run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
+
+      - name: Add Secrets file
+        working-directory: packages/reown_walletkit/example/android
+        run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
+
+      - name: Add Keystore file
+        working-directory: packages/reown_walletkit/example/android
+        run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
 
       - name: Run Integration Tests
         if: github.event.inputs.integration == 'true'
