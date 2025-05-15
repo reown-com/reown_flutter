@@ -162,7 +162,7 @@ runs:
       run: |
         # Build and install the Flutter Android wallet
         flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --debug
-        adb install -r build/app/outputs/flutter-apk/app-internal-release.apk
+        adb install -r build/app/outputs/flutter-apk/app-internal-debug.apk
 
     # Build and install Flutter Dapp to be used on Android emulator
     - name: Build and install Flutter Dapp to be used on Android emulator
@@ -174,7 +174,7 @@ runs:
       run: |
         # Build and install the Flutter Android dapp
         flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --debug
-        adb install -r build/app/outputs/flutter-apk/app-internal-release.apk
+        adb install -r build/app/outputs/flutter-apk/app-internal-debug.apk
 
     # Run Maestro flows on Android emulator
     - name: Run Maestro flows on Android emulator
