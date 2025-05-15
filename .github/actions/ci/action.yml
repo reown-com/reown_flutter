@@ -18,6 +18,12 @@ inputs:
   wallet-project-id:
     description: "Reown wallet project id"
     required: true
+  secrets-file:
+    description: "Secrets file"
+    required: true
+  keystore:
+    description: "Keystore"
+    required: true
 
 runs:
   using: composite
@@ -129,22 +135,22 @@ runs:
     - name: Add Secrets file
       shell: bash
       working-directory: packages/reown_walletkit/example/android
-      run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
+      run: touch secrets.properties && echo "${{ inputs.secrets-file }}" >> secrets.properties
   
     - name: Add Keystore file
       shell: bash
       working-directory: packages/reown_walletkit/example/android
-      run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
+      run: echo "${{ inputs.keystore }}" | base64 --decode >> app/debug.keystore
 
     - name: Add Secrets file
       shell: bash
       working-directory: packages/reown_appkit/example/base/android
-      run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
+      run: touch secrets.properties && echo "${{ inputs.secrets-file }}" >> secrets.properties
 
     - name: Add Keystore file
       shell: bash
       working-directory: packages/reown_appkit/example/base/android
-      run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
+      run: echo "${{ inputs.keystore }}" | base64 --decode >> app/debug.keystore
 
     # Build and install Flutter Wallet to be used on Android emulator
     - name: Build and install Flutter Wallet to be used on Android emulator
