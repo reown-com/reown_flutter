@@ -78,8 +78,29 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       
-      # Install Flutter and Dependencies
-      - uses: ./.github/actions/dependencies
+      # Install Flutter SDK
+      - name: Install Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+
+      # Get package dependencies for dapp and generate files
+      - name: Get package dependencies for dapp and generate files
+        shell: bash
+        working-directory: packages/reown_appkit/example/base
+        run: |
+            flutter pub get
+            flutter pub run build_runner build --delete-conflicting-outputs
+            dart format --output=none --set-exit-if-changed .
+      
+      # Get package dependencies for wallet and generate files
+      - name: Get package dependencies for wallet and generate files
+        shell: bash
+        working-directory: packages/reown_walletkit/example
+        run: |
+            flutter pub get
+            flutter pub run build_runner build --delete-conflicting-outputs
+            dart format --output=none --set-exit-if-changed .
       
       - name: Add Secrets file
         working-directory: packages/reown_appkit/example/base/android
@@ -97,28 +118,87 @@ jobs:
         working-directory: packages/reown_walletkit/example/android
         run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
 
-      - name: Run Integration Tests
-        if: github.event.inputs.integration == 'true'
-        uses: ./.github/actions/ci
-        with:
-          type: "integration-tests"
-          relay-endpoint: "wss://relay.walletconnect.org"
-          project-id: ${{ secrets.DAPP_PROJECT_ID }}
-          wallet-project-id: ${{ secrets.WALLET_PROJECT_ID }}
-          # secrets-file: ${{ secrets.SECRETS_FILE }}
-          # keystore: ${{ secrets.KEYSTORE }}
+      # MAESTRO TESTS
+      - name: Enable KVM
+        shell: bash
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
 
-      - name: Run Tests
-        if: github.event.inputs.maestro != 'none'
-        uses: ./.github/actions/ci
+      # Install Maestro
+      - name: Install Maestro
+        shell: bash
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          export PATH="$PATH":"$HOME/.maestro/bin"
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+          maestro --version
+
+      # Setup Android SDK
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      # Build and install Flutter Wallet to be used on Android emulator
+      - name: Build and install Flutter Wallet to be used on Android emulator
+        shell: bash
+        working-directory: packages/reown_walletkit/example
+        env:
+          WALLET_PROJECT_ID: ${{ secrets.WALLET_PROJECT_ID }}
+        run: |
+          flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --debug
+          mv build/app/outputs/flutter-apk/app-internal-debug.apk $GITHUB_WORKSPACE/wallet-debug.apk
+
+      # Build and install Flutter Dapp to be used on Android emulator
+      - name: Build and install Flutter Dapp to be used on Android emulator
+        shell: bash
+        working-directory: packages/reown_appkit/example/base
+        env:
+          PROJECT_ID: ${{ secrets.DAPP_PROJECT_ID }}
+        run: |
+          flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --debug
+          mv build/app/outputs/flutter-apk/app-internal-debug.apk $GITHUB_WORKSPACE/dapp-debug.apk
+
+      # Start Android Emulator
+      - name: Start Android Emulator
+        uses: reactivecircus/android-emulator-runner@v2
         with:
-          type: "maestro-tests"
-          platform: ${{ github.event.inputs.maestro }}
-          relay-endpoint: "wss://relay.walletconnect.org"
-          project-id: ${{ secrets.DAPP_PROJECT_ID }}
-          wallet-project-id: ${{ secrets.WALLET_PROJECT_ID }}
-          # secrets-file: ${{ secrets.SECRETS_FILE }}
-          # keystore: ${{ secrets.KEYSTORE }}
+          api-level: 33
+          target: google_apis
+          arch: x86_64
+          ram-size: 2048M
+          # disk-size: 4G
+          emulator-boot-timeout: 600 # 10min
+          profile: pixel_7
+          avd-name: test_device
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          pre-emulator-launch-script: |
+            echo "Running pre emulator launch script. Printing the working directory now:"
+            pwd
+          script: |
+            echo "Listing available devices:"
+            avdmanager list device
+            
+            echo "Listing available APKs:"
+            find $GITHUB_WORKSPACE -name "*.apk"
+            
+            # verify emulator is running
+            adb devices
+            
+            echo "Installing APKs:"
+            find $GITHUB_WORKSPACE -name "*.apk" -exec adb install -r {} \;
+            
+            echo "Installed apps:"
+            adb shell pm list packages
+            
+            echo "Running Maestro native to native tests:"
+            mkdir -p .maestro/videos/
+            maestro test .maestro/native/connect_reject_session_flow.yaml
+            maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
+            maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
+            # Move any remaining MP4 files from root to videos directory
+            find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
 
 
 # Launch locally
