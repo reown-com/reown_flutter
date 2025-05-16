@@ -128,7 +128,7 @@ runs:
         ram-size: 1536M
         disk-size: 4G
         emulator-boot-timeout: 600 # 10min
-        profile: Nexus_5X
+        profile: Nexus 6
         avd-name: test_device
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         disable-animations: true
