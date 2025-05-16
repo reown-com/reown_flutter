@@ -258,6 +258,8 @@ runs:
       run: |
         mkdir -p ./maestro-artifacts
         cp -r /home/runner/.maestro/tests/* ./maestro-artifacts/ || true
+        cp -r .maestro/videos/* ./maestro-artifacts/ || true
+        cp *.mp4 ./maestro-artifacts/ || true
         zip -r maestro-test-results.zip ./maestro-artifacts/
 
     # Upload Zipped Maestro Artifacts
