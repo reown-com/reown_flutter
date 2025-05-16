@@ -160,8 +160,8 @@ jobs:
         env:
           WALLET_PROJECT_ID: ${{ secrets.WALLET_PROJECT_ID }}
         run: |
-          flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --debug
-          mv build/app/outputs/flutter-apk/app-internal-debug.apk $GITHUB_WORKSPACE/wallet-debug.apk
+          flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --release
+          mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/wallet-release.apk
 
       # Build and install Flutter Dapp to be used on Android emulator
       - name: Build and install Flutter Dapp to be used on Android emulator
@@ -170,8 +170,8 @@ jobs:
         env:
           PROJECT_ID: ${{ secrets.DAPP_PROJECT_ID }}
         run: |
-          flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --debug
-          mv build/app/outputs/flutter-apk/app-internal-debug.apk $GITHUB_WORKSPACE/dapp-debug.apk
+          flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --release
+          mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/dapp-release.apk
       
       - name: Restart ADB Server
         shell: bash
@@ -226,7 +226,24 @@ jobs:
             maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
             # Move any remaining MP4 files from root to videos directory
             find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
-
+  
+      - name: Upload test recordings from root
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-root-recordings
+          path: |
+            .maestro/videos/
+            *.mp4
+            *.mov
+          if-no-files-found: warn
+  
+      - name: Upload test recordings from .maestro
+        uses: actions/upload-artifact@v4
+        with:
+          name: maestro-videos
+          path: |
+            .maestro/videos/
+            if-no-files-found: warn
 
 # Launch locally
 # act --container-architecture linux/amd64 -P ubuntu-latest=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch --input integration=false --input maestro=android
