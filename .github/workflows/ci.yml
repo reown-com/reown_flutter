@@ -10,8 +10,8 @@ permissions:
 on:
   # push:
   #   branches: [ master ]
-  pull_request:
-    branches: [ develop ]
+  # pull_request:
+  #   branches: [ develop ]
   workflow_dispatch:
     inputs:
       integration:

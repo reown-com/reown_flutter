@@ -260,6 +260,7 @@ runs:
         path: |
           .maestro/videos/
           /home/runner/.maestro/tests/*
-          home/runner/.maestro/tests/*
+          *.mp4
+          *.mov
         if-no-files-found: warn
         retention-days: 7  # Adjust as needed
