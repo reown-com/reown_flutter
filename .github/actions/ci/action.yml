@@ -252,15 +252,19 @@ runs:
         find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
 
     # Upload Maestro Test Artifacts
-    - name: Upload Maestro Test Artifacts
+    - name: Zip Maestro Test Artifacts
+      if: always()
+      shell: bash
+      run: |
+        mkdir -p ./maestro-artifacts
+        cp -r /home/runner/.maestro/tests/* ./maestro-artifacts/ || true
+        zip -r maestro-test-results.zip ./maestro-artifacts/
+
+    # Upload Zipped Maestro Artifacts
+    - name: Upload Zipped Maestro Artifacts
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: maestro-test-results
-        path: |
-          .maestro/videos/
-          /home/runner/.maestro/tests/*
-          *.mp4
-          *.mov
-        if-no-files-found: warn
-        retention-days: 7  # Adjust as needed
+        name: maestro-test-results-zip
+        path: maestro-test-results.zip
+        retention-days: 7
