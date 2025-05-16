@@ -153,8 +153,8 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v2
 
-      # Build and install Flutter Wallet to be used on Android emulator
-      - name: Build and install Flutter Wallet to be used on Android emulator
+      # Build Flutter Wallet to be used on Android emulator
+      - name: Build Flutter Wallet to be used on Android emulator
         shell: bash
         working-directory: packages/reown_walletkit/example
         env:
@@ -163,8 +163,8 @@ jobs:
           flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --release
           mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/wallet-release.apk
 
-      # Build and install Flutter Dapp to be used on Android emulator
-      - name: Build and install Flutter Dapp to be used on Android emulator
+      # Build Flutter Dapp to be used on Android emulator
+      - name: Build Flutter Dapp to be used on Android emulator
         shell: bash
         working-directory: packages/reown_appkit/example/base
         env:
@@ -226,24 +226,19 @@ jobs:
             maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
             # Move any remaining MP4 files from root to videos directory
             find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
-  
-      - name: Upload test recordings from root
+
+      - name: Upload Maestro Test Artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: maestro-root-recordings
+          name: maestro-test-results
           path: |
             .maestro/videos/
+            /home/runner/.maestro/tests/*
             *.mp4
             *.mov
-          if-no-files-found: warn
-  
-      - name: Upload test recordings from .maestro
-        uses: actions/upload-artifact@v4
-        with:
-          name: maestro-videos
-          path: |
-            .maestro/videos/
             if-no-files-found: warn
+          retention-days: 7  # Adjust as needed
 
 # Launch locally
 # act --container-architecture linux/amd64 -P ubuntu-latest=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch --input integration=false --input maestro=android
