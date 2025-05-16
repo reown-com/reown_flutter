@@ -117,14 +117,28 @@ jobs:
       - name: Add Keystore file
         working-directory: packages/reown_walletkit/example/android
         run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
+      
+      - name: Check Runner Resources
+        shell: bash
+        run: |
+          echo "CPU Info:"
+          lscpu
+          echo "Memory Info:"
+          free -m
+          echo "Disk Space:"
+          df -h
 
       # MAESTRO TESTS
       - name: Enable KVM
         shell: bash
         run: |
-          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-          sudo udevadm control --reload-rules
-          sudo udevadm trigger --name-match=kvm
+          sudo apt-get update
+          sudo apt-get install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
+          sudo modprobe kvm
+          sudo chown runner:runner /dev/kvm
+          sudo chmod 666 /dev/kvm
+          ls -l /dev/kvm
+          kvm-ok || echo "KVM not supported or not enabled"
 
       # Install Maestro
       - name: Install Maestro
@@ -158,40 +172,53 @@ jobs:
         run: |
           flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --debug
           mv build/app/outputs/flutter-apk/app-internal-debug.apk $GITHUB_WORKSPACE/dapp-debug.apk
+      
+      - name: Restart ADB Server
+        shell: bash
+        run: |
+          adb kill-server
+          adb start-server
+          adb devices
 
       # Start Android Emulator
       - name: Start Android Emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 33
-          target: google_apis
+          target: default # Use AOSP instead of Google APIs
           arch: x86_64
-          ram-size: 2048M
-          # disk-size: 4G
-          emulator-boot-timeout: 600 # 10min
-          profile: pixel_7
-          avd-name: test_device
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          ram-size: 4096M
+          emulator-boot-timeout: 900
+          profile: pixel_4
+          emulator-options: -no-window -gpu guest -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           pre-emulator-launch-script: |
             echo "Running pre emulator launch script. Printing the working directory now:"
             pwd
+            echo "Checking KVM support:"
+            ls -l /dev/kvm
+            kvm-ok || echo "KVM not supported or not enabled"
+            echo "Listing AVDs:"
+            avdmanager list avd
           script: |
+            echo "Listing running emulator processes:"
+            ps aux | grep emulator || echo "No emulator processes found"
+            echo "Checking ADB server status:"
+            adb kill-server
+            adb start-server
+            adb devices
+            echo "Waiting for emulator to boot..."
+            # Continue with original script
             echo "Listing available devices:"
             avdmanager list device
-            
             echo "Listing available APKs:"
             find $GITHUB_WORKSPACE -name "*.apk"
-            
-            # verify emulator is running
+            # Verify emulator is running
             adb devices
-            
             echo "Installing APKs:"
             find $GITHUB_WORKSPACE -name "*.apk" -exec adb install -r {} \;
-            
             echo "Installed apps:"
             adb shell pm list packages
-            
             echo "Running Maestro native to native tests:"
             mkdir -p .maestro/videos/
             maestro test .maestro/native/connect_reject_session_flow.yaml
