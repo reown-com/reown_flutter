@@ -128,7 +128,7 @@ runs:
         ram-size: 1536M
         disk-size: 4G
         emulator-boot-timeout: 600 # 10min
-        profile: Nexus 6
+        profile: pixel_7
         avd-name: test_device
         emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
         disable-animations: true
@@ -137,7 +137,7 @@ runs:
           pwd
         script: |
           echo "Listing available devices:"
-          avdmanager list device | awk '/^id:/ { print $0 }'
+          avdmanager list device
           
           echo "Listing available APKs:"
           find $GITHUB_WORKSPACE -name "*.apk"
