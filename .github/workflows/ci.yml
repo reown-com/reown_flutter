@@ -47,6 +47,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # Checkout the repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       # Set up environment 
       - uses: ./.github/actions/dependencies
       

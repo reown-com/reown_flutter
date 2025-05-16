@@ -16,7 +16,11 @@ jobs:
     # if: (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master') || github.event_name == 'workflow_dispatch'
     runs-on: macos-14
 
-    steps:      
+    steps:
+      # Checkout the repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       # Set up environment 
       - uses: ./.github/actions/dependencies
 
