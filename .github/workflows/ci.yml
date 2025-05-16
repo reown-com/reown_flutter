@@ -102,22 +102,27 @@ jobs:
             flutter pub run build_runner build --delete-conflicting-outputs
             dart format --output=none --set-exit-if-changed .
       
+      # Add Secrets file on dapp
       - name: Add Secrets file
         working-directory: packages/reown_appkit/example/base/android
         run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
 
+      # Add Keystore file on dapp
       - name: Add Keystore file
         working-directory: packages/reown_appkit/example/base/android
         run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
 
+      # Add Secrets file on wallet
       - name: Add Secrets file
         working-directory: packages/reown_walletkit/example/android
         run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
 
+      # Add Keystore file on wallet
       - name: Add Keystore file
         working-directory: packages/reown_walletkit/example/android
         run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
       
+      # Check Runner Resources
       - name: Check Runner Resources
         shell: bash
         run: |
@@ -173,6 +178,7 @@ jobs:
           flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --release
           mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/dapp-release.apk
       
+      # Restart ADB Server
       - name: Restart ADB Server
         shell: bash
         run: |
@@ -185,48 +191,60 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 33
-          target: default # Use AOSP instead of Google APIs
+          target: google_apis
           arch: x86_64
           ram-size: 4096M
-          emulator-boot-timeout: 900
-          profile: pixel_4
-          emulator-options: -no-window -gpu guest -noaudio -no-boot-anim -camera-back none
+          emulator-boot-timeout: 600 # 10min
+          profile: pixel_7
+          avd-name: test_device
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           pre-emulator-launch-script: |
             echo "Running pre emulator launch script. Printing the working directory now:"
             pwd
+            
             echo "Checking KVM support:"
             ls -l /dev/kvm
             kvm-ok || echo "KVM not supported or not enabled"
+            
             echo "Listing AVDs:"
             avdmanager list avd
           script: |
             echo "Listing running emulator processes:"
             ps aux | grep emulator || echo "No emulator processes found"
+
             echo "Checking ADB server status:"
             adb kill-server
             adb start-server
             adb devices
+            
             echo "Waiting for emulator to boot..."
             # Continue with original script
             echo "Listing available devices:"
             avdmanager list device
+            
             echo "Listing available APKs:"
             find $GITHUB_WORKSPACE -name "*.apk"
+            
             # Verify emulator is running
             adb devices
+            
             echo "Installing APKs:"
             find $GITHUB_WORKSPACE -name "*.apk" -exec adb install -r {} \;
+            
             echo "Installed apps:"
             adb shell pm list packages
+            
             echo "Running Maestro native to native tests:"
             mkdir -p .maestro/videos/
             maestro test .maestro/native/connect_reject_session_flow.yaml
             maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
             maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
+            
             # Move any remaining MP4 files from root to videos directory
             find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
 
+      # Upload Maestro Test Artifacts
       - name: Upload Maestro Test Artifacts
         if: always()
         uses: actions/upload-artifact@v4
