@@ -76,9 +76,13 @@ runs:
       if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
       shell: bash
       run: |
-        echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-        sudo udevadm control --reload-rules
-        sudo udevadm trigger --name-match=kvm
+        sudo apt-get update
+        sudo apt-get install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
+        sudo modprobe kvm
+        sudo chown runner:runner /dev/kvm
+        sudo chmod 666 /dev/kvm
+        ls -l /dev/kvm
+        kvm-ok || echo "KVM not supported or not enabled"
 
     # Install Maestro
     - name: Install Maestro
@@ -95,27 +99,36 @@ runs:
       if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
       uses: android-actions/setup-android@v2
 
-    # Build and install Flutter Wallet to be used on Android emulator
-    - name: Build and install Flutter Wallet to be used on Android emulator
+    # Build Flutter Wallet to be used on Android emulator
+    - name: Build Flutter Wallet to be used on Android emulator
       if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
       shell: bash
       working-directory: packages/reown_walletkit/example
       env:
         WALLET_PROJECT_ID: ${{ inputs.wallet-project-id }}
       run: |
-        flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --debug
-        mv build/app/outputs/flutter-apk/app-internal-debug.apk $GITHUB_WORKSPACE/wallet-debug.apk
+        flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --release
+        mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/wallet-release.apk
 
-    # Build and install Flutter Dapp to be used on Android emulator
-    - name: Build and install Flutter Dapp to be used on Android emulator
+    # Build Flutter Dapp to be used on Android emulator
+    - name: Build Flutter Dapp to be used on Android emulator
       if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
       shell: bash
       working-directory: packages/reown_appkit/example/base
       env:
         PROJECT_ID: ${{ inputs.project-id }}
       run: |
-        flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --debug
-        mv build/app/outputs/flutter-apk/app-internal-debug.apk $GITHUB_WORKSPACE/dapp-debug.apk
+        flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --release
+        mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/dapp-release.apk
+    
+    # Restart ADB Server
+    - name: Restart ADB Server
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      shell: bash
+      run: |
+        adb kill-server
+        adb start-server
+        adb devices
 
     # Start Android Emulator
     - name: Start Android Emulator
@@ -123,26 +136,41 @@ runs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 33
-        target: google_apis
+        target: default # Use AOSP instead of Google APIs
         arch: x86_64
-        ram-size: 1536M
-        disk-size: 4G
-        emulator-boot-timeout: 600 # 10min
-        profile: pixel_7
-        avd-name: test_device
-        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+        ram-size: 2048M
+        emulator-boot-timeout: 900
+        profile: pixel_4
+        emulator-options: -no-window -gpu guest -noaudio -no-boot-anim -camera-back none
         disable-animations: true
         pre-emulator-launch-script: |
           echo "Running pre emulator launch script. Printing the working directory now:"
           pwd
+          
+          echo "Checking KVM support:"
+          ls -l /dev/kvm
+          kvm-ok || echo "KVM not supported or not enabled"
+          
+          echo "Listing AVDs:"
+          avdmanager list avd
         script: |
+          echo "Listing running emulator processes:"
+          ps aux | grep emulator || echo "No emulator processes found"
+
+          echo "Checking ADB server status:"
+          adb kill-server
+          adb start-server
+          adb devices
+          
+          echo "Waiting for emulator to boot..."
+          # Continue with original script
           echo "Listing available devices:"
           avdmanager list device
           
           echo "Listing available APKs:"
           find $GITHUB_WORKSPACE -name "*.apk"
           
-          # verify emulator is running
+          # Verify emulator is running
           adb devices
           
           echo "Installing APKs:"
@@ -156,8 +184,10 @@ runs:
           maestro test .maestro/native/connect_reject_session_flow.yaml
           maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
           maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
+          
           # Move any remaining MP4 files from root to videos directory
           find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
+  
 
     # Start iOS Simulator
     - name: Start iOS Simulator
@@ -226,27 +256,16 @@ runs:
         # Move any remaining MP4 files from root to videos directory
         find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
 
-    - name: Handle test results
-      if: inputs.type == 'maestro-tests' && failure()
-      shell: bash
-      run: echo "Maestro tests failed. Check logs for details."
-
-    - name: Upload test recordings from root
-      if: inputs.type == 'maestro-tests'
+    # Upload Maestro Test Artifacts
+    - name: Upload Maestro Test Artifacts
+      if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: maestro-root-recordings
+        name: maestro-test-results
         path: |
           .maestro/videos/
+          /home/runner/.maestro/tests/*
           *.mp4
           *.mov
-        if-no-files-found: warn
-
-    - name: Upload test recordings from .maestro
-      if: inputs.type == 'maestro-tests'
-      uses: actions/upload-artifact@v4
-      with:
-        name: maestro-videos
-        path: |
-          .maestro/videos/
           if-no-files-found: warn
+        retention-days: 7  # Adjust as needed

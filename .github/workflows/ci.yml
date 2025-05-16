@@ -44,13 +44,6 @@ concurrency:
 
 jobs:
   tests:
-    # strategy:
-    #   matrix:
-    #     include:
-    #       - test-type: integration-tests
-    #         runner: macos-14
-    #       - test-type: maestro-tests
-    #         runner: ubuntu-latest
     runs-on: ubuntu-latest
 
     steps:
@@ -78,29 +71,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       
-      # Install Flutter SDK
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.24.5'
-
-      # Get package dependencies for dapp and generate files
-      - name: Get package dependencies for dapp and generate files
-        shell: bash
-        working-directory: packages/reown_appkit/example/base
-        run: |
-            flutter pub get
-            flutter pub run build_runner build --delete-conflicting-outputs
-            dart format --output=none --set-exit-if-changed .
-      
-      # Get package dependencies for wallet and generate files
-      - name: Get package dependencies for wallet and generate files
-        shell: bash
-        working-directory: packages/reown_walletkit/example
-        run: |
-            flutter pub get
-            flutter pub run build_runner build --delete-conflicting-outputs
-            dart format --output=none --set-exit-if-changed .
+      # Install Flutter and Dependencies
+      - uses: ./.github/actions/dependencies
+      # with:
+      #   working-directory: packages/reown_appkit/example/base
       
       # Add Secrets file on dapp
       - name: Add Secrets file
@@ -133,116 +107,30 @@ jobs:
           echo "Disk Space:"
           df -h
 
-      # MAESTRO TESTS
-      - name: Enable KVM
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
-          sudo modprobe kvm
-          sudo chown runner:runner /dev/kvm
-          sudo chmod 666 /dev/kvm
-          ls -l /dev/kvm
-          kvm-ok || echo "KVM not supported or not enabled"
-
-      # Install Maestro
-      - name: Install Maestro
-        shell: bash
-        run: |
-          curl -Ls "https://get.maestro.mobile.dev" | bash
-          export PATH="$PATH":"$HOME/.maestro/bin"
-          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
-          maestro --version
-
-      # Setup Android SDK
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v2
-
-      # Build Flutter Wallet to be used on Android emulator
-      - name: Build Flutter Wallet to be used on Android emulator
-        shell: bash
-        working-directory: packages/reown_walletkit/example
-        env:
-          WALLET_PROJECT_ID: ${{ secrets.WALLET_PROJECT_ID }}
-        run: |
-          flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --release
-          mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/wallet-release.apk
-
-      # Build Flutter Dapp to be used on Android emulator
-      - name: Build Flutter Dapp to be used on Android emulator
-        shell: bash
-        working-directory: packages/reown_appkit/example/base
-        env:
-          PROJECT_ID: ${{ secrets.DAPP_PROJECT_ID }}
-        run: |
-          flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --release
-          mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/dapp-release.apk
-      
-      # Restart ADB Server
-      - name: Restart ADB Server
-        shell: bash
-        run: |
-          adb kill-server
-          adb start-server
-          adb devices
-
-      # Start Android Emulator
-      - name: Start Android Emulator
-        uses: reactivecircus/android-emulator-runner@v2
+      # Run Integration Tests
+      - name: Run Integration Tests
+        if: github.event.inputs.integration == 'true'
+        uses: ./.github/actions/ci
         with:
-          api-level: 33
-          target: google_apis
-          arch: x86_64
-          ram-size: 4096M
-          emulator-boot-timeout: 600 # 10min
-          profile: pixel_7
-          avd-name: test_device
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          disable-animations: true
-          pre-emulator-launch-script: |
-            echo "Running pre emulator launch script. Printing the working directory now:"
-            pwd
-            
-            echo "Checking KVM support:"
-            ls -l /dev/kvm
-            kvm-ok || echo "KVM not supported or not enabled"
-            
-            echo "Listing AVDs:"
-            avdmanager list avd
-          script: |
-            echo "Listing running emulator processes:"
-            ps aux | grep emulator || echo "No emulator processes found"
+          type: "integration-tests"
+          relay-endpoint: "wss://relay.walletconnect.org"
+          project-id: ${{ secrets.DAPP_PROJECT_ID }}
+          wallet-project-id: ${{ secrets.WALLET_PROJECT_ID }}
+          # secrets-file: ${{ secrets.SECRETS_FILE }}
+          # keystore: ${{ secrets.KEYSTORE }}
 
-            echo "Checking ADB server status:"
-            adb kill-server
-            adb start-server
-            adb devices
-            
-            echo "Waiting for emulator to boot..."
-            # Continue with original script
-            echo "Listing available devices:"
-            avdmanager list device
-            
-            echo "Listing available APKs:"
-            find $GITHUB_WORKSPACE -name "*.apk"
-            
-            # Verify emulator is running
-            adb devices
-            
-            echo "Installing APKs:"
-            find $GITHUB_WORKSPACE -name "*.apk" -exec adb install -r {} \;
-            
-            echo "Installed apps:"
-            adb shell pm list packages
-            
-            echo "Running Maestro native to native tests:"
-            mkdir -p .maestro/videos/
-            maestro test .maestro/native/connect_reject_session_flow.yaml
-            maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
-            maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
-            
-            # Move any remaining MP4 files from root to videos directory
-            find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
+      # Run Maestro Tests
+      - name: Run Maestro Tests
+        if: github.event.inputs.maestro != 'none'
+        uses: ./.github/actions/ci
+        with:
+          type: "maestro-tests"
+          platform: ${{ github.event.inputs.maestro }}
+          relay-endpoint: "wss://relay.walletconnect.org"
+          project-id: ${{ secrets.DAPP_PROJECT_ID }}
+          wallet-project-id: ${{ secrets.WALLET_PROJECT_ID }}
+          # secrets-file: ${{ secrets.SECRETS_FILE }}
+          # keystore: ${{ secrets.KEYSTORE }}
 
       # Upload Maestro Test Artifacts
       - name: Upload Maestro Test Artifacts
