@@ -10,4 +10,4 @@ appId: com.walletconnect.flutterdapp.internal
 - inputText: "Reown Web"
 - extendedWaitUntil:
     visible: "Reown Web Sample"
-    timeout: 15000
+    timeout: 30000

@@ -1,5 +1,5 @@
 name: ci
-description: Executes Tests
+description: Execute Tests
 
 inputs:
   type:
@@ -18,12 +18,6 @@ inputs:
   wallet-project-id:
     description: "Reown wallet project id"
     required: true
-  # secrets-file:
-  #   description: "Secrets file"
-  #   required: true
-  # keystore:
-  #   description: "Keystore"
-  #   required: true
 
 runs:
   using: composite
@@ -71,7 +65,8 @@ runs:
       run: flutter test --dart-define=RELAY_ENDPOINT=$RELAY_ENDPOINT --dart-define=PROJECT_ID=$PROJECT_ID
 
     # MAESTRO TESTS
-
+    
+    # Enable KVM
     - name: Enable KVM
       if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
       shell: bash
@@ -141,7 +136,7 @@ runs:
         ram-size: 2048M
         emulator-boot-timeout: 900
         profile: pixel_4
-        emulator-options: -no-window -gpu guest -noaudio -no-boot-anim -camera-back none
+        emulator-options: -no-window -gpu guest -noaudio -no-boot-anim -camera-back none -netdelay none -netspeed full
         disable-animations: true
         pre-emulator-launch-script: |
           echo "Running pre emulator launch script. Printing the working directory now:"
@@ -265,7 +260,6 @@ runs:
         path: |
           .maestro/videos/
           /home/runner/.maestro/tests/*
-          *.mp4
-          *.mov
-          if-no-files-found: warn
+          home/runner/.maestro/tests/*
+        if-no-files-found: warn
         retention-days: 7  # Adjust as needed

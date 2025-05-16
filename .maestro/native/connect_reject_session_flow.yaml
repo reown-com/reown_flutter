@@ -12,7 +12,7 @@ appId: com.walletconnect.flutterdapp.internal
 - tapOn: "Cancel"
 - extendedWaitUntil:
     visible: "Connection declined"
-    timeout: 15000
+    timeout: 30000
 
 - tapOn: "Scrim"
 

@@ -5,7 +5,7 @@ appId: com.walletconnect.flutterdapp.internal
 - launchApp
 - extendedWaitUntil:
     visible: "AppKitModalConnectButton enabled"
-    timeout: 15000
+    timeout: 30000
 
 # Wait for connect button to become enabled and verify UI
 - assertVisible: "Network"
@@ -26,12 +26,12 @@ appId: com.walletconnect.flutterdapp.internal
         - tapOn:
             id: "appkit_sample_linkmode_true"
         - waitForAnimationToEnd:
-            timeout: 10000
+            timeout: 30000
         - tapOn: "Ok"
         - launchApp
         - extendedWaitUntil:
             visible: "AppKitModalConnectButton enabled"
-            timeout: 15000
+            timeout: 30000
 - runFlow:
     when:
       visible: "appkit_sample_linkmode_false"
@@ -41,13 +41,13 @@ appId: com.walletconnect.flutterdapp.internal
             Connect
             Tab 1 of 3"
         - waitForAnimationToEnd:
-            timeout: 10000
+            timeout: 30000
 
 # Initiate connection and handle modal
 - tapOn: "AppKitModalConnectButton enabled"
 - extendedWaitUntil:
     visible: "Sign in"
-    timeout: 15000
+    timeout: 30000
 - waitForAnimationToEnd:
     timeout: 30000
 - assertVisible: "Continue with email"

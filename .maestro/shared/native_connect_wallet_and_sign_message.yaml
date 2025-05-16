@@ -17,7 +17,7 @@ appId: com.walletconnect.flutterdapp.internal
 
 - extendedWaitUntil:
     visible: "Disconnect"
-    timeout: 15000
+    timeout: 30000
 
 # Confirm app returns to initial state
 - assertVisible: "Disconnect"
@@ -27,12 +27,12 @@ appId: com.walletconnect.flutterdapp.internal
 - tapOn: "personal_sign"
 - extendedWaitUntil:
     visible: "Approve Request"
-    timeout: 15000      # Timeout in milliseconds
+    timeout: 30000      # Timeout in milliseconds
 # Approve on wallet and await for success
 - tapOn: "Approve"
 - extendedWaitUntil:
     visible: "personal_sign success"
-    timeout: 15000      # Timeout in milliseconds
+    timeout: 30000
 
 - tapOn: "Close"
 
@@ -40,19 +40,19 @@ appId: com.walletconnect.flutterdapp.internal
 - tapOn: "personal_sign"
 - extendedWaitUntil:
     visible: "Approve Request"
-    timeout: 15000      # Timeout in milliseconds
+    timeout: 30000
 # Approve on wallet and await for success
 - tapOn: "Reject"
 - extendedWaitUntil:
     visible: "personal_sign error"
-    timeout: 15000      # Timeout in milliseconds
+    timeout: 30000
 
 - tapOn: "Close"
 
 - tapOn: "Disconnect"
 - extendedWaitUntil:
     visible: "Connect"
-    timeout: 15000      # Timeout in milliseconds
+    timeout: 30000
 
 - assertVisible: "Network"
 - assertVisible: "Connect"

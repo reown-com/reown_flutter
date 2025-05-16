@@ -10,8 +10,8 @@ permissions:
 on:
   # push:
   #   branches: [ master ]
-  # pull_request:
-  #   branches: [ master ]
+  pull_request:
+    branches: [ develop ]
   workflow_dispatch:
     inputs:
       integration:
@@ -47,34 +47,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout the repo
-      - name: Checkout repository
-        uses: actions/checkout@v4
-  
-      # Install Java 17
-      - name: Install Java 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'zulu'
-          java-version: '17'
-          architecture: x86_64
-          cache: 'gradle'
-  
-      # Cache Gradle
-      - name: Cache Gradle
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-      
-      # Install Flutter and Dependencies
+      # Set up environment 
       - uses: ./.github/actions/dependencies
-      # with:
-      #   working-directory: packages/reown_appkit/example/base
       
       # Add Secrets file on dapp
       - name: Add Secrets file
@@ -116,8 +90,6 @@ jobs:
           relay-endpoint: "wss://relay.walletconnect.org"
           project-id: ${{ secrets.DAPP_PROJECT_ID }}
           wallet-project-id: ${{ secrets.WALLET_PROJECT_ID }}
-          # secrets-file: ${{ secrets.SECRETS_FILE }}
-          # keystore: ${{ secrets.KEYSTORE }}
 
       # Run Maestro Tests
       - name: Run Maestro Tests
@@ -129,22 +101,6 @@ jobs:
           relay-endpoint: "wss://relay.walletconnect.org"
           project-id: ${{ secrets.DAPP_PROJECT_ID }}
           wallet-project-id: ${{ secrets.WALLET_PROJECT_ID }}
-          # secrets-file: ${{ secrets.SECRETS_FILE }}
-          # keystore: ${{ secrets.KEYSTORE }}
-
-      # Upload Maestro Test Artifacts
-      - name: Upload Maestro Test Artifacts
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: maestro-test-results
-          path: |
-            .maestro/videos/
-            /home/runner/.maestro/tests/*
-            *.mp4
-            *.mov
-            if-no-files-found: warn
-          retention-days: 7  # Adjust as needed
 
 # Launch locally
 # act --container-architecture linux/amd64 -P ubuntu-latest=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch --input integration=false --input maestro=android

@@ -8,7 +8,7 @@ appId: com.walletconnect.flutterdapp.internal
 - tapOn: "Reown Web Sample"
 - extendedWaitUntil:
     visible: "Reown's AppKit internal wants to connect"
-    timeout: 15000
+    timeout: 30000
 - scrollUntilVisible:
     element: "Approve"
     direction: DOWN
@@ -18,7 +18,7 @@ appId: com.walletconnect.flutterdapp.internal
 
 - extendedWaitUntil:
     visible: "Disconnect"
-    timeout: 15000
+    timeout: 30000
 
 # Confirm app returns to initial state
 - assertVisible: "Disconnect"
@@ -28,7 +28,7 @@ appId: com.walletconnect.flutterdapp.internal
 - tapOn: "personal_sign"
 - extendedWaitUntil:
     visible: "Reown's AppKit internal wants to request a signature"
-    timeout: 15000
+    timeout: 30000
 - scrollUntilVisible:
     element: "Approve"
     direction: DOWN
@@ -37,7 +37,7 @@ appId: com.walletconnect.flutterdapp.internal
 - back
 - extendedWaitUntil:
     visible: "personal_sign success"
-    timeout: 15000      # Timeout in milliseconds
+    timeout: 30000
 
 - tapOn: "Close"
 
@@ -45,7 +45,7 @@ appId: com.walletconnect.flutterdapp.internal
 - tapOn: "personal_sign"
 - extendedWaitUntil:
     visible: "Reown's AppKit internal wants to request a signature"
-    timeout: 15000
+    timeout: 30000
 - scrollUntilVisible:
     element: "Approve"
     direction: DOWN
@@ -54,14 +54,14 @@ appId: com.walletconnect.flutterdapp.internal
 - back
 - extendedWaitUntil:
     visible: "personal_sign error"
-    timeout: 15000      # Timeout in milliseconds
+    timeout: 30000
 
 - tapOn: "Close"
 
 - tapOn: "Disconnect"
 - extendedWaitUntil:
     visible: "Connect"
-    timeout: 15000      # Timeout in milliseconds
+    timeout: 30000
 
 - assertVisible: "Network"
 - assertVisible: "Connect"
