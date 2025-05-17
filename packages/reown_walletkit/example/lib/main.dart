@@ -67,20 +67,24 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    DeepLinkHandler.errorStream.listen(
-      (message) => showDialog(
-        context: context,
-        builder: (context) => AlertDialog(content: Text(message)),
-      ),
-    );
-    WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        final platformDispatcher = View.of(context).platformDispatcher;
-        final platformBrightness = platformDispatcher.platformBrightness;
-        _isDarkMode = platformBrightness == Brightness.dark;
+    try {
+      DeepLinkHandler.errorStream.listen(
+        (message) => showDialog(
+          context: context,
+          builder: (context) => AlertDialog(content: Text(message)),
+        ),
+      );
+      WidgetsBinding.instance.addObserver(this);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          final platformDispatcher = View.of(context).platformDispatcher;
+          final platformBrightness = platformDispatcher.platformBrightness;
+          _isDarkMode = platformBrightness == Brightness.dark;
+        });
       });
-    });
+    } catch (e, s) {
+      Sentry.captureException(e, stackTrace: s);
+    }
   }
 
   @override
@@ -149,71 +153,77 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Future<void> initialize() async {
-    GetIt.I.registerSingleton<IBottomSheetService>(BottomSheetService());
-    final prefs = await SharedPreferences.getInstance();
-    GetIt.I.registerSingleton<IKeyService>(KeyService(prefs: prefs));
+    try {
+      GetIt.I.registerSingleton<IBottomSheetService>(BottomSheetService());
+      final prefs = await SharedPreferences.getInstance();
+      GetIt.I.registerSingleton<IKeyService>(KeyService(prefs: prefs));
 
-    final walletKitService = WalletKitService();
-    await walletKitService.create();
-    GetIt.I.registerSingleton<IWalletKitService>(walletKitService);
+      final walletKitService = WalletKitService();
+      await walletKitService.create();
+      GetIt.I.registerSingleton<IWalletKitService>(walletKitService);
 
-    // Support EVM Chains
-    for (final chainData in ChainsDataList.eip155Chains) {
-      GetIt.I.registerSingleton<EVMService>(
-        EVMService(chainSupported: chainData),
-        instanceName: chainData.chainId,
+      // Support EVM Chains
+      for (final chainData in ChainsDataList.eip155Chains) {
+        GetIt.I.registerSingleton<EVMService>(
+          EVMService(chainSupported: chainData),
+          instanceName: chainData.chainId,
+        );
+      }
+
+      // Support Kadena Chains
+      for (final chainData in ChainsDataList.kadenaChains) {
+        GetIt.I.registerSingleton<KadenaService>(
+          KadenaService(chainSupported: chainData),
+          instanceName: chainData.chainId,
+        );
+      }
+
+      // Support Polkadot Chains
+      for (final chainData in ChainsDataList.polkadotChains) {
+        GetIt.I.registerSingleton<PolkadotService>(
+          PolkadotService(chainSupported: chainData),
+          instanceName: chainData.chainId,
+        );
+      }
+
+      // Support Solana Chains
+      // Change SolanaService to SolanaService2 to switch between `solana` package and `solana_web3` package
+      for (final chainData in ChainsDataList.solanaChains) {
+        GetIt.I.registerSingleton<SolanaService>(
+          SolanaService(chainSupported: chainData),
+          instanceName: chainData.chainId,
+        );
+      }
+
+      // Support Cosmos Chains
+      for (final chainData in ChainsDataList.cosmosChains) {
+        GetIt.I.registerSingleton<CosmosService>(
+          CosmosService(chainSupported: chainData),
+          instanceName: chainData.chainId,
+        );
+      }
+
+      await walletKitService.init();
+
+      walletKitService.walletKit.core.relayClient.onRelayClientConnect
+          .subscribe(
+        _setState,
       );
-    }
-
-    // Support Kadena Chains
-    for (final chainData in ChainsDataList.kadenaChains) {
-      GetIt.I.registerSingleton<KadenaService>(
-        KadenaService(chainSupported: chainData),
-        instanceName: chainData.chainId,
+      walletKitService.walletKit.core.relayClient.onRelayClientDisconnect
+          .subscribe(
+        _setState,
       );
+
+      walletKitService.walletKit.core.connectivity.isOnline
+          .addListener(_onLine);
+
+      _setPages();
+
+      // TODO _walletKit.core.echo.register(firebaseAccessToken);
+      DeepLinkHandler.checkInitialLink();
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
     }
-
-    // Support Polkadot Chains
-    for (final chainData in ChainsDataList.polkadotChains) {
-      GetIt.I.registerSingleton<PolkadotService>(
-        PolkadotService(chainSupported: chainData),
-        instanceName: chainData.chainId,
-      );
-    }
-
-    // Support Solana Chains
-    // Change SolanaService to SolanaService2 to switch between `solana` package and `solana_web3` package
-    for (final chainData in ChainsDataList.solanaChains) {
-      GetIt.I.registerSingleton<SolanaService>(
-        SolanaService(chainSupported: chainData),
-        instanceName: chainData.chainId,
-      );
-    }
-
-    // Support Cosmos Chains
-    for (final chainData in ChainsDataList.cosmosChains) {
-      GetIt.I.registerSingleton<CosmosService>(
-        CosmosService(chainSupported: chainData),
-        instanceName: chainData.chainId,
-      );
-    }
-
-    await walletKitService.init();
-
-    walletKitService.walletKit.core.relayClient.onRelayClientConnect.subscribe(
-      _setState,
-    );
-    walletKitService.walletKit.core.relayClient.onRelayClientDisconnect
-        .subscribe(
-      _setState,
-    );
-
-    walletKitService.walletKit.core.connectivity.isOnline.addListener(_onLine);
-
-    _setPages();
-
-    // TODO _walletKit.core.echo.register(firebaseAccessToken);
-    DeepLinkHandler.checkInitialLink();
   }
 
   void _setState(dynamic args) => setState(() {});

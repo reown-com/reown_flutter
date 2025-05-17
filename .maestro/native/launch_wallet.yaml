@@ -1,7 +1,7 @@
 appId: com.walletconnect.flutterwallet.internal
 ---
 
-- startRecording: "native_connection_sign_message_link_mode"
+- startRecording: "launch_wallet"
 
 # Launch and verify initial state
 - launchApp
