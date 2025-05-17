@@ -176,6 +176,7 @@ runs:
           
           echo "Running Maestro native to native tests:"
           mkdir -p .maestro/videos/
+          maestro test .maestro/native/launch_wallet.yaml
           maestro test .maestro/native/connect_reject_session_flow.yaml
           maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
           maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
@@ -245,6 +246,7 @@ runs:
         MAESTRO_DRIVER_STARTUP_TIMEOUT: 30000 # Increase timeout to 30 seconds
       run: |
         mkdir -p .maestro/videos/
+        maestro test .maestro/native/launch_wallet.yaml
         maestro test .maestro/native/connect_reject_session_flow.yaml
         maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
         maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
