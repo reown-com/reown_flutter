@@ -7,7 +7,7 @@ import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/bottom_sheet_se
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/cosmos_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
-import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
+// import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/polkadot_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
@@ -82,13 +82,13 @@ void main() {
       );
     }
 
-    // Support Kadena Chains
-    for (final chainData in ChainsDataList.kadenaChains) {
-      GetIt.I.registerSingleton<KadenaService>(
-        KadenaService(chainSupported: chainData),
-        instanceName: chainData.chainId,
-      );
-    }
+    // // Support Kadena Chains
+    // for (final chainData in ChainsDataList.kadenaChains) {
+    //   GetIt.I.registerSingleton<KadenaService>(
+    //     KadenaService(chainSupported: chainData),
+    //     instanceName: chainData.chainId,
+    //   );
+    // }
 
     // Support Polkadot Chains
     for (final chainData in ChainsDataList.polkadotChains) {

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer' as dev;
 
 import 'package:convert/convert.dart';
-import 'package:eth_sig_util/util/utils.dart';
+// import 'package:eth_sig_util/util/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pointycastle/ecc/curves/secp256k1.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
@@ -150,14 +150,14 @@ class KeyService extends IKeyService {
     final eip155ChainKey = await _evmChainKey(mnemonic);
     final solanaChainKey = await _solanaChainKey(mnemonic);
     final polkadotChainKey = await _polkadotChainKey(mnemonic);
-    final kadenaChainKey = await _kadenaChainKey(mnemonic);
+    // final kadenaChainKey = await _kadenaChainKey(mnemonic);
     // final bitcoinChainKeys = await _bitcoinChainKey(mnemonic);
 
     _keys = List<ChainKey>.from([
       eip155ChainKey,
       solanaChainKey,
       polkadotChainKey,
-      kadenaChainKey,
+      // kadenaChainKey,
     ]);
 
     await _saveKeys();
@@ -242,29 +242,29 @@ class KeyService extends IKeyService {
     );
   }
 
-  Future<ChainKey> _kadenaChainKey(String mnemonic) async {
-    final mnemonic = await getMnemonic();
-    final seed = bip39.mnemonicToSeed(mnemonic);
-    final root = bip32.BIP32.fromSeed(seed);
-    // 626' is Kadena's BIP44 Coin Type
-    final kadenaNode = root.derivePath("m/44'/626'/0'/0/0");
+  // Future<ChainKey> _kadenaChainKey(String mnemonic) async {
+  //   final mnemonic = await getMnemonic();
+  //   final seed = bip39.mnemonicToSeed(mnemonic);
+  //   final root = bip32.BIP32.fromSeed(seed);
+  //   // 626' is Kadena's BIP44 Coin Type
+  //   final kadenaNode = root.derivePath("m/44'/626'/0'/0/0");
 
-    // Step 4: Extract Private and Public Keys
-    Uint8List privateKey = kadenaNode.privateKey!;
-    Uint8List publicKey = kadenaNode.publicKey;
+  //   // Step 4: Extract Private and Public Keys
+  //   Uint8List privateKey = kadenaNode.privateKey!;
+  //   Uint8List publicKey = kadenaNode.publicKey;
 
-    // Step 5: Convert to String Formats
-    String privateKeyHex = bytesToHex(privateKey);
-    String publicKeyHex = bytesToHex(publicKey);
+  //   // Step 5: Convert to String Formats
+  //   String privateKeyHex = bytesToHex(privateKey);
+  //   String publicKeyHex = bytesToHex(publicKey);
 
-    return ChainKey(
-      chains: ChainsDataList.kadenaChains.map((e) => e.chainId).toList(),
-      privateKey: privateKeyHex,
-      publicKey: publicKeyHex,
-      address: publicKeyHex,
-      namespace: 'kadena',
-    );
-  }
+  //   return ChainKey(
+  //     chains: ChainsDataList.kadenaChains.map((e) => e.chainId).toList(),
+  //     privateKey: privateKeyHex,
+  //     publicKey: publicKeyHex,
+  //     address: publicKeyHex,
+  //     namespace: 'kadena',
+  //   );
+  // }
 
   // ignore: unused_element
   Future<ChainKey> _bitcoinChainKey(String mnemonic) async {

@@ -5,7 +5,7 @@ import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/bottom_sheet_se
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/cosmos_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
-import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
+// import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/polkadot_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/deep_link_handler.dart';
@@ -154,12 +154,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> initialize() async {
     try {
+      await Sentry.captureMessage('Initializing', level: SentryLevel.debug);
       GetIt.I.registerSingleton<IBottomSheetService>(BottomSheetService());
       final prefs = await SharedPreferences.getInstance();
       GetIt.I.registerSingleton<IKeyService>(KeyService(prefs: prefs));
 
       final walletKitService = WalletKitService();
       await walletKitService.create();
+      await Sentry.captureMessage(
+        'WalletKit created',
+        level: SentryLevel.debug,
+      );
       GetIt.I.registerSingleton<IWalletKitService>(walletKitService);
 
       // Support EVM Chains
@@ -169,14 +174,16 @@ class _MyHomePageState extends State<MyHomePage> {
           instanceName: chainData.chainId,
         );
       }
+      await Sentry.captureMessage('EVM Chains', level: SentryLevel.debug);
 
-      // Support Kadena Chains
-      for (final chainData in ChainsDataList.kadenaChains) {
-        GetIt.I.registerSingleton<KadenaService>(
-          KadenaService(chainSupported: chainData),
-          instanceName: chainData.chainId,
-        );
-      }
+      // // Support Kadena Chains
+      // for (final chainData in ChainsDataList.kadenaChains) {
+      //   GetIt.I.registerSingleton<KadenaService>(
+      //     KadenaService(chainSupported: chainData),
+      //     instanceName: chainData.chainId,
+      //   );
+      // }
+      // await Sentry.captureMessage('Kadena Chains', level: SentryLevel.debug);
 
       // Support Polkadot Chains
       for (final chainData in ChainsDataList.polkadotChains) {
@@ -185,6 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
           instanceName: chainData.chainId,
         );
       }
+      await Sentry.captureMessage('Polkadot Chains', level: SentryLevel.debug);
 
       // Support Solana Chains
       // Change SolanaService to SolanaService2 to switch between `solana` package and `solana_web3` package
@@ -194,6 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
           instanceName: chainData.chainId,
         );
       }
+      await Sentry.captureMessage('Solana Chains', level: SentryLevel.debug);
 
       // Support Cosmos Chains
       for (final chainData in ChainsDataList.cosmosChains) {
@@ -202,8 +211,13 @@ class _MyHomePageState extends State<MyHomePage> {
           instanceName: chainData.chainId,
         );
       }
+      await Sentry.captureMessage('Cosmos Chains', level: SentryLevel.debug);
 
       await walletKitService.init();
+      await Sentry.captureMessage(
+        'WalletKit initialized',
+        level: SentryLevel.debug,
+      );
 
       walletKitService.walletKit.core.relayClient.onRelayClientConnect
           .subscribe(
@@ -221,8 +235,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
       // TODO _walletKit.core.echo.register(firebaseAccessToken);
       DeepLinkHandler.checkInitialLink();
+      await Sentry.captureMessage(
+        'Check Initial Link',
+        level: SentryLevel.debug,
+      );
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
+      await Sentry.captureEvent(
+        SentryEvent(
+          eventId: SentryId.newId(),
+          timestamp: DateTime.now(),
+          message: SentryMessage('Crash during initialize'),
+        ),
+        stackTrace: s,
+      );
     }
   }
 

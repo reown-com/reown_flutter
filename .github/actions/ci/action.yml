@@ -133,9 +133,9 @@ runs:
         api-level: 33
         target: default # Use AOSP instead of Google APIs
         arch: x86_64
-        ram-size: 2048M
+        ram-size: 4096M
         emulator-boot-timeout: 900
-        profile: pixel_4
+        profile: pixel_6
         emulator-options: -no-window -gpu guest -noaudio -no-boot-anim -camera-back none -netdelay none -netspeed full
         disable-animations: true
         pre-emulator-launch-script: |
