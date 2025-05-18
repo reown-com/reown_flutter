@@ -186,29 +186,29 @@ class ChainsDataList {
     ),
   ];
 
-  // static final List<ChainMetadata> kadenaChains = [
-  //   const ChainMetadata(
-  //     type: ChainType.kadena,
-  //     chainId: 'kadena:mainnet01',
-  //     name: 'Kadena Mainnet',
-  //     logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
-  //     color: Colors.green,
-  //     rpc: [
-  //       'https://api.chainweb.com',
-  //     ],
-  //   ),
-  //   const ChainMetadata(
-  //     type: ChainType.kadena,
-  //     chainId: 'kadena:testnet04',
-  //     name: 'Kadena Testnet',
-  //     logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
-  //     color: Colors.green,
-  //     isTestnet: true,
-  //     rpc: [
-  //       'https://api.chainweb.com',
-  //     ],
-  //   ),
-  // ];
+  static final List<ChainMetadata> kadenaChains = [
+    const ChainMetadata(
+      type: ChainType.kadena,
+      chainId: 'kadena:mainnet01',
+      name: 'Kadena Mainnet',
+      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
+      color: Colors.green,
+      rpc: [
+        'https://api.chainweb.com',
+      ],
+    ),
+    const ChainMetadata(
+      type: ChainType.kadena,
+      chainId: 'kadena:testnet04',
+      name: 'Kadena Testnet',
+      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
+      color: Colors.green,
+      isTestnet: true,
+      rpc: [
+        'https://api.chainweb.com',
+      ],
+    ),
+  ];
 
   static final List<ChainMetadata> polkadotChains = [
     const ChainMetadata(

@@ -39,18 +39,22 @@ class DeepLinkHandler {
     }
   }
 
-  static IReownWalletKit get _walletKit =>
-      GetIt.I<IWalletKitService>().walletKit;
+  // static IReownWalletKit get _walletKit =>
+  //     GetIt.I<IWalletKitService>().walletKit;
   // static Uri get nativeUri =>
   //     Uri.parse(_walletKit.metadata.redirect?.native ?? '');
-  static Uri get universalUri =>
-      Uri.parse(_walletKit.metadata.redirect?.universal ?? '');
-  static String get host => universalUri.host;
+  // static Uri get universalUri =>
+  //     Uri.parse(_walletKit.metadata.redirect?.universal ?? '');
+  // static String get host => universalUri.host;
 
   static void _onLink(dynamic link) async {
     debugPrint('[WalletKit] [DeepLinkHandler] _onLink $link');
     try {
-      return await _walletKit.dispatchEnvelope('$link');
+      final serviceRegistered = GetIt.I.isRegistered<IWalletKitService>();
+      if (serviceRegistered) {
+        final walletKit = GetIt.I<IWalletKitService>().walletKit;
+        return await walletKit.dispatchEnvelope('$link');
+      }
     } catch (e) {
       _relayConnetionUri(link);
     }
@@ -58,11 +62,15 @@ class DeepLinkHandler {
 
   static void _relayConnetionUri(dynamic link) async {
     try {
+      final serviceRegistered = GetIt.I.isRegistered<IWalletKitService>();
+      if (!serviceRegistered) return;
+
       final decodedUri = Uri.parse(Uri.decodeFull('$link'));
       if (decodedUri.isScheme('wc')) {
         debugPrint('[WalletKit] [DeepLinkHandler] is legacy uri $decodedUri');
         waiting.value = true;
-        await _walletKit.pair(uri: decodedUri);
+        final walletKit = GetIt.I<IWalletKitService>().walletKit;
+        await walletKit.pair(uri: decodedUri);
       } else {
         final uriParam = ReownCoreUtils.getSearchParamFromURL(
           decodedUri.toString(),
@@ -74,7 +82,8 @@ class DeepLinkHandler {
           debugPrint('[WalletKit] [DeepLinkHandler] is custom uri $decodedUri');
           waiting.value = true;
           final pairingUri = decodedUri.query.replaceFirst('uri=', '');
-          await _walletKit.pair(uri: Uri.parse(pairingUri));
+          final walletKit = GetIt.I<IWalletKitService>().walletKit;
+          await walletKit.pair(uri: Uri.parse(pairingUri));
         }
       }
     } catch (e) {

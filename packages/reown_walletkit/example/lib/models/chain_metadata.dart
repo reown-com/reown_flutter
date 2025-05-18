@@ -5,7 +5,7 @@ enum ChainType {
   eip155,
   solana,
   cosmos,
-  // kadena,
+  kadena,
   polkadot,
   bitcoin,
 }
