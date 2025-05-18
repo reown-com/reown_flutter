@@ -65,6 +65,14 @@ runs:
       run: flutter test --dart-define=RELAY_ENDPOINT=$RELAY_ENDPOINT --dart-define=PROJECT_ID=$PROJECT_ID
 
     # MAESTRO TESTS
+
+    # Generate random string for artifacts
+    - name: Generate random string
+      if: ${{ inputs.type == 'maestro-tests' }}
+      shell: bash
+      run: |
+        RANDOM_STRING=$(openssl rand -hex 5)
+        echo "RANDOM_STRING=$RANDOM_STRING" >> $GITHUB_ENV
     
     # Enable KVM
     - name: Enable KVM
@@ -102,7 +110,7 @@ runs:
       env:
         WALLET_PROJECT_ID: ${{ inputs.wallet-project-id }}
       run: |
-        flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --release
+        flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --release
         mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/wallet-release.apk
 
     # Build Flutter Dapp to be used on Android emulator
@@ -113,7 +121,7 @@ runs:
       env:
         PROJECT_ID: ${{ inputs.project-id }}
       run: |
-        flutter build apk --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --release
+        flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$PROJECT_ID" --release
         mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/dapp-release.apk
     
     # Restart ADB Server
@@ -222,7 +230,7 @@ runs:
         SIMULATOR_UDID: ${{ env.SIMULATOR_UDID }}
       run: |
         # Build and install the Flutter iOS wallet
-        flutter build ios --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --simulator --debug
+        flutter build ios --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --simulator --debug
         xcrun simctl install "$SIMULATOR_UDID" build/ios/iphonesimulator/Runner.app
 
     # Build and install Flutter Dapp to be used on iOS simulator
@@ -235,7 +243,7 @@ runs:
         SIMULATOR_UDID: ${{ env.SIMULATOR_UDID }}
       run: |
         # Build and install the Flutter iOS dapp
-        flutter build ios --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --simulator --debug
+        flutter build ios --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$PROJECT_ID" --simulator --debug
         xcrun simctl install "$SIMULATOR_UDID" build/ios/iphonesimulator/Runner.app
 
     # Run Maestro flows on iOS simulator
@@ -262,13 +270,13 @@ runs:
         cp -r /home/runner/.maestro/tests/* ./maestro-artifacts/ || true
         cp -r .maestro/videos/* ./maestro-artifacts/ || true
         cp *.mp4 ./maestro-artifacts/ || true
-        zip -r maestro-test-results.zip ./maestro-artifacts/
+        zip -r maestro-test-results-${{ env.RANDOM_STRING }}.zip ./maestro-artifacts/
 
     # Upload Zipped Maestro Artifacts
     - name: Upload Zipped Maestro Artifacts
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: maestro-test-results-zip
-        path: maestro-test-results.zip
+        name: maestro-test-results-${{ env.RANDOM_STRING }}-zip
+        path: maestro-test-results-${{ env.RANDOM_STRING }}.zip
         retention-days: 7
