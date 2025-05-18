@@ -175,7 +175,10 @@ class _MyHomePageState extends State<MyHomePage> {
       // Support EVM Chains
       for (final chainData in ChainsDataList.eip155Chains) {
         GetIt.I.registerSingleton<EVMService>(
-          EVMService(chainSupported: chainData),
+          EVMService(
+            chainSupported: chainData,
+            walletKitService: walletKitService,
+          ),
           instanceName: chainData.chainId,
         );
       }
@@ -183,7 +186,10 @@ class _MyHomePageState extends State<MyHomePage> {
       // Support Kadena Chains
       for (final chainData in ChainsDataList.kadenaChains) {
         GetIt.I.registerSingleton<KadenaService>(
-          KadenaService(chainSupported: chainData),
+          KadenaService(
+            chainSupported: chainData,
+            walletKitService: walletKitService,
+          ),
           instanceName: chainData.chainId,
         );
       }
@@ -191,7 +197,10 @@ class _MyHomePageState extends State<MyHomePage> {
       // Support Polkadot Chains
       for (final chainData in ChainsDataList.polkadotChains) {
         GetIt.I.registerSingleton<PolkadotService>(
-          PolkadotService(chainSupported: chainData),
+          PolkadotService(
+            chainSupported: chainData,
+            walletKitService: walletKitService,
+          ),
           instanceName: chainData.chainId,
         );
       }
@@ -200,7 +209,10 @@ class _MyHomePageState extends State<MyHomePage> {
       // Change SolanaService to SolanaService2 to switch between `solana` package and `solana_web3` package
       for (final chainData in ChainsDataList.solanaChains) {
         GetIt.I.registerSingleton<SolanaService>(
-          SolanaService(chainSupported: chainData),
+          SolanaService(
+            chainSupported: chainData,
+            walletKitService: walletKitService,
+          ),
           instanceName: chainData.chainId,
         );
       }
@@ -208,7 +220,10 @@ class _MyHomePageState extends State<MyHomePage> {
       // Support Cosmos Chains
       for (final chainData in ChainsDataList.cosmosChains) {
         GetIt.I.registerSingleton<CosmosService>(
-          CosmosService(chainSupported: chainData),
+          CosmosService(
+            chainSupported: chainData,
+            walletKitService: walletKitService,
+          ),
           instanceName: chainData.chainId,
         );
       }
@@ -233,14 +248,6 @@ class _MyHomePageState extends State<MyHomePage> {
       DeepLinkHandler.checkInitialLink();
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      await Sentry.captureEvent(
-        SentryEvent(
-          eventId: SentryId.newId(),
-          timestamp: DateTime.now(),
-          message: SentryMessage('Crash during initialize'),
-        ),
-        stackTrace: s,
-      );
     }
   }
 

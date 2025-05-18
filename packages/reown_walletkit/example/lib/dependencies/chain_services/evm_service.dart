@@ -52,10 +52,10 @@ enum SupportedEVMMethods {
 }
 
 class EVMService {
-  final _walletKit = GetIt.I<IWalletKitService>().walletKit;
-
   final ChainMetadata chainSupported;
+  late final IWalletKitService _walletKitService;
   late final Web3Client ethClient;
+  late final ReownWalletKit _walletKit;
 
   Map<String, dynamic Function(String, dynamic)> get sessionRequestHandlers => {
         SupportedEVMMethods.ethSign.name: ethSignHandler,
@@ -71,8 +71,13 @@ class EVMService {
         SupportedEVMMethods.ethSendTransaction.name: ethSendTransactionHandler,
       };
 
-  EVMService({required this.chainSupported}) {
+  EVMService({
+    required this.chainSupported,
+    required IWalletKitService walletKitService,
+  }) {
     ethClient = Web3Client(chainSupported.rpc.first, http.Client());
+    _walletKitService = walletKitService;
+    _walletKit = walletKitService.walletKit;
 
     for (final event in EventsConstants.allEvents) {
       _walletKit.registerEventEmitter(
@@ -622,7 +627,7 @@ class EVMService {
         (e) => e.chainId == 'eip155:$chainId',
       );
       // this change will handle the session event emit, see settings_page
-      GetIt.I<IWalletKitService>().currentSelectedChain.value = chainInfo;
+      _walletKitService.currentSelectedChain.value = chainInfo;
       response = response.copyWith(result: true);
     } on ReownSignError catch (e) {
       debugPrint('[SampleWallet] switchChain error $e');
@@ -678,7 +683,10 @@ class EVMService {
         // Register the corresponding singleton for the new chain
         // This will also call registerEventEmitter and registerRequestHandler
         GetIt.I.registerSingleton<EVMService>(
-          EVMService(chainSupported: chainData),
+          EVMService(
+            chainSupported: chainData,
+            walletKitService: _walletKitService,
+          ),
           instanceName: chainData.chainId,
         );
 
@@ -699,7 +707,7 @@ class EVMService {
         // add the new chain to the list
         ChainsDataList.eip155Chains.add(chainData);
         // this change will handle the session event emit, see settings_page
-        GetIt.I<IWalletKitService>().currentSelectedChain.value = chainData;
+        _walletKitService.currentSelectedChain.value = chainData;
 
         response = response.copyWith(result: true);
       } on ReownSignError catch (e) {

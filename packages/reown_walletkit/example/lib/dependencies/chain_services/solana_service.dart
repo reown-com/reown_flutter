@@ -21,10 +21,14 @@ class SolanaService {
         'solana_signAllTransactions': solanaSignAllTransaction,
       };
 
-  final _walletKit = GetIt.I<IWalletKitService>().walletKit;
+  late final ReownWalletKit _walletKit;
   final ChainMetadata chainSupported;
 
-  SolanaService({required this.chainSupported}) {
+  SolanaService({
+    required this.chainSupported,
+    required IWalletKitService walletKitService,
+  }) {
+    _walletKit = walletKitService.walletKit;
     for (var handler in solanaRequestHandlers.entries) {
       _walletKit.registerRequestHandler(
         chainId: chainSupported.chainId,
