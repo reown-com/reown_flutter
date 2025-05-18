@@ -152,6 +152,14 @@ class _MyHomePageState extends State<MyHomePage> {
     initialize();
   }
 
+  Future<void> _awaitReadiness() async {
+    if (!GetIt.I.isRegistered<IWalletKitService>()) {
+      await Future.delayed(Duration(milliseconds: 200));
+      _awaitReadiness();
+    }
+    return;
+  }
+
   Future<void> initialize() async {
     try {
       GetIt.I.registerSingleton<IBottomSheetService>(BottomSheetService());
@@ -161,6 +169,8 @@ class _MyHomePageState extends State<MyHomePage> {
       final walletKitService = WalletKitService();
       await walletKitService.create();
       GetIt.I.registerSingleton<IWalletKitService>(walletKitService);
+
+      await _awaitReadiness();
 
       // Support EVM Chains
       for (final chainData in ChainsDataList.eip155Chains) {
