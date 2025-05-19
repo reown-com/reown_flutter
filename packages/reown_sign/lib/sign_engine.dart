@@ -2838,23 +2838,38 @@ class ReownSign implements IReownSign {
     final chainId = request.chainId;
     List<String>? contractAddresses;
 
-    // only EVM request could have `data` parameter for contract call
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    // check if it's a contract call on EVM. It would have either `input` or `data` parameter
     if (namespace == 'eip155') {
-      final params = request.request.params;
-      final paramsMap = params.first as Map<String, dynamic>;
-      final input = paramsMap['input'] as String? ?? '';
       try {
-        if (ReownCoreUtils.isValidContractData(input)) {
+        final params = request.request.params;
+        final paramsMap = params.first as Map<String, dynamic>;
+        final inputData = (paramsMap['input'] ?? paramsMap['data'])!;
+        if (ReownCoreUtils.isValidContractData(inputData)) {
           final contractAddress = paramsMap['to'] as String;
           contractAddresses = [contractAddress];
-        } else {
-          final data = paramsMap['data'] as String? ?? '';
-          if (ReownCoreUtils.isValidContractData(data)) {
-            final contractAddress = paramsMap['to'] as String;
-            contractAddresses = [contractAddress];
-          }
         }
+      } catch (e) {
+        core.logger.d('[$runtimeType] invalid contract data');
+      }
+    }
+    // check if it's a contract call on NEAR. It would have an action.type of `FunctionCall`
+    if (namespace == 'near') {
+      try {
+        final params = request.request.params;
+        final paramsMap = params.first as Map<String, dynamic>;
+        final actions = paramsMap['actions'] as List;
+        print(actions);
+        // if (ReownCoreUtils.isValidContractData(input)) {
+        //   final contractAddress = paramsMap['to'] as String;
+        //   contractAddresses = [contractAddress];
+        // } else {
+        //   final data = paramsMap['data'] as String? ?? '';
+        //   if (ReownCoreUtils.isValidContractData(data)) {
+        //     final contractAddress = paramsMap['to'] as String;
+        //     contractAddresses = [contractAddress];
+        //   }
+        // }
       } catch (e) {
         core.logger.d('[$runtimeType] invalid contract data');
       }
@@ -2870,6 +2885,7 @@ class ReownSign implements IReownSign {
     pendingTVFRequests[id] = tvfData;
 
     // return is useful for AppKit's request() method
+    return null; // TODO remove
     return tvfData;
   }
 
