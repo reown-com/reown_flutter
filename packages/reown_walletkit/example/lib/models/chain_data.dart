@@ -154,7 +154,7 @@ class ChainsDataList {
       logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=040',
       color: Color.fromARGB(255, 255, 157, 0),
       rpc: [
-        'https://rpc.walletconnect.com/v1?chainId=bip122:000000000019d6689c085ae165831e93&projectId=${DartDefines.projectId}'
+        'https://rpc.walletconnect.org/v1?chainId=bip122:000000000019d6689c085ae165831e93&projectId=${DartDefines.projectId}'
       ],
     ),
     const ChainMetadata(
@@ -164,7 +164,7 @@ class ChainsDataList {
       logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.png?v=040',
       color: Color.fromARGB(255, 255, 157, 0),
       rpc: [
-        'https://rpc.walletconnect.com/v1?chainId=bip122:000000000933ea01ad0ee984209779ba&projectId=${DartDefines.projectId}'
+        'https://rpc.walletconnect.org/v1?chainId=bip122:000000000933ea01ad0ee984209779ba&projectId=${DartDefines.projectId}'
       ],
       isTestnet: true,
     ),

@@ -1,0 +1,11 @@
+appId: com.walletconnect.flutterwallet.internal
+---
+
+- startRecording: "launch_wallet"
+
+# Launch and verify initial state
+- launchApp
+- waitForAnimationToEnd:
+    timeout: 30000
+
+- stopRecording

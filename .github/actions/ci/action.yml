@@ -1,9 +1,12 @@
 name: ci
-description: Executes Dart specific CI steps.
+description: Execute Tests
 
 inputs:
   type:
     description: The type of CI to run.
+    required: true
+  platform:
+    description: Platform where to run tests (ios/android)
     required: true
   relay-endpoint:
     description: "The endpoint of the relay e.g. relay.walletconnect.org"
@@ -19,8 +22,7 @@ inputs:
 runs:
   using: composite
   steps:
-    # Setup Dependencies
-    - uses: ./.github/actions/dependencies
+    # INTEGRATION TESTS
 
     # Run Core Unit and Integration Tests
     - name: Run Core tests
@@ -62,20 +64,140 @@ runs:
         PROJECT_ID: ${{ inputs.project-id }}
       run: flutter test --dart-define=RELAY_ENDPOINT=$RELAY_ENDPOINT --dart-define=PROJECT_ID=$PROJECT_ID
 
-    # Install Maestro and boot iOS simulator
-    - name: Install Maestro and boot iOS simulator
-      if: inputs.type == 'maestro-tests'
+    # MAESTRO TESTS
+
+    # Generate random string for artifacts
+    - name: Generate random string
+      if: ${{ inputs.type == 'maestro-tests' }}
+      shell: bash
+      run: |
+        RANDOM_STRING=$(openssl rand -hex 5)
+        echo "RANDOM_STRING=$RANDOM_STRING" >> $GITHUB_ENV
+    
+    # Enable KVM
+    - name: Enable KVM
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qemu-kvm libvirt-daemon-system libvirt-clients bridge-utils
+        sudo modprobe kvm
+        sudo chown runner:runner /dev/kvm
+        sudo chmod 666 /dev/kvm
+        ls -l /dev/kvm
+        kvm-ok || echo "KVM not supported or not enabled"
+
+    # Install Maestro
+    - name: Install Maestro
+      if: ${{ inputs.type == 'maestro-tests' }}
+      shell: bash
+      run: |
+        curl -Ls "https://get.maestro.mobile.dev" | bash
+        export PATH="$PATH":"$HOME/.maestro/bin"
+        echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+        maestro --version
+
+    # Setup Android SDK
+    - name: Setup Android SDK
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      uses: android-actions/setup-android@v2
+
+    # Build Flutter Wallet to be used on Android emulator
+    - name: Build Flutter Wallet to be used on Android emulator
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      shell: bash
+      working-directory: packages/reown_walletkit/example
+      env:
+        WALLET_PROJECT_ID: ${{ inputs.wallet-project-id }}
+      run: |
+        flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --release
+        mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/wallet-release.apk
+
+    # Build Flutter Dapp to be used on Android emulator
+    - name: Build Flutter Dapp to be used on Android emulator
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
       shell: bash
       working-directory: packages/reown_appkit/example/base
       env:
         PROJECT_ID: ${{ inputs.project-id }}
       run: |
-        # Install Maestro CLI
-        curl -Ls "https://get.maestro.mobile.dev" | bash
-        # Update PATH to include Maestro
-        export PATH="$PATH":"$HOME/.maestro/bin"
-        echo "PATH=$PATH" >> $GITHUB_ENV
+        flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$PROJECT_ID" --release
+        mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/dapp-release.apk
+    
+    # Restart ADB Server
+    - name: Restart ADB Server
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      shell: bash
+      run: |
+        adb kill-server
+        adb start-server
+        adb devices
 
+    # Start Android Emulator
+    - name: Start Android Emulator
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 33
+        target: default # Use AOSP instead of Google APIs
+        arch: x86_64
+        ram-size: 4096M
+        emulator-boot-timeout: 900
+        profile: pixel_6
+        emulator-options: -no-window -gpu guest -noaudio -no-boot-anim -camera-back none -netdelay none -netspeed full
+        disable-animations: true
+        pre-emulator-launch-script: |
+          echo "Running pre emulator launch script. Printing the working directory now:"
+          pwd
+          
+          echo "Checking KVM support:"
+          ls -l /dev/kvm
+          kvm-ok || echo "KVM not supported or not enabled"
+          
+          echo "Listing AVDs:"
+          avdmanager list avd
+        script: |
+          echo "Listing running emulator processes:"
+          ps aux | grep emulator || echo "No emulator processes found"
+
+          echo "Checking ADB server status:"
+          adb kill-server
+          adb start-server
+          adb devices
+          
+          echo "Waiting for emulator to boot..."
+          # Continue with original script
+          echo "Listing available devices:"
+          avdmanager list device
+          
+          echo "Listing available APKs:"
+          find $GITHUB_WORKSPACE -name "*.apk"
+          
+          # Verify emulator is running
+          adb devices
+          
+          echo "Installing APKs:"
+          find $GITHUB_WORKSPACE -name "*.apk" -exec adb install -r {} \;
+          
+          echo "Installed apps:"
+          adb shell pm list packages
+          
+          echo "Running Maestro native to native tests:"
+          mkdir -p .maestro/videos/
+          maestro test .maestro/native/launch_wallet.yaml
+          maestro test .maestro/native/connect_reject_session_flow.yaml
+          maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
+          maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
+          
+          # Move any remaining MP4 files from root to videos directory
+          find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
+  
+
+    # Start iOS Simulator
+    - name: Start iOS Simulator
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'ios' || inputs.platform == 'both') }}
+      shell: bash
+      run: |
         # Install IDB (iOS Device Bridge) for iOS simulator support
         brew tap facebook/fb
         brew install facebook/fb/idb-companion
@@ -98,9 +220,9 @@ runs:
         # Output the simulator UDID for the next step
         echo "SIMULATOR_UDID=$SIMULATOR_UDID" >> $GITHUB_ENV
 
-    # Build and install Flutter Wallet to be used on testing
-    - name: Build and install Flutter Wallet to be used on testing
-      if: inputs.type == 'maestro-tests'
+    # Build and install Flutter Wallet to be used on iOS simulator
+    - name: Build and install Flutter Wallet to be used on iOS simulator
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'ios' || inputs.platform == 'both') }}
       shell: bash
       working-directory: packages/reown_walletkit/example
       env:
@@ -108,35 +230,53 @@ runs:
         SIMULATOR_UDID: ${{ env.SIMULATOR_UDID }}
       run: |
         # Build and install the Flutter iOS wallet
-        flutter build ios --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --simulator --debug
+        flutter build ios --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --simulator --debug
         xcrun simctl install "$SIMULATOR_UDID" build/ios/iphonesimulator/Runner.app
 
-    # Build and install Flutter Dapp and run Maestro tests
-    - name: Build and install Flutter Dapp and run Maestro tests
-      if: inputs.type == 'maestro-tests'
+    # Build and install Flutter Dapp to be used on iOS simulator
+    - name: Build and install Flutter Dapp to be used on iOS simulator
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'ios' || inputs.platform == 'both') }}
       shell: bash
       working-directory: packages/reown_appkit/example/base
       env:
         PROJECT_ID: ${{ inputs.project-id }}
         SIMULATOR_UDID: ${{ env.SIMULATOR_UDID }}
-        MAESTRO_DRIVER_STARTUP_TIMEOUT: 30000  # Increase timeout to 30 seconds
       run: |
         # Build and install the Flutter iOS dapp
-        flutter build ios --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --simulator --debug
+        flutter build ios --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$PROJECT_ID" --simulator --debug
         xcrun simctl install "$SIMULATOR_UDID" build/ios/iphonesimulator/Runner.app
 
-        # Run Maestro tests
-        maestro test .maestro/connect_disconnect_flow.yaml
-
-    - name: Handle test results
-      if: inputs.type == 'maestro-tests' && failure()
+    # Run Maestro flows on iOS simulator
+    - name: Run Maestro flows on iOS simulator
+      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'ios' || inputs.platform == 'both') }}
       shell: bash
-      run: echo "Maestro tests failed. Check logs for details."
-    
-    - name: Upload test recordings from .maestro
-      if: inputs.type == 'maestro-tests' && failure()
+      env:
+        MAESTRO_DRIVER_STARTUP_TIMEOUT: 30000 # Increase timeout to 30 seconds
+      run: |
+        mkdir -p .maestro/videos/
+        maestro test .maestro/native/launch_wallet.yaml
+        maestro test .maestro/native/connect_reject_session_flow.yaml
+        maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
+        maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
+        # Move any remaining MP4 files from root to videos directory
+        find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
+
+    # Upload Maestro Test Artifacts
+    - name: Zip Maestro Test Artifacts
+      if: always()
+      shell: bash
+      run: |
+        mkdir -p ./maestro-artifacts
+        cp -r /home/runner/.maestro/tests/* ./maestro-artifacts/ || true
+        cp -r .maestro/videos/* ./maestro-artifacts/ || true
+        cp *.mp4 ./maestro-artifacts/ || true
+        zip -r maestro-test-results-${{ env.RANDOM_STRING }}.zip ./maestro-artifacts/
+
+    # Upload Zipped Maestro Artifacts
+    - name: Upload Zipped Maestro Artifacts
+      if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: maestro-screenshots
-        path: .maestro/**
-        if-no-files-found: warn
+        name: maestro-test-results-${{ env.RANDOM_STRING }}-zip
+        path: maestro-test-results-${{ env.RANDOM_STRING }}.zip
+        retention-days: 7

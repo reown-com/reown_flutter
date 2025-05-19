@@ -1,0 +1,58 @@
+appId: com.walletconnect.flutterdapp.internal
+---
+
+- runFlow:
+    file: select_flutter_sample_wallet.yaml
+
+- runFlow:
+    when:
+      visible: "Sign All"
+    commands:
+        - tapOn: "Sign All"
+- runFlow:
+    when:
+      visible: "Approve"
+    commands:
+        - tapOn: "Approve"
+
+- extendedWaitUntil:
+    visible: "Disconnect"
+    timeout: 30000
+
+# Confirm app returns to initial state
+- assertVisible: "Disconnect"
+- assertVisible: "Ethereum"
+
+# Request personal sign
+- tapOn: "personal_sign"
+- extendedWaitUntil:
+    visible: "Approve Request"
+    timeout: 30000      # Timeout in milliseconds
+# Approve on wallet and await for success
+- tapOn: "Approve"
+- extendedWaitUntil:
+    visible: "personal_sign success"
+    timeout: 30000
+
+- tapOn: "Close"
+
+# Request personal sign
+- tapOn: "personal_sign"
+- extendedWaitUntil:
+    visible: "Approve Request"
+    timeout: 30000
+# Approve on wallet and await for success
+- tapOn: "Reject"
+- extendedWaitUntil:
+    visible: "personal_sign error"
+    timeout: 30000
+
+- tapOn: "Close"
+
+- tapOn: "Disconnect"
+- extendedWaitUntil:
+    visible: "Connect"
+    timeout: 30000
+
+- assertVisible: "Network"
+- assertVisible: "Connect"

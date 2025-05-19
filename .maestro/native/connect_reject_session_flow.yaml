@@ -1,0 +1,22 @@
+appId: com.walletconnect.flutterdapp.internal
+---
+
+- startRecording: "native_connection_rejected"
+
+- runFlow:
+    file: ../shared/launch_and_check_link_mode.yaml
+
+- runFlow:
+    file: ../shared/select_flutter_sample_wallet.yaml
+
+- tapOn: "Cancel"
+- extendedWaitUntil:
+    visible: "Connection declined"
+    timeout: 30000
+
+- tapOn: "Scrim"
+
+- assertVisible: "Network"
+- assertVisible: "Connect"
+
+- stopRecording

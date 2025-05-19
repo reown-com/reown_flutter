@@ -1,0 +1,28 @@
+appId: com.walletconnect.flutterdapp.internal
+---
+
+- runFlow:
+    file: ../shared/link_mode_connection_start.yaml
+
+- runFlow:
+    file: ../shared/select_reown_web_wallet.yaml
+
+# Select wallet and reject
+- tapOn: "Reown Web Sample"
+- extendedWaitUntil:
+    visible: "Reown's AppKit internal wants to request a signature"
+    timeout: 15000
+- scrollUntilVisible:
+    element: "Reject"
+    direction: DOWN
+
+- tapOn: "Reject"
+- back # ANDROID ONLY ACTION
+- extendedWaitUntil:
+    visible: "Connection declined"
+    timeout: 15000
+
+- tapOn: "Scrim"
+
+- assertVisible: "Network"
+- assertVisible: "Connect"

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
@@ -7,7 +6,7 @@ import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
 
 class CosmosService {
-  final _walletKit = GetIt.I<IWalletKitService>().walletKit;
+  late final ReownWalletKit _walletKit;
 
   final ChainMetadata chainSupported;
 
@@ -16,7 +15,11 @@ class CosmosService {
         'cosmos_signAmino': cosmosSignAmino,
       };
 
-  CosmosService({required this.chainSupported}) {
+  CosmosService({
+    required this.chainSupported,
+    required IWalletKitService walletKitService,
+  }) {
+    _walletKit = walletKitService.walletKit;
     for (var handler in cosmosRequestHandlers.entries) {
       _walletKit.registerRequestHandler(
         chainId: chainSupported.chainId,

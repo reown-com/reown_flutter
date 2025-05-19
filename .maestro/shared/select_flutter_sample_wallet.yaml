@@ -1,0 +1,17 @@
+appId: com.walletconnect.flutterdapp.internal
+---
+
+# Tap All wallets and Search for Flutter Sample Wallet
+- tapOn: "AllWallets enabled"
+- waitForAnimationToEnd
+- tapOn: "Search wallet"
+- inputText: "Flutter Sample"
+- extendedWaitUntil:
+    visible: "Flutter Sample Wallet"
+    timeout: 30000
+
+# Select wallet and approve
+- tapOn: "Flutter Sample Wallet"
+- extendedWaitUntil:
+    visible: "Reown's AppKit internal would like to connect"
+    timeout: 30000

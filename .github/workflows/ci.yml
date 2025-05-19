@@ -4,21 +4,34 @@
 # documentation.
 
 name: ci
+permissions:
+  contents: read
 
 on:
   # push:
   #   branches: [ master ]
   # pull_request:
-  #   branches: [ master ]
+  #   branches: [ develop ]
   workflow_dispatch:
     inputs:
-      relay-endpoint:
-        description: "The endpoint of the relay e.g. relay.walletconnect.org"
+      integration:
+        description: 'Run integration tests?'
         required: false
-        default: "wss://relay.walletconnect.org"
-      project-id:
-        description: "Reown project id"
-        required: true
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+      maestro:
+        description: 'Run maestro tests?'
+        required: false
+        default: 'android'
+        type: choice
+        options:
+          - 'android'
+          - 'ios'
+          - 'both'
+          - 'none'
 
 concurrency:
   # Support push/pr as event types with different behaviors each:
@@ -30,41 +43,68 @@ concurrency:
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
-  build:
-    strategy:
-      matrix:
-        include:
-          # - test-type: integration-tests
-          #   runner: macos-14
-          - test-type: maestro-tests
-            runner: macos-14-xlarge
-    runs-on: ${{ matrix.runner }}
+  tests:
+    runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      # Checkout the repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Install and set Flutter version
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.24.5"
+      # Set up environment 
+      - uses: ./.github/actions/dependencies
+      
+      # Add Secrets file on dapp
+      - name: Add Secrets file
+        working-directory: packages/reown_appkit/example/base/android
+        run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
 
+      # Add Keystore file on dapp
+      - name: Add Keystore file
+        working-directory: packages/reown_appkit/example/base/android
+        run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
+
+      # Add Secrets file on wallet
+      - name: Add Secrets file
+        working-directory: packages/reown_walletkit/example/android
+        run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
+
+      # Add Keystore file on wallet
+      - name: Add Keystore file
+        working-directory: packages/reown_walletkit/example/android
+        run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
+      
+      # Check Runner Resources
+      - name: Check Runner Resources
+        shell: bash
+        run: |
+          echo "CPU Info:"
+          lscpu
+          echo "Memory Info:"
+          free -m
+          echo "Disk Space:"
+          df -h
+
+      # Run Integration Tests
       - name: Run Integration Tests
-        if: matrix.test-type == 'integration-tests'
+        if: github.event.inputs.integration == 'true'
         uses: ./.github/actions/ci
         with:
-          type: ${{ matrix.test-type }}
-          relay-endpoint: ${{ github.event.inputs.relay-endpoint || 'wss://relay.walletconnect.org' }}
-          project-id: ${{ github.event.inputs.project-id || secrets.DAPP_PROJECT_ID }}
-
-      - name: Run Maestro Tests
-        if: matrix.test-type == 'maestro-tests'
-        uses: ./.github/actions/ci
-        with:
-          type: ${{ matrix.test-type }}
-          project-id: ${{ github.event.inputs.project-id || secrets.DAPP_PROJECT_ID }}
+          type: "integration-tests"
+          relay-endpoint: "wss://relay.walletconnect.org"
+          project-id: ${{ secrets.DAPP_PROJECT_ID }}
           wallet-project-id: ${{ secrets.WALLET_PROJECT_ID }}
 
+      # Run Maestro Tests
+      - name: Run Maestro Tests
+        if: github.event.inputs.maestro != 'none'
+        uses: ./.github/actions/ci
+        with:
+          type: "maestro-tests"
+          platform: ${{ github.event.inputs.maestro }}
+          relay-endpoint: "wss://relay.walletconnect.org"
+          project-id: ${{ secrets.DAPP_PROJECT_ID }}
+          wallet-project-id: ${{ secrets.WALLET_PROJECT_ID }}
 
 # Launch locally
-# act -j build --container-architecture linux/amd64 -P macos-14=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml
-# act --container-architecture linux/amd64 -P macos-14-xlarge=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch
+# act --container-architecture linux/amd64 -P ubuntu-latest=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch --input integration=false --input maestro=android

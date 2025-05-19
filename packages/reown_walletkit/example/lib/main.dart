@@ -27,6 +27,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await SentryFlutter.init(
     (options) {
       options.dsn = DartDefines.sentryDSN;
@@ -42,8 +43,7 @@ Future<void> main() async {
       // Setting to 1.0 will profile 100% of sampled transactions:
       options.profilesSampleRate = 1.0;
     },
-    appRunner: () async {
-      WidgetsFlutterBinding.ensureInitialized();
+    appRunner: () {
       DeepLinkHandler.initListener();
       runApp(
         SentryWidget(
@@ -67,20 +67,24 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    DeepLinkHandler.errorStream.listen(
-      (message) => showDialog(
-        context: context,
-        builder: (context) => AlertDialog(content: Text(message)),
-      ),
-    );
-    WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        final platformDispatcher = View.of(context).platformDispatcher;
-        final platformBrightness = platformDispatcher.platformBrightness;
-        _isDarkMode = platformBrightness == Brightness.dark;
+    try {
+      DeepLinkHandler.errorStream.listen(
+        (message) => showDialog(
+          context: context,
+          builder: (context) => AlertDialog(content: Text(message)),
+        ),
+      );
+      WidgetsBinding.instance.addObserver(this);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          final platformDispatcher = View.of(context).platformDispatcher;
+          final platformBrightness = platformDispatcher.platformBrightness;
+          _isDarkMode = platformBrightness == Brightness.dark;
+        });
       });
-    });
+    } catch (e, s) {
+      Sentry.captureException(e, stackTrace: s);
+    }
   }
 
   @override
@@ -126,10 +130,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({
-    super.key,
-    required this.isDarkMode,
-  });
+  MyHomePage({super.key, required this.isDarkMode});
   final bool isDarkMode;
 
   @override
@@ -137,83 +138,105 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  bool _initializing = true;
-
+  late final IWalletKitService _walletKitService;
   List<PageData> _pageDatas = [];
   int _selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    initialize();
+    _initialize();
   }
 
-  Future<void> initialize() async {
-    GetIt.I.registerSingleton<IBottomSheetService>(BottomSheetService());
-    final prefs = await SharedPreferences.getInstance();
-    GetIt.I.registerSingleton<IKeyService>(KeyService(prefs: prefs));
+  Future<void> _initialize() async {
+    try {
+      GetIt.I.registerSingleton<IBottomSheetService>(BottomSheetService());
 
-    final walletKitService = WalletKitService();
-    await walletKitService.create();
-    GetIt.I.registerSingleton<IWalletKitService>(walletKitService);
+      final prefs = await SharedPreferences.getInstance();
+      GetIt.I.registerSingleton<IKeyService>(KeyService(prefs: prefs));
 
-    // Support EVM Chains
-    for (final chainData in ChainsDataList.eip155Chains) {
-      GetIt.I.registerSingleton<EVMService>(
-        EVMService(chainSupported: chainData),
-        instanceName: chainData.chainId,
+      _walletKitService = WalletKitService();
+      await _walletKitService.create();
+      GetIt.I.registerSingleton<IWalletKitService>(_walletKitService);
+
+      // Support EVM Chains
+      for (final chainData in ChainsDataList.eip155Chains) {
+        GetIt.I.registerSingleton<EVMService>(
+          EVMService(
+            chainSupported: chainData,
+            walletKitService: _walletKitService,
+          ),
+          instanceName: chainData.chainId,
+        );
+      }
+
+      // Support Kadena Chains
+      for (final chainData in ChainsDataList.kadenaChains) {
+        GetIt.I.registerSingleton<KadenaService>(
+          KadenaService(
+            chainSupported: chainData,
+            walletKitService: _walletKitService,
+          ),
+          instanceName: chainData.chainId,
+        );
+      }
+
+      // Support Polkadot Chains
+      for (final chainData in ChainsDataList.polkadotChains) {
+        GetIt.I.registerSingleton<PolkadotService>(
+          PolkadotService(
+            chainSupported: chainData,
+            walletKitService: _walletKitService,
+          ),
+          instanceName: chainData.chainId,
+        );
+      }
+
+      // Support Solana Chains
+      // Change SolanaService to SolanaService2 to switch between `solana` package and `solana_web3` package
+      for (final chainData in ChainsDataList.solanaChains) {
+        GetIt.I.registerSingleton<SolanaService>(
+          SolanaService(
+            chainSupported: chainData,
+            walletKitService: _walletKitService,
+          ),
+          instanceName: chainData.chainId,
+        );
+      }
+
+      // Support Cosmos Chains
+      for (final chainData in ChainsDataList.cosmosChains) {
+        GetIt.I.registerSingleton<CosmosService>(
+          CosmosService(
+            chainSupported: chainData,
+            walletKitService: _walletKitService,
+          ),
+          instanceName: chainData.chainId,
+        );
+      }
+
+      await _walletKitService.init();
+
+      _walletKitService.walletKit.core.relayClient.onRelayClientConnect
+          .subscribe(
+        _setState,
       );
-    }
-
-    // Support Kadena Chains
-    for (final chainData in ChainsDataList.kadenaChains) {
-      GetIt.I.registerSingleton<KadenaService>(
-        KadenaService(chainSupported: chainData),
-        instanceName: chainData.chainId,
+      _walletKitService.walletKit.core.relayClient.onRelayClientDisconnect
+          .subscribe(
+        _setState,
       );
+
+      _walletKitService.walletKit.core.connectivity.isOnline
+          .addListener(_onLine);
+
+      _setPages();
+
+      // TODO _walletKit.core.echo.register(firebaseAccessToken);
+      DeepLinkHandler.checkInitialLink();
+    } catch (e, s) {
+      debugPrint('[$runtimeType] ❌ crash during initialize, $e');
+      await Sentry.captureException(e, stackTrace: s);
     }
-
-    // Support Polkadot Chains
-    for (final chainData in ChainsDataList.polkadotChains) {
-      GetIt.I.registerSingleton<PolkadotService>(
-        PolkadotService(chainSupported: chainData),
-        instanceName: chainData.chainId,
-      );
-    }
-
-    // Support Solana Chains
-    // Change SolanaService to SolanaService2 to switch between `solana` package and `solana_web3` package
-    for (final chainData in ChainsDataList.solanaChains) {
-      GetIt.I.registerSingleton<SolanaService>(
-        SolanaService(chainSupported: chainData),
-        instanceName: chainData.chainId,
-      );
-    }
-
-    // Support Cosmos Chains
-    for (final chainData in ChainsDataList.cosmosChains) {
-      GetIt.I.registerSingleton<CosmosService>(
-        CosmosService(chainSupported: chainData),
-        instanceName: chainData.chainId,
-      );
-    }
-
-    await walletKitService.init();
-
-    walletKitService.walletKit.core.relayClient.onRelayClientConnect.subscribe(
-      _setState,
-    );
-    walletKitService.walletKit.core.relayClient.onRelayClientDisconnect
-        .subscribe(
-      _setState,
-    );
-
-    walletKitService.walletKit.core.connectivity.isOnline.addListener(_onLine);
-
-    _setPages();
-
-    // TODO _walletKit.core.echo.register(firebaseAccessToken);
-    DeepLinkHandler.checkInitialLink();
   }
 
   void _setState(dynamic args) => setState(() {});
@@ -233,21 +256,20 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: Icons.settings_outlined,
           ),
         ];
-
-        _initializing = false;
       });
 
   @override
   void didUpdateWidget(covariant MyHomePage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (GetIt.I.isRegistered<IWalletKitService>()) {
+    final serviceRegistered = GetIt.I.isRegistered<IWalletKitService>();
+    if (serviceRegistered) {
       _setPages();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_initializing) {
+    if (_pageDatas.isEmpty) {
       return const Material(
         child: Center(
           child: CircularProgressIndicator(
@@ -274,7 +296,7 @@ class _MyHomePageState extends State<MyHomePage> {
           const Text('Relay '),
           Builder(
             builder: (context) {
-              final walletKit = GetIt.I<IWalletKitService>().walletKit;
+              final walletKit = _walletKitService.walletKit;
               return CircleAvatar(
                 radius: 6.0,
                 backgroundColor: walletKit.core.relayClient.isConnected &&

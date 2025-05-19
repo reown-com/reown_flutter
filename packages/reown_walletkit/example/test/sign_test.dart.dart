@@ -77,7 +77,10 @@ void main() {
     // Support EVM Chains
     for (final chainData in ChainsDataList.eip155Chains) {
       GetIt.I.registerSingleton<EVMService>(
-        EVMService(chainSupported: chainData),
+        EVMService(
+          chainSupported: chainData,
+          walletKitService: walletKitService,
+        ),
         instanceName: chainData.chainId,
       );
     }
@@ -85,7 +88,10 @@ void main() {
     // Support Kadena Chains
     for (final chainData in ChainsDataList.kadenaChains) {
       GetIt.I.registerSingleton<KadenaService>(
-        KadenaService(chainSupported: chainData),
+        KadenaService(
+          chainSupported: chainData,
+          walletKitService: walletKitService,
+        ),
         instanceName: chainData.chainId,
       );
     }
@@ -93,7 +99,10 @@ void main() {
     // Support Polkadot Chains
     for (final chainData in ChainsDataList.polkadotChains) {
       GetIt.I.registerSingleton<PolkadotService>(
-        PolkadotService(chainSupported: chainData),
+        PolkadotService(
+          chainSupported: chainData,
+          walletKitService: walletKitService,
+        ),
         instanceName: chainData.chainId,
       );
     }
@@ -102,7 +111,10 @@ void main() {
     // Change SolanaService to SolanaService2 to switch between `solana` package and `solana_web3` package
     for (final chainData in ChainsDataList.solanaChains) {
       GetIt.I.registerSingleton<SolanaService>(
-        SolanaService(chainSupported: chainData),
+        SolanaService(
+          chainSupported: chainData,
+          walletKitService: walletKitService,
+        ),
         instanceName: chainData.chainId,
       );
     }
@@ -110,7 +122,10 @@ void main() {
     // Support Cosmos Chains
     for (final chainData in ChainsDataList.cosmosChains) {
       GetIt.I.registerSingleton<CosmosService>(
-        CosmosService(chainSupported: chainData),
+        CosmosService(
+          chainSupported: chainData,
+          walletKitService: walletKitService,
+        ),
         instanceName: chainData.chainId,
       );
     }

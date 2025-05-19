@@ -64,14 +64,19 @@ class SettingsPageState extends State<SettingsPage> {
                               ),
                             ),
                           ),
-                          Switch(
-                            value: widget.linkMode,
-                            onChanged: (value) {
-                              widget.reinitialize(
-                                'appkit_sample_linkmode',
-                                value,
-                              );
-                            },
+                          Semantics(
+                            label: 'appkit_sample_linkmode_${widget.linkMode}',
+                            identifier:
+                                'appkit_sample_linkmode_${widget.linkMode}',
+                            child: Switch(
+                              value: widget.linkMode,
+                              onChanged: (value) {
+                                widget.reinitialize(
+                                  'appkit_sample_linkmode',
+                                  value,
+                                );
+                              },
+                            ),
                           ),
                           Expanded(
                             child: Text(

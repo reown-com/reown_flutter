@@ -15,7 +15,7 @@ import 'package:polkadart_keyring/polkadart_keyring.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
 
 class PolkadotService {
-  final _walletKit = GetIt.I<IWalletKitService>().walletKit;
+  late final ReownWalletKit _walletKit;
 
   final ChainMetadata chainSupported;
   late final Keyring keyring;
@@ -27,7 +27,11 @@ class PolkadotService {
         'polkadot_signTransaction': polkadotSignTransaction,
       };
 
-  PolkadotService({required this.chainSupported}) {
+  PolkadotService({
+    required this.chainSupported,
+    required IWalletKitService walletKitService,
+  }) {
+    _walletKit = walletKitService.walletKit;
     keyring = Keyring();
     provider = Provider.fromUri(Uri.parse(chainSupported.rpc.first));
 

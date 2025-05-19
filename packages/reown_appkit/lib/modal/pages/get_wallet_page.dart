@@ -60,6 +60,7 @@ class GetWalletPage extends StatelessWidget {
                   ),
                   child: AllWalletsItem(
                     title: 'Explore all',
+                    semanticsLabel: 'ExploreAllWallets',
                     onTap: () => ReownCoreUtils.openURL(
                       UrlConstants.exploreWallets,
                     ),

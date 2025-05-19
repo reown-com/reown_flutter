@@ -16,7 +16,7 @@ import 'package:kadena_dart_sdk/kadena_dart_sdk.dart';
 
 class KadenaService {
   final _bottomSheetService = GetIt.I<IBottomSheetService>();
-  final _walletKit = GetIt.I<IWalletKitService>().walletKit;
+  late final ReownWalletKit _walletKit;
 
   final ChainMetadata chainSupported;
   late final SigningApi kadenaClient;
@@ -27,7 +27,11 @@ class KadenaService {
         'kadena_quicksign_v1': kadenaQuicksignV1,
       };
 
-  KadenaService({required this.chainSupported}) {
+  KadenaService({
+    required this.chainSupported,
+    required IWalletKitService walletKitService,
+  }) {
+    _walletKit = walletKitService.walletKit;
     kadenaClient = SigningApi();
 
     _walletKit.registerEventEmitter(

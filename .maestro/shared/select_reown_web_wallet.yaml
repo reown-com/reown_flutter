@@ -1,0 +1,13 @@
+appId: com.walletconnect.flutterdapp.internal
+---
+
+# Tap All wallets and Search for Flutter Sample Wallet
+- tapOn: "AllWallets enabled"
+- waitForAnimationToEnd
+- tapOn: "Search wallet"
+
+# Search for Wallet
+- inputText: "Reown Web"
+- extendedWaitUntil:
+    visible: "Reown Web Sample"
+    timeout: 30000

@@ -1,0 +1,67 @@
+appId: com.walletconnect.flutterdapp.internal
+---
+
+- runFlow:
+    file: select_reown_web_wallet.yaml
+
+# Select wallet and reject
+- tapOn: "Reown Web Sample"
+- extendedWaitUntil:
+    visible: "Reown's AppKit internal wants to connect"
+    timeout: 30000
+- scrollUntilVisible:
+    element: "Approve"
+    direction: DOWN
+
+- tapOn: "Approve"
+- back # ANDROID ONLY ACTION
+
+- extendedWaitUntil:
+    visible: "Disconnect"
+    timeout: 30000
+
+# Confirm app returns to initial state
+- assertVisible: "Disconnect"
+- assertVisible: "Ethereum"
+
+# Request personal sign
+- tapOn: "personal_sign"
+- extendedWaitUntil:
+    visible: "Reown's AppKit internal wants to request a signature"
+    timeout: 30000
+- scrollUntilVisible:
+    element: "Approve"
+    direction: DOWN
+# Approve on wallet and await for success
+- tapOn: "Approve"
+- back
+- extendedWaitUntil:
+    visible: "personal_sign success"
+    timeout: 30000
+
+- tapOn: "Close"
+
+# Request personal sign
+- tapOn: "personal_sign"
+- extendedWaitUntil:
+    visible: "Reown's AppKit internal wants to request a signature"
+    timeout: 30000
+- scrollUntilVisible:
+    element: "Approve"
+    direction: DOWN
+# Approve on wallet and await for success
+- tapOn: "Reject"
+- back
+- extendedWaitUntil:
+    visible: "personal_sign error"
+    timeout: 30000
+
+- tapOn: "Close"
+
+- tapOn: "Disconnect"
+- extendedWaitUntil:
+    visible: "Connect"
+    timeout: 30000
+
+- assertVisible: "Network"
+- assertVisible: "Connect"

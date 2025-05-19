@@ -373,14 +373,14 @@ class _MyHomePageState extends State<MyHomePage> {
           chainIcon:
               'https://cdn-icons-png.flaticon.com/128/12114/12114230.png',
           currency: 'DOT',
-          rpcUrl: 'https://rpc.polkadot.io',
+          rpcUrl: 'wss://polkadot-rpc.dwellir.com',
           explorerUrl: 'https://polkadot.subscan.io',
         ),
         ReownAppKitModalNetworkInfo(
           name: 'Westend',
           chainId: 'e143f23803ac50e8f6f8e62695d1ce9e',
-          currency: 'DOT',
-          rpcUrl: 'https://westend-rpc.polkadot.io',
+          currency: 'WND',
+          rpcUrl: 'wss://westend-rpc.dwellir.com',
           explorerUrl: 'https://westend.subscan.io',
           isTestNetwork: true,
         ),

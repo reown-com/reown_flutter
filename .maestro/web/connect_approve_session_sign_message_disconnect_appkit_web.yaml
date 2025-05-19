@@ -1,0 +1,22 @@
+appId: com.walletconnect.flutterdapp.internal
+---
+
+- openLink:
+    link: https://appkit-lab.reown.com/library/wagmi/
+    browser: true
+- tapOn: "Connect Wallet"
+- tapOn: "Flutter Sample Wallet Flutter Sample Wallet"
+- tapOn: "Approve"
+- back
+- back
+- assertVisible: "AppKit Interactions"
+- scrollUntilVisible:
+    element:
+      text: "Sign Message"
+    direction: DOWN
+- tapOn: "Sign Message"
+- tapOn: "Approve"
+- back
+- back
+- assertVisible: "Signing Succeeded"
+- stopRecording

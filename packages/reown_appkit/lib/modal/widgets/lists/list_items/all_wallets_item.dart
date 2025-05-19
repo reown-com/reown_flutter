@@ -12,19 +12,21 @@ class AllWalletsItem extends StatelessWidget {
     this.leading,
     this.trailing,
     this.onTap,
+    this.semanticsLabel,
   });
   final String title;
   final TextAlign titleAlign;
   final Widget? leading;
   final Widget? trailing;
   final VoidCallback? onTap;
+  final String? semanticsLabel;
 
   @override
   Widget build(BuildContext context) {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return BaseListItem(
-      semanticsLabel: title,
+      semanticsLabel: semanticsLabel ?? 'AllWalletsItem',
       onTap: onTap,
       child: LayoutBuilder(builder: (_, constraints) {
         return Row(
