@@ -20,31 +20,35 @@ import 'package:reown_appkit_dapp/utils/string_constants.dart';
 import 'package:reown_appkit_dapp/widgets/event_widget.dart';
 
 Future<void> main() async {
-  await SentryFlutter.init(
-    (options) {
-      options.dsn = DartDefines.sentryDSN;
-      options.environment = kDebugMode ? 'debug_app' : 'deployed_app';
-      options.attachScreenshot = true;
-      // Adds request headers and IP for users,
-      // visit: https://docs.sentry.io/platforms/dart/data-management/data-collected/ for more info
-      options.sendDefaultPii = true;
-      // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
-      // We recommend adjusting this value in production.
-      options.tracesSampleRate = 1.0;
-      // The sampling rate for profiling is relative to tracesSampleRate
-      // Setting to 1.0 will profile 100% of sampled transactions:
-      options.profilesSampleRate = 1.0;
-    },
-    appRunner: () async {
-      WidgetsFlutterBinding.ensureInitialized();
-      DeepLinkHandler.initListener();
-      runApp(
-        SentryWidget(
-          child: const MyApp(),
-        ),
-      );
-    },
-  );
+  WidgetsFlutterBinding.ensureInitialized();
+  DeepLinkHandler.initListener();
+  if (kDebugMode) {
+    runApp(MyApp());
+  } else {
+    await SentryFlutter.init(
+      (options) {
+        options.dsn = DartDefines.sentryDSN;
+        options.environment = kDebugMode ? 'debug_app' : 'deployed_app';
+        options.attachScreenshot = true;
+        // Adds request headers and IP for users,
+        // visit: https://docs.sentry.io/platforms/dart/data-management/data-collected/ for more info
+        options.sendDefaultPii = true;
+        // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+        // We recommend adjusting this value in production.
+        options.tracesSampleRate = 1.0;
+        // The sampling rate for profiling is relative to tracesSampleRate
+        // Setting to 1.0 will profile 100% of sampled transactions:
+        options.profilesSampleRate = 1.0;
+      },
+      appRunner: () {
+        runApp(
+          SentryWidget(
+            child: const MyApp(),
+          ),
+        );
+      },
+    );
+  }
 }
 
 class MyApp extends StatefulWidget {
