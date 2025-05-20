@@ -6,7 +6,7 @@ import 'package:reown_core/reown_core.dart';
 
 class PolkadotChainUtils {
   // Polkadot related methods
-  static List<int> ss58ToPublic(String ss58Address) {
+  static List<int> ss58AddressToPublicKey(String ss58Address) {
     final decoded = base58.decode(ss58Address);
 
     if (decoded.length < 33) {
@@ -80,12 +80,25 @@ class PolkadotChainUtils {
   }
 
   static bool isSmartContractCall(String hexMethod) {
+    // ⚠️ TODO: Everything in this method has to be validated
     final hex = _normalizeHex(hexMethod);
     if (hex.length < 4) return false;
 
     final callIndex = hex.substring(0, 4); // First 2 bytes = 4 hex chars
 
-    // Known smart contract call indexes (can expand) // TODO
-    return callIndex == '0600' || callIndex == '0f00';
+    // Known smart contract call indexes (can expand)
+    return <String>[
+      '0600', // contracts.call
+      '0601', // contracts.instantiate
+      '0602', // contracts.instantiateWithCode
+      '0603', // contracts.uploadCode
+      '0604', // contracts.removeCode
+      '0f00', // evm.call (Moonbeam)
+      '0f01', // evm.create
+      '0f02', // evm.create2
+      '2000', // evm.call on Astar (likely)
+      '2001', // evm.create
+      '2002', // evm.create2
+    ].contains(callIndex);
   }
 }

@@ -2836,14 +2836,15 @@ class ReownSign implements IReownSign {
     // params to collect
     final rpcMethods = List<String>.from([method]);
     final chainId = request.chainId;
+    final requestParams = request.request.params;
+
     List<String>? contractAddresses;
 
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     // check if it's a contract call on EVM. It would have either `input` or `data` parameter in that case
     if (namespace == 'eip155') {
       try {
-        final params = request.request.params;
-        final paramsMap = params.first as Map<String, dynamic>;
+        final paramsMap = requestParams.first as Map<String, dynamic>;
         final inputData = (paramsMap['input'] ?? paramsMap['data'])!;
         if (EvmChainUtils.isValidContractData(inputData)) {
           final contractAddress = paramsMap['to'] as String;
@@ -2856,16 +2857,16 @@ class ReownSign implements IReownSign {
     // check if it's a contract call on TRON. It would have either `contract_address` in that case
     if (namespace == 'polkadot') {
       try {
-        final params = request.request.params;
         final txPayload = ReownCoreUtils.recursiveSearchForMapKey(
-          params,
+          requestParams,
           'transactionPayload',
         );
         final isContractCall = PolkadotChainUtils.isSmartContractCall(
           txPayload['method'].toString(),
         );
         if (isContractCall) {
-          // contractAddresses = [contractAddress];
+          final contractAddress = txPayload['address'].toString();
+          contractAddresses = [contractAddress];
         }
       } catch (e) {
         core.logger.d('[$runtimeType] invalid contract data on request');
@@ -2942,7 +2943,9 @@ class ReownSign implements IReownSign {
               params,
               'address',
             );
-            final publicKey = PolkadotChainUtils.ss58ToPublic(ss58Address);
+            final publicKey = PolkadotChainUtils.ss58AddressToPublicKey(
+              ss58Address,
+            );
             final signedHex = PolkadotChainUtils.addSignatureToExtrinsic(
               publicKey: publicKey,
               hexSignature: signature,
