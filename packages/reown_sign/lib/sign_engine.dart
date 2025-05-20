@@ -2861,10 +2861,12 @@ class ReownSign implements IReownSign {
           params,
           'transactionPayload',
         );
-        print(txPayload);
-        // if (contractAddress != null) {
-        //   contractAddresses = [contractAddress];
-        // }
+        final isContractCall = PolkadotChainUtils.isSmartContractCall(
+          txPayload['method'].toString(),
+        );
+        if (isContractCall) {
+          // contractAddresses = [contractAddress];
+        }
       } catch (e) {
         core.logger.d('[$runtimeType] invalid contract data on request');
       }

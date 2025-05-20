@@ -78,4 +78,14 @@ class PolkadotChainUtils {
     final bytes = digest.process(Uint8List.fromList(input));
     return '0x${hex.encode(bytes)}';
   }
+
+  static bool isSmartContractCall(String hexMethod) {
+    final hex = _normalizeHex(hexMethod);
+    if (hex.length < 4) return false;
+
+    final callIndex = hex.substring(0, 4); // First 2 bytes = 4 hex chars
+
+    // Known smart contract call indexes (can expand) // TODO
+    return callIndex == '0600' || callIndex == '0f00';
+  }
 }
