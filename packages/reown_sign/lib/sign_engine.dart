@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
-import 'dart:typed_data';
 
-import 'package:convert/convert.dart';
 import 'package:event/event.dart';
-import 'package:pointycastle/digests/blake2b.dart';
 import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:reown_core/reown_core.dart';
@@ -2848,7 +2845,7 @@ class ReownSign implements IReownSign {
         final params = request.request.params;
         final paramsMap = params.first as Map<String, dynamic>;
         final inputData = (paramsMap['input'] ?? paramsMap['data'])!;
-        if (ReownCoreUtils.isValidContractData(inputData)) {
+        if (EvmChainUtils.isValidContractData(inputData)) {
           final contractAddress = paramsMap['to'] as String;
           contractAddresses = [contractAddress];
         }
@@ -2860,7 +2857,7 @@ class ReownSign implements IReownSign {
     if (namespace == 'polkadot') {
       try {
         final params = request.request.params;
-        final txPayload = _recursiveSearchForMapKey(
+        final txPayload = ReownCoreUtils.recursiveSearchForMapKey(
           params,
           'transactionPayload',
         );
@@ -2923,27 +2920,33 @@ class ReownSign implements IReownSign {
             // Decode transactions and extract signature to send as TVF data
             final transactions = result['transactions'] as List;
             final signatures = transactions.map((encodedTx) {
-              return ReownCoreUtils.extractSolanaSignature(encodedTx);
+              return SolanaChainUtils.extractSolanaSignature(encodedTx);
             }).toList();
             return signatures;
           }
           return null;
         case 'polkadot':
-          final signature = _recursiveSearchForMapKey(result, 'signature');
+          final signature = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'signature',
+          );
           if (signature != null) {
             final params = requestParams as Map<String, dynamic>;
-            final payload = _recursiveSearchForMapKey(
+            final payload = ReownCoreUtils.recursiveSearchForMapKey(
               params,
               'transactionPayload',
             );
-            final ss58Address = _recursiveSearchForMapKey(params, 'address');
-            final publicKey = _ss58ToPublic(ss58Address);
-            final signedExtrinsicHex = _addSignatureToExtrinsic(
+            final ss58Address = ReownCoreUtils.recursiveSearchForMapKey(
+              params,
+              'address',
+            );
+            final publicKey = PolkadotChainUtils.ss58ToPublic(ss58Address);
+            final signedHex = PolkadotChainUtils.addSignatureToExtrinsic(
               publicKey: publicKey,
               hexSignature: signature,
               payload: payload,
             );
-            final hash = _txHash(signedExtrinsicHex);
+            final hash = PolkadotChainUtils.deriveExtrinsicHash(signedHex);
             return List<String>.from([hash]);
           }
           return null;
@@ -2955,108 +2958,5 @@ class ReownSign implements IReownSign {
       core.logger.e('[$runtimeType] _collectHashes $e');
       return null;
     }
-  }
-
-  // TODO move the following methods to some utils file
-
-  dynamic _recursiveSearchForMapKey(
-    Map<String, dynamic> map,
-    String targetKey,
-  ) {
-    try {
-      for (final entry in map.entries) {
-        if (entry.key.toString() == targetKey) {
-          return entry.value;
-        } else if (entry.value is Map<String, dynamic>) {
-          final result = _recursiveSearchForMapKey(entry.value, targetKey);
-          if (result != null) return result;
-        } else if (entry.value is List) {
-          for (final element in entry.value) {
-            if (element is Map<String, dynamic>) {
-              final result = _recursiveSearchForMapKey(element, targetKey);
-              if (result != null) return result;
-            }
-          }
-        }
-      }
-    } catch (e) {
-      core.logger.e('[$runtimeType] recursiveSearchForMapKey $e');
-    }
-    return null;
-  }
-
-  // Polkadot related methods
-
-  List<int> _ss58ToPublic(String ss58Address) {
-    final decoded = base58.decode(ss58Address);
-
-    if (decoded.length < 33) {
-      throw FormatException('Too short to contain a public key');
-    }
-
-    // Skip the prefix (1st byte), take 32 bytes
-    return decoded.sublist(1, 33);
-  }
-
-  String _addSignatureToExtrinsic({
-    required List<int> publicKey,
-    required String hexSignature,
-    required Map<String, dynamic> payload,
-  }) {
-    final version = [0x84];
-    // final publicKey = _ss58ToPublic(ss58Address);
-
-    final signaturePrefix = [0x01]; // sr25519
-    final signature = hex.decode(_normalizeHex(hexSignature));
-    final fullSignature = signaturePrefix + signature;
-
-    final era = hex.decode(_normalizeHex(payload['era']));
-    final nonce = _compactEncodeInt(_parseHex(payload['nonce']));
-    final tip = _compactEncodeInt(_parseHex(payload['tip']));
-    final method = hex.decode(_normalizeHex(payload['method']));
-
-    final fullBytes = Uint8List.fromList([
-      ...version,
-      ...publicKey,
-      ...fullSignature,
-      ...era,
-      ...nonce,
-      ...tip,
-      ...method
-    ]);
-
-    return '0x${hex.encode(fullBytes)}';
-  }
-
-  String _normalizeHex(dynamic input) {
-    if (input.toString().startsWith('0x')) {
-      return input.toString().replaceAll('0x', '');
-    }
-    return input.toString();
-  }
-
-  int _parseHex(dynamic input) {
-    final raw = _normalizeHex(input);
-    return int.parse(raw, radix: 16);
-  }
-
-  List<int> _compactEncodeInt(int value) {
-    if (value < 1 << 6) {
-      return [(value << 2)];
-    } else if (value < 1 << 14) {
-      return [
-        ((value << 2) | 0x01) & 0xff,
-        ((value >> 6) & 0xff),
-      ];
-    } else {
-      throw UnimplementedError('Only supports small ints for now');
-    }
-  }
-
-  String _txHash(String signed) {
-    final digest = Blake2bDigest(digestSize: 32); // 256-bit
-    final input = hex.decode(signed.replaceAll('0x', ''));
-    final bytes = digest.process(Uint8List.fromList(input));
-    return '0x${hex.encode(bytes)}';
   }
 }
