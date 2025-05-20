@@ -2838,25 +2838,34 @@ class ReownSign implements IReownSign {
     final chainId = request.chainId;
     List<String>? contractAddresses;
 
-    // only EVM request could have `data` parameter for contract call
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    // check if it's a contract call on EVM. It would have either `input` or `data` parameter in that case
     if (namespace == 'eip155') {
-      final params = request.request.params;
-      final paramsMap = params.first as Map<String, dynamic>;
-      final input = paramsMap['input'] as String? ?? '';
       try {
-        if (ReownCoreUtils.isValidContractData(input)) {
+        final params = request.request.params;
+        final paramsMap = params.first as Map<String, dynamic>;
+        final inputData = (paramsMap['input'] ?? paramsMap['data'])!;
+        if (ReownCoreUtils.isValidContractData(inputData)) {
           final contractAddress = paramsMap['to'] as String;
           contractAddresses = [contractAddress];
-        } else {
-          final data = paramsMap['data'] as String? ?? '';
-          if (ReownCoreUtils.isValidContractData(data)) {
-            final contractAddress = paramsMap['to'] as String;
-            contractAddresses = [contractAddress];
-          }
         }
       } catch (e) {
-        core.logger.d('[$runtimeType] invalid contract data');
+        core.logger.d('[$runtimeType] invalid contract data on request');
+      }
+    }
+    // check if it's a contract call on TRON. It would have either `contract_address` in that case
+    if (namespace == 'tron') {
+      try {
+        final params = request.request.params;
+        final contractAddress = _recursiveSearchForMapKey(
+          params,
+          'contract_address',
+        );
+        if (contractAddress != null) {
+          contractAddresses = [contractAddress];
+        }
+      } catch (e) {
+        core.logger.d('[$runtimeType] invalid contract data on request');
       }
     }
 
@@ -2888,6 +2897,7 @@ class ReownSign implements IReownSign {
     return null;
   }
 
+  // Collect hashes after wallet signing
   List<String>? _collectHashes(String namespace, JsonRpcResponse response) {
     if (response.result == null) {
       return null;
@@ -2909,12 +2919,45 @@ class ReownSign implements IReownSign {
             return signatures;
           }
           return null;
+        case 'tron':
+          final result = (response.result as Map<String, dynamic>);
+          final txID = _recursiveSearchForMapKey(result, 'txID');
+          if (txID != null) {
+            return List<String>.from([txID]);
+          }
+          return null;
         default:
+          // default to EVM
           return List<String>.from([response.result]);
       }
     } catch (e) {
-      core.logger.d('[$runtimeType] _collectHashes $e');
+      core.logger.e('[$runtimeType] _collectHashes $e');
       return null;
     }
+  }
+
+  // TODO move this to utils file
+  dynamic _recursiveSearchForMapKey(
+      Map<String, dynamic> map, String targetKey) {
+    try {
+      for (final entry in map.entries) {
+        if (entry.key.toString() == targetKey) {
+          return entry.value;
+        } else if (entry.value is Map<String, dynamic>) {
+          final result = _recursiveSearchForMapKey(entry.value, targetKey);
+          if (result != null) return result;
+        } else if (entry.value is List) {
+          for (final element in entry.value) {
+            if (element is Map<String, dynamic>) {
+              final result = _recursiveSearchForMapKey(element, targetKey);
+              if (result != null) return result;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      core.logger.e('[$runtimeType] recursiveSearchForMapKey $e');
+    }
+    return null;
   }
 }
