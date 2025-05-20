@@ -5,18 +5,21 @@ class TVFData {
   final String? chainId;
   final List<String>? contractAddresses;
   final List<String>? txHashes;
+  final dynamic requestParams;
 
   const TVFData({
     this.rpcMethods,
     this.chainId,
     this.contractAddresses,
     this.txHashes,
+    this.requestParams,
   });
 
   Map<String, dynamic> toJson({bool includeAll = false}) => {
         'rpcMethods': rpcMethods,
         'chainId': chainId,
         'contractAddresses': contractAddresses,
+        // requestParams is not included in this method because this is used to add tvf data to the publish method
         if (includeAll) 'txHashes': txHashes,
       };
 
@@ -25,12 +28,14 @@ class TVFData {
     String? chainId,
     List<String>? contractAddresses,
     List<String>? txHashes,
+    dynamic requestParams,
   }) {
     return TVFData(
       rpcMethods: rpcMethods ?? this.rpcMethods,
       chainId: chainId ?? this.chainId,
       contractAddresses: contractAddresses ?? this.contractAddresses,
       txHashes: txHashes ?? this.txHashes,
+      requestParams: requestParams ?? this.requestParams,
     );
   }
 
@@ -44,5 +49,7 @@ class TVFData {
     'solana_signTransaction',
     'solana_signAllTransactions',
     'wallet_sendCalls',
+    // Polkadot
+    'polkadot_signTransaction',
   ];
 }

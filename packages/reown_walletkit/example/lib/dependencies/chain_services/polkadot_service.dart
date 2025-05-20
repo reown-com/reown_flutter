@@ -48,7 +48,6 @@ class PolkadotService {
 
   Future<void> polkadotSignMessage(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] polkadotSignMessage: $parameters');
-    const method = 'polkadot_signMessage';
     final pRequest = _walletKit.pendingRequests.getAll().last;
     var response = JsonRpcResponse(
       id: pRequest.id,
@@ -64,16 +63,19 @@ class PolkadotService {
       final keys = GetIt.I<IKeyService>().getKeysForChain(
         chainSupported.chainId,
       );
-      final keyPair = await keyring.fromUri(keys[0].privateKey);
+      final keyPair = await keyring.fromMnemonic(keys[0].privateKey);
       // adjust the default ss58Format for Polkadot
-      keyPair.ss58Format = 0;
+      // keyPair.ss58Format = 0;
       // adjust the default ss58Format for Kusama
       // keyPair.ss58Format = 2;
 
       if (await MethodsUtils.requestApproval(
         message,
-        title: method,
+        method: pRequest.method,
+        chainId: pRequest.chainId,
+        address: keyPair.address,
         transportType: pRequest.transportType.name,
+        verifyContext: pRequest.verifyContext,
       )) {
         final encodedMessage = utf8.encode(message);
         final signature = keyPair.sign(encodedMessage);
@@ -113,7 +115,6 @@ class PolkadotService {
   Future<void> polkadotSignTransaction(String topic, dynamic parameters) async {
     debugPrint(
         '[SampleWallet] polkadotSignTransaction: ${jsonEncode(parameters)}');
-    const method = 'polkadot_signTransaction';
     final pRequest = _walletKit.pendingRequests.getAll().last;
     var response = JsonRpcResponse(
       id: pRequest.id,
@@ -123,22 +124,24 @@ class PolkadotService {
     final keys = GetIt.I<IKeyService>().getKeysForChain(
       chainSupported.chainId,
     );
+    final keyPair = await keyring.fromMnemonic(
+      keys[0].privateKey,
+      keyPairType: KeyPairType.sr25519,
+    );
+
     final trxPayload = parameters['transactionPayload'] as Map<String, dynamic>;
 
     const encoder = JsonEncoder.withIndent('  ');
     final message = encoder.convert(trxPayload);
     if (await MethodsUtils.requestApproval(
       message,
-      title: method,
+      method: pRequest.method,
+      chainId: pRequest.chainId,
+      address: keyPair.address,
       transportType: pRequest.transportType.name,
+      verifyContext: pRequest.verifyContext,
     )) {
       try {
-        final keyPair = await keyring.fromUri(keys[0].privateKey);
-        // adjust the default ss58Format for Polkadot
-        keyPair.ss58Format = 0;
-        // adjust the default ss58Format for Kusama
-        // keyPair.ss58Format = 2;
-
         // Get info necessary to build an extrinsic
         final provider = Provider.fromUri(Uri.parse(chainSupported.rpc.first));
         final stateApi = StateApi(provider);
