@@ -2824,53 +2824,25 @@ class ReownSign implements IReownSign {
     }
   }
 
+  ///
   /// ******* TVF *********** ///
-
+  /// collection during request from dapp
+  ///
   TVFData? _collectRequestTVF(int id, WcSessionRequestRequest request) {
     // check if the rpc request is on the tvf supported methods list
     final method = request.request.method;
     if (!TVFData.tvfRequestMethods.contains(method)) {
       return null;
     }
+    final params = request.request.params;
 
     // params to collect
     final rpcMethods = List<String>.from([method]);
     final chainId = request.chainId;
-    final requestParams = request.request.params;
-
     List<String>? contractAddresses;
-
-    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-    // check if it's a contract call on EVM. It would have either `input` or `data` parameter in that case
-    if (namespace == 'eip155') {
-      try {
-        final paramsMap = requestParams.first as Map<String, dynamic>;
-        final inputData = (paramsMap['input'] ?? paramsMap['data'])!;
-        if (EvmChainUtils.isValidContractData(inputData)) {
-          final contractAddress = paramsMap['to'] as String;
-          contractAddresses = [contractAddress];
-        }
-      } catch (e) {
-        core.logger.d('[$runtimeType] invalid contract data on request');
-      }
-    }
-    // check if it's a contract call on TRON. It would have either `contract_address` in that case
-    if (namespace == 'polkadot') {
-      try {
-        final txPayload = ReownCoreUtils.recursiveSearchForMapKey(
-          requestParams,
-          'transactionPayload',
-        );
-        final isContractCall = PolkadotChainUtils.isSmartContractCall(
-          txPayload['method'].toString(),
-        );
-        if (isContractCall) {
-          final contractAddress = txPayload['address'].toString();
-          contractAddresses = [contractAddress];
-        }
-      } catch (e) {
-        core.logger.d('[$runtimeType] invalid contract data on request');
-      }
+    final contractAddress = _collectContractAddressIfNeeded(chainId, params);
+    if (contractAddress != null) {
+      contractAddresses = [contractAddress];
     }
 
     final tvfData = TVFData(
@@ -2887,6 +2859,34 @@ class ReownSign implements IReownSign {
     return tvfData;
   }
 
+  String? _collectContractAddressIfNeeded(String chainId, dynamic params) {
+    // only EVM request could have `data` parameter for contract call
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    if (namespace == 'eip155') {
+      final paramsMap = (params as List).first as Map<String, dynamic>;
+      final input = paramsMap['input'] as String? ?? '';
+      try {
+        if (EvmChainUtils.isValidContractData(input)) {
+          final contractAddress = paramsMap['to'] as String;
+          return contractAddress;
+        } else {
+          final data = paramsMap['data'] as String? ?? '';
+          if (EvmChainUtils.isValidContractData(data)) {
+            final contractAddress = paramsMap['to'] as String;
+            return contractAddress;
+          }
+        }
+      } catch (e) {
+        core.logger.d('[$runtimeType] invalid contract data');
+      }
+    }
+    return null;
+  }
+
+  ///
+  /// ******* TVF *********** ///
+  /// collection during response from wallet
+  ///
   TVFData? _collectResponseTVF(JsonRpcResponse payload) {
     final id = payload.id;
     if (pendingTVFRequests.containsKey(id)) {
@@ -2902,18 +2902,15 @@ class ReownSign implements IReownSign {
     return null;
   }
 
-  // Collect hashes after wallet signing
   List<String>? _collectHashes(String namespace, JsonRpcResponse response) {
-    if (response.result == null) {
+    if (response.result == null || response.error != null) {
       return null;
     }
 
-    final id = response.id;
-    final requestParams = pendingTVFRequests[id]!.requestParams;
-
-    final result = (response.result as Map<String, dynamic>);
-    core.logger.d('[$runtimeType] _collectHashes ${jsonEncode(result)}');
     try {
+      final id = response.id;
+      final result = (response.result as Map<String, dynamic>);
+      final requestParams = pendingTVFRequests[id]!.requestParams;
       switch (namespace) {
         case 'solana':
           if (result.containsKey('signature')) {

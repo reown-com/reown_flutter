@@ -79,26 +79,58 @@ class PolkadotChainUtils {
     return '0x${hex.encode(bytes)}';
   }
 
-  static bool isSmartContractCall(String hexMethod) {
-    // ⚠️ TODO: Everything in this method has to be validated
-    final hex = _normalizeHex(hexMethod);
-    if (hex.length < 4) return false;
+  /// SCALE-encodes a BigInt using compact encoding.
+  static Uint8List _compactEncodeBigInt(BigInt value) {
+    if (value < BigInt.from(1 << 6)) {
+      // single-byte mode
+      return Uint8List.fromList([value.toInt() << 2]);
+    } else if (value < BigInt.from(1 << 14)) {
+      // two-byte mode
+      int val = value.toInt() << 2 | 0x01;
+      return Uint8List.fromList([
+        val & 0xFF,
+        (val >> 8) & 0xFF,
+      ]);
+    } else if (value < BigInt.from(1 << 30)) {
+      // four-byte mode
+      int val = value.toInt() << 2 | 0x02;
+      return Uint8List.fromList([
+        val & 0xFF,
+        (val >> 8) & 0xFF,
+        (val >> 16) & 0xFF,
+        (val >> 24) & 0xFF,
+      ]);
+    } else {
+      // big-integer mode
+      final bytes = _bigIntToLEBytes(value);
+      final len = bytes.length;
+      if (len > 67) {
+        throw ArgumentError('Compact encoding supports max 2^536-1');
+      }
 
-    final callIndex = hex.substring(0, 4); // First 2 bytes = 4 hex chars
+      return Uint8List.fromList([
+        ((len - 4) << 2) | 0x03,
+        ...bytes,
+      ]);
+    }
+  }
 
-    // Known smart contract call indexes (can expand)
-    return <String>[
-      '0600', // contracts.call
-      '0601', // contracts.instantiate
-      '0602', // contracts.instantiateWithCode
-      '0603', // contracts.uploadCode
-      '0604', // contracts.removeCode
-      '0f00', // evm.call (Moonbeam)
-      '0f01', // evm.create
-      '0f02', // evm.create2
-      '2000', // evm.call on Astar (likely)
-      '2001', // evm.create
-      '2002', // evm.create2
-    ].contains(callIndex);
+  static Uint8List _bigIntToLEBytes(BigInt value) {
+    final bytes = <int>[];
+    BigInt current = value;
+    while (current > BigInt.zero) {
+      bytes.add((current & BigInt.from(0xff)).toInt());
+      current = current >> 8;
+    }
+    return Uint8List.fromList(bytes);
+  }
+
+  /// Constructs the method field for transferKeepAlive.
+  static String constructHexMethod(String destAddress, BigInt amount) {
+    final callIndex = [0x04, 0x03];
+    final dest = ss58AddressToPublicKey(destAddress);
+    final value = _compactEncodeBigInt(amount);
+    final method = [...callIndex, ...dest, ...value];
+    return '0x${method.map((b) => b.toRadixString(16).padLeft(2, '0')).join()}';
   }
 }
