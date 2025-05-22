@@ -2899,11 +2899,12 @@ class ReownSign implements IReownSign {
 
   // Collect hashes after wallet signing
   List<String>? _collectHashes(String namespace, JsonRpcResponse response) {
-    if (response.result == null) {
+    if (response.result == null || response.error != null) {
       return null;
     }
 
     try {
+      final result = (response.result as Map<String, dynamic>);
       switch (namespace) {
         case 'solana':
           final result = (response.result as Map<String, dynamic>);
@@ -2920,7 +2921,6 @@ class ReownSign implements IReownSign {
           }
           return null;
         case 'tron':
-          final result = (response.result as Map<String, dynamic>);
           final txID = _recursiveSearchForMapKey(result, 'txID');
           if (txID != null) {
             return List<String>.from([txID]);
