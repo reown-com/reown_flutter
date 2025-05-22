@@ -33,7 +33,7 @@ class MethodsUtils {
                       'Transport Type: ${transportType.toUpperCase()}\n'
                       'Chain ID: $chainId\n'
                       '${address != null ? 'Address: $address\n\n' : ''}\n'
-                      'Message:',
+                      '${text.isNotEmpty ? 'Message:' : ''}',
                   elements: [
                     text,
                   ],

@@ -51,6 +51,9 @@ class WCConnectionWidgetInfo extends StatelessWidget {
   }
 
   Widget _buildElement(String text) {
+    if (text.isEmpty) {
+      return SizedBox.shrink();
+    }
     return ElevatedButton(
       onPressed:
           model.elementActions != null ? model.elementActions![text] : null,

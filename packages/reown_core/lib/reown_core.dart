@@ -10,6 +10,7 @@ export 'pairing/utils/pairing_models.dart';
 export 'relay_client/relay_client_models.dart';
 export 'store/store_models.dart';
 export 'utils/errors.dart';
+export 'utils/cosmos_utils.dart';
 export 'utils/utils.dart';
 export 'utils/constants.dart';
 export 'utils/method_constants.dart';

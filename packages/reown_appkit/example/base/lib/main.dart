@@ -437,6 +437,18 @@ class _MyHomePageState extends State<MyHomePage> {
           isTestNetwork: true,
         ),
       ]);
+      ReownAppKitModalNetworks.addSupportedNetworks('cosmos', [
+        ReownAppKitModalNetworkInfo(
+          name: 'Cosmos hub',
+          chainId: 'cosmoshub-4',
+          currency: 'ATOM',
+          rpcUrl: 'https://rpc.cosmos.network',
+          explorerUrl:
+              'https://www.mintscan.io/cosmos/', // 'https://www.mintscan.io',
+          chainIcon:
+              'https://s2.coinmarketcap.com/static/img/coins/200x200/3794.png',
+        ),
+      ]);
     }
   }
 

@@ -329,4 +329,30 @@ class ReownCoreUtils {
       throw ArgumentError('No signatures found in transaction');
     }
   }
+
+  static dynamic recursiveSearchForMapKey(
+    Map<String, dynamic> map,
+    String targetKey,
+  ) {
+    try {
+      for (final entry in map.entries) {
+        if (entry.key.toString() == targetKey) {
+          return entry.value;
+        } else if (entry.value is Map<String, dynamic>) {
+          final result = recursiveSearchForMapKey(entry.value, targetKey);
+          if (result != null) return result;
+        } else if (entry.value is List) {
+          for (final element in entry.value) {
+            if (element is Map<String, dynamic>) {
+              final result = recursiveSearchForMapKey(element, targetKey);
+              if (result != null) return result;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      throw ArgumentError('recursiveSearchForMapKey error $e');
+    }
+    return null;
+  }
 }

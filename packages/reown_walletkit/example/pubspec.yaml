@@ -10,6 +10,7 @@ environment:
   flutter: ">=3.16.6"
 
 dependencies:
+  bech32: ^0.2.2
   bitcoin_base: ^6.0.0
   bs58: ^1.0.2
   cached_network_image: ^3.4.1
