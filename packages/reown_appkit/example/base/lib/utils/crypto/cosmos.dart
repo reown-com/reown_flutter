@@ -18,6 +18,7 @@ class Cosmos {
   static final Map<CosmosEvents, String> events = {};
 
   static Map<String, dynamic> signDirect(String address, String chainId) {
+    // TODO hardcoded values for explanatory pursposes
     return {
       'signerAddress': address,
       'signDoc': {
@@ -32,6 +33,7 @@ class Cosmos {
   }
 
   static Map<String, dynamic> signAmino(String address, String chainId) => {
+        // TODO hardcoded values for explanatory pursposes
         'signerAddress': address,
         'signDoc': {
           'chainId': chainId,
