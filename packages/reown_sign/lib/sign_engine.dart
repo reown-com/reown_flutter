@@ -7,6 +7,7 @@ import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/i_generic_store.dart';
+import 'package:reown_core/utils/sui_utils.dart';
 
 import 'package:reown_sign/reown_sign.dart';
 import 'package:reown_sign/utils/sign_api_validator_utils.dart';
@@ -2824,40 +2825,26 @@ class ReownSign implements IReownSign {
     }
   }
 
+  ///
   /// ******* TVF *********** ///
-
+  /// collection during request from dapp
+  ///
   TVFData? _collectRequestTVF(int id, WcSessionRequestRequest request) {
     // check if the rpc request is on the tvf supported methods list
     final method = request.request.method;
     if (!TVFData.tvfRequestMethods.contains(method)) {
       return null;
     }
+    final params = request.request.params;
 
     // params to collect
     final rpcMethods = List<String>.from([method]);
     final chainId = request.chainId;
     List<String>? contractAddresses;
 
-    // only EVM request could have `data` parameter for contract call
-    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-    if (namespace == 'eip155') {
-      final params = request.request.params;
-      final paramsMap = params.first as Map<String, dynamic>;
-      final input = paramsMap['input'] as String? ?? '';
-      try {
-        if (ReownCoreUtils.isValidContractData(input)) {
-          final contractAddress = paramsMap['to'] as String;
-          contractAddresses = [contractAddress];
-        } else {
-          final data = paramsMap['data'] as String? ?? '';
-          if (ReownCoreUtils.isValidContractData(data)) {
-            final contractAddress = paramsMap['to'] as String;
-            contractAddresses = [contractAddress];
-          }
-        }
-      } catch (e) {
-        core.logger.d('[$runtimeType] invalid contract data');
-      }
+    final contractAddress = _collectContractAddressIfNeeded(chainId, params);
+    if (contractAddress != null) {
+      contractAddresses = [contractAddress];
     }
 
     final tvfData = TVFData(
@@ -2873,6 +2860,28 @@ class ReownSign implements IReownSign {
     return tvfData;
   }
 
+  String? _collectContractAddressIfNeeded(String chainId, dynamic params) {
+    // only EVM request could have `data` parameter for contract call
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    if (namespace == 'eip155') {
+      try {
+        final paramsMap = (params as List).first as Map<String, dynamic>;
+        final inputData = (paramsMap['input'] ?? paramsMap['data'])!;
+        if (ReownCoreUtils.isValidContractData(inputData)) {
+          final contractAddress = paramsMap['to'] as String?;
+          return contractAddress;
+        }
+      } catch (e) {
+        core.logger.d('[$runtimeType] invalid contract data');
+      }
+    }
+    return null;
+  }
+
+  ///
+  /// ******* TVF *********** ///
+  /// collection during response from wallet
+  ///
   TVFData? _collectResponseTVF(JsonRpcResponse payload) {
     final id = payload.id;
     if (pendingTVFRequests.containsKey(id)) {
@@ -2889,14 +2898,14 @@ class ReownSign implements IReownSign {
   }
 
   List<String>? _collectHashes(String namespace, JsonRpcResponse response) {
-    if (response.result == null) {
+    if (response.result == null || response.error != null) {
       return null;
     }
 
     try {
+      final result = (response.result as Map<String, dynamic>);
       switch (namespace) {
         case 'solana':
-          final result = (response.result as Map<String, dynamic>);
           if (result.containsKey('signature')) {
             return List<String>.from([result['signature']]);
           }
@@ -2909,11 +2918,28 @@ class ReownSign implements IReownSign {
             return signatures;
           }
           return null;
+        case 'sui':
+          final signature = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'signature',
+          );
+          if (signature != null) {
+            final transactionBytes = ReownCoreUtils.recursiveSearchForMapKey(
+              result,
+              'transactionBytes',
+            );
+            final computedHash = SuiChainUtils.getSuiDigestFromEncodedTx(
+              transactionBytes,
+            );
+            return List<String>.from([computedHash]);
+          }
+          return null;
         default:
+          // default to EVM
           return List<String>.from([response.result]);
       }
     } catch (e) {
-      core.logger.d('[$runtimeType] _collectHashes $e');
+      core.logger.e('[$runtimeType] _collectHashes $e');
       return null;
     }
   }

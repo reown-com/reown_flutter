@@ -44,5 +44,8 @@ class TVFData {
     'solana_signTransaction',
     'solana_signAllTransactions',
     'wallet_sendCalls',
+    // SUI
+    'sui_signTransaction',
+    'sui_signAndExecuteTransaction',
   ];
 }
