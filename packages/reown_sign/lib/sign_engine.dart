@@ -2924,14 +2924,18 @@ class ReownSign implements IReownSign {
             'signature',
           );
           if (signature != null) {
-            final transactionBytes = ReownCoreUtils.recursiveSearchForMapKey(
-              result,
-              'transactionBytes',
-            );
-            final computedHash = SuiChainUtils.getSuiDigestFromEncodedTx(
-              transactionBytes,
-            );
-            return List<String>.from([computedHash]);
+            try {
+              final transactionBytes = ReownCoreUtils.recursiveSearchForMapKey(
+                result,
+                'transactionBytes',
+              );
+              final computedHash = SuiChainUtils.getSuiDigestFromEncodedTx(
+                transactionBytes,
+              );
+              return List<String>.from([computedHash]);
+            } catch (e) {
+              rethrow;
+            }
           }
           return null;
         default:
