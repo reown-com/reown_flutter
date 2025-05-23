@@ -2824,55 +2824,26 @@ class ReownSign implements IReownSign {
     }
   }
 
+  ///
   /// ******* TVF *********** ///
-
+  /// collection during request from dapp
+  ///
   TVFData? _collectRequestTVF(int id, WcSessionRequestRequest request) {
     // check if the rpc request is on the tvf supported methods list
     final method = request.request.method;
     if (!TVFData.tvfRequestMethods.contains(method)) {
       return null;
     }
+    final params = request.request.params;
 
     // params to collect
     final rpcMethods = List<String>.from([method]);
     final chainId = request.chainId;
     List<String>? contractAddresses;
 
-    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-    // check if it's a contract call on EVM. It would have either `input` or `data` parameter
-    if (namespace == 'eip155') {
-      try {
-        final params = request.request.params;
-        final paramsMap = params.first as Map<String, dynamic>;
-        final inputData = (paramsMap['input'] ?? paramsMap['data'])!;
-        if (ReownCoreUtils.isValidContractData(inputData)) {
-          final contractAddress = paramsMap['to'] as String;
-          contractAddresses = [contractAddress];
-        }
-      } catch (e) {
-        core.logger.d('[$runtimeType] invalid contract data');
-      }
-    }
-    // check if it's a contract call on NEAR. It would have an action.type of `FunctionCall`
-    if (namespace == 'near') {
-      try {
-        final params = request.request.params;
-        final paramsMap = params.first as Map<String, dynamic>;
-        final actions = paramsMap['actions'] as List;
-        print(actions);
-        // if (ReownCoreUtils.isValidContractData(input)) {
-        //   final contractAddress = paramsMap['to'] as String;
-        //   contractAddresses = [contractAddress];
-        // } else {
-        //   final data = paramsMap['data'] as String? ?? '';
-        //   if (ReownCoreUtils.isValidContractData(data)) {
-        //     final contractAddress = paramsMap['to'] as String;
-        //     contractAddresses = [contractAddress];
-        //   }
-        // }
-      } catch (e) {
-        core.logger.d('[$runtimeType] invalid contract data');
-      }
+    final contractAddress = _collectContractAddressIfNeeded(chainId, params);
+    if (contractAddress != null) {
+      contractAddresses = [contractAddress];
     }
 
     final tvfData = TVFData(
@@ -2885,10 +2856,31 @@ class ReownSign implements IReownSign {
     pendingTVFRequests[id] = tvfData;
 
     // return is useful for AppKit's request() method
-    return null; // TODO remove
     return tvfData;
   }
 
+  String? _collectContractAddressIfNeeded(String chainId, dynamic params) {
+    // only EVM request could have `data` parameter for contract call
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    if (namespace == 'eip155') {
+      final paramsMap = (params as List).first as Map<String, dynamic>;
+      try {
+        final input = (paramsMap['input'] ?? paramsMap['data'])!;
+        if (ReownCoreUtils.isValidContractData(input)) {
+          final contractAddress = paramsMap['to'] as String;
+          return contractAddress;
+        }
+      } catch (e) {
+        core.logger.d('[$runtimeType] invalid contract data');
+      }
+    }
+    return null;
+  }
+
+  ///
+  /// ******* TVF *********** ///
+  /// collection during response from wallet
+  ///
   TVFData? _collectResponseTVF(JsonRpcResponse payload) {
     final id = payload.id;
     if (pendingTVFRequests.containsKey(id)) {
@@ -2905,14 +2897,14 @@ class ReownSign implements IReownSign {
   }
 
   List<String>? _collectHashes(String namespace, JsonRpcResponse response) {
-    if (response.result == null) {
+    if (response.result == null || response.error != null) {
       return null;
     }
 
     try {
+      final result = (response.result as Map<String, dynamic>);
       switch (namespace) {
         case 'solana':
-          final result = (response.result as Map<String, dynamic>);
           if (result.containsKey('signature')) {
             return List<String>.from([result['signature']]);
           }
@@ -2924,6 +2916,28 @@ class ReownSign implements IReownSign {
             }).toList();
             return signatures;
           }
+          return null;
+        case 'near':
+          // final signature = ReownCoreUtils.recursiveSearchForMapKey(
+          //   result,
+          //   'signature',
+          // );
+          // if (signature != null) {
+          //   final bodyBytes = ReownCoreUtils.recursiveSearchForMapKey(
+          //     result,
+          //     'bodyBytes',
+          //   );
+          //   final authInfoBytes = ReownCoreUtils.recursiveSearchForMapKey(
+          //     result,
+          //     'authInfoBytes',
+          //   );
+          //   final hash = CosmosUtils.computeTxHash(
+          //     bodyBytesBase64: bodyBytes,
+          //     authInfoBytesBase64: authInfoBytes,
+          //     signatureBase64: signature['signature'],
+          //   );
+          //   return List<String>.from([hash]);
+          // }
           return null;
         default:
           return List<String>.from([response.result]);

@@ -38,17 +38,14 @@ class TVFData {
   String toString() => jsonEncode(toJson());
 
   static final tvfRequestMethods = [
-    // EVM methods
     'eth_sendTransaction',
     'eth_sendRawTransaction',
-    // Solana methods
     'solana_signAndSendTransaction',
     'solana_signTransaction',
     'solana_signAllTransactions',
-    // NEAR methods
+    'wallet_sendCalls',
+    // Near
     'near_signTransaction',
     'near_signTransactions',
-    //
-    'wallet_sendCalls',
   ];
 }
