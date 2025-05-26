@@ -2824,49 +2824,26 @@ class ReownSign implements IReownSign {
     }
   }
 
+  ///
   /// ******* TVF *********** ///
-
+  /// collection during request from dapp
+  ///
   TVFData? _collectRequestTVF(int id, WcSessionRequestRequest request) {
     // check if the rpc request is on the tvf supported methods list
     final method = request.request.method;
     if (!TVFData.tvfRequestMethods.contains(method)) {
       return null;
     }
+    final params = request.request.params;
 
     // params to collect
     final rpcMethods = List<String>.from([method]);
     final chainId = request.chainId;
     List<String>? contractAddresses;
 
-    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-    // check if it's a contract call on EVM. It would have either `input` or `data` parameter in that case
-    if (namespace == 'eip155') {
-      try {
-        final params = request.request.params;
-        final paramsMap = params.first as Map<String, dynamic>;
-        final inputData = (paramsMap['input'] ?? paramsMap['data'])!;
-        if (ReownCoreUtils.isValidContractData(inputData)) {
-          final contractAddress = paramsMap['to'] as String;
-          contractAddresses = [contractAddress];
-        }
-      } catch (e) {
-        core.logger.d('[$runtimeType] invalid contract data on request');
-      }
-    }
-    // check if it's a contract call on TRON. It would have either `contract_address` in that case
-    if (namespace == 'tron') {
-      try {
-        final params = request.request.params;
-        final contractAddress = _recursiveSearchForMapKey(
-          params,
-          'contract_address',
-        );
-        if (contractAddress != null) {
-          contractAddresses = [contractAddress];
-        }
-      } catch (e) {
-        core.logger.d('[$runtimeType] invalid contract data on request');
-      }
+    final contractAddress = _collectContractAddressIfNeeded(chainId, params);
+    if (contractAddress != null) {
+      contractAddresses = [contractAddress];
     }
 
     final tvfData = TVFData(
@@ -2882,6 +2859,28 @@ class ReownSign implements IReownSign {
     return tvfData;
   }
 
+  String? _collectContractAddressIfNeeded(String chainId, dynamic params) {
+    // only EVM request could have `data` parameter for contract call
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    if (namespace == 'eip155') {
+      final paramsMap = (params as List).first as Map<String, dynamic>;
+      try {
+        final input = (paramsMap['input'] ?? paramsMap['data'])!;
+        if (ReownCoreUtils.isValidContractData(input)) {
+          final contractAddress = paramsMap['to'] as String;
+          return contractAddress;
+        }
+      } catch (e) {
+        core.logger.d('[$runtimeType] invalid contract data');
+      }
+    }
+    return null;
+  }
+
+  ///
+  /// ******* TVF *********** ///
+  /// collection during response from wallet
+  ///
   TVFData? _collectResponseTVF(JsonRpcResponse payload) {
     final id = payload.id;
     if (pendingTVFRequests.containsKey(id)) {
@@ -2897,67 +2896,53 @@ class ReownSign implements IReownSign {
     return null;
   }
 
-  // Collect hashes after wallet signing
   List<String>? _collectHashes(String namespace, JsonRpcResponse response) {
     if (response.result == null || response.error != null) {
       return null;
     }
 
     try {
-      final result = (response.result as Map<String, dynamic>);
       switch (namespace) {
         case 'solana':
-          final result = (response.result as Map<String, dynamic>);
-          if (result.containsKey('signature')) {
-            return List<String>.from([result['signature']]);
-          }
-          if (result.containsKey('transactions')) {
-            // Decode transactions and extract signature to send as TVF data
-            final transactions = result['transactions'] as List;
-            final signatures = transactions.map((encodedTx) {
-              return ReownCoreUtils.extractSolanaSignature(encodedTx);
-            }).toList();
-            return signatures;
+          try {
+            final result = (response.result as Map<String, dynamic>);
+            // if contain signature it's either solana_signTransaction or solana_signTransaction
+            final signature = ReownCoreUtils.recursiveSearchForMapKey(
+              result,
+              'signature',
+            );
+            if (signature != null) {
+              return List<String>.from([...signature]);
+            }
+            // if contain transactions it's solana_signAllTransactions
+            final transactions = ReownCoreUtils.recursiveSearchForMapKey(
+              result,
+              'transactions',
+            );
+            if (transactions != null) {
+              // Decode transactions and extract signature to send as TVF data
+              final signatures = (transactions as List).map((encodedTx) {
+                return ReownCoreUtils.extractSolanaSignature(encodedTx);
+              }).toList();
+              return signatures;
+            }
+          } catch (e) {
+            core.logger.e('[$runtimeType] _collectHashes: solana, $e');
           }
           return null;
         case 'tron':
-          final txID = _recursiveSearchForMapKey(result, 'txID');
+          final result = (response.result as Map<String, dynamic>);
+          final txID = ReownCoreUtils.recursiveSearchForMapKey(result, 'txID');
           if (txID != null) {
             return List<String>.from([txID]);
           }
           return null;
         default:
-          // default to EVM
           return List<String>.from([response.result]);
       }
     } catch (e) {
       core.logger.e('[$runtimeType] _collectHashes $e');
       return null;
     }
-  }
-
-  // TODO move this to utils file
-  dynamic _recursiveSearchForMapKey(
-      Map<String, dynamic> map, String targetKey) {
-    try {
-      for (final entry in map.entries) {
-        if (entry.key.toString() == targetKey) {
-          return entry.value;
-        } else if (entry.value is Map<String, dynamic>) {
-          final result = _recursiveSearchForMapKey(entry.value, targetKey);
-          if (result != null) return result;
-        } else if (entry.value is List) {
-          for (final element in entry.value) {
-            if (element is Map<String, dynamic>) {
-              final result = _recursiveSearchForMapKey(element, targetKey);
-              if (result != null) return result;
-            }
-          }
-        }
-      }
-    } catch (e) {
-      core.logger.e('[$runtimeType] recursiveSearchForMapKey $e');
-    }
-    return null;
   }
 }
