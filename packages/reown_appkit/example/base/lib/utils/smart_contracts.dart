@@ -2988,6 +2988,8 @@ class WCTOPETHContract implements SmartContract {
       ];
 }
 
+/// Represents the Wrapped Sonic smart contract deployed on the Sonic Blaze Testnet.
+/// This contract provides functionality for interacting with the Wrapped Sonic token.
 class WrappedSonicContract implements SmartContract {
   @override
   String get name => 'Wrapped Sonic';
