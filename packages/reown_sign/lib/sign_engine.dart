@@ -2918,12 +2918,12 @@ class ReownSign implements IReownSign {
           }
           return null;
         case 'xrpl':
-          final txtHash = ReownCoreUtils.recursiveSearchForMapKey(
+          final txHash = ReownCoreUtils.recursiveSearchForMapKey(
             result,
             'hash',
           );
-          if (txtHash != null) {
-            return List<String>.from([txtHash]);
+          if (txHash != null) {
+            return List<String>.from([txHash]);
           }
           return null;
         default:
