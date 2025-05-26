@@ -7,6 +7,7 @@ import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/i_generic_store.dart';
+import 'package:reown_core/utils/near_utils.dart';
 
 import 'package:reown_sign/reown_sign.dart';
 import 'package:reown_sign/utils/sign_api_validator_utils.dart';
@@ -2918,26 +2919,16 @@ class ReownSign implements IReownSign {
           }
           return null;
         case 'near':
-          // final signature = ReownCoreUtils.recursiveSearchForMapKey(
-          //   result,
-          //   'signature',
-          // );
-          // if (signature != null) {
-          //   final bodyBytes = ReownCoreUtils.recursiveSearchForMapKey(
-          //     result,
-          //     'bodyBytes',
-          //   );
-          //   final authInfoBytes = ReownCoreUtils.recursiveSearchForMapKey(
-          //     result,
-          //     'authInfoBytes',
-          //   );
-          //   final hash = CosmosUtils.computeTxHash(
-          //     bodyBytesBase64: bodyBytes,
-          //     authInfoBytesBase64: authInfoBytes,
-          //     signatureBase64: signature['signature'],
-          //   );
-          //   return List<String>.from([hash]);
-          // }
+          final txData = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'data',
+          );
+          if (txData != null) {
+            final hash = NearChainUtils.computeNearHashFromTxBytes(
+              txData as List,
+            );
+            return List<String>.from([hash]);
+          }
           return null;
         default:
           return List<String>.from([response.result]);

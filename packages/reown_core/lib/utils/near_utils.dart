@@ -8,8 +8,8 @@ class NearChainUtils {
     return Uint8List.fromList(data.cast<int>());
   }
 
-  static String computeNearTxHashFromWalletResponse(Map<String, dynamic> json) {
-    final buffer = _bufferFromJson(json['result']['data']);
+  static String computeNearHashFromTxBytes(List<dynamic> txData) {
+    final buffer = _bufferFromJson(txData);
     final hash = SHA256Digest().process(buffer).toList();
     return base58.encode(Uint8List.fromList(hash));
   }

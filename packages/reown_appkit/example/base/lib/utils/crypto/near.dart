@@ -1,14 +1,12 @@
 import 'dart:math';
 
 import 'dart:typed_data';
-import 'package:bs58/bs58.dart';
+// import 'package:bs58/bs58.dart';
 
 enum NearMethods {
   nearSignMessage,
   nearSignTransaction,
   nearSignTransactions,
-  // nearSignAndSendTransaction,
-  // nearRequestSignTransactions,
 }
 
 enum NearEvents {
@@ -107,80 +105,80 @@ class Near {
         ],
       };
 
-  static Uint8List toBorshBytes(Map<String, dynamic> txJson) {
-    final writer = BorshWriter();
+  // static Uint8List toBorshBytes(Map<String, dynamic> txJson) {
+  //   final writer = BorshWriter();
 
-    // 1. signerId
-    writer.writeString(txJson['signerId']);
+  //   // 1. signerId
+  //   writer.writeString(txJson['signerId']);
 
-    // 2. publicKey
-    final publicKey = txJson['publicKey'] as String;
-    final keyBytes = base58.decode(publicKey.split(':')[1]);
-    writer.writeU8(0); // ed25519 = 0
-    writer.writeFixedArray(keyBytes);
+  //   // 2. publicKey
+  //   final publicKey = txJson['publicKey'] as String;
+  //   final keyBytes = base58.decode(publicKey.split(':')[1]);
+  //   writer.writeU8(0); // ed25519 = 0
+  //   writer.writeFixedArray(keyBytes);
 
-    // 3. nonce (u64) from bytes
-    final nonceBytes = txJson['nonce'] as Uint8List;
-    // if (nonceBytes.length != 8) {
-    //   throw ArgumentError('Nonce must be exactly 8 bytes (u64)');
-    // }
-    writer.writeFixedArray(nonceBytes);
+  //   // 3. nonce (u64) from bytes
+  //   final nonceBytes = txJson['nonce'] as Uint8List;
+  //   // if (nonceBytes.length != 8) {
+  //   //   throw ArgumentError('Nonce must be exactly 8 bytes (u64)');
+  //   // }
+  //   writer.writeFixedArray(nonceBytes);
 
-    // 4. receiverId
-    writer.writeString(txJson['receiverId']);
+  //   // 4. receiverId
+  //   writer.writeString(txJson['receiverId']);
 
-    // 5. blockHash
-    final blockHash = base58.decode(txJson['blockHash']);
-    if (blockHash.length != 32) {
-      throw ArgumentError('blockHash must decode to 32 bytes');
-    }
-    writer.writeFixedArray(blockHash);
+  //   // 5. blockHash
+  //   final blockHash = base58.decode(txJson['blockHash']);
+  //   if (blockHash.length != 32) {
+  //     throw ArgumentError('blockHash must decode to 32 bytes');
+  //   }
+  //   writer.writeFixedArray(blockHash);
 
-    // 6. actions
-    final actions = txJson['actions'] as List;
-    writer.writeU32(actions.length);
-    for (final action in actions) {
-      final type = action['type'];
-      final params = action['params'] ?? {};
+  //   // 6. actions
+  //   final actions = txJson['actions'] as List;
+  //   writer.writeU32(actions.length);
+  //   for (final action in actions) {
+  //     final type = action['type'];
+  //     final params = action['params'] ?? {};
 
-      if (type == 'Transfer') {
-        writer.writeU8(3); // Transfer enum value
-        final deposit = BigInt.parse(params['deposit']);
-        writer.writeU128(deposit);
-      } else {
-        throw UnimplementedError('Action type $type not supported');
-      }
-    }
+  //     if (type == 'Transfer') {
+  //       writer.writeU8(3); // Transfer enum value
+  //       final deposit = BigInt.parse(params['deposit']);
+  //       writer.writeU128(deposit);
+  //     } else {
+  //       throw UnimplementedError('Action type $type not supported');
+  //     }
+  //   }
 
-    return writer.toBytes();
-  }
+  //   return writer.toBytes();
+  // }
 }
 
-class BorshWriter {
-  final BytesBuilder _builder = BytesBuilder();
+// class BorshWriter {
+//   final BytesBuilder _builder = BytesBuilder();
 
-  Uint8List toBytes() => _builder.toBytes();
+//   Uint8List toBytes() => _builder.toBytes();
 
-  void writeU8(int value) => _builder.addByte(value);
-  void writeU32(int value) =>
-      _builder.add(List.generate(4, (i) => (value >> (8 * i)) & 0xFF));
-  void writeU64(BigInt value) => _builder.add(_writeLEBigInt(value, 8));
-  void writeU128(BigInt value) => _builder.add(_writeLEBigInt(value, 16));
-  void writeFixedArray(Uint8List bytes) => _builder.add(bytes);
+//   void writeU8(int value) => _builder.addByte(value);
+//   void writeU32(int value) =>
+//       _builder.add(List.generate(4, (i) => (value >> (8 * i)) & 0xFF));
+//   void writeU64(BigInt value) => _builder.add(_writeLEBigInt(value, 8));
+//   void writeU128(BigInt value) => _builder.add(_writeLEBigInt(value, 16));
+//   void writeFixedArray(Uint8List bytes) => _builder.add(bytes);
 
-  void writeString(String value) {
-    final stringBytes = Uint8List.fromList(value.codeUnits);
-    writeU32(stringBytes.length);
-    _builder.add(stringBytes);
-  }
+//   void writeString(String value) {
+//     final stringBytes = Uint8List.fromList(value.codeUnits);
+//     writeU32(stringBytes.length);
+//     _builder.add(stringBytes);
+//   }
 
-  Uint8List _writeLEBigInt(BigInt number, int size) {
-    final result = Uint8List(size);
-    var temp = number;
-    for (int i = 0; i < size; i++) {
-      result[i] = (temp & BigInt.from(0xFF)).toInt();
-      temp = temp >> 8;
-    }
-    return result;
-  }
-}
+//   Uint8List _writeLEBigInt(BigInt number, int size) {
+//     final result = Uint8List(size);
+//     var temp = number;
+//     for (int i = 0; i < size; i++) {
+//       result[i] = (temp & BigInt.from(0xFF)).toInt();
+//       temp = temp >> 8;
+//     }
+//     return result;
+//   }
+// }
