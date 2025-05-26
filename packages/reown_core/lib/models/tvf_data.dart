@@ -44,5 +44,7 @@ class TVFData {
     'solana_signTransaction',
     'solana_signAllTransactions',
     'wallet_sendCalls',
+    // Stacks
+    'stacks_stxTransfer',
   ];
 }
