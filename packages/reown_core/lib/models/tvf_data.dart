@@ -40,9 +40,11 @@ class TVFData {
   static final tvfRequestMethods = [
     'eth_sendTransaction',
     'eth_sendRawTransaction',
-    'solana_signAndSendTransaction',
+    'solana_signTransaction',
     'solana_signTransaction',
     'solana_signAllTransactions',
     'wallet_sendCalls',
+    // Algorand
+    'algo_signTxn',
   ];
 }
