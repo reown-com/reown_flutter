@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:8.1.0")
+        classpath("com.android.tools.build:gradle:7.3.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
     }
 }
@@ -56,12 +56,10 @@ android {
         }
     }
 
-    packaging {
-        jniLibs.pickFirsts.add("lib/arm64-v8a/libuniffi_yttrium.so")
-        jniLibs.pickFirsts.add("lib/armeabi-v7a/libuniffi_yttrium.so")
-//        jniLibs.pickFirsts.add("lib/arm64-v8a/libjnidispatch.so")
-//        jniLibs.pickFirsts.add("lib/armeabi-v7a/libjnidispatch.so")
-        jniLibs.pickFirsts.add("lib/**/libjnidispatch.so")
+    packagingOptions {
+        pickFirsts += ["lib/arm64-v8a/libuniffi_yttrium.so"]
+        pickFirsts += ["lib/armeabi-v7a/libuniffi_yttrium.so"]
+        pickFirsts += ["lib/**/libjnidispatch.so"]
     }
 
     testOptions {
