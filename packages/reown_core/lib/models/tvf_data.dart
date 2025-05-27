@@ -47,5 +47,8 @@ class TVFData {
     // XRPL
     'xrpl_signTransaction',
     'xrpl_signTransactionFor',
+    // SUI
+    'sui_signTransaction',
+    'sui_signAndExecuteTransaction',
   ];
 }

@@ -7,6 +7,7 @@ import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/i_generic_store.dart';
+import 'package:reown_core/utils/sui_utils.dart';
 
 import 'package:reown_sign/reown_sign.dart';
 import 'package:reown_sign/utils/sign_api_validator_utils.dart';
@@ -2863,11 +2864,11 @@ class ReownSign implements IReownSign {
     // only EVM request could have `data` parameter for contract call
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     if (namespace == 'eip155') {
-      final paramsMap = (params as List).first as Map<String, dynamic>;
       try {
-        final input = (paramsMap['input'] ?? paramsMap['data'])!;
-        if (ReownCoreUtils.isValidContractData(input)) {
-          final contractAddress = paramsMap['to'] as String;
+        final paramsMap = (params as List).first as Map<String, dynamic>;
+        final inputData = (paramsMap['input'] ?? paramsMap['data'])!;
+        if (ReownCoreUtils.isValidContractData(inputData)) {
+          final contractAddress = paramsMap['to'] as String?;
           return contractAddress;
         }
       } catch (e) {
@@ -2927,10 +2928,11 @@ class ReownSign implements IReownSign {
           }
           return null;
         default:
+          // default to EVM
           return List<String>.from([response.result]);
       }
     } catch (e) {
-      core.logger.d('[$runtimeType] _collectHashes $e');
+      core.logger.e('[$runtimeType] _collectHashes $e');
       return null;
     }
   }
