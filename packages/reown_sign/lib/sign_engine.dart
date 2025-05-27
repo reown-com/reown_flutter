@@ -2947,6 +2947,15 @@ class ReownSign implements IReownSign {
           core.logger.e('[$runtimeType] _collectHashes: xrpl, $e');
         }
         return null;
+      case 'algo':
+        try {
+          final result = (response.result as List);
+          final txHashesList = AlgorandChainUtils.calculateTxIDs(result);
+          return List<String>.from([...txHashesList]);
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: algo, $e');
+        }
+        return null;
       case 'sui':
         try {
           final result = (response.result as Map<String, dynamic>);
