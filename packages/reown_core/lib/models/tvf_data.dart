@@ -46,5 +46,8 @@ class TVFData {
     'wallet_sendCalls',
     // Algorand
     'algo_signTxn',
+    // SUI
+    'sui_signTransaction',
+    'sui_signAndExecuteTransaction',
   ];
 }

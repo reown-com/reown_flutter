@@ -8,6 +8,7 @@ import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/i_generic_store.dart';
 import 'package:reown_core/utils/algorand_utils.dart';
+import 'package:reown_core/utils/sui_utils.dart';
 
 import 'package:reown_sign/reown_sign.dart';
 import 'package:reown_sign/utils/sign_api_validator_utils.dart';
@@ -2864,11 +2865,11 @@ class ReownSign implements IReownSign {
     // only EVM request could have `data` parameter for contract call
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     if (namespace == 'eip155') {
-      final paramsMap = (params as List).first as Map<String, dynamic>;
       try {
-        final input = (paramsMap['input'] ?? paramsMap['data'])!;
-        if (ReownCoreUtils.isValidContractData(input)) {
-          final contractAddress = paramsMap['to'] as String;
+        final paramsMap = (params as List).first as Map<String, dynamic>;
+        final inputData = (paramsMap['input'] ?? paramsMap['data'])!;
+        if (ReownCoreUtils.isValidContractData(inputData)) {
+          final contractAddress = paramsMap['to'] as String?;
           return contractAddress;
         }
       } catch (e) {
@@ -2903,6 +2904,7 @@ class ReownSign implements IReownSign {
     }
 
     try {
+      final result = (response.result as Map<String, dynamic>);
       switch (namespace) {
         case 'solana':
           try {
@@ -2940,7 +2942,28 @@ class ReownSign implements IReownSign {
             core.logger.e('[$runtimeType] _collectHashes: algo, $e');
           }
           return null;
+        case 'sui':
+          final signature = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'signature',
+          );
+          if (signature != null) {
+            try {
+              final transactionBytes = ReownCoreUtils.recursiveSearchForMapKey(
+                result,
+                'transactionBytes',
+              );
+              final computedHash = SuiChainUtils.getSuiDigestFromEncodedTx(
+                transactionBytes,
+              );
+              return List<String>.from([computedHash]);
+            } catch (e) {
+              rethrow;
+            }
+          }
+          return null;
         default:
+          // default to EVM
           return List<String>.from([response.result]);
       }
     } catch (e) {
