@@ -44,6 +44,9 @@ class TVFData {
     'solana_signTransaction',
     'solana_signAllTransactions',
     'wallet_sendCalls',
+    // XRPL
+    'xrpl_signTransaction',
+    'xrpl_signTransactionFor',
     // Algorand
     'algo_signTxn',
     // SUI
