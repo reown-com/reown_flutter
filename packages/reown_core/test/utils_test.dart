@@ -5,7 +5,7 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('recursiveSearchForMapKey', () {
-    test('should extract the proper key/value', () {
+    test('should extract tron txID after tron_signTransaction response', () {
       final jsonRPCResponse = {
         'jsonrpc': '2.0',
         'id': 1,
