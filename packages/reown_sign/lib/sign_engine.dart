@@ -7,6 +7,7 @@ import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/i_generic_store.dart';
+import 'package:reown_core/utils/algorand_utils.dart';
 import 'package:reown_core/utils/sui_utils.dart';
 
 import 'package:reown_sign/reown_sign.dart';
@@ -2872,7 +2873,9 @@ class ReownSign implements IReownSign {
           return contractAddress;
         }
       } catch (e) {
-        core.logger.d('[$runtimeType] invalid contract data');
+        core.logger.d(
+          '[$runtimeType] invalid contract data, skipping contractAddress collection',
+        );
       }
     }
     return null;

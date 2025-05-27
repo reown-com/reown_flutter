@@ -47,6 +47,8 @@ class TVFData {
     // XRPL
     'xrpl_signTransaction',
     'xrpl_signTransactionFor',
+    // Algorand
+    'algo_signTxn',
     // SUI
     'sui_signTransaction',
     'sui_signAndExecuteTransaction',
