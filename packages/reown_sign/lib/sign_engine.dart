@@ -2902,23 +2902,37 @@ class ReownSign implements IReownSign {
       return null;
     }
 
-    try {
-      final result = (response.result as Map<String, dynamic>);
-      switch (namespace) {
-        case 'solana':
-          if (result.containsKey('signature')) {
-            return List<String>.from([result['signature']]);
+    switch (namespace) {
+      case 'solana':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          // if contain signature it's either solana_signTransaction or solana_signTransaction
+          final signature = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'signature',
+          );
+          if (signature != null) {
+            return List<String>.from([...signature]);
           }
-          if (result.containsKey('transactions')) {
+          // if contain transactions it's solana_signAllTransactions
+          final transactions = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'transactions',
+          );
+          if (transactions != null) {
             // Decode transactions and extract signature to send as TVF data
-            final transactions = result['transactions'] as List;
-            final signatures = transactions.map((encodedTx) {
+            final signatures = (transactions as List).map((encodedTx) {
               return ReownCoreUtils.extractSolanaSignature(encodedTx);
             }).toList();
             return signatures;
           }
-          return null;
-        case 'xrpl':
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: solana, $e');
+        }
+        return null;
+      case 'xrpl':
+        try {
+          final result = (response.result as Map<String, dynamic>);
           final txHash = ReownCoreUtils.recursiveSearchForMapKey(
             result,
             'hash',
@@ -2926,14 +2940,34 @@ class ReownSign implements IReownSign {
           if (txHash != null) {
             return List<String>.from([txHash]);
           }
-          return null;
-        default:
-          // default to EVM
-          return List<String>.from([response.result]);
-      }
-    } catch (e) {
-      core.logger.e('[$runtimeType] _collectHashes $e');
-      return null;
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: xrpl, $e');
+        }
+        return null;
+      case 'sui':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final signature = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'signature',
+          );
+          if (signature != null) {
+            final transactionBytes = ReownCoreUtils.recursiveSearchForMapKey(
+              result,
+              'transactionBytes',
+            );
+            final computedHash = SuiChainUtils.getSuiDigestFromEncodedTx(
+              transactionBytes,
+            );
+            return List<String>.from([computedHash]);
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: sui, $e');
+        }
+        return null;
+      default:
+        // default to EVM
+        return List<String>.from([response.result]);
     }
   }
 }
