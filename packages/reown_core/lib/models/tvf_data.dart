@@ -51,5 +51,13 @@ class TVFData {
     'wallet_sendCalls',
     // Polkadot
     'polkadot_signTransaction',
+    // XRPL
+    'xrpl_signTransaction',
+    'xrpl_signTransactionFor',
+    // Algorand
+    'algo_signTxn',
+    // SUI
+    'sui_signTransaction',
+    'sui_signAndExecuteTransaction',
   ];
 }
