@@ -234,4 +234,28 @@ class ChainsDataList {
       ],
     ),
   ];
+
+  static final List<ChainMetadata> tronChains = [
+    const ChainMetadata(
+      type: ChainType.tron,
+      chainId: 'tron:0x2b6653dc',
+      name: 'Tron Mainnet',
+      logo: 'https://cdn-icons-png.flaticon.com/512/12114/12114250.png',
+      color: Color.fromARGB(255, 223, 0, 0),
+      rpc: [
+        'https://api.trongrid.io',
+      ],
+    ),
+    const ChainMetadata(
+      type: ChainType.tron,
+      chainId: 'tron:0xcd8690dc',
+      name: 'Tron Testnet',
+      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
+      color: Color.fromARGB(255, 223, 0, 0),
+      rpc: [
+        'https://nile.trongrid.io',
+      ],
+      isTestnet: true,
+    ),
+  ];
 }

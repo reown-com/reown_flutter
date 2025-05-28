@@ -8,6 +8,7 @@ enum ChainType {
   kadena,
   polkadot,
   bitcoin,
+  tron,
 }
 
 class ChainMetadata {

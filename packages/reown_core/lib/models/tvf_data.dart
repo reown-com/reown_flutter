@@ -44,6 +44,8 @@ class TVFData {
     'solana_signTransaction',
     'solana_signAllTransactions',
     'wallet_sendCalls',
+    // TRON
+    'tron_signTransaction',
     // XRPL
     'xrpl_signTransaction',
     'xrpl_signTransactionFor',
