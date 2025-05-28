@@ -103,5 +103,23 @@ void main() {
         '73734B611DDA23D3F5F62E20A173B78AB8406AC5015094DA53F53D39B9EDB06C',
       );
     });
+
+    test('should parse stacks_stxTransfer and extract txId', () {
+      final jsonRPCResponse = {
+        'jsonrpc': '2.0',
+        'id': 1,
+        'result': {
+          'txId': 'stack_tx_id',
+          'txRaw': 'raw_tx_hex',
+        },
+      };
+      final response = JsonRpcResponse.fromJson(jsonRPCResponse);
+      final result = (response.result as Map<String, dynamic>);
+      final txid = ReownCoreUtils.recursiveSearchForMapKey(
+        result,
+        'txId',
+      );
+      expect(txid, 'stack_tx_id');
+    });
   });
 }
