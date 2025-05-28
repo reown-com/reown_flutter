@@ -347,6 +347,8 @@ class __SmartAccountButtonsState extends State<_SmartAccountButtons> {
       smartContract = WCTOPETHContract();
     } else if (chainInfo.chainId == 'eip155:1') {
       smartContract = ERC20USDTContract();
+    } else if (chainInfo.chainId == 'eip155:57054') {
+      smartContract = WrappedSonicContract();
     } else {
       return SizedBox.shrink();
     }

@@ -362,6 +362,14 @@ class _MyHomePageState extends State<MyHomePage> {
         explorerUrl: 'https://sepolia.basescan.org/',
         isTestNetwork: true,
       ),
+      ReownAppKitModalNetworkInfo(
+        name: 'Sonic Blaze Testnet',
+        chainId: '57054',
+        currency: 'wS',
+        rpcUrl: 'https://rpc.blaze.soniclabs.com/',
+        explorerUrl: 'https://testnet.sonicscan.org/',
+        isTestNetwork: true,
+      ),
     ]);
     if (linkMode) {
       // When linkMode is true, the application operates in "Link Mode",
