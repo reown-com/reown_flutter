@@ -103,5 +103,24 @@ void main() {
         '73734B611DDA23D3F5F62E20A173B78AB8406AC5015094DA53F53D39B9EDB06C',
       );
     });
+
+    test('should parse bitcoin\'s sendTransfer and extract txid', () {
+      final jsonRPCResponse = {
+        'jsonrpc': '2.0',
+        'id': 1,
+        'result': {
+          'txid':
+              'f007551f169722ce74104d6673bd46ce193c624b8550889526d1b93820d725f7'
+        },
+      };
+      final response = JsonRpcResponse.fromJson(jsonRPCResponse);
+      final result = (response.result as Map<String, dynamic>);
+      final txid = ReownCoreUtils.recursiveSearchForMapKey(
+        result,
+        'txid',
+      );
+      expect(txid,
+          'f007551f169722ce74104d6673bd46ce193c624b8550889526d1b93820d725f7');
+    });
   });
 }
