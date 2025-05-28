@@ -2984,14 +2984,14 @@ class ReownSign implements IReownSign {
             result,
             'txid',
           );
-          return List<String>.from([txId]);
+          return <String>[txId];
         } catch (e) {
           core.logger.e('[$runtimeType] _collectHashes: bip122, $e');
         }
         return null;
       default:
         // default to EVM
-        return List<String>.from([response.result]);
+        return <String>[response.result];
     }
   }
 }
