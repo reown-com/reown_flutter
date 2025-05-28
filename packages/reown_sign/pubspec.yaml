@@ -16,7 +16,7 @@ dependencies:
   http: ^1.2.2
   pointycastle: ^3.9.1
   reown_core:
-     path: ../reown_core/
+    path: ../reown_core/
   web3dart: ^2.7.3
 
 dev_dependencies:
