@@ -2977,6 +2977,13 @@ class ReownSign implements IReownSign {
           core.logger.e('[$runtimeType] _collectHashes: sui, $e');
         }
         return null;
+      case 'tron':
+        final result = (response.result as Map<String, dynamic>);
+        final txID = ReownCoreUtils.recursiveSearchForMapKey(result, 'txID');
+        if (txID != null) {
+          return List<String>.from([txID]);
+        }
+        return null;
       default:
         // default to EVM
         return List<String>.from([response.result]);
