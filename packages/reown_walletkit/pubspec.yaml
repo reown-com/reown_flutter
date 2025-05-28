@@ -13,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   reown_core:
-     path: ../reown_core/
+    path: ../reown_core/
   reown_sign:
     path: ../reown_sign/
   reown_yttrium:

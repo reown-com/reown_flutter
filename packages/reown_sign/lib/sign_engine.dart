@@ -7,6 +7,8 @@ import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/i_generic_store.dart';
+import 'package:reown_core/utils/algorand_utils.dart';
+import 'package:reown_core/utils/sui_utils.dart';
 
 import 'package:reown_sign/reown_sign.dart';
 import 'package:reown_sign/utils/sign_api_validator_utils.dart';
@@ -2860,17 +2862,20 @@ class ReownSign implements IReownSign {
   }
 
   String? _collectContractAddressIfNeeded(String chainId, dynamic params) {
+    // only EVM request could have `data` parameter for contract call
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     if (namespace == 'eip155') {
-      final paramsMap = (params as List).first as Map<String, dynamic>;
       try {
-        final input = (paramsMap['input'] ?? paramsMap['data'])!;
-        if (ReownCoreUtils.isValidContractData(input)) {
-          final contractAddress = paramsMap['to'] as String;
+        final paramsMap = (params as List).first as Map<String, dynamic>;
+        final inputData = (paramsMap['input'] ?? paramsMap['data'])!;
+        if (ReownCoreUtils.isValidContractData(inputData)) {
+          final contractAddress = paramsMap['to'] as String?;
           return contractAddress;
         }
       } catch (e) {
-        core.logger.d('[$runtimeType] invalid contract data');
+        core.logger.d(
+          '[$runtimeType] invalid contract data, skipping contractAddress collection',
+        );
       }
     }
     return null;
@@ -2900,53 +2905,81 @@ class ReownSign implements IReownSign {
       return null;
     }
 
-    try {
-      switch (namespace) {
-        case 'solana':
-          try {
-            final result = (response.result as Map<String, dynamic>);
-            // if contain signature it's either solana_signTransaction or solana_signTransaction
-            final signature = ReownCoreUtils.recursiveSearchForMapKey(
-              result,
-              'signature',
-            );
-            if (signature != null) {
-              return List<String>.from([...signature]);
-            }
-            // if contain transactions it's solana_signAllTransactions
-            final transactions = ReownCoreUtils.recursiveSearchForMapKey(
-              result,
-              'transactions',
-            );
-            if (transactions != null) {
-              // Decode transactions and extract signature to send as TVF data
-              final signatures = (transactions as List).map((encodedTx) {
-                return ReownCoreUtils.extractSolanaSignature(encodedTx);
-              }).toList();
-              return signatures;
-            }
-          } catch (e) {
-            core.logger.e('[$runtimeType] _collectHashes: solana, $e');
+    switch (namespace) {
+      case 'solana':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          // if contain signature it's either solana_signTransaction or solana_signTransaction
+          final signature = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'signature',
+          );
+          if (signature != null) {
+            return List<String>.from([...signature]);
           }
-          return null;
-        case 'stacks':
-          try {
-            final result = (response.result as Map<String, dynamic>);
-            final txId = ReownCoreUtils.recursiveSearchForMapKey(
-              result,
-              'txid',
-            );
-            return List<String>.from([txId]);
-          } catch (e) {
-            core.logger.e('[$runtimeType] _collectHashes: stacks, $e');
+          // if contain transactions it's solana_signAllTransactions
+          final transactions = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'transactions',
+          );
+          if (transactions != null) {
+            // Decode transactions and extract signature to send as TVF data
+            final signatures = (transactions as List).map((encodedTx) {
+              return ReownCoreUtils.extractSolanaSignature(encodedTx);
+            }).toList();
+            return signatures;
           }
-          return null;
-        default:
-          return List<String>.from([response.result]);
-      }
-    } catch (e) {
-      core.logger.e('[$runtimeType] _collectHashes $e');
-      return null;
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: solana, $e');
+        }
+        return null;
+      case 'xrpl':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final txHash = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'hash',
+          );
+          if (txHash != null) {
+            return List<String>.from([txHash]);
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: xrpl, $e');
+        }
+        return null;
+      case 'algo':
+        try {
+          final result = (response.result as List);
+          final txHashesList = AlgorandChainUtils.calculateTxIDs(result);
+          return List<String>.from([...txHashesList]);
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: algo, $e');
+        }
+        return null;
+      case 'sui':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final signature = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'signature',
+          );
+          if (signature != null) {
+            final transactionBytes = ReownCoreUtils.recursiveSearchForMapKey(
+              result,
+              'transactionBytes',
+            );
+            final computedHash = SuiChainUtils.getSuiDigestFromEncodedTx(
+              transactionBytes,
+            );
+            return List<String>.from([computedHash]);
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: sui, $e');
+        }
+        return null;
+      default:
+        // default to EVM
+        return List<String>.from([response.result]);
     }
   }
 }
