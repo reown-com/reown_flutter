@@ -337,6 +337,7 @@ class __SmartAccountButtonsState extends State<_SmartAccountButtons> {
     )!;
 
     late final SmartContract smartContract;
+    String functionaName = 'transfer';
     if (chainInfo.chainId == 'eip155:11155111') {
       smartContract = SepoliaAAVEContract();
     } else if (chainInfo.chainId == 'eip155:42161') {
@@ -349,6 +350,9 @@ class __SmartAccountButtonsState extends State<_SmartAccountButtons> {
       smartContract = ERC20USDTContract();
     } else if (chainInfo.chainId == 'eip155:57054') {
       smartContract = WrappedSonicContract();
+    } else if (chainInfo.chainId == 'eip155:137') {
+      smartContract = PolygonContract();
+      functionaName = 'send';
     } else {
       return SizedBox.shrink();
     }
@@ -386,6 +390,7 @@ class __SmartAccountButtonsState extends State<_SmartAccountButtons> {
                   appKitModal: widget.appKitModal,
                   smartContract: smartContract,
                   action: 'write',
+                  functionaName: functionaName,
                 );
                 MethodDialog.show(
                   context,

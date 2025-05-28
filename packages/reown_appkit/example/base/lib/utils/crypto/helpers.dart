@@ -89,16 +89,24 @@ Future<SessionRequestParams?> getParams(
       );
     case 'eth_signTransaction':
     case 'eth_sendTransaction':
+      final addr = address.toLowerCase().replaceFirst('0x', '');
       return SessionRequestParams(
         method: method,
         params: [
-          Transaction(
-            from: EthereumAddress.fromHex(address),
-            // to: should be the recipient address
-            to: EthereumAddress.fromHex(address),
-            value: EtherAmount.fromInt(EtherUnit.finney, 12), // == 0.012
-            data: utf8.encode('0x'), // to make it work with some wallets
-          ).toJson(),
+          // Transaction(
+          //   from: EthereumAddress.fromHex(address),
+          //   // to: should be the recipient address
+          //   to: EthereumAddress.fromHex(address),
+          //   value: EtherAmount.fromInt(EtherUnit.finney, 12), // == 0.012
+          //   data: utf8.encode('0x'), // to make it work with some wallets
+          // ).toJson(),
+          {
+            'from': address,
+            'to': '0x303b63e785B656ca56ea5A5C1634Ab20C98895e1',
+            'value': '0x1464de808d27cea',
+            'data':
+                'c7c7f5b3000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000001464de808d27cea0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000${addr}00000000000000000000000000000000000000000000000000000000000076a500000000000000000000000013e6ef2e7b1e4ffe579d0f61337ca631b41ca52f0000000000000000000000000000000000000000000000008ac7230489e800000000000000000000000000000000000000000000000000008ac7230489e8000000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000016000000000000000000000000000000000000000000000000000000000000000160003010011010000000000000000000000000007a1200000000000000000000000000000000000000000000000000000000000000000000000000000000000086f72622e636c75620000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+          }
         ],
       );
     case 'solana_signMessage':
@@ -223,6 +231,7 @@ Future<dynamic> callSmartContract({
   required ReownAppKitModal appKitModal,
   required SmartContract smartContract,
   required String action,
+  String? functionaName,
 }) async {
   // Create DeployedContract object using contract's ABI and address
   final deployedContract = DeployedContract(
@@ -263,7 +272,7 @@ Future<dynamic> callSmartContract({
         topic: appKitModal.session!.topic,
         chainId: appKitModal.selectedChain!.chainId,
         deployedContract: deployedContract,
-        functionName: 'transfer',
+        functionName: functionaName ?? 'transfer',
         transaction: Transaction(
           from: EthereumAddress.fromHex(senderAddress),
         ),
