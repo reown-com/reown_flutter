@@ -47,6 +47,11 @@ class TVFData {
     // Hedera
     'hedera_signAndExecuteTransaction',
     'hedera_executeTransaction',
+    // TRON
+    'tron_signTransaction',
+    // XRPL
+    'xrpl_signTransaction',
+    'xrpl_signTransactionFor',
     // Algorand
     'algo_signTxn',
     // SUI

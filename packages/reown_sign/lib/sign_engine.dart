@@ -2933,6 +2933,20 @@ class ReownSign implements IReownSign {
           core.logger.e('[$runtimeType] _collectHashes: solana, $e');
         }
         return null;
+      case 'xrpl':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final txHash = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'hash',
+          );
+          if (txHash != null) {
+            return List<String>.from([txHash]);
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: xrpl, $e');
+        }
+        return null;
       case 'algo':
         try {
           final result = (response.result as List);
@@ -2963,14 +2977,11 @@ class ReownSign implements IReownSign {
           core.logger.e('[$runtimeType] _collectHashes: sui, $e');
         }
         return null;
-      case 'hedera':
+      case 'tron':
         final result = (response.result as Map<String, dynamic>);
-        final transactionId = ReownCoreUtils.recursiveSearchForMapKey(
-          result,
-          'transactionId',
-        );
-        if (transactionId != null) {
-          return List<String>.from([transactionId]);
+        final txID = ReownCoreUtils.recursiveSearchForMapKey(result, 'txID');
+        if (txID != null) {
+          return List<String>.from([txID]);
         }
         return null;
       default:
