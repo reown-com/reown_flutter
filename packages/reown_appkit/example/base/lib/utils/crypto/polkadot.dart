@@ -1,8 +1,17 @@
-import 'package:polkadart/polkadart.dart';
-import 'package:convert/convert.dart';
+import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:polkadart/apis/apis.dart' as dot_apis;
+import 'package:polkadart/polkadart.dart' as polkadart;
+import 'package:polkadart/scale_codec.dart' as scale_codec;
+
 import 'package:reown_appkit/reown_appkit.dart';
+
+import 'package:reown_appkit_dapp/generated/polkadot/polkadot.dart' as polkadot;
+import 'package:reown_appkit_dapp/generated/polkadot/types/polkadot_runtime/runtime_call.dart';
+
+import 'package:reown_appkit_dapp/generated/polkadot/types/sp_runtime/multiaddress/multi_address.dart'
+    as multi_address;
 
 enum PolkadotMethods {
   polkadotSignTransaction,
@@ -21,68 +30,273 @@ class Polkadot {
 
   static final Map<PolkadotEvents, String> events = {};
 
-  static Map<String, dynamic> transactionPayload(String address) => {
-        'specVersion': '0x00002468',
-        'transactionVersion': '0x0000000e',
-        'address': address,
-        'blockHash':
-            '0x554d682a74099d05e8b7852d19c93b527b5fae1e9e1969f6e1b82a2f09a14cc9',
-        'blockNumber': '0x00cb539c',
-        'era': '0xc501',
-        'genesisHash':
-            '0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e',
-        'method':
-            '0x0001784920616d207369676e696e672074686973207472616e73616374696f6e21',
-        'nonce': '0x00000000',
-        'signedExtensions': [
-          'CheckNonZeroSender',
-          'CheckSpecVersion',
-          'CheckTxVersion',
-          'CheckGenesis',
-          'CheckMortality',
-          'CheckNonce',
-          'CheckWeight',
-          'ChargeTransactionPayment',
-        ],
-        'tip': '0x00000000000000000000000000000000',
+  // static Future<dynamic> createExtrinsic2(
+  //   String address,
+  //   ReownAppKitModalNetworkInfo chainData,
+  // ) async {
+  //   print('$address ${chainData.chainId}');
+  //   final provider = polkadart.Provider.fromUri(Uri.parse(chainData.rpcUrl));
+  //   final polkadotApi = polkadot.Polkadot(provider);
+  //   final stateApi = dot_apis.StateApi(provider);
+  //   final runtime = await stateApi.getRuntimeVersion();
+  //   // final stateVersion = runtimeVersion.stateVersion;
+  //   // print('stateVersion $stateVersion');
+  //   // final specVersion = runtimeVersion.specVersion;
+  //   // print('specVersion $specVersion');
+  //   // final transactionVersion = runtimeVersion.transactionVersion;
+  //   // print('transactionVersion $transactionVersion');
+  //   final block = await provider.send('chain_getBlock', []);
+  //   print('block ${jsonEncode(block.result)}');
+  //   final blockNumber = int.parse(block.result['block']['header']['number']);
+  //   print('blockNumber $blockNumber');
+
+  //   final blockHash = (await provider.send('chain_getBlockHash', []))
+  //       .result
+  //       .replaceAll('0x', '');
+  //   print('blockHash $blockHash');
+  //   final genesisHash = (await provider.send('chain_getBlockHash', [0]))
+  //       .result
+  //       .replaceAll('0x', '');
+  //   print('genesisHash $genesisHash');
+
+  //   final authorApi = dot_apis.AuthorApi(provider);
+
+  //   final publicKey = PolkadotChainUtils.ss58AddressToPublicKey(address);
+  //   final multiAddress = multi_address.$MultiAddress().id(publicKey);
+
+  //   final RuntimeCall call = polkadotApi.tx.balances.transferKeepAlive(
+  //     dest: multiAddress,
+  //     value: BigInt.from(1000000000000), // 1 DOT
+  //   );
+  //   final encodedCall = call.encode();
+  //   print('encodedCall ${bytesToHex(encodedCall)}');
+
+  //   final systemApi = dot_apis.SystemApi(provider);
+  //   final nonce1 = await systemApi.accountNextIndex(address);
+  //   print('nonce1 $nonce1');
+
+  //   final payloadToSign = polkadart.SigningPayload(
+  //     method: encodedCall,
+  //     specVersion: runtime.specVersion,
+  //     transactionVersion: runtime.transactionVersion,
+  //     genesisHash: genesisHash,
+  //     blockHash: blockHash,
+  //     blockNumber: blockNumber,
+  //     eraPeriod: 64,
+  //     nonce: nonce1,
+  //     tip: BigInt.zero,
+  //   );
+
+  //   // Build payload and sign with sr25519 wallet
+  //   final encodedPayload = payloadToSign.encode(polkadotApi.registry);
+  //   print('Payload: ${bytesToHex(encodedPayload)}');
+
+  //   // final payloadMap = {
+  //   //   'specVersion':
+  //   //       '0x${payloadToSign.specVersion.toRadixString(16).padLeft(2, '0')}',
+  //   //   'transactionVersion':
+  //   //       '0x${payloadToSign.transactionVersion.toRadixString(16).padLeft(2, '0')}',
+  //   //   'address': address,
+  //   //   'blockHash': '0x${payloadToSign.blockHash}',
+  //   //   'blockNumber':
+  //   //       '0x${payloadToSign.blockNumber.toRadixString(16).padLeft(2, '0')}',
+  //   //   'era': '0x${payloadToSign.eraPeriod.toRadixString(16).padLeft(2, '0')}',
+  //   //   'genesisHash': '0x${payloadToSign.genesisHash}',
+  //   //   'method': '0x${bytesToHex(payloadToSign.method)}',
+  //   //   'nonce': '0x${payloadToSign.nonce.toRadixString(16).padLeft(2, '0')}',
+  //   //   'signedExtensions': payloadToSign.customSignedExtensions,
+  //   //   'tip': '0x${payloadToSign.tip.toRadixString(16).padLeft(2, '0')}',
+  //   //   // 'version': 4,
+  //   // };
+
+  //   print(payloadToSign);
+  //   // // Build extrinsic with sr25519 wallet
+  //   // final srExtrinsic = polkadart.ExtrinsicPayload(
+  //   //   signer: Uint8List.fromList(publicKey),
+  //   //   method: encodedCall,
+  //   //   signature: srSignature,
+  //   //   eraPeriod: 64,
+  //   //   blockNumber: blockNumber,
+  //   //   nonce: nonce1,
+  //   //   tip: 0,
+  //   // ).encode(polkadotApi.registry, polkadart.SignatureType.sr25519);
+  //   // // print('sr25519 wallet extrinsic: ${bytesToHex(srExtrinsic)}');
+
+  //   // final srHash = await authorApi.submitExtrinsic(srExtrinsic);
+  //   // print('Sr25519 extrinsic hash: ${bytesToHex(srHash)}');
+
+  //   return bytesToHex(encodedPayload);
+  // }
+
+  static Future<dynamic> createTransferKeepAlive(
+    String senderAddress,
+    ReownAppKitModalNetworkInfo chainData,
+    ReownAppKitModal appKitModal,
+  ) async {
+    try {
+      final provider = polkadart.Provider.fromUri(Uri.parse(chainData.rpcUrl));
+      final polkadotApi = polkadot.Polkadot(provider);
+      final stateApi = dot_apis.StateApi(provider);
+      final systemApi = dot_apis.SystemApi(provider);
+
+      // Get Runtime version
+      final runtimeVersion = await stateApi.getRuntimeVersion();
+      final specVersion = runtimeVersion.specVersion;
+      final transactionVersion = runtimeVersion.transactionVersion;
+
+      // Get Metadata
+      final customMetadata = await stateApi.getMetadata();
+      final registry = customMetadata.chainInfo.scaleCodec.registry;
+
+      // Get Block number
+      final getBlock = await provider.send('chain_getBlock', []);
+      final blockNumber =
+          int.parse(getBlock.result['block']['header']['number']);
+
+      // Get Block hash
+      final getBlockHash = await provider.send('chain_getBlockHash', []);
+      final blockHash = getBlockHash.result;
+
+      // Get genesis hash
+      final getGenesisHash = await provider.send('chain_getBlockHash', [0]);
+      final genesisHash = getGenesisHash.result;
+
+      // Construct call
+      final destAddress = '15MPNB1h2aaDg1ys2ZPEvVEhoyt78xUNPKwD5XfPpdJeoQ6H';
+      final destPubKey = PolkadotChainUtils.ss58AddressToPublicKey(destAddress);
+      final destination = multi_address.$MultiAddress().id(destPubKey);
+      final RuntimeCall call = polkadotApi.tx.balances.transferKeepAlive(
+        dest: destination,
+        value: BigInt.parse('11000000000'), // 1.1 DOT
+      );
+      final encodedCall = call.encode();
+
+      // Get nonce
+      final senderNonce = await systemApi.accountNextIndex(senderAddress);
+      // Sender public key
+      final publicKey = PolkadotChainUtils.ss58AddressToPublicKey(
+        senderAddress,
+      );
+
+      // Get SignedExtensions mapped with codecs Map<String, Codec<dynamic>>
+      // final signedExtensions = registry.getSignedExtensionTypes();
+
+      final payloadToSign = polkadart.SigningPayload(
+        method: encodedCall,
+        specVersion: specVersion,
+        transactionVersion: transactionVersion,
+        genesisHash: genesisHash,
+        blockHash: blockHash,
+        blockNumber: blockNumber,
+        eraPeriod: 0,
+        nonce: senderNonce,
+        tip: BigInt.zero,
+        // A custom Signed Extensions
+        // customSignedExtensions: {
+        //   'ChargeAssetTxPayment': {
+        //     'tip': BigInt.zero,
+        //     'asset_id': scale_codec.Option.none(),
+        //   },
+        // },
+      );
+
+      final customSignedExtensions = payloadToSign.customSignedExtensions.keys
+          .map((e) => e.toString())
+          .toList();
+
+      final payloadData = payloadToSign.toEncodedMap(registry);
+      final transactionPayload = {
+        ...payloadData, // specVersion, transactionVersion, era, nonce, tip, blockHash, genesisHash
+        'address': senderAddress,
+        'blockNumber': scale_codec.encodeHex(scale_codec.U32Codec.codec.encode(
+          payloadToSign.blockNumber,
+        )),
+        'method': scale_codec.encodeHex(payloadToSign.method),
+        'signedExtensions': customSignedExtensions,
         'version': 4,
       };
 
-  // https://polkadot.subscan.io/extrinsic/26099230-2
-  static Map<String, dynamic> createExtrinsic(String address) {
-    // Convert the address to a Uint8List for the signer
-    final signer = PolkadotChainUtils.ss58AddressToPublicKey(address);
+      // Send request through walletconnect
+      final topic = appKitModal.session!.topic ?? '';
+      final chainId = appKitModal.selectedChain?.chainId ?? '';
+      final requestParams = SessionRequestParams(
+        method: 'polkadot_signTransaction',
+        params: {
+          'address': senderAddress,
+          'transactionPayload': transactionPayload,
+        },
+      );
+      print(
+          '[PolkadotTest] requestParams ${jsonEncode(requestParams.toJson())}');
+      final result = await appKitModal.request(
+        topic: topic,
+        chainId: chainId,
+        request: requestParams,
+      );
 
-    // Balances.transfer_keep_alive method
-    final method =
-        Uint8List.fromList(hex.decode('0x0403'.replaceAll('0x', '')));
+      final String? signature = ReownCoreUtils.recursiveSearchForMapKey(
+        result,
+        'signature',
+      );
+      print('[PolkadotTest] signature $signature');
+      if (signature != null) {
+        // final id = response.id;
+        // final requestParams = pendingTVFRequests[id]!.requestParams;
+        // final params = requestParams as Map<String, dynamic>;
+        // final payload = ReownCoreUtils.recursiveSearchForMapKey(
+        //   params,
+        //   'transactionPayload',
+        // );
+        // final ss58Address = ReownCoreUtils.recursiveSearchForMapKey(
+        //   transactionPayload,
+        //   'address',
+        // );
+        // final publicKey = PolkadotChainUtils.ss58AddressToPublicKey(
+        //   ss58Address,
+        // );
+        final signedHex = PolkadotChainUtils.addSignatureToExtrinsic(
+          publicKey: publicKey,
+          hexSignature: signature,
+          payload: transactionPayload,
+        );
+        final derivedHash = PolkadotChainUtils.deriveExtrinsicHash(signedHex);
+        print('[PolkadotTest] deriveExtrinsicHash $derivedHash');
 
-    // Real signature from the transaction
-    final signature = Uint8List.fromList(hex.decode(
-      '0xfd65726905fb5e484613834fbba1101201b25117aca99cc0805ee2ff640285238ea9047ed7010b165610bba2b5abf2a702ccf19e6562e36d8b1c5176eee95f04'
-          .replaceAll('0x', ''),
-    ));
+        // FROM NOVA WALLET
+        // {
+        //   "signature": "0x0180a67697a21c77959be2933ffbd1b5bb8901364d051a47d563b5dbfdd381886e7f71190dcc7bc5d04e7127e955e40ef250ac731f55278fb15d305f7eeb82f98c",
+        //   "id": 2600629445
+        // }
 
-    return ExtrinsicPayload(
-      signer: Uint8List.fromList(signer),
-      method: method,
-      signature: signature,
-      eraPeriod: 32, // Should be determined from the chain's current era
-      blockNumber: 26099230, // Actual block number from the transaction
-      nonce: 34579, // Actual nonce from the transaction
-      tip: 0, // No tip in this transaction
-      // customSignedExtensions: {
-      //   'CheckNonZeroSender': null,
-      //   'CheckSpecVersion': '0x00002468', // From the transaction payload
-      //   'CheckTxVersion': '0x0000000e', // From the transaction payload
-      //   'CheckGenesis':
-      //       '0xe143f23803ac50e8f6f8e62695d1ce9e4e1d68aa36c1cd2cfd15340213f3423e', // From the transaction payload
-      //   'CheckMortality':
-      //       '0x554d682a74099d05e8b7852d19c93b527b5fae1e9e1969f6e1b82a2f09a14cc9', // From the transaction payload
-      //   'CheckNonce': 34579, // Same as the nonce
-      //   'CheckWeight': null,
-      //   'ChargeTransactionPayment': 0, // No tip
-      // },
-    ).toEncodedMap(null);
+        // final customExtensionPayload = payloadToSign.encode(registry);
+        // print('Encoded Payload: ${hex.encode(customExtensionPayload)}');
+
+        // final customSignature = sr25519Wallet.sign(customExtensionPayload);
+        // print('Signature: ${hex.encode(customSignature)}');
+
+        final customExtrinsic = polkadart.ExtrinsicPayload(
+          signer: Uint8List.fromList(publicKey),
+          method: payloadToSign.method,
+          signature: scale_codec.decodeHex(signature),
+          eraPeriod: payloadToSign.eraPeriod,
+          blockNumber: payloadToSign.blockNumber,
+          nonce: payloadToSign.nonce,
+          tip: payloadToSign.tip,
+          customSignedExtensions: payloadToSign.customSignedExtensions,
+        ).encode(
+          registry,
+          polkadart.SignatureType.sr25519,
+        );
+        print(
+            '[PolkadotTest] extrinsic payload: ${scale_codec.encodeHex(customExtrinsic)}');
+
+        final authorAssetHub = dot_apis.AuthorApi(provider);
+        final txHash = await authorAssetHub.submitExtrinsic(customExtrinsic);
+        print(
+            '[PolkadotTest] Extrinsic Hash: ${scale_codec.encodeHex(txHash)}');
+      }
+    } catch (e, s) {
+      print('[PolkadotTest] error: $e.\n$s');
+    }
   }
 }

@@ -19,6 +19,7 @@ dependencies:
   json_annotation: ^4.9.0
   package_info_plus: ^8.1.2
   polkadart: ^0.5.0
+  polkadart_cli: ^0.5.0
   qr_flutter: ^4.1.0
   reown_appkit:
     path: ../..
@@ -42,3 +43,14 @@ flutter:
 
   assets:
     - assets/
+
+polkadart:
+  output_dir: lib/generated
+  chains:
+    polkadot: wss://polkadot-rpc.dwellir.com
+    westend: wss://westend-asset-hub-rpc.polkadot.io
+    # kusama: wss://kusama-rpc.polkadot.io
+    # astar: wss://rpc.astar.network
+    paseo: wss://paseo-rpc.dwellir.com
+    assethub: wss://asset-hub-paseo-rpc.dwellir.com
+    encointer: wss://encointer-kusama.dotters.network

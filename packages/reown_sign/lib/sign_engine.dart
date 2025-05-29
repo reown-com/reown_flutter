@@ -2868,7 +2868,7 @@ class ReownSign implements IReownSign {
       try {
         final paramsMap = (params as List).first as Map<String, dynamic>;
         final inputData = (paramsMap['input'] ?? paramsMap['data'])!;
-        if (ReownCoreUtils.isValidContractData(inputData)) {
+        if (EvmChainUtils.isValidContractData(inputData)) {
           final contractAddress = paramsMap['to'] as String?;
           return contractAddress;
         }
@@ -2925,7 +2925,7 @@ class ReownSign implements IReownSign {
           if (transactions != null) {
             // Decode transactions and extract signature to send as TVF data
             final signatures = (transactions as List).map((encodedTx) {
-              return ReownCoreUtils.extractSolanaSignature(encodedTx);
+              return SolanaChainUtils.extractSolanaSignature(encodedTx);
             }).toList();
             return signatures;
           }
@@ -2975,6 +2975,40 @@ class ReownSign implements IReownSign {
           }
         } catch (e) {
           core.logger.e('[$runtimeType] _collectHashes: sui, $e');
+        }
+        return null;
+      case 'polkadot':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final signature = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'signature',
+          );
+          if (signature != null) {
+            final id = response.id;
+            final requestParams = pendingTVFRequests[id]!.requestParams;
+            final params = requestParams as Map<String, dynamic>;
+            final payload = ReownCoreUtils.recursiveSearchForMapKey(
+              params,
+              'transactionPayload',
+            );
+            final ss58Address = ReownCoreUtils.recursiveSearchForMapKey(
+              params,
+              'address',
+            );
+            final publicKey = PolkadotChainUtils.ss58AddressToPublicKey(
+              ss58Address,
+            );
+            final signedHex = PolkadotChainUtils.addSignatureToExtrinsic(
+              publicKey: publicKey,
+              hexSignature: signature,
+              payload: payload,
+            );
+            final hash = PolkadotChainUtils.deriveExtrinsicHash(signedHex);
+            return List<String>.from([hash]);
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: polkadot, $e');
         }
         return null;
       default:

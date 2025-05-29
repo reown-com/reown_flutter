@@ -177,15 +177,18 @@ Future<SessionRequestParams?> getParams(
         },
       );
     case 'polkadot_signTransaction':
-      //
-      final transactionPayload = Polkadot.transactionPayload(address);
-      return SessionRequestParams(
-        method: method,
-        params: {
-          'address': address,
-          'transactionPayload': transactionPayload,
-        },
-      );
+    //
+    // final transactionPayload = await Polkadot.createTransferKeepAlive(
+    //   address,
+    //   chainData,
+    // );
+    // return SessionRequestParams(
+    //   method: method,
+    //   params: {
+    //     'address': address,
+    //     'transactionPayload': transactionPayload,
+    //   },
+    // );
     case 'near_signMessage':
       return SessionRequestParams(
         method: method,

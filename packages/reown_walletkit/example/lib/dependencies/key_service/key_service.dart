@@ -151,6 +151,7 @@ class KeyService extends IKeyService {
     final eip155ChainKey = await _evmChainKey(mnemonic);
     final solanaChainKey = await _solanaChainKey(mnemonic);
     final polkadotChainKey = await _polkadotChainKey(mnemonic);
+    final polkadotTestChainKey = await _polkadotTestChainKey(mnemonic);
     final kadenaChainKey = await _kadenaChainKey(mnemonic);
     // final bitcoinChainKeys = await _bitcoinChainKey(mnemonic);
 
@@ -158,6 +159,7 @@ class KeyService extends IKeyService {
       eip155ChainKey,
       solanaChainKey,
       polkadotChainKey,
+      polkadotTestChainKey,
       kadenaChainKey,
     ]);
 
@@ -222,10 +224,9 @@ class KeyService extends IKeyService {
   }
 
   Future<ChainKey> _polkadotChainKey(String mnemonic) async {
-    final dotkeyPair = await keyring.Keyring().fromMnemonic(
-      mnemonic,
-      keyPairType: keyring.KeyPairType.sr25519,
-    );
+    final dotkeyPair = await keyring.Keyring().fromMnemonic(mnemonic);
+    // adjust the default ss58Format for Polkadot https://github.com/paritytech/ss58-registry/blob/main/ss58-registry.json
+    dotkeyPair.ss58Format = 0;
 
     final publicKey = bytesToHex(
       dotkeyPair.publicKey.bytes,
@@ -233,11 +234,34 @@ class KeyService extends IKeyService {
     );
 
     return ChainKey(
-      chains: ChainsDataList.polkadotChains.map((e) => e.chainId).toList(),
+      chains: ChainsDataList.polkadotChains
+          .where((c) => !c.isTestnet)
+          .map((e) => e.chainId)
+          .toList(),
       privateKey: mnemonic,
       publicKey: publicKey,
       address: dotkeyPair.address,
       namespace: 'polkadot',
+    );
+  }
+
+  Future<ChainKey> _polkadotTestChainKey(String mnemonic) async {
+    final dotkeyPair = await keyring.Keyring().fromMnemonic(mnemonic);
+
+    final publicKey = bytesToHex(
+      dotkeyPair.publicKey.bytes,
+      include0x: true,
+    );
+
+    return ChainKey(
+      chains: ChainsDataList.polkadotChains
+          .where((c) => c.isTestnet)
+          .map((e) => e.chainId)
+          .toList(),
+      privateKey: mnemonic,
+      publicKey: publicKey,
+      address: dotkeyPair.address,
+      namespace: 'polkadot_test',
     );
   }
 

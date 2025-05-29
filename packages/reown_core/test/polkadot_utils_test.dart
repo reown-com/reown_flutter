@@ -157,7 +157,6 @@ void main() {
         payload: payload,
       );
       final computedHash = PolkadotChainUtils.deriveExtrinsicHash(signedHex);
-      print(computedHash);
       expect(
         computedHash,
         '0x48ea609de9eb8fa68dca201569e244fd9b01e054ff55db1637ed8062fde201f0',
