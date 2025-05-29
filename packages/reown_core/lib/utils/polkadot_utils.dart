@@ -17,34 +17,58 @@ class PolkadotChainUtils {
     return decoded.sublist(1, 33);
   }
 
-  static String addSignatureToExtrinsic({
-    required List<int> publicKey,
+  static Uint8List addSignatureToExtrinsic({
+    required Uint8List publicKey,
     required String hexSignature,
     required Map<String, dynamic> payload,
   }) {
-    final version = [0x84];
-    // final publicKey = _ss58ToPublic(ss58Address);
-
-    final signaturePrefix = [0x01]; // sr25519
+    final method = payload['method'] is Uint8List
+        ? (payload['method'] as Uint8List).toList()
+        : hex.decode(_normalizeHex(payload['method']));
     final signature = hex.decode(_normalizeHex(hexSignature));
-    final fullSignature = signaturePrefix + signature;
 
-    final era = hex.decode(_normalizeHex(payload['era']));
-    final nonce = _compactEncodeInt(_parseHex(payload['nonce']));
-    final tip = _compactEncodeInt(_parseHex(payload['tip']));
-    final method = hex.decode(_normalizeHex(payload['method']));
+    // Extrinsic version: signed + version (0x84 for sr25519, version 4)
+    const extrinsicVersion = 0x84;
 
-    final fullBytes = Uint8List.fromList([
-      ...version,
-      ...publicKey,
-      ...fullSignature,
-      ...era,
-      ...nonce,
-      ...tip,
-      ...method
-    ]);
+    // Signature type (sr25519 = 1)
+    const signatureType = 0x01;
 
-    return '0x${hex.encode(fullBytes)}';
+    // Era
+    final eraValue = payload['era'].toString();
+    final eraPeriod = _parseHex(eraValue);
+    final eraBytes = _compactEncodeInt(eraPeriod);
+
+    // Nonce - decode from hex and compact encode
+    final nonceValue = _parseHex(payload['nonce']);
+    final nonceBytes = _compactEncodeInt(nonceValue);
+
+    // Tip - decode from hex and compact encode
+    final tipValue = BigInt.parse(_normalizeHex(payload['tip']), radix: 16);
+    final tipBytes = _compactEncodeBigInt(tipValue);
+
+    final extrinsicBody = BytesBuilder();
+
+    extrinsicBody.add(publicKey); // Signer (public key)
+    extrinsicBody.addByte(signatureType); // Signature type (sr25519)
+    extrinsicBody.add(signature); // Signature
+    extrinsicBody.add(eraBytes); // Era
+    extrinsicBody.add(nonceBytes); // Nonce
+    extrinsicBody.add(tipBytes); // Tip
+    extrinsicBody.add(method); // Encoded method
+
+    final bodyBytes = extrinsicBody.toBytes();
+
+    final lengthPrefix = _compactEncodeBigInt(
+        BigInt.from(bodyBytes.length + 1)); // +1 for version byte
+
+    final full = BytesBuilder();
+    full.add(lengthPrefix);
+    full.addByte(extrinsicVersion);
+    full.add(bodyBytes);
+
+    return full.toBytes();
+
+    // return '0x${hex.encode(full.toBytes())}';
   }
 
   static String _normalizeHex(dynamic input) {
@@ -59,24 +83,38 @@ class PolkadotChainUtils {
     return int.parse(raw, radix: 16);
   }
 
-  static List<int> _compactEncodeInt(int value) {
-    if (value < 1 << 6) {
-      return [(value << 2)];
-    } else if (value < 1 << 14) {
+  static List<int> _compactEncodeInt(dynamic value) {
+    // Convert int to BigInt if needed
+    final bigValue = value is BigInt ? value : BigInt.from(value);
+
+    if (bigValue < BigInt.from(1 << 6)) {
+      return [(bigValue.toInt() << 2)];
+    } else if (bigValue < BigInt.from(1 << 14)) {
       return [
-        ((value << 2) | 0x01) & 0xff,
-        ((value >> 6) & 0xff),
+        ((bigValue.toInt() << 2) | 0x01) & 0xff,
+        ((bigValue.toInt() >> 6) & 0xff),
+      ];
+    } else if (bigValue < BigInt.from(1 << 30)) {
+      final val = bigValue.toInt() << 2 | 0x02;
+      return [
+        val & 0xff,
+        (val >> 8) & 0xff,
+        (val >> 16) & 0xff,
+        (val >> 24) & 0xff,
       ];
     } else {
-      throw UnimplementedError('Only supports small ints for now');
-    }
-  }
+      // big-integer mode
+      final bytes = _bigIntToLEBytes(bigValue);
+      final len = bytes.length;
+      if (len > 67) {
+        throw ArgumentError('Compact encoding supports max 2^536-1');
+      }
 
-  static String deriveExtrinsicHash(String signed) {
-    final digest = Blake2bDigest(digestSize: 32); // 256-bit
-    final input = hex.decode(signed.replaceAll('0x', ''));
-    final bytes = digest.process(Uint8List.fromList(input));
-    return '0x${hex.encode(bytes)}';
+      return [
+        ((len - 4) << 2) | 0x03,
+        ...bytes,
+      ];
+    }
   }
 
   /// SCALE-encodes a BigInt using compact encoding.
@@ -126,11 +164,18 @@ class PolkadotChainUtils {
   }
 
   /// Constructs the method field for transferKeepAlive.
-  static String constructHexMethod(String destAddress, BigInt amount) {
-    final callIndex = [0x04, 0x03];
-    final dest = ss58AddressToPublicKey(destAddress);
-    final value = _compactEncodeBigInt(amount);
-    final method = [...callIndex, ...dest, ...value];
-    return '0x${method.map((b) => b.toRadixString(16).padLeft(2, '0')).join()}';
+  // static String constructHexMethod(String destAddress, BigInt amount) {
+  //   final callIndex = [0x04, 0x03];
+  //   final dest = ss58AddressToPublicKey(destAddress);
+  //   final value = _compactEncodeBigInt(amount);
+  //   final method = [...callIndex, ...dest, ...value];
+  //   return '0x${method.map((b) => b.toRadixString(16).padLeft(2, '0')).join()}';
+  // }
+
+  static String deriveExtrinsicHash(String signed) {
+    final digest = Blake2bDigest(digestSize: 32); // 256-bit
+    final input = hex.decode(signed.replaceAll('0x', ''));
+    final bytes = digest.process(Uint8List.fromList(input));
+    return hex.encode(bytes);
   }
 }

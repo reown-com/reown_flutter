@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
 
+import 'package:convert/convert.dart';
 import 'package:event/event.dart';
 import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
@@ -2999,11 +3001,12 @@ class ReownSign implements IReownSign {
             final publicKey = PolkadotChainUtils.ss58AddressToPublicKey(
               ss58Address,
             );
-            final signedHex = PolkadotChainUtils.addSignatureToExtrinsic(
-              publicKey: publicKey,
+            final extrinsic = PolkadotChainUtils.addSignatureToExtrinsic(
+              publicKey: Uint8List.fromList(publicKey),
               hexSignature: signature,
               payload: payload,
             );
+            final signedHex = hex.encode(extrinsic);
             final hash = PolkadotChainUtils.deriveExtrinsicHash(signedHex);
             return List<String>.from([hash]);
           }

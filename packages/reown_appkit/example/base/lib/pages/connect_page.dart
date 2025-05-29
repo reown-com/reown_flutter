@@ -288,11 +288,11 @@ class __RequestButtonsState extends State<_RequestButtons> {
               buttonSize: BaseButtonSize.regular,
               onTap: () async {
                 if (method == 'polkadot_signTransaction') {
-                  await Polkadot.createTransferKeepAlive(
-                    address,
-                    chainInfo!,
-                    widget.appKitModal,
-                  );
+                  await Polkadot.createTransferKeepAlive2(
+                      // address,
+                      // chainInfo!,
+                      // widget.appKitModal,
+                      );
                   // return SessionRequestParams(
                   //   method: method,
                   //   params: {
