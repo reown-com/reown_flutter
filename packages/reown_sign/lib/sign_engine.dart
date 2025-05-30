@@ -8,6 +8,7 @@ import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/i_generic_store.dart';
 import 'package:reown_core/utils/algorand_utils.dart';
+import 'package:reown_core/utils/near_utils.dart';
 import 'package:reown_core/utils/sui_utils.dart';
 
 import 'package:reown_sign/reown_sign.dart';
@@ -2978,10 +2979,14 @@ class ReownSign implements IReownSign {
         }
         return null;
       case 'tron':
-        final result = (response.result as Map<String, dynamic>);
-        final txID = ReownCoreUtils.recursiveSearchForMapKey(result, 'txID');
-        if (txID != null) {
-          return List<String>.from([txID]);
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final txID = ReownCoreUtils.recursiveSearchForMapKey(result, 'txID');
+          if (txID != null) {
+            return List<String>.from([txID]);
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: tron, $e');
         }
         return null;
       case 'hedera':
@@ -2996,6 +3001,15 @@ class ReownSign implements IReownSign {
           }
         } catch (e) {
           core.logger.e('[$runtimeType] _collectHashes: hedera, $e');
+        }
+        return null;
+      case 'near':
+        try {
+          final result = NearChainUtils.parseResponse(response.result);
+          final hash = NearChainUtils.computeNearHashFromTxBytes(result);
+          return <String>[hash];
+        } catch (e) {
+          core.logger.d('[$runtimeType] _collectHashes: near, $e');
         }
         return null;
       default:
