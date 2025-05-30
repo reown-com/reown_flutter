@@ -8,6 +8,7 @@ import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.d
 import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/polkadot_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/tron_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/deep_link_handler.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
@@ -212,6 +213,17 @@ class _MyHomePageState extends State<MyHomePage> {
       for (final chainData in ChainsDataList.cosmosChains) {
         GetIt.I.registerSingleton<CosmosService>(
           CosmosService(
+            chainSupported: chainData,
+            walletKitService: _walletKitService,
+          ),
+          instanceName: chainData.chainId,
+        );
+      }
+
+      // Support Tron Chains
+      for (final chainData in ChainsDataList.tronChains) {
+        GetIt.I.registerSingleton<TronService>(
+          TronService(
             chainSupported: chainData,
             walletKitService: _walletKitService,
           ),
