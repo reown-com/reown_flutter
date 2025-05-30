@@ -27,11 +27,15 @@ class PolkadotChainUtils {
         : hex.decode(_normalizeHex(payload['method']));
     final signature = hex.decode(_normalizeHex(hexSignature));
 
-    // Extrinsic version: signed + version (0x84 for sr25519, version 4)
-    const extrinsicVersion = 0x84;
+    const signedFlag = 0x80; // For signed extrinsics
+    final version = int.parse((payload['version'] ?? 4).toString());
 
-    // Signature type (sr25519 = 1)
-    const signatureType = 0x01;
+    // Extrinsic version: signed + version (0x84 for sr25519, version 4)
+    final int extrinsicVersion = signedFlag | version; // 0x80 + 0x04 = 0x84
+
+    // Detect signature type by evaluating the address if possible
+    final ss58Address = payload['address']?.toString() ?? '';
+    final signatureType = _guessSignatureTypeFromAddress(ss58Address);
 
     // Era
     final eraValue = payload['era'].toString();
@@ -67,8 +71,33 @@ class PolkadotChainUtils {
     full.add(bodyBytes);
 
     return full.toBytes();
+  }
 
-    // return '0x${hex.encode(full.toBytes())}';
+  static int _guessSignatureTypeFromAddress(String address) {
+    try {
+      final decoded = base58.decode(address);
+
+      if (decoded.isEmpty) return 0x01; // default to sr25519
+
+      final prefix = decoded[0];
+
+      // Some known prefixes
+      switch (prefix) {
+        case 0: // Polkadot
+        case 2: // Kusama
+        case 1: // BareSr25519
+          return 0x01; // sr25519
+        case 42:
+          return 0x00; // ed25519
+        default:
+          return 0x01; // fallback to sr25519
+      }
+    } catch (_) {
+      if (address.startsWith('0x')) {
+        return 0x02; // ecdsa
+      }
+      return 0x01; // fallback
+    }
   }
 
   static String _normalizeHex(dynamic input) {
