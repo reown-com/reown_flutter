@@ -287,27 +287,35 @@ class __RequestButtonsState extends State<_RequestButtons> {
               borderRadius: BorderRadius.all(Radius.circular(30.0)),
               buttonSize: BaseButtonSize.regular,
               onTap: () async {
-                final params = await getParams(method, address, chainInfo!);
-                if (params?.params != null) {
-                  final future = widget.appKitModal.request(
-                    topic: topic,
-                    chainId: chainId,
-                    request: params!,
+                if (method == 'polkadot_signTransaction') {
+                  await Polkadot.createTransferKeepAlive(
+                    address, // from address
+                    '15MPNB1h2aaDg1ys2ZPEvVEhoyt78xUNPKwD5XfPpdJeoQ6H', // to address
+                    widget.appKitModal,
                   );
-                  final result = await MethodDialog.show(
-                    context,
-                    method,
-                    future,
-                  );
-                  debugPrint(result);
                 } else {
-                  toastification.show(
-                    type: ToastificationType.error,
-                    title: const Text('Method not implemented'),
-                    context: context,
-                    autoCloseDuration: Duration(seconds: 2),
-                    alignment: Alignment.bottomCenter,
-                  );
+                  final params = await getParams(method, address, chainInfo!);
+                  if (params?.params != null) {
+                    final future = widget.appKitModal.request(
+                      topic: topic,
+                      chainId: chainId,
+                      request: params!,
+                    );
+                    final result = await MethodDialog.show(
+                      context,
+                      method,
+                      future,
+                    );
+                    debugPrint(result);
+                  } else {
+                    toastification.show(
+                      type: ToastificationType.error,
+                      title: const Text('Method not implemented'),
+                      context: context,
+                      autoCloseDuration: Duration(seconds: 2),
+                      alignment: Alignment.bottomCenter,
+                    );
+                  }
                 }
               },
             ),
