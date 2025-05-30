@@ -15,6 +15,7 @@ class PolkadotChainUtils {
     return decoded.sublist(1, 33);
   }
 
+  // SCALE-encoding of the unsigned payload along with the signature
   static Uint8List addSignatureToExtrinsic({
     required Uint8List publicKey,
     required String hexSignature,

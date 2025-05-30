@@ -18,6 +18,8 @@ void main() {
       // utilExtrinsic Hex: 3d0284be0a9f19fe636b4b1a2efaeb75eaa978cff38960c9fda0f532fe4961b885cb63017e991d9bb5c47c4d2a44a125d410854835afec24ae58f30ee6fa0f764757b4409bde94c559567aeba33f9bd190209f6d2121afe32f267b593aa6cef2a87a808d029403006000050300c07d211d3c181df768d9d9d41df6f14f9d116d9c1906f38153b208259c315b4b02286bee
       // extrinsic hash: d0856fc78eb845761b1f60691a5cba2321ca514ab0b76912d617b8cf7fe5060f
 
+      // Request params
+
       final method = [
         5,
         3,
@@ -59,7 +61,8 @@ void main() {
         107,
         238
       ];
-      final payloadToSign = {
+
+      final transactionPayload = {
         'specVersion': 'c9550f00',
         'transactionVersion': '1a000000',
         'address': '15JBFhDp1rQycRFuCtkr2VouMiWyDzh3qRUPA8STY53mdRmM',
@@ -76,6 +79,13 @@ void main() {
         'version': 4,
       };
 
+      final requestParams = {
+        'address': '15JBFhDp1rQycRFuCtkr2VouMiWyDzh3qRUPA8STY53mdRmM',
+        'transactionPayload': transactionPayload,
+      };
+
+      // Wallet response
+
       final jsonRPCResponse = {
         'id': 1,
         'jsonrpc': '2.0',
@@ -85,6 +95,8 @@ void main() {
               '7e991d9bb5c47c4d2a44a125d410854835afec24ae58f30ee6fa0f764757b4409bde94c559567aeba33f9bd190209f6d2121afe32f267b593aa6cef2a87a808d'
         },
       };
+
+      // Expected values
 
       const expectedSignedExtrinsicHex =
           '3d028400be0a9f19fe636b4b1a2efaeb75eaa978cff38960c9fda0f532fe4961b885cb63017e991d9bb5c47c4d2a44a125d410854835afec24ae58f30ee6fa0f764757b4409bde94c559567aeba33f9bd190209f6d2121afe32f267b593aa6cef2a87a808de500180000050300c07d211d3c181df768d9d9d41df6f14f9d116d9c1906f38153b208259c315b4b02286bee';
@@ -110,25 +122,28 @@ void main() {
         '7e991d9bb5c47c4d2a44a125d410854835afec24ae58f30ee6fa0f764757b4409bde94c559567aeba33f9bd190209f6d2121afe32f267b593aa6cef2a87a808d',
       );
 
-      final address = ReownCoreUtils.recursiveSearchForMapKey(
-        payloadToSign,
+      final payload = ReownCoreUtils.recursiveSearchForMapKey(
+        requestParams,
+        'transactionPayload',
+      );
+      final ss58Address = ReownCoreUtils.recursiveSearchForMapKey(
+        requestParams,
         'address',
       );
-      expect(address, '15JBFhDp1rQycRFuCtkr2VouMiWyDzh3qRUPA8STY53mdRmM');
-      final publicKey = PolkadotChainUtils.ss58AddressToPublicKey(address);
-      final utilsExtrinsicBytes = PolkadotChainUtils.addSignatureToExtrinsic(
+      expect(ss58Address, '15JBFhDp1rQycRFuCtkr2VouMiWyDzh3qRUPA8STY53mdRmM');
+      final publicKey = PolkadotChainUtils.ss58AddressToPublicKey(
+        ss58Address,
+      );
+      final extrinsic = PolkadotChainUtils.addSignatureToExtrinsic(
         publicKey: Uint8List.fromList(publicKey),
         hexSignature: signature,
-        payload: payloadToSign,
+        payload: payload,
       );
+      final signedExtrinsic = hex.encode(extrinsic);
+      expect(signedExtrinsic, expectedSignedExtrinsicHex);
 
-      final utilsSignedExtrinsicHex = hex.encode(utilsExtrinsicBytes);
-      expect(utilsSignedExtrinsicHex, expectedSignedExtrinsicHex);
-
-      final utilsDerivedHash = PolkadotChainUtils.deriveExtrinsicHash(
-        utilsSignedExtrinsicHex,
-      );
-      expect(utilsDerivedHash, expectedHash);
+      final hash = PolkadotChainUtils.deriveExtrinsicHash(signedExtrinsic);
+      expect(hash, expectedHash);
     });
   });
 }
