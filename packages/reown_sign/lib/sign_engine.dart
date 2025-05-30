@@ -3033,7 +3033,7 @@ class ReownSign implements IReownSign {
           final hash = NearChainUtils.computeNearHashFromTxBytes(result);
           return <String>[hash];
         } catch (e) {
-          core.logger.d('[$runtimeType] _collectHashes: near, $e');
+          core.logger.e('[$runtimeType] _collectHashes: near, $e');
         }
         return null;
       default:
