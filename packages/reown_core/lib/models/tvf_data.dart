@@ -46,6 +46,11 @@ class TVFData {
     'wallet_sendCalls',
     // Bitcoin
     'sendTransfer',
+    // Hedera
+    'hedera_signAndExecuteTransaction',
+    'hedera_executeTransaction',
+    // TRON
+    'tron_signTransaction',
     // XRPL
     'xrpl_signTransaction',
     'xrpl_signTransactionFor',

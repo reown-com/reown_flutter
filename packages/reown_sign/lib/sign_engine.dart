@@ -2977,16 +2977,25 @@ class ReownSign implements IReownSign {
           core.logger.e('[$runtimeType] _collectHashes: sui, $e');
         }
         return null;
-      case 'bip122':
+      case 'tron':
+        final result = (response.result as Map<String, dynamic>);
+        final txID = ReownCoreUtils.recursiveSearchForMapKey(result, 'txID');
+        if (txID != null) {
+          return List<String>.from([txID]);
+        }
+        return null;
+      case 'hedera':
         try {
           final result = (response.result as Map<String, dynamic>);
-          final txId = ReownCoreUtils.recursiveSearchForMapKey(
+          final transactionId = ReownCoreUtils.recursiveSearchForMapKey(
             result,
-            'txid',
+            'transactionId',
           );
-          return <String>[txId];
+          if (transactionId != null) {
+            return List<String>.from([transactionId]);
+          }
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: bip122, $e');
+          core.logger.e('[$runtimeType] _collectHashes: hedera, $e');
         }
         return null;
       default:
