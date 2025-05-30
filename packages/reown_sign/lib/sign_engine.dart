@@ -2998,9 +2998,21 @@ class ReownSign implements IReownSign {
           core.logger.e('[$runtimeType] _collectHashes: hedera, $e');
         }
         return null;
+      case 'bip122':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final txId = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'txid',
+          );
+          return <String>[txId];
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: bip122, $e');
+        }
+        return null;
       default:
         // default to EVM
-        return List<String>.from([response.result]);
+        return <String>[response.result];
     }
   }
 }

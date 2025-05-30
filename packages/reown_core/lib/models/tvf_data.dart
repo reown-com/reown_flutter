@@ -44,6 +44,8 @@ class TVFData {
     'solana_signTransaction',
     'solana_signAllTransactions',
     'wallet_sendCalls',
+    // Bitcoin
+    'sendTransfer',
     // Hedera
     'hedera_signAndExecuteTransaction',
     'hedera_executeTransaction',
