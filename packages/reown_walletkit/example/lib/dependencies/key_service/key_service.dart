@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:developer' as dev;
 
 import 'package:convert/convert.dart';
+import 'package:crypto/crypto.dart';
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:pointycastle/digests/keccak.dart';
 import 'package:pointycastle/ecc/curves/secp256k1.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bip32/bip32_base.dart';
@@ -147,10 +149,11 @@ class KeyService extends IKeyService {
     await _prefs.remove('rwkt_chain_keys');
     await _prefs.setString('rwkt_mnemonic', mnemonic);
 
-    final eip155ChainKey = await _evmChainKey(mnemonic);
+    final eip155ChainKey = _evmChainKey(mnemonic);
     final solanaChainKey = await _solanaChainKey(mnemonic);
-    final polkadotChainKey = await _polkadotChainKey(mnemonic);
-    final kadenaChainKey = await _kadenaChainKey(mnemonic);
+    final polkadotChainKey = _polkadotChainKey(mnemonic);
+    final kadenaChainKey = _kadenaChainKey(mnemonic);
+    final tronChainKey = _tronChainKey(mnemonic);
     // final bitcoinChainKeys = await _bitcoinChainKey(mnemonic);
 
     _keys = List<ChainKey>.from([
@@ -158,6 +161,7 @@ class KeyService extends IKeyService {
       solanaChainKey,
       polkadotChainKey,
       kadenaChainKey,
+      tronChainKey,
     ]);
 
     await _saveKeys();
@@ -168,7 +172,7 @@ class KeyService extends IKeyService {
     await _prefs.setStringList('rwkt_chain_keys', chainKeys);
   }
 
-  Future<ChainKey> _evmChainKey(String mnemonic) async {
+  ChainKey _evmChainKey(String mnemonic) {
     final keyPair = _keyPairFromMnemonic(mnemonic);
     return _chainKeyFromPrivate(keyPair);
   }
@@ -220,8 +224,7 @@ class KeyService extends IKeyService {
     );
   }
 
-  Future<ChainKey> _polkadotChainKey(String mnemonic) async {
-    final mnemonic = await getMnemonic();
+  ChainKey _polkadotChainKey(String mnemonic) {
     final seed = bip39.mnemonicToSeed(mnemonic);
     final root = bip32.BIP32.fromSeed(seed);
     final polkadotNode = root.derivePath("m/44'/354'/0'/0'");
@@ -239,53 +242,6 @@ class KeyService extends IKeyService {
       publicKey: base58.encode(publicKey),
       address: ss58Address,
       namespace: 'polkadot',
-    );
-  }
-
-  Future<ChainKey> _kadenaChainKey(String mnemonic) async {
-    final mnemonic = await getMnemonic();
-    final seed = bip39.mnemonicToSeed(mnemonic);
-    final root = bip32.BIP32.fromSeed(seed);
-    // 626' is Kadena's BIP44 Coin Type
-    final kadenaNode = root.derivePath("m/44'/626'/0'/0/0");
-
-    // Step 4: Extract Private and Public Keys
-    Uint8List privateKey = kadenaNode.privateKey!;
-    Uint8List publicKey = kadenaNode.publicKey;
-
-    // Step 5: Convert to String Formats
-    String privateKeyHex = bytesToHex(privateKey);
-    String publicKeyHex = bytesToHex(publicKey);
-
-    return ChainKey(
-      chains: ChainsDataList.kadenaChains.map((e) => e.chainId).toList(),
-      privateKey: privateKeyHex,
-      publicKey: publicKeyHex,
-      address: publicKeyHex,
-      namespace: 'kadena',
-    );
-  }
-
-  // ignore: unused_element
-  Future<ChainKey> _bitcoinChainKey(String mnemonic) async {
-    final mnemonic = await getMnemonic();
-    final seed = bip39.mnemonicToSeed(mnemonic);
-    final root = bip32.BIP32.fromSeed(seed, BITCOIN);
-    final bitcoinNode = root.derivePath("m/84'/0'/0'/0/0");
-
-    final privateKeyBytes = bitcoinNode.privateKey!;
-    final privateKey = bitcoin.ECPrivate.fromBytes(privateKeyBytes);
-    final publicKey = privateKey.getPublic();
-    final address = publicKey.toSegwitAddress().toAddress(
-          bitcoin.BitcoinNetwork.mainnet,
-        );
-
-    return ChainKey(
-      chains: ChainsDataList.bitcoinChains.map((e) => e.chainId).toList(),
-      privateKey: privateKey.toWif(),
-      publicKey: base58.encode(Uint8List.fromList(publicKey.toBytes())),
-      address: address,
-      namespace: 'bip122',
     );
   }
 
@@ -324,5 +280,92 @@ class KeyService extends IKeyService {
     final hashBytes = ByteData(32);
     hashBytes.setUint32(0, hash, Endian.little);
     return hashBytes.buffer.asUint8List();
+  }
+
+  ChainKey _kadenaChainKey(String mnemonic) {
+    final seed = bip39.mnemonicToSeed(mnemonic);
+    final root = bip32.BIP32.fromSeed(seed);
+    // 626' is Kadena's BIP44 Coin Type
+    final kadenaNode = root.derivePath("m/44'/626'/0'/0/0");
+
+    // Step 4: Extract Private and Public Keys
+    Uint8List privateKey = kadenaNode.privateKey!;
+    Uint8List publicKey = kadenaNode.publicKey;
+
+    // Step 5: Convert to String Formats
+    String privateKeyHex = bytesToHex(privateKey);
+    String publicKeyHex = bytesToHex(publicKey);
+
+    return ChainKey(
+      chains: ChainsDataList.kadenaChains.map((e) => e.chainId).toList(),
+      privateKey: privateKeyHex,
+      publicKey: publicKeyHex,
+      address: publicKeyHex,
+      namespace: 'kadena',
+    );
+  }
+
+  ChainKey _tronChainKey(String mnemonic) {
+    final seed = bip39.mnemonicToSeed(mnemonic);
+    final root = bip32.BIP32.fromSeed(seed);
+    final tronNode = root.derivePath("m/44'/195'/0'/0/0");
+
+    // Step 4: Extract Private and Public Keys
+    Uint8List privateKey = tronNode.privateKey!;
+    Uint8List publicKey = tronNode.publicKey;
+
+    // Compute Keccak256 hash of public key (drop 0x04 byte if uncompressed)
+    final keccak = KeccakDigest(256);
+    final hashed = keccak.process(publicKey.sublist(1)); // remove 0x04 prefix
+
+    // Get last 20 bytes of hash
+    // Tron uses 0x41 prefix
+    final addressBytes = Uint8List.fromList([0x41] + hashed.sublist(12));
+
+    // Base58Check encode
+    final address = _toTronAddress(addressBytes);
+
+    return ChainKey(
+      chains: ChainsDataList.tronChains.map((e) => e.chainId).toList(),
+      privateKey: bytesToHex(privateKey, include0x: true),
+      publicKey: bytesToHex(publicKey, include0x: true),
+      address: address,
+      namespace: 'tron',
+    );
+  }
+
+  Uint8List _sha256Twice(Uint8List input) {
+    final first = sha256.convert(input).bytes;
+    final second = sha256.convert(first).bytes;
+    return Uint8List.fromList(second);
+  }
+
+  String _toTronAddress(Uint8List addressBytesWith41Prefix) {
+    final checksum = _sha256Twice(addressBytesWith41Prefix).sublist(0, 4);
+    final full = Uint8List.fromList([...addressBytesWith41Prefix, ...checksum]);
+    return base58.encode(full);
+  }
+
+  // ignore: unused_element
+  Future<ChainKey> _bitcoinChainKey(String mnemonic) async {
+    final mnemonic = await getMnemonic();
+    final seed = bip39.mnemonicToSeed(mnemonic);
+    final root = bip32.BIP32.fromSeed(seed, BITCOIN);
+    final bitcoinNode = root.derivePath("m/84'/0'/0'/0/0");
+
+    final privateKeyBytes = bitcoinNode.privateKey!;
+    final privateKey = bitcoin.ECPrivate.fromBytes(privateKeyBytes);
+    final publicKey = privateKey.getPublic();
+    final address = publicKey.toSegwitAddress().toAddress(
+          bitcoin.BitcoinNetwork.mainnet,
+        );
+
+    return ChainKey(
+      chains: ChainsDataList.bitcoinChains.map((e) => e.chainId).toList(),
+      privateKey: privateKey.toWif(),
+      publicKey: base58.encode(Uint8List.fromList(publicKey.toBytes())),
+      address: address,
+      namespace: 'bip122',
+    );
   }
 }

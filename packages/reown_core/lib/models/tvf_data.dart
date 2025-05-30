@@ -47,5 +47,18 @@ class TVFData {
     // Near
     'near_signTransaction',
     'near_signTransactions',
+    // Hedera
+    'hedera_signAndExecuteTransaction',
+    'hedera_executeTransaction',
+    // TRON
+    'tron_signTransaction',
+    // XRPL
+    'xrpl_signTransaction',
+    'xrpl_signTransactionFor',
+    // Algorand
+    'algo_signTxn',
+    // SUI
+    'sui_signTransaction',
+    'sui_signAndExecuteTransaction',
   ];
 }

@@ -20,6 +20,7 @@ dependencies:
   http: ^1.2.2
   json_annotation: ^4.9.0
   logger: ^2.5.0
+  msgpack_dart: ^1.0.1
   package_info_plus: ^8.1.2
   pointycastle: ^3.9.1
   shared_preferences: ^2.3.4
