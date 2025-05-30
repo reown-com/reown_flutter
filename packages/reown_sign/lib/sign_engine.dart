@@ -2903,9 +2903,9 @@ class ReownSign implements IReownSign {
     }
 
     try {
-      final result = (response.result as Map<String, dynamic>);
       switch (namespace) {
         case 'solana':
+          final result = (response.result as Map<String, dynamic>);
           if (result.containsKey('signature')) {
             return List<String>.from([result['signature']]);
           }
@@ -2919,15 +2919,12 @@ class ReownSign implements IReownSign {
           }
           return null;
         case 'near':
-          final txData = ReownCoreUtils.recursiveSearchForMapKey(
-            result,
-            'data',
-          );
-          if (txData != null) {
-            final hash = NearChainUtils.computeNearHashFromTxBytes(
-              txData as List,
-            );
-            return List<String>.from([hash]);
+          try {
+            final result = NearChainUtils.parseResponse(response.result);
+            final hash = NearChainUtils.computeNearHashFromTxBytes(result);
+            return <String>[hash];
+          } catch (e) {
+            core.logger.d('[$runtimeType] _collectHashes, near $e');
           }
           return null;
         default:

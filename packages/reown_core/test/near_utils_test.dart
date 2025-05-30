@@ -1,77 +1,177 @@
-import 'dart:convert';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pointycastle/digests/sha256.dart';
 import 'package:reown_core/models/json_rpc_models.dart';
 import 'package:reown_core/utils/near_utils.dart';
-import 'package:reown_core/utils/utils.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('extractSolanaSignature', () {
-    test('should extract the transaction id from a solana transaction', () {
-      final txBytes = base64.decode(
-          'AXcAam9obm55LnRlc3QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAABwb25nLnRlc3QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAECAxIGr8P0qFUJ97EjhQhtbFxv3rcKJFxvVUolazShIjvPSwEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEDAQEBAgMEBQYHCAkKCwwNDg8QERITFBUWFxgZGhscHR4fAQIDBAUGBwgJCgsMDQ4PEBESExQVFhcYGRobHB0eHw==');
+  const responseTypeList = [
+    16,
+    0,
+    0,
+    0,
+    48,
+    120,
+    103,
+    97,
+    110,
+    99,
+    104,
+    111,
+    46,
+    116,
+    101,
+    115,
+    116,
+    110,
+    101,
+    116,
+    0,
+    243,
+    74,
+    204,
+    31,
+    29,
+    80,
+    146,
+    149,
+    102,
+    175,
+    8,
+    83,
+    231,
+    187,
+    5,
+    120,
+    41,
+    115,
+    247,
+    22,
+    197,
+    120,
+    182,
+    242,
+    120,
+    135,
+    73,
+    137,
+    166,
+    246,
+    171,
+    103,
+    77,
+    243,
+    34,
+    42,
+    212,
+    180,
+    0,
+    0,
+    16,
+    0,
+    0,
+    0,
+    48,
+    120,
+    103,
+    97,
+    110,
+    99,
+    104,
+    111,
+    46,
+    116,
+    101,
+    115,
+    116,
+    110,
+    101,
+    116,
+    5,
+    233,
+    95,
+    227,
+    45,
+    10,
+    101,
+    176,
+    111,
+    124,
+    190,
+    86,
+    106,
+    27,
+    143,
+    54,
+    148,
+    125,
+    132,
+    252,
+    25,
+    71,
+    125,
+    78,
+    60,
+    242,
+    100,
+    219,
+    40,
+    168,
+    65,
+    3,
+    1,
+    0,
+    0,
+    0,
+    3,
+    0,
+    0,
+    0,
+    161,
+    237,
+    204,
+    206,
+    27,
+    194,
+    211,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ];
 
-      final hashBytes = SHA256Digest().process(txBytes).toList();
-      final computedHash = NearChainUtils.computeNearHashFromTxBytes(
-        hashBytes,
-      );
-      expect(computedHash, 'C3NaLMQgq6WJMTYYuKhCJyfdZspRMGoU4RjYfwbCPDqa');
-    });
+  Map<String, int> toJsonTypeResponse(List<int> input) {
+    return {
+      for (int i = 0; i < input.length; i++) i.toString(): input[i],
+    };
+  }
 
-    test('after near_signTransaction response', () {
+  group('computeNearHashFromTxBytes', () {
+    test('after near_signTransaction response type list', () {
       final jsonRPCResponse = {
         'jsonrpc': '2.0',
         'id': 1,
-        'result': {
-          'data': [
-            131,
-            65,
-            0,
-            242,
-            90,
-            30,
-            125,
-            99,
-            136,
-            155,
-            214,
-            139,
-            135,
-            1,
-            72,
-            37,
-            125,
-            237,
-            224,
-            13,
-            167,
-            78,
-            235,
-            229,
-            119,
-            110,
-            226,
-            170,
-            66,
-            31,
-            5,
-            207
-          ],
-        }
+        'result': responseTypeList,
+      };
+
+      final response = JsonRpcResponse.fromJson(jsonRPCResponse);
+      final txData = NearChainUtils.parseResponse(response.result);
+      final computedHash = NearChainUtils.computeNearHashFromTxBytes(txData);
+      expect(computedHash, 'EpHx79wKAn6br4G9aKaCGLpdzNc8YjrthiFonXQgskAx');
+    });
+
+    test('after near_signTransaction response type 1', () {
+      final jsonRPCResponse = {
+        'jsonrpc': '2.0',
+        'id': 1,
+        'result': toJsonTypeResponse(responseTypeList),
       };
       final response = JsonRpcResponse.fromJson(jsonRPCResponse);
-      final result = (response.result as Map<String, dynamic>);
-
-      final txData = ReownCoreUtils.recursiveSearchForMapKey(
-        result,
-        'data',
-      );
-      final computedHash = NearChainUtils.computeNearHashFromTxBytes(
-        txData as List,
-      );
-      expect(computedHash, 'C3NaLMQgq6WJMTYYuKhCJyfdZspRMGoU4RjYfwbCPDqa');
+      final txData = NearChainUtils.parseResponse(response.result);
+      final computedHash = NearChainUtils.computeNearHashFromTxBytes(txData);
+      expect(computedHash, 'EpHx79wKAn6br4G9aKaCGLpdzNc8YjrthiFonXQgskAx');
     });
   });
 }

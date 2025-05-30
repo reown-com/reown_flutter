@@ -1,16 +1,21 @@
 import 'dart:typed_data';
-
-import 'package:bs58/bs58.dart';
-import 'package:pointycastle/digests/sha256.dart';
+import 'package:reown_core/reown_core.dart';
 
 class NearChainUtils {
-  static Uint8List _bufferFromJson(List<dynamic> data) {
-    return Uint8List.fromList(data.cast<int>());
+  static Uint8List parseResponse(dynamic result) {
+    if (result is Uint8List) {
+      return result;
+    } else if (result is List<int>) {
+      return Uint8List.fromList(result);
+    } else if (result is Map) {
+      return Uint8List.fromList(result.values.cast<int>().toList());
+    } else {
+      throw Exception('Unexpected result type from near_signTransaction');
+    }
   }
 
-  static String computeNearHashFromTxBytes(List<dynamic> txData) {
-    final buffer = _bufferFromJson(txData);
-    final hash = SHA256Digest().process(buffer).toList();
+  static String computeNearHashFromTxBytes(Uint8List txData) {
+    final hash = SHA256Digest().process(txData).toList();
     return base58.encode(Uint8List.fromList(hash));
   }
 }
