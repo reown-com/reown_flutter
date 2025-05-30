@@ -188,12 +188,6 @@ Future<SessionRequestParams?> getParams(
         },
       );
     case 'near_signMessage':
-      // RESPONSE FROM WALLET
-      // {
-      //   "accountId": "..."
-      //   "publicKey": "ed25519:....",
-      //   "signature": "<base64_signature>",
-      // }
       return SessionRequestParams(
         method: method,
         params: Near.demoMessageParams(address),
