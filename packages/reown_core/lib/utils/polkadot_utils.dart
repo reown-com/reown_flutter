@@ -5,7 +5,6 @@ import 'package:pointycastle/digests/blake2b.dart';
 import 'package:reown_core/reown_core.dart';
 
 class PolkadotChainUtils {
-  // Polkadot related methods
   static List<int> ss58AddressToPublicKey(String ss58Address) {
     final decoded = base58.decode(ss58Address);
 
@@ -13,7 +12,6 @@ class PolkadotChainUtils {
       throw FormatException('Too short to contain a public key');
     }
 
-    // Skip the prefix (1st byte), take 32 bytes
     return decoded.sublist(1, 33);
   }
 
@@ -28,9 +26,9 @@ class PolkadotChainUtils {
     final signature = hex.decode(_normalizeHex(hexSignature));
 
     const signedFlag = 0x80; // For signed extrinsics
-    final version = int.parse((payload['version'] ?? 4).toString());
-
-    // Extrinsic version: signed + version (0x84 for sr25519, version 4)
+    final versionValue = payload['version']?.toString() ?? '4';
+    final version = int.parse(versionValue);
+    // Extrinsic version = signed flag + version
     final int extrinsicVersion = signedFlag | version; // 0x80 + 0x04 = 0x84
 
     // Detect signature type by evaluating the address if possible
@@ -38,32 +36,42 @@ class PolkadotChainUtils {
     final signatureType = _guessSignatureTypeFromAddress(ss58Address);
 
     // Era
-    final eraValue = payload['era'].toString();
-    final eraPeriod = _parseHex(eraValue);
-    final eraBytes = _compactEncodeInt(eraPeriod);
+    final eraValue = _normalizeHex(payload['era']);
+    List<int> eraBytes;
+    if (eraValue == '00') {
+      eraBytes = [0x00];
+    } else {
+      eraBytes = hex.decode(eraValue);
+      if (eraBytes.length != 2) {
+        throw ArgumentError('Mortal era must be 2 bytes, got 0x$eraValue');
+      }
+    }
 
-    // Nonce - decode from hex and compact encode
+    // Nonce
     final nonceValue = _parseHex(payload['nonce']);
-    final nonceBytes = _compactEncodeInt(nonceValue);
+    final nonceBytes = [
+      nonceValue & 0xFF,
+      (nonceValue >> 8) & 0xFF,
+    ];
 
-    // Tip - decode from hex and compact encode
     final tipValue = BigInt.parse(_normalizeHex(payload['tip']), radix: 16);
     final tipBytes = _compactEncodeBigInt(tipValue);
 
     final extrinsicBody = BytesBuilder();
-
-    extrinsicBody.add(publicKey); // Signer (public key)
-    extrinsicBody.addByte(signatureType); // Signature type (sr25519)
-    extrinsicBody.add(signature); // Signature
-    extrinsicBody.add(eraBytes); // Era
-    extrinsicBody.add(nonceBytes); // Nonce
-    extrinsicBody.add(tipBytes); // Tip
-    extrinsicBody.add(method); // Encoded method
+    extrinsicBody.addByte(0x00); // MultiAddress::Id
+    extrinsicBody.add(publicKey);
+    extrinsicBody.addByte(signatureType);
+    extrinsicBody.add(signature);
+    extrinsicBody.add(eraBytes);
+    extrinsicBody.add(nonceBytes);
+    extrinsicBody.add(tipBytes);
+    extrinsicBody.add(method);
 
     final bodyBytes = extrinsicBody.toBytes();
 
-    final lengthPrefix = _compactEncodeBigInt(
-        BigInt.from(bodyBytes.length + 1)); // +1 for version byte
+    final lengthPrefix = _compactEncodeInt(
+      bodyBytes.length + 1, // +1 for version byte
+    );
 
     final full = BytesBuilder();
     full.add(lengthPrefix);
@@ -76,21 +84,18 @@ class PolkadotChainUtils {
   static int _guessSignatureTypeFromAddress(String address) {
     try {
       final decoded = base58.decode(address);
-
       if (decoded.isEmpty) return 0x01; // default to sr25519
 
       final prefix = decoded[0];
 
-      // Some known prefixes
+      // https://github.com/paritytech/ss58-registry/blob/main/ss58-registry.json
       switch (prefix) {
-        case 0: // Polkadot
-        case 2: // Kusama
-        case 1: // BareSr25519
-          return 0x01; // sr25519
         case 42:
-          return 0x00; // ed25519
+          return 0x00; // Ed25519
+        case 60:
+          return 0x02; // Secp256k1
         default:
-          return 0x01; // fallback to sr25519
+          return 0x01; // Sr25519 for most chains, Polkadot, Kusama, etc
       }
     } catch (_) {
       if (address.startsWith('0x')) {
