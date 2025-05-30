@@ -3003,18 +3003,33 @@ class ReownSign implements IReownSign {
           core.logger.e('[$runtimeType] _collectHashes: hedera, $e');
         }
         return null;
-      case 'near':
+      case 'bip122':
         try {
-          final result = NearChainUtils.parseResponse(response.result);
-          final hash = NearChainUtils.computeNearHashFromTxBytes(result);
-          return <String>[hash];
+          final result = (response.result as Map<String, dynamic>);
+          final txId = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'txid',
+          );
+          return <String>[txId];
         } catch (e) {
-          core.logger.d('[$runtimeType] _collectHashes: near, $e');
+          core.logger.e('[$runtimeType] _collectHashes: bip122, $e');
+        }
+        return null;
+      case 'stacks':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final txId = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'txId',
+          );
+          return List<String>.from([txId]);
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: stacks, $e');
         }
         return null;
       default:
         // default to EVM
-        return List<String>.from([response.result]);
+        return <String>[response.result];
     }
   }
 }
