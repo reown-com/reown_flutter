@@ -59,8 +59,9 @@ List<String> getChainEvents(String namespace) {
 Future<SessionRequestParams?> getParams(
   String method,
   String address,
-  ReownAppKitModalNetworkInfo chainData,
-) async {
+  ReownAppKitModalNetworkInfo chainData, {
+  String? callback,
+}) async {
   switch (method) {
     case 'personal_sign':
       final encodedMessage = EIP155.personalSignMessage(chainData.name);
@@ -189,10 +190,10 @@ Future<SessionRequestParams?> getParams(
     case 'near_signMessage':
       return SessionRequestParams(
         method: method,
-        params: Near.demoMessage,
+        params: Near.demoMessageParams(address),
       );
     case 'near_signTransaction':
-      final jsonTransaction = jsonEncode(Near.demoTransaction);
+      final jsonTransaction = jsonEncode(Near.demoFromReactDapp(address));
       final base64Transaction = base64Encode(utf8.encode(jsonTransaction));
       return SessionRequestParams(
         method: method,
@@ -201,7 +202,7 @@ Future<SessionRequestParams?> getParams(
         },
       );
     case 'near_signTransactions':
-      final jsonTransaction = jsonEncode(Near.demoTransaction);
+      final jsonTransaction = jsonEncode(Near.demoFromReactDapp(address));
       final base64Transaction = base64Encode(utf8.encode(jsonTransaction));
       return SessionRequestParams(
         method: method,

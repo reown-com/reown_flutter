@@ -44,6 +44,9 @@ class TVFData {
     'solana_signTransaction',
     'solana_signAllTransactions',
     'wallet_sendCalls',
+    // Near
+    'near_signTransaction',
+    'near_signTransactions',
     // Stacks
     'stacks_stxTransfer',
     // Bitcoin
