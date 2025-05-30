@@ -76,7 +76,9 @@ class MethodDialogState extends State<MethodDialog> {
                   child: Text(snapshot.error.toString()),
                 );
               } else {
-                final response = jsonEncode(snapshot.data).replaceAll('"', '');
+                final response = const JsonEncoder.withIndent('   ').convert(
+                  snapshot.data,
+                );
                 return InkWell(
                   onTap: () {
                     Clipboard.setData(ClipboardData(text: response)).then(
