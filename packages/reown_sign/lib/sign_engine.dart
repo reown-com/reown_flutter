@@ -3024,6 +3024,41 @@ class ReownSign implements IReownSign {
           core.logger.e('[$runtimeType] _collectHashes: stacks, $e');
         }
         return null;
+      case 'polkadot':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final signature = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'signature',
+          );
+          if (signature != null) {
+            final id = response.id;
+            final requestParams = pendingTVFRequests[id]!.requestParams;
+            final params = requestParams as Map<String, dynamic>;
+            final payload = ReownCoreUtils.recursiveSearchForMapKey(
+              params,
+              'transactionPayload',
+            );
+            final ss58Address = ReownCoreUtils.recursiveSearchForMapKey(
+              params,
+              'address',
+            );
+            final publicKey = PolkadotChainUtils.ss58AddressToPublicKey(
+              ss58Address,
+            );
+            final extrinsic = PolkadotChainUtils.addSignatureToExtrinsic(
+              publicKey: Uint8List.fromList(publicKey),
+              hexSignature: signature,
+              payload: payload,
+            );
+            final signedHex = hex.encode(extrinsic);
+            final hash = PolkadotChainUtils.deriveExtrinsicHash(signedHex);
+            return List<String>.from([hash]);
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: polkadot, $e');
+        }
+        return null;
       default:
         // default to EVM
         return <String>[response.result];
