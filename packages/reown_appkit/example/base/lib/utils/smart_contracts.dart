@@ -321,13 +321,13 @@ class SepoliaAAVEContract implements SmartContract {
       ];
 }
 
-class ArbitrumAAVEContract implements SmartContract {
+class ARBUSDCContract implements SmartContract {
   @override
-  String get name => 'AAVE-ARB';
+  String get name => 'USDC-ARB';
 
-  // https://arbiscan.io/address/0xba5ddd1f9d7f570dc94a51479a000e3bce967196
+  // https://arbiscan.io/address/0xaf88d065e77c8cC2239327C5EDb3A432268e5831
   @override
-  String get contractAddress => '0xba5ddd1f9d7f570dc94a51479a000e3bce967196';
+  String get contractAddress => '0xaf88d065e77c8cC2239327C5EDb3A432268e5831';
 
   @override
   List<Map<String, dynamic>> get contractABI => [
@@ -362,7 +362,103 @@ class ArbitrumAAVEContract implements SmartContract {
             {
               'indexed': true,
               'internalType': 'address',
-              'name': 'from',
+              'name': 'authorizer',
+              'type': 'address'
+            },
+            {
+              'indexed': true,
+              'internalType': 'bytes32',
+              'name': 'nonce',
+              'type': 'bytes32'
+            }
+          ],
+          'name': 'AuthorizationCanceled',
+          'type': 'event'
+        },
+        {
+          'anonymous': false,
+          'inputs': [
+            {
+              'indexed': true,
+              'internalType': 'address',
+              'name': 'authorizer',
+              'type': 'address'
+            },
+            {
+              'indexed': true,
+              'internalType': 'bytes32',
+              'name': 'nonce',
+              'type': 'bytes32'
+            }
+          ],
+          'name': 'AuthorizationUsed',
+          'type': 'event'
+        },
+        {
+          'anonymous': false,
+          'inputs': [
+            {
+              'indexed': true,
+              'internalType': 'address',
+              'name': '_account',
+              'type': 'address'
+            }
+          ],
+          'name': 'Blacklisted',
+          'type': 'event'
+        },
+        {
+          'anonymous': false,
+          'inputs': [
+            {
+              'indexed': true,
+              'internalType': 'address',
+              'name': 'newBlacklister',
+              'type': 'address'
+            }
+          ],
+          'name': 'BlacklisterChanged',
+          'type': 'event'
+        },
+        {
+          'anonymous': false,
+          'inputs': [
+            {
+              'indexed': true,
+              'internalType': 'address',
+              'name': 'burner',
+              'type': 'address'
+            },
+            {
+              'indexed': false,
+              'internalType': 'uint256',
+              'name': 'amount',
+              'type': 'uint256'
+            }
+          ],
+          'name': 'Burn',
+          'type': 'event'
+        },
+        {
+          'anonymous': false,
+          'inputs': [
+            {
+              'indexed': true,
+              'internalType': 'address',
+              'name': 'newMasterMinter',
+              'type': 'address'
+            }
+          ],
+          'name': 'MasterMinterChanged',
+          'type': 'event'
+        },
+        {
+          'anonymous': false,
+          'inputs': [
+            {
+              'indexed': true,
+              'internalType': 'address',
+              'name': 'minter',
               'type': 'address'
             },
             {
@@ -374,17 +470,89 @@ class ArbitrumAAVEContract implements SmartContract {
             {
               'indexed': false,
               'internalType': 'uint256',
-              'name': 'value',
+              'name': 'amount',
               'type': 'uint256'
+            }
+          ],
+          'name': 'Mint',
+          'type': 'event'
+        },
+        {
+          'anonymous': false,
+          'inputs': [
+            {
+              'indexed': true,
+              'internalType': 'address',
+              'name': 'minter',
+              'type': 'address'
             },
             {
               'indexed': false,
-              'internalType': 'bytes',
-              'name': 'data',
-              'type': 'bytes'
+              'internalType': 'uint256',
+              'name': 'minterAllowedAmount',
+              'type': 'uint256'
             }
           ],
-          'name': 'Transfer',
+          'name': 'MinterConfigured',
+          'type': 'event'
+        },
+        {
+          'anonymous': false,
+          'inputs': [
+            {
+              'indexed': true,
+              'internalType': 'address',
+              'name': 'oldMinter',
+              'type': 'address'
+            }
+          ],
+          'name': 'MinterRemoved',
+          'type': 'event'
+        },
+        {
+          'anonymous': false,
+          'inputs': [
+            {
+              'indexed': false,
+              'internalType': 'address',
+              'name': 'previousOwner',
+              'type': 'address'
+            },
+            {
+              'indexed': false,
+              'internalType': 'address',
+              'name': 'newOwner',
+              'type': 'address'
+            }
+          ],
+          'name': 'OwnershipTransferred',
+          'type': 'event'
+        },
+        {'anonymous': false, 'inputs': [], 'name': 'Pause', 'type': 'event'},
+        {
+          'anonymous': false,
+          'inputs': [
+            {
+              'indexed': true,
+              'internalType': 'address',
+              'name': 'newAddress',
+              'type': 'address'
+            }
+          ],
+          'name': 'PauserChanged',
+          'type': 'event'
+        },
+        {
+          'anonymous': false,
+          'inputs': [
+            {
+              'indexed': true,
+              'internalType': 'address',
+              'name': 'newRescuer',
+              'type': 'address'
+            }
+          ],
+          'name': 'RescuerChanged',
           'type': 'event'
         },
         {
@@ -413,8 +581,58 @@ class ArbitrumAAVEContract implements SmartContract {
           'type': 'event'
         },
         {
+          'anonymous': false,
+          'inputs': [
+            {
+              'indexed': true,
+              'internalType': 'address',
+              'name': '_account',
+              'type': 'address'
+            }
+          ],
+          'name': 'UnBlacklisted',
+          'type': 'event'
+        },
+        {'anonymous': false, 'inputs': [], 'name': 'Unpause', 'type': 'event'},
+        {
+          'inputs': [],
+          'name': 'CANCEL_AUTHORIZATION_TYPEHASH',
+          'outputs': [
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+          ],
+          'stateMutability': 'view',
+          'type': 'function'
+        },
+        {
           'inputs': [],
           'name': 'DOMAIN_SEPARATOR',
+          'outputs': [
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+          ],
+          'stateMutability': 'view',
+          'type': 'function'
+        },
+        {
+          'inputs': [],
+          'name': 'PERMIT_TYPEHASH',
+          'outputs': [
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+          ],
+          'stateMutability': 'view',
+          'type': 'function'
+        },
+        {
+          'inputs': [],
+          'name': 'RECEIVE_WITH_AUTHORIZATION_TYPEHASH',
+          'outputs': [
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+          ],
+          'stateMutability': 'view',
+          'type': 'function'
+        },
+        {
+          'inputs': [],
+          'name': 'TRANSFER_WITH_AUTHORIZATION_TYPEHASH',
           'outputs': [
             {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
           ],
@@ -436,13 +654,29 @@ class ArbitrumAAVEContract implements SmartContract {
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
           ],
           'name': 'approve',
           'outputs': [
             {'internalType': 'bool', 'name': '', 'type': 'bool'}
           ],
           'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {
+              'internalType': 'address',
+              'name': 'authorizer',
+              'type': 'address'
+            },
+            {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'}
+          ],
+          'name': 'authorizationState',
+          'outputs': [
+            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+          ],
+          'stateMutability': 'view',
           'type': 'function'
         },
         {
@@ -458,10 +692,27 @@ class ArbitrumAAVEContract implements SmartContract {
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+            {'internalType': 'address', 'name': '_account', 'type': 'address'}
           ],
-          'name': 'bridgeBurn',
+          'name': 'blacklist',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [],
+          'name': 'blacklister',
+          'outputs': [
+            {'internalType': 'address', 'name': '', 'type': 'address'}
+          ],
+          'stateMutability': 'view',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'uint256', 'name': '_amount', 'type': 'uint256'}
+          ],
+          'name': 'burn',
           'outputs': [],
           'stateMutability': 'nonpayable',
           'type': 'function'
@@ -470,24 +721,57 @@ class ArbitrumAAVEContract implements SmartContract {
           'inputs': [
             {
               'internalType': 'address',
-              'name': '_l1Address',
+              'name': 'authorizer',
               'type': 'address'
             },
-            {'internalType': 'bytes', 'name': '_data', 'type': 'bytes'}
+            {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
+            {'internalType': 'uint8', 'name': 'v', 'type': 'uint8'},
+            {'internalType': 'bytes32', 'name': 'r', 'type': 'bytes32'},
+            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'}
           ],
-          'name': 'bridgeInit',
+          'name': 'cancelAuthorization',
           'outputs': [],
           'stateMutability': 'nonpayable',
           'type': 'function'
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+            {
+              'internalType': 'address',
+              'name': 'authorizer',
+              'type': 'address'
+            },
+            {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
+            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'}
           ],
-          'name': 'bridgeMint',
+          'name': 'cancelAuthorization',
           'outputs': [],
           'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': 'minter', 'type': 'address'},
+            {
+              'internalType': 'uint256',
+              'name': 'minterAllowedAmount',
+              'type': 'uint256'
+            }
+          ],
+          'name': 'configureMinter',
+          'outputs': [
+            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+          ],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [],
+          'name': 'currency',
+          'outputs': [
+            {'internalType': 'string', 'name': '', 'type': 'string'}
+          ],
+          'stateMutability': 'view',
           'type': 'function'
         },
         {
@@ -502,11 +786,7 @@ class ArbitrumAAVEContract implements SmartContract {
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
-            {
-              'internalType': 'uint256',
-              'name': 'subtractedValue',
-              'type': 'uint256'
-            }
+            {'internalType': 'uint256', 'name': 'decrement', 'type': 'uint256'}
           ],
           'name': 'decreaseAllowance',
           'outputs': [
@@ -518,7 +798,7 @@ class ArbitrumAAVEContract implements SmartContract {
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'addedValue', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'increment', 'type': 'uint256'}
           ],
           'name': 'increaseAllowance',
           'outputs': [
@@ -528,8 +808,85 @@ class ArbitrumAAVEContract implements SmartContract {
           'type': 'function'
         },
         {
-          'inputs': [],
-          'name': 'isMaster',
+          'inputs': [
+            {'internalType': 'string', 'name': 'tokenName', 'type': 'string'},
+            {'internalType': 'string', 'name': 'tokenSymbol', 'type': 'string'},
+            {
+              'internalType': 'string',
+              'name': 'tokenCurrency',
+              'type': 'string'
+            },
+            {'internalType': 'uint8', 'name': 'tokenDecimals', 'type': 'uint8'},
+            {
+              'internalType': 'address',
+              'name': 'newMasterMinter',
+              'type': 'address'
+            },
+            {'internalType': 'address', 'name': 'newPauser', 'type': 'address'},
+            {
+              'internalType': 'address',
+              'name': 'newBlacklister',
+              'type': 'address'
+            },
+            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'}
+          ],
+          'name': 'initialize',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'string', 'name': 'newName', 'type': 'string'}
+          ],
+          'name': 'initializeV2',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {
+              'internalType': 'address',
+              'name': 'lostAndFound',
+              'type': 'address'
+            }
+          ],
+          'name': 'initializeV2_1',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {
+              'internalType': 'address[]',
+              'name': 'accountsToBlacklist',
+              'type': 'address[]'
+            },
+            {'internalType': 'string', 'name': 'newSymbol', 'type': 'string'}
+          ],
+          'name': 'initializeV2_2',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': '_account', 'type': 'address'}
+          ],
+          'name': 'isBlacklisted',
+          'outputs': [
+            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+          ],
+          'stateMutability': 'view',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': 'account', 'type': 'address'}
+          ],
+          'name': 'isMinter',
           'outputs': [
             {'internalType': 'bool', 'name': '', 'type': 'bool'}
           ],
@@ -538,7 +895,7 @@ class ArbitrumAAVEContract implements SmartContract {
         },
         {
           'inputs': [],
-          'name': 'l1Address',
+          'name': 'masterMinter',
           'outputs': [
             {'internalType': 'address', 'name': '', 'type': 'address'}
           ],
@@ -546,10 +903,24 @@ class ArbitrumAAVEContract implements SmartContract {
           'type': 'function'
         },
         {
-          'inputs': [],
-          'name': 'l2Gateway',
+          'inputs': [
+            {'internalType': 'address', 'name': '_to', 'type': 'address'},
+            {'internalType': 'uint256', 'name': '_amount', 'type': 'uint256'}
+          ],
+          'name': 'mint',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+          ],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': 'minter', 'type': 'address'}
+          ],
+          'name': 'minterAllowance',
+          'outputs': [
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
           ],
           'stateMutability': 'view',
           'type': 'function'
@@ -575,6 +946,53 @@ class ArbitrumAAVEContract implements SmartContract {
           'type': 'function'
         },
         {
+          'inputs': [],
+          'name': 'owner',
+          'outputs': [
+            {'internalType': 'address', 'name': '', 'type': 'address'}
+          ],
+          'stateMutability': 'view',
+          'type': 'function'
+        },
+        {
+          'inputs': [],
+          'name': 'pause',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [],
+          'name': 'paused',
+          'outputs': [
+            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+          ],
+          'stateMutability': 'view',
+          'type': 'function'
+        },
+        {
+          'inputs': [],
+          'name': 'pauser',
+          'outputs': [
+            {'internalType': 'address', 'name': '', 'type': 'address'}
+          ],
+          'stateMutability': 'view',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': 'owner', 'type': 'address'},
+            {'internalType': 'address', 'name': 'spender', 'type': 'address'},
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
+            {'internalType': 'uint256', 'name': 'deadline', 'type': 'uint256'},
+            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'}
+          ],
+          'name': 'permit',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
           'inputs': [
             {'internalType': 'address', 'name': 'owner', 'type': 'address'},
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
@@ -587,6 +1005,89 @@ class ArbitrumAAVEContract implements SmartContract {
           'name': 'permit',
           'outputs': [],
           'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': 'from', 'type': 'address'},
+            {'internalType': 'address', 'name': 'to', 'type': 'address'},
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
+            {
+              'internalType': 'uint256',
+              'name': 'validAfter',
+              'type': 'uint256'
+            },
+            {
+              'internalType': 'uint256',
+              'name': 'validBefore',
+              'type': 'uint256'
+            },
+            {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
+            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'}
+          ],
+          'name': 'receiveWithAuthorization',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': 'from', 'type': 'address'},
+            {'internalType': 'address', 'name': 'to', 'type': 'address'},
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
+            {
+              'internalType': 'uint256',
+              'name': 'validAfter',
+              'type': 'uint256'
+            },
+            {
+              'internalType': 'uint256',
+              'name': 'validBefore',
+              'type': 'uint256'
+            },
+            {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
+            {'internalType': 'uint8', 'name': 'v', 'type': 'uint8'},
+            {'internalType': 'bytes32', 'name': 'r', 'type': 'bytes32'},
+            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'}
+          ],
+          'name': 'receiveWithAuthorization',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': 'minter', 'type': 'address'}
+          ],
+          'name': 'removeMinter',
+          'outputs': [
+            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+          ],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {
+              'internalType': 'contract IERC20',
+              'name': 'tokenContract',
+              'type': 'address'
+            },
+            {'internalType': 'address', 'name': 'to', 'type': 'address'},
+            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+          ],
+          'name': 'rescueERC20',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [],
+          'name': 'rescuer',
+          'outputs': [
+            {'internalType': 'address', 'name': '', 'type': 'address'}
+          ],
+          'stateMutability': 'view',
           'type': 'function'
         },
         {
@@ -609,8 +1110,8 @@ class ArbitrumAAVEContract implements SmartContract {
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'recipient', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+            {'internalType': 'address', 'name': 'to', 'type': 'address'},
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
           ],
           'name': 'transfer',
           'outputs': [
@@ -621,28 +1122,141 @@ class ArbitrumAAVEContract implements SmartContract {
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': '_to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': '_value', 'type': 'uint256'},
-            {'internalType': 'bytes', 'name': '_data', 'type': 'bytes'}
-          ],
-          'name': 'transferAndCall',
-          'outputs': [
-            {'internalType': 'bool', 'name': 'success', 'type': 'bool'}
-          ],
-          'stateMutability': 'nonpayable',
-          'type': 'function'
-        },
-        {
-          'inputs': [
-            {'internalType': 'address', 'name': 'sender', 'type': 'address'},
-            {'internalType': 'address', 'name': 'recipient', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+            {'internalType': 'address', 'name': 'from', 'type': 'address'},
+            {'internalType': 'address', 'name': 'to', 'type': 'address'},
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
           ],
           'name': 'transferFrom',
           'outputs': [
             {'internalType': 'bool', 'name': '', 'type': 'bool'}
           ],
           'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'}
+          ],
+          'name': 'transferOwnership',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': 'from', 'type': 'address'},
+            {'internalType': 'address', 'name': 'to', 'type': 'address'},
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
+            {
+              'internalType': 'uint256',
+              'name': 'validAfter',
+              'type': 'uint256'
+            },
+            {
+              'internalType': 'uint256',
+              'name': 'validBefore',
+              'type': 'uint256'
+            },
+            {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
+            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'}
+          ],
+          'name': 'transferWithAuthorization',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': 'from', 'type': 'address'},
+            {'internalType': 'address', 'name': 'to', 'type': 'address'},
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
+            {
+              'internalType': 'uint256',
+              'name': 'validAfter',
+              'type': 'uint256'
+            },
+            {
+              'internalType': 'uint256',
+              'name': 'validBefore',
+              'type': 'uint256'
+            },
+            {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
+            {'internalType': 'uint8', 'name': 'v', 'type': 'uint8'},
+            {'internalType': 'bytes32', 'name': 'r', 'type': 'bytes32'},
+            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'}
+          ],
+          'name': 'transferWithAuthorization',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': '_account', 'type': 'address'}
+          ],
+          'name': 'unBlacklist',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [],
+          'name': 'unpause',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {
+              'internalType': 'address',
+              'name': '_newBlacklister',
+              'type': 'address'
+            }
+          ],
+          'name': 'updateBlacklister',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {
+              'internalType': 'address',
+              'name': '_newMasterMinter',
+              'type': 'address'
+            }
+          ],
+          'name': 'updateMasterMinter',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': '_newPauser', 'type': 'address'}
+          ],
+          'name': 'updatePauser',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': 'newRescuer', 'type': 'address'}
+          ],
+          'name': 'updateRescuer',
+          'outputs': [],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [],
+          'name': 'version',
+          'outputs': [
+            {'internalType': 'string', 'name': '', 'type': 'string'}
+          ],
+          'stateMutability': 'pure',
           'type': 'function'
         }
       ];
@@ -3282,178 +3896,74 @@ class WrappedSonicContract implements SmartContract {
       ];
 }
 
-class PolygonContract implements SmartContract {
+class PolygonBONSAIContract implements SmartContract {
   @override
   List<Map<String, dynamic>> get contractABI => [
         {
           'inputs': [
-            {'internalType': 'address', 'name': '_token', 'type': 'address'},
+            {
+              'internalType': 'uint96',
+              'name': 'initialTokenSupply',
+              'type': 'uint96'
+            },
             {
               'internalType': 'address',
-              'name': '_lzEndpoint',
+              'name': 'initialSupplyOwner',
               'type': 'address'
             },
-            {'internalType': 'address', 'name': '_delegate', 'type': 'address'}
+            {'internalType': 'uint96', 'name': 'tokensPerNft', 'type': 'uint96'}
           ],
           'stateMutability': 'nonpayable',
           'type': 'constructor'
         },
+        {'inputs': [], 'name': 'AlreadyInitialized', 'type': 'error'},
         {
-          'inputs': [
-            {'internalType': 'address', 'name': 'target', 'type': 'address'}
-          ],
-          'name': 'AddressEmptyCode',
+          'inputs': [],
+          'name': 'ApprovalCallerNotOwnerNorApproved',
           'type': 'error'
         },
+        {'inputs': [], 'name': 'DNAlreadyInitialized', 'type': 'error'},
+        {'inputs': [], 'name': 'InsufficientAllowance', 'type': 'error'},
+        {'inputs': [], 'name': 'InsufficientBalance', 'type': 'error'},
+        {'inputs': [], 'name': 'LinkMirrorContractFailed', 'type': 'error'},
+        {'inputs': [], 'name': 'MirrorAddressIsZero', 'type': 'error'},
+        {'inputs': [], 'name': 'NewOwnerIsZeroAddress', 'type': 'error'},
+        {'inputs': [], 'name': 'NoHandoverRequest', 'type': 'error'},
+        {'inputs': [], 'name': 'SenderNotMirror', 'type': 'error'},
+        {'inputs': [], 'name': 'TokenDoesNotExist', 'type': 'error'},
+        {'inputs': [], 'name': 'TotalSupplyOverflow', 'type': 'error'},
         {
-          'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'}
-          ],
-          'name': 'AddressInsufficientBalance',
+          'inputs': [],
+          'name': 'TransferCallerNotOwnerNorApproved',
           'type': 'error'
         },
-        {'inputs': [], 'name': 'FailedInnerCall', 'type': 'error'},
-        {'inputs': [], 'name': 'InvalidDelegate', 'type': 'error'},
-        {'inputs': [], 'name': 'InvalidEndpointCall', 'type': 'error'},
-        {'inputs': [], 'name': 'InvalidLocalDecimals', 'type': 'error'},
-        {
-          'inputs': [
-            {'internalType': 'bytes', 'name': 'options', 'type': 'bytes'}
-          ],
-          'name': 'InvalidOptions',
-          'type': 'error'
-        },
-        {'inputs': [], 'name': 'LzTokenUnavailable', 'type': 'error'},
-        {
-          'inputs': [
-            {'internalType': 'uint32', 'name': 'eid', 'type': 'uint32'}
-          ],
-          'name': 'NoPeer',
-          'type': 'error'
-        },
-        {
-          'inputs': [
-            {'internalType': 'uint256', 'name': 'msgValue', 'type': 'uint256'}
-          ],
-          'name': 'NotEnoughNative',
-          'type': 'error'
-        },
-        {
-          'inputs': [
-            {'internalType': 'address', 'name': 'addr', 'type': 'address'}
-          ],
-          'name': 'OnlyEndpoint',
-          'type': 'error'
-        },
-        {
-          'inputs': [
-            {'internalType': 'uint32', 'name': 'eid', 'type': 'uint32'},
-            {'internalType': 'bytes32', 'name': 'sender', 'type': 'bytes32'}
-          ],
-          'name': 'OnlyPeer',
-          'type': 'error'
-        },
-        {'inputs': [], 'name': 'OnlySelf', 'type': 'error'},
-        {
-          'inputs': [
-            {'internalType': 'address', 'name': 'owner', 'type': 'address'}
-          ],
-          'name': 'OwnableInvalidOwner',
-          'type': 'error'
-        },
-        {
-          'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'}
-          ],
-          'name': 'OwnableUnauthorizedAccount',
-          'type': 'error'
-        },
-        {
-          'inputs': [
-            {'internalType': 'address', 'name': 'token', 'type': 'address'}
-          ],
-          'name': 'SafeERC20FailedOperation',
-          'type': 'error'
-        },
-        {
-          'inputs': [
-            {'internalType': 'bytes', 'name': 'result', 'type': 'bytes'}
-          ],
-          'name': 'SimulationResult',
-          'type': 'error'
-        },
-        {
-          'inputs': [
-            {'internalType': 'uint256', 'name': 'amountLD', 'type': 'uint256'},
-            {
-              'internalType': 'uint256',
-              'name': 'minAmountLD',
-              'type': 'uint256'
-            }
-          ],
-          'name': 'SlippageExceeded',
-          'type': 'error'
-        },
+        {'inputs': [], 'name': 'TransferFromIncorrectOwner', 'type': 'error'},
+        {'inputs': [], 'name': 'TransferToZeroAddress', 'type': 'error'},
+        {'inputs': [], 'name': 'Unauthorized', 'type': 'error'},
+        {'inputs': [], 'name': 'ZeroTokensPerNft', 'type': 'error'},
         {
           'anonymous': false,
           'inputs': [
             {
-              'components': [
-                {'internalType': 'uint32', 'name': 'eid', 'type': 'uint32'},
-                {'internalType': 'uint16', 'name': 'msgType', 'type': 'uint16'},
-                {'internalType': 'bytes', 'name': 'options', 'type': 'bytes'}
-              ],
-              'indexed': false,
-              'internalType': 'struct EnforcedOptionParam[]',
-              'name': '_enforcedOptions',
-              'type': 'tuple[]'
-            }
-          ],
-          'name': 'EnforcedOptionSet',
-          'type': 'event'
-        },
-        {
-          'anonymous': false,
-          'inputs': [
-            {
-              'indexed': false,
+              'indexed': true,
               'internalType': 'address',
-              'name': 'inspector',
+              'name': 'owner',
               'type': 'address'
-            }
-          ],
-          'name': 'MsgInspectorSet',
-          'type': 'event'
-        },
-        {
-          'anonymous': false,
-          'inputs': [
-            {
-              'indexed': true,
-              'internalType': 'bytes32',
-              'name': 'guid',
-              'type': 'bytes32'
-            },
-            {
-              'indexed': false,
-              'internalType': 'uint32',
-              'name': 'srcEid',
-              'type': 'uint32'
             },
             {
               'indexed': true,
               'internalType': 'address',
-              'name': 'toAddress',
+              'name': 'spender',
               'type': 'address'
             },
             {
               'indexed': false,
               'internalType': 'uint256',
-              'name': 'amountReceivedLD',
+              'name': 'amount',
               'type': 'uint256'
             }
           ],
-          'name': 'OFTReceived',
+          'name': 'Approval',
           'type': 'event'
         },
         {
@@ -3461,36 +3971,12 @@ class PolygonContract implements SmartContract {
           'inputs': [
             {
               'indexed': true,
-              'internalType': 'bytes32',
-              'name': 'guid',
-              'type': 'bytes32'
-            },
-            {
-              'indexed': false,
-              'internalType': 'uint32',
-              'name': 'dstEid',
-              'type': 'uint32'
-            },
-            {
-              'indexed': true,
               'internalType': 'address',
-              'name': 'fromAddress',
+              'name': 'pendingOwner',
               'type': 'address'
-            },
-            {
-              'indexed': false,
-              'internalType': 'uint256',
-              'name': 'amountSentLD',
-              'type': 'uint256'
-            },
-            {
-              'indexed': false,
-              'internalType': 'uint256',
-              'name': 'amountReceivedLD',
-              'type': 'uint256'
             }
           ],
-          'name': 'OFTSent',
+          'name': 'OwnershipHandoverCanceled',
           'type': 'event'
         },
         {
@@ -3499,7 +3985,20 @@ class PolygonContract implements SmartContract {
             {
               'indexed': true,
               'internalType': 'address',
-              'name': 'previousOwner',
+              'name': 'pendingOwner',
+              'type': 'address'
+            }
+          ],
+          'name': 'OwnershipHandoverRequested',
+          'type': 'event'
+        },
+        {
+          'anonymous': false,
+          'inputs': [
+            {
+              'indexed': true,
+              'internalType': 'address',
+              'name': 'oldOwner',
               'type': 'address'
             },
             {
@@ -3516,101 +4015,76 @@ class PolygonContract implements SmartContract {
           'anonymous': false,
           'inputs': [
             {
-              'indexed': false,
-              'internalType': 'uint32',
-              'name': 'eid',
-              'type': 'uint32'
+              'indexed': true,
+              'internalType': 'address',
+              'name': 'target',
+              'type': 'address'
             },
             {
               'indexed': false,
-              'internalType': 'bytes32',
-              'name': 'peer',
-              'type': 'bytes32'
+              'internalType': 'bool',
+              'name': 'status',
+              'type': 'bool'
             }
           ],
-          'name': 'PeerSet',
+          'name': 'SkipNFTSet',
           'type': 'event'
         },
         {
           'anonymous': false,
           'inputs': [
             {
-              'indexed': false,
+              'indexed': true,
               'internalType': 'address',
-              'name': 'preCrimeAddress',
+              'name': 'from',
               'type': 'address'
+            },
+            {
+              'indexed': true,
+              'internalType': 'address',
+              'name': 'to',
+              'type': 'address'
+            },
+            {
+              'indexed': false,
+              'internalType': 'uint256',
+              'name': 'amount',
+              'type': 'uint256'
             }
           ],
-          'name': 'PreCrimeSet',
+          'name': 'Transfer',
           'type': 'event'
         },
+        {'stateMutability': 'payable', 'type': 'fallback'},
         {
-          'inputs': [],
-          'name': 'SEND',
-          'outputs': [
-            {'internalType': 'uint16', 'name': '', 'type': 'uint16'}
+          'inputs': [
+            {'internalType': 'address', 'name': 'owner', 'type': 'address'},
+            {'internalType': 'address', 'name': 'spender', 'type': 'address'}
           ],
-          'stateMutability': 'view',
-          'type': 'function'
-        },
-        {
-          'inputs': [],
-          'name': 'SEND_AND_CALL',
+          'name': 'allowance',
           'outputs': [
-            {'internalType': 'uint16', 'name': '', 'type': 'uint16'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
           ],
           'stateMutability': 'view',
           'type': 'function'
         },
         {
           'inputs': [
-            {
-              'components': [
-                {'internalType': 'uint32', 'name': 'srcEid', 'type': 'uint32'},
-                {
-                  'internalType': 'bytes32',
-                  'name': 'sender',
-                  'type': 'bytes32'
-                },
-                {'internalType': 'uint64', 'name': 'nonce', 'type': 'uint64'}
-              ],
-              'internalType': 'struct Origin',
-              'name': 'origin',
-              'type': 'tuple'
-            }
+            {'internalType': 'address', 'name': 'spender', 'type': 'address'},
+            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
           ],
-          'name': 'allowInitializePath',
+          'name': 'approve',
           'outputs': [
             {'internalType': 'bool', 'name': '', 'type': 'bool'}
           ],
-          'stateMutability': 'view',
-          'type': 'function'
-        },
-        {
-          'inputs': [],
-          'name': 'approvalRequired',
-          'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
-          ],
-          'stateMutability': 'pure',
+          'stateMutability': 'nonpayable',
           'type': 'function'
         },
         {
           'inputs': [
-            {'internalType': 'uint32', 'name': '_eid', 'type': 'uint32'},
-            {'internalType': 'uint16', 'name': '_msgType', 'type': 'uint16'},
-            {'internalType': 'bytes', 'name': '_extraOptions', 'type': 'bytes'}
+            {'internalType': 'address', 'name': 'owner', 'type': 'address'}
           ],
-          'name': 'combineOptions',
-          'outputs': [
-            {'internalType': 'bytes', 'name': '', 'type': 'bytes'}
-          ],
-          'stateMutability': 'view',
-          'type': 'function'
-        },
-        {
-          'inputs': [],
-          'name': 'decimalConversionRate',
+          'name': 'balanceOf',
           'outputs': [
             {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
           ],
@@ -3619,10 +4093,50 @@ class PolygonContract implements SmartContract {
         },
         {
           'inputs': [],
-          'name': 'endpoint',
+          'name': 'cancelOwnershipHandover',
+          'outputs': [],
+          'stateMutability': 'payable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {
+              'internalType': 'address',
+              'name': 'pendingOwner',
+              'type': 'address'
+            }
+          ],
+          'name': 'completeOwnershipHandover',
+          'outputs': [],
+          'stateMutability': 'payable',
+          'type': 'function'
+        },
+        {
+          'inputs': [],
+          'name': 'decimals',
+          'outputs': [
+            {'internalType': 'uint8', 'name': '', 'type': 'uint8'}
+          ],
+          'stateMutability': 'pure',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': 'a', 'type': 'address'}
+          ],
+          'name': 'getSkipNFT',
+          'outputs': [
+            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+          ],
+          'stateMutability': 'view',
+          'type': 'function'
+        },
+        {
+          'inputs': [],
+          'name': 'mirror',
           'outputs': [
             {
-              'internalType': 'contract ILayerZeroEndpointV2',
+              'internalType': 'contract DN404Mirror',
               'name': '',
               'type': 'address'
             }
@@ -3631,183 +4145,8 @@ class PolygonContract implements SmartContract {
           'type': 'function'
         },
         {
-          'inputs': [
-            {'internalType': 'uint32', 'name': 'eid', 'type': 'uint32'},
-            {'internalType': 'uint16', 'name': 'msgType', 'type': 'uint16'}
-          ],
-          'name': 'enforcedOptions',
-          'outputs': [
-            {'internalType': 'bytes', 'name': 'enforcedOption', 'type': 'bytes'}
-          ],
-          'stateMutability': 'view',
-          'type': 'function'
-        },
-        {
-          'inputs': [
-            {
-              'components': [
-                {'internalType': 'uint32', 'name': 'srcEid', 'type': 'uint32'},
-                {
-                  'internalType': 'bytes32',
-                  'name': 'sender',
-                  'type': 'bytes32'
-                },
-                {'internalType': 'uint64', 'name': 'nonce', 'type': 'uint64'}
-              ],
-              'internalType': 'struct Origin',
-              'name': '',
-              'type': 'tuple'
-            },
-            {'internalType': 'bytes', 'name': '', 'type': 'bytes'},
-            {'internalType': 'address', 'name': '_sender', 'type': 'address'}
-          ],
-          'name': 'isComposeMsgSender',
-          'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
-          ],
-          'stateMutability': 'view',
-          'type': 'function'
-        },
-        {
-          'inputs': [
-            {'internalType': 'uint32', 'name': '_eid', 'type': 'uint32'},
-            {'internalType': 'bytes32', 'name': '_peer', 'type': 'bytes32'}
-          ],
-          'name': 'isPeer',
-          'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
-          ],
-          'stateMutability': 'view',
-          'type': 'function'
-        },
-        {
-          'inputs': [
-            {
-              'components': [
-                {'internalType': 'uint32', 'name': 'srcEid', 'type': 'uint32'},
-                {
-                  'internalType': 'bytes32',
-                  'name': 'sender',
-                  'type': 'bytes32'
-                },
-                {'internalType': 'uint64', 'name': 'nonce', 'type': 'uint64'}
-              ],
-              'internalType': 'struct Origin',
-              'name': '_origin',
-              'type': 'tuple'
-            },
-            {'internalType': 'bytes32', 'name': '_guid', 'type': 'bytes32'},
-            {'internalType': 'bytes', 'name': '_message', 'type': 'bytes'},
-            {'internalType': 'address', 'name': '_executor', 'type': 'address'},
-            {'internalType': 'bytes', 'name': '_extraData', 'type': 'bytes'}
-          ],
-          'name': 'lzReceive',
-          'outputs': [],
-          'stateMutability': 'payable',
-          'type': 'function'
-        },
-        {
-          'inputs': [
-            {
-              'components': [
-                {
-                  'components': [
-                    {
-                      'internalType': 'uint32',
-                      'name': 'srcEid',
-                      'type': 'uint32'
-                    },
-                    {
-                      'internalType': 'bytes32',
-                      'name': 'sender',
-                      'type': 'bytes32'
-                    },
-                    {
-                      'internalType': 'uint64',
-                      'name': 'nonce',
-                      'type': 'uint64'
-                    }
-                  ],
-                  'internalType': 'struct Origin',
-                  'name': 'origin',
-                  'type': 'tuple'
-                },
-                {'internalType': 'uint32', 'name': 'dstEid', 'type': 'uint32'},
-                {
-                  'internalType': 'address',
-                  'name': 'receiver',
-                  'type': 'address'
-                },
-                {'internalType': 'bytes32', 'name': 'guid', 'type': 'bytes32'},
-                {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
-                {
-                  'internalType': 'address',
-                  'name': 'executor',
-                  'type': 'address'
-                },
-                {'internalType': 'bytes', 'name': 'message', 'type': 'bytes'},
-                {'internalType': 'bytes', 'name': 'extraData', 'type': 'bytes'}
-              ],
-              'internalType': 'struct InboundPacket[]',
-              'name': '_packets',
-              'type': 'tuple[]'
-            }
-          ],
-          'name': 'lzReceiveAndRevert',
-          'outputs': [],
-          'stateMutability': 'payable',
-          'type': 'function'
-        },
-        {
-          'inputs': [
-            {
-              'components': [
-                {'internalType': 'uint32', 'name': 'srcEid', 'type': 'uint32'},
-                {
-                  'internalType': 'bytes32',
-                  'name': 'sender',
-                  'type': 'bytes32'
-                },
-                {'internalType': 'uint64', 'name': 'nonce', 'type': 'uint64'}
-              ],
-              'internalType': 'struct Origin',
-              'name': '_origin',
-              'type': 'tuple'
-            },
-            {'internalType': 'bytes32', 'name': '_guid', 'type': 'bytes32'},
-            {'internalType': 'bytes', 'name': '_message', 'type': 'bytes'},
-            {'internalType': 'address', 'name': '_executor', 'type': 'address'},
-            {'internalType': 'bytes', 'name': '_extraData', 'type': 'bytes'}
-          ],
-          'name': 'lzReceiveSimulate',
-          'outputs': [],
-          'stateMutability': 'payable',
-          'type': 'function'
-        },
-        {
           'inputs': [],
-          'name': 'msgInspector',
-          'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
-          ],
-          'stateMutability': 'view',
-          'type': 'function'
-        },
-        {
-          'inputs': [
-            {'internalType': 'uint32', 'name': '', 'type': 'uint32'},
-            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
-          ],
-          'name': 'nextNonce',
-          'outputs': [
-            {'internalType': 'uint64', 'name': 'nonce', 'type': 'uint64'}
-          ],
-          'stateMutability': 'view',
-          'type': 'function'
-        },
-        {
-          'inputs': [],
-          'name': 'oApp',
+          'name': 'mirrorERC721',
           'outputs': [
             {'internalType': 'address', 'name': '', 'type': 'address'}
           ],
@@ -3816,28 +4155,9 @@ class PolygonContract implements SmartContract {
         },
         {
           'inputs': [],
-          'name': 'oAppVersion',
+          'name': 'name',
           'outputs': [
-            {
-              'internalType': 'uint64',
-              'name': 'senderVersion',
-              'type': 'uint64'
-            },
-            {
-              'internalType': 'uint64',
-              'name': 'receiverVersion',
-              'type': 'uint64'
-            }
-          ],
-          'stateMutability': 'pure',
-          'type': 'function'
-        },
-        {
-          'inputs': [],
-          'name': 'oftVersion',
-          'outputs': [
-            {'internalType': 'bytes4', 'name': 'interfaceId', 'type': 'bytes4'},
-            {'internalType': 'uint64', 'name': 'version', 'type': 'uint64'}
+            {'internalType': 'string', 'name': '', 'type': 'string'}
           ],
           'stateMutability': 'pure',
           'type': 'function'
@@ -3846,27 +4166,7 @@ class PolygonContract implements SmartContract {
           'inputs': [],
           'name': 'owner',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
-          ],
-          'stateMutability': 'view',
-          'type': 'function'
-        },
-        {
-          'inputs': [
-            {'internalType': 'uint32', 'name': 'eid', 'type': 'uint32'}
-          ],
-          'name': 'peers',
-          'outputs': [
-            {'internalType': 'bytes32', 'name': 'peer', 'type': 'bytes32'}
-          ],
-          'stateMutability': 'view',
-          'type': 'function'
-        },
-        {
-          'inputs': [],
-          'name': 'preCrime',
-          'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'address', 'name': 'result', 'type': 'address'}
           ],
           'stateMutability': 'view',
           'type': 'function'
@@ -3874,146 +4174,14 @@ class PolygonContract implements SmartContract {
         {
           'inputs': [
             {
-              'components': [
-                {'internalType': 'uint32', 'name': 'dstEid', 'type': 'uint32'},
-                {'internalType': 'bytes32', 'name': 'to', 'type': 'bytes32'},
-                {
-                  'internalType': 'uint256',
-                  'name': 'amountLD',
-                  'type': 'uint256'
-                },
-                {
-                  'internalType': 'uint256',
-                  'name': 'minAmountLD',
-                  'type': 'uint256'
-                },
-                {
-                  'internalType': 'bytes',
-                  'name': 'extraOptions',
-                  'type': 'bytes'
-                },
-                {
-                  'internalType': 'bytes',
-                  'name': 'composeMsg',
-                  'type': 'bytes'
-                },
-                {'internalType': 'bytes', 'name': 'oftCmd', 'type': 'bytes'}
-              ],
-              'internalType': 'struct SendParam',
-              'name': '_sendParam',
-              'type': 'tuple'
+              'internalType': 'address',
+              'name': 'pendingOwner',
+              'type': 'address'
             }
           ],
-          'name': 'quoteOFT',
+          'name': 'ownershipHandoverExpiresAt',
           'outputs': [
-            {
-              'components': [
-                {
-                  'internalType': 'uint256',
-                  'name': 'minAmountLD',
-                  'type': 'uint256'
-                },
-                {
-                  'internalType': 'uint256',
-                  'name': 'maxAmountLD',
-                  'type': 'uint256'
-                }
-              ],
-              'internalType': 'struct OFTLimit',
-              'name': 'oftLimit',
-              'type': 'tuple'
-            },
-            {
-              'components': [
-                {
-                  'internalType': 'int256',
-                  'name': 'feeAmountLD',
-                  'type': 'int256'
-                },
-                {
-                  'internalType': 'string',
-                  'name': 'description',
-                  'type': 'string'
-                }
-              ],
-              'internalType': 'struct OFTFeeDetail[]',
-              'name': 'oftFeeDetails',
-              'type': 'tuple[]'
-            },
-            {
-              'components': [
-                {
-                  'internalType': 'uint256',
-                  'name': 'amountSentLD',
-                  'type': 'uint256'
-                },
-                {
-                  'internalType': 'uint256',
-                  'name': 'amountReceivedLD',
-                  'type': 'uint256'
-                }
-              ],
-              'internalType': 'struct OFTReceipt',
-              'name': 'oftReceipt',
-              'type': 'tuple'
-            }
-          ],
-          'stateMutability': 'view',
-          'type': 'function'
-        },
-        {
-          'inputs': [
-            {
-              'components': [
-                {'internalType': 'uint32', 'name': 'dstEid', 'type': 'uint32'},
-                {'internalType': 'bytes32', 'name': 'to', 'type': 'bytes32'},
-                {
-                  'internalType': 'uint256',
-                  'name': 'amountLD',
-                  'type': 'uint256'
-                },
-                {
-                  'internalType': 'uint256',
-                  'name': 'minAmountLD',
-                  'type': 'uint256'
-                },
-                {
-                  'internalType': 'bytes',
-                  'name': 'extraOptions',
-                  'type': 'bytes'
-                },
-                {
-                  'internalType': 'bytes',
-                  'name': 'composeMsg',
-                  'type': 'bytes'
-                },
-                {'internalType': 'bytes', 'name': 'oftCmd', 'type': 'bytes'}
-              ],
-              'internalType': 'struct SendParam',
-              'name': '_sendParam',
-              'type': 'tuple'
-            },
-            {'internalType': 'bool', 'name': '_payInLzToken', 'type': 'bool'}
-          ],
-          'name': 'quoteSend',
-          'outputs': [
-            {
-              'components': [
-                {
-                  'internalType': 'uint256',
-                  'name': 'nativeFee',
-                  'type': 'uint256'
-                },
-                {
-                  'internalType': 'uint256',
-                  'name': 'lzTokenFee',
-                  'type': 'uint256'
-                }
-              ],
-              'internalType': 'struct MessagingFee',
-              'name': 'msgFee',
-              'type': 'tuple'
-            }
+            {'internalType': 'uint256', 'name': 'result', 'type': 'uint256'}
           ],
           'stateMutability': 'view',
           'type': 'function'
@@ -4022,188 +4190,86 @@ class PolygonContract implements SmartContract {
           'inputs': [],
           'name': 'renounceOwnership',
           'outputs': [],
-          'stateMutability': 'nonpayable',
+          'stateMutability': 'payable',
           'type': 'function'
         },
         {
-          'inputs': [
-            {
-              'components': [
-                {'internalType': 'uint32', 'name': 'dstEid', 'type': 'uint32'},
-                {'internalType': 'bytes32', 'name': 'to', 'type': 'bytes32'},
-                {
-                  'internalType': 'uint256',
-                  'name': 'amountLD',
-                  'type': 'uint256'
-                },
-                {
-                  'internalType': 'uint256',
-                  'name': 'minAmountLD',
-                  'type': 'uint256'
-                },
-                {
-                  'internalType': 'bytes',
-                  'name': 'extraOptions',
-                  'type': 'bytes'
-                },
-                {
-                  'internalType': 'bytes',
-                  'name': 'composeMsg',
-                  'type': 'bytes'
-                },
-                {'internalType': 'bytes', 'name': 'oftCmd', 'type': 'bytes'}
-              ],
-              'internalType': 'struct SendParam',
-              'name': '_sendParam',
-              'type': 'tuple'
-            },
-            {
-              'components': [
-                {
-                  'internalType': 'uint256',
-                  'name': 'nativeFee',
-                  'type': 'uint256'
-                },
-                {
-                  'internalType': 'uint256',
-                  'name': 'lzTokenFee',
-                  'type': 'uint256'
-                }
-              ],
-              'internalType': 'struct MessagingFee',
-              'name': '_fee',
-              'type': 'tuple'
-            },
-            {
-              'internalType': 'address',
-              'name': '_refundAddress',
-              'type': 'address'
-            }
-          ],
-          'name': 'send',
-          'outputs': [
-            {
-              'components': [
-                {'internalType': 'bytes32', 'name': 'guid', 'type': 'bytes32'},
-                {'internalType': 'uint64', 'name': 'nonce', 'type': 'uint64'},
-                {
-                  'components': [
-                    {
-                      'internalType': 'uint256',
-                      'name': 'nativeFee',
-                      'type': 'uint256'
-                    },
-                    {
-                      'internalType': 'uint256',
-                      'name': 'lzTokenFee',
-                      'type': 'uint256'
-                    }
-                  ],
-                  'internalType': 'struct MessagingFee',
-                  'name': 'fee',
-                  'type': 'tuple'
-                }
-              ],
-              'internalType': 'struct MessagingReceipt',
-              'name': 'msgReceipt',
-              'type': 'tuple'
-            },
-            {
-              'components': [
-                {
-                  'internalType': 'uint256',
-                  'name': 'amountSentLD',
-                  'type': 'uint256'
-                },
-                {
-                  'internalType': 'uint256',
-                  'name': 'amountReceivedLD',
-                  'type': 'uint256'
-                }
-              ],
-              'internalType': 'struct OFTReceipt',
-              'name': 'oftReceipt',
-              'type': 'tuple'
-            }
-          ],
+          'inputs': [],
+          'name': 'requestOwnershipHandover',
+          'outputs': [],
           'stateMutability': 'payable',
           'type': 'function'
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': '_delegate', 'type': 'address'}
+            {'internalType': 'string', 'name': 'baseURI_', 'type': 'string'}
           ],
-          'name': 'setDelegate',
+          'name': 'setBaseURI',
           'outputs': [],
           'stateMutability': 'nonpayable',
           'type': 'function'
         },
         {
           'inputs': [
-            {
-              'components': [
-                {'internalType': 'uint32', 'name': 'eid', 'type': 'uint32'},
-                {'internalType': 'uint16', 'name': 'msgType', 'type': 'uint16'},
-                {'internalType': 'bytes', 'name': 'options', 'type': 'bytes'}
-              ],
-              'internalType': 'struct EnforcedOptionParam[]',
-              'name': '_enforcedOptions',
-              'type': 'tuple[]'
-            }
+            {'internalType': 'bool', 'name': 'skipNFT', 'type': 'bool'}
           ],
-          'name': 'setEnforcedOptions',
-          'outputs': [],
-          'stateMutability': 'nonpayable',
-          'type': 'function'
-        },
-        {
-          'inputs': [
-            {
-              'internalType': 'address',
-              'name': '_msgInspector',
-              'type': 'address'
-            }
-          ],
-          'name': 'setMsgInspector',
-          'outputs': [],
-          'stateMutability': 'nonpayable',
-          'type': 'function'
-        },
-        {
-          'inputs': [
-            {'internalType': 'uint32', 'name': '_eid', 'type': 'uint32'},
-            {'internalType': 'bytes32', 'name': '_peer', 'type': 'bytes32'}
-          ],
-          'name': 'setPeer',
-          'outputs': [],
-          'stateMutability': 'nonpayable',
-          'type': 'function'
-        },
-        {
-          'inputs': [
-            {'internalType': 'address', 'name': '_preCrime', 'type': 'address'}
-          ],
-          'name': 'setPreCrime',
+          'name': 'setSkipNFT',
           'outputs': [],
           'stateMutability': 'nonpayable',
           'type': 'function'
         },
         {
           'inputs': [],
-          'name': 'sharedDecimals',
+          'name': 'symbol',
           'outputs': [
-            {'internalType': 'uint8', 'name': '', 'type': 'uint8'}
+            {'internalType': 'string', 'name': '', 'type': 'string'}
+          ],
+          'stateMutability': 'pure',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'uint256', 'name': 'tokenId', 'type': 'uint256'}
+          ],
+          'name': 'tokenURI',
+          'outputs': [
+            {'internalType': 'string', 'name': 'result', 'type': 'string'}
           ],
           'stateMutability': 'view',
           'type': 'function'
         },
         {
           'inputs': [],
-          'name': 'token',
+          'name': 'totalSupply',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
           ],
           'stateMutability': 'view',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': 'to', 'type': 'address'},
+            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+          ],
+          'name': 'transfer',
+          'outputs': [
+            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+          ],
+          'stateMutability': 'nonpayable',
+          'type': 'function'
+        },
+        {
+          'inputs': [
+            {'internalType': 'address', 'name': 'from', 'type': 'address'},
+            {'internalType': 'address', 'name': 'to', 'type': 'address'},
+            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+          ],
+          'name': 'transferFrom',
+          'outputs': [
+            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+          ],
+          'stateMutability': 'nonpayable',
           'type': 'function'
         },
         {
@@ -4212,14 +4278,15 @@ class PolygonContract implements SmartContract {
           ],
           'name': 'transferOwnership',
           'outputs': [],
-          'stateMutability': 'nonpayable',
+          'stateMutability': 'payable',
           'type': 'function'
-        }
+        },
+        {'stateMutability': 'payable', 'type': 'receive'}
       ];
 
   @override
-  String get contractAddress => '0x303b63e785B656ca56ea5A5C1634Ab20C98895e1';
+  String get contractAddress => '0x3d2bD0e15829AA5C362a4144FdF4A1112fa29B5c';
 
   @override
-  String get name => 'Unknown';
+  String get name => 'Bonsai Token';
 }

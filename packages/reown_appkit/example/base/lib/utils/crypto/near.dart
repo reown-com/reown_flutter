@@ -18,10 +18,7 @@ class Near {
     NearMethods.nearSignTransactions: 'near_signTransactions',
   };
 
-  static final Map<NearEvents, String> events = {
-    NearEvents.chainChanged: 'chainChanged',
-    NearEvents.accountsChanged: 'accountsChanged',
-  };
+  static final List<String> events = ['chainChanged', 'accountsChanged'];
 
   // https://github.com/near/wallet-selector/blob/dd19db77feee3941b4f53d2e3e1e4b74420f11c6/packages/wallet-connect/src/lib/wallet-connect.ts#L313
   static Map<String, dynamic> get demoMessage => {

@@ -5,7 +5,6 @@ import 'package:reown_appkit/modal/widgets/buttons/primary_button.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
-import 'package:reown_appkit_dapp/utils/smart_contracts.dart';
 import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
 import 'package:toastification/toastification.dart';
 
@@ -331,77 +330,14 @@ class __SmartAccountButtonsState extends State<_SmartAccountButtons> {
       return SizedBox.shrink();
     }
 
-    final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
-      namespace,
-      chainId,
-    )!;
-
-    late final SmartContract smartContract;
-    String functionaName = 'transfer';
-    if (chainInfo.chainId == 'eip155:11155111') {
-      smartContract = SepoliaAAVEContract();
-    } else if (chainInfo.chainId == 'eip155:42161') {
-      smartContract = ArbitrumAAVEContract();
-    } else if (chainInfo.chainId == 'eip155:8453') {
-      smartContract = BASEUSDCContract();
-    } else if (chainInfo.chainId == 'eip155:10') {
-      smartContract = WCTOPETHContract();
-    } else if (chainInfo.chainId == 'eip155:1') {
-      smartContract = ERC20USDTContract();
-    } else if (chainInfo.chainId == 'eip155:57054') {
-      smartContract = WrappedSonicContract();
-    } else if (chainInfo.chainId == 'eip155:137') {
-      smartContract = PolygonContract();
-      functionaName = 'send';
-    } else {
-      return SizedBox.shrink();
-    }
-
-    return Column(
-      children: [
-        Text('Smart Contract interaction'),
-        Wrap(
-          alignment: WrapAlignment.center,
-          spacing: 8.0,
-          children: [
-            PrimaryButton(
-              title: 'Read on ${smartContract.name}',
-              borderRadius: BorderRadius.all(Radius.circular(30.0)),
-              buttonSize: BaseButtonSize.regular,
-              onTap: () async {
-                final future = callSmartContract(
-                  appKitModal: widget.appKitModal,
-                  smartContract: smartContract,
-                  action: 'read',
-                );
-                MethodDialog.show(
-                  context,
-                  'Read on ${smartContract.name}',
-                  future,
-                );
-              },
-            ),
-            PrimaryButton(
-              title: 'Transfer 0.01 ${smartContract.name} to Yourself',
-              borderRadius: BorderRadius.all(Radius.circular(30.0)),
-              buttonSize: BaseButtonSize.regular,
-              onTap: () async {
-                final future = callSmartContract(
-                  appKitModal: widget.appKitModal,
-                  smartContract: smartContract,
-                  action: 'write',
-                  functionaName: functionaName,
-                );
-                MethodDialog.show(
-                  context,
-                  'Transfer 0.01 ${smartContract.name} to Yourself',
-                  future,
-                );
-              },
-            ),
-          ],
-        ),
-      ],
+    return FutureBuilder<Widget>(
+      future: contractCallsButton(
+        widget.appKitModal,
+        context,
+      ),
+      builder: (context, snapshot) {
+        return snapshot.data ?? SizedBox.shrink();
+      },
     );
   }
 }
