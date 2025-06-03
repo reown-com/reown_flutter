@@ -274,7 +274,7 @@ class _MyHomePageState extends State<MyHomePage> {
         logLevel: LogLevel.all,
         disconnectOnDispose: false,
         metadata: _pairingMetadata(),
-        siweConfig: _siweConfig(siweAuthValue),
+        // siweConfig: _siweConfig(siweAuthValue),
         featuresConfig: emailWalletValue ? _featuresConfig() : null,
         enableAnalytics: analyticsValue, // OPTIONAL - null by default
         // includedWalletIds: {},
@@ -440,6 +440,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _onModalDisconnect(ModalDisconnect? event) {
     log('[ExampleApp] _onModalDisconnect ${event?.toString()}');
     setState(() {});
+    _appKitModal!.openModalView();
   }
 
   void _onModalError(ModalError? event) {

@@ -28,7 +28,7 @@ extension TransactionExtension on Transaction {
       if (gasPrice != null)
         'gasPrice': '0x${gasPrice!.getInWei.toRadixString(16)}',
       if (value != null) 'value': '0x${value!.getInWei.toRadixString(16)}',
-      if (data != null) 'data': crypto.bytesToHex(data!),
+      if (data != null) 'data': crypto.bytesToHex(data!, include0x: true),
       if (nonce != null) 'nonce': nonce,
       if (maxFeePerGas != null)
         'maxFeePerGas': '0x${maxFeePerGas!.getInWei.toRadixString(16)}',

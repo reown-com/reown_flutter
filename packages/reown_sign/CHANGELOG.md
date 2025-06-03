@@ -1,3 +1,7 @@
+## 1.1.6+1
+
+- Fix an error where transaction data was missing 0x prefix
+
 ## 1.1.6
 
 - Removed unnecessary methods
