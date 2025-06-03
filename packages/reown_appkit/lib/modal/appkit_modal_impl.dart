@@ -1570,6 +1570,7 @@ class ReownAppKitModal
       _notify();
     }
     _isDisposed = true;
+    _isOpen = false;
     super.dispose();
   }
 
