@@ -32,7 +32,7 @@ class PolkadotChainUtils {
     // Extrinsic version = signed flag + version
     final int extrinsicVersion = signedFlag | version; // 0x80 + 0x04 = 0x84
 
-    // Detect signature type by evaluating the address if possible
+    // Detect signature type by evaluating the address if possible, default to Sr25519
     final ss58Address = payload['address']?.toString() ?? '';
     final signatureType = _guessSignatureTypeFromAddress(ss58Address);
 
@@ -198,18 +198,9 @@ class PolkadotChainUtils {
     return Uint8List.fromList(bytes);
   }
 
-  /// Constructs the method field for transferKeepAlive.
-  // static String constructHexMethod(String destAddress, BigInt amount) {
-  //   final callIndex = [0x04, 0x03];
-  //   final dest = ss58AddressToPublicKey(destAddress);
-  //   final value = _compactEncodeBigInt(amount);
-  //   final method = [...callIndex, ...dest, ...value];
-  //   return '0x${method.map((b) => b.toRadixString(16).padLeft(2, '0')).join()}';
-  // }
-
-  static String deriveExtrinsicHash(String signed) {
+  static String deriveExtrinsicHash(String signedExtrinsicHex) {
     final digest = Blake2bDigest(digestSize: 32); // 256-bit
-    final input = hex.decode(signed.replaceAll('0x', ''));
+    final input = hex.decode(signedExtrinsicHex.replaceAll('0x', ''));
     final bytes = digest.process(Uint8List.fromList(input));
     return hex.encode(bytes);
   }

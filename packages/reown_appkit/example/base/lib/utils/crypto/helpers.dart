@@ -178,7 +178,11 @@ Future<SessionRequestParams?> getParams(
       );
     case 'polkadot_signTransaction':
       //
-      final transactionPayload = Polkadot.hardcodedPayload(address);
+      final transactionPayload = await Polkadot.transferKeepAlivePayload(
+        address, // sender
+        address, // destination
+        chainData,
+      );
       return SessionRequestParams(
         method: method,
         params: {

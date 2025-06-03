@@ -387,7 +387,7 @@ class _MyHomePageState extends State<MyHomePage> {
           chainIcon:
               'https://cdn-icons-png.flaticon.com/128/12114/12114230.png',
           currency: 'DOT',
-          rpcUrl: 'wss://polkadot-rpc.dwellir.com',
+          rpcUrl: 'wss://rpc.polkadot.io',
           explorerUrl: 'https://polkadot.subscan.io',
         ),
         ReownAppKitModalNetworkInfo(

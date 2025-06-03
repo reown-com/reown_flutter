@@ -228,7 +228,10 @@ class KeyService extends IKeyService {
   }
 
   Future<ChainKey> _polkadotChainKey(String mnemonic) async {
-    final dotkeyPair = await keyring.Keyring().fromMnemonic(mnemonic);
+    final dotkeyPair = await keyring.Keyring().fromMnemonic(
+      mnemonic,
+      keyPairType: keyring.KeyPairType.sr25519,
+    );
     // adjust the default ss58Format for Polkadot https://github.com/paritytech/ss58-registry/blob/main/ss58-registry.json
     dotkeyPair.ss58Format = 0;
 

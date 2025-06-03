@@ -68,7 +68,10 @@ class PolkadotService {
       final keys = GetIt.I<IKeyService>().getKeysForChain(
         chainSupported.chainId,
       );
-      final dotkeyPair = await _keyring.fromMnemonic(keys[0].privateKey);
+      final dotkeyPair = await _keyring.fromMnemonic(
+        keys[0].privateKey,
+        keyPairType: KeyPairType.sr25519,
+      );
       // adjust the default ss58Format for Polkadot https://github.com/paritytech/ss58-registry/blob/main/ss58-registry.json
       // if westend (testnet) we don't need ss58 format
       if (!chainSupported.isTestnet) {
@@ -136,7 +139,10 @@ class PolkadotService {
     } else {
       keys = GetIt.I<IKeyService>().getKeysForChain(chainSupported.chainId);
     }
-    final dotkeyPair = await _keyring.fromMnemonic(keys[0].privateKey);
+    final dotkeyPair = await _keyring.fromMnemonic(
+      keys[0].privateKey,
+      keyPairType: KeyPairType.sr25519,
+    );
     // adjust the default ss58Format for Polkadot https://github.com/paritytech/ss58-registry/blob/main/ss58-registry.json
     // if westend (testnet) we don't need ss58 format
     if (!chainSupported.isTestnet) {
@@ -258,10 +264,8 @@ extension on Map<String, dynamic> {
       scale_codec.Input.fromHex(hexTxVersion),
     );
 
-    final hexBlockNumber = '${this['blockNumber']}'.replaceFirst('0x', '');
-    final blockNumber = scale_codec.U32Codec.codec.decode(
-      scale_codec.Input.fromHex(hexBlockNumber),
-    );
+    final hexBlockNumber = '${this["blockNumber"]}'.replaceFirst('0x', '');
+    final blockNumber = int.parse(hexBlockNumber, radix: 16);
 
     final hexNonce = '${this['nonce']}'.replaceFirst('0x', '');
     final nonce = scale_codec.CompactCodec.codec.decode(
