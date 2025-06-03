@@ -37,6 +37,7 @@ analyzer:
     - '**/*.freezed.dart'
     - '**/*.g.dart'
     - '**/generated_plugin_registrant.dart'
+    - 'lib/generated/'
   errors:
     invalid_annotation_target: ignore
 # Additional information about this file can be found at

@@ -385,14 +385,14 @@ class _MyHomePageState extends State<MyHomePage> {
           chainIcon:
               'https://cdn-icons-png.flaticon.com/128/12114/12114230.png',
           currency: 'DOT',
-          rpcUrl: 'wss://polkadot-rpc.dwellir.com',
+          rpcUrl: 'wss://rpc.polkadot.io',
           explorerUrl: 'https://polkadot.subscan.io',
         ),
         ReownAppKitModalNetworkInfo(
           name: 'Westend',
           chainId: 'e143f23803ac50e8f6f8e62695d1ce9e',
           currency: 'WND',
-          rpcUrl: 'wss://westend-rpc.dwellir.com',
+          rpcUrl: 'wss://westend-asset-hub-rpc.polkadot.io',
           explorerUrl: 'https://westend.subscan.io',
           isTestNetwork: true,
         ),
@@ -450,7 +450,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Updates namespaces based on supported networks list
   Map<String, RequiredNamespace>? _updatedNamespaces() {
-    Map<String, RequiredNamespace>? namespaces = {};
+    Map<String, RequiredNamespace>? namespaces;
 
     final supportedNS = ReownAppKitModalNetworks.getAllSupportedNamespaces();
     for (var ns in supportedNS) {
@@ -458,6 +458,7 @@ class _MyHomePageState extends State<MyHomePage> {
         namespace: ns,
       );
       if (chains.isNotEmpty) {
+        namespaces = {};
         namespaces[ns] = RequiredNamespace(
           chains: chains.map((c) => c.chainId).toList(),
           methods: getChainMethods(ns),

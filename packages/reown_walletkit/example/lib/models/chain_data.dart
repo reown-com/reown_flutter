@@ -230,7 +230,7 @@ class ChainsDataList {
       color: Color.fromARGB(255, 174, 57, 220),
       isTestnet: true,
       rpc: [
-        'wss://westend-rpc.polkadot.io',
+        'wss://westend-asset-hub-rpc.polkadot.io',
       ],
     ),
   ];
