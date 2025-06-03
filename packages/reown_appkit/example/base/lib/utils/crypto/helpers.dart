@@ -48,10 +48,9 @@ List<String> getChainEvents(String namespace) {
     case 'mvx':
       return [];
     case 'near':
-      return Near.events.values.toList();
+      return Near.events;
     case 'cosmos':
       return Cosmos.events.values.toList();
-      return Near.events;
     default:
       return [];
   }

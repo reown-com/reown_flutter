@@ -3073,6 +3073,29 @@ class ReownSign implements IReownSign {
           core.logger.e('[$runtimeType] _collectHashes: polkadot, $e');
         }
         return null;
+      case 'cosmos':
+        final result = (response.result as Map<String, dynamic>);
+        final signature = ReownCoreUtils.recursiveSearchForMapKey(
+          result,
+          'signature',
+        );
+        if (signature != null) {
+          final bodyBytes = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'bodyBytes',
+          );
+          final authInfoBytes = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'authInfoBytes',
+          );
+          final hash = CosmosUtils.computeTxHash(
+            bodyBytesBase64: bodyBytes,
+            authInfoBytesBase64: authInfoBytes,
+            signatureBase64: signature['signature'],
+          );
+          return List<String>.from([hash]);
+        }
+        return null;
       default:
         // default to EVM
         return <String>[response.result];

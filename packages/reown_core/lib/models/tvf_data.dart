@@ -51,7 +51,7 @@ class TVFData {
     'wallet_sendCalls',
     // Cosmos
     'cosmos_signDirect',
-    'cosmos_signAmino',
+    // 'cosmos_signAmino',
     // Polkadot
     'polkadot_signTransaction',
     // Near
