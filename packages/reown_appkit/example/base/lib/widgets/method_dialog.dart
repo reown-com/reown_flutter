@@ -9,12 +9,12 @@ import 'package:reown_appkit_dapp/utils/string_constants.dart';
 import 'package:toastification/toastification.dart';
 
 class MethodDialog extends StatefulWidget {
-  static Future<void> show(
+  static Future<dynamic> show(
     BuildContext context,
     String method,
     Future<dynamic> response,
   ) async {
-    await showDialog<void>(
+    return showDialog<dynamic>(
       context: context,
       builder: (BuildContext context) {
         return MethodDialog(
@@ -76,7 +76,9 @@ class MethodDialogState extends State<MethodDialog> {
                   child: Text(snapshot.error.toString()),
                 );
               } else {
-                final response = jsonEncode(snapshot.data).replaceAll('"', '');
+                final response = const JsonEncoder.withIndent('   ').convert(
+                  snapshot.data,
+                );
                 return InkWell(
                   onTap: () {
                     Clipboard.setData(ClipboardData(text: response)).then(
@@ -96,7 +98,7 @@ class MethodDialogState extends State<MethodDialog> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(snapshot.data);
               },
               child: const Text(
                 StringConstants.close,

@@ -557,28 +557,34 @@ class EVMService {
     String input,
   ) async {
     dynamic prepareResponse;
-    final response = await _walletKit.prepare(
-      chainId: chainId,
-      from: from,
-      call: CallCompat(to: to, input: input),
-    );
-    response.when(
-      success: (PrepareDetailedResponseSuccessCompat deatailResponse) {
-        deatailResponse.when(
-          available: (UiFieldsCompat uiFieldsCompat) {
-            prepareResponse = uiFieldsCompat;
-          },
-          notRequired: (PrepareResponseNotRequiredCompat notRequired) {
-            // it means that no bridging is required
-            // proceeds as normal transaction with initial transaction
-            prepareResponse = notRequired;
-          },
-        );
-      },
-      error: (PrepareResponseError error) {
-        prepareResponse = error;
-      },
-    );
+    try {
+      final response = await _walletKit.prepare(
+        chainId: chainId,
+        from: from,
+        call: CallCompat(to: to, input: input),
+      );
+      response.when(
+        success: (PrepareDetailedResponseSuccessCompat deatailResponse) {
+          deatailResponse.when(
+            available: (UiFieldsCompat uiFieldsCompat) {
+              prepareResponse = uiFieldsCompat;
+            },
+            notRequired: (PrepareResponseNotRequiredCompat notRequired) {
+              // it means that no bridging is required
+              // proceeds as normal transaction with initial transaction
+              prepareResponse = notRequired;
+            },
+          );
+        },
+        error: (PrepareResponseError error) {
+          prepareResponse = error;
+        },
+      );
+    } catch (e) {
+      // if prepare fails for any reason we should let the flow continue as usual with the regular approval
+      debugPrint('[SampleWallet] prepare error $e');
+      prepareResponse = null;
+    }
 
     return prepareResponse;
   }

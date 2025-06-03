@@ -244,7 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
       enableAnalytics: true,
       siweConfig: _siweConfig(linkModeEnabled),
       featuresConfig: socialsEnabled ? _featuresConfig() : null,
-      optionalNamespaces: _updatedNamespaces(),
+      optionalNamespaces: _namespacesBasedOnChains(),
       featuredWalletIds: _featuredWalletIds(),
       // excludedWalletIds: {},
       // includedWalletIds: {},
@@ -385,14 +385,14 @@ class _MyHomePageState extends State<MyHomePage> {
           chainIcon:
               'https://cdn-icons-png.flaticon.com/128/12114/12114230.png',
           currency: 'DOT',
-          rpcUrl: 'wss://polkadot-rpc.dwellir.com',
+          rpcUrl: 'wss://rpc.polkadot.io',
           explorerUrl: 'https://polkadot.subscan.io',
         ),
         ReownAppKitModalNetworkInfo(
           name: 'Westend',
           chainId: 'e143f23803ac50e8f6f8e62695d1ce9e',
           currency: 'WND',
-          rpcUrl: 'wss://westend-rpc.dwellir.com',
+          rpcUrl: 'wss://westend-asset-hub-rpc.polkadot.io',
           explorerUrl: 'https://westend.subscan.io',
           isTestNetwork: true,
         ),
@@ -445,12 +445,24 @@ class _MyHomePageState extends State<MyHomePage> {
           isTestNetwork: true,
         ),
       ]);
+      ReownAppKitModalNetworks.addSupportedNetworks('cosmos', [
+        ReownAppKitModalNetworkInfo(
+          name: 'Cosmos hub',
+          chainId: 'cosmoshub-4',
+          currency: 'ATOM',
+          rpcUrl: 'https://rpc.cosmos.network',
+          explorerUrl:
+              'https://www.mintscan.io/cosmos/', // 'https://www.mintscan.io',
+          chainIcon:
+              'https://s2.coinmarketcap.com/static/img/coins/200x200/3794.png',
+        ),
+      ]);
     }
   }
 
   // Updates namespaces based on supported networks list
-  Map<String, RequiredNamespace>? _updatedNamespaces() {
-    Map<String, RequiredNamespace>? namespaces = {};
+  Map<String, RequiredNamespace>? _namespacesBasedOnChains() {
+    Map<String, RequiredNamespace> namespaces = {};
 
     final supportedNS = ReownAppKitModalNetworks.getAllSupportedNamespaces();
     for (var ns in supportedNS) {
