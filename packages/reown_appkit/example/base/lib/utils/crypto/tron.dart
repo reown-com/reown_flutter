@@ -22,7 +22,7 @@ class Tron {
     TronMethods.tronSignMessage: 'tron_signMessage'
   };
 
-  static final Map<TronEvents, String> events = {};
+  static final List<String> events = [];
 
   static Future<Map<String, dynamic>> triggerSmartContract({
     required ReownAppKitModalNetworkInfo chainData,

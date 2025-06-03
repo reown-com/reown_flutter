@@ -21,10 +21,7 @@ class Near {
     NearMethods.nearSignTransactions: 'near_signTransactions',
   };
 
-  static final Map<NearEvents, String> events = {
-    NearEvents.chainChanged: 'chainChanged',
-    NearEvents.accountsChanged: 'accountsChanged',
-  };
+  static final List<String> events = ['chainChanged', 'accountsChanged'];
 
   static Uint8List _generateBase64Nonce() {
     final random = Random.secure();

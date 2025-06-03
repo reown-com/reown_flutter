@@ -23,7 +23,7 @@ class Solana {
     SolanaMethods.solanaSignAllTransactions: 'solana_signAllTransactions'
   };
 
-  static final Map<SolanaEvents, String> events = {};
+  static final List<String> events = [];
 
   static String personalSignMessage() {
     final bytes = utf8.encode('Welcome to Flutter AppKit on Solana');
