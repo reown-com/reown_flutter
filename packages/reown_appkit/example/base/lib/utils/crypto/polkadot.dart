@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
 import 'package:polkadart/apis/apis.dart' as dot_apis;
 import 'package:polkadart/polkadart.dart' as polkadart;
-// import 'package:polkadart/primitives/primitives.dart';
+
 // ignore: depend_on_referenced_packages
 import 'package:polkadart_keyring/polkadart_keyring.dart' as keyring;
 import 'package:polkadart/scale_codec.dart' as scale_codec;
@@ -38,12 +39,12 @@ class Polkadot {
       // Create sr25519 wallet
       final senderWallet = await keyring.KeyPair.sr25519.fromMnemonic('//');
       senderWallet.ss58Format = 0;
-      print('[PolkadotTest] senderWallet: ${senderWallet.address}');
+      debugPrint('[PolkadotTest] senderWallet: ${senderWallet.address}');
 
       // Create ecdsa wallet
       final receiverWallet = await keyring.KeyPair.sr25519.fromMnemonic('//');
       receiverWallet.ss58Format = 0;
-      print('[PolkadotTest] receiverWallet: ${receiverWallet.address}');
+      debugPrint('[PolkadotTest] receiverWallet: ${receiverWallet.address}');
 
       final provider = polkadart.Provider.fromUri(
         Uri.parse('wss://rpc.polkadot.io'),
@@ -106,17 +107,18 @@ class Polkadot {
         tip: BigInt.zero,
       );
       final payloadToSignMap = payloadToSign.toEncodedMap(polkadotApi.registry);
-      print('[PolkadotTest] payloadToSign: ${jsonEncode(payloadToSignMap)}');
+      debugPrint(
+          '[PolkadotTest] payloadToSign: ${jsonEncode(payloadToSignMap)}');
 
       // SIGNING PHASE -->
       // Build payload and sign with sr25519 wallet
       final payloadToSignBytes = payloadToSign.encode(polkadotApi.registry);
       final payloadToSignHex = scale_codec.encodeHex(payloadToSignBytes);
-      print('[PolkadotTest] Payload hex: $payloadToSignHex');
+      debugPrint('[PolkadotTest] Payload hex: $payloadToSignHex');
 
       final payloadSignatureBytes = senderWallet.sign(payloadToSignBytes);
       final payloadSignatureHex = scale_codec.encodeHex(payloadSignatureBytes);
-      print('[PolkadotTest] Signature hex: $payloadSignatureHex');
+      debugPrint('[PolkadotTest] Signature hex: $payloadSignatureHex');
       // <-- SIGNING PHASE
 
       // // Build extrinsic with sr25519 wallet
@@ -134,12 +136,12 @@ class Polkadot {
       //   polkadart.SignatureType.sr25519,
       // );
       // final extrinsicPayloadHex = scale_codec.encodeHex(extrinsicPayloadBytes);
-      // print('[PolkadotTest] srExtrinsic Hex: $extrinsicPayloadHex');
+      // debugPrint('[PolkadotTest] srExtrinsic Hex: $extrinsicPayloadHex');
 
       final publicKey = PolkadotChainUtils.ss58AddressToPublicKey(
         senderWallet.address,
       );
-      print(
+      debugPrint(
         '[PolkadotTest] matches public key: ${scale_codec.encodeHex(publicKey) == scale_codec.encodeHex(senderWallet.bytes())}',
       );
 
@@ -149,21 +151,18 @@ class Polkadot {
         payload: payloadToSignMap,
       );
       final signedExtrinsicHex = scale_codec.encodeHex(signedExtrinsicBytes);
-      print('[PolkadotTest] utilExtrinsic Hex: $signedExtrinsicHex');
-      // print(
-      //   '[PolkadotTest] matches extrinsics ${signedExtrinsicHex == extrinsicPayloadHex}',
-      // );
+      debugPrint('[PolkadotTest] utilExtrinsic Hex: $signedExtrinsicHex');
 
       final hashBytes = await authorApi.submitExtrinsic(signedExtrinsicBytes);
       final hashHex = scale_codec.encodeHex(hashBytes);
-      print('[PolkadotTest] extrinsic hash: $hashHex');
+      debugPrint('[PolkadotTest] extrinsic hash: $hashHex');
       final hash1 = PolkadotChainUtils.deriveExtrinsicHash(signedExtrinsicHex);
       // final hash2 = PolkadotChainUtils.deriveExtrinsicHash(extrinsicPayloadHex);
-      print('[PolkadotTest] matches hash: ${hashHex == hash1}');
-      // print('[PolkadotTest] matches hash: ${hash1 == hash2}');
+      debugPrint('[PolkadotTest] matches hash: ${hashHex == hash1}');
+      // debugPrint('[PolkadotTest] matches hash: ${hash1 == hash2}');
       //
     } catch (e, s) {
-      print('[PolkadotTest] ❌ error: $e.\n$s');
+      debugPrint('[PolkadotTest] ❌ error: $e.\n$s');
     }
   }
 
@@ -182,7 +181,7 @@ class Polkadot {
         destAddress,
         appKitModal.selectedChain!,
       );
-      print(
+      debugPrint(
           '[PolkadotTest] transactionPayload: ${jsonEncode(transactionPayload)}');
 
       // SIGNING PHASE -->
@@ -202,7 +201,7 @@ class Polkadot {
         result,
         'signature',
       );
-      print('[PolkadotTest] signature from wallet: $signatureHex');
+      debugPrint('[PolkadotTest] signature from wallet: $signatureHex');
       // final payloadSignatureBytes = scale_codec.decodeHex(signatureHex);
       // <-- SIGNING PHASE
 
@@ -219,7 +218,7 @@ class Polkadot {
       final txHash = await _submitExtrinsic(provider, signedExtrinsicHex);
       return txHash;
     } catch (e, s) {
-      print('[PolkadotTest] ❌ createTransferKeepAlive error: $e.\n$s');
+      debugPrint('[PolkadotTest] ❌ createTransferKeepAlive error: $e.\n$s');
     }
   }
 
@@ -237,7 +236,7 @@ class Polkadot {
         senderAddress, // destination
         appKitModal.selectedChain!,
       );
-      print(
+      debugPrint(
           '[PolkadotTest] transactionPayload: ${jsonEncode(transactionPayload)}');
 
       // SIGNING PHASE -->
@@ -257,7 +256,7 @@ class Polkadot {
         result,
         'signature',
       );
-      print('[PolkadotTest] signature from wallet: $signatureHex');
+      debugPrint('[PolkadotTest] signature from wallet: $signatureHex');
       // final payloadSignatureBytes = scale_codec.decodeHex(signatureHex);
       // <-- SIGNING PHASE
 
@@ -274,7 +273,7 @@ class Polkadot {
       final txHash = await _submitExtrinsic(provider, signedExtrinsicHex);
       return txHash;
     } catch (e, s) {
-      print('[PolkadotTest] ❌ createTransferKeepAlive error: $e.\n$s');
+      debugPrint('[PolkadotTest] ❌ createTransferKeepAlive error: $e.\n$s');
     }
   }
 
@@ -336,7 +335,7 @@ class Polkadot {
       };
       return transactionPayload;
     } catch (e, s) {
-      print('[PolkadotTest] ❌ createTransferKeepAlive error: $e.\n$s');
+      debugPrint('[PolkadotTest] ❌ createTransferKeepAlive error: $e.\n$s');
       rethrow;
     }
   }
@@ -398,7 +397,7 @@ class Polkadot {
       };
       return transactionPayload;
     } catch (e, s) {
-      print('[PolkadotTest] ❌ createTransferKeepAlive error: $e.\n$s');
+      debugPrint('[PolkadotTest] ❌ createTransferKeepAlive error: $e.\n$s');
       rethrow;
     }
   }
@@ -480,9 +479,9 @@ class Polkadot {
     final signedExtrinsicBytes = scale_codec.decodeHex(signedExtrinsicHex);
     final hashBytes = await authorApi.submitExtrinsic(signedExtrinsicBytes);
     final hashHex = scale_codec.encodeHex(hashBytes);
-    print('[PolkadotTest] extrinsic hash: $hashHex');
+    debugPrint('[PolkadotTest] extrinsic hash: $hashHex');
     final hash1 = PolkadotChainUtils.deriveExtrinsicHash(signedExtrinsicHex);
-    print('[PolkadotTest] matches hash: ${hashHex == hash1}');
+    debugPrint('[PolkadotTest] matches hash: ${hashHex == hash1}');
 
     return '0x$hash1';
   }
