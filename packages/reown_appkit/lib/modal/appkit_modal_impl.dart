@@ -1881,12 +1881,7 @@ class ReownAppKitModal
   Future<void> _cleanSession({SessionDelete? args, bool event = true}) async {
     _blockchainService.dispose();
     await _deleteStorage();
-    if (event) {
-      onModalDisconnect.broadcast(ModalDisconnect(
-        topic: args?.topic ?? _currentSession?.topic,
-        id: args?.id,
-      ));
-    }
+
     _selectedChainID = null;
     _isConnected = false;
     _currentSession = null;
@@ -1896,10 +1891,12 @@ class ReownAppKitModal
     _notify();
 
     if (event) {
-      onModalDisconnect.broadcast(ModalDisconnect(
-        topic: args?.topic ?? _currentSession?.topic,
-        id: args?.id,
-      ));
+      Future.delayed(Duration(milliseconds: 200), () {
+        onModalDisconnect.broadcast(ModalDisconnect(
+          topic: args?.topic ?? _currentSession?.topic,
+          id: args?.id,
+        ));
+      });
     }
   }
 
