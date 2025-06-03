@@ -353,32 +353,30 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Adds or remove supported networks based on linkMode
   void _addOrRemoveNetworks(bool linkMode) {
-    // ReownAppKitModalNetworks.addSupportedNetworks('eip155', [
-    //   ReownAppKitModalNetworkInfo(
-    //     name: 'Base Sepolia',
-    //     chainId: '84531',
-    //     currency: 'SEP',
-    //     rpcUrl: 'https://sepolia.base.org',
-    //     explorerUrl: 'https://sepolia.basescan.org/',
-    //     isTestNetwork: true,
-    //   ),
-    //   ReownAppKitModalNetworkInfo(
-    //     name: 'Sonic Blaze Testnet',
-    //     chainId: '57054',
-    //     currency: 'wS',
-    //     rpcUrl: 'https://rpc.blaze.soniclabs.com/',
-    //     explorerUrl: 'https://testnet.sonicscan.org/',
-    //     isTestNetwork: true,
-    //   ),
-    // ]);
+    ReownAppKitModalNetworks.addSupportedNetworks('eip155', [
+      ReownAppKitModalNetworkInfo(
+        name: 'Base Sepolia',
+        chainId: '84531',
+        currency: 'SEP',
+        rpcUrl: 'https://sepolia.base.org',
+        explorerUrl: 'https://sepolia.basescan.org/',
+        isTestNetwork: true,
+      ),
+      ReownAppKitModalNetworkInfo(
+        name: 'Sonic Blaze Testnet',
+        chainId: '57054',
+        currency: 'wS',
+        rpcUrl: 'https://rpc.blaze.soniclabs.com/',
+        explorerUrl: 'https://testnet.sonicscan.org/',
+        isTestNetwork: true,
+      ),
+    ]);
     if (linkMode) {
       // When linkMode is true, the application operates in "Link Mode",
       // which is designed to support only EVM-compatible networks.
       // As a result, non-EVM networks like Solana should be removed
       ReownAppKitModalNetworks.removeSupportedNetworks('solana');
     } else {
-      ReownAppKitModalNetworks.removeSupportedNetworks('eip155');
-      ReownAppKitModalNetworks.removeSupportedNetworks('solana');
       // When linkMode is false, the application supports a broader range of networks
       ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
         ReownAppKitModalNetworkInfo(
@@ -399,54 +397,54 @@ class _MyHomePageState extends State<MyHomePage> {
           isTestNetwork: true,
         ),
       ]);
-      // ReownAppKitModalNetworks.addSupportedNetworks('tron', [
-      //   ReownAppKitModalNetworkInfo(
-      //     name: 'Tron',
-      //     chainId: '0x2b6653dc',
-      //     chainIcon:
-      //         'https://cdn-icons-png.flaticon.com/512/12114/12114250.png',
-      //     currency: 'TRX',
-      //     rpcUrl: 'https://api.trongrid.io',
-      //     explorerUrl: 'https://tronscan.org',
-      //   ),
-      //   ReownAppKitModalNetworkInfo(
-      //     name: 'Tron testnet',
-      //     chainId: '0xcd8690dc',
-      //     currency: 'TRX',
-      //     rpcUrl: 'https://nile.trongrid.io',
-      //     explorerUrl: 'https://test.tronscan.org',
-      //     isTestNetwork: true,
-      //   ),
-      // ]);
-      // ReownAppKitModalNetworks.addSupportedNetworks('mvx', [
-      //   ReownAppKitModalNetworkInfo(
-      //     name: 'MultiversX',
-      //     chainId: '1',
-      //     currency: 'EGLD',
-      //     rpcUrl: 'https://api.multiversx.com',
-      //     explorerUrl: 'https://explorer.multiversx.com',
-      //     chainIcon: 'https://avatars.githubusercontent.com/u/114073177',
-      //   ),
-      // ]);
-      // ReownAppKitModalNetworks.addSupportedNetworks('near', [
-      //   ReownAppKitModalNetworkInfo(
-      //     name: 'Near Mainnet',
-      //     chainId: 'mainnet',
-      //     currency: 'NEAR',
-      //     rpcUrl: 'https://rpc.mainnet.near.org',
-      //     explorerUrl: 'https://nearblocks.io',
-      //     chainIcon:
-      //         'https://pages.near.org/wp-content/uploads/2023/11/NEAR_token.png',
-      //   ),
-      //   ReownAppKitModalNetworkInfo(
-      //     name: 'Near Testnet',
-      //     chainId: 'testnet',
-      //     currency: 'NEAR',
-      //     rpcUrl: 'https://rpc.testnet.near.org',
-      //     explorerUrl: 'https://testnet.nearblocks.io',
-      //     isTestNetwork: true,
-      //   ),
-      // ]);
+      ReownAppKitModalNetworks.addSupportedNetworks('tron', [
+        ReownAppKitModalNetworkInfo(
+          name: 'Tron',
+          chainId: '0x2b6653dc',
+          chainIcon:
+              'https://cdn-icons-png.flaticon.com/512/12114/12114250.png',
+          currency: 'TRX',
+          rpcUrl: 'https://api.trongrid.io',
+          explorerUrl: 'https://tronscan.org',
+        ),
+        ReownAppKitModalNetworkInfo(
+          name: 'Tron testnet',
+          chainId: '0xcd8690dc',
+          currency: 'TRX',
+          rpcUrl: 'https://nile.trongrid.io',
+          explorerUrl: 'https://test.tronscan.org',
+          isTestNetwork: true,
+        ),
+      ]);
+      ReownAppKitModalNetworks.addSupportedNetworks('mvx', [
+        ReownAppKitModalNetworkInfo(
+          name: 'MultiversX',
+          chainId: '1',
+          currency: 'EGLD',
+          rpcUrl: 'https://api.multiversx.com',
+          explorerUrl: 'https://explorer.multiversx.com',
+          chainIcon: 'https://avatars.githubusercontent.com/u/114073177',
+        ),
+      ]);
+      ReownAppKitModalNetworks.addSupportedNetworks('near', [
+        ReownAppKitModalNetworkInfo(
+          name: 'Near Mainnet',
+          chainId: 'mainnet',
+          currency: 'NEAR',
+          rpcUrl: 'https://rpc.mainnet.near.org',
+          explorerUrl: 'https://nearblocks.io',
+          chainIcon:
+              'https://pages.near.org/wp-content/uploads/2023/11/NEAR_token.png',
+        ),
+        ReownAppKitModalNetworkInfo(
+          name: 'Near Testnet',
+          chainId: 'testnet',
+          currency: 'NEAR',
+          rpcUrl: 'https://rpc.testnet.near.org',
+          explorerUrl: 'https://testnet.nearblocks.io',
+          isTestNetwork: true,
+        ),
+      ]);
     }
   }
 
