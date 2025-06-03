@@ -6,6 +6,12 @@ The communications protocol for web3, Reown brings the ecosystem together by ena
 
 https://pub.dev/publishers/reown.com/packages
 
+## Documentation
+
+AppKit: https://docs.reown.com/appkit/flutter/core/installation
+
+WalletKit: https://docs.reown.com/walletkit/flutter/installation
+
 ## License
 
 Reown is released under the Apache 2.0 license. [See LICENSE](/LICENSE) for details.
