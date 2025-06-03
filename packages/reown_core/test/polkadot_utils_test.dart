@@ -1,7 +1,6 @@
 import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:convert/convert.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:reown_core/reown_core.dart';
 
@@ -35,7 +34,7 @@ void main() {
         'transactionPayload': transactionPayload,
       };
 
-      print(jsonEncode(requestParams));
+      debugPrint(jsonEncode(requestParams));
 
       // Wallet response
 
@@ -49,7 +48,7 @@ void main() {
         },
       };
 
-      print(jsonEncode(jsonRPCResponse));
+      debugPrint(jsonEncode(jsonRPCResponse));
 
       // Expected values
 
@@ -129,7 +128,7 @@ void main() {
         'transactionPayload': transactionPayload,
       };
 
-      print(jsonEncode(requestParams));
+      debugPrint(jsonEncode(requestParams));
 
       // Wallet response
 
@@ -143,7 +142,7 @@ void main() {
         },
       };
 
-      print(jsonEncode(jsonRPCResponse));
+      debugPrint(jsonEncode(jsonRPCResponse));
 
       // Expected values
 
@@ -225,7 +224,7 @@ void main() {
         'transactionPayload': transactionPayload,
       };
 
-      print(jsonEncode(requestParams));
+      debugPrint(jsonEncode(requestParams));
 
       // Wallet response
 
@@ -239,7 +238,7 @@ void main() {
         },
       };
 
-      print(jsonEncode(jsonRPCResponse));
+      debugPrint(jsonEncode(jsonRPCResponse));
 
       // Expected values
 
@@ -319,7 +318,7 @@ void main() {
         'transactionPayload': transactionPayload,
       };
 
-      print(jsonEncode(requestParams));
+      debugPrint(jsonEncode(requestParams));
 
       // Wallet response
 
@@ -332,7 +331,7 @@ void main() {
               '926c22be4158edd2ccefdadd0e951c12da439661fc4e6bf259140f208d3fb815441ad8de4a393809b634643b857c247ea39f3d7bb2e1d3be70af920e2fbdbe84'
         },
       };
-      print(jsonEncode(jsonRPCResponse));
+      debugPrint(jsonEncode(jsonRPCResponse));
 
       // Expected values
 

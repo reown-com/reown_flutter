@@ -109,7 +109,7 @@ class PolkadotService {
       }
     } catch (e, s) {
       debugPrint('[SampleWallet] polkadotSignMessage error $e');
-      print(s);
+      debugPrint(s.toString());
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
         error: JsonRpcError(
@@ -187,7 +187,7 @@ class PolkadotService {
         );
       } catch (e, s) {
         debugPrint('[SampleWallet] polkadotSignTransaction error $e');
-        print(s);
+        debugPrint(s.toString());
         final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
         response = response.copyWith(
           error: JsonRpcError(
