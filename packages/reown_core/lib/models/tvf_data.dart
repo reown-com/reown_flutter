@@ -51,6 +51,9 @@ class TVFData {
     'wallet_sendCalls',
     // Polkadot
     'polkadot_signTransaction',
+    // Near
+    'near_signTransaction',
+    'near_signTransactions',
     // Stacks
     'stacks_stxTransfer',
     // Bitcoin

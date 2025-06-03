@@ -10,6 +10,7 @@ import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/i_generic_store.dart';
 import 'package:reown_core/utils/algorand_utils.dart';
+import 'package:reown_core/utils/near_utils.dart';
 import 'package:reown_core/utils/sui_utils.dart';
 
 import 'package:reown_sign/reown_sign.dart';
@@ -2980,10 +2981,14 @@ class ReownSign implements IReownSign {
         }
         return null;
       case 'tron':
-        final result = (response.result as Map<String, dynamic>);
-        final txID = ReownCoreUtils.recursiveSearchForMapKey(result, 'txID');
-        if (txID != null) {
-          return List<String>.from([txID]);
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final txID = ReownCoreUtils.recursiveSearchForMapKey(result, 'txID');
+          if (txID != null) {
+            return List<String>.from([txID]);
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: tron, $e');
         }
         return null;
       case 'hedera':
@@ -3024,39 +3029,13 @@ class ReownSign implements IReownSign {
           core.logger.e('[$runtimeType] _collectHashes: stacks, $e');
         }
         return null;
-      case 'polkadot':
+      case 'near':
         try {
-          final result = (response.result as Map<String, dynamic>);
-          final signature = ReownCoreUtils.recursiveSearchForMapKey(
-            result,
-            'signature',
-          );
-          if (signature != null) {
-            final id = response.id;
-            final requestParams = pendingTVFRequests[id]!.requestParams;
-            final params = requestParams as Map<String, dynamic>;
-            final payload = ReownCoreUtils.recursiveSearchForMapKey(
-              params,
-              'transactionPayload',
-            );
-            final ss58Address = ReownCoreUtils.recursiveSearchForMapKey(
-              params,
-              'address',
-            );
-            final publicKey = PolkadotChainUtils.ss58AddressToPublicKey(
-              ss58Address,
-            );
-            final extrinsic = PolkadotChainUtils.addSignatureToExtrinsic(
-              publicKey: Uint8List.fromList(publicKey),
-              hexSignature: signature,
-              payload: payload,
-            );
-            final signedHex = hex.encode(extrinsic);
-            final hash = PolkadotChainUtils.deriveExtrinsicHash(signedHex);
-            return List<String>.from([hash]);
-          }
+          final result = NearChainUtils.parseResponse(response.result);
+          final hash = NearChainUtils.computeNearHashFromTxBytes(result);
+          return <String>[hash];
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: polkadot, $e');
+          core.logger.e('[$runtimeType] _collectHashes: near, $e');
         }
         return null;
       default:
