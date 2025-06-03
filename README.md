@@ -8,7 +8,7 @@ Latest stable versions
 
 | [Core SDK](packages/reown_core) | [Sign SDK](packages/reown_sign) | [WalletKit](packages/reown_walletkit) | [AppKit](packages/reown_appkit) | [Yttrium](packages/reown_yttrium)| [CLI](packages/reown_cli)       |
 |---------------------------------|---------------------------------|---------------------------------------|---------------------------------|----------------------------------|---------------------------------|
-| 1.1.5                           | 1.1.5                           | 1.1.5                                 | 1.4.3                           | 0.0.1                            | 0.0.4                           |
+| 1.1.5                           | 1.1.5                           | 1.1.5+2                               | 1.4.3                           | 0.0.2                            | 0.0.4                           |
 
 ## License
 

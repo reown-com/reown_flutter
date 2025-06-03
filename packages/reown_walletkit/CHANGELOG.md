@@ -1,3 +1,7 @@
+## 1.1.5+2
+
+- Yttrium dependency update
+
 ## 1.1.5+1
 
 - Sign SDK update
