@@ -1,12 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'dart:typed_data';
 
+import 'package:convert/convert.dart';
 import 'package:event/event.dart';
 import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/i_generic_store.dart';
+import 'package:reown_core/utils/algorand_utils.dart';
+import 'package:reown_core/utils/near_utils.dart';
+import 'package:reown_core/utils/sui_utils.dart';
 
 import 'package:reown_sign/reown_sign.dart';
 import 'package:reown_sign/utils/sign_api_validator_utils.dart';
@@ -2849,6 +2854,7 @@ class ReownSign implements IReownSign {
       rpcMethods: rpcMethods,
       chainId: chainId,
       contractAddresses: contractAddresses,
+      requestParams: request.request.params,
     );
 
     // pendingTVFRequests is useful for WalletKit _onSessionRequest method
@@ -2862,21 +2868,17 @@ class ReownSign implements IReownSign {
     // only EVM request could have `data` parameter for contract call
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     if (namespace == 'eip155') {
-      final paramsMap = (params as List).first as Map<String, dynamic>;
-      final input = paramsMap['input'] as String? ?? '';
       try {
-        if (ReownCoreUtils.isValidContractData(input)) {
-          final contractAddress = paramsMap['to'] as String;
+        final paramsMap = (params as List).first as Map<String, dynamic>;
+        final inputData = (paramsMap['input'] ?? paramsMap['data'])!;
+        if (EvmChainUtils.isValidContractData(inputData)) {
+          final contractAddress = paramsMap['to'] as String?;
           return contractAddress;
-        } else {
-          final data = paramsMap['data'] as String? ?? '';
-          if (ReownCoreUtils.isValidContractData(data)) {
-            final contractAddress = paramsMap['to'] as String;
-            return contractAddress;
-          }
         }
       } catch (e) {
-        core.logger.d('[$runtimeType] invalid contract data');
+        core.logger.d(
+          '[$runtimeType] invalid contract data, skipping contractAddress collection',
+        );
       }
     }
     return null;
@@ -2906,50 +2908,174 @@ class ReownSign implements IReownSign {
       return null;
     }
 
-    try {
-      final result = (response.result as Map<String, dynamic>);
-      switch (namespace) {
-        case 'solana':
-          if (result.containsKey('signature')) {
-            return List<String>.from([result['signature']]);
-          }
-          if (result.containsKey('transactions')) {
-            // Decode transactions and extract signature to send as TVF data
-            final transactions = result['transactions'] as List;
-            final signatures = transactions.map((encodedTx) {
-              return ReownCoreUtils.extractSolanaSignature(encodedTx);
-            }).toList();
-            return signatures;
-          }
-          return null;
-        case 'cosmos':
+    switch (namespace) {
+      case 'solana':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          // if contain signature it's either solana_signTransaction or solana_signTransaction
           final signature = ReownCoreUtils.recursiveSearchForMapKey(
             result,
             'signature',
           );
           if (signature != null) {
-            final bodyBytes = ReownCoreUtils.recursiveSearchForMapKey(
+            return List<String>.from([...signature]);
+          }
+          // if contain transactions it's solana_signAllTransactions
+          final transactions = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'transactions',
+          );
+          if (transactions != null) {
+            // Decode transactions and extract signature to send as TVF data
+            final signatures = (transactions as List).map((encodedTx) {
+              return SolanaChainUtils.extractSolanaSignature(encodedTx);
+            }).toList();
+            return signatures;
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: solana, $e');
+        }
+        return null;
+      case 'xrpl':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final txHash = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'hash',
+          );
+          if (txHash != null) {
+            return List<String>.from([txHash]);
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: xrpl, $e');
+        }
+        return null;
+      case 'algo':
+        try {
+          final result = (response.result as List);
+          final txHashesList = AlgorandChainUtils.calculateTxIDs(result);
+          return List<String>.from([...txHashesList]);
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: algo, $e');
+        }
+        return null;
+      case 'sui':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final signature = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'signature',
+          );
+          if (signature != null) {
+            final transactionBytes = ReownCoreUtils.recursiveSearchForMapKey(
               result,
-              'bodyBytes',
+              'transactionBytes',
             );
-            final authInfoBytes = ReownCoreUtils.recursiveSearchForMapKey(
-              result,
-              'authInfoBytes',
+            final computedHash = SuiChainUtils.getSuiDigestFromEncodedTx(
+              transactionBytes,
             );
-            final hash = CosmosUtils.computeTxHash(
-              bodyBytesBase64: bodyBytes,
-              authInfoBytesBase64: authInfoBytes,
-              signatureBase64: signature['signature'],
+            return List<String>.from([computedHash]);
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: sui, $e');
+        }
+        return null;
+      case 'tron':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final txID = ReownCoreUtils.recursiveSearchForMapKey(result, 'txID');
+          if (txID != null) {
+            return List<String>.from([txID]);
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: tron, $e');
+        }
+        return null;
+      case 'hedera':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final transactionId = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'transactionId',
+          );
+          if (transactionId != null) {
+            return List<String>.from([transactionId]);
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: hedera, $e');
+        }
+        return null;
+      case 'bip122':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final txId = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'txid',
+          );
+          return <String>[txId];
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: bip122, $e');
+        }
+        return null;
+      case 'stacks':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final txId = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'txId',
+          );
+          return List<String>.from([txId]);
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: stacks, $e');
+        }
+        return null;
+      case 'near':
+        try {
+          final result = NearChainUtils.parseResponse(response.result);
+          final hash = NearChainUtils.computeNearHashFromTxBytes(result);
+          return <String>[hash];
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: near, $e');
+        }
+        return null;
+      case 'polkadot':
+        try {
+          final result = (response.result as Map<String, dynamic>);
+          final signature = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'signature',
+          );
+          if (signature != null) {
+            final id = response.id;
+            final requestParams = pendingTVFRequests[id]!.requestParams;
+            final params = requestParams as Map<String, dynamic>;
+            final payload = ReownCoreUtils.recursiveSearchForMapKey(
+              params,
+              'transactionPayload',
             );
+            final ss58Address = ReownCoreUtils.recursiveSearchForMapKey(
+              params,
+              'address',
+            );
+            final publicKey = PolkadotChainUtils.ss58AddressToPublicKey(
+              ss58Address,
+            );
+            final extrinsic = PolkadotChainUtils.addSignatureToExtrinsic(
+              publicKey: Uint8List.fromList(publicKey),
+              hexSignature: signature,
+              payload: payload,
+            );
+            final signedHex = hex.encode(extrinsic);
+            final hash = PolkadotChainUtils.deriveExtrinsicHash(signedHex);
             return List<String>.from([hash]);
           }
-          return null;
-        default:
-          return List<String>.from([response.result]);
-      }
-    } catch (e) {
-      core.logger.d('[$runtimeType] _collectHashes $e');
-      return null;
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: polkadot, $e');
+        }
+        return null;
+      default:
+        // default to EVM
+        return <String>[response.result];
     }
   }
 }

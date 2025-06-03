@@ -17,14 +17,13 @@ dart run build_runner build --delete-conflicting-outputs
 # dart pub outdated --no-dev-dependencies --up-to-date --no-dependency-overrides
 # dart format .
 # dart run dependency_validator
+dart run polkadart_cli:generate -v
 
 cd ios
-
 rm Podfile.lock
-pod deintegrate
-pod cache clean --all
+# pod deintegrate
+# pod cache clean --all
 pod install
-
 cd ..
 
 cd ..
@@ -42,12 +41,10 @@ dart run build_runner build --delete-conflicting-outputs
 # dart run dependency_validator
 
 cd ios
-
 rm Podfile.lock
-pod deintegrate
-pod cache clean --all
+# pod deintegrate
+# pod cache clean --all
 pod install
-
 cd ..
 
 cd ..

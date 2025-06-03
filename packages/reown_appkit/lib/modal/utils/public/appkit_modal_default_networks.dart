@@ -307,7 +307,7 @@ class ReownAppKitModalNetworks {
     final mainNamespaces =
         _mainnets.keys.where((key) => _mainnets[key]!.isNotEmpty).toList();
     final testNamespaces =
-        _testnets.keys.where((key) => _mainnets[key]!.isNotEmpty).toList();
+        _testnets.keys.where((key) => _testnets[key]!.isNotEmpty).toList();
     return <String>{...mainNamespaces, ...testNamespaces}.toList();
   }
 

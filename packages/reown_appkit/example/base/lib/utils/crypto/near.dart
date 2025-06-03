@@ -1,9 +1,12 @@
+import 'dart:math';
+
+import 'dart:typed_data';
+// import 'package:bs58/bs58.dart';
+
 enum NearMethods {
   nearSignMessage,
   nearSignTransaction,
   nearSignTransactions,
-  // nearSignAndSendTransaction,
-  // nearRequestSignTransactions,
 }
 
 enum NearEvents {
@@ -18,35 +21,84 @@ class Near {
     NearMethods.nearSignTransactions: 'near_signTransactions',
   };
 
-  static final Map<NearEvents, String> events = {
-    NearEvents.chainChanged: 'chainChanged',
-    NearEvents.accountsChanged: 'accountsChanged',
-  };
+  static final List<String> events = ['chainChanged', 'accountsChanged'];
+
+  static Uint8List _generateBase64Nonce() {
+    final random = Random.secure();
+    return Uint8List.fromList(List.generate(32, (_) => random.nextInt(256)));
+  }
 
   // https://github.com/near/wallet-selector/blob/dd19db77feee3941b4f53d2e3e1e4b74420f11c6/packages/wallet-connect/src/lib/wallet-connect.ts#L313
-  static Map<String, dynamic> get demoMessage => {
+  static Map<String, dynamic> demoMessageParams(String address) => {
         'message': 'Welcome to Flutter AppKit on Near',
-        'nonce': '123456789',
-        'recipient': 'bob.near',
-        // 'callbackUrl': 'https://example.com/callback'
+        'nonce': _generateBase64Nonce(),
+        'recipient': address, // could be also in the form of 'myaccount.near'
+        // 'callbackUrl': 'mydapp://', // Optional, for redirect after signing
+        // 'accountId': '<optional>',       // If multiple accounts are connected
       };
 
   // https://github.com/near/wallet-selector/blob/dd19db77feee3941b4f53d2e3e1e4b74420f11c6/packages/wallet-connect/src/lib/wallet-connect.ts#L333
-  static Map<String, dynamic> get demoTransaction => {
-        'signerId': 'alice.near',
-        'publicKey':
-            'ed25519:3u1Qw2k5v6y7z8x9w0v1u2t3s4r5q6p7o8n9m0l1k2j3h4g5f6d7s8a9b0c1d2e3',
-        'receiverId': 'bob.near',
-        'nonce': 123456,
+  static Map<String, dynamic> demoNEARTransferParams(
+    String address,
+    String pubKey,
+  ) =>
+      {
+        'signerId': address,
+        'publicKey': pubKey,
+        'receiverId': address,
+        'nonce': _generateBase64Nonce(),
+        'blockHash': '772yv3sStrcpwY7h33wM5byeox5xZxNGtmyGGQvezMy5',
         'actions': [
           {
             'type': 'Transfer',
             'params': {
-              'deposit': '1000000000000000000000000',
+              'deposit':
+                  '1000000000000000000000000' // 1 NEAR in yoctoNEAR (1e24)
             }
           }
+        ]
+      };
+
+  static Map<String, dynamic> demoUSDCTransfer(
+    String address,
+    String pubKey,
+  ) =>
+      {
+        'signerId': address,
+        'publicKey': pubKey,
+        'receiverId': 'usdc.fakes.testnet', // contract address/id
+        'nonce': _generateBase64Nonce(),
+        'blockHash': '772yv3sStrcpwY7h33wM5byeox5xZxNGtmyGGQvezMy5',
+        'actions': [
+          {
+            'type': 'FunctionCall',
+            'params': {
+              'methodName': 'ft_transfer',
+              'args': {
+                'receiver_id': address,
+                'amount':
+                    '1000000' // Amount in yocto (depending on token decimals)
+              },
+              'gas': '30000000000000', // 30 Tgas
+              'deposit': '1' // 1 yoctoNEAR required for ft_transfer
+            }
+          }
+        ]
+      };
+
+  static Map<String, dynamic> demoFromReactDapp(String address) => {
+        'signerId': address,
+        'receiverId': 'guest-book.testnet',
+        'actions': [
+          {
+            'type': 'FunctionCall',
+            'params': {
+              'methodName': 'addMessage',
+              'args': {'text': 'Hello from Wallet Connect!'},
+              'gas': '30000000000000',
+              'deposit': '0',
+            },
+          },
         ],
-        'blockHash':
-            '9N8Q7W6E5R4T3Y2U1I0O9P8L7K6J5H4G3F2D1S0A9B8C7D6E5F4G3H2J1K0L9M8N7'
       };
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:eth_sig_util/util/utils.dart';
+import 'package:reown_appkit/modal/utils/public/appkit_modal_networks_utils.dart';
 
 enum EIP155Methods {
   personalSign,
@@ -24,6 +25,9 @@ class EIP155 {
     EIP155Methods.ethSignTransaction: 'eth_signTransaction',
     EIP155Methods.ethSendTransaction: 'eth_sendTransaction',
   };
+
+  static final List<String> events =
+      NetworkUtils.defaultNetworkEvents['eip155']!.toList();
 
   static String personalSignMessage(String chain) {
     final bytes = utf8.encode(

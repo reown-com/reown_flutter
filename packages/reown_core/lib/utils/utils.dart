@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:bs58/bs58.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:typed_data';
 import 'package:ed25519_edwards/ed25519_edwards.dart' as ed;
@@ -281,53 +280,30 @@ class ReownCoreUtils {
     return ed.verify(publicKey, message, sig);
   }
 
-  static bool isValidContractData(String data) {
-    bool isValidData = false;
-
+  static dynamic recursiveSearchForMapKey(
+    Map<String, dynamic> map,
+    String targetKey,
+  ) {
     try {
-      // Ensure the data starts with '0x' for consistency
-      if (data.startsWith('0x')) data = data.substring(2);
-      if (data.isEmpty) return false;
-
-      // Extract method ID (first 4 bytes)
-      final methodId = data.substring(0, 8);
-      isValidData = methodId.isNotEmpty;
-
-      // Extract recipient address (next 32 bytes, right-padded with zeros)
-      final recipient = data.substring(8, 72).replaceFirst(RegExp('^0+'), '');
-      isValidData = recipient.isNotEmpty;
-
-      // Extract amount (final 32 bytes, big-endian encoded)
-      final amount = data.substring(72).replaceFirst(RegExp('^0+'), '');
-      // final amount = BigInt.parse(amountHex, radix: 16);
-      isValidData = amount.isNotEmpty;
-
-      return isValidData;
+      for (final entry in map.entries) {
+        if (entry.key.toString() == targetKey) {
+          return entry.value;
+        } else if (entry.value is Map<String, dynamic>) {
+          final result = recursiveSearchForMapKey(entry.value, targetKey);
+          if (result != null) return result;
+        } else if (entry.value is List) {
+          for (final element in entry.value) {
+            if (element is Map<String, dynamic>) {
+              final result = recursiveSearchForMapKey(element, targetKey);
+              if (result != null) return result;
+            }
+          }
+        }
+      }
     } catch (e) {
-      rethrow;
+      throw ArgumentError('recursiveSearchForMapKey error $e');
     }
-  }
-
-  static String extractSolanaSignature(String transaction) {
-    late final Uint8List buffer;
-    try {
-      buffer = base64.decode(transaction);
-    } catch (e) {
-      buffer = base58.decode(transaction);
-    }
-
-    if (buffer.isEmpty) {
-      throw ArgumentError('Transaction buffer is empty');
-    }
-
-    int numSignatures = buffer[0];
-
-    if (numSignatures > 0 && buffer.length >= 65) {
-      Uint8List signatureBuffer = buffer.sublist(1, 65);
-      return base58.encode(signatureBuffer);
-    } else {
-      throw ArgumentError('No signatures found in transaction');
-    }
+    return null;
   }
 
   static dynamic recursiveSearchForMapKey(

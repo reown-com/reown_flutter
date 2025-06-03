@@ -19,7 +19,7 @@ class TVFData {
         'rpcMethods': rpcMethods,
         'chainId': chainId,
         'contractAddresses': contractAddresses,
-        // requestParams is not included in this method because it is used to add tvf data to the irn_publish call, which doesn't require it
+        // requestParams is not included in this method because this is used to add tvf data to the publish method
         if (includeAll) 'txHashes': txHashes,
       };
 
@@ -52,5 +52,27 @@ class TVFData {
     // Cosmos
     'cosmos_signDirect',
     'cosmos_signAmino',
+    // Polkadot
+    'polkadot_signTransaction',
+    // Near
+    'near_signTransaction',
+    'near_signTransactions',
+    // Stacks
+    'stacks_stxTransfer',
+    // Bitcoin
+    'sendTransfer',
+    // Hedera
+    'hedera_signAndExecuteTransaction',
+    'hedera_executeTransaction',
+    // TRON
+    'tron_signTransaction',
+    // XRPL
+    'xrpl_signTransaction',
+    'xrpl_signTransactionFor',
+    // Algorand
+    'algo_signTxn',
+    // SUI
+    'sui_signTransaction',
+    'sui_signAndExecuteTransaction',
   ];
 }
