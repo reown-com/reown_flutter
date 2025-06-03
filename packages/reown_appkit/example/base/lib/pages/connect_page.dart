@@ -5,8 +5,6 @@ import 'package:reown_appkit/modal/widgets/buttons/primary_button.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
-// import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
-import 'package:reown_appkit_dapp/utils/smart_contracts.dart';
 import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
 import 'package:toastification/toastification.dart';
 
