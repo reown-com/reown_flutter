@@ -5,6 +5,8 @@ import 'package:reown_appkit/modal/widgets/buttons/primary_button.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
+// import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
+import 'package:reown_appkit_dapp/utils/smart_contracts.dart';
 import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
 import 'package:toastification/toastification.dart';
 
@@ -285,6 +287,17 @@ class __RequestButtonsState extends State<_RequestButtons> {
               borderRadius: BorderRadius.all(Radius.circular(30.0)),
               buttonSize: BaseButtonSize.regular,
               onTap: () async {
+                // Uncomment to sign and submit real transaction
+                // if (method == 'polkadot_signTransaction') {
+                //   final future = Polkadot.createAndSubmitTransferKeepAlive(
+                //     widget.appKitModal,
+                //   );
+                //   await MethodDialog.show(
+                //     context,
+                //     method,
+                //     future,
+                //   );
+                // } else {
                 final params = await getParams(method, address, chainInfo!);
                 if (params?.params != null) {
                   final future = widget.appKitModal.request(
@@ -292,7 +305,12 @@ class __RequestButtonsState extends State<_RequestButtons> {
                     chainId: chainId,
                     request: params!,
                   );
-                  MethodDialog.show(context, method, future);
+                  final result = await MethodDialog.show(
+                    context,
+                    method,
+                    future,
+                  );
+                  debugPrint(result);
                 } else {
                   toastification.show(
                     type: ToastificationType.error,
@@ -302,6 +320,7 @@ class __RequestButtonsState extends State<_RequestButtons> {
                     alignment: Alignment.bottomCenter,
                   );
                 }
+                // }
               },
             ),
           )

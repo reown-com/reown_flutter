@@ -60,3 +60,4 @@ app.*.map.json
 run_tests.sh
 *.env.secret
 .maestro/screenshots/
+lib/generated/*

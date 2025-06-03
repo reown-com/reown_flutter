@@ -28,29 +28,29 @@ class Tron {
     required ReownAppKitModalNetworkInfo chainData,
     required String walletAdress,
   }) async {
-    /// Get the USDT contract address
-    final usdtContract = chainData.isTestNetwork
+    // Get the USDT contract address
+    final usdTContract = chainData.isTestNetwork
         ? 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf'
         : 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
 
     final parameter = [
       {'type': 'address', 'value': walletAdress},
-      {'type': 'uint256', 'value': 1}
+      {'type': 'uint256', 'value': 1},
     ];
     final params = _convertToFormat(parameter);
-    //
+
     // https://developers.tron.network/reference/triggersmartcontract
     final url = '${chainData.rpcUrl}/wallet/triggersmartcontract';
     final paradic = {
       'owner_address': walletAdress,
-      'contract_address': usdtContract,
+      'contract_address': usdTContract,
       'function_selector': 'approve(address,uint256)',
       'parameter': params,
       'fee_limit': 200000000,
       'call_value': 0,
       'visible': true
     };
-    final respom = await http.post(
+    final response = await http.post(
       Uri.parse(url),
       body: jsonEncode(paradic),
       headers: {
@@ -58,7 +58,34 @@ class Tron {
       },
     );
     try {
-      return jsonDecode(respom.body) as Map<String, dynamic>;
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  static Future<Map<String, dynamic>> createTransaction({
+    required ReownAppKitModalNetworkInfo chainData,
+    required String walletAdress,
+  }) async {
+    // https://developers.tron.network/reference/createtransaction
+    final url = '${chainData.rpcUrl}/wallet/createtransaction';
+    final txPayload = {
+      'owner_address': walletAdress,
+      'to_address': walletAdress,
+      'amount': 1000000, // 1 TRX = 1000000 sun
+      'visible': true,
+    };
+    final response = await http.post(
+      Uri.parse(url),
+      body: jsonEncode(txPayload),
+      headers: {
+        'accept': 'application/json',
+      },
+    );
+    try {
+      return jsonDecode(response.body) as Map<String, dynamic>;
     } catch (e) {
       debugPrint(e.toString());
       rethrow;

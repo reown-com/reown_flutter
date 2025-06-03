@@ -260,7 +260,7 @@ class _MyHomePageState extends State<MyHomePage> {
           name: 'Westend',
           chainId: 'e143f23803ac50e8f6f8e62695d1ce9e',
           currency: 'DOT',
-          rpcUrl: 'https://westend-rpc.polkadot.io',
+          rpcUrl: 'wss://westend-asset-hub-rpc.polkadot.io',
           explorerUrl: 'https://westend.subscan.io',
           isTestNetwork: true,
         ),
