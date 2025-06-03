@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:reown_appkit/modal/widgets/buttons/primary_button.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_appkit_dapp/utils/crypto/cosmos.dart';
 import 'package:reown_appkit_dapp/utils/crypto/near.dart';
 import 'package:reown_appkit_dapp/utils/crypto/eip155.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
@@ -27,6 +28,8 @@ List<String> getChainMethods(String namespace) {
       return ['mvx_signMessage', 'mvx_signTransaction'];
     case 'near':
       return Near.methods.values.toList();
+    case 'cosmos':
+      return Cosmos.methods.values.toList();
     default:
       return [];
   }
@@ -46,6 +49,8 @@ List<String> getChainEvents(String namespace) {
       return [];
     case 'near':
       return Near.events;
+    case 'cosmos':
+      return Cosmos.events.values.toList();
     default:
       return [];
   }
@@ -210,6 +215,21 @@ Future<SessionRequestParams?> getParams(
             base64Transaction,
           ],
         },
+      );
+    case 'cosmos_getAccounts':
+      return SessionRequestParams(
+        method: method,
+        params: {}, // params no needed for this method
+      );
+    case 'cosmos_signDirect':
+      return SessionRequestParams(
+        method: method,
+        params: Cosmos.signDirect(address, chainData.chainId),
+      );
+    case 'cosmos_signAmino':
+      return SessionRequestParams(
+        method: method,
+        params: Cosmos.signAmino(address, chainData.chainId),
       );
     default:
       return SessionRequestParams(

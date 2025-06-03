@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:developer' as dev;
 
+import 'package:bech32/bech32.dart';
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:pointycastle/digests/ripemd160.dart';
 import 'package:pointycastle/digests/keccak.dart';
 import 'package:pointycastle/ecc/curves/secp256k1.dart';
 import 'package:polkadart_keyring/polkadart_keyring.dart' as keyring;
@@ -156,6 +158,7 @@ class KeyService extends IKeyService {
     final polkadotTestChainKey = await _polkadotTestChainKey(mnemonic);
     final kadenaChainKey = _kadenaChainKey(mnemonic);
     final tronChainKey = _tronChainKey(mnemonic);
+    final cosmosChainKey = _cosmosChainKey(mnemonic);
     // final bitcoinChainKeys = await _bitcoinChainKey(mnemonic);
 
     _keys = List<ChainKey>.from([
@@ -165,6 +168,7 @@ class KeyService extends IKeyService {
       polkadotTestChainKey,
       kadenaChainKey,
       tronChainKey,
+      cosmosChainKey,
     ]);
 
     await _saveKeys();
@@ -293,6 +297,55 @@ class KeyService extends IKeyService {
       address: publicKeyHex,
       namespace: 'kadena',
     );
+  }
+
+  ChainKey _cosmosChainKey(String mnemonic) {
+    final seed = bip39.mnemonicToSeed(mnemonic);
+    final root = bip32.BIP32.fromSeed(seed);
+    final child = root.derivePath("m/44'/118'/0'/0/0");
+
+    // Step 4: Extract Private and Public Keys
+    Uint8List privateKey = child.privateKey!;
+    Uint8List publicKey = child.publicKey;
+
+    // 1. SHA256
+    final sha256 = SHA256Digest().process(publicKey);
+    // 2. RIPEMD160
+    final ripemd160 = RIPEMD160Digest().process(sha256);
+    // 3. Bech32 encode
+    final words = _convertBits(ripemd160, 8, 5, true);
+    final bech32Data = Bech32('cosmos', words);
+    final address = bech32.encode(bech32Data);
+
+    return ChainKey(
+      chains: ChainsDataList.cosmosChains.map((e) => e.chainId).toList(),
+      privateKey: base64.encode(privateKey),
+      publicKey: base64.encode(publicKey),
+      address: address,
+      namespace: 'cosmos',
+    );
+  }
+
+  List<int> _convertBits(Uint8List data, int fromBits, int toBits, bool pad) {
+    int acc = 0;
+    int bits = 0;
+    final maxv = (1 << toBits) - 1;
+    final result = <int>[];
+
+    for (final byte in data) {
+      acc = (acc << fromBits) | byte;
+      bits += fromBits;
+      while (bits >= toBits) {
+        bits -= toBits;
+        result.add((acc >> bits) & maxv);
+      }
+    }
+
+    if (pad && bits > 0) {
+      result.add((acc << (toBits - bits)) & maxv);
+    }
+
+    return result;
   }
 
   ChainKey _tronChainKey(String mnemonic) {

@@ -23,6 +23,7 @@ dependencies:
   msgpack_dart: ^1.0.1
   package_info_plus: ^8.1.2
   pointycastle: ^3.9.1
+  # protobuf: ^4.0.0
   shared_preferences: ^2.3.4
   stack_trace: ^1.11.1
   stream_channel: ^2.1.2

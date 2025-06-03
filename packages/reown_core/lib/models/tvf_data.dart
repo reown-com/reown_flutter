@@ -49,6 +49,9 @@ class TVFData {
     'solana_signTransaction',
     'solana_signAllTransactions',
     'wallet_sendCalls',
+    // Cosmos
+    'cosmos_signDirect',
+    // 'cosmos_signAmino',
     // Polkadot
     'polkadot_signTransaction',
     // Near
