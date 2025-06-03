@@ -244,7 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
       enableAnalytics: true,
       siweConfig: _siweConfig(linkModeEnabled),
       featuresConfig: socialsEnabled ? _featuresConfig() : null,
-      optionalNamespaces: _updatedNamespaces(),
+      optionalNamespaces: _namespacesBasedOnChains(),
       featuredWalletIds: _featuredWalletIds(),
       // excludedWalletIds: {},
       // includedWalletIds: {},
@@ -461,8 +461,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   // Updates namespaces based on supported networks list
-  Map<String, RequiredNamespace>? _updatedNamespaces() {
-    Map<String, RequiredNamespace>? namespaces;
+  Map<String, RequiredNamespace>? _namespacesBasedOnChains() {
+    Map<String, RequiredNamespace> namespaces = {};
 
     final supportedNS = ReownAppKitModalNetworks.getAllSupportedNamespaces();
     for (var ns in supportedNS) {
@@ -470,7 +470,6 @@ class _MyHomePageState extends State<MyHomePage> {
         namespace: ns,
       );
       if (chains.isNotEmpty) {
-        namespaces = {};
         namespaces[ns] = RequiredNamespace(
           chains: chains.map((c) => c.chainId).toList(),
           methods: getChainMethods(ns),
