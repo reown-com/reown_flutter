@@ -1,6 +1,6 @@
 import 'package:reown_walletkit/reown_walletkit.dart';
 
-abstract class IChainAbstraction {
+abstract class IChainAbstractionClient {
   Future<void> init();
 
   Future<Eip1559EstimationCompat> estimateFees({

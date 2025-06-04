@@ -5,7 +5,7 @@ import 'package:reown_yttrium/models/chain_abstraction.dart';
 import 'reown_yttrium_platform_interface.dart';
 
 /// An implementation of [ReownYttriumPlatform] that uses method channels.
-class MethodChannelReownYttrium extends ReownYttriumPlatform {
+class MethodChannelReownYttrium extends ReownYttriumPlatformInterface {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
   final methodChannel = const MethodChannel('reown_yttrium');
@@ -28,6 +28,15 @@ class MethodChannelReownYttrium extends ReownYttriumPlatform {
   }
 
   @override
+  MethodChannelChainAbstraction get chainAbstractionClient =>
+      MethodChannelChainAbstraction();
+}
+
+class MethodChannelChainAbstraction {
+  /// The method channel used to interact with the native platform.
+  @visibleForTesting
+  final methodChannel = const MethodChannel('reown_yttrium');
+
   Future<String> erc20TokenBalance({
     required String chainId,
     required String token,
@@ -45,7 +54,6 @@ class MethodChannelReownYttrium extends ReownYttriumPlatform {
     }
   }
 
-  @override
   Future<Eip1559EstimationCompat> estimateFees({
     required String chainId,
   }) async {
@@ -66,7 +74,6 @@ class MethodChannelReownYttrium extends ReownYttriumPlatform {
     }
   }
 
-  @override
   Future<PrepareDetailedResponseCompat> prepareDetailed({
     required String chainId,
     required String from,
@@ -108,7 +115,7 @@ class MethodChannelReownYttrium extends ReownYttriumPlatform {
         final error = response!['error']!['error'];
         final reason = response!['error']?['reason'];
         return PrepareDetailedResponseCompat.error(
-          value: PrepareResponseError(
+          value: PrepareDetailedResponseError(
             error: BridgingError.fromString(error),
             reason: reason ?? response['reason'] ?? '',
           ),
@@ -131,7 +138,6 @@ class MethodChannelReownYttrium extends ReownYttriumPlatform {
   /// ---------------------------------
   /// ⚠️ This method is experimental. Use with caution.
   /// ---------------------------------
-  @override
   Future<ExecuteDetailsCompat> execute({
     required UiFieldsCompat uiFields,
     required List<PrimitiveSignatureCompat> routeTxnSigs,

@@ -1,11 +1,11 @@
 import 'package:reown_walletkit/chain_abstraction/i_chain_abstraction.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 
-class ChainAbstraction implements IChainAbstraction {
+class ChainAbstractionClient implements IChainAbstractionClient {
   final IReownCore core;
   final PulseMetadataCompat pulseMetadata;
 
-  ChainAbstraction({required this.core, required this.pulseMetadata});
+  ChainAbstractionClient({required this.core, required this.pulseMetadata});
 
   // YttriumClient get _yttrium => YttriumClient.instance;
   ReownYttrium get _reownYttrium => ReownYttrium();
@@ -33,7 +33,7 @@ class ChainAbstraction implements IChainAbstraction {
     required String token,
     required String owner,
   }) async {
-    return await _reownYttrium.erc20TokenBalance(
+    return await _reownYttrium.chainAbstractionClient.erc20TokenBalance(
       chainId: chainId,
       token: token,
       owner: owner,
@@ -44,7 +44,7 @@ class ChainAbstraction implements IChainAbstraction {
   Future<Eip1559EstimationCompat> estimateFees({
     required String chainId,
   }) async {
-    return await _reownYttrium.estimateFees(
+    return await _reownYttrium.chainAbstractionClient.estimateFees(
       chainId: chainId,
     );
   }
@@ -62,7 +62,7 @@ class ChainAbstraction implements IChainAbstraction {
     if (call.value == null) {
       call = call.copyWith(value: BigInt.zero);
     }
-    return await _reownYttrium.prepareDetailed(
+    return await _reownYttrium.chainAbstractionClient.prepareDetailed(
       chainId: chainId,
       from: from,
       call: call,
@@ -85,7 +85,7 @@ class ChainAbstraction implements IChainAbstraction {
     final routeTxnSigsPrimitive = routeTxnSigs.map((signature) {
       return signature.toPrimitiveSignature();
     }).toList();
-    return await _reownYttrium.execute(
+    return await _reownYttrium.chainAbstractionClient.execute(
       uiFields: uiFields,
       routeTxnSigs: routeTxnSigsPrimitive,
       initialTxnSig: initialTxnSigPrimitive,

@@ -544,7 +544,7 @@ class EVMService {
     } else if (prepareResponse is PrepareResponseNotRequiredCompat) {
       // chain abstraction notRequired, continue with initialTransaction
       return prepareResponse.initialTransaction; // TransactionCompat
-    } else if (prepareResponse is PrepareResponseError) {
+    } else if (prepareResponse is PrepareDetailedResponseError) {
       // chain abstraction error
       return prepareResponse.error; // BridgingError
     }
@@ -576,7 +576,7 @@ class EVMService {
             },
           );
         },
-        error: (PrepareResponseError error) {
+        error: (PrepareDetailedResponseError error) {
           prepareResponse = error;
         },
       );

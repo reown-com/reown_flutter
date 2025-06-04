@@ -8,7 +8,8 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:1',
       name: 'Ethereum',
-      logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png',
+      logo:
+          'https://www.citypng.com/public/uploads/preview/ethereum-eth-round-logo-icon-png-701751694969815akblwl2552.png',
       color: Colors.blue.shade300,
       rpc: ['https://eth.drpc.org'],
     ),
@@ -16,7 +17,7 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:137',
       name: 'Polygon',
-      logo: 'https://cryptologos.cc/logos/polygon-matic-logo.png',
+      logo: 'https://altcoinsbox.com/wp-content/uploads/2023/03/matic-logo.png',
       color: Colors.purple.shade300,
       rpc: ['https://polygon-rpc.com/'],
     ),
@@ -25,7 +26,8 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:43114',
       name: 'Avalanche',
-      logo: 'https://cryptologos.cc/logos/avalanche-avax-logo.png',
+      logo:
+          'https://images.seeklogo.com/logo-png/39/1/avalanche-avax-logo-png_seeklogo-398226.png',
       color: Colors.orange,
       rpc: ['https://api.avax.network/ext/bc/C/rpc'],
     ),
@@ -95,7 +97,8 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:42161',
       name: 'Arbitrum',
-      logo: 'https://cryptologos.cc/logos/arbitrum-arb-logo.png',
+      logo:
+          'https://yourcryptolibrary.com/wp-content/uploads/2025/05/image4-1.jpg',
       color: Colors.blue,
       rpc: ['https://arbitrum.blockpi.network/v1/rpc/public'],
     ),
@@ -103,7 +106,8 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:10',
       name: 'OP Mainnet',
-      logo: 'https://cryptologos.cc/logos/optimism-ethereum-op-logo.png',
+      logo:
+          'https://files.swissborg.com/product/wealth-app/assets/ic_crypto_op.png',
       color: Colors.red,
       rpc: ['https://mainnet.optimism.io/'],
     ),
