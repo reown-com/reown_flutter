@@ -303,12 +303,12 @@ class __RequestButtonsState extends State<_RequestButtons> {
                     chainId: chainId,
                     request: params!,
                   );
-                  final result = await MethodDialog.show(
+                  await MethodDialog.show(
                     context,
                     method,
                     future,
                   );
-                  debugPrint(result);
+                  // debugPrint(result);
                 } else {
                   toastification.show(
                     type: ToastificationType.error,

@@ -57,7 +57,7 @@ void main() {
 
       // https://polkadot.subscan.io/extrinsic/0xd0856fc78eb845761b1f60691a5cba2321ca514ab0b76912d617b8cf7fe5060f
       const realTxHash =
-          'd0856fc78eb845761b1f60691a5cba2321ca514ab0b76912d617b8cf7fe5060f';
+          '0xd0856fc78eb845761b1f60691a5cba2321ca514ab0b76912d617b8cf7fe5060f';
 
       //
       final txHashFromUtils = PolkadotChainUtils.deriveExtrinsicHash(
@@ -151,7 +151,7 @@ void main() {
 
       // https://polkadot.subscan.io/extrinsic/0xb70583e87e95e8ede02b19801843e7ecf759000f27147f8e17310ea4987ee6c7
       const realTxHash =
-          'b70583e87e95e8ede02b19801843e7ecf759000f27147f8e17310ea4987ee6c7';
+          '0xb70583e87e95e8ede02b19801843e7ecf759000f27147f8e17310ea4987ee6c7';
 
       //
       final txHashFromUtils = PolkadotChainUtils.deriveExtrinsicHash(
@@ -247,7 +247,7 @@ void main() {
 
       // https://polkadot.subscan.io/extrinsic/0xb70583e87e95e8ede02b19801843e7ecf759000f27147f8e17310ea4987ee6c7
       const realTxHash =
-          '48016b3c80b7b61d32d1db6f52038de70d7d30ef948da047442cc9c952b92e84';
+          '0x48016b3c80b7b61d32d1db6f52038de70d7d30ef948da047442cc9c952b92e84';
 
       //
       final txHashFromUtils = PolkadotChainUtils.deriveExtrinsicHash(
@@ -340,7 +340,7 @@ void main() {
 
       // https://polkadot.subscan.io/extrinsic/0xb70583e87e95e8ede02b19801843e7ecf759000f27147f8e17310ea4987ee6c7
       const realTxHash =
-          '5a1d54f26a850ac1637a9bb657172507912133dd003246262303dce2a1a2e45e';
+          '0x5a1d54f26a850ac1637a9bb657172507912133dd003246262303dce2a1a2e45e';
 
       // Utils tests
 

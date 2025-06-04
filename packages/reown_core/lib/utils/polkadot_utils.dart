@@ -202,6 +202,6 @@ class PolkadotChainUtils {
     final digest = Blake2bDigest(digestSize: 32); // 256-bit
     final input = hex.decode(signedExtrinsicHex.replaceAll('0x', ''));
     final bytes = digest.process(Uint8List.fromList(input));
-    return hex.encode(bytes);
+    return '0x${hex.encode(bytes)}';
   }
 }
