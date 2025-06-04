@@ -1,3 +1,7 @@
+## 1.1.6
+
+- General security improvements and verify API V4 readiness
+
 ## 1.1.5
 
 - Link Mode enhancements

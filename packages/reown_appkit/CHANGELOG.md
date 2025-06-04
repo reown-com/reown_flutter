@@ -1,4 +1,4 @@
-## 1.4.3+2
+## 1.4.4
 
 - Fix an error where transaction data was missing 0x prefix
 
