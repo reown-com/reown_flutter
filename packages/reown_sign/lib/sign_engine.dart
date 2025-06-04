@@ -2834,11 +2834,10 @@ class ReownSign implements IReownSign {
   /// collection during request from dapp
   ///
   TVFData? _collectRequestTVF(int id, WcSessionRequestRequest request) {
-    // check if the rpc request is on the tvf supported methods list
     final method = request.request.method;
-    if (!TVFData.tvfRequestMethods.contains(method)) {
-      return null;
-    }
+    // if (!TVFData.tvfRequestMethods.contains(method)) {
+    //   return null;
+    // }
     final params = request.request.params;
 
     // params to collect
