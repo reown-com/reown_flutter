@@ -1,4 +1,4 @@
-import 'package:reown_yttrium/clients/i_chain_abstraction.dart';
+import 'package:reown_yttrium/clients/i_chain_abstraction_client.dart';
 import 'package:reown_yttrium/models/chain_abstraction.dart';
 import 'package:reown_yttrium/reown_yttrium_platform_interface.dart';
 
@@ -8,7 +8,7 @@ class ChainAbstractionClient implements IChainAbstractionClient {
     required String projectId,
     required PulseMetadataCompat pulseMetadata,
   }) async {
-    return await ReownYttriumPlatformInterface.instance.chainAbstractionClient
+    return await ReownYttriumPlatformInterface.instance.chainAbstractionChannel
         .init(
       projectId: projectId,
       pulseMetadata: pulseMetadata,
@@ -21,7 +21,7 @@ class ChainAbstractionClient implements IChainAbstractionClient {
     required String token,
     required String owner,
   }) async {
-    return await ReownYttriumPlatformInterface.instance.chainAbstractionClient
+    return await ReownYttriumPlatformInterface.instance.chainAbstractionChannel
         .erc20TokenBalance(
       chainId: chainId,
       token: token,
@@ -33,7 +33,7 @@ class ChainAbstractionClient implements IChainAbstractionClient {
   Future<Eip1559EstimationCompat> estimateFees({
     required String chainId,
   }) async {
-    return await ReownYttriumPlatformInterface.instance.chainAbstractionClient
+    return await ReownYttriumPlatformInterface.instance.chainAbstractionChannel
         .estimateFees(
       chainId: chainId,
     );
@@ -48,7 +48,7 @@ class ChainAbstractionClient implements IChainAbstractionClient {
     required Currency localCurrency,
     required bool useLifi,
   }) async {
-    return await ReownYttriumPlatformInterface.instance.chainAbstractionClient
+    return await ReownYttriumPlatformInterface.instance.chainAbstractionChannel
         .prepareDetailed(
       chainId: chainId,
       from: from,
@@ -65,7 +65,7 @@ class ChainAbstractionClient implements IChainAbstractionClient {
     required List<PrimitiveSignatureCompat> routeTxnSigs,
     required PrimitiveSignatureCompat initialTxnSig,
   }) async {
-    return await ReownYttriumPlatformInterface.instance.chainAbstractionClient
+    return await ReownYttriumPlatformInterface.instance.chainAbstractionChannel
         .execute(
       uiFields: uiFields,
       routeTxnSigs: routeTxnSigs,

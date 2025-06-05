@@ -1,5 +1,6 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'package:reown_yttrium/channels/chain_abstraction.dart';
+import 'package:reown_yttrium/channels/chain_abstraction_channel.dart';
+import 'package:reown_yttrium/channels/sui_channel.dart';
 
 import 'reown_yttrium_method_channel.dart';
 
@@ -24,5 +25,6 @@ abstract class ReownYttriumPlatformInterface extends PlatformInterface {
     _instance = instance;
   }
 
-  abstract final MethodChannelChainAbstraction chainAbstractionClient;
+  abstract final MethodChannelChainAbstraction chainAbstractionChannel;
+  abstract final MethodChannelSui suiChannel;
 }
