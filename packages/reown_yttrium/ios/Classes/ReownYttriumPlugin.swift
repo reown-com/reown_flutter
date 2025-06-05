@@ -7,7 +7,7 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
         let message: String
     }
     
-    private var client: ChainAbstractionClient?
+    private var chainAbstractionClient: ChainAbstractionClient?
     private var pendingPrepareDetailed: [String: UiFields] = [:]
     
     public static func register(with registrar: FlutterPluginRegistrar) {
@@ -18,22 +18,22 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
-        case "init":
-            initialize(call.arguments ?? {}, result: result)
-        case "erc20TokenBalance":
-            erc20TokenBalance(call.arguments ?? {}, result: result)
-        case "estimateFees":
-            estimateFees(call.arguments ?? {}, result: result)
-        case "prepareDetailed":
-            prepareDetailed(call.arguments ?? {}, result: result)
-        case "execute":
-            execute(call.arguments ?? {}, result: result)
+        case "ca_init":
+            caInitialize(call.arguments ?? {}, result: result)
+        case "ca_erc20TokenBalance":
+            caErc20TokenBalance(call.arguments ?? {}, result: result)
+        case "ca_estimateFees":
+            caEstimateFees(call.arguments ?? {}, result: result)
+        case "ca_prepareDetailed":
+            caPrepareDetailed(call.arguments ?? {}, result: result)
+        case "ca_execute":
+            caExecute(call.arguments ?? {}, result: result)
         default:
             result(FlutterMethodNotImplemented)
         }
     }
     
-    func initialize(_ params: Any, result: @escaping FlutterResult) {
+    func caInitialize(_ params: Any, result: @escaping FlutterResult) {
         guard let dict = params as? [String: Any],
               let projectId = dict["projectId"] as? String,
               let pulseMetadataDict = dict["pulseMetadata"] as? [String: Any],
@@ -48,19 +48,19 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
         let bundleID = Bundle.main.bundleIdentifier ?? bundleId
         let pulseMetadata = PulseMetadata(url: url, bundleId: bundleID, sdkVersion: sdkVersion, sdkPlatform: sdkPlatform)
         
-        client = ChainAbstractionClient(projectId: projectId, pulseMetadata: pulseMetadata)
+        chainAbstractionClient = ChainAbstractionClient(projectId: projectId, pulseMetadata: pulseMetadata)
         
         result(true)
     }
     
-    func erc20TokenBalance(_ params: Any, result: @escaping FlutterResult) {
+    func caErc20TokenBalance(_ params: Any, result: @escaping FlutterResult) {
         print("erc20TokenBalance called with ", params)
         
         guard let dict = params as? [String: Any],
               let chainId = dict["chainId"] as? String,
               let token = dict["token"] as? FfiAddress,  // aka String
               let owner = dict["owner"] as? FfiAddress,
-              let client = client else {
+              let client = chainAbstractionClient else {
             result(FlutterError(code: "erc20TokenBalance", message: "Invalid parameters", details: params))
             return
         }
@@ -81,12 +81,12 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
         }
     }
     
-    func estimateFees(_ params: Any, result: @escaping FlutterResult) {
+    func caEstimateFees(_ params: Any, result: @escaping FlutterResult) {
         print("estimateFees called with ", params)
         
         guard let dict = params as? [String: Any],
               let chainId = dict["chainId"] as? String,
-              let client = client else {
+              let client = chainAbstractionClient else {
             result(FlutterError(code: "estimateFees", message: "Invalid parameters", details: params))
             return
         }
@@ -107,7 +107,7 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
         }
     }
     
-    func prepareDetailed(_ params: Any, result: @escaping FlutterResult) {
+    func caPrepareDetailed(_ params: Any, result: @escaping FlutterResult) {
         print("prepareDetailed called with ", params)
         
         guard let dict = params as? [String: Any],
@@ -120,7 +120,7 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
               let value = call["value"] as? String,  // U256 (String)
               let input = call["input"] as? String,  // Bytes (String)
               let localCurrency = dict["localCurrency"] as? String,
-              let client = client else {
+              let client = chainAbstractionClient else {
             result(FlutterError(code: "prepareDetailed", message: "Invalid parameters", details: nil))
             return
         }
@@ -154,14 +154,14 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
         }
     }
     
-    func execute(_ params: Any, result: @escaping FlutterResult) {
+    func caExecute(_ params: Any, result: @escaping FlutterResult) {
         print("execute called with ", params)
         
         guard let dict = params as? [String: Any],
               let orchestrationId = dict["orchestrationId"] as? String,
               let rawSigs = dict["routeTxnSigs"] as? [Any],
               let initialTxnSig = dict["initialTxnSig"] as? String,
-              let client = client else {
+              let client = chainAbstractionClient else {
             result(FlutterError(code: "execute", message: "Invalid parameters", details: params))
             return
         }

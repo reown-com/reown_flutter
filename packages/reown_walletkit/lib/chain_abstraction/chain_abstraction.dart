@@ -14,7 +14,7 @@ class ChainAbstractionClient implements IChainAbstractionClient {
   Future<void> init() async {
     try {
       final packageName = await ReownCoreUtils.getPackageName();
-      await _reownYttrium.init(
+      await _reownYttrium.chainAbstractionClient.init(
         projectId: core.projectId,
         pulseMetadata: pulseMetadata.copyWith(
           packageName:

@@ -1,5 +1,5 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'package:reown_yttrium/models/chain_abstraction.dart';
+import 'package:reown_yttrium/channels/chain_abstraction.dart';
 
 import 'reown_yttrium_method_channel.dart';
 
@@ -23,11 +23,6 @@ abstract class ReownYttriumPlatformInterface extends PlatformInterface {
     PlatformInterface.verifyToken(instance, _token);
     _instance = instance;
   }
-
-  Future<bool> init({
-    required String projectId,
-    required PulseMetadataCompat pulseMetadata,
-  });
 
   abstract final MethodChannelChainAbstraction chainAbstractionClient;
 }

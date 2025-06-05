@@ -29,6 +29,7 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
   private lateinit var applicationContext: Context // ✅ Store application context
 
   private lateinit var chainAbstractionClient: ChainAbstractionClient
+
   private var pendingPrepareDetailed: MutableMap<String, UiFields> = mutableMapOf()
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -39,16 +40,16 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
 
   override fun onMethodCall(call: MethodCall, result: Result) {
     when (call.method) {
-      "init" -> initialize(call.arguments, result)
-      "erc20TokenBalance" -> erc20TokenBalance(call.arguments, result)
-      "estimateFees" -> estimateFees(call.arguments, result)
-      "prepareDetailed" -> prepareDetailed(call.arguments, result)
-      "execute" -> execute(call.arguments, result)
+      "ca_init" -> caInitialize(call.arguments, result)
+      "ca_erc20TokenBalance" -> caErc20TokenBalance(call.arguments, result)
+      "ca_estimateFees" -> caEstimateFees(call.arguments, result)
+      "ca_prepareDetailed" -> caPrepareDetailed(call.arguments, result)
+      "ca_execute" -> caExecute(call.arguments, result)
       else -> result.notImplemented()
     }
   }
 
-  private fun initialize(params: Any?, result: Result) {
+  private fun caInitialize(params: Any?, result: Result) {
     val dict = params as? Map<*, *> ?: return result.error("initialize", "Invalid parameters: not a map", null)
 
     val projectId = dict["projectId"] as? String ?: return errorMissing("projectId", params, result)
@@ -62,11 +63,12 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
     val finalPackageName = applicationContext.packageName ?: packageName
     val pulseMetadata = PulseMetadata(url, finalPackageName, sdkVersion, sdkPlatform)
 
-    chainAbstractionClient = ChainAbstractionClient(projectId, pulseMetadata)
+    chainAbstractionClient = ChainAbstractionClient(projectId = projectId, pulseMetadata = pulseMetadata)
+
     result.success(true)
   }
 
-  private fun erc20TokenBalance(params: Any?, result: Result) {
+  private fun caErc20TokenBalance(params: Any?, result: Result) {
     println("erc20TokenBalance called with $params")
 
     val dict = params as? Map<*, *> ?: return result.error("erc20TokenBalance", "Invalid parameters: not a map", null)
@@ -86,7 +88,7 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
     }
   }
 
-  private fun estimateFees(params: Any?, result: Result) {
+  private fun caEstimateFees(params: Any?, result: Result) {
     println("estimateFees called with $params")
 
     (params as? Map<*, *>)?.let { dict ->
@@ -109,7 +111,7 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
     result.error("estimateFees", "Invalid parameters $params", null)
   }
 
-  private fun prepareDetailed(params: Any?, result: Result) {
+  private fun caPrepareDetailed(params: Any?, result: Result) {
     println("prepareDetailed called with $params")
 
     val dict = params as? Map<*, *> ?: return result.error("prepareDetailed", "Invalid parameters: not a map", null)
@@ -162,7 +164,7 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
     }
   }
 
-  private fun execute(params: Any?, result: Result) {
+  private fun caExecute(params: Any?, result: Result) {
     println("execute called with $params")
 
     val dict = params as? Map<*, *> ?: return result.error("execute", "Invalid parameters: not a map", null)

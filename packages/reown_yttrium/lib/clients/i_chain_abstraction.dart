@@ -1,6 +1,11 @@
 import 'package:reown_yttrium/models/chain_abstraction.dart';
 
 abstract class IChainAbstractionClient {
+  Future<bool> init({
+    required String projectId,
+    required PulseMetadataCompat pulseMetadata,
+  });
+
   Future<String> erc20TokenBalance({
     required String chainId,
     required String token,
