@@ -150,7 +150,16 @@ class _ChainAbstractionPreparePageState
               const SizedBox.square(dimension: 10.0),
               RichTextWidget(text1: 'ADDRESS\n', text2: _myAddress),
               const SizedBox.square(dimension: 10.0),
-              RichTextWidget(text1: 'BALANCE ', text2: _totalBalance),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  RichTextWidget(text1: 'BALANCE', text2: '', fontSize: 14),
+                  RichTextWidget(text1: '', text2: _totalBalance, fontSize: 14),
+                ],
+              ),
+              const SizedBox.square(dimension: 5.0),
+              Divider(height: 1.0, thickness: 0.5, color: Colors.black87),
+              const SizedBox.square(dimension: 5.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -231,7 +240,7 @@ class _ChainAbstractionPreparePageState
                 },
               ),
               const SizedBox.square(dimension: 20.0),
-              Divider(height: 1.0, thickness: 0.3),
+              Divider(height: 1.0, thickness: 0.5, color: Colors.black87),
               const SizedBox.square(dimension: 20.0),
               RichTextWidget(text1: 'TRANSACTION ', text2: ''),
               const SizedBox.square(dimension: 5.0),
@@ -406,10 +415,12 @@ class _ChainAbstractionPreparePageState
 
       try {
         final evmService = GetIt.I.get<EVMService>(instanceName: chainId);
+        // final id = JsonRpcUtils.payloadId();
         final caResponse = await evmService.handleChainAbstractionIfNeeded(
-          1,
-          chainId,
-          txParams,
+          requestId: 1,
+          chainId: chainId,
+          txParams: txParams,
+          useLifi: true,
         );
         if (caResponse is JsonRpcResponse) {
           if (caResponse.error != null) {
@@ -425,9 +436,9 @@ class _ChainAbstractionPreparePageState
             _updateBalance();
           }
         } else {
-          if (caResponse is BridgingError) {
+          if (caResponse is PrepareDetailedResponseError) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('❌ ${caResponse.name}'),
+              content: Text('❌ ${caResponse.error.name}: ${caResponse.reason}'),
               duration: const Duration(seconds: 4),
             ));
           } else {

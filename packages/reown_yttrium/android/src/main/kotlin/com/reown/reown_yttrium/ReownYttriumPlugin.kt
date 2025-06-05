@@ -28,7 +28,7 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
   private lateinit var channel : MethodChannel
   private lateinit var applicationContext: Context // ✅ Store application context
 
-  private lateinit var client: ChainAbstractionClient
+  private lateinit var chainAbstractionClient: ChainAbstractionClient
   private var pendingPrepareDetailed: MutableMap<String, UiFields> = mutableMapOf()
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
@@ -49,55 +49,41 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
   }
 
   private fun initialize(params: Any?, result: Result) {
-    (params as? Map<*, *>)?.let { dict ->
-      val projectId = dict["projectId"] as? String
-      val pulseMetadataDict = dict["pulseMetadata"] as? Map<*, *>
+    val dict = params as? Map<*, *> ?: return result.error("initialize", "Invalid parameters: not a map", null)
 
-      pulseMetadataDict?.let { metadata ->
-        val url = metadata["url"] as? String
-        val packageName = metadata["packageName"] as? String
-        val sdkVersion = metadata["sdkVersion"] as? String
-        val sdkPlatform = metadata["sdkPlatform"] as? String
+    val projectId = dict["projectId"] as? String ?: return errorMissing("projectId", params, result)
+    val pulseMetadataDict = dict["pulseMetadata"] as? Map<*, *> ?: return errorMissing("pulseMetadata", params, result)
 
-        if (projectId != null && url != null && packageName != null && sdkVersion != null && sdkPlatform != null) {
-          val packageNAME = applicationContext.packageName ?: packageName
-          val pulseMetadata = PulseMetadata(url, null, packageNAME, sdkVersion, sdkPlatform)
+    val url = pulseMetadataDict["url"] as? String ?: return errorMissing("url", params, result)
+    val packageName = pulseMetadataDict["packageName"] as? String ?: return errorMissing("packageName", params, result)
+    val sdkVersion = pulseMetadataDict["sdkVersion"] as? String ?: return errorMissing("sdkVersion", params, result)
+    val sdkPlatform = pulseMetadataDict["sdkPlatform"] as? String ?: return errorMissing("sdkPlatform", params, result)
 
-          client = ChainAbstractionClient(projectId, pulseMetadata)
-          result.success(true)
-          return
-        }
-      }
-    }
+    val finalPackageName = applicationContext.packageName ?: packageName
+    val pulseMetadata = PulseMetadata(url, finalPackageName, sdkVersion, sdkPlatform)
 
-    // If any required field is missing, return an error
-    result.error("initialize", "Invalid parameters", params)
+    chainAbstractionClient = ChainAbstractionClient(projectId, pulseMetadata)
+    result.success(true)
   }
 
   private fun erc20TokenBalance(params: Any?, result: Result) {
     println("erc20TokenBalance called with $params")
 
-    (params as? Map<*, *>)?.let { dict ->
-      val tokenAddress = dict["token"] as? String
-      val ownerAddress = dict["owner"] as? String
-      val chainId = dict["chainId"] as? String
+    val dict = params as? Map<*, *> ?: return result.error("erc20TokenBalance", "Invalid parameters: not a map", null)
 
-      if (tokenAddress != null && ownerAddress != null && chainId != null) {
-        CoroutineScope(Dispatchers.IO).launch {
-          try {
-            val balanceResponse = client.erc20TokenBalance(chainId, tokenAddress, ownerAddress)
-            println("erc20TokenBalance response $balanceResponse")
-            result.success(balanceResponse)
+    val tokenAddress = dict["token"] as? String ?: return errorMissing("token", params, result)
+    val ownerAddress = dict["owner"] as? String ?: return errorMissing("owner", params, result)
+    val chainId = dict["chainId"] as? String ?: return errorMissing("chainId", params, result)
 
-          } catch (e: Exception) {
-            result.error("erc20TokenBalance", "Yttrium erc20TokenBalance Error: ${e.message}", null)
-          }
-        }
-        return
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+        val balanceResponse = chainAbstractionClient.erc20TokenBalance(chainId, tokenAddress, ownerAddress)
+        println("erc20TokenBalance response $balanceResponse")
+        result.success(balanceResponse)
+      } catch (e: Exception) {
+        result.error("erc20TokenBalance", "Yttrium erc20TokenBalance Error: ${e.message}", null)
       }
     }
-
-    result.error("erc20TokenBalance", "Invalid parameters", params)
   }
 
   private fun estimateFees(params: Any?, result: Result) {
@@ -109,7 +95,7 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
       if (chainId != null) {
         CoroutineScope(Dispatchers.IO).launch {
           try {
-            val feesResponse: Eip1559Estimation = client.estimateFees(chainId)
+            val feesResponse: Eip1559Estimation = chainAbstractionClient.estimateFees(chainId)
             println("estimateFees response $feesResponse")
             result.success(feesResponse.toMap())
           } catch (e: Exception) {
@@ -126,88 +112,90 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
   private fun prepareDetailed(params: Any?, result: Result) {
     println("prepareDetailed called with $params")
 
-    (params as? Map<*, *>)?.let { dict ->
-      val chainId = dict["chainId"] as? String
-      val from = dict["from"] as? String
-      val call = dict["call"] as? Map<*, *>
-      val to = call?.get("to") as? String
-      val value = call?.get("value") as? String
-      val input = call?.get("input") as? String
-      val localCurrency = dict["localCurrency"] as? String
+    val dict = params as? Map<*, *> ?: return result.error("prepareDetailed", "Invalid parameters: not a map", null)
 
-      if (chainId != null && from != null && call != null && to != null && value != null && input != null && localCurrency != null) {
-        CoroutineScope(Dispatchers.IO).launch {
-          val response = client.prepareDetailed(
-            chainId = chainId, from = from, Call(
-              to = to,
-              value = value,
-              input = input
-            ), Currency.valueOf(localCurrency.uppercase()),
-          )
+    val chainId = dict["chainId"] as? String ?: return errorMissing("chainId", params, result)
+    val from = dict["from"] as? String ?: return errorMissing("from", params, result)
+    val accounts = (dict["accounts"] as? List<*>)?.filterIsInstance<String>() ?: return errorMissing("accounts", params, result)
+    val call = dict["call"] as? Map<*, *> ?: return errorMissing("call", params, result)
+    val to = call["to"] as? String ?: return errorMissing("call.to", params, result)
+    val value = call["value"] as? String ?: return errorMissing("call.value", params, result)
+    val input = call["input"] as? String ?: return errorMissing("call.input", params, result)
+    val localCurrency = dict["localCurrency"] as? String ?: return errorMissing("localCurrency", params, result)
+    val useLifi = dict["useLifi"] as? Boolean ?: return errorMissing("useLifi", params, result)
 
-          when (response) {
-            is PrepareDetailedResponse.Success -> {
-              when (response.v1) {
-                is PrepareDetailedResponseSuccess.Available -> {
-                  val uiFields: UiFields = (response.v1 as PrepareDetailedResponseSuccess.Available).v1
-                  pendingPrepareDetailed[uiFields.routeResponse.orchestrationId] =  uiFields
-                  println("prepareDetailed response $uiFields")
-                  result.success(mapOf("available" to uiFields.toMap()))
-                }
-                is PrepareDetailedResponseSuccess.NotRequired -> {
-                  val notRequired = (response.v1 as PrepareDetailedResponseSuccess.NotRequired).v1
-                  println("prepareDetailed notRequired $notRequired")
-                  result.success(mapOf("notRequired" to notRequired.toMap()))
-                }
-              }
+    CoroutineScope(Dispatchers.IO).launch {
+      val response = chainAbstractionClient.prepareDetailed(
+        chainId = chainId,
+        from = from,
+        accounts = accounts,
+        call = Call(
+          to = to,
+          value = value,
+          input = input
+        ),
+        localCurrency = Currency.valueOf(localCurrency.uppercase()),
+        useLifi = useLifi,
+      )
+
+      when (response) {
+        is PrepareDetailedResponse.Success -> {
+          when (val success = response.v1) {
+            is PrepareDetailedResponseSuccess.Available -> {
+              val uiFields = success.v1
+              pendingPrepareDetailed[uiFields.routeResponse.orchestrationId] = uiFields
+              println("prepareDetailed response $uiFields")
+              result.success(mapOf("available" to uiFields.toMap()))
             }
-            is PrepareDetailedResponse.Error -> {
-              println("prepareDetailed: error -> ${response.v1}")
-              result.success(response.v1.toMap())
+            is PrepareDetailedResponseSuccess.NotRequired -> {
+              val notRequired = success.v1
+              println("prepareDetailed notRequired $notRequired")
+              result.success(mapOf("notRequired" to notRequired.toMap()))
             }
           }
         }
-        return
+        is PrepareDetailedResponse.Error -> {
+          println("prepareDetailed: error -> ${response.v1}")
+          result.success(response.v1.toMap())
+        }
       }
     }
-
-    result.error("prepareDetailed", "Invalid parameters $params", null)
   }
 
   private fun execute(params: Any?, result: Result) {
     println("execute called with $params")
 
-    (params as? Map<*, *>)?.let { dict ->
-      val orchestrationId = dict["orchestrationId"] as? String
-      val routeTxnSigs = (dict["routeTxnSigs"] as? List<*>)?.filterIsInstance<String>()
-      val initialTxnSig = dict["initialTxnSig"] as? String
+    val dict = params as? Map<*, *> ?: return result.error("execute", "Invalid parameters: not a map", null)
 
-      if (orchestrationId != null && routeTxnSigs != null && initialTxnSig != null) {
-        CoroutineScope(Dispatchers.IO).launch {
-          try {
-            val prepareDetailedResult = pendingPrepareDetailed[orchestrationId]
-            val executionResult = prepareDetailedResult?.let {
-              client.execute(
-                uiFields = it,
-                routeTxnSigs = routeTxnSigs,
-                initialTxnSig = initialTxnSig
-              )
-            }
+    val orchestrationId = dict["orchestrationId"] as? String ?: return errorMissing("orchestrationId", params, result)
+    val routeTxnSigs = (dict["routeTxnSigs"] as? List<*>)?.filterIsInstance<uniffi.yttrium.RouteSig>()
+      ?: return errorMissing("routeTxnSigs", params, result)
+    val initialTxnSig = dict["initialTxnSig"] as? String ?: return errorMissing("initialTxnSig", params, result)
 
-            println("execute response $executionResult")
-            pendingPrepareDetailed.remove(orchestrationId)
-            result.success(executionResult?.toMap())
-
-          } catch (e: Exception) {
-            println("execute response $e")
-            result.error("execute", "Yttrium execute Error: ${e.message}", null)
-          }
+    CoroutineScope(Dispatchers.IO).launch {
+      try {
+        val prepareDetailedResult = pendingPrepareDetailed[orchestrationId]
+        val executionResult = prepareDetailedResult?.let {
+          chainAbstractionClient.execute(
+            uiFields = it,
+            routeTxnSigs = routeTxnSigs,
+            initialTxnSig = initialTxnSig
+          )
         }
-        return
+
+        println("execute response $executionResult")
+        pendingPrepareDetailed.remove(orchestrationId)
+        result.success(executionResult?.toMap())
+      } catch (e: Exception) {
+        println("execute error: $e")
+        result.error("execute", "Yttrium execute Error: ${e.message}", null)
       }
     }
+  }
 
-    result.error("execute", "Invalid parameters", params)
+  private fun errorMissing(key: String, originalParams: Any?, result: Result): Nothing {
+    result.error("prepareDetailed", "Missing or invalid parameter: $key in $originalParams", null)
+    throw IllegalArgumentException("Missing parameter: $key") // stops execution
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {

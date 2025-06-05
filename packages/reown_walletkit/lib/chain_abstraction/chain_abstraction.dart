@@ -57,7 +57,9 @@ class ChainAbstractionClient implements IChainAbstractionClient {
     required String chainId,
     required String from,
     required CallCompat call,
-    Currency? localCurrency,
+    List<String> accounts = const [],
+    Currency localCurrency = Currency.usd,
+    bool useLifi = false,
   }) async {
     if (call.value == null) {
       call = call.copyWith(value: BigInt.zero);
@@ -66,7 +68,9 @@ class ChainAbstractionClient implements IChainAbstractionClient {
       chainId: chainId,
       from: from,
       call: call,
-      localCurrency: localCurrency ?? Currency.usd,
+      accounts: accounts,
+      localCurrency: localCurrency,
+      useLifi: useLifi,
     );
   }
 

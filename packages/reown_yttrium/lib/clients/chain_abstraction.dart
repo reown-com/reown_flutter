@@ -32,14 +32,18 @@ class ChainAbstractionClient implements IChainAbstractionClient {
   Future<PrepareDetailedResponseCompat> prepareDetailed({
     required String chainId,
     required String from,
+    required List<String> accounts,
     required CallCompat call,
     required Currency localCurrency,
+    required bool useLifi,
   }) async {
     return await _yttriumInstance.chainAbstractionClient.prepareDetailed(
       chainId: chainId,
       from: from,
+      accounts: accounts,
       call: call,
       localCurrency: localCurrency,
+      useLifi: useLifi,
     );
   }
 

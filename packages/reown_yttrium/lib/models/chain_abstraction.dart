@@ -303,6 +303,18 @@ class TransactionCompat with _$TransactionCompat {
       _$TransactionCompatFromJson(json);
 }
 
+// @freezed
+// class SolanaTransactionCompat with _$SolanaTransactionCompat {
+//   const factory SolanaTransactionCompat({
+//     required String chainId,
+//     required String from,
+//     required String transaction,
+//   }) = _SolanaTransactionCompat;
+
+//   factory SolanaTransactionCompat.fromJson(Map<String, dynamic> json) =>
+//       _$SolanaTransactionCompatJson(json);
+// }
+
 @freezed
 class TransactionFeeCompat with _$TransactionFeeCompat {
   const factory TransactionFeeCompat({
@@ -345,6 +357,18 @@ class TxnDetailsCompat with _$TxnDetailsCompat {
   factory TxnDetailsCompat.fromJson(Map<String, dynamic> json) =>
       _$TxnDetailsCompatFromJson(json);
 }
+
+// @freezed
+// class SolanaTxnDetailsCompat with _$SolanaTxnDetailsCompat {
+//   const factory SolanaTxnDetailsCompat({
+//     required String chainId,
+//     required String from,
+//     required String transaction,
+//   }) = _SolanaTxnDetailsCompat;
+
+//   factory SolanaTxnDetailsCompat.fromJson(Map<String, dynamic> json) =>
+//       _$SolanaTxnDetailsCompatJson(json);
+// }
 
 @freezed
 class UiFieldsCompat with _$UiFieldsCompat {

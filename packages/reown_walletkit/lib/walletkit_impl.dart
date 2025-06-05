@@ -541,13 +541,17 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     required String chainId,
     required String from,
     required CallCompat call,
-    Currency? localCurrency,
+    List<String> accounts = const [],
+    Currency localCurrency = Currency.usd,
+    bool useLifi = false,
   }) async {
     return await reOwnChainAbstraction.prepare(
       chainId: chainId,
       from: from,
       call: call,
+      accounts: accounts,
       localCurrency: localCurrency,
+      useLifi: useLifi,
     );
   }
 

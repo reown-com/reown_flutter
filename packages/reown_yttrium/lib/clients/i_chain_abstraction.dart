@@ -14,8 +14,10 @@ abstract class IChainAbstractionClient {
   Future<PrepareDetailedResponseCompat> prepareDetailed({
     required String chainId,
     required String from,
+    required List<String> accounts,
     required CallCompat call,
     required Currency localCurrency,
+    required bool useLifi,
   });
 
   Future<ExecuteDetailsCompat> execute({

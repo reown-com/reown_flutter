@@ -17,7 +17,9 @@ abstract class IChainAbstractionClient {
     required String chainId,
     required String from,
     required CallCompat call,
-    Currency? localCurrency,
+    List<String> accounts = const [],
+    Currency localCurrency = Currency.usd,
+    bool useLifi = false,
   });
 
   Future<ExecuteDetailsCompat> execute({

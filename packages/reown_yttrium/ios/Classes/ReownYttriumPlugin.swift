@@ -113,6 +113,8 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
         guard let dict = params as? [String: Any],
               let chainId = dict["chainId"] as? String,
               let from = dict["from"] as? String,
+              let accounts = dict["accounts"] as? [String],
+              let useLifi = dict["useLifi"] as? Bool,
               let call = dict["call"] as? [String: Any],
               let to = call["to"] as? String,  // Address (String)
               let value = call["value"] as? String,  // U256 (String)
@@ -127,7 +129,12 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
             do {
                 let currency = Currency.fromString(value: localCurrency)
                 let call = Call(to: to, value: value, input: input)
-                let prepareResponse = try await client.prepareDetailed(chainId: chainId, from: from, call: call, localCurrency: currency)
+                let prepareResponse = try await client.prepareDetailed(chainId: chainId,
+                                                                                       from: from,
+                                                                                       call: call,
+                                                                                       accounts: accounts,
+                                                                                       localCurrency: currency,
+                                                                                       useLifi: useLifi)
                 
                 switch prepareResponse {
                 case .success(let successData):
@@ -152,7 +159,7 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
         
         guard let dict = params as? [String: Any],
               let orchestrationId = dict["orchestrationId"] as? String,
-              let routeTxnSigs = dict["routeTxnSigs"] as? [String],
+              let rawSigs = dict["routeTxnSigs"] as? [Any],
               let initialTxnSig = dict["initialTxnSig"] as? String,
               let client = client else {
             result(FlutterError(code: "execute", message: "Invalid parameters", details: params))
@@ -164,6 +171,15 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
                 guard let uiFields = pendingPrepareDetailed[orchestrationId] else {
                     throw CustomError(message: "prepareDetailed result not found, try again")
                 }
+                
+                // Try converting to [RouteSig]
+                let routeTxnSigs: [RouteSig] = rawSigs.compactMap { $0 as? RouteSig }
+                if routeTxnSigs.count != rawSigs.count {
+                    result(FlutterError(code: "execute", message: "Invalid item(s) in routeTxnSigs", details: params))
+                    return
+                }
+
+                
                 
                 let executeResponse = try await client.execute(uiFields: uiFields,
                                                                routeTxnSigs: routeTxnSigs,

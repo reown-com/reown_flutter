@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:reown_yttrium/models/chain_abstraction.dart';
@@ -77,20 +79,31 @@ class MethodChannelChainAbstraction {
   Future<PrepareDetailedResponseCompat> prepareDetailed({
     required String chainId,
     required String from,
+    required List<String> accounts,
     required CallCompat call,
     required Currency localCurrency,
+    required bool useLifi,
   }) async {
     try {
+      final parameters = {
+        'chainId': chainId,
+        'from': from,
+        'accounts': accounts,
+        'call': call.toJson(),
+        'localCurrency': localCurrency.name,
+        'useLifi': useLifi,
+      };
+      debugPrint(
+        '[$runtimeType] prepareDetailed, parameters: ${jsonEncode(parameters)}',
+      );
       final response = await methodChannel.invokeMethod<dynamic>(
         'prepareDetailed',
-        {
-          'chainId': chainId,
-          'from': from,
-          'call': call.toJson(),
-          'localCurrency': localCurrency.name,
-        },
+        parameters,
       );
 
+      debugPrint(
+        '[$runtimeType] prepareDetailed, response: ${jsonEncode(response)}',
+      );
       if (response.containsKey('available')) {
         final responseData = _handlePlatformResult(response['available']);
         return PrepareDetailedResponseCompat.success(
@@ -112,12 +125,12 @@ class MethodChannelChainAbstraction {
         );
       }
       if ((response ?? {}).containsKey('error')) {
-        final error = response!['error']!['error'];
-        final reason = response!['error']?['reason'];
+        final error = response!['error'];
+        final reason = response?['reason'];
         return PrepareDetailedResponseCompat.error(
           value: PrepareDetailedResponseError(
             error: BridgingError.fromString(error),
-            reason: reason ?? response['reason'] ?? '',
+            reason: reason ?? 'no reason',
           ),
         );
       }
@@ -125,11 +138,12 @@ class MethodChannelChainAbstraction {
         code: 'prepareDetailed',
         message: 'unable to parse response',
       );
-    } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] prepareDetailed $e');
+    } on PlatformException catch (e, s) {
+      debugPrint('[$runtimeType] prepareDetailed, PlatformException: $e');
+      debugPrint(s.toString());
       rethrow;
     } catch (e, s) {
-      debugPrint('[$runtimeType] prepareDetailed $e');
+      debugPrint('[$runtimeType] prepareDetailed, Exception: $e');
       debugPrint(s.toString());
       rethrow;
     }
