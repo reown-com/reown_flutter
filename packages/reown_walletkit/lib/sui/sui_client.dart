@@ -25,4 +25,60 @@ class SuiClient implements ISuiClient {
       core.logger.e('[$runtimeType] $e');
     }
   }
+
+  @override
+  Future<String> generateKeyPair() async {
+    return await _reownYttrium.suiClient.generateKeyPair();
+  }
+
+  @override
+  Future<String> getAddressFromPublicKey({required String publicKey}) async {
+    return await _reownYttrium.suiClient.getAddressFromPublicKey(
+      publicKey: publicKey,
+    );
+  }
+
+  @override
+  Future<String> getPublicKeyFromKeyPair({required String keyPair}) async {
+    return await _reownYttrium.suiClient.getPublicKeyFromKeyPair(
+      keyPair: keyPair,
+    );
+  }
+
+  @override
+  Future<String> personalSign({
+    required String keyPair,
+    required String message,
+  }) async {
+    return await _reownYttrium.suiClient.personalSign(
+      keyPair: keyPair,
+      message: message,
+    );
+  }
+
+  @override
+  Future<String> signAndExecuteTransaction({
+    required String chainId,
+    required String keyPair,
+    required String txData,
+  }) async {
+    return await _reownYttrium.suiClient.signAndExecuteTransaction(
+      chainId: chainId,
+      keyPair: keyPair,
+      txData: txData,
+    );
+  }
+
+  @override
+  Future<String> signTransaction({
+    required String chainId,
+    required String keyPair,
+    required String txData,
+  }) async {
+    return await _reownYttrium.suiClient.signTransaction(
+      chainId: chainId,
+      keyPair: keyPair,
+      txData: txData,
+    );
+  }
 }

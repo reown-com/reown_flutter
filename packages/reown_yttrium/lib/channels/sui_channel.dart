@@ -16,9 +16,112 @@ class MethodChannelSui {
         'projectId': projectId,
         'pulseMetadata': pulseMetadata.toJson(),
       });
-      return result ?? false;
+      return result!;
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] init $e');
+      debugPrint('[$runtimeType] sui_init $e');
+      rethrow;
+    }
+  }
+
+  Future<String> generateKeyPair() async {
+    try {
+      final result = await methodChannel.invokeMethod<String>(
+        'sui_generateKeyPair',
+      );
+      return result!;
+    } on PlatformException catch (e) {
+      debugPrint('[$runtimeType] sui_generateKeyPair $e');
+      rethrow;
+    }
+  }
+
+  Future<String> getPublicKeyFromKeyPair({required String keyPair}) async {
+    try {
+      final result = await methodChannel.invokeMethod<String>(
+        'sui_getPublicKeyFromKeyPair',
+        {
+          'keyPair': keyPair,
+        },
+      );
+      return result!;
+    } on PlatformException catch (e) {
+      debugPrint('[$runtimeType] sui_getPublicKeyFromKeyPair $e');
+      rethrow;
+    }
+  }
+
+  Future<String> getAddressFromPublicKey({required String publicKey}) async {
+    try {
+      final result = await methodChannel.invokeMethod<String>(
+        'sui_getAddressFromPublicKey',
+        {
+          'publicKey': publicKey,
+        },
+      );
+      return result!;
+    } on PlatformException catch (e) {
+      debugPrint('[$runtimeType] sui_getAddressFromPublicKey $e');
+      rethrow;
+    }
+  }
+
+  Future<String> personalSign({
+    required String keyPair,
+    required String message,
+  }) async {
+    try {
+      final result = await methodChannel.invokeMethod<String>(
+        'sui_personalSign',
+        {
+          'keyPair': keyPair,
+          'message': message, // base64 encoded message
+        },
+      );
+      return result!;
+    } on PlatformException catch (e) {
+      debugPrint('[$runtimeType] sui_personalSign $e');
+      rethrow;
+    }
+  }
+
+  Future<String> signTransaction({
+    required String chainId,
+    required String keyPair,
+    required String txData,
+  }) async {
+    try {
+      final result = await methodChannel.invokeMethod<String>(
+        'sui_signTransaction',
+        {
+          'chainId': chainId,
+          'keyPair': keyPair,
+          'txData': txData, // base64 encoded txData
+        },
+      );
+      return result!;
+    } on PlatformException catch (e) {
+      debugPrint('[$runtimeType] sui_signTransaction $e');
+      rethrow;
+    }
+  }
+
+  Future<String> signAndExecuteTransaction({
+    required String chainId,
+    required String keyPair,
+    required String txData,
+  }) async {
+    try {
+      final result = await methodChannel.invokeMethod<String>(
+        'sui_signAndExecuteTransaction',
+        {
+          'chainId': chainId,
+          'keyPair': keyPair,
+          'txData': txData, // base64 encoded txData
+        },
+      );
+      return result!;
+    } on PlatformException catch (e) {
+      debugPrint('[$runtimeType] sui_signAndExecuteTransaction $e');
       rethrow;
     }
   }

@@ -7,5 +7,6 @@ export 'utils/signature_utils.dart';
 class ReownYttrium {
   IChainAbstractionClient get chainAbstractionClient =>
       ChainAbstractionClient();
+
   ISuiClient get suiClient => SuiClient();
 }

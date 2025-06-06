@@ -53,6 +53,18 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   @override
   final PairingMetadata metadata;
 
+  /// ---------------------------------
+  /// ⚠️ This client is experimental. Use with caution.
+  /// ---------------------------------
+  @override
+  late final IChainAbstractionClient chainAbstractionClient;
+
+  /// ---------------------------------
+  /// ⚠️ This client is experimental. Use with caution.
+  /// ---------------------------------
+  @override
+  late final ISuiClient suiClient;
+
   ReownWalletKit({
     required this.core,
     required this.metadata,
@@ -518,11 +530,9 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     }
   }
 
-  ///---------- CHAIN ABSTRACTION CLIENT ----------///
-  ///
-  @override
-  late final IChainAbstractionClient chainAbstractionClient;
-
+  /// ---------------------------------
+  /// ⚠️ This method is experimental. Use with caution.
+  /// ---------------------------------
   @override
   Future<String> erc20TokenBalance({
     required String chainId,
@@ -536,6 +546,9 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     );
   }
 
+  /// ---------------------------------
+  /// ⚠️ This method is experimental. Use with caution.
+  /// ---------------------------------
   @override
   Future<Eip1559EstimationCompat> estimateFees({
     required String chainId,
@@ -582,9 +595,4 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
       initialTxnSig: initialTxnSig,
     );
   }
-
-  ///---------- SUI CLIENT ----------///
-  ///
-  @override
-  late final ISuiClient suiClient;
 }

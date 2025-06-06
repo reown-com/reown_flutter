@@ -8,6 +8,7 @@ import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.d
 import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/polkadot_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/sui_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/tron_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/deep_link_handler.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
@@ -163,6 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _walletKitService = WalletKitService();
       await _walletKitService.create();
       GetIt.I.registerSingleton<IWalletKitService>(_walletKitService);
+      await _walletKitService.setUpAccounts();
 
       // Support EVM Chains
       for (final chainData in ChainsDataList.eip155Chains) {
@@ -231,6 +233,17 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       }
 
+      // Support Sui Chains
+      for (final chainData in ChainsDataList.suiChains) {
+        GetIt.I.registerSingleton<SUIService>(
+          SUIService(
+            chainSupported: chainData,
+            walletKitService: _walletKitService,
+          ),
+          instanceName: chainData.chainId,
+        );
+      }
+
       await _walletKitService.init();
 
       _walletKitService.walletKit.core.relayClient.onRelayClientConnect
@@ -251,6 +264,7 @@ class _MyHomePageState extends State<MyHomePage> {
       DeepLinkHandler.checkInitialLink();
     } catch (e, s) {
       debugPrint('[$runtimeType] ❌ crash during initialize, $e');
+      print(s);
       await Sentry.captureException(e, stackTrace: s);
     }
   }

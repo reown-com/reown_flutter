@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:typed_data';
-import 'package:ed25519_edwards/ed25519_edwards.dart' as ed;
+import 'package:ed25519_edwards/ed25519_edwards.dart' as ed25519_edwards;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -273,11 +273,11 @@ class ReownCoreUtils {
   }
 
   static bool ed25519Verify(
-    ed.PublicKey publicKey,
+    ed25519_edwards.PublicKey publicKey,
     Uint8List message,
     Uint8List sig,
   ) {
-    return ed.verify(publicKey, message, sig);
+    return ed25519_edwards.verify(publicKey, message, sig);
   }
 
   static dynamic recursiveSearchForMapKey(
