@@ -2961,7 +2961,7 @@ class ReownSign implements IReownSign {
       case 'sui':
         try {
           final result = (response.result as Map<String, dynamic>);
-          // if sui_signAndExecuteTransaction the it'll contain digest
+          // if sui_signAndExecuteTransaction then it'll contain digest
           final digest = ReownCoreUtils.recursiveSearchForMapKey(
             result,
             'digest',
