@@ -13,7 +13,7 @@ class SuiClient implements ISuiClient {
   Future<void> init() async {
     try {
       final packageName = await ReownCoreUtils.getPackageName();
-      await _reownYttrium.chainAbstractionClient.init(
+      await _reownYttrium.suiClient.init(
         projectId: core.projectId,
         pulseMetadata: pulseMetadata.copyWith(
           packageName:
@@ -70,7 +70,7 @@ class SuiClient implements ISuiClient {
   }
 
   @override
-  Future<String> signTransaction({
+  Future<(String, String)> signTransaction({
     required String chainId,
     required String keyPair,
     required String txData,

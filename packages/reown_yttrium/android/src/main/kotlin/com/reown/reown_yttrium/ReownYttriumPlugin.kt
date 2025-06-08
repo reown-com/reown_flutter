@@ -1,6 +1,7 @@
 package com.reown.reown_yttrium
 
 import android.content.Context
+import com.yttrium.YttriumKt
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -23,18 +24,19 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
     applicationContext = flutterPluginBinding.applicationContext // ✅ Get application context
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "reown_yttrium")
     channel.setMethodCallHandler(this)
+//    YttriumKt.initializeTls(applicationContext)
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
     when (call.method) {
       // Chain Abstraction methods
-      "ca_init" -> ChainAbstraction.initialize(applicationContext.packageName, call.arguments, result)
+      "ca_init" -> ChainAbstraction.initialize(applicationContext, call.arguments, result)
       "ca_erc20TokenBalance" -> ChainAbstraction.erc20TokenBalance(call.arguments, result)
       "ca_estimateFees" -> ChainAbstraction.estimateFees(call.arguments, result)
       "ca_prepareDetailed" -> ChainAbstraction.prepareDetailed(call.arguments, result)
       "ca_execute" -> ChainAbstraction.execute(call.arguments, result)
       // Sui methods
-      "sui_init" -> Sui.initialize(applicationContext.packageName, call.arguments, result)
+      "sui_init" -> Sui.initialize(applicationContext, call.arguments, result)
       "sui_generateKeyPair" -> Sui.generateKeyPair(result)
       "sui_getPublicKeyFromKeyPair" -> Sui.getPublicKeyFromKeyPair(call.arguments, result)
       "sui_getAddressFromPublicKey" -> Sui.getAddressFromPublicKey(call.arguments, result)

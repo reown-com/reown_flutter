@@ -1,5 +1,7 @@
 package com.reown.reown_yttrium
 
+import android.content.Context
+import com.yttrium.YttriumKt
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,14 +21,16 @@ class ChainAbstraction {
         private lateinit var chainAbstractionClient: ChainAbstractionClient
         private var pendingPrepareDetailed: MutableMap<String, UiFields> = mutableMapOf()
 
-        fun initialize(packageName: String?, params: Any?, result: MethodChannel.Result) {
+        fun initialize(applicationContext: Context, params: Any?, result: MethodChannel.Result) {
+//            YttriumKt.initializeTls(applicationContext)
+
             val dict = params as? Map<*, *> ?: return result.error("initialize", "Invalid parameters: not a map", null)
 
             val projectId = dict["projectId"] as? String ?: return errorMissing("projectId", params, result)
             val pulseMetadataDict = dict["pulseMetadata"] as? Map<*, *> ?: return errorMissing("pulseMetadata", params, result)
 
             val url = pulseMetadataDict["url"] as? String ?: return errorMissing("url", params, result)
-            val packageName = packageName ?: pulseMetadataDict["packageName"] as? String ?: return errorMissing("packageName", params, result)
+            val packageName = applicationContext.packageName ?: pulseMetadataDict["packageName"] as? String ?: return errorMissing("packageName", params, result)
             val sdkVersion = pulseMetadataDict["sdkVersion"] as? String ?: return errorMissing("sdkVersion", params, result)
             val sdkPlatform = pulseMetadataDict["sdkPlatform"] as? String ?: return errorMissing("sdkPlatform", params, result)
 

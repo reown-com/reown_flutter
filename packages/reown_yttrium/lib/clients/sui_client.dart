@@ -62,7 +62,7 @@ class SuiClient implements ISuiClient {
   }
 
   @override
-  Future<String> signTransaction({
+  Future<(String, String)> signTransaction({
     required String chainId,
     required String keyPair,
     required String txData,

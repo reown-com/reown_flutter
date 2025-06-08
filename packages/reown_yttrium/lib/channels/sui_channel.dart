@@ -84,13 +84,13 @@ class MethodChannelSui {
     }
   }
 
-  Future<String> signTransaction({
+  Future<(String, String)> signTransaction({
     required String chainId,
     required String keyPair,
     required String txData,
   }) async {
     try {
-      final result = await methodChannel.invokeMethod<String>(
+      final result = await methodChannel.invokeMethod<dynamic>(
         'sui_signTransaction',
         {
           'chainId': chainId,
@@ -98,7 +98,10 @@ class MethodChannelSui {
           'txData': txData, // base64 encoded txData
         },
       );
-      return result!;
+      final resultMap = result as Map<Object?, Object?>;
+      final signature = resultMap['signature'].toString();
+      final transactionBytes = resultMap['transactionBytes'].toString();
+      return (signature, transactionBytes);
     } on PlatformException catch (e) {
       debugPrint('[$runtimeType] sui_signTransaction $e');
       rethrow;

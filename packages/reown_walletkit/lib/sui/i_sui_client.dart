@@ -33,7 +33,8 @@ abstract class ISuiClient {
   /// ---------------------------------
   /// ⚠️ This method is experimental. Use with caution.
   /// ---------------------------------
-  Future<String> signTransaction({
+  /// It returns a Record of (signature,transactionBytes)
+  Future<(String, String)> signTransaction({
     required String chainId,
     required String keyPair,
     required String txData,

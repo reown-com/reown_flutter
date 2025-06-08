@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
@@ -145,7 +146,7 @@ class SUIService {
         );
         final suiPrivateKey = keys[0].privateKey;
 
-        final signature = await _walletKit.suiClient.signTransaction(
+        final result = await _walletKit.suiClient.signTransaction(
           keyPair: suiPrivateKey,
           chainId: chainSupported.chainId,
           txData: transaction,
@@ -153,11 +154,21 @@ class SUIService {
 
         response = response.copyWith(
           result: {
-            'signature': signature,
+            'signature': result.$1,
+            'transactionBytes': result.$2,
           },
+        );
+      } on PlatformException catch (e) {
+        debugPrint('[SampleWallet] suiSignTransaction error $e');
+        response = response.copyWith(
+          error: JsonRpcError(
+            code: -1,
+            message: '${e.code}: ${e.message}',
+          ),
         );
       } catch (e) {
         debugPrint('[SampleWallet] suiSignTransaction error $e');
+        // print(e);
         final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
         response = response.copyWith(
           error: JsonRpcError(
@@ -224,6 +235,14 @@ class SUIService {
             'digest': digest,
           },
         );
+      } on PlatformException catch (e) {
+        debugPrint('[SampleWallet] suiSignAndExecuteTransaction error $e');
+        response = response.copyWith(
+          error: JsonRpcError(
+            code: -1,
+            message: '${e.code}: ${e.message}',
+          ),
+        );
       } catch (e) {
         debugPrint('[SampleWallet] suiSignAndExecuteTransaction error $e');
         final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
@@ -259,6 +278,7 @@ class SUIService {
         topic,
         session!.peer.metadata.redirect,
         response.error?.message,
+        response.result != null,
       );
     } on ReownSignError catch (error) {
       MethodsUtils.handleRedirect(

@@ -17,7 +17,7 @@ abstract class ISuiClient {
     required String message,
   });
 
-  Future<String> signTransaction({
+  Future<(String, String)> signTransaction({
     required String chainId,
     required String keyPair,
     required String txData,
