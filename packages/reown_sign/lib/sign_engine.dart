@@ -2961,6 +2961,15 @@ class ReownSign implements IReownSign {
       case 'sui':
         try {
           final result = (response.result as Map<String, dynamic>);
+          // if sui_signAndExecuteTransaction then it'll contain digest
+          final digest = ReownCoreUtils.recursiveSearchForMapKey(
+            result,
+            'digest',
+          );
+          if (digest != null) {
+            return List<String>.from([digest]);
+          }
+          // if sui_signTransaction the it'll contain signature and transactionBytes
           final signature = ReownCoreUtils.recursiveSearchForMapKey(
             result,
             'signature',
@@ -2970,10 +2979,12 @@ class ReownSign implements IReownSign {
               result,
               'transactionBytes',
             );
-            final computedHash = SuiChainUtils.getSuiDigestFromEncodedTx(
-              transactionBytes,
-            );
-            return List<String>.from([computedHash]);
+            if (transactionBytes != null) {
+              final computedHash = SuiChainUtils.getSuiDigestFromEncodedTx(
+                transactionBytes,
+              );
+              return List<String>.from([computedHash]);
+            }
           }
         } catch (e) {
           core.logger.e('[$runtimeType] _collectHashes: sui, $e');
