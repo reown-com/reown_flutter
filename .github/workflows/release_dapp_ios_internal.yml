@@ -32,7 +32,7 @@ jobs:
         key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
         restore-keys: |
           ${{ runner.os }}-spm-
-
+    
     # Install Flutter and Dependencies
     - uses: ./.github/actions/dependencies
       # with:
@@ -51,22 +51,9 @@ jobs:
         VERSION_NUMBER=(${FULL_VERSION//-/ })
 
         flutter build ios --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --config-only --release
-
-    - name: Install working Ruby + OpenSSL (for Fastlane)
-      run: |
-        brew install rbenv ruby-build openssl@3
-
-        export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@3)"
-        rbenv install 3.2.2 -s
-        rbenv global 3.2.2
-        eval "$(rbenv init - bash)"
-
-        gem install bundler fastlane
-
-        # Confirm EC works now
-        ruby -ropenssl -e 'puts OpenSSL::PKey::EC.new("prime256v1")'
-
-    - name: Run Fastlane
+    
+    # Fastlane
+    - name: Fastlane
       working-directory: packages/reown_appkit/example/base/ios
       env:
         BUNDLE_ID: "com.walletconnect.flutterdapp.internal"
@@ -82,8 +69,6 @@ jobs:
         SLACK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         TESTFLIGHT_URL: ${{ secrets.TESTFLIGHT_URL_DAPP_INTERNAL }}
       run: |
-        eval "$(rbenv init - bash)"
-
         PUBSPEC_FILE=../../../pubspec.yaml
         FILE_VALUE=$(echo | grep "^version: " $PUBSPEC_FILE)
         PARTS=(${FILE_VALUE//:/ })
