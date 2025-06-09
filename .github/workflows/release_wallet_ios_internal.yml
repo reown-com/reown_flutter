@@ -51,7 +51,10 @@ jobs:
         VERSION_NUMBER=(${FULL_VERSION//-/ })
 
         flutter build ios --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --config-only --release
-    
+      
+    - name: Set Xcode Version
+      run: sudo xcode-select -s /Applications/Xcode_16.2.app
+
     # Fastlane
     - name: Fastlane
       working-directory: packages/reown_walletkit/example/ios
@@ -75,7 +78,7 @@ jobs:
         FULL_VERSION=${PARTS[1]}
         VERSION_NUMBER=(${FULL_VERSION//-/ })
 
-        fastlane release_testflight username:$APPLE_ID token:$GH_BASIC_AUTH project_id:$PROJECT_ID app_id:$APPLE_DAPP_ID app_store_key_id:$APP_STORE_KEY_ID apple_issuer_id:$APPLE_ISSUER_ID app_store_connect_key:"$APP_STORE_CONNECT_KEY" match_git_url:$MATCH_GIT_URL app_version:$VERSION_NUMBER flavor:internal
+        fastlane release_testflight username:$APPLE_ID token:$GH_BASIC_AUTH project_id:$PROJECT_ID app_id:$APPLE_DAPP_ID app_store_key_id:$APP_STORE_KEY_ID apple_issuer_id:$APPLE_ISSUER_ID match_git_url:$MATCH_GIT_URL app_version:$VERSION_NUMBER flavor:internal
 
 # Launch locally
 # act -j build --container-architecture linux/amd64 -P macos-14=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_wallet_ios_internal.yml
