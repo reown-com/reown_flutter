@@ -1,0 +1,22 @@
+name: Trigger push
+
+on:
+  workflow_dispatch:
+
+jobs:
+  push-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Commit dummy change
+        run: |
+          echo "test $(date)" >> dummy.txt
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add dummy.txt
+          git commit -m "Test commit from bot"
+          git push origin main  # This will fail due to protection, and that's okay
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
