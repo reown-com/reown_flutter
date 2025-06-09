@@ -163,6 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
       _walletKitService = WalletKitService();
       await _walletKitService.create();
       GetIt.I.registerSingleton<IWalletKitService>(_walletKitService);
+      await _walletKitService.setUpAccounts();
 
       // Support EVM Chains
       for (final chainData in ChainsDataList.eip155Chains) {
@@ -251,6 +252,7 @@ class _MyHomePageState extends State<MyHomePage> {
       DeepLinkHandler.checkInitialLink();
     } catch (e, s) {
       debugPrint('[$runtimeType] ❌ crash during initialize, $e');
+      print(s);
       await Sentry.captureException(e, stackTrace: s);
     }
   }

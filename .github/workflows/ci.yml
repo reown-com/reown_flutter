@@ -44,7 +44,7 @@ concurrency:
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16core
 
     steps:
       # Checkout the repo
