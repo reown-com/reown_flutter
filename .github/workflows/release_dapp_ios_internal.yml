@@ -52,6 +52,17 @@ jobs:
 
         flutter build ios --flavor internal --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --config-only --release
     
+    - name: Fix OpenSSL and reinstall Ruby OpenSSL bindings
+      run: |
+        brew reinstall openssl@3
+
+        export LDFLAGS="-L/opt/homebrew/opt/openssl@3/lib"
+        export CPPFLAGS="-I/opt/homebrew/opt/openssl@3/include"
+        export PKG_CONFIG_PATH="/opt/homebrew/opt/openssl@3/lib/pkgconfig"
+
+        gem uninstall openssl -x -a || true
+        gem install openssl -- --with-openssl-dir=/opt/homebrew/opt/openssl@3
+
     # Fastlane
     - name: Fastlane
       working-directory: packages/reown_appkit/example/base/ios
