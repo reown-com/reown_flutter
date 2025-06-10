@@ -8,7 +8,7 @@ class ChainAbstraction {
         let message: String
     }
     
-    private static var chainAbstractionClient: ChainAbstractionClient?
+    private static var client: ChainAbstractionClient?
     private static var pendingPrepareDetailed: [String: UiFields] = [:]
     
     static func initialize(_ params: Any, result: @escaping FlutterResult) {
@@ -24,9 +24,13 @@ class ChainAbstraction {
         }
         
         let bundleID = Bundle.main.bundleIdentifier ?? bundleId
-        let pulseMetadata = PulseMetadata(url: url, bundleId: bundleID, sdkVersion: sdkVersion, sdkPlatform: sdkPlatform)
+        let pulseMetadata = PulseMetadata(url: url,
+                                          bundleId: bundleID,
+                                          sdkVersion: sdkVersion,
+                                          sdkPlatform: sdkPlatform)
         
-        chainAbstractionClient = ChainAbstractionClient(projectId: projectId, pulseMetadata: pulseMetadata)
+        client = ChainAbstractionClient(projectId: projectId,
+                                        pulseMetadata: pulseMetadata)
         
         result(true)
     }
@@ -34,18 +38,24 @@ class ChainAbstraction {
     static func erc20TokenBalance(_ params: Any, result: @escaping FlutterResult) {
         print("erc20TokenBalance called with ", params)
         
+        guard client != nil else {
+            result(FlutterError(code: "Sui", message: "ChainAbstractionClient not initialized", details: nil))
+            return
+        }
+        
         guard let dict = params as? [String: Any],
               let chainId = dict["chainId"] as? String,
               let token = dict["token"] as? FfiAddress,  // aka String
-              let owner = dict["owner"] as? FfiAddress,
-              let client = chainAbstractionClient else {
+              let owner = dict["owner"] as? FfiAddress else {
             result(FlutterError(code: "erc20TokenBalance", message: "Invalid parameters", details: params))
             return
         }
         
         Task {
             do {
-                let balanceResponse = try await client.erc20TokenBalance(chainId: chainId, token: token, owner: owner)
+                let balanceResponse = try await client!.erc20TokenBalance(chainId: chainId,
+                                                                          token: token,
+                                                                          owner: owner)
                 
                 if let balance = balanceResponse as String? {
                     print("balanceResponse", balance)
@@ -62,16 +72,20 @@ class ChainAbstraction {
     static func estimateFees(_ params: Any, result: @escaping FlutterResult) {
         print("estimateFees called with ", params)
         
+        guard client != nil else {
+            result(FlutterError(code: "Sui", message: "ChainAbstractionClient not initialized", details: nil))
+            return
+        }
+        
         guard let dict = params as? [String: Any],
-              let chainId = dict["chainId"] as? String,
-              let client = chainAbstractionClient else {
+              let chainId = dict["chainId"] as? String else {
             result(FlutterError(code: "estimateFees", message: "Invalid parameters", details: params))
             return
         }
         
         Task {
             do {
-                let feesResponse = try await client.estimateFees(chainId: chainId)
+                let feesResponse = try await client!.estimateFees(chainId: chainId)
                 
                 if let fees = feesResponse as Eip1559Estimation? {
                     print("feesResponse", fees)
@@ -88,6 +102,11 @@ class ChainAbstraction {
     static func prepareDetailed(_ params: Any, result: @escaping FlutterResult) {
         print("prepareDetailed called with ", params)
         
+        guard client != nil else {
+            result(FlutterError(code: "Sui", message: "ChainAbstractionClient not initialized", details: nil))
+            return
+        }
+        
         guard let dict = params as? [String: Any],
               let chainId = dict["chainId"] as? String,
               let from = dict["from"] as? String,
@@ -97,8 +116,7 @@ class ChainAbstraction {
               let to = call["to"] as? String,  // Address (String)
               let value = call["value"] as? String,  // U256 (String)
               let input = call["input"] as? String,  // Bytes (String)
-              let localCurrency = dict["localCurrency"] as? String,
-              let client = chainAbstractionClient else {
+              let localCurrency = dict["localCurrency"] as? String else {
             result(FlutterError(code: "prepareDetailed", message: "Invalid parameters", details: nil))
             return
         }
@@ -107,12 +125,12 @@ class ChainAbstraction {
             do {
                 let currency = Currency.fromString(value: localCurrency)
                 let call = Call(to: to, value: value, input: input)
-                let prepareResponse = try await client.prepareDetailed(chainId: chainId,
-                                                                                       from: from,
-                                                                                       call: call,
-                                                                                       accounts: accounts,
-                                                                                       localCurrency: currency,
-                                                                                       useLifi: useLifi)
+                let prepareResponse = try await client!.prepareDetailed(chainId: chainId,
+                                                                        from: from,
+                                                                        call: call,
+                                                                        accounts: accounts,
+                                                                        localCurrency: currency,
+                                                                        useLifi: useLifi)
                 
                 switch prepareResponse {
                 case .success(let successData):
@@ -135,11 +153,15 @@ class ChainAbstraction {
     static func execute(_ params: Any, result: @escaping FlutterResult) {
         print("execute called with ", params)
         
+        guard client != nil else {
+            result(FlutterError(code: "Sui", message: "ChainAbstractionClient not initialized", details: nil))
+            return
+        }
+        
         guard let dict = params as? [String: Any],
               let orchestrationId = dict["orchestrationId"] as? String,
               let rawSigs = dict["routeTxnSigs"] as? [Any],
-              let initialTxnSig = dict["initialTxnSig"] as? String,
-              let client = chainAbstractionClient else {
+              let initialTxnSig = dict["initialTxnSig"] as? String else {
             result(FlutterError(code: "execute", message: "Invalid parameters", details: params))
             return
         }
@@ -156,12 +178,12 @@ class ChainAbstraction {
                     result(FlutterError(code: "execute", message: "Invalid item(s) in routeTxnSigs", details: params))
                     return
                 }
-
                 
                 
-                let executeResponse = try await client.execute(uiFields: uiFields,
-                                                               routeTxnSigs: routeTxnSigs,
-                                                               initialTxnSig: initialTxnSig)
+                
+                let executeResponse = try await client!.execute(uiFields: uiFields,
+                                                                routeTxnSigs: routeTxnSigs,
+                                                                initialTxnSig: initialTxnSig)
                 
                 pendingPrepareDetailed.removeValue(forKey: orchestrationId)
                 

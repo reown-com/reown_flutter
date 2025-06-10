@@ -59,16 +59,8 @@ extension Transactions {
         switch self {
         case .eip155(let txns):
             return (txns as [Transaction]).map { $0.toJson() } // list of Transaction
-//            return [
-//                "type": "Eip155",
-//                "v1": txns.map { $0.toJson() }
-//            ]
         case .solana(let txns):
             return (txns as [SolanaTransaction]).map { $0.toJson() } // list of SolanaTransaction
-//            return [
-//                "type": "Solana",
-//                "v1": txns.map { $0.toJson() }
-//            ]
         }
     }
 }

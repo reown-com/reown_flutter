@@ -48,9 +48,9 @@ polkadart:
   output_dir: lib/generated
   chains:
     polkadot: wss://polkadot-rpc.dwellir.com
-    westend: wss://westend-asset-hub-rpc.polkadot.io
+    # westend: wss://westend-asset-hub-rpc.polkadot.io
     # kusama: wss://kusama-rpc.polkadot.io
     # astar: wss://rpc.astar.network
-    paseo: wss://paseo-rpc.dwellir.com
-    assethub: wss://asset-hub-paseo-rpc.dwellir.com
-    encointer: wss://encointer-kusama.dotters.network
+    # paseo: wss://paseo-rpc.dwellir.com
+    # assethub: wss://asset-hub-paseo-rpc.dwellir.com
+    # encointer: wss://encointer-kusama.dotters.network
