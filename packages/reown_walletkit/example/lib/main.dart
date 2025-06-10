@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/bottom_sheet_listener.dart';
@@ -26,36 +28,75 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
+// Future<void> main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   DeepLinkHandler.initListener();
+//   if (kDebugMode) {
+//     runApp(MyApp());
+//   } else {
+//     await SentryFlutter.init(
+//       (options) {
+//         options.dsn = DartDefines.sentryDSN;
+//         options.environment = kDebugMode ? 'debug_app' : 'deployed_app';
+//         options.attachScreenshot = true;
+//         // Adds request headers and IP for users,
+//         // visit: https://docs.sentry.io/platforms/dart/data-management/data-collected/ for more info
+//         options.sendDefaultPii = true;
+//         // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+//         // We recommend adjusting this value in production.
+//         options.tracesSampleRate = 1.0;
+//         // The sampling rate for profiling is relative to tracesSampleRate
+//         // Setting to 1.0 will profile 100% of sampled transactions:
+//         options.profilesSampleRate = 1.0;
+//       },
+//       appRunner: () {
+//         runApp(
+//           SentryWidget(
+//             child: const MyApp(),
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
+
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  DeepLinkHandler.initListener();
-  if (kDebugMode) {
-    runApp(MyApp());
-  } else {
-    await SentryFlutter.init(
-      (options) {
-        options.dsn = DartDefines.sentryDSN;
-        options.environment = kDebugMode ? 'debug_app' : 'deployed_app';
-        options.attachScreenshot = true;
-        // Adds request headers and IP for users,
-        // visit: https://docs.sentry.io/platforms/dart/data-management/data-collected/ for more info
-        options.sendDefaultPii = true;
-        // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
-        // We recommend adjusting this value in production.
-        options.tracesSampleRate = 1.0;
-        // The sampling rate for profiling is relative to tracesSampleRate
-        // Setting to 1.0 will profile 100% of sampled transactions:
-        options.profilesSampleRate = 1.0;
-      },
-      appRunner: () {
-        runApp(
-          SentryWidget(
-            child: const MyApp(),
-          ),
-        );
-      },
-    );
-  }
+  await runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    DeepLinkHandler.initListener();
+
+    // Catch Flutter framework errors
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.presentError(details);
+      Sentry.captureException(details.exception, stackTrace: details.stack);
+    };
+
+    if (kDebugMode) {
+      runApp(MyApp());
+    } else {
+      await SentryFlutter.init(
+        (options) {
+          options.dsn = DartDefines.sentryDSN;
+          options.environment = 'deployed_app';
+          options.attachScreenshot = true;
+          options.sendDefaultPii = true;
+          options.tracesSampleRate = 1.0;
+          options.profilesSampleRate = 1.0;
+        },
+        appRunner: () {
+          runApp(
+            SentryWidget(
+              child: const MyApp(),
+            ),
+          );
+        },
+      );
+    }
+  }, (error, stackTrace) async {
+    await Sentry.captureException(error, stackTrace: stackTrace);
+    print('Uncaught error: $error');
+    print('Stack trace: $stackTrace');
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -153,8 +194,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _initialize() async {
     try {
+      print("_initialize()");
       GetIt.I.registerSingleton<IBottomSheetService>(BottomSheetService());
       await Future.delayed(Duration(milliseconds: 200));
+      print("IBottomSheetService()");
 
       GetIt.I.registerSingletonAsync<IKeyService>(() async {
         final keyService = KeyService();
@@ -162,14 +205,17 @@ class _MyHomePageState extends State<MyHomePage> {
         return keyService;
       });
       await Future.delayed(Duration(milliseconds: 200));
+      print("IKeyService()");
 
       GetIt.I.registerSingleton<IWalletKitService>(WalletKitService());
       await Future.delayed(Duration(milliseconds: 200));
+      print("IWalletKitService()");
 
       final walletKitService = GetIt.I<IWalletKitService>();
       await walletKitService.create();
       await walletKitService.setUpAccounts();
       await walletKitService.init();
+      print("IWalletKitService() init");
 
       walletKitService.walletKit.core.relayClient.onRelayClientConnect
           .subscribe(
@@ -234,11 +280,13 @@ class _MyHomePageState extends State<MyHomePage> {
       // }
 
       _setPages();
+      print("_setPages()");
 
       // TODO _walletKit.core.echo.register(firebaseAccessToken);
       DeepLinkHandler.checkInitialLink();
+      print("DeepLinkHandler()");
     } catch (e, s) {
-      debugPrint('[$runtimeType] ❌ crash during initialize, $e');
+      print('[$runtimeType] ❌ crash during initialize, $e');
       print(s);
       await Sentry.captureException(e, stackTrace: s);
     }

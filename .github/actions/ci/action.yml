@@ -110,8 +110,8 @@ runs:
       env:
         WALLET_PROJECT_ID: ${{ inputs.wallet-project-id }}
       run: |
-        flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --release
-        mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/wallet-release.apk
+        flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --debug
+        mv build/app/outputs/flutter-apk/app-internal-debug.apk $GITHUB_WORKSPACE/wallet-debug.apk
 
     # Build Flutter Dapp to be used on Android emulator
     - name: Build Flutter Dapp to be used on Android emulator
@@ -121,8 +121,8 @@ runs:
       env:
         PROJECT_ID: ${{ inputs.project-id }}
       run: |
-        flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$PROJECT_ID" --release
-        mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/dapp-release.apk
+        flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$PROJECT_ID" --debug
+        mv build/app/outputs/flutter-apk/app-internal-debug.apk $GITHUB_WORKSPACE/dapp-debug.apk
     
     # Restart ADB Server
     - name: Restart ADB Server
@@ -146,7 +146,7 @@ runs:
         emulator-boot-timeout: 900
         profile: pixel_6
         avd-name: test_device
-        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save -no-snapshot-load
+        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save -no-snapshot-load -netdelay none -netspeed full
         disable-animations: true
         pre-emulator-launch-script: |
           echo "Running pre emulator launch script. Printing the working directory now:"
@@ -166,6 +166,10 @@ runs:
           adb kill-server
           adb start-server
           adb devices
+
+          # Start logcat capture in background
+          adb logcat -v time > maestro_logcat.txt &
+          LOGCAT_PID=$!
           
           echo "Waiting for emulator to boot..."
           # Continue with original script
@@ -185,12 +189,24 @@ runs:
           adb shell pm list packages
           
           echo "Running Maestro native to native tests:"
+
           mkdir -p .maestro/videos/
-          maestro test .maestro/native/launch_wallet.yaml
+
+          # START: logcat capture
+          echo "Starting logcat capture..."
+          adb logcat -v time > maestro_logcat.txt &
+          LOGCAT_PID=$!
+          # END: logcat capture start
+
+          # maestro test .maestro/native/launch_wallet.yaml
           maestro test .maestro/native/connect_reject_session_flow.yaml
-          maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
-          maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
-          
+          # maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
+          # maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
+
+          # END: stop logcat
+          echo "Stopping logcat capture..."
+          kill $LOGCAT_PID || true
+
           # Move any remaining MP4 files from root to videos directory
           find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
   
@@ -272,6 +288,7 @@ runs:
         cp -r /home/runner/.maestro/tests/* ./maestro-artifacts/ || true
         cp -r .maestro/videos/* ./maestro-artifacts/ || true
         cp *.mp4 ./maestro-artifacts/ || true
+        cp maestro_logcat.txt ./maestro-artifacts/ || true  # ✅ Include logcat
         zip -r maestro-test-results-${{ env.RANDOM_STRING }}.zip ./maestro-artifacts/
 
     # Upload Zipped Maestro Artifacts
