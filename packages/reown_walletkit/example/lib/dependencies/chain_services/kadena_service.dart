@@ -27,10 +27,7 @@ class KadenaService {
         'kadena_quicksign_v1': kadenaQuicksignV1,
       };
 
-  KadenaService({
-    required this.chainSupported,
-    // required IWalletKitService walletKitService,
-  }) {
+  KadenaService({required this.chainSupported}) {
     _walletKit = GetIt.I<IWalletKitService>().walletKit;
     kadenaClient = SigningApi();
 

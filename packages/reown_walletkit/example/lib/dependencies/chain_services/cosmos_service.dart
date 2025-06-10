@@ -20,10 +20,7 @@ class CosmosService {
         'cosmos_signAmino': cosmosSignAmino,
       };
 
-  CosmosService({
-    required this.chainSupported,
-    // required IWalletKitService walletKitService,
-  }) {
+  CosmosService({required this.chainSupported}) {
     _walletKit = GetIt.I<IWalletKitService>().walletKit;
     for (var handler in cosmosRequestHandlers.entries) {
       _walletKit.registerRequestHandler(

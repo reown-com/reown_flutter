@@ -73,17 +73,6 @@ jobs:
       - name: Add Keystore file to WalletKit
         working-directory: packages/reown_walletkit/example/android
         run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
-      
-      # # Check Runner Resources
-      # - name: Check Runner Resources
-      #   shell: bash
-      #   run: |
-      #     echo "CPU Info:"
-      #     lscpu
-      #     echo "Memory Info:"
-      #     free -m
-      #     echo "Disk Space:"
-      #     df -h
 
       # Run Integration Tests
       - name: Run Integration Tests
