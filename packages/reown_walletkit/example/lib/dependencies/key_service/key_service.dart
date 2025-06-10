@@ -30,7 +30,12 @@ class KeyService extends IKeyService {
   @override
   List<ChainKey> get keys => _keys;
 
-  KeyService({required SharedPreferences prefs}) : _prefs = prefs;
+  // KeyService({required SharedPreferences prefs}) : _prefs = prefs;
+
+  @override
+  Future<void> init() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
 
   @override
   Future<void> clearAll() async {

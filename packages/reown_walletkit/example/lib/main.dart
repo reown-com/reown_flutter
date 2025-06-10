@@ -23,7 +23,6 @@ import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -143,7 +142,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late final IWalletKitService _walletKitService;
   List<PageData> _pageDatas = [];
   int _selectedIndex = 0;
 
@@ -156,95 +154,84 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _initialize() async {
     try {
       GetIt.I.registerSingleton<IBottomSheetService>(BottomSheetService());
+      await Future.delayed(Duration(milliseconds: 200));
 
-      final prefs = await SharedPreferences.getInstance();
-      GetIt.I.registerSingleton<IKeyService>(KeyService(prefs: prefs));
+      GetIt.I.registerSingletonAsync<IKeyService>(() async {
+        final keyService = KeyService();
+        await keyService.init();
+        return keyService;
+      });
+      await Future.delayed(Duration(milliseconds: 200));
 
-      _walletKitService = WalletKitService();
-      await _walletKitService.create();
-      GetIt.I.registerSingleton<IWalletKitService>(_walletKitService);
-      await _walletKitService.setUpAccounts();
+      GetIt.I.registerSingleton<IWalletKitService>(WalletKitService());
+      await Future.delayed(Duration(milliseconds: 200));
 
-      // Support EVM Chains
-      for (final chainData in ChainsDataList.eip155Chains) {
-        GetIt.I.registerSingleton<EVMService>(
-          EVMService(
-            chainSupported: chainData,
-            walletKitService: _walletKitService,
-          ),
-          instanceName: chainData.chainId,
-        );
-      }
+      final walletKitService = GetIt.I<IWalletKitService>();
+      await walletKitService.create();
+      await walletKitService.setUpAccounts();
+      await walletKitService.init();
 
-      // Support Kadena Chains
-      for (final chainData in ChainsDataList.kadenaChains) {
-        GetIt.I.registerSingleton<KadenaService>(
-          KadenaService(
-            chainSupported: chainData,
-            walletKitService: _walletKitService,
-          ),
-          instanceName: chainData.chainId,
-        );
-      }
-
-      // Support Polkadot Chains
-      for (final chainData in ChainsDataList.polkadotChains) {
-        GetIt.I.registerSingleton<PolkadotService>(
-          PolkadotService(
-            chainSupported: chainData,
-            walletKitService: _walletKitService,
-          ),
-          instanceName: chainData.chainId,
-        );
-      }
-
-      // Support Solana Chains
-      // Change SolanaService to SolanaService2 to switch between `solana` package and `solana_web3` package
-      for (final chainData in ChainsDataList.solanaChains) {
-        GetIt.I.registerSingleton<SolanaService>(
-          SolanaService(
-            chainSupported: chainData,
-            walletKitService: _walletKitService,
-          ),
-          instanceName: chainData.chainId,
-        );
-      }
-
-      // Support Cosmos Chains
-      for (final chainData in ChainsDataList.cosmosChains) {
-        GetIt.I.registerSingleton<CosmosService>(
-          CosmosService(
-            chainSupported: chainData,
-            walletKitService: _walletKitService,
-          ),
-          instanceName: chainData.chainId,
-        );
-      }
-
-      // Support Tron Chains
-      for (final chainData in ChainsDataList.tronChains) {
-        GetIt.I.registerSingleton<TronService>(
-          TronService(
-            chainSupported: chainData,
-            walletKitService: _walletKitService,
-          ),
-          instanceName: chainData.chainId,
-        );
-      }
-
-      await _walletKitService.init();
-
-      _walletKitService.walletKit.core.relayClient.onRelayClientConnect
+      walletKitService.walletKit.core.relayClient.onRelayClientConnect
           .subscribe(
         _setState,
       );
-      _walletKitService.walletKit.core.relayClient.onRelayClientDisconnect
+      walletKitService.walletKit.core.relayClient.onRelayClientDisconnect
           .subscribe(
         _setState,
       );
 
-      _walletKitService.walletKit.core.connectivity.isOnline
-          .addListener(_onLine);
+      walletKitService.walletKit.core.connectivity.isOnline.addListener(
+        _onLine,
+      );
+
+      // // Support EVM Chains
+      // for (final chainData in ChainsDataList.eip155Chains) {
+      //   GetIt.I.registerSingleton<EVMService>(
+      //     EVMService(chainSupported: chainData),
+      //     instanceName: chainData.chainId,
+      //   );
+      // }
+
+      // // Support Kadena Chains
+      // for (final chainData in ChainsDataList.kadenaChains) {
+      //   GetIt.I.registerSingleton<KadenaService>(
+      //     KadenaService(chainSupported: chainData),
+      //     instanceName: chainData.chainId,
+      //   );
+      // }
+
+      // // Support Polkadot Chains
+      // for (final chainData in ChainsDataList.polkadotChains) {
+      //   GetIt.I.registerSingleton<PolkadotService>(
+      //     PolkadotService(chainSupported: chainData),
+      //     instanceName: chainData.chainId,
+      //   );
+      // }
+
+      // // Support Solana Chains
+      // // Change SolanaService to SolanaService2 to switch between `solana` package and `solana_web3` package
+      // for (final chainData in ChainsDataList.solanaChains) {
+      //   GetIt.I.registerSingleton<SolanaService>(
+      //     SolanaService(chainSupported: chainData),
+      //     instanceName: chainData.chainId,
+      //   );
+      // }
+
+      // // Support Cosmos Chains
+      // for (final chainData in ChainsDataList.cosmosChains) {
+      //   GetIt.I.registerSingleton<CosmosService>(
+      //     CosmosService(chainSupported: chainData),
+      //     instanceName: chainData.chainId,
+      //   );
+      // }
+
+      // // Support Tron Chains
+      // for (final chainData in ChainsDataList.tronChains) {
+      //   GetIt.I.registerSingleton<TronService>(
+      //     TronService(chainSupported: chainData),
+      //     instanceName: chainData.chainId,
+      //   );
+      // }
 
       _setPages();
 
@@ -314,7 +301,7 @@ class _MyHomePageState extends State<MyHomePage> {
           const Text('Relay '),
           Builder(
             builder: (context) {
-              final walletKit = _walletKitService.walletKit;
+              final walletKit = GetIt.I<IWalletKitService>().walletKit;
               return CircleAvatar(
                 radius: 6.0,
                 backgroundColor: walletKit.core.relayClient.isConnected &&

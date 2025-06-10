@@ -29,9 +29,9 @@ class KadenaService {
 
   KadenaService({
     required this.chainSupported,
-    required IWalletKitService walletKitService,
+    // required IWalletKitService walletKitService,
   }) {
-    _walletKit = walletKitService.walletKit;
+    _walletKit = GetIt.I<IWalletKitService>().walletKit;
     kadenaClient = SigningApi();
 
     _walletKit.registerEventEmitter(

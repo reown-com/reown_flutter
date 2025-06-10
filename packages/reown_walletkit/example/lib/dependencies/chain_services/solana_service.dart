@@ -26,9 +26,9 @@ class SolanaService {
 
   SolanaService({
     required this.chainSupported,
-    required IWalletKitService walletKitService,
+    // required IWalletKitService walletKitService,
   }) {
-    _walletKit = walletKitService.walletKit;
+    _walletKit = GetIt.I<IWalletKitService>().walletKit;
     for (var handler in solanaRequestHandlers.entries) {
       _walletKit.registerRequestHandler(
         chainId: chainSupported.chainId,

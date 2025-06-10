@@ -22,9 +22,9 @@ class CosmosService {
 
   CosmosService({
     required this.chainSupported,
-    required IWalletKitService walletKitService,
+    // required IWalletKitService walletKitService,
   }) {
-    _walletKit = walletKitService.walletKit;
+    _walletKit = GetIt.I<IWalletKitService>().walletKit;
     for (var handler in cosmosRequestHandlers.entries) {
       _walletKit.registerRequestHandler(
         chainId: chainSupported.chainId,

@@ -34,9 +34,9 @@ class PolkadotService {
 
   PolkadotService({
     required this.chainSupported,
-    required IWalletKitService walletKitService,
+    // required IWalletKitService walletKitService,
   }) {
-    _walletKit = walletKitService.walletKit;
+    _walletKit = GetIt.I<IWalletKitService>().walletKit;
     _keyring = Keyring();
     _provider = polkadart.Provider.fromUri(Uri.parse(chainSupported.rpc.first));
 

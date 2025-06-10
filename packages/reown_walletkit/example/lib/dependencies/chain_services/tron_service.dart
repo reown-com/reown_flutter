@@ -25,9 +25,9 @@ class TronService {
 
   TronService({
     required this.chainSupported,
-    required IWalletKitService walletKitService,
+    // required IWalletKitService walletKitService,
   }) {
-    _walletKit = walletKitService.walletKit;
+    _walletKit = GetIt.I<IWalletKitService>().walletKit;
 
     for (var handler in tronRequestHandlers.entries) {
       _walletKit.registerRequestHandler(

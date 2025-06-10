@@ -73,11 +73,12 @@ class EVMService {
 
   EVMService({
     required this.chainSupported,
-    required IWalletKitService walletKitService,
+    // required IWalletKitService walletKitService,
   }) {
     ethClient = Web3Client(chainSupported.rpc.first, http.Client());
-    _walletKitService = walletKitService;
-    _walletKit = walletKitService.walletKit;
+    _walletKitService = GetIt.I<IWalletKitService>();
+    // _walletKitService = walletKitService;
+    _walletKit = _walletKitService.walletKit;
 
     for (final event in EventsConstants.allEvents) {
       _walletKit.registerEventEmitter(
@@ -691,7 +692,7 @@ class EVMService {
         GetIt.I.registerSingleton<EVMService>(
           EVMService(
             chainSupported: chainData,
-            walletKitService: _walletKitService,
+            // walletKitService: _walletKitService,
           ),
           instanceName: chainData.chainId,
         );
