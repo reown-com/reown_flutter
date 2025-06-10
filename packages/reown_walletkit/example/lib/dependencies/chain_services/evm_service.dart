@@ -686,10 +686,7 @@ class EVMService {
         // Register the corresponding singleton for the new chain
         // This will also call registerEventEmitter and registerRequestHandler
         GetIt.I.registerSingleton<EVMService>(
-          EVMService(
-            chainSupported: chainData,
-            // walletKitService: _walletKitService,
-          ),
+          EVMService(chainSupported: chainData),
           instanceName: chainData.chainId,
         );
 
