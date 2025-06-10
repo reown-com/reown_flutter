@@ -139,12 +139,14 @@ runs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 33
-        target: default # Use AOSP instead of Google APIs
+        target: google_apis
         arch: x86_64
         ram-size: 4096M
+        heap-size: 576M
         emulator-boot-timeout: 900
         profile: pixel_6
-        emulator-options: -no-window -gpu guest -noaudio -no-boot-anim -camera-back none -netdelay none -netspeed full
+        avd-name: test_device
+        emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-snapshot-save -no-snapshot-load
         disable-animations: true
         pre-emulator-launch-script: |
           echo "Running pre emulator launch script. Printing the working directory now:"
