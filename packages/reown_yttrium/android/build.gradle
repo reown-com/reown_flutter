@@ -59,6 +59,7 @@ android {
     packaging {
         jniLibs.pickFirsts.add("lib/arm64-v8a/libuniffi_yttrium.so")
         jniLibs.pickFirsts.add("lib/armeabi-v7a/libuniffi_yttrium.so")
+        jniLibs.pickFirsts.add("lib/x86_64/libuniffi_yttrium.so")
 //        jniLibs.pickFirsts.add("lib/arm64-v8a/libjnidispatch.so")
 //        jniLibs.pickFirsts.add("lib/armeabi-v7a/libjnidispatch.so")
         jniLibs.pickFirsts.add("lib/**/libjnidispatch.so")
@@ -79,7 +80,7 @@ android {
 
 dependencies {
     implementation("net.java.dev.jna:jna:5.15.0@aar")
-    implementation("com.github.reown-com:yttrium:0.8.19") //unspecified
+    implementation("com.github.reown-com:yttrium:0.9.16") //unspecified
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.mockito:mockito-core:5.0.0")
