@@ -63,7 +63,7 @@ class WalletKitService extends IWalletKitService {
     // Create the ReownWalletKit instance
     _walletKit = ReownWalletKit(
       core: ReownCore(
-        projectId: '07429c7285515de0715980519ef2e148',
+        projectId: DartDefines.projectId,
         logLevel: LogLevel.all,
       ),
       metadata: PairingMetadata(
