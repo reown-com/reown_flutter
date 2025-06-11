@@ -115,7 +115,9 @@ runs:
         YTTRIUM_VERSION: ${{ inputs.yttrium-version }}
       run: |
         flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --release --target-platform android-x64 --split-per-abi -PyttriumCiVersion=$YTTRIUM_VERSION
+        # flutter build apk --flavor internal --build-name 3.0.0-internal --dart-define="PROJECT_ID=" --release --target-platform android-x64 --split-per-abi -PyttriumCiVersion=0.0.19-ci
         mv build/app/outputs/flutter-apk/app-x86_64-internal-release.apk $GITHUB_WORKSPACE/wallet-release.apk
+        # mv build/app/outputs/flutter-apk/app-x86_64-internal-release.apk /Users/alfreedom/Development/Reown/reown_flutter/wallet-release.apk
 
     # Build Flutter Dapp to be used on Android emulator
     - name: Build Flutter Dapp to be used on Android emulator
@@ -126,7 +128,9 @@ runs:
         PROJECT_ID: ${{ inputs.project-id }}
       run: |
         flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$PROJECT_ID" --release --target-platform android-x64 --split-per-abi
+        # flutter build apk --flavor internal --build-name 3.0.0-internal --dart-define="PROJECT_ID=" --release --target-platform android-x64 --split-per-abi
         mv build/app/outputs/flutter-apk/app-x86_64-internal-release.apk $GITHUB_WORKSPACE/dapp-release.apk
+        # mv build/app/outputs/flutter-apk/app-x86_64-internal-release.apk /Users/alfreedom/Development/Reown/reown_flutter/dapp-release.apk
     
     # Restart ADB Server
     - name: Restart ADB Server
