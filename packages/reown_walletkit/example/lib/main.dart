@@ -169,17 +169,13 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _initialize() async {
     try {
       GetIt.I.registerSingleton<IBottomSheetService>(BottomSheetService());
-      await Future.delayed(Duration(milliseconds: 200));
-
       GetIt.I.registerSingletonAsync<IKeyService>(() async {
         final keyService = KeyService();
         await keyService.init();
         return keyService;
       });
-      await Future.delayed(Duration(milliseconds: 200));
-
       GetIt.I.registerSingleton<IWalletKitService>(WalletKitService());
-      await Future.delayed(Duration(milliseconds: 200));
+      await GetIt.I.allReady(timeout: Duration(seconds: 1));
 
       final walletKitService = GetIt.I<IWalletKitService>();
       await walletKitService.create();

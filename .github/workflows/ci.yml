@@ -101,4 +101,4 @@ jobs:
           yttrium-version: ${{ github.event.inputs.yttrium-version }}
 
 # Launch locally
-# act --container-architecture linux/amd64 -P ubuntu-latest=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch --input integration=false --input maestro=android
+# act --container-architecture linux/amd64 -P ubuntu-16core=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch --input integration=false --input maestro=android
