@@ -32,6 +32,10 @@ on:
           - 'ios'
           - 'both'
           - 'none'
+      yttrium-version:
+        description: 'Android Yttrium version for CI'
+        required: false
+        default: '0.0.19-ci'
 
 concurrency:
   # Support push/pr as event types with different behaviors each:
@@ -94,6 +98,7 @@ jobs:
           relay-endpoint: "wss://relay.walletconnect.org"
           project-id: ${{ secrets.DAPP_PROJECT_ID }}
           wallet-project-id: ${{ secrets.WALLET_PROJECT_ID }}
+          yttrium-version: ${{ github.event.inputs.yttrium-version }}
 
 # Launch locally
 # act --container-architecture linux/amd64 -P ubuntu-latest=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch --input integration=false --input maestro=android
