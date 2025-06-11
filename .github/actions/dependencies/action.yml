@@ -12,7 +12,7 @@ runs:
   steps:
     # Install Java 17
     - name: Install Java 17
-      if: github.event.inputs.platform == 'android' || github.event.inputs.platform == 'both'
+      if: github.event.inputs.platform == 'android'
       uses: actions/setup-java@v3
       with:
         distribution: 'zulu'
@@ -22,7 +22,7 @@ runs:
 
     # Cache Gradle
     - name: Cache Gradle
-      if: github.event.inputs.platform == 'android' || github.event.inputs.platform == 'both'
+      if: github.event.inputs.platform == 'android'
       uses: actions/cache@v3
       with:
         path: |

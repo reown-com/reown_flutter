@@ -25,13 +25,11 @@ on:
       maestro:
         description: 'Run maestro tests?'
         required: false
-        default: 'android'
+        default: 'true'
         type: choice
         options:
-          - 'android'
-          - 'ios'
-          - 'both'
-          - 'none'
+          - 'true'
+          - 'false'
       yttrium-version:
         description: 'Android Yttrium version for CI'
         required: false
@@ -53,7 +51,7 @@ jobs:
       matrix:
         include:
           - platform: android
-            runner: macos-14
+            runner: ubuntu-16core
           - platform: ios
             runner: macos-14-xlarge
     runs-on: ${{ matrix.runner }}
@@ -66,29 +64,29 @@ jobs:
       # Set up environment 
       - uses: ./.github/actions/dependencies
         with:
-          platform: ${{ github.event.inputs.maestro }}
+          platform: ${{ matrix.platform }}
       
       # Add Secrets file on dapp
       - name: Add Secrets file to AppKit
-        if: github.event.inputs.maestro == 'android' || github.event.inputs.maestro == 'both'
+        if: matrix.platform == 'android'
         working-directory: packages/reown_appkit/example/base/android
         run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
 
       # Add Keystore file on dapp
       - name: Add Keystore file to AppKit
-        if: github.event.inputs.maestro == 'android' || github.event.inputs.maestro == 'both'
+        if: matrix.platform == 'android'
         working-directory: packages/reown_appkit/example/base/android
         run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
 
       # Add Secrets file on wallet
       - name: Add Secrets file to WalletKit
-        if: github.event.inputs.maestro == 'android' || github.event.inputs.maestro == 'both'
+        if: matrix.platform == 'android'
         working-directory: packages/reown_walletkit/example/android
         run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
 
       # Add Keystore file on wallet
       - name: Add Keystore file to WalletKit
-        if: github.event.inputs.maestro == 'android' || github.event.inputs.maestro == 'both'
+        if: matrix.platform == 'android'
         working-directory: packages/reown_walletkit/example/android
         run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
 
@@ -104,11 +102,11 @@ jobs:
 
       # Run Maestro Tests
       - name: Run Maestro Tests
-        if: github.event.inputs.maestro != 'none'
+        if: github.event.inputs.maestro == 'true'
         uses: ./.github/actions/ci
         with:
           type: "maestro-tests"
-          platform: ${{ github.event.inputs.maestro }}
+          platform: ${{ matrix.platform }}
           relay-endpoint: "wss://relay.walletconnect.org"
           project-id: ${{ secrets.DAPP_PROJECT_ID }}
           wallet-project-id: ${{ secrets.WALLET_PROJECT_ID }}
