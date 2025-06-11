@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: ci
+name: tests
 permissions:
   contents: read
 
@@ -101,7 +101,7 @@ jobs:
       # Run Integration Tests
       - name: Run Integration Tests
         if: github.event.inputs.integration == 'true'
-        uses: ./.github/actions/ci
+        uses: ./.github/actions/tests
         with:
           type: "integration-tests"
           relay-endpoint: "wss://relay.walletconnect.org"
@@ -111,7 +111,7 @@ jobs:
       # Run Maestro Tests
       - name: Run Maestro Tests
         if: github.event.inputs.maestro == 'true' && (matrix.platform == 'android' || (matrix.platform == 'ios' && github.event.inputs.ios == 'true'))
-        uses: ./.github/actions/ci
+        uses: ./.github/actions/tests
         with:
           type: "maestro-tests"
           platform: ${{ matrix.platform }}
