@@ -289,8 +289,8 @@ runs:
         find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
 
     # Upload Maestro Test Artifacts
-    - name: Zip Maestro Test Artifacts
-      if: failure() && inputs.type == 'maestro-tests'
+    - name: Zip Maestro Test Artifacts Android
+      if: failure() && inputs.type == 'maestro-tests' && inputs.platform == 'android'
       shell: bash
       run: |
         mkdir -p ./maestro-artifacts
@@ -298,6 +298,16 @@ runs:
         cp -r .maestro/videos/* ./maestro-artifacts/ || true
         cp *.mp4 ./maestro-artifacts/ || true
         cp maestro_logcat.txt ./maestro-artifacts/ || true  # ✅ Include logcat
+        zip -r maestro-test-results-${{ env.RANDOM_STRING }}.zip ./maestro-artifacts/
+    
+    - name: Zip Maestro Test Artifacts iOS
+      if: failure() && inputs.type == 'maestro-tests' && inputs.platform == 'ios'
+      shell: bash
+      run: |
+        mkdir -p ./maestro-artifacts
+        cp -r /home/runner/.maestro/tests/* ./maestro-artifacts/ || true
+        cp -r .maestro/videos/* ./maestro-artifacts/ || true
+        cp *.mp4 ./maestro-artifacts/ || true
         zip -r maestro-test-results-${{ env.RANDOM_STRING }}.zip ./maestro-artifacts/
 
     # Upload Zipped Maestro Artifacts

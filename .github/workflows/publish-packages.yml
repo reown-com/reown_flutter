@@ -130,6 +130,15 @@ jobs:
           chmod +x .github/scripts/wait_for_package.sh
           .github/scripts/wait_for_package.sh reown_core ${{ steps.get_version.outputs.version }}
 
+      - name: Post a message in a channel
+        uses: slackapi/slack-github-action@v2.1.0
+        if: github.event.inputs.core == 'true'
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "*reown_core* version ${{ steps.get_version.outputs.version }} has been published
+
   publish-sign:
     name: Publish reown_sign
     needs: [publish-core]
@@ -230,12 +239,21 @@ jobs:
           chmod +x .github/scripts/wait_for_package.sh
           .github/scripts/wait_for_package.sh reown_sign ${{ steps.get_version.outputs.version }}
 
+      - name: Post a message in a channel
+        uses: slackapi/slack-github-action@v2.1.0
+        if: github.event.inputs.sign == 'true'
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "*reown_sign* version ${{ steps.get_version.outputs.version }} has been published
+
   publish-appkit:
     name: Publish reown_appkit
     needs: [publish-core, publish-sign]
     runs-on: ubuntu-latest
     steps:
-      - name: Check if core should be published
+      - name: Check if appkit should be published
         if: github.event.inputs.appkit == 'false'
         run: |
           echo "Skipping reown_appkit publishing because input was false."
@@ -332,15 +350,24 @@ jobs:
         working-directory: packages/reown_appkit
         run: flutter pub publish --force
 
+      - name: Post a message in a channel
+        uses: slackapi/slack-github-action@v2.1.0
+        if: github.event.inputs.appkit == 'true'
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "*reown_appkit* version ${{ steps.get_version.outputs.version }} has been published
+
   publish-walletkit:
     name: Publish reown_walletkit
-    needs: [publish-core, publish-sign]
+    needs: [publish-core, publish-sign, publish-yttrium]
     runs-on: ubuntu-latest
     steps:
-      - name: Check if core should be published
+      - name: Check if walletkit should be published
         if: github.event.inputs.walletkit == 'false'
         run: |
-          echo "Skipping reown_core publishing because input was false."
+          echo "Skipping reown_walletkit publishing because input was false."
         continue-on-error: false
 
       - name: Checkout code
@@ -360,11 +387,12 @@ jobs:
         run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
 
       - name: Update dependencies in reown_walletkit/pubspec.yaml
-        if: github.event.inputs.walletkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != ''))
+        if: github.event.inputs.walletkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != '') || (github.event.inputs.yttrium == 'true' && needs.publish-yttrium.outputs.package_version != ''))
         working-directory: packages/reown_walletkit
         env:
           CORE_VERSION: ${{ needs.publish-core.outputs.package_version }}
           SIGN_VERSION: ${{ needs.publish-sign.outputs.package_version }}
+          YTTRIUM_VERSION: ${{ needs.publish-yttrium.outputs.package_version }}
         run: |
           echo "Updating dependencies in reown_walletkit/pubspec.yaml"
           if [[ "${{ github.event.inputs.core }}" == 'true' && -n "$CORE_VERSION" ]]; then
@@ -375,16 +403,20 @@ jobs:
             echo "Setting reown_sign to ^$SIGN_VERSION"
             yq e ".dependencies.reown_sign = \"^$SIGN_VERSION\"" -i pubspec.yaml
           fi
+          if [[ "${{ github.event.inputs.yttrium }}" == 'true' && -n "$YTTRIUM_VERSION" ]]; then
+            echo "Setting reown_yttrium to ^$YTTRIUM_VERSION"
+            yq e ".dependencies.reown_yttrium = \"^$YTTRIUM_VERSION\"" -i pubspec.yaml
+          fi
 
       - name: Commit and push pubspec.yaml changes for reown_walletkit
-        if: github.event.inputs.walletkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != ''))
+        if: github.event.inputs.walletkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != '') || (github.event.inputs.yttrium == 'true' && needs.publish-yttrium.outputs.package_version != ''))
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           cd packages/reown_walletkit
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
-            git commit -m "ci(reown_walletkit): Update core/sign dependencies [skip ci]"
+            git commit -m "ci(reown_walletkit): Update core/sign/yttrium dependencies [skip ci]"
             git push
           else
             echo "No changes to commit in reown_walletkit/pubspec.yaml"
@@ -431,6 +463,173 @@ jobs:
         if: github.event.inputs.walletkit == 'true'
         working-directory: packages/reown_walletkit
         run: flutter pub publish --force
+
+      - name: Post a message in a channel
+        uses: slackapi/slack-github-action@v2.1.0
+        if: github.event.inputs.walletkit == 'true'
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "*reown_walletkit* version ${{ steps.get_version.outputs.version }} has been published
+
+  publish-yttrium:
+    name: Publish reown_yttrium
+    runs-on: ubuntu-latest
+    outputs:
+      package_version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - name: Check if sign should be published
+        if: github.event.inputs.yttrium == 'false'
+        run: |
+          echo "Skipping reown_yttrium publishing because input was false."
+        continue-on-error: false
+
+      - name: Checkout code
+        if: github.event.inputs.yttrium == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for git push
+
+      - name: Set up Flutter
+        if: github.event.inputs.yttrium == 'true'
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+
+      - name: Get package version from reown_yttrium/pubspec.yaml
+        if: github.event.inputs.yttrium == 'true'
+        id: get_version
+        working-directory: packages/reown_yttrium
+        run: echo "version=$(yq e '.version' pubspec.yaml)" >> $GITHUB_OUTPUT
+
+      - name: Configure pub.dev credentials
+        if: github.event.inputs.yttrium == 'true'
+        run: |
+          mkdir -p $HOME/.config/dart
+          echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json
+
+      - name: Run generate_files.sh for reown_yttrium
+        if: github.event.inputs.yttrium == 'true'
+        working-directory: packages/reown_yttrium
+        run: |
+          chmod +x generate_files.sh
+          sh ./generate_files.sh
+
+      - name: Check Publish Warnings
+        if: github.event.inputs.yttrium == 'true'
+        shell: bash
+        run: |
+          set -o pipefail
+
+          OUTPUT=$(flutter pub publish --dry-run 2>&1 || true)
+          echo "$OUTPUT"
+
+          if echo "$OUTPUT" | grep -iE "^Error:|validation.*error|validation.*failed"; then
+            echo "❌ Real error(s) detected in pub publish dry-run"
+            exit 1
+          else
+            echo "✅ No real errors, only warnings (e.g. missing CHANGELOG.md)"
+          fi
+
+      - name: Publish reown_yttrium to pub.dev
+        if: github.event.inputs.yttrium == 'true'
+        working-directory: packages/reown_yttrium
+        run: flutter pub publish --force
+
+      - name: Wait for reown_yttrium to be available on pub.dev
+        if: github.event.inputs.yttrium == 'true'
+        run: |
+          chmod +x .github/scripts/wait_for_package.sh
+          .github/scripts/wait_for_package.sh reown_yttrium ${{ steps.get_version.outputs.version }}
+
+      - name: Post a message in a channel
+        uses: slackapi/slack-github-action@v2.1.0
+        if: github.event.inputs.yttrium == 'true'
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "*reown_yttrium* version ${{ steps.get_version.outputs.version }} has been published
+
+  publish-cli:
+    name: Publish reown_cli
+    runs-on: ubuntu-latest
+    outputs:
+      package_version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - name: Check if cli should be published
+        if: github.event.inputs.cli == 'false'
+        run: |
+          echo "Skipping reown_cli publishing because input was false."
+        continue-on-error: false
+
+      - name: Checkout code
+        if: github.event.inputs.cli == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Required for git push
+
+      - name: Set up Flutter
+        if: github.event.inputs.cli == 'true'
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.5'
+
+      - name: Get package version from reown_cli/pubspec.yaml
+        if: github.event.inputs.cli == 'true'
+        id: get_version
+        working-directory: packages/reown_cli
+        run: echo "version=$(yq e '.version' pubspec.yaml)" >> $GITHUB_OUTPUT
+
+      - name: Configure pub.dev credentials
+        if: github.event.inputs.cli == 'true'
+        run: |
+          mkdir -p $HOME/.config/dart
+          echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json
+
+      - name: Run generate_files.sh for reown_cli
+        if: github.event.inputs.cli == 'true'
+        working-directory: packages/reown_cli
+        run: |
+          chmod +x generate_files.sh
+          sh ./generate_files.sh
+
+      - name: Check Publish Warnings
+        if: github.event.inputs.cli == 'true'
+        shell: bash
+        run: |
+          set -o pipefail
+
+          OUTPUT=$(flutter pub publish --dry-run 2>&1 || true)
+          echo "$OUTPUT"
+
+          if echo "$OUTPUT" | grep -iE "^Error:|validation.*error|validation.*failed"; then
+            echo "❌ Real error(s) detected in pub publish dry-run"
+            exit 1
+          else
+            echo "✅ No real errors, only warnings (e.g. missing CHANGELOG.md)"
+          fi
+
+      - name: Publish reown_cli to pub.dev
+        if: github.event.inputs.cli == 'true'
+        working-directory: packages/reown_cli
+        run: flutter pub publish --force
+
+      - name: Wait for reown_cli to be available on pub.dev
+        if: github.event.inputs.cli == 'true'
+        run: |
+          chmod +x .github/scripts/wait_for_package.sh
+          .github/scripts/wait_for_package.sh reown_cli ${{ steps.get_version.outputs.version }}
+
+      - name: Post a message in a channel
+        uses: slackapi/slack-github-action@v2.1.0
+        if: github.event.inputs.cli == 'true'
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "*reown_cli* version ${{ steps.get_version.outputs.version }} has been published
 
 # Launch locally
 # act --container-architecture linux/amd64 -P ubuntu-latest=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/publish-packages.yml workflow_dispatch
