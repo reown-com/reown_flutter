@@ -61,7 +61,7 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
 
         if (projectId != null && url != null && packageName != null && sdkVersion != null && sdkPlatform != null) {
           val packageNAME = applicationContext.packageName ?: packageName
-          val pulseMetadata = PulseMetadata(url, null, packageNAME, sdkVersion, sdkPlatform)
+          val pulseMetadata = PulseMetadata(url, packageNAME, sdkVersion, sdkPlatform)
 
           client = ChainAbstractionClient(projectId, pulseMetadata)
           result.success(true)
@@ -129,20 +129,27 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
     (params as? Map<*, *>)?.let { dict ->
       val chainId = dict["chainId"] as? String
       val from = dict["from"] as? String
+      val accounts = (dict["accounts"] as? List<*>)?.filterIsInstance<String>()
       val call = dict["call"] as? Map<*, *>
       val to = call?.get("to") as? String
       val value = call?.get("value") as? String
       val input = call?.get("input") as? String
       val localCurrency = dict["localCurrency"] as? String
+      val useLifi = dict["useLifi"] as? Boolean
 
       if (chainId != null && from != null && call != null && to != null && value != null && input != null && localCurrency != null) {
         CoroutineScope(Dispatchers.IO).launch {
           val response = client.prepareDetailed(
-            chainId = chainId, from = from, Call(
+            chainId = chainId,
+            from = from,
+            accounts = accounts!!,
+            call = Call(
               to = to,
               value = value,
               input = input
-            ), Currency.valueOf(localCurrency.uppercase()),
+            ),
+            localCurrency = Currency.valueOf(localCurrency.uppercase()),
+            useLifi = useLifi!!,
           )
 
           when (response) {
@@ -179,7 +186,7 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
 
     (params as? Map<*, *>)?.let { dict ->
       val orchestrationId = dict["orchestrationId"] as? String
-      val routeTxnSigs = (dict["routeTxnSigs"] as? List<*>)?.filterIsInstance<String>()
+      val routeTxnSigs = (dict["routeTxnSigs"] as? List<*>)?.filterIsInstance<uniffi.yttrium.RouteSig>()
       val initialTxnSig = dict["initialTxnSig"] as? String
 
       if (orchestrationId != null && routeTxnSigs != null && initialTxnSig != null) {

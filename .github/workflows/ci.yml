@@ -32,6 +32,10 @@ on:
           - 'ios'
           - 'both'
           - 'none'
+      yttrium-version:
+        description: 'Android Yttrium version for CI'
+        required: false
+        default: '0.0.19-ci'
 
 concurrency:
   # Support push/pr as event types with different behaviors each:
@@ -44,7 +48,7 @@ concurrency:
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16core
 
     steps:
       # Checkout the repo
@@ -53,37 +57,32 @@ jobs:
 
       # Set up environment 
       - uses: ./.github/actions/dependencies
+        with:
+          platform: ${{ github.event.inputs.maestro }}
       
       # Add Secrets file on dapp
-      - name: Add Secrets file
+      - name: Add Secrets file to AppKit
+        if: github.event.inputs.maestro == 'android' || github.event.inputs.maestro == 'both'
         working-directory: packages/reown_appkit/example/base/android
         run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
 
       # Add Keystore file on dapp
-      - name: Add Keystore file
+      - name: Add Keystore file to AppKit
+        if: github.event.inputs.maestro == 'android' || github.event.inputs.maestro == 'both'
         working-directory: packages/reown_appkit/example/base/android
         run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
 
       # Add Secrets file on wallet
-      - name: Add Secrets file
+      - name: Add Secrets file to WalletKit
+        if: github.event.inputs.maestro == 'android' || github.event.inputs.maestro == 'both'
         working-directory: packages/reown_walletkit/example/android
         run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
 
       # Add Keystore file on wallet
-      - name: Add Keystore file
+      - name: Add Keystore file to WalletKit
+        if: github.event.inputs.maestro == 'android' || github.event.inputs.maestro == 'both'
         working-directory: packages/reown_walletkit/example/android
         run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
-      
-      # Check Runner Resources
-      - name: Check Runner Resources
-        shell: bash
-        run: |
-          echo "CPU Info:"
-          lscpu
-          echo "Memory Info:"
-          free -m
-          echo "Disk Space:"
-          df -h
 
       # Run Integration Tests
       - name: Run Integration Tests
@@ -105,6 +104,7 @@ jobs:
           relay-endpoint: "wss://relay.walletconnect.org"
           project-id: ${{ secrets.DAPP_PROJECT_ID }}
           wallet-project-id: ${{ secrets.WALLET_PROJECT_ID }}
+          yttrium-version: ${{ github.event.inputs.yttrium-version }}
 
 # Launch locally
-# act --container-architecture linux/amd64 -P ubuntu-latest=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch --input integration=false --input maestro=android
+# act --container-architecture linux/amd64 -P ubuntu-16core=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch --input integration=false --input maestro=android

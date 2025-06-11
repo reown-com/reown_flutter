@@ -5,6 +5,7 @@ import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 
 abstract class IWalletKitService extends Disposable {
   Future<void> create();
+  Future<void> setUpAccounts();
   Future<void> init();
 
   abstract final ValueNotifier<ChainMetadata?> currentSelectedChain;

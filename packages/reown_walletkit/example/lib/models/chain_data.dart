@@ -8,7 +8,8 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:1',
       name: 'Ethereum',
-      logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.png',
+      logo:
+          'https://pbs.twimg.com/profile_images/1878738447067652096/tXQbWfpf_400x400.jpg',
       color: Colors.blue.shade300,
       rpc: ['https://eth.drpc.org'],
     ),
@@ -16,7 +17,8 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:137',
       name: 'Polygon',
-      logo: 'https://cryptologos.cc/logos/polygon-matic-logo.png',
+      logo:
+          'https://pbs.twimg.com/profile_images/1881552782148206592/uL2NdckM_400x400.jpg',
       color: Colors.purple.shade300,
       rpc: ['https://polygon-rpc.com/'],
     ),
@@ -25,7 +27,8 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:43114',
       name: 'Avalanche',
-      logo: 'https://cryptologos.cc/logos/avalanche-avax-logo.png',
+      logo:
+          'https://pbs.twimg.com/profile_images/1923466301227532288/TuL8kPq3_400x400.jpg',
       color: Colors.orange,
       rpc: ['https://api.avax.network/ext/bc/C/rpc'],
     ),
@@ -33,7 +36,8 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:56',
       name: 'BNB Smart Chain',
-      logo: 'https://cryptologos.cc/logos/bnb-bnb-logo.png',
+      logo:
+          'https://pbs.twimg.com/profile_images/1876286110071975936/HvkhyFZg_400x400.jpg',
       color: Colors.orange,
       rpc: ['https://bsc-dataseed1.bnbchain.org'],
     ),
@@ -41,7 +45,8 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:42220',
       name: 'Celo',
-      logo: 'https://cryptologos.cc/logos/celo-celo-logo.png',
+      logo:
+          'https://pbs.twimg.com/profile_images/1613170131491848195/InjXBNx9_400x400.jpg',
       color: Colors.green,
       rpc: ['https://forno.celo.org/'],
     ),
@@ -49,7 +54,8 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:100',
       name: 'Gnosis',
-      logo: 'https://cryptologos.cc/logos/gnosis-gno-gno-logo.png',
+      logo:
+          'https://pbs.twimg.com/profile_images/1846528977428480001/h_MlabDj_400x400.jpg',
       color: Colors.greenAccent,
       rpc: ['https://rpc.gnosischain.com/'],
     ),
@@ -57,7 +63,8 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:324',
       name: 'zkSync',
-      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
+      logo:
+          'https://pbs.twimg.com/profile_images/1835668010951950336/Aq1Kg1p0_400x400.jpg',
       color: Colors.black,
       rpc: ['https://mainnet.era.zksync.io'],
     ),
@@ -95,7 +102,8 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:42161',
       name: 'Arbitrum',
-      logo: 'https://cryptologos.cc/logos/arbitrum-arb-logo.png',
+      logo:
+          'https://pbs.twimg.com/profile_images/1882673922400776192/niCbzDud_400x400.jpg',
       color: Colors.blue,
       rpc: ['https://arbitrum.blockpi.network/v1/rpc/public'],
     ),
@@ -103,7 +111,8 @@ class ChainsDataList {
       type: ChainType.eip155,
       chainId: 'eip155:10',
       name: 'OP Mainnet',
-      logo: 'https://cryptologos.cc/logos/optimism-ethereum-op-logo.png',
+      logo:
+          'https://pbs.twimg.com/profile_images/1734354549496836096/-laoU9C9_400x400.jpg',
       color: Colors.red,
       rpc: ['https://mainnet.optimism.io/'],
     ),
@@ -112,7 +121,7 @@ class ChainsDataList {
       chainId: 'eip155:8453',
       name: 'Base',
       logo:
-          'https://images.mirror-media.xyz/publication-images/cgqxxPdUFBDjgKna_dDir.png',
+          'https://pbs.twimg.com/profile_images/1840800810571350019/1pCjLY5q_400x400.jpg',
       color: Colors.lightBlue,
       rpc: ['https://mainnet.base.org'],
     ),
@@ -123,7 +132,8 @@ class ChainsDataList {
       type: ChainType.solana,
       chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       name: 'Solana',
-      logo: 'https://cryptologos.cc/logos/solana-sol-logo.png',
+      logo:
+          'https://pbs.twimg.com/profile_images/1472933274209107976/6u-LQfjG_400x400.jpg',
       color: Color.fromARGB(255, 247, 0, 255),
       rpc: ['https://api.mainnet-beta.solana.com'],
     ),

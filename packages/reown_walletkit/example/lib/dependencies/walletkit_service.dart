@@ -94,7 +94,10 @@ class WalletKitService extends IWalletKitService {
     _walletKit!.onSessionProposalError.subscribe(_onSessionProposalError);
     _walletKit!.onSessionConnect.subscribe(_onSessionConnect);
     _walletKit!.onSessionAuthRequest.subscribe(_onSessionAuthRequest);
+  }
 
+  @override
+  Future<void> setUpAccounts() async {
     // Setup our accounts
     List<ChainKey> chainKeys = await GetIt.I<IKeyService>().loadKeys();
     if (chainKeys.isEmpty) {
@@ -120,10 +123,6 @@ class WalletKitService extends IWalletKitService {
         }
       }
     }
-  }
-
-  void _logListener(String event) {
-    debugPrint('[WalletKit] $event');
   }
 
   @override
@@ -161,6 +160,10 @@ class WalletKitService extends IWalletKitService {
         }
       } catch (_) {}
     }
+  }
+
+  void _logListener(String event) {
+    debugPrint('[WalletKit] $event');
   }
 
   @override

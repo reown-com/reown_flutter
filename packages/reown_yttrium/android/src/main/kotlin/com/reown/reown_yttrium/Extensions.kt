@@ -14,7 +14,11 @@ import uniffi.yttrium.PrepareResponseNotRequired
 import uniffi.yttrium.Transaction
 import uniffi.yttrium.TransactionFee
 import uniffi.yttrium.TxnDetails
+import uniffi.yttrium.SolanaTxnDetails
 import uniffi.yttrium.UiFields
+import uniffi.yttrium.Route
+import uniffi.yttrium.SolanaTransaction
+import uniffi.yttrium.Transactions
 
 fun Eip1559Estimation.toMap(): Map<String, Any> {
     return mapOf(
@@ -23,10 +27,31 @@ fun Eip1559Estimation.toMap(): Map<String, Any> {
     )
 }
 
+fun SolanaTransaction.toMap(): Map<String, Any> {
+    return mapOf(
+        "chainId" to chainId,
+        "from" to from,
+        "transaction" to transaction
+    )
+}
+
+fun SolanaTxnDetails.toMap(): Map<String, Any> {
+    return mapOf(
+        "transaction" to transaction.toMap(), // SolanaTransaction does not have toMap() so it's done here
+        "transactionHashToSign" to transactionHashToSign
+    )
+}
+
+fun Route.toMap(): List<Map<String, Any>> = when (this) {
+    is Route.Eip155 -> v1.map { it.toMap() } // List<TxnDetails>
+    is Route.Solana -> v1.map { it.toMap() } // List<SolanaTxnDetails>
+}
+
 fun UiFields.toMap(): Map<String, Any> {
+    val route = route.map { it.toMap() }.first() // Route does not have toMap() so it's done here
     return mapOf(
         "routeResponse" to routeResponse.toMap(),
-        "route" to route.map { it.toMap() },
+        "route" to route,
         "localRouteTotal" to localRouteTotal.toMap(),
         "bridge" to bridge.map { it.toMap() },
         "localBridgeTotal" to localBridgeTotal.toMap(),
@@ -35,11 +60,17 @@ fun UiFields.toMap(): Map<String, Any> {
     )
 }
 
+fun Transactions.toMap(): List<Map<String, Any>> = when (this) {
+    is Transactions.Eip155 -> v1.map { it.toMap() } // List<Transaction>
+    is Transactions.Solana -> v1.map { it.toMap() } // List<SolanaTransaction>, SolanaTransaction has toMap() defined here
+}
+
 fun PrepareResponseAvailable.toMap(): Map<String, Any> {
+    val transactions = transactions.map { it.toMap() }.first() // Route does not have toMap() so it's done here
     return mapOf(
         "orchestrationId" to orchestrationId,
         "initialTransaction" to initialTransaction.toMap(),
-        "transactions" to transactions.map { it.toMap() },
+        "transactions" to transactions,
         "metadata" to metadata.toMap()
     )
 }
@@ -122,15 +153,19 @@ fun PrepareResponseNotRequired.toMap(): Map<String, Any> {
 }
 
 fun PrepareResponseError.toMap(): Map<String, Any> {
-    return mapOf("error" to error.toMap())
+    return mapOf(
+        "error" to error.toMap(),
+        "reason" to reason
+    )
 }
 
-fun BridgingError.toMap(): Map<String, Any> {
-    return mapOf("error" to when (this) {
-        BridgingError.NO_ROUTES_AVAILABLE -> "noRoutesAvailable"
-        BridgingError.INSUFFICIENT_FUNDS -> "insufficientFunds"
-        BridgingError.INSUFFICIENT_GAS_FUNDS -> "insufficientGasFunds"
-    })
+fun BridgingError.toMap(): String = when (this) {
+    BridgingError.ASSET_NOT_SUPPORTED -> "assetNotSupported"
+    BridgingError.NO_ROUTES_AVAILABLE -> "noRoutesAvailable"
+    BridgingError.INSUFFICIENT_FUNDS -> "insufficientFunds"
+    BridgingError.INSUFFICIENT_GAS_FUNDS -> "insufficientGasFunds"
+//    BridgingError.TRANSACTION_SIMULATION_FAILED -> "transactionSimulationFailed"
+    else -> this.name.toString()
 }
 
 fun Amount.toMap(): Map<String, Any> {

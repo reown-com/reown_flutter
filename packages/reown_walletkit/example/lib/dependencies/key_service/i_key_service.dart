@@ -1,6 +1,7 @@
 import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
 
 abstract class IKeyService {
+  Future<void> init();
   Future<void> clearAll();
 
   List<ChainKey> get keys;

@@ -23,11 +23,8 @@ class TronService {
         'tron_signTransaction': tronSignTransaction,
       };
 
-  TronService({
-    required this.chainSupported,
-    required IWalletKitService walletKitService,
-  }) {
-    _walletKit = walletKitService.walletKit;
+  TronService({required this.chainSupported}) {
+    _walletKit = GetIt.I<IWalletKitService>().walletKit;
 
     for (var handler in tronRequestHandlers.entries) {
       _walletKit.registerRequestHandler(
