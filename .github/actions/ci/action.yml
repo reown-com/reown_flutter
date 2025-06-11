@@ -200,8 +200,8 @@ runs:
 
           # maestro test .maestro/native/launch_wallet.yaml
           maestro test .maestro/native/connect_reject_session_flow.yaml
-          # maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
-          # maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
+          maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
+          maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
 
           # END: stop logcat
           echo "Stopping logcat capture..."
@@ -280,7 +280,7 @@ runs:
 
     # Upload Maestro Test Artifacts
     - name: Zip Maestro Test Artifacts
-      if: always()
+      if: failure() && inputs.type == 'maestro-tests'
       shell: bash
       run: |
         mkdir -p ./maestro-artifacts
@@ -292,7 +292,7 @@ runs:
 
     # Upload Zipped Maestro Artifacts
     - name: Upload Zipped Maestro Artifacts
-      if: always()
+      if: failure() && inputs.type == 'maestro-tests'
       uses: actions/upload-artifact@v4
       with:
         name: maestro-test-results-${{ env.RANDOM_STRING }}-zip
