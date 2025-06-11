@@ -23,6 +23,8 @@ jobs:
 
       # Set up environment 
       - uses: ./.github/actions/dependencies
+        with:
+          platform: 'android'
 
       # Add Secrets file on dapp
       - name: Add Secrets file

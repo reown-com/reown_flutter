@@ -57,24 +57,30 @@ jobs:
 
       # Set up environment 
       - uses: ./.github/actions/dependencies
+        with:
+          platform: ${{ github.event.inputs.maestro }}
       
       # Add Secrets file on dapp
       - name: Add Secrets file to AppKit
+        if: github.event.inputs.maestro == 'android' || github.event.inputs.maestro == 'both'
         working-directory: packages/reown_appkit/example/base/android
         run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
 
       # Add Keystore file on dapp
       - name: Add Keystore file to AppKit
+        if: github.event.inputs.maestro == 'android' || github.event.inputs.maestro == 'both'
         working-directory: packages/reown_appkit/example/base/android
         run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
 
       # Add Secrets file on wallet
       - name: Add Secrets file to WalletKit
+        if: github.event.inputs.maestro == 'android' || github.event.inputs.maestro == 'both'
         working-directory: packages/reown_walletkit/example/android
         run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
 
       # Add Keystore file on wallet
       - name: Add Keystore file to WalletKit
+        if: github.event.inputs.maestro == 'android' || github.event.inputs.maestro == 'both'
         working-directory: packages/reown_walletkit/example/android
         run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
 
