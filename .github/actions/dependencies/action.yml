@@ -50,4 +50,15 @@ runs:
           flutter pub run build_runner build --delete-conflicting-outputs
           dart format --output=none --set-exit-if-changed .
 
-    # add flutter analyze when packages are published
+    # Cache Flutter dependencies
+    - name: Cache Flutter dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          **/build
+          **/.dart_tool
+          **/.pub-cache
+          **/.pub
+        key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-flutter-

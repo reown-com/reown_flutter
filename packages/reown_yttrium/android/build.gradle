@@ -47,9 +47,9 @@ android {
 
     defaultConfig {
         minSdk = 21
-        ndk {
-            abiFilters "armeabi-v7a", "arm64-v8a", "x86_64" // ✅
-        }
+        // ndk {
+        //     abiFilters "armeabi-v7a", "arm64-v8a", "x86_64" // ✅
+        // }
     }
 
     buildTypes {
@@ -60,7 +60,7 @@ android {
     }
 
     packaging {
-        jniLibs.useLegacyPackaging = true // ✅ forces merge
+        // jniLibs.useLegacyPackaging = true // ✅ forces merge
         jniLibs.pickFirsts.add("lib/arm64-v8a/libuniffi_yttrium.so")
         jniLibs.pickFirsts.add("lib/armeabi-v7a/libuniffi_yttrium.so")	        
         jniLibs.pickFirsts.add("lib/x86_64/libuniffi_yttrium.so")

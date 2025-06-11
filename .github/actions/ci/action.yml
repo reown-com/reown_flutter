@@ -110,8 +110,8 @@ runs:
       env:
         WALLET_PROJECT_ID: ${{ inputs.wallet-project-id }}
       run: |
-        flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --release
-        mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/wallet-release.apk
+        flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --release --target-platform android-x64 --split-per-abi
+        mv build/app/outputs/flutter-apk/app-x86_64-internal-release.apk $GITHUB_WORKSPACE/wallet-release.apk
 
     # Build Flutter Dapp to be used on Android emulator
     - name: Build Flutter Dapp to be used on Android emulator
@@ -121,8 +121,8 @@ runs:
       env:
         PROJECT_ID: ${{ inputs.project-id }}
       run: |
-        flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$PROJECT_ID" --release
-        mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/dapp-release.apk
+        flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$PROJECT_ID" --release --target-platform android-x64 --split-per-abi
+        mv build/app/outputs/flutter-apk/app-x86_64-internal-release.apk $GITHUB_WORKSPACE/dapp-release.apk
     
     # Restart ADB Server
     - name: Restart ADB Server
@@ -139,14 +139,14 @@ runs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 33
-        target: default # Use AOSP instead of Google APIs
+        target: google_apis
         arch: x86_64
         ram-size: 4096M
         # heap-size: 576M
         emulator-boot-timeout: 900
         profile: pixel_6
         avd-name: test_device
-        emulator-options: -no-window -gpu guest -noaudio -no-boot-anim -camera-back none -netdelay none -netspeed full
+        emulator-options: -no-window -gpu guest -noaudio -no-boot-anim -camera-back none -netdelay none -netspeed full -snapshot default
         disable-animations: true
         pre-emulator-launch-script: |
           echo "Running pre emulator launch script. Printing the working directory now:"
@@ -198,10 +198,8 @@ runs:
           LOGCAT_PID=$!
           # END: logcat capture start
 
-          # maestro test .maestro/native/launch_wallet.yaml
-          maestro test .maestro/native/connect_reject_session_flow.yaml
-          maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
-          maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
+          # Run Maestro tests in parallel
+          maestro test --parallel 2 .maestro/native/launch_wallet.yaml .maestro/native/connect_reject_session_flow.yaml .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
 
           # END: stop logcat
           echo "Stopping logcat capture..."
@@ -271,10 +269,8 @@ runs:
         MAESTRO_DRIVER_STARTUP_TIMEOUT: 30000 # Increase timeout to 30 seconds
       run: |
         mkdir -p .maestro/videos/
-        maestro test .maestro/native/launch_wallet.yaml
-        maestro test .maestro/native/connect_reject_session_flow.yaml
-        maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
-        maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
+        # Run Maestro tests in parallel
+        maestro test --parallel 2 .maestro/native/launch_wallet.yaml .maestro/native/connect_reject_session_flow.yaml .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
         # Move any remaining MP4 files from root to videos directory
         find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
 
