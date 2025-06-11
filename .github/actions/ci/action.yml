@@ -198,8 +198,10 @@ runs:
           LOGCAT_PID=$!
           # END: logcat capture start
 
-          # Run Maestro tests in parallel
-          maestro test --parallel 2 .maestro/native/launch_wallet.yaml .maestro/native/connect_reject_session_flow.yaml .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
+          # maestro test .maestro/native/launch_wallet.yaml
+          maestro test .maestro/native/connect_reject_session_flow.yaml
+          maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
+          maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
 
           # END: stop logcat
           echo "Stopping logcat capture..."
@@ -270,7 +272,11 @@ runs:
       run: |
         mkdir -p .maestro/videos/
         # Run Maestro tests in parallel
-        maestro test --parallel 2 .maestro/native/launch_wallet.yaml .maestro/native/connect_reject_session_flow.yaml .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
+        maestro test .maestro/native/launch_wallet.yaml
+        maestro test .maestro/native/connect_reject_session_flow.yaml
+        maestro test .maestro/native/connect_approve_session_sign_message_disconnect_LM_flow.yaml
+        maestro test .maestro/native/connect_approve_session_sign_message_disconnect_RELAY_flow.yaml
+
         # Move any remaining MP4 files from root to videos directory
         find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
 
