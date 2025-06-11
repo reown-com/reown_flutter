@@ -110,8 +110,8 @@ runs:
       env:
         WALLET_PROJECT_ID: ${{ inputs.wallet-project-id }}
       run: |
-        flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --debug
-        mv build/app/outputs/flutter-apk/app-internal-debug.apk $GITHUB_WORKSPACE/wallet-debug.apk
+        flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$WALLET_PROJECT_ID" --release
+        mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/wallet-release.apk
 
     # Build Flutter Dapp to be used on Android emulator
     - name: Build Flutter Dapp to be used on Android emulator
@@ -121,8 +121,8 @@ runs:
       env:
         PROJECT_ID: ${{ inputs.project-id }}
       run: |
-        flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$PROJECT_ID" --debug
-        mv build/app/outputs/flutter-apk/app-internal-debug.apk $GITHUB_WORKSPACE/dapp-debug.apk
+        flutter build apk --flavor internal --build-name 3.0.0-${{ env.RANDOM_STRING }} --dart-define="PROJECT_ID=$PROJECT_ID" --release
+        mv build/app/outputs/flutter-apk/app-internal-release.apk $GITHUB_WORKSPACE/dapp-release.apk
     
     # Restart ADB Server
     - name: Restart ADB Server
