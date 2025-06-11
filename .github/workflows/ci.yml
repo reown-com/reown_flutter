@@ -34,6 +34,15 @@ on:
         description: 'Android Yttrium version for CI'
         required: false
         default: '0.0.19-ci'
+      
+      ios:
+        description: 'Run iOS tests?'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
 
 concurrency:
   # Support push/pr as event types with different behaviors each:
@@ -46,7 +55,6 @@ concurrency:
 
 jobs:
   tests:
-    # runs-on: ubuntu-16core
     strategy:
       matrix:
         include:
@@ -102,7 +110,7 @@ jobs:
 
       # Run Maestro Tests
       - name: Run Maestro Tests
-        if: github.event.inputs.maestro == 'true'
+        if: github.event.inputs.maestro == 'true' && (matrix.platform == 'android' || (matrix.platform == 'ios' && github.event.inputs.ios == 'true'))
         uses: ./.github/actions/ci
         with:
           type: "maestro-tests"
