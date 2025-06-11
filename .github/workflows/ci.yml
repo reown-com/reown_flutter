@@ -48,7 +48,15 @@ concurrency:
 
 jobs:
   tests:
-    runs-on: ubuntu-16core
+    # runs-on: ubuntu-16core
+    strategy:
+      matrix:
+        include:
+          - platform: android
+            runner: macos-14
+          - platform: ios
+            runner: macos-14-xlarge
+    runs-on: ${{ matrix.runner }}
 
     steps:
       # Checkout the repo
