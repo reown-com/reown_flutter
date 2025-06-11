@@ -137,7 +137,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_core* version ${{ steps.get_version.outputs.version }} has been published
+            text: "*reown_core* version ${{ steps.get_version.outputs.version }} has been published"
 
   publish-sign:
     name: Publish reown_sign
