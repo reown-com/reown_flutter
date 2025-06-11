@@ -1,4 +1,4 @@
-name: ci
+name: tests
 description: Execute Tests
 
 inputs:
@@ -71,7 +71,7 @@ runs:
 
     # Generate random string for artifacts
     - name: Generate random string
-      if: ${{ inputs.type == 'maestro-tests' }}
+      if: inputs.type == 'maestro-tests'
       shell: bash
       run: |
         RANDOM_STRING=$(openssl rand -hex 5)
@@ -79,7 +79,7 @@ runs:
     
     # Enable KVM
     - name: Enable KVM
-      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      if: inputs.type == 'maestro-tests' && inputs.platform == 'android'
       shell: bash
       run: |
         sudo apt-get update
@@ -92,7 +92,7 @@ runs:
 
     # Install Maestro
     - name: Install Maestro
-      if: ${{ inputs.type == 'maestro-tests' }}
+      if: inputs.type == 'maestro-tests'
       shell: bash
       run: |
         curl -Ls "https://get.maestro.mobile.dev" | bash
@@ -102,12 +102,12 @@ runs:
 
     # Setup Android SDK
     - name: Setup Android SDK
-      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      if: inputs.type == 'maestro-tests' && inputs.platform == 'android'
       uses: android-actions/setup-android@v2
 
     # Build Flutter Wallet to be used on Android emulator
     - name: Build Flutter Wallet to be used on Android emulator
-      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      if: inputs.type == 'maestro-tests' && inputs.platform == 'android'
       shell: bash
       working-directory: packages/reown_walletkit/example
       env:
@@ -121,7 +121,7 @@ runs:
 
     # Build Flutter Dapp to be used on Android emulator
     - name: Build Flutter Dapp to be used on Android emulator
-      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      if: inputs.type == 'maestro-tests' && inputs.platform == 'android'
       shell: bash
       working-directory: packages/reown_appkit/example/base
       env:
@@ -134,7 +134,7 @@ runs:
     
     # Restart ADB Server
     - name: Restart ADB Server
-      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      if: inputs.type == 'maestro-tests' && inputs.platform == 'android'
       shell: bash
       run: |
         adb kill-server
@@ -143,7 +143,7 @@ runs:
 
     # Start Android Emulator
     - name: Start Android Emulator
-      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'android' || inputs.platform == 'both') }}
+      if: inputs.type == 'maestro-tests' && inputs.platform == 'android'
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 33
@@ -220,7 +220,7 @@ runs:
 
     # Start iOS Simulator
     - name: Start iOS Simulator
-      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'ios' || inputs.platform == 'both') }}
+      if: inputs.type == 'maestro-tests' && inputs.platform == 'ios'
       shell: bash
       run: |
         # Install IDB (iOS Device Bridge) for iOS simulator support
@@ -247,7 +247,7 @@ runs:
 
     # Build and install Flutter Wallet to be used on iOS simulator
     - name: Build and install Flutter Wallet to be used on iOS simulator
-      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'ios' || inputs.platform == 'both') }}
+      if: inputs.type == 'maestro-tests' && inputs.platform == 'ios'
       shell: bash
       working-directory: packages/reown_walletkit/example
       env:
@@ -260,7 +260,7 @@ runs:
 
     # Build and install Flutter Dapp to be used on iOS simulator
     - name: Build and install Flutter Dapp to be used on iOS simulator
-      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'ios' || inputs.platform == 'both') }}
+      if: inputs.type == 'maestro-tests' && inputs.platform == 'ios'
       shell: bash
       working-directory: packages/reown_appkit/example/base
       env:
@@ -273,7 +273,7 @@ runs:
 
     # Run Maestro flows on iOS simulator
     - name: Run Maestro flows on iOS simulator
-      if: ${{ inputs.type == 'maestro-tests' && (inputs.platform == 'ios' || inputs.platform == 'both') }}
+      if: inputs.type == 'maestro-tests' && inputs.platform == 'ios'
       shell: bash
       env:
         MAESTRO_DRIVER_STARTUP_TIMEOUT: 30000 # Increase timeout to 30 seconds
@@ -289,8 +289,8 @@ runs:
         find . -maxdepth 1 -name "*.mp4" -exec mv {} .maestro/videos/ \;
 
     # Upload Maestro Test Artifacts
-    - name: Zip Maestro Test Artifacts
-      if: failure() && inputs.type == 'maestro-tests'
+    - name: Zip Maestro Test Artifacts Android
+      if: failure() && inputs.type == 'maestro-tests' && inputs.platform == 'android'
       shell: bash
       run: |
         mkdir -p ./maestro-artifacts
@@ -298,6 +298,16 @@ runs:
         cp -r .maestro/videos/* ./maestro-artifacts/ || true
         cp *.mp4 ./maestro-artifacts/ || true
         cp maestro_logcat.txt ./maestro-artifacts/ || true  # ✅ Include logcat
+        zip -r maestro-test-results-${{ env.RANDOM_STRING }}.zip ./maestro-artifacts/
+    
+    - name: Zip Maestro Test Artifacts iOS
+      if: failure() && inputs.type == 'maestro-tests' && inputs.platform == 'ios'
+      shell: bash
+      run: |
+        mkdir -p ./maestro-artifacts
+        cp -r /home/runner/.maestro/tests/* ./maestro-artifacts/ || true
+        cp -r .maestro/videos/* ./maestro-artifacts/ || true
+        cp *.mp4 ./maestro-artifacts/ || true
         zip -r maestro-test-results-${{ env.RANDOM_STRING }}.zip ./maestro-artifacts/
 
     # Upload Zipped Maestro Artifacts
