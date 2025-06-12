@@ -8,10 +8,9 @@ permissions:
   contents: read
 
 on:
-  # push:
-  #   branches: [ master ]
   # pull_request:
-  #   branches: [ develop ]
+  #   types: [closed]
+  #   branches: [develop]
   workflow_dispatch:
     inputs:
       integration:
@@ -34,7 +33,6 @@ on:
         description: 'Android Yttrium version for CI'
         required: false
         default: '0.0.19-ci'
-      
       ios:
         description: 'Run iOS tests?'
         required: false
@@ -55,6 +53,7 @@ concurrency:
 
 jobs:
   tests:
+    # if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
     strategy:
       matrix:
         include:
