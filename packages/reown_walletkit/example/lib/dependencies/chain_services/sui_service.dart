@@ -39,11 +39,8 @@ class SUIService {
             suiSignAndExecuteTransaction,
       };
 
-  SUIService({
-    required this.chainSupported,
-    required IWalletKitService walletKitService,
-  }) {
-    _walletKit = walletKitService.walletKit;
+  SUIService({required this.chainSupported}) {
+    _walletKit = GetIt.I<IWalletKitService>().walletKit;
 
     for (var handler in suiRequestHandlers.entries) {
       _walletKit.registerRequestHandler(

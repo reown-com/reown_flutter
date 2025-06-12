@@ -183,10 +183,6 @@ class _MyHomePageState extends State<MyHomePage> {
       await walletKitService.setUpAccounts();
       await walletKitService.init();
 
-      _walletKitService = WalletKitService();
-      await _walletKitService.create();
-      GetIt.I.registerSingleton<IWalletKitService>(_walletKitService);
-      await _walletKitService.setUpAccounts();
       walletKitService.walletKit.core.relayClient.onRelayClientConnect
           .subscribe(
         _setState,
@@ -252,35 +248,16 @@ class _MyHomePageState extends State<MyHomePage> {
       // Support Sui Chains
       for (final chainData in ChainsDataList.suiChains) {
         GetIt.I.registerSingleton<SUIService>(
-          SUIService(
-            chainSupported: chainData,
-            walletKitService: _walletKitService,
-          ),
+          SUIService(chainSupported: chainData),
           instanceName: chainData.chainId,
         );
       }
-
-      await _walletKitService.init();
-
-      _walletKitService.walletKit.core.relayClient.onRelayClientConnect
-          .subscribe(
-        _setState,
-      );
-      _walletKitService.walletKit.core.relayClient.onRelayClientDisconnect
-          .subscribe(
-        _setState,
-      );
-
-      _walletKitService.walletKit.core.connectivity.isOnline
-          .addListener(_onLine);
 
       _setPages();
 
       // TODO _walletKit.core.echo.register(firebaseAccessToken);
       DeepLinkHandler.checkInitialLink();
     } catch (e, s) {
-      debugPrint('[$runtimeType] ❌ crash during initialize, $e');
-      print(s);
       debugPrint('[$runtimeType] ❌ crash during initialize, $e, $s');
       await Sentry.captureException(e, stackTrace: s);
     }
