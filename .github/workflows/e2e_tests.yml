@@ -58,8 +58,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - platform: android
-            runner: ubuntu-16core
+          # - platform: android
+          #   runner: ubuntu-16core
           - platform: ios
             runner: macos-14-xlarge
     runs-on: ${{ matrix.runner }}
