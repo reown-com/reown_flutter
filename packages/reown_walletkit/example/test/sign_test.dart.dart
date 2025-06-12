@@ -66,9 +66,10 @@ void main() {
   late final String chainId;
 
   Future<void> initialize() async {
-    final prefs = await SharedPreferences.getInstance();
     GetIt.I.registerSingleton<IBottomSheetService>(BottomSheetService());
-    GetIt.I.registerSingleton<IKeyService>(KeyService(prefs: prefs));
+    final keyService = KeyService();
+    await keyService.init();
+    GetIt.I.registerSingleton<IKeyService>(keyService);
 
     final walletKitService = WalletKitService();
     await walletKitService.create();
@@ -77,10 +78,7 @@ void main() {
     // Support EVM Chains
     for (final chainData in ChainsDataList.eip155Chains) {
       GetIt.I.registerSingleton<EVMService>(
-        EVMService(
-          chainSupported: chainData,
-          walletKitService: walletKitService,
-        ),
+        EVMService(chainSupported: chainData),
         instanceName: chainData.chainId,
       );
     }
@@ -88,10 +86,7 @@ void main() {
     // Support Kadena Chains
     for (final chainData in ChainsDataList.kadenaChains) {
       GetIt.I.registerSingleton<KadenaService>(
-        KadenaService(
-          chainSupported: chainData,
-          walletKitService: walletKitService,
-        ),
+        KadenaService(chainSupported: chainData),
         instanceName: chainData.chainId,
       );
     }
@@ -99,10 +94,7 @@ void main() {
     // Support Polkadot Chains
     for (final chainData in ChainsDataList.polkadotChains) {
       GetIt.I.registerSingleton<PolkadotService>(
-        PolkadotService(
-          chainSupported: chainData,
-          walletKitService: walletKitService,
-        ),
+        PolkadotService(chainSupported: chainData),
         instanceName: chainData.chainId,
       );
     }
@@ -111,10 +103,7 @@ void main() {
     // Change SolanaService to SolanaService2 to switch between `solana` package and `solana_web3` package
     for (final chainData in ChainsDataList.solanaChains) {
       GetIt.I.registerSingleton<SolanaService>(
-        SolanaService(
-          chainSupported: chainData,
-          walletKitService: walletKitService,
-        ),
+        SolanaService(chainSupported: chainData),
         instanceName: chainData.chainId,
       );
     }
@@ -122,10 +111,7 @@ void main() {
     // Support Cosmos Chains
     for (final chainData in ChainsDataList.cosmosChains) {
       GetIt.I.registerSingleton<CosmosService>(
-        CosmosService(
-          chainSupported: chainData,
-          walletKitService: walletKitService,
-        ),
+        CosmosService(chainSupported: chainData),
         instanceName: chainData.chainId,
       );
     }

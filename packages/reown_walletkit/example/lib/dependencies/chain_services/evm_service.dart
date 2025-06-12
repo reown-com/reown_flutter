@@ -71,13 +71,10 @@ class EVMService {
         SupportedEVMMethods.ethSendTransaction.name: ethSendTransactionHandler,
       };
 
-  EVMService({
-    required this.chainSupported,
-    required IWalletKitService walletKitService,
-  }) {
+  EVMService({required this.chainSupported}) {
     ethClient = Web3Client(chainSupported.rpc.first, http.Client());
-    _walletKitService = walletKitService;
-    _walletKit = walletKitService.walletKit;
+    _walletKitService = GetIt.I<IWalletKitService>();
+    _walletKit = _walletKitService.walletKit;
 
     for (final event in EventsConstants.allEvents) {
       _walletKit.registerEventEmitter(
@@ -705,10 +702,7 @@ class EVMService {
         // Register the corresponding singleton for the new chain
         // This will also call registerEventEmitter and registerRequestHandler
         GetIt.I.registerSingleton<EVMService>(
-          EVMService(
-            chainSupported: chainData,
-            walletKitService: _walletKitService,
-          ),
+          EVMService(chainSupported: chainData),
           instanceName: chainData.chainId,
         );
 

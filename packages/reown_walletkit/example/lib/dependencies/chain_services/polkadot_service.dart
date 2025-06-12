@@ -32,11 +32,8 @@ class PolkadotService {
         'polkadot_signTransaction': polkadotSignTransaction,
       };
 
-  PolkadotService({
-    required this.chainSupported,
-    required IWalletKitService walletKitService,
-  }) {
-    _walletKit = walletKitService.walletKit;
+  PolkadotService({required this.chainSupported}) {
+    _walletKit = GetIt.I<IWalletKitService>().walletKit;
     _keyring = Keyring();
     _provider = polkadart.Provider.fromUri(Uri.parse(chainSupported.rpc.first));
 

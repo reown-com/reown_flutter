@@ -3,15 +3,14 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: ci
+name: E2E Tests
 permissions:
   contents: read
 
 on:
-  # push:
-  #   branches: [ master ]
   # pull_request:
-  #   branches: [ develop ]
+  #   types: [closed]
+  #   branches: [develop]
   workflow_dispatch:
     inputs:
       integration:
@@ -25,13 +24,23 @@ on:
       maestro:
         description: 'Run maestro tests?'
         required: false
-        default: 'android'
+        default: 'true'
         type: choice
         options:
-          - 'android'
-          - 'ios'
-          - 'both'
-          - 'none'
+          - 'true'
+          - 'false'
+      yttrium-version:
+        description: 'Android Yttrium version for CI'
+        required: false
+        default: '0.0.19-ci'
+      ios:
+        description: 'Run iOS tests?'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
 
 concurrency:
   # Support push/pr as event types with different behaviors each:
@@ -44,7 +53,15 @@ concurrency:
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    # if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
+    strategy:
+      matrix:
+        include:
+          - platform: android
+            runner: ubuntu-16core
+          - platform: ios
+            runner: macos-14-xlarge
+    runs-on: ${{ matrix.runner }}
 
     steps:
       # Checkout the repo
@@ -53,42 +70,37 @@ jobs:
 
       # Set up environment 
       - uses: ./.github/actions/dependencies
+        with:
+          platform: ${{ matrix.platform }}
       
       # Add Secrets file on dapp
-      - name: Add Secrets file
+      - name: Add Secrets file to AppKit
+        if: matrix.platform == 'android'
         working-directory: packages/reown_appkit/example/base/android
         run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
 
       # Add Keystore file on dapp
-      - name: Add Keystore file
+      - name: Add Keystore file to AppKit
+        if: matrix.platform == 'android'
         working-directory: packages/reown_appkit/example/base/android
         run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
 
       # Add Secrets file on wallet
-      - name: Add Secrets file
+      - name: Add Secrets file to WalletKit
+        if: matrix.platform == 'android'
         working-directory: packages/reown_walletkit/example/android
         run: touch secrets.properties && echo "${{ secrets.SECRETS_FILE }}" >> secrets.properties
 
       # Add Keystore file on wallet
-      - name: Add Keystore file
+      - name: Add Keystore file to WalletKit
+        if: matrix.platform == 'android'
         working-directory: packages/reown_walletkit/example/android
         run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
-      
-      # Check Runner Resources
-      - name: Check Runner Resources
-        shell: bash
-        run: |
-          echo "CPU Info:"
-          lscpu
-          echo "Memory Info:"
-          free -m
-          echo "Disk Space:"
-          df -h
 
       # Run Integration Tests
       - name: Run Integration Tests
         if: github.event.inputs.integration == 'true'
-        uses: ./.github/actions/ci
+        uses: ./.github/actions/tests
         with:
           type: "integration-tests"
           relay-endpoint: "wss://relay.walletconnect.org"
@@ -97,14 +109,15 @@ jobs:
 
       # Run Maestro Tests
       - name: Run Maestro Tests
-        if: github.event.inputs.maestro != 'none'
-        uses: ./.github/actions/ci
+        if: github.event.inputs.maestro == 'true' && (matrix.platform == 'android' || (matrix.platform == 'ios' && github.event.inputs.ios == 'true'))
+        uses: ./.github/actions/tests
         with:
           type: "maestro-tests"
-          platform: ${{ github.event.inputs.maestro }}
+          platform: ${{ matrix.platform }}
           relay-endpoint: "wss://relay.walletconnect.org"
           project-id: ${{ secrets.DAPP_PROJECT_ID }}
           wallet-project-id: ${{ secrets.WALLET_PROJECT_ID }}
+          yttrium-version: ${{ github.event.inputs.yttrium-version }}
 
 # Launch locally
-# act --container-architecture linux/amd64 -P ubuntu-latest=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch --input integration=false --input maestro=android
+# act --container-architecture linux/amd64 -P ubuntu-16core=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch --input integration=false --input maestro=android

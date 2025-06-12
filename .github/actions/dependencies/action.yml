@@ -1,11 +1,18 @@
-name: ci
+name: dependencies
 description: Set up environment
+
+inputs:
+  platform:
+    description: Platform where to run tests (ios/android)
+    required: false
+    default: 'android'
 
 runs:
   using: composite
   steps:
     # Install Java 17
     - name: Install Java 17
+      if: github.event.inputs.platform == 'android'
       uses: actions/setup-java@v3
       with:
         distribution: 'zulu'
@@ -15,6 +22,7 @@ runs:
 
     # Cache Gradle
     - name: Cache Gradle
+      if: github.event.inputs.platform == 'android'
       uses: actions/cache@v3
       with:
         path: |
@@ -36,7 +44,9 @@ runs:
       working-directory: packages/reown_appkit/example/base
       run: |
           flutter pub get
-          flutter pub run build_runner build --delete-conflicting-outputs
+          dart run build_runner build --delete-conflicting-outputs
+          dart pub add polkadart_cli
+          dart run polkadart_cli:generate -v
           dart format --output=none --set-exit-if-changed .
     
     # Get package dependencies for wallet and generate files
@@ -48,4 +58,15 @@ runs:
           flutter pub run build_runner build --delete-conflicting-outputs
           dart format --output=none --set-exit-if-changed .
 
-    # add flutter analyze when packages are published
+    # Cache Flutter dependencies
+    - name: Cache Flutter dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          **/build
+          **/.dart_tool
+          **/.pub-cache
+          **/.pub
+        key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-flutter-

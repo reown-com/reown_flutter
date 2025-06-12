@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/bottom_sheet_listener.dart';
@@ -24,40 +26,52 @@ import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  DeepLinkHandler.initListener();
-  if (kDebugMode) {
-    runApp(MyApp());
-  } else {
-    await SentryFlutter.init(
-      (options) {
-        options.dsn = DartDefines.sentryDSN;
-        options.environment = kDebugMode ? 'debug_app' : 'deployed_app';
-        options.attachScreenshot = true;
-        // Adds request headers and IP for users,
-        // visit: https://docs.sentry.io/platforms/dart/data-management/data-collected/ for more info
-        options.sendDefaultPii = true;
-        // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
-        // We recommend adjusting this value in production.
-        options.tracesSampleRate = 1.0;
-        // The sampling rate for profiling is relative to tracesSampleRate
-        // Setting to 1.0 will profile 100% of sampled transactions:
-        options.profilesSampleRate = 1.0;
-      },
-      appRunner: () {
-        runApp(
+  await runZonedGuarded<Future<void>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    DeepLinkHandler.initListener();
+
+    if (kDebugMode) {
+      runApp(MyApp());
+    } else {
+      // Catch Flutter framework errors
+      FlutterError.onError = (FlutterErrorDetails details) {
+        FlutterError.presentError(details);
+        Sentry.captureException(details.exception, stackTrace: details.stack);
+      };
+
+      await SentryFlutter.init(
+        (options) {
+          options.dsn = DartDefines.sentryDSN;
+          options.environment = kDebugMode ? 'debug_app' : 'deployed_app';
+          options.attachScreenshot = true;
+          // Adds request headers and IP for users,
+          // visit: https://docs.sentry.io/platforms/dart/data-management/data-collected/ for more info
+          options.sendDefaultPii = true;
+          // Set tracesSampleRate to 1.0 to capture 100% of transactions for tracing.
+          // We recommend adjusting this value in production.
+          options.tracesSampleRate = 1.0;
+          // The sampling rate for profiling is relative to tracesSampleRate
+          // Setting to 1.0 will profile 100% of sampled transactions:
+          options.profilesSampleRate = 1.0;
+        },
+        appRunner: () => runApp(
           SentryWidget(
             child: const MyApp(),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    }
+  }, (error, stackTrace) async {
+    if (!kDebugMode) {
+      await Sentry.captureException(error, stackTrace: stackTrace);
+    }
+    debugPrint('Uncaught error: $error');
+    debugPrint('Stack trace: $stackTrace');
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -144,7 +158,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late final IWalletKitService _walletKitService;
   List<PageData> _pageDatas = [];
   int _selectedIndex = 0;
 
@@ -157,22 +170,40 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _initialize() async {
     try {
       GetIt.I.registerSingleton<IBottomSheetService>(BottomSheetService());
+      GetIt.I.registerSingletonAsync<IKeyService>(() async {
+        final keyService = KeyService();
+        await keyService.init();
+        return keyService;
+      });
+      GetIt.I.registerSingleton<IWalletKitService>(WalletKitService());
+      await GetIt.I.allReady(timeout: Duration(seconds: 1));
 
-      final prefs = await SharedPreferences.getInstance();
-      GetIt.I.registerSingleton<IKeyService>(KeyService(prefs: prefs));
+      final walletKitService = GetIt.I<IWalletKitService>();
+      await walletKitService.create();
+      await walletKitService.setUpAccounts();
+      await walletKitService.init();
 
       _walletKitService = WalletKitService();
       await _walletKitService.create();
       GetIt.I.registerSingleton<IWalletKitService>(_walletKitService);
       await _walletKitService.setUpAccounts();
+      walletKitService.walletKit.core.relayClient.onRelayClientConnect
+          .subscribe(
+        _setState,
+      );
+      walletKitService.walletKit.core.relayClient.onRelayClientDisconnect
+          .subscribe(
+        _setState,
+      );
+
+      walletKitService.walletKit.core.connectivity.isOnline.addListener(
+        _onLine,
+      );
 
       // Support EVM Chains
       for (final chainData in ChainsDataList.eip155Chains) {
         GetIt.I.registerSingleton<EVMService>(
-          EVMService(
-            chainSupported: chainData,
-            walletKitService: _walletKitService,
-          ),
+          EVMService(chainSupported: chainData),
           instanceName: chainData.chainId,
         );
       }
@@ -180,10 +211,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // Support Kadena Chains
       for (final chainData in ChainsDataList.kadenaChains) {
         GetIt.I.registerSingleton<KadenaService>(
-          KadenaService(
-            chainSupported: chainData,
-            walletKitService: _walletKitService,
-          ),
+          KadenaService(chainSupported: chainData),
           instanceName: chainData.chainId,
         );
       }
@@ -191,10 +219,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // Support Polkadot Chains
       for (final chainData in ChainsDataList.polkadotChains) {
         GetIt.I.registerSingleton<PolkadotService>(
-          PolkadotService(
-            chainSupported: chainData,
-            walletKitService: _walletKitService,
-          ),
+          PolkadotService(chainSupported: chainData),
           instanceName: chainData.chainId,
         );
       }
@@ -203,10 +228,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // Change SolanaService to SolanaService2 to switch between `solana` package and `solana_web3` package
       for (final chainData in ChainsDataList.solanaChains) {
         GetIt.I.registerSingleton<SolanaService>(
-          SolanaService(
-            chainSupported: chainData,
-            walletKitService: _walletKitService,
-          ),
+          SolanaService(chainSupported: chainData),
           instanceName: chainData.chainId,
         );
       }
@@ -214,10 +236,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // Support Cosmos Chains
       for (final chainData in ChainsDataList.cosmosChains) {
         GetIt.I.registerSingleton<CosmosService>(
-          CosmosService(
-            chainSupported: chainData,
-            walletKitService: _walletKitService,
-          ),
+          CosmosService(chainSupported: chainData),
           instanceName: chainData.chainId,
         );
       }
@@ -225,10 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // Support Tron Chains
       for (final chainData in ChainsDataList.tronChains) {
         GetIt.I.registerSingleton<TronService>(
-          TronService(
-            chainSupported: chainData,
-            walletKitService: _walletKitService,
-          ),
+          TronService(chainSupported: chainData),
           instanceName: chainData.chainId,
         );
       }
@@ -265,6 +281,7 @@ class _MyHomePageState extends State<MyHomePage> {
     } catch (e, s) {
       debugPrint('[$runtimeType] ❌ crash during initialize, $e');
       print(s);
+      debugPrint('[$runtimeType] ❌ crash during initialize, $e, $s');
       await Sentry.captureException(e, stackTrace: s);
     }
   }
@@ -326,7 +343,7 @@ class _MyHomePageState extends State<MyHomePage> {
           const Text('Relay '),
           Builder(
             builder: (context) {
-              final walletKit = _walletKitService.walletKit;
+              final walletKit = GetIt.I<IWalletKitService>().walletKit;
               return CircleAvatar(
                 radius: 6.0,
                 backgroundColor: walletKit.core.relayClient.isConnected &&

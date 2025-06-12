@@ -164,8 +164,8 @@ fun BridgingError.toMap(): String = when (this) {
     BridgingError.NO_ROUTES_AVAILABLE -> "noRoutesAvailable"
     BridgingError.INSUFFICIENT_FUNDS -> "insufficientFunds"
     BridgingError.INSUFFICIENT_GAS_FUNDS -> "insufficientGasFunds"
-    BridgingError.TRANSACTION_SIMULATION_FAILED -> "transactionSimulationFailed"
-    BridgingError.UNKNOWN -> "unknown"
+//    BridgingError.TRANSACTION_SIMULATION_FAILED -> "transactionSimulationFailed"
+    else -> this.name.toString()
 }
 
 fun Amount.toMap(): Map<String, Any> {
