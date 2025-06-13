@@ -1,3 +1,8 @@
+## 1.1.7
+
+- Yttrium update
+- SUI support implementation
+
 ## 1.1.6
 
 - General security improvements and verify API V4 readiness
