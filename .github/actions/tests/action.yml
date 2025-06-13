@@ -233,18 +233,18 @@ runs:
         # List devices for debug purposes
         xcrun simctl list devices
 
-        # Try to find an available iPhone SE simulator
-        SIMULATOR_UDID=$(xcrun simctl list devices available | grep "iPhone SE" | grep -Eo '[A-F0-9-]{36}' | head -n 1)
+        # Try to find an available iPhone 15 Pro simulator
+        SIMULATOR_UDID=$(xcrun simctl list devices available | grep "iPhone 15 Pro" | grep -Eo '[A-F0-9-]{36}' | head -n 1)
 
         if [ -z "$SIMULATOR_UDID" ]; then
-          echo "No available iPhone SE simulator found. Creating one..."
+          echo "No available iPhone 15 Pro simulator found. Creating one..."
 
           # Get latest iOS runtime available
           RUNTIME=$(xcrun simctl list runtimes | grep iOS | grep -v unavailable | sort -rV | head -n 1 | awk -F '[()]' '{print $2}')
           echo "Using runtime: $RUNTIME"
 
-          # Create a new iPhone SE (3rd generation) simulator
-          SIMULATOR_UDID=$(xcrun simctl create "iPhone SE (3rd generation) - CI" "iPhone SE (3rd generation)" "$RUNTIME")
+          # Create a new iPhone 15 Pro simulator
+          SIMULATOR_UDID=$(xcrun simctl create "iPhone 15 Pro - CI" "iPhone 15 Pro" "$RUNTIME")
           echo "Created new simulator: $SIMULATOR_UDID"
         else
           echo "Found available simulator: $SIMULATOR_UDID"
