@@ -20,7 +20,7 @@ inputs:
     required: true
   yttrium-version:
     description: "Android Yttrium version for CI"
-    required: true
+    required: false
 
 runs:
   using: composite
@@ -223,26 +223,43 @@ runs:
       if: inputs.type == 'maestro-tests' && inputs.platform == 'ios'
       shell: bash
       run: |
-        # Install IDB (iOS Device Bridge) for iOS simulator support
+        # Install IDB (iOS Device Bridge)
         brew tap facebook/fb
         brew install facebook/fb/idb-companion
 
         # Ensure Xcode Command Line Tools are available (rarely needed on macos-14)
         xcode-select --install || true
 
-        # Get the first available iPhone simulator
-        SIMULATOR_UDID=$(xcrun simctl list devices available | grep "iPhone" | grep -Ev "Pro|Plus|Max|SE" | sort -rV | head -n 1 | awk -F '[()]' '{print $2}')
-        echo "Selected simulator UDID: $SIMULATOR_UDID"
+        # List devices for debug purposes
+        xcrun simctl list devices
 
-        if xcrun simctl list devices | grep "$SIMULATOR_UDID" | grep -q "(Booted)"; then
-          echo "$SIMULATOR_UDID is booted."
+        # Try to find an available iPhone 15 Pro simulator
+        SIMULATOR_UDID=$(xcrun simctl list devices available | grep "iPhone 15 Pro" | grep -Eo '[A-F0-9-]{36}' | head -n 1)
+
+        if [ -z "$SIMULATOR_UDID" ]; then
+          echo "No available iPhone 15 Pro simulator found. Creating one..."
+
+          # Get latest iOS runtime available
+          RUNTIME=$(xcrun simctl list runtimes | grep iOS | grep -v unavailable | sort -rV | head -n 1 | awk -F '[()]' '{print $2}')
+          echo "Using runtime: $RUNTIME"
+
+          # Create a new iPhone 15 Pro simulator
+          SIMULATOR_UDID=$(xcrun simctl create "iPhone 15 Pro - CI" "iPhone 15 Pro" "$RUNTIME")
+          echo "Created new simulator: $SIMULATOR_UDID"
         else
-          echo "$SIMULATOR_UDID is not booted. Booting..."
-          xcrun simctl boot "$SIMULATOR_UDID"
-          echo "$SIMULATOR_UDID booted"
+          echo "Found available simulator: $SIMULATOR_UDID"
         fi
 
-        # Output the simulator UDID for the next step
+        # Boot the simulator if it's not already booted
+        if xcrun simctl list devices | grep "$SIMULATOR_UDID" | grep -q "(Booted)"; then
+          echo "$SIMULATOR_UDID is already booted."
+        else
+          echo "Booting simulator $SIMULATOR_UDID..."
+          xcrun simctl boot "$SIMULATOR_UDID"
+          echo "Booted simulator: $SIMULATOR_UDID"
+        fi
+
+        # Output the simulator UDID for next steps
         echo "SIMULATOR_UDID=$SIMULATOR_UDID" >> $GITHUB_ENV
 
     # Build and install Flutter Wallet to be used on iOS simulator
