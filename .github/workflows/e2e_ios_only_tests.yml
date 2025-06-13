@@ -1,0 +1,51 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: E2E iOS Only Tests
+permissions:
+  contents: read
+
+on:
+  # pull_request:
+  #   types: [closed]
+  #   branches: [develop]
+  workflow_dispatch
+
+concurrency:
+  # Support push/pr as event types with different behaviors each:
+  # 1. push: queue up builds by branch
+  # 2. pr: only allow one run per PR
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.ref_name }}
+  # If there is already a workflow running for the same pull request, cancel it
+  # For non-PR triggers queue up builds
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  tests:
+    # if: github.event_name != 'pull_request' || github.event.pull_request.merged == true
+    runs-on: macos-14-xlarge
+
+    steps:
+      # Checkout the repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Set up environment 
+      - uses: ./.github/actions/dependencies
+        with:
+          platform: "ios"
+
+      # Run Maestro Tests
+      - name: Run Maestro Tests
+        uses: ./.github/actions/tests
+        with:
+          type: "maestro-tests"
+          platform: "ios"
+          relay-endpoint: "wss://relay.walletconnect.org"
+          project-id: ${{ secrets.DAPP_PROJECT_ID }}
+          wallet-project-id: ${{ secrets.WALLET_PROJECT_ID }}
+
+# Launch locally
+# act --container-architecture linux/amd64 -P ubuntu-16core=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/ci.yml workflow_dispatch --input integration=false --input maestro=android
