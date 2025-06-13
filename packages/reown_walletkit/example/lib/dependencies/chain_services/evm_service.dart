@@ -408,9 +408,10 @@ class EVMService {
     // ************
     if (txParams.containsKey('input') || txParams.containsKey('data')) {
       final caResponse = await handleChainAbstractionIfNeeded(
-        pRequest.id,
-        pRequest.chainId,
-        txParams,
+        requestId: pRequest.id,
+        chainId: pRequest.chainId,
+        txParams: txParams,
+        useLifi: true,
       );
       // caResponse could be JsonRpcResponse, TransactionCompat, BridgingError
       // if chainAbstractionResponse?.result is not null it means it had been handled by Chain Abstraction
@@ -421,14 +422,18 @@ class EVMService {
           caResponse,
         );
       } else {
-        if (caResponse is BridgingError) {
-          final error = caResponse.name;
+        if (caResponse is PrepareDetailedResponseError) {
+          final error = caResponse.error.name;
+          final reason = caResponse.reason;
           return _handleResponseForTopic(
             topic,
             JsonRpcResponse(
               id: pRequest.id,
               jsonrpc: '2.0',
-              error: JsonRpcError(code: -1, message: error),
+              error: JsonRpcError(
+                code: -1,
+                message: '$error: $reason',
+              ),
             ),
           );
         }
@@ -492,17 +497,19 @@ class EVMService {
     _handleResponseForTopic(topic, response);
   }
 
-  Future<dynamic> handleChainAbstractionIfNeeded(
-    int requestId,
-    String chainId,
-    Map<String, dynamic> txParams,
-  ) async {
+  Future<dynamic> handleChainAbstractionIfNeeded({
+    required int requestId,
+    required String chainId,
+    required Map<String, dynamic> txParams,
+    bool useLifi = false,
+  }) async {
     final txData = txParams['input'] ?? txParams['data'];
     final prepareResponse = await _chainAbstractionPrepareHandler(
-      chainId,
-      txParams['from'],
-      txParams['to'],
-      txData,
+      chainId: chainId,
+      from: txParams['from'],
+      to: txParams['to'],
+      input: txData,
+      useLifi: useLifi,
     );
     if (prepareResponse is UiFieldsCompat) {
       final context = navigatorKey.currentState!.context;
@@ -541,24 +548,33 @@ class EVMService {
     } else if (prepareResponse is PrepareResponseNotRequiredCompat) {
       // chain abstraction notRequired, continue with initialTransaction
       return prepareResponse.initialTransaction; // TransactionCompat
-    } else if (prepareResponse is PrepareResponseError) {
+    } else if (prepareResponse is PrepareDetailedResponseError) {
       // chain abstraction error
-      return prepareResponse.error; // BridgingError
+      return prepareResponse;
     }
   }
 
-  Future<dynamic> _chainAbstractionPrepareHandler(
-    String chainId,
-    String from,
-    String to,
-    String input,
-  ) async {
+  Future<dynamic> _chainAbstractionPrepareHandler({
+    required String chainId,
+    required String from,
+    required String to,
+    required String input,
+    List<String> accounts = const [],
+    bool useLifi = false,
+    Currency localCurrency = Currency.usd,
+  }) async {
     dynamic prepareResponse;
     try {
       final response = await _walletKit.prepare(
         chainId: chainId,
         from: from,
-        call: CallCompat(to: to, input: input),
+        call: CallCompat(
+          to: to,
+          input: input,
+        ),
+        localCurrency: localCurrency,
+        accounts: accounts,
+        useLifi: useLifi,
       );
       response.when(
         success: (PrepareDetailedResponseSuccessCompat deatailResponse) {
@@ -573,7 +589,7 @@ class EVMService {
             },
           );
         },
-        error: (PrepareResponseError error) {
+        error: (PrepareDetailedResponseError error) {
           prepareResponse = error;
         },
       );

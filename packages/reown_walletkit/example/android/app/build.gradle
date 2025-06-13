@@ -104,6 +104,10 @@ android {
         }
     }
     namespace 'com.walletconnect.flutterwallet'
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 flutter {

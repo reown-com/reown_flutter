@@ -1,6 +1,6 @@
 name: reown_yttrium
 description: "Reown is the onchain UX platform that provides toolkits built on top of the WalletConnect Network"
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/reown-com/reown_flutter
 repository: https://github.com/reown-com/reown_flutter/tree/master/packages/reown_yttrium
 documentation: https://docs.reown.com/walletkit/flutter/early-access/chain-abstraction

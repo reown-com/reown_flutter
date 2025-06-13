@@ -2084,19 +2084,19 @@ mixin _$PrepareDetailedResponseCompat {
   TResult when<TResult extends Object?>({
     required TResult Function(PrepareDetailedResponseSuccessCompat value)
         success,
-    required TResult Function(PrepareResponseError value) error,
+    required TResult Function(PrepareDetailedResponseError value) error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(PrepareDetailedResponseSuccessCompat value)? success,
-    TResult? Function(PrepareResponseError value)? error,
+    TResult? Function(PrepareDetailedResponseError value)? error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(PrepareDetailedResponseSuccessCompat value)? success,
-    TResult Function(PrepareResponseError value)? error,
+    TResult Function(PrepareDetailedResponseError value)? error,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -2236,7 +2236,7 @@ class _$PrepareDetailedResponseCompat_SuccessImpl
   TResult when<TResult extends Object?>({
     required TResult Function(PrepareDetailedResponseSuccessCompat value)
         success,
-    required TResult Function(PrepareResponseError value) error,
+    required TResult Function(PrepareDetailedResponseError value) error,
   }) {
     return success(value);
   }
@@ -2245,7 +2245,7 @@ class _$PrepareDetailedResponseCompat_SuccessImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(PrepareDetailedResponseSuccessCompat value)? success,
-    TResult? Function(PrepareResponseError value)? error,
+    TResult? Function(PrepareDetailedResponseError value)? error,
   }) {
     return success?.call(value);
   }
@@ -2254,7 +2254,7 @@ class _$PrepareDetailedResponseCompat_SuccessImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(PrepareDetailedResponseSuccessCompat value)? success,
-    TResult Function(PrepareResponseError value)? error,
+    TResult Function(PrepareDetailedResponseError value)? error,
     required TResult orElse(),
   }) {
     if (success != null) {
@@ -2321,7 +2321,7 @@ abstract class _$$PrepareDetailedResponseCompat_ErrorImplCopyWith<$Res> {
           $Res Function(_$PrepareDetailedResponseCompat_ErrorImpl) then) =
       __$$PrepareDetailedResponseCompat_ErrorImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({PrepareResponseError value});
+  $Res call({PrepareDetailedResponseError value});
 }
 
 /// @nodoc
@@ -2345,7 +2345,7 @@ class __$$PrepareDetailedResponseCompat_ErrorImplCopyWithImpl<$Res>
       value: null == value
           ? _value.value
           : value // ignore: cast_nullable_to_non_nullable
-              as PrepareResponseError,
+              as PrepareDetailedResponseError,
     ));
   }
 }
@@ -2358,7 +2358,7 @@ class _$PrepareDetailedResponseCompat_ErrorImpl
       : super._();
 
   @override
-  final PrepareResponseError value;
+  final PrepareDetailedResponseError value;
 
   @override
   String toString() {
@@ -2391,7 +2391,7 @@ class _$PrepareDetailedResponseCompat_ErrorImpl
   TResult when<TResult extends Object?>({
     required TResult Function(PrepareDetailedResponseSuccessCompat value)
         success,
-    required TResult Function(PrepareResponseError value) error,
+    required TResult Function(PrepareDetailedResponseError value) error,
   }) {
     return error(value);
   }
@@ -2400,7 +2400,7 @@ class _$PrepareDetailedResponseCompat_ErrorImpl
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(PrepareDetailedResponseSuccessCompat value)? success,
-    TResult? Function(PrepareResponseError value)? error,
+    TResult? Function(PrepareDetailedResponseError value)? error,
   }) {
     return error?.call(value);
   }
@@ -2409,7 +2409,7 @@ class _$PrepareDetailedResponseCompat_ErrorImpl
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(PrepareDetailedResponseSuccessCompat value)? success,
-    TResult Function(PrepareResponseError value)? error,
+    TResult Function(PrepareDetailedResponseError value)? error,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -2454,12 +2454,12 @@ class _$PrepareDetailedResponseCompat_ErrorImpl
 abstract class PrepareDetailedResponseCompat_Error
     extends PrepareDetailedResponseCompat {
   const factory PrepareDetailedResponseCompat_Error(
-          {required final PrepareResponseError value}) =
+          {required final PrepareDetailedResponseError value}) =
       _$PrepareDetailedResponseCompat_ErrorImpl;
   const PrepareDetailedResponseCompat_Error._() : super._();
 
   @override
-  PrepareResponseError get value;
+  PrepareDetailedResponseError get value;
 
   /// Create a copy of PrepareDetailedResponseCompat
   /// with the given fields replaced by the non-null parameter values.
