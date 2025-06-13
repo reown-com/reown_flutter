@@ -230,8 +230,11 @@ runs:
         # Ensure Xcode Command Line Tools are available (rarely needed on macos-14)
         xcode-select --install || true
 
+        # List devices for debug purposes
+        xcrun simctl list devices
+
         # Try to find an available iPhone SE simulator
-        SIMULATOR_UDID=$(xcrun simctl list devices available | grep "iPhone SE" | sort -rV | head -n 1 | awk -F '[()]' '{print $2}')
+        SIMULATOR_UDID=$(xcrun simctl list devices available | grep "iPhone SE" | grep -Eo '[A-F0-9-]{36}' | head -n 1)
 
         if [ -z "$SIMULATOR_UDID" ]; then
           echo "No available iPhone SE simulator found. Creating one..."
