@@ -121,7 +121,9 @@ class ExplorerService implements IExplorerService {
 
     // TODO ideally we should call this at every opening to be able to detect newly installed wallets.
     final nativeData = await _fetchNativeAppData();
-    final installed = await nativeData.getInstalledApps();
+    final installed = (await nativeData.getInstalledApps())
+        .where((e) => !(excludedWalletIds ?? {}).contains(e.id))
+        .toList();
     _installedWalletIds = Set<String>.from(installed.map((e) => e.id));
 
     await _fetchInitialWallets();
@@ -565,7 +567,8 @@ extension on List<AppKitModalWalletListing> {
 
 extension on List<ReownAppKitModalWalletInfo> {
   List<ReownAppKitModalWalletInfo> sortByFeaturedIds(
-      Set<String>? featuredWalletIds) {
+    Set<String>? featuredWalletIds,
+  ) {
     Map<String, dynamic> sortedMap = {};
     final auxList = List<ReownAppKitModalWalletInfo>.from(this);
 
