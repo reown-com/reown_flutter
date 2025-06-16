@@ -246,7 +246,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_sign* version ${{ steps.get_version.outputs.version }} has been published
+            text: "*reown_sign* version ${{ steps.get_version.outputs.version }} has been published"
 
   publish-appkit:
     name: Publish reown_appkit
@@ -357,7 +357,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_appkit* version ${{ steps.get_version.outputs.version }} has been published
+            text: "*reown_appkit* version ${{ steps.get_version.outputs.version }} has been published"
 
   publish-walletkit:
     name: Publish reown_walletkit
@@ -471,7 +471,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_walletkit* version ${{ steps.get_version.outputs.version }} has been published
+            text: "*reown_walletkit* version ${{ steps.get_version.outputs.version }} has been published"
 
   publish-yttrium:
     name: Publish reown_yttrium
@@ -550,7 +550,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_yttrium* version ${{ steps.get_version.outputs.version }} has been published
+            text: "*reown_yttrium* version ${{ steps.get_version.outputs.version }} has been published"
 
   publish-cli:
     name: Publish reown_cli
@@ -629,7 +629,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_cli* version ${{ steps.get_version.outputs.version }} has been published
+            text: "*reown_cli* version ${{ steps.get_version.outputs.version }} has been published"
 
 # Launch locally
 # act --container-architecture linux/amd64 -P ubuntu-latest=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/publish-packages.yml workflow_dispatch
