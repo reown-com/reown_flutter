@@ -1,3 +1,7 @@
+## 1.4.6
+
+- Fix an issue where disabling installed wallets wasn't working
+
 ## 1.4.5
 
 - General security improvements and verify API V4 readiness
