@@ -7,6 +7,8 @@ import 'package:reown_walletkit/chain_abstraction/chain_abstraction.dart';
 import 'package:reown_walletkit/chain_abstraction/i_chain_abstraction.dart';
 
 import 'package:reown_walletkit/reown_walletkit.dart';
+import 'package:reown_walletkit/sui/i_sui_client.dart';
+import 'package:reown_walletkit/sui/sui_client.dart';
 import 'package:reown_walletkit/version.dart' as wk;
 
 class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
@@ -50,6 +52,18 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
 
   @override
   final PairingMetadata metadata;
+
+  /// ---------------------------------
+  /// ⚠️ This client is experimental. Use with caution.
+  /// ---------------------------------
+  @override
+  late final IChainAbstractionClient chainAbstractionClient;
+
+  /// ---------------------------------
+  /// ⚠️ This client is experimental. Use with caution.
+  /// ---------------------------------
+  @override
+  late final ISuiClient suiClient;
 
   ReownWalletKit({
     required this.core,
@@ -108,7 +122,16 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
       ),
     );
 
-    chainAbstraction = ChainAbstraction(
+    chainAbstractionClient = ChainAbstractionClient(
+      core: core,
+      pulseMetadata: PulseMetadataCompat(
+        url: metadata.url,
+        sdkVersion: wk.packageVersion,
+        sdkPlatform: ReownCoreUtils.getId(),
+      ),
+    );
+
+    suiClient = SuiClient(
       core: core,
       pulseMetadata: PulseMetadataCompat(
         url: metadata.url,
@@ -126,7 +149,8 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
 
     await core.start();
     await reOwnSign.init();
-    await chainAbstraction.init();
+    await chainAbstractionClient.init();
+    await suiClient.init();
 
     WidgetsBinding.instance.addObserver(this);
     _initialized = true;
@@ -506,29 +530,30 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     }
   }
 
-  ///---------- CHAIN ABSTRACTION CLIENT ----------///
-  ///
-  @override
-  late final IChainAbstraction chainAbstraction;
-
+  /// ---------------------------------
+  /// ⚠️ This method is experimental. Use with caution.
+  /// ---------------------------------
   @override
   Future<String> erc20TokenBalance({
     required String chainId,
     required String token,
     required String owner,
   }) async {
-    return await chainAbstraction.erc20TokenBalance(
+    return await chainAbstractionClient.erc20TokenBalance(
       chainId: chainId,
       token: token,
       owner: owner,
     );
   }
 
+  /// ---------------------------------
+  /// ⚠️ This method is experimental. Use with caution.
+  /// ---------------------------------
   @override
   Future<Eip1559EstimationCompat> estimateFees({
     required String chainId,
   }) async {
-    return await chainAbstraction.estimateFees(
+    return await chainAbstractionClient.estimateFees(
       chainId: chainId,
     );
   }
@@ -541,13 +566,17 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     required String chainId,
     required String from,
     required CallCompat call,
-    Currency? localCurrency,
+    List<String> accounts = const [],
+    Currency localCurrency = Currency.usd,
+    bool useLifi = false,
   }) async {
-    return await chainAbstraction.prepare(
+    return await chainAbstractionClient.prepare(
       chainId: chainId,
       from: from,
       call: call,
+      accounts: accounts,
       localCurrency: localCurrency,
+      useLifi: useLifi,
     );
   }
 
@@ -560,7 +589,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     required List<String> routeTxnSigs,
     required String initialTxnSig,
   }) async {
-    return await chainAbstraction.execute(
+    return await chainAbstractionClient.execute(
       uiFields: uiFields,
       routeTxnSigs: routeTxnSigs,
       initialTxnSig: initialTxnSig,
