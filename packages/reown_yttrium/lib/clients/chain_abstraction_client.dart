@@ -1,5 +1,6 @@
 import 'package:reown_yttrium/clients/i_chain_abstraction_client.dart';
 import 'package:reown_yttrium/models/chain_abstraction.dart';
+import 'package:reown_yttrium/models/shared.dart';
 import 'package:reown_yttrium/reown_yttrium_platform_interface.dart';
 
 class ChainAbstractionClient implements IChainAbstractionClient {

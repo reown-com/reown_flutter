@@ -1,7 +1,6 @@
 package com.reown.reown_yttrium
 
 import android.content.Context
-import com.yttrium.YttriumKt
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,8 +21,6 @@ class ChainAbstraction {
         private var pendingPrepareDetailed: MutableMap<String, UiFields> = mutableMapOf()
 
         fun initialize(applicationContext: Context, params: Any?, result: MethodChannel.Result) {
-//            YttriumKt.initializeTls(applicationContext)
-
             val dict = params as? Map<*, *> ?: return result.error("initialize", "Invalid parameters: not a map", null)
 
             val projectId = dict["projectId"] as? String ?: return errorMissing("projectId", params, result)

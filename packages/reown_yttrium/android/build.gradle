@@ -77,7 +77,7 @@ android {
 }
 
 // Use specific yttrium version for CI builds, default version for local builds
-def yttriumVersion = project.hasProperty("yttriumCiVersion") ? project.getProperty("yttriumCiVersion") : "0.9.14"
+def yttriumVersion = project.hasProperty("yttriumCiVersion") ? project.getProperty("yttriumCiVersion") : "0.9.22-stacks"
 
 dependencies {
     implementation("net.java.dev.jna:jna:5.15.0@aar")

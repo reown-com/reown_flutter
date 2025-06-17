@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:reown_yttrium/models/shared.dart';
 import 'package:reown_yttrium/models/chain_abstraction.dart';
 
 class MethodChannelChainAbstraction {

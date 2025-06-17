@@ -565,7 +565,7 @@ class EVMService {
   }) async {
     dynamic prepareResponse;
     try {
-      final response = await _walletKit.prepare(
+      final response = await _walletKit.chainAbstractionClient.prepare(
         chainId: chainId,
         from: from,
         call: CallCompat(
@@ -619,7 +619,7 @@ class EVMService {
         return rSignature;
       }).toList();
       try {
-        return await _walletKit.execute(
+        return await _walletKit.chainAbstractionClient.execute(
           uiFields: uiFields,
           initialTxnSig: initialSignature,
           routeTxnSigs: routeSignatures,

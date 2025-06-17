@@ -1,0 +1,83 @@
+import 'package:reown_yttrium/clients/i_stacks_client.dart';
+import 'package:reown_yttrium/models/shared.dart';
+import 'package:reown_yttrium/models/stacks.dart';
+import 'package:reown_yttrium/reown_yttrium_platform_interface.dart';
+
+class StacksClient implements IStacksClient {
+  @override
+  Future<bool> init({
+    required String projectId,
+    required PulseMetadataCompat pulseMetadata,
+  }) async {
+    try {
+      return await ReownYttriumPlatformInterface.instance.stacksChannel.init(
+        projectId: projectId,
+        pulseMetadata: pulseMetadata,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> generateWallet() async {
+    try {
+      return await ReownYttriumPlatformInterface.instance.stacksChannel
+          .generateWallet();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> getAddress({
+    required String wallet,
+    required StacksVersion version,
+  }) async {
+    try {
+      return await ReownYttriumPlatformInterface.instance.stacksChannel
+          .getAddress(
+        wallet: wallet,
+        version: version.toString(),
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> signMessage({
+    required String wallet,
+    required String message,
+  }) async {
+    try {
+      return await ReownYttriumPlatformInterface.instance.stacksChannel
+          .signMessage(
+        wallet: wallet,
+        message: message,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<TransferStxResponse> transferStx({
+    required String wallet,
+    required String network,
+    required TransferStxRequest request,
+  }) async {
+    try {
+      final response = await ReownYttriumPlatformInterface
+          .instance.stacksChannel
+          .transferStx(
+        wallet: wallet,
+        network: network,
+        request: request.toJson(),
+      );
+      return TransferStxResponse.fromJson(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+}

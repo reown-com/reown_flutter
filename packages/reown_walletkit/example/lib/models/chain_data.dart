@@ -300,4 +300,26 @@ class ChainsDataList {
       isTestnet: true,
     ),
   ];
+
+  static final List<ChainMetadata> stacksChains = [
+    const ChainMetadata(
+      type: ChainType.stacks,
+      chainId: 'stacks:1',
+      name: 'Stacks Mainnet',
+      logo:
+          'https://pbs.twimg.com/profile_images/1764968185399267328/lrmnHOuN_400x400.jpg',
+      color: Colors.orange,
+      rpc: ['https://api.mainnet.hiro.so'],
+    ),
+    const ChainMetadata(
+      type: ChainType.stacks,
+      chainId: 'stacks:2147483648',
+      name: 'Stacks Testnet',
+      logo:
+          'https://pbs.twimg.com/profile_images/1764968185399267328/lrmnHOuN_400x400.jpg',
+      color: Colors.orange,
+      rpc: ['https://api.testnet.hiro.so'],
+      isTestnet: true,
+    ),
+  ];
 }

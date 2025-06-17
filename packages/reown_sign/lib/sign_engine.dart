@@ -3018,11 +3018,13 @@ class ReownSign implements IReownSign {
       case 'bip122':
         try {
           final result = (response.result as Map<String, dynamic>);
-          final txId = ReownCoreUtils.recursiveSearchForMapKey(
+          final txid = ReownCoreUtils.recursiveSearchForMapKey(
             result,
             'txid',
           );
-          return <String>[txId];
+          if (txid != null) {
+            return <String>[txid];
+          }
         } catch (e) {
           core.logger.e('[$runtimeType] _collectHashes: bip122, $e');
         }
@@ -3034,7 +3036,9 @@ class ReownSign implements IReownSign {
             result,
             'txId',
           );
-          return List<String>.from([txId]);
+          if (txId != null) {
+            return <String>[txId];
+          }
         } catch (e) {
           core.logger.e('[$runtimeType] _collectHashes: stacks, $e');
         }
