@@ -1,7 +1,7 @@
 ## 1.1.7
 
 - Yttrium update
-- SUI support implementation
+- Stacks support implementation
 
 ## 1.1.6
 

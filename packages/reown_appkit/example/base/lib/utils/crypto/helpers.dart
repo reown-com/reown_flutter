@@ -9,6 +9,7 @@ import 'package:reown_appkit_dapp/utils/crypto/near.dart';
 import 'package:reown_appkit_dapp/utils/crypto/eip155.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
 import 'package:reown_appkit_dapp/utils/crypto/solana.dart';
+import 'package:reown_appkit_dapp/utils/crypto/stacks.dart';
 import 'package:reown_appkit_dapp/utils/crypto/tron.dart';
 import 'package:reown_appkit_dapp/utils/smart_contracts.dart';
 import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
@@ -30,6 +31,8 @@ List<String> getChainMethods(String namespace) {
       return Near.methods.values.toList();
     case 'cosmos':
       return Cosmos.methods.values.toList();
+    case 'stacks':
+      return Stacks.methods.values.toList();
     default:
       return [];
   }
@@ -50,7 +53,9 @@ List<String> getChainEvents(String namespace) {
     case 'near':
       return Near.events;
     case 'cosmos':
-      return Cosmos.events.values.toList();
+      return Cosmos.events;
+    case 'stacks':
+      return Stacks.events;
     default:
       return [];
   }
@@ -230,6 +235,23 @@ Future<SessionRequestParams?> getParams(
       return SessionRequestParams(
         method: method,
         params: Cosmos.signAmino(address, chainData.chainId),
+      );
+    case 'stacks_signMessage':
+      return SessionRequestParams(
+        method: method,
+        params: {
+          'pubkey': address,
+          'message': 'This is a message to be signed for Stacks',
+        },
+      );
+    case 'stacks_stxTransfer':
+      return SessionRequestParams(
+        method: method,
+        params: {
+          'pubkey': address,
+          'recipient': address,
+          'amount': BigInt.parse('1000000'), // 1 STX
+        },
       );
     default:
       return SessionRequestParams(

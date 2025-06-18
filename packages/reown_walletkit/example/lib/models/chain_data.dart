@@ -269,38 +269,6 @@ class ChainsDataList {
     ),
   ];
 
-  static final List<ChainMetadata> suiChains = [
-    const ChainMetadata(
-      type: ChainType.sui,
-      chainId: 'sui:mainnet',
-      name: 'Sui Mainnet',
-      logo:
-          'https://pbs.twimg.com/profile_images/1928528183466373120/4xpp6RSr_400x400.jpg',
-      color: Colors.blue,
-      rpc: ['https://fullnode.mainnet.sui.io:443'],
-    ),
-    const ChainMetadata(
-      type: ChainType.sui,
-      chainId: 'sui:testnet',
-      name: 'Sui Testnet',
-      logo:
-          'https://pbs.twimg.com/profile_images/1928528183466373120/4xpp6RSr_400x400.jpg',
-      color: Colors.blue,
-      rpc: ['https://fullnode.testnet.sui.io:443'],
-      isTestnet: true,
-    ),
-    const ChainMetadata(
-      type: ChainType.sui,
-      chainId: 'sui:devnet',
-      name: 'Sui Devnet',
-      logo:
-          'https://pbs.twimg.com/profile_images/1928528183466373120/4xpp6RSr_400x400.jpg',
-      color: Colors.blue,
-      rpc: ['https://fullnode.devnet.sui.io:443'],
-      isTestnet: true,
-    ),
-  ];
-
   static final List<ChainMetadata> stacksChains = [
     const ChainMetadata(
       type: ChainType.stacks,

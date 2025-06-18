@@ -9,7 +9,6 @@ enum ChainType {
   polkadot,
   bitcoin,
   tron,
-  sui,
   stacks,
 }
 
