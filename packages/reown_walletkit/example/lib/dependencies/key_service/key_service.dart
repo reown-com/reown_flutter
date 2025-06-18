@@ -6,12 +6,14 @@ import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pointycastle/digests/ripemd160.dart';
 import 'package:pointycastle/digests/keccak.dart';
 import 'package:pointycastle/ecc/curves/secp256k1.dart';
 import 'package:polkadart_keyring/polkadart_keyring.dart' as keyring;
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bip32/bip32_base.dart';
+import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
@@ -163,6 +165,8 @@ class KeyService extends IKeyService {
     final tronChainKey = _tronChainKey(mnemonic);
     final cosmosChainKey = _cosmosChainKey(mnemonic);
     // final bitcoinChainKeys = await _bitcoinChainKey(mnemonic);
+    final stacksChainKey = await _stacksChainKey(mnemonic);
+    final stacksTestChainKey = await _stacksTestChainKey(mnemonic);
 
     _keys = List<ChainKey>.from([
       eip155ChainKey,
@@ -172,6 +176,8 @@ class KeyService extends IKeyService {
       kadenaChainKey,
       tronChainKey,
       cosmosChainKey,
+      stacksChainKey,
+      stacksTestChainKey,
     ]);
 
     await _saveKeys();
@@ -326,6 +332,46 @@ class KeyService extends IKeyService {
       publicKey: base64.encode(publicKey),
       address: address,
       namespace: 'cosmos',
+    );
+  }
+
+  Future<ChainKey> _stacksChainKey(String mnemonic) async {
+    final walletKit = GetIt.I<IWalletKitService>().walletKit;
+    // final privateKey = await walletKit.stacksClient.generateWallet();
+    final address = await walletKit.stacksClient.getAddress(
+      wallet: mnemonic,
+      version: StacksVersion.mainnet_p2pkh,
+    );
+
+    return ChainKey(
+      chains: ChainsDataList.stacksChains
+          .where((c) => !c.isTestnet)
+          .map((e) => e.chainId)
+          .toList(),
+      privateKey: mnemonic,
+      publicKey: address,
+      address: address,
+      namespace: 'stacks',
+    );
+  }
+
+  Future<ChainKey> _stacksTestChainKey(String mnemonic) async {
+    final walletKit = GetIt.I<IWalletKitService>().walletKit;
+    // final privateKey = await walletKit.stacksClient.generateWallet();
+    final address = await walletKit.stacksClient.getAddress(
+      wallet: mnemonic,
+      version: StacksVersion.testnet_p2pkh,
+    );
+
+    return ChainKey(
+      chains: ChainsDataList.stacksChains
+          .where((c) => c.isTestnet)
+          .map((e) => e.chainId)
+          .toList(),
+      privateKey: mnemonic,
+      publicKey: address,
+      address: address,
+      namespace: 'stacks_test',
     );
   }
 

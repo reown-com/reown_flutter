@@ -91,9 +91,8 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
           });
         }
       } on JsonRpcError catch (e) {
-        setState(
-          () => errorEvent = ModalError(e.message ?? 'An error occurred'),
-        );
+        final message = e.message ?? 'An error occurred';
+        setState(() => errorEvent = ModalError(message));
       } on ReownAppKitModalException catch (e) {
         setState(() => errorEvent = ModalError(e.message));
       } catch (e) {

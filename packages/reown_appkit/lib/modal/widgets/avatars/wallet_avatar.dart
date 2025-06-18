@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
+import 'dart:math' as math;
 
 class ListAvatar extends StatelessWidget {
   const ListAvatar({
@@ -32,52 +33,59 @@ class ListAvatar extends StatelessWidget {
       children: [
         AspectRatio(
           aspectRatio: 1.0,
-          child: Container(
-            decoration: isNetwork
-                ? ShapeDecoration(
-                    shape: StarBorder.polygon(
-                      side: BorderSide(
-                        color: color ?? themeColors.grayGlass010,
-                        width: 1.0,
-                        strokeAlign: BorderSide.strokeAlignInside,
-                      ),
-                      pointRounding: 0.3,
-                      sides: 6,
-                    ),
-                  )
-                : BoxDecoration(
-                    borderRadius: BorderRadius.circular(radius),
-                    border: Border.all(
-                      color: color ?? themeColors.grayGlass010,
-                      width: 1.0,
-                      strokeAlign: BorderSide.strokeAlignOutside,
-                    ),
-                  ),
-          ),
-        ),
-        AspectRatio(
-          aspectRatio: 1.0,
           child: LayoutBuilder(
             builder: (_, constraints) {
-              return Container(
-                decoration: isNetwork
-                    ? ShapeDecoration(
-                        shape: StarBorder.polygon(
-                          pointRounding: 0.3,
-                          sides: 6,
-                        ),
-                      )
-                    : BoxDecoration(
-                        borderRadius: BorderRadius.circular(radius),
+              if (isNetwork) {
+                return Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    CustomPaint(
+                      painter: HexagonBorderPainter(
+                        color: themeColors.grayGlass010,
+                        strokeWidth: 1.0,
                       ),
+                    ),
+                    ClipPath(
+                      clipper: HexagonClipper(),
+                      clipBehavior: Clip.antiAlias,
+                      child: validImage
+                          ? CachedNetworkImage(
+                              imageUrl: imageUrl!,
+                              httpHeaders: CoreUtils.getAPIHeaders(projectId),
+                              fit: BoxFit.cover,
+                              fadeInDuration: const Duration(milliseconds: 500),
+                              fadeOutDuration:
+                                  const Duration(milliseconds: 500),
+                              errorWidget: (context, url, error) => ColoredBox(
+                                color: themeColors.grayGlass005,
+                              ),
+                            )
+                          : Padding(
+                              padding:
+                                  EdgeInsets.all(constraints.maxHeight / 3),
+                              child: SvgPicture.asset(
+                                'lib/modal/assets/icons/network.svg',
+                                package: 'reown_appkit',
+                                colorFilter: ColorFilter.mode(
+                                  themeColors.grayGlass030,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
+                            ),
+                    ),
+                  ],
+                );
+              }
+              return Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(radius),
+                ),
                 clipBehavior: Clip.antiAlias,
                 child: validImage
                     ? ColorFiltered(
                         colorFilter: ColorFilter.mode(
                           disabled ? Colors.white : Colors.transparent,
-                          disabled
-                              ? BlendMode.saturation
-                              : BlendMode.saturation,
+                          BlendMode.saturation,
                         ),
                         child: CachedNetworkImage(
                           imageUrl: imageUrl!,
@@ -89,23 +97,7 @@ class ListAvatar extends StatelessWidget {
                           ),
                         ),
                       )
-                    : isNetwork
-                        ? Padding(
-                            padding: EdgeInsets.all(constraints.maxHeight / 3),
-                            child: SvgPicture.asset(
-                              'lib/modal/assets/icons/network.svg',
-                              package: 'reown_appkit',
-                              colorFilter: ColorFilter.mode(
-                                disabled
-                                    ? Colors.black12
-                                    : themeColors.grayGlass030,
-                                disabled ? BlendMode.srcIn : BlendMode.srcIn,
-                              ),
-                            ),
-                          )
-                        : ColoredBox(
-                            color: themeColors.grayGlass005,
-                          ),
+                    : ColoredBox(color: themeColors.grayGlass005),
               );
             },
           ),
@@ -113,4 +105,75 @@ class ListAvatar extends StatelessWidget {
       ],
     );
   }
+}
+
+class HexagonClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final path = Path();
+    final width = size.width;
+    final height = size.height;
+    final centerX = width / 2;
+    final centerY = height / 2;
+    final radius = width / 2;
+    final angle = (2 * math.pi) / 6;
+    final rotation = -math.pi / 2; // Rotate so a point is at the top
+
+    path.moveTo(
+      centerX + radius * math.cos(rotation),
+      centerY + radius * math.sin(rotation),
+    );
+    for (int i = 1; i <= 6; i++) {
+      path.lineTo(
+        centerX + radius * math.cos(rotation + i * angle),
+        centerY + radius * math.sin(rotation + i * angle),
+      );
+    }
+    path.close();
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+
+class HexagonBorderPainter extends CustomPainter {
+  final Color color;
+  final double strokeWidth;
+
+  HexagonBorderPainter({required this.color, this.strokeWidth = 1.0});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = strokeWidth;
+
+    final path = Path();
+    final width = size.width;
+    final height = size.height;
+    final centerX = width / 2;
+    final centerY = height / 2;
+    final radius = width / 2;
+    final angle = (2 * math.pi) / 6;
+    final rotation = -math.pi / 2;
+
+    path.moveTo(
+      centerX + radius * math.cos(rotation),
+      centerY + radius * math.sin(rotation),
+    );
+    for (int i = 1; i <= 6; i++) {
+      path.lineTo(
+        centerX + radius * math.cos(rotation + i * angle),
+        centerY + radius * math.sin(rotation + i * angle),
+      );
+    }
+    path.close();
+
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

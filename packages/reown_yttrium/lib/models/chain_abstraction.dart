@@ -12,35 +12,42 @@ enum Currency {
   inr,
   jpy,
   btc,
-  eth,
-  ;
+  eth;
 }
 
 enum BridgingError {
   noRoutesAvailable,
   insufficientFunds,
   insufficientGasFunds,
+  assetNotSupported,
+  transactionSimulationFailed,
   unknown;
 
   factory BridgingError.fromString(String value) {
-    if (value == 'noRoutesAvailable') {
-      return BridgingError.noRoutesAvailable;
-    } else if (value == 'insufficientFunds') {
-      return BridgingError.insufficientFunds;
-    } else if (value == 'insufficientGasFunds') {
-      return BridgingError.insufficientGasFunds;
+    switch (value) {
+      case 'noRoutesAvailable':
+        return BridgingError.noRoutesAvailable;
+      case 'insufficientFunds':
+        return BridgingError.insufficientFunds;
+      case 'insufficientGasFunds':
+        return BridgingError.insufficientGasFunds;
+      case 'assetNotSupported':
+        return BridgingError.assetNotSupported;
+      case 'transactionSimulationFailed':
+        return BridgingError.transactionSimulationFailed;
+      default:
+        return BridgingError.unknown;
     }
-    return BridgingError.unknown;
   }
 }
 
 /// Bridging check error response that should be returned as a normal HTTP 200
 /// response
-class PrepareResponseError {
+class PrepareDetailedResponseError {
   final BridgingError error;
   final String reason;
 
-  const PrepareResponseError({
+  const PrepareDetailedResponseError({
     required this.error,
     required this.reason,
   });
@@ -51,7 +58,7 @@ class PrepareResponseError {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PrepareResponseError &&
+      other is PrepareDetailedResponseError &&
           runtimeType == other.runtimeType &&
           error == other.error &&
           reason == other.reason;
@@ -184,7 +191,7 @@ sealed class PrepareDetailedResponseCompat
     required PrepareDetailedResponseSuccessCompat value,
   }) = PrepareDetailedResponseCompat_Success;
   const factory PrepareDetailedResponseCompat.error({
-    required PrepareResponseError value,
+    required PrepareDetailedResponseError value,
   }) = PrepareDetailedResponseCompat_Error;
 }
 
@@ -267,20 +274,6 @@ class PrimitiveSignatureCompat {
 }
 
 @freezed
-class PulseMetadataCompat with _$PulseMetadataCompat {
-  const factory PulseMetadataCompat({
-    String? url,
-    String? bundleId,
-    String? packageName,
-    required String sdkVersion,
-    required String sdkPlatform,
-  }) = _PulseMetadataCompat;
-
-  factory PulseMetadataCompat.fromJson(Map<String, dynamic> json) =>
-      _$PulseMetadataCompatFromJson(json);
-}
-
-@freezed
 class TransactionCompat with _$TransactionCompat {
   const factory TransactionCompat({
     required String chainId,
@@ -295,6 +288,18 @@ class TransactionCompat with _$TransactionCompat {
   factory TransactionCompat.fromJson(Map<String, dynamic> json) =>
       _$TransactionCompatFromJson(json);
 }
+
+// @freezed
+// class SolanaTransactionCompat with _$SolanaTransactionCompat {
+//   const factory SolanaTransactionCompat({
+//     required String chainId,
+//     required String from,
+//     required String transaction,
+//   }) = _SolanaTransactionCompat;
+
+//   factory SolanaTransactionCompat.fromJson(Map<String, dynamic> json) =>
+//       _$SolanaTransactionCompatJson(json);
+// }
 
 @freezed
 class TransactionFeeCompat with _$TransactionFeeCompat {
@@ -338,6 +343,18 @@ class TxnDetailsCompat with _$TxnDetailsCompat {
   factory TxnDetailsCompat.fromJson(Map<String, dynamic> json) =>
       _$TxnDetailsCompatFromJson(json);
 }
+
+// @freezed
+// class SolanaTxnDetailsCompat with _$SolanaTxnDetailsCompat {
+//   const factory SolanaTxnDetailsCompat({
+//     required String chainId,
+//     required String from,
+//     required String transaction,
+//   }) = _SolanaTxnDetailsCompat;
+
+//   factory SolanaTxnDetailsCompat.fromJson(Map<String, dynamic> json) =>
+//       _$SolanaTxnDetailsCompatJson(json);
+// }
 
 @freezed
 class UiFieldsCompat with _$UiFieldsCompat {

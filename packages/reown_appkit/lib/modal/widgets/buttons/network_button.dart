@@ -35,6 +35,7 @@ class NetworkButton extends StatelessWidget {
 
   String _getImageUrl(ReownAppKitModalNetworkInfo? chainInfo) {
     if (chainInfo == null) return '';
+    if (chainInfo.isTestNetwork) return '';
 
     if (chainInfo.chainIcon != null && chainInfo.chainIcon!.contains('http')) {
       return chainInfo.chainIcon!;

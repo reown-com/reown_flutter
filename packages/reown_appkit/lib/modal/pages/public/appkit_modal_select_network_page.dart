@@ -96,7 +96,7 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
                 //
                 final rows = min((items.length ~/ 4) + 1, 3);
                 final height =
-                    (ResponsiveData.gridItemSzieOf(context).height * rows);
+                    ResponsiveData.gridItemSzieOf(context).height * rows;
                 final maxHeight = height + (kPadding12 * (rows + 1));
                 return ConstrainedBox(
                   constraints: BoxConstraints(maxHeight: maxHeight),

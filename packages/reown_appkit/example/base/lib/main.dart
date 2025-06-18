@@ -9,6 +9,7 @@ import 'package:reown_appkit_dapp/pages/settings_page.dart';
 // ignore: depend_on_referenced_packages
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:reown_appkit_dapp/models/page_data.dart';
 import 'package:reown_appkit_dapp/pages/connect_page.dart';
@@ -263,11 +264,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // excludedWalletIds: {},
       // includedWalletIds: {},
       // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
-      getBalanceFallback: () async {
-        // This method will be triggered if getting the balance from our blockchain API fails
-        // You could place here your own getBalance method
-        return 0.0;
-      },
+      getBalanceFallback: getBalanceFallback,
       disconnectOnDispose: true,
       customWallets: [
         ReownAppKitModalWalletInfo(
@@ -365,26 +362,35 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<double> getBalanceFallback() async {
+    final chainId = _appKitModal!.selectedChain!.chainId;
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
+      namespace,
+      chainId,
+    );
+    if (namespace == 'stacks') {
+      try {
+        final address = _appKitModal!.session!.getAddress('stacks');
+        final url =
+            '${chainInfo!.rpcUrl}/extended/v1/address/$address/balances';
+        final response = await http.get(Uri.parse(url));
+
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          final balance = data['stx']?['balance'] ?? '0';
+          // Convert from microSTX to STX
+          return double.parse(balance) / 1000000;
+        }
+      } catch (e) {
+        debugPrint('Error fetching Stacks balance: $e');
+      }
+    }
+    return 0.0;
+  }
+
   // Adds or remove supported networks based on linkMode
   void _addOrRemoveNetworks(bool linkMode) {
-    ReownAppKitModalNetworks.addSupportedNetworks('eip155', [
-      ReownAppKitModalNetworkInfo(
-        name: 'Base Sepolia',
-        chainId: '84531',
-        currency: 'SEP',
-        rpcUrl: 'https://sepolia.base.org',
-        explorerUrl: 'https://sepolia.basescan.org/',
-        isTestNetwork: true,
-      ),
-      ReownAppKitModalNetworkInfo(
-        name: 'Sonic Blaze Testnet',
-        chainId: '57054',
-        currency: 'wS',
-        rpcUrl: 'https://rpc.blaze.soniclabs.com/',
-        explorerUrl: 'https://testnet.sonicscan.org/',
-        isTestNetwork: true,
-      ),
-    ]);
     if (linkMode) {
       // When linkMode is true, the application operates in "Link Mode",
       // which is designed to support only EVM-compatible networks.
@@ -397,7 +403,7 @@ class _MyHomePageState extends State<MyHomePage> {
           name: 'Polkadot',
           chainId: '91b171bb158e2d3848fa23a9f1c25182',
           chainIcon:
-              'https://cdn-icons-png.flaticon.com/128/12114/12114230.png',
+              'https://pbs.twimg.com/profile_images/1823442967664717824/SRcyofz5_400x400.jpg',
           currency: 'DOT',
           rpcUrl: 'wss://rpc.polkadot.io',
           explorerUrl: 'https://polkadot.subscan.io',
@@ -416,7 +422,7 @@ class _MyHomePageState extends State<MyHomePage> {
           name: 'Tron',
           chainId: '0x2b6653dc',
           chainIcon:
-              'https://cdn-icons-png.flaticon.com/512/12114/12114250.png',
+              'https://pbs.twimg.com/profile_images/1761904730668675072/v98T7vRL_400x400.jpg',
           currency: 'TRX',
           rpcUrl: 'https://api.trongrid.io',
           explorerUrl: 'https://tronscan.org',
@@ -437,7 +443,8 @@ class _MyHomePageState extends State<MyHomePage> {
           currency: 'EGLD',
           rpcUrl: 'https://api.multiversx.com',
           explorerUrl: 'https://explorer.multiversx.com',
-          chainIcon: 'https://avatars.githubusercontent.com/u/114073177',
+          chainIcon:
+              'https://pbs.twimg.com/profile_images/1930193204848017408/y4SIVeu8_400x400.jpg',
         ),
       ]);
       ReownAppKitModalNetworks.addSupportedNetworks('near', [
@@ -448,7 +455,7 @@ class _MyHomePageState extends State<MyHomePage> {
           rpcUrl: 'https://rpc.mainnet.near.org',
           explorerUrl: 'https://nearblocks.io',
           chainIcon:
-              'https://pages.near.org/wp-content/uploads/2023/11/NEAR_token.png',
+              'https://pbs.twimg.com/profile_images/1933192512342233088/3ccXhgUx_400x400.jpg',
         ),
         ReownAppKitModalNetworkInfo(
           name: 'Near Testnet',
@@ -468,7 +475,26 @@ class _MyHomePageState extends State<MyHomePage> {
           explorerUrl:
               'https://www.mintscan.io/cosmos/', // 'https://www.mintscan.io',
           chainIcon:
-              'https://s2.coinmarketcap.com/static/img/coins/200x200/3794.png',
+              'https://pbs.twimg.com/profile_images/1910273399282159616/OLSiIjEx_400x400.png',
+        ),
+      ]);
+      ReownAppKitModalNetworks.addSupportedNetworks('stacks', [
+        ReownAppKitModalNetworkInfo(
+          name: 'Stacks Mainnet',
+          chainId: 'stacks:1',
+          currency: 'STX',
+          rpcUrl: 'https://api.hiro.so',
+          explorerUrl: 'https://explorer.hiro.so',
+          chainIcon:
+              'https://pbs.twimg.com/profile_images/1764968185399267328/lrmnHOuN_400x400.jpg',
+        ),
+        ReownAppKitModalNetworkInfo(
+          name: 'Stacks Testnet',
+          chainId: 'stacks:2147483648',
+          currency: 'STX',
+          rpcUrl: 'https://api.testnet.hiro.so',
+          explorerUrl: 'https://explorer.hiro.so',
+          isTestNetwork: true,
         ),
       ]);
     }

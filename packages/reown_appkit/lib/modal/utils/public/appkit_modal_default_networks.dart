@@ -193,6 +193,22 @@ class ReownAppKitModalNetworks {
         explorerUrl: 'https://testnet.bscscan.com',
         isTestNetwork: true,
       ),
+      ReownAppKitModalNetworkInfo(
+        name: 'Base Sepolia',
+        chainId: '84531',
+        currency: 'SEP',
+        rpcUrl: 'https://sepolia.base.org',
+        explorerUrl: 'https://sepolia.basescan.org/',
+        isTestNetwork: true,
+      ),
+      ReownAppKitModalNetworkInfo(
+        name: 'Sonic Blaze Testnet',
+        chainId: '57054',
+        currency: 'wS',
+        rpcUrl: 'https://rpc.blaze.soniclabs.com/',
+        explorerUrl: 'https://testnet.sonicscan.org/',
+        isTestNetwork: true,
+      ),
     ],
     NetworkUtils.solana: [
       ReownAppKitModalNetworkInfo(
@@ -378,6 +394,7 @@ class ReownAppKitModalNetworks {
     try {
       final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
       final network = getNetworkInfo(namespace, chainId);
+      if (network?.isTestNetwork == true) return '';
       if ((network?.chainIcon ?? '').isNotEmpty) {
         return network!.chainIcon!;
       }
