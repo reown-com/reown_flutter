@@ -43,7 +43,7 @@ class Stacks {
         }
 
         fun getAddress(params: Any?, result: MethodChannel.Result) {
-            val dict = params as? Map<*, *> ?: return result.error("signMessage", "Invalid parameters: not a map", null)
+            val dict = params as? Map<*, *> ?: return result.error("Stacks.getAddress", "Invalid parameters: not a map", null)
 
             val wallet = dict["wallet"] as? String ?: return errorMissing("wallet", params, result)
             val version = dict["version"] as? String ?: return errorMissing("version", params, result) // plain message
@@ -53,8 +53,7 @@ class Stacks {
         }
 
         fun signMessage(params: Any?, result: MethodChannel.Result) {
-            Log.d("Stacks", "signMessage: $params")
-            val dict = params as? Map<*, *> ?: return result.error("signMessage", "Invalid parameters: not a map", null)
+            val dict = params as? Map<*, *> ?: return result.error("Stacks.signMessage", "Invalid parameters: not a map", null)
 
             val wallet = dict["wallet"] as? String ?: return errorMissing("wallet", params, result)
             val message = dict["message"] as? String ?: return errorMissing("message", params, result) // plain message
@@ -65,28 +64,35 @@ class Stacks {
 
         fun transferStx(params: Any?, result: MethodChannel.Result) {
             check(::stacksClient.isInitialized) { "Initialize StacksClient before using it." }
-            Log.d("Stacks", "transferStx: $params")
 
-            val dict = params as? Map<*, *> ?: return result.error("transferStx", "Invalid parameters: not a map", null)
+            val dict = params as? Map<*, *> ?: return result.error("Stacks.transferStx", "Invalid parameters: not a map", null)
 
             val wallet = dict["wallet"] as? String ?: return errorMissing("wallet", params, result)
             val network = dict["network"] as? String ?: return errorMissing("network", params, result)
             val request = dict["request"] as? Map<*, *> ?: return errorMissing("request", params, result)
 
-            val amount = request["amount"] as? ULong ?: return errorMissing("request.amount", params, result)
-            val memo = request["memo"] as? String ?: return errorMissing("request.memo", params, result)
+            val amount = request["amount"]?.toString()?.toULongOrNull() ?: return errorMissing("request.amount", params, result)
             val recipient = request["recipient"] as? String ?: return errorMissing("request.recipient", params, result)
+            val memo = request["memo"] as? String?
 
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    val response = stacksClient.transferStx(wallet, network, TransferStxRequest(amount, memo, recipient))
+                    val response = stacksClient.transferStx(
+                        wallet = wallet,
+                        network = network,
+                        request = TransferStxRequest(
+                            amount = amount,
+                            memo = memo ?: "",
+                            recipient = recipient,
+                        )
+                    )
                     val resultMap = mapOf(
                         "transaction" to response.transaction,
                         "txid" to response.txid
                     )
                     result.success(resultMap)
                 } catch (e: Exception) {
-                    result.error("Stacks.transferStx", e.message, null)
+                    result.error("Stacks.transferStx error", e.message, null)
                 }
             }
         }

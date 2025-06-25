@@ -3032,12 +3032,12 @@ class ReownSign implements IReownSign {
       case 'stacks':
         try {
           final result = (response.result as Map<String, dynamic>);
-          final txId = ReownCoreUtils.recursiveSearchForMapKey(
+          final txid = ReownCoreUtils.recursiveSearchForMapKey(
             result,
-            'txId',
+            'txid',
           );
-          if (txId != null) {
-            return <String>[txId];
+          if (txid != null) {
+            return <String>[txid];
           }
         } catch (e) {
           core.logger.e('[$runtimeType] _collectHashes: stacks, $e');

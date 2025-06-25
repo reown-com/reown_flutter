@@ -76,7 +76,11 @@ class KeyService extends IKeyService {
     if (value.contains(':')) {
       namespace = NamespaceUtils.getNamespaceFromChain(value);
     }
-    return _keys.where((e) => e.namespace == namespace).toList();
+    final keys = [
+      ..._keys.where((e) => e.namespace == namespace),
+      ..._keys.where((e) => e.namespace == '${namespace}_test'),
+    ];
+    return [keys.firstWhere((e) => e.chains.contains(value))];
   }
 
   @override

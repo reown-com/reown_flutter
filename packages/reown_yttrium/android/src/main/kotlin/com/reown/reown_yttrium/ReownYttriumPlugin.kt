@@ -31,11 +31,11 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
       "ca_prepareDetailed" -> ChainAbstraction.prepareDetailed(call.arguments, result)
       "ca_execute" -> ChainAbstraction.execute(call.arguments, result)
       // Stacks methods
-      "stacks_init" -> Stacks.initialize(applicationContext, call.arguments, result)
-      "stacks_generateWallet" -> Stacks.generateWallet(result)
-      "stacks_getAddress" -> Stacks.getAddress(call.arguments, result)
-      "stacks_signMessage" -> Stacks.signMessage(call.arguments, result)
-      "stacks_transferStx" -> Stacks.transferStx(call.arguments, result)
+      "stx_init" -> Stacks.initialize(applicationContext, call.arguments, result)
+      "stx_generateWallet" -> Stacks.generateWallet(result)
+      "stx_getAddress" -> Stacks.getAddress(call.arguments, result)
+      "stx_signMessage" -> Stacks.signMessage(call.arguments, result)
+      "stx_transferStx" -> Stacks.transferStx(call.arguments, result)
       //
       else -> result.notImplemented()
     }

@@ -44,7 +44,7 @@ class MethodChannelStacks {
   }) async {
     try {
       final String? result = await methodChannel.invokeMethod<String>(
-        'stacks_getAddress',
+        'stx_getAddress',
         {
           'wallet': wallet,
           'version': version,
@@ -52,7 +52,7 @@ class MethodChannelStacks {
       );
       return result!;
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] stacks_getAddress $e');
+      debugPrint('[$runtimeType] stx_getAddress $e');
       rethrow;
     }
   }
@@ -63,7 +63,7 @@ class MethodChannelStacks {
   }) async {
     try {
       final String? result = await methodChannel.invokeMethod<String>(
-        'stacks_signMessage',
+        'stx_signMessage',
         {
           'wallet': wallet,
           'message': message,
@@ -71,7 +71,7 @@ class MethodChannelStacks {
       );
       return result!;
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] stacks_signMessage $e');
+      debugPrint('[$runtimeType] stx_signMessage $e');
       rethrow;
     }
   }
@@ -84,7 +84,7 @@ class MethodChannelStacks {
     try {
       final Map<String, dynamic>? result =
           await methodChannel.invokeMethod<Map<String, dynamic>>(
-        'stacks_transferStx',
+        'stx_transferStx',
         {
           'wallet': wallet,
           'network': network,
@@ -93,7 +93,7 @@ class MethodChannelStacks {
       );
       return result!;
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] stacks_transferStx $e');
+      debugPrint('[$runtimeType] stx_transferStx $e');
       rethrow;
     }
   }

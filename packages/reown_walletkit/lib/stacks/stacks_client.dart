@@ -73,6 +73,10 @@ class StacksClient implements IStacksClient {
       );
     } catch (e) {
       core.logger.e('[$runtimeType] signMessage $e');
+      final jsonError = RegExp(r'({.*})').firstMatch(e.toString())?.group(1);
+      if (jsonError != null) {
+        throw JsonRpcError(code: 0, message: jsonError);
+      }
       rethrow;
     }
   }
@@ -94,6 +98,10 @@ class StacksClient implements IStacksClient {
       );
     } catch (e) {
       core.logger.e('[$runtimeType] transferStx $e');
+      final jsonError = RegExp(r'({.*})').firstMatch(e.toString())?.group(1);
+      if (jsonError != null) {
+        throw JsonRpcError(code: 0, message: jsonError);
+      }
       rethrow;
     }
   }

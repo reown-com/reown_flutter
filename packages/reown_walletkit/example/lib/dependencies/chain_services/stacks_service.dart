@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
@@ -12,15 +11,15 @@ import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
 
 enum SupportedStacksMethods {
-  stacksSignMessage,
-  stacksStxTransfer;
+  stxSignMessage,
+  stxTransferStx;
 
   String get name {
     switch (this) {
-      case stacksSignMessage:
-        return 'stacks_signMessage';
-      case stacksStxTransfer:
-        return 'stacks_stxTransfer';
+      case stxSignMessage:
+        return 'stx_signMessage';
+      case stxTransferStx:
+        return 'stx_transferStx';
     }
   }
 }
@@ -30,8 +29,8 @@ class StacksService {
   late final ReownWalletKit _walletKit;
 
   Map<String, dynamic Function(String, dynamic)> get stacksRequestHandlers => {
-        SupportedStacksMethods.stacksSignMessage.name: stacksSignMessage,
-        SupportedStacksMethods.stacksStxTransfer.name: stacksStxTransfer,
+        SupportedStacksMethods.stxSignMessage.name: stxSignMessage,
+        SupportedStacksMethods.stxTransferStx.name: stxTransferStx,
       };
 
   StacksService({required this.chainSupported}) {
@@ -48,8 +47,8 @@ class StacksService {
     _walletKit.onSessionRequest.subscribe(_onSessionRequest);
   }
 
-  Future<void> stacksSignMessage(String topic, dynamic parameters) async {
-    debugPrint('[SampleWallet] stacksSignMessage: $parameters');
+  Future<void> stxSignMessage(String topic, dynamic parameters) async {
+    debugPrint('[SampleWallet] stxSignMessage: $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
     var response = JsonRpcResponse(
       id: pRequest.id,
@@ -59,32 +58,32 @@ class StacksService {
     try {
       final params = parameters as Map<String, dynamic>;
       final message = params['message'].toString();
-      final pubkey = params['pubkey'].toString();
+      final address = params['address'].toString();
 
       if (await MethodsUtils.requestApproval(
         message,
         method: pRequest.method,
         chainId: pRequest.chainId,
-        address: pubkey,
+        address: address,
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
       )) {
         final keys = GetIt.I<IKeyService>().getKeysForChain(
           chainSupported.chainId,
         );
-        final privateKey = keys[0].privateKey;
-        // final publicKey = keys[0].publicKey;
+        if (address != keys[0].address) {
+          throw Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
+        }
 
+        final privateKey = keys[0].privateKey;
         final signature = await _walletKit.stacksClient.signMessage(
           wallet: privateKey,
           message: message,
         );
 
-        // TODO Check response format
         response = response.copyWith(
           result: {
             'signature': signature,
-            'publicKey': pubkey,
           },
         );
       } else {
@@ -97,7 +96,7 @@ class StacksService {
         );
       }
     } catch (e) {
-      debugPrint('[SampleWallet] stacksSignMessage error $e');
+      debugPrint('[SampleWallet] stxSignMessage error $e');
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
         error: JsonRpcError(
@@ -110,28 +109,29 @@ class StacksService {
     _handleResponseForTopic(topic, response);
   }
 
-  Future<void> stacksStxTransfer(String topic, dynamic parameters) async {
-    debugPrint('[SampleWallet] stacksStxTransfer: ${jsonEncode(parameters)}');
+  Future<void> stxTransferStx(String topic, dynamic parameters) async {
+    debugPrint('[SampleWallet] stxTransferStx: ${jsonEncode(parameters)}');
     final pRequest = _walletKit.pendingRequests.getAll().last;
     var response = JsonRpcResponse(
       id: pRequest.id,
       jsonrpc: '2.0',
     );
 
-    final params = parameters as Map<String, dynamic>;
-    final pubkey = params['pubkey'] as String;
-    final recipient = params['recipient'] as String;
-    final amount = params['amount'] as BigInt;
+    try {
+      final params = parameters as Map<String, dynamic>;
+      final sender = params['sender'] as String;
+      final recipient = params['recipient'] as String;
+      final amount = BigInt.parse(params['amount'].toString());
+      // final amount = BigInt.parse('10');
 
-    if (await MethodsUtils.requestApproval(
-      jsonEncode(params),
-      method: pRequest.method,
-      chainId: pRequest.chainId,
-      address: pubkey,
-      transportType: pRequest.transportType.name,
-      verifyContext: pRequest.verifyContext,
-    )) {
-      try {
+      if (await MethodsUtils.requestApproval(
+        jsonEncode(params),
+        method: pRequest.method,
+        chainId: pRequest.chainId,
+        address: sender,
+        transportType: pRequest.transportType.name,
+        verifyContext: pRequest.verifyContext,
+      )) {
         final keys = GetIt.I<IKeyService>().getKeysForChain(
           chainSupported.chainId,
         );
@@ -143,25 +143,19 @@ class StacksService {
           request: TransferStxRequest(
             amount: amount,
             recipient: recipient,
-            // memo: 'Memo example',
+            // memo: 'Memo example', // Optional
           ),
         );
 
         response = response.copyWith(
-          result: result.toJson(),
+          result: {
+            'txid': result.txid,
+            'transaction': result.transaction,
+          },
         );
-      } on PlatformException catch (e) {
-        debugPrint('[SampleWallet] stacksStxTransfer error $e');
-        response = response.copyWith(
-          error: JsonRpcError(
-            code: -1,
-            message: '${e.code}: ${e.message}',
-          ),
-        );
-      } catch (e) {
-        debugPrint('[SampleWallet] stacksStxTransfer error $e');
-        // print(e);
-        final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
+      } else {
+        // User rejected manually
+        final error = Errors.getSdkError(Errors.USER_REJECTED);
         response = response.copyWith(
           error: JsonRpcError(
             code: error.code,
@@ -169,8 +163,14 @@ class StacksService {
           ),
         );
       }
-    } else {
-      final error = Errors.getSdkError(Errors.USER_REJECTED);
+    } on JsonRpcError catch (e) {
+      debugPrint('[SampleWallet] stxTransferStx error $e');
+      response = response.copyWith(
+        error: e,
+      );
+    } catch (e) {
+      debugPrint('[SampleWallet] stxTransferStx error $e');
+      final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
         error: JsonRpcError(
           code: error.code,
