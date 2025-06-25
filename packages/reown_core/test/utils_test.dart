@@ -192,20 +192,20 @@ void main() {
           'f007551f169722ce74104d6673bd46ce193c624b8550889526d1b93820d725f7');
     });
 
-    test('should parse stacks_stxTransfer and extract txId', () {
+    test('should parse stx_transferStx and extract txid', () {
       final jsonRPCResponse = {
         'jsonrpc': '2.0',
         'id': 1,
         'result': {
-          'txId': 'stack_tx_id',
-          'txRaw': 'raw_tx_hex',
+          'txid': 'stack_tx_id',
+          'transaction': 'raw_tx_hex',
         },
       };
       final response = JsonRpcResponse.fromJson(jsonRPCResponse);
       final result = (response.result as Map<String, dynamic>);
       final txid = ReownCoreUtils.recursiveSearchForMapKey(
         result,
-        'txId',
+        'txid',
       );
       expect(txid, 'stack_tx_id');
     });
