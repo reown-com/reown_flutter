@@ -3022,9 +3022,7 @@ class ReownSign implements IReownSign {
             result,
             'txid',
           );
-          if (txid != null) {
-            return <String>[txid];
-          }
+          return <String>[txid];
         } catch (e) {
           core.logger.e('[$runtimeType] _collectHashes: bip122, $e');
         }
@@ -3036,9 +3034,7 @@ class ReownSign implements IReownSign {
             result,
             'txid',
           );
-          if (txid != null) {
-            return <String>[txid];
-          }
+          return List<String>.from([txid]);
         } catch (e) {
           core.logger.e('[$runtimeType] _collectHashes: stacks, $e');
         }

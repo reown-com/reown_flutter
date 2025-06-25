@@ -58,7 +58,7 @@ class TVFData {
     'near_signTransaction',
     'near_signTransactions',
     // Stacks
-    'stacks_stxTransfer',
+    'stx_transferStx',
     // Bitcoin
     'sendTransfer',
     // Hedera

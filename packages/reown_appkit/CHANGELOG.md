@@ -1,3 +1,7 @@
+## 1.4.6+1
+
+- Dependency updates
+
 ## 1.4.6
 
 - Fix an issue where disabling installed wallets wasn't working

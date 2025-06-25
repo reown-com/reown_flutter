@@ -186,7 +186,8 @@ jobs:
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_sign): Update reown_core to ^${{ needs.publish-core.outputs.package_version }} [skip ci]"
-            git push
+            # ⚠️ force push is used only because reown organization allows direct push only to allowed members
+            git push --force
           else
             echo "No changes to commit in reown_sign/pubspec.yaml"
           fi
@@ -303,7 +304,8 @@ jobs:
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_appkit): Update core/sign dependencies [skip ci]"
-            git push
+            # ⚠️ force push is used only because reown organization allows direct push only to allowed members
+            git push --force
           else
             echo "No changes to commit in reown_appkit/pubspec.yaml"
           fi
@@ -417,7 +419,8 @@ jobs:
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_walletkit): Update core/sign/yttrium dependencies [skip ci]"
-            git push
+            # ⚠️ force push is used only because reown organization allows direct push only to allowed members
+            git push --force
           else
             echo "No changes to commit in reown_walletkit/pubspec.yaml"
           fi

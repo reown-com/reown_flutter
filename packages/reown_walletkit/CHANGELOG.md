@@ -2,6 +2,9 @@
 
 - Yttrium update
 - Stacks support implementation
+## 1.1.6+1
+
+- Dependency updates
 
 ## 1.1.6
 
