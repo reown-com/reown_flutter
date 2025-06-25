@@ -1,3 +1,7 @@
+## 1.1.6+1
+
+- Dependency updates
+
 ## 1.1.6
 
 - General security improvements and verify API V4 readiness

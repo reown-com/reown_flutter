@@ -1,4 +1,4 @@
-## 1.1.6
+## 1.1.6+1
 
 - General security improvements and verify API V4 readiness
 
