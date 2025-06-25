@@ -12,7 +12,7 @@ dependencies:
   event: ^3.1.0
   flutter:
     sdk: flutter
-  reown_core: ^1.1.6
+  reown_core: ^1.1.6+1
   reown_sign: ^1.1.7
   reown_yttrium: ^0.0.1
 
