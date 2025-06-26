@@ -38,4 +38,20 @@ abstract class IStacksClient {
     required String network,
     required TransferStxRequest request,
   });
+
+  /// ---------------------------------
+  /// ⚠️ This method is experimental. Use with caution.
+  /// ---------------------------------
+  Future<StacksAccount> getAccount({
+    required String principal,
+    required String network,
+  });
+
+  /// ---------------------------------
+  /// ⚠️ This method is experimental. Use with caution.
+  /// ---------------------------------
+  Future<FeeEstimation> estimateFees({
+    required String transaction_payload,
+    required String network,
+  });
 }

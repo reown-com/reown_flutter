@@ -24,4 +24,14 @@ abstract class IStacksClient {
     required String network,
     required TransferStxRequest request,
   });
+
+  Future<StacksAccount> getAccount({
+    required String principal,
+    required String network,
+  });
+
+  Future<FeeEstimation> estimateFees({
+    required String transaction_payload,
+    required String network,
+  });
 }

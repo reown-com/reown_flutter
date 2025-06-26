@@ -236,7 +236,7 @@ Future<SessionRequestParams?> getParams(
         method: method,
         params: Cosmos.signAmino(address, chainData.chainId),
       );
-    case 'stacks_signMessage':
+    case 'stx_signMessage':
       return SessionRequestParams(
         method: method,
         params: {
@@ -244,7 +244,7 @@ Future<SessionRequestParams?> getParams(
           'message': 'This is a message to be signed for Stacks',
         },
       );
-    case 'stacks_stxTransfer':
+    case 'stx_transferStx':
       return SessionRequestParams(
         method: method,
         params: {

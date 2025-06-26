@@ -105,4 +105,44 @@ class StacksClient implements IStacksClient {
       rethrow;
     }
   }
+
+  @override
+  Future<StacksAccount> getAccount({
+    required String principal,
+    required String network,
+  }) async {
+    try {
+      return await _reownYttrium.stacksClient.getAccount(
+        principal: principal,
+        network: network,
+      );
+    } catch (e) {
+      core.logger.e('[$runtimeType] getAccount $e');
+      final jsonError = RegExp(r'({.*})').firstMatch(e.toString())?.group(1);
+      if (jsonError != null) {
+        throw JsonRpcError(code: 0, message: jsonError);
+      }
+      rethrow;
+    }
+  }
+
+  @override
+  Future<FeeEstimation> estimateFees({
+    required String transaction_payload,
+    required String network,
+  }) async {
+    try {
+      return await _reownYttrium.stacksClient.estimateFees(
+        transaction_payload: transaction_payload,
+        network: network,
+      );
+    } catch (e) {
+      core.logger.e('[$runtimeType] estimateFees $e');
+      final jsonError = RegExp(r'({.*})').firstMatch(e.toString())?.group(1);
+      if (jsonError != null) {
+        throw JsonRpcError(code: 0, message: jsonError);
+      }
+      rethrow;
+    }
+  }
 }

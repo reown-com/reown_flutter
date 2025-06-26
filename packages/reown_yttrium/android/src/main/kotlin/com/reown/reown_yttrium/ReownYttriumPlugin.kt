@@ -36,6 +36,8 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
       "stx_getAddress" -> Stacks.getAddress(call.arguments, result)
       "stx_signMessage" -> Stacks.signMessage(call.arguments, result)
       "stx_transferStx" -> Stacks.transferStx(call.arguments, result)
+      "stx_getAccount" -> Stacks.getAccount(call.arguments, result)
+      "stx_estimateFees" -> Stacks.estimateFees(call.arguments, result)
       //
       else -> result.notImplemented()
     }

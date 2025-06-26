@@ -3034,7 +3034,7 @@ class ReownSign implements IReownSign {
             result,
             'txid',
           );
-          return List<String>.from([txid]);
+          return <String>[txid];
         } catch (e) {
           core.logger.e('[$runtimeType] _collectHashes: stacks, $e');
         }

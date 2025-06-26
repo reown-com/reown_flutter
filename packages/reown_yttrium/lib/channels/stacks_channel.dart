@@ -13,7 +13,7 @@ class MethodChannelStacks {
   }) async {
     try {
       final bool? result = await methodChannel.invokeMethod<bool>(
-        'stacks_init',
+        'stx_init',
         {
           'projectId': projectId,
           'pulseMetadata': pulseMetadata.toJson(),
@@ -21,7 +21,7 @@ class MethodChannelStacks {
       );
       return result!;
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] stacks_init $e');
+      debugPrint('[$runtimeType] stx_init $e');
       rethrow;
     }
   }
@@ -29,11 +29,11 @@ class MethodChannelStacks {
   Future<String> generateWallet() async {
     try {
       final String? result = await methodChannel.invokeMethod<String>(
-        'stacks_generateWallet',
+        'stx_generateWallet',
       );
       return result!;
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] stacks_generateWallet $e');
+      debugPrint('[$runtimeType] stx_generateWallet $e');
       rethrow;
     }
   }
@@ -94,6 +94,46 @@ class MethodChannelStacks {
       return result!;
     } on PlatformException catch (e) {
       debugPrint('[$runtimeType] stx_transferStx $e');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> getAccount({
+    required String principal,
+    required String network,
+  }) async {
+    try {
+      final Map<String, dynamic>? result =
+          await methodChannel.invokeMethod<Map<String, dynamic>>(
+        'stx_getAccount',
+        {
+          'principal': principal,
+          'network': network,
+        },
+      );
+      return result!;
+    } on PlatformException catch (e) {
+      debugPrint('[$runtimeType] stx_getAccount $e');
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> estimateFees({
+    required String transaction_payload,
+    required String network,
+  }) async {
+    try {
+      final Map<String, dynamic>? result =
+          await methodChannel.invokeMethod<Map<String, dynamic>>(
+        'stx_estimateFees',
+        {
+          'transaction_payload': transaction_payload,
+          'network': network,
+        },
+      );
+      return result!;
+    } on PlatformException catch (e) {
+      debugPrint('[$runtimeType] stx_estimateFees $e');
       rethrow;
     }
   }

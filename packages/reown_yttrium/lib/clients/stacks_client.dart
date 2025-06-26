@@ -80,4 +80,39 @@ class StacksClient implements IStacksClient {
       rethrow;
     }
   }
+
+  @override
+  Future<StacksAccount> getAccount({
+    required String principal,
+    required String network,
+  }) async {
+    try {
+      final response =
+          await ReownYttriumPlatformInterface.instance.stacksChannel.getAccount(
+        principal: principal,
+        network: network,
+      );
+      return StacksAccount.fromJson(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<FeeEstimation> estimateFees({
+    required String transaction_payload,
+    required String network,
+  }) async {
+    try {
+      final response = await ReownYttriumPlatformInterface
+          .instance.stacksChannel
+          .estimateFees(
+        transaction_payload: transaction_payload,
+        network: network,
+      );
+      return FeeEstimation.fromJson(response);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

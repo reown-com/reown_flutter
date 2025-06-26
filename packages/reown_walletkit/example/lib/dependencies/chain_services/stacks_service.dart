@@ -122,7 +122,7 @@ class StacksService {
       final sender = params['sender'] as String;
       final recipient = params['recipient'] as String;
       final amount = BigInt.parse(params['amount'].toString());
-      // final amount = BigInt.parse('10');
+      // final amount = BigInt.parse('10000000');
 
       if (await MethodsUtils.requestApproval(
         jsonEncode(params),
@@ -136,6 +136,12 @@ class StacksService {
           chainSupported.chainId,
         );
         final privateKey = keys[0].privateKey;
+
+        // final account = await _walletKit.stacksClient.getAccount(
+        //   principal: keys[0].address,
+        //   network: chainSupported.chainId,
+        // );
+        // debugPrint('[SampleWallet] getAccount ${jsonEncode(account.toJson())}');
 
         final result = await _walletKit.stacksClient.transferStx(
           wallet: privateKey,

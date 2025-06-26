@@ -9,8 +9,8 @@ enum StacksEvents {
 
 class Stacks {
   static final Map<StacksMethods, String> methods = {
-    StacksMethods.stacksSignMessage: 'stacks_signMessage',
-    StacksMethods.stacksStxTransfer: 'stacks_stxTransfer'
+    StacksMethods.stacksSignMessage: 'stx_signMessage',
+    StacksMethods.stacksStxTransfer: 'stx_transferStx'
   };
 
   static final List<String> events = [];

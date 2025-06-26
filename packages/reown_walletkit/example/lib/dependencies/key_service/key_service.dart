@@ -80,7 +80,11 @@ class KeyService extends IKeyService {
       ..._keys.where((e) => e.namespace == namespace),
       ..._keys.where((e) => e.namespace == '${namespace}_test'),
     ];
-    return [keys.firstWhere((e) => e.chains.contains(value))];
+    try {
+      return [keys.firstWhere((e) => e.chains.contains(value))];
+    } catch (e) {
+      return _keys.where((e) => e.namespace == namespace).toList();
+    }
   }
 
   @override

@@ -35,3 +35,73 @@ Map<String, dynamic> _$$TransferStxResponseImplToJson(
       'transaction': instance.transaction,
       'txid': instance.txid,
     };
+
+_$StacksAccountImpl _$$StacksAccountImplFromJson(Map<String, dynamic> json) =>
+    _$StacksAccountImpl(
+      balance: json['balance'] as String,
+      locked: json['locked'] as String,
+      unlockHeight: (json['unlock_height'] as num).toInt(),
+      nonce: (json['nonce'] as num).toInt(),
+      balanceProof: json['balance_proof'] as String,
+      nonceProof: json['nonce_proof'] as String,
+    );
+
+Map<String, dynamic> _$$StacksAccountImplToJson(_$StacksAccountImpl instance) =>
+    <String, dynamic>{
+      'balance': instance.balance,
+      'locked': instance.locked,
+      'unlock_height': instance.unlockHeight,
+      'nonce': instance.nonce,
+      'balance_proof': instance.balanceProof,
+      'nonce_proof': instance.nonceProof,
+    };
+
+_$FeeEstimationImpl _$$FeeEstimationImplFromJson(Map<String, dynamic> json) =>
+    _$FeeEstimationImpl(
+      costScalarChangeByByte:
+          (json['cost_scalar_change_by_byte'] as num).toDouble(),
+      estimatedCost: EstimatedCost.fromJson(
+          json['estimated_cost'] as Map<String, dynamic>),
+      estimatedCostScalar: (json['estimated_cost_scalar'] as num).toInt(),
+      estimations: (json['estimations'] as List<dynamic>)
+          .map((e) => Estimation.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$$FeeEstimationImplToJson(_$FeeEstimationImpl instance) =>
+    <String, dynamic>{
+      'cost_scalar_change_by_byte': instance.costScalarChangeByByte,
+      'estimated_cost': instance.estimatedCost.toJson(),
+      'estimated_cost_scalar': instance.estimatedCostScalar,
+      'estimations': instance.estimations.map((e) => e.toJson()).toList(),
+    };
+
+_$EstimatedCostImpl _$$EstimatedCostImplFromJson(Map<String, dynamic> json) =>
+    _$EstimatedCostImpl(
+      readCount: (json['read_count'] as num).toInt(),
+      readLength: (json['read_length'] as num).toInt(),
+      runtime: (json['runtime'] as num).toInt(),
+      writeCount: (json['write_count'] as num).toInt(),
+      writeLength: (json['write_length'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$$EstimatedCostImplToJson(_$EstimatedCostImpl instance) =>
+    <String, dynamic>{
+      'read_count': instance.readCount,
+      'read_length': instance.readLength,
+      'runtime': instance.runtime,
+      'write_count': instance.writeCount,
+      'write_length': instance.writeLength,
+    };
+
+_$EstimationImpl _$$EstimationImplFromJson(Map<String, dynamic> json) =>
+    _$EstimationImpl(
+      fee: (json['fee'] as num).toInt(),
+      feeRate: (json['fee_rate'] as num).toDouble(),
+    );
+
+Map<String, dynamic> _$$EstimationImplToJson(_$EstimationImpl instance) =>
+    <String, dynamic>{
+      'fee': instance.fee,
+      'fee_rate': instance.feeRate,
+    };

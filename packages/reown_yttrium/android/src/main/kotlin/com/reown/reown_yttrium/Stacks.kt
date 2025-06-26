@@ -96,5 +96,72 @@ class Stacks {
                 }
             }
         }
+
+        fun getAccount(params: Any?, result: MethodChannel.Result) {
+            check(::stacksClient.isInitialized) { "Initialize StacksClient before using it." }
+
+            val dict = params as? Map<*, *> ?: return result.error("Stacks.getAccount", "Invalid parameters: not a map", null)
+
+            val network = dict["network"] as? String ?: return errorMissing("network", params, result)
+            val principal = dict["principal"] as? String ?: return errorMissing("principal", params, result)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val response = stacksClient.getAccount(
+                        network = network,
+                        principal = principal
+                    )
+                    val resultMap = mapOf(
+                        "balance" to response.balance,
+                        "locked" to response.locked,
+                        "unlock_height" to response.unlockHeight,
+                        "nonce" to response.nonce,
+                        "balance_proof" to response.balanceProof,
+                        "nonce_proof" to response.nonceProof
+                    )
+                    result.success(resultMap)
+                } catch (e: Exception) {
+                    result.error("Stacks.getAccount error", e.message, null)
+                }
+            }
+        }
+
+        fun estimateFees(params: Any?, result: MethodChannel.Result) {
+            check(::stacksClient.isInitialized) { "Initialize StacksClient before using it." }
+
+            val dict = params as? Map<*, *> ?: return result.error("Stacks.estimateFees", "Invalid parameters: not a map", null)
+
+            val network = dict["network"] as? String ?: return errorMissing("network", params, result)
+            val transactionPayload = dict["transaction_payload"] as? String ?: return errorMissing("transaction_payload", params, result)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val response = stacksClient.estimateFees(
+                        network = network,
+                        transactionPayload = transactionPayload
+                    )
+                    val resultMap = mapOf(
+                        "cost_scalar_change_by_byte" to response.costScalarChangeByByte,
+                        "estimated_cost_scalar" to response.estimatedCostScalar,
+                        "estimated_cost" to mapOf(
+                            "read_count" to response.estimatedCost.readCount,
+                            "read_length" to response.estimatedCost.readLength,
+                            "runtime" to response.estimatedCost.runtime,
+                            "write_count" to response.estimatedCost.writeCount,
+                            "write_length" to response.estimatedCost.writeLength,
+                        ),
+                        "estimations" to response.estimations.map {
+                            mapOf(
+                                "fee" to it.fee,
+                                "fee_rate" to it.feeRate
+                            )
+                        }
+                    )
+                    result.success(resultMap)
+                } catch (e: Exception) {
+                    result.error("Stacks.estimateFees error", e.message, null)
+                }
+            }
+        }
     }
 }
