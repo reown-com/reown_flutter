@@ -7,6 +7,7 @@ part 'stacks.g.dart';
 class TransferStxRequest with _$TransferStxRequest {
   const factory TransferStxRequest({
     required BigInt amount,
+    required String sender,
     required String recipient,
     String? memo,
   }) = _TransferStxRequest;
@@ -31,8 +32,8 @@ class StacksAccount with _$StacksAccount {
   const factory StacksAccount({
     required String balance,
     required String locked,
-    @JsonKey(name: 'unlock_height') required int unlockHeight,
-    required int nonce,
+    @JsonKey(name: 'unlock_height') required String unlockHeight,
+    required String nonce,
     @JsonKey(name: 'balance_proof') required String balanceProof,
     @JsonKey(name: 'nonce_proof') required String nonceProof,
   }) = _StacksAccount;

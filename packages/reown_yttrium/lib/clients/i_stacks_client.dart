@@ -30,8 +30,17 @@ abstract class IStacksClient {
     required String network,
   });
 
-  Future<FeeEstimation> estimateFees({
-    required String transaction_payload,
+  Future<BigInt> transferFees({
     required String network,
   });
+
+  // Future<FeeEstimation> estimateFees({
+  //   required String transaction_payload,
+  //   required String network,
+  // });
+
+  // Future<BigInt> getNonce({
+  //   required String principal,
+  //   required String network,
+  // });
 }

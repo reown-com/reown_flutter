@@ -60,6 +60,23 @@ class StacksService {
       final message = params['message'].toString();
       final address = params['address'].toString();
 
+      // final feeRate = await _walletKit.stacksClient.transferFees(
+      //   network: chainSupported.chainId,
+      // );
+      // debugPrint('[SampleWallet] transferFees $feeRate');
+
+      // final account = await _walletKit.stacksClient.getAccount(
+      //   principal: address,
+      //   network: chainSupported.chainId,
+      // );
+      // debugPrint('[SampleWallet] getAccount ${jsonEncode(account.toJson())}');
+
+      // final nonce = await _walletKit.stacksClient.getNonce(
+      //   principal: address,
+      //   network: chainSupported.chainId,
+      // );
+      // debugPrint('[SampleWallet] getNonce $nonce');
+
       if (await MethodsUtils.requestApproval(
         message,
         method: pRequest.method,
@@ -122,7 +139,7 @@ class StacksService {
       final sender = params['sender'] as String;
       final recipient = params['recipient'] as String;
       final amount = BigInt.parse(params['amount'].toString());
-      // final amount = BigInt.parse('10000000');
+      // final amount = BigInt.parse('1000000');
 
       if (await MethodsUtils.requestApproval(
         jsonEncode(params),
@@ -137,19 +154,14 @@ class StacksService {
         );
         final privateKey = keys[0].privateKey;
 
-        // final account = await _walletKit.stacksClient.getAccount(
-        //   principal: keys[0].address,
-        //   network: chainSupported.chainId,
-        // );
-        // debugPrint('[SampleWallet] getAccount ${jsonEncode(account.toJson())}');
-
         final result = await _walletKit.stacksClient.transferStx(
           wallet: privateKey,
           network: chainSupported.chainId,
           request: TransferStxRequest(
-            amount: amount,
+            sender: sender,
             recipient: recipient,
-            // memo: 'Memo example', // Optional
+            amount: amount,
+            // memo: 'Reown WalletKit for Flutter', // Optional
           ),
         );
 
@@ -180,7 +192,7 @@ class StacksService {
       response = response.copyWith(
         error: JsonRpcError(
           code: error.code,
-          message: error.message,
+          message: '${error.message} $e',
         ),
       );
     }

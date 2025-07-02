@@ -2932,7 +2932,7 @@ class ReownSign implements IReownSign {
             return signatures;
           }
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: solana, $e');
+          core.logger.e('[$runtimeType] _tvf data: solana, $e');
         }
         return null;
       case 'xrpl':
@@ -2946,7 +2946,7 @@ class ReownSign implements IReownSign {
             return List<String>.from([txHash]);
           }
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: xrpl, $e');
+          core.logger.e('[$runtimeType] _tvf data: xrpl, $e');
         }
         return null;
       case 'algo':
@@ -2955,7 +2955,7 @@ class ReownSign implements IReownSign {
           final txHashesList = AlgorandChainUtils.calculateTxIDs(result);
           return List<String>.from([...txHashesList]);
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: algo, $e');
+          core.logger.e('[$runtimeType] _tvf data: algo, $e');
         }
         return null;
       case 'sui':
@@ -2987,7 +2987,7 @@ class ReownSign implements IReownSign {
             }
           }
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: sui, $e');
+          core.logger.e('[$runtimeType] _tvf data: sui, $e');
         }
         return null;
       case 'tron':
@@ -2998,7 +2998,7 @@ class ReownSign implements IReownSign {
             return List<String>.from([txID]);
           }
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: tron, $e');
+          core.logger.e('[$runtimeType] _tvf data: tron, $e');
         }
         return null;
       case 'hedera':
@@ -3012,7 +3012,7 @@ class ReownSign implements IReownSign {
             return List<String>.from([transactionId]);
           }
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: hedera, $e');
+          core.logger.e('[$runtimeType] _tvf data: hedera, $e');
         }
         return null;
       case 'bip122':
@@ -3022,9 +3022,11 @@ class ReownSign implements IReownSign {
             result,
             'txid',
           );
-          return <String>[txid];
+          if (txid != null) {
+            return <String>[txid];
+          }
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: bip122, $e');
+          core.logger.e('[$runtimeType] _tvf data: bip122, $e');
         }
         return null;
       case 'stacks':
@@ -3034,9 +3036,11 @@ class ReownSign implements IReownSign {
             result,
             'txid',
           );
-          return <String>[txid];
+          if (txid != null) {
+            return <String>[txid];
+          }
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: stacks, $e');
+          core.logger.e('[$runtimeType] _tvf data: stacks, $e');
         }
         return null;
       case 'near':
@@ -3045,7 +3049,7 @@ class ReownSign implements IReownSign {
           final hash = NearChainUtils.computeNearHashFromTxBytes(result);
           return <String>[hash];
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: near, $e');
+          core.logger.e('[$runtimeType] _tvf data: near, $e');
         }
         return null;
       case 'polkadot':
@@ -3080,7 +3084,7 @@ class ReownSign implements IReownSign {
             return List<String>.from([hash]);
           }
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: polkadot, $e');
+          core.logger.e('[$runtimeType] _tvf data: polkadot, $e');
         }
         return null;
       case 'cosmos':

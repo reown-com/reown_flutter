@@ -38,8 +38,12 @@ class Stacks {
         }
 
         fun generateWallet(result: MethodChannel.Result) {
-            val response = stacksGenerateWallet()
-            result.success(response) // String
+            try {
+                val response = stacksGenerateWallet()
+                result.success(response) // String
+            } catch (e: Exception) {
+                parseException("Stacks.generateWallet", e, result)
+            }
         }
 
         fun getAddress(params: Any?, result: MethodChannel.Result) {
@@ -48,8 +52,12 @@ class Stacks {
             val wallet = dict["wallet"] as? String ?: return errorMissing("wallet", params, result)
             val version = dict["version"] as? String ?: return errorMissing("version", params, result) // plain message
 
-            val response = stacksGetAddress(wallet, version)
-            result.success(response) // String
+            try {
+                val response = stacksGetAddress(wallet, version)
+                result.success(response) // String
+            } catch (e: Exception) {
+                parseException("Stacks.signMessage", e, result)
+            }
         }
 
         fun signMessage(params: Any?, result: MethodChannel.Result) {
@@ -58,8 +66,12 @@ class Stacks {
             val wallet = dict["wallet"] as? String ?: return errorMissing("wallet", params, result)
             val message = dict["message"] as? String ?: return errorMissing("message", params, result) // plain message
 
-            val response = stacksSignMessage(wallet, message)
-            result.success(response) // String
+            try {
+                val response = stacksSignMessage(wallet, message)
+                result.success(response) // String
+            } catch (e: Exception) {
+                parseException("Stacks.signMessage", e, result)
+            }
         }
 
         fun transferStx(params: Any?, result: MethodChannel.Result) {
@@ -71,6 +83,7 @@ class Stacks {
             val network = dict["network"] as? String ?: return errorMissing("network", params, result)
             val request = dict["request"] as? Map<*, *> ?: return errorMissing("request", params, result)
 
+            val sender = request["sender"] as? String ?: return errorMissing("request.sender", params, result)
             val amount = request["amount"]?.toString()?.toULongOrNull() ?: return errorMissing("request.amount", params, result)
             val recipient = request["recipient"] as? String ?: return errorMissing("request.recipient", params, result)
             val memo = request["memo"] as? String?
@@ -81,6 +94,7 @@ class Stacks {
                         wallet = wallet,
                         network = network,
                         request = TransferStxRequest(
+                            sender = sender,
                             amount = amount,
                             memo = memo ?: "",
                             recipient = recipient,
@@ -88,11 +102,11 @@ class Stacks {
                     )
                     val resultMap = mapOf(
                         "transaction" to response.transaction,
-                        "txid" to response.txid
+                        "txid" to if (response.txid.startsWith("0x")) response.txid else "0x${response.txid}"
                     )
                     result.success(resultMap)
                 } catch (e: Exception) {
-                    result.error("Stacks.transferStx error", e.message, null)
+                    parseException("Stacks.transferStx", e, result)
                 }
             }
         }
@@ -114,53 +128,105 @@ class Stacks {
                     val resultMap = mapOf(
                         "balance" to response.balance,
                         "locked" to response.locked,
-                        "unlock_height" to response.unlockHeight,
-                        "nonce" to response.nonce,
+                        "unlock_height" to response.unlockHeight.toString(),
+                        "nonce" to response.nonce.toString(),
                         "balance_proof" to response.balanceProof,
                         "nonce_proof" to response.nonceProof
                     )
                     result.success(resultMap)
                 } catch (e: Exception) {
-                    result.error("Stacks.getAccount error", e.message, null)
+                    parseException("Stacks.getAccount", e, result)
                 }
             }
         }
 
-        fun estimateFees(params: Any?, result: MethodChannel.Result) {
+        fun transferFeeRate(params: Any?, result: MethodChannel.Result) {
             check(::stacksClient.isInitialized) { "Initialize StacksClient before using it." }
 
-            val dict = params as? Map<*, *> ?: return result.error("Stacks.estimateFees", "Invalid parameters: not a map", null)
+            val dict = params as? Map<*, *> ?: return result.error("Stacks.transferFeeRate", "Invalid parameters: not a map", null)
 
             val network = dict["network"] as? String ?: return errorMissing("network", params, result)
-            val transactionPayload = dict["transaction_payload"] as? String ?: return errorMissing("transaction_payload", params, result)
 
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    val response = stacksClient.estimateFees(
+                    val response = stacksClient.transferFees(
                         network = network,
-                        transactionPayload = transactionPayload
                     )
-                    val resultMap = mapOf(
-                        "cost_scalar_change_by_byte" to response.costScalarChangeByByte,
-                        "estimated_cost_scalar" to response.estimatedCostScalar,
-                        "estimated_cost" to mapOf(
-                            "read_count" to response.estimatedCost.readCount,
-                            "read_length" to response.estimatedCost.readLength,
-                            "runtime" to response.estimatedCost.runtime,
-                            "write_count" to response.estimatedCost.writeCount,
-                            "write_length" to response.estimatedCost.writeLength,
-                        ),
-                        "estimations" to response.estimations.map {
-                            mapOf(
-                                "fee" to it.fee,
-                                "fee_rate" to it.feeRate
-                            )
-                        }
-                    )
-                    result.success(resultMap)
+                    result.success(response.toString())
                 } catch (e: Exception) {
-                    result.error("Stacks.estimateFees error", e.message, null)
+                    parseException("Stacks.transferFeeRate", e, result)
                 }
+            }
+        }
+
+//        fun estimateFees(params: Any?, result: MethodChannel.Result) {
+//            check(::stacksClient.isInitialized) { "Initialize StacksClient before using it." }
+//
+//            val dict = params as? Map<*, *> ?: return result.error("Stacks.estimateFees", "Invalid parameters: not a map", null)
+//
+//            val network = dict["network"] as? String ?: return errorMissing("network", params, result)
+//            val transactionPayload = dict["transaction_payload"] as? String ?: return errorMissing("transaction_payload", params, result)
+//
+//            CoroutineScope(Dispatchers.IO).launch {
+//                try {
+//                    val response = stacksClient.estimateFees(
+//                        network = network,
+//                        transactionPayload = transactionPayload
+//                    )
+//                    val resultMap = mapOf(
+//                        "cost_scalar_change_by_byte" to response.costScalarChangeByByte,
+//                        "estimated_cost_scalar" to response.estimatedCostScalar,
+//                        "estimated_cost" to mapOf(
+//                            "read_count" to response.estimatedCost.readCount,
+//                            "read_length" to response.estimatedCost.readLength,
+//                            "runtime" to response.estimatedCost.runtime,
+//                            "write_count" to response.estimatedCost.writeCount,
+//                            "write_length" to response.estimatedCost.writeLength,
+//                        ),
+//                        "estimations" to response.estimations.map {
+//                            mapOf(
+//                                "fee" to it.fee,
+//                                "fee_rate" to it.feeRate
+//                            )
+//                        }
+//                    )
+//                    result.success(resultMap)
+//                } catch (e: Exception) {
+//                    result.error("Stacks.estimateFees error", e.message, null)
+//                }
+//            }
+//        }
+
+//        fun getNonce(params: Any?, result: MethodChannel.Result) {
+//            check(::stacksClient.isInitialized) { "Initialize StacksClient before using it." }
+//
+//            val dict = params as? Map<*, *> ?: return result.error("Stacks.getNonce", "Invalid parameters: not a map", null)
+//
+//            val network = dict["network"] as? String ?: return errorMissing("network", params, result)
+//            val principal = dict["principal"] as? String ?: return errorMissing("principal", params, result)
+//
+//            CoroutineScope(Dispatchers.IO).launch {
+//                try {
+//                    val response = stacksClient.getNonce(
+//                        network = network,
+//                        principal = principal
+//                    )
+//                    result.success(response)
+//                } catch (e: Exception) {
+//                    result.error("Stacks.getNonce error", e.message, null)
+//                }
+//            }
+//        }
+
+        private fun parseException(c: String, e: Exception, result: MethodChannel.Result) {
+            if (e.message?.contains("MemoTooLong") == true) {
+                result.error(c, "Memo too long: maximum allowed is 34 bytes", null)
+            } else if (e.message?.contains("TransferFees") == true) {
+                result.error(c, "Failed to fetch fee rate", null)
+            } else if (e.message?.contains("FetchAccount") == true) {
+                result.error(c, "Failed to fetch account", null)
+            } else {
+                result.error(c, e.message, null)
             }
         }
     }

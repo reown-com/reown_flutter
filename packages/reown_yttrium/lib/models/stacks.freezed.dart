@@ -21,6 +21,7 @@ TransferStxRequest _$TransferStxRequestFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$TransferStxRequest {
   BigInt get amount => throw _privateConstructorUsedError;
+  String get sender => throw _privateConstructorUsedError;
   String get recipient => throw _privateConstructorUsedError;
   String? get memo => throw _privateConstructorUsedError;
 
@@ -40,7 +41,7 @@ abstract class $TransferStxRequestCopyWith<$Res> {
           TransferStxRequest value, $Res Function(TransferStxRequest) then) =
       _$TransferStxRequestCopyWithImpl<$Res, TransferStxRequest>;
   @useResult
-  $Res call({BigInt amount, String recipient, String? memo});
+  $Res call({BigInt amount, String sender, String recipient, String? memo});
 }
 
 /// @nodoc
@@ -59,6 +60,7 @@ class _$TransferStxRequestCopyWithImpl<$Res, $Val extends TransferStxRequest>
   @override
   $Res call({
     Object? amount = null,
+    Object? sender = null,
     Object? recipient = null,
     Object? memo = freezed,
   }) {
@@ -67,6 +69,10 @@ class _$TransferStxRequestCopyWithImpl<$Res, $Val extends TransferStxRequest>
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
               as BigInt,
+      sender: null == sender
+          ? _value.sender
+          : sender // ignore: cast_nullable_to_non_nullable
+              as String,
       recipient: null == recipient
           ? _value.recipient
           : recipient // ignore: cast_nullable_to_non_nullable
@@ -87,7 +93,7 @@ abstract class _$$TransferStxRequestImplCopyWith<$Res>
       __$$TransferStxRequestImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({BigInt amount, String recipient, String? memo});
+  $Res call({BigInt amount, String sender, String recipient, String? memo});
 }
 
 /// @nodoc
@@ -104,6 +110,7 @@ class __$$TransferStxRequestImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? amount = null,
+    Object? sender = null,
     Object? recipient = null,
     Object? memo = freezed,
   }) {
@@ -112,6 +119,10 @@ class __$$TransferStxRequestImplCopyWithImpl<$Res>
           ? _value.amount
           : amount // ignore: cast_nullable_to_non_nullable
               as BigInt,
+      sender: null == sender
+          ? _value.sender
+          : sender // ignore: cast_nullable_to_non_nullable
+              as String,
       recipient: null == recipient
           ? _value.recipient
           : recipient // ignore: cast_nullable_to_non_nullable
@@ -128,7 +139,10 @@ class __$$TransferStxRequestImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$TransferStxRequestImpl implements _TransferStxRequest {
   const _$TransferStxRequestImpl(
-      {required this.amount, required this.recipient, this.memo});
+      {required this.amount,
+      required this.sender,
+      required this.recipient,
+      this.memo});
 
   factory _$TransferStxRequestImpl.fromJson(Map<String, dynamic> json) =>
       _$$TransferStxRequestImplFromJson(json);
@@ -136,13 +150,15 @@ class _$TransferStxRequestImpl implements _TransferStxRequest {
   @override
   final BigInt amount;
   @override
+  final String sender;
+  @override
   final String recipient;
   @override
   final String? memo;
 
   @override
   String toString() {
-    return 'TransferStxRequest(amount: $amount, recipient: $recipient, memo: $memo)';
+    return 'TransferStxRequest(amount: $amount, sender: $sender, recipient: $recipient, memo: $memo)';
   }
 
   @override
@@ -151,6 +167,7 @@ class _$TransferStxRequestImpl implements _TransferStxRequest {
         (other.runtimeType == runtimeType &&
             other is _$TransferStxRequestImpl &&
             (identical(other.amount, amount) || other.amount == amount) &&
+            (identical(other.sender, sender) || other.sender == sender) &&
             (identical(other.recipient, recipient) ||
                 other.recipient == recipient) &&
             (identical(other.memo, memo) || other.memo == memo));
@@ -158,7 +175,7 @@ class _$TransferStxRequestImpl implements _TransferStxRequest {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, amount, recipient, memo);
+  int get hashCode => Object.hash(runtimeType, amount, sender, recipient, memo);
 
   /// Create a copy of TransferStxRequest
   /// with the given fields replaced by the non-null parameter values.
@@ -180,6 +197,7 @@ class _$TransferStxRequestImpl implements _TransferStxRequest {
 abstract class _TransferStxRequest implements TransferStxRequest {
   const factory _TransferStxRequest(
       {required final BigInt amount,
+      required final String sender,
       required final String recipient,
       final String? memo}) = _$TransferStxRequestImpl;
 
@@ -188,6 +206,8 @@ abstract class _TransferStxRequest implements TransferStxRequest {
 
   @override
   BigInt get amount;
+  @override
+  String get sender;
   @override
   String get recipient;
   @override
@@ -380,8 +400,8 @@ mixin _$StacksAccount {
   String get balance => throw _privateConstructorUsedError;
   String get locked => throw _privateConstructorUsedError;
   @JsonKey(name: 'unlock_height')
-  int get unlockHeight => throw _privateConstructorUsedError;
-  int get nonce => throw _privateConstructorUsedError;
+  String get unlockHeight => throw _privateConstructorUsedError;
+  String get nonce => throw _privateConstructorUsedError;
   @JsonKey(name: 'balance_proof')
   String get balanceProof => throw _privateConstructorUsedError;
   @JsonKey(name: 'nonce_proof')
@@ -406,8 +426,8 @@ abstract class $StacksAccountCopyWith<$Res> {
   $Res call(
       {String balance,
       String locked,
-      @JsonKey(name: 'unlock_height') int unlockHeight,
-      int nonce,
+      @JsonKey(name: 'unlock_height') String unlockHeight,
+      String nonce,
       @JsonKey(name: 'balance_proof') String balanceProof,
       @JsonKey(name: 'nonce_proof') String nonceProof});
 }
@@ -446,11 +466,11 @@ class _$StacksAccountCopyWithImpl<$Res, $Val extends StacksAccount>
       unlockHeight: null == unlockHeight
           ? _value.unlockHeight
           : unlockHeight // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       nonce: null == nonce
           ? _value.nonce
           : nonce // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       balanceProof: null == balanceProof
           ? _value.balanceProof
           : balanceProof // ignore: cast_nullable_to_non_nullable
@@ -474,8 +494,8 @@ abstract class _$$StacksAccountImplCopyWith<$Res>
   $Res call(
       {String balance,
       String locked,
-      @JsonKey(name: 'unlock_height') int unlockHeight,
-      int nonce,
+      @JsonKey(name: 'unlock_height') String unlockHeight,
+      String nonce,
       @JsonKey(name: 'balance_proof') String balanceProof,
       @JsonKey(name: 'nonce_proof') String nonceProof});
 }
@@ -512,11 +532,11 @@ class __$$StacksAccountImplCopyWithImpl<$Res>
       unlockHeight: null == unlockHeight
           ? _value.unlockHeight
           : unlockHeight // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       nonce: null == nonce
           ? _value.nonce
           : nonce // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       balanceProof: null == balanceProof
           ? _value.balanceProof
           : balanceProof // ignore: cast_nullable_to_non_nullable
@@ -549,9 +569,9 @@ class _$StacksAccountImpl implements _StacksAccount {
   final String locked;
   @override
   @JsonKey(name: 'unlock_height')
-  final int unlockHeight;
+  final String unlockHeight;
   @override
-  final int nonce;
+  final String nonce;
   @override
   @JsonKey(name: 'balance_proof')
   final String balanceProof;
@@ -605,8 +625,8 @@ abstract class _StacksAccount implements StacksAccount {
   const factory _StacksAccount(
           {required final String balance,
           required final String locked,
-          @JsonKey(name: 'unlock_height') required final int unlockHeight,
-          required final int nonce,
+          @JsonKey(name: 'unlock_height') required final String unlockHeight,
+          required final String nonce,
           @JsonKey(name: 'balance_proof') required final String balanceProof,
           @JsonKey(name: 'nonce_proof') required final String nonceProof}) =
       _$StacksAccountImpl;
@@ -620,9 +640,9 @@ abstract class _StacksAccount implements StacksAccount {
   String get locked;
   @override
   @JsonKey(name: 'unlock_height')
-  int get unlockHeight;
+  String get unlockHeight;
   @override
-  int get nonce;
+  String get nonce;
   @override
   @JsonKey(name: 'balance_proof')
   String get balanceProof;

@@ -10,6 +10,7 @@ _$TransferStxRequestImpl _$$TransferStxRequestImplFromJson(
         Map<String, dynamic> json) =>
     _$TransferStxRequestImpl(
       amount: BigInt.parse(json['amount'] as String),
+      sender: json['sender'] as String,
       recipient: json['recipient'] as String,
       memo: json['memo'] as String?,
     );
@@ -18,6 +19,7 @@ Map<String, dynamic> _$$TransferStxRequestImplToJson(
         _$TransferStxRequestImpl instance) =>
     <String, dynamic>{
       'amount': instance.amount.toString(),
+      'sender': instance.sender,
       'recipient': instance.recipient,
       'memo': instance.memo,
     };
@@ -40,8 +42,8 @@ _$StacksAccountImpl _$$StacksAccountImplFromJson(Map<String, dynamic> json) =>
     _$StacksAccountImpl(
       balance: json['balance'] as String,
       locked: json['locked'] as String,
-      unlockHeight: (json['unlock_height'] as num).toInt(),
-      nonce: (json['nonce'] as num).toInt(),
+      unlockHeight: json['unlock_height'] as String,
+      nonce: json['nonce'] as String,
       balanceProof: json['balance_proof'] as String,
       nonceProof: json['nonce_proof'] as String,
     );

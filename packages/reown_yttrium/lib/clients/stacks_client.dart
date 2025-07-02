@@ -99,20 +99,51 @@ class StacksClient implements IStacksClient {
   }
 
   @override
-  Future<FeeEstimation> estimateFees({
-    required String transaction_payload,
-    required String network,
-  }) async {
+  Future<BigInt> transferFees({required String network}) async {
     try {
       final response = await ReownYttriumPlatformInterface
           .instance.stacksChannel
-          .estimateFees(
-        transaction_payload: transaction_payload,
+          .transferFees(
         network: network,
       );
-      return FeeEstimation.fromJson(response);
+      return response;
     } catch (e) {
       rethrow;
     }
   }
+
+  // @override
+  // Future<FeeEstimation> estimateFees({
+  //   required String transaction_payload,
+  //   required String network,
+  // }) async {
+  //   try {
+  //     final response = await ReownYttriumPlatformInterface
+  //         .instance.stacksChannel
+  //         .estimateFees(
+  //       transaction_payload: transaction_payload,
+  //       network: network,
+  //     );
+  //     return FeeEstimation.fromJson(response);
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
+
+  // @override
+  // Future<BigInt> getNonce({
+  //   required String principal,
+  //   required String network,
+  // }) async {
+  //   try {
+  //     final response =
+  //         await ReownYttriumPlatformInterface.instance.stacksChannel.getNonce(
+  //       principal: principal,
+  //       network: network,
+  //     );
+  //     return BigInt.parse(response.toString());
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 }

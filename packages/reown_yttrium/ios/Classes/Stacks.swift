@@ -93,6 +93,7 @@ class Stacks {
               let network = dict["network"] as? String,
               let request = dict["request"] as? [String: Any],
               let amount = request["amount"] as? String,
+              let sender = request["sender"] as? String,
               let recipient = request["recipient"] as? String else {
             result(FlutterError(code: "Stacks.transferStx", 
                              message: "Invalid parameters \(params)", 
@@ -104,22 +105,102 @@ class Stacks {
             do {
                 let memo = request["memo"] as? String ?? ""
                 let amountValue = UInt64(amount)!
-                let transferRequest = TransferStxRequest(amount: amountValue,
-                                                         recipient: recipient,
-                                                         memo: memo)
+                let transferRequest = TransferStxRequest(sender: sender,
+                                                         amount: amountValue,
+                                                      recipient: recipient,
+                                                           memo: memo)
                 
                 let response = try await stacksClient!.transferStx(wallet: wallet,
                                                                    network: network,
                                                                    request: transferRequest)
                 result([
                     "transaction": response.transaction,
-                    "txid": response.txid
+                    "txid": response.txid.hasPrefix("0x") ? response.txid : "0x" + response.txid
                 ])
             } catch {
-                result(FlutterError(code: "Stacks.transferStx",
-                                    message: error.localizedDescription,
-                                    details: nil))
+                parseException("Stacks.transferStx", error, result: result)
             }
+        }
+    }
+    
+    static func getAccount(_ params: Any, result: @escaping FlutterResult) {
+        print("getAccount called with", params)
+        
+        guard stacksClient != nil else {
+            result(FlutterError(code: "Stacks.getAccount",
+                             message: "StacksClient not initialized",
+                             details: nil))
+            return
+        }
+        
+        guard let dict = params as? [String: Any],
+              let network = dict["network"] as? String,
+              let principal = dict["principal"] as? String else {
+            result(FlutterError(code: "Stacks.getAccount",
+                             message: "Invalid parameters \(params)",
+                             details: nil))
+            return
+        }
+        
+        Task {
+            do {
+                
+                let response = try await stacksClient!.getAccount(network: network,
+                                                                principal: principal)
+                result([
+                    "balance": response.balance,
+                    "locked": response.locked,
+                    "unlock_height": "\(response.unlockHeight)",
+                    "nonce": "\(response.nonce)",
+                    "balance_proof": response.balanceProof,
+                    "nonce_proof": response.nonceProof
+                ])
+            } catch {
+                parseException("Stacks.getAccount", error, result: result)
+            }
+        }
+    }
+    
+    static func transferFeeRate(_ params: Any, result: @escaping FlutterResult) {
+        print("transferFeeRate called with", params)
+        
+        guard stacksClient != nil else {
+            result(FlutterError(code: "Stacks.transferFeeRate",
+                             message: "StacksClient not initialized",
+                             details: nil))
+            return
+        }
+        
+        guard let dict = params as? [String: Any],
+              let network = dict["network"] as? String else {
+            result(FlutterError(code: "Stacks.transferFeeRate",
+                             message: "Invalid parameters \(params)",
+                             details: nil))
+            return
+        }
+        
+        Task {
+            do {
+                
+                let response = try await stacksClient!.transferFees(network: network)
+                result("\(response)")
+            } catch {
+                parseException("Stacks.transferFeeRate", error, result: result)
+            }
+        }
+    }
+    
+    private static func parseException(_ code: String, _ error: Error, result: @escaping FlutterResult) {
+        let message = error.localizedDescription
+
+        if message.contains("MemoTooLong") {
+            result(FlutterError(code: code, message: "Memo too long: maximum allowed is 34 bytes", details: nil))
+        } else if message.contains("TransferFees") {
+            result(FlutterError(code: code, message: "Failed to fetch fee rate", details: nil))
+        } else if message.contains("FetchAccount") {
+            result(FlutterError(code: code, message: "Failed to fetch account", details: nil))
+        } else {
+            result(FlutterError(code: code, message: message, details: nil))
         }
     }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:reown_yttrium/models/shared.dart';
+import 'package:reown_yttrium/utils/channel_utils.dart';
 
 class MethodChannelStacks {
   /// The method channel used to interact with the native platform.
@@ -72,7 +73,7 @@ class MethodChannelStacks {
       return result!;
     } on PlatformException catch (e) {
       debugPrint('[$runtimeType] stx_signMessage $e');
-      rethrow;
+      throw Exception(e.message);
     }
   }
 
@@ -82,8 +83,7 @@ class MethodChannelStacks {
     required Map<String, dynamic> request,
   }) async {
     try {
-      final Map<String, dynamic>? result =
-          await methodChannel.invokeMethod<Map<String, dynamic>>(
+      final response = await methodChannel.invokeMethod<dynamic>(
         'stx_transferStx',
         {
           'wallet': wallet,
@@ -91,10 +91,11 @@ class MethodChannelStacks {
           'request': request,
         },
       );
-      return result!;
+      return ChannelUtils.handlePlatformResult(response)
+          as Map<String, dynamic>;
     } on PlatformException catch (e) {
       debugPrint('[$runtimeType] stx_transferStx $e');
-      rethrow;
+      throw Exception(e.message);
     }
   }
 
@@ -103,38 +104,76 @@ class MethodChannelStacks {
     required String network,
   }) async {
     try {
-      final Map<String, dynamic>? result =
-          await methodChannel.invokeMethod<Map<String, dynamic>>(
+      final response = await methodChannel.invokeMethod<dynamic>(
         'stx_getAccount',
         {
           'principal': principal,
           'network': network,
         },
       );
-      return result!;
+      return ChannelUtils.handlePlatformResult(response)
+          as Map<String, dynamic>;
     } on PlatformException catch (e) {
       debugPrint('[$runtimeType] stx_getAccount $e');
-      rethrow;
+      throw Exception(e.message);
     }
   }
 
-  Future<Map<String, dynamic>> estimateFees({
-    required String transaction_payload,
+  Future<BigInt> transferFees({
     required String network,
   }) async {
     try {
-      final Map<String, dynamic>? result =
-          await methodChannel.invokeMethod<Map<String, dynamic>>(
-        'stx_estimateFees',
+      final response = await methodChannel.invokeMethod<dynamic>(
+        'stx_transferFeeRate',
         {
-          'transaction_payload': transaction_payload,
           'network': network,
         },
       );
-      return result!;
+      final feeRate = ChannelUtils.handlePlatformResult(response).toString();
+      return BigInt.parse(feeRate);
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] stx_estimateFees $e');
-      rethrow;
+      debugPrint('[$runtimeType] stx_transferFeeRate $e');
+      throw Exception(e.message);
     }
   }
+
+  // Future<Map<String, dynamic>> estimateFees({
+  //   required String transaction_payload,
+  //   required String network,
+  // }) async {
+  //   try {
+  //     final Map<String, dynamic>? result =
+  //         await methodChannel.invokeMethod<Map<String, dynamic>>(
+  //       'stx_estimateFees',
+  //       {
+  //         'transaction_payload': transaction_payload,
+  //         'network': network,
+  //       },
+  //     );
+  //     return result!;
+  //   } on PlatformException catch (e) {
+  //     debugPrint('[$runtimeType] stx_estimateFees $e');
+  //     rethrow;
+  //   }
+  // }
+
+  // Future<Map<String, dynamic>> getNonce({
+  //   required String principal,
+  //   required String network,
+  // }) async {
+  //   try {
+  //     final Map<String, dynamic>? result =
+  //         await methodChannel.invokeMethod<Map<String, dynamic>>(
+  //       'stx_getNonce',
+  //       {
+  //         'principal': principal,
+  //         'network': network,
+  //       },
+  //     );
+  //     return result!;
+  //   } on PlatformException catch (e) {
+  //     debugPrint('[$runtimeType] stx_getNonce $e');
+  //     rethrow;
+  //   }
+  // }
 }
