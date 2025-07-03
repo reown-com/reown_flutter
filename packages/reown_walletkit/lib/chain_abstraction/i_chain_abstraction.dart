@@ -1,6 +1,6 @@
 import 'package:reown_walletkit/reown_walletkit.dart';
 
-abstract class IChainAbstraction {
+abstract class IChainAbstractionClient {
   Future<void> init();
 
   Future<Eip1559EstimationCompat> estimateFees({
@@ -17,7 +17,9 @@ abstract class IChainAbstraction {
     required String chainId,
     required String from,
     required CallCompat call,
-    Currency? localCurrency,
+    List<String> accounts = const [],
+    Currency localCurrency = Currency.usd,
+    bool useLifi = false,
   });
 
   Future<ExecuteDetailsCompat> execute({

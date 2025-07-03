@@ -6,12 +6,14 @@ import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
 import 'package:pointycastle/digests/ripemd160.dart';
 import 'package:pointycastle/digests/keccak.dart';
 import 'package:pointycastle/ecc/curves/secp256k1.dart';
 import 'package:polkadart_keyring/polkadart_keyring.dart' as keyring;
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bip32/bip32_base.dart';
+import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
@@ -22,6 +24,8 @@ import 'package:reown_walletkit_wallet/dependencies/bip32/bip32_base.dart'
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solana/solana.dart' as solana;
 import 'package:bitcoin_base/bitcoin_base.dart' as bitcoin;
+// ignore: depend_on_referenced_packages
+import 'package:ed25519_hd_key/ed25519_hd_key.dart' as ed25519_hd_key;
 
 class KeyService extends IKeyService {
   List<ChainKey> _keys = [];
@@ -162,6 +166,7 @@ class KeyService extends IKeyService {
     final kadenaChainKey = _kadenaChainKey(mnemonic);
     final tronChainKey = _tronChainKey(mnemonic);
     final cosmosChainKey = _cosmosChainKey(mnemonic);
+    final suiChainKey = await _suiChainKey(mnemonic);
     // final bitcoinChainKeys = await _bitcoinChainKey(mnemonic);
 
     _keys = List<ChainKey>.from([
@@ -172,6 +177,7 @@ class KeyService extends IKeyService {
       kadenaChainKey,
       tronChainKey,
       cosmosChainKey,
+      suiChainKey,
     ]);
 
     await _saveKeys();
@@ -326,6 +332,42 @@ class KeyService extends IKeyService {
       publicKey: base64.encode(publicKey),
       address: address,
       namespace: 'cosmos',
+    );
+  }
+
+  Future<ChainKey> _suiChainKey(String mnemonic) async {
+    final seed = bip39.mnemonicToSeed(mnemonic);
+    final suiKeyPair = await ed25519_hd_key.ED25519_HD_KEY.derivePath(
+      "m/44'/501'/0'/0'",
+      seed,
+    );
+
+    // Prefix with Ed25519 scheme flag
+    final suiPrivBytes = Uint8List(33)
+      ..[0] = 0x00
+      ..setRange(1, 33, suiKeyPair.key);
+
+    // Convert to 5-bit words for bech32 encoding
+    final words = _convertBits(suiPrivBytes, 8, 5, true);
+
+    // Encode as bech32 string with prefix suiprivkey
+    final bech32PrivKey = Bech32('suiprivkey', words);
+    final privateKey = bech32.encode(bech32PrivKey);
+
+    final walletKit = GetIt.I<IWalletKitService>().walletKit;
+    final publicKey = await walletKit.suiClient.getPublicKeyFromKeyPair(
+      keyPair: privateKey,
+    );
+    final address = await walletKit.suiClient.getAddressFromPublicKey(
+      publicKey: publicKey,
+    );
+
+    return ChainKey(
+      chains: ChainsDataList.suiChains.map((e) => e.chainId).toList(),
+      privateKey: privateKey,
+      publicKey: publicKey,
+      address: address,
+      namespace: 'sui',
     );
   }
 

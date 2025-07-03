@@ -10,6 +10,7 @@ import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.d
 import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/polkadot_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/sui_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/tron_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/deep_link_handler.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
@@ -240,6 +241,14 @@ class _MyHomePageState extends State<MyHomePage> {
       for (final chainData in ChainsDataList.tronChains) {
         GetIt.I.registerSingleton<TronService>(
           TronService(chainSupported: chainData),
+          instanceName: chainData.chainId,
+        );
+      }
+
+      // Support Sui Chains
+      for (final chainData in ChainsDataList.suiChains) {
+        GetIt.I.registerSingleton<SUIService>(
+          SUIService(chainSupported: chainData),
           instanceName: chainData.chainId,
         );
       }

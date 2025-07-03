@@ -15,7 +15,7 @@ PODS:
     - MTBBarcodeScanner
   - reown_yttrium (0.0.1):
     - Flutter
-    - YttriumWrapper (= 0.8.35)
+    - YttriumWrapper (= 0.9.27)
   - Sentry/HybridSDK (8.46.0)
   - sentry_flutter (8.14.2):
     - Flutter
@@ -29,7 +29,7 @@ PODS:
     - FlutterMacOS
   - url_launcher_ios (0.0.1):
     - Flutter
-  - YttriumWrapper (0.8.35)
+  - YttriumWrapper (0.9.27)
 
 DEPENDENCIES:
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
@@ -82,13 +82,13 @@ SPEC CHECKSUMS:
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   qr_bar_code_scanner_dialog: a4cb7ad7201cbf8b888f3e6e58972b611ac43b28
   qr_code_scanner: d77f94ecc9abf96d9b9b8fc04ef13f611e5a147a
-  reown_yttrium: cee334ade64725b1d83f7b34c706a6aae2696d58
+  reown_yttrium: 6371df0aefdce316dea35c86dabf7c5e548a4409
   Sentry: da60d980b197a46db0b35ea12cb8f39af48d8854
   sentry_flutter: 27892878729f42701297c628eb90e7c6529f3684
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
-  YttriumWrapper: 31e937fe9fbe0f1314d2ca6be9ce9b379a059966
+  YttriumWrapper: a099bb59d9886cf754cbf7be6d1be63b9628670f
 
 PODFILE CHECKSUM: 0772a2bd8cd4c7aaeb2576ddfaf6b03be722593b
 
