@@ -16,6 +16,9 @@ allprojects {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
+//         mavenLocal {
+//             url '/Users/alfreedom/.m2/repository'
+//         }
     }
 }
 

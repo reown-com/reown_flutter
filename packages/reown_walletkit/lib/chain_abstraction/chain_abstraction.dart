@@ -27,6 +27,9 @@ class ChainAbstractionClient implements IChainAbstractionClient {
     }
   }
 
+  /// ---------------------------------
+  /// ⚠️ This method is experimental. Use with caution.
+  /// ---------------------------------
   @override
   Future<String> erc20TokenBalance({
     required String chainId,
@@ -40,6 +43,9 @@ class ChainAbstractionClient implements IChainAbstractionClient {
     );
   }
 
+  /// ---------------------------------
+  /// ⚠️ This method is experimental. Use with caution.
+  /// ---------------------------------
   @override
   Future<Eip1559EstimationCompat> estimateFees({
     required String chainId,

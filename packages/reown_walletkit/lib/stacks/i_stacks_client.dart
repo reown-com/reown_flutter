@@ -1,7 +1,9 @@
+import 'package:reown_yttrium/models/stacks.dart';
+
 /// ---------------------------------
 /// ⚠️ This client is experimental. Use with caution.
 /// ---------------------------------
-abstract class ISuiClient {
+abstract class IStacksClient {
   /// ---------------------------------
   /// ⚠️ This method is experimental. Use with caution.
   /// ---------------------------------
@@ -10,42 +12,61 @@ abstract class ISuiClient {
   /// ---------------------------------
   /// ⚠️ This method is experimental. Use with caution.
   /// ---------------------------------
-  Future<String> generateKeyPair();
+  Future<String> generateWallet();
 
   /// ---------------------------------
   /// ⚠️ This method is experimental. Use with caution.
   /// ---------------------------------
-  Future<String> getPublicKeyFromKeyPair({required String keyPair});
+  Future<String> getAddress({
+    required String wallet,
+    required StacksVersion version,
+  });
 
   /// ---------------------------------
   /// ⚠️ This method is experimental. Use with caution.
   /// ---------------------------------
-  Future<String> getAddressFromPublicKey({required String publicKey});
-
-  /// ---------------------------------
-  /// ⚠️ This method is experimental. Use with caution.
-  /// ---------------------------------
-  Future<String> personalSign({
-    required String keyPair,
+  Future<String> signMessage({
+    required String wallet,
     required String message,
   });
 
   /// ---------------------------------
   /// ⚠️ This method is experimental. Use with caution.
   /// ---------------------------------
-  /// It returns a Record of (signature,transactionBytes)
-  Future<(String, String)> signTransaction({
-    required String chainId,
-    required String keyPair,
-    required String txData,
+  Future<TransferStxResponse> transferStx({
+    required String wallet,
+    required String network,
+    required TransferStxRequest request,
   });
 
   /// ---------------------------------
   /// ⚠️ This method is experimental. Use with caution.
   /// ---------------------------------
-  Future<String> signAndExecuteTransaction({
-    required String chainId,
-    required String keyPair,
-    required String txData,
+  Future<StacksAccount> getAccount({
+    required String principal,
+    required String network,
   });
+
+  /// ---------------------------------
+  /// ⚠️ This method is experimental. Use with caution.
+  /// ---------------------------------
+  Future<BigInt> transferFees({
+    required String network,
+  });
+
+  // /// ---------------------------------
+  // /// ⚠️ This method is experimental. Use with caution.
+  // /// ---------------------------------
+  // Future<FeeEstimation> estimateFees({
+  //   required String transaction_payload,
+  //   required String network,
+  // });
+
+  // /// ---------------------------------
+  // /// ⚠️ This method is experimental. Use with caution.
+  // /// ---------------------------------
+  // Future<BigInt> getNonce({
+  //   required String principal,
+  //   required String network,
+  // });
 }

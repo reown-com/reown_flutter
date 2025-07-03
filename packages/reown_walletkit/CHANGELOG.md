@@ -5,6 +5,13 @@
 
 - Yttrium update
 - SUI support implementation
+## 1.1.7
+
+- Yttrium update
+- Stacks support implementation
+## 1.1.6+1
+
+- Dependency updates
 
 ## 1.1.6
 

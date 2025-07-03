@@ -24,8 +24,6 @@ import 'package:reown_walletkit_wallet/dependencies/bip32/bip32_base.dart'
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solana/solana.dart' as solana;
 import 'package:bitcoin_base/bitcoin_base.dart' as bitcoin;
-// ignore: depend_on_referenced_packages
-import 'package:ed25519_hd_key/ed25519_hd_key.dart' as ed25519_hd_key;
 
 class KeyService extends IKeyService {
   List<ChainKey> _keys = [];
@@ -78,7 +76,15 @@ class KeyService extends IKeyService {
     if (value.contains(':')) {
       namespace = NamespaceUtils.getNamespaceFromChain(value);
     }
-    return _keys.where((e) => e.namespace == namespace).toList();
+    final keys = [
+      ..._keys.where((e) => e.namespace == namespace),
+      ..._keys.where((e) => e.namespace == '${namespace}_test'),
+    ];
+    try {
+      return [keys.firstWhere((e) => e.chains.contains(value))];
+    } catch (e) {
+      return _keys.where((e) => e.namespace == namespace).toList();
+    }
   }
 
   @override
@@ -166,8 +172,9 @@ class KeyService extends IKeyService {
     final kadenaChainKey = _kadenaChainKey(mnemonic);
     final tronChainKey = _tronChainKey(mnemonic);
     final cosmosChainKey = _cosmosChainKey(mnemonic);
-    final suiChainKey = await _suiChainKey(mnemonic);
     // final bitcoinChainKeys = await _bitcoinChainKey(mnemonic);
+    final stacksChainKey = await _stacksChainKey(mnemonic);
+    final stacksTestChainKey = await _stacksTestChainKey(mnemonic);
 
     _keys = List<ChainKey>.from([
       eip155ChainKey,
@@ -177,7 +184,8 @@ class KeyService extends IKeyService {
       kadenaChainKey,
       tronChainKey,
       cosmosChainKey,
-      suiChainKey,
+      stacksChainKey,
+      stacksTestChainKey,
     ]);
 
     await _saveKeys();
@@ -335,39 +343,43 @@ class KeyService extends IKeyService {
     );
   }
 
-  Future<ChainKey> _suiChainKey(String mnemonic) async {
-    final seed = bip39.mnemonicToSeed(mnemonic);
-    final suiKeyPair = await ed25519_hd_key.ED25519_HD_KEY.derivePath(
-      "m/44'/501'/0'/0'",
-      seed,
-    );
-
-    // Prefix with Ed25519 scheme flag
-    final suiPrivBytes = Uint8List(33)
-      ..[0] = 0x00
-      ..setRange(1, 33, suiKeyPair.key);
-
-    // Convert to 5-bit words for bech32 encoding
-    final words = _convertBits(suiPrivBytes, 8, 5, true);
-
-    // Encode as bech32 string with prefix suiprivkey
-    final bech32PrivKey = Bech32('suiprivkey', words);
-    final privateKey = bech32.encode(bech32PrivKey);
-
+  Future<ChainKey> _stacksChainKey(String mnemonic) async {
     final walletKit = GetIt.I<IWalletKitService>().walletKit;
-    final publicKey = await walletKit.suiClient.getPublicKeyFromKeyPair(
-      keyPair: privateKey,
-    );
-    final address = await walletKit.suiClient.getAddressFromPublicKey(
-      publicKey: publicKey,
+    // final privateKey = await walletKit.stacksClient.generateWallet();
+    final address = await walletKit.stacksClient.getAddress(
+      wallet: mnemonic,
+      version: StacksVersion.mainnet_p2pkh,
     );
 
     return ChainKey(
-      chains: ChainsDataList.suiChains.map((e) => e.chainId).toList(),
-      privateKey: privateKey,
-      publicKey: publicKey,
+      chains: ChainsDataList.stacksChains
+          .where((c) => !c.isTestnet)
+          .map((e) => e.chainId)
+          .toList(),
+      privateKey: mnemonic,
+      publicKey: address,
       address: address,
-      namespace: 'sui',
+      namespace: 'stacks',
+    );
+  }
+
+  Future<ChainKey> _stacksTestChainKey(String mnemonic) async {
+    final walletKit = GetIt.I<IWalletKitService>().walletKit;
+    // final privateKey = await walletKit.stacksClient.generateWallet();
+    final address = await walletKit.stacksClient.getAddress(
+      wallet: mnemonic,
+      version: StacksVersion.testnet_p2pkh,
+    );
+
+    return ChainKey(
+      chains: ChainsDataList.stacksChains
+          .where((c) => c.isTestnet)
+          .map((e) => e.chainId)
+          .toList(),
+      privateKey: mnemonic,
+      publicKey: address,
+      address: address,
+      namespace: 'stacks_test',
     );
   }
 

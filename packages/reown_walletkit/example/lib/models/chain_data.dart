@@ -269,34 +269,24 @@ class ChainsDataList {
     ),
   ];
 
-  static final List<ChainMetadata> suiChains = [
+  static final List<ChainMetadata> stacksChains = [
     const ChainMetadata(
-      type: ChainType.sui,
-      chainId: 'sui:mainnet',
-      name: 'Sui Mainnet',
+      type: ChainType.stacks,
+      chainId: 'stacks:1',
+      name: 'Stacks Mainnet',
       logo:
-          'https://pbs.twimg.com/profile_images/1928528183466373120/4xpp6RSr_400x400.jpg',
-      color: Colors.blue,
-      rpc: ['https://fullnode.mainnet.sui.io:443'],
+          'https://pbs.twimg.com/profile_images/1764968185399267328/lrmnHOuN_400x400.jpg',
+      color: Colors.orange,
+      rpc: ['https://api.mainnet.hiro.so'],
     ),
     const ChainMetadata(
-      type: ChainType.sui,
-      chainId: 'sui:testnet',
-      name: 'Sui Testnet',
+      type: ChainType.stacks,
+      chainId: 'stacks:2147483648',
+      name: 'Stacks Testnet',
       logo:
-          'https://pbs.twimg.com/profile_images/1928528183466373120/4xpp6RSr_400x400.jpg',
-      color: Colors.blue,
-      rpc: ['https://fullnode.testnet.sui.io:443'],
-      isTestnet: true,
-    ),
-    const ChainMetadata(
-      type: ChainType.sui,
-      chainId: 'sui:devnet',
-      name: 'Sui Devnet',
-      logo:
-          'https://pbs.twimg.com/profile_images/1928528183466373120/4xpp6RSr_400x400.jpg',
-      color: Colors.blue,
-      rpc: ['https://fullnode.devnet.sui.io:443'],
+          'https://pbs.twimg.com/profile_images/1764968185399267328/lrmnHOuN_400x400.jpg',
+      color: Colors.orange,
+      rpc: ['https://api.testnet.hiro.so'],
       isTestnet: true,
     ),
   ];

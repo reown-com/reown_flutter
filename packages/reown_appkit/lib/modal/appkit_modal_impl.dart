@@ -592,29 +592,23 @@ class ReownAppKitModal
 
       final hasValidSession = _isConnected && _currentSession != null;
       final ns = NamespaceUtils.getNamespaceFromChain(chainInfo.chainId);
-      final approvedChains = _currentSession!.getApprovedChains(namespace: ns);
+      final approvedChains = _currentSession?.getApprovedChains(namespace: ns);
       final isApproved = (approvedChains ?? []).contains(chainInfo.chainId);
 
-      if (switchChain && hasValidSession && _selectedChainID != null) {
-        if (!isApproved) {
-          await requestSwitchToChain(chainInfo);
-        } else {
-          await _setLocalEthChain(chainInfo.chainId, logEvent: logEvent);
-        }
+      if (switchChain &&
+          hasValidSession &&
+          _selectedChainID != null &&
+          !isApproved) {
+        await requestSwitchToChain(chainInfo);
       } else {
-        if (isApproved) {
-          await _setLocalEthChain(chainInfo.chainId, logEvent: logEvent);
-        } else {
-          throw ReownAppKitModalException(
-            'Chain is not approved, try switch to it',
-          );
-        }
+        await _setLocalEthChain(chainInfo.chainId, logEvent: logEvent);
       }
     } on JsonRpcError catch (e) {
       onModalError.broadcast(ModalError(e.message ?? 'An error occurred'));
     } on ReownAppKitModalException catch (e) {
       onModalError.broadcast(ModalError(e.message));
-    } catch (e) {
+    } catch (e, s) {
+      _appKit.core.logger.e('[$runtimeType] selectChain, error: $e, $s');
       onModalError.broadcast(ModalError('An error occurred'));
     }
   }
