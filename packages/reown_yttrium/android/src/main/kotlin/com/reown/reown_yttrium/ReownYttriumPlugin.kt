@@ -20,6 +20,7 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
     applicationContext = flutterPluginBinding.applicationContext // ✅ Get application context
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "reown_yttrium")
     channel.setMethodCallHandler(this)
+//    YttriumKt.initializeTls(applicationContext)
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
@@ -40,6 +41,14 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
       "stx_transferFeeRate" -> Stacks.transferFeeRate(call.arguments, result)
 //      "stx_estimateFees" -> Stacks.estimateFees(call.arguments, result)
 //      "stx_getNonce" -> Stacks.getNonce(call.arguments, result)
+      // Sui methods
+      "sui_init" -> Sui.initialize(applicationContext, call.arguments, result)
+      "sui_generateKeyPair" -> Sui.generateKeyPair(result)
+      "sui_getPublicKeyFromKeyPair" -> Sui.getPublicKeyFromKeyPair(call.arguments, result)
+      "sui_getAddressFromPublicKey" -> Sui.getAddressFromPublicKey(call.arguments, result)
+      "sui_personalSign" -> Sui.personalSign(call.arguments, result)
+      "sui_signTransaction" -> Sui.signTransaction(call.arguments, result)
+      "sui_signAndExecuteTransaction" -> Sui.signAndExecuteTransaction(call.arguments, result)
       //
       else -> result.notImplemented()
     }

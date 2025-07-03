@@ -33,6 +33,21 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
             Stacks.signMessage(call.arguments ?? {}, result: result)
         case "stx_transferStx":
             Stacks.transferStx(call.arguments ?? {}, result: result)
+            // Sui methods
+        case "sui_init":
+            Sui.initialize(call.arguments ?? {}, result: result)
+        case "sui_generateKeyPair":
+            Sui.generateKeyPair(result: result)
+        case "sui_getPublicKeyFromKeyPair":
+            Sui.getPublicKeyFromKeyPair(call.arguments ?? {}, result: result)
+        case "sui_getAddressFromPublicKey":
+            Sui.getAddressFromPublicKey(call.arguments ?? {}, result: result)
+        case "sui_personalSign":
+            Sui.personalSign(call.arguments ?? {}, result: result)
+        case "sui_signTransaction":
+            Sui.signTransaction(call.arguments ?? {}, result: result)
+        case "sui_signAndExecuteTransaction":
+            Sui.signAndExecuteTransaction(call.arguments ?? {}, result: result)
         default:
             result(FlutterMethodNotImplemented)
         }

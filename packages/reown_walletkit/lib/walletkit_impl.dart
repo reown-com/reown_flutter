@@ -9,6 +9,8 @@ import 'package:reown_walletkit/chain_abstraction/i_chain_abstraction.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit/stacks/i_stacks_client.dart';
 import 'package:reown_walletkit/stacks/stacks_client.dart';
+import 'package:reown_walletkit/sui/i_sui_client.dart';
+import 'package:reown_walletkit/sui/sui_client.dart';
 import 'package:reown_walletkit/version.dart' as wk;
 
 class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
@@ -64,6 +66,12 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   /// ---------------------------------
   @override
   late final IStacksClient stacksClient;
+
+  /// ---------------------------------
+  /// ⚠️ This client is experimental. Use with caution.
+  /// ---------------------------------
+  @override
+  late final ISuiClient suiClient;
 
   ReownWalletKit({
     required this.core,
@@ -139,6 +147,15 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
         sdkPlatform: ReownCoreUtils.getId(),
       ),
     );
+
+    suiClient = SuiClient(
+      core: core,
+      pulseMetadata: PulseMetadataCompat(
+        url: metadata.url,
+        sdkVersion: wk.packageVersion,
+        sdkPlatform: ReownCoreUtils.getId(),
+      ),
+    );
   }
 
   @override
@@ -151,6 +168,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     await reOwnSign.init();
     await chainAbstractionClient.init();
     await stacksClient.init();
+    await suiClient.init();
 
     WidgetsBinding.instance.addObserver(this);
     _initialized = true;

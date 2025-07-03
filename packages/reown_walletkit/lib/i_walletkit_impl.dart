@@ -2,6 +2,7 @@ import 'package:reown_sign/i_sign_wallet.dart';
 import 'package:reown_walletkit/chain_abstraction/i_chain_abstraction.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit/stacks/i_stacks_client.dart';
+import 'package:reown_walletkit/sui/i_sui_client.dart';
 
 abstract class IReownWalletKit implements IReownSignWallet {
   final String protocol = 'wc';
@@ -18,4 +19,9 @@ abstract class IReownWalletKit implements IReownSignWallet {
   /// ⚠️ This method is experimental. Use with caution.
   /// ---------------------------------
   abstract final IStacksClient stacksClient;
+
+  /// ---------------------------------
+  /// ⚠️ This method is experimental. Use with caution.
+  /// ---------------------------------
+  abstract final ISuiClient suiClient;
 }
