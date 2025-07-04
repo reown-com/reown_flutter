@@ -62,9 +62,11 @@ class ReownAppKitModal
     implements IReownAppKitModal {
   String _projectId = '';
 
-  Map<String, RequiredNamespace> _requiredNamespaces = {};
+  @Deprecated(
+    'requiredNamespaces are automatically assigned to optionalNamespaces. Considering using only optionalNamespaces',
+  )
   @override
-  Map<String, RequiredNamespace> get requiredNamespaces => _requiredNamespaces;
+  Map<String, RequiredNamespace> get requiredNamespaces => {};
 
   Map<String, RequiredNamespace> _optionalNamespaces = {};
   @override
@@ -102,8 +104,7 @@ class ReownAppKitModal
   ReownAppKitModalWalletInfo? get selectedWallet => _selectedWallet;
 
   @override
-  bool get hasNamespaces =>
-      _requiredNamespaces.isNotEmpty || _optionalNamespaces.isNotEmpty;
+  bool get hasNamespaces => _optionalNamespaces.isNotEmpty;
 
   String _wcUri = '';
   @override
@@ -168,6 +169,9 @@ class ReownAppKitModal
     bool? enableAnalytics,
     SIWEConfig? siweConfig,
     FeaturesConfig? featuresConfig,
+    @Deprecated(
+      'requiredNamespaces are automatically assigned to optionalNamespaces. Considering using only optionalNamespaces',
+    )
     Map<String, RequiredNamespace>? requiredNamespaces,
     Map<String, RequiredNamespace>? optionalNamespaces,
     Set<String>? featuredWalletIds,
@@ -210,7 +214,6 @@ class ReownAppKitModal
         );
     _projectId = _appKit.core.projectId;
 
-    _setRequiredNamespaces(null);
     _setOptionalNamespaces(_buildNamespaces(
       requiredNamespaces,
       optionalNamespaces,
@@ -235,7 +238,7 @@ class ReownAppKitModal
         featuredWalletIds: featuredWalletIds,
         includedWalletIds: includedWalletIds,
         excludedWalletIds: excludedWalletIds,
-        namespaces: {..._requiredNamespaces, ..._optionalNamespaces},
+        namespaces: _optionalNamespaces,
         customWallets: _customWallets,
       ),
     );
@@ -270,7 +273,7 @@ class ReownAppKitModal
       () => SiweService(
         appKit: _appKit,
         siweConfig: siweConfig,
-        namespaces: {..._requiredNamespaces, ..._optionalNamespaces},
+        namespaces: _optionalNamespaces,
       ),
     );
   }
@@ -385,9 +388,7 @@ class ReownAppKitModal
     final allNetworks = ReownAppKitModalNetworks.getAllSupportedNetworks();
     for (final chain in allNetworks) {
       final namespace = NamespaceUtils.getNamespaceFromChain(chain.chainId);
-      final requiredEvents = _requiredNamespaces[namespace]?.events ?? [];
-      final optionalEvents = _optionalNamespaces[namespace]?.events ?? [];
-      final events = [...requiredEvents, ...optionalEvents];
+      final events = _optionalNamespaces[namespace]?.events ?? [];
       for (final event in events) {
         _appKit.registerEventHandler(
           chainId: chain.chainId,
@@ -592,29 +593,23 @@ class ReownAppKitModal
 
       final hasValidSession = _isConnected && _currentSession != null;
       final ns = NamespaceUtils.getNamespaceFromChain(chainInfo.chainId);
-      final approvedChains = _currentSession!.getApprovedChains(namespace: ns);
+      final approvedChains = _currentSession?.getApprovedChains(namespace: ns);
       final isApproved = (approvedChains ?? []).contains(chainInfo.chainId);
 
-      if (switchChain && hasValidSession && _selectedChainID != null) {
-        if (!isApproved) {
-          await requestSwitchToChain(chainInfo);
-        } else {
-          await _setLocalEthChain(chainInfo.chainId, logEvent: logEvent);
-        }
+      if (switchChain &&
+          hasValidSession &&
+          _selectedChainID != null &&
+          !isApproved) {
+        await requestSwitchToChain(chainInfo);
       } else {
-        if (isApproved) {
-          await _setLocalEthChain(chainInfo.chainId, logEvent: logEvent);
-        } else {
-          throw ReownAppKitModalException(
-            'Chain is not approved, try switch to it',
-          );
-        }
+        await _setLocalEthChain(chainInfo.chainId, logEvent: logEvent);
       }
     } on JsonRpcError catch (e) {
       onModalError.broadcast(ModalError(e.message ?? 'An error occurred'));
     } on ReownAppKitModalException catch (e) {
       onModalError.broadcast(ModalError(e.message));
-    } catch (e) {
+    } catch (e, s) {
+      _appKit.core.logger.e('[$runtimeType] selectChain, error: $e, $s');
       onModalError.broadcast(ModalError('An error occurred'));
     }
   }
@@ -1039,7 +1034,6 @@ class ReownAppKitModal
         } else {
           // Regular Session Proposal
           final connectResponse = await _appKit.connect(
-            requiredNamespaces: _requiredNamespaces,
             optionalNamespaces: _optionalNamespaces,
           );
           _wcUri = connectResponse.uri?.toString() ?? '';
@@ -1546,7 +1540,6 @@ class ReownAppKitModal
           _relayConnected = false;
           _isConnected = false;
           _selectedChainID = null;
-          _requiredNamespaces = {};
           _optionalNamespaces = {};
           _lastChainEmitted = null;
           _supportsOneClickAuth = false;
@@ -1637,28 +1630,6 @@ class ReownAppKitModal
       }
     }
     return totalNS;
-  }
-
-  void _setRequiredNamespaces(Map<String, RequiredNamespace>? requiredNSpaces) {
-    if (requiredNSpaces != null) {
-      // Set the required namespaces declared by the user on ReownAppKitModal object
-      _requiredNamespaces = requiredNSpaces.map(
-        (key, value) => MapEntry(
-          key,
-          RequiredNamespace(
-            chains: value.chains,
-            methods: value.methods,
-            events: value.events,
-          ),
-        ),
-      );
-    } else {
-      // Set the required namespaces to everything in our chain presets
-      _requiredNamespaces = {};
-    }
-    _appKit.core.logger.d(
-      '[$runtimeType] required namespaces ${jsonEncode(_requiredNamespaces)}',
-    );
   }
 
   void _setOptionalNamespaces(Map<String, RequiredNamespace>? optionalNSpaces) {
