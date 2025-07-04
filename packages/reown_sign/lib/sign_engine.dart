@@ -133,6 +133,9 @@ class ReownSign implements IReownSign {
 
   @override
   Future<ConnectResponse> connect({
+    @Deprecated(
+      'requiredNamespaces are automatically assigned to optionalNamespaces. Considering using only optionalNamespaces',
+    )
     Map<String, RequiredNamespace>? requiredNamespaces,
     Map<String, RequiredNamespace>? optionalNamespaces,
     Map<String, String>? sessionProperties,
