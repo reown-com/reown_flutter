@@ -17,6 +17,7 @@ class SessionProposalCompleter {
   final Map<String, RequiredNamespace> requiredNamespaces;
   final Map<String, RequiredNamespace> optionalNamespaces;
   final Map<String, String>? sessionProperties;
+  final Map<String, dynamic>? scopedProperties;
   final Completer completer;
 
   const SessionProposalCompleter({
@@ -27,11 +28,12 @@ class SessionProposalCompleter {
     required this.optionalNamespaces,
     required this.completer,
     this.sessionProperties,
+    this.scopedProperties,
   });
 
   @override
   String toString() {
-    return 'SessionProposalCompleter(id: $id, selfPublicKey: $selfPublicKey, pairingTopic: $pairingTopic, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, completer: $completer)';
+    return 'SessionProposalCompleter(id: $id, selfPublicKey: $selfPublicKey, pairingTopic: $pairingTopic, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, scopedProperties: $scopedProperties, completer: $completer)';
   }
 }
 
@@ -65,6 +67,7 @@ class SessionData with _$SessionData {
     Map<String, RequiredNamespace>? requiredNamespaces,
     Map<String, RequiredNamespace>? optionalNamespaces,
     Map<String, String>? sessionProperties,
+    Map<String, dynamic>? scopedProperties,
     List<Cacao>? authentication,
     @Default(TransportType.relay) TransportType transportType,
   }) = _SessionData;

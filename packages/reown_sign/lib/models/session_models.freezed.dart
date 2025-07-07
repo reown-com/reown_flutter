@@ -282,6 +282,8 @@ mixin _$SessionData {
       throw _privateConstructorUsedError;
   Map<String, String>? get sessionProperties =>
       throw _privateConstructorUsedError;
+  Map<String, dynamic>? get scopedProperties =>
+      throw _privateConstructorUsedError;
   List<Cacao>? get authentication => throw _privateConstructorUsedError;
   TransportType get transportType => throw _privateConstructorUsedError;
 
@@ -314,6 +316,7 @@ abstract class $SessionDataCopyWith<$Res> {
       Map<String, RequiredNamespace>? requiredNamespaces,
       Map<String, RequiredNamespace>? optionalNamespaces,
       Map<String, String>? sessionProperties,
+      Map<String, dynamic>? scopedProperties,
       List<Cacao>? authentication,
       TransportType transportType});
 
@@ -348,6 +351,7 @@ class _$SessionDataCopyWithImpl<$Res, $Val extends SessionData>
     Object? requiredNamespaces = freezed,
     Object? optionalNamespaces = freezed,
     Object? sessionProperties = freezed,
+    Object? scopedProperties = freezed,
     Object? authentication = freezed,
     Object? transportType = null,
   }) {
@@ -400,6 +404,10 @@ class _$SessionDataCopyWithImpl<$Res, $Val extends SessionData>
           ? _value.sessionProperties
           : sessionProperties // ignore: cast_nullable_to_non_nullable
               as Map<String, String>?,
+      scopedProperties: freezed == scopedProperties
+          ? _value.scopedProperties
+          : scopedProperties // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
       authentication: freezed == authentication
           ? _value.authentication
           : authentication // ignore: cast_nullable_to_non_nullable
@@ -453,6 +461,7 @@ abstract class _$$SessionDataImplCopyWith<$Res>
       Map<String, RequiredNamespace>? requiredNamespaces,
       Map<String, RequiredNamespace>? optionalNamespaces,
       Map<String, String>? sessionProperties,
+      Map<String, dynamic>? scopedProperties,
       List<Cacao>? authentication,
       TransportType transportType});
 
@@ -487,6 +496,7 @@ class __$$SessionDataImplCopyWithImpl<$Res>
     Object? requiredNamespaces = freezed,
     Object? optionalNamespaces = freezed,
     Object? sessionProperties = freezed,
+    Object? scopedProperties = freezed,
     Object? authentication = freezed,
     Object? transportType = null,
   }) {
@@ -539,6 +549,10 @@ class __$$SessionDataImplCopyWithImpl<$Res>
           ? _value._sessionProperties
           : sessionProperties // ignore: cast_nullable_to_non_nullable
               as Map<String, String>?,
+      scopedProperties: freezed == scopedProperties
+          ? _value._scopedProperties
+          : scopedProperties // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
       authentication: freezed == authentication
           ? _value._authentication
           : authentication // ignore: cast_nullable_to_non_nullable
@@ -568,12 +582,14 @@ class _$SessionDataImpl implements _SessionData {
       final Map<String, RequiredNamespace>? requiredNamespaces,
       final Map<String, RequiredNamespace>? optionalNamespaces,
       final Map<String, String>? sessionProperties,
+      final Map<String, dynamic>? scopedProperties,
       final List<Cacao>? authentication,
       this.transportType = TransportType.relay})
       : _namespaces = namespaces,
         _requiredNamespaces = requiredNamespaces,
         _optionalNamespaces = optionalNamespaces,
         _sessionProperties = sessionProperties,
+        _scopedProperties = scopedProperties,
         _authentication = authentication;
 
   factory _$SessionDataImpl.fromJson(Map<String, dynamic> json) =>
@@ -636,6 +652,16 @@ class _$SessionDataImpl implements _SessionData {
     return EqualUnmodifiableMapView(value);
   }
 
+  final Map<String, dynamic>? _scopedProperties;
+  @override
+  Map<String, dynamic>? get scopedProperties {
+    final value = _scopedProperties;
+    if (value == null) return null;
+    if (_scopedProperties is EqualUnmodifiableMapView) return _scopedProperties;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
   final List<Cacao>? _authentication;
   @override
   List<Cacao>? get authentication {
@@ -652,7 +678,7 @@ class _$SessionDataImpl implements _SessionData {
 
   @override
   String toString() {
-    return 'SessionData(topic: $topic, pairingTopic: $pairingTopic, relay: $relay, expiry: $expiry, acknowledged: $acknowledged, controller: $controller, namespaces: $namespaces, self: $self, peer: $peer, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, authentication: $authentication, transportType: $transportType)';
+    return 'SessionData(topic: $topic, pairingTopic: $pairingTopic, relay: $relay, expiry: $expiry, acknowledged: $acknowledged, controller: $controller, namespaces: $namespaces, self: $self, peer: $peer, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, scopedProperties: $scopedProperties, authentication: $authentication, transportType: $transportType)';
   }
 
   @override
@@ -680,6 +706,8 @@ class _$SessionDataImpl implements _SessionData {
             const DeepCollectionEquality()
                 .equals(other._sessionProperties, _sessionProperties) &&
             const DeepCollectionEquality()
+                .equals(other._scopedProperties, _scopedProperties) &&
+            const DeepCollectionEquality()
                 .equals(other._authentication, _authentication) &&
             (identical(other.transportType, transportType) ||
                 other.transportType == transportType));
@@ -701,6 +729,7 @@ class _$SessionDataImpl implements _SessionData {
       const DeepCollectionEquality().hash(_requiredNamespaces),
       const DeepCollectionEquality().hash(_optionalNamespaces),
       const DeepCollectionEquality().hash(_sessionProperties),
+      const DeepCollectionEquality().hash(_scopedProperties),
       const DeepCollectionEquality().hash(_authentication),
       transportType);
 
@@ -734,6 +763,7 @@ abstract class _SessionData implements SessionData {
       final Map<String, RequiredNamespace>? requiredNamespaces,
       final Map<String, RequiredNamespace>? optionalNamespaces,
       final Map<String, String>? sessionProperties,
+      final Map<String, dynamic>? scopedProperties,
       final List<Cacao>? authentication,
       final TransportType transportType}) = _$SessionDataImpl;
 
@@ -764,6 +794,8 @@ abstract class _SessionData implements SessionData {
   Map<String, RequiredNamespace>? get optionalNamespaces;
   @override
   Map<String, String>? get sessionProperties;
+  @override
+  Map<String, dynamic>? get scopedProperties;
   @override
   List<Cacao>? get authentication;
   @override

@@ -364,6 +364,8 @@ mixin _$WcSessionProposeRequest {
       throw _privateConstructorUsedError;
   Map<String, String>? get sessionProperties =>
       throw _privateConstructorUsedError;
+  Map<String, dynamic>? get scopedProperties =>
+      throw _privateConstructorUsedError;
   ConnectionMetadata get proposer => throw _privateConstructorUsedError;
 
   /// Serializes this WcSessionProposeRequest to a JSON map.
@@ -387,6 +389,7 @@ abstract class $WcSessionProposeRequestCopyWith<$Res> {
       Map<String, RequiredNamespace> requiredNamespaces,
       Map<String, RequiredNamespace>? optionalNamespaces,
       Map<String, String>? sessionProperties,
+      Map<String, dynamic>? scopedProperties,
       ConnectionMetadata proposer});
 
   $ConnectionMetadataCopyWith<$Res> get proposer;
@@ -412,6 +415,7 @@ class _$WcSessionProposeRequestCopyWithImpl<$Res,
     Object? requiredNamespaces = null,
     Object? optionalNamespaces = freezed,
     Object? sessionProperties = freezed,
+    Object? scopedProperties = freezed,
     Object? proposer = null,
   }) {
     return _then(_value.copyWith(
@@ -431,6 +435,10 @@ class _$WcSessionProposeRequestCopyWithImpl<$Res,
           ? _value.sessionProperties
           : sessionProperties // ignore: cast_nullable_to_non_nullable
               as Map<String, String>?,
+      scopedProperties: freezed == scopedProperties
+          ? _value.scopedProperties
+          : scopedProperties // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
       proposer: null == proposer
           ? _value.proposer
           : proposer // ignore: cast_nullable_to_non_nullable
@@ -463,6 +471,7 @@ abstract class _$$WcSessionProposeRequestImplCopyWith<$Res>
       Map<String, RequiredNamespace> requiredNamespaces,
       Map<String, RequiredNamespace>? optionalNamespaces,
       Map<String, String>? sessionProperties,
+      Map<String, dynamic>? scopedProperties,
       ConnectionMetadata proposer});
 
   @override
@@ -488,6 +497,7 @@ class __$$WcSessionProposeRequestImplCopyWithImpl<$Res>
     Object? requiredNamespaces = null,
     Object? optionalNamespaces = freezed,
     Object? sessionProperties = freezed,
+    Object? scopedProperties = freezed,
     Object? proposer = null,
   }) {
     return _then(_$WcSessionProposeRequestImpl(
@@ -507,6 +517,10 @@ class __$$WcSessionProposeRequestImplCopyWithImpl<$Res>
           ? _value._sessionProperties
           : sessionProperties // ignore: cast_nullable_to_non_nullable
               as Map<String, String>?,
+      scopedProperties: freezed == scopedProperties
+          ? _value._scopedProperties
+          : scopedProperties // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
       proposer: null == proposer
           ? _value.proposer
           : proposer // ignore: cast_nullable_to_non_nullable
@@ -524,11 +538,13 @@ class _$WcSessionProposeRequestImpl implements _WcSessionProposeRequest {
       required final Map<String, RequiredNamespace> requiredNamespaces,
       final Map<String, RequiredNamespace>? optionalNamespaces,
       final Map<String, String>? sessionProperties,
+      final Map<String, dynamic>? scopedProperties,
       required this.proposer})
       : _relays = relays,
         _requiredNamespaces = requiredNamespaces,
         _optionalNamespaces = optionalNamespaces,
-        _sessionProperties = sessionProperties;
+        _sessionProperties = sessionProperties,
+        _scopedProperties = scopedProperties;
 
   factory _$WcSessionProposeRequestImpl.fromJson(Map<String, dynamic> json) =>
       _$$WcSessionProposeRequestImplFromJson(json);
@@ -572,12 +588,22 @@ class _$WcSessionProposeRequestImpl implements _WcSessionProposeRequest {
     return EqualUnmodifiableMapView(value);
   }
 
+  final Map<String, dynamic>? _scopedProperties;
+  @override
+  Map<String, dynamic>? get scopedProperties {
+    final value = _scopedProperties;
+    if (value == null) return null;
+    if (_scopedProperties is EqualUnmodifiableMapView) return _scopedProperties;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
   @override
   final ConnectionMetadata proposer;
 
   @override
   String toString() {
-    return 'WcSessionProposeRequest(relays: $relays, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, proposer: $proposer)';
+    return 'WcSessionProposeRequest(relays: $relays, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, scopedProperties: $scopedProperties, proposer: $proposer)';
   }
 
   @override
@@ -592,6 +618,8 @@ class _$WcSessionProposeRequestImpl implements _WcSessionProposeRequest {
                 .equals(other._optionalNamespaces, _optionalNamespaces) &&
             const DeepCollectionEquality()
                 .equals(other._sessionProperties, _sessionProperties) &&
+            const DeepCollectionEquality()
+                .equals(other._scopedProperties, _scopedProperties) &&
             (identical(other.proposer, proposer) ||
                 other.proposer == proposer));
   }
@@ -604,6 +632,7 @@ class _$WcSessionProposeRequestImpl implements _WcSessionProposeRequest {
       const DeepCollectionEquality().hash(_requiredNamespaces),
       const DeepCollectionEquality().hash(_optionalNamespaces),
       const DeepCollectionEquality().hash(_sessionProperties),
+      const DeepCollectionEquality().hash(_scopedProperties),
       proposer);
 
   /// Create a copy of WcSessionProposeRequest
@@ -629,6 +658,7 @@ abstract class _WcSessionProposeRequest implements WcSessionProposeRequest {
           required final Map<String, RequiredNamespace> requiredNamespaces,
           final Map<String, RequiredNamespace>? optionalNamespaces,
           final Map<String, String>? sessionProperties,
+          final Map<String, dynamic>? scopedProperties,
           required final ConnectionMetadata proposer}) =
       _$WcSessionProposeRequestImpl;
 
@@ -643,6 +673,8 @@ abstract class _WcSessionProposeRequest implements WcSessionProposeRequest {
   Map<String, RequiredNamespace>? get optionalNamespaces;
   @override
   Map<String, String>? get sessionProperties;
+  @override
+  Map<String, dynamic>? get scopedProperties;
   @override
   ConnectionMetadata get proposer;
 
@@ -846,6 +878,8 @@ mixin _$WcSessionSettleRequest {
       throw _privateConstructorUsedError;
   Map<String, String>? get sessionProperties =>
       throw _privateConstructorUsedError;
+  Map<String, dynamic>? get scopedProperties =>
+      throw _privateConstructorUsedError;
   int get expiry => throw _privateConstructorUsedError;
   ConnectionMetadata get controller => throw _privateConstructorUsedError;
 
@@ -871,6 +905,7 @@ abstract class $WcSessionSettleRequestCopyWith<$Res> {
       Map<String, RequiredNamespace>? requiredNamespaces,
       Map<String, RequiredNamespace>? optionalNamespaces,
       Map<String, String>? sessionProperties,
+      Map<String, dynamic>? scopedProperties,
       int expiry,
       ConnectionMetadata controller});
 
@@ -898,6 +933,7 @@ class _$WcSessionSettleRequestCopyWithImpl<$Res,
     Object? requiredNamespaces = freezed,
     Object? optionalNamespaces = freezed,
     Object? sessionProperties = freezed,
+    Object? scopedProperties = freezed,
     Object? expiry = null,
     Object? controller = null,
   }) {
@@ -922,6 +958,10 @@ class _$WcSessionSettleRequestCopyWithImpl<$Res,
           ? _value.sessionProperties
           : sessionProperties // ignore: cast_nullable_to_non_nullable
               as Map<String, String>?,
+      scopedProperties: freezed == scopedProperties
+          ? _value.scopedProperties
+          : scopedProperties // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
       expiry: null == expiry
           ? _value.expiry
           : expiry // ignore: cast_nullable_to_non_nullable
@@ -959,6 +999,7 @@ abstract class _$$WcSessionSettleRequestImplCopyWith<$Res>
       Map<String, RequiredNamespace>? requiredNamespaces,
       Map<String, RequiredNamespace>? optionalNamespaces,
       Map<String, String>? sessionProperties,
+      Map<String, dynamic>? scopedProperties,
       int expiry,
       ConnectionMetadata controller});
 
@@ -986,6 +1027,7 @@ class __$$WcSessionSettleRequestImplCopyWithImpl<$Res>
     Object? requiredNamespaces = freezed,
     Object? optionalNamespaces = freezed,
     Object? sessionProperties = freezed,
+    Object? scopedProperties = freezed,
     Object? expiry = null,
     Object? controller = null,
   }) {
@@ -1010,6 +1052,10 @@ class __$$WcSessionSettleRequestImplCopyWithImpl<$Res>
           ? _value._sessionProperties
           : sessionProperties // ignore: cast_nullable_to_non_nullable
               as Map<String, String>?,
+      scopedProperties: freezed == scopedProperties
+          ? _value._scopedProperties
+          : scopedProperties // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
       expiry: null == expiry
           ? _value.expiry
           : expiry // ignore: cast_nullable_to_non_nullable
@@ -1032,12 +1078,14 @@ class _$WcSessionSettleRequestImpl implements _WcSessionSettleRequest {
       final Map<String, RequiredNamespace>? requiredNamespaces,
       final Map<String, RequiredNamespace>? optionalNamespaces,
       final Map<String, String>? sessionProperties,
+      final Map<String, dynamic>? scopedProperties,
       required this.expiry,
       required this.controller})
       : _namespaces = namespaces,
         _requiredNamespaces = requiredNamespaces,
         _optionalNamespaces = optionalNamespaces,
-        _sessionProperties = sessionProperties;
+        _sessionProperties = sessionProperties,
+        _scopedProperties = scopedProperties;
 
   factory _$WcSessionSettleRequestImpl.fromJson(Map<String, dynamic> json) =>
       _$$WcSessionSettleRequestImplFromJson(json);
@@ -1085,6 +1133,16 @@ class _$WcSessionSettleRequestImpl implements _WcSessionSettleRequest {
     return EqualUnmodifiableMapView(value);
   }
 
+  final Map<String, dynamic>? _scopedProperties;
+  @override
+  Map<String, dynamic>? get scopedProperties {
+    final value = _scopedProperties;
+    if (value == null) return null;
+    if (_scopedProperties is EqualUnmodifiableMapView) return _scopedProperties;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
   @override
   final int expiry;
   @override
@@ -1092,7 +1150,7 @@ class _$WcSessionSettleRequestImpl implements _WcSessionSettleRequest {
 
   @override
   String toString() {
-    return 'WcSessionSettleRequest(relay: $relay, namespaces: $namespaces, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, expiry: $expiry, controller: $controller)';
+    return 'WcSessionSettleRequest(relay: $relay, namespaces: $namespaces, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, scopedProperties: $scopedProperties, expiry: $expiry, controller: $controller)';
   }
 
   @override
@@ -1109,6 +1167,8 @@ class _$WcSessionSettleRequestImpl implements _WcSessionSettleRequest {
                 .equals(other._optionalNamespaces, _optionalNamespaces) &&
             const DeepCollectionEquality()
                 .equals(other._sessionProperties, _sessionProperties) &&
+            const DeepCollectionEquality()
+                .equals(other._scopedProperties, _scopedProperties) &&
             (identical(other.expiry, expiry) || other.expiry == expiry) &&
             (identical(other.controller, controller) ||
                 other.controller == controller));
@@ -1123,6 +1183,7 @@ class _$WcSessionSettleRequestImpl implements _WcSessionSettleRequest {
       const DeepCollectionEquality().hash(_requiredNamespaces),
       const DeepCollectionEquality().hash(_optionalNamespaces),
       const DeepCollectionEquality().hash(_sessionProperties),
+      const DeepCollectionEquality().hash(_scopedProperties),
       expiry,
       controller);
 
@@ -1150,6 +1211,7 @@ abstract class _WcSessionSettleRequest implements WcSessionSettleRequest {
           final Map<String, RequiredNamespace>? requiredNamespaces,
           final Map<String, RequiredNamespace>? optionalNamespaces,
           final Map<String, String>? sessionProperties,
+          final Map<String, dynamic>? scopedProperties,
           required final int expiry,
           required final ConnectionMetadata controller}) =
       _$WcSessionSettleRequestImpl;
@@ -1167,6 +1229,8 @@ abstract class _WcSessionSettleRequest implements WcSessionSettleRequest {
   Map<String, RequiredNamespace>? get optionalNamespaces;
   @override
   Map<String, String>? get sessionProperties;
+  @override
+  Map<String, dynamic>? get scopedProperties;
   @override
   int get expiry;
   @override

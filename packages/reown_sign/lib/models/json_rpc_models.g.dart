@@ -52,6 +52,7 @@ _$WcSessionProposeRequestImpl _$$WcSessionProposeRequestImplFromJson(
           (json['sessionProperties'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as String),
       ),
+      scopedProperties: json['scopedProperties'] as Map<String, dynamic>?,
       proposer:
           ConnectionMetadata.fromJson(json['proposer'] as Map<String, dynamic>),
     );
@@ -67,6 +68,8 @@ Map<String, dynamic> _$$WcSessionProposeRequestImplToJson(
         'optionalNamespaces': value,
       if (instance.sessionProperties case final value?)
         'sessionProperties': value,
+      if (instance.scopedProperties case final value?)
+        'scopedProperties': value,
       'proposer': instance.proposer.toJson(),
     };
 
@@ -105,6 +108,7 @@ _$WcSessionSettleRequestImpl _$$WcSessionSettleRequestImplFromJson(
           (json['sessionProperties'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as String),
       ),
+      scopedProperties: json['scopedProperties'] as Map<String, dynamic>?,
       expiry: (json['expiry'] as num).toInt(),
       controller: ConnectionMetadata.fromJson(
           json['controller'] as Map<String, dynamic>),
@@ -123,6 +127,8 @@ Map<String, dynamic> _$$WcSessionSettleRequestImplToJson(
         'optionalNamespaces': value,
       if (instance.sessionProperties case final value?)
         'sessionProperties': value,
+      if (instance.scopedProperties case final value?)
+        'scopedProperties': value,
       'expiry': instance.expiry,
       'controller': instance.controller.toJson(),
     };

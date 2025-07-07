@@ -146,6 +146,7 @@ class ReownSignClient implements IReownSignClient {
     Map<String, RequiredNamespace>? requiredNamespaces,
     Map<String, RequiredNamespace>? optionalNamespaces,
     Map<String, String>? sessionProperties,
+    Map<String, dynamic>? scopedProperties,
     String? pairingTopic,
     List<Relay>? relays,
     List<List<String>>? methods = ReownSign.DEFAULT_METHODS,
@@ -155,6 +156,7 @@ class ReownSignClient implements IReownSignClient {
         requiredNamespaces: requiredNamespaces,
         optionalNamespaces: optionalNamespaces,
         sessionProperties: sessionProperties,
+        scopedProperties: scopedProperties,
         pairingTopic: pairingTopic,
         relays: relays,
         methods: methods,
@@ -181,6 +183,7 @@ class ReownSignClient implements IReownSignClient {
     required int id,
     required Map<String, Namespace> namespaces,
     Map<String, String>? sessionProperties,
+    Map<String, dynamic>? scopedProperties,
     String? relayProtocol,
   }) async {
     try {
@@ -188,6 +191,7 @@ class ReownSignClient implements IReownSignClient {
         id: id,
         namespaces: namespaces,
         sessionProperties: sessionProperties,
+        scopedProperties: scopedProperties,
         relayProtocol: relayProtocol,
       );
     } catch (e) {

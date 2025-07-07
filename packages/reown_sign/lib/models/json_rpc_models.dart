@@ -40,6 +40,7 @@ class WcSessionProposeRequest with _$WcSessionProposeRequest {
     required Map<String, RequiredNamespace> requiredNamespaces,
     Map<String, RequiredNamespace>? optionalNamespaces,
     Map<String, String>? sessionProperties,
+    Map<String, dynamic>? scopedProperties,
     required ConnectionMetadata proposer,
   }) = _WcSessionProposeRequest;
 
@@ -68,6 +69,7 @@ class WcSessionSettleRequest with _$WcSessionSettleRequest {
     Map<String, RequiredNamespace>? requiredNamespaces,
     Map<String, RequiredNamespace>? optionalNamespaces,
     Map<String, String>? sessionProperties,
+    Map<String, dynamic>? scopedProperties,
     required int expiry,
     required ConnectionMetadata controller,
   }) = _WcSessionSettleRequest;

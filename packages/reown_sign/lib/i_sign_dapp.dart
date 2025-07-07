@@ -13,6 +13,7 @@ abstract class IReownSignDapp extends IReownSignCommon {
     Map<String, RequiredNamespace>? requiredNamespaces,
     Map<String, RequiredNamespace>? optionalNamespaces,
     Map<String, String>? sessionProperties,
+    Map<String, dynamic>? scopedProperties,
     String? pairingTopic,
     List<Relay>? relays,
     List<List<String>>? methods,

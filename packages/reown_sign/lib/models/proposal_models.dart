@@ -43,6 +43,7 @@ class ProposalData with _$ProposalData {
     required Map<String, RequiredNamespace> optionalNamespaces,
     required String pairingTopic,
     Map<String, String>? sessionProperties,
+    Map<String, dynamic>? scopedProperties,
     Map<String, Namespace>? generatedNamespaces,
   }) = _ProposalData;
 

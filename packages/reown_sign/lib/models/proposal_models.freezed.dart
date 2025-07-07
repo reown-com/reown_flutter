@@ -430,6 +430,8 @@ mixin _$ProposalData {
   String get pairingTopic => throw _privateConstructorUsedError;
   Map<String, String>? get sessionProperties =>
       throw _privateConstructorUsedError;
+  Map<String, dynamic>? get scopedProperties =>
+      throw _privateConstructorUsedError;
   Map<String, Namespace>? get generatedNamespaces =>
       throw _privateConstructorUsedError;
 
@@ -458,6 +460,7 @@ abstract class $ProposalDataCopyWith<$Res> {
       Map<String, RequiredNamespace> optionalNamespaces,
       String pairingTopic,
       Map<String, String>? sessionProperties,
+      Map<String, dynamic>? scopedProperties,
       Map<String, Namespace>? generatedNamespaces});
 
   $ConnectionMetadataCopyWith<$Res> get proposer;
@@ -486,6 +489,7 @@ class _$ProposalDataCopyWithImpl<$Res, $Val extends ProposalData>
     Object? optionalNamespaces = null,
     Object? pairingTopic = null,
     Object? sessionProperties = freezed,
+    Object? scopedProperties = freezed,
     Object? generatedNamespaces = freezed,
   }) {
     return _then(_value.copyWith(
@@ -521,6 +525,10 @@ class _$ProposalDataCopyWithImpl<$Res, $Val extends ProposalData>
           ? _value.sessionProperties
           : sessionProperties // ignore: cast_nullable_to_non_nullable
               as Map<String, String>?,
+      scopedProperties: freezed == scopedProperties
+          ? _value.scopedProperties
+          : scopedProperties // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
       generatedNamespaces: freezed == generatedNamespaces
           ? _value.generatedNamespaces
           : generatedNamespaces // ignore: cast_nullable_to_non_nullable
@@ -556,6 +564,7 @@ abstract class _$$ProposalDataImplCopyWith<$Res>
       Map<String, RequiredNamespace> optionalNamespaces,
       String pairingTopic,
       Map<String, String>? sessionProperties,
+      Map<String, dynamic>? scopedProperties,
       Map<String, Namespace>? generatedNamespaces});
 
   @override
@@ -583,6 +592,7 @@ class __$$ProposalDataImplCopyWithImpl<$Res>
     Object? optionalNamespaces = null,
     Object? pairingTopic = null,
     Object? sessionProperties = freezed,
+    Object? scopedProperties = freezed,
     Object? generatedNamespaces = freezed,
   }) {
     return _then(_$ProposalDataImpl(
@@ -618,6 +628,10 @@ class __$$ProposalDataImplCopyWithImpl<$Res>
           ? _value._sessionProperties
           : sessionProperties // ignore: cast_nullable_to_non_nullable
               as Map<String, String>?,
+      scopedProperties: freezed == scopedProperties
+          ? _value._scopedProperties
+          : scopedProperties // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>?,
       generatedNamespaces: freezed == generatedNamespaces
           ? _value._generatedNamespaces
           : generatedNamespaces // ignore: cast_nullable_to_non_nullable
@@ -639,11 +653,13 @@ class _$ProposalDataImpl implements _ProposalData {
       required final Map<String, RequiredNamespace> optionalNamespaces,
       required this.pairingTopic,
       final Map<String, String>? sessionProperties,
+      final Map<String, dynamic>? scopedProperties,
       final Map<String, Namespace>? generatedNamespaces})
       : _relays = relays,
         _requiredNamespaces = requiredNamespaces,
         _optionalNamespaces = optionalNamespaces,
         _sessionProperties = sessionProperties,
+        _scopedProperties = scopedProperties,
         _generatedNamespaces = generatedNamespaces;
 
   factory _$ProposalDataImpl.fromJson(Map<String, dynamic> json) =>
@@ -694,6 +710,16 @@ class _$ProposalDataImpl implements _ProposalData {
     return EqualUnmodifiableMapView(value);
   }
 
+  final Map<String, dynamic>? _scopedProperties;
+  @override
+  Map<String, dynamic>? get scopedProperties {
+    final value = _scopedProperties;
+    if (value == null) return null;
+    if (_scopedProperties is EqualUnmodifiableMapView) return _scopedProperties;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(value);
+  }
+
   final Map<String, Namespace>? _generatedNamespaces;
   @override
   Map<String, Namespace>? get generatedNamespaces {
@@ -707,7 +733,7 @@ class _$ProposalDataImpl implements _ProposalData {
 
   @override
   String toString() {
-    return 'ProposalData(id: $id, expiry: $expiry, relays: $relays, proposer: $proposer, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, pairingTopic: $pairingTopic, sessionProperties: $sessionProperties, generatedNamespaces: $generatedNamespaces)';
+    return 'ProposalData(id: $id, expiry: $expiry, relays: $relays, proposer: $proposer, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, pairingTopic: $pairingTopic, sessionProperties: $sessionProperties, scopedProperties: $scopedProperties, generatedNamespaces: $generatedNamespaces)';
   }
 
   @override
@@ -729,6 +755,8 @@ class _$ProposalDataImpl implements _ProposalData {
             const DeepCollectionEquality()
                 .equals(other._sessionProperties, _sessionProperties) &&
             const DeepCollectionEquality()
+                .equals(other._scopedProperties, _scopedProperties) &&
+            const DeepCollectionEquality()
                 .equals(other._generatedNamespaces, _generatedNamespaces));
   }
 
@@ -744,6 +772,7 @@ class _$ProposalDataImpl implements _ProposalData {
       const DeepCollectionEquality().hash(_optionalNamespaces),
       pairingTopic,
       const DeepCollectionEquality().hash(_sessionProperties),
+      const DeepCollectionEquality().hash(_scopedProperties),
       const DeepCollectionEquality().hash(_generatedNamespaces));
 
   /// Create a copy of ProposalData
@@ -772,6 +801,7 @@ abstract class _ProposalData implements ProposalData {
       required final Map<String, RequiredNamespace> optionalNamespaces,
       required final String pairingTopic,
       final Map<String, String>? sessionProperties,
+      final Map<String, dynamic>? scopedProperties,
       final Map<String, Namespace>? generatedNamespaces}) = _$ProposalDataImpl;
 
   factory _ProposalData.fromJson(Map<String, dynamic> json) =
@@ -793,6 +823,8 @@ abstract class _ProposalData implements ProposalData {
   String get pairingTopic;
   @override
   Map<String, String>? get sessionProperties;
+  @override
+  Map<String, dynamic>? get scopedProperties;
   @override
   Map<String, Namespace>? get generatedNamespaces;
 
