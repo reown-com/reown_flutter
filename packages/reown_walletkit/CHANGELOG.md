@@ -1,3 +1,7 @@
+## 1.1.6+2
+
+- Bug fix #205
+
 ## 1.1.6+1
 
 - Dependency updates
