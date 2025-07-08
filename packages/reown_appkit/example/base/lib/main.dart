@@ -9,6 +9,7 @@ import 'package:reown_appkit_dapp/pages/settings_page.dart';
 // ignore: depend_on_referenced_packages
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 
 import 'package:reown_appkit_dapp/models/page_data.dart';
