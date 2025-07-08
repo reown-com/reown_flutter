@@ -172,7 +172,7 @@ class ReownSign implements IReownSign {
     final int id = JsonRpcUtils.payloadId();
 
     // Merge requiredNamespaces into optionalNamespaces, avoiding duplicates
-    final mergedNamespaces = _mergeRequiredIntoOptionalNamespaces(
+    final mergedNamespaces = NamespaceUtils.mergeRequiredIntoOptionalNamespaces(
       requiredNamespaces ?? {},
       optionalNamespaces ?? {},
     );
@@ -3130,57 +3130,5 @@ class ReownSign implements IReownSign {
         // default to EVM
         return <String>[response.result];
     }
-  }
-
-  /// Merges requiredNamespaces into optionalNamespaces, avoiding duplicates
-  /// When a key exists in both maps, the values are merged by combining chains, methods, and events
-  /// while removing duplicates
-  Map<String, RequiredNamespace> _mergeRequiredIntoOptionalNamespaces(
-    Map<String, RequiredNamespace> requiredNamespaces,
-    Map<String, RequiredNamespace> optionalNamespaces,
-  ) {
-    final Map<String, RequiredNamespace> merged = Map.from(optionalNamespaces);
-
-    for (final entry in requiredNamespaces.entries) {
-      final key = entry.key;
-      final requiredNamespace = entry.value;
-
-      if (merged.containsKey(key)) {
-        // Key exists in both, merge the values
-        final existingNamespace = merged[key]!;
-
-        // Merge chains (remove duplicates)
-        final mergedChains = <String>{};
-        if (requiredNamespace.chains != null) {
-          mergedChains.addAll(requiredNamespace.chains!);
-        }
-        if (existingNamespace.chains != null) {
-          mergedChains.addAll(existingNamespace.chains!);
-        }
-        final finalChains =
-            mergedChains.isNotEmpty ? mergedChains.toList() : null;
-
-        // Merge methods (remove duplicates)
-        final mergedMethods = <String>{};
-        mergedMethods.addAll(requiredNamespace.methods);
-        mergedMethods.addAll(existingNamespace.methods);
-
-        // Merge events (remove duplicates)
-        final mergedEvents = <String>{};
-        mergedEvents.addAll(requiredNamespace.events);
-        mergedEvents.addAll(existingNamespace.events);
-
-        merged[key] = RequiredNamespace(
-          chains: finalChains,
-          methods: mergedMethods.toList(),
-          events: mergedEvents.toList(),
-        );
-      } else {
-        // Key only exists in required, add it to merged
-        merged[key] = requiredNamespace;
-      }
-    }
-
-    return merged;
   }
 }
