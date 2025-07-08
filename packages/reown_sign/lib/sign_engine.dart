@@ -3097,26 +3097,33 @@ class ReownSign implements IReownSign {
         }
         return null;
       case 'cosmos':
-        final result = (response.result as Map<String, dynamic>);
-        final signature = ReownCoreUtils.recursiveSearchForMapKey(
-          result,
-          'signature',
-        );
-        if (signature != null) {
-          final bodyBytes = ReownCoreUtils.recursiveSearchForMapKey(
+        try {
+          // only cosmos_signDirect and cosmos_signAmino has a result of type Map
+          // cosmos_getAccounts would respond with a List but we don't want to parse this method
+          // wrapping it with a try/catch as for other methods is enough
+          final result = (response.result as Map<String, dynamic>);
+          final signature = ReownCoreUtils.recursiveSearchForMapKey(
             result,
-            'bodyBytes',
+            'signature',
           );
-          final authInfoBytes = ReownCoreUtils.recursiveSearchForMapKey(
-            result,
-            'authInfoBytes',
-          );
-          final hash = CosmosUtils.computeTxHash(
-            bodyBytesBase64: bodyBytes,
-            authInfoBytesBase64: authInfoBytes,
-            signatureBase64: signature['signature'],
-          );
-          return List<String>.from([hash]);
+          if (signature != null) {
+            final bodyBytes = ReownCoreUtils.recursiveSearchForMapKey(
+              result,
+              'bodyBytes',
+            );
+            final authInfoBytes = ReownCoreUtils.recursiveSearchForMapKey(
+              result,
+              'authInfoBytes',
+            );
+            final hash = CosmosUtils.computeTxHash(
+              bodyBytesBase64: bodyBytes,
+              authInfoBytesBase64: authInfoBytes,
+              signatureBase64: signature['signature'],
+            );
+            return List<String>.from([hash]);
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: cosmos, $e');
         }
         return null;
       default:
