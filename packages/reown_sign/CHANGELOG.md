@@ -1,3 +1,7 @@
+## 1.1.8
+
+- Required namespaces deprecation
+
 ## 1.1.7+2
 
 - Bug fix #205
