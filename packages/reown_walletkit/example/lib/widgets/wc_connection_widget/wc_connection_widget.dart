@@ -30,7 +30,6 @@ class WCConnectionWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildTitle(title),
-          // const SizedBox(height: StyleConstants.linear8),
           ...info.map(
             (e) => WCConnectionWidgetInfo(
               model: e,
