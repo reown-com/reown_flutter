@@ -56,10 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
         context: context,
         builder: (BuildContext context) {
           return const AlertDialog(
-            content: Text(
-              'Wallet restored. App will close.',
-            ),
-          );
+              content: Text('Wallet restored. App will close.'));
         },
       );
       if (!kDebugMode) {
@@ -67,6 +64,25 @@ class _SettingsPageState extends State<SettingsPage> {
       } else {
         setState(() {});
       }
+    }
+  }
+
+  Future<void> _onRegenerateSeed() async {
+    await _keysService.clearAll();
+    await _keysService.regenerateStoredWallet();
+    await _keysService.loadKeys();
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const AlertDialog(
+          content: Text('Wallet restored. App will close.'),
+        );
+      },
+    );
+    if (!kDebugMode) {
+      exit(0);
+    } else {
+      setState(() {});
     }
   }
 
@@ -147,6 +163,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   _Buttons(
                     onDeleteData: _onDeleteData,
                     onRestoreFromSeed: _onRestoreFromSeed,
+                    onRegenerateSeed: _onRegenerateSeed,
                     onCreateNewWallet: _onCreateNewWallet,
                   ),
                   //
@@ -593,12 +610,11 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                 .toList(),
           ),
         ),
-        FutureBuilder<String>(
-          future: _keysService.getMnemonic(),
-          builder: (context, snapshot) {
-            final value = snapshot.data ?? '';
+        Builder(
+          builder: (BuildContext context) {
+            final mnemonic = _keysService.getMnemonic();
             return Visibility(
-              visible: value.isNotEmpty,
+              visible: mnemonic.isNotEmpty,
               child: Column(
                 children: [
                   const SizedBox(height: 20.0),
@@ -606,7 +622,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                     padding: const EdgeInsets.symmetric(horizontal: 12.0),
                     child: _DataContainer(
                       title: 'Mnemonic phrase',
-                      data: snapshot.data ?? '',
+                      data: mnemonic,
                       blurred: true,
                     ),
                   ),
@@ -877,10 +893,12 @@ class _DeviceData extends StatelessWidget {
 
 class _Buttons extends StatelessWidget {
   final VoidCallback onRestoreFromSeed;
+  final VoidCallback onRegenerateSeed;
   final VoidCallback onCreateNewWallet;
   final VoidCallback onDeleteData;
   const _Buttons({
     required this.onRestoreFromSeed,
+    required this.onRegenerateSeed,
     required this.onCreateNewWallet,
     required this.onDeleteData,
   });
@@ -896,14 +914,22 @@ class _Buttons extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 8.0),
+              TextButton(
+                onPressed: onDeleteData,
+                child: Text(
+                  'Clear local storage',
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+              const SizedBox(height: 12.0),
               Row(
                 children: [
                   CustomButton(
-                    type: CustomButtonType.normal,
-                    onTap: onDeleteData,
+                    type: CustomButtonType.valid,
+                    onTap: onRestoreFromSeed,
                     child: const Center(
                       child: Text(
-                        'Clear local storage',
+                        'Restore a wallet',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -917,11 +943,11 @@ class _Buttons extends StatelessWidget {
               Row(
                 children: [
                   CustomButton(
-                    type: CustomButtonType.valid,
-                    onTap: onRestoreFromSeed,
+                    type: CustomButtonType.normal,
+                    onTap: onRegenerateSeed,
                     child: const Center(
                       child: Text(
-                        'Restore wallet',
+                        'Regenerate current wallet',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -939,7 +965,7 @@ class _Buttons extends StatelessWidget {
                     onTap: onCreateNewWallet,
                     child: const Center(
                       child: Text(
-                        'Create new wallet',
+                        'Create new random wallet',
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,

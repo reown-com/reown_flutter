@@ -9,6 +9,8 @@ import 'package:reown_appkit_dapp/pages/settings_page.dart';
 // ignore: depend_on_referenced_packages
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+// ignore: depend_on_referenced_packages
+import 'package:http/http.dart' as http;
 
 import 'package:reown_appkit_dapp/models/page_data.dart';
 import 'package:reown_appkit_dapp/pages/connect_page.dart';
@@ -263,11 +265,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // excludedWalletIds: {},
       // includedWalletIds: {},
       // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
-      getBalanceFallback: () async {
-        // This method will be triggered if getting the balance from our blockchain API fails
-        // You could place here your own getBalance method
-        return 0.0;
-      },
+      getBalanceFallback: getBalanceFallback,
       disconnectOnDispose: true,
       customWallets: [
         ReownAppKitModalWalletInfo(
@@ -365,6 +363,33 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  Future<double> getBalanceFallback() async {
+    final chainId = _appKitModal!.selectedChain!.chainId;
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
+      namespace,
+      chainId,
+    );
+    if (namespace == 'stacks') {
+      try {
+        final address = _appKitModal!.session!.getAddress('stacks');
+        final url =
+            '${chainInfo!.rpcUrl}/extended/v1/address/$address/balances';
+        final response = await http.get(Uri.parse(url));
+
+        if (response.statusCode == 200) {
+          final data = jsonDecode(response.body);
+          final balance = data['stx']?['balance'] ?? '0';
+          // Convert from microSTX to STX
+          return double.parse(balance) / 1000000;
+        }
+      } catch (e) {
+        debugPrint('Error fetching Stacks balance: $e');
+      }
+    }
+    return 0.0;
+  }
+
   // Adds or remove supported networks based on linkMode
   void _addOrRemoveNetworks(bool linkMode) {
     if (linkMode) {
@@ -452,6 +477,25 @@ class _MyHomePageState extends State<MyHomePage> {
               'https://www.mintscan.io/cosmos/', // 'https://www.mintscan.io',
           chainIcon:
               'https://pbs.twimg.com/profile_images/1910273399282159616/OLSiIjEx_400x400.png',
+        ),
+      ]);
+      ReownAppKitModalNetworks.addSupportedNetworks('stacks', [
+        ReownAppKitModalNetworkInfo(
+          name: 'Stacks Mainnet',
+          chainId: 'stacks:1',
+          currency: 'STX',
+          rpcUrl: 'https://api.hiro.so',
+          explorerUrl: 'https://explorer.hiro.so',
+          chainIcon:
+              'https://pbs.twimg.com/profile_images/1764968185399267328/lrmnHOuN_400x400.jpg',
+        ),
+        ReownAppKitModalNetworkInfo(
+          name: 'Stacks Testnet',
+          chainId: 'stacks:2147483648',
+          currency: 'STX',
+          rpcUrl: 'https://api.testnet.hiro.so',
+          explorerUrl: 'https://explorer.hiro.so',
+          isTestNetwork: true,
         ),
       ]);
     }

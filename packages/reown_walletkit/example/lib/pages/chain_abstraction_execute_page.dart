@@ -182,7 +182,7 @@ class _ChainAbstractionDetailsAndExecuteState
                     ),
                   ),
                   FutureBuilder(
-                    future: walletKit.erc20TokenBalance(
+                    future: walletKit.chainAbstractionClient.erc20TokenBalance(
                       chainId:
                           uiFields.routeResponse.initialTransaction.chainId,
                       token: uiFields.routeResponse.metadata.initialTransaction

@@ -15,7 +15,7 @@ class Cosmos {
     CosmosMethods.cosmosSignAmino: 'cosmos_signAmino',
   };
 
-  static final Map<CosmosEvents, String> events = {};
+  static final List<String> events = [];
 
   static Map<String, dynamic> signDirect(String address, String chainId) {
     // TODO hardcoded values for explanatory pursposes

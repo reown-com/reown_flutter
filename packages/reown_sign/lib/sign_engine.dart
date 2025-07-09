@@ -3035,7 +3035,9 @@ class ReownSign implements IReownSign {
             result,
             'txid',
           );
-          return <String>[txid];
+          if (txid != null) {
+            return <String>[txid];
+          }
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: bip122, $e');
         }
@@ -3047,7 +3049,9 @@ class ReownSign implements IReownSign {
             result,
             'txid',
           );
-          return List<String>.from([txid]);
+          if (txid != null) {
+            return <String>[txid];
+          }
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: stacks, $e');
         }

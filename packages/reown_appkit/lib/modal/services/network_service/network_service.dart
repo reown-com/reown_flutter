@@ -20,9 +20,8 @@ class NetworkService implements INetworkService {
       ValueNotifier<List<GridItem<ReownAppKitModalNetworkInfo>>>([]);
 
   String _getImageUrl(ReownAppKitModalNetworkInfo chainInfo) {
-    if (chainInfo.isTestNetwork) {
-      return '';
-    }
+    if (chainInfo.isTestNetwork) return '';
+
     if (chainInfo.chainIcon != null && chainInfo.chainIcon!.contains('http')) {
       return chainInfo.chainIcon!;
     }

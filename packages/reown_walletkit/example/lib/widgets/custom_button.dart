@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 
-enum CustomButtonType { normal, valid, invalid }
+enum CustomButtonType { normal, valid, invalid, idle }
 
 class CustomButton extends StatelessWidget {
   final Widget child;

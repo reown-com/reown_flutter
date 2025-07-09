@@ -163,22 +163,26 @@ class VerifyHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          Icons.shield_outlined,
-          color: iconColor,
-        ),
-        const SizedBox(width: StyleConstants.linear8),
-        Text(
-          title,
-          style: TextStyle(
-            color: iconColor,
-            fontWeight: FontWeight.bold,
+    return RichText(
+      textAlign: TextAlign.center,
+      text: TextSpan(
+        children: [
+          WidgetSpan(
+            child: Icon(
+              Icons.shield_outlined,
+              color: iconColor,
+            ),
+            alignment: PlaceholderAlignment.middle,
           ),
-        ),
-      ],
+          TextSpan(
+            text: ' $title',
+            style: TextStyle(
+              color: iconColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

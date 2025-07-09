@@ -18,7 +18,7 @@ class ChainKey {
   Map<String, dynamic> toJson() => {
         'chains': chains,
         'privateKey': privateKey,
-        'publicKey': privateKey,
+        'publicKey': publicKey,
         'address': address,
         'namespace': namespace,
       };
