@@ -54,7 +54,7 @@ class WCConnectionRequestWidget extends StatelessWidget {
           const SizedBox(height: StyleConstants.linear8),
           (sessionAuthPayload != null)
               ? _buildSessionAuthRequestView()
-              : _buildSessionProposalView(context),
+              : _buildSessionProposalView(),
         ],
       ),
     );
@@ -91,7 +91,7 @@ class WCConnectionRequestWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSessionProposalView(BuildContext context) {
+  Widget _buildSessionProposalView() {
     // Create the connection models using the required and optional namespaces provided by the proposal data
     // The key is the title and the list of values is the data
     final views = ConnectionWidgetBuilder.buildFromRequiredNamespaces(

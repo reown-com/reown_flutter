@@ -62,13 +62,15 @@ class ReownAppKitModal
     implements IReownAppKitModal {
   String _projectId = '';
 
-  Map<String, RequiredNamespace> _requiredNamespaces = {};
+  @Deprecated(
+    'requiredNamespaces are automatically assigned to optionalNamespaces. Considering using only optionalNamespaces',
+  )
   @override
-  Map<String, RequiredNamespace> get requiredNamespaces => _requiredNamespaces;
+  Map<String, RequiredNamespace> get requiredNamespaces => {};
 
-  Map<String, RequiredNamespace> _optionalNamespaces = {};
+  Map<String, RequiredNamespace> _sessionNamespaces = {};
   @override
-  Map<String, RequiredNamespace> get optionalNamespaces => _optionalNamespaces;
+  Map<String, RequiredNamespace> get optionalNamespaces => _sessionNamespaces;
 
   bool _supportsOneClickAuth = false;
   bool _relayConnected = false;
@@ -102,8 +104,7 @@ class ReownAppKitModal
   ReownAppKitModalWalletInfo? get selectedWallet => _selectedWallet;
 
   @override
-  bool get hasNamespaces =>
-      _requiredNamespaces.isNotEmpty || _optionalNamespaces.isNotEmpty;
+  bool get hasNamespaces => _sessionNamespaces.isNotEmpty;
 
   String _wcUri = '';
   @override
@@ -168,6 +169,9 @@ class ReownAppKitModal
     bool? enableAnalytics,
     SIWEConfig? siweConfig,
     FeaturesConfig? featuresConfig,
+    @Deprecated(
+      'requiredNamespaces are automatically assigned to optionalNamespaces. Considering using only optionalNamespaces',
+    )
     Map<String, RequiredNamespace>? requiredNamespaces,
     Map<String, RequiredNamespace>? optionalNamespaces,
     Set<String>? featuredWalletIds,
@@ -210,7 +214,6 @@ class ReownAppKitModal
         );
     _projectId = _appKit.core.projectId;
 
-    _setRequiredNamespaces(null);
     _setOptionalNamespaces(_buildNamespaces(
       requiredNamespaces,
       optionalNamespaces,
@@ -235,7 +238,7 @@ class ReownAppKitModal
         featuredWalletIds: featuredWalletIds,
         includedWalletIds: includedWalletIds,
         excludedWalletIds: excludedWalletIds,
-        namespaces: {..._requiredNamespaces, ..._optionalNamespaces},
+        namespaces: _sessionNamespaces,
         customWallets: _customWallets,
       ),
     );
@@ -270,7 +273,7 @@ class ReownAppKitModal
       () => SiweService(
         appKit: _appKit,
         siweConfig: siweConfig,
-        namespaces: {..._requiredNamespaces, ..._optionalNamespaces},
+        namespaces: _sessionNamespaces,
       ),
     );
   }
@@ -385,9 +388,7 @@ class ReownAppKitModal
     final allNetworks = ReownAppKitModalNetworks.getAllSupportedNetworks();
     for (final chain in allNetworks) {
       final namespace = NamespaceUtils.getNamespaceFromChain(chain.chainId);
-      final requiredEvents = _requiredNamespaces[namespace]?.events ?? [];
-      final optionalEvents = _optionalNamespaces[namespace]?.events ?? [];
-      final events = [...requiredEvents, ...optionalEvents];
+      final events = _sessionNamespaces[namespace]?.events ?? [];
       for (final event in events) {
         _appKit.registerEventHandler(
           chainId: chain.chainId,
@@ -1033,8 +1034,7 @@ class ReownAppKitModal
         } else {
           // Regular Session Proposal
           final connectResponse = await _appKit.connect(
-            requiredNamespaces: _requiredNamespaces,
-            optionalNamespaces: _optionalNamespaces,
+            optionalNamespaces: _sessionNamespaces,
           );
           _wcUri = connectResponse.uri?.toString() ?? '';
           _notify();
@@ -1540,8 +1540,7 @@ class ReownAppKitModal
           _relayConnected = false;
           _isConnected = false;
           _selectedChainID = null;
-          _requiredNamespaces = {};
-          _optionalNamespaces = {};
+          _sessionNamespaces = {};
           _lastChainEmitted = null;
           _supportsOneClickAuth = false;
           _status = ReownAppKitModalStatus.idle;
@@ -1633,32 +1632,10 @@ class ReownAppKitModal
     return totalNS;
   }
 
-  void _setRequiredNamespaces(Map<String, RequiredNamespace>? requiredNSpaces) {
-    if (requiredNSpaces != null) {
-      // Set the required namespaces declared by the user on ReownAppKitModal object
-      _requiredNamespaces = requiredNSpaces.map(
-        (key, value) => MapEntry(
-          key,
-          RequiredNamespace(
-            chains: value.chains,
-            methods: value.methods,
-            events: value.events,
-          ),
-        ),
-      );
-    } else {
-      // Set the required namespaces to everything in our chain presets
-      _requiredNamespaces = {};
-    }
-    _appKit.core.logger.d(
-      '[$runtimeType] required namespaces ${jsonEncode(_requiredNamespaces)}',
-    );
-  }
-
   void _setOptionalNamespaces(Map<String, RequiredNamespace>? optionalNSpaces) {
     if (optionalNSpaces != null) {
       // Set the optional namespaces declared by the user on ReownAppKitModal object
-      _optionalNamespaces = optionalNSpaces.map(
+      _sessionNamespaces = optionalNSpaces.map(
         (key, value) => MapEntry(
           key,
           RequiredNamespace(
@@ -1675,7 +1652,7 @@ class ReownAppKitModal
         final networks = ReownAppKitModalNetworks.getAllSupportedNetworks(
           namespace: ns,
         );
-        _optionalNamespaces[ns] = RequiredNamespace(
+        _sessionNamespaces[ns] = RequiredNamespace(
           chains: networks.map((e) => e.chainId).toList(),
           methods: NetworkUtils.defaultNetworkMethods[ns] ?? [],
           events: NetworkUtils.defaultNetworkEvents[ns] ?? [],
@@ -1684,7 +1661,7 @@ class ReownAppKitModal
     }
 
     _appKit.core.logger.d(
-      '[$runtimeType] optional namespaces ${jsonEncode(_optionalNamespaces)}',
+      '[$runtimeType] optional namespaces ${jsonEncode(_sessionNamespaces)}',
     );
   }
 

@@ -133,6 +133,9 @@ class ReownSign implements IReownSign {
 
   @override
   Future<ConnectResponse> connect({
+    @Deprecated(
+      'requiredNamespaces are automatically assigned to optionalNamespaces. Considering using only optionalNamespaces',
+    )
     Map<String, RequiredNamespace>? requiredNamespaces,
     Map<String, RequiredNamespace>? optionalNamespaces,
     Map<String, String>? sessionProperties,
@@ -168,10 +171,16 @@ class ReownSign implements IReownSign {
     final publicKey = await core.crypto.generateKeyPair();
     final int id = JsonRpcUtils.payloadId();
 
+    // Merge requiredNamespaces into optionalNamespaces, avoiding duplicates
+    final mergedNamespaces = NamespaceUtils.mergeRequiredIntoOptionalNamespaces(
+      requiredNamespaces ?? {},
+      optionalNamespaces ?? {},
+    );
+
     final request = WcSessionProposeRequest(
       relays: relays ?? [Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL)],
-      requiredNamespaces: requiredNamespaces ?? {},
-      optionalNamespaces: optionalNamespaces ?? {},
+      requiredNamespaces: {},
+      optionalNamespaces: mergedNamespaces,
       proposer: ConnectionMetadata(
         publicKey: publicKey,
         metadata: metadata,
@@ -1025,7 +1034,7 @@ class ReownSign implements IReownSign {
       // If there are accounts and event emitters, then handle the Namespace generate automatically
       Map<String, Namespace>? namespaces;
       if (_accounts.isNotEmpty || _eventEmitters.isNotEmpty) {
-        namespaces = NamespaceUtils.constructNamespaces(
+        namespaces = NamespaceUtils.generateNamespaces(
           availableAccounts: _accounts,
           availableMethods: _methodHandlers.keys.toSet(),
           availableEvents: _eventEmitters,
@@ -1682,16 +1691,20 @@ class ReownSign implements IReownSign {
       }
     }
 
-    if (requiredNamespaces != null) {
+    if ((requiredNamespaces ?? {}).isNotEmpty) {
       SignApiValidatorUtils.isValidRequiredNamespaces(
-        requiredNamespaces: requiredNamespaces,
+        requiredNamespaces: requiredNamespaces!,
         context: 'connect() check requiredNamespaces.',
+      );
+      core.logger.w(
+        'requiredNamespaces are deprecated and are automatically assigned to optionalNamespaces. '
+        'Considering using only optionalNamespaces',
       );
     }
 
-    if (optionalNamespaces != null) {
+    if ((optionalNamespaces ?? {}).isNotEmpty) {
       SignApiValidatorUtils.isValidRequiredNamespaces(
-        requiredNamespaces: optionalNamespaces,
+        requiredNamespaces: optionalNamespaces!,
         context: 'connect() check optionalNamespaces.',
       );
     }
@@ -3088,26 +3101,33 @@ class ReownSign implements IReownSign {
         }
         return null;
       case 'cosmos':
-        final result = (response.result as Map<String, dynamic>);
-        final signature = ReownCoreUtils.recursiveSearchForMapKey(
-          result,
-          'signature',
-        );
-        if (signature != null) {
-          final bodyBytes = ReownCoreUtils.recursiveSearchForMapKey(
+        try {
+          // only cosmos_signDirect and cosmos_signAmino has a result of type Map
+          // cosmos_getAccounts would respond with a List but we don't want to parse this method
+          // wrapping it with a try/catch as for other methods is enough
+          final result = (response.result as Map<String, dynamic>);
+          final signature = ReownCoreUtils.recursiveSearchForMapKey(
             result,
-            'bodyBytes',
+            'signature',
           );
-          final authInfoBytes = ReownCoreUtils.recursiveSearchForMapKey(
-            result,
-            'authInfoBytes',
-          );
-          final hash = CosmosUtils.computeTxHash(
-            bodyBytesBase64: bodyBytes,
-            authInfoBytesBase64: authInfoBytes,
-            signatureBase64: signature['signature'],
-          );
-          return List<String>.from([hash]);
+          if (signature != null) {
+            final bodyBytes = ReownCoreUtils.recursiveSearchForMapKey(
+              result,
+              'bodyBytes',
+            );
+            final authInfoBytes = ReownCoreUtils.recursiveSearchForMapKey(
+              result,
+              'authInfoBytes',
+            );
+            final hash = CosmosUtils.computeTxHash(
+              bodyBytesBase64: bodyBytes,
+              authInfoBytesBase64: authInfoBytes,
+              signatureBase64: signature['signature'],
+            );
+            return List<String>.from([hash]);
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: cosmos, $e');
         }
         return null;
       default:

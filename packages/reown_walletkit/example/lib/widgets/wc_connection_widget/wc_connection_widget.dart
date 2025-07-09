@@ -25,11 +25,11 @@ class WCConnectionWidget extends StatelessWidget {
       padding: const EdgeInsets.all(
         StyleConstants.linear8,
       ),
+      margin: const EdgeInsets.only(bottom: 12.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildTitle(title),
-          const SizedBox(height: StyleConstants.linear8),
           ...info.map(
             (e) => WCConnectionWidgetInfo(
               model: e,

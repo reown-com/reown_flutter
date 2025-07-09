@@ -65,7 +65,9 @@ extension on List<GridItem<ReownAppKitModalNetworkInfo>> {
           // Then sort by order in allNetworks
           final indexA = allNetworks.indexOf(a.data.chainId);
           final indexB = allNetworks.indexOf(b.data.chainId);
-          return indexA.compareTo(indexB);
+          final adjustedIndexA = indexA == -1 ? allNetworks.length : indexA;
+          final adjustedIndexB = indexB == -1 ? allNetworks.length : indexB;
+          return adjustedIndexA.compareTo(adjustedIndexB);
         });
     }
     return map((item) {

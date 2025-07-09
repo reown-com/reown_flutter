@@ -233,8 +233,7 @@ class NamespaceUtils {
     return chainIds.toList();
   }
 
-  /// Using the availabe accounts, methods, and events, construct the namespaces
-  /// If optional namespaces are provided, then they will be added to the namespaces as well
+  @Deprecated('use `generateNamespaces`')
   static Map<String, Namespace> constructNamespaces({
     required Set<String> availableAccounts,
     required Set<String> availableMethods,
@@ -242,49 +241,146 @@ class NamespaceUtils {
     required Map<String, RequiredNamespace> requiredNamespaces,
     Map<String, RequiredNamespace>? optionalNamespaces,
   }) {
-    final Map<String, Namespace> namespaces = _constructNamespaces(
+    return generateNamespaces(
+      availableAccounts: availableAccounts,
+      availableMethods: availableMethods,
+      availableEvents: availableEvents,
+      requiredNamespaces: requiredNamespaces,
+    );
+  }
+
+  /// Using the availabe accounts, methods, and events, construct the namespaces
+  /// If optional namespaces are provided, then they will be added to the namespaces as well
+  static Map<String, Namespace> generateNamespaces({
+    required Set<String> availableAccounts,
+    required Set<String> availableMethods,
+    required Set<String> availableEvents,
+    required Map<String, RequiredNamespace> requiredNamespaces,
+    Map<String, RequiredNamespace>? optionalNamespaces,
+  }) {
+    final Map<String, Namespace> requiredNS = _constructNamespaces(
       availableAccounts: availableAccounts,
       availableMethods: availableMethods,
       availableEvents: availableEvents,
       namespacesMap: requiredNamespaces,
     );
-    final Map<String, Namespace> optionals = _constructNamespaces(
+    final Map<String, Namespace> optionalNS = _constructNamespaces(
       availableAccounts: availableAccounts,
       availableMethods: availableMethods,
       availableEvents: availableEvents,
       namespacesMap: optionalNamespaces ?? {},
     );
 
-    // Loop through the optional keys and if they exist in the namespaces, then merge them and delete them from optional
-    List<String> keys = optionals.keys.toList();
-    for (int i = 0; i < keys.length; i++) {
-      String key = keys[i];
-      if (namespaces.containsKey(key)) {
-        namespaces[key] = Namespace(
-          accounts: namespaces[key]!
-              .accounts
-              .toSet()
-              .union(optionals[key]!.accounts.toSet())
-              .toList(),
-          methods: namespaces[key]!
-              .methods
-              .toSet()
-              .union(optionals[key]!.methods.toSet())
-              .toList(),
-          events: namespaces[key]!
-              .events
-              .toSet()
-              .union(optionals[key]!.events.toSet())
-              .toList(),
-        );
-        optionals.remove(key);
+    // Merge requiredNS and optionalNS, avoiding duplicates
+    final Map<String, Namespace> merged = Map.from(requiredNS);
+
+    for (final entry in optionalNS.entries) {
+      final key = entry.key;
+      final optionalNamespace = entry.value;
+
+      if (merged.containsKey(key)) {
+        // Key exists in both, merge the values
+        final existingNamespace = merged[key]!;
+
+        // Merge chains (remove duplicates)
+        final mergedChains = <String>{};
+        if (existingNamespace.chains != null) {
+          mergedChains.addAll(existingNamespace.chains!);
+        }
+        if (optionalNamespace.chains != null) {
+          mergedChains.addAll(optionalNamespace.chains!);
+        }
+        final finalChains =
+            mergedChains.isNotEmpty ? mergedChains.toList() : null;
+
+        // Merge accounts (remove duplicates)
+        final mergedAccounts = <String>{};
+        mergedAccounts.addAll(existingNamespace.accounts);
+        mergedAccounts.addAll(optionalNamespace.accounts);
+
+        // Merge methods (remove duplicates)
+        final mergedMethods = <String>{};
+        mergedMethods.addAll(existingNamespace.methods);
+        mergedMethods.addAll(optionalNamespace.methods);
+
+        // Merge events (remove duplicates)
+        final mergedEvents = <String>{};
+        mergedEvents.addAll(existingNamespace.events);
+        mergedEvents.addAll(optionalNamespace.events);
+
+        // Only include if accounts list is not empty
+        if (mergedAccounts.isNotEmpty) {
+          merged[key] = Namespace(
+            chains: finalChains,
+            accounts: mergedAccounts.toList(),
+            methods: mergedMethods.toList(),
+            events: mergedEvents.toList(),
+          );
+        } else {
+          // Remove the key if accounts list is empty
+          merged.remove(key);
+        }
+      } else {
+        // Key only exists in optional, add it to merged only if accounts list is not empty
+        if (optionalNamespace.accounts.isNotEmpty) {
+          merged[key] = optionalNamespace;
+        }
       }
     }
 
-    return {
-      ...namespaces,
-      ...optionals,
-    };
+    return regenerateNamespacesWithChains(merged);
+  }
+
+  /// Merges requiredNamespaces into optionalNamespaces, avoiding duplicates
+  /// When a key exists in both maps, the values are merged by combining chains, methods, and events
+  /// while removing duplicates
+  static Map<String, RequiredNamespace> mergeRequiredIntoOptionalNamespaces(
+    Map<String, RequiredNamespace> requiredNamespaces,
+    Map<String, RequiredNamespace> optionalNamespaces,
+  ) {
+    final Map<String, RequiredNamespace> merged = Map.from(optionalNamespaces);
+
+    for (final entry in requiredNamespaces.entries) {
+      final key = entry.key;
+      final requiredNamespace = entry.value;
+
+      if (merged.containsKey(key)) {
+        // Key exists in both, merge the values
+        final existingNamespace = merged[key]!;
+
+        // Merge chains (remove duplicates)
+        final mergedChains = <String>{};
+        if (requiredNamespace.chains != null) {
+          mergedChains.addAll(requiredNamespace.chains!);
+        }
+        if (existingNamespace.chains != null) {
+          mergedChains.addAll(existingNamespace.chains!);
+        }
+        final finalChains =
+            mergedChains.isNotEmpty ? mergedChains.toList() : null;
+
+        // Merge methods (remove duplicates)
+        final mergedMethods = <String>{};
+        mergedMethods.addAll(requiredNamespace.methods);
+        mergedMethods.addAll(existingNamespace.methods);
+
+        // Merge events (remove duplicates)
+        final mergedEvents = <String>{};
+        mergedEvents.addAll(requiredNamespace.events);
+        mergedEvents.addAll(existingNamespace.events);
+
+        merged[key] = RequiredNamespace(
+          chains: finalChains,
+          methods: mergedMethods.toList(),
+          events: mergedEvents.toList(),
+        );
+      } else {
+        // Key only exists in required, add it to merged
+        merged[key] = requiredNamespace;
+      }
+    }
+
+    return merged;
   }
 
   static Map<String, Namespace> buildNamespacesFromAuth({
