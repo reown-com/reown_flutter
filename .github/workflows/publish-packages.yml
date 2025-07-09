@@ -302,6 +302,7 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           cd packages/reown_appkit
+          # Check if there are changes to commit to prevent empty commits
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_appkit): Update core/sign dependencies [skip ci]"
@@ -416,6 +417,7 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           cd packages/reown_walletkit
+          # Check if there are changes to commit to prevent empty commits
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_walletkit): Update core/sign/yttrium dependencies [skip ci]"
