@@ -133,6 +133,9 @@ class ReownSign implements IReownSign {
 
   @override
   Future<ConnectResponse> connect({
+    @Deprecated(
+      'requiredNamespaces are automatically assigned to optionalNamespaces. Considering using only optionalNamespaces',
+    )
     Map<String, RequiredNamespace>? requiredNamespaces,
     Map<String, RequiredNamespace>? optionalNamespaces,
     Map<String, String>? sessionProperties,
@@ -168,10 +171,16 @@ class ReownSign implements IReownSign {
     final publicKey = await core.crypto.generateKeyPair();
     final int id = JsonRpcUtils.payloadId();
 
+    // Merge requiredNamespaces into optionalNamespaces, avoiding duplicates
+    final mergedNamespaces = NamespaceUtils.mergeRequiredIntoOptionalNamespaces(
+      requiredNamespaces ?? {},
+      optionalNamespaces ?? {},
+    );
+
     final request = WcSessionProposeRequest(
       relays: relays ?? [Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL)],
-      requiredNamespaces: requiredNamespaces ?? {},
-      optionalNamespaces: optionalNamespaces ?? {},
+      requiredNamespaces: {},
+      optionalNamespaces: mergedNamespaces,
       proposer: ConnectionMetadata(
         publicKey: publicKey,
         metadata: metadata,
@@ -1025,7 +1034,7 @@ class ReownSign implements IReownSign {
       // If there are accounts and event emitters, then handle the Namespace generate automatically
       Map<String, Namespace>? namespaces;
       if (_accounts.isNotEmpty || _eventEmitters.isNotEmpty) {
-        namespaces = NamespaceUtils.constructNamespaces(
+        namespaces = NamespaceUtils.generateNamespaces(
           availableAccounts: _accounts,
           availableMethods: _methodHandlers.keys.toSet(),
           availableEvents: _eventEmitters,
@@ -1682,16 +1691,20 @@ class ReownSign implements IReownSign {
       }
     }
 
-    if (requiredNamespaces != null) {
+    if ((requiredNamespaces ?? {}).isNotEmpty) {
       SignApiValidatorUtils.isValidRequiredNamespaces(
-        requiredNamespaces: requiredNamespaces,
+        requiredNamespaces: requiredNamespaces!,
         context: 'connect() check requiredNamespaces.',
+      );
+      core.logger.w(
+        'requiredNamespaces are deprecated and are automatically assigned to optionalNamespaces. '
+        'Considering using only optionalNamespaces',
       );
     }
 
-    if (optionalNamespaces != null) {
+    if ((optionalNamespaces ?? {}).isNotEmpty) {
       SignApiValidatorUtils.isValidRequiredNamespaces(
-        requiredNamespaces: optionalNamespaces,
+        requiredNamespaces: optionalNamespaces!,
         context: 'connect() check optionalNamespaces.',
       );
     }
@@ -2932,7 +2945,7 @@ class ReownSign implements IReownSign {
             return signatures;
           }
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: solana, $e');
+          core.logger.e('[$runtimeType] _tvf data: solana, $e');
         }
         return null;
       case 'xrpl':
@@ -2946,7 +2959,7 @@ class ReownSign implements IReownSign {
             return List<String>.from([txHash]);
           }
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: xrpl, $e');
+          core.logger.e('[$runtimeType] _tvf data: xrpl, $e');
         }
         return null;
       case 'algo':
@@ -2955,7 +2968,7 @@ class ReownSign implements IReownSign {
           final txHashesList = AlgorandChainUtils.calculateTxIDs(result);
           return List<String>.from([...txHashesList]);
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: algo, $e');
+          core.logger.e('[$runtimeType] _tvf data: algo, $e');
         }
         return null;
       case 'sui':
@@ -2987,7 +3000,7 @@ class ReownSign implements IReownSign {
             }
           }
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: sui, $e');
+          core.logger.e('[$runtimeType] _tvf data: sui, $e');
         }
         return null;
       case 'tron':
@@ -2998,7 +3011,7 @@ class ReownSign implements IReownSign {
             return List<String>.from([txID]);
           }
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: tron, $e');
+          core.logger.e('[$runtimeType] _tvf data: tron, $e');
         }
         return null;
       case 'hedera':
@@ -3012,7 +3025,7 @@ class ReownSign implements IReownSign {
             return List<String>.from([transactionId]);
           }
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: hedera, $e');
+          core.logger.e('[$runtimeType] _tvf data: hedera, $e');
         }
         return null;
       case 'bip122':
@@ -3024,7 +3037,7 @@ class ReownSign implements IReownSign {
           );
           return <String>[txid];
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: bip122, $e');
+          core.logger.e('[$runtimeType] _tvf data: bip122, $e');
         }
         return null;
       case 'stacks':
@@ -3036,7 +3049,7 @@ class ReownSign implements IReownSign {
           );
           return List<String>.from([txid]);
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: stacks, $e');
+          core.logger.e('[$runtimeType] _tvf data: stacks, $e');
         }
         return null;
       case 'near':
@@ -3045,7 +3058,7 @@ class ReownSign implements IReownSign {
           final hash = NearChainUtils.computeNearHashFromTxBytes(result);
           return <String>[hash];
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: near, $e');
+          core.logger.e('[$runtimeType] _tvf data: near, $e');
         }
         return null;
       case 'polkadot':
@@ -3080,7 +3093,7 @@ class ReownSign implements IReownSign {
             return List<String>.from([hash]);
           }
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: polkadot, $e');
+          core.logger.e('[$runtimeType] _tvf data: polkadot, $e');
         }
         return null;
       case 'cosmos':

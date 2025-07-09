@@ -228,9 +228,7 @@ class WalletKitService extends IWalletKitService {
         try {
           _walletKit!.approveSession(
             id: args.id,
-            namespaces: NamespaceUtils.regenerateNamespacesWithChains(
-              args.params.generatedNamespaces!,
-            ),
+            namespaces: args.params.generatedNamespaces!,
             sessionProperties: args.params.sessionProperties,
           );
           // MethodsUtils.handleRedirect(

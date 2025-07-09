@@ -1,3 +1,7 @@
+## 1.4.7
+
+- Required namespaces deprecation
+
 ## 1.4.6+1
 
 - Dependency updates
