@@ -16,6 +16,15 @@ class ConnectionWidgetBuilder {
       // If the chains property is present, add the chain data to the models
       models.add(
         WCConnectionModel(
+          title: 'Address',
+          elements: namespaces.accounts
+              .map((e) => NamespaceUtils.getAccount(e))
+              .toSet()
+              .toList(),
+        ),
+      );
+      models.add(
+        WCConnectionModel(
           title: StringConstants.chains,
           elements: chains,
         ),
@@ -37,7 +46,7 @@ class ConnectionWidgetBuilder {
 
       views.add(
         WCConnectionWidget(
-          title: key,
+          title: '$key namespace',
           info: models,
         ),
       );

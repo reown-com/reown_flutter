@@ -24,6 +24,9 @@ abstract class IReownAppKitModal with ChangeNotifier {
   /// Whether or not this object has been initialized.
   ReownAppKitModalStatus get status;
 
+  @Deprecated(
+    'requiredNamespaces are automatically assigned to optionalNamespaces. Considering using only optionalNamespaces',
+  )
   Map<String, RequiredNamespace> get requiredNamespaces;
 
   Map<String, RequiredNamespace> get optionalNamespaces;

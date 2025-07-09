@@ -181,7 +181,7 @@ void main() {
 
     group('constructNamespaces', () {
       test('constructs namespaces with required namespaces', () {
-        Map<String, Namespace> namespaces = NamespaceUtils.constructNamespaces(
+        Map<String, Namespace> namespaces = NamespaceUtils.generateNamespaces(
           availableAccounts: availableAccounts,
           availableMethods: availableMethods,
           availableEvents: availableEvents,
@@ -225,7 +225,7 @@ void main() {
           true,
         );
 
-        namespaces = NamespaceUtils.constructNamespaces(
+        namespaces = NamespaceUtils.generateNamespaces(
           availableAccounts: availableAccounts,
           availableMethods: availableMethods,
           availableEvents: availableEvents,
@@ -269,7 +269,7 @@ void main() {
           true,
         );
 
-        namespaces = NamespaceUtils.constructNamespaces(
+        namespaces = NamespaceUtils.generateNamespaces(
           availableAccounts: availableAccounts,
           availableMethods: availableMethods,
           availableEvents: availableEvents,
@@ -314,7 +314,7 @@ void main() {
       });
 
       test('constructs namespaces with required and optional namespaces', () {
-        Map<String, Namespace> namespaces = NamespaceUtils.constructNamespaces(
+        Map<String, Namespace> namespaces = NamespaceUtils.generateNamespaces(
           availableAccounts: availableAccounts3,
           availableMethods: availableMethods3,
           availableEvents: availableEvents3,
@@ -426,7 +426,7 @@ void main() {
         };
 
         final Map<String, Namespace> namespaces =
-            NamespaceUtils.constructNamespaces(
+            NamespaceUtils.generateNamespaces(
           availableAccounts: availableAccounts,
           availableMethods: availableMethods,
           availableEvents: availableEvents,
@@ -498,7 +498,7 @@ void main() {
         ];
 
         for (int i = 0; i < nonconforming.length; i++) {
-          final namespaces = NamespaceUtils.constructNamespaces(
+          final namespaces = NamespaceUtils.generateNamespaces(
             availableAccounts: availableAccounts,
             availableMethods: availableMethods,
             availableEvents: availableEvents,
@@ -524,7 +524,7 @@ void main() {
       });
 
       test('constructs namespaces with optional namespaces', () {
-        Map<String, Namespace> namespaces = NamespaceUtils.constructNamespaces(
+        Map<String, Namespace> namespaces = NamespaceUtils.generateNamespaces(
           availableAccounts: availableAccounts,
           availableMethods: availableMethods,
           availableEvents: availableEvents,
@@ -556,6 +556,281 @@ void main() {
           ),
           true,
         );
+      });
+    });
+
+    group('mergeRequiredIntoOptionalNamespaces', () {
+      test('merges required namespaces into empty optional namespaces', () {
+        final requiredNamespaces = {
+          'eip155': const RequiredNamespace(
+            chains: ['eip155:1', 'eip155:137'],
+            methods: ['eth_sendTransaction', 'personal_sign'],
+            events: ['chainChanged', 'accountsChanged'],
+          ),
+        };
+        final optionalNamespaces = <String, RequiredNamespace>{};
+
+        final result = NamespaceUtils.mergeRequiredIntoOptionalNamespaces(
+          requiredNamespaces,
+          optionalNamespaces,
+        );
+
+        expect(result.length, 1);
+        expect(result['eip155'], requiredNamespaces['eip155']);
+      });
+
+      test('merges required namespaces into existing optional namespaces', () {
+        final requiredNamespaces = {
+          'eip155': const RequiredNamespace(
+            chains: ['eip155:1'],
+            methods: ['eth_sendTransaction'],
+            events: ['chainChanged'],
+          ),
+        };
+        final optionalNamespaces = {
+          'eip155': const RequiredNamespace(
+            chains: ['eip155:137'],
+            methods: ['personal_sign'],
+            events: ['accountsChanged'],
+          ),
+        };
+
+        final result = NamespaceUtils.mergeRequiredIntoOptionalNamespaces(
+          requiredNamespaces,
+          optionalNamespaces,
+        );
+
+        expect(result.length, 1);
+        expect(result['eip155']!.chains, ['eip155:1', 'eip155:137']);
+        expect(result['eip155']!.methods,
+            ['eth_sendTransaction', 'personal_sign']);
+        expect(result['eip155']!.events, ['chainChanged', 'accountsChanged']);
+      });
+
+      test(
+          'merges overlapping chains, methods, and events with duplicates removed',
+          () {
+        final requiredNamespaces = {
+          'eip155': const RequiredNamespace(
+            chains: ['eip155:1', 'eip155:137'],
+            methods: ['eth_sendTransaction', 'personal_sign'],
+            events: ['chainChanged', 'accountsChanged'],
+          ),
+        };
+        final optionalNamespaces = {
+          'eip155': const RequiredNamespace(
+            chains: ['eip155:137', 'eip155:80001'], // eip155:137 is duplicate
+            methods: [
+              'personal_sign',
+              'eth_call'
+            ], // personal_sign is duplicate
+            events: [
+              'accountsChanged',
+              'message'
+            ], // accountsChanged is duplicate
+          ),
+        };
+
+        final result = NamespaceUtils.mergeRequiredIntoOptionalNamespaces(
+          requiredNamespaces,
+          optionalNamespaces,
+        );
+
+        expect(result.length, 1);
+        expect(result['eip155']!.chains,
+            ['eip155:1', 'eip155:137', 'eip155:80001']);
+        expect(result['eip155']!.methods,
+            ['eth_sendTransaction', 'personal_sign', 'eth_call']);
+        expect(result['eip155']!.events,
+            ['chainChanged', 'accountsChanged', 'message']);
+      });
+
+      test('handles multiple namespaces correctly', () {
+        final requiredNamespaces = {
+          'eip155': const RequiredNamespace(
+            chains: ['eip155:1'],
+            methods: ['eth_sendTransaction'],
+            events: ['chainChanged'],
+          ),
+          'solana': const RequiredNamespace(
+            chains: ['solana:mainnet'],
+            methods: ['solana_signTransaction'],
+            events: ['accountChanged'],
+          ),
+        };
+        final optionalNamespaces = {
+          'eip155': const RequiredNamespace(
+            chains: ['eip155:137'],
+            methods: ['personal_sign'],
+            events: ['accountsChanged'],
+          ),
+          'cosmos': const RequiredNamespace(
+            chains: ['cosmos:cosmoshub-4'],
+            methods: ['cosmos_signDirect'],
+            events: ['chainChanged'],
+          ),
+        };
+
+        final result = NamespaceUtils.mergeRequiredIntoOptionalNamespaces(
+          requiredNamespaces,
+          optionalNamespaces,
+        );
+
+        expect(result.length, 3);
+
+        // Check eip155 (merged)
+        expect(result['eip155']!.chains, ['eip155:1', 'eip155:137']);
+        expect(result['eip155']!.methods,
+            ['eth_sendTransaction', 'personal_sign']);
+        expect(result['eip155']!.events, ['chainChanged', 'accountsChanged']);
+
+        // Check solana (only in required)
+        expect(result['solana']!.chains, ['solana:mainnet']);
+        expect(result['solana']!.methods, ['solana_signTransaction']);
+        expect(result['solana']!.events, ['accountChanged']);
+
+        // Check cosmos (only in optional)
+        expect(result['cosmos']!.chains, ['cosmos:cosmoshub-4']);
+        expect(result['cosmos']!.methods, ['cosmos_signDirect']);
+        expect(result['cosmos']!.events, ['chainChanged']);
+      });
+
+      test('handles null chains correctly', () {
+        final requiredNamespaces = {
+          'eip155': const RequiredNamespace(
+            chains: null,
+            methods: ['eth_sendTransaction'],
+            events: ['chainChanged'],
+          ),
+        };
+        final optionalNamespaces = {
+          'eip155': const RequiredNamespace(
+            chains: ['eip155:1', 'eip155:137'],
+            methods: ['personal_sign'],
+            events: ['accountsChanged'],
+          ),
+        };
+
+        final result = NamespaceUtils.mergeRequiredIntoOptionalNamespaces(
+          requiredNamespaces,
+          optionalNamespaces,
+        );
+
+        expect(result.length, 1);
+        expect(result['eip155']!.chains, ['eip155:1', 'eip155:137']);
+        expect(result['eip155']!.methods,
+            ['eth_sendTransaction', 'personal_sign']);
+        expect(result['eip155']!.events, ['chainChanged', 'accountsChanged']);
+      });
+
+      test('handles both null chains correctly', () {
+        final requiredNamespaces = {
+          'eip155': const RequiredNamespace(
+            chains: null,
+            methods: ['eth_sendTransaction'],
+            events: ['chainChanged'],
+          ),
+        };
+        final optionalNamespaces = {
+          'eip155': const RequiredNamespace(
+            chains: null,
+            methods: ['personal_sign'],
+            events: ['accountsChanged'],
+          ),
+        };
+
+        final result = NamespaceUtils.mergeRequiredIntoOptionalNamespaces(
+          requiredNamespaces,
+          optionalNamespaces,
+        );
+
+        expect(result.length, 1);
+        expect(result['eip155']!.chains, null);
+        expect(result['eip155']!.methods,
+            ['eth_sendTransaction', 'personal_sign']);
+        expect(result['eip155']!.events, ['chainChanged', 'accountsChanged']);
+      });
+
+      test('preserves order of methods and events', () {
+        final requiredNamespaces = {
+          'eip155': const RequiredNamespace(
+            chains: ['eip155:1'],
+            methods: ['eth_sendTransaction', 'personal_sign'],
+            events: ['chainChanged', 'accountsChanged'],
+          ),
+        };
+        final optionalNamespaces = {
+          'eip155': const RequiredNamespace(
+            chains: ['eip155:137'],
+            methods: ['eth_call', 'eth_getBalance'],
+            events: ['message', 'disconnect'],
+          ),
+        };
+
+        final result = NamespaceUtils.mergeRequiredIntoOptionalNamespaces(
+          requiredNamespaces,
+          optionalNamespaces,
+        );
+
+        expect(result.length, 1);
+        expect(result['eip155']!.methods, [
+          'eth_sendTransaction',
+          'personal_sign',
+          'eth_call',
+          'eth_getBalance'
+        ]);
+        expect(result['eip155']!.events,
+            ['chainChanged', 'accountsChanged', 'message', 'disconnect']);
+      });
+
+      test('handles empty required namespaces', () {
+        final requiredNamespaces = <String, RequiredNamespace>{};
+        final optionalNamespaces = {
+          'eip155': const RequiredNamespace(
+            chains: ['eip155:1'],
+            methods: ['eth_sendTransaction'],
+            events: ['chainChanged'],
+          ),
+        };
+
+        final result = NamespaceUtils.mergeRequiredIntoOptionalNamespaces(
+          requiredNamespaces,
+          optionalNamespaces,
+        );
+
+        expect(result.length, 1);
+        expect(result['eip155'], optionalNamespaces['eip155']);
+      });
+
+      test('handles empty optional namespaces', () {
+        final requiredNamespaces = {
+          'eip155': const RequiredNamespace(
+            chains: ['eip155:1'],
+            methods: ['eth_sendTransaction'],
+            events: ['chainChanged'],
+          ),
+        };
+        final optionalNamespaces = <String, RequiredNamespace>{};
+
+        final result = NamespaceUtils.mergeRequiredIntoOptionalNamespaces(
+          requiredNamespaces,
+          optionalNamespaces,
+        );
+
+        expect(result.length, 1);
+        expect(result['eip155'], requiredNamespaces['eip155']);
+      });
+
+      test('handles both empty maps', () {
+        final requiredNamespaces = <String, RequiredNamespace>{};
+        final optionalNamespaces = <String, RequiredNamespace>{};
+
+        final result = NamespaceUtils.mergeRequiredIntoOptionalNamespaces(
+          requiredNamespaces,
+          optionalNamespaces,
+        );
+
+        expect(result.length, 0);
       });
     });
   });

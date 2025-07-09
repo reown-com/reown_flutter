@@ -271,8 +271,11 @@ class _LogPrinter extends LogPrinter {
 
   static final Map<Level, String> defaultLevelEmojis = {
     Level.debug: '🐛',
-    Level.info: '📝',
+    Level.info: 'ℹ️',
     Level.error: '❌',
+    Level.warning: '⚠️',
+    Level.trace: '📝',
+    Level.fatal: '💥',
   };
 
   static final _deviceStackTraceRegex = RegExp(r'#[0-9]+\s+(.+) \((\S+)\)');
