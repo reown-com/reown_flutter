@@ -139,6 +139,7 @@ class ReownSign implements IReownSign {
     Map<String, RequiredNamespace>? requiredNamespaces,
     Map<String, RequiredNamespace>? optionalNamespaces,
     Map<String, String>? sessionProperties,
+    Map<String, dynamic>? scopedProperties,
     String? pairingTopic,
     List<Relay>? relays,
     List<List<String>>? methods = DEFAULT_METHODS,
@@ -150,6 +151,7 @@ class ReownSign implements IReownSign {
       requiredNamespaces: requiredNamespaces ?? {},
       optionalNamespaces: optionalNamespaces ?? {},
       sessionProperties: sessionProperties,
+      scopedProperties: scopedProperties,
       pairingTopic: pairingTopic,
       relays: relays,
     );
@@ -186,6 +188,7 @@ class ReownSign implements IReownSign {
         metadata: metadata,
       ),
       sessionProperties: sessionProperties,
+      scopedProperties: scopedProperties,
     );
 
     final expiry = ReownCoreUtils.calculateExpiry(
@@ -199,6 +202,7 @@ class ReownSign implements IReownSign {
       requiredNamespaces: request.requiredNamespaces,
       optionalNamespaces: request.optionalNamespaces ?? {},
       sessionProperties: request.sessionProperties,
+      scopedProperties: request.scopedProperties,
       pairingTopic: pTopic,
     );
     await _setProposal(
@@ -216,6 +220,7 @@ class ReownSign implements IReownSign {
         requiredNamespaces: request.requiredNamespaces,
         optionalNamespaces: request.optionalNamespaces ?? {},
         sessionProperties: request.sessionProperties,
+        scopedProperties: request.scopedProperties,
         completer: completer,
       ),
     );
@@ -296,6 +301,7 @@ class ReownSign implements IReownSign {
     required int id,
     required Map<String, Namespace> namespaces,
     Map<String, String>? sessionProperties,
+    Map<String, dynamic>? scopedProperties,
     String? relayProtocol,
   }) async {
     // print('sign approveSession');
@@ -306,6 +312,7 @@ class ReownSign implements IReownSign {
       id: id,
       namespaces: namespaces,
       sessionProperties: sessionProperties,
+      scopedProperties: scopedProperties,
       relayProtocol: relayProtocol,
     );
 
@@ -364,6 +371,7 @@ class ReownSign implements IReownSign {
       ),
       peer: proposal.proposer,
       sessionProperties: proposal.sessionProperties,
+      scopedProperties: proposal.scopedProperties,
       transportType: TransportType.relay,
     );
 
@@ -377,6 +385,7 @@ class ReownSign implements IReownSign {
       relay: relay,
       namespaces: namespaces,
       sessionProperties: sessionProperties,
+      scopedProperties: scopedProperties,
       expiry: expiry,
       controller: ConnectionMetadata(
         publicKey: selfPubKey,
@@ -1027,6 +1036,7 @@ class ReownSign implements IReownSign {
         requiredNamespaces: proposeRequest.requiredNamespaces,
         optionalNamespaces: proposeRequest.optionalNamespaces,
         sessionProperties: proposeRequest.sessionProperties,
+        scopedProperties: proposeRequest.scopedProperties,
         pairingTopic: topic,
         relays: proposeRequest.relays,
       );
@@ -1087,6 +1097,7 @@ class ReownSign implements IReownSign {
         requiredNamespaces: proposeRequest.requiredNamespaces,
         optionalNamespaces: proposeRequest.optionalNamespaces ?? {},
         sessionProperties: proposeRequest.sessionProperties,
+        scopedProperties: proposeRequest.scopedProperties,
         pairingTopic: topic,
         generatedNamespaces: namespaces,
       );
@@ -1145,6 +1156,7 @@ class ReownSign implements IReownSign {
         controller: request.controller.publicKey,
         namespaces: request.namespaces,
         sessionProperties: request.sessionProperties,
+        scopedProperties: request.scopedProperties,
         self: ConnectionMetadata(
           publicKey: sProposalCompleter.selfPublicKey,
           metadata: metadata,
@@ -1676,6 +1688,7 @@ class ReownSign implements IReownSign {
     Map<String, RequiredNamespace>? requiredNamespaces,
     Map<String, RequiredNamespace>? optionalNamespaces,
     Map<String, String>? sessionProperties,
+    Map<String, dynamic>? scopedProperties,
     String? pairingTopic,
     List<Relay>? relays,
   }) async {
@@ -1709,6 +1722,24 @@ class ReownSign implements IReownSign {
       );
     }
 
+    // validate session properties only if they are defined
+    if (sessionProperties != null) {
+      SignApiValidatorUtils.isValidSessionProperties(
+        properties: sessionProperties,
+      );
+    }
+
+    // validate scoped properties only if they are defined
+    if (scopedProperties != null) {
+      SignApiValidatorUtils.isValidScopedProperties(
+        properties: scopedProperties,
+        namespaces: [
+          ...?requiredNamespaces?.keys,
+          ...?optionalNamespaces?.keys,
+        ],
+      );
+    }
+
     return true;
   }
 
@@ -1716,6 +1747,7 @@ class ReownSign implements IReownSign {
     required int id,
     required Map<String, Namespace> namespaces,
     Map<String, String>? sessionProperties,
+    Map<String, dynamic>? scopedProperties,
     String? relayProtocol,
   }) async {
     // No need to validate sessionProperties. Strict typing enforces Strings are valid
@@ -1744,6 +1776,21 @@ class ReownSign implements IReownSign {
       namespaces: namespaces,
       context: 'approve()',
     );
+
+    // validate session properties only if they are defined
+    if (sessionProperties != null) {
+      SignApiValidatorUtils.isValidSessionProperties(
+        properties: sessionProperties,
+      );
+    }
+
+    // validate scoped properties only if they are defined
+    if (scopedProperties != null) {
+      SignApiValidatorUtils.isValidScopedProperties(
+        properties: scopedProperties,
+        namespaces: namespaces.keys.toList(),
+      );
+    }
 
     return true;
   }

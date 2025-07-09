@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:reown_sign/reown_sign.dart';
 import 'package:reown_sign/utils/sign_api_validator_utils.dart';
@@ -132,6 +134,70 @@ void main() {
           (e) => e.message,
           'message',
           'Unsupported chains. test requiredNamespace, chain $TEST_CHAIN_INVALID_1 should conform to "CAIP-2" format',
+        ),
+      ),
+    );
+  });
+
+  test('isValidSessionProperties', () {
+    final String type = 'test';
+    expect(
+      SignApiValidatorUtils.isValidSessionProperties(
+        properties: {'key': 'value'},
+        type: type,
+      ),
+      true,
+    );
+    expect(
+      () => SignApiValidatorUtils.isValidSessionProperties(
+        properties: {'key': null},
+        type: type,
+      ),
+      throwsA(
+        isA<ReownSignError>().having(
+          (e) => e.message,
+          'message',
+          'Malformed request parameters. $type must contain an existing value for each key. Received: null for key key',
+        ),
+      ),
+    );
+  });
+
+  test('isValidScopedProperties', () {
+    expect(
+      SignApiValidatorUtils.isValidScopedProperties(
+        properties: {'eip155:1': {}},
+        namespaces: [
+          ...TEST_REQUIRED_NAMESPACES.keys,
+        ],
+      ),
+      true,
+    );
+    // should reject connect with scopedProperties when not defined in requiredNamespaces or optionalNamespaces
+    expect(
+      () => SignApiValidatorUtils.isValidScopedProperties(
+        properties: {'eip155:1': {}},
+        namespaces: [],
+      ),
+      throwsA(
+        isA<ReownSignError>().having(
+          (e) => e.message,
+          'message',
+          'Malformed request parameters. scopedProperties must be a subset of namespaces, received: {"eip155:1":{}}, namespaces: []',
+        ),
+      ),
+    );
+    // should reject connect with scopedProperties when not defined in requiredNamespaces or optionalNamespaces
+    expect(
+      () => SignApiValidatorUtils.isValidScopedProperties(
+        properties: {'test:1': {}},
+        namespaces: TEST_REQUIRED_NAMESPACES.keys.toList(),
+      ),
+      throwsA(
+        isA<ReownSignError>().having(
+          (e) => e.message,
+          'message',
+          'Malformed request parameters. scopedProperties must be a subset of namespaces, received: {"test:1":{}}, namespaces: ${jsonEncode(TEST_REQUIRED_NAMESPACES.keys.toList())}',
         ),
       ),
     );

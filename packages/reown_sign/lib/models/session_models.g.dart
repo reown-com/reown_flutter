@@ -53,6 +53,7 @@ _$SessionDataImpl _$$SessionDataImplFromJson(Map<String, dynamic> json) =>
           (json['sessionProperties'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as String),
       ),
+      scopedProperties: json['scopedProperties'] as Map<String, dynamic>?,
       authentication: (json['authentication'] as List<dynamic>?)
           ?.map((e) => Cacao.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -80,6 +81,8 @@ Map<String, dynamic> _$$SessionDataImplToJson(_$SessionDataImpl instance) =>
         'optionalNamespaces': value,
       if (instance.sessionProperties case final value?)
         'sessionProperties': value,
+      if (instance.scopedProperties case final value?)
+        'scopedProperties': value,
       if (instance.authentication?.map((e) => e.toJson()).toList()
           case final value?)
         'authentication': value,

@@ -63,6 +63,7 @@ _$ProposalDataImpl _$$ProposalDataImplFromJson(Map<String, dynamic> json) =>
           (json['sessionProperties'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as String),
       ),
+      scopedProperties: json['scopedProperties'] as Map<String, dynamic>?,
       generatedNamespaces:
           (json['generatedNamespaces'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, Namespace.fromJson(e as Map<String, dynamic>)),
@@ -82,6 +83,8 @@ Map<String, dynamic> _$$ProposalDataImplToJson(_$ProposalDataImpl instance) =>
       'pairingTopic': instance.pairingTopic,
       if (instance.sessionProperties case final value?)
         'sessionProperties': value,
+      if (instance.scopedProperties case final value?)
+        'scopedProperties': value,
       if (instance.generatedNamespaces?.map((k, e) => MapEntry(k, e.toJson()))
           case final value?)
         'generatedNamespaces': value,

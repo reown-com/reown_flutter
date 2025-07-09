@@ -94,6 +94,7 @@ class SignClientTestWrapper implements IReownSign {
     Map<String, RequiredNamespace>? requiredNamespaces,
     Map<String, RequiredNamespace>? optionalNamespaces,
     Map<String, String>? sessionProperties,
+    Map<String, dynamic>? scopedProperties,
     String? pairingTopic,
     List<Relay>? relays,
     List<List<String>>? methods = ReownSign.DEFAULT_METHODS,
@@ -129,6 +130,7 @@ class SignClientTestWrapper implements IReownSign {
     required int id,
     required Map<String, Namespace> namespaces,
     Map<String, String>? sessionProperties,
+    Map<String, dynamic>? scopedProperties,
     String? relayProtocol,
   }) async {
     try {

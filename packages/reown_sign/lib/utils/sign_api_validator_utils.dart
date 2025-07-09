@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:reown_core/reown_core.dart';
 import 'package:reown_sign/models/proposal_models.dart';
 import 'package:reown_sign/models/session_models.dart';
@@ -269,6 +271,54 @@ class SignApiValidatorUtils {
           ).toSignError();
         }
       }
+    }
+
+    return true;
+  }
+
+  static bool isValidSessionProperties({
+    required Map<String, dynamic> properties,
+    String type = 'sessionProperties',
+  }) {
+    final keys = properties.keys.toList();
+    final values = properties.values.toList();
+
+    for (var i = 0; i < values.length; i++) {
+      final property = values[i];
+      if (property == null) {
+        throw Errors.getSdkError(
+          Errors.MALFORMED_REQUEST_PARAMS,
+          context:
+              '$type must contain an existing value for each key. Received: $property for key ${keys[i]}',
+        ).toSignError();
+      }
+    }
+
+    return true;
+  }
+
+  static bool isValidScopedProperties({
+    required Map<String, dynamic> properties,
+    required List<String> namespaces,
+  }) {
+    isValidSessionProperties(
+      properties: properties,
+      type: 'scopedProperties',
+    );
+
+    final scopedNamespaces = properties.keys.toList();
+    final valid = scopedNamespaces.every((ns) {
+      final baseNs = ns.split(':')[0];
+      return namespaces.contains(baseNs);
+    });
+
+    if (!valid) {
+      throw Errors.getSdkError(
+        Errors.MALFORMED_REQUEST_PARAMS,
+        context: 'scopedProperties must be a subset of namespaces, '
+            'received: ${jsonEncode(properties)}, '
+            'namespaces: ${jsonEncode(namespaces)}',
+      ).toSignError();
     }
 
     return true;

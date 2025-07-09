@@ -190,6 +190,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     required int id,
     required Map<String, Namespace> namespaces,
     Map<String, String>? sessionProperties,
+    Map<String, dynamic>? scopedProperties,
     String? relayProtocol,
   }) async {
     try {
