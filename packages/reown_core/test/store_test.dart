@@ -267,7 +267,7 @@ void main() {
             topic: 'expired',
             expiry: -1,
             relay: Relay(
-              'irn',
+              ReownConstants.RELAYER_DEFAULT_PROTOCOL,
             ),
             active: true,
           ),

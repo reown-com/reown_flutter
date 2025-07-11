@@ -217,7 +217,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _logListener(String event) {
-    debugPrint('[AppKit] $event');
+    // debugPrint('[AppKit] $event');
   }
 
   Future<void> _initializeService() async {
