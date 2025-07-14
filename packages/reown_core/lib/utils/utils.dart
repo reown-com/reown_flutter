@@ -212,10 +212,12 @@ class ReownCoreUtils {
   }) {
     Map<String, String> params = formatRelayParams(relay);
     params['symKey'] = symKey;
-    if (methods != null) {
-      final uriMethods = methods.expand((e) => e).toList();
-      params['methods'] =
-          uriMethods.map((e) => jsonEncode(e)).join(',').replaceAll('"', '');
+    if ((methods ?? []).isNotEmpty) {
+      final uriMethods = methods!.expand((e) => e).toList();
+      if (uriMethods.isNotEmpty) {
+        params['methods'] =
+            uriMethods.map((e) => jsonEncode(e)).join(',').replaceAll('"', '');
+      }
     }
 
     if (expiry != null) {
