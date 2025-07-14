@@ -1,5 +1,6 @@
 import 'package:event/event.dart';
 import 'package:reown_core/crypto/crypto_models.dart';
+import 'package:reown_core/models/basic_models.dart';
 import 'package:reown_core/models/json_rpc_models.dart';
 import 'package:reown_core/models/tvf_data.dart';
 
@@ -23,6 +24,7 @@ abstract class IPairing {
   Future<CreateResponse> create({
     List<List<String>>? methods,
     TransportType transportType = TransportType.relay,
+    bool skipSubscribe = false,
   });
   Future<void> activate({required String topic});
   void register({
@@ -50,7 +52,7 @@ abstract class IPairing {
   Future<void> disconnect({required String topic});
   IPairingStore getStore();
 
-  Future sendRequest(
+  Future<dynamic> sendRequest(
     String topic,
     String method,
     Map<String, dynamic> params, {
@@ -60,6 +62,15 @@ abstract class IPairing {
     String? appLink,
     bool openUrl = true,
     TVFData? tvf,
+  });
+
+  Future<dynamic> sendProposeSessionRequest(
+    String topic,
+    String method,
+    Map<String, dynamic> params, {
+    int? id,
+    int? ttl,
+    EncodeOptions? encodeOptions,
   });
 
   Future<void> sendResult(
@@ -81,6 +92,14 @@ abstract class IPairing {
     RpcOptions? rpcOptions,
     String? appLink,
     TVFData? tvf,
+  });
+
+  Future<dynamic> sendApproveSessionRequest({
+    required String sessionTopic,
+    required String pairingTopic,
+    required String sessionProposalResponse,
+    required String sessionSettlementRequest,
+    required PublishOptions publishOpts,
   });
 
   Future<void> isValidPairingTopic({

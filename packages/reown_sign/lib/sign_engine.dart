@@ -156,10 +156,13 @@ class ReownSign implements IReownSign {
     String? pTopic = pairingTopic;
     Uri? uri;
 
+    final bool skipSubscribe = true; // TODO Sign 2.5
+
     if (pTopic == null) {
       final CreateResponse newTopicAndUri = await core.pairing.create(
         methods: methods,
         transportType: TransportType.relay,
+        skipSubscribe: skipSubscribe,
       );
       pTopic = newTopicAndUri.topic;
       uri = newTopicAndUri.uri;
@@ -223,6 +226,7 @@ class ReownSign implements IReownSign {
       pTopic,
       request,
       id,
+      skipSubscribe,
     );
 
     final ConnectResponse resp = ConnectResponse(
@@ -238,16 +242,24 @@ class ReownSign implements IReownSign {
     String topic,
     WcSessionProposeRequest request,
     int requestId,
+    bool skipSubscribe,
   ) async {
-    // print("sending proposal for $topic");
-    // print('connectResponseHandler requestId: $requestId');
     try {
-      final Map<String, dynamic> response = await core.pairing.sendRequest(
-        topic,
-        MethodConstants.WC_SESSION_PROPOSE,
-        request.toJson(),
-        id: requestId,
-      );
+      final Map<String, dynamic> response = skipSubscribe
+          // no need to pass WC_SESSION_PROPOSE as method since
+          // it's the only method possible for sendPayloadRequest
+          ? await core.pairing.sendProposeSessionRequest(
+              topic,
+              MethodConstants.WC_SESSION_PROPOSE,
+              request.toJson(),
+              id: requestId,
+            )
+          : await core.pairing.sendRequest(
+              topic,
+              MethodConstants.WC_SESSION_PROPOSE,
+              request.toJson(),
+              id: requestId,
+            );
       final String peerPublicKey = response['responderPublicKey'];
 
       final ProposalData proposal = proposals.get(
@@ -263,13 +275,17 @@ class ReownSign implements IReownSign {
       await _deleteProposal(requestId);
 
       await core.relayClient.subscribe(
-        topic: sessionTopic,
-        transportType: TransportType.relay,
+        options: SubscribeOptions(
+          topic: sessionTopic,
+          transportType: TransportType.relay,
+          skipSubscribe: skipSubscribe,
+        ),
       );
       await core.pairing.activate(topic: topic);
-    } catch (e) {
+    } catch (e, s) {
       // Get the completer and finish it with an error
       pendingProposals.removeLast().completer.completeError(e);
+      core.logger.e('[$runtimeType] connect error: $e, $s');
     }
   }
 
@@ -342,8 +358,10 @@ class ReownSign implements IReownSign {
     );
 
     await core.relayClient.subscribe(
-      topic: sessionTopic,
-      transportType: TransportType.relay,
+      options: SubscribeOptions(
+        topic: sessionTopic,
+        transportType: TransportType.relay,
+      ),
     );
 
     final int expiry = ReownCoreUtils.calculateExpiry(
@@ -827,8 +845,10 @@ class ReownSign implements IReownSign {
     for (final SessionData session in sessions.getAll()) {
       core.logger.i('[$runtimeType] Resubscribe to session: ${session.topic}');
       await core.relayClient.subscribe(
-        topic: session.topic,
-        transportType: session.transportType,
+        options: SubscribeOptions(
+          topic: session.topic,
+          transportType: session.transportType,
+        ),
       );
     }
   }
@@ -2129,8 +2149,10 @@ class ReownSign implements IReownSign {
 
     // Subscribe to the responseTopic because we expect the response to use this topic
     await core.relayClient.subscribe(
-      topic: responseTopic,
-      transportType: transportType,
+      options: SubscribeOptions(
+        topic: responseTopic,
+        transportType: transportType,
+      ),
     );
 
     final id = JsonRpcUtils.payloadId();
@@ -2234,6 +2256,7 @@ class ReownSign implements IReownSign {
         pTopic,
         proposeRequest,
         fallbackId,
+        false,
       );
     }
 
@@ -2392,9 +2415,11 @@ class ReownSign implements IReownSign {
       );
 
       await core.relayClient.subscribe(
-        topic: sessionTopic,
-        transportType:
-            isLinkMode ? TransportType.linkMode : TransportType.relay,
+        options: SubscribeOptions(
+          topic: sessionTopic,
+          transportType:
+              isLinkMode ? TransportType.linkMode : TransportType.relay,
+        ),
       );
       await sessions.set(sessionTopic, session);
       await core.pairing.updateMetadata(
@@ -2559,8 +2584,10 @@ class ReownSign implements IReownSign {
       );
 
       await core.relayClient.subscribe(
-        topic: sessionTopic,
-        transportType: pendingRequest.transportType,
+        options: SubscribeOptions(
+          topic: sessionTopic,
+          transportType: pendingRequest.transportType,
+        ),
       );
       await sessions.set(sessionTopic, session);
       await core.pairing.updateMetadata(
