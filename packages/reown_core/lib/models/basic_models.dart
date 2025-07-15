@@ -23,7 +23,7 @@ class ReownCoreError with _$ReownCoreError {
 
 @JsonSerializable()
 class PublishOptions {
-  final int ttl;
+  final int? ttl;
   final int? tag;
   final int? correlationId;
   final Map<String, dynamic>? tvf;
@@ -42,7 +42,7 @@ class PublishOptions {
 
   Map<String, dynamic> toJson() => _$PublishOptionsToJson(this);
   Map<String, dynamic> toPublishParams() => {
-        'ttl': ttl,
+        if (ttl != null) 'ttl': ttl,
         if (tag != null) 'tag': tag,
         if (correlationId != null) 'correlationId': correlationId,
         ...?tvf,

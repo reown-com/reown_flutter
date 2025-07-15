@@ -156,13 +156,13 @@ class ReownSign implements IReownSign {
     String? pTopic = pairingTopic;
     Uri? uri;
 
-    final bool skipSubscribe = true; // TODO Sign 2.5
+    final bool sign25enabled = true; // Sign 2.5
 
     if (pTopic == null) {
       final CreateResponse newTopicAndUri = await core.pairing.create(
         methods: methods,
         transportType: TransportType.relay,
-        skipSubscribe: skipSubscribe,
+        skipSubscribe: sign25enabled,
       );
       pTopic = newTopicAndUri.topic;
       uri = newTopicAndUri.uri;
@@ -226,7 +226,7 @@ class ReownSign implements IReownSign {
       pTopic,
       request,
       id,
-      skipSubscribe,
+      sign25enabled,
     );
 
     final ConnectResponse resp = ConnectResponse(
@@ -242,15 +242,14 @@ class ReownSign implements IReownSign {
     String topic,
     WcSessionProposeRequest request,
     int requestId,
-    bool skipSubscribe,
+    bool sign25enabled,
   ) async {
     try {
-      final Map<String, dynamic> response = skipSubscribe
+      final Map<String, dynamic> response = sign25enabled
           // no need to pass WC_SESSION_PROPOSE as method since
           // it's the only method possible for sendPayloadRequest
           ? await core.pairing.sendProposeSessionRequest(
               topic,
-              MethodConstants.WC_SESSION_PROPOSE,
               request.toJson(),
               id: requestId,
             )
@@ -278,7 +277,7 @@ class ReownSign implements IReownSign {
         options: SubscribeOptions(
           topic: sessionTopic,
           transportType: TransportType.relay,
-          skipSubscribe: skipSubscribe,
+          skipSubscribe: sign25enabled,
         ),
       );
       await core.pairing.activate(topic: topic);
@@ -339,16 +338,22 @@ class ReownSign implements IReownSign {
     final protocol = relayProtocol ?? ReownConstants.RELAYER_DEFAULT_PROTOCOL;
     final relay = Relay(protocol);
 
+    final bool sign25enabled = true; // Sign 2.5
+
     // Respond to the proposal
-    await core.pairing.sendResult(
-      id,
-      proposal.pairingTopic,
-      MethodConstants.WC_SESSION_PROPOSE,
-      WcSessionProposeResponse(
-        relay: relay,
-        responderPublicKey: selfPubKey,
-      ),
+    final sessionProposalResponse = WcSessionProposeResponse(
+      relay: relay,
+      responderPublicKey: selfPubKey,
     );
+    // ignore: dead_code
+    if (!sign25enabled) {
+      await core.pairing.sendResult(
+        id,
+        proposal.pairingTopic,
+        MethodConstants.WC_SESSION_PROPOSE,
+        sessionProposalResponse,
+      );
+    }
     await _deleteProposal(id);
     await core.pairing.activate(topic: proposal.pairingTopic);
 
@@ -361,6 +366,7 @@ class ReownSign implements IReownSign {
       options: SubscribeOptions(
         topic: sessionTopic,
         transportType: TransportType.relay,
+        skipSubscribe: sign25enabled,
       ),
     );
 
@@ -391,7 +397,7 @@ class ReownSign implements IReownSign {
     await _setSessionExpiry(sessionTopic, expiry);
 
     // `wc_sessionSettle` is not critical throughout the entire session.
-    final settleRequest = WcSessionSettleRequest(
+    final sessionSettleRequest = WcSessionSettleRequest(
       relay: relay,
       namespaces: namespaces,
       sessionProperties: sessionProperties,
@@ -401,20 +407,29 @@ class ReownSign implements IReownSign {
         metadata: metadata,
       ),
     );
-    bool acknowledged = await core.pairing
-        .sendRequest(
-          sessionTopic,
-          MethodConstants.WC_SESSION_SETTLE,
-          settleRequest.toJson(),
-        )
-        // Sometimes we don't receive any response for a long time,
-        // in which case we manually time out to prevent waiting indefinitely.
-        .timeout(const Duration(seconds: 15))
-        .catchError(
-      (_) {
-        return false;
-      },
-    );
+    bool acknowledged = sign25enabled
+        ? await core.pairing.sendApproveSessionRequest(
+            sessionTopic,
+            proposal.pairingTopic,
+            responseId: proposal.id,
+            sessionProposalResponse: sessionProposalResponse.toJson(),
+            sessionSettlementRequest: sessionSettleRequest.toJson(),
+          )
+        // ignore: dead_code
+        : await core.pairing
+            .sendRequest(
+              sessionTopic,
+              MethodConstants.WC_SESSION_SETTLE,
+              sessionSettleRequest.toJson(),
+            )
+            // Sometimes we don't receive any response for a long time,
+            // in which case we manually time out to prevent waiting indefinitely.
+            .timeout(const Duration(seconds: 15))
+            .catchError(
+            (_) {
+              return false;
+            },
+          );
 
     session = session.copyWith(
       acknowledged: acknowledged,

@@ -1,6 +1,5 @@
 import 'package:event/event.dart';
 import 'package:reown_core/crypto/crypto_models.dart';
-import 'package:reown_core/models/basic_models.dart';
 import 'package:reown_core/models/json_rpc_models.dart';
 import 'package:reown_core/models/tvf_data.dart';
 
@@ -66,10 +65,8 @@ abstract class IPairing {
 
   Future<dynamic> sendProposeSessionRequest(
     String topic,
-    String method,
     Map<String, dynamic> params, {
     int? id,
-    int? ttl,
     EncodeOptions? encodeOptions,
   });
 
@@ -94,12 +91,13 @@ abstract class IPairing {
     TVFData? tvf,
   });
 
-  Future<dynamic> sendApproveSessionRequest({
-    required String sessionTopic,
-    required String pairingTopic,
-    required String sessionProposalResponse,
-    required String sessionSettlementRequest,
-    required PublishOptions publishOpts,
+  Future<dynamic> sendApproveSessionRequest(
+    String sessionTopic,
+    String pairingTopic, {
+    required int responseId,
+    required Map<String, dynamic> sessionProposalResponse,
+    required Map<String, dynamic> sessionSettlementRequest,
+    EncodeOptions? encodeOptions,
   });
 
   Future<void> isValidPairingTopic({

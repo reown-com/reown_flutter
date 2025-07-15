@@ -522,59 +522,64 @@ class Pairing implements IPairing {
     }
   }
 
+  ///
+  /// Sign 2.5
+  /// Substitutes wc_sessionPropose sendRequest()
+  /// during signEngine.connect()
+  ///
   @override
   Future<dynamic> sendProposeSessionRequest(
     String topic,
-    String method,
     Map<String, dynamic> params, {
     int? id,
-    int? ttl,
     EncodeOptions? encodeOptions,
   }) async {
-    final payload = JsonRpcUtils.formatJsonRpcRequest(
-      method,
+    final proposeSessionPayload = JsonRpcUtils.formatJsonRpcRequest(
+      MethodConstants.WC_SESSION_PROPOSE,
       params,
       id: id,
     );
-    final requestId = payload['id'] as int;
+    final requestId = proposeSessionPayload['id'] as int;
 
-    final message = await core.crypto.encode(
+    final proposeSessionMessage = await core.crypto.encode(
       topic,
-      payload,
+      proposeSessionPayload,
       options: encodeOptions,
     );
 
-    if (message == null) {
+    if (proposeSessionMessage == null) {
       return;
     }
 
     // print('adding payload to pending requests: $requestId');
     final resp = PendingRequestResponse(
       completer: Completer(),
-      method: method,
+      method: MethodConstants.WC_SESSION_PROPOSE,
     );
     resp.completer.future.catchError((err) {
       // Catch the error so that it won't throw an uncaught error
     });
     pendingRequests[requestId] = resp;
 
+    final payload = {
+      'pairingTopic': topic,
+      'sessionProposal': proposeSessionMessage,
+    };
+
+    final options = PublishOptions(
+      correlationId: requestId,
+      ttl: null, // ttl is not required in this case, it's assigned relay-side
+      tag: null, // tag is not required in this case, it's assigned relay-side
+      publishMethod: RelayClient.WC_PROPOSE_SESSION,
+    );
+
     await core.relayClient.publishPayload(
-      payload: {
-        'pairingTopic': topic,
-        'sessionProposal': message,
-      },
-      options: PublishOptions(
-        ttl: ttl ?? ReownConstants.FIVE_MINUTES,
-        correlationId: requestId,
-        publishMethod: RelayClient.WC_PROPOSE_SESSION,
-        // tag is not required in this case
-        tag: null,
-      ),
+      payload: payload,
+      options: options,
     );
     core.logger.d(
-      '[$runtimeType] sendPayloadRequest relayClient, '
-      'id: $requestId pairingTopic: $topic, method: ${RelayClient.WC_PROPOSE_SESSION}, '
-      'params: $params, ttl: ${ttl ?? ReownConstants.FIVE_MINUTES}',
+      '[$runtimeType] sendProposeSessionRequest relayClient, '
+      'payload: ${jsonEncode(payload)}, options: ${jsonEncode(options.toJson())}',
     );
 
     // Get the result from the completer, if it's an error, throw it
@@ -662,6 +667,75 @@ class Pairing implements IPairing {
     }
   }
 
+  ///
+  /// Sign 2.5
+  /// Substitutes wc_sessionPropose sendResult() and WC_SESSION_SETTLE sendRequest()
+  /// during signEngine.approveSession()
+  ///
+  @override
+  Future<dynamic> sendApproveSessionRequest(
+    String sessionTopic,
+    String pairingTopic, {
+    required int responseId,
+    required Map<String, dynamic> sessionProposalResponse,
+    required Map<String, dynamic> sessionSettlementRequest,
+    EncodeOptions? encodeOptions,
+  }) async {
+    final pairingPayload = JsonRpcUtils.formatJsonRpcResponse<dynamic>(
+      responseId,
+      sessionProposalResponse,
+    );
+
+    final String? pairingResponseMessage = await core.crypto.encode(
+      pairingTopic,
+      pairingPayload,
+      options: encodeOptions,
+    );
+
+    if (pairingResponseMessage == null) {
+      return;
+    }
+
+    //
+    final sessionSettlePayload = JsonRpcUtils.formatJsonRpcRequest(
+      MethodConstants.WC_SESSION_SETTLE,
+      sessionSettlementRequest,
+    );
+
+    final String? sessionSettlementRequestMessage = await core.crypto.encode(
+      sessionTopic,
+      sessionSettlePayload,
+      options: encodeOptions,
+    );
+
+    if (sessionSettlementRequestMessage == null) {
+      return;
+    }
+
+    final payload = {
+      'sessionTopic': sessionTopic,
+      'pairingTopic': pairingTopic,
+      'sessionProposalResponse': pairingResponseMessage,
+      'sessionSettlementRequest': sessionSettlementRequestMessage,
+    };
+
+    final options = PublishOptions(
+      correlationId: responseId,
+      ttl: null, // ttl is not required in this case, it's assigned relay-side
+      tag: null, // tag is not required in this case, it's assigned relay-side
+      publishMethod: RelayClient.WC_APPROVE_SESSION,
+    );
+
+    await core.relayClient.publishPayload(
+      payload: payload,
+      options: options,
+    );
+    core.logger.d(
+      '[$runtimeType] sendApproveSessionRequest relayClient, '
+      'payload: ${jsonEncode(payload)}, options: ${jsonEncode(options.toJson())}',
+    );
+  }
+
   @override
   Future<dynamic> sendError(
     int id,
@@ -736,18 +810,6 @@ class Pairing implements IPairing {
         'id: $id topic: $topic, method: $method, error: $error',
       );
     }
-  }
-
-  @override
-  Future<dynamic> sendApproveSessionRequest({
-    required String sessionTopic,
-    required String pairingTopic,
-    required String sessionProposalResponse,
-    required String sessionSettlementRequest,
-    required PublishOptions publishOpts,
-  }) {
-    // TODO: implement sendApproveSession
-    throw UnimplementedError();
   }
 
   /// ---- Private Helpers ---- ///

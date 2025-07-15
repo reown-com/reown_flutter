@@ -8,7 +8,7 @@ part of 'basic_models.dart';
 
 PublishOptions _$PublishOptionsFromJson(Map<String, dynamic> json) =>
     PublishOptions(
-      ttl: (json['ttl'] as num).toInt(),
+      ttl: (json['ttl'] as num?)?.toInt(),
       tag: (json['tag'] as num?)?.toInt(),
       correlationId: (json['correlationId'] as num?)?.toInt(),
       tvf: json['tvf'] as Map<String, dynamic>?,

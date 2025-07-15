@@ -117,7 +117,7 @@ class RelayClient implements IRelayClient {
   }) async {
     _checkInitialized();
 
-    Map<String, dynamic> data = {
+    final Map<String, dynamic> data = {
       'topic': topic,
       'message': message,
       ...options.toPublishParams(),
@@ -127,12 +127,11 @@ class RelayClient implements IRelayClient {
 
     try {
       await messageTracker.recordMessageEvent(topic, message);
-      final response = await _sendJsonRpcRequest(
+      final _ = await _sendJsonRpcRequest(
         id: JsonRpcUtils.payloadId(entropy: 6),
         method: _buildIRNMethod(IRN_PUBLISH),
         parameters: data,
       );
-      core.logger.t('[$runtimeType], publish response: $response');
     } catch (e, s) {
       core.logger.e('[$runtimeType], publish: $e', stackTrace: s);
       onRelayClientError.broadcast(ErrorEvent(e));
@@ -146,26 +145,20 @@ class RelayClient implements IRelayClient {
   }) async {
     _checkInitialized();
 
-    final method = options.publishMethod!;
-    final publishMethod = _buildWCMethod(method);
-
     final Map<String, dynamic> parameters = {
       ...payload,
       ...options.toPublishParams(),
     };
 
-    core.logger.t(
-      '[$runtimeType] publishPayload method: $publishMethod, ${jsonEncode(parameters)}',
-    );
+    core.logger.t('[$runtimeType] publishPayload: ${jsonEncode(parameters)}');
 
     try {
       // await messageTracker.recordMessageEvent(topic, message);
-      final response = await _sendJsonRpcRequest(
-        id: options.correlationId ?? JsonRpcUtils.payloadId(entropy: 6),
-        method: publishMethod,
+      final _ = await _sendJsonRpcRequest(
+        id: JsonRpcUtils.payloadId(entropy: 6),
+        method: _buildWCMethod(options.publishMethod!),
         parameters: parameters,
       );
-      core.logger.t('[$runtimeType], publishPayload response: $response');
     } catch (e, s) {
       core.logger.e('[$runtimeType], publishPayload: $e, $s');
       onRelayClientError.broadcast(ErrorEvent(e));
@@ -178,10 +171,10 @@ class RelayClient implements IRelayClient {
   }) async {
     _checkInitialized();
 
+    // if (options.skipSubscribe) return ''; // TODO Sign 2.5. Is this needed?
+
     final topic = options.topic;
-
     core.logger.i('[$runtimeType] subscribe, $topic');
-
     pendingSubscriptions[topic] = _onSubscribe(options);
 
     return await pendingSubscriptions[topic];
