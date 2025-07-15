@@ -1053,8 +1053,8 @@ class ReownAppKitModal
     } on TimeoutException {
       _appKit.core.logger.i('[$runtimeType] Rebuilding session, ending future');
       return;
-    } catch (e, s) {
-      await _connectionErrorHandler(e, s);
+    } catch (e) {
+      await _connectionErrorHandler(e);
     }
   }
 
@@ -1078,13 +1078,13 @@ class ReownAppKitModal
     } on TimeoutException {
       _appKit.core.logger.i('[$runtimeType] Rebuilding session, ending future');
       return;
-    } catch (e, s) {
+    } catch (e) {
       await disconnect();
-      await _connectionErrorHandler(e, s);
+      await _connectionErrorHandler(e);
     }
   }
 
-  Future<void> _connectionErrorHandler(dynamic e, dynamic stackTrace) async {
+  Future<void> _connectionErrorHandler(dynamic e) async {
     if (_isUserRejectedError(e)) {
       onModalError.broadcast(UserRejectedConnection());
       _analyticsService.sendEvent(ConnectErrorEvent(
@@ -1111,7 +1111,6 @@ class ReownAppKitModal
         ));
       }
     }
-    _appKit.core.logger.e('[$runtimeType] connection error: $e, $stackTrace');
     return await expirePreviousInactivePairings();
   }
 
