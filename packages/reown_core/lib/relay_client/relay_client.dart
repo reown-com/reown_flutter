@@ -153,7 +153,15 @@ class RelayClient implements IRelayClient {
     core.logger.t('[$runtimeType] publishPayload: ${jsonEncode(parameters)}');
 
     try {
-      // await messageTracker.recordMessageEvent(topic, message);
+      if (options.publishMethod == RelayClient.WC_PROPOSE_SESSION) {
+        final topic = payload['pairingTopic'];
+        final message = payload['sessionProposal'];
+        await messageTracker.recordMessageEvent(topic, message);
+      } else {
+        final topic = payload['sessionTopic'];
+        final message = payload['sessionProposalResponse'];
+        await messageTracker.recordMessageEvent(topic, message);
+      }
       final _ = await _sendJsonRpcRequest(
         id: JsonRpcUtils.payloadId(entropy: 6),
         method: _buildWCMethod(options.publishMethod!),
