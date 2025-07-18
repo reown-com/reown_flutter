@@ -1,3 +1,7 @@
+## 1.2.0
+
+- New relay methods for latency improvements
+
 ## 1.1.6+2
 
 - Bug fix #205

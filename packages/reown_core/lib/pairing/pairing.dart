@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:event/event.dart';
+import 'package:reown_core/events/models/basic_event.dart';
 import 'package:reown_core/events/models/link_mode_events.dart';
 import 'package:reown_core/models/json_rpc_models.dart';
 import 'package:reown_core/models/tvf_data.dart';
@@ -449,13 +450,13 @@ class Pairing implements IPairing {
     }
 
     // print('adding payload to pending requests: $requestId');
-    final resp = PendingRequestResponse(
-      completer: Completer(),
-      method: method,
+    final resp = PendingRequestResponse(completer: Completer(), method: method);
+    resp.completer.future.catchError(
+      (err) => core.events.recordEvent(BasicCoreEvent(
+        event: CoreEventType.ERROR,
+        properties: CoreEventProperties(topic: topic, method: resp.method),
+      )),
     );
-    resp.completer.future.catchError((err) {
-      // Catch the error so that it won't throw an uncaught error
-    });
     pendingRequests[requestId] = resp;
 
     if (isLinkMode) {
@@ -554,9 +555,12 @@ class Pairing implements IPairing {
       completer: Completer(),
       method: MethodConstants.WC_SESSION_PROPOSE,
     );
-    resp.completer.future.catchError((err) {
-      // Catch the error so that it won't throw an uncaught error
-    });
+    resp.completer.future.catchError(
+      (err) => core.events.recordEvent(BasicCoreEvent(
+        event: CoreEventType.ERROR,
+        properties: CoreEventProperties(topic: topic, method: resp.method),
+      )),
+    );
     pendingRequests[requestId] = resp;
 
     final payload = {

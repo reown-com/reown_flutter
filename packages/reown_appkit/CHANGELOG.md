@@ -1,3 +1,7 @@
+## 1.5.0
+
+- New relay methods for latency improvements
+
 ## 1.4.7
 
 - Required namespaces deprecation
