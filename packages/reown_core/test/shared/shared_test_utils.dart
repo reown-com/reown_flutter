@@ -12,6 +12,7 @@ import 'package:reown_core/crypto/i_crypto.dart';
 import 'package:reown_core/relay_client/i_message_tracker.dart';
 import 'package:reown_core/relay_client/message_tracker.dart';
 import 'package:reown_core/relay_client/websocket/http_client.dart';
+import 'package:reown_core/relay_client/relay_client.dart';
 import 'package:reown_core/relay_client/websocket/websocket_handler.dart';
 import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/generic_store.dart';
@@ -26,6 +27,7 @@ import 'shared_test_utils.mocks.dart';
   HttpWrapper,
   ReownCore,
   WebSocketHandler,
+  RelayClient,
 ])
 class SharedTestUtils {}
 
