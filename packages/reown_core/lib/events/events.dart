@@ -11,9 +11,9 @@ class Events implements IEvents {
   final IReownCore _core;
   final IHttpClient _httpClient;
 
-  late final String _bundleId;
-  late final String _clientId;
-  late final Map<String, String> _params;
+  String? _bundleId;
+  String? _clientId;
+  Map<String, String>? _params;
 
   Map<String, String> get _requiredParams => {
         'st': 'events_sdk',

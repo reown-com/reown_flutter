@@ -10,12 +10,14 @@ class SettingsPage extends StatefulWidget {
     required this.appKitModal,
     required this.reinitialize,
     this.linkMode = false,
+    this.analytics = false,
     this.socials = false,
   });
 
   final ReownAppKitModal appKitModal;
   final Function(String storageKey, bool value) reinitialize;
   final bool linkMode;
+  final bool analytics;
   final bool socials;
 
   @override
@@ -53,7 +55,7 @@ class SettingsPageState extends State<SettingsPage> {
                         children: [
                           Expanded(
                             child: Text(
-                              'non-EVM\nSession Proposal',
+                              'Relay Mode\n(Multichain)',
                               textAlign: TextAlign.end,
                               style: TextStyle(
                                 color: ReownAppKitModalTheme.colorsOf(context)
@@ -80,7 +82,7 @@ class SettingsPageState extends State<SettingsPage> {
                           ),
                           Expanded(
                             child: Text(
-                              'Link Mode\nonly EVM',
+                              'Link Mode\n(1CA, only EVM)',
                               style: TextStyle(
                                 color: ReownAppKitModalTheme.colorsOf(context)
                                     .foreground100,
@@ -97,7 +99,7 @@ class SettingsPageState extends State<SettingsPage> {
                         children: [
                           Expanded(
                             child: Text(
-                              'Without Socials',
+                              'Socials Off',
                               textAlign: TextAlign.end,
                               style: TextStyle(
                                 color: ReownAppKitModalTheme.colorsOf(context)
@@ -124,11 +126,56 @@ class SettingsPageState extends State<SettingsPage> {
                           ),
                           Expanded(
                             child: Text(
-                              'With Socials',
+                              'Socials On',
                               style: TextStyle(
                                 color: ReownAppKitModalTheme.colorsOf(context)
                                     .foreground100,
                                 fontWeight: widget.socials
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              'Analytics Off',
+                              textAlign: TextAlign.end,
+                              style: TextStyle(
+                                color: ReownAppKitModalTheme.colorsOf(context)
+                                    .foreground100,
+                                fontWeight: !widget.analytics
+                                    ? FontWeight.bold
+                                    : FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                          Semantics(
+                            label:
+                                'appkit_sample_analytics_${widget.analytics}',
+                            identifier:
+                                'appkit_sample_analytics_${widget.analytics}',
+                            child: Switch(
+                              value: widget.analytics,
+                              onChanged: (value) {
+                                widget.reinitialize(
+                                  'appkit_sample_analytics',
+                                  value,
+                                );
+                              },
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              'Analytics On',
+                              style: TextStyle(
+                                color: ReownAppKitModalTheme.colorsOf(context)
+                                    .foreground100,
+                                fontWeight: widget.analytics
                                     ? FontWeight.bold
                                     : FontWeight.normal,
                               ),
@@ -216,15 +263,12 @@ class SettingsPageState extends State<SettingsPage> {
               ),
             ),
             const SizedBox(height: StyleConstants.linear8),
-            Text(
-              'Redirect metadata:',
-              style: textStyleBold,
-            ),
+            Text('Redirect metadata:', style: textStyle),
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Native: ', style: textStyle),
+                Text('    Native: ', style: textStyle),
                 Expanded(
                   child: Text('${redirect?.native}', style: textStyleBold),
                 ),
@@ -234,7 +278,7 @@ class SettingsPageState extends State<SettingsPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Universal: ', style: textStyle),
+                Text('    Universal: ', style: textStyle),
                 Expanded(
                   child: Text('${redirect?.universal}', style: textStyleBold),
                 ),
@@ -242,7 +286,7 @@ class SettingsPageState extends State<SettingsPage> {
             ),
             Row(
               children: [
-                Text('Link Mode: ', style: textStyle),
+                Text('    Link Mode: ', style: textStyle),
                 Text('${redirect?.linkMode}', style: textStyleBold),
               ],
             ),
@@ -255,7 +299,6 @@ class SettingsPageState extends State<SettingsPage> {
                 final v = snapshot.data!.version;
                 final b = snapshot.data!.buildNumber;
                 const f = String.fromEnvironment('FLUTTER_APP_FLAVOR');
-                // return Text('App Version: $v-$f ($b) - SDK v$packageVersion');
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,16 +314,40 @@ class SettingsPageState extends State<SettingsPage> {
                 );
               },
             ),
-            const SizedBox(height: StyleConstants.linear8),
             FutureBuilder(
               future: ReownCoreUtils.getPackageName(),
               builder: (_, snapshot) {
-                return Text(
-                  snapshot.data ?? '',
-                  style: textStyleBold,
+                return Row(
+                  children: [
+                    Text('Bundle ID: ', style: textStyle),
+                    Expanded(
+                      child: Text(
+                        snapshot.data ?? '',
+                        style: textStyleBold,
+                      ),
+                    ),
+                  ],
                 );
               },
             ),
+            FutureBuilder(
+              future: widget.appKitModal.appKit!.core.crypto.getClientId(),
+              builder: (_, snapshot) {
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Client ID: ', style: textStyle),
+                    Expanded(
+                      child: Text(
+                        snapshot.data ?? '',
+                        style: textStyleBold,
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+            const SizedBox(height: StyleConstants.linear8),
           ],
         ),
       ),

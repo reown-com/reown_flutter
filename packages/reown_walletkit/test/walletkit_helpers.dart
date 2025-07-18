@@ -47,10 +47,10 @@ class ReownWalletKitHelpers {
     signHandler(SessionProposalEvent? args) async {
       // print('B Session Proposal');
 
-      expect(
-        args!.params.requiredNamespaces,
-        reqNamespaces,
-      );
+      // With the new SDK behavior, requiredNamespaces are automatically merged into optionalNamespaces
+      // So requiredNamespaces will be empty and we should check optionalNamespaces instead
+      expect(args!.params.requiredNamespaces, {});
+      expect(args.params.optionalNamespaces, reqNamespaces);
 
       expect(b.getPendingSessionProposals().length, 1);
 

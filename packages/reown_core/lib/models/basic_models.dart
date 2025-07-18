@@ -21,76 +21,30 @@ class ReownCoreError with _$ReownCoreError {
       _$ReownCoreErrorFromJson(json);
 }
 
-@JsonSerializable()
-class PublishOptions {
-  final int? ttl;
-  final int? tag;
-  final int? correlationId;
-  final Map<String, dynamic>? tvf;
-  final String? publishMethod;
-
-  const PublishOptions({
-    required this.ttl,
-    required this.tag,
-    this.correlationId,
-    this.tvf,
-    this.publishMethod,
-  });
-
-  factory PublishOptions.fromJson(Map<String, dynamic> json) =>
-      _$PublishOptionsFromJson(json);
-
-  Map<String, dynamic> toJson() => _$PublishOptionsToJson(this);
-  Map<String, dynamic> toPublishParams() => {
-        if (ttl != null) 'ttl': ttl,
-        if (tag != null) 'tag': tag,
-        if (correlationId != null) 'correlationId': correlationId,
-        ...?tvf,
-      };
-
-  PublishOptions copyWith({
+@freezed
+class PublishOptions with _$PublishOptions {
+  @JsonSerializable(includeIfNull: false)
+  const factory PublishOptions({
     int? ttl,
     int? tag,
     int? correlationId,
     Map<String, dynamic>? tvf,
     String? publishMethod,
-  }) {
-    return PublishOptions(
-      ttl: ttl ?? this.ttl,
-      tag: tag ?? this.tag,
-      correlationId: correlationId ?? this.correlationId,
-      tvf: tvf ?? this.tvf,
-      publishMethod: publishMethod ?? this.publishMethod,
-    );
-  }
+  }) = _PublishOptions;
+
+  factory PublishOptions.fromJson(Map<String, dynamic> json) =>
+      _$PublishOptionsFromJson(json);
 }
 
-@JsonSerializable()
-class SubscribeOptions {
-  final String topic;
-  final TransportType transportType;
-  final bool skipSubscribe;
-
-  const SubscribeOptions({
-    required this.topic,
-    required this.transportType,
-    this.skipSubscribe = false,
-  });
+@freezed
+class SubscribeOptions with _$SubscribeOptions {
+  @JsonSerializable(includeIfNull: false)
+  const factory SubscribeOptions({
+    required String topic,
+    @Default(TransportType.relay) TransportType transportType,
+    @Default(false) bool skipSubscribe,
+  }) = _SubscribeOptions;
 
   factory SubscribeOptions.fromJson(Map<String, dynamic> json) =>
       _$SubscribeOptionsFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SubscribeOptionsToJson(this);
-
-  SubscribeOptions copyWith({
-    String? topic,
-    TransportType? transportType,
-    bool? skipSubscribe,
-  }) {
-    return SubscribeOptions(
-      topic: topic ?? this.topic,
-      transportType: transportType ?? this.transportType,
-      skipSubscribe: skipSubscribe ?? this.skipSubscribe,
-    );
-  }
 }

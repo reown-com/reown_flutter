@@ -120,7 +120,7 @@ class RelayClient implements IRelayClient {
     final Map<String, dynamic> data = {
       'topic': topic,
       'message': message,
-      ...options.toPublishParams(),
+      ...options.toJson(),
     };
 
     core.logger.i('[$runtimeType] publish, topic: $topic, ${options.toJson()}');
@@ -147,7 +147,7 @@ class RelayClient implements IRelayClient {
 
     final Map<String, dynamic> parameters = {
       ...payload,
-      ...options.toPublishParams(),
+      ...options.toJson(),
     };
 
     core.logger.t('[$runtimeType] publishPayload: ${jsonEncode(parameters)}');
@@ -178,8 +178,6 @@ class RelayClient implements IRelayClient {
     required SubscribeOptions options,
   }) async {
     _checkInitialized();
-
-    // if (options.skipSubscribe) return ''; // TODO Sign 2.5. Is this needed?
 
     final topic = options.topic;
     core.logger.i('[$runtimeType] subscribe, $topic');
@@ -512,6 +510,20 @@ class RelayClient implements IRelayClient {
     String? requestId;
     final topic = options.topic;
     final transportType = options.transportType;
+
+    // Sign 2.5
+    if (options.skipSubscribe) {
+      final subId = '$topic${await core.crypto.getClientId()}';
+      requestId = core.crypto.getUtils().hashMessage(subId);
+      await topicMap.set(topic, requestId);
+      pendingSubscriptions.remove(topic);
+
+      core.logger.t(
+        '[$runtimeType] skipSubscribe, topic: $topic, requestId: $requestId',
+      );
+
+      return requestId;
+    }
 
     try {
       if (transportType == TransportType.relay) {

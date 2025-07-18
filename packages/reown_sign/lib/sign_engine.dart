@@ -156,13 +156,9 @@ class ReownSign implements IReownSign {
     String? pTopic = pairingTopic;
     Uri? uri;
 
-    final bool sign25enabled = true; // Sign 2.5
-
     if (pTopic == null) {
       final CreateResponse newTopicAndUri = await core.pairing.create(
         methods: methods,
-        transportType: TransportType.relay,
-        skipSubscribe: sign25enabled,
       );
       pTopic = newTopicAndUri.topic;
       uri = newTopicAndUri.uri;
@@ -226,7 +222,6 @@ class ReownSign implements IReownSign {
       pTopic,
       request,
       id,
-      sign25enabled,
     );
 
     final ConnectResponse resp = ConnectResponse(
@@ -242,23 +237,14 @@ class ReownSign implements IReownSign {
     String topic,
     WcSessionProposeRequest request,
     int requestId,
-    bool sign25enabled,
   ) async {
     try {
-      final Map<String, dynamic> response = sign25enabled
-          // no need to pass WC_SESSION_PROPOSE as method since
-          // it's the only method possible for sendPayloadRequest
-          ? await core.pairing.sendProposeSessionRequest(
-              topic,
-              request.toJson(),
-              id: requestId,
-            )
-          : await core.pairing.sendRequest(
-              topic,
-              MethodConstants.WC_SESSION_PROPOSE,
-              request.toJson(),
-              id: requestId,
-            );
+      final Map<String, dynamic> response =
+          await core.pairing.sendProposeSessionRequest(
+        topic,
+        request.toJson(),
+        id: requestId,
+      );
       final String peerPublicKey = response['responderPublicKey'];
 
       final ProposalData proposal = proposals.get(
@@ -276,8 +262,6 @@ class ReownSign implements IReownSign {
       await core.relayClient.subscribe(
         options: SubscribeOptions(
           topic: sessionTopic,
-          transportType: TransportType.relay,
-          skipSubscribe: sign25enabled,
         ),
       );
       await core.pairing.activate(topic: topic);
@@ -338,22 +322,11 @@ class ReownSign implements IReownSign {
     final protocol = relayProtocol ?? ReownConstants.RELAYER_DEFAULT_PROTOCOL;
     final relay = Relay(protocol);
 
-    final bool sign25enabled = true; // Sign 2.5
-
     // Respond to the proposal
     final sessionProposalResponse = WcSessionProposeResponse(
       relay: relay,
       responderPublicKey: selfPubKey,
     );
-    // ignore: dead_code
-    if (!sign25enabled) {
-      await core.pairing.sendResult(
-        id,
-        proposal.pairingTopic,
-        MethodConstants.WC_SESSION_PROPOSE,
-        sessionProposalResponse,
-      );
-    }
     await _deleteProposal(id);
     await core.pairing.activate(topic: proposal.pairingTopic);
 
@@ -365,8 +338,7 @@ class ReownSign implements IReownSign {
     await core.relayClient.subscribe(
       options: SubscribeOptions(
         topic: sessionTopic,
-        transportType: TransportType.relay,
-        skipSubscribe: sign25enabled,
+        skipSubscribe: true,
       ),
     );
 
@@ -407,29 +379,17 @@ class ReownSign implements IReownSign {
         metadata: metadata,
       ),
     );
-    bool acknowledged = sign25enabled
-        ? await core.pairing.sendApproveSessionRequest(
-            sessionTopic,
-            proposal.pairingTopic,
-            responseId: proposal.id,
-            sessionProposalResponse: sessionProposalResponse.toJson(),
-            sessionSettlementRequest: sessionSettleRequest.toJson(),
-          )
-        // ignore: dead_code
-        : await core.pairing
-            .sendRequest(
-              sessionTopic,
-              MethodConstants.WC_SESSION_SETTLE,
-              sessionSettleRequest.toJson(),
-            )
-            // Sometimes we don't receive any response for a long time,
-            // in which case we manually time out to prevent waiting indefinitely.
-            .timeout(const Duration(seconds: 15))
-            .catchError(
-            (_) {
-              return false;
-            },
-          );
+    bool acknowledged = await core.pairing
+        .sendApproveSessionRequest(
+          sessionTopic,
+          proposal.pairingTopic,
+          responseId: proposal.id,
+          sessionProposalResponse: sessionProposalResponse.toJson(),
+          sessionSettlementRequest: sessionSettleRequest.toJson(),
+        )
+        .timeout(const Duration(seconds: 60))
+        .catchError((_) => false)
+        .then((_) => true);
 
     session = session.copyWith(
       acknowledged: acknowledged,
@@ -2271,7 +2231,6 @@ class ReownSign implements IReownSign {
         pTopic,
         proposeRequest,
         fallbackId,
-        false,
       );
     }
 

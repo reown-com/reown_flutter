@@ -106,7 +106,6 @@ class Pairing implements IPairing {
   Future<CreateResponse> create({
     List<List<String>>? methods,
     TransportType transportType = TransportType.relay,
-    bool skipSubscribe = false,
   }) async {
     _checkInitialized();
     final String symKey = core.crypto.getUtils().generateRandomBytes32();
@@ -143,7 +142,7 @@ class Pairing implements IPairing {
       options: SubscribeOptions(
         topic: topic,
         transportType: transportType,
-        skipSubscribe: skipSubscribe,
+        skipSubscribe: true,
       ),
     );
     await core.expirer.set(topic, expiry);
@@ -213,7 +212,6 @@ class Pairing implements IPairing {
       await core.relayClient.subscribe(
         options: SubscribeOptions(
           topic: topic,
-          transportType: TransportType.relay,
         ),
       );
       await core.expirer.set(topic, expiry);
@@ -566,10 +564,9 @@ class Pairing implements IPairing {
       'sessionProposal': proposeSessionMessage,
     };
 
+    // ttl and tag are not required on Sign 2.5 methods, it's assigned relay-side
     final options = PublishOptions(
       correlationId: requestId,
-      ttl: null, // ttl is not required in this case, it's assigned relay-side
-      tag: null, // tag is not required in this case, it's assigned relay-side
       publishMethod: RelayClient.WC_PROPOSE_SESSION,
     );
 
@@ -719,10 +716,9 @@ class Pairing implements IPairing {
       'sessionSettlementRequest': sessionSettlementRequestMessage,
     };
 
+    // ttl and tag are not required on Sign 2.5 methods, it's assigned relay-side
     final options = PublishOptions(
       correlationId: responseId,
-      ttl: null, // ttl is not required in this case, it's assigned relay-side
-      tag: null, // tag is not required in this case, it's assigned relay-side
       publishMethod: RelayClient.WC_APPROVE_SESSION,
     );
 
@@ -826,7 +822,6 @@ class Pairing implements IPairing {
       await core.relayClient.subscribe(
         options: SubscribeOptions(
           topic: pairing.topic,
-          transportType: TransportType.relay,
         ),
       );
     }

@@ -33,7 +33,7 @@ class EventsTracker extends GenericStore<List<String>>
         await storage.set(_key, {_key: newList});
         debugPrint(
           '[WalletKit] ✅ [Events] tracker: storeEvent. '
-          '${_storedValue!.length} events stored',
+          '${_storedValue?.length ?? 0} events stored',
         );
         return true;
       }
@@ -77,7 +77,7 @@ class EventsTracker extends GenericStore<List<String>>
         await storage.set(_key, {_key: newList});
         debugPrint(
           '[WalletKit] ✅ [Events] tracker: ${events.length} events cleared. '
-          ' ${_storedValue!.length} events stored',
+          ' ${_storedValue?.length ?? 0} events stored',
         );
         return true;
       }
@@ -91,12 +91,11 @@ class EventsTracker extends GenericStore<List<String>>
   @override
   List<String> getStoredEvents() {
     checkInitialized();
-    if (_storedValue != null) {
+    try {
       debugPrint(
-        '[WalletKit] ✅ [Events] tracker: got ${_storedValue!.length} stored events',
-      );
-      return _storedValue!;
-    } else {
+          '[$runtimeType] [Events] tracker: ${_storedValue?.length} stored events');
+      return _storedValue ?? [];
+    } catch (_) {
       return [];
     }
   }
