@@ -45,8 +45,8 @@ runs:
       run: |
           flutter pub get
           dart run build_runner build --delete-conflicting-outputs
-          dart pub add polkadart_cli
-          dart run polkadart_cli:generate -v
+          # dart pub add polkadart_cli
+          # dart run polkadart_cli:generate -v
           dart format --output=none --set-exit-if-changed .
     
     # Get package dependencies for wallet and generate files

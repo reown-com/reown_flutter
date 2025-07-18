@@ -177,20 +177,20 @@ Future<SessionRequestParams?> getParams(
           'message': 'Welcome to Flutter AppKit on Polkadot',
         },
       );
-    case 'polkadot_signTransaction':
-      //
-      final transactionPayload = await Polkadot.transferKeepAlivePayload(
-        address, // sender
-        address, // destination
-        chainData,
-      );
-      return SessionRequestParams(
-        method: method,
-        params: {
-          'address': address,
-          'transactionPayload': transactionPayload,
-        },
-      );
+    // case 'polkadot_signTransaction':
+    //   //
+    //   final transactionPayload = await Polkadot.transferKeepAlivePayload(
+    //     address, // sender
+    //     address, // destination
+    //     chainData,
+    //   );
+    //   return SessionRequestParams(
+    //     method: method,
+    //     params: {
+    //       'address': address,
+    //       'transactionPayload': transactionPayload,
+    //     },
+    //   );
     case 'near_signMessage':
       return SessionRequestParams(
         method: method,

@@ -44,10 +44,10 @@ flutter:
   assets:
     - assets/
 
-polkadart:
-  output_dir: lib/generated
-  chains:
-    polkadot: wss://polkadot-rpc.dwellir.com
+# polkadart:
+#   output_dir: lib/generated
+#   chains:
+#     polkadot: wss://polkadot-rpc.dwellir.com
     # westend: wss://westend-asset-hub-rpc.polkadot.io
     # kusama: wss://kusama-rpc.polkadot.io
     # astar: wss://rpc.astar.network
