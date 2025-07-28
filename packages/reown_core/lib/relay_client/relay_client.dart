@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:event/event.dart';
 import 'package:reown_core/i_core_impl.dart';
@@ -123,7 +122,7 @@ class RelayClient implements IRelayClient {
       ...options.toJson(),
     };
 
-    core.logger.i('[$runtimeType] publish, topic: $topic, ${options.toJson()}');
+    core.logger.i('[$runtimeType] publish topic: $topic, ${options.toJson()}');
 
     try {
       await messageTracker.recordMessageEvent(topic, message);
@@ -150,17 +149,21 @@ class RelayClient implements IRelayClient {
       ...options.toJson(),
     };
 
-    core.logger.t('[$runtimeType] publishPayload: ${jsonEncode(parameters)}');
-
     try {
       if (options.publishMethod == RelayClient.WC_PROPOSE_SESSION) {
         final topic = payload['pairingTopic'];
         final message = payload['sessionProposal'];
         await messageTracker.recordMessageEvent(topic, message);
+        core.logger.i(
+          '[$runtimeType] publishPayload, topic: $topic, ${options.toJson()}',
+        );
       } else {
         final topic = payload['sessionTopic'];
         final message = payload['sessionProposalResponse'];
         await messageTracker.recordMessageEvent(topic, message);
+        core.logger.i(
+          '[$runtimeType] publishPayload, topic: $topic, ${options.toJson()}',
+        );
       }
       final _ = await _sendJsonRpcRequest(
         id: JsonRpcUtils.payloadId(entropy: 6),
