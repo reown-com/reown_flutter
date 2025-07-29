@@ -3,7 +3,7 @@ name: Debug Git Push to Develop
 on:
   push:
     branches:
-      - develop
+      - debug/pat-develop-push
     # Only trigger if the commit message doesn't contain [skip ci] to prevent infinite loops
     # and only on changes to specific paths to avoid triggering on every push
     paths:
