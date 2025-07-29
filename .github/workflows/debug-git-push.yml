@@ -1,0 +1,79 @@
+name: Debug Git Push to Develop
+
+on:
+  push:
+    branches:
+      - develop
+    # Only trigger if the commit message doesn't contain [skip ci] to prevent infinite loops
+    # and only on changes to specific paths to avoid triggering on every push
+    paths:
+      - ".github/workflows/**"
+      - "packages/**/pubspec.yaml"
+
+permissions:
+  contents: write # Required to commit and push changes to the repo
+
+jobs:
+  debug-git-push:
+    name: Debug Git Push to Develop Branch
+    runs-on: ubuntu-latest
+    # Skip if the triggering commit already contains [skip ci] to prevent loops
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: develop # Checkout the develop branch specifically
+          fetch-depth: 0 # Required for git push
+
+      - name: Check PAT token availability
+        env:
+          REOWN_FLUTTER_RELEASE_PAT: ${{ secrets.REOWN_FLUTTER_RELEASE_PAT }}
+        run: |
+          if [[ -z "$REOWN_FLUTTER_RELEASE_PAT" ]]; then
+            echo "❌ REOWN_FLUTTER_RELEASE_PAT is not set or is empty"
+            exit 1
+          else
+            echo "✅ REOWN_FLUTTER_RELEASE_PAT is available (length: ${#REOWN_FLUTTER_RELEASE_PAT} characters)"
+          fi
+
+      - name: Configure git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          echo "✅ Git configuration set"
+
+      - name: Create empty test commit and push to develop
+        env:
+          REOWN_FLUTTER_RELEASE_PAT: ${{ secrets.REOWN_FLUTTER_RELEASE_PAT }}
+        run: |
+          echo "🚀 Attempting to create empty commit and push to develop branch..."
+
+          # Verify we're on the correct branch
+          CURRENT_BRANCH=$(git branch --show-current)
+          echo "Current branch: $CURRENT_BRANCH"
+
+          if [[ "$CURRENT_BRANCH" != "develop" ]]; then
+            echo "❌ Not on develop branch, switching..."
+            git checkout develop
+          fi
+
+          # Create empty commit with timestamp and workflow info
+          COMMIT_MESSAGE="debug: Test commit triggered by push - $(date -u '+%Y-%m-%d %H:%M:%S UTC') - Run: ${{ github.run_id }} [skip ci]"
+          git commit --allow-empty -m "$COMMIT_MESSAGE"
+          echo "✅ Empty test commit created"
+
+          # Push using the PAT token
+          git push https://x-access-token:${REOWN_FLUTTER_RELEASE_PAT}@github.com/${{ github.repository }} develop
+          echo "✅ Successfully pushed empty commit to develop branch"
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "🎯 Debug workflow completed"
+          echo "Branch: develop"
+          echo "Repository: ${{ github.repository }}"
+          echo "Run ID: ${{ github.run_id }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Triggered by commit: ${{ github.event.head_commit.id }}"
+          echo "Commit message: ${{ github.event.head_commit.message }}"
