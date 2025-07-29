@@ -65,7 +65,7 @@ platform :android do
     _project_id = "#{options[:project_id]}"
 
     # gradle(task: 'assemble', build_type: 'Release')
-    sh "flutter build apk --build-name #{_app_version} --build-number #{_new_build_number} --dart-define='PROJECT_ID=#{_project_id}' --flavor #{_flavor} --release"
+    sh "flutter build apk --build-name #{_app_version} --build-number #{_new_build_number} --dart-define='PROJECT_ID=#{_project_id}' --flavor #{_flavor} --release --verbose"
 
     changelog = read_changelog
 
