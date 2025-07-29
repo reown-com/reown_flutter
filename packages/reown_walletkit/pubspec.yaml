@@ -12,8 +12,7 @@ dependencies:
   event: ^3.1.0
   flutter:
     sdk: flutter
-  reown_core:
-    path: ../reown_core/
+  reown_core: ^1.2.0
   reown_sign:
     path: ../reown_sign/
   reown_yttrium: ^0.0.1
