@@ -179,17 +179,16 @@ jobs:
       - name: Commit and push pubspec.yaml changes for reown_sign
         if: github.event.inputs.sign == 'true' && github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != ''
         env:
-          REOWN_FLUTTER_RELEASE_PAT_PERSONAL: ${{ secrets.REOWN_FLUTTER_RELEASE_PAT_PERSONAL }}
+          REOWN_FLUTTER_RELEASE_PAT: ${{ secrets.REOWN_FLUTTER_RELEASE_PAT }}
         run: |
-          git config --global user.name 'quetool'
-          git config --global user.email 'alfredo@reown.com'
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           cd packages/reown_sign
           # Check if there are changes to commit to prevent empty commits
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_sign): Update reown_core to ^${{ needs.publish-core.outputs.package_version }} [skip ci]"
-            # git push https://x-access-token:${REOWN_FLUTTER_RELEASE_PAT}@github.com/${{ github.repository }}
-            git push https://x-access-token:${REOWN_FLUTTER_RELEASE_PAT_PERSONAL}@github.com/reown-com/reown_flutter HEAD:develop
+            git push https://x-access-token:${REOWN_FLUTTER_RELEASE_PAT}@github.com/${{ github.repository }}
           else
             echo "No changes to commit in reown_sign/pubspec.yaml"
           fi
@@ -298,17 +297,16 @@ jobs:
       - name: Commit and push pubspec.yaml changes for reown_appkit
         if: github.event.inputs.appkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != ''))
         env:
-          REOWN_FLUTTER_RELEASE_PAT_PERSONAL: ${{ secrets.REOWN_FLUTTER_RELEASE_PAT_PERSONAL }}
+          REOWN_FLUTTER_RELEASE_PAT: ${{ secrets.REOWN_FLUTTER_RELEASE_PAT }}
         run: |
-          git config --global user.name 'quetool'
-          git config --global user.email 'alfredo@reown.com'
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           cd packages/reown_appkit
           # Check if there are changes to commit to prevent empty commits
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_appkit): Update core/sign dependencies [skip ci]"
-            # git push https://x-access-token:${REOWN_FLUTTER_RELEASE_PAT}@github.com/${{ github.repository }}
-            git push https://x-access-token:${REOWN_FLUTTER_RELEASE_PAT_PERSONAL}@github.com/reown-com/reown_flutter HEAD:develop
+            git push https://x-access-token:${REOWN_FLUTTER_RELEASE_PAT}@github.com/${{ github.repository }}
           else
             echo "No changes to commit in reown_appkit/pubspec.yaml"
           fi
@@ -414,17 +412,16 @@ jobs:
       - name: Commit and push pubspec.yaml changes for reown_walletkit
         if: github.event.inputs.walletkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != '') || (github.event.inputs.yttrium == 'true' && needs.publish-yttrium.outputs.package_version != ''))
         env:
-          REOWN_FLUTTER_RELEASE_PAT_PERSONAL: ${{ secrets.REOWN_FLUTTER_RELEASE_PAT_PERSONAL }}
+          REOWN_FLUTTER_RELEASE_PAT: ${{ secrets.REOWN_FLUTTER_RELEASE_PAT }}
         run: |
-          git config --global user.name 'quetool'
-          git config --global user.email 'alfredo@reown.com'
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           cd packages/reown_walletkit
           # Check if there are changes to commit to prevent empty commits
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_walletkit): Update core/sign/yttrium dependencies [skip ci]"
-            # git push https://x-access-token:${REOWN_FLUTTER_RELEASE_PAT}@github.com/${{ github.repository }}
-            git push https://x-access-token:${REOWN_FLUTTER_RELEASE_PAT_PERSONAL}@github.com/reown-com/reown_flutter HEAD:develop
+            git push https://x-access-token:${REOWN_FLUTTER_RELEASE_PAT}@github.com/${{ github.repository }}
           else
             echo "No changes to commit in reown_walletkit/pubspec.yaml"
           fi
