@@ -18,7 +18,7 @@ jobs:
     name: Debug Git Push to Develop Branch
     runs-on: ubuntu-latest
     # Skip if the triggering commit already contains [skip ci] to prevent loops
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
