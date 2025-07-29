@@ -4,12 +4,12 @@ part 'basic_event.g.dart';
 part 'basic_event.freezed.dart';
 
 class BasicCoreEvent {
-  final String type;
+  final String? type;
   final String event;
   final CoreEventProperties? properties;
 
   BasicCoreEvent({
-    required this.type,
+    this.type,
     required this.event,
     required this.properties,
   });

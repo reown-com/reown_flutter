@@ -115,6 +115,11 @@ class ExplorerService implements IExplorerService {
     }
     _bundleId = await ReownCoreUtils.getPackageName();
 
+    if ((includedWalletIds ?? {}).isNotEmpty) {
+      featuredWalletIds = {};
+      excludedWalletIds = {};
+    }
+
     _chains = NamespaceUtils.getChainIdsFromRequiredNamespaces(
       requiredNamespaces: namespaces,
     ).map((chainId) => NamespaceUtils.getNamespaceFromChain(chainId)).toSet();

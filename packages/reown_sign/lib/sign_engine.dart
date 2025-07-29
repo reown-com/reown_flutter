@@ -159,7 +159,6 @@ class ReownSign implements IReownSign {
     if (pTopic == null) {
       final CreateResponse newTopicAndUri = await core.pairing.create(
         methods: methods,
-        transportType: TransportType.relay,
       );
       pTopic = newTopicAndUri.topic;
       uri = newTopicAndUri.uri;
@@ -239,12 +238,10 @@ class ReownSign implements IReownSign {
     WcSessionProposeRequest request,
     int requestId,
   ) async {
-    // print("sending proposal for $topic");
-    // print('connectResponseHandler requestId: $requestId');
     try {
-      final Map<String, dynamic> response = await core.pairing.sendRequest(
+      final Map<String, dynamic> response =
+          await core.pairing.sendProposeSessionRequest(
         topic,
-        MethodConstants.WC_SESSION_PROPOSE,
         request.toJson(),
         id: requestId,
       );
@@ -263,13 +260,15 @@ class ReownSign implements IReownSign {
       await _deleteProposal(requestId);
 
       await core.relayClient.subscribe(
-        topic: sessionTopic,
-        transportType: TransportType.relay,
+        options: SubscribeOptions(
+          topic: sessionTopic,
+        ),
       );
       await core.pairing.activate(topic: topic);
-    } catch (e) {
+    } catch (e, s) {
       // Get the completer and finish it with an error
       pendingProposals.removeLast().completer.completeError(e);
+      core.logger.e('[$runtimeType] connect error: $e, $s');
     }
   }
 
@@ -324,14 +323,9 @@ class ReownSign implements IReownSign {
     final relay = Relay(protocol);
 
     // Respond to the proposal
-    await core.pairing.sendResult(
-      id,
-      proposal.pairingTopic,
-      MethodConstants.WC_SESSION_PROPOSE,
-      WcSessionProposeResponse(
-        relay: relay,
-        responderPublicKey: selfPubKey,
-      ),
+    final sessionProposalResponse = WcSessionProposeResponse(
+      relay: relay,
+      responderPublicKey: selfPubKey,
     );
     await _deleteProposal(id);
     await core.pairing.activate(topic: proposal.pairingTopic);
@@ -342,8 +336,10 @@ class ReownSign implements IReownSign {
     );
 
     await core.relayClient.subscribe(
-      topic: sessionTopic,
-      transportType: TransportType.relay,
+      options: SubscribeOptions(
+        topic: sessionTopic,
+        skipSubscribe: true,
+      ),
     );
 
     final int expiry = ReownCoreUtils.calculateExpiry(
@@ -373,7 +369,7 @@ class ReownSign implements IReownSign {
     await _setSessionExpiry(sessionTopic, expiry);
 
     // `wc_sessionSettle` is not critical throughout the entire session.
-    final settleRequest = WcSessionSettleRequest(
+    final sessionSettleRequest = WcSessionSettleRequest(
       relay: relay,
       namespaces: namespaces,
       sessionProperties: sessionProperties,
@@ -384,19 +380,16 @@ class ReownSign implements IReownSign {
       ),
     );
     bool acknowledged = await core.pairing
-        .sendRequest(
+        .sendApproveSessionRequest(
           sessionTopic,
-          MethodConstants.WC_SESSION_SETTLE,
-          settleRequest.toJson(),
+          proposal.pairingTopic,
+          responseId: proposal.id,
+          sessionProposalResponse: sessionProposalResponse.toJson(),
+          sessionSettlementRequest: sessionSettleRequest.toJson(),
         )
-        // Sometimes we don't receive any response for a long time,
-        // in which case we manually time out to prevent waiting indefinitely.
-        .timeout(const Duration(seconds: 15))
-        .catchError(
-      (_) {
-        return false;
-      },
-    );
+        .timeout(const Duration(seconds: 60))
+        .catchError((_) => false)
+        .then((_) => true);
 
     session = session.copyWith(
       acknowledged: acknowledged,
@@ -827,8 +820,10 @@ class ReownSign implements IReownSign {
     for (final SessionData session in sessions.getAll()) {
       core.logger.i('[$runtimeType] Resubscribe to session: ${session.topic}');
       await core.relayClient.subscribe(
-        topic: session.topic,
-        transportType: session.transportType,
+        options: SubscribeOptions(
+          topic: session.topic,
+          transportType: session.transportType,
+        ),
       );
     }
   }
@@ -2129,8 +2124,10 @@ class ReownSign implements IReownSign {
 
     // Subscribe to the responseTopic because we expect the response to use this topic
     await core.relayClient.subscribe(
-      topic: responseTopic,
-      transportType: transportType,
+      options: SubscribeOptions(
+        topic: responseTopic,
+        transportType: transportType,
+      ),
     );
 
     final id = JsonRpcUtils.payloadId();
@@ -2392,9 +2389,11 @@ class ReownSign implements IReownSign {
       );
 
       await core.relayClient.subscribe(
-        topic: sessionTopic,
-        transportType:
-            isLinkMode ? TransportType.linkMode : TransportType.relay,
+        options: SubscribeOptions(
+          topic: sessionTopic,
+          transportType:
+              isLinkMode ? TransportType.linkMode : TransportType.relay,
+        ),
       );
       await sessions.set(sessionTopic, session);
       await core.pairing.updateMetadata(
@@ -2559,8 +2558,10 @@ class ReownSign implements IReownSign {
       );
 
       await core.relayClient.subscribe(
-        topic: sessionTopic,
-        transportType: pendingRequest.transportType,
+        options: SubscribeOptions(
+          topic: sessionTopic,
+          transportType: pendingRequest.transportType,
+        ),
       );
       await sessions.set(sessionTopic, session);
       await core.pairing.updateMetadata(

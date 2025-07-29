@@ -295,9 +295,9 @@ void main() {
 
       expect(eventsTracker.getStoredEvents(), <String>[]);
 
-      // Store events
-      await core.events.sendEvent(event1);
-      await core.events.sendEvent(event2);
+      // Store events using recordEvent instead of sendEvent
+      await core.events.recordEvent(event1);
+      await core.events.recordEvent(event2);
 
       // Retrieve stored events
       final storedEvents = eventsTracker.getStoredEvents();

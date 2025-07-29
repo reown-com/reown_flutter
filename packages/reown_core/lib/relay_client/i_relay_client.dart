@@ -1,14 +1,6 @@
 import 'package:event/event.dart';
+import 'package:reown_core/models/basic_models.dart';
 import 'package:reown_core/relay_client/relay_client_models.dart';
-
-class PublishOptions {
-  final Relay? relay;
-  final int? ttl;
-  final bool? prompt;
-  final int? tag;
-
-  PublishOptions(this.relay, this.ttl, this.prompt, this.tag);
-}
 
 abstract class IRelayClient {
   /// Relay Client Events
@@ -42,15 +34,16 @@ abstract class IRelayClient {
   Future<void> publish({
     required String topic,
     required String message,
-    required int ttl,
-    required int tag,
-    int? correlationId,
-    Map<String, dynamic>? tvf,
+    required PublishOptions options,
+  });
+  // TODO we should consider having just one publish method and parse topic/message or payload based on options.publishMethod
+  Future<void> publishPayload({
+    required Map<String, dynamic> payload,
+    required PublishOptions options,
   });
 
   Future<String> subscribe({
-    required String topic,
-    required TransportType transportType,
+    required SubscribeOptions options,
   });
 
   Future<void> unsubscribe({required String topic});

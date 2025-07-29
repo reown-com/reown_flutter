@@ -223,6 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _initializeService() async {
     final prefs = await SharedPreferences.getInstance();
     final linkModeEnabled = prefs.getBool('appkit_sample_linkmode') ?? true;
+    final analyticsEnabled = prefs.getBool('appkit_sample_analytics') ?? true;
     final socialsEnabled = prefs.getBool('appkit_sample_socials') ?? true;
 
     _appKit = ReownAppKit(
@@ -255,7 +256,7 @@ class _MyHomePageState extends State<MyHomePage> {
       logLevel: LogLevel.all,
       context: context,
       appKit: _appKit,
-      enableAnalytics: true,
+      enableAnalytics: analyticsEnabled,
       siweConfig: _siweConfig(linkModeEnabled),
       featuresConfig: socialsEnabled ? _featuresConfig() : null,
       optionalNamespaces: _namespacesBasedOnChains(),
@@ -308,6 +309,7 @@ class _MyHomePageState extends State<MyHomePage> {
       PageData(
         page: SettingsPage(
           appKitModal: _appKitModal!,
+          analytics: analyticsEnabled,
           linkMode: linkModeEnabled,
           socials: socialsEnabled,
           reinitialize: (String storageKey, bool value) async {

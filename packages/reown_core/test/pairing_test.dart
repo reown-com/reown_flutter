@@ -22,7 +22,9 @@ void main() {
       version: '2',
       topic: 'abc',
       symKey: 'xyz',
-      relay: Relay('irn'),
+      relay: Relay(
+        ReownConstants.RELAYER_DEFAULT_PROTOCOL,
+      ),
       methods: [
         [MethodConstants.WC_SESSION_PROPOSE],
         ['wc_authBatchRequest'],
@@ -49,7 +51,9 @@ void main() {
       version: '2',
       topic: 'abc',
       symKey: 'xyz',
-      relay: Relay('irn'),
+      relay: Relay(
+        ReownConstants.RELAYER_DEFAULT_PROTOCOL,
+      ),
       methods: null,
     );
     expect(

@@ -50,7 +50,7 @@ abstract class IPairing {
   Future<void> disconnect({required String topic});
   IPairingStore getStore();
 
-  Future sendRequest(
+  Future<dynamic> sendRequest(
     String topic,
     String method,
     Map<String, dynamic> params, {
@@ -60,6 +60,13 @@ abstract class IPairing {
     String? appLink,
     bool openUrl = true,
     TVFData? tvf,
+  });
+
+  Future<dynamic> sendProposeSessionRequest(
+    String topic,
+    Map<String, dynamic> params, {
+    int? id,
+    EncodeOptions? encodeOptions,
   });
 
   Future<void> sendResult(
@@ -81,6 +88,15 @@ abstract class IPairing {
     RpcOptions? rpcOptions,
     String? appLink,
     TVFData? tvf,
+  });
+
+  Future<dynamic> sendApproveSessionRequest(
+    String sessionTopic,
+    String pairingTopic, {
+    required int responseId,
+    required Map<String, dynamic> sessionProposalResponse,
+    required Map<String, dynamic> sessionSettlementRequest,
+    EncodeOptions? encodeOptions,
   });
 
   Future<void> isValidPairingTopic({

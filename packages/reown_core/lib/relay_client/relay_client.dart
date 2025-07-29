@@ -19,10 +19,12 @@ import 'package:reown_core/utils/errors.dart';
 import 'package:reown_core/version.dart';
 
 class RelayClient implements IRelayClient {
-  static const JSON_RPC_PUBLISH = 'publish';
-  static const JSON_RPC_SUBSCRIPTION = 'subscription';
-  static const JSON_RPC_SUBSCRIBE = 'subscribe';
-  static const JSON_RPC_UNSUBSCRIBE = 'unsubscribe';
+  static const IRN_PUBLISH = 'publish';
+  static const IRN_SUBSCRIPTION = 'subscription';
+  static const IRN_SUBSCRIBE = 'subscribe';
+  static const IRN_UNSUBSCRIBE = 'unsubscribe';
+  static const WC_PROPOSE_SESSION = 'proposeSession';
+  static const WC_APPROVE_SESSION = 'approveSession';
 
   /// Events ///
   /// Relay Client
@@ -110,35 +112,24 @@ class RelayClient implements IRelayClient {
   Future<void> publish({
     required String topic,
     required String message,
-    required int ttl,
-    required int tag,
-    int? correlationId,
-    Map<String, dynamic>? tvf,
+    required PublishOptions options,
   }) async {
     _checkInitialized();
 
-    Map<String, dynamic> data = {
-      'message': message,
-      'ttl': ttl,
+    final Map<String, dynamic> data = {
       'topic': topic,
-      'tag': tag,
-      // new fields valid for all tags in Sign SDK
-      // is the request.id of the wc_sessionRequest call
-      if (correlationId != null) 'correlationId': correlationId,
-      // tvf fields valid only for tags 1108 and 1109 and certain methods
-      ...?tvf
+      'message': message,
+      ...options.toJson(),
     };
 
-    core.logger.i(
-      '[$runtimeType] publish, topic: $topic, tag: $tag, correlationId: $correlationId, tvf: $tvf',
-    );
+    core.logger.i('[$runtimeType] publish topic: $topic, ${options.toJson()}');
 
     try {
       await messageTracker.recordMessageEvent(topic, message);
-      var _ = await _sendJsonRpcRequest(
-        _buildMethod(JSON_RPC_PUBLISH),
-        parameters: data,
+      final _ = await _sendJsonRpcRequest(
         id: JsonRpcUtils.payloadId(entropy: 6),
+        method: _buildIRNMethod(IRN_PUBLISH),
+        parameters: data,
       );
     } catch (e, s) {
       core.logger.e('[$runtimeType], publish: $e', stackTrace: s);
@@ -147,15 +138,53 @@ class RelayClient implements IRelayClient {
   }
 
   @override
-  Future<String> subscribe({
-    required String topic,
-    required TransportType transportType,
+  Future<void> publishPayload({
+    required Map<String, dynamic> payload,
+    required PublishOptions options,
   }) async {
     _checkInitialized();
 
-    core.logger.i('[$runtimeType] subscribe, $topic');
+    final Map<String, dynamic> parameters = {
+      ...payload,
+      ...options.toJson(),
+    };
 
-    pendingSubscriptions[topic] = _onSubscribe(topic, transportType);
+    try {
+      if (options.publishMethod == RelayClient.WC_PROPOSE_SESSION) {
+        final topic = payload['pairingTopic'];
+        final message = payload['sessionProposal'];
+        await messageTracker.recordMessageEvent(topic, message);
+        core.logger.i(
+          '[$runtimeType] publishPayload, topic: $topic, ${options.toJson()}',
+        );
+      } else {
+        final topic = payload['sessionTopic'];
+        final message = payload['sessionProposalResponse'];
+        await messageTracker.recordMessageEvent(topic, message);
+        core.logger.i(
+          '[$runtimeType] publishPayload, topic: $topic, ${options.toJson()}',
+        );
+      }
+      final _ = await _sendJsonRpcRequest(
+        id: JsonRpcUtils.payloadId(entropy: 6),
+        method: _buildWCMethod(options.publishMethod!),
+        parameters: parameters,
+      );
+    } catch (e, s) {
+      core.logger.e('[$runtimeType], publishPayload: $e, $s');
+      onRelayClientError.broadcast(ErrorEvent(e));
+    }
+  }
+
+  @override
+  Future<String> subscribe({
+    required SubscribeOptions options,
+  }) async {
+    _checkInitialized();
+
+    final topic = options.topic;
+    core.logger.i('[$runtimeType] subscribe, $topic');
+    pendingSubscriptions[topic] = _onSubscribe(options);
 
     return await pendingSubscriptions[topic];
   }
@@ -170,9 +199,9 @@ class RelayClient implements IRelayClient {
 
     try {
       await _sendJsonRpcRequest(
-        _buildMethod(JSON_RPC_UNSUBSCRIBE),
-        parameters: {'topic': topic, 'id': id},
         id: JsonRpcUtils.payloadId(entropy: 6),
+        method: _buildIRNMethod(IRN_UNSUBSCRIBE),
+        parameters: {'topic': topic, 'id': id},
       );
     } catch (e, s) {
       core.logger.e('[$runtimeType], unsubscribe: $e', stackTrace: s);
@@ -285,15 +314,15 @@ class RelayClient implements IRelayClient {
     jsonRPC = Peer(socketHandler.channel!);
 
     jsonRPC!.registerMethod(
-      _buildMethod(JSON_RPC_SUBSCRIPTION),
+      _buildIRNMethod(IRN_SUBSCRIPTION),
       _handleSubscription,
     );
     jsonRPC!.registerMethod(
-      _buildMethod(JSON_RPC_SUBSCRIBE),
+      _buildIRNMethod(IRN_SUBSCRIBE),
       _handleSubscribe,
     );
     jsonRPC!.registerMethod(
-      _buildMethod(JSON_RPC_UNSUBSCRIBE),
+      _buildIRNMethod(IRN_UNSUBSCRIBE),
       _handleUnsubscribe,
     );
 
@@ -375,8 +404,12 @@ class RelayClient implements IRelayClient {
     }
   }
 
-  String _buildMethod(String method) {
+  String _buildIRNMethod(String method) {
     return '${ReownConstants.RELAYER_DEFAULT_PROTOCOL}_$method';
+  }
+
+  String _buildWCMethod(String method) {
+    return '${ReownConstants.RELAYER_WC_PROTOCOL}_$method';
   }
 
   // This method could be placed directly into pairings API but it's place here for consistency with onRelayClientMessage
@@ -448,10 +481,10 @@ class RelayClient implements IRelayClient {
 
   /// SUBSCRIPTION HANDLING
 
-  Future<dynamic> _sendJsonRpcRequest(
-    String method, {
-    dynamic parameters,
+  Future<dynamic> _sendJsonRpcRequest({
+    required String method,
     int? id,
+    dynamic parameters,
   }) async {
     // If we are connected and we know it send the message!
     if (isConnected) {
@@ -476,14 +509,31 @@ class RelayClient implements IRelayClient {
     );
   }
 
-  Future<String> _onSubscribe(String topic, TransportType transportType) async {
+  Future<String> _onSubscribe(SubscribeOptions options) async {
     String? requestId;
+    final topic = options.topic;
+    final transportType = options.transportType;
+
+    // Sign 2.5
+    if (options.skipSubscribe) {
+      final subId = '$topic${await core.crypto.getClientId()}';
+      requestId = core.crypto.getUtils().hashMessage(subId);
+      await topicMap.set(topic, requestId);
+      pendingSubscriptions.remove(topic);
+
+      core.logger.t(
+        '[$runtimeType] skipSubscribe, topic: $topic, requestId: $requestId',
+      );
+
+      return requestId;
+    }
+
     try {
       if (transportType == TransportType.relay) {
         requestId = await _sendJsonRpcRequest(
-          _buildMethod(JSON_RPC_SUBSCRIBE),
-          parameters: {'topic': topic},
           id: JsonRpcUtils.payloadId(entropy: 6),
+          method: _buildIRNMethod(IRN_SUBSCRIBE),
+          parameters: {'topic': topic},
         );
       }
     } catch (e, s) {
@@ -500,6 +550,10 @@ class RelayClient implements IRelayClient {
 
     await topicMap.set(topic, requestId.toString());
     pendingSubscriptions.remove(topic);
+
+    core.logger.t(
+      '[$runtimeType], _onSubscribe, topic: $topic, requestId: $requestId',
+    );
 
     return requestId;
   }

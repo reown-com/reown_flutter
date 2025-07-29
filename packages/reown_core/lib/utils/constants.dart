@@ -13,6 +13,7 @@ class ReownConstants {
   static const TRUSTED_VERIFY_URLS = [VERIFY_SERVER];
 
   static const RELAYER_DEFAULT_PROTOCOL = 'irn';
+  static const RELAYER_WC_PROTOCOL = CORE_PROTOCOL;
 
   static const THIRTY_SECONDS = 30;
   static const ONE_MINUTE = 60;

@@ -2,10 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:event/event.dart';
+import 'package:reown_core/events/models/basic_event.dart';
 import 'package:reown_core/events/models/link_mode_events.dart';
 import 'package:reown_core/models/json_rpc_models.dart';
 import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/i_json_rpc_history.dart';
+import 'package:reown_core/relay_client/relay_client.dart';
 import 'package:reown_core/store/i_generic_store.dart';
 import 'package:reown_core/crypto/crypto_models.dart';
 import 'package:reown_core/i_core_impl.dart';
@@ -138,8 +140,11 @@ class Pairing implements IPairing {
 
     await pairings.set(topic, pairing);
     await core.relayClient.subscribe(
-      topic: topic,
-      transportType: transportType,
+      options: SubscribeOptions(
+        topic: topic,
+        transportType: transportType,
+        skipSubscribe: true,
+      ),
     );
     await core.expirer.set(topic, expiry);
 
@@ -206,8 +211,9 @@ class Pairing implements IPairing {
       await pairings.set(topic, pairing);
       await core.crypto.setSymKey(symKey, overrideTopic: topic);
       await core.relayClient.subscribe(
-        topic: topic,
-        transportType: TransportType.relay,
+        options: SubscribeOptions(
+          topic: topic,
+        ),
       );
       await core.expirer.set(topic, expiry);
 
@@ -444,13 +450,13 @@ class Pairing implements IPairing {
     }
 
     // print('adding payload to pending requests: $requestId');
-    final resp = PendingRequestResponse(
-      completer: Completer(),
-      method: method,
+    final resp = PendingRequestResponse(completer: Completer(), method: method);
+    resp.completer.future.catchError(
+      (err) => core.events.recordEvent(BasicCoreEvent(
+        event: CoreEventType.ERROR,
+        properties: CoreEventProperties(topic: topic, method: resp.method),
+      )),
     );
-    resp.completer.future.catchError((err) {
-      // Catch the error so that it won't throw an uncaught error
-    });
     pendingRequests[requestId] = resp;
 
     if (isLinkMode) {
@@ -483,11 +489,13 @@ class Pairing implements IPairing {
       await core.relayClient.publish(
         topic: topic,
         message: message,
-        ttl: ttl ?? opts.ttl,
-        tag: opts.tag,
-        correlationId: requestId,
-        // tvf data is sent only on tvfMethods methods
-        tvf: _shouldSendTVF(opts.tag) ? tvf?.toJson() : null,
+        options: PublishOptions(
+          ttl: ttl ?? opts.ttl,
+          tag: opts.tag,
+          correlationId: requestId,
+          // tvf data is sent only on tvfMethods methods
+          tvf: _shouldSendTVF(opts.tag) ? tvf?.toJson() : null,
+        ),
       );
       core.logger.d(
         '[$runtimeType] sendRequest relayClient, '
@@ -495,6 +503,85 @@ class Pairing implements IPairing {
         'params: $params, ttl: ${ttl ?? opts.ttl}',
       );
     }
+
+    // Get the result from the completer, if it's an error, throw it
+    try {
+      if (resp.error != null) {
+        throw resp.error!;
+      }
+
+      // print('checking if completed');
+      if (resp.completer.isCompleted) {
+        return resp.response;
+      }
+
+      return await resp.completer.future;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  ///
+  /// Sign 2.5
+  /// Substitutes wc_sessionPropose sendRequest()
+  /// during signEngine.connect()
+  ///
+  @override
+  Future<dynamic> sendProposeSessionRequest(
+    String topic,
+    Map<String, dynamic> params, {
+    int? id,
+    EncodeOptions? encodeOptions,
+  }) async {
+    final proposeSessionPayload = JsonRpcUtils.formatJsonRpcRequest(
+      MethodConstants.WC_SESSION_PROPOSE,
+      params,
+      id: id,
+    );
+    final requestId = proposeSessionPayload['id'] as int;
+
+    final proposeSessionMessage = await core.crypto.encode(
+      topic,
+      proposeSessionPayload,
+      options: encodeOptions,
+    );
+
+    if (proposeSessionMessage == null) {
+      return;
+    }
+
+    // print('adding payload to pending requests: $requestId');
+    final resp = PendingRequestResponse(
+      completer: Completer(),
+      method: MethodConstants.WC_SESSION_PROPOSE,
+    );
+    resp.completer.future.catchError(
+      (err) => core.events.recordEvent(BasicCoreEvent(
+        event: CoreEventType.ERROR,
+        properties: CoreEventProperties(topic: topic, method: resp.method),
+      )),
+    );
+    pendingRequests[requestId] = resp;
+
+    final payload = {
+      'pairingTopic': topic,
+      'sessionProposal': proposeSessionMessage,
+    };
+
+    // ttl and tag are not required on Sign 2.5 methods, it's assigned relay-side
+    final options = PublishOptions(
+      correlationId: requestId,
+      publishMethod: RelayClient.WC_PROPOSE_SESSION,
+    );
+
+    await core.relayClient.publishPayload(
+      payload: payload,
+      options: options,
+    );
+    core.logger.d(
+      '[$runtimeType] sendProposeSessionRequest relayClient, '
+      'payload: ${jsonEncode(payload)}, options: ${jsonEncode(options.toJson())}',
+    );
 
     // Get the result from the completer, if it's an error, throw it
     try {
@@ -566,17 +653,87 @@ class Pairing implements IPairing {
       await core.relayClient.publish(
         topic: topic,
         message: message,
-        ttl: opts.ttl,
-        tag: opts.tag,
-        correlationId: resultId,
-        // tvf data is sent only on tvfMethods methods
-        tvf: _shouldSendTVF(opts.tag) ? tvf?.toJson(includeAll: true) : null,
+        options: PublishOptions(
+          ttl: opts.ttl,
+          tag: opts.tag,
+          correlationId: resultId,
+          // tvf data is sent only on tvfMethods methods
+          tvf: _shouldSendTVF(opts.tag) ? tvf?.toJson(includeAll: true) : null,
+        ),
       );
       core.logger.d(
         '[$runtimeType] sendResult relayClient, '
         'id: $id topic: $topic, method: $method, result: $result',
       );
     }
+  }
+
+  ///
+  /// Sign 2.5
+  /// Substitutes wc_sessionPropose sendResult() and WC_SESSION_SETTLE sendRequest()
+  /// during signEngine.approveSession()
+  ///
+  @override
+  Future<dynamic> sendApproveSessionRequest(
+    String sessionTopic,
+    String pairingTopic, {
+    required int responseId,
+    required Map<String, dynamic> sessionProposalResponse,
+    required Map<String, dynamic> sessionSettlementRequest,
+    EncodeOptions? encodeOptions,
+  }) async {
+    final pairingPayload = JsonRpcUtils.formatJsonRpcResponse<dynamic>(
+      responseId,
+      sessionProposalResponse,
+    );
+
+    final String? pairingResponseMessage = await core.crypto.encode(
+      pairingTopic,
+      pairingPayload,
+      options: encodeOptions,
+    );
+
+    if (pairingResponseMessage == null) {
+      return;
+    }
+
+    //
+    final sessionSettlePayload = JsonRpcUtils.formatJsonRpcRequest(
+      MethodConstants.WC_SESSION_SETTLE,
+      sessionSettlementRequest,
+    );
+
+    final String? sessionSettlementRequestMessage = await core.crypto.encode(
+      sessionTopic,
+      sessionSettlePayload,
+      options: encodeOptions,
+    );
+
+    if (sessionSettlementRequestMessage == null) {
+      return;
+    }
+
+    final payload = {
+      'sessionTopic': sessionTopic,
+      'pairingTopic': pairingTopic,
+      'sessionProposalResponse': pairingResponseMessage,
+      'sessionSettlementRequest': sessionSettlementRequestMessage,
+    };
+
+    // ttl and tag are not required on Sign 2.5 methods, it's assigned relay-side
+    final options = PublishOptions(
+      correlationId: responseId,
+      publishMethod: RelayClient.WC_APPROVE_SESSION,
+    );
+
+    await core.relayClient.publishPayload(
+      payload: payload,
+      options: options,
+    );
+    core.logger.d(
+      '[$runtimeType] sendApproveSessionRequest relayClient, '
+      'payload: ${jsonEncode(payload)}, options: ${jsonEncode(options.toJson())}',
+    );
   }
 
   @override
@@ -640,11 +797,13 @@ class Pairing implements IPairing {
       await core.relayClient.publish(
         topic: topic,
         message: message,
-        ttl: ttl,
-        tag: tag,
-        correlationId: resultId,
-        // tvf data is sent only on tvfMethods methods
-        tvf: _shouldSendTVF(tag) ? tvf?.toJson(includeAll: true) : null,
+        options: PublishOptions(
+          ttl: ttl,
+          tag: tag,
+          correlationId: resultId,
+          // tvf data is sent only on tvfMethods methods
+          tvf: _shouldSendTVF(tag) ? tvf?.toJson(includeAll: true) : null,
+        ),
       );
       core.logger.d(
         '[$runtimeType] sendError relayClient, '
@@ -665,8 +824,9 @@ class Pairing implements IPairing {
     for (final PairingInfo pairing in pairings.getAll()) {
       core.logger.i('[$runtimeType] Resubscribe to pairing: ${pairing.topic}');
       await core.relayClient.subscribe(
-        topic: pairing.topic,
-        transportType: TransportType.relay,
+        options: SubscribeOptions(
+          topic: pairing.topic,
+        ),
       );
     }
   }
