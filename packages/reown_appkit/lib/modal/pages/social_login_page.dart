@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
@@ -267,7 +268,7 @@ final _webWalletListing = AppKitModalWalletListing.fromJson(
     'mobile_link': null,
     'desktop_link': null,
     'link_mode': null,
-    'webapp_link': String.fromEnvironment('FLUTTER_APP_FLAVOR') == 'internal'
+    'webapp_link': kDebugMode
         ? UrlConstants.webWalletUrlInternal
         : UrlConstants.webWalletUrl,
     'app_store': null,
