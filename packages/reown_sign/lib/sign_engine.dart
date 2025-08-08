@@ -12,6 +12,7 @@ import 'package:reown_core/store/i_generic_store.dart';
 import 'package:reown_core/utils/algorand_utils.dart';
 import 'package:reown_core/utils/near_utils.dart';
 import 'package:reown_core/utils/sui_utils.dart';
+import 'package:reown_core/yttrium/models/events.dart';
 
 import 'package:reown_sign/reown_sign.dart';
 import 'package:reown_sign/utils/sign_api_validator_utils.dart';
@@ -280,7 +281,7 @@ class ReownSign implements IReownSign {
     _confirmOnlineStateOrThrow();
 
     try {
-      return await core.pairing.pair(
+      return await core.rustSignClient.pair(
         uri: uri,
       );
     } on ReownCoreError catch (e) {
@@ -312,21 +313,52 @@ class ReownSign implements IReownSign {
       id.toString(),
     )!;
 
-    final String selfPubKey = await core.crypto.generateKeyPair();
+    // selfPubKey is now generated on rust side and returned on the approval response
     final String peerPubKey = proposal.proposer.publicKey;
-    final String sessionTopic = await core.crypto.generateSharedKey(
-      selfPubKey,
-      peerPubKey,
+    // sessionTopic is now generated  from `sessionSymKey` returned on the approval response
+
+    // pairingSymKey was previously saved on secure storage during pair function on core package
+    final String pairingSymKey = core.crypto.getSymKey(proposal.pairingTopic)!;
+    final proposalFfi = SessionProposalFfi(
+      id: proposal.id.toString(),
+      topic: proposal.pairingTopic,
+      pairingSymKey: pairingSymKey,
+      proposerPublicKey: peerPubKey,
+      relays: proposal.relays.map((e) => e.toJson()).toList(),
+      requiredNamespaces: proposal.requiredNamespaces.map(
+        (key, namespace) => MapEntry(key, namespace.toJson()),
+      ),
+      optionalNamespaces: proposal.optionalNamespaces.map(
+        (key, namespace) => MapEntry(key, namespace.toJson()),
+      ),
+      metadata: proposal.proposer.metadata.toJson(),
+      sessionProperties: proposal.sessionProperties,
+      // scopedProperties: {}, // scopedProperties still not implemented on flutter SDKs
+      expiryTimestamp: proposal.expiry.toString(),
     );
-    // print('approve session topic: $sessionTopic');
+    final approvedNamespaces = namespaces.map(
+      (key, namespace) => MapEntry(key, namespace.toJson()),
+    );
+    final ApproveResultFfi approveResult = await core.rustSignClient
+        .approve(
+          proposal: proposalFfi,
+          approvedNamespaces: approvedNamespaces,
+          selfMetadata: metadata.toJson(),
+        )
+        .timeout(const Duration(seconds: 60));
+
+    final String selfPubKey = approveResult.selfPublicKey;
+    final String sessionTopic = await core.crypto.setSymKey(
+      approveResult.sessionSymKey,
+    );
     final protocol = relayProtocol ?? ReownConstants.RELAYER_DEFAULT_PROTOCOL;
     final relay = Relay(protocol);
 
-    // Respond to the proposal
-    final sessionProposalResponse = WcSessionProposeResponse(
-      relay: relay,
-      responderPublicKey: selfPubKey,
-    );
+    // No needed anymore, will be handled by Rust Client
+    // final sessionProposalResponse = WcSessionProposeResponse(
+    //   relay: relay,
+    //   responderPublicKey: selfPubKey,
+    // );
     await _deleteProposal(id);
     await core.pairing.activate(topic: proposal.pairingTopic);
 
@@ -338,7 +370,6 @@ class ReownSign implements IReownSign {
     await core.relayClient.subscribe(
       options: SubscribeOptions(
         topic: sessionTopic,
-        skipSubscribe: true,
       ),
     );
 
@@ -351,7 +382,7 @@ class ReownSign implements IReownSign {
       pairingTopic: proposal.pairingTopic,
       relay: relay,
       expiry: expiry,
-      acknowledged: false,
+      acknowledged: true,
       controller: selfPubKey,
       namespaces: namespaces,
       self: ConnectionMetadata(
@@ -368,34 +399,34 @@ class ReownSign implements IReownSign {
     await sessions.set(sessionTopic, session);
     await _setSessionExpiry(sessionTopic, expiry);
 
-    // `wc_sessionSettle` is not critical throughout the entire session.
-    final sessionSettleRequest = WcSessionSettleRequest(
-      relay: relay,
-      namespaces: namespaces,
-      sessionProperties: sessionProperties,
-      expiry: expiry,
-      controller: ConnectionMetadata(
-        publicKey: selfPubKey,
-        metadata: metadata,
-      ),
-    );
-    bool acknowledged = await core.pairing
-        .sendApproveSessionRequest(
-          sessionTopic,
-          proposal.pairingTopic,
-          responseId: proposal.id,
-          sessionProposalResponse: sessionProposalResponse.toJson(),
-          sessionSettlementRequest: sessionSettleRequest.toJson(),
-        )
-        .timeout(const Duration(seconds: 60))
-        .catchError((_) => false)
-        .then((_) => true);
+    // No needed anymore, will be handled by Rust Client
+    // final sessionSettleRequest = WcSessionSettleRequest(
+    //   relay: relay,
+    //   namespaces: namespaces,
+    //   sessionProperties: sessionProperties,
+    //   expiry: expiry,
+    //   controller: ConnectionMetadata(
+    //     publicKey: selfPubKey,
+    //     metadata: metadata,
+    //   ),
+    // );
+    // bool acknowledged = await core.pairing
+    //     .sendApproveSessionRequest(
+    //       sessionTopic,
+    //       proposal.pairingTopic,
+    //       responseId: proposal.id,
+    //       sessionProposalResponse: sessionProposalResponse.toJson(),
+    //       sessionSettlementRequest: sessionSettleRequest.toJson(),
+    //     )
+    //     .timeout(const Duration(seconds: 60))
+    //     .catchError((_) => false)
+    //     .then((_) => true);
 
-    session = session.copyWith(
-      acknowledged: acknowledged,
-    );
+    // session = session.copyWith(
+    //   acknowledged: acknowledged,
+    // );
 
-    if (acknowledged && sessions.has(sessionTopic)) {
+    if (session.acknowledged && sessions.has(sessionTopic)) {
       // We directly update the latest value.
       await sessions.set(
         sessionTopic,
@@ -940,11 +971,15 @@ class ReownSign implements IReownSign {
   /// ---- Relay Events ---- ///
 
   void _registerRelayClientFunctions() {
-    core.pairing.register(
-      method: MethodConstants.WC_SESSION_PROPOSE,
-      function: _onSessionProposeRequest,
-      type: ProtocolType.sign,
+    core.rustSignClient.onYttriumSessionPropose.subscribe(
+      _onYttriumSessionPropose,
     );
+    // TODO No needed anymore, will be handled by Rust Client
+    // core.pairing.register(
+    //   method: MethodConstants.WC_SESSION_PROPOSE,
+    //   function: _onSessionProposeRequest,
+    //   type: ProtocolType.sign,
+    // );
     core.pairing.register(
       method: MethodConstants.WC_SESSION_SETTLE,
       function: _onSessionSettleRequest,
@@ -1000,6 +1035,37 @@ class ReownSign implements IReownSign {
     final containsMethod = (pairingInfo?.methods ?? []).contains(method);
 
     return implementSessionAuth && containsMethod;
+  }
+
+  Future<void> _onYttriumSessionPropose(YttriumSessionPropose event) async {
+    final topic = event.pairingTopic;
+    // we created new stream to emulate _onSessionProposeRequest logic from relay
+    final payload = JsonRpcRequest(
+      id: int.parse(event.proposal.id),
+      method: MethodConstants.WC_SESSION_PROPOSE,
+      params: ProposalData(
+        id: int.parse(event.proposal.id),
+        expiry: int.parse(event.proposal.expiryTimestamp!),
+        relays: event.proposal.relays.map((e) => Relay.fromJson(e)).toList(),
+        proposer: ConnectionMetadata(
+          publicKey: event.proposal.proposerPublicKey,
+          metadata: PairingMetadata.fromJson(event.proposal.metadata),
+        ),
+        requiredNamespaces: event.proposal.requiredNamespaces.map(
+          (key, value) => MapEntry(key, RequiredNamespace.fromJson(value)),
+        ),
+        optionalNamespaces: event.proposal.optionalNamespaces?.map(
+              (key, value) => MapEntry(key, RequiredNamespace.fromJson(value)),
+            ) ??
+            {},
+        pairingTopic: event.proposal.topic,
+        sessionProperties: event.proposal.sessionProperties,
+      ).toJson(),
+    );
+    core.logger.d(
+      '_onSessionProposeFromRust, topic: $topic, payload: $payload',
+    );
+    await _onSessionProposeRequest(topic, payload);
   }
 
   Future<void> _onSessionProposeRequest(

@@ -541,7 +541,7 @@ class EVMService {
     } else if (prepareResponse is PrepareResponseNotRequiredCompat) {
       // chain abstraction notRequired, continue with initialTransaction
       return prepareResponse.initialTransaction; // TransactionCompat
-    } else if (prepareResponse is PrepareResponseError) {
+    } else if (prepareResponse is PrepareDetailedResponseError) {
       // chain abstraction error
       return prepareResponse.error; // BridgingError
     }
@@ -555,7 +555,7 @@ class EVMService {
   ) async {
     dynamic prepareResponse;
     try {
-      final response = await _walletKit.prepare(
+      final response = await _walletKit.chainAbstractionClient.prepare(
         chainId: chainId,
         from: from,
         call: CallCompat(to: to, input: input),
@@ -573,7 +573,7 @@ class EVMService {
             },
           );
         },
-        error: (PrepareResponseError error) {
+        error: (PrepareDetailedResponseError error) {
           prepareResponse = error;
         },
       );
@@ -603,7 +603,7 @@ class EVMService {
         return rSignature;
       }).toList();
       try {
-        return await _walletKit.execute(
+        return await _walletKit.chainAbstractionClient.execute(
           uiFields: uiFields,
           initialTxnSig: initialSignature,
           routeTxnSigs: routeSignatures,

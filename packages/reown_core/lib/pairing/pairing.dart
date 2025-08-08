@@ -160,6 +160,11 @@ class Pairing implements IPairing {
     required Uri uri,
     bool activatePairing = false,
   }) async {
+    // If this is reached it means we are still calling sign_engine logic
+    // Current tests on reown_sign/reown_walletkit should not throw this
+    throw UnimplementedError('Rust Client should be called instead');
+
+    // ignore: dead_code
     _checkInitialized();
 
     // print(uri.queryParameters);

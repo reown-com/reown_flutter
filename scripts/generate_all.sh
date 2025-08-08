@@ -5,6 +5,14 @@ echo "******* GENERATING ROOT *******"
 flutter clean
 flutter pub get
 
+echo "******* GENERATING YTTRIUM *******"
+
+cd packages/reown_yttrium/
+sh generate_files.sh
+
+cd ..
+cd ..
+
 echo "******* GENERATING CORE *******"
 
 cd packages/reown_core/
@@ -16,14 +24,6 @@ cd ..
 echo "******* GENERATING SIGN *******"
 
 cd packages/reown_sign/
-sh generate_files.sh
-
-cd ..
-cd ..
-
-echo "******* GENERATING YTTRIUM *******"
-
-cd packages/reown_yttrium/
 sh generate_files.sh
 
 cd ..

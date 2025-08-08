@@ -12,7 +12,7 @@ enum TransportType {
   bool get isLinkMode => this == linkMode;
 }
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class Relay {
   final String protocol;
   final String? data;

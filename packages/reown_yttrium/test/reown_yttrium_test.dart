@@ -13,7 +13,7 @@ import 'package:reown_yttrium/reown_yttrium_method_channel.dart';
 // }
 
 void main() {
-  final ReownYttriumPlatform initialPlatform = ReownYttriumPlatform.instance;
+  final initialPlatform = ReownYttriumPlatformInterface.instance;
 
   test('$MethodChannelReownYttrium is the default instance', () {
     expect(initialPlatform, isInstanceOf<MethodChannelReownYttrium>());

@@ -61,12 +61,12 @@ class _ChainAbstractionPreparePageState
   Future<void> _updateBalance() async {
     try {
       final balances = await Future.wait([
-        _walletKit.erc20TokenBalance(
+        _walletKit.chainAbstractionClient.erc20TokenBalance(
           chainId: _selectedChain.chainId,
           token: _usdcAddress,
           owner: _myAddress,
         ),
-        _walletKit.erc20TokenBalance(
+        _walletKit.chainAbstractionClient.erc20TokenBalance(
           chainId: _selectedChain.chainId,
           token: _usdtAddress,
           owner: _myAddress,
@@ -184,7 +184,7 @@ class _ChainAbstractionPreparePageState
               ),
               const SizedBox.square(dimension: 10.0),
               FutureBuilder(
-                future: _walletKit.estimateFees(
+                future: _walletKit.chainAbstractionClient.estimateFees(
                   chainId: _selectedChain.chainId,
                 ),
                 builder: (_, snapshot) {
