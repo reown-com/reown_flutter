@@ -53,7 +53,7 @@ class MethodChannelSign {
         'sign_pair',
         uri,
       );
-      return ChannelUtils.handlePlatformResult(result!);
+      return ChannelUtils.handlePlatformResult(jsonDecode(result!));
     } on PlatformException catch (e) {
       debugPrint('[$runtimeType] sign_pair $e');
       rethrow;
@@ -66,17 +66,15 @@ class MethodChannelSign {
     required Map<String, dynamic> selfMetadata,
   }) async {
     try {
-      final params = {
-        'proposal': proposal,
-        'approvedNamespaces': approvedNamespaces,
-        'selfMetadata': selfMetadata,
-      };
-      debugPrint('[$runtimeType] sign_approve, params ${jsonEncode(params)}');
       final result = await methodChannel.invokeMethod<dynamic>(
         'sign_approve',
-        params,
+        {
+          'proposal': jsonEncode(proposal),
+          'approvedNamespaces': jsonEncode(approvedNamespaces),
+          'selfMetadata': jsonEncode(selfMetadata),
+        },
       );
-      return ChannelUtils.handlePlatformResult(result!);
+      return ChannelUtils.handlePlatformResult(jsonDecode(result!));
     } on PlatformException catch (e) {
       debugPrint('[$runtimeType] sign_approve $e');
       rethrow;

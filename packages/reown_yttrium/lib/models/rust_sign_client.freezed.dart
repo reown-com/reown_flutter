@@ -22,8 +22,8 @@ SessionProposalFfi _$SessionProposalFfiFromJson(Map<String, dynamic> json) {
 mixin _$SessionProposalFfi {
   String get id => throw _privateConstructorUsedError;
   String get topic => throw _privateConstructorUsedError;
-  String get pairingSymKey => throw _privateConstructorUsedError;
-  String get proposerPublicKey => throw _privateConstructorUsedError;
+  List<int> get pairingSymKey => throw _privateConstructorUsedError;
+  List<int> get proposerPublicKey => throw _privateConstructorUsedError;
   List<Map<String, dynamic>> get relays => throw _privateConstructorUsedError;
   Map<String, Map<String, dynamic>> get requiredNamespaces =>
       throw _privateConstructorUsedError;
@@ -34,7 +34,7 @@ mixin _$SessionProposalFfi {
       throw _privateConstructorUsedError;
   Map<String, String>? get scopedProperties =>
       throw _privateConstructorUsedError;
-  String? get expiryTimestamp => throw _privateConstructorUsedError;
+  int? get expiryTimestamp => throw _privateConstructorUsedError;
 
   /// Serializes this SessionProposalFfi to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -55,15 +55,15 @@ abstract class $SessionProposalFfiCopyWith<$Res> {
   $Res call(
       {String id,
       String topic,
-      String pairingSymKey,
-      String proposerPublicKey,
+      List<int> pairingSymKey,
+      List<int> proposerPublicKey,
       List<Map<String, dynamic>> relays,
       Map<String, Map<String, dynamic>> requiredNamespaces,
       Map<String, Map<String, dynamic>>? optionalNamespaces,
       Map<String, dynamic> metadata,
       Map<String, String>? sessionProperties,
       Map<String, String>? scopedProperties,
-      String? expiryTimestamp});
+      int? expiryTimestamp});
 }
 
 /// @nodoc
@@ -105,11 +105,11 @@ class _$SessionProposalFfiCopyWithImpl<$Res, $Val extends SessionProposalFfi>
       pairingSymKey: null == pairingSymKey
           ? _value.pairingSymKey
           : pairingSymKey // ignore: cast_nullable_to_non_nullable
-              as String,
+              as List<int>,
       proposerPublicKey: null == proposerPublicKey
           ? _value.proposerPublicKey
           : proposerPublicKey // ignore: cast_nullable_to_non_nullable
-              as String,
+              as List<int>,
       relays: null == relays
           ? _value.relays
           : relays // ignore: cast_nullable_to_non_nullable
@@ -137,7 +137,7 @@ class _$SessionProposalFfiCopyWithImpl<$Res, $Val extends SessionProposalFfi>
       expiryTimestamp: freezed == expiryTimestamp
           ? _value.expiryTimestamp
           : expiryTimestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
     ) as $Val);
   }
 }
@@ -153,15 +153,15 @@ abstract class _$$SessionProposalFfiImplCopyWith<$Res>
   $Res call(
       {String id,
       String topic,
-      String pairingSymKey,
-      String proposerPublicKey,
+      List<int> pairingSymKey,
+      List<int> proposerPublicKey,
       List<Map<String, dynamic>> relays,
       Map<String, Map<String, dynamic>> requiredNamespaces,
       Map<String, Map<String, dynamic>>? optionalNamespaces,
       Map<String, dynamic> metadata,
       Map<String, String>? sessionProperties,
       Map<String, String>? scopedProperties,
-      String? expiryTimestamp});
+      int? expiryTimestamp});
 }
 
 /// @nodoc
@@ -199,13 +199,13 @@ class __$$SessionProposalFfiImplCopyWithImpl<$Res>
           : topic // ignore: cast_nullable_to_non_nullable
               as String,
       pairingSymKey: null == pairingSymKey
-          ? _value.pairingSymKey
+          ? _value._pairingSymKey
           : pairingSymKey // ignore: cast_nullable_to_non_nullable
-              as String,
+              as List<int>,
       proposerPublicKey: null == proposerPublicKey
-          ? _value.proposerPublicKey
+          ? _value._proposerPublicKey
           : proposerPublicKey // ignore: cast_nullable_to_non_nullable
-              as String,
+              as List<int>,
       relays: null == relays
           ? _value._relays
           : relays // ignore: cast_nullable_to_non_nullable
@@ -233,7 +233,7 @@ class __$$SessionProposalFfiImplCopyWithImpl<$Res>
       expiryTimestamp: freezed == expiryTimestamp
           ? _value.expiryTimestamp
           : expiryTimestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as int?,
     ));
   }
 }
@@ -244,8 +244,8 @@ class _$SessionProposalFfiImpl implements _SessionProposalFfi {
   const _$SessionProposalFfiImpl(
       {required this.id,
       required this.topic,
-      required this.pairingSymKey,
-      required this.proposerPublicKey,
+      required final List<int> pairingSymKey,
+      required final List<int> proposerPublicKey,
       required final List<Map<String, dynamic>> relays,
       required final Map<String, Map<String, dynamic>> requiredNamespaces,
       final Map<String, Map<String, dynamic>>? optionalNamespaces,
@@ -253,7 +253,9 @@ class _$SessionProposalFfiImpl implements _SessionProposalFfi {
       final Map<String, String>? sessionProperties,
       final Map<String, String>? scopedProperties,
       this.expiryTimestamp})
-      : _relays = relays,
+      : _pairingSymKey = pairingSymKey,
+        _proposerPublicKey = proposerPublicKey,
+        _relays = relays,
         _requiredNamespaces = requiredNamespaces,
         _optionalNamespaces = optionalNamespaces,
         _metadata = metadata,
@@ -267,10 +269,23 @@ class _$SessionProposalFfiImpl implements _SessionProposalFfi {
   final String id;
   @override
   final String topic;
+  final List<int> _pairingSymKey;
   @override
-  final String pairingSymKey;
+  List<int> get pairingSymKey {
+    if (_pairingSymKey is EqualUnmodifiableListView) return _pairingSymKey;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_pairingSymKey);
+  }
+
+  final List<int> _proposerPublicKey;
   @override
-  final String proposerPublicKey;
+  List<int> get proposerPublicKey {
+    if (_proposerPublicKey is EqualUnmodifiableListView)
+      return _proposerPublicKey;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_proposerPublicKey);
+  }
+
   final List<Map<String, dynamic>> _relays;
   @override
   List<Map<String, dynamic>> get relays {
@@ -329,7 +344,7 @@ class _$SessionProposalFfiImpl implements _SessionProposalFfi {
   }
 
   @override
-  final String? expiryTimestamp;
+  final int? expiryTimestamp;
 
   @override
   String toString() {
@@ -343,10 +358,10 @@ class _$SessionProposalFfiImpl implements _SessionProposalFfi {
             other is _$SessionProposalFfiImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.topic, topic) || other.topic == topic) &&
-            (identical(other.pairingSymKey, pairingSymKey) ||
-                other.pairingSymKey == pairingSymKey) &&
-            (identical(other.proposerPublicKey, proposerPublicKey) ||
-                other.proposerPublicKey == proposerPublicKey) &&
+            const DeepCollectionEquality()
+                .equals(other._pairingSymKey, _pairingSymKey) &&
+            const DeepCollectionEquality()
+                .equals(other._proposerPublicKey, _proposerPublicKey) &&
             const DeepCollectionEquality().equals(other._relays, _relays) &&
             const DeepCollectionEquality()
                 .equals(other._requiredNamespaces, _requiredNamespaces) &&
@@ -367,8 +382,8 @@ class _$SessionProposalFfiImpl implements _SessionProposalFfi {
       runtimeType,
       id,
       topic,
-      pairingSymKey,
-      proposerPublicKey,
+      const DeepCollectionEquality().hash(_pairingSymKey),
+      const DeepCollectionEquality().hash(_proposerPublicKey),
       const DeepCollectionEquality().hash(_relays),
       const DeepCollectionEquality().hash(_requiredNamespaces),
       const DeepCollectionEquality().hash(_optionalNamespaces),
@@ -398,15 +413,15 @@ abstract class _SessionProposalFfi implements SessionProposalFfi {
   const factory _SessionProposalFfi(
       {required final String id,
       required final String topic,
-      required final String pairingSymKey,
-      required final String proposerPublicKey,
+      required final List<int> pairingSymKey,
+      required final List<int> proposerPublicKey,
       required final List<Map<String, dynamic>> relays,
       required final Map<String, Map<String, dynamic>> requiredNamespaces,
       final Map<String, Map<String, dynamic>>? optionalNamespaces,
       required final Map<String, dynamic> metadata,
       final Map<String, String>? sessionProperties,
       final Map<String, String>? scopedProperties,
-      final String? expiryTimestamp}) = _$SessionProposalFfiImpl;
+      final int? expiryTimestamp}) = _$SessionProposalFfiImpl;
 
   factory _SessionProposalFfi.fromJson(Map<String, dynamic> json) =
       _$SessionProposalFfiImpl.fromJson;
@@ -416,9 +431,9 @@ abstract class _SessionProposalFfi implements SessionProposalFfi {
   @override
   String get topic;
   @override
-  String get pairingSymKey;
+  List<int> get pairingSymKey;
   @override
-  String get proposerPublicKey;
+  List<int> get proposerPublicKey;
   @override
   List<Map<String, dynamic>> get relays;
   @override
@@ -432,7 +447,7 @@ abstract class _SessionProposalFfi implements SessionProposalFfi {
   @override
   Map<String, String>? get scopedProperties;
   @override
-  String? get expiryTimestamp;
+  int? get expiryTimestamp;
 
   /// Create a copy of SessionProposalFfi
   /// with the given fields replaced by the non-null parameter values.
@@ -1168,8 +1183,8 @@ ApproveResultFfi _$ApproveResultFfiFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ApproveResultFfi {
-  String get sessionSymKey => throw _privateConstructorUsedError;
-  String get selfPublicKey => throw _privateConstructorUsedError;
+  List<int> get sessionSymKey => throw _privateConstructorUsedError;
+  List<int> get selfPublicKey => throw _privateConstructorUsedError;
 
   /// Serializes this ApproveResultFfi to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -1187,7 +1202,7 @@ abstract class $ApproveResultFfiCopyWith<$Res> {
           ApproveResultFfi value, $Res Function(ApproveResultFfi) then) =
       _$ApproveResultFfiCopyWithImpl<$Res, ApproveResultFfi>;
   @useResult
-  $Res call({String sessionSymKey, String selfPublicKey});
+  $Res call({List<int> sessionSymKey, List<int> selfPublicKey});
 }
 
 /// @nodoc
@@ -1212,11 +1227,11 @@ class _$ApproveResultFfiCopyWithImpl<$Res, $Val extends ApproveResultFfi>
       sessionSymKey: null == sessionSymKey
           ? _value.sessionSymKey
           : sessionSymKey // ignore: cast_nullable_to_non_nullable
-              as String,
+              as List<int>,
       selfPublicKey: null == selfPublicKey
           ? _value.selfPublicKey
           : selfPublicKey // ignore: cast_nullable_to_non_nullable
-              as String,
+              as List<int>,
     ) as $Val);
   }
 }
@@ -1229,7 +1244,7 @@ abstract class _$$ApproveResultFfiImplCopyWith<$Res>
       __$$ApproveResultFfiImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String sessionSymKey, String selfPublicKey});
+  $Res call({List<int> sessionSymKey, List<int> selfPublicKey});
 }
 
 /// @nodoc
@@ -1250,13 +1265,13 @@ class __$$ApproveResultFfiImplCopyWithImpl<$Res>
   }) {
     return _then(_$ApproveResultFfiImpl(
       sessionSymKey: null == sessionSymKey
-          ? _value.sessionSymKey
+          ? _value._sessionSymKey
           : sessionSymKey // ignore: cast_nullable_to_non_nullable
-              as String,
+              as List<int>,
       selfPublicKey: null == selfPublicKey
-          ? _value.selfPublicKey
+          ? _value._selfPublicKey
           : selfPublicKey // ignore: cast_nullable_to_non_nullable
-              as String,
+              as List<int>,
     ));
   }
 }
@@ -1266,15 +1281,29 @@ class __$$ApproveResultFfiImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ApproveResultFfiImpl implements _ApproveResultFfi {
   const _$ApproveResultFfiImpl(
-      {required this.sessionSymKey, required this.selfPublicKey});
+      {required final List<int> sessionSymKey,
+      required final List<int> selfPublicKey})
+      : _sessionSymKey = sessionSymKey,
+        _selfPublicKey = selfPublicKey;
 
   factory _$ApproveResultFfiImpl.fromJson(Map<String, dynamic> json) =>
       _$$ApproveResultFfiImplFromJson(json);
 
+  final List<int> _sessionSymKey;
   @override
-  final String sessionSymKey;
+  List<int> get sessionSymKey {
+    if (_sessionSymKey is EqualUnmodifiableListView) return _sessionSymKey;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_sessionSymKey);
+  }
+
+  final List<int> _selfPublicKey;
   @override
-  final String selfPublicKey;
+  List<int> get selfPublicKey {
+    if (_selfPublicKey is EqualUnmodifiableListView) return _selfPublicKey;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_selfPublicKey);
+  }
 
   @override
   String toString() {
@@ -1286,15 +1315,18 @@ class _$ApproveResultFfiImpl implements _ApproveResultFfi {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ApproveResultFfiImpl &&
-            (identical(other.sessionSymKey, sessionSymKey) ||
-                other.sessionSymKey == sessionSymKey) &&
-            (identical(other.selfPublicKey, selfPublicKey) ||
-                other.selfPublicKey == selfPublicKey));
+            const DeepCollectionEquality()
+                .equals(other._sessionSymKey, _sessionSymKey) &&
+            const DeepCollectionEquality()
+                .equals(other._selfPublicKey, _selfPublicKey));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, sessionSymKey, selfPublicKey);
+  int get hashCode => Object.hash(
+      runtimeType,
+      const DeepCollectionEquality().hash(_sessionSymKey),
+      const DeepCollectionEquality().hash(_selfPublicKey));
 
   /// Create a copy of ApproveResultFfi
   /// with the given fields replaced by the non-null parameter values.
@@ -1315,16 +1347,16 @@ class _$ApproveResultFfiImpl implements _ApproveResultFfi {
 
 abstract class _ApproveResultFfi implements ApproveResultFfi {
   const factory _ApproveResultFfi(
-      {required final String sessionSymKey,
-      required final String selfPublicKey}) = _$ApproveResultFfiImpl;
+      {required final List<int> sessionSymKey,
+      required final List<int> selfPublicKey}) = _$ApproveResultFfiImpl;
 
   factory _ApproveResultFfi.fromJson(Map<String, dynamic> json) =
       _$ApproveResultFfiImpl.fromJson;
 
   @override
-  String get sessionSymKey;
+  List<int> get sessionSymKey;
   @override
-  String get selfPublicKey;
+  List<int> get selfPublicKey;
 
   /// Create a copy of ApproveResultFfi
   /// with the given fields replaced by the non-null parameter values.

@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
 import 'package:event/event.dart';
+import 'package:reown_core/models/rust_sign_client_models.dart';
 import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:reown_core/reown_core.dart';
@@ -12,7 +13,6 @@ import 'package:reown_core/store/i_generic_store.dart';
 import 'package:reown_core/utils/algorand_utils.dart';
 import 'package:reown_core/utils/near_utils.dart';
 import 'package:reown_core/utils/sui_utils.dart';
-import 'package:reown_core/yttrium/models/events.dart';
 
 import 'package:reown_sign/reown_sign.dart';
 import 'package:reown_sign/utils/sign_api_validator_utils.dart';
@@ -281,7 +281,7 @@ class ReownSign implements IReownSign {
     _confirmOnlineStateOrThrow();
 
     try {
-      return await core.rustSignClient.pair(
+      return await core.pairing.pair(
         uri: uri,
       );
     } on ReownCoreError catch (e) {
@@ -319,27 +319,19 @@ class ReownSign implements IReownSign {
 
     // pairingSymKey was previously saved on secure storage during pair function on core package
     final String pairingSymKey = core.crypto.getSymKey(proposal.pairingTopic)!;
-    final proposalFfi = SessionProposalFfi(
-      id: proposal.id.toString(),
-      topic: proposal.pairingTopic,
-      pairingSymKey: pairingSymKey,
-      proposerPublicKey: peerPubKey,
-      relays: proposal.relays.map((e) => e.toJson()).toList(),
-      requiredNamespaces: proposal.requiredNamespaces.map(
-        (key, namespace) => MapEntry(key, namespace.toJson()),
-      ),
-      optionalNamespaces: proposal.optionalNamespaces.map(
-        (key, namespace) => MapEntry(key, namespace.toJson()),
-      ),
-      metadata: proposal.proposer.metadata.toJson(),
-      sessionProperties: proposal.sessionProperties,
-      // scopedProperties: {}, // scopedProperties still not implemented on flutter SDKs
-      expiryTimestamp: proposal.expiry.toString(),
-    );
+    // TODO a middle model should be optimal
+    final proposalFfi = SessionProposalFfi.fromJson({
+      ...proposal.toJson(),
+      'id': proposal.id.toString(),
+      'topic': proposal.pairingTopic,
+      'pairingSymKey': hex.decode(pairingSymKey),
+      'proposerPublicKey': hex.decode(peerPubKey),
+      'metadata': proposal.proposer.metadata.toJson(),
+    });
     final approvedNamespaces = namespaces.map(
       (key, namespace) => MapEntry(key, namespace.toJson()),
     );
-    final ApproveResultFfi approveResult = await core.rustSignClient
+    final ApproveResult approveResult = await core.rustSignClient
         .approve(
           proposal: proposalFfi,
           approvedNamespaces: approvedNamespaces,
@@ -1045,11 +1037,11 @@ class ReownSign implements IReownSign {
       method: MethodConstants.WC_SESSION_PROPOSE,
       params: ProposalData(
         id: int.parse(event.proposal.id),
-        expiry: int.parse(event.proposal.expiryTimestamp!),
-        relays: event.proposal.relays.map((e) => Relay.fromJson(e)).toList(),
+        expiry: event.proposal.expiryTimestamp!,
+        relays: event.proposal.relays,
         proposer: ConnectionMetadata(
           publicKey: event.proposal.proposerPublicKey,
-          metadata: PairingMetadata.fromJson(event.proposal.metadata),
+          metadata: event.proposal.metadata,
         ),
         requiredNamespaces: event.proposal.requiredNamespaces.map(
           (key, value) => MapEntry(key, RequiredNamespace.fromJson(value)),

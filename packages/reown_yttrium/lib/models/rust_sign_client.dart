@@ -8,15 +8,15 @@ class SessionProposalFfi with _$SessionProposalFfi {
   const factory SessionProposalFfi({
     required String id,
     required String topic,
-    required String pairingSymKey,
-    required String proposerPublicKey,
+    required List<int> pairingSymKey,
+    required List<int> proposerPublicKey,
     required List<Map<String, dynamic>> relays,
     required Map<String, Map<String, dynamic>> requiredNamespaces,
     Map<String, Map<String, dynamic>>? optionalNamespaces,
     required Map<String, dynamic> metadata,
     Map<String, String>? sessionProperties,
     Map<String, String>? scopedProperties,
-    String? expiryTimestamp,
+    int? expiryTimestamp,
   }) = _SessionProposalFfi;
 
   factory SessionProposalFfi.fromJson(Map<String, dynamic> json) =>
@@ -69,8 +69,8 @@ class RedirectFfi with _$RedirectFfi {
 class ApproveResultFfi with _$ApproveResultFfi {
   @JsonSerializable()
   const factory ApproveResultFfi({
-    required String sessionSymKey,
-    required String selfPublicKey,
+    required List<int> sessionSymKey,
+    required List<int> selfPublicKey,
   }) = _ApproveResultFfi;
 
   factory ApproveResultFfi.fromJson(Map<String, dynamic> json) =>

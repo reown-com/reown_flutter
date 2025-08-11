@@ -11,8 +11,12 @@ _$SessionProposalFfiImpl _$$SessionProposalFfiImplFromJson(
     _$SessionProposalFfiImpl(
       id: json['id'] as String,
       topic: json['topic'] as String,
-      pairingSymKey: json['pairingSymKey'] as String,
-      proposerPublicKey: json['proposerPublicKey'] as String,
+      pairingSymKey: (json['pairingSymKey'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toList(),
+      proposerPublicKey: (json['proposerPublicKey'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toList(),
       relays: (json['relays'] as List<dynamic>)
           .map((e) => e as Map<String, dynamic>)
           .toList(),
@@ -33,7 +37,7 @@ _$SessionProposalFfiImpl _$$SessionProposalFfiImplFromJson(
           (json['scopedProperties'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as String),
       ),
-      expiryTimestamp: json['expiryTimestamp'] as String?,
+      expiryTimestamp: (json['expiryTimestamp'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$SessionProposalFfiImplToJson(
@@ -115,8 +119,12 @@ Map<String, dynamic> _$$RedirectFfiImplToJson(_$RedirectFfiImpl instance) =>
 _$ApproveResultFfiImpl _$$ApproveResultFfiImplFromJson(
         Map<String, dynamic> json) =>
     _$ApproveResultFfiImpl(
-      sessionSymKey: json['sessionSymKey'] as String,
-      selfPublicKey: json['selfPublicKey'] as String,
+      sessionSymKey: (json['sessionSymKey'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toList(),
+      selfPublicKey: (json['selfPublicKey'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toList(),
     );
 
 Map<String, dynamic> _$$ApproveResultFfiImplToJson(

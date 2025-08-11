@@ -5,6 +5,7 @@ import 'package:event/event.dart';
 import 'package:reown_core/events/models/basic_event.dart';
 import 'package:reown_core/events/models/link_mode_events.dart';
 import 'package:reown_core/models/json_rpc_models.dart';
+import 'package:reown_core/models/rust_sign_client_models.dart';
 import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/i_json_rpc_history.dart';
 import 'package:reown_core/relay_client/relay_client.dart';
@@ -160,17 +161,9 @@ class Pairing implements IPairing {
     required Uri uri,
     bool activatePairing = false,
   }) async {
-    // If this is reached it means we are still calling sign_engine logic
-    // Current tests on reown_sign/reown_walletkit should not throw this
-    throw UnimplementedError('Rust Client should be called instead');
-
-    // ignore: dead_code
     _checkInitialized();
 
     // print(uri.queryParameters);
-    final int expiry = ReownCoreUtils.calculateExpiry(
-      ReownConstants.FIVE_MINUTES,
-    );
     final URIParseResult parsedUri = ReownCoreUtils.parseUri(uri);
     if (parsedUri.version != URIVersion.v2) {
       throw Errors.getInternalError(
@@ -179,9 +172,14 @@ class Pairing implements IPairing {
       );
     }
 
-    final String topic = parsedUri.topic;
-    final Relay relay = parsedUri.v2Data!.relay;
-    final String symKey = parsedUri.v2Data!.symKey;
+    final SessionProposal sessionProposal = await core.rustSignClient.pair(
+      uri: uri,
+    );
+
+    final String topic = sessionProposal.topic;
+    final Relay relay = sessionProposal.relays.first;
+    final String symKey = sessionProposal.pairingSymKey;
+    final int expiry = sessionProposal.expiryTimestamp!;
     final PairingInfo pairing = PairingInfo(
       topic: topic,
       expiry: expiry,
