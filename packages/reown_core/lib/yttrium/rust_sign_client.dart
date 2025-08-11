@@ -60,12 +60,16 @@ class RustSignClient implements IRustSignClient {
           ),
     );
 
-    onYttriumSessionPropose.broadcast(
-      YttriumSessionPropose(
-        sessionProposal.topic,
-        sessionProposal,
-      ),
-    );
+    core.pairing.onPairingCreate.subscribe((pairingEvent) {
+      if (pairingEvent.topic == sessionProposal.topic) {
+        onYttriumSessionPropose.broadcast(
+          YttriumSessionPropose(
+            sessionProposal.topic,
+            sessionProposal,
+          ),
+        );
+      }
+    });
 
     return sessionProposal;
   }
