@@ -4,10 +4,6 @@ import YttriumWrapper
 
 class Sign {
     
-    struct CustomError: Error {
-        let message: String
-    }
-    
     private static var client: SignClient?
     
     static func initialize(_ params: Any, result: @escaping FlutterResult) {
@@ -23,8 +19,6 @@ class Sign {
     }
     
     static func setKey(_ params: Any, result: @escaping FlutterResult) {
-        print("Sign.setKey called with ", params)
-        
         guard client != nil else {
             result(FlutterError(code: "Sign.setKey", message: "SignClient not initialized", details: nil))
             return
@@ -55,8 +49,6 @@ class Sign {
     }
     
     static func pair(_ params: Any, result: @escaping FlutterResult) {
-        print("Sign.pair called with ", params)
-        
         guard client != nil else {
             result(FlutterError(code: "Sign.pair", message: "SignClient not initialized", details: nil))
             return
@@ -77,9 +69,7 @@ class Sign {
         }
     }
     
-    static func approve(_ params: Any, result: @escaping FlutterResult) {
-        print("Sign.approve called with ", params)
-        
+    static func approve(_ params: Any, result: @escaping FlutterResult) {        
         guard client != nil else {
             result(FlutterError(code: "Sign.approve", message: "SignClient not initialized", details: nil))
             return
