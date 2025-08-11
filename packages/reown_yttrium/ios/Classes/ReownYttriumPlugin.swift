@@ -12,17 +12,26 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
             // ChainAbstraction methods
-        case "ca_init":
-            ChainAbstraction.initialize(call.arguments ?? {}, result: result)
-        case "ca_erc20TokenBalance":
-            ChainAbstraction.erc20TokenBalance(call.arguments ?? {}, result: result)
-        case "ca_estimateFees":
-            ChainAbstraction.estimateFees(call.arguments ?? {}, result: result)
-        case "ca_prepareDetailed":
-            ChainAbstraction.prepareDetailed(call.arguments ?? {}, result: result)
-        case "ca_execute":
-            ChainAbstraction.execute(call.arguments ?? {}, result: result)
-            // Stacks methods
+//        case "ca_init":
+//            ChainAbstraction.initialize(call.arguments ?? {}, result: result)
+//        case "ca_erc20TokenBalance":
+//            ChainAbstraction.erc20TokenBalance(call.arguments ?? {}, result: result)
+//        case "ca_estimateFees":
+//            ChainAbstraction.estimateFees(call.arguments ?? {}, result: result)
+//        case "ca_prepareDetailed":
+//            ChainAbstraction.prepareDetailed(call.arguments ?? {}, result: result)
+//        case "ca_execute":
+//            ChainAbstraction.execute(call.arguments ?? {}, result: result)
+        case "sign_init":
+            Sign.initialize(call.arguments ?? {}, result: result)
+        case "sign_setKey":
+            Sign.setKey(call.arguments ?? {}, result: result)
+        case "sign_generateKey":
+            Sign.generateKey(result: result)
+        case "sign_pair":
+            Sign.pair(call.arguments ?? {}, result: result)
+        case "sign_approve":
+            Sign.approve(call.arguments ?? {}, result: result)
         default:
             result(FlutterMethodNotImplemented)
         }
