@@ -19,7 +19,7 @@ PODS:
     - FlutterMacOS
   - reown_yttrium (0.0.1):
     - Flutter
-    - YttriumWrapper (= 0.9.31)
+    - YttriumWrapper (= 0.9.57)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -31,7 +31,7 @@ PODS:
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
     - FlutterMacOS
-  - YttriumWrapper (0.9.31)
+  - YttriumWrapper (0.9.57)
 
 DEPENDENCIES:
   - appcheck (from `.symlinks/plugins/appcheck/ios`)
@@ -87,12 +87,12 @@ SPEC CHECKSUMS:
   integration_test: 4a889634ef21a45d28d50d622cf412dc6d9f586e
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
-  reown_yttrium: d3bf414d8639a09e84edbc519714de109fc47dd0
+  reown_yttrium: 518f6a50e4f291cef7e282ab5f2c955aa63f2e27
   shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   url_launcher_ios: 694010445543906933d732453a59da0a173ae33d
   webview_flutter_wkwebview: 44d4dee7d7056d5ad185d25b38404436d56c547c
-  YttriumWrapper: d0bea3d15c51aea0544109f186f73418a3d3999f
+  YttriumWrapper: ded5842dc952538bb7f09a1074fdd6d7348bfeaa
 
 PODFILE CHECKSUM: 0a7d5b7d0e53420cb0284f7b2f171f93843b94d2
 

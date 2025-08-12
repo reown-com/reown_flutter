@@ -64,12 +64,14 @@ class Sign {
                 let pairResponse = try await client!.pairJson(uri: pairingUri)
                 result(pairResponse)
             } catch {
-                result(FlutterError(code: "Sign.pair", message: error.localizedDescription, details: nil))
+                result(FlutterError(code: "Sign.pair",
+                                 message: error.localizedDescription,
+                                 details: nil))
             }
         }
     }
     
-    static func approve(_ params: Any, result: @escaping FlutterResult) {        
+    static func approve(_ params: Any, result: @escaping FlutterResult) {
         guard client != nil else {
             result(FlutterError(code: "Sign.approve", message: "SignClient not initialized", details: nil))
             return
@@ -86,8 +88,8 @@ class Sign {
         Task {
             do {
                 let approveResponse = try await client!.approveJson(proposal: proposal,
-                                                                 approvedNamespaces: approvedNamespaces,
-                                                                 selfMetadata: selfMetadata)
+                                                          approvedNamespaces: approvedNamespaces,
+                                                                selfMetadata: selfMetadata)
                 result(approveResponse)
             } catch {
                 result(FlutterError(code: "Sign.approve", message: error.localizedDescription, details: nil))
