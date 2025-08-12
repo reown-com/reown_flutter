@@ -5,6 +5,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/solflare_service/i_solflare_service.dart';
+import 'package:reown_appkit/modal/services/solflare_service/models/solflare_events.dart';
+import 'package:reown_appkit/modal/services/solflare_service/solflare_service.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack.dart';
 
@@ -269,6 +272,12 @@ class ReownAppKitModal
         metadata: _appKit.metadata,
       ),
     );
+    _registerSingleton<ISolflareService>(
+      () => SolflareService(
+        core: _appKit.core,
+        metadata: _appKit.metadata,
+      ),
+    );
     _registerSingleton<ISiweService>(
       () => SiweService(
         appKit: _appKit,
@@ -288,6 +297,7 @@ class ReownAppKitModal
   IMagicService get _magicService => _getSingleton<IMagicService>();
   ICoinbaseService get _coinbaseService => _getSingleton<ICoinbaseService>();
   IPhantomService get _phantomService => _getSingleton<IPhantomService>();
+  ISolflareService get _solflareService => _getSingleton<ISolflareService>();
 
   IWidgetStack get _widgetStack => _getSingleton<IWidgetStack>();
   IUriService get _uriService => _getSingleton<IUriService>();
@@ -359,6 +369,7 @@ class ReownAppKitModal
     await _explorerService.init();
     await _coinbaseService.init();
     await _phantomService.init();
+    await _solflareService.init();
     await _blockchainService.init();
     await _analyticsService.init();
 
@@ -369,7 +380,8 @@ class ReownAppKitModal
     final isMagic = _currentSession?.sessionService.isMagic == true;
     final isCoinbase = _currentSession?.sessionService.isCoinbase == true;
     final isPhantom = _currentSession?.sessionService.isPhantom == true;
-    if (isMagic || isCoinbase || isPhantom) {
+    final isSolflare = _currentSession?.sessionService.isSolflare == true;
+    if (isMagic || isCoinbase || isPhantom || isSolflare) {
       _selectedChainID ??= _currentSession!.chainId;
       await _setSesionAndChainData(_currentSession!);
       if (isMagic) {
@@ -422,6 +434,11 @@ class ReownAppKitModal
           }
         } else if (_currentSession!.sessionService.isPhantom) {
           final isConnected = await _phantomService.isConnected();
+          if (!isConnected) {
+            await _cleanSession();
+          }
+        } else if (_currentSession!.sessionService.isSolflare) {
+          final isConnected = await _solflareService.isConnected();
           if (!isConnected) {
             await _cleanSession();
           }
@@ -483,6 +500,15 @@ class ReownAppKitModal
     );
     if (phantomRequest.isNotEmpty) {
       _phantomService.completePhantomRequest(url: url);
+      return true;
+    }
+
+    final solflareRequest = ReownCoreUtils.getSearchParamFromURL(
+      url,
+      'solflareRequest',
+    );
+    if (solflareRequest.isNotEmpty) {
+      _solflareService.completeSolflareRequest(url: url);
       return true;
     }
 
@@ -631,7 +657,8 @@ class ReownAppKitModal
     final isMagic = _currentSession!.sessionService.isMagic;
     final isCoinbase = _currentSession!.sessionService.isCoinbase;
     final isPhantom = _currentSession!.sessionService.isPhantom;
-    if (isMagic || isCoinbase || isPhantom) {
+    final isSolflare = _currentSession!.sessionService.isSolflare;
+    if (isMagic || isCoinbase || isPhantom || isSolflare) {
       return getApprovedChains();
     }
 
@@ -913,6 +940,8 @@ class ReownAppKitModal
         await _coinbaseService.getAccount();
       } else if (_selectedWallet!.isPhantom) {
         await _phantomService.connect(chainId: _selectedChainID);
+      } else if (_selectedWallet!.isSolflare) {
+        await _solflareService.connect(chainId: _selectedChainID);
       } else {
         await _connect(walletRedirect, pType, socialOption);
       }
@@ -1151,6 +1180,13 @@ class ReownAppKitModal
       return;
     }
 
+    final isSolflare = _currentSession!.sessionService.isSolflare == true;
+    if (walletInfo.isSolflare || isSolflare) {
+      // Solflare Wallet is getting launched at every request by its service
+      // So no need to do it here.
+      return;
+    }
+
     if (_currentSession!.sessionService.isMagic) {
       // There's no wallet to launch when connected with Email
       // TODO check if this is still relevant with web-wallet
@@ -1232,6 +1268,16 @@ class ReownAppKitModal
         await _phantomService.disconnect();
       } catch (e) {
         _appKit.core.logger.d('[$runtimeType] disconnect phantom $e');
+        _status = ReownAppKitModalStatus.initialized;
+        _notify();
+        return;
+      }
+    }
+    if (_currentSession?.sessionService.isSolflare == true) {
+      try {
+        await _solflareService.disconnect();
+      } catch (e) {
+        _appKit.core.logger.d('[$runtimeType] disconnect solflare $e');
         _status = ReownAppKitModalStatus.initialized;
         _notify();
         return;
@@ -1497,6 +1543,12 @@ class ReownAppKitModal
           request: request,
         );
       }
+      if (_currentSession!.sessionService.isSolflare) {
+        return await _solflareService.request(
+          chainId: chainId,
+          request: request,
+        );
+      }
 
       final requestId = JsonRpcUtils.payloadId();
       final pendingRequest = _appKit.request(
@@ -1557,6 +1609,7 @@ class ReownAppKitModal
       _unregisterSingleton<IMagicService>();
       _unregisterSingleton<ICoinbaseService>();
       _unregisterSingleton<IPhantomService>();
+      _unregisterSingleton<ISolflareService>();
       _unregisterSingleton<ISiweService>();
       _unregisterSingleton<IWidgetStack>();
       await Future.delayed(Duration(milliseconds: 500));
@@ -1927,6 +1980,9 @@ class ReownAppKitModal
     // Phantom
     _phantomService.onPhantomConnect.subscribe(_onPhantomConnect);
     _phantomService.onPhantomError.subscribe(_onPhantomError);
+    // Solflare
+    _solflareService.onSolflareConnect.subscribe(_onSolflareConnect);
+    _solflareService.onSolflareError.subscribe(_onSolflareError);
     //
     _appKit.onSessionAuthResponse.subscribe(_onSessionAuthResponse);
     _appKit.onSessionConnect.subscribe(_onSessionConnect);
@@ -1970,6 +2026,9 @@ class ReownAppKitModal
     // Phantom
     _phantomService.onPhantomConnect.unsubscribeAll();
     _phantomService.onPhantomError.unsubscribeAll();
+    // Solflare
+    _solflareService.onSolflareConnect.unsubscribeAll();
+    _solflareService.onSolflareError.unsubscribeAll();
     //
     _appKit.onSessionAuthResponse.unsubscribeAll();
     _appKit.onSessionConnect.unsubscribeAll();
@@ -2208,6 +2267,40 @@ extension _PhantomConnectorExtension on ReownAppKitModal {
 
   void _onPhantomError(PhantomErrorEvent? args) async {
     _appKit.core.logger.d('[$runtimeType] _onPhantomError: $args');
+    if (_isUserRejectedError(args?.toString())) {
+      onModalError.broadcast(UserRejectedConnection());
+      _analyticsService.sendEvent(ConnectErrorEvent(
+        message: 'User declined connection',
+      ));
+    } else {
+      final errorMessage = args?.error ?? 'Something went wrong';
+      onModalError.broadcast(ErrorOpeningWallet());
+      _analyticsService.sendEvent(ConnectErrorEvent(
+        message: errorMessage,
+      ));
+    }
+  }
+}
+
+extension _SolflareConnectorExtension on ReownAppKitModal {
+  void _onSolflareConnect(SolflareConnectEvent? args) async {
+    _appKit.core.logger.d('[$runtimeType] _onSolflareConnect: $args');
+    if (args?.data != null) {
+      _selectedChainID = _getStoredChainId(args!.data!.chainId)!;
+      //
+      final session = ReownAppKitModalSession(solflareData: args.data!);
+      await _setSesionAndChainData(session);
+      await _explorerService.storeConnectedWallet(_selectedWallet);
+      onModalConnect.broadcast(ModalConnect(session));
+      //
+      if (_isOpen) {
+        closeModal();
+      }
+    }
+  }
+
+  void _onSolflareError(SolflareErrorEvent? args) async {
+    _appKit.core.logger.d('[$runtimeType] _onSolflareError: $args');
     if (_isUserRejectedError(args?.toString())) {
       onModalError.broadcast(UserRejectedConnection());
       _analyticsService.sendEvent(ConnectErrorEvent(

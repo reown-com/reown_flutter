@@ -41,6 +41,7 @@ class StorageConstants {
   static const String selectedChainId = '${prefix}selectedChainId';
   static const String modalSession = '${prefix}session';
   static const String phantomSession = '${prefix}phantomSession';
+  static const String solflareSession = '${prefix}solflareSession';
 }
 
 class UrlConstants {

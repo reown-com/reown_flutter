@@ -8,6 +8,8 @@ import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_data.dart';
 import 'package:reown_appkit/modal/services/phantom_service/i_phantom_service.dart';
 import 'package:reown_appkit/modal/services/phantom_service/models/phantom_data.dart';
+import 'package:reown_appkit/modal/services/solflare_service/i_solflare_service.dart';
+import 'package:reown_appkit/modal/services/solflare_service/models/solflare_data.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 // TODO ReownAppKitModal this should be hidden
@@ -15,12 +17,14 @@ enum ReownAppKitModalConnector {
   wc,
   coinbase,
   phantom,
+  solflare,
   magic,
   none;
 
   bool get isWC => this == ReownAppKitModalConnector.wc;
   bool get isCoinbase => this == ReownAppKitModalConnector.coinbase;
   bool get isPhantom => this == ReownAppKitModalConnector.phantom;
+  bool get isSolflare => this == ReownAppKitModalConnector.solflare;
   bool get isMagic => this == ReownAppKitModalConnector.magic;
   bool get noSession => this == ReownAppKitModalConnector.none;
 }
@@ -30,6 +34,7 @@ class ReownAppKitModalSession {
   SessionData? _sessionData;
   CoinbaseData? _coinbaseData;
   PhantomData? _phantomData;
+  SolflareData? _solflareData;
   MagicData? _magicData;
   SIWESession? _siweSession;
   bool _isSmartAccount = false;
@@ -38,12 +43,14 @@ class ReownAppKitModalSession {
     SessionData? sessionData,
     CoinbaseData? coinbaseData,
     PhantomData? phantomData,
+    SolflareData? solflareData,
     MagicData? magicData,
     SIWESession? siweSession,
     bool isSmartAccount = false,
   })  : _sessionData = sessionData,
         _coinbaseData = coinbaseData,
         _phantomData = phantomData,
+        _solflareData = solflareData,
         _magicData = magicData,
         _siweSession = siweSession,
         _isSmartAccount = isSmartAccount;
@@ -53,6 +60,7 @@ class ReownAppKitModalSession {
     final sessionDataString = map['sessionData'];
     final coinbaseDataString = map['coinbaseData'];
     final phantomDataString = map['phantomData'];
+    final solflareDataString = map['solflareData'];
     final magicDataString = map['magicData'];
     final siweSession = map['siweSession'];
     final smartAccount = map['isSmartAccount'] ?? false;
@@ -66,6 +74,9 @@ class ReownAppKitModalSession {
       phantomData: phantomDataString != null
           ? PhantomData.fromJson(phantomDataString)
           : null,
+      solflareData: solflareDataString != null
+          ? SolflareData.fromJson(solflareDataString)
+          : null,
       magicData:
           magicDataString != null ? MagicData.fromJson(magicDataString) : null,
       siweSession:
@@ -78,6 +89,7 @@ class ReownAppKitModalSession {
     SessionData? sessionData,
     CoinbaseData? coinbaseData,
     PhantomData? phantomData,
+    SolflareData? solflareData,
     MagicData? magicData,
     SIWESession? siweSession,
   }) {
@@ -92,6 +104,11 @@ class ReownAppKitModalSession {
       address: phantomData?.address,
       self: phantomData?.self,
       peer: phantomData?.peer,
+    );
+    final newSolflareData = _solflareData?.copytWith(
+      address: solflareData?.address,
+      self: solflareData?.self,
+      peer: solflareData?.peer,
     );
     final newMagicData = _magicData?.copytWith(
       email: magicData?.email,
@@ -108,6 +125,7 @@ class ReownAppKitModalSession {
       sessionData: sessionData ?? _sessionData,
       coinbaseData: newCoinbaseData ?? _coinbaseData,
       phantomData: newPhantomData ?? _phantomData,
+      solflareData: newSolflareData ?? _solflareData,
       magicData: newMagicData ?? _magicData,
       siweSession: siweSession ?? _siweSession,
     );
@@ -123,6 +141,9 @@ class ReownAppKitModalSession {
     }
     if (_phantomData != null) {
       return ReownAppKitModalConnector.phantom;
+    }
+    if (_solflareData != null) {
+      return ReownAppKitModalConnector.solflare;
     }
     if (_magicData != null) {
       return ReownAppKitModalConnector.magic;
@@ -142,6 +163,11 @@ class ReownAppKitModalSession {
     }
     if (sessionService.isPhantom) {
       // Phantom Wallet can only use one cluster (network) at a time
+      // it will connect to mainnet-beta by default if no network is selected beforehand
+      return false;
+    }
+    if (sessionService.isSolflare) {
+      // Solflare Wallet can only use one cluster (network) at a time
       // it will connect to mainnet-beta by default if no network is selected beforehand
       return false;
     }
@@ -168,6 +194,9 @@ class ReownAppKitModalSession {
     if (sessionService.isPhantom) {
       return GetIt.I<IPhantomService>().walletSupportedMethods;
     }
+    if (sessionService.isSolflare) {
+      return GetIt.I<ISolflareService>().walletSupportedMethods;
+    }
     if (sessionService.isMagic) {
       final ns = namespace ?? NetworkUtils.eip155;
       return GetIt.I<IMagicService>().supportedMethods[ns];
@@ -192,6 +221,7 @@ class ReownAppKitModalSession {
     }
     if (sessionService.isCoinbase ||
         sessionService.isPhantom ||
+        sessionService.isSolflare ||
         sessionService.isMagic) {
       return <String>[];
     }
@@ -233,6 +263,10 @@ class ReownAppKitModalSession {
       return [_phantomData!.chainId];
     }
 
+    if (sessionService.isSolflare) {
+      return [_solflareData!.chainId];
+    }
+
     if (sessionService.isMagic) {
       return [...allEIP155, ...allSolana];
     }
@@ -256,6 +290,13 @@ class ReownAppKitModalSession {
     }
 
     if (sessionService.isPhantom) {
+      final ns = namespace ?? NetworkUtils.solana;
+      return ReownAppKitModalNetworks.getAllSupportedNetworks(namespace: ns)
+          .map((e) => '${e.chainId}:${getAddress(ns)}')
+          .toList();
+    }
+
+    if (sessionService.isSolflare) {
       final ns = namespace ?? NetworkUtils.solana;
       return ReownAppKitModalNetworks.getAllSupportedNetworks(namespace: ns)
           .map((e) => '${e.chainId}:${getAddress(ns)}')
@@ -336,6 +377,9 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     if (sessionService.isPhantom) {
       return _phantomData?.self;
     }
+    if (sessionService.isSolflare) {
+      return _solflareData?.self;
+    }
     if (sessionService.isMagic) {
       return _magicData?.self ??
           ConnectionMetadata(
@@ -357,6 +401,9 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     }
     if (sessionService.isPhantom) {
       return _phantomData?.peer;
+    }
+    if (sessionService.isSolflare) {
+      return _solflareData?.peer;
     }
     if (sessionService.isMagic) {
       return _magicData?.peer ??
@@ -405,6 +452,9 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     if (sessionService.isPhantom) {
       return _phantomData!.address;
     }
+    if (sessionService.isSolflare) {
+      return _solflareData!.address;
+    }
     if (sessionService.isMagic) {
       return _magicData!.address;
     }
@@ -428,6 +478,9 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     if (sessionService.isPhantom) {
       return _phantomData!.chainId;
     }
+    if (sessionService.isSolflare) {
+      return _solflareData!.chainId;
+    }
     if (sessionService.isMagic) {
       return _magicData!.chainId;
     }
@@ -445,6 +498,9 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
     if (sessionService.isPhantom) {
       return peer!.metadata.name;
     }
+    if (sessionService.isSolflare) {
+      return peer!.metadata.name;
+    }
     if (sessionService.isMagic) {
       return peer?.metadata.name;
     }
@@ -459,6 +515,7 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
       ...(_sessionData?.toJson() ?? {}),
       ...(_coinbaseData?.toJson() ?? {}),
       ...(_phantomData?.toJson() ?? {}),
+      ...(_solflareData?.toJson() ?? {}),
       ...(_magicData?.toJson() ?? {}),
     };
   }
@@ -494,6 +551,21 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
       };
     }
 
+    if (sessionService.isSolflare) {
+      // Solflare only supports solana chains through the deeplink API
+      final solana = NetworkUtils.solana;
+      final allSolana = getApprovedChains(namespace: solana)!;
+      return {
+        solana: Namespace(
+          chains: [...allSolana],
+          accounts: [...getAccounts(namespace: solana)!],
+          methods: [...GetIt.I<ISolflareService>().walletSupportedMethods],
+          // Solflare does not have events as it doesn't use WC protocol
+          events: [],
+        ),
+      };
+    }
+
     if (sessionService.isMagic) {
       final ns = NamespaceUtils.getNamespaceFromChain(_magicData!.chainId);
       final allChains = ReownAppKitModalNetworks.getAllSupportedNetworks(
@@ -519,6 +591,7 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
       if (_sessionData != null) 'sessionData': _sessionData!.toJson(),
       if (_coinbaseData != null) 'coinbaseData': _coinbaseData?.toJson(),
       if (_phantomData != null) 'phantomData': _phantomData?.toJson(),
+      if (_solflareData != null) 'solflareData': _solflareData?.toJson(),
       if (_magicData != null) 'magicData': _magicData?.toJson(),
       if (_siweSession != null) 'siweSession': _siweSession?.toJson(),
       'isSmartAccount': _isSmartAccount,

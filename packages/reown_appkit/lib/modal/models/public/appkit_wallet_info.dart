@@ -24,6 +24,9 @@ extension ReownAppKitWalletInfoExtension on ReownAppKitModalWalletInfo {
   bool get isPhantom =>
       listing.id ==
       'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393';
+  bool get isSolflare =>
+      listing.id ==
+      '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79';
 }
 
 class AppKitModalWalletListing {

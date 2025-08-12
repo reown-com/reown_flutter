@@ -1,3 +1,7 @@
+## 1.5.1
+
+- Solflare Wallet support
+
 ## 1.5.0
 
 - New relay methods for latency improvements

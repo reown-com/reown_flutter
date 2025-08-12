@@ -5,18 +5,18 @@ import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
-import 'package:reown_appkit/modal/services/phantom_service/i_phantom_service.dart';
-import 'package:reown_appkit/modal/services/phantom_service/models/phantom_data.dart';
-import 'package:reown_appkit/modal/services/phantom_service/models/phantom_events.dart';
-import 'package:reown_appkit/modal/services/phantom_service/phantom_helper.dart';
-import 'package:reown_appkit/modal/services/phantom_service/utils/phantom_utils.dart';
+import 'package:reown_appkit/modal/services/solflare_service/i_solflare_service.dart';
+import 'package:reown_appkit/modal/services/solflare_service/models/solflare_data.dart';
+import 'package:reown_appkit/modal/services/solflare_service/models/solflare_events.dart';
+import 'package:reown_appkit/modal/services/solflare_service/solflare_helper.dart';
+import 'package:reown_appkit/modal/services/solflare_service/utils/solflare_utils.dart';
 import 'package:reown_appkit/modal/services/third_party_wallet_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
-class PhantomService implements IPhantomService {
+class SolflareService implements ISolflareService {
   String _iconImage = '';
-  ReownAppKitModalWalletInfo? _phantomWalletData;
-  PhantomHelper? _phantomHelper;
+  ReownAppKitModalWalletInfo? _solflareWalletData;
+  SolflareHelper? _solflareHelper;
 
   late final PairingMetadata _metadata;
   late final IReownCore _core;
@@ -28,14 +28,14 @@ class PhantomService implements IPhantomService {
   @override
   ConnectionMetadata get walletMetadata => ConnectionMetadata(
         metadata: PairingMetadata(
-          name: _phantomWalletData?.listing.name ?? 'Phantom Wallet',
-          description: _phantomWalletData?.listing.description ?? '',
-          url: _phantomWalletData?.listing.homepage ?? '',
+          name: _solflareWalletData?.listing.name ?? 'Solflare',
+          description: _solflareWalletData?.listing.description ?? '',
+          url: _solflareWalletData?.listing.homepage ?? '',
           icons: [_iconImage],
           redirect: Redirect(
-            native: _phantomWalletData?.listing.mobileLink,
-            universal: _phantomWalletData?.listing.linkMode,
-            linkMode: _phantomWalletData?.listing.linkMode != null,
+            native: _solflareWalletData?.listing.mobileLink,
+            universal: _solflareWalletData?.listing.linkMode,
+            linkMode: _solflareWalletData?.listing.linkMode != null,
           ),
         ),
         publicKey: '',
@@ -47,16 +47,16 @@ class PhantomService implements IPhantomService {
         ..remove('solana_getAccounts');
 
   @override
-  Event<PhantomConnectEvent> onPhantomConnect = Event<PhantomConnectEvent>();
+  Event<SolflareConnectEvent> onSolflareConnect = Event<SolflareConnectEvent>();
 
   @override
-  Event<PhantomErrorEvent> onPhantomError = Event<PhantomErrorEvent>();
+  Event<SolflareErrorEvent> onSolflareError = Event<SolflareErrorEvent>();
 
   @override
-  Event<PhantomResponseEvent> get onPhantomResponse =>
-      Event<PhantomResponseEvent>();
+  Event<SolflareResponseEvent> get onSolflareResponse =>
+      Event<SolflareResponseEvent>();
 
-  PhantomService({
+  SolflareService({
     required PairingMetadata metadata,
     required IReownCore core,
   })  : _metadata = metadata,
@@ -64,21 +64,21 @@ class PhantomService implements IPhantomService {
 
   @override
   Future<void> init() async {
-    _phantomWalletData = (await _explorerService.getPhantomWalletObject()) ??
+    _solflareWalletData = (await _explorerService.getSolflareWalletObject()) ??
         ReownAppKitModalWalletInfo(
-          listing: PhantomUtils.defaultListingData,
+          listing: SolflareUtils.defaultListingData,
           installed: false,
           recent: false,
         );
 
-    final imageId = _phantomWalletData?.listing.imageId ?? '';
+    final imageId = _solflareWalletData?.listing.imageId ?? '';
     _iconImage = _explorerService.getWalletImageUrl(imageId);
 
     final dappRedirect = (_metadata.redirect?.linkMode == true)
         ? _metadata.redirect?.universal
         : _metadata.redirect?.native;
 
-    _phantomHelper = PhantomHelper(
+    _solflareHelper = SolflareHelper(
       redirect: walletMetadata.metadata.redirect!,
       appUrl: _metadata.url,
       redirectLink: dappRedirect ?? '',
@@ -87,16 +87,17 @@ class PhantomService implements IPhantomService {
   }
 
   @override
-  Future<String> get dappPublicKey async => _phantomHelper?.dappPublicKey ?? '';
+  Future<String> get dappPublicKey async =>
+      _solflareHelper?.dappPublicKey ?? '';
 
   @override
   Future<String> get walletPublicKey async =>
-      _phantomHelper?.walletPublicKey ?? '';
+      _solflareHelper?.walletPublicKey ?? '';
 
   @override
   Future<bool> isConnected() async {
     try {
-      return _phantomHelper!.restoreSession();
+      return _solflareHelper!.restoreSession();
     } catch (e, s) {
       _core.logger.e('[$runtimeType] isConnected $e', stackTrace: s);
     }
@@ -126,12 +127,12 @@ class PhantomService implements IPhantomService {
         _selectedChainId = solanaNets.first.chainId;
       }
 
-      final selectedCluster = PhantomUtils.walletClusters[_selectedChainId];
-      final phantomUri = _phantomHelper?.buildConnectionUri(
+      final selectedCluster = SolflareUtils.walletClusters[_selectedChainId];
+      final solflareUri = _solflareHelper?.buildConnectionUri(
         cluster: selectedCluster,
       );
-      _core.logger.d('[$runtimeType] connect $phantomUri');
-      await ReownCoreUtils.openURL(phantomUri.toString());
+      _core.logger.d('[$runtimeType] connect $solflareUri');
+      await ReownCoreUtils.openURL(solflareUri.toString());
     } catch (e, s) {
       if (e is ThirdPartyWalletException) {
         _core.logger.e('[$runtimeType] ${e.message}', stackTrace: s);
@@ -140,7 +141,7 @@ class PhantomService implements IPhantomService {
 
       final errorMessage = '${walletMetadata.metadata.name} connect error';
       _core.logger.e('[$runtimeType] $errorMessage', error: e, stackTrace: s);
-      onPhantomError.broadcast(PhantomErrorEvent(-1, errorMessage));
+      onSolflareError.broadcast(SolflareErrorEvent(-1, errorMessage));
       throw ThirdPartyWalletException(errorMessage, e, s);
     }
   }
@@ -161,19 +162,19 @@ class PhantomService implements IPhantomService {
       late final Uri requestUri;
       switch (request.method) {
         case 'solana_signMessage':
-          requestUri = _phantomHelper!.buildSignMessageUri(
+          requestUri = _solflareHelper!.buildSignMessageUri(
             message: request.params['message'],
           );
         case 'solana_signTransaction':
-          requestUri = _phantomHelper!.buildSignTransactionUri(
+          requestUri = _solflareHelper!.buildSignTransactionUri(
             transaction: request.params['transaction'],
           );
         case 'solana_signAllTransactions':
-          requestUri = _phantomHelper!.buildUriSignAllTransactions(
+          requestUri = _solflareHelper!.buildUriSignAllTransactions(
             transactions: request.params['transactions'],
           );
         case 'solana_signAndSendTransaction':
-          requestUri = _phantomHelper!.buildSignAndSendTransactionUri(
+          requestUri = _solflareHelper!.buildSignAndSendTransactionUri(
             transaction: request.params['transaction'],
           );
         default:
@@ -185,7 +186,7 @@ class PhantomService implements IPhantomService {
     } catch (e, s) {
       final errorMessage = '${walletMetadata.metadata.name} request error';
       _core.logger.e('[$runtimeType] $errorMessage', error: e, stackTrace: s);
-      onPhantomError.broadcast(PhantomErrorEvent(-1, errorMessage));
+      onSolflareError.broadcast(SolflareErrorEvent(-1, errorMessage));
       throw ThirdPartyWalletException(errorMessage, e, s);
     }
 
@@ -196,32 +197,32 @@ class PhantomService implements IPhantomService {
   Future<void> disconnect() async {
     await _checkInstalled();
     try {
-      final disconnectUri = _phantomHelper?.buildDisconnectUri();
+      final disconnectUri = _solflareHelper?.buildDisconnectUri();
       await ReownCoreUtils.openURL(disconnectUri.toString());
     } catch (e, s) {
       final errorMessage = '${walletMetadata.metadata.name} disconnect error';
       _core.logger.e('[$runtimeType] $errorMessage', error: e, stackTrace: s);
-      onPhantomError.broadcast(PhantomErrorEvent(-1, errorMessage));
+      onSolflareError.broadcast(SolflareErrorEvent(-1, errorMessage));
       throw ThirdPartyWalletException(errorMessage, e, s);
     }
   }
 
   @override
-  bool get isInstalled => _phantomWalletData?.installed ?? false;
+  bool get isInstalled => _solflareWalletData?.installed ?? false;
 
   @override
-  void completePhantomRequest({required String url}) async {
+  void completeSolflareRequest({required String url}) async {
     final params = Uri.parse(url).queryParameters;
-    final payload = await _phantomHelper!.decryptPayload(params);
-    final phantomRequest = payload['phantomRequest'];
-    _core.logger.d('[$runtimeType] completePhantomRequest, payload: $payload');
+    final payload = await _solflareHelper!.decryptPayload(params);
+    final solflareRequest = payload['solflareRequest'];
+    _core.logger.d('[$runtimeType] completeSolflareRequest, payload: $payload');
 
-    switch (phantomRequest) {
+    switch (solflareRequest) {
       case 'connect':
-        _onConnectPhantomWallet(payload);
+        _onConnectSolflareWallet(payload);
         break;
       case 'disconnect':
-        _onDisconnectPhantomWallet(payload);
+        _onDisconnectSolflareWallet(payload);
         break;
       default:
         _onRequestResponse(payload);
@@ -231,20 +232,20 @@ class PhantomService implements IPhantomService {
 
   Future<bool> _checkInstalled() async {
     if (!isInstalled) {
-      throw ThirdPartyWalletNotInstalled(walletName: 'Phantom Wallet');
+      throw ThirdPartyWalletNotInstalled(walletName: 'Solflare Wallet');
     }
     return true;
   }
 
-  Future<void> _onConnectPhantomWallet(Map<String, dynamic> payload) async {
+  Future<void> _onConnectSolflareWallet(Map<String, dynamic> payload) async {
     if (payload.containsKey('errorCode')) {
       final errorCode = int.parse(payload['errorCode']);
       final errorMessage = payload['errorMessage'];
-      onPhantomError.broadcast(PhantomErrorEvent(errorCode, errorMessage));
+      onSolflareError.broadcast(SolflareErrorEvent(errorCode, errorMessage));
       return;
     }
 
-    final data = PhantomData.fromJson(payload).copytWith(
+    final data = SolflareData.fromJson(payload).copytWith(
       chainId: _selectedChainId,
       peer: walletMetadata.copyWith(publicKey: await walletPublicKey),
       self: ConnectionMetadata(
@@ -252,20 +253,20 @@ class PhantomService implements IPhantomService {
         publicKey: await dappPublicKey,
       ),
     );
-    await _phantomHelper?.persistSession();
-    onPhantomConnect.broadcast(PhantomConnectEvent(data));
+    await _solflareHelper?.persistSession();
+    onSolflareConnect.broadcast(SolflareConnectEvent(data));
     _core.logger.i(
-      '[$runtimeType] _onConnectPhantomWallet ${jsonEncode(data.toJson())}',
+      '[$runtimeType] _onConnectSolflareWallet ${jsonEncode(data.toJson())}',
     );
   }
 
-  Future<void> _onDisconnectPhantomWallet(_) async {
-    await _core.storage.delete(StorageConstants.phantomSession);
-    return _phantomHelper?.resetSharedSecret();
+  Future<void> _onDisconnectSolflareWallet(_) async {
+    await _core.storage.delete(StorageConstants.solflareSession);
+    return _solflareHelper?.resetSharedSecret();
   }
 
   void _onRequestResponse(Map<String, dynamic> payload) {
-    final p = Map<String, dynamic>.from(payload)..remove('phantomRequest');
+    final p = Map<String, dynamic>.from(payload)..remove('solflareRequest');
     _requestCompleter.complete(p);
   }
 }

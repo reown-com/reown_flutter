@@ -112,10 +112,12 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
     final imageId = selectedWallet?.listing.imageId ?? '';
     final imageUrl = _explorerService.getWalletImageUrl(imageId);
     //
-    final webOnlyWallet =
-        walletRedirect?.webOnly == true && selectedWallet?.isPhantom == false;
+    final webOnlyWallet = walletRedirect?.webOnly == true &&
+        selectedWallet?.isPhantom == false &&
+        selectedWallet?.isSolflare == false;
     final mobileOnlyWallet = walletRedirect?.mobileOnly == true ||
         selectedWallet?.isPhantom == true ||
+        selectedWallet?.isSolflare == true ||
         selectedWallet?.isCoinbase == true;
     return ModalNavbar(
       title: walletName,
