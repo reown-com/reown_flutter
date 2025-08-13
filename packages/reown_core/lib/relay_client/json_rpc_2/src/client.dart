@@ -162,7 +162,7 @@ class Client {
 
     _send(method, parameters, idAct);
 
-    var completer = Completer<dynamic>();
+    var completer = Completer<dynamic>.sync();
     _pendingRequests[idAct] = _Request(method, completer, Chain.current());
     return completer.future;
   }
