@@ -311,7 +311,7 @@ class RelayClient implements IRelayClient {
     await socketHandler.setup(url: url);
     await socketHandler.connect();
 
-    jsonRPC = Peer(socketHandler.channel!);
+    jsonRPC = Peer(socketHandler.channel!, logCallback: _handleJsonRpcLog);
 
     jsonRPC!.registerMethod(
       _buildIRNMethod(IRN_SUBSCRIPTION),
@@ -456,6 +456,29 @@ class RelayClient implements IRelayClient {
       ),
     );
     return true;
+  }
+
+  /// Handles JSON-RPC logging from the underlying Peer, Client, and Server classes.
+  /// This centralizes all JSON-RPC logging in the relay client for better control.
+  void _handleJsonRpcLog(
+    String level,
+    String message, [
+    Object? error,
+    StackTrace? stackTrace,
+  ]) {
+    final prefix = '[JSON-RPC]';
+
+    switch (level.toLowerCase()) {
+      case 'debug':
+        core.logger.d('$prefix $message');
+        break;
+      case 'error':
+        core.logger.e('$prefix $message', error: error, stackTrace: stackTrace);
+        break;
+      default:
+        core.logger.i('$prefix $message');
+        break;
+    }
   }
 
   Future<bool> _handleSubscription(Parameters params) async {

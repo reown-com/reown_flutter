@@ -222,92 +222,79 @@ class ReownAppKitModal
       optionalNamespaces,
     ));
 
-    _registerSingleton<IWidgetStack>(
-      () => WidgetStack(core: _appKit.core),
-    );
-    _registerSingleton<IUriService>(
-      () => UriService(core: _appKit.core),
-    );
-    _registerSingleton<IAnalyticsService>(
-      () => AnalyticsService(
-        core: _appKit.core,
-        enableAnalytics: enableAnalytics,
-      ),
-    );
-    _registerSingleton<IExplorerService>(
-      () => ExplorerService(
-        core: _appKit.core,
-        referer: _appKit.metadata.name.replaceAll(' ', ''),
-        featuredWalletIds: featuredWalletIds,
-        includedWalletIds: includedWalletIds,
-        excludedWalletIds: excludedWalletIds,
-        namespaces: _sessionNamespaces,
-        customWallets: _customWallets,
-      ),
-    );
-    _registerSingleton<INetworkService>(() => NetworkService());
-    _registerSingleton<IToastService>(() => ToastService());
-    _registerSingleton<IBlockChainService>(
-      () => BlockChainService(
-        core: _appKit.core,
-      ),
-    );
-    _registerSingleton<IMagicService>(
-      () => MagicService(
-        core: _appKit.core,
-        metadata: _appKit.metadata,
-        featuresConfig: this.featuresConfig,
-      ),
-    );
-    _registerSingleton<ICoinbaseService>(
-      () => CoinbaseService(
-        core: _appKit.core,
-        metadata: _appKit.metadata,
-        enabled: _initializeCoinbaseSDK,
-      ),
-    );
-    _registerSingleton<IPhantomService>(
-      () => PhantomService(
-        core: _appKit.core,
-        metadata: _appKit.metadata,
-      ),
-    );
-    _registerSingleton<ISolflareService>(
-      () => SolflareService(
-        core: _appKit.core,
-        metadata: _appKit.metadata,
-      ),
-    );
-    _registerSingleton<ISiweService>(
-      () => SiweService(
-        appKit: _appKit,
-        siweConfig: siweConfig,
-        namespaces: _sessionNamespaces,
-      ),
+    _registerServices(
+      analyticsEnabled: enableAnalytics,
+      featuredWalletIds: featuredWalletIds,
+      includedWalletIds: includedWalletIds,
+      excludedWalletIds: excludedWalletIds,
+      siweConfig: siweConfig,
     );
   }
 
-  T _registerSingleton<T extends Object>(T Function() factoryFunc) =>
-      GetIt.I.registerSingletonIfAbsent<T>(factoryFunc);
+  void _registerServices({
+    required bool? analyticsEnabled,
+    required Set<String>? featuredWalletIds,
+    required Set<String>? includedWalletIds,
+    required Set<String>? excludedWalletIds,
+    required SIWEConfig? siweConfig,
+  }) {
+    GetIt.I.registerSingletonIfAbsent<IWidgetStack>(() => WidgetStack(
+          core: _appKit.core,
+        ));
+    GetIt.I.registerSingletonIfAbsent<IUriService>(() => UriService(
+          core: _appKit.core,
+        ));
+    GetIt.I.registerSingletonIfAbsent<IAnalyticsService>(() => AnalyticsService(
+          core: _appKit.core,
+          enableAnalytics: analyticsEnabled,
+        ));
+    GetIt.I.registerSingletonIfAbsent<IExplorerService>(() => ExplorerService(
+          core: _appKit.core,
+          referer: _appKit.metadata.name.replaceAll(' ', ''),
+          featuredWalletIds: featuredWalletIds,
+          includedWalletIds: includedWalletIds,
+          excludedWalletIds: excludedWalletIds,
+          namespaces: _sessionNamespaces,
+          customWallets: _customWallets,
+        ));
+    GetIt.I.registerSingletonIfAbsent<INetworkService>(() => NetworkService());
+    GetIt.I.registerSingletonIfAbsent<IToastService>(() => ToastService());
+    GetIt.I
+        .registerSingletonIfAbsent<IBlockChainService>(() => BlockChainService(
+              core: _appKit.core,
+            ));
+    GetIt.I.registerSingletonIfAbsent<IMagicService>(() => MagicService(
+          core: _appKit.core,
+          metadata: _appKit.metadata,
+          featuresConfig: featuresConfig,
+        ));
+    GetIt.I.registerSingletonIfAbsent<ICoinbaseService>(() => CoinbaseService(
+          core: _appKit.core,
+          metadata: _appKit.metadata,
+          enabled: _initializeCoinbaseSDK,
+        ));
+    GetIt.I.registerSingletonIfAbsent<IPhantomService>(() => PhantomService(
+          core: _appKit.core,
+          metadata: _appKit.metadata,
+        ));
+    GetIt.I.registerSingletonIfAbsent<ISiweService>(() => SiweService(
+          appKit: _appKit,
+          siweConfig: siweConfig,
+          namespaces: _sessionNamespaces,
+        ));
+  }
 
-  T _getSingleton<T extends Object>() => GetIt.I<T>();
-
-  FutureOr _unregisterSingleton<T extends Object>() => GetIt.I.unregister<T>();
-
-  IMagicService get _magicService => _getSingleton<IMagicService>();
-  ICoinbaseService get _coinbaseService => _getSingleton<ICoinbaseService>();
-  IPhantomService get _phantomService => _getSingleton<IPhantomService>();
-  ISolflareService get _solflareService => _getSingleton<ISolflareService>();
-
-  IWidgetStack get _widgetStack => _getSingleton<IWidgetStack>();
-  IUriService get _uriService => _getSingleton<IUriService>();
-  IToastService get _toastService => _getSingleton<IToastService>();
-  IAnalyticsService get _analyticsService => _getSingleton<IAnalyticsService>();
-  IExplorerService get _explorerService => _getSingleton<IExplorerService>();
-  INetworkService get _networkService => _getSingleton<INetworkService>();
-  IBlockChainService get _blockchainService =>
-      _getSingleton<IBlockChainService>();
-  ISiweService get _siweService => _getSingleton<ISiweService>();
+  IMagicService get _magicService => GetIt.I<IMagicService>();
+  ICoinbaseService get _coinbaseService => GetIt.I<ICoinbaseService>();
+  IPhantomService get _phantomService => GetIt.I<IPhantomService>();
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+  IUriService get _uriService => GetIt.I<IUriService>();
+  IToastService get _toastService => GetIt.I<IToastService>();
+  IAnalyticsService get _analyticsService => GetIt.I<IAnalyticsService>();
+  IExplorerService get _explorerService => GetIt.I<IExplorerService>();
+  INetworkService get _networkService => GetIt.I<INetworkService>();
+  IBlockChainService get _blockchainService => GetIt.I<IBlockChainService>();
+  ISiweService get _siweService => GetIt.I<ISiweService>();
 
   bool _isValidProjectID() {
     if (!CoreUtils.isValidProjectID(_projectId)) {
@@ -1600,18 +1587,17 @@ class ReownAppKitModal
           _appKit.core.logger.e('[$runtimeType] disconnectOnDispose $e');
         }
       }
-      _unregisterSingleton<IUriService>();
-      _unregisterSingleton<IAnalyticsService>();
-      _unregisterSingleton<IExplorerService>();
-      _unregisterSingleton<INetworkService>();
-      _unregisterSingleton<IToastService>();
-      _unregisterSingleton<IBlockChainService>();
-      _unregisterSingleton<IMagicService>();
-      _unregisterSingleton<ICoinbaseService>();
-      _unregisterSingleton<IPhantomService>();
-      _unregisterSingleton<ISolflareService>();
-      _unregisterSingleton<ISiweService>();
-      _unregisterSingleton<IWidgetStack>();
+      GetIt.I.unregister<IUriService>();
+      GetIt.I.unregister<IAnalyticsService>();
+      GetIt.I.unregister<IExplorerService>();
+      GetIt.I.unregister<INetworkService>();
+      GetIt.I.unregister<IToastService>();
+      GetIt.I.unregister<IBlockChainService>();
+      GetIt.I.unregister<IMagicService>();
+      GetIt.I.unregister<ICoinbaseService>();
+      GetIt.I.unregister<IPhantomService>();
+      GetIt.I.unregister<ISiweService>();
+      GetIt.I.unregister<IWidgetStack>();
       await Future.delayed(Duration(milliseconds: 500));
       _notify();
     }

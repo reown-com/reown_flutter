@@ -17,6 +17,10 @@ import 'utils.dart';
 /// A callback for unhandled exceptions.
 typedef ErrorCallback = void Function(dynamic error, dynamic stackTrace);
 
+/// A callback for logging messages from the JSON-RPC server.
+typedef JsonRpcLogCallback = void Function(String level, String message,
+    [Object? error, StackTrace? stackTrace]);
+
 /// A JSON-RPC 2.0 server.
 ///
 /// A server exposes methods that are called by requests, to which it provides
@@ -29,8 +33,14 @@ typedef ErrorCallback = void Function(dynamic error, dynamic stackTrace);
 /// time, or even for a single method to be invoked multiple times at once.
 class Server {
   final StreamChannel<dynamic> _channel;
-  late final _stream = _channel.stream.asBroadcastStream();
-  final _channelSubscriptions = <StreamSubscription<dynamic>>{};
+  final List<StreamSubscription<dynamic>> _managedSubscriptions = [];
+  late final Stream<dynamic> _inputStream;
+
+  // Debug identifier for logging purposes (used in log messages)
+  final String _debugId = _generateDebugId();
+
+  /// Optional logging callback for propagating logs to parent classes
+  final JsonRpcLogCallback? _logCallback;
 
   /// The methods registered for this server.
   final _methods = <String, Function>{};
@@ -41,7 +51,7 @@ class Server {
   /// [RpcException.methodNotFound] exception.
   final _fallbacks = Queue<Function>();
 
-  final _done = Completer<void>();
+  final _done = Completer<dynamic>();
 
   /// Returns a [Future] that completes when the underlying connection is
   /// closed.
@@ -49,7 +59,7 @@ class Server {
   /// This is the same future that's returned by [listen] and [close]. It may
   /// complete before [close] is called if the remote endpoint closes the
   /// connection.
-  Future get done => _done.future;
+  Future<dynamic> get done => _done.future;
 
   /// Whether the underlying connection is closed.
   ///
@@ -87,16 +97,17 @@ class Server {
     StreamChannel<String> channel, {
     ErrorCallback? onUnhandledError,
     bool strictProtocolChecks = true,
+    JsonRpcLogCallback? logCallback,
   }) {
     return Server.withoutJson(
       jsonDocument.bind(channel).transform(respondToFormatExceptions),
       onUnhandledError: onUnhandledError,
       strictProtocolChecks: strictProtocolChecks,
+      logCallback: logCallback,
     );
   }
 
-  /// Creates a [Server] that communicates using decoded messages over
-  /// [channel].
+  /// Creates a [Server] that communicates using decoded messages over [channel].
   ///
   /// Unlike [Server], this doesn't read or write JSON strings. Instead, it
   /// reads and writes decoded maps or lists.
@@ -114,7 +125,12 @@ class Server {
     this._channel, {
     this.onUnhandledError,
     this.strictProtocolChecks = true,
-  });
+    JsonRpcLogCallback? logCallback,
+  }) : _logCallback = logCallback {
+    _inputStream = _channel.stream;
+    _logDebug(
+        'Server initialized with ${strictProtocolChecks ? 'strict' : 'lenient'} protocol checks');
+  }
 
   /// Starts listening to the underlying stream.
   ///
@@ -122,24 +138,27 @@ class Server {
   /// when it has an error. This is the same as [done].
   ///
   /// [listen] may only be called once.
-  Future listen() {
+  Future<dynamic> listen() {
+    _logDebug('Starting to listen for requests');
+
     late final StreamSubscription<dynamic> subscription;
-    subscription = _stream.listen(
+    subscription = _inputStream.listen(
       _handleRequest,
       onError: (error, stackTrace) {
+        _logError('Stream error occurred', error, stackTrace);
         _done.completeError(error, stackTrace);
         _channel.sink.close();
       },
       onDone: () {
+        _logDebug('Stream completed');
         if (!_done.isCompleted) {
           _done.complete();
         }
-        subscription.cancel();
-        _channelSubscriptions.remove(subscription);
+        _unregisterSubscription(subscription);
         close();
       },
     );
-    _channelSubscriptions.add(subscription);
+    _managedSubscriptions.add(subscription);
     return done;
   }
 
@@ -147,16 +166,12 @@ class Server {
   ///
   /// Returns a [Future] that completes when all resources have been released.
   /// This is the same as [done].
-  Future close() {
+  Future<dynamic> close() {
+    _logDebug(
+        'Closing server, cleaning up ${_managedSubscriptions.length} subscriptions');
     _channel.sink.close();
     if (!_done.isCompleted) _done.complete();
-    Future.forEach(
-      _channelSubscriptions.toSet(),
-      (subscription) async {
-        _channelSubscriptions.remove(subscription);
-        await subscription.cancel();
-      },
-    );
+    _terminateAllSubscriptions();
     return done;
   }
 
@@ -175,6 +190,7 @@ class Server {
     }
 
     _methods[name] = callback;
+    _logDebug('Registered method: $name');
   }
 
   /// Registers a fallback method on this server.
@@ -190,6 +206,7 @@ class Server {
   /// errors by throwing an [RpcException].
   void registerFallback(Function(Parameters parameters) callback) {
     _fallbacks.add(callback);
+    _logDebug('Registered fallback method (total: ${_fallbacks.length})');
   }
 
   /// Handle a request.
@@ -199,29 +216,40 @@ class Server {
   /// handling that request and returns a JSON-serializable response, or `null`
   /// if no response should be sent. [callback] may send custom
   /// errors by throwing an [RpcException].
-  Future _handleRequest(request) async {
-    dynamic response;
-    if (request is List) {
-      if (request.isEmpty) {
-        response = RpcException(error_code.INVALID_REQUEST,
-                'A batch must contain at least one request.')
-            .serialize(request);
+  Future<dynamic> _handleRequest(request) async {
+    try {
+      dynamic response;
+      if (request is List) {
+        if (request.isEmpty) {
+          _logError('Empty batch request received');
+          response = RpcException(error_code.INVALID_REQUEST,
+                  'A batch must contain at least one request.')
+              .serialize(request);
+        } else {
+          _logDebug('Handling batch request with ${request.length} items');
+          var results = await Future.wait(request.map(_handleSingleRequest));
+          var nonNull = results.where((result) => result != null);
+          if (nonNull.isEmpty) return;
+          response = nonNull.toList();
+        }
       } else {
-        var results = await Future.wait(request.map(_handleSingleRequest));
-        var nonNull = results.where((result) => result != null);
-        if (nonNull.isEmpty) return;
-        response = nonNull.toList();
+        _logDebug('Handling single request');
+        response = await _handleSingleRequest(request);
+        if (response == null) return;
       }
-    } else {
-      response = await _handleSingleRequest(request);
-      if (response == null) return;
-    }
 
-    if (!isClosed) _channel.sink.add(response);
+      if (!isClosed) {
+        _channel.sink.add(response);
+        _logDebug('Response sent successfully');
+      }
+    } catch (error, stackTrace) {
+      _logError('Error handling request', error, stackTrace);
+      rethrow;
+    }
   }
 
   /// Handles an individual parsed request.
-  Future _handleSingleRequest(request) async {
+  Future<dynamic> _handleSingleRequest(request) async {
     try {
       _validateRequest(request);
 
@@ -244,11 +272,13 @@ class Server {
       // response, even if one is generated on the server.
       if (!request.containsKey('id')) return null;
 
+      _logDebug('Method $name executed successfully');
       return {'jsonrpc': '2.0', 'result': result, 'id': request['id']};
     } catch (error, stackTrace) {
       if (error is RpcException) {
         if (error.code == error_code.INVALID_REQUEST ||
             request.containsKey('id')) {
+          _logError('RPC exception in method ${request['method']}', error);
           return error.serialize(request);
         } else {
           onUnhandledError?.call(error, stackTrace);
@@ -259,6 +289,8 @@ class Server {
         return null;
       }
       final chain = Chain.forTrace(stackTrace);
+      _logError(
+          'Unexpected error in method ${request['method']}', error, stackTrace);
       return RpcException(error_code.SERVER_ERROR, getErrorMessage(error),
           data: {
             'full': '$error',
@@ -326,10 +358,10 @@ class Server {
   }
 
   /// Try all the fallback methods in order.
-  Future _tryFallbacks(Parameters params) {
+  Future<dynamic> _tryFallbacks(Parameters params) {
     var iterator = _fallbacks.toList().iterator;
 
-    Future tryNext() async {
+    Future<dynamic> tryNext() async {
       if (!iterator.moveNext()) {
         throw RpcException.methodNotFound(params.method);
       }
@@ -343,5 +375,38 @@ class Server {
     }
 
     return tryNext();
+  }
+
+  /// Unregisters a specific subscription from tracking.
+  void _unregisterSubscription(StreamSubscription<dynamic> subscription) {
+    _managedSubscriptions.remove(subscription);
+    _logDebug(
+        'Unregistered subscription, ${_managedSubscriptions.length} remaining');
+  }
+
+  /// Terminates all managed subscriptions.
+  void _terminateAllSubscriptions() {
+    final count = _managedSubscriptions.length;
+    for (final subscription in _managedSubscriptions.toList()) {
+      _managedSubscriptions.remove(subscription);
+      subscription.cancel();
+    }
+    _logDebug('Terminated $count subscriptions');
+  }
+
+  /// Logs debug information if debug mode is enabled.
+  void _logDebug(String message) {
+    _logCallback?.call('debug', '[$_debugId] $message');
+  }
+
+  /// Logs error information.
+  void _logError(String message, [Object? error, StackTrace? stackTrace]) {
+    _logCallback?.call(
+        'error', '[$_debugId] ERROR: $message', error, stackTrace);
+  }
+
+  /// Generates a unique debug identifier for this server instance.
+  static String _generateDebugId() {
+    return 'Server_${DateTime.now().millisecondsSinceEpoch % 10000}';
   }
 }
