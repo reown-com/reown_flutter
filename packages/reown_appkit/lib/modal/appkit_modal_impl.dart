@@ -277,6 +277,10 @@ class ReownAppKitModal
           core: _appKit.core,
           metadata: _appKit.metadata,
         ));
+    GetIt.I.registerSingletonIfAbsent<ISolflareService>(() => SolflareService(
+          core: _appKit.core,
+          metadata: _appKit.metadata,
+        ));
     GetIt.I.registerSingletonIfAbsent<ISiweService>(() => SiweService(
           appKit: _appKit,
           siweConfig: siweConfig,
@@ -287,6 +291,7 @@ class ReownAppKitModal
   IMagicService get _magicService => GetIt.I<IMagicService>();
   ICoinbaseService get _coinbaseService => GetIt.I<ICoinbaseService>();
   IPhantomService get _phantomService => GetIt.I<IPhantomService>();
+  ISolflareService get _solflareService => GetIt.I<ISolflareService>();
   IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
   IUriService get _uriService => GetIt.I<IUriService>();
   IToastService get _toastService => GetIt.I<IToastService>();
@@ -1596,6 +1601,7 @@ class ReownAppKitModal
       GetIt.I.unregister<IMagicService>();
       GetIt.I.unregister<ICoinbaseService>();
       GetIt.I.unregister<IPhantomService>();
+      GetIt.I.unregister<ISolflareService>();
       GetIt.I.unregister<ISiweService>();
       GetIt.I.unregister<IWidgetStack>();
       await Future.delayed(Duration(milliseconds: 500));
