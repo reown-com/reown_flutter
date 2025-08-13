@@ -63,8 +63,9 @@ class SolflareHelper {
 
   Future<bool> restoreSession() async {
     try {
-      if (_core.storage.has(StorageConstants.solflareSession)) {
-        final session = _core.storage.get(StorageConstants.solflareSession)!;
+      if (_core.secureStorage.has(StorageConstants.solflareSession)) {
+        final session =
+            _core.secureStorage.get(StorageConstants.solflareSession)!;
         _currentKeyPair = CryptoKeyPair(
           hex.encode(_getKeyBytes('${session['self_private_key']}')),
           hex.encode(_getKeyBytes('${session['self_public_key']}')),
@@ -263,10 +264,11 @@ class SolflareHelper {
 
   Future<void> persistSession() async {
     try {
-      final currentData = _core.storage.has(StorageConstants.solflareSession)
-          ? _core.storage.get(StorageConstants.solflareSession)!
-          : {};
-      await _core.storage.set(StorageConstants.solflareSession, {
+      final currentData =
+          _core.secureStorage.has(StorageConstants.solflareSession)
+              ? _core.secureStorage.get(StorageConstants.solflareSession)!
+              : {};
+      await _core.secureStorage.set(StorageConstants.solflareSession, {
         ...currentData,
         'session_token': _sessionToken,
         'solflare_encryption_public_key': _solflarePublicKey,
@@ -355,10 +357,11 @@ class SolflareHelper {
       theirPublicKey: pncl.PublicKey(_getKeyBytes(_solflarePublicKey!)),
     );
     try {
-      final currentData = _core.storage.has(StorageConstants.solflareSession)
-          ? _core.storage.get(StorageConstants.solflareSession)!
-          : {};
-      await _core.storage.set(StorageConstants.solflareSession, {
+      final currentData =
+          _core.secureStorage.has(StorageConstants.solflareSession)
+              ? _core.secureStorage.get(StorageConstants.solflareSession)!
+              : {};
+      await _core.secureStorage.set(StorageConstants.solflareSession, {
         ...currentData,
         'self_private_key': _currentKeyPair!.getPrivateKeyBs58(),
         'self_public_key': _currentKeyPair!.getPublicKeyBs58(),

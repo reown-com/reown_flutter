@@ -1495,6 +1495,25 @@ class MockReownCore extends _i1.Mock implements _i31.ReownCore {
       );
 
   @override
+  _i7.IStore<Map<String, dynamic>> get secureStorage => (super.noSuchMethod(
+        Invocation.getter(#secureStorage),
+        returnValue: _FakeIStore_7<Map<String, dynamic>>(
+          this,
+          Invocation.getter(#secureStorage),
+        ),
+      ) as _i7.IStore<Map<String, dynamic>>);
+
+  @override
+  set secureStorage(_i7.IStore<Map<String, dynamic>>? _secureStorage) =>
+      super.noSuchMethod(
+        Invocation.setter(
+          #secureStorage,
+          _secureStorage,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
   String get protocol => (super.noSuchMethod(
         Invocation.getter(#protocol),
         returnValue: _i25.dummyValue<String>(

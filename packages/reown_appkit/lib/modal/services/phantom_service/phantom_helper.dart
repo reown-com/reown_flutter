@@ -63,8 +63,9 @@ class PhantomHelper {
 
   Future<bool> restoreSession() async {
     try {
-      if (_core.storage.has(StorageConstants.phantomSession)) {
-        final session = _core.storage.get(StorageConstants.phantomSession)!;
+      if (_core.secureStorage.has(StorageConstants.phantomSession)) {
+        final session =
+            _core.secureStorage.get(StorageConstants.phantomSession)!;
         _currentKeyPair = CryptoKeyPair(
           hex.encode(_getKeyBytes('${session['self_private_key']}')),
           hex.encode(_getKeyBytes('${session['self_public_key']}')),
@@ -262,10 +263,11 @@ class PhantomHelper {
 
   Future<void> persistSession() async {
     try {
-      final currentData = _core.storage.has(StorageConstants.phantomSession)
-          ? _core.storage.get(StorageConstants.phantomSession)!
-          : {};
-      await _core.storage.set(StorageConstants.phantomSession, {
+      final currentData =
+          _core.secureStorage.has(StorageConstants.phantomSession)
+              ? _core.secureStorage.get(StorageConstants.phantomSession)!
+              : {};
+      await _core.secureStorage.set(StorageConstants.phantomSession, {
         ...currentData,
         'session_token': _sessionToken,
         'phantom_encryption_public_key': _phantomPublicKey,
@@ -353,10 +355,11 @@ class PhantomHelper {
       theirPublicKey: pncl.PublicKey(_getKeyBytes(_phantomPublicKey!)),
     );
     try {
-      final currentData = _core.storage.has(StorageConstants.phantomSession)
-          ? _core.storage.get(StorageConstants.phantomSession)!
-          : {};
-      await _core.storage.set(StorageConstants.phantomSession, {
+      final currentData =
+          _core.secureStorage.has(StorageConstants.phantomSession)
+              ? _core.secureStorage.get(StorageConstants.phantomSession)!
+              : {};
+      await _core.secureStorage.set(StorageConstants.phantomSession, {
         ...currentData,
         'self_private_key': _currentKeyPair!.getPrivateKeyBs58(),
         'self_public_key': _currentKeyPair!.getPublicKeyBs58(),
