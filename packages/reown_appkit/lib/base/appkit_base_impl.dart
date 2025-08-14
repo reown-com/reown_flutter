@@ -43,26 +43,11 @@ class ReownAppKit implements IReownAppKit {
     return client;
   }
 
-  ///---------- GENERIC ----------///
-
-  @override
-  final String protocol = 'wc';
-
-  @override
-  final int version = 2;
-
-  @override
-  final IReownCore core;
-
-  @override
-  final PairingMetadata metadata;
-
-  ///
-  ReownAppKit({
-    required this.core,
-    required this.metadata,
+  static ReownSign createReOwnSignInstance({
+    required IReownCore core,
+    required PairingMetadata metadata,
   }) {
-    reOwnSign = ReownSign(
+    return ReownSign(
       core: core,
       metadata: metadata,
       proposals: GenericStore(
@@ -114,6 +99,29 @@ class ReownAppKit implements IReownAppKit {
         },
       ),
     );
+  }
+
+  ///---------- GENERIC ----------///
+
+  @override
+  final String protocol = 'wc';
+
+  @override
+  final int version = 2;
+
+  @override
+  final IReownCore core;
+
+  @override
+  final PairingMetadata metadata;
+
+  ///
+  ReownAppKit(
+      {required this.core,
+      required this.metadata,
+      ReownSign? overrideReOwnSign}) {
+    reOwnSign = overrideReOwnSign ??
+        createReOwnSignInstance(core: core, metadata: metadata);
   }
 
   @override
