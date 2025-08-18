@@ -17,6 +17,7 @@ import uniffi.yttrium.TxnDetails
 import uniffi.yttrium.SolanaTxnDetails
 import uniffi.yttrium.UiFields
 import uniffi.yttrium.Route
+import uniffi.yttrium.SettleNamespace
 import uniffi.yttrium.SolanaTransaction
 import uniffi.yttrium.Transactions
 
@@ -195,3 +196,25 @@ fun String.hexStringToByteArray(): ByteArray {
 
 fun ByteArray.byteArrayToHexString(): String =
     joinToString("") { "%02x".format(it) }
+
+fun Map<*, *>.toSettleNamespace(): SettleNamespace {
+    val accounts = (this["accounts"] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+    val chains = (this["chains"] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+    val methods = (this["methods"] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+    val events = (this["events"] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+
+    return SettleNamespace(
+        accounts = accounts,
+        chains = chains,
+        methods = methods,
+        events = events,
+    )
+}
+
+fun Map<*, *>.toApprovedNamespace(): Map<String, SettleNamespace> {
+    return this.mapNotNull { (key, value) ->
+        val k = key as? String
+        val v = (value as? Map<*, *>)?.toSettleNamespace()
+        if (k != null && v != null) k to v else null
+    }.toMap()
+}

@@ -1,4 +1,3 @@
-// import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:reown_yttrium/clients/models/rust_sign_client.dart';
@@ -10,19 +9,15 @@ class EventChannelSign {
   late final Function(SessionRequestNativeEvent data) onEvent;
 
   void init() {
-    // TODO implement
-    // debugPrint('☢️ [$runtimeType] init');
-    // _eventChannel.receiveBroadcastStream().listen(_onEvent);
+    debugPrint('☢️ [$runtimeType] init');
+    _eventChannel.receiveBroadcastStream().listen(_onEvent);
   }
 
   void _onEvent(dynamic event) {
     try {
+      debugPrint('☢️ [$runtimeType] _onEvent $event');
       final result = ChannelUtils.handlePlatformResult(event);
-      onEvent.call(
-        SessionRequestNativeEvent.fromJson(
-          result,
-        ),
-      );
+      onEvent.call(SessionRequestNativeEvent.fromJson(result));
     } catch (e, s) {
       debugPrint('☢️ [$runtimeType] _onEvent error: $e, $s');
     }

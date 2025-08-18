@@ -13,7 +13,7 @@ class ReownYttriumPlugin : FlutterPlugin, MethodCallHandler {
   private lateinit var methodChannel: MethodChannel
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    Sign.setupEventChannel(flutterPluginBinding.binaryMessenger)
+    Sign.setEventChannel(flutterPluginBinding.binaryMessenger)
     ChainAbstraction.setApplicationContext(flutterPluginBinding.applicationContext)
 
     methodChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "reown_yttrium")

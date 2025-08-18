@@ -1018,7 +1018,7 @@ class ReownSign implements IReownSign {
   }
 
   void _dummyCallback(String topic, JsonRpcRequest payload, [dynamic _]) {
-    core.logger.d('[$runtimeType] dummy callback');
+    // dummy callback to hold flutter logic on reown_sign
   }
 
   bool _shouldIgnoreSessionPropose(String topic) {

@@ -70,7 +70,7 @@ class MethodChannelSign {
         'sign_approve',
         {
           'proposal': jsonEncode(proposal),
-          'approvedNamespaces': jsonEncode(approvedNamespaces),
+          'approvedNamespaces': approvedNamespaces,
           'selfMetadata': jsonEncode(selfMetadata),
         },
       );
