@@ -4,13 +4,20 @@ import 'package:reown_yttrium/clients/i_rust_sign_client.dart';
 import 'package:reown_yttrium/clients/rust_sign_client.dart';
 
 export 'utils/signature_utils.dart';
-export 'models/chain_abstraction.dart';
-export 'models/rust_sign_client.dart';
-export 'models/shared.dart';
+export 'clients/models/chain_abstraction.dart';
+export 'clients/models/rust_sign_client.dart';
+export 'clients/models/shared.dart';
 
 class ReownYttrium {
-  IChainAbstractionClient get chainAbstractionClient =>
-      ChainAbstractionClient();
+  ReownYttrium._internal();
 
-  ISignClient get signClient => SignClient();
+  static final _instance = ReownYttrium._internal();
+  factory ReownYttrium() => _instance;
+
+  // TODO remove CA
+  final _chainAbstractionClient = ChainAbstractionClient();
+  IChainAbstractionClient get chainAbstractionClient => _chainAbstractionClient;
+
+  final _signClient = SignClient();
+  ISignClient get signClient => _signClient;
 }

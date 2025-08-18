@@ -1,5 +1,5 @@
-import 'package:reown_yttrium/models/chain_abstraction.dart';
-import 'package:reown_yttrium/models/shared.dart';
+import 'package:reown_yttrium/clients/models/chain_abstraction.dart';
+import 'package:reown_yttrium/clients/models/shared.dart';
 
 abstract class IChainAbstractionClient {
   Future<bool> init({

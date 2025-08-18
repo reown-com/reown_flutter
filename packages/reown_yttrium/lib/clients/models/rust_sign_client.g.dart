@@ -133,3 +133,82 @@ Map<String, dynamic> _$$ApproveResultFfiImplToJson(
       'sessionSymKey': instance.sessionSymKey,
       'selfPublicKey': instance.selfPublicKey,
     };
+
+_$SessionRequestRequestFfiImpl _$$SessionRequestRequestFfiImplFromJson(
+        Map<String, dynamic> json) =>
+    _$SessionRequestRequestFfiImpl(
+      method: json['method'] as String,
+      params: json['params'] as String,
+      expiry: (json['expiry'] as num?)?.toInt(),
+    );
+
+Map<String, dynamic> _$$SessionRequestRequestFfiImplToJson(
+        _$SessionRequestRequestFfiImpl instance) =>
+    <String, dynamic>{
+      'method': instance.method,
+      'params': instance.params,
+      'expiry': instance.expiry,
+    };
+
+_$SessionRequestFfiImpl _$$SessionRequestFfiImplFromJson(
+        Map<String, dynamic> json) =>
+    _$SessionRequestFfiImpl(
+      chainId: json['chainId'] as String,
+      request: SessionRequestRequestFfi.fromJson(
+          json['request'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$$SessionRequestFfiImplToJson(
+        _$SessionRequestFfiImpl instance) =>
+    <String, dynamic>{
+      'chainId': instance.chainId,
+      'request': instance.request.toJson(),
+    };
+
+_$SessionRequestJsonRpcFfiImpl _$$SessionRequestJsonRpcFfiImplFromJson(
+        Map<String, dynamic> json) =>
+    _$SessionRequestJsonRpcFfiImpl(
+      id: (json['id'] as num).toInt(),
+      method: json['method'] as String,
+      params:
+          SessionRequestFfi.fromJson(json['params'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$$SessionRequestJsonRpcFfiImplToJson(
+        _$SessionRequestJsonRpcFfiImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'method': instance.method,
+      'params': instance.params.toJson(),
+    };
+
+_$SessionRequestNativeEventImpl _$$SessionRequestNativeEventImplFromJson(
+        Map<String, dynamic> json) =>
+    _$SessionRequestNativeEventImpl(
+      topic: json['topic'] as String,
+      sessionRequest: json['sessionRequest'] as String,
+    );
+
+Map<String, dynamic> _$$SessionRequestNativeEventImplToJson(
+        _$SessionRequestNativeEventImpl instance) =>
+    <String, dynamic>{
+      'topic': instance.topic,
+      'sessionRequest': instance.sessionRequest,
+    };
+
+_$SessionRequestResponseJsonRpcFfiImpl
+    _$$SessionRequestResponseJsonRpcFfiImplFromJson(
+            Map<String, dynamic> json) =>
+        _$SessionRequestResponseJsonRpcFfiImpl(
+          id: (json['id'] as num).toInt(),
+          jsonrpc: json['jsonrpc'] as String,
+          result: json['result'] as String,
+        );
+
+Map<String, dynamic> _$$SessionRequestResponseJsonRpcFfiImplToJson(
+        _$SessionRequestResponseJsonRpcFfiImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'jsonrpc': instance.jsonrpc,
+      'result': instance.result,
+    };

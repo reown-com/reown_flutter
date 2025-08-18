@@ -1,5 +1,6 @@
-import 'package:reown_yttrium/channels/chain_abstraction_channel.dart';
-import 'package:reown_yttrium/channels/rust_sign_client_channel.dart';
+import 'package:reown_yttrium/channels/events_channel/rust_sign_client_event_channel.dart';
+import 'package:reown_yttrium/channels/methods_channel/chain_abstraction_methods_channel.dart';
+import 'package:reown_yttrium/channels/methods_channel/rust_sign_client_methods_channel.dart';
 
 import 'reown_yttrium_platform_interface.dart';
 
@@ -10,5 +11,8 @@ class MethodChannelReownYttrium extends ReownYttriumPlatformInterface {
       MethodChannelChainAbstraction();
 
   @override
-  MethodChannelSign get signChannel => MethodChannelSign();
+  MethodChannelSign get methodChannelSign => MethodChannelSign();
+
+  @override
+  EventChannelSign get eventChannelSign => EventChannelSign();
 }

@@ -76,3 +76,70 @@ class ApproveResultFfi with _$ApproveResultFfi {
   factory ApproveResultFfi.fromJson(Map<String, dynamic> json) =>
       _$ApproveResultFfiFromJson(json);
 }
+
+// RUST
+@freezed
+class SessionRequestRequestFfi with _$SessionRequestRequestFfi {
+  const factory SessionRequestRequestFfi({
+    required String method,
+    required String params, // JSON string
+    int? expiry,
+  }) = _SessionRequestRequestFfi;
+
+  factory SessionRequestRequestFfi.fromJson(Map<String, dynamic> json) =>
+      _$SessionRequestRequestFfiFromJson(json);
+}
+
+// RUST
+// Should be paired with WcSessionRequestRequest in reow_sign
+@freezed
+class SessionRequestFfi with _$SessionRequestFfi {
+  const factory SessionRequestFfi({
+    required String chainId,
+    required SessionRequestRequestFfi request,
+  }) = _SessionRequestFfi;
+
+  factory SessionRequestFfi.fromJson(Map<String, dynamic> json) =>
+      _$SessionRequestFfiFromJson(json);
+}
+
+// RUST
+// Should be paired with JsonRpcRequest in reow_core
+@freezed
+class SessionRequestJsonRpcFfi with _$SessionRequestJsonRpcFfi {
+  const factory SessionRequestJsonRpcFfi({
+    required int id,
+    required String method,
+    required SessionRequestFfi params,
+  }) = _SessionRequestJsonRpcFfi;
+
+  factory SessionRequestJsonRpcFfi.fromJson(Map<String, dynamic> json) =>
+      _$SessionRequestJsonRpcFfiFromJson(json);
+}
+
+// Comes from native through EventChannel
+// should probably go in a different file as it does not pertains to rust itself
+@freezed
+class SessionRequestNativeEvent with _$SessionRequestNativeEvent {
+  const factory SessionRequestNativeEvent({
+    required String topic,
+    // JSON String. Should be transformed into SessionRequestJsonRpcFfi
+    required String sessionRequest,
+  }) = _SessionRequestNativeEvent;
+
+  factory SessionRequestNativeEvent.fromJson(Map<String, dynamic> json) =>
+      _$SessionRequestNativeEventFromJson(json);
+}
+
+@freezed
+class SessionRequestResponseJsonRpcFfi with _$SessionRequestResponseJsonRpcFfi {
+  const factory SessionRequestResponseJsonRpcFfi({
+    required int id,
+    required String jsonrpc,
+    required String result, // JSON string
+  }) = _SessionRequestResponseJsonRpcFfi;
+
+  factory SessionRequestResponseJsonRpcFfi.fromJson(
+          Map<String, dynamic> json) =>
+      _$SessionRequestResponseJsonRpcFfiFromJson(json);
+}

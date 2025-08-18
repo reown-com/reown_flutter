@@ -1,7 +1,15 @@
-import 'package:reown_yttrium/models/rust_sign_client.dart';
+import 'dart:async';
+import 'package:reown_yttrium/clients/models/rust_sign_client.dart';
 
 abstract class ISignClient {
+  abstract Function(
+    String topic,
+    SessionRequestJsonRpcFfi request,
+  ) onSessionRequest;
+
   Future<bool> init({required String projectId});
+
+  Future<void> initListener();
 
   Future<bool> setKey({required String key});
 

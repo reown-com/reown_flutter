@@ -163,7 +163,7 @@ class WalletKitService extends IWalletKitService {
   }
 
   void _logListener(String event) {
-    debugPrint('[WalletKit] $event');
+    // debugPrint('[WalletKit] $event');
   }
 
   @override

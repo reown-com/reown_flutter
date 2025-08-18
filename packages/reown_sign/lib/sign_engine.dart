@@ -319,7 +319,6 @@ class ReownSign implements IReownSign {
 
     // pairingSymKey was previously saved on secure storage during pair function on core package
     final String pairingSymKey = core.crypto.getSymKey(proposal.pairingTopic)!;
-    // TODO a middle model should be optimal
     final proposalFfi = SessionProposalFfi.fromJson({
       ...proposal.toJson(),
       'id': proposal.id.toString(),
@@ -963,15 +962,12 @@ class ReownSign implements IReownSign {
   /// ---- Relay Events ---- ///
 
   void _registerRelayClientFunctions() {
-    core.rustSignClient.onYttriumSessionPropose.subscribe(
-      _onYttriumSessionPropose,
+    core.rustSignClient.onSessionProposeRequest = _onSessionProposeRequest;
+    core.pairing.register(
+      method: MethodConstants.WC_SESSION_PROPOSE,
+      function: _dummyCallback,
+      type: ProtocolType.sign,
     );
-    // TODO No needed anymore, will be handled by Rust Client
-    // core.pairing.register(
-    //   method: MethodConstants.WC_SESSION_PROPOSE,
-    //   function: _onSessionProposeRequest,
-    //   type: ProtocolType.sign,
-    // );
     core.pairing.register(
       method: MethodConstants.WC_SESSION_SETTLE,
       function: _onSessionSettleRequest,
@@ -997,9 +993,10 @@ class ReownSign implements IReownSign {
       function: _onSessionDeleteRequest,
       type: ProtocolType.sign,
     );
+    core.rustSignClient.onSessionRequest = _onSessionRequest;
     core.pairing.register(
       method: MethodConstants.WC_SESSION_REQUEST,
-      function: _onSessionRequest,
+      function: _dummyCallback,
       type: ProtocolType.sign,
     );
     core.pairing.register(
@@ -1020,6 +1017,10 @@ class ReownSign implements IReownSign {
     // );
   }
 
+  void _dummyCallback(String topic, JsonRpcRequest payload, [dynamic _]) {
+    core.logger.d('[$runtimeType] dummy callback');
+  }
+
   bool _shouldIgnoreSessionPropose(String topic) {
     final PairingInfo? pairingInfo = core.pairing.getPairing(topic: topic);
     final implementSessionAuth = onSessionAuthRequest.subscriberCount > 0;
@@ -1027,37 +1028,6 @@ class ReownSign implements IReownSign {
     final containsMethod = (pairingInfo?.methods ?? []).contains(method);
 
     return implementSessionAuth && containsMethod;
-  }
-
-  Future<void> _onYttriumSessionPropose(YttriumSessionPropose event) async {
-    final topic = event.pairingTopic;
-    // we created new stream to emulate _onSessionProposeRequest logic from relay
-    final payload = JsonRpcRequest(
-      id: int.parse(event.proposal.id),
-      method: MethodConstants.WC_SESSION_PROPOSE,
-      params: ProposalData(
-        id: int.parse(event.proposal.id),
-        expiry: event.proposal.expiryTimestamp!,
-        relays: event.proposal.relays,
-        proposer: ConnectionMetadata(
-          publicKey: event.proposal.proposerPublicKey,
-          metadata: event.proposal.metadata,
-        ),
-        requiredNamespaces: event.proposal.requiredNamespaces.map(
-          (key, value) => MapEntry(key, RequiredNamespace.fromJson(value)),
-        ),
-        optionalNamespaces: event.proposal.optionalNamespaces?.map(
-              (key, value) => MapEntry(key, RequiredNamespace.fromJson(value)),
-            ) ??
-            {},
-        pairingTopic: event.proposal.topic,
-        sessionProperties: event.proposal.sessionProperties,
-      ).toJson(),
-    );
-    core.logger.d(
-      '_onSessionProposeFromRust, topic: $topic, payload: $payload',
-    );
-    await _onSessionProposeRequest(topic, payload);
   }
 
   Future<void> _onSessionProposeRequest(

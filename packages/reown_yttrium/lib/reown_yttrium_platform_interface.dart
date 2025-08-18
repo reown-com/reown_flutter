@@ -1,6 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'package:reown_yttrium/channels/chain_abstraction_channel.dart';
-import 'package:reown_yttrium/channels/rust_sign_client_channel.dart';
+import 'package:reown_yttrium/channels/events_channel/rust_sign_client_event_channel.dart';
+import 'package:reown_yttrium/channels/methods_channel/chain_abstraction_methods_channel.dart';
+import 'package:reown_yttrium/channels/methods_channel/rust_sign_client_methods_channel.dart';
 
 import 'reown_yttrium_method_channel.dart';
 
@@ -25,6 +26,9 @@ abstract class ReownYttriumPlatformInterface extends PlatformInterface {
     _instance = instance;
   }
 
+  // TODO remove CA
   abstract final MethodChannelChainAbstraction chainAbstractionChannel;
-  abstract final MethodChannelSign signChannel;
+
+  abstract final MethodChannelSign methodChannelSign;
+  abstract final EventChannelSign eventChannelSign;
 }

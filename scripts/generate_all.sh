@@ -37,15 +37,15 @@ sh generate_files.sh
 cd ..
 cd ..
 
-echo "******* GENERATING APPKIT *******"
+# echo "******* GENERATING APPKIT *******"
 
-cd packages/reown_appkit/
-sh generate_files.sh
+# cd packages/reown_appkit/
+# sh generate_files.sh
 
-cd ..
-cd ..
+# cd ..
+# cd ..
 
-echo "******* GENERATING CLI *******"
+# echo "******* GENERATING CLI *******"
 
-cd packages/reown_cli/
-sh generate_files.sh
+# cd packages/reown_cli/
+# sh generate_files.sh

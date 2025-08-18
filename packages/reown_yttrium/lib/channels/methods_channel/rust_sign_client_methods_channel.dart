@@ -6,14 +6,13 @@ import 'package:reown_yttrium/utils/channel_utils.dart';
 
 class MethodChannelSign {
   /// The method channel used to interact with the native platform.
-  @visibleForTesting
-  final methodChannel = const MethodChannel('reown_yttrium');
+  final _methodChannel = const MethodChannel('reown_yttrium');
 
   Future<bool> init({
     required String projectId,
   }) async {
     try {
-      final result = await methodChannel.invokeMethod<bool>('sign_init', {
+      final result = await _methodChannel.invokeMethod<bool>('sign_init', {
         'projectId': projectId,
       });
       return result!;
@@ -27,7 +26,8 @@ class MethodChannelSign {
     required String key,
   }) async {
     try {
-      final result = await methodChannel.invokeMethod<bool>('sign_setKey', key);
+      final result =
+          await _methodChannel.invokeMethod<bool>('sign_setKey', key);
       return result!;
     } on PlatformException catch (e) {
       debugPrint('[$runtimeType] sign_setKey $e');
@@ -37,7 +37,7 @@ class MethodChannelSign {
 
   Future<String> generateKey() async {
     try {
-      final result = await methodChannel.invokeMethod<String>(
+      final result = await _methodChannel.invokeMethod<String>(
         'sign_generateKey',
       );
       return result!;
@@ -49,7 +49,7 @@ class MethodChannelSign {
 
   Future<Map<String, dynamic>> pair({required String uri}) async {
     try {
-      final result = await methodChannel.invokeMethod<dynamic>(
+      final result = await _methodChannel.invokeMethod<dynamic>(
         'sign_pair',
         uri,
       );
@@ -66,7 +66,7 @@ class MethodChannelSign {
     required Map<String, dynamic> selfMetadata,
   }) async {
     try {
-      final result = await methodChannel.invokeMethod<dynamic>(
+      final result = await _methodChannel.invokeMethod<dynamic>(
         'sign_approve',
         {
           'proposal': jsonEncode(proposal),

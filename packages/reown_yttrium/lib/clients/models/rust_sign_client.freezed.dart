@@ -1365,3 +1365,963 @@ abstract class _ApproveResultFfi implements ApproveResultFfi {
   _$$ApproveResultFfiImplCopyWith<_$ApproveResultFfiImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+SessionRequestRequestFfi _$SessionRequestRequestFfiFromJson(
+    Map<String, dynamic> json) {
+  return _SessionRequestRequestFfi.fromJson(json);
+}
+
+/// @nodoc
+mixin _$SessionRequestRequestFfi {
+  String get method => throw _privateConstructorUsedError;
+  String get params => throw _privateConstructorUsedError; // JSON string
+  int? get expiry => throw _privateConstructorUsedError;
+
+  /// Serializes this SessionRequestRequestFfi to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of SessionRequestRequestFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SessionRequestRequestFfiCopyWith<SessionRequestRequestFfi> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SessionRequestRequestFfiCopyWith<$Res> {
+  factory $SessionRequestRequestFfiCopyWith(SessionRequestRequestFfi value,
+          $Res Function(SessionRequestRequestFfi) then) =
+      _$SessionRequestRequestFfiCopyWithImpl<$Res, SessionRequestRequestFfi>;
+  @useResult
+  $Res call({String method, String params, int? expiry});
+}
+
+/// @nodoc
+class _$SessionRequestRequestFfiCopyWithImpl<$Res,
+        $Val extends SessionRequestRequestFfi>
+    implements $SessionRequestRequestFfiCopyWith<$Res> {
+  _$SessionRequestRequestFfiCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SessionRequestRequestFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? method = null,
+    Object? params = null,
+    Object? expiry = freezed,
+  }) {
+    return _then(_value.copyWith(
+      method: null == method
+          ? _value.method
+          : method // ignore: cast_nullable_to_non_nullable
+              as String,
+      params: null == params
+          ? _value.params
+          : params // ignore: cast_nullable_to_non_nullable
+              as String,
+      expiry: freezed == expiry
+          ? _value.expiry
+          : expiry // ignore: cast_nullable_to_non_nullable
+              as int?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$SessionRequestRequestFfiImplCopyWith<$Res>
+    implements $SessionRequestRequestFfiCopyWith<$Res> {
+  factory _$$SessionRequestRequestFfiImplCopyWith(
+          _$SessionRequestRequestFfiImpl value,
+          $Res Function(_$SessionRequestRequestFfiImpl) then) =
+      __$$SessionRequestRequestFfiImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String method, String params, int? expiry});
+}
+
+/// @nodoc
+class __$$SessionRequestRequestFfiImplCopyWithImpl<$Res>
+    extends _$SessionRequestRequestFfiCopyWithImpl<$Res,
+        _$SessionRequestRequestFfiImpl>
+    implements _$$SessionRequestRequestFfiImplCopyWith<$Res> {
+  __$$SessionRequestRequestFfiImplCopyWithImpl(
+      _$SessionRequestRequestFfiImpl _value,
+      $Res Function(_$SessionRequestRequestFfiImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SessionRequestRequestFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? method = null,
+    Object? params = null,
+    Object? expiry = freezed,
+  }) {
+    return _then(_$SessionRequestRequestFfiImpl(
+      method: null == method
+          ? _value.method
+          : method // ignore: cast_nullable_to_non_nullable
+              as String,
+      params: null == params
+          ? _value.params
+          : params // ignore: cast_nullable_to_non_nullable
+              as String,
+      expiry: freezed == expiry
+          ? _value.expiry
+          : expiry // ignore: cast_nullable_to_non_nullable
+              as int?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SessionRequestRequestFfiImpl implements _SessionRequestRequestFfi {
+  const _$SessionRequestRequestFfiImpl(
+      {required this.method, required this.params, this.expiry});
+
+  factory _$SessionRequestRequestFfiImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SessionRequestRequestFfiImplFromJson(json);
+
+  @override
+  final String method;
+  @override
+  final String params;
+// JSON string
+  @override
+  final int? expiry;
+
+  @override
+  String toString() {
+    return 'SessionRequestRequestFfi(method: $method, params: $params, expiry: $expiry)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SessionRequestRequestFfiImpl &&
+            (identical(other.method, method) || other.method == method) &&
+            (identical(other.params, params) || other.params == params) &&
+            (identical(other.expiry, expiry) || other.expiry == expiry));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, method, params, expiry);
+
+  /// Create a copy of SessionRequestRequestFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SessionRequestRequestFfiImplCopyWith<_$SessionRequestRequestFfiImpl>
+      get copyWith => __$$SessionRequestRequestFfiImplCopyWithImpl<
+          _$SessionRequestRequestFfiImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SessionRequestRequestFfiImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _SessionRequestRequestFfi implements SessionRequestRequestFfi {
+  const factory _SessionRequestRequestFfi(
+      {required final String method,
+      required final String params,
+      final int? expiry}) = _$SessionRequestRequestFfiImpl;
+
+  factory _SessionRequestRequestFfi.fromJson(Map<String, dynamic> json) =
+      _$SessionRequestRequestFfiImpl.fromJson;
+
+  @override
+  String get method;
+  @override
+  String get params; // JSON string
+  @override
+  int? get expiry;
+
+  /// Create a copy of SessionRequestRequestFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SessionRequestRequestFfiImplCopyWith<_$SessionRequestRequestFfiImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+SessionRequestFfi _$SessionRequestFfiFromJson(Map<String, dynamic> json) {
+  return _SessionRequestFfi.fromJson(json);
+}
+
+/// @nodoc
+mixin _$SessionRequestFfi {
+  String get chainId => throw _privateConstructorUsedError;
+  SessionRequestRequestFfi get request => throw _privateConstructorUsedError;
+
+  /// Serializes this SessionRequestFfi to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of SessionRequestFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SessionRequestFfiCopyWith<SessionRequestFfi> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SessionRequestFfiCopyWith<$Res> {
+  factory $SessionRequestFfiCopyWith(
+          SessionRequestFfi value, $Res Function(SessionRequestFfi) then) =
+      _$SessionRequestFfiCopyWithImpl<$Res, SessionRequestFfi>;
+  @useResult
+  $Res call({String chainId, SessionRequestRequestFfi request});
+
+  $SessionRequestRequestFfiCopyWith<$Res> get request;
+}
+
+/// @nodoc
+class _$SessionRequestFfiCopyWithImpl<$Res, $Val extends SessionRequestFfi>
+    implements $SessionRequestFfiCopyWith<$Res> {
+  _$SessionRequestFfiCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SessionRequestFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? chainId = null,
+    Object? request = null,
+  }) {
+    return _then(_value.copyWith(
+      chainId: null == chainId
+          ? _value.chainId
+          : chainId // ignore: cast_nullable_to_non_nullable
+              as String,
+      request: null == request
+          ? _value.request
+          : request // ignore: cast_nullable_to_non_nullable
+              as SessionRequestRequestFfi,
+    ) as $Val);
+  }
+
+  /// Create a copy of SessionRequestFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $SessionRequestRequestFfiCopyWith<$Res> get request {
+    return $SessionRequestRequestFfiCopyWith<$Res>(_value.request, (value) {
+      return _then(_value.copyWith(request: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$SessionRequestFfiImplCopyWith<$Res>
+    implements $SessionRequestFfiCopyWith<$Res> {
+  factory _$$SessionRequestFfiImplCopyWith(_$SessionRequestFfiImpl value,
+          $Res Function(_$SessionRequestFfiImpl) then) =
+      __$$SessionRequestFfiImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String chainId, SessionRequestRequestFfi request});
+
+  @override
+  $SessionRequestRequestFfiCopyWith<$Res> get request;
+}
+
+/// @nodoc
+class __$$SessionRequestFfiImplCopyWithImpl<$Res>
+    extends _$SessionRequestFfiCopyWithImpl<$Res, _$SessionRequestFfiImpl>
+    implements _$$SessionRequestFfiImplCopyWith<$Res> {
+  __$$SessionRequestFfiImplCopyWithImpl(_$SessionRequestFfiImpl _value,
+      $Res Function(_$SessionRequestFfiImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SessionRequestFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? chainId = null,
+    Object? request = null,
+  }) {
+    return _then(_$SessionRequestFfiImpl(
+      chainId: null == chainId
+          ? _value.chainId
+          : chainId // ignore: cast_nullable_to_non_nullable
+              as String,
+      request: null == request
+          ? _value.request
+          : request // ignore: cast_nullable_to_non_nullable
+              as SessionRequestRequestFfi,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SessionRequestFfiImpl implements _SessionRequestFfi {
+  const _$SessionRequestFfiImpl({required this.chainId, required this.request});
+
+  factory _$SessionRequestFfiImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SessionRequestFfiImplFromJson(json);
+
+  @override
+  final String chainId;
+  @override
+  final SessionRequestRequestFfi request;
+
+  @override
+  String toString() {
+    return 'SessionRequestFfi(chainId: $chainId, request: $request)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SessionRequestFfiImpl &&
+            (identical(other.chainId, chainId) || other.chainId == chainId) &&
+            (identical(other.request, request) || other.request == request));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, chainId, request);
+
+  /// Create a copy of SessionRequestFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SessionRequestFfiImplCopyWith<_$SessionRequestFfiImpl> get copyWith =>
+      __$$SessionRequestFfiImplCopyWithImpl<_$SessionRequestFfiImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SessionRequestFfiImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _SessionRequestFfi implements SessionRequestFfi {
+  const factory _SessionRequestFfi(
+          {required final String chainId,
+          required final SessionRequestRequestFfi request}) =
+      _$SessionRequestFfiImpl;
+
+  factory _SessionRequestFfi.fromJson(Map<String, dynamic> json) =
+      _$SessionRequestFfiImpl.fromJson;
+
+  @override
+  String get chainId;
+  @override
+  SessionRequestRequestFfi get request;
+
+  /// Create a copy of SessionRequestFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SessionRequestFfiImplCopyWith<_$SessionRequestFfiImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+SessionRequestJsonRpcFfi _$SessionRequestJsonRpcFfiFromJson(
+    Map<String, dynamic> json) {
+  return _SessionRequestJsonRpcFfi.fromJson(json);
+}
+
+/// @nodoc
+mixin _$SessionRequestJsonRpcFfi {
+  int get id => throw _privateConstructorUsedError;
+  String get method => throw _privateConstructorUsedError;
+  SessionRequestFfi get params => throw _privateConstructorUsedError;
+
+  /// Serializes this SessionRequestJsonRpcFfi to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of SessionRequestJsonRpcFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SessionRequestJsonRpcFfiCopyWith<SessionRequestJsonRpcFfi> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SessionRequestJsonRpcFfiCopyWith<$Res> {
+  factory $SessionRequestJsonRpcFfiCopyWith(SessionRequestJsonRpcFfi value,
+          $Res Function(SessionRequestJsonRpcFfi) then) =
+      _$SessionRequestJsonRpcFfiCopyWithImpl<$Res, SessionRequestJsonRpcFfi>;
+  @useResult
+  $Res call({int id, String method, SessionRequestFfi params});
+
+  $SessionRequestFfiCopyWith<$Res> get params;
+}
+
+/// @nodoc
+class _$SessionRequestJsonRpcFfiCopyWithImpl<$Res,
+        $Val extends SessionRequestJsonRpcFfi>
+    implements $SessionRequestJsonRpcFfiCopyWith<$Res> {
+  _$SessionRequestJsonRpcFfiCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SessionRequestJsonRpcFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? method = null,
+    Object? params = null,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      method: null == method
+          ? _value.method
+          : method // ignore: cast_nullable_to_non_nullable
+              as String,
+      params: null == params
+          ? _value.params
+          : params // ignore: cast_nullable_to_non_nullable
+              as SessionRequestFfi,
+    ) as $Val);
+  }
+
+  /// Create a copy of SessionRequestJsonRpcFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $SessionRequestFfiCopyWith<$Res> get params {
+    return $SessionRequestFfiCopyWith<$Res>(_value.params, (value) {
+      return _then(_value.copyWith(params: value) as $Val);
+    });
+  }
+}
+
+/// @nodoc
+abstract class _$$SessionRequestJsonRpcFfiImplCopyWith<$Res>
+    implements $SessionRequestJsonRpcFfiCopyWith<$Res> {
+  factory _$$SessionRequestJsonRpcFfiImplCopyWith(
+          _$SessionRequestJsonRpcFfiImpl value,
+          $Res Function(_$SessionRequestJsonRpcFfiImpl) then) =
+      __$$SessionRequestJsonRpcFfiImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({int id, String method, SessionRequestFfi params});
+
+  @override
+  $SessionRequestFfiCopyWith<$Res> get params;
+}
+
+/// @nodoc
+class __$$SessionRequestJsonRpcFfiImplCopyWithImpl<$Res>
+    extends _$SessionRequestJsonRpcFfiCopyWithImpl<$Res,
+        _$SessionRequestJsonRpcFfiImpl>
+    implements _$$SessionRequestJsonRpcFfiImplCopyWith<$Res> {
+  __$$SessionRequestJsonRpcFfiImplCopyWithImpl(
+      _$SessionRequestJsonRpcFfiImpl _value,
+      $Res Function(_$SessionRequestJsonRpcFfiImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SessionRequestJsonRpcFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? method = null,
+    Object? params = null,
+  }) {
+    return _then(_$SessionRequestJsonRpcFfiImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      method: null == method
+          ? _value.method
+          : method // ignore: cast_nullable_to_non_nullable
+              as String,
+      params: null == params
+          ? _value.params
+          : params // ignore: cast_nullable_to_non_nullable
+              as SessionRequestFfi,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SessionRequestJsonRpcFfiImpl implements _SessionRequestJsonRpcFfi {
+  const _$SessionRequestJsonRpcFfiImpl(
+      {required this.id, required this.method, required this.params});
+
+  factory _$SessionRequestJsonRpcFfiImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SessionRequestJsonRpcFfiImplFromJson(json);
+
+  @override
+  final int id;
+  @override
+  final String method;
+  @override
+  final SessionRequestFfi params;
+
+  @override
+  String toString() {
+    return 'SessionRequestJsonRpcFfi(id: $id, method: $method, params: $params)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SessionRequestJsonRpcFfiImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.method, method) || other.method == method) &&
+            (identical(other.params, params) || other.params == params));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, method, params);
+
+  /// Create a copy of SessionRequestJsonRpcFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SessionRequestJsonRpcFfiImplCopyWith<_$SessionRequestJsonRpcFfiImpl>
+      get copyWith => __$$SessionRequestJsonRpcFfiImplCopyWithImpl<
+          _$SessionRequestJsonRpcFfiImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SessionRequestJsonRpcFfiImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _SessionRequestJsonRpcFfi implements SessionRequestJsonRpcFfi {
+  const factory _SessionRequestJsonRpcFfi(
+          {required final int id,
+          required final String method,
+          required final SessionRequestFfi params}) =
+      _$SessionRequestJsonRpcFfiImpl;
+
+  factory _SessionRequestJsonRpcFfi.fromJson(Map<String, dynamic> json) =
+      _$SessionRequestJsonRpcFfiImpl.fromJson;
+
+  @override
+  int get id;
+  @override
+  String get method;
+  @override
+  SessionRequestFfi get params;
+
+  /// Create a copy of SessionRequestJsonRpcFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SessionRequestJsonRpcFfiImplCopyWith<_$SessionRequestJsonRpcFfiImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+SessionRequestNativeEvent _$SessionRequestNativeEventFromJson(
+    Map<String, dynamic> json) {
+  return _SessionRequestNativeEvent.fromJson(json);
+}
+
+/// @nodoc
+mixin _$SessionRequestNativeEvent {
+  String get topic =>
+      throw _privateConstructorUsedError; // JSON String. Should be transformed into SessionRequestJsonRpcFfi
+  String get sessionRequest => throw _privateConstructorUsedError;
+
+  /// Serializes this SessionRequestNativeEvent to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of SessionRequestNativeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SessionRequestNativeEventCopyWith<SessionRequestNativeEvent> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SessionRequestNativeEventCopyWith<$Res> {
+  factory $SessionRequestNativeEventCopyWith(SessionRequestNativeEvent value,
+          $Res Function(SessionRequestNativeEvent) then) =
+      _$SessionRequestNativeEventCopyWithImpl<$Res, SessionRequestNativeEvent>;
+  @useResult
+  $Res call({String topic, String sessionRequest});
+}
+
+/// @nodoc
+class _$SessionRequestNativeEventCopyWithImpl<$Res,
+        $Val extends SessionRequestNativeEvent>
+    implements $SessionRequestNativeEventCopyWith<$Res> {
+  _$SessionRequestNativeEventCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SessionRequestNativeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? topic = null,
+    Object? sessionRequest = null,
+  }) {
+    return _then(_value.copyWith(
+      topic: null == topic
+          ? _value.topic
+          : topic // ignore: cast_nullable_to_non_nullable
+              as String,
+      sessionRequest: null == sessionRequest
+          ? _value.sessionRequest
+          : sessionRequest // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$SessionRequestNativeEventImplCopyWith<$Res>
+    implements $SessionRequestNativeEventCopyWith<$Res> {
+  factory _$$SessionRequestNativeEventImplCopyWith(
+          _$SessionRequestNativeEventImpl value,
+          $Res Function(_$SessionRequestNativeEventImpl) then) =
+      __$$SessionRequestNativeEventImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String topic, String sessionRequest});
+}
+
+/// @nodoc
+class __$$SessionRequestNativeEventImplCopyWithImpl<$Res>
+    extends _$SessionRequestNativeEventCopyWithImpl<$Res,
+        _$SessionRequestNativeEventImpl>
+    implements _$$SessionRequestNativeEventImplCopyWith<$Res> {
+  __$$SessionRequestNativeEventImplCopyWithImpl(
+      _$SessionRequestNativeEventImpl _value,
+      $Res Function(_$SessionRequestNativeEventImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SessionRequestNativeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? topic = null,
+    Object? sessionRequest = null,
+  }) {
+    return _then(_$SessionRequestNativeEventImpl(
+      topic: null == topic
+          ? _value.topic
+          : topic // ignore: cast_nullable_to_non_nullable
+              as String,
+      sessionRequest: null == sessionRequest
+          ? _value.sessionRequest
+          : sessionRequest // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SessionRequestNativeEventImpl implements _SessionRequestNativeEvent {
+  const _$SessionRequestNativeEventImpl(
+      {required this.topic, required this.sessionRequest});
+
+  factory _$SessionRequestNativeEventImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SessionRequestNativeEventImplFromJson(json);
+
+  @override
+  final String topic;
+// JSON String. Should be transformed into SessionRequestJsonRpcFfi
+  @override
+  final String sessionRequest;
+
+  @override
+  String toString() {
+    return 'SessionRequestNativeEvent(topic: $topic, sessionRequest: $sessionRequest)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SessionRequestNativeEventImpl &&
+            (identical(other.topic, topic) || other.topic == topic) &&
+            (identical(other.sessionRequest, sessionRequest) ||
+                other.sessionRequest == sessionRequest));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, topic, sessionRequest);
+
+  /// Create a copy of SessionRequestNativeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SessionRequestNativeEventImplCopyWith<_$SessionRequestNativeEventImpl>
+      get copyWith => __$$SessionRequestNativeEventImplCopyWithImpl<
+          _$SessionRequestNativeEventImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SessionRequestNativeEventImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _SessionRequestNativeEvent implements SessionRequestNativeEvent {
+  const factory _SessionRequestNativeEvent(
+      {required final String topic,
+      required final String sessionRequest}) = _$SessionRequestNativeEventImpl;
+
+  factory _SessionRequestNativeEvent.fromJson(Map<String, dynamic> json) =
+      _$SessionRequestNativeEventImpl.fromJson;
+
+  @override
+  String
+      get topic; // JSON String. Should be transformed into SessionRequestJsonRpcFfi
+  @override
+  String get sessionRequest;
+
+  /// Create a copy of SessionRequestNativeEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SessionRequestNativeEventImplCopyWith<_$SessionRequestNativeEventImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+SessionRequestResponseJsonRpcFfi _$SessionRequestResponseJsonRpcFfiFromJson(
+    Map<String, dynamic> json) {
+  return _SessionRequestResponseJsonRpcFfi.fromJson(json);
+}
+
+/// @nodoc
+mixin _$SessionRequestResponseJsonRpcFfi {
+  int get id => throw _privateConstructorUsedError;
+  String get jsonrpc => throw _privateConstructorUsedError;
+  String get result => throw _privateConstructorUsedError;
+
+  /// Serializes this SessionRequestResponseJsonRpcFfi to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of SessionRequestResponseJsonRpcFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SessionRequestResponseJsonRpcFfiCopyWith<SessionRequestResponseJsonRpcFfi>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SessionRequestResponseJsonRpcFfiCopyWith<$Res> {
+  factory $SessionRequestResponseJsonRpcFfiCopyWith(
+          SessionRequestResponseJsonRpcFfi value,
+          $Res Function(SessionRequestResponseJsonRpcFfi) then) =
+      _$SessionRequestResponseJsonRpcFfiCopyWithImpl<$Res,
+          SessionRequestResponseJsonRpcFfi>;
+  @useResult
+  $Res call({int id, String jsonrpc, String result});
+}
+
+/// @nodoc
+class _$SessionRequestResponseJsonRpcFfiCopyWithImpl<$Res,
+        $Val extends SessionRequestResponseJsonRpcFfi>
+    implements $SessionRequestResponseJsonRpcFfiCopyWith<$Res> {
+  _$SessionRequestResponseJsonRpcFfiCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SessionRequestResponseJsonRpcFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? jsonrpc = null,
+    Object? result = null,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      jsonrpc: null == jsonrpc
+          ? _value.jsonrpc
+          : jsonrpc // ignore: cast_nullable_to_non_nullable
+              as String,
+      result: null == result
+          ? _value.result
+          : result // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$SessionRequestResponseJsonRpcFfiImplCopyWith<$Res>
+    implements $SessionRequestResponseJsonRpcFfiCopyWith<$Res> {
+  factory _$$SessionRequestResponseJsonRpcFfiImplCopyWith(
+          _$SessionRequestResponseJsonRpcFfiImpl value,
+          $Res Function(_$SessionRequestResponseJsonRpcFfiImpl) then) =
+      __$$SessionRequestResponseJsonRpcFfiImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({int id, String jsonrpc, String result});
+}
+
+/// @nodoc
+class __$$SessionRequestResponseJsonRpcFfiImplCopyWithImpl<$Res>
+    extends _$SessionRequestResponseJsonRpcFfiCopyWithImpl<$Res,
+        _$SessionRequestResponseJsonRpcFfiImpl>
+    implements _$$SessionRequestResponseJsonRpcFfiImplCopyWith<$Res> {
+  __$$SessionRequestResponseJsonRpcFfiImplCopyWithImpl(
+      _$SessionRequestResponseJsonRpcFfiImpl _value,
+      $Res Function(_$SessionRequestResponseJsonRpcFfiImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SessionRequestResponseJsonRpcFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? jsonrpc = null,
+    Object? result = null,
+  }) {
+    return _then(_$SessionRequestResponseJsonRpcFfiImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      jsonrpc: null == jsonrpc
+          ? _value.jsonrpc
+          : jsonrpc // ignore: cast_nullable_to_non_nullable
+              as String,
+      result: null == result
+          ? _value.result
+          : result // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SessionRequestResponseJsonRpcFfiImpl
+    implements _SessionRequestResponseJsonRpcFfi {
+  const _$SessionRequestResponseJsonRpcFfiImpl(
+      {required this.id, required this.jsonrpc, required this.result});
+
+  factory _$SessionRequestResponseJsonRpcFfiImpl.fromJson(
+          Map<String, dynamic> json) =>
+      _$$SessionRequestResponseJsonRpcFfiImplFromJson(json);
+
+  @override
+  final int id;
+  @override
+  final String jsonrpc;
+  @override
+  final String result;
+
+  @override
+  String toString() {
+    return 'SessionRequestResponseJsonRpcFfi(id: $id, jsonrpc: $jsonrpc, result: $result)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SessionRequestResponseJsonRpcFfiImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.jsonrpc, jsonrpc) || other.jsonrpc == jsonrpc) &&
+            (identical(other.result, result) || other.result == result));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, jsonrpc, result);
+
+  /// Create a copy of SessionRequestResponseJsonRpcFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SessionRequestResponseJsonRpcFfiImplCopyWith<
+          _$SessionRequestResponseJsonRpcFfiImpl>
+      get copyWith => __$$SessionRequestResponseJsonRpcFfiImplCopyWithImpl<
+          _$SessionRequestResponseJsonRpcFfiImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SessionRequestResponseJsonRpcFfiImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _SessionRequestResponseJsonRpcFfi
+    implements SessionRequestResponseJsonRpcFfi {
+  const factory _SessionRequestResponseJsonRpcFfi(
+      {required final int id,
+      required final String jsonrpc,
+      required final String result}) = _$SessionRequestResponseJsonRpcFfiImpl;
+
+  factory _SessionRequestResponseJsonRpcFfi.fromJson(
+          Map<String, dynamic> json) =
+      _$SessionRequestResponseJsonRpcFfiImpl.fromJson;
+
+  @override
+  int get id;
+  @override
+  String get jsonrpc;
+  @override
+  String get result;
+
+  /// Create a copy of SessionRequestResponseJsonRpcFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SessionRequestResponseJsonRpcFfiImplCopyWith<
+          _$SessionRequestResponseJsonRpcFfiImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}

@@ -20,23 +20,23 @@ SessionProposal _$SessionProposalFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$SessionProposal {
-  String get id => throw _privateConstructorUsedError;
-  String get topic => throw _privateConstructorUsedError;
+  int get id => throw _privateConstructorUsedError;
+  String get pairingTopic => throw _privateConstructorUsedError;
   String get pairingSymKey =>
       throw _privateConstructorUsedError; // hex encoded string
   String get proposerPublicKey =>
       throw _privateConstructorUsedError; // hex encoded string
-  List<Relay> get relays => throw _privateConstructorUsedError;
+  List<Map<String, dynamic>> get relays => throw _privateConstructorUsedError;
   Map<String, Map<String, dynamic>> get requiredNamespaces =>
       throw _privateConstructorUsedError;
   Map<String, Map<String, dynamic>>? get optionalNamespaces =>
       throw _privateConstructorUsedError;
-  PairingMetadata get metadata => throw _privateConstructorUsedError;
+  Map<String, dynamic> get metadata => throw _privateConstructorUsedError;
   Map<String, String>? get sessionProperties =>
       throw _privateConstructorUsedError;
   Map<String, String>? get scopedProperties =>
       throw _privateConstructorUsedError;
-  int? get expiryTimestamp => throw _privateConstructorUsedError;
+  int? get expiry => throw _privateConstructorUsedError;
 
   /// Serializes this SessionProposal to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -55,19 +55,17 @@ abstract class $SessionProposalCopyWith<$Res> {
       _$SessionProposalCopyWithImpl<$Res, SessionProposal>;
   @useResult
   $Res call(
-      {String id,
-      String topic,
+      {int id,
+      String pairingTopic,
       String pairingSymKey,
       String proposerPublicKey,
-      List<Relay> relays,
+      List<Map<String, dynamic>> relays,
       Map<String, Map<String, dynamic>> requiredNamespaces,
       Map<String, Map<String, dynamic>>? optionalNamespaces,
-      PairingMetadata metadata,
+      Map<String, dynamic> metadata,
       Map<String, String>? sessionProperties,
       Map<String, String>? scopedProperties,
-      int? expiryTimestamp});
-
-  $PairingMetadataCopyWith<$Res> get metadata;
+      int? expiry});
 }
 
 /// @nodoc
@@ -86,7 +84,7 @@ class _$SessionProposalCopyWithImpl<$Res, $Val extends SessionProposal>
   @override
   $Res call({
     Object? id = null,
-    Object? topic = null,
+    Object? pairingTopic = null,
     Object? pairingSymKey = null,
     Object? proposerPublicKey = null,
     Object? relays = null,
@@ -95,16 +93,16 @@ class _$SessionProposalCopyWithImpl<$Res, $Val extends SessionProposal>
     Object? metadata = null,
     Object? sessionProperties = freezed,
     Object? scopedProperties = freezed,
-    Object? expiryTimestamp = freezed,
+    Object? expiry = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      topic: null == topic
-          ? _value.topic
-          : topic // ignore: cast_nullable_to_non_nullable
+              as int,
+      pairingTopic: null == pairingTopic
+          ? _value.pairingTopic
+          : pairingTopic // ignore: cast_nullable_to_non_nullable
               as String,
       pairingSymKey: null == pairingSymKey
           ? _value.pairingSymKey
@@ -117,7 +115,7 @@ class _$SessionProposalCopyWithImpl<$Res, $Val extends SessionProposal>
       relays: null == relays
           ? _value.relays
           : relays // ignore: cast_nullable_to_non_nullable
-              as List<Relay>,
+              as List<Map<String, dynamic>>,
       requiredNamespaces: null == requiredNamespaces
           ? _value.requiredNamespaces
           : requiredNamespaces // ignore: cast_nullable_to_non_nullable
@@ -129,7 +127,7 @@ class _$SessionProposalCopyWithImpl<$Res, $Val extends SessionProposal>
       metadata: null == metadata
           ? _value.metadata
           : metadata // ignore: cast_nullable_to_non_nullable
-              as PairingMetadata,
+              as Map<String, dynamic>,
       sessionProperties: freezed == sessionProperties
           ? _value.sessionProperties
           : sessionProperties // ignore: cast_nullable_to_non_nullable
@@ -138,21 +136,11 @@ class _$SessionProposalCopyWithImpl<$Res, $Val extends SessionProposal>
           ? _value.scopedProperties
           : scopedProperties // ignore: cast_nullable_to_non_nullable
               as Map<String, String>?,
-      expiryTimestamp: freezed == expiryTimestamp
-          ? _value.expiryTimestamp
-          : expiryTimestamp // ignore: cast_nullable_to_non_nullable
+      expiry: freezed == expiry
+          ? _value.expiry
+          : expiry // ignore: cast_nullable_to_non_nullable
               as int?,
     ) as $Val);
-  }
-
-  /// Create a copy of SessionProposal
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $PairingMetadataCopyWith<$Res> get metadata {
-    return $PairingMetadataCopyWith<$Res>(_value.metadata, (value) {
-      return _then(_value.copyWith(metadata: value) as $Val);
-    });
   }
 }
 
@@ -165,20 +153,17 @@ abstract class _$$SessionProposalImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
-      String topic,
+      {int id,
+      String pairingTopic,
       String pairingSymKey,
       String proposerPublicKey,
-      List<Relay> relays,
+      List<Map<String, dynamic>> relays,
       Map<String, Map<String, dynamic>> requiredNamespaces,
       Map<String, Map<String, dynamic>>? optionalNamespaces,
-      PairingMetadata metadata,
+      Map<String, dynamic> metadata,
       Map<String, String>? sessionProperties,
       Map<String, String>? scopedProperties,
-      int? expiryTimestamp});
-
-  @override
-  $PairingMetadataCopyWith<$Res> get metadata;
+      int? expiry});
 }
 
 /// @nodoc
@@ -195,7 +180,7 @@ class __$$SessionProposalImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = null,
-    Object? topic = null,
+    Object? pairingTopic = null,
     Object? pairingSymKey = null,
     Object? proposerPublicKey = null,
     Object? relays = null,
@@ -204,16 +189,16 @@ class __$$SessionProposalImplCopyWithImpl<$Res>
     Object? metadata = null,
     Object? sessionProperties = freezed,
     Object? scopedProperties = freezed,
-    Object? expiryTimestamp = freezed,
+    Object? expiry = freezed,
   }) {
     return _then(_$SessionProposalImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      topic: null == topic
-          ? _value.topic
-          : topic // ignore: cast_nullable_to_non_nullable
+              as int,
+      pairingTopic: null == pairingTopic
+          ? _value.pairingTopic
+          : pairingTopic // ignore: cast_nullable_to_non_nullable
               as String,
       pairingSymKey: null == pairingSymKey
           ? _value.pairingSymKey
@@ -226,7 +211,7 @@ class __$$SessionProposalImplCopyWithImpl<$Res>
       relays: null == relays
           ? _value._relays
           : relays // ignore: cast_nullable_to_non_nullable
-              as List<Relay>,
+              as List<Map<String, dynamic>>,
       requiredNamespaces: null == requiredNamespaces
           ? _value._requiredNamespaces
           : requiredNamespaces // ignore: cast_nullable_to_non_nullable
@@ -236,9 +221,9 @@ class __$$SessionProposalImplCopyWithImpl<$Res>
           : optionalNamespaces // ignore: cast_nullable_to_non_nullable
               as Map<String, Map<String, dynamic>>?,
       metadata: null == metadata
-          ? _value.metadata
+          ? _value._metadata
           : metadata // ignore: cast_nullable_to_non_nullable
-              as PairingMetadata,
+              as Map<String, dynamic>,
       sessionProperties: freezed == sessionProperties
           ? _value._sessionProperties
           : sessionProperties // ignore: cast_nullable_to_non_nullable
@@ -247,9 +232,9 @@ class __$$SessionProposalImplCopyWithImpl<$Res>
           ? _value._scopedProperties
           : scopedProperties // ignore: cast_nullable_to_non_nullable
               as Map<String, String>?,
-      expiryTimestamp: freezed == expiryTimestamp
-          ? _value.expiryTimestamp
-          : expiryTimestamp // ignore: cast_nullable_to_non_nullable
+      expiry: freezed == expiry
+          ? _value.expiry
+          : expiry // ignore: cast_nullable_to_non_nullable
               as int?,
     ));
   }
@@ -260,19 +245,20 @@ class __$$SessionProposalImplCopyWithImpl<$Res>
 class _$SessionProposalImpl implements _SessionProposal {
   const _$SessionProposalImpl(
       {required this.id,
-      required this.topic,
+      required this.pairingTopic,
       required this.pairingSymKey,
       required this.proposerPublicKey,
-      required final List<Relay> relays,
+      required final List<Map<String, dynamic>> relays,
       required final Map<String, Map<String, dynamic>> requiredNamespaces,
       final Map<String, Map<String, dynamic>>? optionalNamespaces,
-      required this.metadata,
+      required final Map<String, dynamic> metadata,
       final Map<String, String>? sessionProperties,
       final Map<String, String>? scopedProperties,
-      this.expiryTimestamp})
+      this.expiry})
       : _relays = relays,
         _requiredNamespaces = requiredNamespaces,
         _optionalNamespaces = optionalNamespaces,
+        _metadata = metadata,
         _sessionProperties = sessionProperties,
         _scopedProperties = scopedProperties;
 
@@ -280,19 +266,19 @@ class _$SessionProposalImpl implements _SessionProposal {
       _$$SessionProposalImplFromJson(json);
 
   @override
-  final String id;
+  final int id;
   @override
-  final String topic;
+  final String pairingTopic;
   @override
   final String pairingSymKey;
 // hex encoded string
   @override
   final String proposerPublicKey;
 // hex encoded string
-  final List<Relay> _relays;
+  final List<Map<String, dynamic>> _relays;
 // hex encoded string
   @override
-  List<Relay> get relays {
+  List<Map<String, dynamic>> get relays {
     if (_relays is EqualUnmodifiableListView) return _relays;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_relays);
@@ -318,8 +304,14 @@ class _$SessionProposalImpl implements _SessionProposal {
     return EqualUnmodifiableMapView(value);
   }
 
+  final Map<String, dynamic> _metadata;
   @override
-  final PairingMetadata metadata;
+  Map<String, dynamic> get metadata {
+    if (_metadata is EqualUnmodifiableMapView) return _metadata;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_metadata);
+  }
+
   final Map<String, String>? _sessionProperties;
   @override
   Map<String, String>? get sessionProperties {
@@ -342,11 +334,11 @@ class _$SessionProposalImpl implements _SessionProposal {
   }
 
   @override
-  final int? expiryTimestamp;
+  final int? expiry;
 
   @override
   String toString() {
-    return 'SessionProposal(id: $id, topic: $topic, pairingSymKey: $pairingSymKey, proposerPublicKey: $proposerPublicKey, relays: $relays, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, metadata: $metadata, sessionProperties: $sessionProperties, scopedProperties: $scopedProperties, expiryTimestamp: $expiryTimestamp)';
+    return 'SessionProposal(id: $id, pairingTopic: $pairingTopic, pairingSymKey: $pairingSymKey, proposerPublicKey: $proposerPublicKey, relays: $relays, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, metadata: $metadata, sessionProperties: $sessionProperties, scopedProperties: $scopedProperties, expiry: $expiry)';
   }
 
   @override
@@ -355,7 +347,8 @@ class _$SessionProposalImpl implements _SessionProposal {
         (other.runtimeType == runtimeType &&
             other is _$SessionProposalImpl &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.topic, topic) || other.topic == topic) &&
+            (identical(other.pairingTopic, pairingTopic) ||
+                other.pairingTopic == pairingTopic) &&
             (identical(other.pairingSymKey, pairingSymKey) ||
                 other.pairingSymKey == pairingSymKey) &&
             (identical(other.proposerPublicKey, proposerPublicKey) ||
@@ -365,14 +358,12 @@ class _$SessionProposalImpl implements _SessionProposal {
                 .equals(other._requiredNamespaces, _requiredNamespaces) &&
             const DeepCollectionEquality()
                 .equals(other._optionalNamespaces, _optionalNamespaces) &&
-            (identical(other.metadata, metadata) ||
-                other.metadata == metadata) &&
+            const DeepCollectionEquality().equals(other._metadata, _metadata) &&
             const DeepCollectionEquality()
                 .equals(other._sessionProperties, _sessionProperties) &&
             const DeepCollectionEquality()
                 .equals(other._scopedProperties, _scopedProperties) &&
-            (identical(other.expiryTimestamp, expiryTimestamp) ||
-                other.expiryTimestamp == expiryTimestamp));
+            (identical(other.expiry, expiry) || other.expiry == expiry));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -380,16 +371,16 @@ class _$SessionProposalImpl implements _SessionProposal {
   int get hashCode => Object.hash(
       runtimeType,
       id,
-      topic,
+      pairingTopic,
       pairingSymKey,
       proposerPublicKey,
       const DeepCollectionEquality().hash(_relays),
       const DeepCollectionEquality().hash(_requiredNamespaces),
       const DeepCollectionEquality().hash(_optionalNamespaces),
-      metadata,
+      const DeepCollectionEquality().hash(_metadata),
       const DeepCollectionEquality().hash(_sessionProperties),
       const DeepCollectionEquality().hash(_scopedProperties),
-      expiryTimestamp);
+      expiry);
 
   /// Create a copy of SessionProposal
   /// with the given fields replaced by the non-null parameter values.
@@ -410,43 +401,43 @@ class _$SessionProposalImpl implements _SessionProposal {
 
 abstract class _SessionProposal implements SessionProposal {
   const factory _SessionProposal(
-      {required final String id,
-      required final String topic,
+      {required final int id,
+      required final String pairingTopic,
       required final String pairingSymKey,
       required final String proposerPublicKey,
-      required final List<Relay> relays,
+      required final List<Map<String, dynamic>> relays,
       required final Map<String, Map<String, dynamic>> requiredNamespaces,
       final Map<String, Map<String, dynamic>>? optionalNamespaces,
-      required final PairingMetadata metadata,
+      required final Map<String, dynamic> metadata,
       final Map<String, String>? sessionProperties,
       final Map<String, String>? scopedProperties,
-      final int? expiryTimestamp}) = _$SessionProposalImpl;
+      final int? expiry}) = _$SessionProposalImpl;
 
   factory _SessionProposal.fromJson(Map<String, dynamic> json) =
       _$SessionProposalImpl.fromJson;
 
   @override
-  String get id;
+  int get id;
   @override
-  String get topic;
+  String get pairingTopic;
   @override
   String get pairingSymKey; // hex encoded string
   @override
   String get proposerPublicKey; // hex encoded string
   @override
-  List<Relay> get relays;
+  List<Map<String, dynamic>> get relays;
   @override
   Map<String, Map<String, dynamic>> get requiredNamespaces;
   @override
   Map<String, Map<String, dynamic>>? get optionalNamespaces;
   @override
-  PairingMetadata get metadata;
+  Map<String, dynamic> get metadata;
   @override
   Map<String, String>? get sessionProperties;
   @override
   Map<String, String>? get scopedProperties;
   @override
-  int? get expiryTimestamp;
+  int? get expiry;
 
   /// Create a copy of SessionProposal
   /// with the given fields replaced by the non-null parameter values.

@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:reown_yttrium/models/shared.dart';
-import 'package:reown_yttrium/models/chain_abstraction.dart';
+import 'package:reown_yttrium/clients/models/shared.dart'; // TODO shouldn't use models
+import 'package:reown_yttrium/clients/models/chain_abstraction.dart'; // TODO shouldn't use models
 import 'package:reown_yttrium/utils/channel_utils.dart';
 
 class MethodChannelChainAbstraction {

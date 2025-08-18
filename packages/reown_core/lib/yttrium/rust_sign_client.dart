@@ -1,7 +1,7 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
-import 'package:event/event.dart';
 import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/yttrium/i_rust_sign_client.dart';
 import 'package:reown_core/models/rust_sign_client_models.dart';
@@ -11,12 +11,21 @@ class RustSignClient implements IRustSignClient {
   static const clientSeed = 'CLIENT_SEED';
 
   @override
-  final Event<YttriumSessionPropose> onYttriumSessionPropose =
-      Event<YttriumSessionPropose>();
+  late Function(
+    String topic,
+    JsonRpcRequest payload, [
+    TransportType transportType,
+  ]) onSessionProposeRequest;
 
-  ReownYttrium get _yttrium => ReownYttrium();
+  @override
+  late Function(
+    String topic,
+    JsonRpcRequest payload, [
+    TransportType transportType,
+  ]) onSessionRequest;
 
   final IReownCore core;
+  final Map<String, SessionProposal> pendingProposals = {};
 
   RustSignClient({required this.core});
 
@@ -26,9 +35,11 @@ class RustSignClient implements IRustSignClient {
       return;
     }
     try {
-      await _yttrium.signClient.init(projectId: core.projectId);
-      final pk = await _getKey();
-      await _yttrium.signClient.setKey(key: pk);
+      await ReownYttrium().signClient.init(projectId: core.projectId);
+      await ReownYttrium().signClient.setKey(key: await _getKey());
+      await ReownYttrium().signClient.initListener();
+      ReownYttrium().signClient.onSessionRequest = _onSessionRequest;
+      core.pairing.onPairingCreate.subscribe(_onPairingEvent);
       _initialized = true;
     } catch (e) {
       core.logger.e('[$runtimeType] $e');
@@ -36,42 +47,53 @@ class RustSignClient implements IRustSignClient {
     }
   }
 
+  void _onSessionRequest(String topic, SessionRequestJsonRpcFfi request) {
+    core.logger.d('[$runtimeType] signClient onRequest ${request.toJson()}');
+    final payload = JsonRpcRequest(
+      id: request.id,
+      method: request.method,
+      params: {
+        'chainId': request.params.chainId,
+        'request': {
+          'method': request.params.request.method,
+          'params': jsonDecode(request.params.request.params),
+        }
+      },
+    );
+    onSessionRequest.call(topic, payload);
+  }
+
   @override
   Future<SessionProposal> pair({required Uri uri}) async {
     _checkInitialized();
 
-    final sessionProposalFfi = await _yttrium.signClient.pair(
-      uri: '$uri',
-    );
-    final sessionProposal = SessionProposal(
-      id: sessionProposalFfi.id,
-      topic: sessionProposalFfi.topic,
-      pairingSymKey: hex.encode(sessionProposalFfi.pairingSymKey),
-      proposerPublicKey: hex.encode(sessionProposalFfi.proposerPublicKey),
-      relays: sessionProposalFfi.relays.map((e) => Relay.fromJson(e)).toList(),
-      requiredNamespaces: sessionProposalFfi.requiredNamespaces,
-      optionalNamespaces: sessionProposalFfi.optionalNamespaces,
-      metadata: PairingMetadata.fromJson(sessionProposalFfi.metadata),
-      sessionProperties: sessionProposalFfi.sessionProperties,
-      scopedProperties: sessionProposalFfi.scopedProperties,
-      expiryTimestamp: sessionProposalFfi.expiryTimestamp ??
-          ReownCoreUtils.calculateExpiry(
-            ReownConstants.FIVE_MINUTES,
-          ),
-    );
-
-    core.pairing.onPairingCreate.subscribe((pairingEvent) {
-      if (pairingEvent.topic == sessionProposal.topic) {
-        onYttriumSessionPropose.broadcast(
-          YttriumSessionPropose(
-            sessionProposal.topic,
-            sessionProposal,
-          ),
-        );
-      }
-    });
+    final pairResponse = await ReownYttrium().signClient.pair(uri: '$uri');
+    final sessionProposal = SessionProposal.fromFfi(pairResponse);
+    pendingProposals[sessionProposal.pairingTopic] = sessionProposal;
 
     return sessionProposal;
+  }
+
+  void _onPairingEvent(PairingEvent pairingEvent) {
+    // TODO could it be id instead of topic?
+    if (pendingProposals.containsKey(pairingEvent.topic)) {
+      final sessionProposal = pendingProposals[pairingEvent.topic]!;
+      pendingProposals.remove(pairingEvent.topic);
+      onSessionProposeRequest.call(
+        sessionProposal.pairingTopic,
+        JsonRpcRequest(
+          id: sessionProposal.id,
+          method: MethodConstants.WC_SESSION_PROPOSE,
+          params: {
+            ...sessionProposal.toJson(),
+            'proposer': {
+              'publicKey': sessionProposal.proposerPublicKey,
+              'metadata': sessionProposal.metadata,
+            },
+          },
+        ),
+      );
+    }
   }
 
   @override
@@ -82,18 +104,15 @@ class RustSignClient implements IRustSignClient {
   }) async {
     _checkInitialized();
 
-    final approveResultFfi = await _yttrium.signClient.approve(
-      proposal: proposal,
-      approvedNamespaces: approvedNamespaces.map(
-        (key, value) => MapEntry(key, SettleNamespaceFfi.fromJson(value)),
-      ),
-      selfMetadata: MetadataFfi.fromJson(selfMetadata),
-    );
+    final approveResponse = await ReownYttrium().signClient.approve(
+          proposal: proposal,
+          approvedNamespaces: approvedNamespaces.map(
+            (key, value) => MapEntry(key, SettleNamespaceFfi.fromJson(value)),
+          ),
+          selfMetadata: MetadataFfi.fromJson(selfMetadata),
+        );
 
-    return ApproveResult(
-      sessionSymKey: hex.encode(approveResultFfi.sessionSymKey),
-      selfPublicKey: hex.encode(approveResultFfi.selfPublicKey),
-    );
+    return ApproveResult.fromFfi(approveResponse);
   }
 
   void _checkInitialized() {

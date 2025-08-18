@@ -1,58 +1,56 @@
 package com.reown.reown_yttrium
 
-import android.content.Context
-
+import android.util.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import uniffi.uniffi_yttrium.ChainAbstractionClient
-import uniffi.uniffi_yttrium.Eip1559Estimation
-import uniffi.yttrium.Call
-import uniffi.yttrium.Currency
-import uniffi.yttrium.PrepareDetailedResponse
-import uniffi.yttrium.PrepareDetailedResponseSuccess
-import uniffi.yttrium.PulseMetadata
-import uniffi.yttrium.UiFields
+import uniffi.yttrium.Logger
+import uniffi.yttrium.registerLogger
 
-/** ReownYttriumPlugin */
-class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
-  /// The MethodChannel that will the communication between Flutter and native Android
-  ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-  /// when the Flutter Engine is detached from the Activity
-  private lateinit var channel : MethodChannel
-  private lateinit var applicationContext: Context // ✅ Store application context
+class ReownYttriumPlugin : FlutterPlugin, MethodCallHandler {
+  private lateinit var methodChannel: MethodChannel
 
   override fun onAttachedToEngine(flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    applicationContext = flutterPluginBinding.applicationContext // ✅ Get application context
-    channel = MethodChannel(flutterPluginBinding.binaryMessenger, "reown_yttrium")
-    channel.setMethodCallHandler(this)
+    Sign.setupEventChannel(flutterPluginBinding.binaryMessenger)
+    ChainAbstraction.setApplicationContext(flutterPluginBinding.applicationContext)
+
+    methodChannel = MethodChannel(flutterPluginBinding.binaryMessenger, "reown_yttrium")
+    methodChannel.setMethodCallHandler(this)
+
+    android.os.Handler(android.os.Looper.getMainLooper()).post {
+      registerLogger(RustLogger())
+    }
   }
 
   override fun onMethodCall(call: MethodCall, result: Result) {
     when (call.method) {
       // Chain Abstraction methods
-      "ca_init" -> ChainAbstraction.initialize(applicationContext, call.arguments, result)
+      "ca_init" -> ChainAbstraction.initialize(call.arguments, result)
       "ca_erc20TokenBalance" -> ChainAbstraction.erc20TokenBalance(call.arguments, result)
       "ca_estimateFees" -> ChainAbstraction.estimateFees(call.arguments, result)
       "ca_prepareDetailed" -> ChainAbstraction.prepareDetailed(call.arguments, result)
       "ca_execute" -> ChainAbstraction.execute(call.arguments, result)
       //
+      // Sign methods
       "sign_init" -> Sign.initialize(call.arguments, result)
       "sign_setKey" -> Sign.setKey(call.arguments, result)
       "sign_generateKey" -> Sign.generateKey(result)
       "sign_pair" -> Sign.pair(call.arguments, result)
       "sign_approve" -> Sign.approve(call.arguments, result)
+      //
       else -> result.notImplemented()
     }
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-    channel.setMethodCallHandler(null)
+    methodChannel.setMethodCallHandler(null)
+  }
+}
+
+class RustLogger: Logger {
+  override fun log(message: String) {
+    Log.d("🧪 RustLogger", message)
   }
 }

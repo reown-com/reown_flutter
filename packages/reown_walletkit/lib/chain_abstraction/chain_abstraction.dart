@@ -7,21 +7,18 @@ class ChainAbstractionClient implements IChainAbstractionClient {
 
   ChainAbstractionClient({required this.core, required this.pulseMetadata});
 
-  // YttriumClient get _yttrium => YttriumClient.instance;
-  ReownYttrium get _reownYttrium => ReownYttrium();
-
   @override
   Future<void> init() async {
     try {
       final packageName = await ReownCoreUtils.getPackageName();
-      await _reownYttrium.chainAbstractionClient.init(
-        projectId: core.projectId,
-        pulseMetadata: pulseMetadata.copyWith(
-          packageName:
-              pulseMetadata.sdkPlatform == 'android' ? packageName : null,
-          bundleId: pulseMetadata.sdkPlatform == 'ios' ? packageName : null,
-        ),
-      );
+      await ReownYttrium().chainAbstractionClient.init(
+            projectId: core.projectId,
+            pulseMetadata: pulseMetadata.copyWith(
+              packageName:
+                  pulseMetadata.sdkPlatform == 'android' ? packageName : null,
+              bundleId: pulseMetadata.sdkPlatform == 'ios' ? packageName : null,
+            ),
+          );
     } catch (e) {
       core.logger.e('[$runtimeType] $e');
     }
@@ -36,11 +33,11 @@ class ChainAbstractionClient implements IChainAbstractionClient {
     required String token,
     required String owner,
   }) async {
-    return await _reownYttrium.chainAbstractionClient.erc20TokenBalance(
-      chainId: chainId,
-      token: token,
-      owner: owner,
-    );
+    return await ReownYttrium().chainAbstractionClient.erc20TokenBalance(
+          chainId: chainId,
+          token: token,
+          owner: owner,
+        );
   }
 
   /// ---------------------------------
@@ -50,9 +47,9 @@ class ChainAbstractionClient implements IChainAbstractionClient {
   Future<Eip1559EstimationCompat> estimateFees({
     required String chainId,
   }) async {
-    return await _reownYttrium.chainAbstractionClient.estimateFees(
-      chainId: chainId,
-    );
+    return await ReownYttrium().chainAbstractionClient.estimateFees(
+          chainId: chainId,
+        );
   }
 
   /// ---------------------------------
@@ -70,14 +67,14 @@ class ChainAbstractionClient implements IChainAbstractionClient {
     if (call.value == null) {
       call = call.copyWith(value: BigInt.zero);
     }
-    return await _reownYttrium.chainAbstractionClient.prepareDetailed(
-      chainId: chainId,
-      from: from,
-      call: call,
-      accounts: accounts,
-      localCurrency: localCurrency,
-      useLifi: useLifi,
-    );
+    return await ReownYttrium().chainAbstractionClient.prepareDetailed(
+          chainId: chainId,
+          from: from,
+          call: call,
+          accounts: accounts,
+          localCurrency: localCurrency,
+          useLifi: useLifi,
+        );
   }
 
   /// ---------------------------------
@@ -95,10 +92,10 @@ class ChainAbstractionClient implements IChainAbstractionClient {
     final routeTxnSigsPrimitive = routeTxnSigs.map((signature) {
       return signature.toPrimitiveSignature();
     }).toList();
-    return await _reownYttrium.chainAbstractionClient.execute(
-      uiFields: uiFields,
-      routeTxnSigs: routeTxnSigsPrimitive,
-      initialTxnSig: initialTxnSigPrimitive,
-    );
+    return await ReownYttrium().chainAbstractionClient.execute(
+          uiFields: uiFields,
+          routeTxnSigs: routeTxnSigsPrimitive,
+          initialTxnSig: initialTxnSigPrimitive,
+        );
   }
 }

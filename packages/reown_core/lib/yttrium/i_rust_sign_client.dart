@@ -1,9 +1,18 @@
-import 'package:event/event.dart';
 import 'package:reown_core/models/rust_sign_client_models.dart';
 import 'package:reown_core/reown_core.dart';
 
 abstract class IRustSignClient {
-  abstract final Event<YttriumSessionPropose> onYttriumSessionPropose;
+  abstract Function(
+    String topic,
+    JsonRpcRequest payload, [
+    TransportType transportType,
+  ]) onSessionProposeRequest;
+
+  abstract Function(
+    String topic,
+    JsonRpcRequest payload, [
+    TransportType transportType,
+  ]) onSessionRequest;
 
   Future<void> init();
 

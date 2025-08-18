@@ -176,10 +176,11 @@ class Pairing implements IPairing {
       uri: uri,
     );
 
-    final String topic = sessionProposal.topic;
-    final Relay relay = sessionProposal.relays.first;
+    final String topic = sessionProposal.pairingTopic;
+    final Relay relay =
+        sessionProposal.relays.map((e) => Relay.fromJson(e)).first;
     final String symKey = sessionProposal.pairingSymKey;
-    final int expiry = sessionProposal.expiryTimestamp!;
+    final int expiry = sessionProposal.expiry!;
     final PairingInfo pairing = PairingInfo(
       topic: topic,
       expiry: expiry,

@@ -1,6 +1,8 @@
 package com.reown.reown_yttrium
 
 import android.content.Context
+import io.flutter.plugin.common.BinaryMessenger
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,8 +21,14 @@ class ChainAbstraction {
     companion object {
         private lateinit var chainAbstractionClient: ChainAbstractionClient
         private var pendingPrepareDetailed: MutableMap<String, UiFields> = mutableMapOf()
+        private lateinit var applicationContext: Context
 
-        fun initialize(applicationContext: Context, params: Any?, result: MethodChannel.Result) {
+        // Called during plugin registration
+        fun setApplicationContext(context: Context) {
+            applicationContext = context
+        }
+
+        fun initialize(params: Any?, result: MethodChannel.Result) {
             val dict = params as? Map<*, *> ?: return result.error("initialize", "Invalid parameters: not a map", null)
 
             val projectId = dict["projectId"] as? String ?: return errorMissing("projectId", params, result)
