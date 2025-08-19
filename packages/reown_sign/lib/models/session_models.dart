@@ -36,7 +36,7 @@ class SessionProposalCompleter {
 }
 
 @freezed
-class Namespace with _$Namespace {
+sealed class Namespace with _$Namespace {
   @JsonSerializable(includeIfNull: false)
   const factory Namespace({
     List<String>? chains,
@@ -50,7 +50,7 @@ class Namespace with _$Namespace {
 }
 
 @freezed
-class SessionData with _$SessionData {
+sealed class SessionData with _$SessionData {
   @JsonSerializable(includeIfNull: false)
   const factory SessionData({
     required String topic,
@@ -74,7 +74,7 @@ class SessionData with _$SessionData {
 }
 
 @freezed
-class SessionRequest with _$SessionRequest {
+sealed class SessionRequest with _$SessionRequest {
   @JsonSerializable()
   const factory SessionRequest({
     required int id,

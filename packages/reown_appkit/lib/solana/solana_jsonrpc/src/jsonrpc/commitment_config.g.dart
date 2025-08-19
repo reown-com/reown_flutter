@@ -14,6 +14,4 @@ CommitmentConfig _$CommitmentConfigFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$CommitmentConfigToJson(CommitmentConfig instance) =>
-    <String, dynamic>{
-      'commitment': instance.commitment?.toJson(),
-    };
+    <String, dynamic>{'commitment': instance.commitment?.toJson()};

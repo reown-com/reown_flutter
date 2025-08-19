@@ -6,9 +6,8 @@ part of 'cacao_models.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$CacaoRequestPayloadImpl _$$CacaoRequestPayloadImplFromJson(
-        Map<String, dynamic> json) =>
-    _$CacaoRequestPayloadImpl(
+_CacaoRequestPayload _$CacaoRequestPayloadFromJson(Map<String, dynamic> json) =>
+    _CacaoRequestPayload(
       domain: json['domain'] as String,
       aud: json['aud'] as String,
       version: json['version'] as String,
@@ -23,23 +22,23 @@ _$CacaoRequestPayloadImpl _$$CacaoRequestPayloadImplFromJson(
           .toList(),
     );
 
-Map<String, dynamic> _$$CacaoRequestPayloadImplToJson(
-        _$CacaoRequestPayloadImpl instance) =>
-    <String, dynamic>{
-      'domain': instance.domain,
-      'aud': instance.aud,
-      'version': instance.version,
-      'nonce': instance.nonce,
-      'iat': instance.iat,
-      if (instance.nbf case final value?) 'nbf': value,
-      if (instance.exp case final value?) 'exp': value,
-      if (instance.statement case final value?) 'statement': value,
-      if (instance.requestId case final value?) 'requestId': value,
-      if (instance.resources case final value?) 'resources': value,
-    };
+Map<String, dynamic> _$CacaoRequestPayloadToJson(
+  _CacaoRequestPayload instance,
+) => <String, dynamic>{
+  'domain': instance.domain,
+  'aud': instance.aud,
+  'version': instance.version,
+  'nonce': instance.nonce,
+  'iat': instance.iat,
+  'nbf': ?instance.nbf,
+  'exp': ?instance.exp,
+  'statement': ?instance.statement,
+  'requestId': ?instance.requestId,
+  'resources': ?instance.resources,
+};
 
-_$CacaoPayloadImpl _$$CacaoPayloadImplFromJson(Map<String, dynamic> json) =>
-    _$CacaoPayloadImpl(
+_CacaoPayload _$CacaoPayloadFromJson(Map<String, dynamic> json) =>
+    _CacaoPayload(
       iss: json['iss'] as String,
       domain: json['domain'] as String,
       aud: json['aud'] as String,
@@ -55,7 +54,7 @@ _$CacaoPayloadImpl _$$CacaoPayloadImplFromJson(Map<String, dynamic> json) =>
           .toList(),
     );
 
-Map<String, dynamic> _$$CacaoPayloadImplToJson(_$CacaoPayloadImpl instance) =>
+Map<String, dynamic> _$CacaoPayloadToJson(_CacaoPayload instance) =>
     <String, dynamic>{
       'iss': instance.iss,
       'domain': instance.domain,
@@ -63,61 +62,50 @@ Map<String, dynamic> _$$CacaoPayloadImplToJson(_$CacaoPayloadImpl instance) =>
       'version': instance.version,
       'nonce': instance.nonce,
       'iat': instance.iat,
-      if (instance.nbf case final value?) 'nbf': value,
-      if (instance.exp case final value?) 'exp': value,
-      if (instance.statement case final value?) 'statement': value,
-      if (instance.requestId case final value?) 'requestId': value,
-      if (instance.resources case final value?) 'resources': value,
+      'nbf': ?instance.nbf,
+      'exp': ?instance.exp,
+      'statement': ?instance.statement,
+      'requestId': ?instance.requestId,
+      'resources': ?instance.resources,
     };
 
-_$CacaoHeaderImpl _$$CacaoHeaderImplFromJson(Map<String, dynamic> json) =>
-    _$CacaoHeaderImpl(
-      t: json['t'] as String? ?? 'eip4361',
-    );
+_CacaoHeader _$CacaoHeaderFromJson(Map<String, dynamic> json) =>
+    _CacaoHeader(t: json['t'] as String? ?? 'eip4361');
 
-Map<String, dynamic> _$$CacaoHeaderImplToJson(_$CacaoHeaderImpl instance) =>
-    <String, dynamic>{
-      't': instance.t,
-    };
+Map<String, dynamic> _$CacaoHeaderToJson(_CacaoHeader instance) =>
+    <String, dynamic>{'t': instance.t};
 
-_$CacaoSignatureImpl _$$CacaoSignatureImplFromJson(Map<String, dynamic> json) =>
-    _$CacaoSignatureImpl(
+_CacaoSignature _$CacaoSignatureFromJson(Map<String, dynamic> json) =>
+    _CacaoSignature(
       t: json['t'] as String,
       s: json['s'] as String,
       m: json['m'] as String?,
     );
 
-Map<String, dynamic> _$$CacaoSignatureImplToJson(
-        _$CacaoSignatureImpl instance) =>
-    <String, dynamic>{
-      't': instance.t,
-      's': instance.s,
-      if (instance.m case final value?) 'm': value,
-    };
+Map<String, dynamic> _$CacaoSignatureToJson(_CacaoSignature instance) =>
+    <String, dynamic>{'t': instance.t, 's': instance.s, 'm': ?instance.m};
 
-_$CacaoImpl _$$CacaoImplFromJson(Map<String, dynamic> json) => _$CacaoImpl(
-      h: CacaoHeader.fromJson(json['h'] as Map<String, dynamic>),
-      p: CacaoPayload.fromJson(json['p'] as Map<String, dynamic>),
-      s: CacaoSignature.fromJson(json['s'] as Map<String, dynamic>),
-    );
+_Cacao _$CacaoFromJson(Map<String, dynamic> json) => _Cacao(
+  h: CacaoHeader.fromJson(json['h'] as Map<String, dynamic>),
+  p: CacaoPayload.fromJson(json['p'] as Map<String, dynamic>),
+  s: CacaoSignature.fromJson(json['s'] as Map<String, dynamic>),
+);
 
-Map<String, dynamic> _$$CacaoImplToJson(_$CacaoImpl instance) =>
-    <String, dynamic>{
-      'h': instance.h.toJson(),
-      'p': instance.p.toJson(),
-      's': instance.s.toJson(),
-    };
+Map<String, dynamic> _$CacaoToJson(_Cacao instance) => <String, dynamic>{
+  'h': instance.h.toJson(),
+  'p': instance.p.toJson(),
+  's': instance.s.toJson(),
+};
 
-_$StoredCacaoImpl _$$StoredCacaoImplFromJson(Map<String, dynamic> json) =>
-    _$StoredCacaoImpl(
-      id: (json['id'] as num).toInt(),
-      pairingTopic: json['pairingTopic'] as String,
-      h: CacaoHeader.fromJson(json['h'] as Map<String, dynamic>),
-      p: CacaoPayload.fromJson(json['p'] as Map<String, dynamic>),
-      s: CacaoSignature.fromJson(json['s'] as Map<String, dynamic>),
-    );
+_StoredCacao _$StoredCacaoFromJson(Map<String, dynamic> json) => _StoredCacao(
+  id: (json['id'] as num).toInt(),
+  pairingTopic: json['pairingTopic'] as String,
+  h: CacaoHeader.fromJson(json['h'] as Map<String, dynamic>),
+  p: CacaoPayload.fromJson(json['p'] as Map<String, dynamic>),
+  s: CacaoSignature.fromJson(json['s'] as Map<String, dynamic>),
+);
 
-Map<String, dynamic> _$$StoredCacaoImplToJson(_$StoredCacaoImpl instance) =>
+Map<String, dynamic> _$StoredCacaoToJson(_StoredCacao instance) =>
     <String, dynamic>{
       'id': instance.id,
       'pairingTopic': instance.pairingTopic,

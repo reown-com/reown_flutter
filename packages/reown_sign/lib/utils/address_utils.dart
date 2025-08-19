@@ -1,5 +1,3 @@
-// import 'package:web3dart/web3dart.dart';
-
 class AddressUtils {
   static String getDidAddress(String iss) {
     return iss.split(':').last;

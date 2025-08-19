@@ -16,7 +16,7 @@ enum Validation {
 }
 
 @freezed
-class VerifyContext with _$VerifyContext {
+sealed class VerifyContext with _$VerifyContext {
   @JsonSerializable()
   const factory VerifyContext({
     required String origin,
@@ -30,7 +30,7 @@ class VerifyContext with _$VerifyContext {
 }
 
 @freezed
-class AttestationResponse with _$AttestationResponse {
+sealed class AttestationResponse with _$AttestationResponse {
   @JsonSerializable()
   const factory AttestationResponse({
     required String origin,

@@ -6,7 +6,7 @@ part 'appkit_wallet_info.freezed.dart';
 part 'appkit_wallet_info.g.dart';
 
 @freezed
-class ReownAppKitModalWalletInfo with _$ReownAppKitModalWalletInfo {
+sealed class ReownAppKitModalWalletInfo with _$ReownAppKitModalWalletInfo {
   const factory ReownAppKitModalWalletInfo({
     required AppKitModalWalletListing listing,
     @Default(false) bool installed,

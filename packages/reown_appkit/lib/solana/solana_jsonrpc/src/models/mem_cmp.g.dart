@@ -7,11 +7,11 @@ part of 'mem_cmp.dart';
 // **************************************************************************
 
 MemCmp _$MemCmpFromJson(Map<String, dynamic> json) => MemCmp(
-      offset: (json['offset'] as num).toInt(),
-      bytes: json['bytes'] as String,
-    );
+  offset: (json['offset'] as num).toInt(),
+  bytes: json['bytes'] as String,
+);
 
 Map<String, dynamic> _$MemCmpToJson(MemCmp instance) => <String, dynamic>{
-      'offset': instance.offset,
-      'bytes': instance.bytes,
-    };
+  'offset': instance.offset,
+  'bytes': instance.bytes,
+};

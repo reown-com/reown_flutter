@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'appkit_modal_colors.freezed.dart';
 
 @freezed
-class ReownAppKitModalColors with _$ReownAppKitModalColors {
+sealed class ReownAppKitModalColors with _$ReownAppKitModalColors {
   const factory ReownAppKitModalColors({
     required Color accent100,
     required Color accent090,
