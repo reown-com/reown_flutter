@@ -302,24 +302,42 @@ class SolflareHelper {
       return <String, dynamic>{'solflareRequest': solflareRequest};
     }
 
-    final data = params['data']!;
-    final nonce = params['nonce']!;
-    final decryptedData = _sharedSecretBox?.decrypt(
-      pncl.ByteList(base58.decode(data)),
-      nonce: Uint8List.fromList(base58.decode(nonce)),
-    );
+    try {
+      final data = params['data']!;
+      final nonce = params['nonce']!;
+      final decryptedData = _sharedSecretBox?.decrypt(
+        pncl.ByteList(base58.decode(data)),
+        nonce: Uint8List.fromList(base58.decode(nonce)),
+      );
 
-    final payload = <String, dynamic>{
-      ...JsonDecoder().convert(String.fromCharCodes(
-        decryptedData!,
-      )),
-      if (solflareKey.isNotEmpty) 'solflare_encryption_public_key': solflareKey,
-      if (solflareRequest.isNotEmpty) 'solflareRequest': solflareRequest,
-    };
+      final payload = <String, dynamic>{
+        ...JsonDecoder().convert(String.fromCharCodes(
+          decryptedData!,
+        )),
+        if (solflareKey.isNotEmpty)
+          'solflare_encryption_public_key': solflareKey,
+        if (solflareRequest.isNotEmpty) 'solflareRequest': solflareRequest,
+      };
 
-    _sessionToken = payload['session'] ?? _sessionToken;
+      _sessionToken = payload['session'] ?? _sessionToken;
 
-    return payload;
+      return payload;
+    } catch (e) {
+      final queryParams = Uri.parse(solflareRequest).queryParameters;
+      if (queryParams.containsKey('errorCode')) {
+        final errorCode = queryParams['errorCode'];
+        final errorMessage = params['errorMessage'];
+        return {
+          'errorCode': errorCode,
+          'errorMessage': errorMessage,
+        };
+      } else {
+        return Errors.getInternalError(
+          Errors.MISSING_OR_INVALID,
+          context: e.toString(),
+        ).toJson();
+      }
+    }
   }
 
   /// Encrypts the data payload to be sent to Solflare Wallet.

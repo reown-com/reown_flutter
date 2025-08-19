@@ -47,7 +47,7 @@ class MethodDialogState extends State<MethodDialog> {
         String result = '';
         if (snapshot.hasData) {
           final response = jsonEncode(snapshot.data).replaceAll('"', '');
-          result = response.startsWith('0x') ? ' success' : ' error';
+          result = response.contains('error') ? ' error' : ' success';
         }
         return AlertDialog(
           title: Text('${widget.method}$result'),

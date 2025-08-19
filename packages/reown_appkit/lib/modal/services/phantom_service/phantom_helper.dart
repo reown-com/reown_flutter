@@ -300,24 +300,41 @@ class PhantomHelper {
       return <String, dynamic>{'phantomRequest': phantomRequest};
     }
 
-    final data = params['data']!;
-    final nonce = params['nonce']!;
-    final decryptedData = _sharedSecretBox?.decrypt(
-      pncl.ByteList(base58.decode(data)),
-      nonce: Uint8List.fromList(base58.decode(nonce)),
-    );
+    try {
+      final data = params['data']!;
+      final nonce = params['nonce']!;
+      final decryptedData = _sharedSecretBox?.decrypt(
+        pncl.ByteList(base58.decode(data)),
+        nonce: Uint8List.fromList(base58.decode(nonce)),
+      );
 
-    final payload = <String, dynamic>{
-      ...JsonDecoder().convert(String.fromCharCodes(
-        decryptedData!,
-      )),
-      if (phantomKey.isNotEmpty) 'phantom_encryption_public_key': phantomKey,
-      if (phantomRequest.isNotEmpty) 'phantomRequest': phantomRequest,
-    };
+      final payload = <String, dynamic>{
+        ...JsonDecoder().convert(String.fromCharCodes(
+          decryptedData!,
+        )),
+        if (phantomKey.isNotEmpty) 'phantom_encryption_public_key': phantomKey,
+        if (phantomRequest.isNotEmpty) 'phantomRequest': phantomRequest,
+      };
 
-    _sessionToken = payload['session'] ?? _sessionToken;
+      _sessionToken = payload['session'] ?? _sessionToken;
 
-    return payload;
+      return payload;
+    } catch (e) {
+      final queryParams = Uri.parse(phantomRequest).queryParameters;
+      if (queryParams.containsKey('errorCode')) {
+        final errorCode = queryParams['errorCode'];
+        final errorMessage = params['errorMessage'];
+        return {
+          'errorCode': errorCode,
+          'errorMessage': errorMessage,
+        };
+      } else {
+        return Errors.getInternalError(
+          Errors.MISSING_OR_INVALID,
+          context: e.toString(),
+        ).toJson();
+      }
+    }
   }
 
   /// Encrypts the data payload to be sent to Phantom Wallet.
