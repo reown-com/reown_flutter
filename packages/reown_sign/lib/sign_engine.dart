@@ -446,16 +446,22 @@ class ReownSign implements IReownSign {
       // Attempt to send a response, if the pairing is not active, this will fail
       // but we don't care
       try {
-        final method = MethodConstants.WC_SESSION_PROPOSE;
-        final rpcOpts = MethodConstants.RPC_OPTS[method];
-        await core.pairing.sendError(
-          id,
+        final String pairingSymKey = core.crypto.getSymKey(
           proposal.pairingTopic,
-          method,
-          JsonRpcError(code: reason.code, message: reason.message),
-          rpcOptions: rpcOpts?['reject'],
+        )!;
+        final proposalFfi = SessionProposalFfi.fromJson({
+          ...proposal.toJson(),
+          'id': proposal.id.toString(),
+          'topic': proposal.pairingTopic,
+          'pairingSymKey': hex.decode(pairingSymKey),
+          'proposerPublicKey': hex.decode(proposal.proposer.publicKey),
+          'metadata': proposal.proposer.metadata.toJson(),
+        });
+        await core.rustSignClient.reject(
+          proposal: proposalFfi,
+          error: ErrorDataFfi.fromJson(reason.toJson()),
         );
-      } catch (_) {
+      } catch (e) {
         // print('got here');
       }
     }

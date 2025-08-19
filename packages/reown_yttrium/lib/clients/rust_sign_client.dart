@@ -82,4 +82,15 @@ class SignClient implements ISignClient {
     );
     return ApproveResultFfi.fromJson(result);
   }
+
+  @override
+  Future<bool> reject({
+    required SessionProposalFfi proposal,
+    required ErrorDataFfi error,
+  }) async {
+    return await _methodChannelSign.reject(
+      proposal: proposal.toJson(),
+      reason: error.toJson(),
+    );
+  }
 }

@@ -24,4 +24,9 @@ abstract class ISignClient {
     required Map<String, SettleNamespaceFfi> approvedNamespaces,
     required MetadataFfi selfMetadata,
   });
+
+  Future<bool> reject({
+    required SessionProposalFfi proposal,
+    required ErrorDataFfi error,
+  });
 }

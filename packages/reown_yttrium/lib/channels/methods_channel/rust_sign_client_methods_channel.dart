@@ -80,4 +80,23 @@ class MethodChannelSign {
       rethrow;
     }
   }
+
+  Future<bool> reject({
+    required Map<String, dynamic> proposal,
+    required Map<String, dynamic> reason,
+  }) async {
+    try {
+      final result = await _methodChannel.invokeMethod<dynamic>(
+        'sign_reject',
+        {
+          'proposal': jsonEncode(proposal),
+          'reason': jsonEncode(reason),
+        },
+      );
+      return result!;
+    } on PlatformException catch (e) {
+      debugPrint('[$runtimeType] sign_reject $e');
+      rethrow;
+    }
+  }
 }

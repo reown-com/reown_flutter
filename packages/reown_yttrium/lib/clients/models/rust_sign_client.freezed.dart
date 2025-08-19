@@ -2325,3 +2325,188 @@ abstract class _SessionRequestResponseJsonRpcFfi
           _$SessionRequestResponseJsonRpcFfiImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
+
+ErrorDataFfi _$ErrorDataFfiFromJson(Map<String, dynamic> json) {
+  return _ErrorDataFfi.fromJson(json);
+}
+
+/// @nodoc
+mixin _$ErrorDataFfi {
+  int get code => throw _privateConstructorUsedError;
+  String get message => throw _privateConstructorUsedError;
+  String? get data => throw _privateConstructorUsedError;
+
+  /// Serializes this ErrorDataFfi to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of ErrorDataFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $ErrorDataFfiCopyWith<ErrorDataFfi> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ErrorDataFfiCopyWith<$Res> {
+  factory $ErrorDataFfiCopyWith(
+          ErrorDataFfi value, $Res Function(ErrorDataFfi) then) =
+      _$ErrorDataFfiCopyWithImpl<$Res, ErrorDataFfi>;
+  @useResult
+  $Res call({int code, String message, String? data});
+}
+
+/// @nodoc
+class _$ErrorDataFfiCopyWithImpl<$Res, $Val extends ErrorDataFfi>
+    implements $ErrorDataFfiCopyWith<$Res> {
+  _$ErrorDataFfiCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of ErrorDataFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? code = null,
+    Object? message = null,
+    Object? data = freezed,
+  }) {
+    return _then(_value.copyWith(
+      code: null == code
+          ? _value.code
+          : code // ignore: cast_nullable_to_non_nullable
+              as int,
+      message: null == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String,
+      data: freezed == data
+          ? _value.data
+          : data // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$ErrorDataFfiImplCopyWith<$Res>
+    implements $ErrorDataFfiCopyWith<$Res> {
+  factory _$$ErrorDataFfiImplCopyWith(
+          _$ErrorDataFfiImpl value, $Res Function(_$ErrorDataFfiImpl) then) =
+      __$$ErrorDataFfiImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({int code, String message, String? data});
+}
+
+/// @nodoc
+class __$$ErrorDataFfiImplCopyWithImpl<$Res>
+    extends _$ErrorDataFfiCopyWithImpl<$Res, _$ErrorDataFfiImpl>
+    implements _$$ErrorDataFfiImplCopyWith<$Res> {
+  __$$ErrorDataFfiImplCopyWithImpl(
+      _$ErrorDataFfiImpl _value, $Res Function(_$ErrorDataFfiImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of ErrorDataFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? code = null,
+    Object? message = null,
+    Object? data = freezed,
+  }) {
+    return _then(_$ErrorDataFfiImpl(
+      code: null == code
+          ? _value.code
+          : code // ignore: cast_nullable_to_non_nullable
+              as int,
+      message: null == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String,
+      data: freezed == data
+          ? _value.data
+          : data // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ErrorDataFfiImpl implements _ErrorDataFfi {
+  const _$ErrorDataFfiImpl(
+      {required this.code, required this.message, this.data});
+
+  factory _$ErrorDataFfiImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ErrorDataFfiImplFromJson(json);
+
+  @override
+  final int code;
+  @override
+  final String message;
+  @override
+  final String? data;
+
+  @override
+  String toString() {
+    return 'ErrorDataFfi(code: $code, message: $message, data: $data)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ErrorDataFfiImpl &&
+            (identical(other.code, code) || other.code == code) &&
+            (identical(other.message, message) || other.message == message) &&
+            (identical(other.data, data) || other.data == data));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, code, message, data);
+
+  /// Create a copy of ErrorDataFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ErrorDataFfiImplCopyWith<_$ErrorDataFfiImpl> get copyWith =>
+      __$$ErrorDataFfiImplCopyWithImpl<_$ErrorDataFfiImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ErrorDataFfiImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _ErrorDataFfi implements ErrorDataFfi {
+  const factory _ErrorDataFfi(
+      {required final int code,
+      required final String message,
+      final String? data}) = _$ErrorDataFfiImpl;
+
+  factory _ErrorDataFfi.fromJson(Map<String, dynamic> json) =
+      _$ErrorDataFfiImpl.fromJson;
+
+  @override
+  int get code;
+  @override
+  String get message;
+  @override
+  String? get data;
+
+  /// Create a copy of ErrorDataFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ErrorDataFfiImplCopyWith<_$ErrorDataFfiImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}

@@ -115,6 +115,19 @@ class RustSignClient implements IRustSignClient {
     return ApproveResult.fromFfi(approveResponse);
   }
 
+  @override
+  Future<bool> reject({
+    required SessionProposalFfi proposal,
+    required ErrorDataFfi error,
+  }) async {
+    _checkInitialized();
+
+    return await ReownYttrium().signClient.reject(
+          proposal: proposal,
+          error: error,
+        );
+  }
+
   void _checkInitialized() {
     if (!_initialized) {
       throw Errors.getInternalError(Errors.NOT_INITIALIZED);

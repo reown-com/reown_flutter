@@ -212,3 +212,17 @@ Map<String, dynamic> _$$SessionRequestResponseJsonRpcFfiImplToJson(
       'jsonrpc': instance.jsonrpc,
       'result': instance.result,
     };
+
+_$ErrorDataFfiImpl _$$ErrorDataFfiImplFromJson(Map<String, dynamic> json) =>
+    _$ErrorDataFfiImpl(
+      code: (json['code'] as num).toInt(),
+      message: json['message'] as String,
+      data: json['data'] as String?,
+    );
+
+Map<String, dynamic> _$$ErrorDataFfiImplToJson(_$ErrorDataFfiImpl instance) =>
+    <String, dynamic>{
+      'code': instance.code,
+      'message': instance.message,
+      'data': instance.data,
+    };

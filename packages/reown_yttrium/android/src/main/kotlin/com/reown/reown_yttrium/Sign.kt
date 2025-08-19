@@ -1,8 +1,6 @@
 package com.reown.reown_yttrium
 
-import android.annotation.SuppressLint
 import android.util.Log
-//import com.reown.reown_yttrium.Sign.Companion.sessionRequestListener
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.EventChannel.StreamHandler
@@ -13,10 +11,10 @@ import kotlinx.coroutines.launch
 import uniffi.yttrium.SessionFfi
 import uniffi.yttrium.SessionProposalFfi
 import uniffi.yttrium.SessionRequestJsonRpcFfi
-import uniffi.yttrium.SessionRequestListener
 import uniffi.yttrium.SignClient
+import uniffi.yttrium.SignListener
+import uniffi.yttrium.errorDataFfiFromJson
 import uniffi.yttrium.metadataFromJson
-import uniffi.yttrium.registerLogger
 import uniffi.yttrium.sessionFfiToJson
 import uniffi.yttrium.sessionProposalFfiFromJson
 import uniffi.yttrium.sessionProposalFfiToJson
@@ -27,12 +25,12 @@ class Sign {
     companion object {
         private lateinit var signClient: SignClient
         private lateinit var eventChannel: EventChannel
-        private var onSessionRequest = OnSessionRequest()
+        private var signListenerHandler = SignListenerHandler()
 
         // Called during plugin registration
         fun setEventChannel(messenger: BinaryMessenger) {
             eventChannel = EventChannel(messenger, "reown_yttrium/session_requests")
-            eventChannel.setStreamHandler(onSessionRequest)
+            eventChannel.setStreamHandler(signListenerHandler)
         }
 
         fun initialize(params: Any?, result: MethodChannel.Result) {
@@ -42,7 +40,7 @@ class Sign {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     signClient = SignClient(projectId = projectId)
-                    signClient.registerSessionRequestListener(onSessionRequest)
+                    signClient.registerSignListener(signListenerHandler)
                     Log.d("🤖 Yttrium.Sign", "initialize success")
                     result.success(true)
                 } catch (e: Exception) {
@@ -114,10 +112,31 @@ class Sign {
                 }
             }
         }
+
+        fun reject(params: Any?, result: MethodChannel.Result) {
+            check(::signClient.isInitialized) { "Initialize SignClient before using it." }
+
+            val dict = params as? Map<*, *> ?: return result.error("Yttrium.Sign.reject", "Invalid parameters: not a map", null)
+
+            val proposal = dict["proposal"] as? String ?: return result.error("Yttrium.Sign.reject", "Invalid parameter proposal", null)
+            val reason = dict["reason"] as? String ?: return result.error("Yttrium.Sign.reject", "Invalid parameter reason", null)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    signClient.reject(
+                        proposal = sessionProposalFfiFromJson(proposal),
+                        reason = errorDataFfiFromJson(reason),
+                        );
+                    result.success(true)
+                } catch (e: Exception) {
+                    result.error("Yttrium.Sign.reject", e.message, null)
+                }
+            }
+        }
     }
 }
 
-class OnSessionRequest : SessionRequestListener, StreamHandler {
+class SignListenerHandler : SignListener, StreamHandler {
     private var eventChannelSink: EventChannel.EventSink? = null
 
     override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {

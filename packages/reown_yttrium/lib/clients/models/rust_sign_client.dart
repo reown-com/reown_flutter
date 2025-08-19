@@ -143,3 +143,15 @@ class SessionRequestResponseJsonRpcFfi with _$SessionRequestResponseJsonRpcFfi {
           Map<String, dynamic> json) =>
       _$SessionRequestResponseJsonRpcFfiFromJson(json);
 }
+
+@freezed
+class ErrorDataFfi with _$ErrorDataFfi {
+  const factory ErrorDataFfi({
+    required int code,
+    required String message,
+    String? data,
+  }) = _ErrorDataFfi;
+
+  factory ErrorDataFfi.fromJson(Map<String, dynamic> json) =>
+      _$ErrorDataFfiFromJson(json);
+}

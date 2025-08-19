@@ -23,4 +23,9 @@ abstract class IRustSignClient {
     required Map<String, Map<String, dynamic>> approvedNamespaces,
     required Map<String, dynamic> selfMetadata,
   });
+
+  Future<bool> reject({
+    required SessionProposalFfi proposal,
+    required ErrorDataFfi error,
+  });
 }
