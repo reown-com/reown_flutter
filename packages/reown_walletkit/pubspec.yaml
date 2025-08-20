@@ -7,6 +7,7 @@ documentation: https://docs.reown.com/walletkit/flutter/installation
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
+  flutter: ">=1.10.0"
 
 dependencies:
   event: ^3.1.0

@@ -6,6 +6,7 @@ repository: https://github.com/reown-com/reown_flutter/tree/master/packages/reow
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
+  flutter: ">=1.10.0"
 
 # Add regular dependencies here.
 dependencies:
