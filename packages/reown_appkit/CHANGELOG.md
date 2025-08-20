@@ -1,6 +1,10 @@
-## 1.5.1
+## 1.6.0
 
+- LICENSE UPDATE
+- Flutter SDK upgrade to 3.35.1
+- Dependency updates
 - Solflare Wallet support
+- Bug fixes
 
 ## 1.5.0
 
