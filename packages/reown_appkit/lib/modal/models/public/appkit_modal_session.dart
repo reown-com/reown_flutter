@@ -47,13 +47,13 @@ class ReownAppKitModalSession {
     MagicData? magicData,
     SIWESession? siweSession,
     bool isSmartAccount = false,
-  })  : _sessionData = sessionData,
-        _coinbaseData = coinbaseData,
-        _phantomData = phantomData,
-        _solflareData = solflareData,
-        _magicData = magicData,
-        _siweSession = siweSession,
-        _isSmartAccount = isSmartAccount;
+  }) : _sessionData = sessionData,
+       _coinbaseData = coinbaseData,
+       _phantomData = phantomData,
+       _solflareData = solflareData,
+       _magicData = magicData,
+       _siweSession = siweSession,
+       _isSmartAccount = isSmartAccount;
 
   /// USED TO READ THE SESSION FROM LOCAL STORAGE
   factory ReownAppKitModalSession.fromMap(Map<String, dynamic> map) {
@@ -77,10 +77,12 @@ class ReownAppKitModalSession {
       solflareData: solflareDataString != null
           ? SolflareData.fromJson(solflareDataString)
           : null,
-      magicData:
-          magicDataString != null ? MagicData.fromJson(magicDataString) : null,
-      siweSession:
-          siweSession != null ? SIWESession.fromJson(siweSession) : null,
+      magicData: magicDataString != null
+          ? MagicData.fromJson(magicDataString)
+          : null,
+      siweSession: siweSession != null
+          ? SIWESession.fromJson(siweSession)
+          : null,
       isSmartAccount: smartAccount,
     );
   }
@@ -93,24 +95,24 @@ class ReownAppKitModalSession {
     MagicData? magicData,
     SIWESession? siweSession,
   }) {
-    final newCoinbaseData = _coinbaseData?.copytWith(
+    final newCoinbaseData = _coinbaseData?.copyWith(
       address: coinbaseData?.address,
       chainName: coinbaseData?.chainName,
       chainId: coinbaseData?.chainId,
       self: coinbaseData?.self,
       peer: coinbaseData?.peer,
     );
-    final newPhantomData = _phantomData?.copytWith(
+    final newPhantomData = _phantomData?.copyWith(
       address: phantomData?.address,
       self: phantomData?.self,
       peer: phantomData?.peer,
     );
-    final newSolflareData = _solflareData?.copytWith(
+    final newSolflareData = _solflareData?.copyWith(
       address: solflareData?.address,
       self: solflareData?.self,
       peer: solflareData?.peer,
     );
-    final newMagicData = _magicData?.copytWith(
+    final newMagicData = _magicData?.copyWith(
       email: magicData?.email,
       address: magicData?.address,
       chainId: magicData?.chainId,
@@ -284,30 +286,30 @@ class ReownAppKitModalSession {
 
     if (sessionService.isCoinbase) {
       final ns = NetworkUtils.eip155;
-      return ReownAppKitModalNetworks.getAllSupportedNetworks(namespace: ns)
-          .map((e) => '${e.chainId}:${getAddress(ns)}')
-          .toList();
+      return ReownAppKitModalNetworks.getAllSupportedNetworks(
+        namespace: ns,
+      ).map((e) => '${e.chainId}:${getAddress(ns)}').toList();
     }
 
     if (sessionService.isPhantom) {
       final ns = namespace ?? NetworkUtils.solana;
-      return ReownAppKitModalNetworks.getAllSupportedNetworks(namespace: ns)
-          .map((e) => '${e.chainId}:${getAddress(ns)}')
-          .toList();
+      return ReownAppKitModalNetworks.getAllSupportedNetworks(
+        namespace: ns,
+      ).map((e) => '${e.chainId}:${getAddress(ns)}').toList();
     }
 
     if (sessionService.isSolflare) {
       final ns = namespace ?? NetworkUtils.solana;
-      return ReownAppKitModalNetworks.getAllSupportedNetworks(namespace: ns)
-          .map((e) => '${e.chainId}:${getAddress(ns)}')
-          .toList();
+      return ReownAppKitModalNetworks.getAllSupportedNetworks(
+        namespace: ns,
+      ).map((e) => '${e.chainId}:${getAddress(ns)}').toList();
     }
 
     if (sessionService.isMagic) {
       final ns = namespace ?? NetworkUtils.eip155;
-      return ReownAppKitModalNetworks.getAllSupportedNetworks(namespace: ns)
-          .map((e) => '${e.chainId}:${getAddress(ns)}')
-          .toList();
+      return ReownAppKitModalNetworks.getAllSupportedNetworks(
+        namespace: ns,
+      ).map((e) => '${e.chainId}:${getAddress(ns)}').toList();
     }
 
     if (_isSmartAccount) {

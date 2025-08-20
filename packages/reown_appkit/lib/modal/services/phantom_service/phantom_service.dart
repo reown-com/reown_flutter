@@ -27,19 +27,19 @@ class PhantomService implements IPhantomService {
 
   @override
   ConnectionMetadata get walletMetadata => ConnectionMetadata(
-        metadata: PairingMetadata(
-          name: _phantomWalletData?.listing.name ?? 'Phantom Wallet',
-          description: _phantomWalletData?.listing.description ?? '',
-          url: _phantomWalletData?.listing.homepage ?? '',
-          icons: [_iconImage],
-          redirect: Redirect(
-            native: _phantomWalletData?.listing.mobileLink,
-            universal: _phantomWalletData?.listing.linkMode,
-            linkMode: _phantomWalletData?.listing.linkMode != null,
-          ),
-        ),
-        publicKey: '',
-      );
+    metadata: PairingMetadata(
+      name: _phantomWalletData?.listing.name ?? 'Phantom Wallet',
+      description: _phantomWalletData?.listing.description ?? '',
+      url: _phantomWalletData?.listing.homepage ?? '',
+      icons: [_iconImage],
+      redirect: Redirect(
+        native: _phantomWalletData?.listing.mobileLink,
+        universal: _phantomWalletData?.listing.linkMode,
+        linkMode: _phantomWalletData?.listing.linkMode != null,
+      ),
+    ),
+    publicKey: '',
+  );
 
   @override
   List<String> get walletSupportedMethods =>
@@ -56,15 +56,14 @@ class PhantomService implements IPhantomService {
   Event<PhantomResponseEvent> get onPhantomResponse =>
       Event<PhantomResponseEvent>();
 
-  PhantomService({
-    required PairingMetadata metadata,
-    required IReownCore core,
-  })  : _metadata = metadata,
-        _core = core;
+  PhantomService({required PairingMetadata metadata, required IReownCore core})
+    : _metadata = metadata,
+      _core = core;
 
   @override
   Future<void> init() async {
-    _phantomWalletData = (await _explorerService.getPhantomWalletObject()) ??
+    _phantomWalletData =
+        (await _explorerService.getPhantomWalletObject()) ??
         ReownAppKitModalWalletInfo(
           listing: PhantomUtils.defaultListingData,
           installed: false,
@@ -244,7 +243,7 @@ class PhantomService implements IPhantomService {
       return;
     }
 
-    final data = PhantomData.fromJson(payload).copytWith(
+    final data = PhantomData.fromJson(payload).copyWith(
       chainId: _selectedChainId,
       peer: walletMetadata.copyWith(publicKey: await walletPublicKey),
       self: ConnectionMetadata(

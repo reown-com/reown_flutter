@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:reown_core/store/i_store.dart';
 import 'package:reown_core/utils/constants.dart';
@@ -28,8 +29,8 @@ class SecureStore implements IStore<Map<String, dynamic>> {
   SecureStore({
     Map<String, Map<String, dynamic>>? defaultValue,
     required IStore<Map<String, dynamic>> fallbackStorage,
-  })  : _map = defaultValue ?? {},
-        _fallbackStorage = fallbackStorage;
+  }) : _map = defaultValue ?? {},
+       _fallbackStorage = fallbackStorage;
 
   @override
   Future<void> init() async {
@@ -40,9 +41,7 @@ class SecureStore implements IStore<Map<String, dynamic>> {
     try {
       // Try secure storage first
       _secureStorage = const FlutterSecureStorage(
-        aOptions: AndroidOptions(
-          encryptedSharedPreferences: true,
-        ),
+        aOptions: AndroidOptions(encryptedSharedPreferences: true),
         iOptions: IOSOptions(
           accessibility: KeychainAccessibility.first_unlock_this_device,
         ),
@@ -100,10 +99,7 @@ class SecureStore implements IStore<Map<String, dynamic>> {
     } else {
       try {
         final stringValue = jsonEncode(value);
-        await _secureStorage.write(
-          key: keyWithPrefix,
-          value: stringValue,
-        );
+        await _secureStorage.write(key: keyWithPrefix, value: stringValue);
       } catch (e) {
         throw Errors.getInternalError(
           Errors.MISSING_OR_INVALID,
@@ -127,10 +123,7 @@ class SecureStore implements IStore<Map<String, dynamic>> {
       } else {
         try {
           final stringValue = jsonEncode(value);
-          await _secureStorage.write(
-            key: keyWithPrefix,
-            value: stringValue,
-          );
+          await _secureStorage.write(key: keyWithPrefix, value: stringValue);
         } catch (e) {
           throw Errors.getInternalError(
             Errors.MISSING_OR_INVALID,
@@ -192,8 +185,9 @@ class SecureStore implements IStore<Map<String, dynamic>> {
             _map[key] = decodedValue;
           } catch (e) {
             // Skip corrupted data
-            print(
-                'Warning: Failed to decode secure storage value for key $key: $e');
+            debugPrint(
+              'Warning: Failed to decode secure storage value for key $key: $e',
+            );
           }
         }
       }
@@ -217,7 +211,7 @@ class SecureStore implements IStore<Map<String, dynamic>> {
         }
       }
     } catch (e) {
-      print('Warning: Failed to restore from fallback storage: $e');
+      debugPrint('Warning: Failed to restore from fallback storage: $e');
     }
   }
 

@@ -38,7 +38,7 @@ class SolflareData {
   @override
   String toString() => toJson().toString();
 
-  SolflareData copytWith({
+  SolflareData copyWith({
     String? address,
     String? chainId,
     ConnectionMetadata? self,

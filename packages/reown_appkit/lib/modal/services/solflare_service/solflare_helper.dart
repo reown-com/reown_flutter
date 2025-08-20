@@ -23,9 +23,8 @@ class SolflareHelper {
 
   /// Private/Public keypair for encryption and decryption of solflare responses
   CryptoKeyPair? _currentKeyPair;
-  String get dappPublicKey => base58.encode(
-        _currentKeyPair!.getPublicKeyBytes(),
-      );
+  String get dappPublicKey =>
+      base58.encode(_currentKeyPair!.getPublicKeyBytes());
 
   /// When a user connects to Solflare Wallet for the first time, Solflare will return a session token param that represents the user's connection.
   /// Will have to be securely stored
@@ -64,8 +63,9 @@ class SolflareHelper {
   Future<bool> restoreSession() async {
     try {
       if (_core.secureStorage.has(StorageConstants.solflareSession)) {
-        final session =
-            _core.secureStorage.get(StorageConstants.solflareSession)!;
+        final session = _core.secureStorage.get(
+          StorageConstants.solflareSession,
+        )!;
         _currentKeyPair = CryptoKeyPair(
           hex.encode(_getKeyBytes('${session['self_private_key']}')),
           hex.encode(_getKeyBytes('${session['self_public_key']}')),
@@ -120,7 +120,8 @@ class SolflareHelper {
 
   bool _isBase58String(String input) {
     final base58Regex = RegExp(
-        r'^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$');
+      r'^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$',
+    );
     return base58Regex.hasMatch(input);
   }
 
@@ -136,9 +137,7 @@ class SolflareHelper {
       'session': _sessionToken,
       'message': _isBase58String(message)
           ? message
-          : base58.encode(
-              Uint8List.fromList(hashedMessage.codeUnits),
-            ),
+          : base58.encode(Uint8List.fromList(hashedMessage.codeUnits)),
     };
     final encryptedPayload = encryptPayload(payload, requestNonce);
 
@@ -165,9 +164,7 @@ class SolflareHelper {
     final payload = {
       'session': _sessionToken,
       'transaction': base58.encode(
-        Uint8List.fromList(
-          base64.decode(transaction),
-        ),
+        Uint8List.fromList(base64.decode(transaction)),
       ),
     };
     final encryptedPayload = encryptPayload(payload, requestNonce);
@@ -187,17 +184,12 @@ class SolflareHelper {
   }
 
   /// Generate an URL with given [transaction] to sign it with Solflare Wallet.
-  Uri buildSignTransactionUri({
-    required String transaction,
-    Uint8List? nonce,
-  }) {
+  Uri buildSignTransactionUri({required String transaction, Uint8List? nonce}) {
     final requestNonce = nonce ?? _core.crypto.getUtils().randomBytes(24);
 
     final payload = {
       'transaction': base58.encode(
-        Uint8List.fromList(
-          base64.decode(transaction),
-        ),
+        Uint8List.fromList(base64.decode(transaction)),
       ),
       'session': _sessionToken,
     };
@@ -226,11 +218,7 @@ class SolflareHelper {
 
     final payload = {
       'transactions': transactions
-          .map((e) => base58.encode(
-                Uint8List.fromList(
-                  base64.decode(e),
-                ),
-              ))
+          .map((e) => base58.encode(Uint8List.fromList(base64.decode(e))))
           .toList(),
       'session': _sessionToken,
     };
@@ -266,15 +254,15 @@ class SolflareHelper {
     try {
       final currentData =
           _core.secureStorage.has(StorageConstants.solflareSession)
-              ? _core.secureStorage.get(StorageConstants.solflareSession)!
-              : {};
+          ? _core.secureStorage.get(StorageConstants.solflareSession)!
+          : {};
       await _core.secureStorage.set(StorageConstants.solflareSession, {
         ...currentData,
         'session_token': _sessionToken,
         'solflare_encryption_public_key': _solflarePublicKey,
       });
     } catch (e) {
-      _core.logger.d('[$runtimeType] persistSession $e');
+      _core.logger.e('[$runtimeType] persistSession $e');
     }
   }
 
@@ -289,8 +277,9 @@ class SolflareHelper {
     final solflareRequest = params['solflareRequest'] ?? '';
     // solflare_encryption_public_key is Solflare publicKey (not solana Address)
     final solflareKey = params['solflare_encryption_public_key'] ?? '';
-    _core.logger
-        .d('[$runtimeType] solflare_encryption_public_key $solflareKey');
+    _core.logger.d(
+      '[$runtimeType] solflare_encryption_public_key $solflareKey',
+    );
 
     if (solflareRequest == 'connect') {
       // executed only once after successful /connect
@@ -311,9 +300,7 @@ class SolflareHelper {
       );
 
       final payload = <String, dynamic>{
-        ...JsonDecoder().convert(String.fromCharCodes(
-          decryptedData!,
-        )),
+        ...JsonDecoder().convert(String.fromCharCodes(decryptedData!)),
         if (solflareKey.isNotEmpty)
           'solflare_encryption_public_key': solflareKey,
         if (solflareRequest.isNotEmpty) 'solflareRequest': solflareRequest,
@@ -327,10 +314,7 @@ class SolflareHelper {
       if (queryParams.containsKey('errorCode')) {
         final errorCode = queryParams['errorCode'];
         final errorMessage = params['errorMessage'];
-        return {
-          'errorCode': errorCode,
-          'errorMessage': errorMessage,
-        };
+        return {'errorCode': errorCode, 'errorMessage': errorMessage};
       } else {
         return Errors.getInternalError(
           Errors.MISSING_OR_INVALID,
@@ -377,15 +361,15 @@ class SolflareHelper {
     try {
       final currentData =
           _core.secureStorage.has(StorageConstants.solflareSession)
-              ? _core.secureStorage.get(StorageConstants.solflareSession)!
-              : {};
+          ? _core.secureStorage.get(StorageConstants.solflareSession)!
+          : {};
       await _core.secureStorage.set(StorageConstants.solflareSession, {
         ...currentData,
         'self_private_key': _currentKeyPair!.getPrivateKeyBs58(),
         'self_public_key': _currentKeyPair!.getPublicKeyBs58(),
       });
     } catch (e) {
-      _core.logger.d('[$runtimeType] _createSharedSecret $e');
+      _core.logger.e('[$runtimeType] _createSharedSecret $e');
     }
   }
 

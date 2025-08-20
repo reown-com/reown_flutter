@@ -27,19 +27,19 @@ class SolflareService implements ISolflareService {
 
   @override
   ConnectionMetadata get walletMetadata => ConnectionMetadata(
-        metadata: PairingMetadata(
-          name: _solflareWalletData?.listing.name ?? 'Solflare',
-          description: _solflareWalletData?.listing.description ?? '',
-          url: _solflareWalletData?.listing.homepage ?? '',
-          icons: [_iconImage],
-          redirect: Redirect(
-            native: _solflareWalletData?.listing.mobileLink,
-            universal: _solflareWalletData?.listing.linkMode,
-            linkMode: _solflareWalletData?.listing.linkMode != null,
-          ),
-        ),
-        publicKey: '',
-      );
+    metadata: PairingMetadata(
+      name: _solflareWalletData?.listing.name ?? 'Solflare',
+      description: _solflareWalletData?.listing.description ?? '',
+      url: _solflareWalletData?.listing.homepage ?? '',
+      icons: [_iconImage],
+      redirect: Redirect(
+        native: _solflareWalletData?.listing.mobileLink,
+        universal: _solflareWalletData?.listing.linkMode,
+        linkMode: _solflareWalletData?.listing.linkMode != null,
+      ),
+    ),
+    publicKey: '',
+  );
 
   @override
   List<String> get walletSupportedMethods =>
@@ -56,15 +56,14 @@ class SolflareService implements ISolflareService {
   Event<SolflareResponseEvent> get onSolflareResponse =>
       Event<SolflareResponseEvent>();
 
-  SolflareService({
-    required PairingMetadata metadata,
-    required IReownCore core,
-  })  : _metadata = metadata,
-        _core = core;
+  SolflareService({required PairingMetadata metadata, required IReownCore core})
+    : _metadata = metadata,
+      _core = core;
 
   @override
   Future<void> init() async {
-    _solflareWalletData = (await _explorerService.getSolflareWalletObject()) ??
+    _solflareWalletData =
+        (await _explorerService.getSolflareWalletObject()) ??
         ReownAppKitModalWalletInfo(
           listing: SolflareUtils.defaultListingData,
           installed: false,
@@ -245,7 +244,7 @@ class SolflareService implements ISolflareService {
       return;
     }
 
-    final data = SolflareData.fromJson(payload).copytWith(
+    final data = SolflareData.fromJson(payload).copyWith(
       chainId: _selectedChainId,
       peer: walletMetadata.copyWith(publicKey: await walletPublicKey),
       self: ConnectionMetadata(
