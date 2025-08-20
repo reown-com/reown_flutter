@@ -100,8 +100,8 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
     final maxWidth = isPortrait
         ? ResponsiveData.maxWidthOf(context)
         : ResponsiveData.maxHeightOf(context) -
-            kNavbarHeight -
-            (kPadding16 * 2);
+              kNavbarHeight -
+              (kPadding16 * 2);
     //
     final walletRedirect = _explorerService.getWalletRedirect(
       _service!.selectedWallet,
@@ -112,10 +112,12 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
     final imageId = selectedWallet?.listing.imageId ?? '';
     final imageUrl = _explorerService.getWalletImageUrl(imageId);
     //
-    final webOnlyWallet = walletRedirect?.webOnly == true &&
+    final webOnlyWallet =
+        walletRedirect?.webOnly == true &&
         selectedWallet?.isPhantom == false &&
         selectedWallet?.isSolflare == false;
-    final mobileOnlyWallet = walletRedirect?.mobileOnly == true ||
+    final mobileOnlyWallet =
+        walletRedirect?.mobileOnly == true ||
         selectedWallet?.isPhantom == true ||
         selectedWallet?.isSolflare == true ||
         selectedWallet?.isCoinbase == true;
@@ -185,7 +187,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
                       ? Text(
                           errorEvent is ErrorOpeningWallet
                               ? (errorEvent!.description ??
-                                  'Unable to connect with $walletName')
+                                    'Unable to connect with $walletName')
                               : 'Connection can be declined by the user or if a previous request is still active',
                           textAlign: TextAlign.center,
                           style: themeData.textStyles.small500.copyWith(
@@ -193,21 +195,22 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
                           ),
                         )
                       : nonInstalledMobile(errorEvent)
-                          ? SizedBox.shrink()
-                          : Text(
-                              webOnlyWallet ||
-                                      _selectedSegment == SegmentOption.option2
-                                  ? 'Open and continue in a new browser tab'
-                                  : 'Accept connection request in the wallet',
-                              textAlign: TextAlign.center,
-                              style: themeData.textStyles.small500.copyWith(
-                                color: themeColors.foreground200,
-                              ),
-                            ),
+                      ? SizedBox.shrink()
+                      : Text(
+                          webOnlyWallet ||
+                                  _selectedSegment == SegmentOption.option2
+                              ? 'Open and continue in a new browser tab'
+                              : 'Accept connection request in the wallet',
+                          textAlign: TextAlign.center,
+                          style: themeData.textStyles.small500.copyWith(
+                            color: themeColors.foreground200,
+                          ),
+                        ),
                   //
                   const SizedBox.square(dimension: kPadding16),
                   Visibility(
-                    visible: isPortrait &&
+                    visible:
+                        isPortrait &&
                         _selectedSegment != SegmentOption.option2 &&
                         errorEvent == null,
                     child: SimpleIconButton(
@@ -219,7 +222,8 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
                     ),
                   ),
                   Visibility(
-                    visible: isPortrait &&
+                    visible:
+                        isPortrait &&
                         (webOnlyWallet ||
                             _selectedSegment == SegmentOption.option2),
                     child: SimpleIconButton(
@@ -243,7 +247,8 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
                 children: [
                   if (isPortrait) const SizedBox.square(dimension: kPadding12),
                   Visibility(
-                    visible: !isPortrait &&
+                    visible:
+                        !isPortrait &&
                         _selectedSegment != SegmentOption.option2 &&
                         errorEvent == null,
                     child: SimpleIconButton(
@@ -255,7 +260,8 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
                     ),
                   ),
                   Visibility(
-                    visible: !isPortrait &&
+                    visible:
+                        !isPortrait &&
                         (webOnlyWallet ||
                             _selectedSegment == SegmentOption.option2),
                     child: SimpleIconButton(
@@ -308,10 +314,9 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
   Future<void> _copyToClipboard(BuildContext context) async {
     final service = ModalProvider.of(context).instance;
     await Clipboard.setData(ClipboardData(text: service.wcUri!));
-    GetIt.I<IToastService>().show(ToastMessage(
-      type: ToastType.success,
-      text: 'Link copied',
-    ));
+    GetIt.I<IToastService>().show(
+      ToastMessage(type: ToastType.success, text: 'Link copied'),
+    );
   }
 }
 
@@ -346,7 +351,7 @@ class _WalletAvatar extends StatelessWidget {
               child: RoundedIcon(
                 assetPath: 'lib/modal/assets/icons/close.svg',
                 assetColor: themeColors.error100,
-                circleColor: themeColors.error100.withOpacity(0.2),
+                circleColor: themeColors.error100.withValues(alpha: 0.2),
                 borderColor: themeColors.background125,
                 padding: 4.0,
                 size: 24.0,

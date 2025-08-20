@@ -8,11 +8,7 @@ import 'package:reown_appkit/modal/widgets/miscellaneous/content_loading.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
 
 class QRCodeView extends StatelessWidget {
-  const QRCodeView({
-    super.key,
-    required this.uri,
-    this.logoPath = '',
-  });
+  const QRCodeView({super.key, required this.uri, this.logoPath = ''});
 
   final String logoPath, uri;
 
@@ -62,10 +58,7 @@ class QRCodeView extends StatelessWidget {
                       color: Colors.black,
                     ),
                     embeddedImage: logoPath.isNotEmpty
-                        ? AssetImage(
-                            logoPath,
-                            package: 'reown_appkit',
-                          )
+                        ? AssetImage(logoPath, package: 'reown_appkit')
                         : null,
                     embeddedImageStyle: QrEmbeddedImageStyle(
                       size: Size(imageSize, imageSize),
@@ -81,7 +74,7 @@ class QRCodeView extends StatelessWidget {
                 TextSpan(
                   text: 'UX by ',
                   style: themeData.textStyles.tiny600.copyWith(
-                    color: themeColors.inverse000.withOpacity(0.3),
+                    color: themeColors.inverse000.withValues(alpha: 0.3),
                   ),
                 ),
                 TextSpan(

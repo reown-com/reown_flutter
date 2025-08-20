@@ -79,11 +79,7 @@ class _AccountAvatarState extends State<AccountAvatar> {
 }
 
 class GradientOrb extends StatelessWidget {
-  const GradientOrb({
-    super.key,
-    this.address,
-    this.size = 40.0,
-  });
+  const GradientOrb({super.key, this.address, this.size = 40.0});
   final String? address;
   final double size;
 
@@ -119,22 +115,20 @@ class GradientOrb extends StatelessWidget {
       size -= 0.1;
       return _gradient(c, size);
     }).toList();
-    gradients.add(
-      _gradient(Colors.white.withOpacity(0.8), 0.5),
-    );
+    gradients.add(_gradient(Colors.white.withValues(alpha: 0.8), 0.5));
     return gradients;
   }
 
   Widget _gradient(Color color, double size) => Positioned.fill(
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: RadialGradient(
-              colors: [color, color, color.withOpacity(0.0)],
-              stops: [0.0, size / 4, size],
-              center: const Alignment(0.3, -0.3),
-            ),
-          ),
+    child: DecoratedBox(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(
+          colors: [color, color, color.withValues(alpha: 0.0)],
+          stops: [0.0, size / 4, size],
+          center: const Alignment(0.3, -0.3),
         ),
-      );
+      ),
+    ),
+  );
 }

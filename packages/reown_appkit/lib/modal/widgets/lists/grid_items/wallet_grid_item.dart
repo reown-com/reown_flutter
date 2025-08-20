@@ -61,7 +61,9 @@ class WalletGridItem extends StatelessWidget {
                         child: RoundedIcon(
                           assetPath: 'lib/modal/assets/icons/checkmark.svg',
                           assetColor: themeColors.success100,
-                          circleColor: themeColors.success100.withOpacity(0.3),
+                          circleColor: themeColors.success100.withValues(
+                            alpha: 0.3,
+                          ),
                           borderColor: themeColors.background150,
                           padding: 2.0,
                           size: 18.0,
@@ -96,8 +98,8 @@ class WalletGridItem extends StatelessWidget {
                     color: isSelected
                         ? themeColors.accent100
                         : (isNetwork && onTap == null)
-                            ? themeColors.background300
-                            : themeColors.foreground100,
+                        ? themeColors.background300
+                        : themeColors.foreground100,
                     height: 1.0,
                   ),
                 ),

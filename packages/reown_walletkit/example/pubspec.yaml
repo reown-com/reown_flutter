@@ -40,11 +40,11 @@ dependencies:
   toastification: ^2.3.0
 
 dependency_overrides:
-  pinenacl: ^0.6.0
   # because of solana
+  freezed_annotation: ^3.1.0
+  pinenacl: ^0.6.0
   shelf_web_socket: ^2.0.1
   web_socket_channel: ^3.0.1
-  freezed_annotation: ^3.1.0
 
 dev_dependencies:
   build_runner: ^2.4.13
