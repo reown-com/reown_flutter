@@ -42,7 +42,7 @@ class CoinbaseData {
   @override
   String toString() => toJson().toString();
 
-  CoinbaseData copytWith({
+  CoinbaseData copyWith({
     String? address,
     String? chainName,
     String? chainId,

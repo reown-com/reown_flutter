@@ -12,6 +12,7 @@ import 'package:reown_appkit/modal/services/explorer_service/models/native_app_d
 import 'package:reown_appkit/modal/services/explorer_service/models/redirect.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/request_params.dart';
 import 'package:reown_appkit/modal/services/phantom_service/utils/phantom_utils.dart';
+import 'package:reown_appkit/modal/services/solflare_service/utils/solflare_utils.dart';
 import 'package:reown_appkit/modal/services/uri_service/i_url_utils.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/utils/debouncer.dart';
@@ -235,6 +236,12 @@ class ExplorerService implements IExplorerService {
                 ? PhantomUtils.defaultListingData.rdns
                 : PhantomUtils.defaultListingData.mobileLink,
           ),
+          NativeAppData(
+            id: SolflareUtils.defaultListingData.id,
+            schema: Platform.isAndroid
+                ? SolflareUtils.defaultListingData.rdns
+                : SolflareUtils.defaultListingData.mobileLink,
+          ),
           ...apiResponse.data,
         ];
       } else {
@@ -323,7 +330,8 @@ class ExplorerService implements IExplorerService {
             .where((a) {
               return a.mobileLink != null ||
                   a.id == CoinbaseUtils.walletId ||
-                  a.id == PhantomUtils.walletId;
+                  a.id == PhantomUtils.walletId ||
+                  a.id == SolflareUtils.walletId;
             })
             .toList()
             .toAppKitWalletInfo();
@@ -500,6 +508,38 @@ class ExplorerService implements IExplorerService {
       final mobileLink = PhantomUtils.defaultListingData.mobileLink;
       final rdns = PhantomUtils.defaultListingData.rdns;
       final linkMode = PhantomUtils.defaultListingData.linkMode;
+      final installed = Platform.isAndroid
+          ? await _uriService.isInstalled(rdns)
+          : await _uriService.isInstalled(mobileLink);
+      return serviceData.copyWith(
+        listing: serviceData.listing.copyWith(
+          mobileLink: mobileLink,
+          linkMode: linkMode,
+        ),
+        installed: installed,
+      );
+    }
+    return null;
+  }
+
+  @override
+  Future<ReownAppKitModalWalletInfo?> getSolflareWalletObject() async {
+    final results = await _fetchListings(
+      params: RequestParams(
+        page: 1,
+        entries: 1,
+        include: SolflareUtils.walletId,
+      ),
+      updateCount: false,
+    );
+
+    if (results.isNotEmpty) {
+      final serviceData = ReownAppKitModalWalletInfo.fromJson(
+        results.first.toJson(),
+      );
+      final mobileLink = SolflareUtils.defaultListingData.mobileLink;
+      final rdns = SolflareUtils.defaultListingData.rdns;
+      final linkMode = SolflareUtils.defaultListingData.linkMode;
       final installed = Platform.isAndroid
           ? await _uriService.isInstalled(rdns)
           : await _uriService.isInstalled(mobileLink);

@@ -8,11 +8,8 @@ import 'package:reown_core/reown_core.dart';
 import 'package:reown_sign/models/basic_models.dart';
 
 extension ReownSignErrorExtension on ReownCoreError {
-  ReownSignError toSignError() => ReownSignError(
-        code: code,
-        message: message,
-        data: data,
-      );
+  ReownSignError toSignError() =>
+      ReownSignError(code: code, message: message, data: data);
 }
 
 extension UriExtension on String {
@@ -47,8 +44,8 @@ extension TransactionExtension2 on Map<String, dynamic> {
       value: (this['value'] as String?)?.toEthereAmount(),
       gasPrice: (this['gasPrice'] as String?)?.toEthereAmount(),
       maxFeePerGas: (this['maxFeePerGas'] as String?)?.toEthereAmount(),
-      maxPriorityFeePerGas:
-          (this['maxPriorityFeePerGas'] as String?)?.toEthereAmount(),
+      maxPriorityFeePerGas: (this['maxPriorityFeePerGas'] as String?)
+          ?.toEthereAmount(),
       maxGas: (this['maxGas'] as String?)?.toIntFromHex(),
       nonce: (this['nonce'] as String?)?.toIntFromHex(),
       data: _parseTransactionData(this['input'] ?? this['data']),

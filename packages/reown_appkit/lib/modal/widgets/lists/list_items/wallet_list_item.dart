@@ -65,7 +65,9 @@ class WalletListItem extends StatelessWidget {
                       child: RoundedIcon(
                         assetPath: 'lib/modal/assets/icons/checkmark.svg',
                         assetColor: themeColors.success100,
-                        circleColor: themeColors.success100.withOpacity(0.3),
+                        circleColor: themeColors.success100.withValues(
+                          alpha: 0.3,
+                        ),
                         borderColor: themeColors.background150,
                         padding: 2.0,
                         size: 15.0,

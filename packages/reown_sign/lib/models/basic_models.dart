@@ -9,7 +9,7 @@ part 'basic_models.freezed.dart';
 class ReownSignErrorSilent {}
 
 @freezed
-class ReownSignError with _$ReownSignError {
+sealed class ReownSignError with _$ReownSignError {
   @JsonSerializable(includeIfNull: false)
   const factory ReownSignError({
     required int code,
@@ -22,7 +22,7 @@ class ReownSignError with _$ReownSignError {
 }
 
 @freezed
-class ConnectionMetadata with _$ConnectionMetadata {
+sealed class ConnectionMetadata with _$ConnectionMetadata {
   const factory ConnectionMetadata({
     required String publicKey,
     required PairingMetadata metadata,
@@ -33,7 +33,7 @@ class ConnectionMetadata with _$ConnectionMetadata {
 }
 
 @freezed
-class AuthPublicKey with _$AuthPublicKey {
+sealed class AuthPublicKey with _$AuthPublicKey {
   @JsonSerializable(includeIfNull: false)
   const factory AuthPublicKey({
     required String publicKey,

@@ -117,9 +117,7 @@ class _WalletFeaturesPageState extends State<WalletFeaturesPage>
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kPadding12),
-        child: _SmartAccountView(
-          appKitModal: _appKitModal!,
-        ),
+        child: _SmartAccountView(appKitModal: _appKitModal!),
       ),
     );
   }
@@ -168,7 +166,8 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
   String get _sumBalance {
     String? tokenBalance = '0.00';
     if (_tokens.isNotEmpty) {
-      final sum = _tokens.map((e) => e.value).reduce((prev, curr) {
+      final sum =
+          _tokens.map((e) => e.value).reduce((prev, curr) {
             return (prev ?? 0.0) + (curr ?? 0.0);
           }) ??
           0.0;
@@ -299,8 +298,9 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
                                         assetPath:
                                             'lib/modal/assets/icons/coin.svg',
                                         assetColor: themeColors.foreground200,
-                                        borderRadius:
-                                            radiuses.isSquare() ? 0.0 : null,
+                                        borderRadius: radiuses.isSquare()
+                                            ? 0.0
+                                            : null,
                                       ),
                                     ),
                                   ),
@@ -327,13 +327,10 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
                             ),
                           ),
                           title: _tokens[index].name ?? '',
-                          titleStyle:
-                              themeData.textStyles.paragraph500.copyWith(
-                            color: themeColors.foreground100,
-                          ),
-                          subtitle: '${CoreUtils.formatStringBalance(
-                            _tokens[index].quantity?.numeric ?? '0.0',
-                          )} ${_tokens[index].symbol ?? ''}',
+                          titleStyle: themeData.textStyles.paragraph500
+                              .copyWith(color: themeColors.foreground100),
+                          subtitle:
+                              '${CoreUtils.formatStringBalance(_tokens[index].quantity?.numeric ?? '0.0')} ${_tokens[index].symbol ?? ''}',
                           subtitleStyle: themeData.textStyles.small400.copyWith(
                             color: themeColors.foreground200,
                           ),
@@ -341,10 +338,8 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
                             children: [
                               Text(
                                 '\$${CoreUtils.formatChainBalance(_tokens[index].value)}',
-                                style:
-                                    themeData.textStyles.paragraph500.copyWith(
-                                  color: themeColors.foreground100,
-                                ),
+                                style: themeData.textStyles.paragraph500
+                                    .copyWith(color: themeColors.foreground100),
                               ),
                               SizedBox.square(dimension: kPadding6),
                             ],
@@ -362,9 +357,7 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
           Visibility(
             visible: _selectedSegment == SegmentOption.option2,
             child: Expanded(
-              child: ActivityListViewBuilder(
-                appKitModal: widget.appKitModal,
-              ),
+              child: ActivityListViewBuilder(appKitModal: widget.appKitModal),
             ),
           ),
           // const SizedBox.square(dimension: 20.0),
@@ -395,8 +388,8 @@ class _ReceiveFundsEmptyStateButton extends StatelessWidget {
               size: 30.0,
               assetPath: 'lib/modal/assets/icons/arrow_bottom_circle.svg',
               assetColor: themeColors.error100,
-              circleColor: themeColors.error100.withOpacity(0.15),
-              borderColor: themeColors.error100.withOpacity(0.15),
+              circleColor: themeColors.error100.withValues(alpha: 0.15),
+              borderColor: themeColors.error100.withValues(alpha: 0.15),
             ),
           ),
           title: 'Receive funds',

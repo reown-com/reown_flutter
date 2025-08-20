@@ -586,7 +586,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                       radius: e.$1 == _currentPage ? 4.0 : 3.0,
                       backgroundColor: e.$1 == _currentPage
                           ? StyleConstants.lightGray
-                          : StyleConstants.lightGray.withOpacity(0.5),
+                          : StyleConstants.lightGray.withValues(alpha: 0.5),
                     ),
                   ),
                 )
@@ -1003,7 +1003,7 @@ class __DataContainerState extends State<_DataContainer> {
       child: Container(
         height: widget.height,
         decoration: BoxDecoration(
-          color: StyleConstants.lightGray.withOpacity(0.5),
+          color: StyleConstants.lightGray.withValues(alpha: 0.5),
           borderRadius: BorderRadius.circular(
             StyleConstants.linear16,
           ),

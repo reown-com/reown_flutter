@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'appkit_modal_colors.freezed.dart';
 
 @freezed
-class ReownAppKitModalColors with _$ReownAppKitModalColors {
+sealed class ReownAppKitModalColors with _$ReownAppKitModalColors {
   const factory ReownAppKitModalColors({
     required Color accent100,
     required Color accent090,
@@ -124,23 +124,23 @@ class ReownAppKitModalColors with _$ReownAppKitModalColors {
 }
 
 extension AppKitColorsExtension on ReownAppKitModalColors {
-  Color get accenGlass090 => accent100.withOpacity(0.9);
-  Color get accenGlass080 => accent100.withOpacity(0.8);
-  Color get accenGlass020 => accent100.withOpacity(0.2);
-  Color get accenGlass015 => accent100.withOpacity(0.15);
-  Color get accenGlass010 => accent100.withOpacity(0.1);
-  Color get accenGlass005 => accent100.withOpacity(0.05);
-  Color get accenGlass002 => accent100.withOpacity(0.02);
+  Color get accenGlass090 => accent100.withValues(alpha: 0.9);
+  Color get accenGlass080 => accent100.withValues(alpha: 0.8);
+  Color get accenGlass020 => accent100.withValues(alpha: 0.2);
+  Color get accenGlass015 => accent100.withValues(alpha: 0.15);
+  Color get accenGlass010 => accent100.withValues(alpha: 0.1);
+  Color get accenGlass005 => accent100.withValues(alpha: 0.05);
+  Color get accenGlass002 => accent100.withValues(alpha: 0.02);
   //
-  Color get grayGlass001 => grayGlass100.withOpacity(0.01);
-  Color get grayGlass002 => grayGlass100.withOpacity(0.02);
-  Color get grayGlass005 => grayGlass100.withOpacity(0.05);
-  Color get grayGlass010 => grayGlass100.withOpacity(0.1);
-  Color get grayGlass015 => grayGlass100.withOpacity(0.15);
-  Color get grayGlass020 => grayGlass100.withOpacity(0.2);
-  Color get grayGlass025 => grayGlass100.withOpacity(0.25);
-  Color get grayGlass030 => grayGlass100.withOpacity(0.3);
-  Color get grayGlass060 => grayGlass100.withOpacity(0.6);
-  Color get grayGlass080 => grayGlass100.withOpacity(0.8);
-  Color get grayGlass090 => grayGlass100.withOpacity(0.9);
+  Color get grayGlass001 => grayGlass100.withValues(alpha: 0.01);
+  Color get grayGlass002 => grayGlass100.withValues(alpha: 0.02);
+  Color get grayGlass005 => grayGlass100.withValues(alpha: 0.05);
+  Color get grayGlass010 => grayGlass100.withValues(alpha: 0.1);
+  Color get grayGlass015 => grayGlass100.withValues(alpha: 0.15);
+  Color get grayGlass020 => grayGlass100.withValues(alpha: 0.2);
+  Color get grayGlass025 => grayGlass100.withValues(alpha: 0.25);
+  Color get grayGlass030 => grayGlass100.withValues(alpha: 0.3);
+  Color get grayGlass060 => grayGlass100.withValues(alpha: 0.6);
+  Color get grayGlass080 => grayGlass100.withValues(alpha: 0.8);
+  Color get grayGlass090 => grayGlass100.withValues(alpha: 0.9);
 }

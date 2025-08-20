@@ -27,7 +27,7 @@ class SessionAuthRequestResponse {
 }
 
 @freezed
-class SessionAuthRequestParams with _$SessionAuthRequestParams {
+sealed class SessionAuthRequestParams with _$SessionAuthRequestParams {
   @JsonSerializable(includeIfNull: false)
   const factory SessionAuthRequestParams({
     required List<String> chains,
@@ -50,7 +50,7 @@ class SessionAuthRequestParams with _$SessionAuthRequestParams {
 }
 
 @freezed
-class SessionAuthPayload with _$SessionAuthPayload {
+sealed class SessionAuthPayload with _$SessionAuthPayload {
   @JsonSerializable(includeIfNull: false)
   const factory SessionAuthPayload({
     required List<String> chains,
@@ -102,7 +102,7 @@ class SessionAuthPayload with _$SessionAuthPayload {
 }
 
 @freezed
-class PendingSessionAuthRequest with _$PendingSessionAuthRequest {
+sealed class PendingSessionAuthRequest with _$PendingSessionAuthRequest {
   @JsonSerializable(includeIfNull: false)
   const factory PendingSessionAuthRequest({
     required int id,

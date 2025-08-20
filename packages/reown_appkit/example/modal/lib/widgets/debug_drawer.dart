@@ -125,7 +125,7 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                   ),
                   trailing: Switch(
                     value: isCustom,
-                    activeColor:
+                    activeThumbColor:
                         ReownAppKitModalTheme.colorsOf(context).accent100,
                     onChanged: (value) {
                       widget.toggleTheme();
@@ -156,7 +156,7 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                   trailing: Switch(
                     value: ReownAppKitModalTheme.maybeOf(context)?.isDarkMode ??
                         false,
-                    activeColor:
+                    activeThumbColor:
                         ReownAppKitModalTheme.colorsOf(context).accent100,
                     onChanged: (value) {
                       widget.toggleBrightness();
@@ -189,7 +189,7 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                   ),
                   trailing: Switch(
                     value: _analyticsValue,
-                    activeColor:
+                    activeThumbColor:
                         ReownAppKitModalTheme.colorsOf(context).accent100,
                     onChanged: (value) {
                       _analyticsValue = value;
@@ -210,7 +210,7 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                   ),
                   trailing: Switch(
                     value: _emailWalletValue,
-                    activeColor:
+                    activeThumbColor:
                         ReownAppKitModalTheme.colorsOf(context).accent100,
                     onChanged: (value) {
                       _emailWalletValue = value;
@@ -231,7 +231,7 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                   ),
                   trailing: Switch(
                     value: _siweAuthValue,
-                    activeColor:
+                    activeThumbColor:
                         ReownAppKitModalTheme.colorsOf(context).accent100,
                     onChanged: (value) {
                       _siweAuthValue = value;

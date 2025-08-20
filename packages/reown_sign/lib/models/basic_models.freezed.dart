@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,532 +9,804 @@ part of 'basic_models.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-ReownSignError _$ReownSignErrorFromJson(Map<String, dynamic> json) {
-  return _ReownSignError.fromJson(json);
-}
 
 /// @nodoc
 mixin _$ReownSignError {
-  int get code => throw _privateConstructorUsedError;
-  String get message => throw _privateConstructorUsedError;
-  String? get data => throw _privateConstructorUsedError;
+
+ int get code; String get message; String? get data;
+/// Create a copy of ReownSignError
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ReownSignErrorCopyWith<ReownSignError> get copyWith => _$ReownSignErrorCopyWithImpl<ReownSignError>(this as ReownSignError, _$identity);
 
   /// Serializes this ReownSignError to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of ReownSignError
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $ReownSignErrorCopyWith<ReownSignError> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ReownSignError&&(identical(other.code, code) || other.code == code)&&(identical(other.message, message) || other.message == message)&&(identical(other.data, data) || other.data == data));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,code,message,data);
+
+@override
+String toString() {
+  return 'ReownSignError(code: $code, message: $message, data: $data)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $ReownSignErrorCopyWith<$Res> {
-  factory $ReownSignErrorCopyWith(
-          ReownSignError value, $Res Function(ReownSignError) then) =
-      _$ReownSignErrorCopyWithImpl<$Res, ReownSignError>;
-  @useResult
-  $Res call({int code, String message, String? data});
-}
+abstract mixin class $ReownSignErrorCopyWith<$Res>  {
+  factory $ReownSignErrorCopyWith(ReownSignError value, $Res Function(ReownSignError) _then) = _$ReownSignErrorCopyWithImpl;
+@useResult
+$Res call({
+ int code, String message, String? data
+});
 
+
+
+
+}
 /// @nodoc
-class _$ReownSignErrorCopyWithImpl<$Res, $Val extends ReownSignError>
+class _$ReownSignErrorCopyWithImpl<$Res>
     implements $ReownSignErrorCopyWith<$Res> {
-  _$ReownSignErrorCopyWithImpl(this._value, this._then);
+  _$ReownSignErrorCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final ReownSignError _self;
+  final $Res Function(ReownSignError) _then;
 
-  /// Create a copy of ReownSignError
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? code = null,
-    Object? message = null,
-    Object? data = freezed,
-  }) {
-    return _then(_value.copyWith(
-      code: null == code
-          ? _value.code
-          : code // ignore: cast_nullable_to_non_nullable
-              as int,
-      message: null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
-      data: freezed == data
-          ? _value.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
-  }
+/// Create a copy of ReownSignError
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? code = null,Object? message = null,Object? data = freezed,}) {
+  return _then(_self.copyWith(
+code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
+as int,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$ReownSignErrorImplCopyWith<$Res>
-    implements $ReownSignErrorCopyWith<$Res> {
-  factory _$$ReownSignErrorImplCopyWith(_$ReownSignErrorImpl value,
-          $Res Function(_$ReownSignErrorImpl) then) =
-      __$$ReownSignErrorImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({int code, String message, String? data});
 }
 
-/// @nodoc
-class __$$ReownSignErrorImplCopyWithImpl<$Res>
-    extends _$ReownSignErrorCopyWithImpl<$Res, _$ReownSignErrorImpl>
-    implements _$$ReownSignErrorImplCopyWith<$Res> {
-  __$$ReownSignErrorImplCopyWithImpl(
-      _$ReownSignErrorImpl _value, $Res Function(_$ReownSignErrorImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of ReownSignError
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? code = null,
-    Object? message = null,
-    Object? data = freezed,
-  }) {
-    return _then(_$ReownSignErrorImpl(
-      code: null == code
-          ? _value.code
-          : code // ignore: cast_nullable_to_non_nullable
-              as int,
-      message: null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
-      data: freezed == data
-          ? _value.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
-  }
+/// Adds pattern-matching-related methods to [ReownSignError].
+extension ReownSignErrorPatterns on ReownSignError {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ReownSignError value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ReownSignError() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ReownSignError value)  $default,){
+final _that = this;
+switch (_that) {
+case _ReownSignError():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ReownSignError value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ReownSignError() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int code,  String message,  String? data)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ReownSignError() when $default != null:
+return $default(_that.code,_that.message,_that.data);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int code,  String message,  String? data)  $default,) {final _that = this;
+switch (_that) {
+case _ReownSignError():
+return $default(_that.code,_that.message,_that.data);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int code,  String message,  String? data)?  $default,) {final _that = this;
+switch (_that) {
+case _ReownSignError() when $default != null:
+return $default(_that.code,_that.message,_that.data);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable(includeIfNull: false)
-class _$ReownSignErrorImpl implements _ReownSignError {
-  const _$ReownSignErrorImpl(
-      {required this.code, required this.message, this.data});
+class _ReownSignError implements ReownSignError {
+  const _ReownSignError({required this.code, required this.message, this.data});
+  factory _ReownSignError.fromJson(Map<String, dynamic> json) => _$ReownSignErrorFromJson(json);
 
-  factory _$ReownSignErrorImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ReownSignErrorImplFromJson(json);
+@override final  int code;
+@override final  String message;
+@override final  String? data;
 
-  @override
-  final int code;
-  @override
-  final String message;
-  @override
-  final String? data;
+/// Create a copy of ReownSignError
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ReownSignErrorCopyWith<_ReownSignError> get copyWith => __$ReownSignErrorCopyWithImpl<_ReownSignError>(this, _$identity);
 
-  @override
-  String toString() {
-    return 'ReownSignError(code: $code, message: $message, data: $data)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ReownSignErrorImpl &&
-            (identical(other.code, code) || other.code == code) &&
-            (identical(other.message, message) || other.message == message) &&
-            (identical(other.data, data) || other.data == data));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, code, message, data);
-
-  /// Create a copy of ReownSignError
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ReownSignErrorImplCopyWith<_$ReownSignErrorImpl> get copyWith =>
-      __$$ReownSignErrorImplCopyWithImpl<_$ReownSignErrorImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ReownSignErrorImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$ReownSignErrorToJson(this, );
 }
 
-abstract class _ReownSignError implements ReownSignError {
-  const factory _ReownSignError(
-      {required final int code,
-      required final String message,
-      final String? data}) = _$ReownSignErrorImpl;
-
-  factory _ReownSignError.fromJson(Map<String, dynamic> json) =
-      _$ReownSignErrorImpl.fromJson;
-
-  @override
-  int get code;
-  @override
-  String get message;
-  @override
-  String? get data;
-
-  /// Create a copy of ReownSignError
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ReownSignErrorImplCopyWith<_$ReownSignErrorImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ReownSignError&&(identical(other.code, code) || other.code == code)&&(identical(other.message, message) || other.message == message)&&(identical(other.data, data) || other.data == data));
 }
 
-ConnectionMetadata _$ConnectionMetadataFromJson(Map<String, dynamic> json) {
-  return _ConnectionMetadata.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,code,message,data);
+
+@override
+String toString() {
+  return 'ReownSignError(code: $code, message: $message, data: $data)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ReownSignErrorCopyWith<$Res> implements $ReownSignErrorCopyWith<$Res> {
+  factory _$ReownSignErrorCopyWith(_ReownSignError value, $Res Function(_ReownSignError) _then) = __$ReownSignErrorCopyWithImpl;
+@override @useResult
+$Res call({
+ int code, String message, String? data
+});
+
+
+
+
+}
+/// @nodoc
+class __$ReownSignErrorCopyWithImpl<$Res>
+    implements _$ReownSignErrorCopyWith<$Res> {
+  __$ReownSignErrorCopyWithImpl(this._self, this._then);
+
+  final _ReownSignError _self;
+  final $Res Function(_ReownSignError) _then;
+
+/// Create a copy of ReownSignError
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? code = null,Object? message = null,Object? data = freezed,}) {
+  return _then(_ReownSignError(
+code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
+as int,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$ConnectionMetadata {
-  String get publicKey => throw _privateConstructorUsedError;
-  PairingMetadata get metadata => throw _privateConstructorUsedError;
+
+ String get publicKey; PairingMetadata get metadata;
+/// Create a copy of ConnectionMetadata
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ConnectionMetadataCopyWith<ConnectionMetadata> get copyWith => _$ConnectionMetadataCopyWithImpl<ConnectionMetadata>(this as ConnectionMetadata, _$identity);
 
   /// Serializes this ConnectionMetadata to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of ConnectionMetadata
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $ConnectionMetadataCopyWith<ConnectionMetadata> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConnectionMetadata&&(identical(other.publicKey, publicKey) || other.publicKey == publicKey)&&(identical(other.metadata, metadata) || other.metadata == metadata));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,publicKey,metadata);
+
+@override
+String toString() {
+  return 'ConnectionMetadata(publicKey: $publicKey, metadata: $metadata)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $ConnectionMetadataCopyWith<$Res> {
-  factory $ConnectionMetadataCopyWith(
-          ConnectionMetadata value, $Res Function(ConnectionMetadata) then) =
-      _$ConnectionMetadataCopyWithImpl<$Res, ConnectionMetadata>;
-  @useResult
-  $Res call({String publicKey, PairingMetadata metadata});
+abstract mixin class $ConnectionMetadataCopyWith<$Res>  {
+  factory $ConnectionMetadataCopyWith(ConnectionMetadata value, $Res Function(ConnectionMetadata) _then) = _$ConnectionMetadataCopyWithImpl;
+@useResult
+$Res call({
+ String publicKey, PairingMetadata metadata
+});
 
-  $PairingMetadataCopyWith<$Res> get metadata;
+
+$PairingMetadataCopyWith<$Res> get metadata;
+
 }
-
 /// @nodoc
-class _$ConnectionMetadataCopyWithImpl<$Res, $Val extends ConnectionMetadata>
+class _$ConnectionMetadataCopyWithImpl<$Res>
     implements $ConnectionMetadataCopyWith<$Res> {
-  _$ConnectionMetadataCopyWithImpl(this._value, this._then);
+  _$ConnectionMetadataCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final ConnectionMetadata _self;
+  final $Res Function(ConnectionMetadata) _then;
 
-  /// Create a copy of ConnectionMetadata
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? publicKey = null,
-    Object? metadata = null,
-  }) {
-    return _then(_value.copyWith(
-      publicKey: null == publicKey
-          ? _value.publicKey
-          : publicKey // ignore: cast_nullable_to_non_nullable
-              as String,
-      metadata: null == metadata
-          ? _value.metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
-              as PairingMetadata,
-    ) as $Val);
-  }
-
-  /// Create a copy of ConnectionMetadata
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $PairingMetadataCopyWith<$Res> get metadata {
-    return $PairingMetadataCopyWith<$Res>(_value.metadata, (value) {
-      return _then(_value.copyWith(metadata: value) as $Val);
-    });
-  }
+/// Create a copy of ConnectionMetadata
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? publicKey = null,Object? metadata = null,}) {
+  return _then(_self.copyWith(
+publicKey: null == publicKey ? _self.publicKey : publicKey // ignore: cast_nullable_to_non_nullable
+as String,metadata: null == metadata ? _self.metadata : metadata // ignore: cast_nullable_to_non_nullable
+as PairingMetadata,
+  ));
+}
+/// Create a copy of ConnectionMetadata
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PairingMetadataCopyWith<$Res> get metadata {
+  
+  return $PairingMetadataCopyWith<$Res>(_self.metadata, (value) {
+    return _then(_self.copyWith(metadata: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$ConnectionMetadataImplCopyWith<$Res>
-    implements $ConnectionMetadataCopyWith<$Res> {
-  factory _$$ConnectionMetadataImplCopyWith(_$ConnectionMetadataImpl value,
-          $Res Function(_$ConnectionMetadataImpl) then) =
-      __$$ConnectionMetadataImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String publicKey, PairingMetadata metadata});
 
-  @override
-  $PairingMetadataCopyWith<$Res> get metadata;
+/// Adds pattern-matching-related methods to [ConnectionMetadata].
+extension ConnectionMetadataPatterns on ConnectionMetadata {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ConnectionMetadata value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ConnectionMetadata() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ConnectionMetadata value)  $default,){
+final _that = this;
+switch (_that) {
+case _ConnectionMetadata():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ConnectionMetadata value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ConnectionMetadata() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String publicKey,  PairingMetadata metadata)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ConnectionMetadata() when $default != null:
+return $default(_that.publicKey,_that.metadata);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String publicKey,  PairingMetadata metadata)  $default,) {final _that = this;
+switch (_that) {
+case _ConnectionMetadata():
+return $default(_that.publicKey,_that.metadata);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String publicKey,  PairingMetadata metadata)?  $default,) {final _that = this;
+switch (_that) {
+case _ConnectionMetadata() when $default != null:
+return $default(_that.publicKey,_that.metadata);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$ConnectionMetadataImplCopyWithImpl<$Res>
-    extends _$ConnectionMetadataCopyWithImpl<$Res, _$ConnectionMetadataImpl>
-    implements _$$ConnectionMetadataImplCopyWith<$Res> {
-  __$$ConnectionMetadataImplCopyWithImpl(_$ConnectionMetadataImpl _value,
-      $Res Function(_$ConnectionMetadataImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of ConnectionMetadata
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? publicKey = null,
-    Object? metadata = null,
-  }) {
-    return _then(_$ConnectionMetadataImpl(
-      publicKey: null == publicKey
-          ? _value.publicKey
-          : publicKey // ignore: cast_nullable_to_non_nullable
-              as String,
-      metadata: null == metadata
-          ? _value.metadata
-          : metadata // ignore: cast_nullable_to_non_nullable
-              as PairingMetadata,
-    ));
-  }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$ConnectionMetadataImpl implements _ConnectionMetadata {
-  const _$ConnectionMetadataImpl(
-      {required this.publicKey, required this.metadata});
 
-  factory _$ConnectionMetadataImpl.fromJson(Map<String, dynamic> json) =>
-      _$$ConnectionMetadataImplFromJson(json);
+class _ConnectionMetadata implements ConnectionMetadata {
+  const _ConnectionMetadata({required this.publicKey, required this.metadata});
+  factory _ConnectionMetadata.fromJson(Map<String, dynamic> json) => _$ConnectionMetadataFromJson(json);
 
-  @override
-  final String publicKey;
-  @override
-  final PairingMetadata metadata;
+@override final  String publicKey;
+@override final  PairingMetadata metadata;
 
-  @override
-  String toString() {
-    return 'ConnectionMetadata(publicKey: $publicKey, metadata: $metadata)';
-  }
+/// Create a copy of ConnectionMetadata
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ConnectionMetadataCopyWith<_ConnectionMetadata> get copyWith => __$ConnectionMetadataCopyWithImpl<_ConnectionMetadata>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$ConnectionMetadataImpl &&
-            (identical(other.publicKey, publicKey) ||
-                other.publicKey == publicKey) &&
-            (identical(other.metadata, metadata) ||
-                other.metadata == metadata));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, publicKey, metadata);
-
-  /// Create a copy of ConnectionMetadata
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$ConnectionMetadataImplCopyWith<_$ConnectionMetadataImpl> get copyWith =>
-      __$$ConnectionMetadataImplCopyWithImpl<_$ConnectionMetadataImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$ConnectionMetadataImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$ConnectionMetadataToJson(this, );
 }
 
-abstract class _ConnectionMetadata implements ConnectionMetadata {
-  const factory _ConnectionMetadata(
-      {required final String publicKey,
-      required final PairingMetadata metadata}) = _$ConnectionMetadataImpl;
-
-  factory _ConnectionMetadata.fromJson(Map<String, dynamic> json) =
-      _$ConnectionMetadataImpl.fromJson;
-
-  @override
-  String get publicKey;
-  @override
-  PairingMetadata get metadata;
-
-  /// Create a copy of ConnectionMetadata
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ConnectionMetadataImplCopyWith<_$ConnectionMetadataImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConnectionMetadata&&(identical(other.publicKey, publicKey) || other.publicKey == publicKey)&&(identical(other.metadata, metadata) || other.metadata == metadata));
 }
 
-AuthPublicKey _$AuthPublicKeyFromJson(Map<String, dynamic> json) {
-  return _AuthPublicKey.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,publicKey,metadata);
+
+@override
+String toString() {
+  return 'ConnectionMetadata(publicKey: $publicKey, metadata: $metadata)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ConnectionMetadataCopyWith<$Res> implements $ConnectionMetadataCopyWith<$Res> {
+  factory _$ConnectionMetadataCopyWith(_ConnectionMetadata value, $Res Function(_ConnectionMetadata) _then) = __$ConnectionMetadataCopyWithImpl;
+@override @useResult
+$Res call({
+ String publicKey, PairingMetadata metadata
+});
+
+
+@override $PairingMetadataCopyWith<$Res> get metadata;
+
+}
+/// @nodoc
+class __$ConnectionMetadataCopyWithImpl<$Res>
+    implements _$ConnectionMetadataCopyWith<$Res> {
+  __$ConnectionMetadataCopyWithImpl(this._self, this._then);
+
+  final _ConnectionMetadata _self;
+  final $Res Function(_ConnectionMetadata) _then;
+
+/// Create a copy of ConnectionMetadata
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? publicKey = null,Object? metadata = null,}) {
+  return _then(_ConnectionMetadata(
+publicKey: null == publicKey ? _self.publicKey : publicKey // ignore: cast_nullable_to_non_nullable
+as String,metadata: null == metadata ? _self.metadata : metadata // ignore: cast_nullable_to_non_nullable
+as PairingMetadata,
+  ));
+}
+
+/// Create a copy of ConnectionMetadata
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PairingMetadataCopyWith<$Res> get metadata {
+  
+  return $PairingMetadataCopyWith<$Res>(_self.metadata, (value) {
+    return _then(_self.copyWith(metadata: value));
+  });
+}
+}
+
 
 /// @nodoc
 mixin _$AuthPublicKey {
-  String get publicKey => throw _privateConstructorUsedError;
+
+ String get publicKey;
+/// Create a copy of AuthPublicKey
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthPublicKeyCopyWith<AuthPublicKey> get copyWith => _$AuthPublicKeyCopyWithImpl<AuthPublicKey>(this as AuthPublicKey, _$identity);
 
   /// Serializes this AuthPublicKey to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of AuthPublicKey
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $AuthPublicKeyCopyWith<AuthPublicKey> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthPublicKey&&(identical(other.publicKey, publicKey) || other.publicKey == publicKey));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,publicKey);
+
+@override
+String toString() {
+  return 'AuthPublicKey(publicKey: $publicKey)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $AuthPublicKeyCopyWith<$Res> {
-  factory $AuthPublicKeyCopyWith(
-          AuthPublicKey value, $Res Function(AuthPublicKey) then) =
-      _$AuthPublicKeyCopyWithImpl<$Res, AuthPublicKey>;
-  @useResult
-  $Res call({String publicKey});
-}
+abstract mixin class $AuthPublicKeyCopyWith<$Res>  {
+  factory $AuthPublicKeyCopyWith(AuthPublicKey value, $Res Function(AuthPublicKey) _then) = _$AuthPublicKeyCopyWithImpl;
+@useResult
+$Res call({
+ String publicKey
+});
 
+
+
+
+}
 /// @nodoc
-class _$AuthPublicKeyCopyWithImpl<$Res, $Val extends AuthPublicKey>
+class _$AuthPublicKeyCopyWithImpl<$Res>
     implements $AuthPublicKeyCopyWith<$Res> {
-  _$AuthPublicKeyCopyWithImpl(this._value, this._then);
+  _$AuthPublicKeyCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final AuthPublicKey _self;
+  final $Res Function(AuthPublicKey) _then;
 
-  /// Create a copy of AuthPublicKey
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? publicKey = null,
-  }) {
-    return _then(_value.copyWith(
-      publicKey: null == publicKey
-          ? _value.publicKey
-          : publicKey // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
+/// Create a copy of AuthPublicKey
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? publicKey = null,}) {
+  return _then(_self.copyWith(
+publicKey: null == publicKey ? _self.publicKey : publicKey // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-/// @nodoc
-abstract class _$$AuthPublicKeyImplCopyWith<$Res>
-    implements $AuthPublicKeyCopyWith<$Res> {
-  factory _$$AuthPublicKeyImplCopyWith(
-          _$AuthPublicKeyImpl value, $Res Function(_$AuthPublicKeyImpl) then) =
-      __$$AuthPublicKeyImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String publicKey});
 }
 
-/// @nodoc
-class __$$AuthPublicKeyImplCopyWithImpl<$Res>
-    extends _$AuthPublicKeyCopyWithImpl<$Res, _$AuthPublicKeyImpl>
-    implements _$$AuthPublicKeyImplCopyWith<$Res> {
-  __$$AuthPublicKeyImplCopyWithImpl(
-      _$AuthPublicKeyImpl _value, $Res Function(_$AuthPublicKeyImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of AuthPublicKey
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? publicKey = null,
-  }) {
-    return _then(_$AuthPublicKeyImpl(
-      publicKey: null == publicKey
-          ? _value.publicKey
-          : publicKey // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
+/// Adds pattern-matching-related methods to [AuthPublicKey].
+extension AuthPublicKeyPatterns on AuthPublicKey {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AuthPublicKey value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AuthPublicKey() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AuthPublicKey value)  $default,){
+final _that = this;
+switch (_that) {
+case _AuthPublicKey():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AuthPublicKey value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AuthPublicKey() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String publicKey)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AuthPublicKey() when $default != null:
+return $default(_that.publicKey);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String publicKey)  $default,) {final _that = this;
+switch (_that) {
+case _AuthPublicKey():
+return $default(_that.publicKey);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String publicKey)?  $default,) {final _that = this;
+switch (_that) {
+case _AuthPublicKey() when $default != null:
+return $default(_that.publicKey);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable(includeIfNull: false)
-class _$AuthPublicKeyImpl implements _AuthPublicKey {
-  const _$AuthPublicKeyImpl({required this.publicKey});
+class _AuthPublicKey implements AuthPublicKey {
+  const _AuthPublicKey({required this.publicKey});
+  factory _AuthPublicKey.fromJson(Map<String, dynamic> json) => _$AuthPublicKeyFromJson(json);
 
-  factory _$AuthPublicKeyImpl.fromJson(Map<String, dynamic> json) =>
-      _$$AuthPublicKeyImplFromJson(json);
+@override final  String publicKey;
 
-  @override
-  final String publicKey;
+/// Create a copy of AuthPublicKey
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AuthPublicKeyCopyWith<_AuthPublicKey> get copyWith => __$AuthPublicKeyCopyWithImpl<_AuthPublicKey>(this, _$identity);
 
-  @override
-  String toString() {
-    return 'AuthPublicKey(publicKey: $publicKey)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$AuthPublicKeyImpl &&
-            (identical(other.publicKey, publicKey) ||
-                other.publicKey == publicKey));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, publicKey);
-
-  /// Create a copy of AuthPublicKey
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$AuthPublicKeyImplCopyWith<_$AuthPublicKeyImpl> get copyWith =>
-      __$$AuthPublicKeyImplCopyWithImpl<_$AuthPublicKeyImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$AuthPublicKeyImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$AuthPublicKeyToJson(this, );
 }
 
-abstract class _AuthPublicKey implements AuthPublicKey {
-  const factory _AuthPublicKey({required final String publicKey}) =
-      _$AuthPublicKeyImpl;
-
-  factory _AuthPublicKey.fromJson(Map<String, dynamic> json) =
-      _$AuthPublicKeyImpl.fromJson;
-
-  @override
-  String get publicKey;
-
-  /// Create a copy of AuthPublicKey
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$AuthPublicKeyImplCopyWith<_$AuthPublicKeyImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthPublicKey&&(identical(other.publicKey, publicKey) || other.publicKey == publicKey));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,publicKey);
+
+@override
+String toString() {
+  return 'AuthPublicKey(publicKey: $publicKey)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AuthPublicKeyCopyWith<$Res> implements $AuthPublicKeyCopyWith<$Res> {
+  factory _$AuthPublicKeyCopyWith(_AuthPublicKey value, $Res Function(_AuthPublicKey) _then) = __$AuthPublicKeyCopyWithImpl;
+@override @useResult
+$Res call({
+ String publicKey
+});
+
+
+
+
+}
+/// @nodoc
+class __$AuthPublicKeyCopyWithImpl<$Res>
+    implements _$AuthPublicKeyCopyWith<$Res> {
+  __$AuthPublicKeyCopyWithImpl(this._self, this._then);
+
+  final _AuthPublicKey _self;
+  final $Res Function(_AuthPublicKey) _then;
+
+/// Create a copy of AuthPublicKey
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? publicKey = null,}) {
+  return _then(_AuthPublicKey(
+publicKey: null == publicKey ? _self.publicKey : publicKey // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+// dart format on

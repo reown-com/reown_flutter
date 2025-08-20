@@ -21,25 +21,20 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 class MagicService implements IMagicService {
-  static const _thirdPartySafeDomains = [
-    'auth.magic.link',
-    'launchdarkly.com',
-  ];
+  static const _thirdPartySafeDomains = ['auth.magic.link', 'launchdarkly.com'];
 
-  ConnectionMetadata get _selfMetadata => ConnectionMetadata(
-        metadata: _metadata,
-        publicKey: '',
-      );
+  ConnectionMetadata get _selfMetadata =>
+      ConnectionMetadata(metadata: _metadata, publicKey: '');
 
   ConnectionMetadata get _peerMetadata => ConnectionMetadata(
-        metadata: PairingMetadata(
-          name: 'Social Wallet',
-          description: '',
-          url: '',
-          icons: [''],
-        ),
-        publicKey: '',
-      );
+    metadata: PairingMetadata(
+      name: 'Social Wallet',
+      description: '',
+      url: '',
+      icons: [''],
+    ),
+    publicKey: '',
+  );
 
   //
   Timer? _timeOutTimer;
@@ -59,16 +54,16 @@ class MagicService implements IMagicService {
 
   @override
   Map<String, List<String>> get supportedMethods => {
-        NetworkUtils.eip155: [
-          'personal_sign',
-          'eth_sendTransaction',
-          'eth_accounts',
-          'eth_sendRawTransaction',
-          'eth_signTypedData_v4',
-        ],
-        NetworkUtils.solana:
-            NetworkUtils.defaultNetworkMethods[NetworkUtils.solana]!,
-      };
+    NetworkUtils.eip155: [
+      'personal_sign',
+      'eth_sendTransaction',
+      'eth_accounts',
+      'eth_sendRawTransaction',
+      'eth_signTypedData_v4',
+    ],
+    NetworkUtils.solana:
+        NetworkUtils.defaultNetworkMethods[NetworkUtils.solana]!,
+  };
 
   @override
   WebViewWidget get webview => _webview;
@@ -109,9 +104,9 @@ class MagicService implements IMagicService {
     required IReownCore core,
     required PairingMetadata metadata,
     required FeaturesConfig featuresConfig,
-  })  : _core = core,
-        _metadata = metadata,
-        _features = featuresConfig {
+  }) : _core = core,
+       _metadata = metadata,
+       _features = featuresConfig {
     _connectionChainId = null;
     _onLoadCount = 0;
     _packageName = '';
@@ -306,9 +301,9 @@ class MagicService implements IMagicService {
     if (NamespaceUtils.isValidChainId(chainId ?? '')) {
       cid = chainId;
     }
-    _analyticsService.sendEvent(SocialLoginRequestUserData(
-      provider: AppKitSocialOption.Farcaster.name,
-    ));
+    _analyticsService.sendEvent(
+      SocialLoginRequestUserData(provider: AppKitSocialOption.Farcaster.name),
+    );
     final message = GetUser(chainId: cid).toString();
     return await _webViewController.runJavaScript('sendMessage($message)');
   }
@@ -335,9 +330,9 @@ class MagicService implements IMagicService {
   Future<void> _switchNetwork(String chainId) async {
     if (!isConnected.value) {
       _isConnectedCompleter = Completer<bool>();
-      onMagicLoginRequest.broadcast(MagicSessionEvent(
-        provider: AppKitSocialOption.Farcaster,
-      ));
+      onMagicLoginRequest.broadcast(
+        MagicSessionEvent(provider: AppKitSocialOption.Farcaster),
+      );
       final success = await _isConnectedCompleter.future;
       if (!success) return;
     }
@@ -364,9 +359,9 @@ class MagicService implements IMagicService {
   Future<void> _rpcRequest(Map<String, dynamic> parameters) async {
     if (!isConnected.value) {
       _isConnectedCompleter = Completer<bool>();
-      onMagicLoginRequest.broadcast(MagicSessionEvent(
-        provider: AppKitSocialOption.Farcaster,
-      ));
+      onMagicLoginRequest.broadcast(
+        MagicSessionEvent(provider: AppKitSocialOption.Farcaster),
+      );
       final success = await _isConnectedCompleter.future;
       if (!success) return;
     }
@@ -493,19 +488,15 @@ class MagicService implements IMagicService {
       final hash = messageData.payload;
       _requestCompleter.complete(hash);
       onMagicRpcRequest.broadcast(
-        MagicRequestEvent(
-          request: null,
-          result: hash,
-          success: true,
-        ),
+        MagicRequestEvent(request: null, result: hash, success: true),
       );
     }
     // ****** GET_USER_SUCCESS
     if (messageData.getUserSuccess) {
       isConnected.value = true;
-      final magicData = MagicData.fromJson(messageData.payload!).copytWith(
-        farcasterUserName: _socialUsername,
-      );
+      final magicData = MagicData.fromJson(
+        messageData.payload!,
+      ).copyWith(farcasterUserName: _socialUsername);
       if (!_isConnectedCompleter.isCompleted) {
         final event = MagicSessionEvent(
           email: magicData.email,
@@ -526,7 +517,7 @@ class MagicService implements IMagicService {
         );
         onMagicUpdate.broadcast(event);
       } else {
-        final session = magicData.copytWith(
+        final session = magicData.copyWith(
           peer: _peerMetadata.copyWith(
             metadata: _peerMetadata.metadata.copyWith(name: 'Social Wallet'),
           ),
@@ -582,19 +573,13 @@ class MagicService implements IMagicService {
     }
     if (messageData.getFarcasterUriError) {
       String? message = messageData.getPayloadMapKey<String?>('message');
-      message = message?.replaceFirst(
-        'Error: Magic RPC Error: [-32600] ',
-        '',
-      );
+      message = message?.replaceFirst('Error: Magic RPC Error: [-32600] ', '');
       _error(MagicErrorEvent(message));
       _getFarcasterUri.complete(null);
     }
     if (messageData.connectFarcasterError) {
       String? message = messageData.getPayloadMapKey<String?>('message');
-      message = message?.replaceFirst(
-        'Error: Magic RPC Error: [-32600] ',
-        '',
-      );
+      message = message?.replaceFirst('Error: Magic RPC Error: [-32600] ', '');
       _error(MagicErrorEvent(message));
       _connectFarcaster.complete(false);
     }
@@ -625,10 +610,9 @@ class MagicService implements IMagicService {
 
   void _error(MagicErrorEvent errorEvent) {
     if (errorEvent is RpcRequestErrorEvent) {
-      _requestCompleter.completeError(JsonRpcError(
-        code: 0,
-        message: errorEvent.error,
-      ));
+      _requestCompleter.completeError(
+        JsonRpcError(code: 0, message: errorEvent.error),
+      );
       final errorMessage = (errorEvent.error ?? 'Request error').replaceFirst(
         'Magic RPC Error: ',
         '',
@@ -757,9 +741,7 @@ class MagicService implements IMagicService {
     if (kDebugMode) {
       try {
         if (Platform.isIOS) {
-          await _webViewController.setOnConsoleMessage(
-            _onDebugConsoleReceived,
-          );
+          await _webViewController.setOnConsoleMessage(_onDebugConsoleReceived);
           final webkitCtrl =
               _webViewController.platform as WebKitWebViewController;
           webkitCtrl.setInspectable(true);

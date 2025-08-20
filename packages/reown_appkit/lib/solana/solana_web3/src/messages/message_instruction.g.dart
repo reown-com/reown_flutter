@@ -9,8 +9,9 @@ part of 'message_instruction.dart';
 MessageInstruction _$MessageInstructionFromJson(Map<String, dynamic> json) =>
     MessageInstruction(
       programIdIndex: (json['programIdIndex'] as num).toInt(),
-      accounts:
-          (json['accounts'] as List<dynamic>).map((e) => (e as num).toInt()),
+      accounts: (json['accounts'] as List<dynamic>).map(
+        (e) => (e as num).toInt(),
+      ),
       data: json['data'] as String,
     );
 

@@ -34,19 +34,21 @@ class SocialLoginButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          LayoutBuilder(builder: (_, constraints) {
-            return ClipRRect(
-              borderRadius: radiuses.isSquare()
-                  ? BorderRadius.zero
-                  : BorderRadius.circular(constraints.maxHeight * 0.9),
-              child: SvgPicture.asset(
-                logoPath,
-                package: 'reown_appkit',
-                height: constraints.maxHeight * 0.9,
-                width: constraints.maxHeight * 0.9,
-              ),
-            );
-          }),
+          LayoutBuilder(
+            builder: (_, constraints) {
+              return ClipRRect(
+                borderRadius: radiuses.isSquare()
+                    ? BorderRadius.zero
+                    : BorderRadius.circular(constraints.maxHeight * 0.9),
+                child: SvgPicture.asset(
+                  logoPath,
+                  package: 'reown_appkit',
+                  height: constraints.maxHeight * 0.9,
+                  width: constraints.maxHeight * 0.9,
+                ),
+              );
+            },
+          ),
           if (title != null)
             Expanded(
               child: Padding(
@@ -95,14 +97,10 @@ class FarcasterLoginButton extends StatelessWidget {
           valueListenable: _magicService.isTimeout,
           builder: (context, isTimeout, _) {
             if (!isReady) {
-              return _ShimmerSocialLoginButton(
-                title: ' $title',
-              );
+              return _ShimmerSocialLoginButton(title: ' $title');
             }
             if (isTimeout) {
-              return _ShimmerSocialLoginButton(
-                title: ' $title',
-              );
+              return _ShimmerSocialLoginButton(title: ' $title');
             }
             return BaseListItem(
               semanticsLabel: semantics,
@@ -110,22 +108,24 @@ class FarcasterLoginButton extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  LayoutBuilder(builder: (_, constraints) {
-                    return ClipRRect(
-                      borderRadius: radiuses.isSquare()
-                          ? BorderRadius.zero
-                          : BorderRadius.circular(constraints.maxHeight),
-                      child: SvgPicture.asset(
-                        AssetUtils.getThemedAsset(
-                          context,
-                          'farcaster_logo.svg',
+                  LayoutBuilder(
+                    builder: (_, constraints) {
+                      return ClipRRect(
+                        borderRadius: radiuses.isSquare()
+                            ? BorderRadius.zero
+                            : BorderRadius.circular(constraints.maxHeight),
+                        child: SvgPicture.asset(
+                          AssetUtils.getThemedAsset(
+                            context,
+                            'farcaster_logo.svg',
+                          ),
+                          package: 'reown_appkit',
+                          height: constraints.maxHeight,
+                          width: constraints.maxHeight,
                         ),
-                        package: 'reown_appkit',
-                        height: constraints.maxHeight,
-                        width: constraints.maxHeight,
-                      ),
-                    );
-                  }),
+                      );
+                    },
+                  ),
                   if (title != null)
                     Expanded(
                       child: Padding(
@@ -168,18 +168,20 @@ class _ShimmerSocialLoginButton extends StatelessWidget {
         semanticsLabel: 'ShimmerSocialLoginButton',
         child: Row(
           children: [
-            LayoutBuilder(builder: (_, constraints) {
-              return ClipRRect(
-                borderRadius: radiuses.isSquare()
-                    ? BorderRadius.zero
-                    : BorderRadius.circular(constraints.maxHeight),
-                child: Container(
-                  width: constraints.maxHeight,
-                  height: constraints.maxHeight,
-                  color: Colors.black.withOpacity(0.6),
-                ),
-              );
-            }),
+            LayoutBuilder(
+              builder: (_, constraints) {
+                return ClipRRect(
+                  borderRadius: radiuses.isSquare()
+                      ? BorderRadius.zero
+                      : BorderRadius.circular(constraints.maxHeight),
+                  child: Container(
+                    width: constraints.maxHeight,
+                    height: constraints.maxHeight,
+                    color: Colors.black.withValues(alpha: 0.6),
+                  ),
+                );
+              },
+            ),
             if (title != null)
               Expanded(
                 child: Padding(
@@ -224,38 +226,40 @@ class EmailLoginButton extends StatelessWidget {
     return BaseListItem(
       semanticsLabel: title,
       onTap: onTap,
-      child: LayoutBuilder(builder: (_, constraints) {
-        return Row(
-          children: [
-            SizedBox.square(
-              dimension: constraints.maxHeight,
-              child: RoundedIcon(
-                padding: 10.0,
-                assetPath: 'lib/modal/assets/icons/mail.svg',
-                assetColor: themeColors.foreground100,
-                circleColor: Colors.transparent,
-                borderColor: Colors.transparent,
+      child: LayoutBuilder(
+        builder: (_, constraints) {
+          return Row(
+            children: [
+              SizedBox.square(
+                dimension: constraints.maxHeight,
+                child: RoundedIcon(
+                  padding: 10.0,
+                  assetPath: 'lib/modal/assets/icons/mail.svg',
+                  assetColor: themeColors.foreground100,
+                  circleColor: Colors.transparent,
+                  borderColor: Colors.transparent,
+                ),
               ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Text(
-                  title,
-                  textAlign: titleAlign,
-                  style: themeData.textStyles.paragraph500.copyWith(
-                    color: themeColors.foreground100,
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Text(
+                    title,
+                    textAlign: titleAlign,
+                    style: themeData.textStyles.paragraph500.copyWith(
+                      color: themeColors.foreground100,
+                    ),
                   ),
                 ),
               ),
-            ),
-            SizedBox.square(
-              dimension: constraints.maxHeight,
-              child: Container(),
-            ),
-          ],
-        );
-      }),
+              SizedBox.square(
+                dimension: constraints.maxHeight,
+                child: Container(),
+              ),
+            ],
+          );
+        },
+      ),
       trailing: trailing,
     );
   }

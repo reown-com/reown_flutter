@@ -27,33 +27,33 @@ class CoinbaseService implements ICoinbaseService {
 
   @override
   ConnectionMetadata get walletMetadata => ConnectionMetadata(
-        metadata: PairingMetadata(
-          name: _coinbaseWalletData?.listing.name ?? 'Coinbase Wallet',
-          description: _coinbaseWalletData?.listing.description ?? '',
-          url: _coinbaseWalletData?.listing.homepage ?? '',
-          icons: [_iconImage],
-          redirect: Redirect(
-            native: _coinbaseWalletData?.listing.mobileLink,
-            universal: _coinbaseWalletData?.listing.linkMode,
-            linkMode: _coinbaseWalletData?.listing.linkMode != null,
-          ),
-        ),
-        publicKey: '',
-      );
+    metadata: PairingMetadata(
+      name: _coinbaseWalletData?.listing.name ?? 'Coinbase Wallet',
+      description: _coinbaseWalletData?.listing.description ?? '',
+      url: _coinbaseWalletData?.listing.homepage ?? '',
+      icons: [_iconImage],
+      redirect: Redirect(
+        native: _coinbaseWalletData?.listing.mobileLink,
+        universal: _coinbaseWalletData?.listing.linkMode,
+        linkMode: _coinbaseWalletData?.listing.linkMode != null,
+      ),
+    ),
+    publicKey: '',
+  );
 
   IExplorerService get _explorerService => GetIt.I<IExplorerService>();
 
   @override
   List<String> get supportedMethods => [
-        ...MethodsConstants.requiredMethods,
-        'eth_requestAccounts',
-        'eth_signTypedData_v3',
-        'eth_signTypedData_v4',
-        'eth_signTransaction',
-        MethodsConstants.walletSwitchEthChain,
-        MethodsConstants.walletAddEthChain,
-        'wallet_watchAsset',
-      ];
+    ...MethodsConstants.requiredMethods,
+    'eth_requestAccounts',
+    'eth_signTypedData_v3',
+    'eth_signTypedData_v4',
+    'eth_signTransaction',
+    MethodsConstants.walletSwitchEthChain,
+    MethodsConstants.walletAddEthChain,
+    'wallet_watchAsset',
+  ];
 
   @override
   Event<CoinbaseConnectEvent> onCoinbaseConnect = Event<CoinbaseConnectEvent>();
@@ -73,15 +73,16 @@ class CoinbaseService implements ICoinbaseService {
     required PairingMetadata metadata,
     required IReownCore core,
     bool enabled = false,
-  })  : _metadata = metadata,
-        _enabled = enabled,
-        _core = core;
+  }) : _metadata = metadata,
+       _enabled = enabled,
+       _core = core;
 
   @override
   Future<void> init() async {
     if (!_enabled) return;
     // Configure SDK for each platform
-    _coinbaseWalletData = (await _explorerService.getCoinbaseWalletObject()) ??
+    _coinbaseWalletData =
+        (await _explorerService.getCoinbaseWalletObject()) ??
         ReownAppKitModalWalletInfo(
           listing: CoinbaseUtils.defaultListingData,
           installed: false,
@@ -91,7 +92,8 @@ class CoinbaseService implements ICoinbaseService {
     final imageId = _coinbaseWalletData?.listing.imageId ?? '';
     _iconImage = _explorerService.getWalletImageUrl(imageId);
 
-    final walletLink = (walletMetadata.metadata.redirect?.linkMode == true
+    final walletLink =
+        (walletMetadata.metadata.redirect?.linkMode == true
             ? _coinbaseWalletData?.listing.linkMode
             : _coinbaseWalletData?.listing.mobileLink) ??
         '';
@@ -112,9 +114,7 @@ class CoinbaseService implements ICoinbaseService {
             host: Uri.parse('${walletLink}wsegue'),
             callback: Uri.parse(callback),
           ),
-          android: AndroidConfiguration(
-            domain: Uri.parse(callback),
-          ),
+          android: AndroidConfiguration(domain: Uri.parse(callback)),
         );
         await CoinbaseWalletSDK.shared.configure(config);
       } catch (_) {
@@ -162,10 +162,8 @@ class CoinbaseService implements ICoinbaseService {
         throw CoinbaseServiceException('$errorMessage ($errorCode)');
       }
 
-      final data = CoinbaseData.fromJson(result.account!.toJson()).copytWith(
-        peer: walletMetadata.copyWith(
-          publicKey: await peerPublicKey,
-        ),
+      final data = CoinbaseData.fromJson(result.account!.toJson()).copyWith(
+        peer: walletMetadata.copyWith(publicKey: await peerPublicKey),
         self: ConnectionMetadata(
           metadata: _metadata,
           publicKey: await ownPublicKey,
@@ -213,10 +211,8 @@ class CoinbaseService implements ICoinbaseService {
           break;
         case 'eth_requestAccounts':
           final json = jsonDecode(value!);
-          final data = CoinbaseData.fromJson(json).copytWith(
-            peer: walletMetadata.copyWith(
-              publicKey: await peerPublicKey,
-            ),
+          final data = CoinbaseData.fromJson(json).copyWith(
+            peer: walletMetadata.copyWith(publicKey: await peerPublicKey),
             self: ConnectionMetadata(
               metadata: _metadata,
               publicKey: await ownPublicKey,
@@ -346,9 +342,7 @@ extension on SessionRequestParams {
               decimals: 18,
             ),
             iconUrls: [chainInfo.chainIcon!],
-            blockExplorerUrls: [
-              chainInfo.explorerUrl,
-            ],
+            blockExplorerUrls: [chainInfo.explorerUrl],
           );
         } catch (e, s) {
           throw CoinbaseServiceException('Unrecognized chainId $chainId', e, s);
@@ -356,10 +350,7 @@ extension on SessionRequestParams {
       case 'wallet_watchAsset':
         final address = _getAddressFromParamsList(method, params);
         final symbol = _getDataFromParamsList(method, params);
-        return WatchAsset(
-          address: address,
-          symbol: symbol,
-        );
+        return WatchAsset(address: address, symbol: symbol);
       default:
         throw CoinbaseServiceException('Unsupported request method $method');
     }

@@ -38,6 +38,7 @@
         <package android:name="com.bitcoin.mwallet"/>
         <package android:name="coin98.crypto.finance.media"/>
         <package android:name="app.phantom"/>
+        <package android:name="com.solflare.mobile"/>
         <package android:name="finance.ottr.android"/>
         <package android:name="co.arculus.wallet.android"/>
         <package android:name="com.huddln"/>
@@ -46,7 +47,6 @@
         <package android:name="com.carrieverse.cling.wallet"/>
         <package android:name="com.broearn.browser"/>
         <package android:name="com.ripio.android"/>
-        <package android:name="kh.com.sabay.sabaywallet"/>
         <package android:name="com.tokoin.wallet"/>
         <package android:name="com.walletconnect.flutterwallet"/>
         <package android:name="com.walletconnect.flutterwallet.internal"/>

@@ -1,3 +1,8 @@
+## 1.3.0
+
+- LICENSE UPDATE
+- Flutter SDK upgrade to 3.35.1
+
 ## 1.2.0
 
 - New relay methods for latency improvements

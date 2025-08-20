@@ -5,6 +5,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/solflare_service/i_solflare_service.dart';
+import 'package:reown_appkit/modal/services/solflare_service/models/solflare_events.dart';
+import 'package:reown_appkit/modal/services/solflare_service/solflare_service.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack.dart';
 
@@ -204,20 +207,17 @@ class ReownAppKitModal
     _disconnectOnDispose = disconnectOnDispose;
     _customWallets = customWallets;
 
-    _appKit = appKit ??
+    _appKit =
+        appKit ??
         ReownAppKit(
-          core: ReownCore(
-            projectId: projectId!,
-            logLevel: logLevel,
-          ),
+          core: ReownCore(projectId: projectId!, logLevel: logLevel),
           metadata: metadata!,
         );
     _projectId = _appKit.core.projectId;
 
-    _setOptionalNamespaces(_buildNamespaces(
-      requiredNamespaces,
-      optionalNamespaces,
-    ));
+    _setOptionalNamespaces(
+      _buildNamespaces(requiredNamespaces, optionalNamespaces),
+    );
 
     _registerServices(
       analyticsEnabled: enableAnalytics,
@@ -235,55 +235,67 @@ class ReownAppKitModal
     required Set<String>? excludedWalletIds,
     required SIWEConfig? siweConfig,
   }) {
-    GetIt.I.registerSingletonIfAbsent<IWidgetStack>(() => WidgetStack(
-          core: _appKit.core,
-        ));
-    GetIt.I.registerSingletonIfAbsent<IUriService>(() => UriService(
-          core: _appKit.core,
-        ));
-    GetIt.I.registerSingletonIfAbsent<IAnalyticsService>(() => AnalyticsService(
-          core: _appKit.core,
-          enableAnalytics: analyticsEnabled,
-        ));
-    GetIt.I.registerSingletonIfAbsent<IExplorerService>(() => ExplorerService(
-          core: _appKit.core,
-          referer: _appKit.metadata.name.replaceAll(' ', ''),
-          featuredWalletIds: featuredWalletIds,
-          includedWalletIds: includedWalletIds,
-          excludedWalletIds: excludedWalletIds,
-          namespaces: _sessionNamespaces,
-          customWallets: _customWallets,
-        ));
+    GetIt.I.registerSingletonIfAbsent<IWidgetStack>(
+      () => WidgetStack(core: _appKit.core),
+    );
+    GetIt.I.registerSingletonIfAbsent<IUriService>(
+      () => UriService(core: _appKit.core),
+    );
+    GetIt.I.registerSingletonIfAbsent<IAnalyticsService>(
+      () => AnalyticsService(
+        core: _appKit.core,
+        enableAnalytics: analyticsEnabled,
+      ),
+    );
+    GetIt.I.registerSingletonIfAbsent<IExplorerService>(
+      () => ExplorerService(
+        core: _appKit.core,
+        referer: _appKit.metadata.name.replaceAll(' ', ''),
+        featuredWalletIds: featuredWalletIds,
+        includedWalletIds: includedWalletIds,
+        excludedWalletIds: excludedWalletIds,
+        namespaces: _sessionNamespaces,
+        customWallets: _customWallets,
+      ),
+    );
     GetIt.I.registerSingletonIfAbsent<INetworkService>(() => NetworkService());
     GetIt.I.registerSingletonIfAbsent<IToastService>(() => ToastService());
-    GetIt.I
-        .registerSingletonIfAbsent<IBlockChainService>(() => BlockChainService(
-              core: _appKit.core,
-            ));
-    GetIt.I.registerSingletonIfAbsent<IMagicService>(() => MagicService(
-          core: _appKit.core,
-          metadata: _appKit.metadata,
-          featuresConfig: featuresConfig,
-        ));
-    GetIt.I.registerSingletonIfAbsent<ICoinbaseService>(() => CoinbaseService(
-          core: _appKit.core,
-          metadata: _appKit.metadata,
-          enabled: _initializeCoinbaseSDK,
-        ));
-    GetIt.I.registerSingletonIfAbsent<IPhantomService>(() => PhantomService(
-          core: _appKit.core,
-          metadata: _appKit.metadata,
-        ));
-    GetIt.I.registerSingletonIfAbsent<ISiweService>(() => SiweService(
-          appKit: _appKit,
-          siweConfig: siweConfig,
-          namespaces: _sessionNamespaces,
-        ));
+    GetIt.I.registerSingletonIfAbsent<IBlockChainService>(
+      () => BlockChainService(core: _appKit.core),
+    );
+    GetIt.I.registerSingletonIfAbsent<IMagicService>(
+      () => MagicService(
+        core: _appKit.core,
+        metadata: _appKit.metadata,
+        featuresConfig: featuresConfig,
+      ),
+    );
+    GetIt.I.registerSingletonIfAbsent<ICoinbaseService>(
+      () => CoinbaseService(
+        core: _appKit.core,
+        metadata: _appKit.metadata,
+        enabled: _initializeCoinbaseSDK,
+      ),
+    );
+    GetIt.I.registerSingletonIfAbsent<IPhantomService>(
+      () => PhantomService(core: _appKit.core, metadata: _appKit.metadata),
+    );
+    GetIt.I.registerSingletonIfAbsent<ISolflareService>(
+      () => SolflareService(core: _appKit.core, metadata: _appKit.metadata),
+    );
+    GetIt.I.registerSingletonIfAbsent<ISiweService>(
+      () => SiweService(
+        appKit: _appKit,
+        siweConfig: siweConfig,
+        namespaces: _sessionNamespaces,
+      ),
+    );
   }
 
   IMagicService get _magicService => GetIt.I<IMagicService>();
   ICoinbaseService get _coinbaseService => GetIt.I<ICoinbaseService>();
   IPhantomService get _phantomService => GetIt.I<IPhantomService>();
+  ISolflareService get _solflareService => GetIt.I<ISolflareService>();
   IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
   IUriService get _uriService => GetIt.I<IUriService>();
   IToastService get _toastService => GetIt.I<IToastService>();
@@ -353,6 +365,7 @@ class ReownAppKitModal
     await _explorerService.init();
     await _coinbaseService.init();
     await _phantomService.init();
+    await _solflareService.init();
     await _blockchainService.init();
     await _analyticsService.init();
 
@@ -363,7 +376,8 @@ class ReownAppKitModal
     final isMagic = _currentSession?.sessionService.isMagic == true;
     final isCoinbase = _currentSession?.sessionService.isCoinbase == true;
     final isPhantom = _currentSession?.sessionService.isPhantom == true;
-    if (isMagic || isCoinbase || isPhantom) {
+    final isSolflare = _currentSession?.sessionService.isSolflare == true;
+    if (isMagic || isCoinbase || isPhantom || isSolflare) {
       _selectedChainID ??= _currentSession!.chainId;
       await _setSesionAndChainData(_currentSession!);
       if (isMagic) {
@@ -384,10 +398,7 @@ class ReownAppKitModal
       final namespace = NamespaceUtils.getNamespaceFromChain(chain.chainId);
       final events = _sessionNamespaces[namespace]?.events ?? [];
       for (final event in events) {
-        _appKit.registerEventHandler(
-          chainId: chain.chainId,
-          event: event,
-        );
+        _appKit.registerEventHandler(chainId: chain.chainId, event: event);
       }
       _appKit.registerEventHandler(
         chainId: chain.chainId,
@@ -397,9 +408,9 @@ class ReownAppKitModal
 
     // There's a WC/Relay session stored
     if (wcSessions.isNotEmpty) {
-      await _storeSession(ReownAppKitModalSession(
-        sessionData: wcSessions.first,
-      ));
+      await _storeSession(
+        ReownAppKitModalSession(sessionData: wcSessions.first),
+      );
       // session should not outlive the pairing
       if (wcPairings.isEmpty) {
         await disconnect();
@@ -416,6 +427,11 @@ class ReownAppKitModal
           }
         } else if (_currentSession!.sessionService.isPhantom) {
           final isConnected = await _phantomService.isConnected();
+          if (!isConnected) {
+            await _cleanSession();
+          }
+        } else if (_currentSession!.sessionService.isSolflare) {
+          final isConnected = await _solflareService.isConnected();
           if (!isConnected) {
             await _cleanSession();
           }
@@ -477,6 +493,15 @@ class ReownAppKitModal
     );
     if (phantomRequest.isNotEmpty) {
       _phantomService.completePhantomRequest(url: url);
+      return true;
+    }
+
+    final solflareRequest = ReownCoreUtils.getSearchParamFromURL(
+      url,
+      'solflareRequest',
+    );
+    if (solflareRequest.isNotEmpty) {
+      _solflareService.completeSolflareRequest(url: url);
       return true;
     }
 
@@ -625,7 +650,8 @@ class ReownAppKitModal
     final isMagic = _currentSession!.sessionService.isMagic;
     final isCoinbase = _currentSession!.sessionService.isCoinbase;
     final isPhantom = _currentSession!.sessionService.isPhantom;
-    if (isMagic || isCoinbase || isPhantom) {
+    final isSolflare = _currentSession!.sessionService.isSolflare;
+    if (isMagic || isCoinbase || isPhantom || isSolflare) {
       return getApprovedChains();
     }
 
@@ -675,24 +701,23 @@ class ReownAppKitModal
     _notify();
     try {
       if (isConnected) {
-        await _storage.set(
-          StorageConstants.selectedChainId,
-          {'chainId': _selectedChainID},
-        );
+        await _storage.set(StorageConstants.selectedChainId, {
+          'chainId': _selectedChainID,
+        });
       }
     } catch (e) {
       _appKit.core.logger.e('[$runtimeType] _setLocalEthChain error: $e');
     }
     if (_isConnected && logEvent == true) {
-      _analyticsService.sendEvent(SwitchNetworkEvent(
-        network: _selectedChainID!,
-      ));
+      _analyticsService.sendEvent(
+        SwitchNetworkEvent(network: _selectedChainID!),
+      );
     }
     if (_lastChainEmitted != _selectedChainID && _isConnected) {
       if (_lastChainEmitted != null) {
-        onModalNetworkChange.broadcast(ModalNetworkChange(
-          chainId: _selectedChainID!,
-        ));
+        onModalNetworkChange.broadcast(
+          ModalNetworkChange(chainId: _selectedChainID!),
+        );
       }
       _lastChainEmitted = _selectedChainID;
     }
@@ -718,20 +743,24 @@ class ReownAppKitModal
     final isMagic = _currentSession?.sessionService.isMagic == true;
     final embeddedWallet = isMagic || (smartAccounts ?? []).isNotEmpty;
     if (_isConnected) {
-      final connectedKeys =
-          _allowedScreensWhenConnected.map((e) => e.toString()).toList();
+      final connectedKeys = _allowedScreensWhenConnected
+          .map((e) => e.toString())
+          .toList();
       if (startWidget == null) {
-        startWidget =
-            embeddedWallet ? const WalletFeaturesPage() : const AccountPage();
+        startWidget = embeddedWallet
+            ? const WalletFeaturesPage()
+            : const AccountPage();
       } else {
         if (!connectedKeys.contains(keyString)) {
-          startWidget =
-              embeddedWallet ? const WalletFeaturesPage() : const AccountPage();
+          startWidget = embeddedWallet
+              ? const WalletFeaturesPage()
+              : const AccountPage();
         }
       }
     } else {
-      final disconnectedKeys =
-          _allowedScreensWhenDisconnected.map((e) => e.toString()).toList();
+      final disconnectedKeys = _allowedScreensWhenDisconnected
+          .map((e) => e.toString())
+          .toList();
       if (startWidget != null && !disconnectedKeys.contains(keyString)) {
         startWidget = null;
       }
@@ -776,9 +805,7 @@ class ReownAppKitModal
       return;
     }
 
-    _analyticsService.sendEvent(ModalOpenEvent(
-      connected: _isConnected,
-    ));
+    _analyticsService.sendEvent(ModalOpenEvent(connected: _isConnected));
 
     // Reset the explorer
     _explorerService.search(query: null);
@@ -802,10 +829,7 @@ class ReownAppKitModal
           )
         : ModalContainer(startWidget: showWidget);
 
-    final rootWidget = ModalProvider(
-      instance: this,
-      child: childWidget,
-    );
+    final rootWidget = ModalProvider(instance: this, child: childWidget);
 
     final isTabletSize = PlatformUtils.isTablet(_context!);
 
@@ -837,14 +861,12 @@ class ReownAppKitModal
           final borderRadius = BorderRadius.all(Radius.circular(maxRadius));
           final constraints = BoxConstraints(maxWidth: 360, maxHeight: 600);
           return Dialog(
-            backgroundColor:
-                ReownAppKitModalTheme.colorsOf(_context!).background125,
+            backgroundColor: ReownAppKitModalTheme.colorsOf(
+              _context!,
+            ).background125,
             shape: RoundedRectangleBorder(borderRadius: borderRadius),
             clipBehavior: Clip.hardEdge,
-            child: ConstrainedBox(
-              constraints: constraints,
-              child: rootWidget,
-            ),
+            child: ConstrainedBox(constraints: constraints, child: rootWidget),
           );
         },
       );
@@ -887,9 +909,7 @@ class ReownAppKitModal
   }) async {
     _checkInitialized();
 
-    final walletRedirect = _explorerService.getWalletRedirect(
-      _selectedWallet,
-    );
+    final walletRedirect = _explorerService.getWalletRedirect(_selectedWallet);
 
     if (walletRedirect == null) {
       throw ReownAppKitModalException(
@@ -907,6 +927,8 @@ class ReownAppKitModal
         await _coinbaseService.getAccount();
       } else if (_selectedWallet!.isPhantom) {
         await _phantomService.connect(chainId: _selectedChainID);
+      } else if (_selectedWallet!.isSolflare) {
+        await _solflareService.connect(chainId: _selectedChainID);
       } else {
         await _connect(walletRedirect, pType, socialOption);
       }
@@ -936,22 +958,20 @@ class ReownAppKitModal
         } else {
           if (_isUserRejectedError(e)) {
             onModalError.broadcast(UserRejectedConnection());
-            _analyticsService.sendEvent(ConnectErrorEvent(
-              message: 'User declined connection',
-            ));
+            _analyticsService.sendEvent(
+              ConnectErrorEvent(message: 'User declined connection'),
+            );
           } else {
             onModalError.broadcast(ErrorOpeningWallet());
-            _analyticsService.sendEvent(ConnectErrorEvent(
-              message: e.message,
-            ));
+            _analyticsService.sendEvent(ConnectErrorEvent(message: e.message));
           }
         }
       } else {
         if (_isUserRejectedError(e)) {
           onModalError.broadcast(UserRejectedConnection());
-          _analyticsService.sendEvent(ConnectErrorEvent(
-            message: 'User declined connection',
-          ));
+          _analyticsService.sendEvent(
+            ConnectErrorEvent(message: 'User declined connection'),
+          );
         } else if (e is ReownCoreError) {
           onModalError.broadcast(ErrorOpeningWallet(description: e.message));
           _appKit.core.logger.e(
@@ -1058,9 +1078,9 @@ class ReownAppKitModal
       _sessionAuthResponse = await authResponse.completer.future;
       _supportsOneClickAuth = true;
       if (_sessionAuthResponse?.session != null) {
-        _appKit.onSessionConnect.broadcast(SessionConnect(
-          _sessionAuthResponse!.session!,
-        ));
+        _appKit.onSessionConnect.broadcast(
+          SessionConnect(_sessionAuthResponse!.session!),
+        );
       } else {
         if (_sessionAuthResponse?.jsonRpcError != null) {
           throw _sessionAuthResponse!.jsonRpcError!;
@@ -1081,9 +1101,9 @@ class ReownAppKitModal
   Future<void> _connectionErrorHandler(dynamic e) async {
     if (_isUserRejectedError(e)) {
       onModalError.broadcast(UserRejectedConnection());
-      _analyticsService.sendEvent(ConnectErrorEvent(
-        message: 'User declined connection',
-      ));
+      _analyticsService.sendEvent(
+        ConnectErrorEvent(message: 'User declined connection'),
+      );
     } else {
       if (e is JsonRpcError) {
         final message = e.message ?? '';
@@ -1094,15 +1114,11 @@ class ReownAppKitModal
           return;
         }
         onModalError.broadcast(ModalError('Error connecting to wallet'));
-        _analyticsService.sendEvent(ConnectErrorEvent(
-          message: message,
-        ));
+        _analyticsService.sendEvent(ConnectErrorEvent(message: message));
       }
       if (e is ReownSignError || e is ReownCoreError) {
         onModalError.broadcast(ModalError(e.message));
-        _analyticsService.sendEvent(ConnectErrorEvent(
-          message: e.message,
-        ));
+        _analyticsService.sendEvent(ConnectErrorEvent(message: e.message));
       }
     }
     return await expirePreviousInactivePairings();
@@ -1141,6 +1157,13 @@ class ReownAppKitModal
     final isPhantom = _currentSession!.sessionService.isPhantom == true;
     if (walletInfo.isPhantom || isPhantom) {
       // Phantom Wallet is getting launched at every request by its service
+      // So no need to do it here.
+      return;
+    }
+
+    final isSolflare = _currentSession!.sessionService.isSolflare == true;
+    if (walletInfo.isSolflare || isSolflare) {
+      // Solflare Wallet is getting launched at every request by its service
       // So no need to do it here.
       return;
     }
@@ -1231,6 +1254,16 @@ class ReownAppKitModal
         return;
       }
     }
+    if (_currentSession?.sessionService.isSolflare == true) {
+      try {
+        await _solflareService.disconnect();
+      } catch (e) {
+        _appKit.core.logger.d('[$runtimeType] disconnect solflare $e');
+        _status = ReownAppKitModalStatus.initialized;
+        _notify();
+        return;
+      }
+    }
     if (_currentSession?.sessionService.isMagic == true) {
       try {
         await Future.delayed(Duration(milliseconds: 300));
@@ -1302,18 +1335,16 @@ class ReownAppKitModal
     if (_disconnectOnClose) {
       _disconnectOnClose = false;
       if (currentKey == KeyConstants.approveSiwePageKey) {
-        _analyticsService.sendEvent(ClickCancelSiwe(
-          network: _selectedChainID ?? '',
-        ));
+        _analyticsService.sendEvent(
+          ClickCancelSiwe(network: _selectedChainID ?? ''),
+        );
       }
       await disconnect();
       selectWallet(null);
     }
     _toastService.clear();
     _blockchainService.selectSendToken(null);
-    _analyticsService.sendEvent(ModalCloseEvent(
-      connected: _isConnected,
-    ));
+    _analyticsService.sendEvent(ModalCloseEvent(connected: _isConnected));
   }
 
   @override
@@ -1363,9 +1394,9 @@ class ReownAppKitModal
     );
 
     try {
-      final data = deployedContract.function(functionName).encodeCall(
-            parameters,
-          );
+      final data = deployedContract
+          .function(functionName)
+          .encodeCall(parameters);
       final params = {
         'from': _currentSession!.getAddress('eip155'),
         'to': deployedContract.address.hex,
@@ -1376,9 +1407,9 @@ class ReownAppKitModal
         chainId: chainId,
         params: params,
       );
-      return deployedContract.function(functionName).decodeReturnValues(
-            rawCallResponse,
-          );
+      return deployedContract
+          .function(functionName)
+          .decodeReturnValues(rawCallResponse);
     } catch (e, s) {
       _appKit.core.logger.e(
         '[$runtimeType] requestReadContract, error: $e, $s',
@@ -1474,10 +1505,7 @@ class ReownAppKitModal
     );
     try {
       if (_currentSession!.sessionService.isMagic) {
-        return await _magicService.request(
-          chainId: chainId,
-          request: request,
-        );
+        return await _magicService.request(chainId: chainId, request: request);
       }
       if (_currentSession!.sessionService.isCoinbase) {
         return await _coinbaseService.request(
@@ -1487,6 +1515,12 @@ class ReownAppKitModal
       }
       if (_currentSession!.sessionService.isPhantom) {
         return await _phantomService.request(
+          chainId: chainId,
+          request: request,
+        );
+      }
+      if (_currentSession!.sessionService.isSolflare) {
+        return await _solflareService.request(
           chainId: chainId,
           request: request,
         );
@@ -1551,6 +1585,7 @@ class ReownAppKitModal
       GetIt.I.unregister<IMagicService>();
       GetIt.I.unregister<ICoinbaseService>();
       GetIt.I.unregister<IPhantomService>();
+      GetIt.I.unregister<ISolflareService>();
       GetIt.I.unregister<ISiweService>();
       GetIt.I.unregister<IWidgetStack>();
       await Future.delayed(Duration(milliseconds: 500));
@@ -1735,7 +1770,7 @@ class ReownAppKitModal
         request: SessionRequestParams(
           method: MethodsConstants.walletSwitchEthChain,
           params: [
-            {'chainId': newChain.chainHexId}
+            {'chainId': newChain.chainHexId},
           ],
         ),
       );
@@ -1857,19 +1892,23 @@ class ReownAppKitModal
 
     if (event) {
       Future.delayed(Duration(milliseconds: 200), () {
-        onModalDisconnect.broadcast(ModalDisconnect(
-          topic: args?.topic ?? _currentSession?.topic,
-          id: args?.id,
-        ));
+        onModalDisconnect.broadcast(
+          ModalDisconnect(
+            topic: args?.topic ?? _currentSession?.topic,
+            id: args?.id,
+          ),
+        );
       });
     }
   }
 
   void _onModalError(ModalError? event) {
-    _toastService.show(ToastMessage(
-      type: ToastType.error,
-      text: event?.message ?? 'An error occurred.',
-    ));
+    _toastService.show(
+      ToastMessage(
+        type: ToastType.error,
+        text: event?.message ?? 'An error occurred.',
+      ),
+    );
   }
 
   void _onNetworkChainRequireSIWE(ModalNetworkChange? args) async {
@@ -1880,9 +1919,7 @@ class ReownAppKitModal
         await _magicService.getUser(chainId: _selectedChainID, isUpdate: true);
         await _siweService.signOut();
         _disconnectOnClose = true;
-        _widgetStack.push(ApproveSIWEPage(
-          onSiweFinish: _oneSIWEFinish,
-        ));
+        _widgetStack.push(ApproveSIWEPage(onSiweFinish: _oneSIWEFinish));
       }
     } catch (e, s) {
       _appKit.core.logger.e(
@@ -1921,6 +1958,9 @@ class ReownAppKitModal
     // Phantom
     _phantomService.onPhantomConnect.subscribe(_onPhantomConnect);
     _phantomService.onPhantomError.subscribe(_onPhantomError);
+    // Solflare
+    _solflareService.onSolflareConnect.subscribe(_onSolflareConnect);
+    _solflareService.onSolflareError.subscribe(_onSolflareError);
     //
     _appKit.onSessionAuthResponse.subscribe(_onSessionAuthResponse);
     _appKit.onSessionConnect.subscribe(_onSessionConnect);
@@ -1932,9 +1972,7 @@ class ReownAppKitModal
     _appKit.core.relayClient.onRelayClientConnect.subscribe(
       _onRelayClientConnect,
     );
-    _appKit.core.relayClient.onRelayClientError.subscribe(
-      _onRelayClientError,
-    );
+    _appKit.core.relayClient.onRelayClientError.subscribe(_onRelayClientError);
     _appKit.core.relayClient.onRelayClientDisconnect.subscribe(
       _onRelayClientDisconnect,
     );
@@ -1964,6 +2002,9 @@ class ReownAppKitModal
     // Phantom
     _phantomService.onPhantomConnect.unsubscribeAll();
     _phantomService.onPhantomError.unsubscribeAll();
+    // Solflare
+    _solflareService.onSolflareConnect.unsubscribeAll();
+    _solflareService.onSolflareError.unsubscribeAll();
     //
     _appKit.onSessionAuthResponse.unsubscribeAll();
     _appKit.onSessionConnect.unsubscribeAll();
@@ -2007,7 +2048,7 @@ extension _EmailConnectorExtension on ReownAppKitModal {
       final email = args.data?.email ?? _currentSession?.sessionEmail;
       final userName =
           args.data?.farcasterUserName ?? _currentSession?.sessionUsername;
-      final magicData = args.data?.copytWith(
+      final magicData = args.data?.copyWith(
         chainId: _selectedChainID,
         email: email,
         farcasterUserName: userName,
@@ -2029,9 +2070,7 @@ extension _EmailConnectorExtension on ReownAppKitModal {
           // TODO Check if this is still relevant
           final theme = ReownAppKitModalTheme.maybeOf(_context!);
           await _magicService.syncTheme(theme);
-          _widgetStack.push(ApproveSIWEPage(
-            onSiweFinish: _oneSIWEFinish,
-          ));
+          _widgetStack.push(ApproveSIWEPage(onSiweFinish: _oneSIWEFinish));
         }
       } else {
         if (_isOpen) {
@@ -2051,10 +2090,12 @@ extension _EmailConnectorExtension on ReownAppKitModal {
         final currentEmail = _currentSession?.sessionEmail;
         final newEmail = args.email ?? currentEmail ?? currentUsername;
         final newUsername = args.userName ?? currentUsername;
-        final newProvider = args.provider ??
+        final newProvider =
+            args.provider ??
             (_currentSession?.socialProvider != null
                 ? AppKitSocialOption.fromString(
-                    _currentSession!.socialProvider!)
+                    _currentSession!.socialProvider!,
+                  )
                 : null);
         final newChainId = args.chainId?.toString() ?? _currentSession!.chainId;
         final ns = NamespaceUtils.getNamespaceFromChain(newChainId);
@@ -2128,9 +2169,7 @@ extension _CoinbaseConnectorExtension on ReownAppKitModal {
       //
       if (_siweService.enabled) {
         _disconnectOnClose = true;
-        _widgetStack.push(ApproveSIWEPage(
-          onSiweFinish: _oneSIWEFinish,
-        ));
+        _widgetStack.push(ApproveSIWEPage(onSiweFinish: _oneSIWEFinish));
       } else {
         if (_isOpen) {
           closeModal();
@@ -2204,15 +2243,45 @@ extension _PhantomConnectorExtension on ReownAppKitModal {
     _appKit.core.logger.d('[$runtimeType] _onPhantomError: $args');
     if (_isUserRejectedError(args?.toString())) {
       onModalError.broadcast(UserRejectedConnection());
-      _analyticsService.sendEvent(ConnectErrorEvent(
-        message: 'User declined connection',
-      ));
+      _analyticsService.sendEvent(
+        ConnectErrorEvent(message: 'User declined connection'),
+      );
     } else {
       final errorMessage = args?.error ?? 'Something went wrong';
       onModalError.broadcast(ErrorOpeningWallet());
-      _analyticsService.sendEvent(ConnectErrorEvent(
-        message: errorMessage,
-      ));
+      _analyticsService.sendEvent(ConnectErrorEvent(message: errorMessage));
+    }
+  }
+}
+
+extension _SolflareConnectorExtension on ReownAppKitModal {
+  void _onSolflareConnect(SolflareConnectEvent? args) async {
+    _appKit.core.logger.d('[$runtimeType] _onSolflareConnect: $args');
+    if (args?.data != null) {
+      _selectedChainID = _getStoredChainId(args!.data!.chainId)!;
+      //
+      final session = ReownAppKitModalSession(solflareData: args.data!);
+      await _setSesionAndChainData(session);
+      await _explorerService.storeConnectedWallet(_selectedWallet);
+      onModalConnect.broadcast(ModalConnect(session));
+      //
+      if (_isOpen) {
+        closeModal();
+      }
+    }
+  }
+
+  void _onSolflareError(SolflareErrorEvent? args) async {
+    _appKit.core.logger.d('[$runtimeType] _onSolflareError: $args');
+    if (_isUserRejectedError(args?.toString())) {
+      onModalError.broadcast(UserRejectedConnection());
+      _analyticsService.sendEvent(
+        ConnectErrorEvent(message: 'User declined connection'),
+      );
+    } else {
+      final errorMessage = args?.error ?? 'Something went wrong';
+      onModalError.broadcast(ErrorOpeningWallet());
+      _analyticsService.sendEvent(ConnectErrorEvent(message: errorMessage));
     }
   }
 }
@@ -2292,20 +2361,24 @@ extension _AppKitModalExtension on ReownAppKitModal {
     final session = ReownAppKitModalSession(sessionData: mSession);
     await _setSesionAndChainData(session);
     if (_selectedWallet == null) {
-      _analyticsService.sendEvent(ConnectSuccessEvent(
-        name: 'WalletConnect',
-        method: AnalyticsPlatform.qrcode,
-      ));
+      _analyticsService.sendEvent(
+        ConnectSuccessEvent(
+          name: 'WalletConnect',
+          method: AnalyticsPlatform.qrcode,
+        ),
+      );
       await _storage.delete(StorageConstants.connectedWalletData);
     } else {
       _explorerService.storeConnectedWallet(_selectedWallet);
       final walletName = _selectedWallet!.listing.name;
       final walletId = _selectedWallet!.listing.id;
-      _analyticsService.sendEvent(ConnectSuccessEvent(
-        name: walletName,
-        explorerId: walletId,
-        method: AnalyticsPlatform.mobile,
-      ));
+      _analyticsService.sendEvent(
+        ConnectSuccessEvent(
+          name: walletName,
+          explorerId: walletId,
+          method: AnalyticsPlatform.mobile,
+        ),
+      );
     }
     return session;
   }
@@ -2316,10 +2389,9 @@ extension _AppKitModalExtension on ReownAppKitModal {
     );
     await _storeSession(updatedSession);
     try {
-      await _storage.set(
-        StorageConstants.selectedChainId,
-        {'chainId': _selectedChainID!},
-      );
+      await _storage.set(StorageConstants.selectedChainId, {
+        'chainId': _selectedChainID!,
+      });
     } catch (e, s) {
       _appKit.core.logger.e(
         '[$runtimeType] _oneSIWEFinish error: $e',
@@ -2337,15 +2409,17 @@ extension _AppKitModalExtension on ReownAppKitModal {
       if (_currentSession?.topic == args?.topic) {
         try {
           final newEmail = args!.data['email'];
-          await _storeSession(ReownAppKitModalSession(
-            sessionData:
-                SessionData.fromJson(_currentSession!.toJson()).copyWith(
-              sessionProperties: {
-                ..._currentSession!.sessionProperties,
-                'email': newEmail,
-              },
+          await _storeSession(
+            ReownAppKitModalSession(
+              sessionData: SessionData.fromJson(_currentSession!.toJson())
+                  .copyWith(
+                    sessionProperties: {
+                      ..._currentSession!.sessionProperties,
+                      'email': newEmail,
+                    },
+                  ),
             ),
-          ));
+          );
           _notify();
           return;
         } catch (e) {
@@ -2378,9 +2452,7 @@ extension _AppKitModalExtension on ReownAppKitModal {
       //
       final session = _appKit.sessions.get(args.topic);
       final updatedSession = ReownAppKitModalSession(
-        sessionData: session!.copyWith(
-          namespaces: args.namespaces,
-        ),
+        sessionData: session!.copyWith(namespaces: args.namespaces),
       );
       await _setSesionAndChainData(updatedSession);
       onSessionUpdateEvent.broadcast(args);

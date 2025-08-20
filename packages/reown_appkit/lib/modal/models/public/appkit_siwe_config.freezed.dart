@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,1282 +9,1211 @@ part of 'appkit_siwe_config.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-SIWECreateMessageArgs _$SIWECreateMessageArgsFromJson(
-    Map<String, dynamic> json) {
-  return _SIWECreateMessageArgs.fromJson(json);
-}
 
 /// @nodoc
 mixin _$SIWECreateMessageArgs {
-  String get chainId => throw _privateConstructorUsedError;
-  String get domain => throw _privateConstructorUsedError;
-  String get nonce => throw _privateConstructorUsedError;
-  String get uri => throw _privateConstructorUsedError;
-  String get address => throw _privateConstructorUsedError;
-  String get version => throw _privateConstructorUsedError;
-  CacaoHeader? get type => throw _privateConstructorUsedError;
-  String? get nbf => throw _privateConstructorUsedError;
-  String? get exp => throw _privateConstructorUsedError;
-  String? get statement => throw _privateConstructorUsedError;
-  String? get requestId => throw _privateConstructorUsedError;
-  List<String>? get resources => throw _privateConstructorUsedError;
-  int? get expiry => throw _privateConstructorUsedError;
-  String? get iat => throw _privateConstructorUsedError;
+
+ String get chainId; String get domain; String get nonce; String get uri; String get address; String get version; CacaoHeader? get type; String? get nbf; String? get exp; String? get statement; String? get requestId; List<String>? get resources; int? get expiry; String? get iat;
+/// Create a copy of SIWECreateMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SIWECreateMessageArgsCopyWith<SIWECreateMessageArgs> get copyWith => _$SIWECreateMessageArgsCopyWithImpl<SIWECreateMessageArgs>(this as SIWECreateMessageArgs, _$identity);
 
   /// Serializes this SIWECreateMessageArgs to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of SIWECreateMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $SIWECreateMessageArgsCopyWith<SIWECreateMessageArgs> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SIWECreateMessageArgs&&(identical(other.chainId, chainId) || other.chainId == chainId)&&(identical(other.domain, domain) || other.domain == domain)&&(identical(other.nonce, nonce) || other.nonce == nonce)&&(identical(other.uri, uri) || other.uri == uri)&&(identical(other.address, address) || other.address == address)&&(identical(other.version, version) || other.version == version)&&(identical(other.type, type) || other.type == type)&&(identical(other.nbf, nbf) || other.nbf == nbf)&&(identical(other.exp, exp) || other.exp == exp)&&(identical(other.statement, statement) || other.statement == statement)&&(identical(other.requestId, requestId) || other.requestId == requestId)&&const DeepCollectionEquality().equals(other.resources, resources)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.iat, iat) || other.iat == iat));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,chainId,domain,nonce,uri,address,version,type,nbf,exp,statement,requestId,const DeepCollectionEquality().hash(resources),expiry,iat);
+
+@override
+String toString() {
+  return 'SIWECreateMessageArgs(chainId: $chainId, domain: $domain, nonce: $nonce, uri: $uri, address: $address, version: $version, type: $type, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources, expiry: $expiry, iat: $iat)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $SIWECreateMessageArgsCopyWith<$Res> {
-  factory $SIWECreateMessageArgsCopyWith(SIWECreateMessageArgs value,
-          $Res Function(SIWECreateMessageArgs) then) =
-      _$SIWECreateMessageArgsCopyWithImpl<$Res, SIWECreateMessageArgs>;
-  @useResult
-  $Res call(
-      {String chainId,
-      String domain,
-      String nonce,
-      String uri,
-      String address,
-      String version,
-      CacaoHeader? type,
-      String? nbf,
-      String? exp,
-      String? statement,
-      String? requestId,
-      List<String>? resources,
-      int? expiry,
-      String? iat});
+abstract mixin class $SIWECreateMessageArgsCopyWith<$Res>  {
+  factory $SIWECreateMessageArgsCopyWith(SIWECreateMessageArgs value, $Res Function(SIWECreateMessageArgs) _then) = _$SIWECreateMessageArgsCopyWithImpl;
+@useResult
+$Res call({
+ String chainId, String domain, String nonce, String uri, String address, String version, CacaoHeader? type, String? nbf, String? exp, String? statement, String? requestId, List<String>? resources, int? expiry, String? iat
+});
 
-  $CacaoHeaderCopyWith<$Res>? get type;
+
+$CacaoHeaderCopyWith<$Res>? get type;
+
 }
-
 /// @nodoc
-class _$SIWECreateMessageArgsCopyWithImpl<$Res,
-        $Val extends SIWECreateMessageArgs>
+class _$SIWECreateMessageArgsCopyWithImpl<$Res>
     implements $SIWECreateMessageArgsCopyWith<$Res> {
-  _$SIWECreateMessageArgsCopyWithImpl(this._value, this._then);
+  _$SIWECreateMessageArgsCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final SIWECreateMessageArgs _self;
+  final $Res Function(SIWECreateMessageArgs) _then;
 
-  /// Create a copy of SIWECreateMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? chainId = null,
-    Object? domain = null,
-    Object? nonce = null,
-    Object? uri = null,
-    Object? address = null,
-    Object? version = null,
-    Object? type = freezed,
-    Object? nbf = freezed,
-    Object? exp = freezed,
-    Object? statement = freezed,
-    Object? requestId = freezed,
-    Object? resources = freezed,
-    Object? expiry = freezed,
-    Object? iat = freezed,
-  }) {
-    return _then(_value.copyWith(
-      chainId: null == chainId
-          ? _value.chainId
-          : chainId // ignore: cast_nullable_to_non_nullable
-              as String,
-      domain: null == domain
-          ? _value.domain
-          : domain // ignore: cast_nullable_to_non_nullable
-              as String,
-      nonce: null == nonce
-          ? _value.nonce
-          : nonce // ignore: cast_nullable_to_non_nullable
-              as String,
-      uri: null == uri
-          ? _value.uri
-          : uri // ignore: cast_nullable_to_non_nullable
-              as String,
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as String,
-      version: null == version
-          ? _value.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String,
-      type: freezed == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as CacaoHeader?,
-      nbf: freezed == nbf
-          ? _value.nbf
-          : nbf // ignore: cast_nullable_to_non_nullable
-              as String?,
-      exp: freezed == exp
-          ? _value.exp
-          : exp // ignore: cast_nullable_to_non_nullable
-              as String?,
-      statement: freezed == statement
-          ? _value.statement
-          : statement // ignore: cast_nullable_to_non_nullable
-              as String?,
-      requestId: freezed == requestId
-          ? _value.requestId
-          : requestId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      resources: freezed == resources
-          ? _value.resources
-          : resources // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-      expiry: freezed == expiry
-          ? _value.expiry
-          : expiry // ignore: cast_nullable_to_non_nullable
-              as int?,
-      iat: freezed == iat
-          ? _value.iat
-          : iat // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
+/// Create a copy of SIWECreateMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? chainId = null,Object? domain = null,Object? nonce = null,Object? uri = null,Object? address = null,Object? version = null,Object? type = freezed,Object? nbf = freezed,Object? exp = freezed,Object? statement = freezed,Object? requestId = freezed,Object? resources = freezed,Object? expiry = freezed,Object? iat = freezed,}) {
+  return _then(_self.copyWith(
+chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
+as String,domain: null == domain ? _self.domain : domain // ignore: cast_nullable_to_non_nullable
+as String,nonce: null == nonce ? _self.nonce : nonce // ignore: cast_nullable_to_non_nullable
+as String,uri: null == uri ? _self.uri : uri // ignore: cast_nullable_to_non_nullable
+as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as String,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as String,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as CacaoHeader?,nbf: freezed == nbf ? _self.nbf : nbf // ignore: cast_nullable_to_non_nullable
+as String?,exp: freezed == exp ? _self.exp : exp // ignore: cast_nullable_to_non_nullable
+as String?,statement: freezed == statement ? _self.statement : statement // ignore: cast_nullable_to_non_nullable
+as String?,requestId: freezed == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
+as String?,resources: freezed == resources ? _self.resources : resources // ignore: cast_nullable_to_non_nullable
+as List<String>?,expiry: freezed == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
+as int?,iat: freezed == iat ? _self.iat : iat // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+/// Create a copy of SIWECreateMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoHeaderCopyWith<$Res>? get type {
+    if (_self.type == null) {
+    return null;
   }
 
-  /// Create a copy of SIWECreateMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $CacaoHeaderCopyWith<$Res>? get type {
-    if (_value.type == null) {
-      return null;
-    }
-
-    return $CacaoHeaderCopyWith<$Res>(_value.type!, (value) {
-      return _then(_value.copyWith(type: value) as $Val);
-    });
-  }
+  return $CacaoHeaderCopyWith<$Res>(_self.type!, (value) {
+    return _then(_self.copyWith(type: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$SIWECreateMessageArgsImplCopyWith<$Res>
-    implements $SIWECreateMessageArgsCopyWith<$Res> {
-  factory _$$SIWECreateMessageArgsImplCopyWith(
-          _$SIWECreateMessageArgsImpl value,
-          $Res Function(_$SIWECreateMessageArgsImpl) then) =
-      __$$SIWECreateMessageArgsImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String chainId,
-      String domain,
-      String nonce,
-      String uri,
-      String address,
-      String version,
-      CacaoHeader? type,
-      String? nbf,
-      String? exp,
-      String? statement,
-      String? requestId,
-      List<String>? resources,
-      int? expiry,
-      String? iat});
 
-  @override
-  $CacaoHeaderCopyWith<$Res>? get type;
+/// Adds pattern-matching-related methods to [SIWECreateMessageArgs].
+extension SIWECreateMessageArgsPatterns on SIWECreateMessageArgs {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SIWECreateMessageArgs value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SIWECreateMessageArgs() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SIWECreateMessageArgs value)  $default,){
+final _that = this;
+switch (_that) {
+case _SIWECreateMessageArgs():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SIWECreateMessageArgs value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SIWECreateMessageArgs() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String chainId,  String domain,  String nonce,  String uri,  String address,  String version,  CacaoHeader? type,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources,  int? expiry,  String? iat)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SIWECreateMessageArgs() when $default != null:
+return $default(_that.chainId,_that.domain,_that.nonce,_that.uri,_that.address,_that.version,_that.type,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources,_that.expiry,_that.iat);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String chainId,  String domain,  String nonce,  String uri,  String address,  String version,  CacaoHeader? type,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources,  int? expiry,  String? iat)  $default,) {final _that = this;
+switch (_that) {
+case _SIWECreateMessageArgs():
+return $default(_that.chainId,_that.domain,_that.nonce,_that.uri,_that.address,_that.version,_that.type,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources,_that.expiry,_that.iat);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String chainId,  String domain,  String nonce,  String uri,  String address,  String version,  CacaoHeader? type,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources,  int? expiry,  String? iat)?  $default,) {final _that = this;
+switch (_that) {
+case _SIWECreateMessageArgs() when $default != null:
+return $default(_that.chainId,_that.domain,_that.nonce,_that.uri,_that.address,_that.version,_that.type,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources,_that.expiry,_that.iat);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$SIWECreateMessageArgsImplCopyWithImpl<$Res>
-    extends _$SIWECreateMessageArgsCopyWithImpl<$Res,
-        _$SIWECreateMessageArgsImpl>
-    implements _$$SIWECreateMessageArgsImplCopyWith<$Res> {
-  __$$SIWECreateMessageArgsImplCopyWithImpl(_$SIWECreateMessageArgsImpl _value,
-      $Res Function(_$SIWECreateMessageArgsImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of SIWECreateMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? chainId = null,
-    Object? domain = null,
-    Object? nonce = null,
-    Object? uri = null,
-    Object? address = null,
-    Object? version = null,
-    Object? type = freezed,
-    Object? nbf = freezed,
-    Object? exp = freezed,
-    Object? statement = freezed,
-    Object? requestId = freezed,
-    Object? resources = freezed,
-    Object? expiry = freezed,
-    Object? iat = freezed,
-  }) {
-    return _then(_$SIWECreateMessageArgsImpl(
-      chainId: null == chainId
-          ? _value.chainId
-          : chainId // ignore: cast_nullable_to_non_nullable
-              as String,
-      domain: null == domain
-          ? _value.domain
-          : domain // ignore: cast_nullable_to_non_nullable
-              as String,
-      nonce: null == nonce
-          ? _value.nonce
-          : nonce // ignore: cast_nullable_to_non_nullable
-              as String,
-      uri: null == uri
-          ? _value.uri
-          : uri // ignore: cast_nullable_to_non_nullable
-              as String,
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as String,
-      version: null == version
-          ? _value.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String,
-      type: freezed == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as CacaoHeader?,
-      nbf: freezed == nbf
-          ? _value.nbf
-          : nbf // ignore: cast_nullable_to_non_nullable
-              as String?,
-      exp: freezed == exp
-          ? _value.exp
-          : exp // ignore: cast_nullable_to_non_nullable
-              as String?,
-      statement: freezed == statement
-          ? _value.statement
-          : statement // ignore: cast_nullable_to_non_nullable
-              as String?,
-      requestId: freezed == requestId
-          ? _value.requestId
-          : requestId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      resources: freezed == resources
-          ? _value._resources
-          : resources // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-      expiry: freezed == expiry
-          ? _value.expiry
-          : expiry // ignore: cast_nullable_to_non_nullable
-              as int?,
-      iat: freezed == iat
-          ? _value.iat
-          : iat // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
-  }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$SIWECreateMessageArgsImpl implements _SIWECreateMessageArgs {
-  const _$SIWECreateMessageArgsImpl(
-      {required this.chainId,
-      required this.domain,
-      required this.nonce,
-      required this.uri,
-      required this.address,
-      this.version = '1',
-      this.type = const CacaoHeader(t: 'eip4361'),
-      this.nbf,
-      this.exp,
-      this.statement,
-      this.requestId,
-      final List<String>? resources,
-      this.expiry,
-      this.iat})
-      : _resources = resources;
 
-  factory _$SIWECreateMessageArgsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SIWECreateMessageArgsImplFromJson(json);
+class _SIWECreateMessageArgs implements SIWECreateMessageArgs {
+  const _SIWECreateMessageArgs({required this.chainId, required this.domain, required this.nonce, required this.uri, required this.address, this.version = '1', this.type = const CacaoHeader(t: 'eip4361'), this.nbf, this.exp, this.statement, this.requestId, final  List<String>? resources, this.expiry, this.iat}): _resources = resources;
+  factory _SIWECreateMessageArgs.fromJson(Map<String, dynamic> json) => _$SIWECreateMessageArgsFromJson(json);
 
-  @override
-  final String chainId;
-  @override
-  final String domain;
-  @override
-  final String nonce;
-  @override
-  final String uri;
-  @override
-  final String address;
-  @override
-  @JsonKey()
-  final String version;
-  @override
-  @JsonKey()
-  final CacaoHeader? type;
-  @override
-  final String? nbf;
-  @override
-  final String? exp;
-  @override
-  final String? statement;
-  @override
-  final String? requestId;
-  final List<String>? _resources;
-  @override
-  List<String>? get resources {
-    final value = _resources;
-    if (value == null) return null;
-    if (_resources is EqualUnmodifiableListView) return _resources;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
-  @override
-  final int? expiry;
-  @override
-  final String? iat;
-
-  @override
-  String toString() {
-    return 'SIWECreateMessageArgs(chainId: $chainId, domain: $domain, nonce: $nonce, uri: $uri, address: $address, version: $version, type: $type, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources, expiry: $expiry, iat: $iat)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SIWECreateMessageArgsImpl &&
-            (identical(other.chainId, chainId) || other.chainId == chainId) &&
-            (identical(other.domain, domain) || other.domain == domain) &&
-            (identical(other.nonce, nonce) || other.nonce == nonce) &&
-            (identical(other.uri, uri) || other.uri == uri) &&
-            (identical(other.address, address) || other.address == address) &&
-            (identical(other.version, version) || other.version == version) &&
-            (identical(other.type, type) || other.type == type) &&
-            (identical(other.nbf, nbf) || other.nbf == nbf) &&
-            (identical(other.exp, exp) || other.exp == exp) &&
-            (identical(other.statement, statement) ||
-                other.statement == statement) &&
-            (identical(other.requestId, requestId) ||
-                other.requestId == requestId) &&
-            const DeepCollectionEquality()
-                .equals(other._resources, _resources) &&
-            (identical(other.expiry, expiry) || other.expiry == expiry) &&
-            (identical(other.iat, iat) || other.iat == iat));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      chainId,
-      domain,
-      nonce,
-      uri,
-      address,
-      version,
-      type,
-      nbf,
-      exp,
-      statement,
-      requestId,
-      const DeepCollectionEquality().hash(_resources),
-      expiry,
-      iat);
-
-  /// Create a copy of SIWECreateMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SIWECreateMessageArgsImplCopyWith<_$SIWECreateMessageArgsImpl>
-      get copyWith => __$$SIWECreateMessageArgsImplCopyWithImpl<
-          _$SIWECreateMessageArgsImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SIWECreateMessageArgsImplToJson(
-      this,
-    );
-  }
+@override final  String chainId;
+@override final  String domain;
+@override final  String nonce;
+@override final  String uri;
+@override final  String address;
+@override@JsonKey() final  String version;
+@override@JsonKey() final  CacaoHeader? type;
+@override final  String? nbf;
+@override final  String? exp;
+@override final  String? statement;
+@override final  String? requestId;
+ final  List<String>? _resources;
+@override List<String>? get resources {
+  final value = _resources;
+  if (value == null) return null;
+  if (_resources is EqualUnmodifiableListView) return _resources;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
 }
 
-abstract class _SIWECreateMessageArgs implements SIWECreateMessageArgs {
-  const factory _SIWECreateMessageArgs(
-      {required final String chainId,
-      required final String domain,
-      required final String nonce,
-      required final String uri,
-      required final String address,
-      final String version,
-      final CacaoHeader? type,
-      final String? nbf,
-      final String? exp,
-      final String? statement,
-      final String? requestId,
-      final List<String>? resources,
-      final int? expiry,
-      final String? iat}) = _$SIWECreateMessageArgsImpl;
+@override final  int? expiry;
+@override final  String? iat;
 
-  factory _SIWECreateMessageArgs.fromJson(Map<String, dynamic> json) =
-      _$SIWECreateMessageArgsImpl.fromJson;
+/// Create a copy of SIWECreateMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SIWECreateMessageArgsCopyWith<_SIWECreateMessageArgs> get copyWith => __$SIWECreateMessageArgsCopyWithImpl<_SIWECreateMessageArgs>(this, _$identity);
 
-  @override
-  String get chainId;
-  @override
-  String get domain;
-  @override
-  String get nonce;
-  @override
-  String get uri;
-  @override
-  String get address;
-  @override
-  String get version;
-  @override
-  CacaoHeader? get type;
-  @override
-  String? get nbf;
-  @override
-  String? get exp;
-  @override
-  String? get statement;
-  @override
-  String? get requestId;
-  @override
-  List<String>? get resources;
-  @override
-  int? get expiry;
-  @override
-  String? get iat;
-
-  /// Create a copy of SIWECreateMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SIWECreateMessageArgsImplCopyWith<_$SIWECreateMessageArgsImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+Map<String, dynamic> toJson() {
+  return _$SIWECreateMessageArgsToJson(this, );
 }
 
-SIWEMessageArgs _$SIWEMessageArgsFromJson(Map<String, dynamic> json) {
-  return _SIWEMessageArgs.fromJson(json);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SIWECreateMessageArgs&&(identical(other.chainId, chainId) || other.chainId == chainId)&&(identical(other.domain, domain) || other.domain == domain)&&(identical(other.nonce, nonce) || other.nonce == nonce)&&(identical(other.uri, uri) || other.uri == uri)&&(identical(other.address, address) || other.address == address)&&(identical(other.version, version) || other.version == version)&&(identical(other.type, type) || other.type == type)&&(identical(other.nbf, nbf) || other.nbf == nbf)&&(identical(other.exp, exp) || other.exp == exp)&&(identical(other.statement, statement) || other.statement == statement)&&(identical(other.requestId, requestId) || other.requestId == requestId)&&const DeepCollectionEquality().equals(other._resources, _resources)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.iat, iat) || other.iat == iat));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,chainId,domain,nonce,uri,address,version,type,nbf,exp,statement,requestId,const DeepCollectionEquality().hash(_resources),expiry,iat);
+
+@override
+String toString() {
+  return 'SIWECreateMessageArgs(chainId: $chainId, domain: $domain, nonce: $nonce, uri: $uri, address: $address, version: $version, type: $type, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources, expiry: $expiry, iat: $iat)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SIWECreateMessageArgsCopyWith<$Res> implements $SIWECreateMessageArgsCopyWith<$Res> {
+  factory _$SIWECreateMessageArgsCopyWith(_SIWECreateMessageArgs value, $Res Function(_SIWECreateMessageArgs) _then) = __$SIWECreateMessageArgsCopyWithImpl;
+@override @useResult
+$Res call({
+ String chainId, String domain, String nonce, String uri, String address, String version, CacaoHeader? type, String? nbf, String? exp, String? statement, String? requestId, List<String>? resources, int? expiry, String? iat
+});
+
+
+@override $CacaoHeaderCopyWith<$Res>? get type;
+
+}
+/// @nodoc
+class __$SIWECreateMessageArgsCopyWithImpl<$Res>
+    implements _$SIWECreateMessageArgsCopyWith<$Res> {
+  __$SIWECreateMessageArgsCopyWithImpl(this._self, this._then);
+
+  final _SIWECreateMessageArgs _self;
+  final $Res Function(_SIWECreateMessageArgs) _then;
+
+/// Create a copy of SIWECreateMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? chainId = null,Object? domain = null,Object? nonce = null,Object? uri = null,Object? address = null,Object? version = null,Object? type = freezed,Object? nbf = freezed,Object? exp = freezed,Object? statement = freezed,Object? requestId = freezed,Object? resources = freezed,Object? expiry = freezed,Object? iat = freezed,}) {
+  return _then(_SIWECreateMessageArgs(
+chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
+as String,domain: null == domain ? _self.domain : domain // ignore: cast_nullable_to_non_nullable
+as String,nonce: null == nonce ? _self.nonce : nonce // ignore: cast_nullable_to_non_nullable
+as String,uri: null == uri ? _self.uri : uri // ignore: cast_nullable_to_non_nullable
+as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as String,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as String,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as CacaoHeader?,nbf: freezed == nbf ? _self.nbf : nbf // ignore: cast_nullable_to_non_nullable
+as String?,exp: freezed == exp ? _self.exp : exp // ignore: cast_nullable_to_non_nullable
+as String?,statement: freezed == statement ? _self.statement : statement // ignore: cast_nullable_to_non_nullable
+as String?,requestId: freezed == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
+as String?,resources: freezed == resources ? _self._resources : resources // ignore: cast_nullable_to_non_nullable
+as List<String>?,expiry: freezed == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
+as int?,iat: freezed == iat ? _self.iat : iat // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+/// Create a copy of SIWECreateMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoHeaderCopyWith<$Res>? get type {
+    if (_self.type == null) {
+    return null;
+  }
+
+  return $CacaoHeaderCopyWith<$Res>(_self.type!, (value) {
+    return _then(_self.copyWith(type: value));
+  });
+}
+}
+
 
 /// @nodoc
 mixin _$SIWEMessageArgs {
-  String get domain => throw _privateConstructorUsedError;
-  String get uri => throw _privateConstructorUsedError;
-  CacaoHeader? get type => throw _privateConstructorUsedError;
-  String? get nbf => throw _privateConstructorUsedError;
-  String? get exp => throw _privateConstructorUsedError;
-  String? get statement => throw _privateConstructorUsedError;
-  String? get requestId => throw _privateConstructorUsedError;
-  List<String>? get resources => throw _privateConstructorUsedError;
-  int? get expiry => throw _privateConstructorUsedError;
-  String? get iat => throw _privateConstructorUsedError;
-  List<String>? get methods => throw _privateConstructorUsedError;
+
+ String get domain; String get uri; CacaoHeader? get type; String? get nbf; String? get exp; String? get statement; String? get requestId; List<String>? get resources; int? get expiry; String? get iat; List<String>? get methods;
+/// Create a copy of SIWEMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SIWEMessageArgsCopyWith<SIWEMessageArgs> get copyWith => _$SIWEMessageArgsCopyWithImpl<SIWEMessageArgs>(this as SIWEMessageArgs, _$identity);
 
   /// Serializes this SIWEMessageArgs to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of SIWEMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $SIWEMessageArgsCopyWith<SIWEMessageArgs> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SIWEMessageArgs&&(identical(other.domain, domain) || other.domain == domain)&&(identical(other.uri, uri) || other.uri == uri)&&(identical(other.type, type) || other.type == type)&&(identical(other.nbf, nbf) || other.nbf == nbf)&&(identical(other.exp, exp) || other.exp == exp)&&(identical(other.statement, statement) || other.statement == statement)&&(identical(other.requestId, requestId) || other.requestId == requestId)&&const DeepCollectionEquality().equals(other.resources, resources)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.iat, iat) || other.iat == iat)&&const DeepCollectionEquality().equals(other.methods, methods));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,domain,uri,type,nbf,exp,statement,requestId,const DeepCollectionEquality().hash(resources),expiry,iat,const DeepCollectionEquality().hash(methods));
+
+@override
+String toString() {
+  return 'SIWEMessageArgs(domain: $domain, uri: $uri, type: $type, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources, expiry: $expiry, iat: $iat, methods: $methods)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $SIWEMessageArgsCopyWith<$Res> {
-  factory $SIWEMessageArgsCopyWith(
-          SIWEMessageArgs value, $Res Function(SIWEMessageArgs) then) =
-      _$SIWEMessageArgsCopyWithImpl<$Res, SIWEMessageArgs>;
-  @useResult
-  $Res call(
-      {String domain,
-      String uri,
-      CacaoHeader? type,
-      String? nbf,
-      String? exp,
-      String? statement,
-      String? requestId,
-      List<String>? resources,
-      int? expiry,
-      String? iat,
-      List<String>? methods});
+abstract mixin class $SIWEMessageArgsCopyWith<$Res>  {
+  factory $SIWEMessageArgsCopyWith(SIWEMessageArgs value, $Res Function(SIWEMessageArgs) _then) = _$SIWEMessageArgsCopyWithImpl;
+@useResult
+$Res call({
+ String domain, String uri, CacaoHeader? type, String? nbf, String? exp, String? statement, String? requestId, List<String>? resources, int? expiry, String? iat, List<String>? methods
+});
 
-  $CacaoHeaderCopyWith<$Res>? get type;
+
+$CacaoHeaderCopyWith<$Res>? get type;
+
 }
-
 /// @nodoc
-class _$SIWEMessageArgsCopyWithImpl<$Res, $Val extends SIWEMessageArgs>
+class _$SIWEMessageArgsCopyWithImpl<$Res>
     implements $SIWEMessageArgsCopyWith<$Res> {
-  _$SIWEMessageArgsCopyWithImpl(this._value, this._then);
+  _$SIWEMessageArgsCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final SIWEMessageArgs _self;
+  final $Res Function(SIWEMessageArgs) _then;
 
-  /// Create a copy of SIWEMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? domain = null,
-    Object? uri = null,
-    Object? type = freezed,
-    Object? nbf = freezed,
-    Object? exp = freezed,
-    Object? statement = freezed,
-    Object? requestId = freezed,
-    Object? resources = freezed,
-    Object? expiry = freezed,
-    Object? iat = freezed,
-    Object? methods = freezed,
-  }) {
-    return _then(_value.copyWith(
-      domain: null == domain
-          ? _value.domain
-          : domain // ignore: cast_nullable_to_non_nullable
-              as String,
-      uri: null == uri
-          ? _value.uri
-          : uri // ignore: cast_nullable_to_non_nullable
-              as String,
-      type: freezed == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as CacaoHeader?,
-      nbf: freezed == nbf
-          ? _value.nbf
-          : nbf // ignore: cast_nullable_to_non_nullable
-              as String?,
-      exp: freezed == exp
-          ? _value.exp
-          : exp // ignore: cast_nullable_to_non_nullable
-              as String?,
-      statement: freezed == statement
-          ? _value.statement
-          : statement // ignore: cast_nullable_to_non_nullable
-              as String?,
-      requestId: freezed == requestId
-          ? _value.requestId
-          : requestId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      resources: freezed == resources
-          ? _value.resources
-          : resources // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-      expiry: freezed == expiry
-          ? _value.expiry
-          : expiry // ignore: cast_nullable_to_non_nullable
-              as int?,
-      iat: freezed == iat
-          ? _value.iat
-          : iat // ignore: cast_nullable_to_non_nullable
-              as String?,
-      methods: freezed == methods
-          ? _value.methods
-          : methods // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-    ) as $Val);
+/// Create a copy of SIWEMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? domain = null,Object? uri = null,Object? type = freezed,Object? nbf = freezed,Object? exp = freezed,Object? statement = freezed,Object? requestId = freezed,Object? resources = freezed,Object? expiry = freezed,Object? iat = freezed,Object? methods = freezed,}) {
+  return _then(_self.copyWith(
+domain: null == domain ? _self.domain : domain // ignore: cast_nullable_to_non_nullable
+as String,uri: null == uri ? _self.uri : uri // ignore: cast_nullable_to_non_nullable
+as String,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as CacaoHeader?,nbf: freezed == nbf ? _self.nbf : nbf // ignore: cast_nullable_to_non_nullable
+as String?,exp: freezed == exp ? _self.exp : exp // ignore: cast_nullable_to_non_nullable
+as String?,statement: freezed == statement ? _self.statement : statement // ignore: cast_nullable_to_non_nullable
+as String?,requestId: freezed == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
+as String?,resources: freezed == resources ? _self.resources : resources // ignore: cast_nullable_to_non_nullable
+as List<String>?,expiry: freezed == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
+as int?,iat: freezed == iat ? _self.iat : iat // ignore: cast_nullable_to_non_nullable
+as String?,methods: freezed == methods ? _self.methods : methods // ignore: cast_nullable_to_non_nullable
+as List<String>?,
+  ));
+}
+/// Create a copy of SIWEMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoHeaderCopyWith<$Res>? get type {
+    if (_self.type == null) {
+    return null;
   }
 
-  /// Create a copy of SIWEMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $CacaoHeaderCopyWith<$Res>? get type {
-    if (_value.type == null) {
-      return null;
-    }
-
-    return $CacaoHeaderCopyWith<$Res>(_value.type!, (value) {
-      return _then(_value.copyWith(type: value) as $Val);
-    });
-  }
+  return $CacaoHeaderCopyWith<$Res>(_self.type!, (value) {
+    return _then(_self.copyWith(type: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$SIWEMessageArgsImplCopyWith<$Res>
-    implements $SIWEMessageArgsCopyWith<$Res> {
-  factory _$$SIWEMessageArgsImplCopyWith(_$SIWEMessageArgsImpl value,
-          $Res Function(_$SIWEMessageArgsImpl) then) =
-      __$$SIWEMessageArgsImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String domain,
-      String uri,
-      CacaoHeader? type,
-      String? nbf,
-      String? exp,
-      String? statement,
-      String? requestId,
-      List<String>? resources,
-      int? expiry,
-      String? iat,
-      List<String>? methods});
 
-  @override
-  $CacaoHeaderCopyWith<$Res>? get type;
+/// Adds pattern-matching-related methods to [SIWEMessageArgs].
+extension SIWEMessageArgsPatterns on SIWEMessageArgs {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SIWEMessageArgs value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SIWEMessageArgs() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SIWEMessageArgs value)  $default,){
+final _that = this;
+switch (_that) {
+case _SIWEMessageArgs():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SIWEMessageArgs value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SIWEMessageArgs() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String domain,  String uri,  CacaoHeader? type,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources,  int? expiry,  String? iat,  List<String>? methods)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SIWEMessageArgs() when $default != null:
+return $default(_that.domain,_that.uri,_that.type,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources,_that.expiry,_that.iat,_that.methods);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String domain,  String uri,  CacaoHeader? type,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources,  int? expiry,  String? iat,  List<String>? methods)  $default,) {final _that = this;
+switch (_that) {
+case _SIWEMessageArgs():
+return $default(_that.domain,_that.uri,_that.type,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources,_that.expiry,_that.iat,_that.methods);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String domain,  String uri,  CacaoHeader? type,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources,  int? expiry,  String? iat,  List<String>? methods)?  $default,) {final _that = this;
+switch (_that) {
+case _SIWEMessageArgs() when $default != null:
+return $default(_that.domain,_that.uri,_that.type,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources,_that.expiry,_that.iat,_that.methods);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$SIWEMessageArgsImplCopyWithImpl<$Res>
-    extends _$SIWEMessageArgsCopyWithImpl<$Res, _$SIWEMessageArgsImpl>
-    implements _$$SIWEMessageArgsImplCopyWith<$Res> {
-  __$$SIWEMessageArgsImplCopyWithImpl(
-      _$SIWEMessageArgsImpl _value, $Res Function(_$SIWEMessageArgsImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of SIWEMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? domain = null,
-    Object? uri = null,
-    Object? type = freezed,
-    Object? nbf = freezed,
-    Object? exp = freezed,
-    Object? statement = freezed,
-    Object? requestId = freezed,
-    Object? resources = freezed,
-    Object? expiry = freezed,
-    Object? iat = freezed,
-    Object? methods = freezed,
-  }) {
-    return _then(_$SIWEMessageArgsImpl(
-      domain: null == domain
-          ? _value.domain
-          : domain // ignore: cast_nullable_to_non_nullable
-              as String,
-      uri: null == uri
-          ? _value.uri
-          : uri // ignore: cast_nullable_to_non_nullable
-              as String,
-      type: freezed == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as CacaoHeader?,
-      nbf: freezed == nbf
-          ? _value.nbf
-          : nbf // ignore: cast_nullable_to_non_nullable
-              as String?,
-      exp: freezed == exp
-          ? _value.exp
-          : exp // ignore: cast_nullable_to_non_nullable
-              as String?,
-      statement: freezed == statement
-          ? _value.statement
-          : statement // ignore: cast_nullable_to_non_nullable
-              as String?,
-      requestId: freezed == requestId
-          ? _value.requestId
-          : requestId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      resources: freezed == resources
-          ? _value._resources
-          : resources // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-      expiry: freezed == expiry
-          ? _value.expiry
-          : expiry // ignore: cast_nullable_to_non_nullable
-              as int?,
-      iat: freezed == iat
-          ? _value.iat
-          : iat // ignore: cast_nullable_to_non_nullable
-              as String?,
-      methods: freezed == methods
-          ? _value._methods
-          : methods // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-    ));
-  }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$SIWEMessageArgsImpl implements _SIWEMessageArgs {
-  const _$SIWEMessageArgsImpl(
-      {required this.domain,
-      required this.uri,
-      this.type = const CacaoHeader(t: 'eip4361'),
-      this.nbf,
-      this.exp,
-      this.statement,
-      this.requestId,
-      final List<String>? resources,
-      this.expiry,
-      this.iat,
-      final List<String>? methods})
-      : _resources = resources,
-        _methods = methods;
 
-  factory _$SIWEMessageArgsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SIWEMessageArgsImplFromJson(json);
+class _SIWEMessageArgs implements SIWEMessageArgs {
+  const _SIWEMessageArgs({required this.domain, required this.uri, this.type = const CacaoHeader(t: 'eip4361'), this.nbf, this.exp, this.statement, this.requestId, final  List<String>? resources, this.expiry, this.iat, final  List<String>? methods}): _resources = resources,_methods = methods;
+  factory _SIWEMessageArgs.fromJson(Map<String, dynamic> json) => _$SIWEMessageArgsFromJson(json);
 
-  @override
-  final String domain;
-  @override
-  final String uri;
-  @override
-  @JsonKey()
-  final CacaoHeader? type;
-  @override
-  final String? nbf;
-  @override
-  final String? exp;
-  @override
-  final String? statement;
-  @override
-  final String? requestId;
-  final List<String>? _resources;
-  @override
-  List<String>? get resources {
-    final value = _resources;
-    if (value == null) return null;
-    if (_resources is EqualUnmodifiableListView) return _resources;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
-  @override
-  final int? expiry;
-  @override
-  final String? iat;
-  final List<String>? _methods;
-  @override
-  List<String>? get methods {
-    final value = _methods;
-    if (value == null) return null;
-    if (_methods is EqualUnmodifiableListView) return _methods;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
-  @override
-  String toString() {
-    return 'SIWEMessageArgs(domain: $domain, uri: $uri, type: $type, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources, expiry: $expiry, iat: $iat, methods: $methods)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SIWEMessageArgsImpl &&
-            (identical(other.domain, domain) || other.domain == domain) &&
-            (identical(other.uri, uri) || other.uri == uri) &&
-            (identical(other.type, type) || other.type == type) &&
-            (identical(other.nbf, nbf) || other.nbf == nbf) &&
-            (identical(other.exp, exp) || other.exp == exp) &&
-            (identical(other.statement, statement) ||
-                other.statement == statement) &&
-            (identical(other.requestId, requestId) ||
-                other.requestId == requestId) &&
-            const DeepCollectionEquality()
-                .equals(other._resources, _resources) &&
-            (identical(other.expiry, expiry) || other.expiry == expiry) &&
-            (identical(other.iat, iat) || other.iat == iat) &&
-            const DeepCollectionEquality().equals(other._methods, _methods));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      domain,
-      uri,
-      type,
-      nbf,
-      exp,
-      statement,
-      requestId,
-      const DeepCollectionEquality().hash(_resources),
-      expiry,
-      iat,
-      const DeepCollectionEquality().hash(_methods));
-
-  /// Create a copy of SIWEMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SIWEMessageArgsImplCopyWith<_$SIWEMessageArgsImpl> get copyWith =>
-      __$$SIWEMessageArgsImplCopyWithImpl<_$SIWEMessageArgsImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SIWEMessageArgsImplToJson(
-      this,
-    );
-  }
+@override final  String domain;
+@override final  String uri;
+@override@JsonKey() final  CacaoHeader? type;
+@override final  String? nbf;
+@override final  String? exp;
+@override final  String? statement;
+@override final  String? requestId;
+ final  List<String>? _resources;
+@override List<String>? get resources {
+  final value = _resources;
+  if (value == null) return null;
+  if (_resources is EqualUnmodifiableListView) return _resources;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
 }
 
-abstract class _SIWEMessageArgs implements SIWEMessageArgs {
-  const factory _SIWEMessageArgs(
-      {required final String domain,
-      required final String uri,
-      final CacaoHeader? type,
-      final String? nbf,
-      final String? exp,
-      final String? statement,
-      final String? requestId,
-      final List<String>? resources,
-      final int? expiry,
-      final String? iat,
-      final List<String>? methods}) = _$SIWEMessageArgsImpl;
-
-  factory _SIWEMessageArgs.fromJson(Map<String, dynamic> json) =
-      _$SIWEMessageArgsImpl.fromJson;
-
-  @override
-  String get domain;
-  @override
-  String get uri;
-  @override
-  CacaoHeader? get type;
-  @override
-  String? get nbf;
-  @override
-  String? get exp;
-  @override
-  String? get statement;
-  @override
-  String? get requestId;
-  @override
-  List<String>? get resources;
-  @override
-  int? get expiry;
-  @override
-  String? get iat;
-  @override
-  List<String>? get methods;
-
-  /// Create a copy of SIWEMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SIWEMessageArgsImplCopyWith<_$SIWEMessageArgsImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override final  int? expiry;
+@override final  String? iat;
+ final  List<String>? _methods;
+@override List<String>? get methods {
+  final value = _methods;
+  if (value == null) return null;
+  if (_methods is EqualUnmodifiableListView) return _methods;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
 }
 
-SIWEVerifyMessageArgs _$SIWEVerifyMessageArgsFromJson(
-    Map<String, dynamic> json) {
-  return _SIWEVerifyMessageArgs.fromJson(json);
+
+/// Create a copy of SIWEMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SIWEMessageArgsCopyWith<_SIWEMessageArgs> get copyWith => __$SIWEMessageArgsCopyWithImpl<_SIWEMessageArgs>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SIWEMessageArgsToJson(this, );
 }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SIWEMessageArgs&&(identical(other.domain, domain) || other.domain == domain)&&(identical(other.uri, uri) || other.uri == uri)&&(identical(other.type, type) || other.type == type)&&(identical(other.nbf, nbf) || other.nbf == nbf)&&(identical(other.exp, exp) || other.exp == exp)&&(identical(other.statement, statement) || other.statement == statement)&&(identical(other.requestId, requestId) || other.requestId == requestId)&&const DeepCollectionEquality().equals(other._resources, _resources)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.iat, iat) || other.iat == iat)&&const DeepCollectionEquality().equals(other._methods, _methods));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,domain,uri,type,nbf,exp,statement,requestId,const DeepCollectionEquality().hash(_resources),expiry,iat,const DeepCollectionEquality().hash(_methods));
+
+@override
+String toString() {
+  return 'SIWEMessageArgs(domain: $domain, uri: $uri, type: $type, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources, expiry: $expiry, iat: $iat, methods: $methods)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SIWEMessageArgsCopyWith<$Res> implements $SIWEMessageArgsCopyWith<$Res> {
+  factory _$SIWEMessageArgsCopyWith(_SIWEMessageArgs value, $Res Function(_SIWEMessageArgs) _then) = __$SIWEMessageArgsCopyWithImpl;
+@override @useResult
+$Res call({
+ String domain, String uri, CacaoHeader? type, String? nbf, String? exp, String? statement, String? requestId, List<String>? resources, int? expiry, String? iat, List<String>? methods
+});
+
+
+@override $CacaoHeaderCopyWith<$Res>? get type;
+
+}
+/// @nodoc
+class __$SIWEMessageArgsCopyWithImpl<$Res>
+    implements _$SIWEMessageArgsCopyWith<$Res> {
+  __$SIWEMessageArgsCopyWithImpl(this._self, this._then);
+
+  final _SIWEMessageArgs _self;
+  final $Res Function(_SIWEMessageArgs) _then;
+
+/// Create a copy of SIWEMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? domain = null,Object? uri = null,Object? type = freezed,Object? nbf = freezed,Object? exp = freezed,Object? statement = freezed,Object? requestId = freezed,Object? resources = freezed,Object? expiry = freezed,Object? iat = freezed,Object? methods = freezed,}) {
+  return _then(_SIWEMessageArgs(
+domain: null == domain ? _self.domain : domain // ignore: cast_nullable_to_non_nullable
+as String,uri: null == uri ? _self.uri : uri // ignore: cast_nullable_to_non_nullable
+as String,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as CacaoHeader?,nbf: freezed == nbf ? _self.nbf : nbf // ignore: cast_nullable_to_non_nullable
+as String?,exp: freezed == exp ? _self.exp : exp // ignore: cast_nullable_to_non_nullable
+as String?,statement: freezed == statement ? _self.statement : statement // ignore: cast_nullable_to_non_nullable
+as String?,requestId: freezed == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
+as String?,resources: freezed == resources ? _self._resources : resources // ignore: cast_nullable_to_non_nullable
+as List<String>?,expiry: freezed == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
+as int?,iat: freezed == iat ? _self.iat : iat // ignore: cast_nullable_to_non_nullable
+as String?,methods: freezed == methods ? _self._methods : methods // ignore: cast_nullable_to_non_nullable
+as List<String>?,
+  ));
+}
+
+/// Create a copy of SIWEMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoHeaderCopyWith<$Res>? get type {
+    if (_self.type == null) {
+    return null;
+  }
+
+  return $CacaoHeaderCopyWith<$Res>(_self.type!, (value) {
+    return _then(_self.copyWith(type: value));
+  });
+}
+}
+
 
 /// @nodoc
 mixin _$SIWEVerifyMessageArgs {
-  String get message => throw _privateConstructorUsedError;
-  String get signature => throw _privateConstructorUsedError;
-  Cacao? get cacao => throw _privateConstructorUsedError; // for One-Click Auth
-  String? get clientId => throw _privateConstructorUsedError;
+
+ String get message; String get signature; Cacao? get cacao;// for One-Click Auth
+ String? get clientId;
+/// Create a copy of SIWEVerifyMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SIWEVerifyMessageArgsCopyWith<SIWEVerifyMessageArgs> get copyWith => _$SIWEVerifyMessageArgsCopyWithImpl<SIWEVerifyMessageArgs>(this as SIWEVerifyMessageArgs, _$identity);
 
   /// Serializes this SIWEVerifyMessageArgs to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of SIWEVerifyMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $SIWEVerifyMessageArgsCopyWith<SIWEVerifyMessageArgs> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SIWEVerifyMessageArgs&&(identical(other.message, message) || other.message == message)&&(identical(other.signature, signature) || other.signature == signature)&&(identical(other.cacao, cacao) || other.cacao == cacao)&&(identical(other.clientId, clientId) || other.clientId == clientId));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,message,signature,cacao,clientId);
+
+@override
+String toString() {
+  return 'SIWEVerifyMessageArgs(message: $message, signature: $signature, cacao: $cacao, clientId: $clientId)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $SIWEVerifyMessageArgsCopyWith<$Res> {
-  factory $SIWEVerifyMessageArgsCopyWith(SIWEVerifyMessageArgs value,
-          $Res Function(SIWEVerifyMessageArgs) then) =
-      _$SIWEVerifyMessageArgsCopyWithImpl<$Res, SIWEVerifyMessageArgs>;
-  @useResult
-  $Res call({String message, String signature, Cacao? cacao, String? clientId});
+abstract mixin class $SIWEVerifyMessageArgsCopyWith<$Res>  {
+  factory $SIWEVerifyMessageArgsCopyWith(SIWEVerifyMessageArgs value, $Res Function(SIWEVerifyMessageArgs) _then) = _$SIWEVerifyMessageArgsCopyWithImpl;
+@useResult
+$Res call({
+ String message, String signature, Cacao? cacao, String? clientId
+});
 
-  $CacaoCopyWith<$Res>? get cacao;
+
+$CacaoCopyWith<$Res>? get cacao;
+
 }
-
 /// @nodoc
-class _$SIWEVerifyMessageArgsCopyWithImpl<$Res,
-        $Val extends SIWEVerifyMessageArgs>
+class _$SIWEVerifyMessageArgsCopyWithImpl<$Res>
     implements $SIWEVerifyMessageArgsCopyWith<$Res> {
-  _$SIWEVerifyMessageArgsCopyWithImpl(this._value, this._then);
+  _$SIWEVerifyMessageArgsCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final SIWEVerifyMessageArgs _self;
+  final $Res Function(SIWEVerifyMessageArgs) _then;
 
-  /// Create a copy of SIWEVerifyMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? message = null,
-    Object? signature = null,
-    Object? cacao = freezed,
-    Object? clientId = freezed,
-  }) {
-    return _then(_value.copyWith(
-      message: null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
-      signature: null == signature
-          ? _value.signature
-          : signature // ignore: cast_nullable_to_non_nullable
-              as String,
-      cacao: freezed == cacao
-          ? _value.cacao
-          : cacao // ignore: cast_nullable_to_non_nullable
-              as Cacao?,
-      clientId: freezed == clientId
-          ? _value.clientId
-          : clientId // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
+/// Create a copy of SIWEVerifyMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? message = null,Object? signature = null,Object? cacao = freezed,Object? clientId = freezed,}) {
+  return _then(_self.copyWith(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,signature: null == signature ? _self.signature : signature // ignore: cast_nullable_to_non_nullable
+as String,cacao: freezed == cacao ? _self.cacao : cacao // ignore: cast_nullable_to_non_nullable
+as Cacao?,clientId: freezed == clientId ? _self.clientId : clientId // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+/// Create a copy of SIWEVerifyMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoCopyWith<$Res>? get cacao {
+    if (_self.cacao == null) {
+    return null;
   }
 
-  /// Create a copy of SIWEVerifyMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $CacaoCopyWith<$Res>? get cacao {
-    if (_value.cacao == null) {
-      return null;
-    }
-
-    return $CacaoCopyWith<$Res>(_value.cacao!, (value) {
-      return _then(_value.copyWith(cacao: value) as $Val);
-    });
-  }
+  return $CacaoCopyWith<$Res>(_self.cacao!, (value) {
+    return _then(_self.copyWith(cacao: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$SIWEVerifyMessageArgsImplCopyWith<$Res>
-    implements $SIWEVerifyMessageArgsCopyWith<$Res> {
-  factory _$$SIWEVerifyMessageArgsImplCopyWith(
-          _$SIWEVerifyMessageArgsImpl value,
-          $Res Function(_$SIWEVerifyMessageArgsImpl) then) =
-      __$$SIWEVerifyMessageArgsImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String message, String signature, Cacao? cacao, String? clientId});
 
-  @override
-  $CacaoCopyWith<$Res>? get cacao;
+/// Adds pattern-matching-related methods to [SIWEVerifyMessageArgs].
+extension SIWEVerifyMessageArgsPatterns on SIWEVerifyMessageArgs {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SIWEVerifyMessageArgs value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SIWEVerifyMessageArgs() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SIWEVerifyMessageArgs value)  $default,){
+final _that = this;
+switch (_that) {
+case _SIWEVerifyMessageArgs():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SIWEVerifyMessageArgs value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SIWEVerifyMessageArgs() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String message,  String signature,  Cacao? cacao,  String? clientId)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SIWEVerifyMessageArgs() when $default != null:
+return $default(_that.message,_that.signature,_that.cacao,_that.clientId);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String message,  String signature,  Cacao? cacao,  String? clientId)  $default,) {final _that = this;
+switch (_that) {
+case _SIWEVerifyMessageArgs():
+return $default(_that.message,_that.signature,_that.cacao,_that.clientId);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String message,  String signature,  Cacao? cacao,  String? clientId)?  $default,) {final _that = this;
+switch (_that) {
+case _SIWEVerifyMessageArgs() when $default != null:
+return $default(_that.message,_that.signature,_that.cacao,_that.clientId);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$SIWEVerifyMessageArgsImplCopyWithImpl<$Res>
-    extends _$SIWEVerifyMessageArgsCopyWithImpl<$Res,
-        _$SIWEVerifyMessageArgsImpl>
-    implements _$$SIWEVerifyMessageArgsImplCopyWith<$Res> {
-  __$$SIWEVerifyMessageArgsImplCopyWithImpl(_$SIWEVerifyMessageArgsImpl _value,
-      $Res Function(_$SIWEVerifyMessageArgsImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of SIWEVerifyMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? message = null,
-    Object? signature = null,
-    Object? cacao = freezed,
-    Object? clientId = freezed,
-  }) {
-    return _then(_$SIWEVerifyMessageArgsImpl(
-      message: null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
-      signature: null == signature
-          ? _value.signature
-          : signature // ignore: cast_nullable_to_non_nullable
-              as String,
-      cacao: freezed == cacao
-          ? _value.cacao
-          : cacao // ignore: cast_nullable_to_non_nullable
-              as Cacao?,
-      clientId: freezed == clientId
-          ? _value.clientId
-          : clientId // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
-  }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$SIWEVerifyMessageArgsImpl implements _SIWEVerifyMessageArgs {
-  const _$SIWEVerifyMessageArgsImpl(
-      {required this.message,
-      required this.signature,
-      this.cacao,
-      this.clientId});
 
-  factory _$SIWEVerifyMessageArgsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SIWEVerifyMessageArgsImplFromJson(json);
+class _SIWEVerifyMessageArgs implements SIWEVerifyMessageArgs {
+  const _SIWEVerifyMessageArgs({required this.message, required this.signature, this.cacao, this.clientId});
+  factory _SIWEVerifyMessageArgs.fromJson(Map<String, dynamic> json) => _$SIWEVerifyMessageArgsFromJson(json);
 
-  @override
-  final String message;
-  @override
-  final String signature;
-  @override
-  final Cacao? cacao;
+@override final  String message;
+@override final  String signature;
+@override final  Cacao? cacao;
 // for One-Click Auth
-  @override
-  final String? clientId;
+@override final  String? clientId;
 
-  @override
-  String toString() {
-    return 'SIWEVerifyMessageArgs(message: $message, signature: $signature, cacao: $cacao, clientId: $clientId)';
-  }
+/// Create a copy of SIWEVerifyMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SIWEVerifyMessageArgsCopyWith<_SIWEVerifyMessageArgs> get copyWith => __$SIWEVerifyMessageArgsCopyWithImpl<_SIWEVerifyMessageArgs>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SIWEVerifyMessageArgsImpl &&
-            (identical(other.message, message) || other.message == message) &&
-            (identical(other.signature, signature) ||
-                other.signature == signature) &&
-            (identical(other.cacao, cacao) || other.cacao == cacao) &&
-            (identical(other.clientId, clientId) ||
-                other.clientId == clientId));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, message, signature, cacao, clientId);
-
-  /// Create a copy of SIWEVerifyMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SIWEVerifyMessageArgsImplCopyWith<_$SIWEVerifyMessageArgsImpl>
-      get copyWith => __$$SIWEVerifyMessageArgsImplCopyWithImpl<
-          _$SIWEVerifyMessageArgsImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SIWEVerifyMessageArgsImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$SIWEVerifyMessageArgsToJson(this, );
 }
 
-abstract class _SIWEVerifyMessageArgs implements SIWEVerifyMessageArgs {
-  const factory _SIWEVerifyMessageArgs(
-      {required final String message,
-      required final String signature,
-      final Cacao? cacao,
-      final String? clientId}) = _$SIWEVerifyMessageArgsImpl;
-
-  factory _SIWEVerifyMessageArgs.fromJson(Map<String, dynamic> json) =
-      _$SIWEVerifyMessageArgsImpl.fromJson;
-
-  @override
-  String get message;
-  @override
-  String get signature;
-  @override
-  Cacao? get cacao; // for One-Click Auth
-  @override
-  String? get clientId;
-
-  /// Create a copy of SIWEVerifyMessageArgs
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SIWEVerifyMessageArgsImplCopyWith<_$SIWEVerifyMessageArgsImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SIWEVerifyMessageArgs&&(identical(other.message, message) || other.message == message)&&(identical(other.signature, signature) || other.signature == signature)&&(identical(other.cacao, cacao) || other.cacao == cacao)&&(identical(other.clientId, clientId) || other.clientId == clientId));
 }
 
-SIWESession _$SIWESessionFromJson(Map<String, dynamic> json) {
-  return _SIWESession.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,message,signature,cacao,clientId);
+
+@override
+String toString() {
+  return 'SIWEVerifyMessageArgs(message: $message, signature: $signature, cacao: $cacao, clientId: $clientId)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SIWEVerifyMessageArgsCopyWith<$Res> implements $SIWEVerifyMessageArgsCopyWith<$Res> {
+  factory _$SIWEVerifyMessageArgsCopyWith(_SIWEVerifyMessageArgs value, $Res Function(_SIWEVerifyMessageArgs) _then) = __$SIWEVerifyMessageArgsCopyWithImpl;
+@override @useResult
+$Res call({
+ String message, String signature, Cacao? cacao, String? clientId
+});
+
+
+@override $CacaoCopyWith<$Res>? get cacao;
+
+}
+/// @nodoc
+class __$SIWEVerifyMessageArgsCopyWithImpl<$Res>
+    implements _$SIWEVerifyMessageArgsCopyWith<$Res> {
+  __$SIWEVerifyMessageArgsCopyWithImpl(this._self, this._then);
+
+  final _SIWEVerifyMessageArgs _self;
+  final $Res Function(_SIWEVerifyMessageArgs) _then;
+
+/// Create a copy of SIWEVerifyMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? message = null,Object? signature = null,Object? cacao = freezed,Object? clientId = freezed,}) {
+  return _then(_SIWEVerifyMessageArgs(
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,signature: null == signature ? _self.signature : signature // ignore: cast_nullable_to_non_nullable
+as String,cacao: freezed == cacao ? _self.cacao : cacao // ignore: cast_nullable_to_non_nullable
+as Cacao?,clientId: freezed == clientId ? _self.clientId : clientId // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+/// Create a copy of SIWEVerifyMessageArgs
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoCopyWith<$Res>? get cacao {
+    if (_self.cacao == null) {
+    return null;
+  }
+
+  return $CacaoCopyWith<$Res>(_self.cacao!, (value) {
+    return _then(_self.copyWith(cacao: value));
+  });
+}
+}
+
 
 /// @nodoc
 mixin _$SIWESession {
-  String get address => throw _privateConstructorUsedError;
-  List<String> get chains => throw _privateConstructorUsedError;
+
+ String get address; List<String> get chains;
+/// Create a copy of SIWESession
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SIWESessionCopyWith<SIWESession> get copyWith => _$SIWESessionCopyWithImpl<SIWESession>(this as SIWESession, _$identity);
 
   /// Serializes this SIWESession to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of SIWESession
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $SIWESessionCopyWith<SIWESession> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SIWESession&&(identical(other.address, address) || other.address == address)&&const DeepCollectionEquality().equals(other.chains, chains));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,address,const DeepCollectionEquality().hash(chains));
+
+
+
 }
 
 /// @nodoc
-abstract class $SIWESessionCopyWith<$Res> {
-  factory $SIWESessionCopyWith(
-          SIWESession value, $Res Function(SIWESession) then) =
-      _$SIWESessionCopyWithImpl<$Res, SIWESession>;
-  @useResult
-  $Res call({String address, List<String> chains});
-}
+abstract mixin class $SIWESessionCopyWith<$Res>  {
+  factory $SIWESessionCopyWith(SIWESession value, $Res Function(SIWESession) _then) = _$SIWESessionCopyWithImpl;
+@useResult
+$Res call({
+ String address, List<String> chains
+});
 
+
+
+
+}
 /// @nodoc
-class _$SIWESessionCopyWithImpl<$Res, $Val extends SIWESession>
+class _$SIWESessionCopyWithImpl<$Res>
     implements $SIWESessionCopyWith<$Res> {
-  _$SIWESessionCopyWithImpl(this._value, this._then);
+  _$SIWESessionCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final SIWESession _self;
+  final $Res Function(SIWESession) _then;
 
-  /// Create a copy of SIWESession
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? address = null,
-    Object? chains = null,
-  }) {
-    return _then(_value.copyWith(
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as String,
-      chains: null == chains
-          ? _value.chains
-          : chains // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-    ) as $Val);
-  }
+/// Create a copy of SIWESession
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? address = null,Object? chains = null,}) {
+  return _then(_self.copyWith(
+address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as String,chains: null == chains ? _self.chains : chains // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
 }
 
-/// @nodoc
-abstract class _$$SIWESessionImplCopyWith<$Res>
-    implements $SIWESessionCopyWith<$Res> {
-  factory _$$SIWESessionImplCopyWith(
-          _$SIWESessionImpl value, $Res Function(_$SIWESessionImpl) then) =
-      __$$SIWESessionImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String address, List<String> chains});
 }
 
-/// @nodoc
-class __$$SIWESessionImplCopyWithImpl<$Res>
-    extends _$SIWESessionCopyWithImpl<$Res, _$SIWESessionImpl>
-    implements _$$SIWESessionImplCopyWith<$Res> {
-  __$$SIWESessionImplCopyWithImpl(
-      _$SIWESessionImpl _value, $Res Function(_$SIWESessionImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of SIWESession
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? address = null,
-    Object? chains = null,
-  }) {
-    return _then(_$SIWESessionImpl(
-      address: null == address
-          ? _value.address
-          : address // ignore: cast_nullable_to_non_nullable
-              as String,
-      chains: null == chains
-          ? _value._chains
-          : chains // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-    ));
-  }
+/// Adds pattern-matching-related methods to [SIWESession].
+extension SIWESessionPatterns on SIWESession {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SIWESession value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SIWESession() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SIWESession value)  $default,){
+final _that = this;
+switch (_that) {
+case _SIWESession():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SIWESession value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SIWESession() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String address,  List<String> chains)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SIWESession() when $default != null:
+return $default(_that.address,_that.chains);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String address,  List<String> chains)  $default,) {final _that = this;
+switch (_that) {
+case _SIWESession():
+return $default(_that.address,_that.chains);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String address,  List<String> chains)?  $default,) {final _that = this;
+switch (_that) {
+case _SIWESession() when $default != null:
+return $default(_that.address,_that.chains);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$SIWESessionImpl implements _SIWESession {
-  const _$SIWESessionImpl(
-      {required this.address, required final List<String> chains})
-      : _chains = chains;
 
-  factory _$SIWESessionImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SIWESessionImplFromJson(json);
+class _SIWESession implements SIWESession {
+  const _SIWESession({required this.address, required final  List<String> chains}): _chains = chains;
+  factory _SIWESession.fromJson(Map<String, dynamic> json) => _$SIWESessionFromJson(json);
 
-  @override
-  final String address;
-  final List<String> _chains;
-  @override
-  List<String> get chains {
-    if (_chains is EqualUnmodifiableListView) return _chains;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_chains);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SIWESessionImpl &&
-            (identical(other.address, address) || other.address == address) &&
-            const DeepCollectionEquality().equals(other._chains, _chains));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType, address, const DeepCollectionEquality().hash(_chains));
-
-  /// Create a copy of SIWESession
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SIWESessionImplCopyWith<_$SIWESessionImpl> get copyWith =>
-      __$$SIWESessionImplCopyWithImpl<_$SIWESessionImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SIWESessionImplToJson(
-      this,
-    );
-  }
+@override final  String address;
+ final  List<String> _chains;
+@override List<String> get chains {
+  if (_chains is EqualUnmodifiableListView) return _chains;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_chains);
 }
 
-abstract class _SIWESession implements SIWESession {
-  const factory _SIWESession(
-      {required final String address,
-      required final List<String> chains}) = _$SIWESessionImpl;
 
-  factory _SIWESession.fromJson(Map<String, dynamic> json) =
-      _$SIWESessionImpl.fromJson;
+/// Create a copy of SIWESession
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SIWESessionCopyWith<_SIWESession> get copyWith => __$SIWESessionCopyWithImpl<_SIWESession>(this, _$identity);
 
-  @override
-  String get address;
-  @override
-  List<String> get chains;
-
-  /// Create a copy of SIWESession
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SIWESessionImplCopyWith<_$SIWESessionImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+Map<String, dynamic> toJson() {
+  return _$SIWESessionToJson(this, );
 }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SIWESession&&(identical(other.address, address) || other.address == address)&&const DeepCollectionEquality().equals(other._chains, _chains));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,address,const DeepCollectionEquality().hash(_chains));
+
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SIWESessionCopyWith<$Res> implements $SIWESessionCopyWith<$Res> {
+  factory _$SIWESessionCopyWith(_SIWESession value, $Res Function(_SIWESession) _then) = __$SIWESessionCopyWithImpl;
+@override @useResult
+$Res call({
+ String address, List<String> chains
+});
+
+
+
+
+}
+/// @nodoc
+class __$SIWESessionCopyWithImpl<$Res>
+    implements _$SIWESessionCopyWith<$Res> {
+  __$SIWESessionCopyWithImpl(this._self, this._then);
+
+  final _SIWESession _self;
+  final $Res Function(_SIWESession) _then;
+
+/// Create a copy of SIWESession
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? address = null,Object? chains = null,}) {
+  return _then(_SIWESession(
+address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
+as String,chains: null == chains ? _self._chains : chains // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
+}
+
+
+}
+
+// dart format on

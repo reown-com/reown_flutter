@@ -20,10 +20,8 @@ import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class ConnectNetworkPage extends StatefulWidget {
-  const ConnectNetworkPage({
-    required this.chainInfo,
-    this.isMagic = false,
-  }) : super(key: KeyConstants.connecNetworkPageKey);
+  const ConnectNetworkPage({required this.chainInfo, this.isMagic = false})
+    : super(key: KeyConstants.connecNetworkPageKey);
 
   final ReownAppKitModalNetworkInfo chainInfo;
   final bool isMagic;
@@ -135,8 +133,8 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
     final maxWidth = isPortrait
         ? ResponsiveData.maxWidthOf(context)
         : ResponsiveData.maxHeightOf(context) -
-            kNavbarHeight -
-            (kPadding16 * 2);
+              kNavbarHeight -
+              (kPadding16 * 2);
     //
     final chainId = widget.chainInfo.chainId;
     final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
@@ -232,10 +230,7 @@ class _WalletAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        ListAvatar(
-          imageUrl: imageUrl,
-          isNetwork: true,
-        ),
+        ListAvatar(imageUrl: imageUrl, isNetwork: true),
         Positioned(
           bottom: 0,
           right: 0,
@@ -251,7 +246,7 @@ class _WalletAvatar extends StatelessWidget {
               child: RoundedIcon(
                 assetPath: 'lib/modal/assets/icons/close.svg',
                 assetColor: themeColors.error100,
-                circleColor: themeColors.error100.withOpacity(0.2),
+                circleColor: themeColors.error100.withValues(alpha: 0.2),
                 borderColor: themeColors.background125,
                 padding: 4.0,
                 size: 24.0,
