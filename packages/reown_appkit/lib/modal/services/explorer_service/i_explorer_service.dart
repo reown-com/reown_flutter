@@ -54,4 +54,6 @@ abstract class IExplorerService {
   Future<ReownAppKitModalWalletInfo?> getCoinbaseWalletObject();
 
   Future<ReownAppKitModalWalletInfo?> getPhantomWalletObject();
+
+  Future<ReownAppKitModalWalletInfo?> getSolflareWalletObject();
 }

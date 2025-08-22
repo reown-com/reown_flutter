@@ -4,7 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'appkit_modal_text_styles.freezed.dart';
 
 @freezed
-class ReownAppKitModalTextStyles with _$ReownAppKitModalTextStyles {
+sealed class ReownAppKitModalTextStyles with _$ReownAppKitModalTextStyles {
   const factory ReownAppKitModalTextStyles({
     required String fontFamily,
     required TextStyle title400,

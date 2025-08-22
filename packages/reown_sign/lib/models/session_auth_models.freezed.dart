@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,1185 +9,981 @@ part of 'session_auth_models.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-SessionAuthRequestParams _$SessionAuthRequestParamsFromJson(
-    Map<String, dynamic> json) {
-  return _SessionAuthRequestParams.fromJson(json);
-}
 
 /// @nodoc
 mixin _$SessionAuthRequestParams {
-  List<String> get chains => throw _privateConstructorUsedError;
-  String get domain => throw _privateConstructorUsedError;
-  String get nonce => throw _privateConstructorUsedError;
-  String get uri => throw _privateConstructorUsedError; //
-  CacaoHeader? get type => throw _privateConstructorUsedError;
-  String? get nbf => throw _privateConstructorUsedError;
-  String? get exp => throw _privateConstructorUsedError;
-  String? get statement => throw _privateConstructorUsedError;
-  String? get requestId => throw _privateConstructorUsedError;
-  List<String>? get resources => throw _privateConstructorUsedError;
-  int? get expiry => throw _privateConstructorUsedError;
-  List<String>? get methods => throw _privateConstructorUsedError;
+
+ List<String> get chains; String get domain; String get nonce; String get uri;//
+ CacaoHeader? get type; String? get nbf; String? get exp; String? get statement; String? get requestId; List<String>? get resources; int? get expiry; List<String>? get methods;
+/// Create a copy of SessionAuthRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SessionAuthRequestParamsCopyWith<SessionAuthRequestParams> get copyWith => _$SessionAuthRequestParamsCopyWithImpl<SessionAuthRequestParams>(this as SessionAuthRequestParams, _$identity);
 
   /// Serializes this SessionAuthRequestParams to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of SessionAuthRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $SessionAuthRequestParamsCopyWith<SessionAuthRequestParams> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionAuthRequestParams&&const DeepCollectionEquality().equals(other.chains, chains)&&(identical(other.domain, domain) || other.domain == domain)&&(identical(other.nonce, nonce) || other.nonce == nonce)&&(identical(other.uri, uri) || other.uri == uri)&&(identical(other.type, type) || other.type == type)&&(identical(other.nbf, nbf) || other.nbf == nbf)&&(identical(other.exp, exp) || other.exp == exp)&&(identical(other.statement, statement) || other.statement == statement)&&(identical(other.requestId, requestId) || other.requestId == requestId)&&const DeepCollectionEquality().equals(other.resources, resources)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&const DeepCollectionEquality().equals(other.methods, methods));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(chains),domain,nonce,uri,type,nbf,exp,statement,requestId,const DeepCollectionEquality().hash(resources),expiry,const DeepCollectionEquality().hash(methods));
+
+@override
+String toString() {
+  return 'SessionAuthRequestParams(chains: $chains, domain: $domain, nonce: $nonce, uri: $uri, type: $type, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources, expiry: $expiry, methods: $methods)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $SessionAuthRequestParamsCopyWith<$Res> {
-  factory $SessionAuthRequestParamsCopyWith(SessionAuthRequestParams value,
-          $Res Function(SessionAuthRequestParams) then) =
-      _$SessionAuthRequestParamsCopyWithImpl<$Res, SessionAuthRequestParams>;
-  @useResult
-  $Res call(
-      {List<String> chains,
-      String domain,
-      String nonce,
-      String uri,
-      CacaoHeader? type,
-      String? nbf,
-      String? exp,
-      String? statement,
-      String? requestId,
-      List<String>? resources,
-      int? expiry,
-      List<String>? methods});
+abstract mixin class $SessionAuthRequestParamsCopyWith<$Res>  {
+  factory $SessionAuthRequestParamsCopyWith(SessionAuthRequestParams value, $Res Function(SessionAuthRequestParams) _then) = _$SessionAuthRequestParamsCopyWithImpl;
+@useResult
+$Res call({
+ List<String> chains, String domain, String nonce, String uri, CacaoHeader? type, String? nbf, String? exp, String? statement, String? requestId, List<String>? resources, int? expiry, List<String>? methods
+});
 
-  $CacaoHeaderCopyWith<$Res>? get type;
+
+$CacaoHeaderCopyWith<$Res>? get type;
+
 }
-
 /// @nodoc
-class _$SessionAuthRequestParamsCopyWithImpl<$Res,
-        $Val extends SessionAuthRequestParams>
+class _$SessionAuthRequestParamsCopyWithImpl<$Res>
     implements $SessionAuthRequestParamsCopyWith<$Res> {
-  _$SessionAuthRequestParamsCopyWithImpl(this._value, this._then);
+  _$SessionAuthRequestParamsCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final SessionAuthRequestParams _self;
+  final $Res Function(SessionAuthRequestParams) _then;
 
-  /// Create a copy of SessionAuthRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? chains = null,
-    Object? domain = null,
-    Object? nonce = null,
-    Object? uri = null,
-    Object? type = freezed,
-    Object? nbf = freezed,
-    Object? exp = freezed,
-    Object? statement = freezed,
-    Object? requestId = freezed,
-    Object? resources = freezed,
-    Object? expiry = freezed,
-    Object? methods = freezed,
-  }) {
-    return _then(_value.copyWith(
-      chains: null == chains
-          ? _value.chains
-          : chains // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      domain: null == domain
-          ? _value.domain
-          : domain // ignore: cast_nullable_to_non_nullable
-              as String,
-      nonce: null == nonce
-          ? _value.nonce
-          : nonce // ignore: cast_nullable_to_non_nullable
-              as String,
-      uri: null == uri
-          ? _value.uri
-          : uri // ignore: cast_nullable_to_non_nullable
-              as String,
-      type: freezed == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as CacaoHeader?,
-      nbf: freezed == nbf
-          ? _value.nbf
-          : nbf // ignore: cast_nullable_to_non_nullable
-              as String?,
-      exp: freezed == exp
-          ? _value.exp
-          : exp // ignore: cast_nullable_to_non_nullable
-              as String?,
-      statement: freezed == statement
-          ? _value.statement
-          : statement // ignore: cast_nullable_to_non_nullable
-              as String?,
-      requestId: freezed == requestId
-          ? _value.requestId
-          : requestId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      resources: freezed == resources
-          ? _value.resources
-          : resources // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-      expiry: freezed == expiry
-          ? _value.expiry
-          : expiry // ignore: cast_nullable_to_non_nullable
-              as int?,
-      methods: freezed == methods
-          ? _value.methods
-          : methods // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-    ) as $Val);
+/// Create a copy of SessionAuthRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? chains = null,Object? domain = null,Object? nonce = null,Object? uri = null,Object? type = freezed,Object? nbf = freezed,Object? exp = freezed,Object? statement = freezed,Object? requestId = freezed,Object? resources = freezed,Object? expiry = freezed,Object? methods = freezed,}) {
+  return _then(_self.copyWith(
+chains: null == chains ? _self.chains : chains // ignore: cast_nullable_to_non_nullable
+as List<String>,domain: null == domain ? _self.domain : domain // ignore: cast_nullable_to_non_nullable
+as String,nonce: null == nonce ? _self.nonce : nonce // ignore: cast_nullable_to_non_nullable
+as String,uri: null == uri ? _self.uri : uri // ignore: cast_nullable_to_non_nullable
+as String,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as CacaoHeader?,nbf: freezed == nbf ? _self.nbf : nbf // ignore: cast_nullable_to_non_nullable
+as String?,exp: freezed == exp ? _self.exp : exp // ignore: cast_nullable_to_non_nullable
+as String?,statement: freezed == statement ? _self.statement : statement // ignore: cast_nullable_to_non_nullable
+as String?,requestId: freezed == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
+as String?,resources: freezed == resources ? _self.resources : resources // ignore: cast_nullable_to_non_nullable
+as List<String>?,expiry: freezed == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
+as int?,methods: freezed == methods ? _self.methods : methods // ignore: cast_nullable_to_non_nullable
+as List<String>?,
+  ));
+}
+/// Create a copy of SessionAuthRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoHeaderCopyWith<$Res>? get type {
+    if (_self.type == null) {
+    return null;
   }
 
-  /// Create a copy of SessionAuthRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $CacaoHeaderCopyWith<$Res>? get type {
-    if (_value.type == null) {
-      return null;
-    }
-
-    return $CacaoHeaderCopyWith<$Res>(_value.type!, (value) {
-      return _then(_value.copyWith(type: value) as $Val);
-    });
-  }
+  return $CacaoHeaderCopyWith<$Res>(_self.type!, (value) {
+    return _then(_self.copyWith(type: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$SessionAuthRequestParamsImplCopyWith<$Res>
-    implements $SessionAuthRequestParamsCopyWith<$Res> {
-  factory _$$SessionAuthRequestParamsImplCopyWith(
-          _$SessionAuthRequestParamsImpl value,
-          $Res Function(_$SessionAuthRequestParamsImpl) then) =
-      __$$SessionAuthRequestParamsImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {List<String> chains,
-      String domain,
-      String nonce,
-      String uri,
-      CacaoHeader? type,
-      String? nbf,
-      String? exp,
-      String? statement,
-      String? requestId,
-      List<String>? resources,
-      int? expiry,
-      List<String>? methods});
 
-  @override
-  $CacaoHeaderCopyWith<$Res>? get type;
+/// Adds pattern-matching-related methods to [SessionAuthRequestParams].
+extension SessionAuthRequestParamsPatterns on SessionAuthRequestParams {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SessionAuthRequestParams value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SessionAuthRequestParams() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SessionAuthRequestParams value)  $default,){
+final _that = this;
+switch (_that) {
+case _SessionAuthRequestParams():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SessionAuthRequestParams value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SessionAuthRequestParams() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<String> chains,  String domain,  String nonce,  String uri,  CacaoHeader? type,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources,  int? expiry,  List<String>? methods)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SessionAuthRequestParams() when $default != null:
+return $default(_that.chains,_that.domain,_that.nonce,_that.uri,_that.type,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources,_that.expiry,_that.methods);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<String> chains,  String domain,  String nonce,  String uri,  CacaoHeader? type,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources,  int? expiry,  List<String>? methods)  $default,) {final _that = this;
+switch (_that) {
+case _SessionAuthRequestParams():
+return $default(_that.chains,_that.domain,_that.nonce,_that.uri,_that.type,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources,_that.expiry,_that.methods);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<String> chains,  String domain,  String nonce,  String uri,  CacaoHeader? type,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources,  int? expiry,  List<String>? methods)?  $default,) {final _that = this;
+switch (_that) {
+case _SessionAuthRequestParams() when $default != null:
+return $default(_that.chains,_that.domain,_that.nonce,_that.uri,_that.type,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources,_that.expiry,_that.methods);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$SessionAuthRequestParamsImplCopyWithImpl<$Res>
-    extends _$SessionAuthRequestParamsCopyWithImpl<$Res,
-        _$SessionAuthRequestParamsImpl>
-    implements _$$SessionAuthRequestParamsImplCopyWith<$Res> {
-  __$$SessionAuthRequestParamsImplCopyWithImpl(
-      _$SessionAuthRequestParamsImpl _value,
-      $Res Function(_$SessionAuthRequestParamsImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of SessionAuthRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? chains = null,
-    Object? domain = null,
-    Object? nonce = null,
-    Object? uri = null,
-    Object? type = freezed,
-    Object? nbf = freezed,
-    Object? exp = freezed,
-    Object? statement = freezed,
-    Object? requestId = freezed,
-    Object? resources = freezed,
-    Object? expiry = freezed,
-    Object? methods = freezed,
-  }) {
-    return _then(_$SessionAuthRequestParamsImpl(
-      chains: null == chains
-          ? _value._chains
-          : chains // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      domain: null == domain
-          ? _value.domain
-          : domain // ignore: cast_nullable_to_non_nullable
-              as String,
-      nonce: null == nonce
-          ? _value.nonce
-          : nonce // ignore: cast_nullable_to_non_nullable
-              as String,
-      uri: null == uri
-          ? _value.uri
-          : uri // ignore: cast_nullable_to_non_nullable
-              as String,
-      type: freezed == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as CacaoHeader?,
-      nbf: freezed == nbf
-          ? _value.nbf
-          : nbf // ignore: cast_nullable_to_non_nullable
-              as String?,
-      exp: freezed == exp
-          ? _value.exp
-          : exp // ignore: cast_nullable_to_non_nullable
-              as String?,
-      statement: freezed == statement
-          ? _value.statement
-          : statement // ignore: cast_nullable_to_non_nullable
-              as String?,
-      requestId: freezed == requestId
-          ? _value.requestId
-          : requestId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      resources: freezed == resources
-          ? _value._resources
-          : resources // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-      expiry: freezed == expiry
-          ? _value.expiry
-          : expiry // ignore: cast_nullable_to_non_nullable
-              as int?,
-      methods: freezed == methods
-          ? _value._methods
-          : methods // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-    ));
-  }
 }
 
 /// @nodoc
 
 @JsonSerializable(includeIfNull: false)
-class _$SessionAuthRequestParamsImpl implements _SessionAuthRequestParams {
-  const _$SessionAuthRequestParamsImpl(
-      {required final List<String> chains,
-      required this.domain,
-      required this.nonce,
-      required this.uri,
-      this.type,
-      this.nbf,
-      this.exp,
-      this.statement,
-      this.requestId,
-      final List<String>? resources,
-      this.expiry,
-      final List<String>? methods = const <String>[]})
-      : _chains = chains,
-        _resources = resources,
-        _methods = methods;
+class _SessionAuthRequestParams implements SessionAuthRequestParams {
+  const _SessionAuthRequestParams({required final  List<String> chains, required this.domain, required this.nonce, required this.uri, this.type, this.nbf, this.exp, this.statement, this.requestId, final  List<String>? resources, this.expiry, final  List<String>? methods = const <String>[]}): _chains = chains,_resources = resources,_methods = methods;
+  factory _SessionAuthRequestParams.fromJson(Map<String, dynamic> json) => _$SessionAuthRequestParamsFromJson(json);
 
-  factory _$SessionAuthRequestParamsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SessionAuthRequestParamsImplFromJson(json);
+ final  List<String> _chains;
+@override List<String> get chains {
+  if (_chains is EqualUnmodifiableListView) return _chains;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_chains);
+}
 
-  final List<String> _chains;
-  @override
-  List<String> get chains {
-    if (_chains is EqualUnmodifiableListView) return _chains;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_chains);
-  }
-
-  @override
-  final String domain;
-  @override
-  final String nonce;
-  @override
-  final String uri;
+@override final  String domain;
+@override final  String nonce;
+@override final  String uri;
 //
-  @override
-  final CacaoHeader? type;
-  @override
-  final String? nbf;
-  @override
-  final String? exp;
-  @override
-  final String? statement;
-  @override
-  final String? requestId;
-  final List<String>? _resources;
-  @override
-  List<String>? get resources {
-    final value = _resources;
-    if (value == null) return null;
-    if (_resources is EqualUnmodifiableListView) return _resources;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
-  @override
-  final int? expiry;
-  final List<String>? _methods;
-  @override
-  @JsonKey()
-  List<String>? get methods {
-    final value = _methods;
-    if (value == null) return null;
-    if (_methods is EqualUnmodifiableListView) return _methods;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
-  @override
-  String toString() {
-    return 'SessionAuthRequestParams(chains: $chains, domain: $domain, nonce: $nonce, uri: $uri, type: $type, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources, expiry: $expiry, methods: $methods)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SessionAuthRequestParamsImpl &&
-            const DeepCollectionEquality().equals(other._chains, _chains) &&
-            (identical(other.domain, domain) || other.domain == domain) &&
-            (identical(other.nonce, nonce) || other.nonce == nonce) &&
-            (identical(other.uri, uri) || other.uri == uri) &&
-            (identical(other.type, type) || other.type == type) &&
-            (identical(other.nbf, nbf) || other.nbf == nbf) &&
-            (identical(other.exp, exp) || other.exp == exp) &&
-            (identical(other.statement, statement) ||
-                other.statement == statement) &&
-            (identical(other.requestId, requestId) ||
-                other.requestId == requestId) &&
-            const DeepCollectionEquality()
-                .equals(other._resources, _resources) &&
-            (identical(other.expiry, expiry) || other.expiry == expiry) &&
-            const DeepCollectionEquality().equals(other._methods, _methods));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_chains),
-      domain,
-      nonce,
-      uri,
-      type,
-      nbf,
-      exp,
-      statement,
-      requestId,
-      const DeepCollectionEquality().hash(_resources),
-      expiry,
-      const DeepCollectionEquality().hash(_methods));
-
-  /// Create a copy of SessionAuthRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SessionAuthRequestParamsImplCopyWith<_$SessionAuthRequestParamsImpl>
-      get copyWith => __$$SessionAuthRequestParamsImplCopyWithImpl<
-          _$SessionAuthRequestParamsImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SessionAuthRequestParamsImplToJson(
-      this,
-    );
-  }
+@override final  CacaoHeader? type;
+@override final  String? nbf;
+@override final  String? exp;
+@override final  String? statement;
+@override final  String? requestId;
+ final  List<String>? _resources;
+@override List<String>? get resources {
+  final value = _resources;
+  if (value == null) return null;
+  if (_resources is EqualUnmodifiableListView) return _resources;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
 }
 
-abstract class _SessionAuthRequestParams implements SessionAuthRequestParams {
-  const factory _SessionAuthRequestParams(
-      {required final List<String> chains,
-      required final String domain,
-      required final String nonce,
-      required final String uri,
-      final CacaoHeader? type,
-      final String? nbf,
-      final String? exp,
-      final String? statement,
-      final String? requestId,
-      final List<String>? resources,
-      final int? expiry,
-      final List<String>? methods}) = _$SessionAuthRequestParamsImpl;
-
-  factory _SessionAuthRequestParams.fromJson(Map<String, dynamic> json) =
-      _$SessionAuthRequestParamsImpl.fromJson;
-
-  @override
-  List<String> get chains;
-  @override
-  String get domain;
-  @override
-  String get nonce;
-  @override
-  String get uri; //
-  @override
-  CacaoHeader? get type;
-  @override
-  String? get nbf;
-  @override
-  String? get exp;
-  @override
-  String? get statement;
-  @override
-  String? get requestId;
-  @override
-  List<String>? get resources;
-  @override
-  int? get expiry;
-  @override
-  List<String>? get methods;
-
-  /// Create a copy of SessionAuthRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SessionAuthRequestParamsImplCopyWith<_$SessionAuthRequestParamsImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override final  int? expiry;
+ final  List<String>? _methods;
+@override@JsonKey() List<String>? get methods {
+  final value = _methods;
+  if (value == null) return null;
+  if (_methods is EqualUnmodifiableListView) return _methods;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
 }
 
-SessionAuthPayload _$SessionAuthPayloadFromJson(Map<String, dynamic> json) {
-  return _SessionAuthPayload.fromJson(json);
+
+/// Create a copy of SessionAuthRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SessionAuthRequestParamsCopyWith<_SessionAuthRequestParams> get copyWith => __$SessionAuthRequestParamsCopyWithImpl<_SessionAuthRequestParams>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SessionAuthRequestParamsToJson(this, );
 }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionAuthRequestParams&&const DeepCollectionEquality().equals(other._chains, _chains)&&(identical(other.domain, domain) || other.domain == domain)&&(identical(other.nonce, nonce) || other.nonce == nonce)&&(identical(other.uri, uri) || other.uri == uri)&&(identical(other.type, type) || other.type == type)&&(identical(other.nbf, nbf) || other.nbf == nbf)&&(identical(other.exp, exp) || other.exp == exp)&&(identical(other.statement, statement) || other.statement == statement)&&(identical(other.requestId, requestId) || other.requestId == requestId)&&const DeepCollectionEquality().equals(other._resources, _resources)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&const DeepCollectionEquality().equals(other._methods, _methods));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_chains),domain,nonce,uri,type,nbf,exp,statement,requestId,const DeepCollectionEquality().hash(_resources),expiry,const DeepCollectionEquality().hash(_methods));
+
+@override
+String toString() {
+  return 'SessionAuthRequestParams(chains: $chains, domain: $domain, nonce: $nonce, uri: $uri, type: $type, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources, expiry: $expiry, methods: $methods)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SessionAuthRequestParamsCopyWith<$Res> implements $SessionAuthRequestParamsCopyWith<$Res> {
+  factory _$SessionAuthRequestParamsCopyWith(_SessionAuthRequestParams value, $Res Function(_SessionAuthRequestParams) _then) = __$SessionAuthRequestParamsCopyWithImpl;
+@override @useResult
+$Res call({
+ List<String> chains, String domain, String nonce, String uri, CacaoHeader? type, String? nbf, String? exp, String? statement, String? requestId, List<String>? resources, int? expiry, List<String>? methods
+});
+
+
+@override $CacaoHeaderCopyWith<$Res>? get type;
+
+}
+/// @nodoc
+class __$SessionAuthRequestParamsCopyWithImpl<$Res>
+    implements _$SessionAuthRequestParamsCopyWith<$Res> {
+  __$SessionAuthRequestParamsCopyWithImpl(this._self, this._then);
+
+  final _SessionAuthRequestParams _self;
+  final $Res Function(_SessionAuthRequestParams) _then;
+
+/// Create a copy of SessionAuthRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? chains = null,Object? domain = null,Object? nonce = null,Object? uri = null,Object? type = freezed,Object? nbf = freezed,Object? exp = freezed,Object? statement = freezed,Object? requestId = freezed,Object? resources = freezed,Object? expiry = freezed,Object? methods = freezed,}) {
+  return _then(_SessionAuthRequestParams(
+chains: null == chains ? _self._chains : chains // ignore: cast_nullable_to_non_nullable
+as List<String>,domain: null == domain ? _self.domain : domain // ignore: cast_nullable_to_non_nullable
+as String,nonce: null == nonce ? _self.nonce : nonce // ignore: cast_nullable_to_non_nullable
+as String,uri: null == uri ? _self.uri : uri // ignore: cast_nullable_to_non_nullable
+as String,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as CacaoHeader?,nbf: freezed == nbf ? _self.nbf : nbf // ignore: cast_nullable_to_non_nullable
+as String?,exp: freezed == exp ? _self.exp : exp // ignore: cast_nullable_to_non_nullable
+as String?,statement: freezed == statement ? _self.statement : statement // ignore: cast_nullable_to_non_nullable
+as String?,requestId: freezed == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
+as String?,resources: freezed == resources ? _self._resources : resources // ignore: cast_nullable_to_non_nullable
+as List<String>?,expiry: freezed == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
+as int?,methods: freezed == methods ? _self._methods : methods // ignore: cast_nullable_to_non_nullable
+as List<String>?,
+  ));
+}
+
+/// Create a copy of SessionAuthRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoHeaderCopyWith<$Res>? get type {
+    if (_self.type == null) {
+    return null;
+  }
+
+  return $CacaoHeaderCopyWith<$Res>(_self.type!, (value) {
+    return _then(_self.copyWith(type: value));
+  });
+}
+}
+
 
 /// @nodoc
 mixin _$SessionAuthPayload {
-  List<String> get chains => throw _privateConstructorUsedError;
-  String get domain => throw _privateConstructorUsedError;
-  String get nonce => throw _privateConstructorUsedError;
-  String get aud => throw _privateConstructorUsedError;
-  String get type => throw _privateConstructorUsedError; //
-  String get version => throw _privateConstructorUsedError;
-  String get iat => throw _privateConstructorUsedError; //
-  String? get nbf => throw _privateConstructorUsedError;
-  String? get exp => throw _privateConstructorUsedError;
-  String? get statement => throw _privateConstructorUsedError;
-  String? get requestId => throw _privateConstructorUsedError;
-  List<String>? get resources => throw _privateConstructorUsedError;
+
+ List<String> get chains; String get domain; String get nonce; String get aud; String get type;//
+ String get version; String get iat;//
+ String? get nbf; String? get exp; String? get statement; String? get requestId; List<String>? get resources;
+/// Create a copy of SessionAuthPayload
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SessionAuthPayloadCopyWith<SessionAuthPayload> get copyWith => _$SessionAuthPayloadCopyWithImpl<SessionAuthPayload>(this as SessionAuthPayload, _$identity);
 
   /// Serializes this SessionAuthPayload to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of SessionAuthPayload
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $SessionAuthPayloadCopyWith<SessionAuthPayload> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionAuthPayload&&const DeepCollectionEquality().equals(other.chains, chains)&&(identical(other.domain, domain) || other.domain == domain)&&(identical(other.nonce, nonce) || other.nonce == nonce)&&(identical(other.aud, aud) || other.aud == aud)&&(identical(other.type, type) || other.type == type)&&(identical(other.version, version) || other.version == version)&&(identical(other.iat, iat) || other.iat == iat)&&(identical(other.nbf, nbf) || other.nbf == nbf)&&(identical(other.exp, exp) || other.exp == exp)&&(identical(other.statement, statement) || other.statement == statement)&&(identical(other.requestId, requestId) || other.requestId == requestId)&&const DeepCollectionEquality().equals(other.resources, resources));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(chains),domain,nonce,aud,type,version,iat,nbf,exp,statement,requestId,const DeepCollectionEquality().hash(resources));
+
+@override
+String toString() {
+  return 'SessionAuthPayload(chains: $chains, domain: $domain, nonce: $nonce, aud: $aud, type: $type, version: $version, iat: $iat, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $SessionAuthPayloadCopyWith<$Res> {
-  factory $SessionAuthPayloadCopyWith(
-          SessionAuthPayload value, $Res Function(SessionAuthPayload) then) =
-      _$SessionAuthPayloadCopyWithImpl<$Res, SessionAuthPayload>;
-  @useResult
-  $Res call(
-      {List<String> chains,
-      String domain,
-      String nonce,
-      String aud,
-      String type,
-      String version,
-      String iat,
-      String? nbf,
-      String? exp,
-      String? statement,
-      String? requestId,
-      List<String>? resources});
-}
+abstract mixin class $SessionAuthPayloadCopyWith<$Res>  {
+  factory $SessionAuthPayloadCopyWith(SessionAuthPayload value, $Res Function(SessionAuthPayload) _then) = _$SessionAuthPayloadCopyWithImpl;
+@useResult
+$Res call({
+ List<String> chains, String domain, String nonce, String aud, String type, String version, String iat, String? nbf, String? exp, String? statement, String? requestId, List<String>? resources
+});
 
+
+
+
+}
 /// @nodoc
-class _$SessionAuthPayloadCopyWithImpl<$Res, $Val extends SessionAuthPayload>
+class _$SessionAuthPayloadCopyWithImpl<$Res>
     implements $SessionAuthPayloadCopyWith<$Res> {
-  _$SessionAuthPayloadCopyWithImpl(this._value, this._then);
+  _$SessionAuthPayloadCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final SessionAuthPayload _self;
+  final $Res Function(SessionAuthPayload) _then;
 
-  /// Create a copy of SessionAuthPayload
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? chains = null,
-    Object? domain = null,
-    Object? nonce = null,
-    Object? aud = null,
-    Object? type = null,
-    Object? version = null,
-    Object? iat = null,
-    Object? nbf = freezed,
-    Object? exp = freezed,
-    Object? statement = freezed,
-    Object? requestId = freezed,
-    Object? resources = freezed,
-  }) {
-    return _then(_value.copyWith(
-      chains: null == chains
-          ? _value.chains
-          : chains // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      domain: null == domain
-          ? _value.domain
-          : domain // ignore: cast_nullable_to_non_nullable
-              as String,
-      nonce: null == nonce
-          ? _value.nonce
-          : nonce // ignore: cast_nullable_to_non_nullable
-              as String,
-      aud: null == aud
-          ? _value.aud
-          : aud // ignore: cast_nullable_to_non_nullable
-              as String,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-      version: null == version
-          ? _value.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String,
-      iat: null == iat
-          ? _value.iat
-          : iat // ignore: cast_nullable_to_non_nullable
-              as String,
-      nbf: freezed == nbf
-          ? _value.nbf
-          : nbf // ignore: cast_nullable_to_non_nullable
-              as String?,
-      exp: freezed == exp
-          ? _value.exp
-          : exp // ignore: cast_nullable_to_non_nullable
-              as String?,
-      statement: freezed == statement
-          ? _value.statement
-          : statement // ignore: cast_nullable_to_non_nullable
-              as String?,
-      requestId: freezed == requestId
-          ? _value.requestId
-          : requestId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      resources: freezed == resources
-          ? _value.resources
-          : resources // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-    ) as $Val);
-  }
+/// Create a copy of SessionAuthPayload
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? chains = null,Object? domain = null,Object? nonce = null,Object? aud = null,Object? type = null,Object? version = null,Object? iat = null,Object? nbf = freezed,Object? exp = freezed,Object? statement = freezed,Object? requestId = freezed,Object? resources = freezed,}) {
+  return _then(_self.copyWith(
+chains: null == chains ? _self.chains : chains // ignore: cast_nullable_to_non_nullable
+as List<String>,domain: null == domain ? _self.domain : domain // ignore: cast_nullable_to_non_nullable
+as String,nonce: null == nonce ? _self.nonce : nonce // ignore: cast_nullable_to_non_nullable
+as String,aud: null == aud ? _self.aud : aud // ignore: cast_nullable_to_non_nullable
+as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as String,iat: null == iat ? _self.iat : iat // ignore: cast_nullable_to_non_nullable
+as String,nbf: freezed == nbf ? _self.nbf : nbf // ignore: cast_nullable_to_non_nullable
+as String?,exp: freezed == exp ? _self.exp : exp // ignore: cast_nullable_to_non_nullable
+as String?,statement: freezed == statement ? _self.statement : statement // ignore: cast_nullable_to_non_nullable
+as String?,requestId: freezed == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
+as String?,resources: freezed == resources ? _self.resources : resources // ignore: cast_nullable_to_non_nullable
+as List<String>?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$SessionAuthPayloadImplCopyWith<$Res>
-    implements $SessionAuthPayloadCopyWith<$Res> {
-  factory _$$SessionAuthPayloadImplCopyWith(_$SessionAuthPayloadImpl value,
-          $Res Function(_$SessionAuthPayloadImpl) then) =
-      __$$SessionAuthPayloadImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {List<String> chains,
-      String domain,
-      String nonce,
-      String aud,
-      String type,
-      String version,
-      String iat,
-      String? nbf,
-      String? exp,
-      String? statement,
-      String? requestId,
-      List<String>? resources});
 }
 
-/// @nodoc
-class __$$SessionAuthPayloadImplCopyWithImpl<$Res>
-    extends _$SessionAuthPayloadCopyWithImpl<$Res, _$SessionAuthPayloadImpl>
-    implements _$$SessionAuthPayloadImplCopyWith<$Res> {
-  __$$SessionAuthPayloadImplCopyWithImpl(_$SessionAuthPayloadImpl _value,
-      $Res Function(_$SessionAuthPayloadImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of SessionAuthPayload
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? chains = null,
-    Object? domain = null,
-    Object? nonce = null,
-    Object? aud = null,
-    Object? type = null,
-    Object? version = null,
-    Object? iat = null,
-    Object? nbf = freezed,
-    Object? exp = freezed,
-    Object? statement = freezed,
-    Object? requestId = freezed,
-    Object? resources = freezed,
-  }) {
-    return _then(_$SessionAuthPayloadImpl(
-      chains: null == chains
-          ? _value._chains
-          : chains // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      domain: null == domain
-          ? _value.domain
-          : domain // ignore: cast_nullable_to_non_nullable
-              as String,
-      nonce: null == nonce
-          ? _value.nonce
-          : nonce // ignore: cast_nullable_to_non_nullable
-              as String,
-      aud: null == aud
-          ? _value.aud
-          : aud // ignore: cast_nullable_to_non_nullable
-              as String,
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String,
-      version: null == version
-          ? _value.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String,
-      iat: null == iat
-          ? _value.iat
-          : iat // ignore: cast_nullable_to_non_nullable
-              as String,
-      nbf: freezed == nbf
-          ? _value.nbf
-          : nbf // ignore: cast_nullable_to_non_nullable
-              as String?,
-      exp: freezed == exp
-          ? _value.exp
-          : exp // ignore: cast_nullable_to_non_nullable
-              as String?,
-      statement: freezed == statement
-          ? _value.statement
-          : statement // ignore: cast_nullable_to_non_nullable
-              as String?,
-      requestId: freezed == requestId
-          ? _value.requestId
-          : requestId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      resources: freezed == resources
-          ? _value._resources
-          : resources // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-    ));
-  }
+/// Adds pattern-matching-related methods to [SessionAuthPayload].
+extension SessionAuthPayloadPatterns on SessionAuthPayload {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SessionAuthPayload value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SessionAuthPayload() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SessionAuthPayload value)  $default,){
+final _that = this;
+switch (_that) {
+case _SessionAuthPayload():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SessionAuthPayload value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SessionAuthPayload() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<String> chains,  String domain,  String nonce,  String aud,  String type,  String version,  String iat,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SessionAuthPayload() when $default != null:
+return $default(_that.chains,_that.domain,_that.nonce,_that.aud,_that.type,_that.version,_that.iat,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<String> chains,  String domain,  String nonce,  String aud,  String type,  String version,  String iat,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources)  $default,) {final _that = this;
+switch (_that) {
+case _SessionAuthPayload():
+return $default(_that.chains,_that.domain,_that.nonce,_that.aud,_that.type,_that.version,_that.iat,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<String> chains,  String domain,  String nonce,  String aud,  String type,  String version,  String iat,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources)?  $default,) {final _that = this;
+switch (_that) {
+case _SessionAuthPayload() when $default != null:
+return $default(_that.chains,_that.domain,_that.nonce,_that.aud,_that.type,_that.version,_that.iat,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable(includeIfNull: false)
-class _$SessionAuthPayloadImpl implements _SessionAuthPayload {
-  const _$SessionAuthPayloadImpl(
-      {required final List<String> chains,
-      required this.domain,
-      required this.nonce,
-      required this.aud,
-      required this.type,
-      required this.version,
-      required this.iat,
-      this.nbf,
-      this.exp,
-      this.statement,
-      this.requestId,
-      final List<String>? resources})
-      : _chains = chains,
-        _resources = resources;
+class _SessionAuthPayload implements SessionAuthPayload {
+  const _SessionAuthPayload({required final  List<String> chains, required this.domain, required this.nonce, required this.aud, required this.type, required this.version, required this.iat, this.nbf, this.exp, this.statement, this.requestId, final  List<String>? resources}): _chains = chains,_resources = resources;
+  factory _SessionAuthPayload.fromJson(Map<String, dynamic> json) => _$SessionAuthPayloadFromJson(json);
 
-  factory _$SessionAuthPayloadImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SessionAuthPayloadImplFromJson(json);
+ final  List<String> _chains;
+@override List<String> get chains {
+  if (_chains is EqualUnmodifiableListView) return _chains;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_chains);
+}
 
-  final List<String> _chains;
-  @override
-  List<String> get chains {
-    if (_chains is EqualUnmodifiableListView) return _chains;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_chains);
-  }
-
-  @override
-  final String domain;
-  @override
-  final String nonce;
-  @override
-  final String aud;
-  @override
-  final String type;
+@override final  String domain;
+@override final  String nonce;
+@override final  String aud;
+@override final  String type;
 //
-  @override
-  final String version;
-  @override
-  final String iat;
+@override final  String version;
+@override final  String iat;
 //
-  @override
-  final String? nbf;
-  @override
-  final String? exp;
-  @override
-  final String? statement;
-  @override
-  final String? requestId;
-  final List<String>? _resources;
-  @override
-  List<String>? get resources {
-    final value = _resources;
-    if (value == null) return null;
-    if (_resources is EqualUnmodifiableListView) return _resources;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
-  @override
-  String toString() {
-    return 'SessionAuthPayload(chains: $chains, domain: $domain, nonce: $nonce, aud: $aud, type: $type, version: $version, iat: $iat, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SessionAuthPayloadImpl &&
-            const DeepCollectionEquality().equals(other._chains, _chains) &&
-            (identical(other.domain, domain) || other.domain == domain) &&
-            (identical(other.nonce, nonce) || other.nonce == nonce) &&
-            (identical(other.aud, aud) || other.aud == aud) &&
-            (identical(other.type, type) || other.type == type) &&
-            (identical(other.version, version) || other.version == version) &&
-            (identical(other.iat, iat) || other.iat == iat) &&
-            (identical(other.nbf, nbf) || other.nbf == nbf) &&
-            (identical(other.exp, exp) || other.exp == exp) &&
-            (identical(other.statement, statement) ||
-                other.statement == statement) &&
-            (identical(other.requestId, requestId) ||
-                other.requestId == requestId) &&
-            const DeepCollectionEquality()
-                .equals(other._resources, _resources));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_chains),
-      domain,
-      nonce,
-      aud,
-      type,
-      version,
-      iat,
-      nbf,
-      exp,
-      statement,
-      requestId,
-      const DeepCollectionEquality().hash(_resources));
-
-  /// Create a copy of SessionAuthPayload
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SessionAuthPayloadImplCopyWith<_$SessionAuthPayloadImpl> get copyWith =>
-      __$$SessionAuthPayloadImplCopyWithImpl<_$SessionAuthPayloadImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SessionAuthPayloadImplToJson(
-      this,
-    );
-  }
+@override final  String? nbf;
+@override final  String? exp;
+@override final  String? statement;
+@override final  String? requestId;
+ final  List<String>? _resources;
+@override List<String>? get resources {
+  final value = _resources;
+  if (value == null) return null;
+  if (_resources is EqualUnmodifiableListView) return _resources;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
 }
 
-abstract class _SessionAuthPayload implements SessionAuthPayload {
-  const factory _SessionAuthPayload(
-      {required final List<String> chains,
-      required final String domain,
-      required final String nonce,
-      required final String aud,
-      required final String type,
-      required final String version,
-      required final String iat,
-      final String? nbf,
-      final String? exp,
-      final String? statement,
-      final String? requestId,
-      final List<String>? resources}) = _$SessionAuthPayloadImpl;
 
-  factory _SessionAuthPayload.fromJson(Map<String, dynamic> json) =
-      _$SessionAuthPayloadImpl.fromJson;
+/// Create a copy of SessionAuthPayload
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SessionAuthPayloadCopyWith<_SessionAuthPayload> get copyWith => __$SessionAuthPayloadCopyWithImpl<_SessionAuthPayload>(this, _$identity);
 
-  @override
-  List<String> get chains;
-  @override
-  String get domain;
-  @override
-  String get nonce;
-  @override
-  String get aud;
-  @override
-  String get type; //
-  @override
-  String get version;
-  @override
-  String get iat; //
-  @override
-  String? get nbf;
-  @override
-  String? get exp;
-  @override
-  String? get statement;
-  @override
-  String? get requestId;
-  @override
-  List<String>? get resources;
-
-  /// Create a copy of SessionAuthPayload
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SessionAuthPayloadImplCopyWith<_$SessionAuthPayloadImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+Map<String, dynamic> toJson() {
+  return _$SessionAuthPayloadToJson(this, );
 }
 
-PendingSessionAuthRequest _$PendingSessionAuthRequestFromJson(
-    Map<String, dynamic> json) {
-  return _PendingSessionAuthRequest.fromJson(json);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionAuthPayload&&const DeepCollectionEquality().equals(other._chains, _chains)&&(identical(other.domain, domain) || other.domain == domain)&&(identical(other.nonce, nonce) || other.nonce == nonce)&&(identical(other.aud, aud) || other.aud == aud)&&(identical(other.type, type) || other.type == type)&&(identical(other.version, version) || other.version == version)&&(identical(other.iat, iat) || other.iat == iat)&&(identical(other.nbf, nbf) || other.nbf == nbf)&&(identical(other.exp, exp) || other.exp == exp)&&(identical(other.statement, statement) || other.statement == statement)&&(identical(other.requestId, requestId) || other.requestId == requestId)&&const DeepCollectionEquality().equals(other._resources, _resources));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_chains),domain,nonce,aud,type,version,iat,nbf,exp,statement,requestId,const DeepCollectionEquality().hash(_resources));
+
+@override
+String toString() {
+  return 'SessionAuthPayload(chains: $chains, domain: $domain, nonce: $nonce, aud: $aud, type: $type, version: $version, iat: $iat, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SessionAuthPayloadCopyWith<$Res> implements $SessionAuthPayloadCopyWith<$Res> {
+  factory _$SessionAuthPayloadCopyWith(_SessionAuthPayload value, $Res Function(_SessionAuthPayload) _then) = __$SessionAuthPayloadCopyWithImpl;
+@override @useResult
+$Res call({
+ List<String> chains, String domain, String nonce, String aud, String type, String version, String iat, String? nbf, String? exp, String? statement, String? requestId, List<String>? resources
+});
+
+
+
+
+}
+/// @nodoc
+class __$SessionAuthPayloadCopyWithImpl<$Res>
+    implements _$SessionAuthPayloadCopyWith<$Res> {
+  __$SessionAuthPayloadCopyWithImpl(this._self, this._then);
+
+  final _SessionAuthPayload _self;
+  final $Res Function(_SessionAuthPayload) _then;
+
+/// Create a copy of SessionAuthPayload
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? chains = null,Object? domain = null,Object? nonce = null,Object? aud = null,Object? type = null,Object? version = null,Object? iat = null,Object? nbf = freezed,Object? exp = freezed,Object? statement = freezed,Object? requestId = freezed,Object? resources = freezed,}) {
+  return _then(_SessionAuthPayload(
+chains: null == chains ? _self._chains : chains // ignore: cast_nullable_to_non_nullable
+as List<String>,domain: null == domain ? _self.domain : domain // ignore: cast_nullable_to_non_nullable
+as String,nonce: null == nonce ? _self.nonce : nonce // ignore: cast_nullable_to_non_nullable
+as String,aud: null == aud ? _self.aud : aud // ignore: cast_nullable_to_non_nullable
+as String,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as String,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as String,iat: null == iat ? _self.iat : iat // ignore: cast_nullable_to_non_nullable
+as String,nbf: freezed == nbf ? _self.nbf : nbf // ignore: cast_nullable_to_non_nullable
+as String?,exp: freezed == exp ? _self.exp : exp // ignore: cast_nullable_to_non_nullable
+as String?,statement: freezed == statement ? _self.statement : statement // ignore: cast_nullable_to_non_nullable
+as String?,requestId: freezed == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
+as String?,resources: freezed == resources ? _self._resources : resources // ignore: cast_nullable_to_non_nullable
+as List<String>?,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$PendingSessionAuthRequest {
-  int get id => throw _privateConstructorUsedError;
-  String get pairingTopic => throw _privateConstructorUsedError;
-  ConnectionMetadata get requester => throw _privateConstructorUsedError;
-  int get expiryTimestamp => throw _privateConstructorUsedError;
-  CacaoRequestPayload get authPayload => throw _privateConstructorUsedError;
-  VerifyContext get verifyContext => throw _privateConstructorUsedError;
-  TransportType get transportType => throw _privateConstructorUsedError;
+
+ int get id; String get pairingTopic; ConnectionMetadata get requester; int get expiryTimestamp; CacaoRequestPayload get authPayload; VerifyContext get verifyContext; TransportType get transportType;
+/// Create a copy of PendingSessionAuthRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PendingSessionAuthRequestCopyWith<PendingSessionAuthRequest> get copyWith => _$PendingSessionAuthRequestCopyWithImpl<PendingSessionAuthRequest>(this as PendingSessionAuthRequest, _$identity);
 
   /// Serializes this PendingSessionAuthRequest to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of PendingSessionAuthRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $PendingSessionAuthRequestCopyWith<PendingSessionAuthRequest> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PendingSessionAuthRequest&&(identical(other.id, id) || other.id == id)&&(identical(other.pairingTopic, pairingTopic) || other.pairingTopic == pairingTopic)&&(identical(other.requester, requester) || other.requester == requester)&&(identical(other.expiryTimestamp, expiryTimestamp) || other.expiryTimestamp == expiryTimestamp)&&(identical(other.authPayload, authPayload) || other.authPayload == authPayload)&&(identical(other.verifyContext, verifyContext) || other.verifyContext == verifyContext)&&(identical(other.transportType, transportType) || other.transportType == transportType));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,pairingTopic,requester,expiryTimestamp,authPayload,verifyContext,transportType);
+
+@override
+String toString() {
+  return 'PendingSessionAuthRequest(id: $id, pairingTopic: $pairingTopic, requester: $requester, expiryTimestamp: $expiryTimestamp, authPayload: $authPayload, verifyContext: $verifyContext, transportType: $transportType)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $PendingSessionAuthRequestCopyWith<$Res> {
-  factory $PendingSessionAuthRequestCopyWith(PendingSessionAuthRequest value,
-          $Res Function(PendingSessionAuthRequest) then) =
-      _$PendingSessionAuthRequestCopyWithImpl<$Res, PendingSessionAuthRequest>;
-  @useResult
-  $Res call(
-      {int id,
-      String pairingTopic,
-      ConnectionMetadata requester,
-      int expiryTimestamp,
-      CacaoRequestPayload authPayload,
-      VerifyContext verifyContext,
-      TransportType transportType});
+abstract mixin class $PendingSessionAuthRequestCopyWith<$Res>  {
+  factory $PendingSessionAuthRequestCopyWith(PendingSessionAuthRequest value, $Res Function(PendingSessionAuthRequest) _then) = _$PendingSessionAuthRequestCopyWithImpl;
+@useResult
+$Res call({
+ int id, String pairingTopic, ConnectionMetadata requester, int expiryTimestamp, CacaoRequestPayload authPayload, VerifyContext verifyContext, TransportType transportType
+});
 
-  $ConnectionMetadataCopyWith<$Res> get requester;
-  $CacaoRequestPayloadCopyWith<$Res> get authPayload;
-  $VerifyContextCopyWith<$Res> get verifyContext;
+
+$ConnectionMetadataCopyWith<$Res> get requester;$CacaoRequestPayloadCopyWith<$Res> get authPayload;$VerifyContextCopyWith<$Res> get verifyContext;
+
 }
-
 /// @nodoc
-class _$PendingSessionAuthRequestCopyWithImpl<$Res,
-        $Val extends PendingSessionAuthRequest>
+class _$PendingSessionAuthRequestCopyWithImpl<$Res>
     implements $PendingSessionAuthRequestCopyWith<$Res> {
-  _$PendingSessionAuthRequestCopyWithImpl(this._value, this._then);
+  _$PendingSessionAuthRequestCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final PendingSessionAuthRequest _self;
+  final $Res Function(PendingSessionAuthRequest) _then;
 
-  /// Create a copy of PendingSessionAuthRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? pairingTopic = null,
-    Object? requester = null,
-    Object? expiryTimestamp = null,
-    Object? authPayload = null,
-    Object? verifyContext = null,
-    Object? transportType = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      pairingTopic: null == pairingTopic
-          ? _value.pairingTopic
-          : pairingTopic // ignore: cast_nullable_to_non_nullable
-              as String,
-      requester: null == requester
-          ? _value.requester
-          : requester // ignore: cast_nullable_to_non_nullable
-              as ConnectionMetadata,
-      expiryTimestamp: null == expiryTimestamp
-          ? _value.expiryTimestamp
-          : expiryTimestamp // ignore: cast_nullable_to_non_nullable
-              as int,
-      authPayload: null == authPayload
-          ? _value.authPayload
-          : authPayload // ignore: cast_nullable_to_non_nullable
-              as CacaoRequestPayload,
-      verifyContext: null == verifyContext
-          ? _value.verifyContext
-          : verifyContext // ignore: cast_nullable_to_non_nullable
-              as VerifyContext,
-      transportType: null == transportType
-          ? _value.transportType
-          : transportType // ignore: cast_nullable_to_non_nullable
-              as TransportType,
-    ) as $Val);
-  }
-
-  /// Create a copy of PendingSessionAuthRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $ConnectionMetadataCopyWith<$Res> get requester {
-    return $ConnectionMetadataCopyWith<$Res>(_value.requester, (value) {
-      return _then(_value.copyWith(requester: value) as $Val);
-    });
-  }
-
-  /// Create a copy of PendingSessionAuthRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $CacaoRequestPayloadCopyWith<$Res> get authPayload {
-    return $CacaoRequestPayloadCopyWith<$Res>(_value.authPayload, (value) {
-      return _then(_value.copyWith(authPayload: value) as $Val);
-    });
-  }
-
-  /// Create a copy of PendingSessionAuthRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $VerifyContextCopyWith<$Res> get verifyContext {
-    return $VerifyContextCopyWith<$Res>(_value.verifyContext, (value) {
-      return _then(_value.copyWith(verifyContext: value) as $Val);
-    });
-  }
+/// Create a copy of PendingSessionAuthRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? pairingTopic = null,Object? requester = null,Object? expiryTimestamp = null,Object? authPayload = null,Object? verifyContext = null,Object? transportType = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,pairingTopic: null == pairingTopic ? _self.pairingTopic : pairingTopic // ignore: cast_nullable_to_non_nullable
+as String,requester: null == requester ? _self.requester : requester // ignore: cast_nullable_to_non_nullable
+as ConnectionMetadata,expiryTimestamp: null == expiryTimestamp ? _self.expiryTimestamp : expiryTimestamp // ignore: cast_nullable_to_non_nullable
+as int,authPayload: null == authPayload ? _self.authPayload : authPayload // ignore: cast_nullable_to_non_nullable
+as CacaoRequestPayload,verifyContext: null == verifyContext ? _self.verifyContext : verifyContext // ignore: cast_nullable_to_non_nullable
+as VerifyContext,transportType: null == transportType ? _self.transportType : transportType // ignore: cast_nullable_to_non_nullable
+as TransportType,
+  ));
+}
+/// Create a copy of PendingSessionAuthRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConnectionMetadataCopyWith<$Res> get requester {
+  
+  return $ConnectionMetadataCopyWith<$Res>(_self.requester, (value) {
+    return _then(_self.copyWith(requester: value));
+  });
+}/// Create a copy of PendingSessionAuthRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoRequestPayloadCopyWith<$Res> get authPayload {
+  
+  return $CacaoRequestPayloadCopyWith<$Res>(_self.authPayload, (value) {
+    return _then(_self.copyWith(authPayload: value));
+  });
+}/// Create a copy of PendingSessionAuthRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$VerifyContextCopyWith<$Res> get verifyContext {
+  
+  return $VerifyContextCopyWith<$Res>(_self.verifyContext, (value) {
+    return _then(_self.copyWith(verifyContext: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$PendingSessionAuthRequestImplCopyWith<$Res>
-    implements $PendingSessionAuthRequestCopyWith<$Res> {
-  factory _$$PendingSessionAuthRequestImplCopyWith(
-          _$PendingSessionAuthRequestImpl value,
-          $Res Function(_$PendingSessionAuthRequestImpl) then) =
-      __$$PendingSessionAuthRequestImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {int id,
-      String pairingTopic,
-      ConnectionMetadata requester,
-      int expiryTimestamp,
-      CacaoRequestPayload authPayload,
-      VerifyContext verifyContext,
-      TransportType transportType});
 
-  @override
-  $ConnectionMetadataCopyWith<$Res> get requester;
-  @override
-  $CacaoRequestPayloadCopyWith<$Res> get authPayload;
-  @override
-  $VerifyContextCopyWith<$Res> get verifyContext;
+/// Adds pattern-matching-related methods to [PendingSessionAuthRequest].
+extension PendingSessionAuthRequestPatterns on PendingSessionAuthRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _PendingSessionAuthRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _PendingSessionAuthRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _PendingSessionAuthRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _PendingSessionAuthRequest():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _PendingSessionAuthRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _PendingSessionAuthRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String pairingTopic,  ConnectionMetadata requester,  int expiryTimestamp,  CacaoRequestPayload authPayload,  VerifyContext verifyContext,  TransportType transportType)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _PendingSessionAuthRequest() when $default != null:
+return $default(_that.id,_that.pairingTopic,_that.requester,_that.expiryTimestamp,_that.authPayload,_that.verifyContext,_that.transportType);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String pairingTopic,  ConnectionMetadata requester,  int expiryTimestamp,  CacaoRequestPayload authPayload,  VerifyContext verifyContext,  TransportType transportType)  $default,) {final _that = this;
+switch (_that) {
+case _PendingSessionAuthRequest():
+return $default(_that.id,_that.pairingTopic,_that.requester,_that.expiryTimestamp,_that.authPayload,_that.verifyContext,_that.transportType);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String pairingTopic,  ConnectionMetadata requester,  int expiryTimestamp,  CacaoRequestPayload authPayload,  VerifyContext verifyContext,  TransportType transportType)?  $default,) {final _that = this;
+switch (_that) {
+case _PendingSessionAuthRequest() when $default != null:
+return $default(_that.id,_that.pairingTopic,_that.requester,_that.expiryTimestamp,_that.authPayload,_that.verifyContext,_that.transportType);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$PendingSessionAuthRequestImplCopyWithImpl<$Res>
-    extends _$PendingSessionAuthRequestCopyWithImpl<$Res,
-        _$PendingSessionAuthRequestImpl>
-    implements _$$PendingSessionAuthRequestImplCopyWith<$Res> {
-  __$$PendingSessionAuthRequestImplCopyWithImpl(
-      _$PendingSessionAuthRequestImpl _value,
-      $Res Function(_$PendingSessionAuthRequestImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of PendingSessionAuthRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? pairingTopic = null,
-    Object? requester = null,
-    Object? expiryTimestamp = null,
-    Object? authPayload = null,
-    Object? verifyContext = null,
-    Object? transportType = null,
-  }) {
-    return _then(_$PendingSessionAuthRequestImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      pairingTopic: null == pairingTopic
-          ? _value.pairingTopic
-          : pairingTopic // ignore: cast_nullable_to_non_nullable
-              as String,
-      requester: null == requester
-          ? _value.requester
-          : requester // ignore: cast_nullable_to_non_nullable
-              as ConnectionMetadata,
-      expiryTimestamp: null == expiryTimestamp
-          ? _value.expiryTimestamp
-          : expiryTimestamp // ignore: cast_nullable_to_non_nullable
-              as int,
-      authPayload: null == authPayload
-          ? _value.authPayload
-          : authPayload // ignore: cast_nullable_to_non_nullable
-              as CacaoRequestPayload,
-      verifyContext: null == verifyContext
-          ? _value.verifyContext
-          : verifyContext // ignore: cast_nullable_to_non_nullable
-              as VerifyContext,
-      transportType: null == transportType
-          ? _value.transportType
-          : transportType // ignore: cast_nullable_to_non_nullable
-              as TransportType,
-    ));
-  }
 }
 
 /// @nodoc
 
 @JsonSerializable(includeIfNull: false)
-class _$PendingSessionAuthRequestImpl implements _PendingSessionAuthRequest {
-  const _$PendingSessionAuthRequestImpl(
-      {required this.id,
-      required this.pairingTopic,
-      required this.requester,
-      required this.expiryTimestamp,
-      required this.authPayload,
-      required this.verifyContext,
-      this.transportType = TransportType.relay});
+class _PendingSessionAuthRequest implements PendingSessionAuthRequest {
+  const _PendingSessionAuthRequest({required this.id, required this.pairingTopic, required this.requester, required this.expiryTimestamp, required this.authPayload, required this.verifyContext, this.transportType = TransportType.relay});
+  factory _PendingSessionAuthRequest.fromJson(Map<String, dynamic> json) => _$PendingSessionAuthRequestFromJson(json);
 
-  factory _$PendingSessionAuthRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$PendingSessionAuthRequestImplFromJson(json);
+@override final  int id;
+@override final  String pairingTopic;
+@override final  ConnectionMetadata requester;
+@override final  int expiryTimestamp;
+@override final  CacaoRequestPayload authPayload;
+@override final  VerifyContext verifyContext;
+@override@JsonKey() final  TransportType transportType;
 
-  @override
-  final int id;
-  @override
-  final String pairingTopic;
-  @override
-  final ConnectionMetadata requester;
-  @override
-  final int expiryTimestamp;
-  @override
-  final CacaoRequestPayload authPayload;
-  @override
-  final VerifyContext verifyContext;
-  @override
-  @JsonKey()
-  final TransportType transportType;
+/// Create a copy of PendingSessionAuthRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PendingSessionAuthRequestCopyWith<_PendingSessionAuthRequest> get copyWith => __$PendingSessionAuthRequestCopyWithImpl<_PendingSessionAuthRequest>(this, _$identity);
 
-  @override
-  String toString() {
-    return 'PendingSessionAuthRequest(id: $id, pairingTopic: $pairingTopic, requester: $requester, expiryTimestamp: $expiryTimestamp, authPayload: $authPayload, verifyContext: $verifyContext, transportType: $transportType)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$PendingSessionAuthRequestImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.pairingTopic, pairingTopic) ||
-                other.pairingTopic == pairingTopic) &&
-            (identical(other.requester, requester) ||
-                other.requester == requester) &&
-            (identical(other.expiryTimestamp, expiryTimestamp) ||
-                other.expiryTimestamp == expiryTimestamp) &&
-            (identical(other.authPayload, authPayload) ||
-                other.authPayload == authPayload) &&
-            (identical(other.verifyContext, verifyContext) ||
-                other.verifyContext == verifyContext) &&
-            (identical(other.transportType, transportType) ||
-                other.transportType == transportType));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, pairingTopic, requester,
-      expiryTimestamp, authPayload, verifyContext, transportType);
-
-  /// Create a copy of PendingSessionAuthRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$PendingSessionAuthRequestImplCopyWith<_$PendingSessionAuthRequestImpl>
-      get copyWith => __$$PendingSessionAuthRequestImplCopyWithImpl<
-          _$PendingSessionAuthRequestImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$PendingSessionAuthRequestImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$PendingSessionAuthRequestToJson(this, );
 }
 
-abstract class _PendingSessionAuthRequest implements PendingSessionAuthRequest {
-  const factory _PendingSessionAuthRequest(
-      {required final int id,
-      required final String pairingTopic,
-      required final ConnectionMetadata requester,
-      required final int expiryTimestamp,
-      required final CacaoRequestPayload authPayload,
-      required final VerifyContext verifyContext,
-      final TransportType transportType}) = _$PendingSessionAuthRequestImpl;
-
-  factory _PendingSessionAuthRequest.fromJson(Map<String, dynamic> json) =
-      _$PendingSessionAuthRequestImpl.fromJson;
-
-  @override
-  int get id;
-  @override
-  String get pairingTopic;
-  @override
-  ConnectionMetadata get requester;
-  @override
-  int get expiryTimestamp;
-  @override
-  CacaoRequestPayload get authPayload;
-  @override
-  VerifyContext get verifyContext;
-  @override
-  TransportType get transportType;
-
-  /// Create a copy of PendingSessionAuthRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PendingSessionAuthRequestImplCopyWith<_$PendingSessionAuthRequestImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PendingSessionAuthRequest&&(identical(other.id, id) || other.id == id)&&(identical(other.pairingTopic, pairingTopic) || other.pairingTopic == pairingTopic)&&(identical(other.requester, requester) || other.requester == requester)&&(identical(other.expiryTimestamp, expiryTimestamp) || other.expiryTimestamp == expiryTimestamp)&&(identical(other.authPayload, authPayload) || other.authPayload == authPayload)&&(identical(other.verifyContext, verifyContext) || other.verifyContext == verifyContext)&&(identical(other.transportType, transportType) || other.transportType == transportType));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,pairingTopic,requester,expiryTimestamp,authPayload,verifyContext,transportType);
+
+@override
+String toString() {
+  return 'PendingSessionAuthRequest(id: $id, pairingTopic: $pairingTopic, requester: $requester, expiryTimestamp: $expiryTimestamp, authPayload: $authPayload, verifyContext: $verifyContext, transportType: $transportType)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$PendingSessionAuthRequestCopyWith<$Res> implements $PendingSessionAuthRequestCopyWith<$Res> {
+  factory _$PendingSessionAuthRequestCopyWith(_PendingSessionAuthRequest value, $Res Function(_PendingSessionAuthRequest) _then) = __$PendingSessionAuthRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ int id, String pairingTopic, ConnectionMetadata requester, int expiryTimestamp, CacaoRequestPayload authPayload, VerifyContext verifyContext, TransportType transportType
+});
+
+
+@override $ConnectionMetadataCopyWith<$Res> get requester;@override $CacaoRequestPayloadCopyWith<$Res> get authPayload;@override $VerifyContextCopyWith<$Res> get verifyContext;
+
+}
+/// @nodoc
+class __$PendingSessionAuthRequestCopyWithImpl<$Res>
+    implements _$PendingSessionAuthRequestCopyWith<$Res> {
+  __$PendingSessionAuthRequestCopyWithImpl(this._self, this._then);
+
+  final _PendingSessionAuthRequest _self;
+  final $Res Function(_PendingSessionAuthRequest) _then;
+
+/// Create a copy of PendingSessionAuthRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? pairingTopic = null,Object? requester = null,Object? expiryTimestamp = null,Object? authPayload = null,Object? verifyContext = null,Object? transportType = null,}) {
+  return _then(_PendingSessionAuthRequest(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,pairingTopic: null == pairingTopic ? _self.pairingTopic : pairingTopic // ignore: cast_nullable_to_non_nullable
+as String,requester: null == requester ? _self.requester : requester // ignore: cast_nullable_to_non_nullable
+as ConnectionMetadata,expiryTimestamp: null == expiryTimestamp ? _self.expiryTimestamp : expiryTimestamp // ignore: cast_nullable_to_non_nullable
+as int,authPayload: null == authPayload ? _self.authPayload : authPayload // ignore: cast_nullable_to_non_nullable
+as CacaoRequestPayload,verifyContext: null == verifyContext ? _self.verifyContext : verifyContext // ignore: cast_nullable_to_non_nullable
+as VerifyContext,transportType: null == transportType ? _self.transportType : transportType // ignore: cast_nullable_to_non_nullable
+as TransportType,
+  ));
+}
+
+/// Create a copy of PendingSessionAuthRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConnectionMetadataCopyWith<$Res> get requester {
+  
+  return $ConnectionMetadataCopyWith<$Res>(_self.requester, (value) {
+    return _then(_self.copyWith(requester: value));
+  });
+}/// Create a copy of PendingSessionAuthRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoRequestPayloadCopyWith<$Res> get authPayload {
+  
+  return $CacaoRequestPayloadCopyWith<$Res>(_self.authPayload, (value) {
+    return _then(_self.copyWith(authPayload: value));
+  });
+}/// Create a copy of PendingSessionAuthRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$VerifyContextCopyWith<$Res> get verifyContext {
+  
+  return $VerifyContextCopyWith<$Res>(_self.verifyContext, (value) {
+    return _then(_self.copyWith(verifyContext: value));
+  });
+}
+}
+
+// dart format on

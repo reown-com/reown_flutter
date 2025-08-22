@@ -68,7 +68,7 @@ class MagicData {
   @override
   String toString() => toJson().toString();
 
-  MagicData copytWith({
+  MagicData copyWith({
     String? email,
     String? address,
     String? chainId,

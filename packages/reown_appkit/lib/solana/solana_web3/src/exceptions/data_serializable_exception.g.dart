@@ -7,8 +7,8 @@ part of 'data_serializable_exception.dart';
 // **************************************************************************
 
 DataSerializableException _$DataSerializableExceptionFromJson(
-        Map<String, dynamic> json) =>
-    DataSerializableException(
-      json['message'] as String,
-      code: (json['code'] as num?)?.toInt(),
-    );
+  Map<String, dynamic> json,
+) => DataSerializableException(
+  json['message'] as String,
+  code: (json['code'] as num?)?.toInt(),
+);

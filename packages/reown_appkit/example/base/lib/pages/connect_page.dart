@@ -95,8 +95,8 @@ class ConnectPageState extends State<ConnectPage> {
                 ),
                 Container(
                   color: isDarkMode
-                      ? Colors.black.withOpacity(0.8)
-                      : Colors.white.withOpacity(0.8),
+                      ? Colors.black.withValues(alpha: 0.8)
+                      : Colors.white.withValues(alpha: 0.8),
                 )
               ],
             ),

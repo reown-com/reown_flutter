@@ -6,10 +6,9 @@ part of 'cluster.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Cluster _$ClusterFromJson(Map<String, dynamic> json) => Cluster(
-      Uri.parse(json['uri'] as String),
-    );
+Cluster _$ClusterFromJson(Map<String, dynamic> json) =>
+    Cluster(Uri.parse(json['uri'] as String));
 
 Map<String, dynamic> _$ClusterToJson(Cluster instance) => <String, dynamic>{
-      'uri': instance.uri.toString(),
-    };
+  'uri': instance.uri.toString(),
+};

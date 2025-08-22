@@ -5,7 +5,7 @@ part 'appkit_network_info.freezed.dart';
 part 'appkit_network_info.g.dart';
 
 @freezed
-class ReownAppKitModalNetworkInfo with _$ReownAppKitModalNetworkInfo {
+sealed class ReownAppKitModalNetworkInfo with _$ReownAppKitModalNetworkInfo {
   const factory ReownAppKitModalNetworkInfo({
     required String name,
     required String chainId,
@@ -18,10 +18,10 @@ class ReownAppKitModalNetworkInfo with _$ReownAppKitModalNetworkInfo {
   }) = _ReownAppKitModalNetworkInfo;
 
   factory ReownAppKitModalNetworkInfo.fromJson(Map<String, dynamic> json) =>
-      _$$ReownAppKitModalNetworkInfoImplFromJson(json);
+      _$ReownAppKitModalNetworkInfoFromJson(json);
 }
 
-extension AppKitNetworkInfoExtension on ReownAppKitModalNetworkInfo {
+extension ReownAppKitModalNetworkInfoExtension on ReownAppKitModalNetworkInfo {
   String get chainHexId {
     try {
       final id = ReownAppKitModalNetworks.getIdFromChain(chainId);

@@ -22,7 +22,7 @@ class BasicCoreEvent {
 }
 
 @freezed
-class CoreEventProperties with _$CoreEventProperties {
+sealed class CoreEventProperties with _$CoreEventProperties {
   @JsonSerializable(includeIfNull: false)
   const factory CoreEventProperties({
     String? message,

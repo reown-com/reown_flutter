@@ -6,23 +6,22 @@ part of 'basic_models.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ReownCoreErrorImpl _$$ReownCoreErrorImplFromJson(Map<String, dynamic> json) =>
-    _$ReownCoreErrorImpl(
+_ReownCoreError _$ReownCoreErrorFromJson(Map<String, dynamic> json) =>
+    _ReownCoreError(
       code: (json['code'] as num).toInt(),
       message: json['message'] as String,
       data: json['data'] as String?,
     );
 
-Map<String, dynamic> _$$ReownCoreErrorImplToJson(
-        _$ReownCoreErrorImpl instance) =>
+Map<String, dynamic> _$ReownCoreErrorToJson(_ReownCoreError instance) =>
     <String, dynamic>{
       'code': instance.code,
       'message': instance.message,
-      if (instance.data case final value?) 'data': value,
+      'data': ?instance.data,
     };
 
-_$PublishOptionsImpl _$$PublishOptionsImplFromJson(Map<String, dynamic> json) =>
-    _$PublishOptionsImpl(
+_PublishOptions _$PublishOptionsFromJson(Map<String, dynamic> json) =>
+    _PublishOptions(
       ttl: (json['ttl'] as num?)?.toInt(),
       tag: (json['tag'] as num?)?.toInt(),
       correlationId: (json['correlationId'] as num?)?.toInt(),
@@ -30,28 +29,25 @@ _$PublishOptionsImpl _$$PublishOptionsImplFromJson(Map<String, dynamic> json) =>
       publishMethod: json['publishMethod'] as String?,
     );
 
-Map<String, dynamic> _$$PublishOptionsImplToJson(
-        _$PublishOptionsImpl instance) =>
+Map<String, dynamic> _$PublishOptionsToJson(_PublishOptions instance) =>
     <String, dynamic>{
-      if (instance.ttl case final value?) 'ttl': value,
-      if (instance.tag case final value?) 'tag': value,
-      if (instance.correlationId case final value?) 'correlationId': value,
-      if (instance.tvf case final value?) 'tvf': value,
-      if (instance.publishMethod case final value?) 'publishMethod': value,
+      'ttl': ?instance.ttl,
+      'tag': ?instance.tag,
+      'correlationId': ?instance.correlationId,
+      'tvf': ?instance.tvf,
+      'publishMethod': ?instance.publishMethod,
     };
 
-_$SubscribeOptionsImpl _$$SubscribeOptionsImplFromJson(
-        Map<String, dynamic> json) =>
-    _$SubscribeOptionsImpl(
+_SubscribeOptions _$SubscribeOptionsFromJson(Map<String, dynamic> json) =>
+    _SubscribeOptions(
       topic: json['topic'] as String,
       transportType:
           $enumDecodeNullable(_$TransportTypeEnumMap, json['transportType']) ??
-              TransportType.relay,
+          TransportType.relay,
       skipSubscribe: json['skipSubscribe'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$$SubscribeOptionsImplToJson(
-        _$SubscribeOptionsImpl instance) =>
+Map<String, dynamic> _$SubscribeOptionsToJson(_SubscribeOptions instance) =>
     <String, dynamic>{
       'topic': instance.topic,
       'transportType': _$TransportTypeEnumMap[instance.transportType]!,

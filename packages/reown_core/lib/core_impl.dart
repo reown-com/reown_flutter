@@ -39,6 +39,7 @@ import 'package:reown_core/verify/verify.dart';
 import 'package:reown_core/utils/log_level.dart';
 import 'package:reown_core/utils/utils.dart';
 import 'package:reown_core/models/basic_models.dart';
+import 'package:reown_core/store/secure_store.dart';
 
 class ReownCore implements IReownCore {
   @override
@@ -115,6 +116,9 @@ class ReownCore implements IReownCore {
   @override
   late IStore<Map<String, dynamic>> storage;
 
+  @override
+  late IStore<Map<String, dynamic>> secureStorage;
+
   ReownCore({
     required this.projectId,
     this.relayUrl = ReownConstants.DEFAULT_RELAY_URL,
@@ -138,10 +142,13 @@ class ReownCore implements IReownCore {
     storage = SharedPrefsStores(
       memoryStore: memoryStore,
     );
+    secureStorage = SecureStore(
+      fallbackStorage: storage,
+    );
     crypto = Crypto(
       core: this,
       keyChain: GenericStore<String>(
-        storage: storage,
+        storage: secureStorage,
         context: StoreVersions.CONTEXT_KEYCHAIN,
         version: StoreVersions.VERSION_KEYCHAIN,
         fromJson: (dynamic value) => value as String,
@@ -230,6 +237,7 @@ class ReownCore implements IReownCore {
   @override
   Future<void> start() async {
     await storage.init();
+    await secureStorage.init();
     await crypto.init();
     await relayClient.init();
     await expirer.init();

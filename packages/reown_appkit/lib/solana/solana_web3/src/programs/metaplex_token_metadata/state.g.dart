@@ -33,10 +33,10 @@ Map<String, dynamic> _$MetadataCollectionToJson(MetadataCollection instance) =>
     };
 
 MetadataUses _$MetadataUsesFromJson(Map<String, dynamic> json) => MetadataUses(
-      useMethod: $enumDecode(_$MetadataUseMethodEnumMap, json['useMethod']),
-      remaining: (json['remaining'] as num).toInt(),
-      total: (json['total'] as num).toInt(),
-    );
+  useMethod: $enumDecode(_$MetadataUseMethodEnumMap, json['useMethod']),
+  remaining: (json['remaining'] as num).toInt(),
+  total: (json['total'] as num).toInt(),
+);
 
 Map<String, dynamic> _$MetadataUsesToJson(MetadataUses instance) =>
     <String, dynamic>{
@@ -52,13 +52,9 @@ const _$MetadataUseMethodEnumMap = {
 };
 
 MetadataCollectionDetailsV1 _$MetadataCollectionDetailsV1FromJson(
-        Map<String, dynamic> json) =>
-    MetadataCollectionDetailsV1(
-      size: (json['size'] as num).toInt(),
-    );
+  Map<String, dynamic> json,
+) => MetadataCollectionDetailsV1(size: (json['size'] as num).toInt());
 
 Map<String, dynamic> _$MetadataCollectionDetailsV1ToJson(
-        MetadataCollectionDetailsV1 instance) =>
-    <String, dynamic>{
-      'size': instance.size,
-    };
+  MetadataCollectionDetailsV1 instance,
+) => <String, dynamic>{'size': instance.size};

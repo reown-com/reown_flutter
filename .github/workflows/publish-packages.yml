@@ -108,7 +108,7 @@ jobs:
         if: github.event.inputs.core == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.35.1'
 
       - name: Install yq
         if: github.event.inputs.core == 'true'
@@ -193,7 +193,7 @@ jobs:
         if: github.event.inputs.sign == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.35.1'
 
       - name: Install yq
         if: github.event.inputs.sign == 'true'
@@ -301,7 +301,7 @@ jobs:
         if: github.event.inputs.appkit == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.35.1'
 
       - name: Install yq
         if: github.event.inputs.appkit == 'true'
@@ -414,7 +414,7 @@ jobs:
         if: github.event.inputs.walletkit == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.35.1'
 
       - name: Install yq
         if: github.event.inputs.walletkit == 'true'
@@ -532,7 +532,7 @@ jobs:
         if: github.event.inputs.yttrium == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.35.1'
 
       - name: Get package version from reown_yttrium/pubspec.yaml
         if: github.event.inputs.yttrium == 'true'
@@ -613,7 +613,7 @@ jobs:
         if: github.event.inputs.cli == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.35.1'
 
       - name: Get package version from reown_cli/pubspec.yaml
         if: github.event.inputs.cli == 'true'

@@ -14,12 +14,12 @@ class RenderUtils {
   }
 
   static List<Color> get defaultAvatarColors => [
-        Color(0xFFf5ccfc),
-        Color(0xFFdba4f5),
-        Color(0xFF9a8ee8),
-        Color(0xFF6493da),
-        Color(0xFF6ebdea),
-      ];
+    Color(0xFFf5ccfc),
+    Color(0xFFdba4f5),
+    Color(0xFF9a8ee8),
+    Color(0xFF6493da),
+    Color(0xFF6ebdea),
+  ];
 
   static List<Color> generateAvatarColors(String? address) {
     if ((address ?? '').isEmpty) {
@@ -36,12 +36,7 @@ class RenderUtils {
       for (int i = 0; i < 5; i += 1) {
         final tintedColor = _tintColor(rgbColor, 0.15 * i);
         colors.add(
-          Color.fromRGBO(
-            tintedColor[0],
-            tintedColor[1],
-            tintedColor[2],
-            1.0,
-          ),
+          Color.fromRGBO(tintedColor[0], tintedColor[1], tintedColor[2], 1.0),
         );
       }
 
@@ -70,17 +65,17 @@ class RenderUtils {
   }
 
   static String colorToRGBA(Color color) {
-    final r = color.red;
-    final g = color.green;
-    final b = color.blue;
-    final a = color.opacity;
+    final r = color.r;
+    final g = color.g;
+    final b = color.b;
+    final a = color.a;
     return 'rgba($r, $g, $b, $a)';
   }
 
   static String colorToHex(Color color) {
-    return '${color.alpha.toRadixString(16).padLeft(2, '0')}'
-        '${color.red.toRadixString(16).padLeft(2, '0')}'
-        '${color.green.toRadixString(16).padLeft(2, '0')}'
-        '${color.blue.toRadixString(16).padLeft(2, '0')}';
+    return '${color.a.toInt().toRadixString(16).padLeft(2, '0')}'
+        '${color.r.toInt().toRadixString(16).padLeft(2, '0')}'
+        '${color.g.toInt().toRadixString(16).padLeft(2, '0')}'
+        '${color.b.toInt().toRadixString(16).padLeft(2, '0')}';
   }
 }

@@ -7,7 +7,7 @@ part 'proposal_models.g.dart';
 part 'proposal_models.freezed.dart';
 
 @freezed
-class RequiredNamespace with _$RequiredNamespace {
+sealed class RequiredNamespace with _$RequiredNamespace {
   @JsonSerializable(includeIfNull: false)
   const factory RequiredNamespace({
     List<String>? chains,
@@ -20,7 +20,7 @@ class RequiredNamespace with _$RequiredNamespace {
 }
 
 @freezed
-class SessionProposal with _$SessionProposal {
+sealed class SessionProposal with _$SessionProposal {
   @JsonSerializable()
   const factory SessionProposal({
     required int id,
@@ -32,7 +32,7 @@ class SessionProposal with _$SessionProposal {
 }
 
 @freezed
-class ProposalData with _$ProposalData {
+sealed class ProposalData with _$ProposalData {
   @JsonSerializable(includeIfNull: false)
   const factory ProposalData({
     required int id,

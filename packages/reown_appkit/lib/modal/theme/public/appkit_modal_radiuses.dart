@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'appkit_modal_radiuses.freezed.dart';
 
 @freezed
-class ReownAppKitModalRadiuses with _$ReownAppKitModalRadiuses {
+sealed class ReownAppKitModalRadiuses with _$ReownAppKitModalRadiuses {
   const factory ReownAppKitModalRadiuses({
     @Default(6.0) double radius4XS,
     @Default(8.0) double radius3XS,

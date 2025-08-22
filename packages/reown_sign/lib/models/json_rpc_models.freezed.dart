@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,3022 +9,4142 @@ part of 'json_rpc_models.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-WcPairingDeleteRequest _$WcPairingDeleteRequestFromJson(
-    Map<String, dynamic> json) {
-  return _WcPairingDeleteRequest.fromJson(json);
-}
 
 /// @nodoc
 mixin _$WcPairingDeleteRequest {
-  int get code => throw _privateConstructorUsedError;
-  String get message => throw _privateConstructorUsedError;
+
+ int get code; String get message;
+/// Create a copy of WcPairingDeleteRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WcPairingDeleteRequestCopyWith<WcPairingDeleteRequest> get copyWith => _$WcPairingDeleteRequestCopyWithImpl<WcPairingDeleteRequest>(this as WcPairingDeleteRequest, _$identity);
 
   /// Serializes this WcPairingDeleteRequest to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of WcPairingDeleteRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $WcPairingDeleteRequestCopyWith<WcPairingDeleteRequest> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcPairingDeleteRequest&&(identical(other.code, code) || other.code == code)&&(identical(other.message, message) || other.message == message));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,code,message);
+
+@override
+String toString() {
+  return 'WcPairingDeleteRequest(code: $code, message: $message)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $WcPairingDeleteRequestCopyWith<$Res> {
-  factory $WcPairingDeleteRequestCopyWith(WcPairingDeleteRequest value,
-          $Res Function(WcPairingDeleteRequest) then) =
-      _$WcPairingDeleteRequestCopyWithImpl<$Res, WcPairingDeleteRequest>;
-  @useResult
-  $Res call({int code, String message});
-}
+abstract mixin class $WcPairingDeleteRequestCopyWith<$Res>  {
+  factory $WcPairingDeleteRequestCopyWith(WcPairingDeleteRequest value, $Res Function(WcPairingDeleteRequest) _then) = _$WcPairingDeleteRequestCopyWithImpl;
+@useResult
+$Res call({
+ int code, String message
+});
 
+
+
+
+}
 /// @nodoc
-class _$WcPairingDeleteRequestCopyWithImpl<$Res,
-        $Val extends WcPairingDeleteRequest>
+class _$WcPairingDeleteRequestCopyWithImpl<$Res>
     implements $WcPairingDeleteRequestCopyWith<$Res> {
-  _$WcPairingDeleteRequestCopyWithImpl(this._value, this._then);
+  _$WcPairingDeleteRequestCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WcPairingDeleteRequest _self;
+  final $Res Function(WcPairingDeleteRequest) _then;
 
-  /// Create a copy of WcPairingDeleteRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? code = null,
-    Object? message = null,
-  }) {
-    return _then(_value.copyWith(
-      code: null == code
-          ? _value.code
-          : code // ignore: cast_nullable_to_non_nullable
-              as int,
-      message: null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
+/// Create a copy of WcPairingDeleteRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? code = null,Object? message = null,}) {
+  return _then(_self.copyWith(
+code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
+as int,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-/// @nodoc
-abstract class _$$WcPairingDeleteRequestImplCopyWith<$Res>
-    implements $WcPairingDeleteRequestCopyWith<$Res> {
-  factory _$$WcPairingDeleteRequestImplCopyWith(
-          _$WcPairingDeleteRequestImpl value,
-          $Res Function(_$WcPairingDeleteRequestImpl) then) =
-      __$$WcPairingDeleteRequestImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({int code, String message});
 }
 
-/// @nodoc
-class __$$WcPairingDeleteRequestImplCopyWithImpl<$Res>
-    extends _$WcPairingDeleteRequestCopyWithImpl<$Res,
-        _$WcPairingDeleteRequestImpl>
-    implements _$$WcPairingDeleteRequestImplCopyWith<$Res> {
-  __$$WcPairingDeleteRequestImplCopyWithImpl(
-      _$WcPairingDeleteRequestImpl _value,
-      $Res Function(_$WcPairingDeleteRequestImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of WcPairingDeleteRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? code = null,
-    Object? message = null,
-  }) {
-    return _then(_$WcPairingDeleteRequestImpl(
-      code: null == code
-          ? _value.code
-          : code // ignore: cast_nullable_to_non_nullable
-              as int,
-      message: null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
+/// Adds pattern-matching-related methods to [WcPairingDeleteRequest].
+extension WcPairingDeleteRequestPatterns on WcPairingDeleteRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WcPairingDeleteRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WcPairingDeleteRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WcPairingDeleteRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _WcPairingDeleteRequest():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WcPairingDeleteRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WcPairingDeleteRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int code,  String message)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WcPairingDeleteRequest() when $default != null:
+return $default(_that.code,_that.message);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int code,  String message)  $default,) {final _that = this;
+switch (_that) {
+case _WcPairingDeleteRequest():
+return $default(_that.code,_that.message);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int code,  String message)?  $default,) {final _that = this;
+switch (_that) {
+case _WcPairingDeleteRequest() when $default != null:
+return $default(_that.code,_that.message);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable()
-class _$WcPairingDeleteRequestImpl implements _WcPairingDeleteRequest {
-  const _$WcPairingDeleteRequestImpl(
-      {required this.code, required this.message});
+class _WcPairingDeleteRequest implements WcPairingDeleteRequest {
+  const _WcPairingDeleteRequest({required this.code, required this.message});
+  factory _WcPairingDeleteRequest.fromJson(Map<String, dynamic> json) => _$WcPairingDeleteRequestFromJson(json);
 
-  factory _$WcPairingDeleteRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WcPairingDeleteRequestImplFromJson(json);
+@override final  int code;
+@override final  String message;
 
-  @override
-  final int code;
-  @override
-  final String message;
+/// Create a copy of WcPairingDeleteRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WcPairingDeleteRequestCopyWith<_WcPairingDeleteRequest> get copyWith => __$WcPairingDeleteRequestCopyWithImpl<_WcPairingDeleteRequest>(this, _$identity);
 
-  @override
-  String toString() {
-    return 'WcPairingDeleteRequest(code: $code, message: $message)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WcPairingDeleteRequestImpl &&
-            (identical(other.code, code) || other.code == code) &&
-            (identical(other.message, message) || other.message == message));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, code, message);
-
-  /// Create a copy of WcPairingDeleteRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WcPairingDeleteRequestImplCopyWith<_$WcPairingDeleteRequestImpl>
-      get copyWith => __$$WcPairingDeleteRequestImplCopyWithImpl<
-          _$WcPairingDeleteRequestImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WcPairingDeleteRequestImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$WcPairingDeleteRequestToJson(this, );
 }
 
-abstract class _WcPairingDeleteRequest implements WcPairingDeleteRequest {
-  const factory _WcPairingDeleteRequest(
-      {required final int code,
-      required final String message}) = _$WcPairingDeleteRequestImpl;
-
-  factory _WcPairingDeleteRequest.fromJson(Map<String, dynamic> json) =
-      _$WcPairingDeleteRequestImpl.fromJson;
-
-  @override
-  int get code;
-  @override
-  String get message;
-
-  /// Create a copy of WcPairingDeleteRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$WcPairingDeleteRequestImplCopyWith<_$WcPairingDeleteRequestImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcPairingDeleteRequest&&(identical(other.code, code) || other.code == code)&&(identical(other.message, message) || other.message == message));
 }
 
-WcPairingPingRequest _$WcPairingPingRequestFromJson(Map<String, dynamic> json) {
-  return _WcPairingPingRequest.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,code,message);
+
+@override
+String toString() {
+  return 'WcPairingDeleteRequest(code: $code, message: $message)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WcPairingDeleteRequestCopyWith<$Res> implements $WcPairingDeleteRequestCopyWith<$Res> {
+  factory _$WcPairingDeleteRequestCopyWith(_WcPairingDeleteRequest value, $Res Function(_WcPairingDeleteRequest) _then) = __$WcPairingDeleteRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ int code, String message
+});
+
+
+
+
+}
+/// @nodoc
+class __$WcPairingDeleteRequestCopyWithImpl<$Res>
+    implements _$WcPairingDeleteRequestCopyWith<$Res> {
+  __$WcPairingDeleteRequestCopyWithImpl(this._self, this._then);
+
+  final _WcPairingDeleteRequest _self;
+  final $Res Function(_WcPairingDeleteRequest) _then;
+
+/// Create a copy of WcPairingDeleteRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? code = null,Object? message = null,}) {
+  return _then(_WcPairingDeleteRequest(
+code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
+as int,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$WcPairingPingRequest {
-  Map<String, dynamic> get data => throw _privateConstructorUsedError;
+
+ Map<String, dynamic> get data;
+/// Create a copy of WcPairingPingRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WcPairingPingRequestCopyWith<WcPairingPingRequest> get copyWith => _$WcPairingPingRequestCopyWithImpl<WcPairingPingRequest>(this as WcPairingPingRequest, _$identity);
 
   /// Serializes this WcPairingPingRequest to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of WcPairingPingRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $WcPairingPingRequestCopyWith<WcPairingPingRequest> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcPairingPingRequest&&const DeepCollectionEquality().equals(other.data, data));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(data));
+
+@override
+String toString() {
+  return 'WcPairingPingRequest(data: $data)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $WcPairingPingRequestCopyWith<$Res> {
-  factory $WcPairingPingRequestCopyWith(WcPairingPingRequest value,
-          $Res Function(WcPairingPingRequest) then) =
-      _$WcPairingPingRequestCopyWithImpl<$Res, WcPairingPingRequest>;
-  @useResult
-  $Res call({Map<String, dynamic> data});
-}
+abstract mixin class $WcPairingPingRequestCopyWith<$Res>  {
+  factory $WcPairingPingRequestCopyWith(WcPairingPingRequest value, $Res Function(WcPairingPingRequest) _then) = _$WcPairingPingRequestCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> data
+});
 
+
+
+
+}
 /// @nodoc
-class _$WcPairingPingRequestCopyWithImpl<$Res,
-        $Val extends WcPairingPingRequest>
+class _$WcPairingPingRequestCopyWithImpl<$Res>
     implements $WcPairingPingRequestCopyWith<$Res> {
-  _$WcPairingPingRequestCopyWithImpl(this._value, this._then);
+  _$WcPairingPingRequestCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WcPairingPingRequest _self;
+  final $Res Function(WcPairingPingRequest) _then;
 
-  /// Create a copy of WcPairingPingRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? data = null,
-  }) {
-    return _then(_value.copyWith(
-      data: null == data
-          ? _value.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
-    ) as $Val);
-  }
+/// Create a copy of WcPairingPingRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? data = null,}) {
+  return _then(_self.copyWith(
+data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
 }
 
-/// @nodoc
-abstract class _$$WcPairingPingRequestImplCopyWith<$Res>
-    implements $WcPairingPingRequestCopyWith<$Res> {
-  factory _$$WcPairingPingRequestImplCopyWith(_$WcPairingPingRequestImpl value,
-          $Res Function(_$WcPairingPingRequestImpl) then) =
-      __$$WcPairingPingRequestImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({Map<String, dynamic> data});
 }
 
-/// @nodoc
-class __$$WcPairingPingRequestImplCopyWithImpl<$Res>
-    extends _$WcPairingPingRequestCopyWithImpl<$Res, _$WcPairingPingRequestImpl>
-    implements _$$WcPairingPingRequestImplCopyWith<$Res> {
-  __$$WcPairingPingRequestImplCopyWithImpl(_$WcPairingPingRequestImpl _value,
-      $Res Function(_$WcPairingPingRequestImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of WcPairingPingRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? data = null,
-  }) {
-    return _then(_$WcPairingPingRequestImpl(
-      data: null == data
-          ? _value._data
-          : data // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
-    ));
-  }
+/// Adds pattern-matching-related methods to [WcPairingPingRequest].
+extension WcPairingPingRequestPatterns on WcPairingPingRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WcPairingPingRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WcPairingPingRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WcPairingPingRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _WcPairingPingRequest():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WcPairingPingRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WcPairingPingRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<String, dynamic> data)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WcPairingPingRequest() when $default != null:
+return $default(_that.data);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<String, dynamic> data)  $default,) {final _that = this;
+switch (_that) {
+case _WcPairingPingRequest():
+return $default(_that.data);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<String, dynamic> data)?  $default,) {final _that = this;
+switch (_that) {
+case _WcPairingPingRequest() when $default != null:
+return $default(_that.data);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable()
-class _$WcPairingPingRequestImpl implements _WcPairingPingRequest {
-  const _$WcPairingPingRequestImpl({required final Map<String, dynamic> data})
-      : _data = data;
+class _WcPairingPingRequest implements WcPairingPingRequest {
+  const _WcPairingPingRequest({required final  Map<String, dynamic> data}): _data = data;
+  factory _WcPairingPingRequest.fromJson(Map<String, dynamic> json) => _$WcPairingPingRequestFromJson(json);
 
-  factory _$WcPairingPingRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WcPairingPingRequestImplFromJson(json);
-
-  final Map<String, dynamic> _data;
-  @override
-  Map<String, dynamic> get data {
-    if (_data is EqualUnmodifiableMapView) return _data;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_data);
-  }
-
-  @override
-  String toString() {
-    return 'WcPairingPingRequest(data: $data)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WcPairingPingRequestImpl &&
-            const DeepCollectionEquality().equals(other._data, _data));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
-
-  /// Create a copy of WcPairingPingRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WcPairingPingRequestImplCopyWith<_$WcPairingPingRequestImpl>
-      get copyWith =>
-          __$$WcPairingPingRequestImplCopyWithImpl<_$WcPairingPingRequestImpl>(
-              this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WcPairingPingRequestImplToJson(
-      this,
-    );
-  }
+ final  Map<String, dynamic> _data;
+@override Map<String, dynamic> get data {
+  if (_data is EqualUnmodifiableMapView) return _data;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_data);
 }
 
-abstract class _WcPairingPingRequest implements WcPairingPingRequest {
-  const factory _WcPairingPingRequest(
-      {required final Map<String, dynamic> data}) = _$WcPairingPingRequestImpl;
 
-  factory _WcPairingPingRequest.fromJson(Map<String, dynamic> json) =
-      _$WcPairingPingRequestImpl.fromJson;
+/// Create a copy of WcPairingPingRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WcPairingPingRequestCopyWith<_WcPairingPingRequest> get copyWith => __$WcPairingPingRequestCopyWithImpl<_WcPairingPingRequest>(this, _$identity);
 
-  @override
-  Map<String, dynamic> get data;
-
-  /// Create a copy of WcPairingPingRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$WcPairingPingRequestImplCopyWith<_$WcPairingPingRequestImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+Map<String, dynamic> toJson() {
+  return _$WcPairingPingRequestToJson(this, );
 }
 
-WcSessionProposeRequest _$WcSessionProposeRequestFromJson(
-    Map<String, dynamic> json) {
-  return _WcSessionProposeRequest.fromJson(json);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcPairingPingRequest&&const DeepCollectionEquality().equals(other._data, _data));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_data));
+
+@override
+String toString() {
+  return 'WcPairingPingRequest(data: $data)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WcPairingPingRequestCopyWith<$Res> implements $WcPairingPingRequestCopyWith<$Res> {
+  factory _$WcPairingPingRequestCopyWith(_WcPairingPingRequest value, $Res Function(_WcPairingPingRequest) _then) = __$WcPairingPingRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ Map<String, dynamic> data
+});
+
+
+
+
+}
+/// @nodoc
+class __$WcPairingPingRequestCopyWithImpl<$Res>
+    implements _$WcPairingPingRequestCopyWith<$Res> {
+  __$WcPairingPingRequestCopyWithImpl(this._self, this._then);
+
+  final _WcPairingPingRequest _self;
+  final $Res Function(_WcPairingPingRequest) _then;
+
+/// Create a copy of WcPairingPingRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? data = null,}) {
+  return _then(_WcPairingPingRequest(
+data: null == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$WcSessionProposeRequest {
-  List<Relay> get relays => throw _privateConstructorUsedError;
-  Map<String, RequiredNamespace> get requiredNamespaces =>
-      throw _privateConstructorUsedError;
-  Map<String, RequiredNamespace>? get optionalNamespaces =>
-      throw _privateConstructorUsedError;
-  Map<String, String>? get sessionProperties =>
-      throw _privateConstructorUsedError;
-  ConnectionMetadata get proposer => throw _privateConstructorUsedError;
+
+ List<Relay> get relays; Map<String, RequiredNamespace> get requiredNamespaces; Map<String, RequiredNamespace>? get optionalNamespaces; Map<String, String>? get sessionProperties; ConnectionMetadata get proposer;
+/// Create a copy of WcSessionProposeRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WcSessionProposeRequestCopyWith<WcSessionProposeRequest> get copyWith => _$WcSessionProposeRequestCopyWithImpl<WcSessionProposeRequest>(this as WcSessionProposeRequest, _$identity);
 
   /// Serializes this WcSessionProposeRequest to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of WcSessionProposeRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $WcSessionProposeRequestCopyWith<WcSessionProposeRequest> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionProposeRequest&&const DeepCollectionEquality().equals(other.relays, relays)&&const DeepCollectionEquality().equals(other.requiredNamespaces, requiredNamespaces)&&const DeepCollectionEquality().equals(other.optionalNamespaces, optionalNamespaces)&&const DeepCollectionEquality().equals(other.sessionProperties, sessionProperties)&&(identical(other.proposer, proposer) || other.proposer == proposer));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(relays),const DeepCollectionEquality().hash(requiredNamespaces),const DeepCollectionEquality().hash(optionalNamespaces),const DeepCollectionEquality().hash(sessionProperties),proposer);
+
+@override
+String toString() {
+  return 'WcSessionProposeRequest(relays: $relays, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, proposer: $proposer)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $WcSessionProposeRequestCopyWith<$Res> {
-  factory $WcSessionProposeRequestCopyWith(WcSessionProposeRequest value,
-          $Res Function(WcSessionProposeRequest) then) =
-      _$WcSessionProposeRequestCopyWithImpl<$Res, WcSessionProposeRequest>;
-  @useResult
-  $Res call(
-      {List<Relay> relays,
-      Map<String, RequiredNamespace> requiredNamespaces,
-      Map<String, RequiredNamespace>? optionalNamespaces,
-      Map<String, String>? sessionProperties,
-      ConnectionMetadata proposer});
+abstract mixin class $WcSessionProposeRequestCopyWith<$Res>  {
+  factory $WcSessionProposeRequestCopyWith(WcSessionProposeRequest value, $Res Function(WcSessionProposeRequest) _then) = _$WcSessionProposeRequestCopyWithImpl;
+@useResult
+$Res call({
+ List<Relay> relays, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, ConnectionMetadata proposer
+});
 
-  $ConnectionMetadataCopyWith<$Res> get proposer;
+
+$ConnectionMetadataCopyWith<$Res> get proposer;
+
 }
-
 /// @nodoc
-class _$WcSessionProposeRequestCopyWithImpl<$Res,
-        $Val extends WcSessionProposeRequest>
+class _$WcSessionProposeRequestCopyWithImpl<$Res>
     implements $WcSessionProposeRequestCopyWith<$Res> {
-  _$WcSessionProposeRequestCopyWithImpl(this._value, this._then);
+  _$WcSessionProposeRequestCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WcSessionProposeRequest _self;
+  final $Res Function(WcSessionProposeRequest) _then;
 
-  /// Create a copy of WcSessionProposeRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? relays = null,
-    Object? requiredNamespaces = null,
-    Object? optionalNamespaces = freezed,
-    Object? sessionProperties = freezed,
-    Object? proposer = null,
-  }) {
-    return _then(_value.copyWith(
-      relays: null == relays
-          ? _value.relays
-          : relays // ignore: cast_nullable_to_non_nullable
-              as List<Relay>,
-      requiredNamespaces: null == requiredNamespaces
-          ? _value.requiredNamespaces
-          : requiredNamespaces // ignore: cast_nullable_to_non_nullable
-              as Map<String, RequiredNamespace>,
-      optionalNamespaces: freezed == optionalNamespaces
-          ? _value.optionalNamespaces
-          : optionalNamespaces // ignore: cast_nullable_to_non_nullable
-              as Map<String, RequiredNamespace>?,
-      sessionProperties: freezed == sessionProperties
-          ? _value.sessionProperties
-          : sessionProperties // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
-      proposer: null == proposer
-          ? _value.proposer
-          : proposer // ignore: cast_nullable_to_non_nullable
-              as ConnectionMetadata,
-    ) as $Val);
-  }
-
-  /// Create a copy of WcSessionProposeRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $ConnectionMetadataCopyWith<$Res> get proposer {
-    return $ConnectionMetadataCopyWith<$Res>(_value.proposer, (value) {
-      return _then(_value.copyWith(proposer: value) as $Val);
-    });
-  }
+/// Create a copy of WcSessionProposeRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? relays = null,Object? requiredNamespaces = null,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? proposer = null,}) {
+  return _then(_self.copyWith(
+relays: null == relays ? _self.relays : relays // ignore: cast_nullable_to_non_nullable
+as List<Relay>,requiredNamespaces: null == requiredNamespaces ? _self.requiredNamespaces : requiredNamespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, RequiredNamespace>,optionalNamespaces: freezed == optionalNamespaces ? _self.optionalNamespaces : optionalNamespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, RequiredNamespace>?,sessionProperties: freezed == sessionProperties ? _self.sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
+as Map<String, String>?,proposer: null == proposer ? _self.proposer : proposer // ignore: cast_nullable_to_non_nullable
+as ConnectionMetadata,
+  ));
+}
+/// Create a copy of WcSessionProposeRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConnectionMetadataCopyWith<$Res> get proposer {
+  
+  return $ConnectionMetadataCopyWith<$Res>(_self.proposer, (value) {
+    return _then(_self.copyWith(proposer: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$WcSessionProposeRequestImplCopyWith<$Res>
-    implements $WcSessionProposeRequestCopyWith<$Res> {
-  factory _$$WcSessionProposeRequestImplCopyWith(
-          _$WcSessionProposeRequestImpl value,
-          $Res Function(_$WcSessionProposeRequestImpl) then) =
-      __$$WcSessionProposeRequestImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {List<Relay> relays,
-      Map<String, RequiredNamespace> requiredNamespaces,
-      Map<String, RequiredNamespace>? optionalNamespaces,
-      Map<String, String>? sessionProperties,
-      ConnectionMetadata proposer});
 
-  @override
-  $ConnectionMetadataCopyWith<$Res> get proposer;
+/// Adds pattern-matching-related methods to [WcSessionProposeRequest].
+extension WcSessionProposeRequestPatterns on WcSessionProposeRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WcSessionProposeRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WcSessionProposeRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WcSessionProposeRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionProposeRequest():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WcSessionProposeRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionProposeRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WcSessionProposeRequest() when $default != null:
+return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer)  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionProposeRequest():
+return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer)?  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionProposeRequest() when $default != null:
+return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$WcSessionProposeRequestImplCopyWithImpl<$Res>
-    extends _$WcSessionProposeRequestCopyWithImpl<$Res,
-        _$WcSessionProposeRequestImpl>
-    implements _$$WcSessionProposeRequestImplCopyWith<$Res> {
-  __$$WcSessionProposeRequestImplCopyWithImpl(
-      _$WcSessionProposeRequestImpl _value,
-      $Res Function(_$WcSessionProposeRequestImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of WcSessionProposeRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? relays = null,
-    Object? requiredNamespaces = null,
-    Object? optionalNamespaces = freezed,
-    Object? sessionProperties = freezed,
-    Object? proposer = null,
-  }) {
-    return _then(_$WcSessionProposeRequestImpl(
-      relays: null == relays
-          ? _value._relays
-          : relays // ignore: cast_nullable_to_non_nullable
-              as List<Relay>,
-      requiredNamespaces: null == requiredNamespaces
-          ? _value._requiredNamespaces
-          : requiredNamespaces // ignore: cast_nullable_to_non_nullable
-              as Map<String, RequiredNamespace>,
-      optionalNamespaces: freezed == optionalNamespaces
-          ? _value._optionalNamespaces
-          : optionalNamespaces // ignore: cast_nullable_to_non_nullable
-              as Map<String, RequiredNamespace>?,
-      sessionProperties: freezed == sessionProperties
-          ? _value._sessionProperties
-          : sessionProperties // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
-      proposer: null == proposer
-          ? _value.proposer
-          : proposer // ignore: cast_nullable_to_non_nullable
-              as ConnectionMetadata,
-    ));
-  }
 }
 
 /// @nodoc
 
 @JsonSerializable(includeIfNull: false)
-class _$WcSessionProposeRequestImpl implements _WcSessionProposeRequest {
-  const _$WcSessionProposeRequestImpl(
-      {required final List<Relay> relays,
-      required final Map<String, RequiredNamespace> requiredNamespaces,
-      final Map<String, RequiredNamespace>? optionalNamespaces,
-      final Map<String, String>? sessionProperties,
-      required this.proposer})
-      : _relays = relays,
-        _requiredNamespaces = requiredNamespaces,
-        _optionalNamespaces = optionalNamespaces,
-        _sessionProperties = sessionProperties;
+class _WcSessionProposeRequest implements WcSessionProposeRequest {
+  const _WcSessionProposeRequest({required final  List<Relay> relays, required final  Map<String, RequiredNamespace> requiredNamespaces, final  Map<String, RequiredNamespace>? optionalNamespaces, final  Map<String, String>? sessionProperties, required this.proposer}): _relays = relays,_requiredNamespaces = requiredNamespaces,_optionalNamespaces = optionalNamespaces,_sessionProperties = sessionProperties;
+  factory _WcSessionProposeRequest.fromJson(Map<String, dynamic> json) => _$WcSessionProposeRequestFromJson(json);
 
-  factory _$WcSessionProposeRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WcSessionProposeRequestImplFromJson(json);
-
-  final List<Relay> _relays;
-  @override
-  List<Relay> get relays {
-    if (_relays is EqualUnmodifiableListView) return _relays;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_relays);
-  }
-
-  final Map<String, RequiredNamespace> _requiredNamespaces;
-  @override
-  Map<String, RequiredNamespace> get requiredNamespaces {
-    if (_requiredNamespaces is EqualUnmodifiableMapView)
-      return _requiredNamespaces;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_requiredNamespaces);
-  }
-
-  final Map<String, RequiredNamespace>? _optionalNamespaces;
-  @override
-  Map<String, RequiredNamespace>? get optionalNamespaces {
-    final value = _optionalNamespaces;
-    if (value == null) return null;
-    if (_optionalNamespaces is EqualUnmodifiableMapView)
-      return _optionalNamespaces;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
-
-  final Map<String, String>? _sessionProperties;
-  @override
-  Map<String, String>? get sessionProperties {
-    final value = _sessionProperties;
-    if (value == null) return null;
-    if (_sessionProperties is EqualUnmodifiableMapView)
-      return _sessionProperties;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
-
-  @override
-  final ConnectionMetadata proposer;
-
-  @override
-  String toString() {
-    return 'WcSessionProposeRequest(relays: $relays, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, proposer: $proposer)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WcSessionProposeRequestImpl &&
-            const DeepCollectionEquality().equals(other._relays, _relays) &&
-            const DeepCollectionEquality()
-                .equals(other._requiredNamespaces, _requiredNamespaces) &&
-            const DeepCollectionEquality()
-                .equals(other._optionalNamespaces, _optionalNamespaces) &&
-            const DeepCollectionEquality()
-                .equals(other._sessionProperties, _sessionProperties) &&
-            (identical(other.proposer, proposer) ||
-                other.proposer == proposer));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_relays),
-      const DeepCollectionEquality().hash(_requiredNamespaces),
-      const DeepCollectionEquality().hash(_optionalNamespaces),
-      const DeepCollectionEquality().hash(_sessionProperties),
-      proposer);
-
-  /// Create a copy of WcSessionProposeRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WcSessionProposeRequestImplCopyWith<_$WcSessionProposeRequestImpl>
-      get copyWith => __$$WcSessionProposeRequestImplCopyWithImpl<
-          _$WcSessionProposeRequestImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WcSessionProposeRequestImplToJson(
-      this,
-    );
-  }
+ final  List<Relay> _relays;
+@override List<Relay> get relays {
+  if (_relays is EqualUnmodifiableListView) return _relays;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_relays);
 }
 
-abstract class _WcSessionProposeRequest implements WcSessionProposeRequest {
-  const factory _WcSessionProposeRequest(
-          {required final List<Relay> relays,
-          required final Map<String, RequiredNamespace> requiredNamespaces,
-          final Map<String, RequiredNamespace>? optionalNamespaces,
-          final Map<String, String>? sessionProperties,
-          required final ConnectionMetadata proposer}) =
-      _$WcSessionProposeRequestImpl;
-
-  factory _WcSessionProposeRequest.fromJson(Map<String, dynamic> json) =
-      _$WcSessionProposeRequestImpl.fromJson;
-
-  @override
-  List<Relay> get relays;
-  @override
-  Map<String, RequiredNamespace> get requiredNamespaces;
-  @override
-  Map<String, RequiredNamespace>? get optionalNamespaces;
-  @override
-  Map<String, String>? get sessionProperties;
-  @override
-  ConnectionMetadata get proposer;
-
-  /// Create a copy of WcSessionProposeRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$WcSessionProposeRequestImplCopyWith<_$WcSessionProposeRequestImpl>
-      get copyWith => throw _privateConstructorUsedError;
+ final  Map<String, RequiredNamespace> _requiredNamespaces;
+@override Map<String, RequiredNamespace> get requiredNamespaces {
+  if (_requiredNamespaces is EqualUnmodifiableMapView) return _requiredNamespaces;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_requiredNamespaces);
 }
 
-WcSessionProposeResponse _$WcSessionProposeResponseFromJson(
-    Map<String, dynamic> json) {
-  return _WcSessionProposeResponse.fromJson(json);
+ final  Map<String, RequiredNamespace>? _optionalNamespaces;
+@override Map<String, RequiredNamespace>? get optionalNamespaces {
+  final value = _optionalNamespaces;
+  if (value == null) return null;
+  if (_optionalNamespaces is EqualUnmodifiableMapView) return _optionalNamespaces;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
 }
+
+ final  Map<String, String>? _sessionProperties;
+@override Map<String, String>? get sessionProperties {
+  final value = _sessionProperties;
+  if (value == null) return null;
+  if (_sessionProperties is EqualUnmodifiableMapView) return _sessionProperties;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
+}
+
+@override final  ConnectionMetadata proposer;
+
+/// Create a copy of WcSessionProposeRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WcSessionProposeRequestCopyWith<_WcSessionProposeRequest> get copyWith => __$WcSessionProposeRequestCopyWithImpl<_WcSessionProposeRequest>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$WcSessionProposeRequestToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionProposeRequest&&const DeepCollectionEquality().equals(other._relays, _relays)&&const DeepCollectionEquality().equals(other._requiredNamespaces, _requiredNamespaces)&&const DeepCollectionEquality().equals(other._optionalNamespaces, _optionalNamespaces)&&const DeepCollectionEquality().equals(other._sessionProperties, _sessionProperties)&&(identical(other.proposer, proposer) || other.proposer == proposer));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_relays),const DeepCollectionEquality().hash(_requiredNamespaces),const DeepCollectionEquality().hash(_optionalNamespaces),const DeepCollectionEquality().hash(_sessionProperties),proposer);
+
+@override
+String toString() {
+  return 'WcSessionProposeRequest(relays: $relays, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, proposer: $proposer)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WcSessionProposeRequestCopyWith<$Res> implements $WcSessionProposeRequestCopyWith<$Res> {
+  factory _$WcSessionProposeRequestCopyWith(_WcSessionProposeRequest value, $Res Function(_WcSessionProposeRequest) _then) = __$WcSessionProposeRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ List<Relay> relays, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, ConnectionMetadata proposer
+});
+
+
+@override $ConnectionMetadataCopyWith<$Res> get proposer;
+
+}
+/// @nodoc
+class __$WcSessionProposeRequestCopyWithImpl<$Res>
+    implements _$WcSessionProposeRequestCopyWith<$Res> {
+  __$WcSessionProposeRequestCopyWithImpl(this._self, this._then);
+
+  final _WcSessionProposeRequest _self;
+  final $Res Function(_WcSessionProposeRequest) _then;
+
+/// Create a copy of WcSessionProposeRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? relays = null,Object? requiredNamespaces = null,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? proposer = null,}) {
+  return _then(_WcSessionProposeRequest(
+relays: null == relays ? _self._relays : relays // ignore: cast_nullable_to_non_nullable
+as List<Relay>,requiredNamespaces: null == requiredNamespaces ? _self._requiredNamespaces : requiredNamespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, RequiredNamespace>,optionalNamespaces: freezed == optionalNamespaces ? _self._optionalNamespaces : optionalNamespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, RequiredNamespace>?,sessionProperties: freezed == sessionProperties ? _self._sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
+as Map<String, String>?,proposer: null == proposer ? _self.proposer : proposer // ignore: cast_nullable_to_non_nullable
+as ConnectionMetadata,
+  ));
+}
+
+/// Create a copy of WcSessionProposeRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConnectionMetadataCopyWith<$Res> get proposer {
+  
+  return $ConnectionMetadataCopyWith<$Res>(_self.proposer, (value) {
+    return _then(_self.copyWith(proposer: value));
+  });
+}
+}
+
 
 /// @nodoc
 mixin _$WcSessionProposeResponse {
-  Relay get relay => throw _privateConstructorUsedError;
-  String get responderPublicKey => throw _privateConstructorUsedError;
+
+ Relay get relay; String get responderPublicKey;
+/// Create a copy of WcSessionProposeResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WcSessionProposeResponseCopyWith<WcSessionProposeResponse> get copyWith => _$WcSessionProposeResponseCopyWithImpl<WcSessionProposeResponse>(this as WcSessionProposeResponse, _$identity);
 
   /// Serializes this WcSessionProposeResponse to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of WcSessionProposeResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $WcSessionProposeResponseCopyWith<WcSessionProposeResponse> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionProposeResponse&&(identical(other.relay, relay) || other.relay == relay)&&(identical(other.responderPublicKey, responderPublicKey) || other.responderPublicKey == responderPublicKey));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,relay,responderPublicKey);
+
+@override
+String toString() {
+  return 'WcSessionProposeResponse(relay: $relay, responderPublicKey: $responderPublicKey)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $WcSessionProposeResponseCopyWith<$Res> {
-  factory $WcSessionProposeResponseCopyWith(WcSessionProposeResponse value,
-          $Res Function(WcSessionProposeResponse) then) =
-      _$WcSessionProposeResponseCopyWithImpl<$Res, WcSessionProposeResponse>;
-  @useResult
-  $Res call({Relay relay, String responderPublicKey});
-}
+abstract mixin class $WcSessionProposeResponseCopyWith<$Res>  {
+  factory $WcSessionProposeResponseCopyWith(WcSessionProposeResponse value, $Res Function(WcSessionProposeResponse) _then) = _$WcSessionProposeResponseCopyWithImpl;
+@useResult
+$Res call({
+ Relay relay, String responderPublicKey
+});
 
+
+
+
+}
 /// @nodoc
-class _$WcSessionProposeResponseCopyWithImpl<$Res,
-        $Val extends WcSessionProposeResponse>
+class _$WcSessionProposeResponseCopyWithImpl<$Res>
     implements $WcSessionProposeResponseCopyWith<$Res> {
-  _$WcSessionProposeResponseCopyWithImpl(this._value, this._then);
+  _$WcSessionProposeResponseCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WcSessionProposeResponse _self;
+  final $Res Function(WcSessionProposeResponse) _then;
 
-  /// Create a copy of WcSessionProposeResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? relay = null,
-    Object? responderPublicKey = null,
-  }) {
-    return _then(_value.copyWith(
-      relay: null == relay
-          ? _value.relay
-          : relay // ignore: cast_nullable_to_non_nullable
-              as Relay,
-      responderPublicKey: null == responderPublicKey
-          ? _value.responderPublicKey
-          : responderPublicKey // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
+/// Create a copy of WcSessionProposeResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? relay = null,Object? responderPublicKey = null,}) {
+  return _then(_self.copyWith(
+relay: null == relay ? _self.relay : relay // ignore: cast_nullable_to_non_nullable
+as Relay,responderPublicKey: null == responderPublicKey ? _self.responderPublicKey : responderPublicKey // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-/// @nodoc
-abstract class _$$WcSessionProposeResponseImplCopyWith<$Res>
-    implements $WcSessionProposeResponseCopyWith<$Res> {
-  factory _$$WcSessionProposeResponseImplCopyWith(
-          _$WcSessionProposeResponseImpl value,
-          $Res Function(_$WcSessionProposeResponseImpl) then) =
-      __$$WcSessionProposeResponseImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({Relay relay, String responderPublicKey});
 }
 
-/// @nodoc
-class __$$WcSessionProposeResponseImplCopyWithImpl<$Res>
-    extends _$WcSessionProposeResponseCopyWithImpl<$Res,
-        _$WcSessionProposeResponseImpl>
-    implements _$$WcSessionProposeResponseImplCopyWith<$Res> {
-  __$$WcSessionProposeResponseImplCopyWithImpl(
-      _$WcSessionProposeResponseImpl _value,
-      $Res Function(_$WcSessionProposeResponseImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of WcSessionProposeResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? relay = null,
-    Object? responderPublicKey = null,
-  }) {
-    return _then(_$WcSessionProposeResponseImpl(
-      relay: null == relay
-          ? _value.relay
-          : relay // ignore: cast_nullable_to_non_nullable
-              as Relay,
-      responderPublicKey: null == responderPublicKey
-          ? _value.responderPublicKey
-          : responderPublicKey // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
+/// Adds pattern-matching-related methods to [WcSessionProposeResponse].
+extension WcSessionProposeResponsePatterns on WcSessionProposeResponse {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WcSessionProposeResponse value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WcSessionProposeResponse() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WcSessionProposeResponse value)  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionProposeResponse():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WcSessionProposeResponse value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionProposeResponse() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Relay relay,  String responderPublicKey)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WcSessionProposeResponse() when $default != null:
+return $default(_that.relay,_that.responderPublicKey);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Relay relay,  String responderPublicKey)  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionProposeResponse():
+return $default(_that.relay,_that.responderPublicKey);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Relay relay,  String responderPublicKey)?  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionProposeResponse() when $default != null:
+return $default(_that.relay,_that.responderPublicKey);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable()
-class _$WcSessionProposeResponseImpl implements _WcSessionProposeResponse {
-  const _$WcSessionProposeResponseImpl(
-      {required this.relay, required this.responderPublicKey});
+class _WcSessionProposeResponse implements WcSessionProposeResponse {
+  const _WcSessionProposeResponse({required this.relay, required this.responderPublicKey});
+  factory _WcSessionProposeResponse.fromJson(Map<String, dynamic> json) => _$WcSessionProposeResponseFromJson(json);
 
-  factory _$WcSessionProposeResponseImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WcSessionProposeResponseImplFromJson(json);
+@override final  Relay relay;
+@override final  String responderPublicKey;
 
-  @override
-  final Relay relay;
-  @override
-  final String responderPublicKey;
+/// Create a copy of WcSessionProposeResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WcSessionProposeResponseCopyWith<_WcSessionProposeResponse> get copyWith => __$WcSessionProposeResponseCopyWithImpl<_WcSessionProposeResponse>(this, _$identity);
 
-  @override
-  String toString() {
-    return 'WcSessionProposeResponse(relay: $relay, responderPublicKey: $responderPublicKey)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WcSessionProposeResponseImpl &&
-            (identical(other.relay, relay) || other.relay == relay) &&
-            (identical(other.responderPublicKey, responderPublicKey) ||
-                other.responderPublicKey == responderPublicKey));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, relay, responderPublicKey);
-
-  /// Create a copy of WcSessionProposeResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WcSessionProposeResponseImplCopyWith<_$WcSessionProposeResponseImpl>
-      get copyWith => __$$WcSessionProposeResponseImplCopyWithImpl<
-          _$WcSessionProposeResponseImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WcSessionProposeResponseImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$WcSessionProposeResponseToJson(this, );
 }
 
-abstract class _WcSessionProposeResponse implements WcSessionProposeResponse {
-  const factory _WcSessionProposeResponse(
-          {required final Relay relay,
-          required final String responderPublicKey}) =
-      _$WcSessionProposeResponseImpl;
-
-  factory _WcSessionProposeResponse.fromJson(Map<String, dynamic> json) =
-      _$WcSessionProposeResponseImpl.fromJson;
-
-  @override
-  Relay get relay;
-  @override
-  String get responderPublicKey;
-
-  /// Create a copy of WcSessionProposeResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$WcSessionProposeResponseImplCopyWith<_$WcSessionProposeResponseImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionProposeResponse&&(identical(other.relay, relay) || other.relay == relay)&&(identical(other.responderPublicKey, responderPublicKey) || other.responderPublicKey == responderPublicKey));
 }
 
-WcSessionSettleRequest _$WcSessionSettleRequestFromJson(
-    Map<String, dynamic> json) {
-  return _WcSessionSettleRequest.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,relay,responderPublicKey);
+
+@override
+String toString() {
+  return 'WcSessionProposeResponse(relay: $relay, responderPublicKey: $responderPublicKey)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WcSessionProposeResponseCopyWith<$Res> implements $WcSessionProposeResponseCopyWith<$Res> {
+  factory _$WcSessionProposeResponseCopyWith(_WcSessionProposeResponse value, $Res Function(_WcSessionProposeResponse) _then) = __$WcSessionProposeResponseCopyWithImpl;
+@override @useResult
+$Res call({
+ Relay relay, String responderPublicKey
+});
+
+
+
+
+}
+/// @nodoc
+class __$WcSessionProposeResponseCopyWithImpl<$Res>
+    implements _$WcSessionProposeResponseCopyWith<$Res> {
+  __$WcSessionProposeResponseCopyWithImpl(this._self, this._then);
+
+  final _WcSessionProposeResponse _self;
+  final $Res Function(_WcSessionProposeResponse) _then;
+
+/// Create a copy of WcSessionProposeResponse
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? relay = null,Object? responderPublicKey = null,}) {
+  return _then(_WcSessionProposeResponse(
+relay: null == relay ? _self.relay : relay // ignore: cast_nullable_to_non_nullable
+as Relay,responderPublicKey: null == responderPublicKey ? _self.responderPublicKey : responderPublicKey // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$WcSessionSettleRequest {
-  Relay get relay => throw _privateConstructorUsedError;
-  Map<String, Namespace> get namespaces => throw _privateConstructorUsedError;
-  Map<String, RequiredNamespace>? get requiredNamespaces =>
-      throw _privateConstructorUsedError;
-  Map<String, RequiredNamespace>? get optionalNamespaces =>
-      throw _privateConstructorUsedError;
-  Map<String, String>? get sessionProperties =>
-      throw _privateConstructorUsedError;
-  int get expiry => throw _privateConstructorUsedError;
-  ConnectionMetadata get controller => throw _privateConstructorUsedError;
+
+ Relay get relay; Map<String, Namespace> get namespaces; Map<String, RequiredNamespace>? get requiredNamespaces; Map<String, RequiredNamespace>? get optionalNamespaces; Map<String, String>? get sessionProperties; int get expiry; ConnectionMetadata get controller;
+/// Create a copy of WcSessionSettleRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WcSessionSettleRequestCopyWith<WcSessionSettleRequest> get copyWith => _$WcSessionSettleRequestCopyWithImpl<WcSessionSettleRequest>(this as WcSessionSettleRequest, _$identity);
 
   /// Serializes this WcSessionSettleRequest to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of WcSessionSettleRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $WcSessionSettleRequestCopyWith<WcSessionSettleRequest> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionSettleRequest&&(identical(other.relay, relay) || other.relay == relay)&&const DeepCollectionEquality().equals(other.namespaces, namespaces)&&const DeepCollectionEquality().equals(other.requiredNamespaces, requiredNamespaces)&&const DeepCollectionEquality().equals(other.optionalNamespaces, optionalNamespaces)&&const DeepCollectionEquality().equals(other.sessionProperties, sessionProperties)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.controller, controller) || other.controller == controller));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,relay,const DeepCollectionEquality().hash(namespaces),const DeepCollectionEquality().hash(requiredNamespaces),const DeepCollectionEquality().hash(optionalNamespaces),const DeepCollectionEquality().hash(sessionProperties),expiry,controller);
+
+@override
+String toString() {
+  return 'WcSessionSettleRequest(relay: $relay, namespaces: $namespaces, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, expiry: $expiry, controller: $controller)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $WcSessionSettleRequestCopyWith<$Res> {
-  factory $WcSessionSettleRequestCopyWith(WcSessionSettleRequest value,
-          $Res Function(WcSessionSettleRequest) then) =
-      _$WcSessionSettleRequestCopyWithImpl<$Res, WcSessionSettleRequest>;
-  @useResult
-  $Res call(
-      {Relay relay,
-      Map<String, Namespace> namespaces,
-      Map<String, RequiredNamespace>? requiredNamespaces,
-      Map<String, RequiredNamespace>? optionalNamespaces,
-      Map<String, String>? sessionProperties,
-      int expiry,
-      ConnectionMetadata controller});
+abstract mixin class $WcSessionSettleRequestCopyWith<$Res>  {
+  factory $WcSessionSettleRequestCopyWith(WcSessionSettleRequest value, $Res Function(WcSessionSettleRequest) _then) = _$WcSessionSettleRequestCopyWithImpl;
+@useResult
+$Res call({
+ Relay relay, Map<String, Namespace> namespaces, Map<String, RequiredNamespace>? requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, int expiry, ConnectionMetadata controller
+});
 
-  $ConnectionMetadataCopyWith<$Res> get controller;
+
+$ConnectionMetadataCopyWith<$Res> get controller;
+
 }
-
 /// @nodoc
-class _$WcSessionSettleRequestCopyWithImpl<$Res,
-        $Val extends WcSessionSettleRequest>
+class _$WcSessionSettleRequestCopyWithImpl<$Res>
     implements $WcSessionSettleRequestCopyWith<$Res> {
-  _$WcSessionSettleRequestCopyWithImpl(this._value, this._then);
+  _$WcSessionSettleRequestCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WcSessionSettleRequest _self;
+  final $Res Function(WcSessionSettleRequest) _then;
 
-  /// Create a copy of WcSessionSettleRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? relay = null,
-    Object? namespaces = null,
-    Object? requiredNamespaces = freezed,
-    Object? optionalNamespaces = freezed,
-    Object? sessionProperties = freezed,
-    Object? expiry = null,
-    Object? controller = null,
-  }) {
-    return _then(_value.copyWith(
-      relay: null == relay
-          ? _value.relay
-          : relay // ignore: cast_nullable_to_non_nullable
-              as Relay,
-      namespaces: null == namespaces
-          ? _value.namespaces
-          : namespaces // ignore: cast_nullable_to_non_nullable
-              as Map<String, Namespace>,
-      requiredNamespaces: freezed == requiredNamespaces
-          ? _value.requiredNamespaces
-          : requiredNamespaces // ignore: cast_nullable_to_non_nullable
-              as Map<String, RequiredNamespace>?,
-      optionalNamespaces: freezed == optionalNamespaces
-          ? _value.optionalNamespaces
-          : optionalNamespaces // ignore: cast_nullable_to_non_nullable
-              as Map<String, RequiredNamespace>?,
-      sessionProperties: freezed == sessionProperties
-          ? _value.sessionProperties
-          : sessionProperties // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
-      expiry: null == expiry
-          ? _value.expiry
-          : expiry // ignore: cast_nullable_to_non_nullable
-              as int,
-      controller: null == controller
-          ? _value.controller
-          : controller // ignore: cast_nullable_to_non_nullable
-              as ConnectionMetadata,
-    ) as $Val);
-  }
-
-  /// Create a copy of WcSessionSettleRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $ConnectionMetadataCopyWith<$Res> get controller {
-    return $ConnectionMetadataCopyWith<$Res>(_value.controller, (value) {
-      return _then(_value.copyWith(controller: value) as $Val);
-    });
-  }
+/// Create a copy of WcSessionSettleRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? relay = null,Object? namespaces = null,Object? requiredNamespaces = freezed,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? expiry = null,Object? controller = null,}) {
+  return _then(_self.copyWith(
+relay: null == relay ? _self.relay : relay // ignore: cast_nullable_to_non_nullable
+as Relay,namespaces: null == namespaces ? _self.namespaces : namespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, Namespace>,requiredNamespaces: freezed == requiredNamespaces ? _self.requiredNamespaces : requiredNamespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, RequiredNamespace>?,optionalNamespaces: freezed == optionalNamespaces ? _self.optionalNamespaces : optionalNamespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, RequiredNamespace>?,sessionProperties: freezed == sessionProperties ? _self.sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
+as Map<String, String>?,expiry: null == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
+as int,controller: null == controller ? _self.controller : controller // ignore: cast_nullable_to_non_nullable
+as ConnectionMetadata,
+  ));
+}
+/// Create a copy of WcSessionSettleRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConnectionMetadataCopyWith<$Res> get controller {
+  
+  return $ConnectionMetadataCopyWith<$Res>(_self.controller, (value) {
+    return _then(_self.copyWith(controller: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$WcSessionSettleRequestImplCopyWith<$Res>
-    implements $WcSessionSettleRequestCopyWith<$Res> {
-  factory _$$WcSessionSettleRequestImplCopyWith(
-          _$WcSessionSettleRequestImpl value,
-          $Res Function(_$WcSessionSettleRequestImpl) then) =
-      __$$WcSessionSettleRequestImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {Relay relay,
-      Map<String, Namespace> namespaces,
-      Map<String, RequiredNamespace>? requiredNamespaces,
-      Map<String, RequiredNamespace>? optionalNamespaces,
-      Map<String, String>? sessionProperties,
-      int expiry,
-      ConnectionMetadata controller});
 
-  @override
-  $ConnectionMetadataCopyWith<$Res> get controller;
+/// Adds pattern-matching-related methods to [WcSessionSettleRequest].
+extension WcSessionSettleRequestPatterns on WcSessionSettleRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WcSessionSettleRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WcSessionSettleRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WcSessionSettleRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionSettleRequest():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WcSessionSettleRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionSettleRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Relay relay,  Map<String, Namespace> namespaces,  Map<String, RequiredNamespace>? requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  int expiry,  ConnectionMetadata controller)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WcSessionSettleRequest() when $default != null:
+return $default(_that.relay,_that.namespaces,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.expiry,_that.controller);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Relay relay,  Map<String, Namespace> namespaces,  Map<String, RequiredNamespace>? requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  int expiry,  ConnectionMetadata controller)  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionSettleRequest():
+return $default(_that.relay,_that.namespaces,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.expiry,_that.controller);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Relay relay,  Map<String, Namespace> namespaces,  Map<String, RequiredNamespace>? requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  int expiry,  ConnectionMetadata controller)?  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionSettleRequest() when $default != null:
+return $default(_that.relay,_that.namespaces,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.expiry,_that.controller);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$WcSessionSettleRequestImplCopyWithImpl<$Res>
-    extends _$WcSessionSettleRequestCopyWithImpl<$Res,
-        _$WcSessionSettleRequestImpl>
-    implements _$$WcSessionSettleRequestImplCopyWith<$Res> {
-  __$$WcSessionSettleRequestImplCopyWithImpl(
-      _$WcSessionSettleRequestImpl _value,
-      $Res Function(_$WcSessionSettleRequestImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of WcSessionSettleRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? relay = null,
-    Object? namespaces = null,
-    Object? requiredNamespaces = freezed,
-    Object? optionalNamespaces = freezed,
-    Object? sessionProperties = freezed,
-    Object? expiry = null,
-    Object? controller = null,
-  }) {
-    return _then(_$WcSessionSettleRequestImpl(
-      relay: null == relay
-          ? _value.relay
-          : relay // ignore: cast_nullable_to_non_nullable
-              as Relay,
-      namespaces: null == namespaces
-          ? _value._namespaces
-          : namespaces // ignore: cast_nullable_to_non_nullable
-              as Map<String, Namespace>,
-      requiredNamespaces: freezed == requiredNamespaces
-          ? _value._requiredNamespaces
-          : requiredNamespaces // ignore: cast_nullable_to_non_nullable
-              as Map<String, RequiredNamespace>?,
-      optionalNamespaces: freezed == optionalNamespaces
-          ? _value._optionalNamespaces
-          : optionalNamespaces // ignore: cast_nullable_to_non_nullable
-              as Map<String, RequiredNamespace>?,
-      sessionProperties: freezed == sessionProperties
-          ? _value._sessionProperties
-          : sessionProperties // ignore: cast_nullable_to_non_nullable
-              as Map<String, String>?,
-      expiry: null == expiry
-          ? _value.expiry
-          : expiry // ignore: cast_nullable_to_non_nullable
-              as int,
-      controller: null == controller
-          ? _value.controller
-          : controller // ignore: cast_nullable_to_non_nullable
-              as ConnectionMetadata,
-    ));
-  }
 }
 
 /// @nodoc
 
 @JsonSerializable(includeIfNull: false)
-class _$WcSessionSettleRequestImpl implements _WcSessionSettleRequest {
-  const _$WcSessionSettleRequestImpl(
-      {required this.relay,
-      required final Map<String, Namespace> namespaces,
-      final Map<String, RequiredNamespace>? requiredNamespaces,
-      final Map<String, RequiredNamespace>? optionalNamespaces,
-      final Map<String, String>? sessionProperties,
-      required this.expiry,
-      required this.controller})
-      : _namespaces = namespaces,
-        _requiredNamespaces = requiredNamespaces,
-        _optionalNamespaces = optionalNamespaces,
-        _sessionProperties = sessionProperties;
+class _WcSessionSettleRequest implements WcSessionSettleRequest {
+  const _WcSessionSettleRequest({required this.relay, required final  Map<String, Namespace> namespaces, final  Map<String, RequiredNamespace>? requiredNamespaces, final  Map<String, RequiredNamespace>? optionalNamespaces, final  Map<String, String>? sessionProperties, required this.expiry, required this.controller}): _namespaces = namespaces,_requiredNamespaces = requiredNamespaces,_optionalNamespaces = optionalNamespaces,_sessionProperties = sessionProperties;
+  factory _WcSessionSettleRequest.fromJson(Map<String, dynamic> json) => _$WcSessionSettleRequestFromJson(json);
 
-  factory _$WcSessionSettleRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WcSessionSettleRequestImplFromJson(json);
-
-  @override
-  final Relay relay;
-  final Map<String, Namespace> _namespaces;
-  @override
-  Map<String, Namespace> get namespaces {
-    if (_namespaces is EqualUnmodifiableMapView) return _namespaces;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_namespaces);
-  }
-
-  final Map<String, RequiredNamespace>? _requiredNamespaces;
-  @override
-  Map<String, RequiredNamespace>? get requiredNamespaces {
-    final value = _requiredNamespaces;
-    if (value == null) return null;
-    if (_requiredNamespaces is EqualUnmodifiableMapView)
-      return _requiredNamespaces;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
-
-  final Map<String, RequiredNamespace>? _optionalNamespaces;
-  @override
-  Map<String, RequiredNamespace>? get optionalNamespaces {
-    final value = _optionalNamespaces;
-    if (value == null) return null;
-    if (_optionalNamespaces is EqualUnmodifiableMapView)
-      return _optionalNamespaces;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
-
-  final Map<String, String>? _sessionProperties;
-  @override
-  Map<String, String>? get sessionProperties {
-    final value = _sessionProperties;
-    if (value == null) return null;
-    if (_sessionProperties is EqualUnmodifiableMapView)
-      return _sessionProperties;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
-
-  @override
-  final int expiry;
-  @override
-  final ConnectionMetadata controller;
-
-  @override
-  String toString() {
-    return 'WcSessionSettleRequest(relay: $relay, namespaces: $namespaces, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, expiry: $expiry, controller: $controller)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WcSessionSettleRequestImpl &&
-            (identical(other.relay, relay) || other.relay == relay) &&
-            const DeepCollectionEquality()
-                .equals(other._namespaces, _namespaces) &&
-            const DeepCollectionEquality()
-                .equals(other._requiredNamespaces, _requiredNamespaces) &&
-            const DeepCollectionEquality()
-                .equals(other._optionalNamespaces, _optionalNamespaces) &&
-            const DeepCollectionEquality()
-                .equals(other._sessionProperties, _sessionProperties) &&
-            (identical(other.expiry, expiry) || other.expiry == expiry) &&
-            (identical(other.controller, controller) ||
-                other.controller == controller));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      relay,
-      const DeepCollectionEquality().hash(_namespaces),
-      const DeepCollectionEquality().hash(_requiredNamespaces),
-      const DeepCollectionEquality().hash(_optionalNamespaces),
-      const DeepCollectionEquality().hash(_sessionProperties),
-      expiry,
-      controller);
-
-  /// Create a copy of WcSessionSettleRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WcSessionSettleRequestImplCopyWith<_$WcSessionSettleRequestImpl>
-      get copyWith => __$$WcSessionSettleRequestImplCopyWithImpl<
-          _$WcSessionSettleRequestImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WcSessionSettleRequestImplToJson(
-      this,
-    );
-  }
+@override final  Relay relay;
+ final  Map<String, Namespace> _namespaces;
+@override Map<String, Namespace> get namespaces {
+  if (_namespaces is EqualUnmodifiableMapView) return _namespaces;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_namespaces);
 }
 
-abstract class _WcSessionSettleRequest implements WcSessionSettleRequest {
-  const factory _WcSessionSettleRequest(
-          {required final Relay relay,
-          required final Map<String, Namespace> namespaces,
-          final Map<String, RequiredNamespace>? requiredNamespaces,
-          final Map<String, RequiredNamespace>? optionalNamespaces,
-          final Map<String, String>? sessionProperties,
-          required final int expiry,
-          required final ConnectionMetadata controller}) =
-      _$WcSessionSettleRequestImpl;
-
-  factory _WcSessionSettleRequest.fromJson(Map<String, dynamic> json) =
-      _$WcSessionSettleRequestImpl.fromJson;
-
-  @override
-  Relay get relay;
-  @override
-  Map<String, Namespace> get namespaces;
-  @override
-  Map<String, RequiredNamespace>? get requiredNamespaces;
-  @override
-  Map<String, RequiredNamespace>? get optionalNamespaces;
-  @override
-  Map<String, String>? get sessionProperties;
-  @override
-  int get expiry;
-  @override
-  ConnectionMetadata get controller;
-
-  /// Create a copy of WcSessionSettleRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$WcSessionSettleRequestImplCopyWith<_$WcSessionSettleRequestImpl>
-      get copyWith => throw _privateConstructorUsedError;
+ final  Map<String, RequiredNamespace>? _requiredNamespaces;
+@override Map<String, RequiredNamespace>? get requiredNamespaces {
+  final value = _requiredNamespaces;
+  if (value == null) return null;
+  if (_requiredNamespaces is EqualUnmodifiableMapView) return _requiredNamespaces;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
 }
 
-WcSessionUpdateRequest _$WcSessionUpdateRequestFromJson(
-    Map<String, dynamic> json) {
-  return _WcSessionUpdateRequest.fromJson(json);
+ final  Map<String, RequiredNamespace>? _optionalNamespaces;
+@override Map<String, RequiredNamespace>? get optionalNamespaces {
+  final value = _optionalNamespaces;
+  if (value == null) return null;
+  if (_optionalNamespaces is EqualUnmodifiableMapView) return _optionalNamespaces;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
 }
+
+ final  Map<String, String>? _sessionProperties;
+@override Map<String, String>? get sessionProperties {
+  final value = _sessionProperties;
+  if (value == null) return null;
+  if (_sessionProperties is EqualUnmodifiableMapView) return _sessionProperties;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
+}
+
+@override final  int expiry;
+@override final  ConnectionMetadata controller;
+
+/// Create a copy of WcSessionSettleRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WcSessionSettleRequestCopyWith<_WcSessionSettleRequest> get copyWith => __$WcSessionSettleRequestCopyWithImpl<_WcSessionSettleRequest>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$WcSessionSettleRequestToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionSettleRequest&&(identical(other.relay, relay) || other.relay == relay)&&const DeepCollectionEquality().equals(other._namespaces, _namespaces)&&const DeepCollectionEquality().equals(other._requiredNamespaces, _requiredNamespaces)&&const DeepCollectionEquality().equals(other._optionalNamespaces, _optionalNamespaces)&&const DeepCollectionEquality().equals(other._sessionProperties, _sessionProperties)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.controller, controller) || other.controller == controller));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,relay,const DeepCollectionEquality().hash(_namespaces),const DeepCollectionEquality().hash(_requiredNamespaces),const DeepCollectionEquality().hash(_optionalNamespaces),const DeepCollectionEquality().hash(_sessionProperties),expiry,controller);
+
+@override
+String toString() {
+  return 'WcSessionSettleRequest(relay: $relay, namespaces: $namespaces, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, expiry: $expiry, controller: $controller)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WcSessionSettleRequestCopyWith<$Res> implements $WcSessionSettleRequestCopyWith<$Res> {
+  factory _$WcSessionSettleRequestCopyWith(_WcSessionSettleRequest value, $Res Function(_WcSessionSettleRequest) _then) = __$WcSessionSettleRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ Relay relay, Map<String, Namespace> namespaces, Map<String, RequiredNamespace>? requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, int expiry, ConnectionMetadata controller
+});
+
+
+@override $ConnectionMetadataCopyWith<$Res> get controller;
+
+}
+/// @nodoc
+class __$WcSessionSettleRequestCopyWithImpl<$Res>
+    implements _$WcSessionSettleRequestCopyWith<$Res> {
+  __$WcSessionSettleRequestCopyWithImpl(this._self, this._then);
+
+  final _WcSessionSettleRequest _self;
+  final $Res Function(_WcSessionSettleRequest) _then;
+
+/// Create a copy of WcSessionSettleRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? relay = null,Object? namespaces = null,Object? requiredNamespaces = freezed,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? expiry = null,Object? controller = null,}) {
+  return _then(_WcSessionSettleRequest(
+relay: null == relay ? _self.relay : relay // ignore: cast_nullable_to_non_nullable
+as Relay,namespaces: null == namespaces ? _self._namespaces : namespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, Namespace>,requiredNamespaces: freezed == requiredNamespaces ? _self._requiredNamespaces : requiredNamespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, RequiredNamespace>?,optionalNamespaces: freezed == optionalNamespaces ? _self._optionalNamespaces : optionalNamespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, RequiredNamespace>?,sessionProperties: freezed == sessionProperties ? _self._sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
+as Map<String, String>?,expiry: null == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
+as int,controller: null == controller ? _self.controller : controller // ignore: cast_nullable_to_non_nullable
+as ConnectionMetadata,
+  ));
+}
+
+/// Create a copy of WcSessionSettleRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConnectionMetadataCopyWith<$Res> get controller {
+  
+  return $ConnectionMetadataCopyWith<$Res>(_self.controller, (value) {
+    return _then(_self.copyWith(controller: value));
+  });
+}
+}
+
 
 /// @nodoc
 mixin _$WcSessionUpdateRequest {
-  Map<String, Namespace> get namespaces => throw _privateConstructorUsedError;
+
+ Map<String, Namespace> get namespaces;
+/// Create a copy of WcSessionUpdateRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WcSessionUpdateRequestCopyWith<WcSessionUpdateRequest> get copyWith => _$WcSessionUpdateRequestCopyWithImpl<WcSessionUpdateRequest>(this as WcSessionUpdateRequest, _$identity);
 
   /// Serializes this WcSessionUpdateRequest to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of WcSessionUpdateRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $WcSessionUpdateRequestCopyWith<WcSessionUpdateRequest> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionUpdateRequest&&const DeepCollectionEquality().equals(other.namespaces, namespaces));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(namespaces));
+
+@override
+String toString() {
+  return 'WcSessionUpdateRequest(namespaces: $namespaces)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $WcSessionUpdateRequestCopyWith<$Res> {
-  factory $WcSessionUpdateRequestCopyWith(WcSessionUpdateRequest value,
-          $Res Function(WcSessionUpdateRequest) then) =
-      _$WcSessionUpdateRequestCopyWithImpl<$Res, WcSessionUpdateRequest>;
-  @useResult
-  $Res call({Map<String, Namespace> namespaces});
-}
+abstract mixin class $WcSessionUpdateRequestCopyWith<$Res>  {
+  factory $WcSessionUpdateRequestCopyWith(WcSessionUpdateRequest value, $Res Function(WcSessionUpdateRequest) _then) = _$WcSessionUpdateRequestCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, Namespace> namespaces
+});
 
+
+
+
+}
 /// @nodoc
-class _$WcSessionUpdateRequestCopyWithImpl<$Res,
-        $Val extends WcSessionUpdateRequest>
+class _$WcSessionUpdateRequestCopyWithImpl<$Res>
     implements $WcSessionUpdateRequestCopyWith<$Res> {
-  _$WcSessionUpdateRequestCopyWithImpl(this._value, this._then);
+  _$WcSessionUpdateRequestCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WcSessionUpdateRequest _self;
+  final $Res Function(WcSessionUpdateRequest) _then;
 
-  /// Create a copy of WcSessionUpdateRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? namespaces = null,
-  }) {
-    return _then(_value.copyWith(
-      namespaces: null == namespaces
-          ? _value.namespaces
-          : namespaces // ignore: cast_nullable_to_non_nullable
-              as Map<String, Namespace>,
-    ) as $Val);
-  }
+/// Create a copy of WcSessionUpdateRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? namespaces = null,}) {
+  return _then(_self.copyWith(
+namespaces: null == namespaces ? _self.namespaces : namespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, Namespace>,
+  ));
 }
 
-/// @nodoc
-abstract class _$$WcSessionUpdateRequestImplCopyWith<$Res>
-    implements $WcSessionUpdateRequestCopyWith<$Res> {
-  factory _$$WcSessionUpdateRequestImplCopyWith(
-          _$WcSessionUpdateRequestImpl value,
-          $Res Function(_$WcSessionUpdateRequestImpl) then) =
-      __$$WcSessionUpdateRequestImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({Map<String, Namespace> namespaces});
 }
 
-/// @nodoc
-class __$$WcSessionUpdateRequestImplCopyWithImpl<$Res>
-    extends _$WcSessionUpdateRequestCopyWithImpl<$Res,
-        _$WcSessionUpdateRequestImpl>
-    implements _$$WcSessionUpdateRequestImplCopyWith<$Res> {
-  __$$WcSessionUpdateRequestImplCopyWithImpl(
-      _$WcSessionUpdateRequestImpl _value,
-      $Res Function(_$WcSessionUpdateRequestImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of WcSessionUpdateRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? namespaces = null,
-  }) {
-    return _then(_$WcSessionUpdateRequestImpl(
-      namespaces: null == namespaces
-          ? _value._namespaces
-          : namespaces // ignore: cast_nullable_to_non_nullable
-              as Map<String, Namespace>,
-    ));
-  }
+/// Adds pattern-matching-related methods to [WcSessionUpdateRequest].
+extension WcSessionUpdateRequestPatterns on WcSessionUpdateRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WcSessionUpdateRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WcSessionUpdateRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WcSessionUpdateRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionUpdateRequest():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WcSessionUpdateRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionUpdateRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<String, Namespace> namespaces)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WcSessionUpdateRequest() when $default != null:
+return $default(_that.namespaces);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<String, Namespace> namespaces)  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionUpdateRequest():
+return $default(_that.namespaces);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<String, Namespace> namespaces)?  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionUpdateRequest() when $default != null:
+return $default(_that.namespaces);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable()
-class _$WcSessionUpdateRequestImpl implements _WcSessionUpdateRequest {
-  const _$WcSessionUpdateRequestImpl(
-      {required final Map<String, Namespace> namespaces})
-      : _namespaces = namespaces;
+class _WcSessionUpdateRequest implements WcSessionUpdateRequest {
+  const _WcSessionUpdateRequest({required final  Map<String, Namespace> namespaces}): _namespaces = namespaces;
+  factory _WcSessionUpdateRequest.fromJson(Map<String, dynamic> json) => _$WcSessionUpdateRequestFromJson(json);
 
-  factory _$WcSessionUpdateRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WcSessionUpdateRequestImplFromJson(json);
-
-  final Map<String, Namespace> _namespaces;
-  @override
-  Map<String, Namespace> get namespaces {
-    if (_namespaces is EqualUnmodifiableMapView) return _namespaces;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_namespaces);
-  }
-
-  @override
-  String toString() {
-    return 'WcSessionUpdateRequest(namespaces: $namespaces)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WcSessionUpdateRequestImpl &&
-            const DeepCollectionEquality()
-                .equals(other._namespaces, _namespaces));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_namespaces));
-
-  /// Create a copy of WcSessionUpdateRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WcSessionUpdateRequestImplCopyWith<_$WcSessionUpdateRequestImpl>
-      get copyWith => __$$WcSessionUpdateRequestImplCopyWithImpl<
-          _$WcSessionUpdateRequestImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WcSessionUpdateRequestImplToJson(
-      this,
-    );
-  }
+ final  Map<String, Namespace> _namespaces;
+@override Map<String, Namespace> get namespaces {
+  if (_namespaces is EqualUnmodifiableMapView) return _namespaces;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_namespaces);
 }
 
-abstract class _WcSessionUpdateRequest implements WcSessionUpdateRequest {
-  const factory _WcSessionUpdateRequest(
-          {required final Map<String, Namespace> namespaces}) =
-      _$WcSessionUpdateRequestImpl;
 
-  factory _WcSessionUpdateRequest.fromJson(Map<String, dynamic> json) =
-      _$WcSessionUpdateRequestImpl.fromJson;
+/// Create a copy of WcSessionUpdateRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WcSessionUpdateRequestCopyWith<_WcSessionUpdateRequest> get copyWith => __$WcSessionUpdateRequestCopyWithImpl<_WcSessionUpdateRequest>(this, _$identity);
 
-  @override
-  Map<String, Namespace> get namespaces;
-
-  /// Create a copy of WcSessionUpdateRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$WcSessionUpdateRequestImplCopyWith<_$WcSessionUpdateRequestImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+Map<String, dynamic> toJson() {
+  return _$WcSessionUpdateRequestToJson(this, );
 }
 
-WcSessionExtendRequest _$WcSessionExtendRequestFromJson(
-    Map<String, dynamic> json) {
-  return _WcSessionExtendRequest.fromJson(json);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionUpdateRequest&&const DeepCollectionEquality().equals(other._namespaces, _namespaces));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_namespaces));
+
+@override
+String toString() {
+  return 'WcSessionUpdateRequest(namespaces: $namespaces)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WcSessionUpdateRequestCopyWith<$Res> implements $WcSessionUpdateRequestCopyWith<$Res> {
+  factory _$WcSessionUpdateRequestCopyWith(_WcSessionUpdateRequest value, $Res Function(_WcSessionUpdateRequest) _then) = __$WcSessionUpdateRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ Map<String, Namespace> namespaces
+});
+
+
+
+
+}
+/// @nodoc
+class __$WcSessionUpdateRequestCopyWithImpl<$Res>
+    implements _$WcSessionUpdateRequestCopyWith<$Res> {
+  __$WcSessionUpdateRequestCopyWithImpl(this._self, this._then);
+
+  final _WcSessionUpdateRequest _self;
+  final $Res Function(_WcSessionUpdateRequest) _then;
+
+/// Create a copy of WcSessionUpdateRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? namespaces = null,}) {
+  return _then(_WcSessionUpdateRequest(
+namespaces: null == namespaces ? _self._namespaces : namespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, Namespace>,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$WcSessionExtendRequest {
-  Map<String, dynamic>? get data => throw _privateConstructorUsedError;
+
+ Map<String, dynamic>? get data;
+/// Create a copy of WcSessionExtendRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WcSessionExtendRequestCopyWith<WcSessionExtendRequest> get copyWith => _$WcSessionExtendRequestCopyWithImpl<WcSessionExtendRequest>(this as WcSessionExtendRequest, _$identity);
 
   /// Serializes this WcSessionExtendRequest to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of WcSessionExtendRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $WcSessionExtendRequestCopyWith<WcSessionExtendRequest> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionExtendRequest&&const DeepCollectionEquality().equals(other.data, data));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(data));
+
+@override
+String toString() {
+  return 'WcSessionExtendRequest(data: $data)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $WcSessionExtendRequestCopyWith<$Res> {
-  factory $WcSessionExtendRequestCopyWith(WcSessionExtendRequest value,
-          $Res Function(WcSessionExtendRequest) then) =
-      _$WcSessionExtendRequestCopyWithImpl<$Res, WcSessionExtendRequest>;
-  @useResult
-  $Res call({Map<String, dynamic>? data});
-}
+abstract mixin class $WcSessionExtendRequestCopyWith<$Res>  {
+  factory $WcSessionExtendRequestCopyWith(WcSessionExtendRequest value, $Res Function(WcSessionExtendRequest) _then) = _$WcSessionExtendRequestCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic>? data
+});
 
+
+
+
+}
 /// @nodoc
-class _$WcSessionExtendRequestCopyWithImpl<$Res,
-        $Val extends WcSessionExtendRequest>
+class _$WcSessionExtendRequestCopyWithImpl<$Res>
     implements $WcSessionExtendRequestCopyWith<$Res> {
-  _$WcSessionExtendRequestCopyWithImpl(this._value, this._then);
+  _$WcSessionExtendRequestCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WcSessionExtendRequest _self;
+  final $Res Function(WcSessionExtendRequest) _then;
 
-  /// Create a copy of WcSessionExtendRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? data = freezed,
-  }) {
-    return _then(_value.copyWith(
-      data: freezed == data
-          ? _value.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>?,
-    ) as $Val);
-  }
+/// Create a copy of WcSessionExtendRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? data = freezed,}) {
+  return _then(_self.copyWith(
+data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$WcSessionExtendRequestImplCopyWith<$Res>
-    implements $WcSessionExtendRequestCopyWith<$Res> {
-  factory _$$WcSessionExtendRequestImplCopyWith(
-          _$WcSessionExtendRequestImpl value,
-          $Res Function(_$WcSessionExtendRequestImpl) then) =
-      __$$WcSessionExtendRequestImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({Map<String, dynamic>? data});
 }
 
-/// @nodoc
-class __$$WcSessionExtendRequestImplCopyWithImpl<$Res>
-    extends _$WcSessionExtendRequestCopyWithImpl<$Res,
-        _$WcSessionExtendRequestImpl>
-    implements _$$WcSessionExtendRequestImplCopyWith<$Res> {
-  __$$WcSessionExtendRequestImplCopyWithImpl(
-      _$WcSessionExtendRequestImpl _value,
-      $Res Function(_$WcSessionExtendRequestImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of WcSessionExtendRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? data = freezed,
-  }) {
-    return _then(_$WcSessionExtendRequestImpl(
-      data: freezed == data
-          ? _value._data
-          : data // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>?,
-    ));
-  }
+/// Adds pattern-matching-related methods to [WcSessionExtendRequest].
+extension WcSessionExtendRequestPatterns on WcSessionExtendRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WcSessionExtendRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WcSessionExtendRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WcSessionExtendRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionExtendRequest():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WcSessionExtendRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionExtendRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<String, dynamic>? data)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WcSessionExtendRequest() when $default != null:
+return $default(_that.data);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<String, dynamic>? data)  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionExtendRequest():
+return $default(_that.data);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<String, dynamic>? data)?  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionExtendRequest() when $default != null:
+return $default(_that.data);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable(includeIfNull: false)
-class _$WcSessionExtendRequestImpl implements _WcSessionExtendRequest {
-  const _$WcSessionExtendRequestImpl({final Map<String, dynamic>? data})
-      : _data = data;
+class _WcSessionExtendRequest implements WcSessionExtendRequest {
+  const _WcSessionExtendRequest({final  Map<String, dynamic>? data}): _data = data;
+  factory _WcSessionExtendRequest.fromJson(Map<String, dynamic> json) => _$WcSessionExtendRequestFromJson(json);
 
-  factory _$WcSessionExtendRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WcSessionExtendRequestImplFromJson(json);
-
-  final Map<String, dynamic>? _data;
-  @override
-  Map<String, dynamic>? get data {
-    final value = _data;
-    if (value == null) return null;
-    if (_data is EqualUnmodifiableMapView) return _data;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
-
-  @override
-  String toString() {
-    return 'WcSessionExtendRequest(data: $data)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WcSessionExtendRequestImpl &&
-            const DeepCollectionEquality().equals(other._data, _data));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
-
-  /// Create a copy of WcSessionExtendRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WcSessionExtendRequestImplCopyWith<_$WcSessionExtendRequestImpl>
-      get copyWith => __$$WcSessionExtendRequestImplCopyWithImpl<
-          _$WcSessionExtendRequestImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WcSessionExtendRequestImplToJson(
-      this,
-    );
-  }
+ final  Map<String, dynamic>? _data;
+@override Map<String, dynamic>? get data {
+  final value = _data;
+  if (value == null) return null;
+  if (_data is EqualUnmodifiableMapView) return _data;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
 }
 
-abstract class _WcSessionExtendRequest implements WcSessionExtendRequest {
-  const factory _WcSessionExtendRequest({final Map<String, dynamic>? data}) =
-      _$WcSessionExtendRequestImpl;
 
-  factory _WcSessionExtendRequest.fromJson(Map<String, dynamic> json) =
-      _$WcSessionExtendRequestImpl.fromJson;
+/// Create a copy of WcSessionExtendRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WcSessionExtendRequestCopyWith<_WcSessionExtendRequest> get copyWith => __$WcSessionExtendRequestCopyWithImpl<_WcSessionExtendRequest>(this, _$identity);
 
-  @override
-  Map<String, dynamic>? get data;
-
-  /// Create a copy of WcSessionExtendRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$WcSessionExtendRequestImplCopyWith<_$WcSessionExtendRequestImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+Map<String, dynamic> toJson() {
+  return _$WcSessionExtendRequestToJson(this, );
 }
 
-WcSessionDeleteRequest _$WcSessionDeleteRequestFromJson(
-    Map<String, dynamic> json) {
-  return _WcSessionDeleteRequest.fromJson(json);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionExtendRequest&&const DeepCollectionEquality().equals(other._data, _data));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_data));
+
+@override
+String toString() {
+  return 'WcSessionExtendRequest(data: $data)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WcSessionExtendRequestCopyWith<$Res> implements $WcSessionExtendRequestCopyWith<$Res> {
+  factory _$WcSessionExtendRequestCopyWith(_WcSessionExtendRequest value, $Res Function(_WcSessionExtendRequest) _then) = __$WcSessionExtendRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ Map<String, dynamic>? data
+});
+
+
+
+
+}
+/// @nodoc
+class __$WcSessionExtendRequestCopyWithImpl<$Res>
+    implements _$WcSessionExtendRequestCopyWith<$Res> {
+  __$WcSessionExtendRequestCopyWithImpl(this._self, this._then);
+
+  final _WcSessionExtendRequest _self;
+  final $Res Function(_WcSessionExtendRequest) _then;
+
+/// Create a copy of WcSessionExtendRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? data = freezed,}) {
+  return _then(_WcSessionExtendRequest(
+data: freezed == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$WcSessionDeleteRequest {
-  int get code => throw _privateConstructorUsedError;
-  String get message => throw _privateConstructorUsedError;
-  String? get data => throw _privateConstructorUsedError;
+
+ int get code; String get message; String? get data;
+/// Create a copy of WcSessionDeleteRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WcSessionDeleteRequestCopyWith<WcSessionDeleteRequest> get copyWith => _$WcSessionDeleteRequestCopyWithImpl<WcSessionDeleteRequest>(this as WcSessionDeleteRequest, _$identity);
 
   /// Serializes this WcSessionDeleteRequest to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of WcSessionDeleteRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $WcSessionDeleteRequestCopyWith<WcSessionDeleteRequest> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionDeleteRequest&&(identical(other.code, code) || other.code == code)&&(identical(other.message, message) || other.message == message)&&(identical(other.data, data) || other.data == data));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,code,message,data);
+
+@override
+String toString() {
+  return 'WcSessionDeleteRequest(code: $code, message: $message, data: $data)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $WcSessionDeleteRequestCopyWith<$Res> {
-  factory $WcSessionDeleteRequestCopyWith(WcSessionDeleteRequest value,
-          $Res Function(WcSessionDeleteRequest) then) =
-      _$WcSessionDeleteRequestCopyWithImpl<$Res, WcSessionDeleteRequest>;
-  @useResult
-  $Res call({int code, String message, String? data});
-}
+abstract mixin class $WcSessionDeleteRequestCopyWith<$Res>  {
+  factory $WcSessionDeleteRequestCopyWith(WcSessionDeleteRequest value, $Res Function(WcSessionDeleteRequest) _then) = _$WcSessionDeleteRequestCopyWithImpl;
+@useResult
+$Res call({
+ int code, String message, String? data
+});
 
+
+
+
+}
 /// @nodoc
-class _$WcSessionDeleteRequestCopyWithImpl<$Res,
-        $Val extends WcSessionDeleteRequest>
+class _$WcSessionDeleteRequestCopyWithImpl<$Res>
     implements $WcSessionDeleteRequestCopyWith<$Res> {
-  _$WcSessionDeleteRequestCopyWithImpl(this._value, this._then);
+  _$WcSessionDeleteRequestCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WcSessionDeleteRequest _self;
+  final $Res Function(WcSessionDeleteRequest) _then;
 
-  /// Create a copy of WcSessionDeleteRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? code = null,
-    Object? message = null,
-    Object? data = freezed,
-  }) {
-    return _then(_value.copyWith(
-      code: null == code
-          ? _value.code
-          : code // ignore: cast_nullable_to_non_nullable
-              as int,
-      message: null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
-      data: freezed == data
-          ? _value.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
-  }
+/// Create a copy of WcSessionDeleteRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? code = null,Object? message = null,Object? data = freezed,}) {
+  return _then(_self.copyWith(
+code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
+as int,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$WcSessionDeleteRequestImplCopyWith<$Res>
-    implements $WcSessionDeleteRequestCopyWith<$Res> {
-  factory _$$WcSessionDeleteRequestImplCopyWith(
-          _$WcSessionDeleteRequestImpl value,
-          $Res Function(_$WcSessionDeleteRequestImpl) then) =
-      __$$WcSessionDeleteRequestImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({int code, String message, String? data});
 }
 
-/// @nodoc
-class __$$WcSessionDeleteRequestImplCopyWithImpl<$Res>
-    extends _$WcSessionDeleteRequestCopyWithImpl<$Res,
-        _$WcSessionDeleteRequestImpl>
-    implements _$$WcSessionDeleteRequestImplCopyWith<$Res> {
-  __$$WcSessionDeleteRequestImplCopyWithImpl(
-      _$WcSessionDeleteRequestImpl _value,
-      $Res Function(_$WcSessionDeleteRequestImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of WcSessionDeleteRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? code = null,
-    Object? message = null,
-    Object? data = freezed,
-  }) {
-    return _then(_$WcSessionDeleteRequestImpl(
-      code: null == code
-          ? _value.code
-          : code // ignore: cast_nullable_to_non_nullable
-              as int,
-      message: null == message
-          ? _value.message
-          : message // ignore: cast_nullable_to_non_nullable
-              as String,
-      data: freezed == data
-          ? _value.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
-  }
+/// Adds pattern-matching-related methods to [WcSessionDeleteRequest].
+extension WcSessionDeleteRequestPatterns on WcSessionDeleteRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WcSessionDeleteRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WcSessionDeleteRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WcSessionDeleteRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionDeleteRequest():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WcSessionDeleteRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionDeleteRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int code,  String message,  String? data)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WcSessionDeleteRequest() when $default != null:
+return $default(_that.code,_that.message,_that.data);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int code,  String message,  String? data)  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionDeleteRequest():
+return $default(_that.code,_that.message,_that.data);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int code,  String message,  String? data)?  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionDeleteRequest() when $default != null:
+return $default(_that.code,_that.message,_that.data);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable(includeIfNull: false)
-class _$WcSessionDeleteRequestImpl implements _WcSessionDeleteRequest {
-  const _$WcSessionDeleteRequestImpl(
-      {required this.code, required this.message, this.data});
+class _WcSessionDeleteRequest implements WcSessionDeleteRequest {
+  const _WcSessionDeleteRequest({required this.code, required this.message, this.data});
+  factory _WcSessionDeleteRequest.fromJson(Map<String, dynamic> json) => _$WcSessionDeleteRequestFromJson(json);
 
-  factory _$WcSessionDeleteRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WcSessionDeleteRequestImplFromJson(json);
+@override final  int code;
+@override final  String message;
+@override final  String? data;
 
-  @override
-  final int code;
-  @override
-  final String message;
-  @override
-  final String? data;
+/// Create a copy of WcSessionDeleteRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WcSessionDeleteRequestCopyWith<_WcSessionDeleteRequest> get copyWith => __$WcSessionDeleteRequestCopyWithImpl<_WcSessionDeleteRequest>(this, _$identity);
 
-  @override
-  String toString() {
-    return 'WcSessionDeleteRequest(code: $code, message: $message, data: $data)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WcSessionDeleteRequestImpl &&
-            (identical(other.code, code) || other.code == code) &&
-            (identical(other.message, message) || other.message == message) &&
-            (identical(other.data, data) || other.data == data));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, code, message, data);
-
-  /// Create a copy of WcSessionDeleteRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WcSessionDeleteRequestImplCopyWith<_$WcSessionDeleteRequestImpl>
-      get copyWith => __$$WcSessionDeleteRequestImplCopyWithImpl<
-          _$WcSessionDeleteRequestImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WcSessionDeleteRequestImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$WcSessionDeleteRequestToJson(this, );
 }
 
-abstract class _WcSessionDeleteRequest implements WcSessionDeleteRequest {
-  const factory _WcSessionDeleteRequest(
-      {required final int code,
-      required final String message,
-      final String? data}) = _$WcSessionDeleteRequestImpl;
-
-  factory _WcSessionDeleteRequest.fromJson(Map<String, dynamic> json) =
-      _$WcSessionDeleteRequestImpl.fromJson;
-
-  @override
-  int get code;
-  @override
-  String get message;
-  @override
-  String? get data;
-
-  /// Create a copy of WcSessionDeleteRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$WcSessionDeleteRequestImplCopyWith<_$WcSessionDeleteRequestImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionDeleteRequest&&(identical(other.code, code) || other.code == code)&&(identical(other.message, message) || other.message == message)&&(identical(other.data, data) || other.data == data));
 }
 
-WcSessionPingRequest _$WcSessionPingRequestFromJson(Map<String, dynamic> json) {
-  return _WcSessionPingRequest.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,code,message,data);
+
+@override
+String toString() {
+  return 'WcSessionDeleteRequest(code: $code, message: $message, data: $data)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WcSessionDeleteRequestCopyWith<$Res> implements $WcSessionDeleteRequestCopyWith<$Res> {
+  factory _$WcSessionDeleteRequestCopyWith(_WcSessionDeleteRequest value, $Res Function(_WcSessionDeleteRequest) _then) = __$WcSessionDeleteRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ int code, String message, String? data
+});
+
+
+
+
+}
+/// @nodoc
+class __$WcSessionDeleteRequestCopyWithImpl<$Res>
+    implements _$WcSessionDeleteRequestCopyWith<$Res> {
+  __$WcSessionDeleteRequestCopyWithImpl(this._self, this._then);
+
+  final _WcSessionDeleteRequest _self;
+  final $Res Function(_WcSessionDeleteRequest) _then;
+
+/// Create a copy of WcSessionDeleteRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? code = null,Object? message = null,Object? data = freezed,}) {
+  return _then(_WcSessionDeleteRequest(
+code: null == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
+as int,message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$WcSessionPingRequest {
-  Map<String, dynamic>? get data => throw _privateConstructorUsedError;
+
+ Map<String, dynamic>? get data;
+/// Create a copy of WcSessionPingRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WcSessionPingRequestCopyWith<WcSessionPingRequest> get copyWith => _$WcSessionPingRequestCopyWithImpl<WcSessionPingRequest>(this as WcSessionPingRequest, _$identity);
 
   /// Serializes this WcSessionPingRequest to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of WcSessionPingRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $WcSessionPingRequestCopyWith<WcSessionPingRequest> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionPingRequest&&const DeepCollectionEquality().equals(other.data, data));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(data));
+
+@override
+String toString() {
+  return 'WcSessionPingRequest(data: $data)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $WcSessionPingRequestCopyWith<$Res> {
-  factory $WcSessionPingRequestCopyWith(WcSessionPingRequest value,
-          $Res Function(WcSessionPingRequest) then) =
-      _$WcSessionPingRequestCopyWithImpl<$Res, WcSessionPingRequest>;
-  @useResult
-  $Res call({Map<String, dynamic>? data});
-}
+abstract mixin class $WcSessionPingRequestCopyWith<$Res>  {
+  factory $WcSessionPingRequestCopyWith(WcSessionPingRequest value, $Res Function(WcSessionPingRequest) _then) = _$WcSessionPingRequestCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic>? data
+});
 
+
+
+
+}
 /// @nodoc
-class _$WcSessionPingRequestCopyWithImpl<$Res,
-        $Val extends WcSessionPingRequest>
+class _$WcSessionPingRequestCopyWithImpl<$Res>
     implements $WcSessionPingRequestCopyWith<$Res> {
-  _$WcSessionPingRequestCopyWithImpl(this._value, this._then);
+  _$WcSessionPingRequestCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WcSessionPingRequest _self;
+  final $Res Function(WcSessionPingRequest) _then;
 
-  /// Create a copy of WcSessionPingRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? data = freezed,
-  }) {
-    return _then(_value.copyWith(
-      data: freezed == data
-          ? _value.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>?,
-    ) as $Val);
-  }
+/// Create a copy of WcSessionPingRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? data = freezed,}) {
+  return _then(_self.copyWith(
+data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$WcSessionPingRequestImplCopyWith<$Res>
-    implements $WcSessionPingRequestCopyWith<$Res> {
-  factory _$$WcSessionPingRequestImplCopyWith(_$WcSessionPingRequestImpl value,
-          $Res Function(_$WcSessionPingRequestImpl) then) =
-      __$$WcSessionPingRequestImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({Map<String, dynamic>? data});
 }
 
-/// @nodoc
-class __$$WcSessionPingRequestImplCopyWithImpl<$Res>
-    extends _$WcSessionPingRequestCopyWithImpl<$Res, _$WcSessionPingRequestImpl>
-    implements _$$WcSessionPingRequestImplCopyWith<$Res> {
-  __$$WcSessionPingRequestImplCopyWithImpl(_$WcSessionPingRequestImpl _value,
-      $Res Function(_$WcSessionPingRequestImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of WcSessionPingRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? data = freezed,
-  }) {
-    return _then(_$WcSessionPingRequestImpl(
-      data: freezed == data
-          ? _value._data
-          : data // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>?,
-    ));
-  }
+/// Adds pattern-matching-related methods to [WcSessionPingRequest].
+extension WcSessionPingRequestPatterns on WcSessionPingRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WcSessionPingRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WcSessionPingRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WcSessionPingRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionPingRequest():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WcSessionPingRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionPingRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Map<String, dynamic>? data)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WcSessionPingRequest() when $default != null:
+return $default(_that.data);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Map<String, dynamic>? data)  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionPingRequest():
+return $default(_that.data);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Map<String, dynamic>? data)?  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionPingRequest() when $default != null:
+return $default(_that.data);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable(includeIfNull: false)
-class _$WcSessionPingRequestImpl implements _WcSessionPingRequest {
-  const _$WcSessionPingRequestImpl({final Map<String, dynamic>? data})
-      : _data = data;
+class _WcSessionPingRequest implements WcSessionPingRequest {
+  const _WcSessionPingRequest({final  Map<String, dynamic>? data}): _data = data;
+  factory _WcSessionPingRequest.fromJson(Map<String, dynamic> json) => _$WcSessionPingRequestFromJson(json);
 
-  factory _$WcSessionPingRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WcSessionPingRequestImplFromJson(json);
-
-  final Map<String, dynamic>? _data;
-  @override
-  Map<String, dynamic>? get data {
-    final value = _data;
-    if (value == null) return null;
-    if (_data is EqualUnmodifiableMapView) return _data;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(value);
-  }
-
-  @override
-  String toString() {
-    return 'WcSessionPingRequest(data: $data)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WcSessionPingRequestImpl &&
-            const DeepCollectionEquality().equals(other._data, _data));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
-
-  /// Create a copy of WcSessionPingRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WcSessionPingRequestImplCopyWith<_$WcSessionPingRequestImpl>
-      get copyWith =>
-          __$$WcSessionPingRequestImplCopyWithImpl<_$WcSessionPingRequestImpl>(
-              this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WcSessionPingRequestImplToJson(
-      this,
-    );
-  }
+ final  Map<String, dynamic>? _data;
+@override Map<String, dynamic>? get data {
+  final value = _data;
+  if (value == null) return null;
+  if (_data is EqualUnmodifiableMapView) return _data;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
 }
 
-abstract class _WcSessionPingRequest implements WcSessionPingRequest {
-  const factory _WcSessionPingRequest({final Map<String, dynamic>? data}) =
-      _$WcSessionPingRequestImpl;
 
-  factory _WcSessionPingRequest.fromJson(Map<String, dynamic> json) =
-      _$WcSessionPingRequestImpl.fromJson;
+/// Create a copy of WcSessionPingRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WcSessionPingRequestCopyWith<_WcSessionPingRequest> get copyWith => __$WcSessionPingRequestCopyWithImpl<_WcSessionPingRequest>(this, _$identity);
 
-  @override
-  Map<String, dynamic>? get data;
-
-  /// Create a copy of WcSessionPingRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$WcSessionPingRequestImplCopyWith<_$WcSessionPingRequestImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+Map<String, dynamic> toJson() {
+  return _$WcSessionPingRequestToJson(this, );
 }
 
-WcSessionRequestRequest _$WcSessionRequestRequestFromJson(
-    Map<String, dynamic> json) {
-  return _WcSessionRequestRequest.fromJson(json);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionPingRequest&&const DeepCollectionEquality().equals(other._data, _data));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_data));
+
+@override
+String toString() {
+  return 'WcSessionPingRequest(data: $data)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WcSessionPingRequestCopyWith<$Res> implements $WcSessionPingRequestCopyWith<$Res> {
+  factory _$WcSessionPingRequestCopyWith(_WcSessionPingRequest value, $Res Function(_WcSessionPingRequest) _then) = __$WcSessionPingRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ Map<String, dynamic>? data
+});
+
+
+
+
+}
+/// @nodoc
+class __$WcSessionPingRequestCopyWithImpl<$Res>
+    implements _$WcSessionPingRequestCopyWith<$Res> {
+  __$WcSessionPingRequestCopyWithImpl(this._self, this._then);
+
+  final _WcSessionPingRequest _self;
+  final $Res Function(_WcSessionPingRequest) _then;
+
+/// Create a copy of WcSessionPingRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? data = freezed,}) {
+  return _then(_WcSessionPingRequest(
+data: freezed == data ? _self._data : data // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>?,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$WcSessionRequestRequest {
-  String get chainId => throw _privateConstructorUsedError;
-  SessionRequestParams get request => throw _privateConstructorUsedError;
+
+ String get chainId; SessionRequestParams get request;
+/// Create a copy of WcSessionRequestRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WcSessionRequestRequestCopyWith<WcSessionRequestRequest> get copyWith => _$WcSessionRequestRequestCopyWithImpl<WcSessionRequestRequest>(this as WcSessionRequestRequest, _$identity);
 
   /// Serializes this WcSessionRequestRequest to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of WcSessionRequestRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $WcSessionRequestRequestCopyWith<WcSessionRequestRequest> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionRequestRequest&&(identical(other.chainId, chainId) || other.chainId == chainId)&&(identical(other.request, request) || other.request == request));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,chainId,request);
+
+@override
+String toString() {
+  return 'WcSessionRequestRequest(chainId: $chainId, request: $request)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $WcSessionRequestRequestCopyWith<$Res> {
-  factory $WcSessionRequestRequestCopyWith(WcSessionRequestRequest value,
-          $Res Function(WcSessionRequestRequest) then) =
-      _$WcSessionRequestRequestCopyWithImpl<$Res, WcSessionRequestRequest>;
-  @useResult
-  $Res call({String chainId, SessionRequestParams request});
+abstract mixin class $WcSessionRequestRequestCopyWith<$Res>  {
+  factory $WcSessionRequestRequestCopyWith(WcSessionRequestRequest value, $Res Function(WcSessionRequestRequest) _then) = _$WcSessionRequestRequestCopyWithImpl;
+@useResult
+$Res call({
+ String chainId, SessionRequestParams request
+});
 
-  $SessionRequestParamsCopyWith<$Res> get request;
+
+$SessionRequestParamsCopyWith<$Res> get request;
+
 }
-
 /// @nodoc
-class _$WcSessionRequestRequestCopyWithImpl<$Res,
-        $Val extends WcSessionRequestRequest>
+class _$WcSessionRequestRequestCopyWithImpl<$Res>
     implements $WcSessionRequestRequestCopyWith<$Res> {
-  _$WcSessionRequestRequestCopyWithImpl(this._value, this._then);
+  _$WcSessionRequestRequestCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WcSessionRequestRequest _self;
+  final $Res Function(WcSessionRequestRequest) _then;
 
-  /// Create a copy of WcSessionRequestRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? chainId = null,
-    Object? request = null,
-  }) {
-    return _then(_value.copyWith(
-      chainId: null == chainId
-          ? _value.chainId
-          : chainId // ignore: cast_nullable_to_non_nullable
-              as String,
-      request: null == request
-          ? _value.request
-          : request // ignore: cast_nullable_to_non_nullable
-              as SessionRequestParams,
-    ) as $Val);
-  }
-
-  /// Create a copy of WcSessionRequestRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $SessionRequestParamsCopyWith<$Res> get request {
-    return $SessionRequestParamsCopyWith<$Res>(_value.request, (value) {
-      return _then(_value.copyWith(request: value) as $Val);
-    });
-  }
+/// Create a copy of WcSessionRequestRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? chainId = null,Object? request = null,}) {
+  return _then(_self.copyWith(
+chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
+as String,request: null == request ? _self.request : request // ignore: cast_nullable_to_non_nullable
+as SessionRequestParams,
+  ));
+}
+/// Create a copy of WcSessionRequestRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SessionRequestParamsCopyWith<$Res> get request {
+  
+  return $SessionRequestParamsCopyWith<$Res>(_self.request, (value) {
+    return _then(_self.copyWith(request: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$WcSessionRequestRequestImplCopyWith<$Res>
-    implements $WcSessionRequestRequestCopyWith<$Res> {
-  factory _$$WcSessionRequestRequestImplCopyWith(
-          _$WcSessionRequestRequestImpl value,
-          $Res Function(_$WcSessionRequestRequestImpl) then) =
-      __$$WcSessionRequestRequestImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String chainId, SessionRequestParams request});
 
-  @override
-  $SessionRequestParamsCopyWith<$Res> get request;
+/// Adds pattern-matching-related methods to [WcSessionRequestRequest].
+extension WcSessionRequestRequestPatterns on WcSessionRequestRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WcSessionRequestRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WcSessionRequestRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WcSessionRequestRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionRequestRequest():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WcSessionRequestRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionRequestRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String chainId,  SessionRequestParams request)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WcSessionRequestRequest() when $default != null:
+return $default(_that.chainId,_that.request);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String chainId,  SessionRequestParams request)  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionRequestRequest():
+return $default(_that.chainId,_that.request);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String chainId,  SessionRequestParams request)?  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionRequestRequest() when $default != null:
+return $default(_that.chainId,_that.request);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$WcSessionRequestRequestImplCopyWithImpl<$Res>
-    extends _$WcSessionRequestRequestCopyWithImpl<$Res,
-        _$WcSessionRequestRequestImpl>
-    implements _$$WcSessionRequestRequestImplCopyWith<$Res> {
-  __$$WcSessionRequestRequestImplCopyWithImpl(
-      _$WcSessionRequestRequestImpl _value,
-      $Res Function(_$WcSessionRequestRequestImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of WcSessionRequestRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? chainId = null,
-    Object? request = null,
-  }) {
-    return _then(_$WcSessionRequestRequestImpl(
-      chainId: null == chainId
-          ? _value.chainId
-          : chainId // ignore: cast_nullable_to_non_nullable
-              as String,
-      request: null == request
-          ? _value.request
-          : request // ignore: cast_nullable_to_non_nullable
-              as SessionRequestParams,
-    ));
-  }
 }
 
 /// @nodoc
 
 @JsonSerializable()
-class _$WcSessionRequestRequestImpl implements _WcSessionRequestRequest {
-  const _$WcSessionRequestRequestImpl(
-      {required this.chainId, required this.request});
+class _WcSessionRequestRequest implements WcSessionRequestRequest {
+  const _WcSessionRequestRequest({required this.chainId, required this.request});
+  factory _WcSessionRequestRequest.fromJson(Map<String, dynamic> json) => _$WcSessionRequestRequestFromJson(json);
 
-  factory _$WcSessionRequestRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WcSessionRequestRequestImplFromJson(json);
+@override final  String chainId;
+@override final  SessionRequestParams request;
 
-  @override
-  final String chainId;
-  @override
-  final SessionRequestParams request;
+/// Create a copy of WcSessionRequestRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WcSessionRequestRequestCopyWith<_WcSessionRequestRequest> get copyWith => __$WcSessionRequestRequestCopyWithImpl<_WcSessionRequestRequest>(this, _$identity);
 
-  @override
-  String toString() {
-    return 'WcSessionRequestRequest(chainId: $chainId, request: $request)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WcSessionRequestRequestImpl &&
-            (identical(other.chainId, chainId) || other.chainId == chainId) &&
-            (identical(other.request, request) || other.request == request));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, chainId, request);
-
-  /// Create a copy of WcSessionRequestRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WcSessionRequestRequestImplCopyWith<_$WcSessionRequestRequestImpl>
-      get copyWith => __$$WcSessionRequestRequestImplCopyWithImpl<
-          _$WcSessionRequestRequestImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WcSessionRequestRequestImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$WcSessionRequestRequestToJson(this, );
 }
 
-abstract class _WcSessionRequestRequest implements WcSessionRequestRequest {
-  const factory _WcSessionRequestRequest(
-          {required final String chainId,
-          required final SessionRequestParams request}) =
-      _$WcSessionRequestRequestImpl;
-
-  factory _WcSessionRequestRequest.fromJson(Map<String, dynamic> json) =
-      _$WcSessionRequestRequestImpl.fromJson;
-
-  @override
-  String get chainId;
-  @override
-  SessionRequestParams get request;
-
-  /// Create a copy of WcSessionRequestRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$WcSessionRequestRequestImplCopyWith<_$WcSessionRequestRequestImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionRequestRequest&&(identical(other.chainId, chainId) || other.chainId == chainId)&&(identical(other.request, request) || other.request == request));
 }
 
-SessionRequestParams _$SessionRequestParamsFromJson(Map<String, dynamic> json) {
-  return _SessionRequestParams.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,chainId,request);
+
+@override
+String toString() {
+  return 'WcSessionRequestRequest(chainId: $chainId, request: $request)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WcSessionRequestRequestCopyWith<$Res> implements $WcSessionRequestRequestCopyWith<$Res> {
+  factory _$WcSessionRequestRequestCopyWith(_WcSessionRequestRequest value, $Res Function(_WcSessionRequestRequest) _then) = __$WcSessionRequestRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ String chainId, SessionRequestParams request
+});
+
+
+@override $SessionRequestParamsCopyWith<$Res> get request;
+
+}
+/// @nodoc
+class __$WcSessionRequestRequestCopyWithImpl<$Res>
+    implements _$WcSessionRequestRequestCopyWith<$Res> {
+  __$WcSessionRequestRequestCopyWithImpl(this._self, this._then);
+
+  final _WcSessionRequestRequest _self;
+  final $Res Function(_WcSessionRequestRequest) _then;
+
+/// Create a copy of WcSessionRequestRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? chainId = null,Object? request = null,}) {
+  return _then(_WcSessionRequestRequest(
+chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
+as String,request: null == request ? _self.request : request // ignore: cast_nullable_to_non_nullable
+as SessionRequestParams,
+  ));
+}
+
+/// Create a copy of WcSessionRequestRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SessionRequestParamsCopyWith<$Res> get request {
+  
+  return $SessionRequestParamsCopyWith<$Res>(_self.request, (value) {
+    return _then(_self.copyWith(request: value));
+  });
+}
+}
+
 
 /// @nodoc
 mixin _$SessionRequestParams {
-  String get method => throw _privateConstructorUsedError;
-  dynamic get params => throw _privateConstructorUsedError;
+
+ String get method; dynamic get params;
+/// Create a copy of SessionRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SessionRequestParamsCopyWith<SessionRequestParams> get copyWith => _$SessionRequestParamsCopyWithImpl<SessionRequestParams>(this as SessionRequestParams, _$identity);
 
   /// Serializes this SessionRequestParams to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of SessionRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $SessionRequestParamsCopyWith<SessionRequestParams> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionRequestParams&&(identical(other.method, method) || other.method == method)&&const DeepCollectionEquality().equals(other.params, params));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,method,const DeepCollectionEquality().hash(params));
+
+@override
+String toString() {
+  return 'SessionRequestParams(method: $method, params: $params)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $SessionRequestParamsCopyWith<$Res> {
-  factory $SessionRequestParamsCopyWith(SessionRequestParams value,
-          $Res Function(SessionRequestParams) then) =
-      _$SessionRequestParamsCopyWithImpl<$Res, SessionRequestParams>;
-  @useResult
-  $Res call({String method, dynamic params});
-}
+abstract mixin class $SessionRequestParamsCopyWith<$Res>  {
+  factory $SessionRequestParamsCopyWith(SessionRequestParams value, $Res Function(SessionRequestParams) _then) = _$SessionRequestParamsCopyWithImpl;
+@useResult
+$Res call({
+ String method, dynamic params
+});
 
+
+
+
+}
 /// @nodoc
-class _$SessionRequestParamsCopyWithImpl<$Res,
-        $Val extends SessionRequestParams>
+class _$SessionRequestParamsCopyWithImpl<$Res>
     implements $SessionRequestParamsCopyWith<$Res> {
-  _$SessionRequestParamsCopyWithImpl(this._value, this._then);
+  _$SessionRequestParamsCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final SessionRequestParams _self;
+  final $Res Function(SessionRequestParams) _then;
 
-  /// Create a copy of SessionRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? method = null,
-    Object? params = freezed,
-  }) {
-    return _then(_value.copyWith(
-      method: null == method
-          ? _value.method
-          : method // ignore: cast_nullable_to_non_nullable
-              as String,
-      params: freezed == params
-          ? _value.params
-          : params // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-    ) as $Val);
-  }
+/// Create a copy of SessionRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? method = null,Object? params = freezed,}) {
+  return _then(_self.copyWith(
+method: null == method ? _self.method : method // ignore: cast_nullable_to_non_nullable
+as String,params: freezed == params ? _self.params : params // ignore: cast_nullable_to_non_nullable
+as dynamic,
+  ));
 }
 
-/// @nodoc
-abstract class _$$SessionRequestParamsImplCopyWith<$Res>
-    implements $SessionRequestParamsCopyWith<$Res> {
-  factory _$$SessionRequestParamsImplCopyWith(_$SessionRequestParamsImpl value,
-          $Res Function(_$SessionRequestParamsImpl) then) =
-      __$$SessionRequestParamsImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String method, dynamic params});
 }
 
-/// @nodoc
-class __$$SessionRequestParamsImplCopyWithImpl<$Res>
-    extends _$SessionRequestParamsCopyWithImpl<$Res, _$SessionRequestParamsImpl>
-    implements _$$SessionRequestParamsImplCopyWith<$Res> {
-  __$$SessionRequestParamsImplCopyWithImpl(_$SessionRequestParamsImpl _value,
-      $Res Function(_$SessionRequestParamsImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of SessionRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? method = null,
-    Object? params = freezed,
-  }) {
-    return _then(_$SessionRequestParamsImpl(
-      method: null == method
-          ? _value.method
-          : method // ignore: cast_nullable_to_non_nullable
-              as String,
-      params: freezed == params
-          ? _value.params
-          : params // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-    ));
-  }
+/// Adds pattern-matching-related methods to [SessionRequestParams].
+extension SessionRequestParamsPatterns on SessionRequestParams {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SessionRequestParams value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SessionRequestParams() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SessionRequestParams value)  $default,){
+final _that = this;
+switch (_that) {
+case _SessionRequestParams():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SessionRequestParams value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SessionRequestParams() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String method,  dynamic params)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SessionRequestParams() when $default != null:
+return $default(_that.method,_that.params);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String method,  dynamic params)  $default,) {final _that = this;
+switch (_that) {
+case _SessionRequestParams():
+return $default(_that.method,_that.params);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String method,  dynamic params)?  $default,) {final _that = this;
+switch (_that) {
+case _SessionRequestParams() when $default != null:
+return $default(_that.method,_that.params);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable()
-class _$SessionRequestParamsImpl implements _SessionRequestParams {
-  const _$SessionRequestParamsImpl(
-      {required this.method, required this.params});
+class _SessionRequestParams implements SessionRequestParams {
+  const _SessionRequestParams({required this.method, required this.params});
+  factory _SessionRequestParams.fromJson(Map<String, dynamic> json) => _$SessionRequestParamsFromJson(json);
 
-  factory _$SessionRequestParamsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SessionRequestParamsImplFromJson(json);
+@override final  String method;
+@override final  dynamic params;
 
-  @override
-  final String method;
-  @override
-  final dynamic params;
+/// Create a copy of SessionRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SessionRequestParamsCopyWith<_SessionRequestParams> get copyWith => __$SessionRequestParamsCopyWithImpl<_SessionRequestParams>(this, _$identity);
 
-  @override
-  String toString() {
-    return 'SessionRequestParams(method: $method, params: $params)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SessionRequestParamsImpl &&
-            (identical(other.method, method) || other.method == method) &&
-            const DeepCollectionEquality().equals(other.params, params));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType, method, const DeepCollectionEquality().hash(params));
-
-  /// Create a copy of SessionRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SessionRequestParamsImplCopyWith<_$SessionRequestParamsImpl>
-      get copyWith =>
-          __$$SessionRequestParamsImplCopyWithImpl<_$SessionRequestParamsImpl>(
-              this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SessionRequestParamsImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$SessionRequestParamsToJson(this, );
 }
 
-abstract class _SessionRequestParams implements SessionRequestParams {
-  const factory _SessionRequestParams(
-      {required final String method,
-      required final dynamic params}) = _$SessionRequestParamsImpl;
-
-  factory _SessionRequestParams.fromJson(Map<String, dynamic> json) =
-      _$SessionRequestParamsImpl.fromJson;
-
-  @override
-  String get method;
-  @override
-  dynamic get params;
-
-  /// Create a copy of SessionRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SessionRequestParamsImplCopyWith<_$SessionRequestParamsImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionRequestParams&&(identical(other.method, method) || other.method == method)&&const DeepCollectionEquality().equals(other.params, params));
 }
 
-WcSessionEventRequest _$WcSessionEventRequestFromJson(
-    Map<String, dynamic> json) {
-  return _WcSessionEventRequest.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,method,const DeepCollectionEquality().hash(params));
+
+@override
+String toString() {
+  return 'SessionRequestParams(method: $method, params: $params)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SessionRequestParamsCopyWith<$Res> implements $SessionRequestParamsCopyWith<$Res> {
+  factory _$SessionRequestParamsCopyWith(_SessionRequestParams value, $Res Function(_SessionRequestParams) _then) = __$SessionRequestParamsCopyWithImpl;
+@override @useResult
+$Res call({
+ String method, dynamic params
+});
+
+
+
+
+}
+/// @nodoc
+class __$SessionRequestParamsCopyWithImpl<$Res>
+    implements _$SessionRequestParamsCopyWith<$Res> {
+  __$SessionRequestParamsCopyWithImpl(this._self, this._then);
+
+  final _SessionRequestParams _self;
+  final $Res Function(_SessionRequestParams) _then;
+
+/// Create a copy of SessionRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? method = null,Object? params = freezed,}) {
+  return _then(_SessionRequestParams(
+method: null == method ? _self.method : method // ignore: cast_nullable_to_non_nullable
+as String,params: freezed == params ? _self.params : params // ignore: cast_nullable_to_non_nullable
+as dynamic,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$WcSessionEventRequest {
-  String get chainId => throw _privateConstructorUsedError;
-  SessionEventParams get event => throw _privateConstructorUsedError;
+
+ String get chainId; SessionEventParams get event;
+/// Create a copy of WcSessionEventRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WcSessionEventRequestCopyWith<WcSessionEventRequest> get copyWith => _$WcSessionEventRequestCopyWithImpl<WcSessionEventRequest>(this as WcSessionEventRequest, _$identity);
 
   /// Serializes this WcSessionEventRequest to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of WcSessionEventRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $WcSessionEventRequestCopyWith<WcSessionEventRequest> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionEventRequest&&(identical(other.chainId, chainId) || other.chainId == chainId)&&(identical(other.event, event) || other.event == event));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,chainId,event);
+
+@override
+String toString() {
+  return 'WcSessionEventRequest(chainId: $chainId, event: $event)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $WcSessionEventRequestCopyWith<$Res> {
-  factory $WcSessionEventRequestCopyWith(WcSessionEventRequest value,
-          $Res Function(WcSessionEventRequest) then) =
-      _$WcSessionEventRequestCopyWithImpl<$Res, WcSessionEventRequest>;
-  @useResult
-  $Res call({String chainId, SessionEventParams event});
+abstract mixin class $WcSessionEventRequestCopyWith<$Res>  {
+  factory $WcSessionEventRequestCopyWith(WcSessionEventRequest value, $Res Function(WcSessionEventRequest) _then) = _$WcSessionEventRequestCopyWithImpl;
+@useResult
+$Res call({
+ String chainId, SessionEventParams event
+});
 
-  $SessionEventParamsCopyWith<$Res> get event;
+
+$SessionEventParamsCopyWith<$Res> get event;
+
 }
-
 /// @nodoc
-class _$WcSessionEventRequestCopyWithImpl<$Res,
-        $Val extends WcSessionEventRequest>
+class _$WcSessionEventRequestCopyWithImpl<$Res>
     implements $WcSessionEventRequestCopyWith<$Res> {
-  _$WcSessionEventRequestCopyWithImpl(this._value, this._then);
+  _$WcSessionEventRequestCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WcSessionEventRequest _self;
+  final $Res Function(WcSessionEventRequest) _then;
 
-  /// Create a copy of WcSessionEventRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? chainId = null,
-    Object? event = null,
-  }) {
-    return _then(_value.copyWith(
-      chainId: null == chainId
-          ? _value.chainId
-          : chainId // ignore: cast_nullable_to_non_nullable
-              as String,
-      event: null == event
-          ? _value.event
-          : event // ignore: cast_nullable_to_non_nullable
-              as SessionEventParams,
-    ) as $Val);
-  }
-
-  /// Create a copy of WcSessionEventRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $SessionEventParamsCopyWith<$Res> get event {
-    return $SessionEventParamsCopyWith<$Res>(_value.event, (value) {
-      return _then(_value.copyWith(event: value) as $Val);
-    });
-  }
+/// Create a copy of WcSessionEventRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? chainId = null,Object? event = null,}) {
+  return _then(_self.copyWith(
+chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
+as String,event: null == event ? _self.event : event // ignore: cast_nullable_to_non_nullable
+as SessionEventParams,
+  ));
+}
+/// Create a copy of WcSessionEventRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SessionEventParamsCopyWith<$Res> get event {
+  
+  return $SessionEventParamsCopyWith<$Res>(_self.event, (value) {
+    return _then(_self.copyWith(event: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$WcSessionEventRequestImplCopyWith<$Res>
-    implements $WcSessionEventRequestCopyWith<$Res> {
-  factory _$$WcSessionEventRequestImplCopyWith(
-          _$WcSessionEventRequestImpl value,
-          $Res Function(_$WcSessionEventRequestImpl) then) =
-      __$$WcSessionEventRequestImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String chainId, SessionEventParams event});
 
-  @override
-  $SessionEventParamsCopyWith<$Res> get event;
+/// Adds pattern-matching-related methods to [WcSessionEventRequest].
+extension WcSessionEventRequestPatterns on WcSessionEventRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WcSessionEventRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WcSessionEventRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WcSessionEventRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionEventRequest():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WcSessionEventRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionEventRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String chainId,  SessionEventParams event)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WcSessionEventRequest() when $default != null:
+return $default(_that.chainId,_that.event);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String chainId,  SessionEventParams event)  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionEventRequest():
+return $default(_that.chainId,_that.event);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String chainId,  SessionEventParams event)?  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionEventRequest() when $default != null:
+return $default(_that.chainId,_that.event);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$WcSessionEventRequestImplCopyWithImpl<$Res>
-    extends _$WcSessionEventRequestCopyWithImpl<$Res,
-        _$WcSessionEventRequestImpl>
-    implements _$$WcSessionEventRequestImplCopyWith<$Res> {
-  __$$WcSessionEventRequestImplCopyWithImpl(_$WcSessionEventRequestImpl _value,
-      $Res Function(_$WcSessionEventRequestImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of WcSessionEventRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? chainId = null,
-    Object? event = null,
-  }) {
-    return _then(_$WcSessionEventRequestImpl(
-      chainId: null == chainId
-          ? _value.chainId
-          : chainId // ignore: cast_nullable_to_non_nullable
-              as String,
-      event: null == event
-          ? _value.event
-          : event // ignore: cast_nullable_to_non_nullable
-              as SessionEventParams,
-    ));
-  }
 }
 
 /// @nodoc
 
 @JsonSerializable()
-class _$WcSessionEventRequestImpl implements _WcSessionEventRequest {
-  const _$WcSessionEventRequestImpl(
-      {required this.chainId, required this.event});
+class _WcSessionEventRequest implements WcSessionEventRequest {
+  const _WcSessionEventRequest({required this.chainId, required this.event});
+  factory _WcSessionEventRequest.fromJson(Map<String, dynamic> json) => _$WcSessionEventRequestFromJson(json);
 
-  factory _$WcSessionEventRequestImpl.fromJson(Map<String, dynamic> json) =>
-      _$$WcSessionEventRequestImplFromJson(json);
+@override final  String chainId;
+@override final  SessionEventParams event;
 
-  @override
-  final String chainId;
-  @override
-  final SessionEventParams event;
+/// Create a copy of WcSessionEventRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WcSessionEventRequestCopyWith<_WcSessionEventRequest> get copyWith => __$WcSessionEventRequestCopyWithImpl<_WcSessionEventRequest>(this, _$identity);
 
-  @override
-  String toString() {
-    return 'WcSessionEventRequest(chainId: $chainId, event: $event)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WcSessionEventRequestImpl &&
-            (identical(other.chainId, chainId) || other.chainId == chainId) &&
-            (identical(other.event, event) || other.event == event));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, chainId, event);
-
-  /// Create a copy of WcSessionEventRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WcSessionEventRequestImplCopyWith<_$WcSessionEventRequestImpl>
-      get copyWith => __$$WcSessionEventRequestImplCopyWithImpl<
-          _$WcSessionEventRequestImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WcSessionEventRequestImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$WcSessionEventRequestToJson(this, );
 }
 
-abstract class _WcSessionEventRequest implements WcSessionEventRequest {
-  const factory _WcSessionEventRequest(
-      {required final String chainId,
-      required final SessionEventParams event}) = _$WcSessionEventRequestImpl;
-
-  factory _WcSessionEventRequest.fromJson(Map<String, dynamic> json) =
-      _$WcSessionEventRequestImpl.fromJson;
-
-  @override
-  String get chainId;
-  @override
-  SessionEventParams get event;
-
-  /// Create a copy of WcSessionEventRequest
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$WcSessionEventRequestImplCopyWith<_$WcSessionEventRequestImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionEventRequest&&(identical(other.chainId, chainId) || other.chainId == chainId)&&(identical(other.event, event) || other.event == event));
 }
 
-SessionEventParams _$SessionEventParamsFromJson(Map<String, dynamic> json) {
-  return _SessionEventParams.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,chainId,event);
+
+@override
+String toString() {
+  return 'WcSessionEventRequest(chainId: $chainId, event: $event)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WcSessionEventRequestCopyWith<$Res> implements $WcSessionEventRequestCopyWith<$Res> {
+  factory _$WcSessionEventRequestCopyWith(_WcSessionEventRequest value, $Res Function(_WcSessionEventRequest) _then) = __$WcSessionEventRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ String chainId, SessionEventParams event
+});
+
+
+@override $SessionEventParamsCopyWith<$Res> get event;
+
+}
+/// @nodoc
+class __$WcSessionEventRequestCopyWithImpl<$Res>
+    implements _$WcSessionEventRequestCopyWith<$Res> {
+  __$WcSessionEventRequestCopyWithImpl(this._self, this._then);
+
+  final _WcSessionEventRequest _self;
+  final $Res Function(_WcSessionEventRequest) _then;
+
+/// Create a copy of WcSessionEventRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? chainId = null,Object? event = null,}) {
+  return _then(_WcSessionEventRequest(
+chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
+as String,event: null == event ? _self.event : event // ignore: cast_nullable_to_non_nullable
+as SessionEventParams,
+  ));
+}
+
+/// Create a copy of WcSessionEventRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SessionEventParamsCopyWith<$Res> get event {
+  
+  return $SessionEventParamsCopyWith<$Res>(_self.event, (value) {
+    return _then(_self.copyWith(event: value));
+  });
+}
+}
+
 
 /// @nodoc
 mixin _$SessionEventParams {
-  String get name => throw _privateConstructorUsedError;
-  dynamic get data => throw _privateConstructorUsedError;
+
+ String get name; dynamic get data;
+/// Create a copy of SessionEventParams
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SessionEventParamsCopyWith<SessionEventParams> get copyWith => _$SessionEventParamsCopyWithImpl<SessionEventParams>(this as SessionEventParams, _$identity);
 
   /// Serializes this SessionEventParams to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of SessionEventParams
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $SessionEventParamsCopyWith<SessionEventParams> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionEventParams&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other.data, data));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,name,const DeepCollectionEquality().hash(data));
+
+@override
+String toString() {
+  return 'SessionEventParams(name: $name, data: $data)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $SessionEventParamsCopyWith<$Res> {
-  factory $SessionEventParamsCopyWith(
-          SessionEventParams value, $Res Function(SessionEventParams) then) =
-      _$SessionEventParamsCopyWithImpl<$Res, SessionEventParams>;
-  @useResult
-  $Res call({String name, dynamic data});
-}
+abstract mixin class $SessionEventParamsCopyWith<$Res>  {
+  factory $SessionEventParamsCopyWith(SessionEventParams value, $Res Function(SessionEventParams) _then) = _$SessionEventParamsCopyWithImpl;
+@useResult
+$Res call({
+ String name, dynamic data
+});
 
+
+
+
+}
 /// @nodoc
-class _$SessionEventParamsCopyWithImpl<$Res, $Val extends SessionEventParams>
+class _$SessionEventParamsCopyWithImpl<$Res>
     implements $SessionEventParamsCopyWith<$Res> {
-  _$SessionEventParamsCopyWithImpl(this._value, this._then);
+  _$SessionEventParamsCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final SessionEventParams _self;
+  final $Res Function(SessionEventParams) _then;
 
-  /// Create a copy of SessionEventParams
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? name = null,
-    Object? data = freezed,
-  }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      data: freezed == data
-          ? _value.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-    ) as $Val);
-  }
+/// Create a copy of SessionEventParams
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? data = freezed,}) {
+  return _then(_self.copyWith(
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as dynamic,
+  ));
 }
 
-/// @nodoc
-abstract class _$$SessionEventParamsImplCopyWith<$Res>
-    implements $SessionEventParamsCopyWith<$Res> {
-  factory _$$SessionEventParamsImplCopyWith(_$SessionEventParamsImpl value,
-          $Res Function(_$SessionEventParamsImpl) then) =
-      __$$SessionEventParamsImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String name, dynamic data});
 }
 
-/// @nodoc
-class __$$SessionEventParamsImplCopyWithImpl<$Res>
-    extends _$SessionEventParamsCopyWithImpl<$Res, _$SessionEventParamsImpl>
-    implements _$$SessionEventParamsImplCopyWith<$Res> {
-  __$$SessionEventParamsImplCopyWithImpl(_$SessionEventParamsImpl _value,
-      $Res Function(_$SessionEventParamsImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of SessionEventParams
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? name = null,
-    Object? data = freezed,
-  }) {
-    return _then(_$SessionEventParamsImpl(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      data: freezed == data
-          ? _value.data
-          : data // ignore: cast_nullable_to_non_nullable
-              as dynamic,
-    ));
-  }
+/// Adds pattern-matching-related methods to [SessionEventParams].
+extension SessionEventParamsPatterns on SessionEventParams {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SessionEventParams value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SessionEventParams() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SessionEventParams value)  $default,){
+final _that = this;
+switch (_that) {
+case _SessionEventParams():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SessionEventParams value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SessionEventParams() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  dynamic data)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SessionEventParams() when $default != null:
+return $default(_that.name,_that.data);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  dynamic data)  $default,) {final _that = this;
+switch (_that) {
+case _SessionEventParams():
+return $default(_that.name,_that.data);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  dynamic data)?  $default,) {final _that = this;
+switch (_that) {
+case _SessionEventParams() when $default != null:
+return $default(_that.name,_that.data);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable()
-class _$SessionEventParamsImpl implements _SessionEventParams {
-  const _$SessionEventParamsImpl({required this.name, required this.data});
+class _SessionEventParams implements SessionEventParams {
+  const _SessionEventParams({required this.name, required this.data});
+  factory _SessionEventParams.fromJson(Map<String, dynamic> json) => _$SessionEventParamsFromJson(json);
 
-  factory _$SessionEventParamsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SessionEventParamsImplFromJson(json);
+@override final  String name;
+@override final  dynamic data;
 
-  @override
-  final String name;
-  @override
-  final dynamic data;
+/// Create a copy of SessionEventParams
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SessionEventParamsCopyWith<_SessionEventParams> get copyWith => __$SessionEventParamsCopyWithImpl<_SessionEventParams>(this, _$identity);
 
-  @override
-  String toString() {
-    return 'SessionEventParams(name: $name, data: $data)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SessionEventParamsImpl &&
-            (identical(other.name, name) || other.name == name) &&
-            const DeepCollectionEquality().equals(other.data, data));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, name, const DeepCollectionEquality().hash(data));
-
-  /// Create a copy of SessionEventParams
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SessionEventParamsImplCopyWith<_$SessionEventParamsImpl> get copyWith =>
-      __$$SessionEventParamsImplCopyWithImpl<_$SessionEventParamsImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SessionEventParamsImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$SessionEventParamsToJson(this, );
 }
 
-abstract class _SessionEventParams implements SessionEventParams {
-  const factory _SessionEventParams(
-      {required final String name,
-      required final dynamic data}) = _$SessionEventParamsImpl;
-
-  factory _SessionEventParams.fromJson(Map<String, dynamic> json) =
-      _$SessionEventParamsImpl.fromJson;
-
-  @override
-  String get name;
-  @override
-  dynamic get data;
-
-  /// Create a copy of SessionEventParams
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SessionEventParamsImplCopyWith<_$SessionEventParamsImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionEventParams&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other.data, data));
 }
 
-WcSessionAuthRequestParams _$WcSessionAuthRequestParamsFromJson(
-    Map<String, dynamic> json) {
-  return _WcSessionAuthRequestParams.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,name,const DeepCollectionEquality().hash(data));
+
+@override
+String toString() {
+  return 'SessionEventParams(name: $name, data: $data)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SessionEventParamsCopyWith<$Res> implements $SessionEventParamsCopyWith<$Res> {
+  factory _$SessionEventParamsCopyWith(_SessionEventParams value, $Res Function(_SessionEventParams) _then) = __$SessionEventParamsCopyWithImpl;
+@override @useResult
+$Res call({
+ String name, dynamic data
+});
+
+
+
+
+}
+/// @nodoc
+class __$SessionEventParamsCopyWithImpl<$Res>
+    implements _$SessionEventParamsCopyWith<$Res> {
+  __$SessionEventParamsCopyWithImpl(this._self, this._then);
+
+  final _SessionEventParams _self;
+  final $Res Function(_SessionEventParams) _then;
+
+/// Create a copy of SessionEventParams
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? data = freezed,}) {
+  return _then(_SessionEventParams(
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as dynamic,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$WcSessionAuthRequestParams {
-  SessionAuthPayload get authPayload => throw _privateConstructorUsedError;
-  ConnectionMetadata get requester => throw _privateConstructorUsedError;
-  int get expiryTimestamp => throw _privateConstructorUsedError;
+
+ SessionAuthPayload get authPayload; ConnectionMetadata get requester; int get expiryTimestamp;
+/// Create a copy of WcSessionAuthRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WcSessionAuthRequestParamsCopyWith<WcSessionAuthRequestParams> get copyWith => _$WcSessionAuthRequestParamsCopyWithImpl<WcSessionAuthRequestParams>(this as WcSessionAuthRequestParams, _$identity);
 
   /// Serializes this WcSessionAuthRequestParams to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of WcSessionAuthRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $WcSessionAuthRequestParamsCopyWith<WcSessionAuthRequestParams>
-      get copyWith => throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionAuthRequestParams&&(identical(other.authPayload, authPayload) || other.authPayload == authPayload)&&(identical(other.requester, requester) || other.requester == requester)&&(identical(other.expiryTimestamp, expiryTimestamp) || other.expiryTimestamp == expiryTimestamp));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,authPayload,requester,expiryTimestamp);
+
+@override
+String toString() {
+  return 'WcSessionAuthRequestParams(authPayload: $authPayload, requester: $requester, expiryTimestamp: $expiryTimestamp)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $WcSessionAuthRequestParamsCopyWith<$Res> {
-  factory $WcSessionAuthRequestParamsCopyWith(WcSessionAuthRequestParams value,
-          $Res Function(WcSessionAuthRequestParams) then) =
-      _$WcSessionAuthRequestParamsCopyWithImpl<$Res,
-          WcSessionAuthRequestParams>;
-  @useResult
-  $Res call(
-      {SessionAuthPayload authPayload,
-      ConnectionMetadata requester,
-      int expiryTimestamp});
+abstract mixin class $WcSessionAuthRequestParamsCopyWith<$Res>  {
+  factory $WcSessionAuthRequestParamsCopyWith(WcSessionAuthRequestParams value, $Res Function(WcSessionAuthRequestParams) _then) = _$WcSessionAuthRequestParamsCopyWithImpl;
+@useResult
+$Res call({
+ SessionAuthPayload authPayload, ConnectionMetadata requester, int expiryTimestamp
+});
 
-  $SessionAuthPayloadCopyWith<$Res> get authPayload;
-  $ConnectionMetadataCopyWith<$Res> get requester;
+
+$SessionAuthPayloadCopyWith<$Res> get authPayload;$ConnectionMetadataCopyWith<$Res> get requester;
+
 }
-
 /// @nodoc
-class _$WcSessionAuthRequestParamsCopyWithImpl<$Res,
-        $Val extends WcSessionAuthRequestParams>
+class _$WcSessionAuthRequestParamsCopyWithImpl<$Res>
     implements $WcSessionAuthRequestParamsCopyWith<$Res> {
-  _$WcSessionAuthRequestParamsCopyWithImpl(this._value, this._then);
+  _$WcSessionAuthRequestParamsCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WcSessionAuthRequestParams _self;
+  final $Res Function(WcSessionAuthRequestParams) _then;
 
-  /// Create a copy of WcSessionAuthRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? authPayload = null,
-    Object? requester = null,
-    Object? expiryTimestamp = null,
-  }) {
-    return _then(_value.copyWith(
-      authPayload: null == authPayload
-          ? _value.authPayload
-          : authPayload // ignore: cast_nullable_to_non_nullable
-              as SessionAuthPayload,
-      requester: null == requester
-          ? _value.requester
-          : requester // ignore: cast_nullable_to_non_nullable
-              as ConnectionMetadata,
-      expiryTimestamp: null == expiryTimestamp
-          ? _value.expiryTimestamp
-          : expiryTimestamp // ignore: cast_nullable_to_non_nullable
-              as int,
-    ) as $Val);
-  }
-
-  /// Create a copy of WcSessionAuthRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $SessionAuthPayloadCopyWith<$Res> get authPayload {
-    return $SessionAuthPayloadCopyWith<$Res>(_value.authPayload, (value) {
-      return _then(_value.copyWith(authPayload: value) as $Val);
-    });
-  }
-
-  /// Create a copy of WcSessionAuthRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $ConnectionMetadataCopyWith<$Res> get requester {
-    return $ConnectionMetadataCopyWith<$Res>(_value.requester, (value) {
-      return _then(_value.copyWith(requester: value) as $Val);
-    });
-  }
+/// Create a copy of WcSessionAuthRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? authPayload = null,Object? requester = null,Object? expiryTimestamp = null,}) {
+  return _then(_self.copyWith(
+authPayload: null == authPayload ? _self.authPayload : authPayload // ignore: cast_nullable_to_non_nullable
+as SessionAuthPayload,requester: null == requester ? _self.requester : requester // ignore: cast_nullable_to_non_nullable
+as ConnectionMetadata,expiryTimestamp: null == expiryTimestamp ? _self.expiryTimestamp : expiryTimestamp // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+/// Create a copy of WcSessionAuthRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SessionAuthPayloadCopyWith<$Res> get authPayload {
+  
+  return $SessionAuthPayloadCopyWith<$Res>(_self.authPayload, (value) {
+    return _then(_self.copyWith(authPayload: value));
+  });
+}/// Create a copy of WcSessionAuthRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConnectionMetadataCopyWith<$Res> get requester {
+  
+  return $ConnectionMetadataCopyWith<$Res>(_self.requester, (value) {
+    return _then(_self.copyWith(requester: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$WcSessionAuthRequestParamsImplCopyWith<$Res>
-    implements $WcSessionAuthRequestParamsCopyWith<$Res> {
-  factory _$$WcSessionAuthRequestParamsImplCopyWith(
-          _$WcSessionAuthRequestParamsImpl value,
-          $Res Function(_$WcSessionAuthRequestParamsImpl) then) =
-      __$$WcSessionAuthRequestParamsImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {SessionAuthPayload authPayload,
-      ConnectionMetadata requester,
-      int expiryTimestamp});
 
-  @override
-  $SessionAuthPayloadCopyWith<$Res> get authPayload;
-  @override
-  $ConnectionMetadataCopyWith<$Res> get requester;
+/// Adds pattern-matching-related methods to [WcSessionAuthRequestParams].
+extension WcSessionAuthRequestParamsPatterns on WcSessionAuthRequestParams {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WcSessionAuthRequestParams value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WcSessionAuthRequestParams() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WcSessionAuthRequestParams value)  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionAuthRequestParams():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WcSessionAuthRequestParams value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionAuthRequestParams() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SessionAuthPayload authPayload,  ConnectionMetadata requester,  int expiryTimestamp)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WcSessionAuthRequestParams() when $default != null:
+return $default(_that.authPayload,_that.requester,_that.expiryTimestamp);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SessionAuthPayload authPayload,  ConnectionMetadata requester,  int expiryTimestamp)  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionAuthRequestParams():
+return $default(_that.authPayload,_that.requester,_that.expiryTimestamp);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SessionAuthPayload authPayload,  ConnectionMetadata requester,  int expiryTimestamp)?  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionAuthRequestParams() when $default != null:
+return $default(_that.authPayload,_that.requester,_that.expiryTimestamp);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$WcSessionAuthRequestParamsImplCopyWithImpl<$Res>
-    extends _$WcSessionAuthRequestParamsCopyWithImpl<$Res,
-        _$WcSessionAuthRequestParamsImpl>
-    implements _$$WcSessionAuthRequestParamsImplCopyWith<$Res> {
-  __$$WcSessionAuthRequestParamsImplCopyWithImpl(
-      _$WcSessionAuthRequestParamsImpl _value,
-      $Res Function(_$WcSessionAuthRequestParamsImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of WcSessionAuthRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? authPayload = null,
-    Object? requester = null,
-    Object? expiryTimestamp = null,
-  }) {
-    return _then(_$WcSessionAuthRequestParamsImpl(
-      authPayload: null == authPayload
-          ? _value.authPayload
-          : authPayload // ignore: cast_nullable_to_non_nullable
-              as SessionAuthPayload,
-      requester: null == requester
-          ? _value.requester
-          : requester // ignore: cast_nullable_to_non_nullable
-              as ConnectionMetadata,
-      expiryTimestamp: null == expiryTimestamp
-          ? _value.expiryTimestamp
-          : expiryTimestamp // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
-  }
 }
 
 /// @nodoc
 
 @JsonSerializable()
-class _$WcSessionAuthRequestParamsImpl implements _WcSessionAuthRequestParams {
-  const _$WcSessionAuthRequestParamsImpl(
-      {required this.authPayload,
-      required this.requester,
-      required this.expiryTimestamp});
+class _WcSessionAuthRequestParams implements WcSessionAuthRequestParams {
+  const _WcSessionAuthRequestParams({required this.authPayload, required this.requester, required this.expiryTimestamp});
+  factory _WcSessionAuthRequestParams.fromJson(Map<String, dynamic> json) => _$WcSessionAuthRequestParamsFromJson(json);
 
-  factory _$WcSessionAuthRequestParamsImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$WcSessionAuthRequestParamsImplFromJson(json);
+@override final  SessionAuthPayload authPayload;
+@override final  ConnectionMetadata requester;
+@override final  int expiryTimestamp;
 
-  @override
-  final SessionAuthPayload authPayload;
-  @override
-  final ConnectionMetadata requester;
-  @override
-  final int expiryTimestamp;
+/// Create a copy of WcSessionAuthRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WcSessionAuthRequestParamsCopyWith<_WcSessionAuthRequestParams> get copyWith => __$WcSessionAuthRequestParamsCopyWithImpl<_WcSessionAuthRequestParams>(this, _$identity);
 
-  @override
-  String toString() {
-    return 'WcSessionAuthRequestParams(authPayload: $authPayload, requester: $requester, expiryTimestamp: $expiryTimestamp)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WcSessionAuthRequestParamsImpl &&
-            (identical(other.authPayload, authPayload) ||
-                other.authPayload == authPayload) &&
-            (identical(other.requester, requester) ||
-                other.requester == requester) &&
-            (identical(other.expiryTimestamp, expiryTimestamp) ||
-                other.expiryTimestamp == expiryTimestamp));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode =>
-      Object.hash(runtimeType, authPayload, requester, expiryTimestamp);
-
-  /// Create a copy of WcSessionAuthRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WcSessionAuthRequestParamsImplCopyWith<_$WcSessionAuthRequestParamsImpl>
-      get copyWith => __$$WcSessionAuthRequestParamsImplCopyWithImpl<
-          _$WcSessionAuthRequestParamsImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WcSessionAuthRequestParamsImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$WcSessionAuthRequestParamsToJson(this, );
 }
 
-abstract class _WcSessionAuthRequestParams
-    implements WcSessionAuthRequestParams {
-  const factory _WcSessionAuthRequestParams(
-      {required final SessionAuthPayload authPayload,
-      required final ConnectionMetadata requester,
-      required final int expiryTimestamp}) = _$WcSessionAuthRequestParamsImpl;
-
-  factory _WcSessionAuthRequestParams.fromJson(Map<String, dynamic> json) =
-      _$WcSessionAuthRequestParamsImpl.fromJson;
-
-  @override
-  SessionAuthPayload get authPayload;
-  @override
-  ConnectionMetadata get requester;
-  @override
-  int get expiryTimestamp;
-
-  /// Create a copy of WcSessionAuthRequestParams
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$WcSessionAuthRequestParamsImplCopyWith<_$WcSessionAuthRequestParamsImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionAuthRequestParams&&(identical(other.authPayload, authPayload) || other.authPayload == authPayload)&&(identical(other.requester, requester) || other.requester == requester)&&(identical(other.expiryTimestamp, expiryTimestamp) || other.expiryTimestamp == expiryTimestamp));
 }
 
-WcSessionAuthRequestResult _$WcSessionAuthRequestResultFromJson(
-    Map<String, dynamic> json) {
-  return _WcSessionAuthRequestResult.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,authPayload,requester,expiryTimestamp);
+
+@override
+String toString() {
+  return 'WcSessionAuthRequestParams(authPayload: $authPayload, requester: $requester, expiryTimestamp: $expiryTimestamp)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WcSessionAuthRequestParamsCopyWith<$Res> implements $WcSessionAuthRequestParamsCopyWith<$Res> {
+  factory _$WcSessionAuthRequestParamsCopyWith(_WcSessionAuthRequestParams value, $Res Function(_WcSessionAuthRequestParams) _then) = __$WcSessionAuthRequestParamsCopyWithImpl;
+@override @useResult
+$Res call({
+ SessionAuthPayload authPayload, ConnectionMetadata requester, int expiryTimestamp
+});
+
+
+@override $SessionAuthPayloadCopyWith<$Res> get authPayload;@override $ConnectionMetadataCopyWith<$Res> get requester;
+
+}
+/// @nodoc
+class __$WcSessionAuthRequestParamsCopyWithImpl<$Res>
+    implements _$WcSessionAuthRequestParamsCopyWith<$Res> {
+  __$WcSessionAuthRequestParamsCopyWithImpl(this._self, this._then);
+
+  final _WcSessionAuthRequestParams _self;
+  final $Res Function(_WcSessionAuthRequestParams) _then;
+
+/// Create a copy of WcSessionAuthRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? authPayload = null,Object? requester = null,Object? expiryTimestamp = null,}) {
+  return _then(_WcSessionAuthRequestParams(
+authPayload: null == authPayload ? _self.authPayload : authPayload // ignore: cast_nullable_to_non_nullable
+as SessionAuthPayload,requester: null == requester ? _self.requester : requester // ignore: cast_nullable_to_non_nullable
+as ConnectionMetadata,expiryTimestamp: null == expiryTimestamp ? _self.expiryTimestamp : expiryTimestamp // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+/// Create a copy of WcSessionAuthRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SessionAuthPayloadCopyWith<$Res> get authPayload {
+  
+  return $SessionAuthPayloadCopyWith<$Res>(_self.authPayload, (value) {
+    return _then(_self.copyWith(authPayload: value));
+  });
+}/// Create a copy of WcSessionAuthRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConnectionMetadataCopyWith<$Res> get requester {
+  
+  return $ConnectionMetadataCopyWith<$Res>(_self.requester, (value) {
+    return _then(_self.copyWith(requester: value));
+  });
+}
+}
+
 
 /// @nodoc
 mixin _$WcSessionAuthRequestResult {
-  List<Cacao> get cacaos => throw _privateConstructorUsedError;
-  ConnectionMetadata get responder => throw _privateConstructorUsedError;
+
+ List<Cacao> get cacaos; ConnectionMetadata get responder;
+/// Create a copy of WcSessionAuthRequestResult
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WcSessionAuthRequestResultCopyWith<WcSessionAuthRequestResult> get copyWith => _$WcSessionAuthRequestResultCopyWithImpl<WcSessionAuthRequestResult>(this as WcSessionAuthRequestResult, _$identity);
 
   /// Serializes this WcSessionAuthRequestResult to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of WcSessionAuthRequestResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $WcSessionAuthRequestResultCopyWith<WcSessionAuthRequestResult>
-      get copyWith => throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionAuthRequestResult&&const DeepCollectionEquality().equals(other.cacaos, cacaos)&&(identical(other.responder, responder) || other.responder == responder));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(cacaos),responder);
+
+@override
+String toString() {
+  return 'WcSessionAuthRequestResult(cacaos: $cacaos, responder: $responder)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $WcSessionAuthRequestResultCopyWith<$Res> {
-  factory $WcSessionAuthRequestResultCopyWith(WcSessionAuthRequestResult value,
-          $Res Function(WcSessionAuthRequestResult) then) =
-      _$WcSessionAuthRequestResultCopyWithImpl<$Res,
-          WcSessionAuthRequestResult>;
-  @useResult
-  $Res call({List<Cacao> cacaos, ConnectionMetadata responder});
+abstract mixin class $WcSessionAuthRequestResultCopyWith<$Res>  {
+  factory $WcSessionAuthRequestResultCopyWith(WcSessionAuthRequestResult value, $Res Function(WcSessionAuthRequestResult) _then) = _$WcSessionAuthRequestResultCopyWithImpl;
+@useResult
+$Res call({
+ List<Cacao> cacaos, ConnectionMetadata responder
+});
 
-  $ConnectionMetadataCopyWith<$Res> get responder;
+
+$ConnectionMetadataCopyWith<$Res> get responder;
+
 }
-
 /// @nodoc
-class _$WcSessionAuthRequestResultCopyWithImpl<$Res,
-        $Val extends WcSessionAuthRequestResult>
+class _$WcSessionAuthRequestResultCopyWithImpl<$Res>
     implements $WcSessionAuthRequestResultCopyWith<$Res> {
-  _$WcSessionAuthRequestResultCopyWithImpl(this._value, this._then);
+  _$WcSessionAuthRequestResultCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final WcSessionAuthRequestResult _self;
+  final $Res Function(WcSessionAuthRequestResult) _then;
 
-  /// Create a copy of WcSessionAuthRequestResult
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? cacaos = null,
-    Object? responder = null,
-  }) {
-    return _then(_value.copyWith(
-      cacaos: null == cacaos
-          ? _value.cacaos
-          : cacaos // ignore: cast_nullable_to_non_nullable
-              as List<Cacao>,
-      responder: null == responder
-          ? _value.responder
-          : responder // ignore: cast_nullable_to_non_nullable
-              as ConnectionMetadata,
-    ) as $Val);
-  }
-
-  /// Create a copy of WcSessionAuthRequestResult
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $ConnectionMetadataCopyWith<$Res> get responder {
-    return $ConnectionMetadataCopyWith<$Res>(_value.responder, (value) {
-      return _then(_value.copyWith(responder: value) as $Val);
-    });
-  }
+/// Create a copy of WcSessionAuthRequestResult
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? cacaos = null,Object? responder = null,}) {
+  return _then(_self.copyWith(
+cacaos: null == cacaos ? _self.cacaos : cacaos // ignore: cast_nullable_to_non_nullable
+as List<Cacao>,responder: null == responder ? _self.responder : responder // ignore: cast_nullable_to_non_nullable
+as ConnectionMetadata,
+  ));
+}
+/// Create a copy of WcSessionAuthRequestResult
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConnectionMetadataCopyWith<$Res> get responder {
+  
+  return $ConnectionMetadataCopyWith<$Res>(_self.responder, (value) {
+    return _then(_self.copyWith(responder: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$WcSessionAuthRequestResultImplCopyWith<$Res>
-    implements $WcSessionAuthRequestResultCopyWith<$Res> {
-  factory _$$WcSessionAuthRequestResultImplCopyWith(
-          _$WcSessionAuthRequestResultImpl value,
-          $Res Function(_$WcSessionAuthRequestResultImpl) then) =
-      __$$WcSessionAuthRequestResultImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({List<Cacao> cacaos, ConnectionMetadata responder});
 
-  @override
-  $ConnectionMetadataCopyWith<$Res> get responder;
+/// Adds pattern-matching-related methods to [WcSessionAuthRequestResult].
+extension WcSessionAuthRequestResultPatterns on WcSessionAuthRequestResult {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WcSessionAuthRequestResult value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WcSessionAuthRequestResult() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WcSessionAuthRequestResult value)  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionAuthRequestResult():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WcSessionAuthRequestResult value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionAuthRequestResult() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Cacao> cacaos,  ConnectionMetadata responder)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WcSessionAuthRequestResult() when $default != null:
+return $default(_that.cacaos,_that.responder);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Cacao> cacaos,  ConnectionMetadata responder)  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionAuthRequestResult():
+return $default(_that.cacaos,_that.responder);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Cacao> cacaos,  ConnectionMetadata responder)?  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionAuthRequestResult() when $default != null:
+return $default(_that.cacaos,_that.responder);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$WcSessionAuthRequestResultImplCopyWithImpl<$Res>
-    extends _$WcSessionAuthRequestResultCopyWithImpl<$Res,
-        _$WcSessionAuthRequestResultImpl>
-    implements _$$WcSessionAuthRequestResultImplCopyWith<$Res> {
-  __$$WcSessionAuthRequestResultImplCopyWithImpl(
-      _$WcSessionAuthRequestResultImpl _value,
-      $Res Function(_$WcSessionAuthRequestResultImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of WcSessionAuthRequestResult
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? cacaos = null,
-    Object? responder = null,
-  }) {
-    return _then(_$WcSessionAuthRequestResultImpl(
-      cacaos: null == cacaos
-          ? _value._cacaos
-          : cacaos // ignore: cast_nullable_to_non_nullable
-              as List<Cacao>,
-      responder: null == responder
-          ? _value.responder
-          : responder // ignore: cast_nullable_to_non_nullable
-              as ConnectionMetadata,
-    ));
-  }
 }
 
 /// @nodoc
 
 @JsonSerializable()
-class _$WcSessionAuthRequestResultImpl implements _WcSessionAuthRequestResult {
-  const _$WcSessionAuthRequestResultImpl(
-      {required final List<Cacao> cacaos, required this.responder})
-      : _cacaos = cacaos;
+class _WcSessionAuthRequestResult implements WcSessionAuthRequestResult {
+  const _WcSessionAuthRequestResult({required final  List<Cacao> cacaos, required this.responder}): _cacaos = cacaos;
+  factory _WcSessionAuthRequestResult.fromJson(Map<String, dynamic> json) => _$WcSessionAuthRequestResultFromJson(json);
 
-  factory _$WcSessionAuthRequestResultImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$WcSessionAuthRequestResultImplFromJson(json);
-
-  final List<Cacao> _cacaos;
-  @override
-  List<Cacao> get cacaos {
-    if (_cacaos is EqualUnmodifiableListView) return _cacaos;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_cacaos);
-  }
-
-  @override
-  final ConnectionMetadata responder;
-
-  @override
-  String toString() {
-    return 'WcSessionAuthRequestResult(cacaos: $cacaos, responder: $responder)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$WcSessionAuthRequestResultImpl &&
-            const DeepCollectionEquality().equals(other._cacaos, _cacaos) &&
-            (identical(other.responder, responder) ||
-                other.responder == responder));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType, const DeepCollectionEquality().hash(_cacaos), responder);
-
-  /// Create a copy of WcSessionAuthRequestResult
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$WcSessionAuthRequestResultImplCopyWith<_$WcSessionAuthRequestResultImpl>
-      get copyWith => __$$WcSessionAuthRequestResultImplCopyWithImpl<
-          _$WcSessionAuthRequestResultImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$WcSessionAuthRequestResultImplToJson(
-      this,
-    );
-  }
+ final  List<Cacao> _cacaos;
+@override List<Cacao> get cacaos {
+  if (_cacaos is EqualUnmodifiableListView) return _cacaos;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_cacaos);
 }
 
-abstract class _WcSessionAuthRequestResult
-    implements WcSessionAuthRequestResult {
-  const factory _WcSessionAuthRequestResult(
-          {required final List<Cacao> cacaos,
-          required final ConnectionMetadata responder}) =
-      _$WcSessionAuthRequestResultImpl;
+@override final  ConnectionMetadata responder;
 
-  factory _WcSessionAuthRequestResult.fromJson(Map<String, dynamic> json) =
-      _$WcSessionAuthRequestResultImpl.fromJson;
+/// Create a copy of WcSessionAuthRequestResult
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WcSessionAuthRequestResultCopyWith<_WcSessionAuthRequestResult> get copyWith => __$WcSessionAuthRequestResultCopyWithImpl<_WcSessionAuthRequestResult>(this, _$identity);
 
-  @override
-  List<Cacao> get cacaos;
-  @override
-  ConnectionMetadata get responder;
-
-  /// Create a copy of WcSessionAuthRequestResult
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$WcSessionAuthRequestResultImplCopyWith<_$WcSessionAuthRequestResultImpl>
-      get copyWith => throw _privateConstructorUsedError;
+@override
+Map<String, dynamic> toJson() {
+  return _$WcSessionAuthRequestResultToJson(this, );
 }
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionAuthRequestResult&&const DeepCollectionEquality().equals(other._cacaos, _cacaos)&&(identical(other.responder, responder) || other.responder == responder));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_cacaos),responder);
+
+@override
+String toString() {
+  return 'WcSessionAuthRequestResult(cacaos: $cacaos, responder: $responder)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WcSessionAuthRequestResultCopyWith<$Res> implements $WcSessionAuthRequestResultCopyWith<$Res> {
+  factory _$WcSessionAuthRequestResultCopyWith(_WcSessionAuthRequestResult value, $Res Function(_WcSessionAuthRequestResult) _then) = __$WcSessionAuthRequestResultCopyWithImpl;
+@override @useResult
+$Res call({
+ List<Cacao> cacaos, ConnectionMetadata responder
+});
+
+
+@override $ConnectionMetadataCopyWith<$Res> get responder;
+
+}
+/// @nodoc
+class __$WcSessionAuthRequestResultCopyWithImpl<$Res>
+    implements _$WcSessionAuthRequestResultCopyWith<$Res> {
+  __$WcSessionAuthRequestResultCopyWithImpl(this._self, this._then);
+
+  final _WcSessionAuthRequestResult _self;
+  final $Res Function(_WcSessionAuthRequestResult) _then;
+
+/// Create a copy of WcSessionAuthRequestResult
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? cacaos = null,Object? responder = null,}) {
+  return _then(_WcSessionAuthRequestResult(
+cacaos: null == cacaos ? _self._cacaos : cacaos // ignore: cast_nullable_to_non_nullable
+as List<Cacao>,responder: null == responder ? _self.responder : responder // ignore: cast_nullable_to_non_nullable
+as ConnectionMetadata,
+  ));
+}
+
+/// Create a copy of WcSessionAuthRequestResult
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConnectionMetadataCopyWith<$Res> get responder {
+  
+  return $ConnectionMetadataCopyWith<$Res>(_self.responder, (value) {
+    return _then(_self.copyWith(responder: value));
+  });
+}
+}
+
+// dart format on

@@ -12,7 +12,7 @@ enum ProtocolType {
 }
 
 @freezed
-class PairingInfo with _$PairingInfo {
+sealed class PairingInfo with _$PairingInfo {
   @JsonSerializable()
   const factory PairingInfo({
     required String topic,
@@ -28,7 +28,7 @@ class PairingInfo with _$PairingInfo {
 }
 
 @freezed
-class PairingMetadata with _$PairingMetadata {
+sealed class PairingMetadata with _$PairingMetadata {
   @JsonSerializable(includeIfNull: false)
   const factory PairingMetadata({
     required String name,
@@ -51,7 +51,7 @@ class PairingMetadata with _$PairingMetadata {
 }
 
 @freezed
-class Redirect with _$Redirect {
+sealed class Redirect with _$Redirect {
   @JsonSerializable()
   const factory Redirect({
     String? native,
@@ -152,7 +152,7 @@ class PairingActivateEvent extends EventArgs {
 }
 
 @freezed
-class JsonRpcRecord with _$JsonRpcRecord {
+sealed class JsonRpcRecord with _$JsonRpcRecord {
   @JsonSerializable(includeIfNull: false)
   const factory JsonRpcRecord({
     required int id,
@@ -169,7 +169,7 @@ class JsonRpcRecord with _$JsonRpcRecord {
 }
 
 @freezed
-class ReceiverPublicKey with _$ReceiverPublicKey {
+sealed class ReceiverPublicKey with _$ReceiverPublicKey {
   @JsonSerializable(includeIfNull: false)
   const factory ReceiverPublicKey({
     required String topic,
