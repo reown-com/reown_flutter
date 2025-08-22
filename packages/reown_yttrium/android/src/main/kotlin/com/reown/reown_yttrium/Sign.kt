@@ -11,6 +11,8 @@ import kotlinx.coroutines.launch
 import uniffi.yttrium.SessionFfi
 import uniffi.yttrium.SessionProposalFfi
 import uniffi.yttrium.SessionRequestJsonRpcFfi
+import uniffi.yttrium.SessionRequestJsonRpcResponseFfi
+import uniffi.yttrium.SessionStoreFfi
 import uniffi.yttrium.SignClient
 import uniffi.yttrium.SignListener
 import uniffi.yttrium.errorDataFfiFromJson
@@ -18,7 +20,10 @@ import uniffi.yttrium.metadataFromJson
 import uniffi.yttrium.sessionFfiToJson
 import uniffi.yttrium.sessionProposalFfiFromJson
 import uniffi.yttrium.sessionProposalFfiToJson
+import uniffi.yttrium.sessionRequestJsonRpcErrorResponseFfiFromJson
+import uniffi.yttrium.sessionRequestJsonRpcFfiFromJson
 import uniffi.yttrium.sessionRequestJsonRpcFfiToJson
+import uniffi.yttrium.sessionRequestJsonRpcResultResponseFfiFromJson
 import kotlin.collections.get
 
 class Sign {
@@ -36,10 +41,15 @@ class Sign {
         fun initialize(params: Any?, result: MethodChannel.Result) {
             val dict = params as? Map<*, *> ?: return result.error("Yttrium.Sign.initialize", "Invalid parameters: not a map", null)
             val projectId = dict["projectId"] as? String ?: return result.error("Yttrium.Sign.initialize", "Invalid projectId", null)
+            val key = dict["key"] as? String ?: return result.error("Yttrium.Sign.setKey", "Invalid parameters: not a String", null)
 
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    signClient = SignClient(projectId = projectId)
+                    signClient = SignClient(
+                        projectId = projectId,
+                        key = key.hexStringToByteArray(),
+                        sessionStore = SessionStoreFfi(), // TODO
+                    )
                     signClient.registerSignListener(signListenerHandler)
                     Log.d("🤖 Yttrium.Sign", "initialize success")
                     result.success(true)
@@ -49,20 +59,20 @@ class Sign {
             }
         }
 
-        fun setKey(params: Any?, result: MethodChannel.Result) {
-            check(::signClient.isInitialized) { "Initialize Yttrium.Sign.SignClient before using it." }
-
-            val key = params as? String ?: return result.error("Yttrium.Sign.setKey", "Invalid parameters: not a String", null)
-
-            CoroutineScope(Dispatchers.IO).launch {
-                try {
-                    signClient.setKey(key = key.hexStringToByteArray())
-                    result.success(true)
-                } catch (e: Exception) {
-                    result.error("Yttrium.Sign.setKey", e.message, null)
-                }
-            }
-        }
+//        fun setKey(params: Any?, result: MethodChannel.Result) {
+//            check(::signClient.isInitialized) { "Initialize Yttrium.Sign.SignClient before using it." }
+//
+//            val key = params as? String ?: return result.error("Yttrium.Sign.setKey", "Invalid parameters: not a String", null)
+//
+//            CoroutineScope(Dispatchers.IO).launch {
+//                try {
+//                    signClient.setKey(key = key.hexStringToByteArray())
+//                    result.success(true)
+//                } catch (e: Exception) {
+//                    result.error("Yttrium.Sign.setKey", e.message, null)
+//                }
+//            }
+//        }
 
         fun generateKey(result: MethodChannel.Result) {
             check(::signClient.isInitialized) { "Initialize Yttrium.Sign.SignClient before using it." }
@@ -133,6 +143,67 @@ class Sign {
                 }
             }
         }
+
+        fun respond(params: Any?, result: MethodChannel.Result) {
+            check(::signClient.isInitialized) { "Initialize SignClient before using it." }
+
+            val dict = params as? Map<*, *> ?: return result.error("Yttrium.Sign.respond", "Invalid parameters: not a map", null)
+
+            val topic = dict["topic"] as? String ?: return result.error("Yttrium.Sign.respond", "Invalid parameter topic", null)
+            val responseResult = dict["result"] as? String
+            val responseError = dict["error"] as? String
+
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    lateinit var response: SessionRequestJsonRpcResponseFfi
+                    if (responseResult != null) {
+                        response = SessionRequestJsonRpcResponseFfi.Result(
+                            v1 = sessionRequestJsonRpcResultResponseFfiFromJson(
+                                json = responseResult
+                            )
+                        );
+                    } else {
+                        response = SessionRequestJsonRpcResponseFfi.Error(
+                            v1 = sessionRequestJsonRpcErrorResponseFfiFromJson(
+                                json = responseError!!
+                            )
+                        );
+                    }
+                    val topic = signClient.respond(
+                        topic = topic,
+                        response = response,
+                    );
+                    result.success(topic)
+                } catch (e: Exception) {
+                    result.error("Yttrium.Sign.respond", e.message, null)
+                }
+            }
+        }
+
+//        fun respondError(params: Any?, result: MethodChannel.Result) {
+//            check(::signClient.isInitialized) { "Initialize SignClient before using it." }
+//
+//            val dict = params as? Map<*, *> ?: return result.error("Yttrium.Sign.respond", "Invalid parameters: not a map", null)
+//
+//            val topic = dict["topic"] as? String ?: return result.error("Yttrium.Sign.respond", "Invalid parameter topic", null)
+//            val response = dict["response"] as? String ?: return result.error("Yttrium.Sign.respond", "Invalid parameter response", null)
+//
+//            CoroutineScope(Dispatchers.IO).launch {
+//                try {
+//                    val topic = signClient.respond(
+//                        topic = topic,
+//                        response = SessionRequestJsonRpcResponseFfi.Error(
+//                            v1 = sessionRequestJsonRpcErrorResponseFfiFromJson(
+//                                response
+//                            )
+//                        )
+//                    );
+//                    result.success(topic)
+//                } catch (e: Exception) {
+//                    result.error("Yttrium.Sign.respond", e.message, null)
+//                }
+//            }
+//        }
     }
 }
 

@@ -461,11 +461,12 @@ class ReownSign implements IReownSign {
           proposal: proposalFfi,
           error: ErrorDataFfi.fromJson(reason.toJson()),
         );
+
+        await _deleteProposal(id);
       } catch (e) {
         // print('got here');
       }
     }
-    await _deleteProposal(id);
   }
 
   @override

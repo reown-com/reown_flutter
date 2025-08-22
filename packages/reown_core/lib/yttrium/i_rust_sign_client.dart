@@ -28,4 +28,9 @@ abstract class IRustSignClient {
     required SessionProposalFfi proposal,
     required ErrorDataFfi error,
   });
+
+  Future<String> respond({
+    required String topic,
+    required SessionRequestJsonRpcResponseFfi response,
+  });
 }

@@ -35,11 +35,13 @@ class ReownYttriumPlugin : FlutterPlugin, MethodCallHandler {
       //
       // Sign methods
       "sign_init" -> Sign.initialize(call.arguments, result)
-      "sign_setKey" -> Sign.setKey(call.arguments, result)
+//      "sign_setKey" -> Sign.setKey(call.arguments, result)
       "sign_generateKey" -> Sign.generateKey(result)
       "sign_pair" -> Sign.pair(call.arguments, result)
       "sign_approve" -> Sign.approve(call.arguments, result)
       "sign_reject" -> Sign.reject(call.arguments, result)
+      "sign_respond" -> Sign.respond(call.arguments, result)
+//      "sign_respond_error" -> Sign.respondError(call.arguments, result)
       //
       else -> result.notImplemented()
     }

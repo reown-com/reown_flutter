@@ -9,6 +9,7 @@ import 'package:reown_core/models/rust_sign_client_models.dart';
 import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/i_json_rpc_history.dart';
 import 'package:reown_core/relay_client/relay_client.dart';
+import 'package:reown_core/reown_core.dart';
 import 'package:reown_core/store/i_generic_store.dart';
 import 'package:reown_core/crypto/crypto_models.dart';
 import 'package:reown_core/i_core_impl.dart';
@@ -652,22 +653,29 @@ class Pairing implements IPairing {
         'id: $id topic: $topic, method: $method, result: $result',
       );
     } else {
-      final opts = MethodConstants.RPC_OPTS[method]!['res']!;
-      //
-      await core.relayClient.publish(
+      // final opts = MethodConstants.RPC_OPTS[method]!['res']!;
+      // //
+      // await core.relayClient.publish(
+      //   topic: topic,
+      //   message: message,
+      //   options: PublishOptions(
+      //     ttl: opts.ttl,
+      //     tag: opts.tag,
+      //     correlationId: resultId,
+      //     // tvf data is sent only on tvfMethods methods
+      //     tvf: _shouldSendTVF(opts.tag) ? tvf?.toJson(includeAll: true) : null,
+      //   ),
+      // );
+      // core.logger.d(
+      //   '[$runtimeType] sendResult relayClient, '
+      //   'id: $id topic: $topic, method: $method, result: $result',
+      // );
+      await core.rustSignClient.respond(
         topic: topic,
-        message: message,
-        options: PublishOptions(
-          ttl: opts.ttl,
-          tag: opts.tag,
-          correlationId: resultId,
-          // tvf data is sent only on tvfMethods methods
-          tvf: _shouldSendTVF(opts.tag) ? tvf?.toJson(includeAll: true) : null,
+        response: SessionRequestJsonRpcResponseFfi.result(
+          id: id,
+          result: result, // TODO result should be dynamic?
         ),
-      );
-      core.logger.d(
-        '[$runtimeType] sendResult relayClient, '
-        'id: $id topic: $topic, method: $method, result: $result',
       );
     }
   }
@@ -790,28 +798,35 @@ class Pairing implements IPairing {
         'id: $id topic: $topic, method: $method, error: $error',
       );
     } else {
-      final fallbackMethod = MethodConstants.UNREGISTERED_METHOD;
-      final methodOpts = MethodConstants.RPC_OPTS[method];
-      final fallbackMethodOpts = MethodConstants.RPC_OPTS[fallbackMethod]!;
-      final relayOpts = methodOpts ?? fallbackMethodOpts;
-      final fallbackOpts = relayOpts['reject'] ?? relayOpts['res']!;
-      final ttl = (rpcOptions ?? fallbackOpts).ttl;
-      final tag = (rpcOptions ?? fallbackOpts).tag;
-      //
-      await core.relayClient.publish(
+      // final fallbackMethod = MethodConstants.UNREGISTERED_METHOD;
+      // final methodOpts = MethodConstants.RPC_OPTS[method];
+      // final fallbackMethodOpts = MethodConstants.RPC_OPTS[fallbackMethod]!;
+      // final relayOpts = methodOpts ?? fallbackMethodOpts;
+      // final fallbackOpts = relayOpts['reject'] ?? relayOpts['res']!;
+      // final ttl = (rpcOptions ?? fallbackOpts).ttl;
+      // final tag = (rpcOptions ?? fallbackOpts).tag;
+      // //
+      // await core.relayClient.publish(
+      //   topic: topic,
+      //   message: message,
+      //   options: PublishOptions(
+      //     ttl: ttl,
+      //     tag: tag,
+      //     correlationId: resultId,
+      //     // tvf data is sent only on tvfMethods methods
+      //     tvf: _shouldSendTVF(tag) ? tvf?.toJson(includeAll: true) : null,
+      //   ),
+      // );
+      // core.logger.d(
+      //   '[$runtimeType] sendError relayClient, '
+      //   'id: $id topic: $topic, method: $method, error: $error',
+      // );
+      await core.rustSignClient.respond(
         topic: topic,
-        message: message,
-        options: PublishOptions(
-          ttl: ttl,
-          tag: tag,
-          correlationId: resultId,
-          // tvf data is sent only on tvfMethods methods
-          tvf: _shouldSendTVF(tag) ? tvf?.toJson(includeAll: true) : null,
+        response: SessionRequestJsonRpcResponseFfi.error(
+          id: id,
+          error: jsonEncode(error.toString()),
         ),
-      );
-      core.logger.d(
-        '[$runtimeType] sendError relayClient, '
-        'id: $id topic: $topic, method: $method, error: $error',
       );
     }
   }

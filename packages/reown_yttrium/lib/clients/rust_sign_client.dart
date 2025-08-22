@@ -93,4 +93,15 @@ class SignClient implements ISignClient {
       reason: error.toJson(),
     );
   }
+
+  @override
+  Future<String> respond({
+    required String topic,
+    required SessionRequestJsonRpcResponseFfi response,
+  }) async {
+    return await _methodChannelSign.respond(
+      topic: topic,
+      response: response.toJson(),
+    );
+  }
 }

@@ -196,21 +196,34 @@ Map<String, dynamic> _$$SessionRequestNativeEventImplToJson(
       'sessionRequest': instance.sessionRequest,
     };
 
-_$SessionRequestResponseJsonRpcFfiImpl
-    _$$SessionRequestResponseJsonRpcFfiImplFromJson(
-            Map<String, dynamic> json) =>
-        _$SessionRequestResponseJsonRpcFfiImpl(
-          id: (json['id'] as num).toInt(),
-          jsonrpc: json['jsonrpc'] as String,
-          result: json['result'] as String,
-        );
+_$ResultImpl _$$ResultImplFromJson(Map<String, dynamic> json) => _$ResultImpl(
+      id: (json['id'] as num).toInt(),
+      jsonrpc: json['jsonrpc'] as String? ?? '2.0',
+      result: json['result'] as String,
+      $type: json['runtimeType'] as String?,
+    );
 
-Map<String, dynamic> _$$SessionRequestResponseJsonRpcFfiImplToJson(
-        _$SessionRequestResponseJsonRpcFfiImpl instance) =>
+Map<String, dynamic> _$$ResultImplToJson(_$ResultImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'jsonrpc': instance.jsonrpc,
       'result': instance.result,
+      'runtimeType': instance.$type,
+    };
+
+_$ErrorImpl _$$ErrorImplFromJson(Map<String, dynamic> json) => _$ErrorImpl(
+      id: (json['id'] as num).toInt(),
+      jsonrpc: json['jsonrpc'] as String? ?? '2.0',
+      error: json['error'] as String,
+      $type: json['runtimeType'] as String?,
+    );
+
+Map<String, dynamic> _$$ErrorImplToJson(_$ErrorImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'jsonrpc': instance.jsonrpc,
+      'error': instance.error,
+      'runtimeType': instance.$type,
     };
 
 _$ErrorDataFfiImpl _$$ErrorDataFfiImplFromJson(Map<String, dynamic> json) =>

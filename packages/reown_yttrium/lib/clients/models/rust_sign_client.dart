@@ -131,17 +131,52 @@ class SessionRequestNativeEvent with _$SessionRequestNativeEvent {
       _$SessionRequestNativeEventFromJson(json);
 }
 
-@freezed
-class SessionRequestResponseJsonRpcFfi with _$SessionRequestResponseJsonRpcFfi {
-  const factory SessionRequestResponseJsonRpcFfi({
-    required int id,
-    required String jsonrpc,
-    required String result, // JSON string
-  }) = _SessionRequestResponseJsonRpcFfi;
+// @freezed
+// class SessionRequestJsonRpcResultResponseFfi
+//     with _$SessionRequestJsonRpcResultResponseFfi {
+//   const factory SessionRequestJsonRpcResultResponseFfi({
+//     required int id,
+//     @Default('2.0') String jsonrpc,
+//     required String result, // JSON string
+//   }) = _SessionRequestJsonRpcResultResponseFfi;
 
-  factory SessionRequestResponseJsonRpcFfi.fromJson(
+//   factory SessionRequestJsonRpcResultResponseFfi.fromJson(
+//           Map<String, dynamic> json) =>
+//       _$SessionRequestJsonRpcResultResponseFfiFromJson(json);
+// }
+
+// @freezed
+// class SessionRequestJsonRpcErrorResponseFfi
+//     with _$SessionRequestJsonRpcErrorResponseFfi {
+//   const factory SessionRequestJsonRpcErrorResponseFfi({
+//     required int id,
+//     @Default('2.0') String jsonrpc,
+//     required String error, // JSON string
+//   }) = _SessionRequestJsonRpcErrorResponseFfi;
+
+//   factory SessionRequestJsonRpcErrorResponseFfi.fromJson(
+//           Map<String, dynamic> json) =>
+//       _$SessionRequestJsonRpcErrorResponseFfiFromJson(json);
+// }
+
+@freezed
+sealed class SessionRequestJsonRpcResponseFfi
+    with _$SessionRequestJsonRpcResponseFfi {
+  const factory SessionRequestJsonRpcResponseFfi.result({
+    required int id,
+    @Default('2.0') String jsonrpc,
+    required String result,
+  }) = Result;
+
+  const factory SessionRequestJsonRpcResponseFfi.error({
+    required int id,
+    @Default('2.0') String jsonrpc,
+    required String error,
+  }) = Error;
+
+  factory SessionRequestJsonRpcResponseFfi.fromJson(
           Map<String, dynamic> json) =>
-      _$SessionRequestResponseJsonRpcFfiFromJson(json);
+      _$SessionRequestJsonRpcResponseFfiFromJson(json);
 }
 
 @freezed

@@ -2127,57 +2127,105 @@ abstract class _SessionRequestNativeEvent implements SessionRequestNativeEvent {
       get copyWith => throw _privateConstructorUsedError;
 }
 
-SessionRequestResponseJsonRpcFfi _$SessionRequestResponseJsonRpcFfiFromJson(
+SessionRequestJsonRpcResponseFfi _$SessionRequestJsonRpcResponseFfiFromJson(
     Map<String, dynamic> json) {
-  return _SessionRequestResponseJsonRpcFfi.fromJson(json);
+  switch (json['runtimeType']) {
+    case 'result':
+      return Result.fromJson(json);
+    case 'error':
+      return Error.fromJson(json);
+
+    default:
+      throw CheckedFromJsonException(
+          json,
+          'runtimeType',
+          'SessionRequestJsonRpcResponseFfi',
+          'Invalid union type "${json['runtimeType']}"!');
+  }
 }
 
 /// @nodoc
-mixin _$SessionRequestResponseJsonRpcFfi {
+mixin _$SessionRequestJsonRpcResponseFfi {
   int get id => throw _privateConstructorUsedError;
   String get jsonrpc => throw _privateConstructorUsedError;
-  String get result => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(int id, String jsonrpc, String result) result,
+    required TResult Function(int id, String jsonrpc, String error) error,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(int id, String jsonrpc, String result)? result,
+    TResult? Function(int id, String jsonrpc, String error)? error,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(int id, String jsonrpc, String result)? result,
+    TResult Function(int id, String jsonrpc, String error)? error,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(Result value) result,
+    required TResult Function(Error value) error,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(Result value)? result,
+    TResult? Function(Error value)? error,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(Result value)? result,
+    TResult Function(Error value)? error,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
 
-  /// Serializes this SessionRequestResponseJsonRpcFfi to a JSON map.
+  /// Serializes this SessionRequestJsonRpcResponseFfi to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of SessionRequestResponseJsonRpcFfi
+  /// Create a copy of SessionRequestJsonRpcResponseFfi
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $SessionRequestResponseJsonRpcFfiCopyWith<SessionRequestResponseJsonRpcFfi>
+  $SessionRequestJsonRpcResponseFfiCopyWith<SessionRequestJsonRpcResponseFfi>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $SessionRequestResponseJsonRpcFfiCopyWith<$Res> {
-  factory $SessionRequestResponseJsonRpcFfiCopyWith(
-          SessionRequestResponseJsonRpcFfi value,
-          $Res Function(SessionRequestResponseJsonRpcFfi) then) =
-      _$SessionRequestResponseJsonRpcFfiCopyWithImpl<$Res,
-          SessionRequestResponseJsonRpcFfi>;
+abstract class $SessionRequestJsonRpcResponseFfiCopyWith<$Res> {
+  factory $SessionRequestJsonRpcResponseFfiCopyWith(
+          SessionRequestJsonRpcResponseFfi value,
+          $Res Function(SessionRequestJsonRpcResponseFfi) then) =
+      _$SessionRequestJsonRpcResponseFfiCopyWithImpl<$Res,
+          SessionRequestJsonRpcResponseFfi>;
   @useResult
-  $Res call({int id, String jsonrpc, String result});
+  $Res call({int id, String jsonrpc});
 }
 
 /// @nodoc
-class _$SessionRequestResponseJsonRpcFfiCopyWithImpl<$Res,
-        $Val extends SessionRequestResponseJsonRpcFfi>
-    implements $SessionRequestResponseJsonRpcFfiCopyWith<$Res> {
-  _$SessionRequestResponseJsonRpcFfiCopyWithImpl(this._value, this._then);
+class _$SessionRequestJsonRpcResponseFfiCopyWithImpl<$Res,
+        $Val extends SessionRequestJsonRpcResponseFfi>
+    implements $SessionRequestJsonRpcResponseFfiCopyWith<$Res> {
+  _$SessionRequestJsonRpcResponseFfiCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of SessionRequestResponseJsonRpcFfi
+  /// Create a copy of SessionRequestJsonRpcResponseFfi
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? id = null,
     Object? jsonrpc = null,
-    Object? result = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -2188,37 +2236,30 @@ class _$SessionRequestResponseJsonRpcFfiCopyWithImpl<$Res,
           ? _value.jsonrpc
           : jsonrpc // ignore: cast_nullable_to_non_nullable
               as String,
-      result: null == result
-          ? _value.result
-          : result // ignore: cast_nullable_to_non_nullable
-              as String,
     ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$SessionRequestResponseJsonRpcFfiImplCopyWith<$Res>
-    implements $SessionRequestResponseJsonRpcFfiCopyWith<$Res> {
-  factory _$$SessionRequestResponseJsonRpcFfiImplCopyWith(
-          _$SessionRequestResponseJsonRpcFfiImpl value,
-          $Res Function(_$SessionRequestResponseJsonRpcFfiImpl) then) =
-      __$$SessionRequestResponseJsonRpcFfiImplCopyWithImpl<$Res>;
+abstract class _$$ResultImplCopyWith<$Res>
+    implements $SessionRequestJsonRpcResponseFfiCopyWith<$Res> {
+  factory _$$ResultImplCopyWith(
+          _$ResultImpl value, $Res Function(_$ResultImpl) then) =
+      __$$ResultImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({int id, String jsonrpc, String result});
 }
 
 /// @nodoc
-class __$$SessionRequestResponseJsonRpcFfiImplCopyWithImpl<$Res>
-    extends _$SessionRequestResponseJsonRpcFfiCopyWithImpl<$Res,
-        _$SessionRequestResponseJsonRpcFfiImpl>
-    implements _$$SessionRequestResponseJsonRpcFfiImplCopyWith<$Res> {
-  __$$SessionRequestResponseJsonRpcFfiImplCopyWithImpl(
-      _$SessionRequestResponseJsonRpcFfiImpl _value,
-      $Res Function(_$SessionRequestResponseJsonRpcFfiImpl) _then)
+class __$$ResultImplCopyWithImpl<$Res>
+    extends _$SessionRequestJsonRpcResponseFfiCopyWithImpl<$Res, _$ResultImpl>
+    implements _$$ResultImplCopyWith<$Res> {
+  __$$ResultImplCopyWithImpl(
+      _$ResultImpl _value, $Res Function(_$ResultImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of SessionRequestResponseJsonRpcFfi
+  /// Create a copy of SessionRequestJsonRpcResponseFfi
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -2227,7 +2268,7 @@ class __$$SessionRequestResponseJsonRpcFfiImplCopyWithImpl<$Res>
     Object? jsonrpc = null,
     Object? result = null,
   }) {
-    return _then(_$SessionRequestResponseJsonRpcFfiImpl(
+    return _then(_$ResultImpl(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -2246,32 +2287,38 @@ class __$$SessionRequestResponseJsonRpcFfiImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$SessionRequestResponseJsonRpcFfiImpl
-    implements _SessionRequestResponseJsonRpcFfi {
-  const _$SessionRequestResponseJsonRpcFfiImpl(
-      {required this.id, required this.jsonrpc, required this.result});
+class _$ResultImpl implements Result {
+  const _$ResultImpl(
+      {required this.id,
+      this.jsonrpc = '2.0',
+      required this.result,
+      final String? $type})
+      : $type = $type ?? 'result';
 
-  factory _$SessionRequestResponseJsonRpcFfiImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$SessionRequestResponseJsonRpcFfiImplFromJson(json);
+  factory _$ResultImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ResultImplFromJson(json);
 
   @override
   final int id;
   @override
+  @JsonKey()
   final String jsonrpc;
   @override
   final String result;
 
+  @JsonKey(name: 'runtimeType')
+  final String $type;
+
   @override
   String toString() {
-    return 'SessionRequestResponseJsonRpcFfi(id: $id, jsonrpc: $jsonrpc, result: $result)';
+    return 'SessionRequestJsonRpcResponseFfi.result(id: $id, jsonrpc: $jsonrpc, result: $result)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SessionRequestResponseJsonRpcFfiImpl &&
+            other is _$ResultImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.jsonrpc, jsonrpc) || other.jsonrpc == jsonrpc) &&
             (identical(other.result, result) || other.result == result));
@@ -2281,49 +2328,292 @@ class _$SessionRequestResponseJsonRpcFfiImpl
   @override
   int get hashCode => Object.hash(runtimeType, id, jsonrpc, result);
 
-  /// Create a copy of SessionRequestResponseJsonRpcFfi
+  /// Create a copy of SessionRequestJsonRpcResponseFfi
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$SessionRequestResponseJsonRpcFfiImplCopyWith<
-          _$SessionRequestResponseJsonRpcFfiImpl>
-      get copyWith => __$$SessionRequestResponseJsonRpcFfiImplCopyWithImpl<
-          _$SessionRequestResponseJsonRpcFfiImpl>(this, _$identity);
+  _$$ResultImplCopyWith<_$ResultImpl> get copyWith =>
+      __$$ResultImplCopyWithImpl<_$ResultImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(int id, String jsonrpc, String result) result,
+    required TResult Function(int id, String jsonrpc, String error) error,
+  }) {
+    return result(id, jsonrpc, this.result);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(int id, String jsonrpc, String result)? result,
+    TResult? Function(int id, String jsonrpc, String error)? error,
+  }) {
+    return result?.call(id, jsonrpc, this.result);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(int id, String jsonrpc, String result)? result,
+    TResult Function(int id, String jsonrpc, String error)? error,
+    required TResult orElse(),
+  }) {
+    if (result != null) {
+      return result(id, jsonrpc, this.result);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(Result value) result,
+    required TResult Function(Error value) error,
+  }) {
+    return result(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(Result value)? result,
+    TResult? Function(Error value)? error,
+  }) {
+    return result?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(Result value)? result,
+    TResult Function(Error value)? error,
+    required TResult orElse(),
+  }) {
+    if (result != null) {
+      return result(this);
+    }
+    return orElse();
+  }
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$SessionRequestResponseJsonRpcFfiImplToJson(
+    return _$$ResultImplToJson(
       this,
     );
   }
 }
 
-abstract class _SessionRequestResponseJsonRpcFfi
-    implements SessionRequestResponseJsonRpcFfi {
-  const factory _SessionRequestResponseJsonRpcFfi(
+abstract class Result implements SessionRequestJsonRpcResponseFfi {
+  const factory Result(
       {required final int id,
-      required final String jsonrpc,
-      required final String result}) = _$SessionRequestResponseJsonRpcFfiImpl;
+      final String jsonrpc,
+      required final String result}) = _$ResultImpl;
 
-  factory _SessionRequestResponseJsonRpcFfi.fromJson(
-          Map<String, dynamic> json) =
-      _$SessionRequestResponseJsonRpcFfiImpl.fromJson;
+  factory Result.fromJson(Map<String, dynamic> json) = _$ResultImpl.fromJson;
 
   @override
   int get id;
   @override
   String get jsonrpc;
-  @override
   String get result;
 
-  /// Create a copy of SessionRequestResponseJsonRpcFfi
+  /// Create a copy of SessionRequestJsonRpcResponseFfi
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SessionRequestResponseJsonRpcFfiImplCopyWith<
-          _$SessionRequestResponseJsonRpcFfiImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$ResultImplCopyWith<_$ResultImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$ErrorImplCopyWith<$Res>
+    implements $SessionRequestJsonRpcResponseFfiCopyWith<$Res> {
+  factory _$$ErrorImplCopyWith(
+          _$ErrorImpl value, $Res Function(_$ErrorImpl) then) =
+      __$$ErrorImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({int id, String jsonrpc, String error});
+}
+
+/// @nodoc
+class __$$ErrorImplCopyWithImpl<$Res>
+    extends _$SessionRequestJsonRpcResponseFfiCopyWithImpl<$Res, _$ErrorImpl>
+    implements _$$ErrorImplCopyWith<$Res> {
+  __$$ErrorImplCopyWithImpl(
+      _$ErrorImpl _value, $Res Function(_$ErrorImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SessionRequestJsonRpcResponseFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? jsonrpc = null,
+    Object? error = null,
+  }) {
+    return _then(_$ErrorImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      jsonrpc: null == jsonrpc
+          ? _value.jsonrpc
+          : jsonrpc // ignore: cast_nullable_to_non_nullable
+              as String,
+      error: null == error
+          ? _value.error
+          : error // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$ErrorImpl implements Error {
+  const _$ErrorImpl(
+      {required this.id,
+      this.jsonrpc = '2.0',
+      required this.error,
+      final String? $type})
+      : $type = $type ?? 'error';
+
+  factory _$ErrorImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ErrorImplFromJson(json);
+
+  @override
+  final int id;
+  @override
+  @JsonKey()
+  final String jsonrpc;
+  @override
+  final String error;
+
+  @JsonKey(name: 'runtimeType')
+  final String $type;
+
+  @override
+  String toString() {
+    return 'SessionRequestJsonRpcResponseFfi.error(id: $id, jsonrpc: $jsonrpc, error: $error)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ErrorImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.jsonrpc, jsonrpc) || other.jsonrpc == jsonrpc) &&
+            (identical(other.error, error) || other.error == error));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, jsonrpc, error);
+
+  /// Create a copy of SessionRequestJsonRpcResponseFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
+      __$$ErrorImplCopyWithImpl<_$ErrorImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(int id, String jsonrpc, String result) result,
+    required TResult Function(int id, String jsonrpc, String error) error,
+  }) {
+    return error(id, jsonrpc, this.error);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(int id, String jsonrpc, String result)? result,
+    TResult? Function(int id, String jsonrpc, String error)? error,
+  }) {
+    return error?.call(id, jsonrpc, this.error);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(int id, String jsonrpc, String result)? result,
+    TResult Function(int id, String jsonrpc, String error)? error,
+    required TResult orElse(),
+  }) {
+    if (error != null) {
+      return error(id, jsonrpc, this.error);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(Result value) result,
+    required TResult Function(Error value) error,
+  }) {
+    return error(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(Result value)? result,
+    TResult? Function(Error value)? error,
+  }) {
+    return error?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(Result value)? result,
+    TResult Function(Error value)? error,
+    required TResult orElse(),
+  }) {
+    if (error != null) {
+      return error(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ErrorImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class Error implements SessionRequestJsonRpcResponseFfi {
+  const factory Error(
+      {required final int id,
+      final String jsonrpc,
+      required final String error}) = _$ErrorImpl;
+
+  factory Error.fromJson(Map<String, dynamic> json) = _$ErrorImpl.fromJson;
+
+  @override
+  int get id;
+  @override
+  String get jsonrpc;
+  String get error;
+
+  /// Create a copy of SessionRequestJsonRpcResponseFfi
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 ErrorDataFfi _$ErrorDataFfiFromJson(Map<String, dynamic> json) {

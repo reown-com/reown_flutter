@@ -86,7 +86,7 @@ class MethodChannelSign {
     required Map<String, dynamic> reason,
   }) async {
     try {
-      final result = await _methodChannel.invokeMethod<dynamic>(
+      final result = await _methodChannel.invokeMethod<bool>(
         'sign_reject',
         {
           'proposal': jsonEncode(proposal),
@@ -96,6 +96,28 @@ class MethodChannelSign {
       return result!;
     } on PlatformException catch (e) {
       debugPrint('[$runtimeType] sign_reject $e');
+      rethrow;
+    }
+  }
+
+  Future<String> respond({
+    required String topic,
+    required Map<String, dynamic> response,
+  }) async {
+    try {
+      final result = await _methodChannel.invokeMethod<String>(
+        'sign_respond',
+        {
+          'topic': topic,
+          // jsonRpcResponse (result) as json String
+          'result': response.containsKey('result') ? response : null,
+          // jsonRpcResponse (error) as json String
+          'error': response.containsKey('error') ? response : null,
+        },
+      );
+      return result!;
+    } on PlatformException catch (e) {
+      debugPrint('[$runtimeType] sign_respond $e');
       rethrow;
     }
   }

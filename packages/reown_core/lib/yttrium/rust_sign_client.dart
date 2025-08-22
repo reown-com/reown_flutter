@@ -128,6 +128,19 @@ class RustSignClient implements IRustSignClient {
         );
   }
 
+  @override
+  Future<String> respond({
+    required String topic,
+    required SessionRequestJsonRpcResponseFfi response,
+  }) async {
+    _checkInitialized();
+
+    return await ReownYttrium().signClient.respond(
+          topic: topic,
+          response: response,
+        );
+  }
+
   void _checkInitialized() {
     if (!_initialized) {
       throw Errors.getInternalError(Errors.NOT_INITIALIZED);

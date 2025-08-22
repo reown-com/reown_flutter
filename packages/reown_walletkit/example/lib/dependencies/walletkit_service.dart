@@ -247,9 +247,9 @@ class WalletKitService extends IWalletKitService {
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED).toSignError();
         await _walletKit!.rejectSession(id: args.id, reason: error);
-        await _walletKit!.core.pairing.disconnect(
-          topic: args.params.pairingTopic,
-        );
+        // await _walletKit!.core.pairing.disconnect(
+        //   topic: args.params.pairingTopic,
+        // );
         MethodsUtils.handleRedirect(
           '',
           proposer.metadata.redirect,
