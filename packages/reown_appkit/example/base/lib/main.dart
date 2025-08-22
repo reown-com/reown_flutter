@@ -381,7 +381,7 @@ class _MyHomePageState extends State<MyHomePage> {
           name: 'Polkadot',
           chainId: '91b171bb158e2d3848fa23a9f1c25182',
           chainIcon:
-              'https://pbs.twimg.com/profile_images/1823442967664717824/SRcyofz5_400x400.jpg',
+              'https://pbs.twimg.com/profile_images/1944665239502323712/0FMaAZ31_400x400.jpg',
           currency: 'DOT',
           rpcUrl: 'wss://rpc.polkadot.io',
           explorerUrl: 'https://polkadot.subscan.io',
