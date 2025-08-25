@@ -2919,17 +2919,17 @@ class ReownSign implements IReownSign {
       default:
         // default to EVM
         if (response.result is Map) {
-          // wallet_sendCalls
+          // wallet_sendCalls 2.0.0
           final id = ReownCoreUtils.recursiveSearchForMapKey(
             response.result,
             'id',
           );
           if (id != null) {
-            return <String>[id];
+            return <String>[id.toString()];
           }
           return null;
         }
-        return <String>[response.result];
+        return <String>[response.result.toString()];
     }
   }
 }
