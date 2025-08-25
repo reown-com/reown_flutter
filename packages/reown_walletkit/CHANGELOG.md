@@ -1,3 +1,7 @@
+## 1.3.1
+
+- Sign update
+
 ## 1.3.0
 
 - LICENSE UPDATE

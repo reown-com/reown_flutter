@@ -459,7 +459,10 @@ void main() {
             'capabilities': {
               'caip345': {
                 'caip2': 'eip155:1',
-                'transactionHashes': ['0xabcdef1234567890', '0xfedcba0987654321'],
+                'transactionHashes': [
+                  '0xabcdef1234567890',
+                  '0xfedcba0987654321'
+                ],
               }
             },
           },
@@ -479,7 +482,8 @@ void main() {
         expect(signEngine.pendingTVFRequests.containsKey(id), isFalse);
         final hashes = signEngine.collectHashes('eip155', response);
         expect(hashes?.length, 3);
-        expect(hashes, ['0x1234567890abcdef', '0xabcdef1234567890', '0xfedcba0987654321']);
+        expect(hashes,
+            ['0x1234567890abcdef', '0xabcdef1234567890', '0xfedcba0987654321']);
       });
 
       test('should collect simple EVM transaction hash correctly', () async {
@@ -645,7 +649,10 @@ void main() {
           chainId: 'eip155:1',
           request: SessionRequestParams(
             method: 'personal_sign',
-            params: ['Hello World', '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'],
+            params: [
+              'Hello World',
+              '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'
+            ],
           ),
         );
 
@@ -792,7 +799,10 @@ void main() {
             'capabilities': {
               'caip345': {
                 'caip2': 'eip155:1',
-                'transactionHashes': ['0xabcdef1234567890', '0xfedcba0987654321'],
+                'transactionHashes': [
+                  '0xabcdef1234567890',
+                  '0xfedcba0987654321'
+                ],
               }
             },
           },
@@ -805,8 +815,10 @@ void main() {
         expect(hashes, isNotNull);
         expect(hashes!.length, equals(3));
         expect(hashes[0], equals('0x1234567890abcdef')); // id
-        expect(hashes[1], equals('0xabcdef1234567890')); // first transaction hash
-        expect(hashes[2], equals('0xfedcba0987654321')); // second transaction hash
+        expect(
+            hashes[1], equals('0xabcdef1234567890')); // first transaction hash
+        expect(
+            hashes[2], equals('0xfedcba0987654321')); // second transaction hash
       });
 
       test('should collect simple EVM transaction hash', () {
