@@ -167,7 +167,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_core* version ${{ steps.get_version.outputs.version }} has been published"
+            text: "*reown_core* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_core"
 
   publish-sign:
     name: Publish reown_sign
@@ -277,7 +277,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_sign* version ${{ steps.get_version.outputs.version }} has been published"
+            text: "*reown_sign* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_sign"
 
   publish-appkit:
     name: Publish reown_appkit
@@ -390,7 +390,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_appkit* version ${{ steps.get_version.outputs.version }} has been published"
+            text: "*reown_appkit* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_appkit"
 
   publish-walletkit:
     name: Publish reown_walletkit
@@ -506,7 +506,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_walletkit* version ${{ steps.get_version.outputs.version }} has been published"
+            text: "*reown_walletkit* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_walletkit"
 
   publish-yttrium:
     name: Publish reown_yttrium
@@ -587,7 +587,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_yttrium* version ${{ steps.get_version.outputs.version }} has been published"
+            text: "*reown_yttrium* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_yttrium"
 
   publish-cli:
     name: Publish reown_cli
@@ -668,7 +668,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_cli* version ${{ steps.get_version.outputs.version }} has been published"
+            text: "*reown_cli* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_cli"
 
   create-pull-request:
     name: Create Pull Request
