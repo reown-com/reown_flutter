@@ -16,14 +16,14 @@ class TVFData {
   });
 
   Map<String, dynamic> toJson({bool includeAll = false}) => {
-        'rpcMethods': rpcMethods,
-        'chainId': chainId,
-        'contractAddresses': contractAddresses,
-        // requestParams is not included in this method because this is used to add tvf data to the publish method
-        if (includeAll) 'txHashes': txHashes,
-      };
+    'rpcMethods': rpcMethods,
+    'chainId': chainId,
+    'contractAddresses': contractAddresses,
+    // requestParams is not included in this method because this is used to add tvf data to the publish method
+    if (includeAll) 'txHashes': txHashes,
+  };
 
-  TVFData copytWith({
+  TVFData copyWith({
     List<String>? rpcMethods,
     String? chainId,
     List<String>? contractAddresses,

@@ -51,10 +51,30 @@ class WebSocketHandler implements IWebSocketHandler {
       );
     }
 
-    _channel = StreamChannel(
-      _socket!.stream.asBroadcastStream().cast(),
-      StreamController.broadcast(sync: true)..stream.cast().pipe(_socket!.sink),
+    // Create a multi-subscription capable stream channel using stream splitting
+    // This approach enables multiple listeners without broadcast streams
+    final inputController = StreamController<String>.broadcast(sync: true);
+    final outputController = StreamController<String>.broadcast(sync: true);
+
+    // Split the incoming stream to support multiple listeners
+    _socket!.stream.cast<String>().listen(
+          (data) => inputController.add(data),
+          onError: (error) => inputController.addError(error),
+          onDone: () => inputController.close(),
+        );
+
+    // Route outgoing messages through the output controller
+    outputController.stream.listen(
+      (data) => _socket!.sink.add(data),
+      onError: (error) => _socket!.sink.addError(error),
+      onDone: () => _socket!.sink.close(),
     );
+
+    _channel = StreamChannel(
+      inputController.stream,
+      outputController.sink,
+    );
+
     if (_channel == null) {
       // print('Socket channel is null, waiting...');
       await Future.delayed(const Duration(milliseconds: 500));

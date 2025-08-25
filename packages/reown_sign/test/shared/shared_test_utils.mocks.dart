@@ -52,45 +52,25 @@ import 'package:reown_core/yttrium/i_rust_sign_client.dart' as _i20;
 // ignore_for_file: subtype_of_sealed_class
 
 class _FakeCryptoKeyPair_0 extends _i1.SmartFake implements _i2.CryptoKeyPair {
-  _FakeCryptoKeyPair_0(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeCryptoKeyPair_0(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeEncodingParams_1 extends _i1.SmartFake
     implements _i2.EncodingParams {
-  _FakeEncodingParams_1(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeEncodingParams_1(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeEncodingValidation_2 extends _i1.SmartFake
     implements _i2.EncodingValidation {
-  _FakeEncodingValidation_2(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeEncodingValidation_2(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeIReownCore_3 extends _i1.SmartFake implements _i3.IReownCore {
-  _FakeIReownCore_3(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeIReownCore_3(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeICryptoUtils_4 extends _i1.SmartFake implements _i4.ICryptoUtils {
@@ -115,146 +95,76 @@ class _FakeIGenericStore_5<T> extends _i1.SmartFake
 }
 
 class _FakeIRelayAuth_6 extends _i1.SmartFake implements _i6.IRelayAuth {
-  _FakeIRelayAuth_6(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeIRelayAuth_6(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeIStore_7<T> extends _i1.SmartFake implements _i7.IStore<T> {
-  _FakeIStore_7(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeIStore_7(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeEvent_8<T extends _i8.EventArgs> extends _i1.SmartFake
     implements _i8.Event<T> {
-  _FakeEvent_8(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeEvent_8(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeResponse_9 extends _i1.SmartFake implements _i9.Response {
-  _FakeResponse_9(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeResponse_9(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeICrypto_10 extends _i1.SmartFake implements _i10.ICrypto {
-  _FakeICrypto_10(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeICrypto_10(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeIRelayClient_11 extends _i1.SmartFake implements _i11.IRelayClient {
-  _FakeIRelayClient_11(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeIRelayClient_11(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeIExpirer_12 extends _i1.SmartFake implements _i12.IExpirer {
-  _FakeIExpirer_12(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeIExpirer_12(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeIPairing_13 extends _i1.SmartFake implements _i13.IPairing {
-  _FakeIPairing_13(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeIPairing_13(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeIEcho_14 extends _i1.SmartFake implements _i14.IEcho {
-  _FakeIEcho_14(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeIEcho_14(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeIEvents_15 extends _i1.SmartFake implements _i15.IEvents {
-  _FakeIEvents_15(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeIEvents_15(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeIHeartBeat_16 extends _i1.SmartFake implements _i16.IHeartBeat {
-  _FakeIHeartBeat_16(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeIHeartBeat_16(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeIVerify_17 extends _i1.SmartFake implements _i17.IVerify {
-  _FakeIVerify_17(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeIVerify_17(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeIConnectivity_18 extends _i1.SmartFake
     implements _i18.IConnectivity {
-  _FakeIConnectivity_18(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeIConnectivity_18(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeILinkModeStore_19 extends _i1.SmartFake
     implements _i19.ILinkModeStore {
-  _FakeILinkModeStore_19(
-    Object parent,
-    Invocation parentInvocation,
-  ) : super(
-          parent,
-          parentInvocation,
-        );
+  _FakeILinkModeStore_19(Object parent, Invocation parentInvocation)
+      : super(parent, parentInvocation);
 }
 
 class _FakeIRustSignClient_20 extends _i1.SmartFake
@@ -476,16 +386,10 @@ class MockCryptoUtils extends _i1.Mock implements _i22.CryptoUtils {
 
   @override
   _i2.EncodingParams deserialize(String? encoded) => (super.noSuchMethod(
-        Invocation.method(
-          #deserialize,
-          [encoded],
-        ),
+        Invocation.method(#deserialize, [encoded]),
         returnValue: _FakeEncodingParams_1(
           this,
-          Invocation.method(
-            #deserialize,
-            [encoded],
-          ),
+          Invocation.method(#deserialize, [encoded]),
         ),
       ) as _i2.EncodingParams);
 
@@ -517,44 +421,30 @@ class MockCryptoUtils extends _i1.Mock implements _i22.CryptoUtils {
     String? receiverPublicKey,
   }) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #validateEncoding,
-          [],
-          {
+        Invocation.method(#validateEncoding, [], {
+          #type: type,
+          #senderPublicKey: senderPublicKey,
+          #receiverPublicKey: receiverPublicKey,
+        }),
+        returnValue: _FakeEncodingValidation_2(
+          this,
+          Invocation.method(#validateEncoding, [], {
             #type: type,
             #senderPublicKey: senderPublicKey,
             #receiverPublicKey: receiverPublicKey,
-          },
-        ),
-        returnValue: _FakeEncodingValidation_2(
-          this,
-          Invocation.method(
-            #validateEncoding,
-            [],
-            {
-              #type: type,
-              #senderPublicKey: senderPublicKey,
-              #receiverPublicKey: receiverPublicKey,
-            },
-          ),
+          }),
         ),
       ) as _i2.EncodingValidation);
 
   @override
   bool isTypeOneEnvelope(_i2.EncodingValidation? result) => (super.noSuchMethod(
-        Invocation.method(
-          #isTypeOneEnvelope,
-          [result],
-        ),
+        Invocation.method(#isTypeOneEnvelope, [result]),
         returnValue: false,
       ) as bool);
 
   @override
   bool isTypeTwoEnvelope(_i2.EncodingValidation? result) => (super.noSuchMethod(
-        Invocation.method(
-          #isTypeTwoEnvelope,
-          [result],
-        ),
+        Invocation.method(#isTypeTwoEnvelope, [result]),
         returnValue: false,
       ) as bool);
 
@@ -624,10 +514,7 @@ class MockCrypto extends _i1.Mock implements _i26.Crypto {
   @override
   _i3.IReownCore get core => (super.noSuchMethod(
         Invocation.getter(#core),
-        returnValue: _FakeIReownCore_3(
-          this,
-          Invocation.getter(#core),
-        ),
+        returnValue: _FakeIReownCore_3(this, Invocation.getter(#core)),
       ) as _i3.IReownCore);
 
   @override
@@ -668,10 +555,7 @@ class MockCrypto extends _i1.Mock implements _i26.Crypto {
 
   @override
   set relayAuth(_i6.IRelayAuth? _relayAuth) => super.noSuchMethod(
-        Invocation.setter(
-          #relayAuth,
-          _relayAuth,
-        ),
+        Invocation.setter(#relayAuth, _relayAuth),
         returnValueForMissingStub: null,
       );
 
@@ -695,13 +579,15 @@ class MockCrypto extends _i1.Mock implements _i26.Crypto {
       ) as _i25.Future<void>);
 
   @override
-  bool hasKeys(String? tag) => (super.noSuchMethod(
-        Invocation.method(
-          #hasKeys,
-          [tag],
+  _i24.Future<String> getClientId() => (super.noSuchMethod(
+        Invocation.method(#getClientId, []),
+        returnValue: _i24.Future<String>.value(
+          _i23.dummyValue<String>(
+            this,
+            Invocation.method(#getClientId, []),
+          ),
         ),
-        returnValue: false,
-      ) as bool);
+      ) as _i24.Future<String>);
 
   @override
   _i25.Future<String> getClientId() => (super.noSuchMethod(
@@ -861,19 +747,14 @@ class MockCrypto extends _i1.Mock implements _i26.Crypto {
 
   @override
   int getPayloadType(String? encoded) => (super.noSuchMethod(
-        Invocation.method(
-          #getPayloadType,
-          [encoded],
-        ),
+        Invocation.method(#getPayloadType, [encoded]),
         returnValue: 0,
       ) as int);
 
   @override
-  String? getPayloadSenderPublicKey(String? encoded) =>
-      (super.noSuchMethod(Invocation.method(
-        #getPayloadSenderPublicKey,
-        [encoded],
-      )) as String?);
+  String? getPayloadSenderPublicKey(String? encoded) => (super.noSuchMethod(
+        Invocation.method(#getPayloadSenderPublicKey, [encoded]),
+      ) as String?);
 
   @override
   _i4.ICryptoUtils getUtils() => (super.noSuchMethod(
@@ -982,11 +863,23 @@ class MockMessageTracker extends _i1.Mock implements _i27.MessageTracker {
       ) as Map<String, Map<String, String>>);
 
   @override
-  set data(Map<String, Map<String, String>>? _data) => super.noSuchMethod(
-        Invocation.setter(
-          #data,
-          _data,
+  Map<String, String> Function(dynamic) get fromJson => (super.noSuchMethod(
+        Invocation.getter(#fromJson),
+        returnValue: (dynamic __p0) => <String, String>{},
+      ) as Map<String, String> Function(dynamic));
+
+  @override
+  String get storageKey => (super.noSuchMethod(
+        Invocation.getter(#storageKey),
+        returnValue: _i23.dummyValue<String>(
+          this,
+          Invocation.getter(#storageKey),
         ),
+      ) as String);
+
+  @override
+  set data(Map<String, Map<String, String>>? _data) => super.noSuchMethod(
+        Invocation.setter(#data, _data),
         returnValueForMissingStub: null,
       );
 
@@ -1038,20 +931,12 @@ class MockMessageTracker extends _i1.Mock implements _i27.MessageTracker {
       ) as _i25.Future<void>);
 
   @override
-  bool messageIsRecorded(
-    String? topic,
-    String? message,
-  ) =>
+  _i24.Future<void> recordMessageEvent(String? topic, String? message) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #messageIsRecorded,
-          [
-            topic,
-            message,
-          ],
-        ),
-        returnValue: false,
-      ) as bool);
+        Invocation.method(#recordMessageEvent, [topic, message]),
+        returnValue: _i24.Future<void>.value(),
+        returnValueForMissingStub: _i24.Future<void>.value(),
+      ) as _i24.Future<void>);
 
   @override
   _i25.Future<void> init() => (super.noSuchMethod(
@@ -1064,20 +949,21 @@ class MockMessageTracker extends _i1.Mock implements _i27.MessageTracker {
       ) as _i25.Future<void>);
 
   @override
-  bool has(String? key) => (super.noSuchMethod(
-        Invocation.method(
-          #has,
-          [key],
-        ),
-        returnValue: false,
-      ) as bool);
+  _i24.Future<void> init() => (super.noSuchMethod(
+        Invocation.method(#init, []),
+        returnValue: _i24.Future<void>.value(),
+        returnValueForMissingStub: _i24.Future<void>.value(),
+      ) as _i24.Future<void>);
+
+  @override
+  bool has(String? key) =>
+      (super.noSuchMethod(Invocation.method(#has, [key]), returnValue: false)
+          as bool);
 
   @override
   Map<String, String>? get(String? key) =>
-      (super.noSuchMethod(Invocation.method(
-        #get,
-        [key],
-      )) as Map<String, String>?);
+      (super.noSuchMethod(Invocation.method(#get, [key]))
+          as Map<String, String>?);
 
   @override
   List<Map<String, String>> getAll() => (super.noSuchMethod(
@@ -1137,10 +1023,7 @@ class MockMessageTracker extends _i1.Mock implements _i27.MessageTracker {
 
   @override
   void checkInitialized() => super.noSuchMethod(
-        Invocation.method(
-          #checkInitialized,
-          [],
-        ),
+        Invocation.method(#checkInitialized, []),
         returnValueForMissingStub: null,
       );
 }
@@ -1270,183 +1153,63 @@ class MockReownCore extends _i1.Mock implements _i30.ReownCore {
 
   @override
   set pushUrl(String? _pushUrl) => super.noSuchMethod(
-        Invocation.setter(
-          #pushUrl,
-          _pushUrl,
-        ),
+        Invocation.setter(#pushUrl, _pushUrl),
         returnValueForMissingStub: null,
       );
-
-  @override
-  _i10.ICrypto get crypto => (super.noSuchMethod(
-        Invocation.getter(#crypto),
-        returnValue: _FakeICrypto_10(
-          this,
-          Invocation.getter(#crypto),
-        ),
-      ) as _i10.ICrypto);
 
   @override
   set crypto(_i10.ICrypto? _crypto) => super.noSuchMethod(
-        Invocation.setter(
-          #crypto,
-          _crypto,
-        ),
+        Invocation.setter(#crypto, _crypto),
         returnValueForMissingStub: null,
       );
-
-  @override
-  _i11.IRelayClient get relayClient => (super.noSuchMethod(
-        Invocation.getter(#relayClient),
-        returnValue: _FakeIRelayClient_11(
-          this,
-          Invocation.getter(#relayClient),
-        ),
-      ) as _i11.IRelayClient);
 
   @override
   set relayClient(_i11.IRelayClient? _relayClient) => super.noSuchMethod(
-        Invocation.setter(
-          #relayClient,
-          _relayClient,
-        ),
+        Invocation.setter(#relayClient, _relayClient),
         returnValueForMissingStub: null,
       );
-
-  @override
-  _i12.IExpirer get expirer => (super.noSuchMethod(
-        Invocation.getter(#expirer),
-        returnValue: _FakeIExpirer_12(
-          this,
-          Invocation.getter(#expirer),
-        ),
-      ) as _i12.IExpirer);
 
   @override
   set expirer(_i12.IExpirer? _expirer) => super.noSuchMethod(
-        Invocation.setter(
-          #expirer,
-          _expirer,
-        ),
+        Invocation.setter(#expirer, _expirer),
         returnValueForMissingStub: null,
       );
-
-  @override
-  _i13.IPairing get pairing => (super.noSuchMethod(
-        Invocation.getter(#pairing),
-        returnValue: _FakeIPairing_13(
-          this,
-          Invocation.getter(#pairing),
-        ),
-      ) as _i13.IPairing);
 
   @override
   set pairing(_i13.IPairing? _pairing) => super.noSuchMethod(
-        Invocation.setter(
-          #pairing,
-          _pairing,
-        ),
+        Invocation.setter(#pairing, _pairing),
         returnValueForMissingStub: null,
       );
-
-  @override
-  _i14.IEcho get echo => (super.noSuchMethod(
-        Invocation.getter(#echo),
-        returnValue: _FakeIEcho_14(
-          this,
-          Invocation.getter(#echo),
-        ),
-      ) as _i14.IEcho);
 
   @override
   set echo(_i14.IEcho? _echo) => super.noSuchMethod(
-        Invocation.setter(
-          #echo,
-          _echo,
-        ),
+        Invocation.setter(#echo, _echo),
         returnValueForMissingStub: null,
       );
-
-  @override
-  _i15.IEvents get events => (super.noSuchMethod(
-        Invocation.getter(#events),
-        returnValue: _FakeIEvents_15(
-          this,
-          Invocation.getter(#events),
-        ),
-      ) as _i15.IEvents);
 
   @override
   set events(_i15.IEvents? _events) => super.noSuchMethod(
-        Invocation.setter(
-          #events,
-          _events,
-        ),
+        Invocation.setter(#events, _events),
         returnValueForMissingStub: null,
       );
-
-  @override
-  _i16.IHeartBeat get heartbeat => (super.noSuchMethod(
-        Invocation.getter(#heartbeat),
-        returnValue: _FakeIHeartBeat_16(
-          this,
-          Invocation.getter(#heartbeat),
-        ),
-      ) as _i16.IHeartBeat);
 
   @override
   set heartbeat(_i16.IHeartBeat? _heartbeat) => super.noSuchMethod(
-        Invocation.setter(
-          #heartbeat,
-          _heartbeat,
-        ),
+        Invocation.setter(#heartbeat, _heartbeat),
         returnValueForMissingStub: null,
       );
-
-  @override
-  _i17.IVerify get verify => (super.noSuchMethod(
-        Invocation.getter(#verify),
-        returnValue: _FakeIVerify_17(
-          this,
-          Invocation.getter(#verify),
-        ),
-      ) as _i17.IVerify);
 
   @override
   set verify(_i17.IVerify? _verify) => super.noSuchMethod(
-        Invocation.setter(
-          #verify,
-          _verify,
-        ),
+        Invocation.setter(#verify, _verify),
         returnValueForMissingStub: null,
       );
-
-  @override
-  _i18.IConnectivity get connectivity => (super.noSuchMethod(
-        Invocation.getter(#connectivity),
-        returnValue: _FakeIConnectivity_18(
-          this,
-          Invocation.getter(#connectivity),
-        ),
-      ) as _i18.IConnectivity);
 
   @override
   set connectivity(_i18.IConnectivity? _connectivity) => super.noSuchMethod(
-        Invocation.setter(
-          #connectivity,
-          _connectivity,
-        ),
+        Invocation.setter(#connectivity, _connectivity),
         returnValueForMissingStub: null,
       );
-
-  @override
-  _i19.ILinkModeStore get linkModeStore => (super.noSuchMethod(
-        Invocation.getter(#linkModeStore),
-        returnValue: _FakeILinkModeStore_19(
-          this,
-          Invocation.getter(#linkModeStore),
-        ),
-      ) as _i19.ILinkModeStore);
 
   @override
   set linkModeStore(_i19.ILinkModeStore? _linkModeStore) => super.noSuchMethod(
@@ -1487,10 +1250,14 @@ class MockReownCore extends _i1.Mock implements _i30.ReownCore {
 
   @override
   set storage(_i7.IStore<Map<String, dynamic>>? _storage) => super.noSuchMethod(
-        Invocation.setter(
-          #storage,
-          _storage,
-        ),
+        Invocation.setter(#storage, _storage),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  set secureStorage(_i7.IStore<Map<String, dynamic>>? _secureStorage) =>
+      super.noSuchMethod(
+        Invocation.setter(#secureStorage, _secureStorage),
         returnValueForMissingStub: null,
       );
 
@@ -1523,20 +1290,14 @@ class MockReownCore extends _i1.Mock implements _i30.ReownCore {
 
   @override
   void addLogListener(dynamic Function(String)? callback) => super.noSuchMethod(
-        Invocation.method(
-          #addLogListener,
-          [callback],
-        ),
+        Invocation.method(#addLogListener, [callback]),
         returnValueForMissingStub: null,
       );
 
   @override
   bool removeLogListener(dynamic Function(String)? callback) =>
       (super.noSuchMethod(
-        Invocation.method(
-          #removeLogListener,
-          [callback],
-        ),
+        Invocation.method(#removeLogListener, [callback]),
         returnValue: false,
       ) as bool);
 
@@ -1562,19 +1323,13 @@ class MockReownCore extends _i1.Mock implements _i30.ReownCore {
 
   @override
   List<String> getLinkModeSupportedApps() => (super.noSuchMethod(
-        Invocation.method(
-          #getLinkModeSupportedApps,
-          [],
-        ),
+        Invocation.method(#getLinkModeSupportedApps, []),
         returnValue: <String>[],
       ) as List<String>);
 
   @override
   void confirmOnlineStateOrThrow() => super.noSuchMethod(
-        Invocation.method(
-          #confirmOnlineStateOrThrow,
-          [],
-        ),
+        Invocation.method(#confirmOnlineStateOrThrow, []),
         returnValueForMissingStub: null,
       );
 }

@@ -52,9 +52,7 @@ class AuthSignature {
   ) {
     // Get the sig bytes
     // print(sig);
-    final sigBytes = Uint8List.fromList(
-      hex.decode(sig.substring(2)),
-    );
+    final sigBytes = Uint8List.fromList(hex.decode(sig.substring(2)));
 
     // If the sig bytes aren't 65 bytes long, throw an error
     if (sigBytes.length != 65) {
@@ -62,14 +60,8 @@ class AuthSignature {
     }
 
     // Get the r and s values from the sig bytes
-    final r = BigInt.parse(
-      hex.encode(sigBytes.sublist(0, 32)),
-      radix: 16,
-    );
-    final s = BigInt.parse(
-      hex.encode(sigBytes.sublist(32, 64)),
-      radix: 16,
-    );
+    final r = BigInt.parse(hex.encode(sigBytes.sublist(0, 32)), radix: 16);
+    final s = BigInt.parse(hex.encode(sigBytes.sublist(32, 64)), radix: 16);
     // print(sigBytes[64]);
     final v = getNormalizedV(sigBytes[64]);
     // print(r);
@@ -128,10 +120,12 @@ class AuthSignature {
       const String dynamicTypeLength =
           '0000000000000000000000000000000000000000000000000000000000000041';
       final String nonPrefixedSignature = cacaoSignature.substring(2);
-      final String nonPrefixedHashedMessage =
-          hex.encode(hashMessage(reconstructedMessage)).substring(2);
+      final String nonPrefixedHashedMessage = hex
+          .encode(hashMessage(reconstructedMessage))
+          .substring(2);
 
-      final String data = eip1271MagicValue +
+      final String data =
+          eip1271MagicValue +
           nonPrefixedHashedMessage +
           dynamicTypeOffset +
           dynamicTypeLength +
@@ -142,21 +136,17 @@ class AuthSignature {
       );
       final Map<String, dynamic> body = JsonRpcUtils.formatJsonRpcRequest(
         'eth_call',
-        {
-          'to': address,
-          'data': data,
-        },
+        {'to': address, 'data': data},
       );
 
-      final http.Response response = await http.post(
-        url,
-        body: body,
-      );
+      final http.Response response = await http.post(url, body: body);
 
       // print(response.body);
       // final jsonBody = jsonDecode(response.body);
-      final String recoveredValue =
-          response.body.substring(0, eip1271MagicValue.length);
+      final String recoveredValue = response.body.substring(
+        0,
+        eip1271MagicValue.length,
+      );
       return recoveredValue.toLowerCase() == eip1271MagicValue.toLowerCase();
     } catch (e) {
       return false;
@@ -205,10 +195,7 @@ class AuthSignature {
     iss = iss.replaceAll(address, address.toEIP55());
     return Cacao(
       h: const CacaoHeader(t: CacaoHeader.CAIP122),
-      p: CacaoPayload.fromRequestPayload(
-        issuer: iss,
-        payload: requestPayload,
-      ),
+      p: CacaoPayload.fromRequestPayload(issuer: iss, payload: requestPayload),
       s: signature,
     );
   }
@@ -225,8 +212,9 @@ class AuthSignature {
     final requested = authPayload.chains;
     final supported = chains;
 
-    final approvedChains =
-        supported.where((value) => requested.contains(value)).toList();
+    final approvedChains = supported
+        .where((value) => requested.contains(value))
+        .toList();
     if (approvedChains.isEmpty) {
       throw ReownSignError(code: -1, message: 'No supported chains');
     }
@@ -246,12 +234,14 @@ class AuthSignature {
 
     if (resource.isNotEmpty) {
       final actions = ReCapsUtils.getReCapActions(abilities: resource);
-      final approvedActions =
-          actions.where((value) => methods.contains(value)).toList();
+      final approvedActions = actions
+          .where((value) => methods.contains(value))
+          .toList();
       if (approvedActions.isEmpty) {
         throw ReownSignError(
           code: -1,
-          message: 'Supported methods don\'t satisfy the requested: $actions, '
+          message:
+              'Supported methods don\'t satisfy the requested: $actions, '
               'supported: $methods',
         );
       }

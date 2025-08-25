@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
@@ -21,10 +22,8 @@ import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class SocialLoginPage extends StatefulWidget {
-  const SocialLoginPage({
-    required this.socialOption,
-    this.farcasterCompleter,
-  }) : super(key: KeyConstants.socialLoginPage);
+  const SocialLoginPage({required this.socialOption, this.farcasterCompleter})
+      : super(key: KeyConstants.socialLoginPage);
   final AppKitSocialOption socialOption;
   final Future<bool>? farcasterCompleter;
 
@@ -71,9 +70,9 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
   Future<void> _initSocialLogin(AppKitSocialOption option) async {
     try {
       setState(() => errorEvent = null);
-      _analyticsService.sendEvent(SocialLoginStarted(
-        provider: widget.socialOption.name.toLowerCase(),
-      ));
+      _analyticsService.sendEvent(
+        SocialLoginStarted(provider: widget.socialOption.name.toLowerCase()),
+      );
       if (option == AppKitSocialOption.Farcaster) {
         final farcasterUri = await _magicService.getFarcasterUri(
           chainId: _service?.selectedChain?.chainId,
@@ -104,9 +103,9 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
     if (success == false) {
       errorEvent = ModalError('User canceled');
       setState(() => _retrievingData = false);
-      _analyticsService.sendEvent(SocialLoginCanceled(
-        provider: widget.socialOption.name.toLowerCase(),
-      ));
+      _analyticsService.sendEvent(
+        SocialLoginCanceled(provider: widget.socialOption.name.toLowerCase()),
+      );
     } else {
       setState(() => _retrievingData = true);
       final caip2Chain = _service?.selectedChain?.chainId;
@@ -193,16 +192,18 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: themeColors.background125,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30.0)),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(30.0),
+                                  ),
                                 ),
                                 padding: const EdgeInsets.all(1.0),
                                 clipBehavior: Clip.antiAlias,
                                 child: RoundedIcon(
                                   assetPath: 'lib/modal/assets/icons/close.svg',
                                   assetColor: themeColors.error100,
-                                  circleColor:
-                                      themeColors.error100.withOpacity(0.2),
+                                  circleColor: themeColors.error100.withValues(
+                                    alpha: 0.2,
+                                  ),
                                   borderColor: themeColors.background125,
                                   padding: 4.0,
                                   size: 24.0,
@@ -267,7 +268,7 @@ final _webWalletListing = AppKitModalWalletListing.fromJson(
     'mobile_link': null,
     'desktop_link': null,
     'link_mode': null,
-    'webapp_link': String.fromEnvironment('FLUTTER_APP_FLAVOR') == 'internal'
+    'webapp_link': kDebugMode
         ? UrlConstants.webWalletUrlInternal
         : UrlConstants.webWalletUrl,
     'app_store': null,

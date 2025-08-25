@@ -6,10 +6,9 @@ part of 'data_size.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-DataSize _$DataSizeFromJson(Map<String, dynamic> json) => DataSize(
-      dataSize: (json['dataSize'] as num).toInt(),
-    );
+DataSize _$DataSizeFromJson(Map<String, dynamic> json) =>
+    DataSize(dataSize: (json['dataSize'] as num).toInt());
 
 Map<String, dynamic> _$DataSizeToJson(DataSize instance) => <String, dynamic>{
-      'dataSize': instance.dataSize,
-    };
+  'dataSize': instance.dataSize,
+};

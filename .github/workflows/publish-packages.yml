@@ -54,15 +54,44 @@ on:
 
 permissions:
   contents: write # Required to commit pubspec.yaml changes back to the repo
+  pull-requests: write # Required to create pull requests
 
 jobs:
+  create-branch:
+    name: Create Release Branch
+    runs-on: ubuntu-latest
+    outputs:
+      branch_name: ${{ steps.create_branch.outputs.branch_name }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create release branch
+        id: create_branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH_NAME="publish_workflow_${{ github.run_number }}"
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+          
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          
+          git checkout -b $BRANCH_NAME
+          git push -u https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} $BRANCH_NAME
+          
+          echo "Created and pushed branch: $BRANCH_NAME"
+
   publish-core:
     name: Publish reown_core
+    needs: [create-branch]
     runs-on: ubuntu-latest
     outputs:
       package_version: ${{ steps.get_version.outputs.version }}
     steps:
-      - name: Check if core should be published
+      - name: Check if reown_core should be published
         if: github.event.inputs.core == 'false'
         run: |
           echo "Skipping reown_core publishing because input was false."
@@ -72,13 +101,14 @@ jobs:
         if: github.event.inputs.core == 'true'
         uses: actions/checkout@v4
         with:
+          ref: ${{ needs.create-branch.outputs.branch_name }}
           fetch-depth: 0 # Required for git push
 
       - name: Set up Flutter
         if: github.event.inputs.core == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.35.1'
 
       - name: Install yq
         if: github.event.inputs.core == 'true'
@@ -137,16 +167,16 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_core* version ${{ steps.get_version.outputs.version }} has been published"
+            text: "*reown_core* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_core"
 
   publish-sign:
     name: Publish reown_sign
-    needs: [publish-core]
+    needs: [create-branch, publish-core]
     runs-on: ubuntu-latest
     outputs:
       package_version: ${{ steps.get_version.outputs.version }}
     steps:
-      - name: Check if sign should be published
+      - name: Check if reown_sign should be published
         if: github.event.inputs.sign == 'false'
         run: |
           echo "Skipping reown_sign publishing because input was false."
@@ -156,13 +186,14 @@ jobs:
         if: github.event.inputs.sign == 'true'
         uses: actions/checkout@v4
         with:
+          ref: ${{ needs.create-branch.outputs.branch_name }}
           fetch-depth: 0 # Required for git push
 
       - name: Set up Flutter
         if: github.event.inputs.sign == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.35.1'
 
       - name: Install yq
         if: github.event.inputs.sign == 'true'
@@ -179,7 +210,7 @@ jobs:
       - name: Commit and push pubspec.yaml changes for reown_sign
         if: github.event.inputs.sign == 'true' && github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != ''
         env:
-          REOWN_FLUTTER_RELEASE_PAT: ${{ secrets.REOWN_FLUTTER_RELEASE_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -188,7 +219,7 @@ jobs:
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_sign): Update reown_core to ^${{ needs.publish-core.outputs.package_version }} [skip ci]"
-            git push https://x-access-token:${REOWN_FLUTTER_RELEASE_PAT}@github.com/${{ github.repository }}
+            git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} ${{ needs.create-branch.outputs.branch_name }}
           else
             echo "No changes to commit in reown_sign/pubspec.yaml"
           fi
@@ -246,14 +277,14 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_sign* version ${{ steps.get_version.outputs.version }} has been published"
+            text: "*reown_sign* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_sign"
 
   publish-appkit:
     name: Publish reown_appkit
-    needs: [publish-core, publish-sign]
+    needs: [create-branch, publish-core, publish-sign]
     runs-on: ubuntu-latest
     steps:
-      - name: Check if appkit should be published
+      - name: Check if reown_appkit should be published
         if: github.event.inputs.appkit == 'false'
         run: |
           echo "Skipping reown_appkit publishing because input was false."
@@ -263,13 +294,14 @@ jobs:
         if: github.event.inputs.appkit == 'true'
         uses: actions/checkout@v4
         with:
+          ref: ${{ needs.create-branch.outputs.branch_name }}
           fetch-depth: 0
 
       - name: Set up Flutter
         if: github.event.inputs.appkit == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.35.1'
 
       - name: Install yq
         if: github.event.inputs.appkit == 'true'
@@ -297,7 +329,7 @@ jobs:
       - name: Commit and push pubspec.yaml changes for reown_appkit
         if: github.event.inputs.appkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != ''))
         env:
-          REOWN_FLUTTER_RELEASE_PAT: ${{ secrets.REOWN_FLUTTER_RELEASE_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -306,7 +338,7 @@ jobs:
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_appkit): Update core/sign dependencies [skip ci]"
-            git push https://x-access-token:${REOWN_FLUTTER_RELEASE_PAT}@github.com/${{ github.repository }}
+            git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} ${{ needs.create-branch.outputs.branch_name }}
           else
             echo "No changes to commit in reown_appkit/pubspec.yaml"
           fi
@@ -358,14 +390,14 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_appkit* version ${{ steps.get_version.outputs.version }} has been published"
+            text: "*reown_appkit* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_appkit"
 
   publish-walletkit:
     name: Publish reown_walletkit
-    needs: [publish-core, publish-sign, publish-yttrium]
+    needs: [create-branch, publish-core, publish-sign, publish-yttrium]
     runs-on: ubuntu-latest
     steps:
-      - name: Check if walletkit should be published
+      - name: Check if reown_walletkit should be published
         if: github.event.inputs.walletkit == 'false'
         run: |
           echo "Skipping reown_walletkit publishing because input was false."
@@ -375,13 +407,14 @@ jobs:
         if: github.event.inputs.walletkit == 'true'
         uses: actions/checkout@v4
         with:
+          ref: ${{ needs.create-branch.outputs.branch_name }}
           fetch-depth: 0
 
       - name: Set up Flutter
         if: github.event.inputs.walletkit == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.35.1'
 
       - name: Install yq
         if: github.event.inputs.walletkit == 'true'
@@ -412,7 +445,7 @@ jobs:
       - name: Commit and push pubspec.yaml changes for reown_walletkit
         if: github.event.inputs.walletkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != '') || (github.event.inputs.yttrium == 'true' && needs.publish-yttrium.outputs.package_version != ''))
         env:
-          REOWN_FLUTTER_RELEASE_PAT: ${{ secrets.REOWN_FLUTTER_RELEASE_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
@@ -421,7 +454,7 @@ jobs:
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
             git commit -m "ci(reown_walletkit): Update core/sign/yttrium dependencies [skip ci]"
-            git push https://x-access-token:${REOWN_FLUTTER_RELEASE_PAT}@github.com/${{ github.repository }}
+            git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} ${{ needs.create-branch.outputs.branch_name }}
           else
             echo "No changes to commit in reown_walletkit/pubspec.yaml"
           fi
@@ -473,15 +506,16 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_walletkit* version ${{ steps.get_version.outputs.version }} has been published"
+            text: "*reown_walletkit* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_walletkit"
 
   publish-yttrium:
     name: Publish reown_yttrium
+    needs: [create-branch] # Not really needed in this package but still used in case is needed in the future
     runs-on: ubuntu-latest
     outputs:
       package_version: ${{ steps.get_version.outputs.version }}
     steps:
-      - name: Check if sign should be published
+      - name: Check if reown_yttrium should be published
         if: github.event.inputs.yttrium == 'false'
         run: |
           echo "Skipping reown_yttrium publishing because input was false."
@@ -491,13 +525,14 @@ jobs:
         if: github.event.inputs.yttrium == 'true'
         uses: actions/checkout@v4
         with:
+          ref: ${{ needs.create-branch.outputs.branch_name }} # Not really needed in this package but still used in case is needed in the future
           fetch-depth: 0 # Required for git push
 
       - name: Set up Flutter
         if: github.event.inputs.yttrium == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.35.1'
 
       - name: Get package version from reown_yttrium/pubspec.yaml
         if: github.event.inputs.yttrium == 'true'
@@ -552,15 +587,16 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_yttrium* version ${{ steps.get_version.outputs.version }} has been published"
+            text: "*reown_yttrium* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_yttrium"
 
   publish-cli:
     name: Publish reown_cli
+    needs: [create-branch] # Not really needed in this package but still used in case is needed in the future
     runs-on: ubuntu-latest
     outputs:
       package_version: ${{ steps.get_version.outputs.version }}
     steps:
-      - name: Check if cli should be published
+      - name: Check if reown_cli should be published
         if: github.event.inputs.cli == 'false'
         run: |
           echo "Skipping reown_cli publishing because input was false."
@@ -570,13 +606,14 @@ jobs:
         if: github.event.inputs.cli == 'true'
         uses: actions/checkout@v4
         with:
+          ref: ${{ needs.create-branch.outputs.branch_name }} # Not really needed in this package but still used in case is needed in the future
           fetch-depth: 0 # Required for git push
 
       - name: Set up Flutter
         if: github.event.inputs.cli == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
+          flutter-version: '3.35.1'
 
       - name: Get package version from reown_cli/pubspec.yaml
         if: github.event.inputs.cli == 'true'
@@ -631,7 +668,69 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_cli* version ${{ steps.get_version.outputs.version }} has been published"
+            text: "*reown_cli* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_cli"
+
+  create-pull-request:
+    name: Create Pull Request
+    needs: [create-branch, publish-core, publish-sign, publish-appkit, publish-walletkit, publish-yttrium, publish-cli]
+    runs-on: ubuntu-latest
+    if: always() && (needs.publish-core.result == 'success' || needs.publish-sign.result == 'success' || needs.publish-appkit.result == 'success' || needs.publish-walletkit.result == 'success' || needs.publish-yttrium.result == 'success' || needs.publish-cli.result == 'success')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.create-branch.outputs.branch_name }}
+          fetch-depth: 0
+
+      - name: Check if branch is ahead of develop
+        id: check_changes
+        run: |
+          BRANCH_NAME="${{ needs.create-branch.outputs.branch_name }}"
+          # Fetch develop to ensure we have the latest
+          git fetch origin develop:develop
+          # Count commits in branch not in develop
+          COMMITS_AHEAD=$(git rev-list ${BRANCH_NAME} ^develop --count)
+          if [[ "$COMMITS_AHEAD" -gt 0 ]]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Branch is ahead of develop by $COMMITS_AHEAD commits, will create PR"
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "Branch is not ahead of develop, skipping PR creation"
+          fi
+
+      - name: Push all changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} ${{ needs.create-branch.outputs.branch_name }}
+
+      - name: Create Pull Request
+        if: steps.check_changes.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          base: develop
+          branch: ${{ needs.create-branch.outputs.branch_name }}
+          title: "ci: Package dependency updates and releases"
+          body: |
+            This PR contains package dependency updates and releases from the automated publishing workflow.
+            
+            ## Packages Published
+            ${{ github.event.inputs.core == 'true' && '- reown_core' || '' }}
+            ${{ github.event.inputs.sign == 'true' && '- reown_sign' || '' }}
+            ${{ github.event.inputs.appkit == 'true' && '- reown_appkit' || '' }}
+            ${{ github.event.inputs.walletkit == 'true' && '- reown_walletkit' || '' }}
+            ${{ github.event.inputs.yttrium == 'true' && '- reown_yttrium' || '' }}
+            ${{ github.event.inputs.cli == 'true' && '- reown_cli' || '' }}
+            
+            ## Changes
+            - Updated package dependencies to latest published versions
+            - All packages have been successfully published to pub.dev
+            
+            This PR was automatically created by the GitHub Actions workflow.
 
 # Launch locally
 # act --container-architecture linux/amd64 -P ubuntu-latest=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/publish-packages.yml workflow_dispatch

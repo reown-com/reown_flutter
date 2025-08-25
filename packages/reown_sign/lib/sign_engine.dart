@@ -22,10 +22,7 @@ import 'package:reown_sign/utils/constants.dart';
 
 class ReownSign implements IReownSign {
   static const List<List<String>> DEFAULT_METHODS = [
-    [
-      MethodConstants.WC_SESSION_PROPOSE,
-      MethodConstants.WC_SESSION_REQUEST,
-    ],
+    [MethodConstants.WC_SESSION_PROPOSE, MethodConstants.WC_SESSION_REQUEST],
   ];
 
   bool _initialized = false;
@@ -181,16 +178,11 @@ class ReownSign implements IReownSign {
       relays: relays ?? [Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL)],
       requiredNamespaces: {},
       optionalNamespaces: mergedNamespaces,
-      proposer: ConnectionMetadata(
-        publicKey: publicKey,
-        metadata: metadata,
-      ),
+      proposer: ConnectionMetadata(publicKey: publicKey, metadata: metadata),
       sessionProperties: sessionProperties,
     );
 
-    final expiry = ReownCoreUtils.calculateExpiry(
-      ReownConstants.FIVE_MINUTES,
-    );
+    final expiry = ReownCoreUtils.calculateExpiry(ReownConstants.FIVE_MINUTES);
     final ProposalData proposal = ProposalData(
       id: id,
       expiry: expiry,
@@ -201,10 +193,7 @@ class ReownSign implements IReownSign {
       sessionProperties: request.sessionProperties,
       pairingTopic: pTopic,
     );
-    await _setProposal(
-      id,
-      proposal,
-    );
+    await _setProposal(id, proposal);
 
     Completer<SessionData> completer = Completer();
 
@@ -219,11 +208,7 @@ class ReownSign implements IReownSign {
         completer: completer,
       ),
     );
-    _connectResponseHandler(
-      pTopic,
-      request,
-      id,
-    );
+    _connectResponseHandler(pTopic, request, id);
 
     final ConnectResponse resp = ConnectResponse(
       pairingTopic: pTopic,
@@ -240,17 +225,11 @@ class ReownSign implements IReownSign {
     int requestId,
   ) async {
     try {
-      final Map<String, dynamic> response =
-          await core.pairing.sendProposeSessionRequest(
-        topic,
-        request.toJson(),
-        id: requestId,
-      );
+      final Map<String, dynamic> response = await core.pairing
+          .sendProposeSessionRequest(topic, request.toJson(), id: requestId);
       final String peerPublicKey = response['responderPublicKey'];
 
-      final ProposalData proposal = proposals.get(
-        requestId.toString(),
-      )!;
+      final ProposalData proposal = proposals.get(requestId.toString())!;
       final String sessionTopic = await core.crypto.generateSharedKey(
         proposal.proposer.publicKey,
         peerPublicKey,
@@ -261,9 +240,7 @@ class ReownSign implements IReownSign {
       await _deleteProposal(requestId);
 
       await core.relayClient.subscribe(
-        options: SubscribeOptions(
-          topic: sessionTopic,
-        ),
+        options: SubscribeOptions(topic: sessionTopic),
       );
       await core.pairing.activate(topic: topic);
     } catch (e, s) {
@@ -274,16 +251,12 @@ class ReownSign implements IReownSign {
   }
 
   @override
-  Future<PairingInfo> pair({
-    required Uri uri,
-  }) async {
+  Future<PairingInfo> pair({required Uri uri}) async {
     _checkInitialized();
     _confirmOnlineStateOrThrow();
 
     try {
-      return await core.pairing.pair(
-        uri: uri,
-      );
+      return await core.pairing.pair(uri: uri);
     } on ReownCoreError catch (e) {
       throw e.toSignError();
     }
@@ -309,9 +282,7 @@ class ReownSign implements IReownSign {
       relayProtocol: relayProtocol,
     );
 
-    final ProposalData proposal = proposals.get(
-      id.toString(),
-    )!;
+    final ProposalData proposal = proposals.get(id.toString())!;
 
     // selfPubKey is now generated on rust side and returned on the approval response
     final String peerPubKey = proposal.proposer.publicKey;
@@ -376,10 +347,7 @@ class ReownSign implements IReownSign {
       acknowledged: true,
       controller: selfPubKey,
       namespaces: namespaces,
-      self: ConnectionMetadata(
-        publicKey: selfPubKey,
-        metadata: metadata,
-      ),
+      self: ConnectionMetadata(publicKey: selfPubKey, metadata: metadata),
       peer: proposal.proposer,
       sessionProperties: proposal.sessionProperties,
       transportType: TransportType.relay,
@@ -419,16 +387,10 @@ class ReownSign implements IReownSign {
 
     if (session.acknowledged && sessions.has(sessionTopic)) {
       // We directly update the latest value.
-      await sessions.set(
-        sessionTopic,
-        session,
-      );
+      await sessions.set(sessionTopic, session);
     }
 
-    return ApproveResponse(
-      topic: sessionTopic,
-      session: session,
-    );
+    return ApproveResponse(topic: sessionTopic, session: session);
   }
 
   @override
@@ -477,19 +439,11 @@ class ReownSign implements IReownSign {
     _checkInitialized();
     _confirmOnlineStateOrThrow();
 
-    await _isValidUpdate(
-      topic,
-      namespaces,
-    );
+    await _isValidUpdate(topic, namespaces);
 
-    await sessions.update(
-      topic,
-      namespaces: namespaces,
-    );
+    await sessions.update(topic, namespaces: namespaces);
 
-    final updateRequest = WcSessionUpdateRequest(
-      namespaces: namespaces,
-    );
+    final updateRequest = WcSessionUpdateRequest(namespaces: namespaces);
 
     await core.pairing.sendRequest(
       topic,
@@ -499,9 +453,7 @@ class ReownSign implements IReownSign {
   }
 
   @override
-  Future<void> extendSession({
-    required String topic,
-  }) async {
+  Future<void> extendSession({required String topic}) async {
     _checkInitialized();
     _confirmOnlineStateOrThrow();
 
@@ -515,9 +467,7 @@ class ReownSign implements IReownSign {
 
     await _setSessionExpiry(
       topic,
-      ReownCoreUtils.calculateExpiry(
-        ReownConstants.SEVEN_DAYS,
-      ),
+      ReownCoreUtils.calculateExpiry(ReownConstants.SEVEN_DAYS),
     );
   }
 
@@ -541,11 +491,7 @@ class ReownSign implements IReownSign {
     required SessionRequestParams request,
   }) async {
     _checkInitialized();
-    await _isValidRequest(
-      topic,
-      chainId,
-      request,
-    );
+    await _isValidRequest(topic, chainId, request);
 
     final session = sessions.get(topic);
     final isLinkMode = _isLinkModeRequest(session);
@@ -644,16 +590,9 @@ class ReownSign implements IReownSign {
     _checkInitialized();
     _confirmOnlineStateOrThrow();
 
-    await _isValidEmit(
-      topic,
-      event,
-      chainId,
-    );
+    await _isValidEmit(topic, event, chainId);
 
-    final eventRequest = WcSessionEventRequest(
-      chainId: chainId,
-      event: event,
-    );
+    final eventRequest = WcSessionEventRequest(chainId: chainId, event: event);
 
     await core.pairing.sendRequest(
       topic,
@@ -663,9 +602,7 @@ class ReownSign implements IReownSign {
   }
 
   @override
-  Future<void> ping({
-    required String topic,
-  }) async {
+  Future<void> ping({required String topic}) async {
     _checkInitialized();
     _confirmOnlineStateOrThrow();
 
@@ -796,10 +733,7 @@ class ReownSign implements IReownSign {
   final Set<String> _accounts = {};
 
   @override
-  void registerEventEmitter({
-    required String chainId,
-    required String event,
-  }) {
+  void registerEventEmitter({required String chainId, required String event}) {
     final bool isChainId = NamespaceUtils.isValidChainId(chainId);
     if (!isChainId) {
       throw Errors.getSdkError(
@@ -889,17 +823,10 @@ class ReownSign implements IReownSign {
       await core.expirer.delete(topic);
     }
 
-    onSessionDelete.broadcast(
-      SessionDelete(
-        topic,
-      ),
-    );
+    onSessionDelete.broadcast(SessionDelete(topic));
   }
 
-  Future<void> _deleteProposal(
-    int id, {
-    bool expirerHasDeleted = false,
-  }) async {
+  Future<void> _deleteProposal(int id, {bool expirerHasDeleted = false}) async {
     await proposals.delete(id.toString());
     if (expirerHasDeleted) {
       await core.expirer.delete(id.toString());
@@ -918,10 +845,7 @@ class ReownSign implements IReownSign {
 
   Future<void> _setSessionExpiry(String topic, int expiry) async {
     if (sessions.has(topic)) {
-      await sessions.update(
-        topic,
-        expiry: expiry,
-      );
+      await sessions.update(topic, expiry: expiry);
     }
     await core.expirer.set(topic, expiry);
   }
@@ -932,15 +856,10 @@ class ReownSign implements IReownSign {
   }
 
   Future<void> _setPendingRequest(int id, SessionRequest request) async {
-    await pendingRequests.set(
-      id.toString(),
-      request,
-    );
+    await pendingRequests.set(id.toString(), request);
     core.expirer.set(
       id.toString(),
-      ReownCoreUtils.calculateExpiry(
-        ReownConstants.FIVE_MINUTES,
-      ),
+      ReownCoreUtils.calculateExpiry(ReownConstants.FIVE_MINUTES),
     );
   }
 
@@ -1081,9 +1000,7 @@ class ReownSign implements IReownSign {
           );
         } on ReownSignError catch (err) {
           // If they aren't, send an error
-          core.logger.e(
-            '_onSessionProposeRequest ReownSignError: $err',
-          );
+          core.logger.e('_onSessionProposeRequest ReownSignError: $err');
           final rpcOpts = MethodConstants.RPC_OPTS[payload.method];
           await core.pairing.sendError(
             payload.id,
@@ -1130,11 +1047,7 @@ class ReownSign implements IReownSign {
       );
 
       onSessionProposal.broadcast(
-        SessionProposalEvent(
-          payload.id,
-          proposal,
-          verifyContext,
-        ),
+        SessionProposalEvent(payload.id, proposal, verifyContext),
       );
     } on ReownSignError catch (err) {
       core.logger.e('_onSessionProposeRequest Error: $err');
@@ -1154,9 +1067,7 @@ class ReownSign implements IReownSign {
     JsonRpcRequest payload, [
     _,
   ]) async {
-    core.logger.d(
-      '_onSessionSettleRequest, topic: $topic, payload: $payload',
-    );
+    core.logger.d('_onSessionSettleRequest, topic: $topic, payload: $payload');
     final request = WcSessionSettleRequest.fromJson(payload.params);
     try {
       await _isValidSessionSettleRequest(request.namespaces, request.expiry);
@@ -1206,18 +1117,14 @@ class ReownSign implements IReownSign {
         MethodConstants.WC_SESSION_SETTLE,
         true,
       );
-      onSessionConnect.broadcast(
-        SessionConnect(session),
-      );
+      onSessionConnect.broadcast(SessionConnect(session));
     } on ReownSignError catch (err) {
       core.logger.e('_onSessionSettleRequest Error: $err');
       await core.pairing.sendError(
         payload.id,
         topic,
         payload.method,
-        JsonRpcError.invalidParams(
-          err.message,
-        ),
+        JsonRpcError.invalidParams(err.message),
       );
     }
   }
@@ -1231,10 +1138,7 @@ class ReownSign implements IReownSign {
       // print(payload.params);
       final request = WcSessionUpdateRequest.fromJson(payload.params);
       await _isValidUpdate(topic, request.namespaces);
-      await sessions.update(
-        topic,
-        namespaces: request.namespaces,
-      );
+      await sessions.update(topic, namespaces: request.namespaces);
       await core.pairing.sendResult(
         payload.id,
         topic,
@@ -1242,11 +1146,7 @@ class ReownSign implements IReownSign {
         true,
       );
       onSessionUpdate.broadcast(
-        SessionUpdate(
-          payload.id,
-          topic,
-          request.namespaces,
-        ),
+        SessionUpdate(payload.id, topic, request.namespaces),
       );
     } on ReownSignError catch (err) {
       core.logger.e('_onSessionUpdateRequest Error: $err');
@@ -1254,9 +1154,7 @@ class ReownSign implements IReownSign {
         payload.id,
         topic,
         payload.method,
-        JsonRpcError.invalidParams(
-          err.message,
-        ),
+        JsonRpcError.invalidParams(err.message),
       );
     }
   }
@@ -1271,9 +1169,7 @@ class ReownSign implements IReownSign {
       await _isValidSessionTopic(topic);
       await _setSessionExpiry(
         topic,
-        ReownCoreUtils.calculateExpiry(
-          ReownConstants.SEVEN_DAYS,
-        ),
+        ReownCoreUtils.calculateExpiry(ReownConstants.SEVEN_DAYS),
       );
       await core.pairing.sendResult(
         payload.id,
@@ -1281,20 +1177,13 @@ class ReownSign implements IReownSign {
         MethodConstants.WC_SESSION_EXTEND,
         true,
       );
-      onSessionExtend.broadcast(
-        SessionExtend(
-          payload.id,
-          topic,
-        ),
-      );
+      onSessionExtend.broadcast(SessionExtend(payload.id, topic));
     } on ReownSignError catch (err) {
       await core.pairing.sendError(
         payload.id,
         topic,
         payload.method,
-        JsonRpcError.invalidParams(
-          err.message,
-        ),
+        JsonRpcError.invalidParams(err.message),
       );
     }
   }
@@ -1313,20 +1202,13 @@ class ReownSign implements IReownSign {
         MethodConstants.WC_SESSION_PING,
         true,
       );
-      onSessionPing.broadcast(
-        SessionPing(
-          payload.id,
-          topic,
-        ),
-      );
+      onSessionPing.broadcast(SessionPing(payload.id, topic));
     } on ReownSignError catch (err) {
       await core.pairing.sendError(
         payload.id,
         topic,
         payload.method,
-        JsonRpcError.invalidParams(
-          err.message,
-        ),
+        JsonRpcError.invalidParams(err.message),
       );
     }
   }
@@ -1351,9 +1233,7 @@ class ReownSign implements IReownSign {
         payload.id,
         topic,
         payload.method,
-        JsonRpcError.invalidParams(
-          err.message,
-        ),
+        JsonRpcError.invalidParams(err.message),
       );
     }
   }
@@ -1368,11 +1248,7 @@ class ReownSign implements IReownSign {
   ]) async {
     try {
       final request = WcSessionRequestRequest.fromJson(payload.params);
-      await _isValidRequest(
-        topic,
-        request.chainId,
-        request.request,
-      );
+      await _isValidRequest(topic, request.chainId, request.request);
 
       final tvf = _collectRequestTVF(payload.id, request);
       core.logger.d(
@@ -1397,10 +1273,7 @@ class ReownSign implements IReownSign {
       );
 
       // print('payload id: ${payload.id}');
-      await _setPendingRequest(
-        payload.id,
-        sessionRequest,
-      );
+      await _setPendingRequest(payload.id, sessionRequest);
 
       final appLink = (session.peer.metadata.redirect?.universal ?? '');
       if (session.transportType.isLinkMode && appLink.isNotEmpty) {
@@ -1423,9 +1296,7 @@ class ReownSign implements IReownSign {
             payload.id,
             topic,
             payload.method,
-            JsonRpcError.fromJson(
-              e.toJson(),
-            ),
+            JsonRpcError.fromJson(e.toJson()),
             tvf: tvf,
           );
           await _deletePendingRequest(payload.id);
@@ -1437,9 +1308,7 @@ class ReownSign implements IReownSign {
             payload.id,
             topic,
             payload.method,
-            JsonRpcError.invalidParams(
-              err.toString(),
-            ),
+            JsonRpcError.invalidParams(err.toString()),
             tvf: tvf,
           );
           await _deletePendingRequest(payload.id);
@@ -1447,9 +1316,7 @@ class ReownSign implements IReownSign {
       } else {
         // Otherwise we send onSessionRequest event
         onSessionRequest.broadcast(
-          SessionRequestEvent.fromSessionRequest(
-            sessionRequest,
-          ),
+          SessionRequestEvent.fromSessionRequest(sessionRequest),
         );
       }
     } on ReownSignError catch (err) {
@@ -1457,9 +1324,7 @@ class ReownSign implements IReownSign {
         payload.id,
         topic,
         payload.method,
-        JsonRpcError.invalidParams(
-          err.message,
-        ),
+        JsonRpcError.invalidParams(err.message),
       );
     }
   }
@@ -1473,11 +1338,7 @@ class ReownSign implements IReownSign {
     try {
       final request = WcSessionEventRequest.fromJson(payload.params);
       final SessionEventParams event = request.event;
-      await _isValidEmit(
-        topic,
-        event,
-        request.chainId,
-      );
+      await _isValidEmit(topic, event, request.chainId);
 
       final String eventKey = _getRegisterKey(
         request.chainId,
@@ -1488,18 +1349,13 @@ class ReownSign implements IReownSign {
         if (handler != null) {
           final handler = _eventHandlers[eventKey]!;
           try {
-            await handler(
-              topic,
-              event.data,
-            );
+            await handler(topic, event.data);
           } catch (err) {
             await core.pairing.sendError(
               payload.id,
               topic,
               payload.method,
-              JsonRpcError.invalidParams(
-                err.toString(),
-              ),
+              JsonRpcError.invalidParams(err.toString()),
             );
           }
         }
@@ -1535,9 +1391,7 @@ class ReownSign implements IReownSign {
         payload.id,
         topic,
         payload.method,
-        JsonRpcError.invalidParams(
-          err.message,
-        ),
+        JsonRpcError.invalidParams(err.message),
       );
     }
   }
@@ -1571,9 +1425,7 @@ class ReownSign implements IReownSign {
         .toList();
 
     for (final proposal in proposalsToDelete) {
-      await _deleteProposal(
-        proposal.id,
-      );
+      await _deleteProposal(proposal.id);
     }
 
     // Delete the sessions
@@ -1583,9 +1435,7 @@ class ReownSign implements IReownSign {
         .toList();
 
     for (final session in sessionsToDelete) {
-      await _deleteSession(
-        session.topic,
-      );
+      await _deleteSession(session.topic);
     }
   }
 
@@ -1595,26 +1445,13 @@ class ReownSign implements IReownSign {
     }
 
     if (sessions.has(event.target)) {
-      await _deleteSession(
-        event.target,
-        expirerHasDeleted: true,
-      );
-      onSessionExpire.broadcast(
-        SessionExpire(
-          event.target,
-        ),
-      );
+      await _deleteSession(event.target, expirerHasDeleted: true);
+      onSessionExpire.broadcast(SessionExpire(event.target));
     } else if (proposals.has(event.target)) {
       ProposalData proposal = proposals.get(event.target)!;
-      await _deleteProposal(
-        int.parse(event.target),
-        expirerHasDeleted: true,
-      );
+      await _deleteProposal(int.parse(event.target), expirerHasDeleted: true);
       onProposalExpire.broadcast(
-        SessionProposalEvent(
-          int.parse(event.target),
-          proposal,
-        ),
+        SessionProposalEvent(int.parse(event.target), proposal),
       );
     } else if (pendingRequests.has(event.target)) {
       await _deletePendingRequest(
@@ -1713,9 +1550,7 @@ class ReownSign implements IReownSign {
     // No need to see if the relays are a valid array and whatnot. Strict typing enforces that.
     if (pairingTopic != null) {
       try {
-        await core.pairing.isValidPairingTopic(
-          topic: pairingTopic,
-        );
+        await core.pairing.isValidPairingTopic(topic: pairingTopic);
       } on ReownCoreError catch (e) {
         throw e.toSignError();
       }
@@ -1843,10 +1678,7 @@ class ReownSign implements IReownSign {
     return true;
   }
 
-  Future<bool> _isValidResponse(
-    String topic,
-    JsonRpcResponse response,
-  ) async {
+  Future<bool> _isValidResponse(String topic, JsonRpcResponse response) async {
     await _isValidSessionTopic(topic);
 
     if (response.result == null && response.error == null) {
@@ -1861,9 +1693,7 @@ class ReownSign implements IReownSign {
     return true;
   }
 
-  Future<bool> _isValidPing(
-    String topic,
-  ) async {
+  Future<bool> _isValidPing(String topic) async {
     await _isValidSessionOrPairingTopic(topic);
 
     return true;
@@ -1913,10 +1743,7 @@ class ReownSign implements IReownSign {
       final jsonStringify = jsonEncode(payload.toJson());
       final hash = core.crypto.getUtils().hashMessage(jsonStringify);
       final attestation = await core.verify.resolve(attestationId: hash);
-      final validation = core.verify.getValidation(
-        attestation,
-        metadataUri,
-      );
+      final validation = core.verify.getValidation(attestation, metadataUri);
       final origin = attestation?.origin;
       return VerifyContext(
         origin: (origin ?? metadataUri?.origin) ?? proposerMetada.url,
@@ -2097,7 +1924,7 @@ class ReownSign implements IReownSign {
     String? walletUniversalLink,
     String? pairingTopic,
     List<List<String>>? methods = const [
-      [MethodConstants.WC_SESSION_AUTHENTICATE]
+      [MethodConstants.WC_SESSION_AUTHENTICATE],
     ],
   }) async {
     _checkInitialized();
@@ -2177,13 +2004,10 @@ class ReownSign implements IReownSign {
     final expiryTimestamp = currentDateTime.add(Duration(seconds: ttl));
 
     final request = WcSessionAuthRequestParams(
-      authPayload: SessionAuthPayload.fromRequestParams(params).copyWith(
-        resources: resources,
-      ),
-      requester: ConnectionMetadata(
-        publicKey: publicKey,
-        metadata: metadata,
-      ),
+      authPayload: SessionAuthPayload.fromRequestParams(
+        params,
+      ).copyWith(resources: resources),
+      requester: ConnectionMetadata(publicKey: publicKey, metadata: metadata),
       expiryTimestamp: expiryTimestamp.millisecondsSinceEpoch,
     );
 
@@ -2215,10 +2039,7 @@ class ReownSign implements IReownSign {
       },
       relays: [Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL)],
       expiry: fallbackExpiryTimestamp.millisecondsSinceEpoch,
-      proposer: ConnectionMetadata(
-        publicKey: publicKey,
-        metadata: metadata,
-      ),
+      proposer: ConnectionMetadata(publicKey: publicKey, metadata: metadata),
       pairingTopic: pTopic,
     );
     final proposeRequest = WcSessionProposeRequest(
@@ -2262,11 +2083,7 @@ class ReownSign implements IReownSign {
       ).toLinkMode;
     } else {
       // Send Session Proposal request (Only when on Relay mode)
-      _connectResponseHandler(
-        pTopic,
-        proposeRequest,
-        fallbackId,
-      );
+      _connectResponseHandler(pTopic, proposeRequest, fallbackId);
     }
 
     // Send One-Click Auth request (When on Relay and LinkMode)
@@ -2382,10 +2199,7 @@ class ReownSign implements IReownSign {
       final resp = SessionAuthResponse(
         id: id,
         topic: responseTopic,
-        error: ReownSignError(
-          code: e.code,
-          message: e.message,
-        ),
+        error: ReownSignError(code: e.code, message: e.message),
       );
       onSessionAuthResponse.broadcast(resp);
       completer.complete(resp);
@@ -2409,9 +2223,7 @@ class ReownSign implements IReownSign {
         ),
         peer: responder,
         controller: request.requester.publicKey,
-        expiry: ReownCoreUtils.calculateExpiry(
-          ReownConstants.SEVEN_DAYS,
-        ),
+        expiry: ReownCoreUtils.calculateExpiry(ReownConstants.SEVEN_DAYS),
         relay: Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
         pairingTopic: pairingTopic,
         namespaces: NamespaceUtils.buildNamespacesFromAuth(
@@ -2579,9 +2391,7 @@ class ReownSign implements IReownSign {
         ),
         peer: pendingRequest.requester,
         controller: receiverPublicKey,
-        expiry: ReownCoreUtils.calculateExpiry(
-          ReownConstants.SEVEN_DAYS,
-        ),
+        expiry: ReownCoreUtils.calculateExpiry(ReownConstants.SEVEN_DAYS),
         relay: Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
         pairingTopic: pendingRequest.pairingTopic,
         namespaces: NamespaceUtils.buildNamespacesFromAuth(
@@ -2624,10 +2434,7 @@ class ReownSign implements IReownSign {
       appLink: _getAppLinkIfEnabled(pendingRequest.requester.metadata),
     );
 
-    return ApproveResponse(
-      topic: sessionTopic,
-      session: session,
-    );
+    return ApproveResponse(topic: sessionTopic, session: session);
   }
 
   @override
@@ -2702,9 +2509,7 @@ class ReownSign implements IReownSign {
     if (transportType.isLinkMode && !sessions.has(topic)) {
       final pairingInfo = PairingInfo(
         topic: topic,
-        expiry: ReownCoreUtils.calculateExpiry(
-          ReownConstants.SEVEN_DAYS,
-        ),
+        expiry: ReownCoreUtils.calculateExpiry(ReownConstants.SEVEN_DAYS),
         relay: Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
         // Will be activated during approveSessionAuthenticate()
         // or deleted during rejectSessionAuthenticate()
@@ -2801,10 +2606,7 @@ class ReownSign implements IReownSign {
       );
     }
 
-    core.pairing.dispatchEnvelope(
-      topic: topic,
-      envelope: envelope,
-    );
+    core.pairing.dispatchEnvelope(topic: topic, envelope: envelope);
   }
 
   bool _isLinkModeEnabled(PairingMetadata? peerMetadata) {
@@ -2860,17 +2662,11 @@ class ReownSign implements IReownSign {
     final scheme = redirect?.native;
     try {
       if (scheme == null) {
-        throw ReownSignError(
-          code: 0,
-          message: 'scheme `$scheme` is invalid',
-        );
+        throw ReownSignError(code: 0, message: 'scheme `$scheme` is invalid');
       }
       final success = await ReownCoreUtils.openURL(scheme);
       if (!success) {
-        throw ReownSignError(
-          code: 0,
-          message: 'Can not open $scheme',
-        );
+        throw ReownSignError(code: 0, message: 'Can not open $scheme');
       }
       return true;
     } catch (e) {
@@ -2941,7 +2737,7 @@ class ReownSign implements IReownSign {
     if (pendingTVFRequests.containsKey(id)) {
       final chainId = pendingTVFRequests[id]!.chainId!;
       final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-      final tvfData = pendingTVFRequests[id]!.copytWith(
+      final tvfData = pendingTVFRequests[id]!.copyWith(
         txHashes: _collectHashes(namespace, payload),
       );
       pendingTVFRequests.remove(id);
@@ -3067,10 +2863,7 @@ class ReownSign implements IReownSign {
       case 'bip122':
         try {
           final result = (response.result as Map<String, dynamic>);
-          final txid = ReownCoreUtils.recursiveSearchForMapKey(
-            result,
-            'txid',
-          );
+          final txid = ReownCoreUtils.recursiveSearchForMapKey(result, 'txid');
           return <String>[txid];
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: bip122, $e');
@@ -3079,10 +2872,7 @@ class ReownSign implements IReownSign {
       case 'stacks':
         try {
           final result = (response.result as Map<String, dynamic>);
-          final txid = ReownCoreUtils.recursiveSearchForMapKey(
-            result,
-            'txid',
-          );
+          final txid = ReownCoreUtils.recursiveSearchForMapKey(result, 'txid');
           return List<String>.from([txid]);
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: stacks, $e');

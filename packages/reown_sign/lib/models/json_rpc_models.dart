@@ -10,7 +10,7 @@ part 'json_rpc_models.g.dart';
 part 'json_rpc_models.freezed.dart';
 
 @freezed
-class WcPairingDeleteRequest with _$WcPairingDeleteRequest {
+sealed class WcPairingDeleteRequest with _$WcPairingDeleteRequest {
   @JsonSerializable()
   const factory WcPairingDeleteRequest({
     required int code,
@@ -22,7 +22,7 @@ class WcPairingDeleteRequest with _$WcPairingDeleteRequest {
 }
 
 @freezed
-class WcPairingPingRequest with _$WcPairingPingRequest {
+sealed class WcPairingPingRequest with _$WcPairingPingRequest {
   @JsonSerializable()
   const factory WcPairingPingRequest({
     required Map<String, dynamic> data,
@@ -33,7 +33,7 @@ class WcPairingPingRequest with _$WcPairingPingRequest {
 }
 
 @freezed
-class WcSessionProposeRequest with _$WcSessionProposeRequest {
+sealed class WcSessionProposeRequest with _$WcSessionProposeRequest {
   @JsonSerializable(includeIfNull: false)
   const factory WcSessionProposeRequest({
     required List<Relay> relays,
@@ -48,7 +48,7 @@ class WcSessionProposeRequest with _$WcSessionProposeRequest {
 }
 
 @freezed
-class WcSessionProposeResponse with _$WcSessionProposeResponse {
+sealed class WcSessionProposeResponse with _$WcSessionProposeResponse {
   @JsonSerializable()
   const factory WcSessionProposeResponse({
     required Relay relay,
@@ -60,7 +60,7 @@ class WcSessionProposeResponse with _$WcSessionProposeResponse {
 }
 
 @freezed
-class WcSessionSettleRequest with _$WcSessionSettleRequest {
+sealed class WcSessionSettleRequest with _$WcSessionSettleRequest {
   @JsonSerializable(includeIfNull: false)
   const factory WcSessionSettleRequest({
     required Relay relay,
@@ -77,7 +77,7 @@ class WcSessionSettleRequest with _$WcSessionSettleRequest {
 }
 
 @freezed
-class WcSessionUpdateRequest with _$WcSessionUpdateRequest {
+sealed class WcSessionUpdateRequest with _$WcSessionUpdateRequest {
   @JsonSerializable()
   const factory WcSessionUpdateRequest({
     required Map<String, Namespace> namespaces,
@@ -88,7 +88,7 @@ class WcSessionUpdateRequest with _$WcSessionUpdateRequest {
 }
 
 @freezed
-class WcSessionExtendRequest with _$WcSessionExtendRequest {
+sealed class WcSessionExtendRequest with _$WcSessionExtendRequest {
   @JsonSerializable(includeIfNull: false)
   const factory WcSessionExtendRequest({
     Map<String, dynamic>? data,
@@ -99,7 +99,7 @@ class WcSessionExtendRequest with _$WcSessionExtendRequest {
 }
 
 @freezed
-class WcSessionDeleteRequest with _$WcSessionDeleteRequest {
+sealed class WcSessionDeleteRequest with _$WcSessionDeleteRequest {
   @JsonSerializable(includeIfNull: false)
   const factory WcSessionDeleteRequest({
     required int code,
@@ -112,7 +112,7 @@ class WcSessionDeleteRequest with _$WcSessionDeleteRequest {
 }
 
 @freezed
-class WcSessionPingRequest with _$WcSessionPingRequest {
+sealed class WcSessionPingRequest with _$WcSessionPingRequest {
   @JsonSerializable(includeIfNull: false)
   const factory WcSessionPingRequest({
     Map<String, dynamic>? data,
@@ -123,7 +123,7 @@ class WcSessionPingRequest with _$WcSessionPingRequest {
 }
 
 @freezed
-class WcSessionRequestRequest with _$WcSessionRequestRequest {
+sealed class WcSessionRequestRequest with _$WcSessionRequestRequest {
   @JsonSerializable()
   const factory WcSessionRequestRequest({
     required String chainId,
@@ -135,7 +135,7 @@ class WcSessionRequestRequest with _$WcSessionRequestRequest {
 }
 
 @freezed
-class SessionRequestParams with _$SessionRequestParams {
+sealed class SessionRequestParams with _$SessionRequestParams {
   @JsonSerializable()
   const factory SessionRequestParams({
     required String method,
@@ -147,7 +147,7 @@ class SessionRequestParams with _$SessionRequestParams {
 }
 
 @freezed
-class WcSessionEventRequest with _$WcSessionEventRequest {
+sealed class WcSessionEventRequest with _$WcSessionEventRequest {
   @JsonSerializable()
   const factory WcSessionEventRequest({
     required String chainId,
@@ -159,7 +159,7 @@ class WcSessionEventRequest with _$WcSessionEventRequest {
 }
 
 @freezed
-class SessionEventParams with _$SessionEventParams {
+sealed class SessionEventParams with _$SessionEventParams {
   @JsonSerializable()
   const factory SessionEventParams({
     required String name,
@@ -171,7 +171,7 @@ class SessionEventParams with _$SessionEventParams {
 }
 
 @freezed
-class WcSessionAuthRequestParams with _$WcSessionAuthRequestParams {
+sealed class WcSessionAuthRequestParams with _$WcSessionAuthRequestParams {
   @JsonSerializable()
   const factory WcSessionAuthRequestParams({
     required SessionAuthPayload authPayload,
@@ -184,7 +184,7 @@ class WcSessionAuthRequestParams with _$WcSessionAuthRequestParams {
 }
 
 @freezed
-class WcSessionAuthRequestResult with _$WcSessionAuthRequestResult {
+sealed class WcSessionAuthRequestResult with _$WcSessionAuthRequestResult {
   @JsonSerializable()
   const factory WcSessionAuthRequestResult({
     required List<Cacao> cacaos,

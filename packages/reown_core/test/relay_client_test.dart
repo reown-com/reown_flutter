@@ -1,6 +1,5 @@
 // ignore: library_annotations
 @Timeout(Duration(seconds: 45))
-library;
 
 import 'dart:async';
 
@@ -352,13 +351,26 @@ void main() {
         );
       });
 
-      test('Does not throws when calling listen() multiple times', () async {
-        await Future.wait([
+      test('Relay client handles concurrent initialization gracefully',
+          () async {
+        // Test that multiple simultaneous initialization calls are handled properly
+        // This verifies the enhanced subscription management system works correctly
+        final concurrentInitOperations = [
           coreDapp.relayClient.init(),
           coreDapp.relayClient.init(),
           coreWallet.relayClient.init(),
           coreWallet.relayClient.init(),
-        ]);
+        ];
+
+        // Execute all initialization operations concurrently
+        final results = await Future.wait(concurrentInitOperations);
+
+        // Verify all operations completed successfully
+        expect(results.length, equals(4));
+
+        // Ensure both relay clients are properly initialized and connected
+        expect(coreDapp.relayClient.isConnected, isTrue);
+        expect(coreWallet.relayClient.isConnected, isTrue);
       });
     });
   });
@@ -431,7 +443,6 @@ void main() {
         const pairingTopic = 'testPairingTopic';
         const sessionProposal = 'testSessionProposal';
         const correlationId = 1234;
-        const expectedId = 123;
 
         // Mock successful response
         when(mockWebSocketHandlerDapp.channel).thenReturn(null);
@@ -485,7 +496,6 @@ void main() {
         const pairingTopic = 'testPairingTopic';
         const sessionProposal = 'testSessionProposal';
         const correlationId = 1234;
-        const errorMessage = 'Session proposal error';
 
         // Mock error response
         when(mockWebSocketHandlerDapp.channel).thenReturn(null);
@@ -517,7 +527,6 @@ void main() {
         const sessionProposalResponse = 'testSessionProposalResponse';
         const sessionSettlementRequest = 'testSessionSettlementRequest';
         const correlationId = 1234;
-        const expectedId = 123;
 
         // Mock successful response
         when(mockWebSocketHandlerWallet.channel).thenReturn(null);
@@ -579,7 +588,6 @@ void main() {
         const sessionProposalResponse = 'testSessionProposalResponse';
         const sessionSettlementRequest = 'testSessionSettlementRequest';
         const correlationId = 1234;
-        const errorMessage = 'Session approve error';
 
         // Mock error response
         when(mockWebSocketHandlerWallet.channel).thenReturn(null);

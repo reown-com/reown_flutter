@@ -7,7 +7,7 @@ part 'cacao_models.g.dart';
 part 'cacao_models.freezed.dart';
 
 @freezed
-class CacaoRequestPayload with _$CacaoRequestPayload {
+sealed class CacaoRequestPayload with _$CacaoRequestPayload {
   @JsonSerializable(includeIfNull: false)
   const factory CacaoRequestPayload({
     required String domain,
@@ -74,7 +74,7 @@ class CacaoRequestPayload with _$CacaoRequestPayload {
 }
 
 @freezed
-class CacaoPayload with _$CacaoPayload {
+sealed class CacaoPayload with _$CacaoPayload {
   @JsonSerializable(includeIfNull: false)
   const factory CacaoPayload({
     required String iss,
@@ -114,7 +114,7 @@ class CacaoPayload with _$CacaoPayload {
 }
 
 @freezed
-class CacaoHeader with _$CacaoHeader {
+sealed class CacaoHeader with _$CacaoHeader {
   static const EIP4361 = 'eip4361';
   static const CAIP122 = 'caip122';
 
@@ -128,7 +128,7 @@ class CacaoHeader with _$CacaoHeader {
 }
 
 @freezed
-class CacaoSignature with _$CacaoSignature {
+sealed class CacaoSignature with _$CacaoSignature {
   static const EIP191 = 'eip191';
   static const EIP1271 = 'eip1271';
 
@@ -144,7 +144,7 @@ class CacaoSignature with _$CacaoSignature {
 }
 
 @freezed
-class Cacao with _$Cacao {
+sealed class Cacao with _$Cacao {
   @JsonSerializable(includeIfNull: false)
   const factory Cacao({
     required CacaoHeader h,
@@ -156,7 +156,7 @@ class Cacao with _$Cacao {
 }
 
 @freezed
-class StoredCacao with _$StoredCacao {
+sealed class StoredCacao with _$StoredCacao {
   @JsonSerializable(includeIfNull: false)
   const factory StoredCacao({
     required int id,

@@ -10,7 +10,8 @@ NonceInformation _$NonceInformationFromJson(Map<String, dynamic> json) =>
     NonceInformation(
       nonce: json['nonce'] as String,
       nonceInstruction: TransactionInstruction.fromJson(
-          json['nonceInstruction'] as Map<String, dynamic>),
+        json['nonceInstruction'] as Map<String, dynamic>,
+      ),
     );
 
 Map<String, dynamic> _$NonceInformationToJson(NonceInformation instance) =>

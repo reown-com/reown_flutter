@@ -65,7 +65,7 @@ class PrepareDetailedResponseError {
 }
 
 @freezed
-class AmountCompat with _$AmountCompat {
+sealed class AmountCompat with _$AmountCompat {
   const factory AmountCompat({
     required String symbol,
     required String amount,
@@ -79,7 +79,7 @@ class AmountCompat with _$AmountCompat {
 }
 
 @freezed
-class CallCompat with _$CallCompat {
+sealed class CallCompat with _$CallCompat {
   const factory CallCompat({
     required String to,
     required String input,
@@ -91,7 +91,7 @@ class CallCompat with _$CallCompat {
 }
 
 @freezed
-class Eip1559EstimationCompat with _$Eip1559EstimationCompat {
+sealed class Eip1559EstimationCompat with _$Eip1559EstimationCompat {
   const factory Eip1559EstimationCompat({
     required String maxFeePerGas,
     required String maxPriorityFeePerGas,
@@ -111,7 +111,7 @@ sealed class ErrorCompat with _$ErrorCompat {
 }
 
 @freezed
-class ExecuteDetailsCompat with _$ExecuteDetailsCompat {
+sealed class ExecuteDetailsCompat with _$ExecuteDetailsCompat {
   const factory ExecuteDetailsCompat({
     // required TransactionReceiptCompat initialTxnReceipt,
     required String initialTxnReceipt,
@@ -123,7 +123,8 @@ class ExecuteDetailsCompat with _$ExecuteDetailsCompat {
 }
 
 @freezed
-class FeeEstimatedTransactionCompat with _$FeeEstimatedTransactionCompat {
+sealed class FeeEstimatedTransactionCompat
+    with _$FeeEstimatedTransactionCompat {
   const factory FeeEstimatedTransactionCompat({
     required String chainId,
     required String from,
@@ -141,7 +142,7 @@ class FeeEstimatedTransactionCompat with _$FeeEstimatedTransactionCompat {
 }
 
 @freezed
-class FundingMetadataCompat with _$FundingMetadataCompat {
+sealed class FundingMetadataCompat with _$FundingMetadataCompat {
   const factory FundingMetadataCompat({
     required String chainId,
     required String tokenContract,
@@ -156,7 +157,8 @@ class FundingMetadataCompat with _$FundingMetadataCompat {
 }
 
 @freezed
-class InitialTransactionMetadataCompat with _$InitialTransactionMetadataCompat {
+sealed class InitialTransactionMetadataCompat
+    with _$InitialTransactionMetadataCompat {
   const factory InitialTransactionMetadataCompat({
     required String transferTo,
     required String amount,
@@ -171,7 +173,7 @@ class InitialTransactionMetadataCompat with _$InitialTransactionMetadataCompat {
 }
 
 @freezed
-class MetadataCompat with _$MetadataCompat {
+sealed class MetadataCompat with _$MetadataCompat {
   const factory MetadataCompat({
     required List<FundingMetadataCompat> fundingFrom,
     required InitialTransactionMetadataCompat initialTransaction,
@@ -213,7 +215,8 @@ sealed class PrepareDetailedResponseSuccessCompat
 }
 
 @freezed
-class PrepareResponseAvailableCompat with _$PrepareResponseAvailableCompat {
+sealed class PrepareResponseAvailableCompat
+    with _$PrepareResponseAvailableCompat {
   const factory PrepareResponseAvailableCompat({
     required String orchestrationId,
     required TransactionCompat initialTransaction,
@@ -226,7 +229,8 @@ class PrepareResponseAvailableCompat with _$PrepareResponseAvailableCompat {
 }
 
 @freezed
-class PrepareResponseNotRequiredCompat with _$PrepareResponseNotRequiredCompat {
+sealed class PrepareResponseNotRequiredCompat
+    with _$PrepareResponseNotRequiredCompat {
   const factory PrepareResponseNotRequiredCompat({
     required TransactionCompat initialTransaction,
     required List<TransactionCompat> transactions,
@@ -290,7 +294,7 @@ class TransactionCompat with _$TransactionCompat {
 }
 
 @freezed
-class TransactionFeeCompat with _$TransactionFeeCompat {
+sealed class TransactionFeeCompat with _$TransactionFeeCompat {
   const factory TransactionFeeCompat({
     required AmountCompat fee,
     required AmountCompat localFee,
@@ -301,7 +305,7 @@ class TransactionFeeCompat with _$TransactionFeeCompat {
 }
 
 @freezed
-class TransactionReceiptCompat with _$TransactionReceiptCompat {
+sealed class TransactionReceiptCompat with _$TransactionReceiptCompat {
   const factory TransactionReceiptCompat({
     required String transactionHash,
     BigInt? transactionIndex,
@@ -321,7 +325,7 @@ class TransactionReceiptCompat with _$TransactionReceiptCompat {
 }
 
 @freezed
-class TxnDetailsCompat with _$TxnDetailsCompat {
+sealed class TxnDetailsCompat with _$TxnDetailsCompat {
   const factory TxnDetailsCompat({
     required FeeEstimatedTransactionCompat transaction,
     required String transactionHashToSign,
@@ -333,7 +337,7 @@ class TxnDetailsCompat with _$TxnDetailsCompat {
 }
 
 @freezed
-class UiFieldsCompat with _$UiFieldsCompat {
+sealed class UiFieldsCompat with _$UiFieldsCompat {
   const factory UiFieldsCompat({
     required PrepareResponseAvailableCompat routeResponse,
     required List<TxnDetailsCompat> route,

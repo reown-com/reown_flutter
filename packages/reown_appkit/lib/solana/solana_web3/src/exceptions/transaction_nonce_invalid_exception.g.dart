@@ -7,8 +7,8 @@ part of 'transaction_nonce_invalid_exception.dart';
 // **************************************************************************
 
 TransactionNonceInvalidException _$TransactionNonceInvalidExceptionFromJson(
-        Map<String, dynamic> json) =>
-    TransactionNonceInvalidException(
-      json['message'] as String,
-      slot: (json['slot'] as num?)?.toInt(),
-    );
+  Map<String, dynamic> json,
+) => TransactionNonceInvalidException(
+  json['message'] as String,
+  slot: (json['slot'] as num?)?.toInt(),
+);
