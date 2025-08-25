@@ -479,6 +479,7 @@ void main() {
         expect(signEngine.pendingTVFRequests.containsKey(id), isFalse);
         final hashes = signEngine.collectHashes('eip155', response);
         expect(hashes?.length, 3);
+        expect(hashes, ['0x1234567890abcdef', '0xabcdef1234567890', '0xfedcba0987654321']);
       });
 
       test('should collect simple EVM transaction hash correctly', () async {
