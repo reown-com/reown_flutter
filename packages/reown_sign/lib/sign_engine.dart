@@ -659,8 +659,8 @@ class ReownSign implements IReownSign {
         .getAll()
         .where((session) => session.pairingTopic == pairingTopic)
         .forEach((session) {
-          pairingSessions[session.topic] = session;
-        });
+      pairingSessions[session.topic] = session;
+    });
 
     return pairingSessions;
   }
@@ -2922,23 +2922,24 @@ class ReownSign implements IReownSign {
         return null;
       default:
         // default to EVM
-        if (response.result is Map) {
-          // wallet_sendCalls 2.0.0
-          final id = ReownCoreUtils.recursiveSearchForMapKey(
-            response.result,
-            'id',
-          );
-          if (id != null) {
-            final transactionHashes = ReownCoreUtils.recursiveSearchForMapKey(
+        try {
+          if (response.result is Map) {
+            // wallet_sendCalls 2.0.0
+            final id = ReownCoreUtils.recursiveSearchForMapKey(
               response.result,
-              'transactionHashes',
-            ) as List;
-            return <String>[
-              id.toString(),
-              ...transactionHashes.map((e) => e.toString()),
-            ];
+              'id',
+            );
+            if (id != null) {
+              final transactionHashes = ReownCoreUtils.recursiveSearchForMapKey(
+                response.result,
+                'transactionHashes',
+              ) as List;
+              return <String>[id, ...transactionHashes];
+            }
+            return null;
           }
-          return null;
+        } catch (e) {
+          core.logger.e('[$runtimeType] collectHashes: evm, $e');
         }
         return <String>[response.result.toString()];
     }
