@@ -2427,47 +2427,26 @@ $InitialTransactionMetadataCompatCopyWith<$Res> get initialTransaction {
 
 /// @nodoc
 mixin _$PrepareDetailedResponseCompat {
-  Object get value => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(PrepareDetailedResponseSuccessCompat value)
-        success,
-    required TResult Function(PrepareDetailedResponseError value) error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(PrepareDetailedResponseSuccessCompat value)? success,
-    TResult? Function(PrepareDetailedResponseError value)? error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(PrepareDetailedResponseSuccessCompat value)? success,
-    TResult Function(PrepareDetailedResponseError value)? error,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(PrepareDetailedResponseCompat_Success value)
-        success,
-    required TResult Function(PrepareDetailedResponseCompat_Error value) error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(PrepareDetailedResponseCompat_Success value)? success,
-    TResult? Function(PrepareDetailedResponseCompat_Error value)? error,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(PrepareDetailedResponseCompat_Success value)? success,
-    TResult Function(PrepareDetailedResponseCompat_Error value)? error,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+
+ Object get value;
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PrepareDetailedResponseCompat&&const DeepCollectionEquality().equals(other.value, value));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(value));
+
+@override
+String toString() {
+  return 'PrepareDetailedResponseCompat(value: $value)';
+}
+
+
 }
 
 /// @nodoc
@@ -2554,7 +2533,7 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( PrepareDetailedResponseSuccessCompat value)?  success,TResult Function( PrepareResponseError value)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( PrepareDetailedResponseSuccessCompat value)?  success,TResult Function( PrepareDetailedResponseError value)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case PrepareDetailedResponseCompat_Success() when success != null:
 return success(_that.value);case PrepareDetailedResponseCompat_Error() when error != null:
@@ -2576,7 +2555,7 @@ return error(_that.value);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( PrepareDetailedResponseSuccessCompat value)  success,required TResult Function( PrepareResponseError value)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( PrepareDetailedResponseSuccessCompat value)  success,required TResult Function( PrepareDetailedResponseError value)  error,}) {final _that = this;
 switch (_that) {
 case PrepareDetailedResponseCompat_Success():
 return success(_that.value);case PrepareDetailedResponseCompat_Error():
@@ -2594,7 +2573,7 @@ return error(_that.value);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( PrepareDetailedResponseSuccessCompat value)?  success,TResult? Function( PrepareResponseError value)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( PrepareDetailedResponseSuccessCompat value)?  success,TResult? Function( PrepareDetailedResponseError value)?  error,}) {final _that = this;
 switch (_that) {
 case PrepareDetailedResponseCompat_Success() when success != null:
 return success(_that.value);case PrepareDetailedResponseCompat_Error() when error != null:
@@ -2623,69 +2602,9 @@ $PrepareDetailedResponseCompat_SuccessCopyWith<PrepareDetailedResponseCompat_Suc
 
 
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(PrepareDetailedResponseSuccessCompat value)
-        success,
-    required TResult Function(PrepareDetailedResponseError value) error,
-  }) {
-    return success(value);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(PrepareDetailedResponseSuccessCompat value)? success,
-    TResult? Function(PrepareDetailedResponseError value)? error,
-  }) {
-    return success?.call(value);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(PrepareDetailedResponseSuccessCompat value)? success,
-    TResult Function(PrepareDetailedResponseError value)? error,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success(value);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(PrepareDetailedResponseCompat_Success value)
-        success,
-    required TResult Function(PrepareDetailedResponseCompat_Error value) error,
-  }) {
-    return success(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(PrepareDetailedResponseCompat_Success value)? success,
-    TResult? Function(PrepareDetailedResponseCompat_Error value)? error,
-  }) {
-    return success?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(PrepareDetailedResponseCompat_Success value)? success,
-    TResult Function(PrepareDetailedResponseCompat_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PrepareDetailedResponseCompat_Success&&(identical(other.value, value) || other.value == value));
 }
 
 
@@ -2701,48 +2620,54 @@ String toString() {
 }
 
 /// @nodoc
-abstract class _$$PrepareDetailedResponseCompat_ErrorImplCopyWith<$Res> {
-  factory _$$PrepareDetailedResponseCompat_ErrorImplCopyWith(
-          _$PrepareDetailedResponseCompat_ErrorImpl value,
-          $Res Function(_$PrepareDetailedResponseCompat_ErrorImpl) then) =
-      __$$PrepareDetailedResponseCompat_ErrorImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({PrepareDetailedResponseError value});
+abstract mixin class $PrepareDetailedResponseCompat_SuccessCopyWith<$Res> implements $PrepareDetailedResponseCompatCopyWith<$Res> {
+  factory $PrepareDetailedResponseCompat_SuccessCopyWith(PrepareDetailedResponseCompat_Success value, $Res Function(PrepareDetailedResponseCompat_Success) _then) = _$PrepareDetailedResponseCompat_SuccessCopyWithImpl;
+@useResult
+$Res call({
+ PrepareDetailedResponseSuccessCompat value
+});
+
+
+$PrepareDetailedResponseSuccessCompatCopyWith<$Res> get value;
+
+}
+/// @nodoc
+class _$PrepareDetailedResponseCompat_SuccessCopyWithImpl<$Res>
+    implements $PrepareDetailedResponseCompat_SuccessCopyWith<$Res> {
+  _$PrepareDetailedResponseCompat_SuccessCopyWithImpl(this._self, this._then);
+
+  final PrepareDetailedResponseCompat_Success _self;
+  final $Res Function(PrepareDetailedResponseCompat_Success) _then;
+
+/// Create a copy of PrepareDetailedResponseCompat
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? value = null,}) {
+  return _then(PrepareDetailedResponseCompat_Success(
+value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as PrepareDetailedResponseSuccessCompat,
+  ));
+}
+
+/// Create a copy of PrepareDetailedResponseCompat
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PrepareDetailedResponseSuccessCompatCopyWith<$Res> get value {
+  
+  return $PrepareDetailedResponseSuccessCompatCopyWith<$Res>(_self.value, (value) {
+    return _then(_self.copyWith(value: value));
+  });
+}
 }
 
 /// @nodoc
-class __$$PrepareDetailedResponseCompat_ErrorImplCopyWithImpl<$Res>
-    extends _$PrepareDetailedResponseCompatCopyWithImpl<$Res,
-        _$PrepareDetailedResponseCompat_ErrorImpl>
-    implements _$$PrepareDetailedResponseCompat_ErrorImplCopyWith<$Res> {
-  __$$PrepareDetailedResponseCompat_ErrorImplCopyWithImpl(
-      _$PrepareDetailedResponseCompat_ErrorImpl _value,
-      $Res Function(_$PrepareDetailedResponseCompat_ErrorImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of PrepareDetailedResponseCompat
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? value = null,
-  }) {
-    return _then(_$PrepareDetailedResponseCompat_ErrorImpl(
-      value: null == value
-          ? _value.value
-          : value // ignore: cast_nullable_to_non_nullable
-              as PrepareDetailedResponseError,
-    ));
-  }
-}
-
-/// @nodoc
 
 
-  @override
-  final PrepareDetailedResponseError value;
+class PrepareDetailedResponseCompat_Error extends PrepareDetailedResponseCompat {
+  const PrepareDetailedResponseCompat_Error({required this.value}): super._();
+  
 
-@override final  PrepareResponseError value;
+@override final  PrepareDetailedResponseError value;
 
 /// Create a copy of PrepareDetailedResponseCompat
 /// with the given fields replaced by the non-null parameter values.
@@ -2752,80 +2677,14 @@ $PrepareDetailedResponseCompat_ErrorCopyWith<PrepareDetailedResponseCompat_Error
 
 
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(PrepareDetailedResponseSuccessCompat value)
-        success,
-    required TResult Function(PrepareDetailedResponseError value) error,
-  }) {
-    return error(value);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(PrepareDetailedResponseSuccessCompat value)? success,
-    TResult? Function(PrepareDetailedResponseError value)? error,
-  }) {
-    return error?.call(value);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(PrepareDetailedResponseSuccessCompat value)? success,
-    TResult Function(PrepareDetailedResponseError value)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(value);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(PrepareDetailedResponseCompat_Success value)
-        success,
-    required TResult Function(PrepareDetailedResponseCompat_Error value) error,
-  }) {
-    return error(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(PrepareDetailedResponseCompat_Success value)? success,
-    TResult? Function(PrepareDetailedResponseCompat_Error value)? error,
-  }) {
-    return error?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(PrepareDetailedResponseCompat_Success value)? success,
-    TResult Function(PrepareDetailedResponseCompat_Error value)? error,
-    required TResult orElse(),
-  }) {
-    if (error != null) {
-      return error(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PrepareDetailedResponseCompat_Error&&(identical(other.value, value) || other.value == value));
 }
 
-abstract class PrepareDetailedResponseCompat_Error
-    extends PrepareDetailedResponseCompat {
-  const factory PrepareDetailedResponseCompat_Error(
-          {required final PrepareDetailedResponseError value}) =
-      _$PrepareDetailedResponseCompat_ErrorImpl;
-  const PrepareDetailedResponseCompat_Error._() : super._();
 
-  @override
-  PrepareDetailedResponseError get value;
+@override
+int get hashCode => Object.hash(runtimeType,value);
 
 @override
 String toString() {
@@ -2840,7 +2699,7 @@ abstract mixin class $PrepareDetailedResponseCompat_ErrorCopyWith<$Res> implemen
   factory $PrepareDetailedResponseCompat_ErrorCopyWith(PrepareDetailedResponseCompat_Error value, $Res Function(PrepareDetailedResponseCompat_Error) _then) = _$PrepareDetailedResponseCompat_ErrorCopyWithImpl;
 @useResult
 $Res call({
- PrepareResponseError value
+ PrepareDetailedResponseError value
 });
 
 
@@ -2860,7 +2719,7 @@ class _$PrepareDetailedResponseCompat_ErrorCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? value = null,}) {
   return _then(PrepareDetailedResponseCompat_Error(
 value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
-as PrepareResponseError,
+as PrepareDetailedResponseError,
   ));
 }
 
@@ -3750,47 +3609,63 @@ Map<String, dynamic> toJson() {
   return _$PrepareResponseNotRequiredCompatToJson(this, );
 }
 
-TransactionCompat _$TransactionCompatFromJson(Map<String, dynamic> json) {
-  return _TransactionCompat.fromJson(json);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PrepareResponseNotRequiredCompat&&(identical(other.initialTransaction, initialTransaction) || other.initialTransaction == initialTransaction)&&const DeepCollectionEquality().equals(other._transactions, _transactions));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,initialTransaction,const DeepCollectionEquality().hash(_transactions));
+
+@override
+String toString() {
+  return 'PrepareResponseNotRequiredCompat(initialTransaction: $initialTransaction, transactions: $transactions)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$PulseMetadataCompatCopyWith<$Res> implements $PulseMetadataCompatCopyWith<$Res> {
-  factory _$PulseMetadataCompatCopyWith(_PulseMetadataCompat value, $Res Function(_PulseMetadataCompat) _then) = __$PulseMetadataCompatCopyWithImpl;
+abstract mixin class _$PrepareResponseNotRequiredCompatCopyWith<$Res> implements $PrepareResponseNotRequiredCompatCopyWith<$Res> {
+  factory _$PrepareResponseNotRequiredCompatCopyWith(_PrepareResponseNotRequiredCompat value, $Res Function(_PrepareResponseNotRequiredCompat) _then) = __$PrepareResponseNotRequiredCompatCopyWithImpl;
 @override @useResult
 $Res call({
- String? url, String? bundleId, String? packageName, String sdkVersion, String sdkPlatform
+ TransactionCompat initialTransaction, List<TransactionCompat> transactions
 });
 
 
-
+@override $TransactionCompatCopyWith<$Res> get initialTransaction;
 
 }
 /// @nodoc
-class __$PulseMetadataCompatCopyWithImpl<$Res>
-    implements _$PulseMetadataCompatCopyWith<$Res> {
-  __$PulseMetadataCompatCopyWithImpl(this._self, this._then);
+class __$PrepareResponseNotRequiredCompatCopyWithImpl<$Res>
+    implements _$PrepareResponseNotRequiredCompatCopyWith<$Res> {
+  __$PrepareResponseNotRequiredCompatCopyWithImpl(this._self, this._then);
 
-  final _PulseMetadataCompat _self;
-  final $Res Function(_PulseMetadataCompat) _then;
+  final _PrepareResponseNotRequiredCompat _self;
+  final $Res Function(_PrepareResponseNotRequiredCompat) _then;
 
-/// Create a copy of PulseMetadataCompat
+/// Create a copy of PrepareResponseNotRequiredCompat
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? url = freezed,Object? bundleId = freezed,Object? packageName = freezed,Object? sdkVersion = null,Object? sdkPlatform = null,}) {
-  return _then(_PulseMetadataCompat(
-url: freezed == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
-as String?,bundleId: freezed == bundleId ? _self.bundleId : bundleId // ignore: cast_nullable_to_non_nullable
-as String?,packageName: freezed == packageName ? _self.packageName : packageName // ignore: cast_nullable_to_non_nullable
-as String?,sdkVersion: null == sdkVersion ? _self.sdkVersion : sdkVersion // ignore: cast_nullable_to_non_nullable
-as String,sdkPlatform: null == sdkPlatform ? _self.sdkPlatform : sdkPlatform // ignore: cast_nullable_to_non_nullable
-as String,
+@override @pragma('vm:prefer-inline') $Res call({Object? initialTransaction = null,Object? transactions = null,}) {
+  return _then(_PrepareResponseNotRequiredCompat(
+initialTransaction: null == initialTransaction ? _self.initialTransaction : initialTransaction // ignore: cast_nullable_to_non_nullable
+as TransactionCompat,transactions: null == transactions ? _self._transactions : transactions // ignore: cast_nullable_to_non_nullable
+as List<TransactionCompat>,
   ));
 }
 
-
+/// Create a copy of PrepareResponseNotRequiredCompat
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TransactionCompatCopyWith<$Res> get initialTransaction {
+  
+  return $TransactionCompatCopyWith<$Res>(_self.initialTransaction, (value) {
+    return _then(_self.copyWith(initialTransaction: value));
+  });
+}
 }
 
 

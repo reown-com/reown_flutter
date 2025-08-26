@@ -10,6 +10,6 @@ Relay _$RelayFromJson(Map<String, dynamic> json) =>
     Relay(json['protocol'] as String, data: json['data'] as String?);
 
 Map<String, dynamic> _$RelayToJson(Relay instance) => <String, dynamic>{
-      'protocol': instance.protocol,
-      if (instance.data case final value?) 'data': value,
-    };
+  'protocol': instance.protocol,
+  'data': ?instance.data,
+};

@@ -6,7 +6,7 @@ part 'rust_sign_client_models.g.dart';
 part 'rust_sign_client_models.freezed.dart';
 
 @freezed
-class SessionProposal with _$SessionProposal {
+sealed class SessionProposal with _$SessionProposal {
   const factory SessionProposal({
     required int id,
     required String pairingTopic,
@@ -43,7 +43,7 @@ class SessionProposal with _$SessionProposal {
 }
 
 @freezed
-class ApproveResult with _$ApproveResult {
+sealed class ApproveResult with _$ApproveResult {
   @JsonSerializable()
   const factory ApproveResult({
     required String sessionSymKey, // hex encoded string

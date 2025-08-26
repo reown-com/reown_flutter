@@ -4,7 +4,7 @@ part 'shared.freezed.dart';
 part 'shared.g.dart';
 
 @freezed
-class PulseMetadataCompat with _$PulseMetadataCompat {
+sealed class PulseMetadataCompat with _$PulseMetadataCompat {
   const factory PulseMetadataCompat({
     String? url,
     String? bundleId,

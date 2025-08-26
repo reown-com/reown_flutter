@@ -178,7 +178,10 @@ class ReownSign implements IReownSign {
       relays: relays ?? [Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL)],
       requiredNamespaces: {},
       optionalNamespaces: mergedNamespaces,
-      proposer: ConnectionMetadata(publicKey: publicKey, metadata: metadata),
+      proposer: ConnectionMetadata(
+        publicKey: publicKey,
+        metadata: metadata,
+      ),
       sessionProperties: sessionProperties,
     );
 
@@ -225,8 +228,12 @@ class ReownSign implements IReownSign {
     int requestId,
   ) async {
     try {
-      final Map<String, dynamic> response = await core.pairing
-          .sendProposeSessionRequest(topic, request.toJson(), id: requestId);
+      final Map<String, dynamic> response =
+          await core.pairing.sendProposeSessionRequest(
+        topic,
+        request.toJson(),
+        id: requestId,
+      );
       final String peerPublicKey = response['responderPublicKey'];
 
       final ProposalData proposal = proposals.get(requestId.toString())!;
@@ -240,7 +247,9 @@ class ReownSign implements IReownSign {
       await _deleteProposal(requestId);
 
       await core.relayClient.subscribe(
-        options: SubscribeOptions(topic: sessionTopic),
+        options: SubscribeOptions(
+          topic: sessionTopic,
+        ),
       );
       await core.pairing.activate(topic: topic);
     } catch (e, s) {

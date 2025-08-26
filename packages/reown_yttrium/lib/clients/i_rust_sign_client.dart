@@ -7,11 +7,15 @@ abstract class ISignClient {
     SessionRequestJsonRpcFfi request,
   ) onSessionRequest;
 
-  Future<bool> init({required String projectId});
+  Future<bool> init({
+    required String projectId,
+    required String key,
+    // required store,
+  });
 
   Future<void> initListener();
 
-  Future<bool> setKey({required String key});
+  // Future<bool> setKey({required String key});
 
   Future<String> generateKey();
 

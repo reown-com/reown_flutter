@@ -31,6 +31,7 @@ class Sign {
         private lateinit var signClient: SignClient
         private lateinit var eventChannel: EventChannel
         private var signListenerHandler = SignListenerHandler()
+        private lateinit var sessionStore: SessionStoreFfi
 
         // Called during plugin registration
         fun setEventChannel(messenger: BinaryMessenger) {
@@ -41,14 +42,15 @@ class Sign {
         fun initialize(params: Any?, result: MethodChannel.Result) {
             val dict = params as? Map<*, *> ?: return result.error("Yttrium.Sign.initialize", "Invalid parameters: not a map", null)
             val projectId = dict["projectId"] as? String ?: return result.error("Yttrium.Sign.initialize", "Invalid projectId", null)
-            val key = dict["key"] as? String ?: return result.error("Yttrium.Sign.setKey", "Invalid parameters: not a String", null)
+            val key = dict["key"] as? String ?: return result.error("Yttrium.Sign.initialize", "Invalid parameters: not a String", null)
 
             CoroutineScope(Dispatchers.IO).launch {
                 try {
+                    sessionStore = SessionStore()
                     signClient = SignClient(
                         projectId = projectId,
                         key = key.hexStringToByteArray(),
-                        sessionStore = SessionStoreFfi(), // TODO
+                        sessionStore = sessionStore,
                     )
                     signClient.registerSignListener(signListenerHandler)
                     Log.d("🤖 Yttrium.Sign", "initialize success")
@@ -234,4 +236,25 @@ class SignListenerHandler : SignListener, StreamHandler {
             eventChannelSink?.success(sessionRequestEvent)
         }, 200)
     }
+}
+
+internal class SessionStore: SessionStoreFfi {
+    override fun addSession(session: SessionFfi) {
+        TODO("Not yet implemented")
+//        send session to flutter through eventChannel so flutter can add it to its storage
+//        pretty much like SignListener
+    }
+
+    override fun deleteSession(topic: String) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getAllSessions(): List<SessionFfi> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getSession(topic: String): SessionFfi? {
+        TODO("Not yet implemented")
+    }
+
 }

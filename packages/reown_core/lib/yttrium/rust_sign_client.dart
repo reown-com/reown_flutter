@@ -35,8 +35,12 @@ class RustSignClient implements IRustSignClient {
       return;
     }
     try {
-      await ReownYttrium().signClient.init(projectId: core.projectId);
-      await ReownYttrium().signClient.setKey(key: await _getKey());
+      final clientKey = await _getKey();
+      await ReownYttrium().signClient.init(
+            projectId: core.projectId,
+            key: clientKey,
+          );
+      // await ReownYttrium().signClient.setKey(key: await _getKey());
       await ReownYttrium().signClient.initListener();
       ReownYttrium().signClient.onSessionRequest = _onSessionRequest;
       core.pairing.onPairingCreate.subscribe(_onPairingEvent);
