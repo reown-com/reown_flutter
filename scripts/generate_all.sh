@@ -49,3 +49,14 @@ echo "******* GENERATING CLI *******"
 
 cd packages/reown_cli/
 sh generate_files.sh
+
+cd ..
+cd ..
+
+echo "******* GENERATING POS *******"
+
+cd packages/reown_pos/
+sh generate_files.sh
+
+cd ..
+cd ..
