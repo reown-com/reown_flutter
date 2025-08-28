@@ -28,8 +28,6 @@ class _AmountScreenState extends ConsumerState<AmountScreen> {
   }
 
   void _navigateToTokenScreen() {
-    final paymentInfo = ref.watch(paymentInfoProvider);
-    debugPrint('[ReownPos] paymentInfo ${paymentInfo.toJson()}');
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => TokenScreen()),

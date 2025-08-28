@@ -1,6 +1,5 @@
 // import 'package:example/providers/available_networks_provider.dart';
 import 'package:example/providers/available_tokens_provider.dart';
-import 'package:example/providers/payment_info_provider.dart';
 import 'package:example/providers/reown_pos_provider.dart';
 import 'package:example/screens/amount_screen.dart';
 import 'package:example/widgets/dtc_app_bar.dart';
@@ -28,9 +27,6 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       ..setTokens(tokens: tokens)
       // [ReownPos SDK API] 3. initialize ReownPos SDK
       ..init();
-
-    final paymentInfo = ref.watch(paymentInfoProvider);
-    debugPrint('[ReownPos] paymentInfo ${paymentInfo.toJson()}');
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const AmountScreen()),
