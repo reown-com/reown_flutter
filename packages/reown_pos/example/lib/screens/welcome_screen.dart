@@ -1,4 +1,6 @@
-import 'package:example/providers/available_networks_provider.dart';
+// import 'package:example/providers/available_networks_provider.dart';
+import 'package:example/providers/available_tokens_provider.dart';
+import 'package:example/providers/payment_info_provider.dart';
 import 'package:example/providers/reown_pos_provider.dart';
 import 'package:example/screens/amount_screen.dart';
 import 'package:example/widgets/dtc_app_bar.dart';
@@ -16,11 +18,19 @@ class WelcomeScreen extends ConsumerStatefulWidget {
 
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   void _initPosAndNavigate() {
-    final networks = ref.watch(availableNetworksProvider);
-    final chainIds = networks.map((e) => e.id).toList();
+    // final networks = ref.watch(availableNetworksProvider);
+    // final chains = networks.map((e) => e.network).toList();
+    final availableTokens = ref.watch(availableTokensProvider);
+    final tokens = availableTokens.map((e) => e.token).toList();
     ref.read(reownPosProvider)
-      ..setChains(chainIds: chainIds)
+      // [ReownPos SDK API] 2. call setChains to construct namespaces with your supported networks
+      // ..setChains(chains: chains)
+      ..setTokens(tokens: tokens)
+      // [ReownPos SDK API] 3. initialize ReownPos SDK
       ..init();
+
+    final paymentInfo = ref.watch(paymentInfoProvider);
+    debugPrint('[ReownPos] paymentInfo ${paymentInfo.toJson()}');
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const AmountScreen()),
@@ -44,7 +54,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                   child: Column(
                     children: [
                       Text(
-                        'Welcome to ${posInstance.reOwnSign.metadata.name}',
+                        'Welcome to ${posInstance.reOwnSign!.metadata.name}',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 32,
@@ -54,7 +64,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        posInstance.reOwnSign.metadata.description,
+                        posInstance.reOwnSign!.metadata.description,
                         style: TextStyle(
                           color: Colors.grey,
                           fontSize: 18,

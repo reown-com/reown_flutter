@@ -4,6 +4,8 @@ abstract class PosEvent extends EventArgs {}
 
 abstract class ErrorEvent extends PosEvent {}
 
+// connection events
+
 class QrReadyEvent extends PosEvent {
   final Uri uri;
   QrReadyEvent(this.uri);
@@ -24,20 +26,22 @@ class ConnectFailedEvent extends ErrorEvent {
   String toString() => 'ConnectFailedEvent(error: $error)';
 }
 
+// payment request events
+
 class PaymentRequestedEvent extends PosEvent {}
 
 class PaymentBroadcastedEvent extends PosEvent {}
 
 class PaymentRejectedEvent extends ErrorEvent {}
 
+// payments checking events
+
 class PaymentSuccessfulEvent extends PosEvent {
   final String txHash;
-  final String receipt;
-  PaymentSuccessfulEvent(this.txHash, this.receipt);
+  PaymentSuccessfulEvent(this.txHash);
 
   @override
-  String toString() =>
-      'PaymentSuccessfulEvent(txHash: $txHash, receipt: $receipt)';
+  String toString() => 'PaymentSuccessfulEvent(txHash: $txHash)';
 }
 
 class PaymentFailedEvent extends ErrorEvent {

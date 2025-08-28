@@ -21,7 +21,7 @@ class DtcAppBar extends ConsumerWidget implements PreferredSizeWidget {
       title: Column(
         children: [
           Text(
-            posInstance.reOwnSign.metadata.name,
+            posInstance.reOwnSign!.metadata.name,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 20,
@@ -29,7 +29,7 @@ class DtcAppBar extends ConsumerWidget implements PreferredSizeWidget {
             ),
           ),
           Text(
-            posInstance.reOwnSign.metadata.description,
+            posInstance.reOwnSign!.metadata.description,
             style: const TextStyle(
               color: Colors.white,
               fontSize: 14,

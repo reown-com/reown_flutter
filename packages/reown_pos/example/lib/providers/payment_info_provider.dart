@@ -8,36 +8,28 @@ final paymentInfoProvider =
     );
 
 class PaymentInfoNotifier extends StateNotifier<PaymentIntent> {
-  PaymentInfoNotifier()
-    : super(
-        PaymentIntent(
-          token: '',
-          amount: '',
-          chainId: '',
-          recipient: '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
-        ),
-      );
+  static const _initialPaymentIntent = PaymentIntent(
+    token: '',
+    amount: '',
+    chainId: '',
+    // Currently only EVM supported so we can hardcode it here
+    // when non-EVM chains are available developer will have to write logic to pass the proper address based on the network
+    recipient: '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
+  );
+
+  PaymentInfoNotifier() : super(_initialPaymentIntent);
 
   void update({
     String? token,
     String? amount,
     String? chainId,
     String? recipient,
-  }) {
-    state = state.copyWith(
-      token: token ?? state.token,
-      amount: amount ?? state.amount,
-      chainId: chainId ?? state.chainId,
-      recipient: recipient ?? state.recipient,
-    );
-  }
+  }) => state = state.copyWith(
+    token: token ?? state.token,
+    amount: amount ?? state.amount,
+    chainId: chainId ?? state.chainId,
+    recipient: recipient ?? state.recipient,
+  );
 
-  void clear() {
-    state = PaymentIntent(
-      token: '',
-      amount: '',
-      chainId: '',
-      recipient: '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
-    );
-  }
+  void clear() => state = _initialPaymentIntent;
 }

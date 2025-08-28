@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
+import 'package:example/models/available_token.dart';
 import 'package:example/providers/available_tokens_provider.dart';
 import 'package:example/providers/payment_info_provider.dart';
+// import 'package:example/providers/payment_info_provider.dart';
 import 'package:example/screens/network_screen.dart';
 import 'package:example/widgets/dtc_app_bar.dart';
 
@@ -19,20 +21,33 @@ class TokenScreen extends ConsumerStatefulWidget {
 }
 
 class _TokenScreenState extends ConsumerState<TokenScreen> {
-  void _navigateToNetworkScreen() => Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => NetworkScreen()),
-  );
+  void _navigateToNetworkScreen() {
+    final paymentInfo = ref.watch(paymentInfoProvider);
+    debugPrint('[ReownPos] paymentInfo ${paymentInfo.toJson()}');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => NetworkScreen()),
+    );
+  }
+
+  void _selectToken(AvailableToken token) {
+    ref.read(availableTokensProvider.notifier).select(token);
+  }
 
   @override
   Widget build(BuildContext context) {
-    final tokens = ref.watch(availableTokensProvider);
-    final tokenNotifier = ref.read(availableTokensProvider.notifier);
+    final availableTokens = ref.watch(availableTokensProvider);
+    final reducedTokens = availableTokens
+        .toSet()
+        .fold<Map<String, AvailableToken>>({}, (map, token) {
+          map.putIfAbsent(token.token.symbol, () => token);
+          return map;
+        })
+        .values
+        .toList();
     final tokenSelected = ref
         .watch(availableTokensProvider)
         .firstWhereOrNull((token) => token.selected);
-    // final paymentInfo = ref.watch(paymentInfoProvider);
-    final paymentInfoNotifier = ref.read(paymentInfoProvider.notifier);
     return Scaffold(
       backgroundColor: const Color(0xFF4CAF50),
       appBar: const DtcAppBar(),
@@ -70,12 +85,9 @@ class _TokenScreenState extends ConsumerState<TokenScreen> {
                       Expanded(
                         child: ListView.separated(
                           itemBuilder: (context, index) {
-                            final token = tokens[index];
+                            final token = reducedTokens[index];
                             return GestureDetector(
-                              onTap: () {
-                                tokenNotifier.select(token.symbol);
-                                paymentInfoNotifier.update(token: token.symbol);
-                              },
+                              onTap: () => _selectToken(token), // TODO CHECK
                               child: DtcCard(
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 0,
@@ -84,8 +96,9 @@ class _TokenScreenState extends ConsumerState<TokenScreen> {
                                 child: DtcItem(
                                   icon: Icons.circle,
                                   iconColor: token.color,
-                                  title: token.symbol.toUpperCase(),
-                                  subtitle: token.name,
+                                  title: token.token.symbol.toUpperCase(),
+                                  // subtitle:
+                                  //     'On ${token.token.network.networkData.name}',
                                   trailing: token.selected
                                       ? Icon(Icons.check)
                                       : null,
@@ -93,7 +106,7 @@ class _TokenScreenState extends ConsumerState<TokenScreen> {
                               ),
                             );
                           },
-                          itemCount: tokens.length,
+                          itemCount: reducedTokens.length,
                           separatorBuilder: (BuildContext context, int index) {
                             return SizedBox.square(dimension: 12.0);
                           },

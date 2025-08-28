@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:example/providers/available_networks_provider.dart';
+import 'package:example/providers/available_tokens_provider.dart';
 import 'package:example/providers/payment_info_provider.dart';
 import 'package:example/providers/reown_pos_provider.dart';
 import 'package:example/screens/payment_screen.dart';
@@ -9,6 +9,7 @@ import 'package:example/widgets/dtc_footer.dart';
 import 'package:example/widgets/dtc_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reown_pos/models/pos_models.dart';
 
 class NetworkScreen extends ConsumerStatefulWidget {
   const NetworkScreen({super.key});
@@ -19,25 +20,48 @@ class NetworkScreen extends ConsumerStatefulWidget {
 
 class _NetworkScreenState extends ConsumerState<NetworkScreen> {
   void _createPaymentAndNavigate() {
-    final paymentInfo = ref.watch(paymentInfoProvider);
-    ref
-        .read(reownPosProvider)
-        .createPaymentIntent(paymentIntents: [paymentInfo]);
+    final paymentInfo = ref.read(paymentInfoProvider);
+
+    // [ReownPos SDK API] 4. create a payment intent with the PaymentIntent object
+    final posInstance = ref.read(reownPosProvider);
+    posInstance.createPaymentIntent(paymentIntents: [paymentInfo]);
+
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => PaymentScreen()),
     );
   }
 
+  String get tokenSymbol => ref
+      .watch(availableTokensProvider)
+      .firstWhereOrNull((token) => token.selected)!
+      .token
+      .symbol;
+
+  String _tokenAddress(String chainId) {
+    final token = ref.watch(availableTokensProvider).firstWhere((token) {
+      return token.token.symbol == tokenSymbol &&
+          token.token.network.networkData.chainId == chainId;
+    });
+    return token.token.address;
+  }
+
+  void _selectNetwork(PosNetwork network) {
+    final chainId = network.networkData.chainId;
+    final tokenAddress = _tokenAddress(network.networkData.chainId);
+    final paymentInfoNotifier = ref.read(paymentInfoProvider.notifier);
+    paymentInfoNotifier.update(token: tokenAddress, chainId: chainId);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final networks = ref.watch(availableNetworksProvider);
-    final networkNotifier = ref.read(availableNetworksProvider.notifier);
-    final networkSelected = ref
-        .watch(availableNetworksProvider)
-        .firstWhereOrNull((network) => network.selected);
-    // final paymentInfo = ref.watch(paymentInfoProvider);
-    final paymentInfoNotifier = ref.read(paymentInfoProvider.notifier);
+    final availableTokens = ref.watch(availableTokensProvider);
+    final avaibleNetworks = availableTokens
+        .where((token) => token.token.symbol == tokenSymbol)
+        .map((e) => e.token.network)
+        .toList();
+    final paymentInfo = ref.watch(paymentInfoProvider);
+    debugPrint('[ReownPos] paymentInfo ${paymentInfo.toJson()}');
     return Scaffold(
       backgroundColor: const Color(0xFF4CAF50),
       appBar: const DtcAppBar(),
@@ -75,12 +99,9 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
                       Expanded(
                         child: ListView.separated(
                           itemBuilder: (BuildContext context, int index) {
-                            final network = networks[index];
+                            final network = avaibleNetworks[index];
                             return GestureDetector(
-                              onTap: () {
-                                networkNotifier.select(network.id);
-                                paymentInfoNotifier.update(chainId: network.id);
-                              },
+                              onTap: () => _selectNetwork(network),
                               child: DtcCard(
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 0,
@@ -88,17 +109,19 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
                                 ),
                                 child: DtcItem(
                                   icon: Icons.circle,
-                                  iconColor: network.color,
-                                  title: network.name,
-                                  subtitle: 'Fee ${network.fee}',
-                                  trailing: network.selected
+                                  iconColor: Colors.black,
+                                  title: network.networkData.name,
+                                  // subtitle: 'Fee ${network.fee}',
+                                  trailing:
+                                      network.networkData.chainId ==
+                                          paymentInfo.chainId
                                       ? Icon(Icons.check)
                                       : null,
                                 ),
                               ),
                             );
                           },
-                          itemCount: networks.length,
+                          itemCount: avaibleNetworks.length,
                           separatorBuilder: (BuildContext context, int index) {
                             return SizedBox.square(dimension: 12.0);
                           },
@@ -110,9 +133,8 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton(
-                          onPressed: networkSelected != null
-                              ? _createPaymentAndNavigate
-                              : null,
+                          onPressed: _createPaymentAndNavigate,
+                          // onPressed: null,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF4CAF50),
                             foregroundColor: Colors.white,

@@ -1,10 +1,11 @@
 import 'package:collection/collection.dart';
-import 'package:example/providers/available_networks_provider.dart';
+import 'package:example/providers/available_tokens_provider.dart';
 import 'package:example/providers/payment_info_provider.dart';
 import 'package:example/providers/reown_pos_provider.dart';
 import 'package:example/widgets/dtc_app_bar.dart';
 import 'package:example/widgets/dtc_card.dart';
 import 'package:example/widgets/dtc_footer.dart';
+import 'package:example/widgets/dtc_header.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,6 +27,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
   @override
   void initState() {
     super.initState();
+    // [ReownPos SDK API] 5. subscribe to events to update the UI accordingli
     ref.read(reownPosProvider).onPosEvent.subscribe(_onPosEvent);
   }
 
@@ -37,11 +39,6 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final networkSelected = ref
-        .read(availableNetworksProvider)
-        .firstWhereOrNull((network) => network.selected);
-    final paymentInfo = ref.watch(paymentInfoProvider);
-    // final paymentInfoNotifier = ref.read(paymentInfoProvider.notifier);
     return Scaffold(
       backgroundColor: const Color(0xFF4CAF50),
       appBar: const DtcAppBar(),
@@ -55,39 +52,29 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                   padding: const EdgeInsets.all(24),
                   child: Column(
                     children: [
-                      const Text(
-                        'Scan to Pay',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 12),
-                      const Text(
-                        'Step 5: Customer scans QR',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
-                          fontWeight: FontWeight.normal,
-                        ),
-                        textAlign: TextAlign.center,
+                      // Screen header
+                      DtcHeader(
+                        title: 'Scan to Pay',
+                        description: 'Step 5: Customer scans QR',
                       ),
                       const SizedBox(height: 32),
+                      // QR
                       SizedBox.square(
                         dimension: 250.0,
-                        child: QrImageView(
-                          data: _uri?.toString() ?? '',
-                          version: QrVersions.auto,
-                          errorCorrectionLevel: QrErrorCorrectLevel.L,
-                          eyeStyle: const QrEyeStyle(
-                            eyeShape: QrEyeShape.circle,
-                            color: Colors.black,
-                          ),
-                          dataModuleStyle: const QrDataModuleStyle(
-                            dataModuleShape: QrDataModuleShape.circle,
-                            color: Colors.black,
+                        child: Visibility(
+                          visible: _uri != null,
+                          child: QrImageView(
+                            data: _uri.toString(),
+                            version: QrVersions.auto,
+                            errorCorrectionLevel: QrErrorCorrectLevel.L,
+                            eyeStyle: const QrEyeStyle(
+                              eyeShape: QrEyeShape.circle,
+                              color: Colors.black,
+                            ),
+                            dataModuleStyle: const QrDataModuleStyle(
+                              dataModuleShape: QrDataModuleShape.circle,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
                       ),
@@ -96,41 +83,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                       _EventsListWidget(),
                       const SizedBox(height: 32),
                       // Payment Details Card
-                      DtcCard(
-                        child: Column(
-                          children: [
-                            Text(
-                              '\$${paymentInfo.amount}',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              '${paymentInfo.token.toUpperCase()} on ${networkSelected!.name}',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.normal,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 4),
-                            const Text(
-                              'Network fee: \$0.05',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 14,
-                                fontWeight: FontWeight.normal,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
-                        ),
-                      ),
+                      _PaymentInfoWidget(),
                       const SizedBox(height: 24),
                     ],
                   ),
@@ -158,16 +111,17 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
   void initState() {
     super.initState();
     _posInstance = ref.read(reownPosProvider);
+    // [ReownPos SDK API] 5. subscribe to events to update the UI accordingli
     _posInstance.onPosEvent.subscribe(_onPosEvent);
   }
 
   void _onPosEvent(PosEvent event) {
     if (event is QrReadyEvent) {
-      //
+      // Used on the main widget to render the QR Code
     } else if (event is ConnectRejectedEvent) {
-      //
+      _showDialogEvent(event.runtimeType.toString(), 'User rejected session');
     } else if (event is ConnectFailedEvent) {
-      //
+      _showDialogEvent(event.runtimeType.toString(), event.error);
     } else if (event is ConnectedEvent) {
       //
     } else if (event is PaymentRequestedEvent) {
@@ -175,34 +129,12 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
     } else if (event is PaymentBroadcastedEvent) {
       //
     } else if (event is PaymentRejectedEvent) {
-      //
+      _showDialogEvent(event.runtimeType.toString(), 'User rejected payment');
     } else if (event is PaymentFailedEvent) {
-      //
+      _showDialogEvent(event.runtimeType.toString(), event.message);
     } else if (event is PaymentSuccessfulEvent) {
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(event.runtimeType.toString()),
-            content: Text('${event.receipt}:\n${event.txHash}'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  ref.read(paymentInfoProvider.notifier).clear();
-                  Navigator.of(
-                    context,
-                  ).popUntil((route) => route.settings.name == '/');
-                },
-                child: Text('Great!'),
-              ),
-            ],
-          );
-        },
-      );
+      _showDialogEvent(event.runtimeType.toString(), event.txHash);
     } else if (event is DisconnectedEvent) {
-      //
-    } else if (event is ErrorEvent) {
       //
     }
     _eventsPool.add(event);
@@ -211,47 +143,36 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    // _eventsPool = [
-    //   QrReadyEvent(
-    //     Uri.parse(
-    //       'wc:3ff40e98ea015f10ceffe97d924e8910393fb937ed5969be8ce1105c6cd81476@2?relay-protocol=irn&symKey=074a348c386729671b7ee197741c22c6202ca1e1cfb1ebdada13ec3d36349956&methods=wc_sessionPropose%2Cwc_sessionRequest&expiryTimestamp=1756298705',
-    //     ),
-    //   ),
-    //   ConnectedEvent(),
-    //   PaymentRequestedEvent(),
-    //   PaymentBroadcastedEvent(),
-    //   PaymentSuccessfulEvent('', ''),
-    //   PaymentFailedEvent(''),
-    // ];
-    //
     if (_eventsPool.isEmpty) {
       return SizedBox.shrink();
     }
     final currentEvent = _eventsPool.last;
-    debugPrint('current event $currentEvent');
     return Column(
       children: [
-        _buildStatusItem(
+        _bulletPointStatus(
           text: 'Scan QR, waiting for wallet connection...',
           isLoading: currentEvent is QrReadyEvent,
           isActive: _eventsPool.any((event) => event is ConnectedEvent),
+          // you can be more specific if handled the proper error event, such as ConnectRejectedEvent
           isFailed: _eventsPool.any((event) => event is ErrorEvent),
         ),
-        _buildStatusItem(
+        _bulletPointStatus(
           text: 'Sending transaction...',
           isLoading: currentEvent is ConnectedEvent,
           isActive: _eventsPool.any((event) => event is PaymentRequestedEvent),
+          // you can be more specific if handled the proper error event, such as PaymentRejectedEvent
           isFailed: _eventsPool.any((event) => event is ErrorEvent),
         ),
-        _buildStatusItem(
+        _bulletPointStatus(
           text: 'Confirming transaction...',
           isLoading: currentEvent is PaymentRequestedEvent,
           isActive: _eventsPool.any(
             (event) => event is PaymentBroadcastedEvent,
           ),
+          // you can be more specific if handled the proper error event, such as PaymentFailedEvent
           isFailed: _eventsPool.any((event) => event is ErrorEvent),
         ),
-        _buildStatusItem(
+        _bulletPointStatus(
           text: 'Checking the transaction status...',
           isLoading: currentEvent is PaymentBroadcastedEvent,
           isActive: _eventsPool.any((event) => event is PaymentSuccessfulEvent),
@@ -261,7 +182,7 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
     );
   }
 
-  Widget _buildStatusItem({
+  Widget _bulletPointStatus({
     required String text,
     required bool isActive,
     required bool isLoading,
@@ -315,6 +236,84 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
           ),
         ),
       ],
+    );
+  }
+
+  void _showDialogEvent(String title, String message) {
+    showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                ref.read(paymentInfoProvider.notifier).clear();
+                Navigator.of(
+                  context,
+                ).popUntil((route) => route.settings.name == '/');
+              },
+              child: Text('Ok!'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class _PaymentInfoWidget extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final paymentInfo = ref.watch(paymentInfoProvider);
+    final networkSelected = ref
+        .read(availableTokensProvider)
+        .firstWhereOrNull((token) => token.token.address == paymentInfo.token)
+        ?.token
+        .network
+        .networkData
+        .name;
+    final token = ref
+        .watch(availableTokensProvider)
+        .firstWhereOrNull((token) => token.selected)!
+        .token
+        .symbol;
+    return DtcCard(
+      child: Column(
+        children: [
+          Text(
+            '\$${paymentInfo.amount}',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '${token.toUpperCase()} on $networkSelected',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 16,
+              fontWeight: FontWeight.normal,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 4),
+          const Text(
+            'Network fee: \$0.05',
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 14,
+              fontWeight: FontWeight.normal,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 }

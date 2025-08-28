@@ -27,10 +27,14 @@ class _AmountScreenState extends ConsumerState<AmountScreen> {
     setState(() {});
   }
 
-  void _navigateToTokenScreen() => Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => TokenScreen()),
-  );
+  void _navigateToTokenScreen() {
+    final paymentInfo = ref.watch(paymentInfoProvider);
+    debugPrint('[ReownPos] paymentInfo ${paymentInfo.toJson()}');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => TokenScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

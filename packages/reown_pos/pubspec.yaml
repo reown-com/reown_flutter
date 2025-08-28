@@ -5,14 +5,16 @@ homepage: https://github.com/reown-com/reown_flutter
 repository: https://github.com/reown-com/reown_flutter/tree/master/packages/reown_pos
 
 environment:
-  sdk: ^3.9.0
-  flutter: ">=1.17.0"
+  sdk: ^3.8.0
+  flutter: ">=1.10.0"
 
 dependencies:
+  collection: ^1.19.1
   event: ^3.1.0
   flutter:
     sdk: flutter
   freezed_annotation: ^3.1.0
+  http: ^1.5.0
   json_annotation: ^4.9.0
   reown_core:
     path: ../reown_core/
@@ -27,7 +29,6 @@ dev_dependencies:
     sdk: flutter
   freezed: ^3.2.0
   json_serializable: ^6.10.0
-  http: ^1.2.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

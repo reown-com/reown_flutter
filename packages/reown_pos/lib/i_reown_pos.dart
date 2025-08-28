@@ -4,16 +4,17 @@ import 'package:reown_pos/models/pos_models.dart';
 import 'package:reown_sign/i_sign_engine.dart';
 
 abstract class IReownPos {
+  abstract IReownSign? reOwnSign;
   abstract final Event<PosEvent> onPosEvent;
 
   Future<void> init();
-  Future<void> dispose();
 
-  void setChains({required List<String> chainIds});
+  // void setChains({required List<PosNetwork> chains});
+  void setTokens({required List<PosToken> tokens});
 
   Future<void> createPaymentIntent({
     required List<PaymentIntent> paymentIntents,
   });
 
-  abstract final IReownSign reOwnSign;
+  Future<void> dispose();
 }
