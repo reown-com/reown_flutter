@@ -24,7 +24,7 @@ Add the package to your `pubspec.yaml` using the git repository (as the SDK is n
 dependencies:
   reown_pos:
     git:
-      url: https://github.com/reown-xyz/reown_flutter.git
+      url: https://github.com/reown-com/reown_flutter.git
       path: packages/reown_pos
 ```
 
