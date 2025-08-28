@@ -2,7 +2,7 @@ import 'package:event/event.dart';
 
 abstract class PosEvent extends EventArgs {}
 
-abstract class ErrorEvent extends PosEvent {}
+abstract class PosErrorEvent extends PosEvent {}
 
 // connection events
 
@@ -16,9 +16,9 @@ class QrReadyEvent extends PosEvent {
 
 class ConnectedEvent extends PosEvent {}
 
-class ConnectRejectedEvent extends ErrorEvent {}
+class ConnectRejectedEvent extends PosErrorEvent {}
 
-class ConnectFailedEvent extends ErrorEvent {
+class ConnectFailedEvent extends PosErrorEvent {
   final String error;
   ConnectFailedEvent(this.error);
 
@@ -32,7 +32,7 @@ class PaymentRequestedEvent extends PosEvent {}
 
 class PaymentBroadcastedEvent extends PosEvent {}
 
-class PaymentRejectedEvent extends ErrorEvent {}
+class PaymentRejectedEvent extends PosErrorEvent {}
 
 // payments checking events
 
@@ -44,7 +44,7 @@ class PaymentSuccessfulEvent extends PosEvent {
   String toString() => 'PaymentSuccessfulEvent(txHash: $txHash)';
 }
 
-class PaymentFailedEvent extends ErrorEvent {
+class PaymentFailedEvent extends PosErrorEvent {
   final String message;
   PaymentFailedEvent(this.message);
 

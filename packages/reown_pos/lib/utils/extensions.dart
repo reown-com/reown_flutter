@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:reown_pos/models/pos_models.dart';
 import 'package:reown_pos/reown_pos.dart';
 import 'package:reown_pos/utils/caip_validator.dart';
 

@@ -1,6 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:reown_pos/i_reown_pos.dart';
-import 'package:reown_pos/models/pos_models.dart';
 import 'package:reown_pos/reown_pos.dart';
 
 /// Reown POS plugin instance

@@ -4,8 +4,7 @@ A Flutter SDK for implementing Point of Sale (POS) cryptocurrency payments using
 
 ## Features
 
-- **Multi-chain Support**: Support for major EVM networks (Ethereum, Polygon, BSC, Avalanche, Arbitrum, Optimism, Base, Fantom, Cronos, Polygon zkEVM, Sepolia)
-- **QR Code Generation**: Automatic QR code generation for wallet connections
+- **Multi-chain Support**: Support for major EVM networks (Ethereum, Polygon, BSC, Avalanche, Arbitrum, Optimism, Base, Fantom, Cronos, Polygon zkEVM, Sepolia, etc..)
 - **Event-driven Architecture**: Real-time payment status updates through events
 - **Secure Transactions**: Built-in transaction validation and status checking
 - **Easy Integration**: Simple API for Flutter applications
@@ -16,15 +15,17 @@ A Flutter SDK for implementing Point of Sale (POS) cryptocurrency payments using
 
 - Flutter 3.0 or higher
 - A Reown project ID (get one from [Reown](https://reown.com))
-- Supported EVM-compatible networks
 
 ### Installation
 
-Add the package to your `pubspec.yaml`:
+Add the package to your `pubspec.yaml` using the git repository (as the SDK is not yet published):
 
 ```yaml
 dependencies:
-  reown_pos: ^0.0.1 // At the moment of writing this docs
+  reown_pos:
+    git:
+      url: https://github.com/reown-xyz/reown_flutter.git
+      path: packages/reown_pos
 ```
 
 ## Usage
@@ -33,7 +34,6 @@ dependencies:
 
 ```dart
 import 'package:reown_pos/reown_pos.dart';
-import 'package:reown_pos/models/pos_models.dart';
 
 // Create metadata for your merchant application
 final metadata = Metadata(
@@ -101,26 +101,19 @@ await reownPos.createPaymentIntent(
 Subscribe to events to track the payment flow:
 
 ```dart
-// Subscribe to POS events
+// Subscribe to POS events (happy-path, more events, includind errors, in the example)
 reownPos.onPosEvent.subscribe((event) {
   if (event is QrReadyEvent) {
-    // QR code is ready - display it to customer
-    print('QR Code ready: ${event.uri}');
+    // When payment intent is created and connection with the relay is established, this event will contain the pairing URI to create the QR with
+    // A QrImageView(data: uri); Widget is available for you to use
   } else if (event is ConnectedEvent) {
-    // Customer connected their wallet
-    print('Wallet connected');
+    // Customer connected their wallet upon scnning the QR code with the pairing URI
   } else if (event is PaymentRequestedEvent) {
-    // Payment request sent to wallet
-    print('Payment requested');
+    // Payment has been sent to the wallet for user approval
+  } else if (event is PaymentBroadcastedEvent) {
+    // User approved the payment
   } else if (event is PaymentSuccessfulEvent) {
-    // Payment successful
-    print('Payment successful! TX Hash: ${event.txHash}');
-  } else if (event is PaymentFailedEvent) {
-    // Payment failed
-    print('Payment failed: ${event.message}');
-  } else if (event is PaymentRejectedEvent) {
-    // Customer rejected payment
-    print('Payment rejected by customer');
+    // Payment has been confirmed on the blockchain
   }
 });
 ```
@@ -232,18 +225,6 @@ The SDK provides comprehensive error handling through events. Always subscribe t
 - Payment rejections
 - Transaction failures
 - Network issues
-
-## Cleanup
-
-Don't forget to dispose of the SDK when you're done:
-
-```dart
-@override
-void dispose() {
-  reownPos.dispose();
-  super.dispose();
-}
-```
 
 ## Additional Information
 

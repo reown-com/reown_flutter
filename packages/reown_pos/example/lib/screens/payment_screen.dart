@@ -9,9 +9,7 @@ import 'package:example/widgets/dtc_header.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qr_flutter_wc/qr_flutter_wc.dart';
-import 'package:reown_pos/i_reown_pos.dart';
-import 'package:reown_pos/models/events.dart';
+import 'package:reown_pos/reown_pos.dart';
 //
 
 class PaymentScreen extends ConsumerStatefulWidget {
@@ -126,10 +124,10 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
       //
     } else if (event is PaymentRequestedEvent) {
       //
-    } else if (event is PaymentBroadcastedEvent) {
-      //
     } else if (event is PaymentRejectedEvent) {
       _showDialogEvent(event.runtimeType.toString(), 'User rejected payment');
+    } else if (event is PaymentBroadcastedEvent) {
+      //
     } else if (event is PaymentFailedEvent) {
       _showDialogEvent(event.runtimeType.toString(), event.message);
     } else if (event is PaymentSuccessfulEvent) {
@@ -154,14 +152,14 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
           isLoading: currentEvent is QrReadyEvent,
           isActive: _eventsPool.any((event) => event is ConnectedEvent),
           // you can be more specific if handled the proper error event, such as ConnectRejectedEvent
-          isFailed: _eventsPool.any((event) => event is ErrorEvent),
+          isFailed: _eventsPool.any((event) => event is PosErrorEvent),
         ),
         _bulletPointStatus(
           text: 'Sending transaction...',
           isLoading: currentEvent is ConnectedEvent,
           isActive: _eventsPool.any((event) => event is PaymentRequestedEvent),
           // you can be more specific if handled the proper error event, such as PaymentRejectedEvent
-          isFailed: _eventsPool.any((event) => event is ErrorEvent),
+          isFailed: _eventsPool.any((event) => event is PosErrorEvent),
         ),
         _bulletPointStatus(
           text: 'Confirming transaction...',
@@ -170,13 +168,13 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
             (event) => event is PaymentBroadcastedEvent,
           ),
           // you can be more specific if handled the proper error event, such as PaymentFailedEvent
-          isFailed: _eventsPool.any((event) => event is ErrorEvent),
+          isFailed: _eventsPool.any((event) => event is PosErrorEvent),
         ),
         _bulletPointStatus(
           text: 'Checking the transaction status...',
           isLoading: currentEvent is PaymentBroadcastedEvent,
           isActive: _eventsPool.any((event) => event is PaymentSuccessfulEvent),
-          isFailed: _eventsPool.any((event) => event is ErrorEvent),
+          isFailed: _eventsPool.any((event) => event is PosErrorEvent),
         ),
       ],
     );

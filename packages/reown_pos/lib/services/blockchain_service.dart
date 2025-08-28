@@ -1,6 +1,5 @@
-import 'package:reown_core/i_core_impl.dart';
-import 'package:reown_core/models/json_rpc_models.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
+import 'package:reown_pos/reown_pos.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
