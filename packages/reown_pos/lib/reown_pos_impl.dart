@@ -21,6 +21,7 @@ export 'package:reown_sign/reown_sign.dart';
 class ReownPos with BlockchainService, ValidatorService implements IReownPos {
   bool _initialized = false;
   QueryParams? _queryParams;
+  final List<PosToken> _configuredTokens = [];
   final Map<String, RequiredNamespace> _sessionNamespaces = {};
   PaymentIntent? _pendingIntent;
   Completer<String> _statusCheckCompleter = Completer<String>();
@@ -31,6 +32,9 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
 
   @override
   final Event<PosEvent> onPosEvent = Event();
+
+  @override
+  List<PosToken> get configuredTokens => _configuredTokens;
 
   ReownPos({
     required String projectId,
@@ -111,12 +115,11 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
         return;
       }
 
-      _registerListeners();
-
       await _reOwnCore!.start();
       await reOwnSign!.init();
-
       await _expirePreviousPairings();
+
+      _registerListeners();
 
       _reOwnCore!.logger.d('[$runtimeType] initialized');
       _initialized = true;
@@ -137,7 +140,11 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
 
     _reOwnCore!.logger.d('[$runtimeType] set tokens $tokens');
 
-    final chains = tokens.map((e) => e.network).toList();
+    _configuredTokens
+      ..clear()
+      ..addAll(tokens);
+
+    final List<PosNetwork> chains = tokens.map((e) => e.network).toList();
     _setNamespaces(chains);
   }
 
@@ -146,38 +153,27 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
     required List<PaymentIntent> paymentIntents,
   }) async {
     if (_sessionNamespaces.isEmpty) {
-      throw StateError('No chains set, call setChains method first');
+      throw StateError('No chains set, call setTokens method first');
     }
     if (paymentIntents.isEmpty) {
       throw StateError('No payment intents provided');
     }
-    _reOwnCore!.logger.d('[$runtimeType] namespaces $_sessionNamespaces');
-    _reOwnCore!.logger.d(
-      '[$runtimeType] payment intent ${paymentIntents.first}',
-    );
 
     _pendingIntent = paymentIntents.first.copyWith();
     isValidPaymentIntent(_pendingIntent!);
-    _reOwnCore!.logger.d('[$runtimeType] pending intent $_pendingIntent');
+    _reOwnCore!.logger.d('[$runtimeType] paymentIntent $_pendingIntent');
 
     try {
-      // final CreateResponse pairing = await reOwnSign!.core.pairing.create();
-      // _reOwnCore!.logger.d('[$runtimeType] pairing: $pairing');
-
       final ConnectResponse connect = await reOwnSign!.connect(
         optionalNamespaces: _sessionNamespaces,
-        // pairingTopic: pairing.topic,
       );
-      _reOwnCore!.logger.d('[$runtimeType] connect: ${connect.uri}');
-
+      _reOwnCore!.logger.d('[$runtimeType] pairing uri: ${connect.uri}');
       onPosEvent.broadcast(QrReadyEvent(connect.uri!));
 
-      // We can await the session or we can listen to onSessionConnected
+      // We can await the session as follows or we can listen to onSessionConnected
       // final connectedSession = await connect.session.future;
     } on JsonRpcError catch (e) {
-      _reOwnCore!.logger.e(
-        '[$runtimeType] createPaymentIntent JsonRpcError: $e',
-      );
+      _reOwnCore!.logger.e('[$runtimeType] connect error: $e');
       if (e.isUserRejected) {
         // TODO User rejected session is not coming from connect method rather from relay
         onPosEvent.broadcast(ConnectRejectedEvent());
@@ -185,12 +181,10 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
         onPosEvent.broadcast(ConnectFailedEvent(e.message ?? ''));
       }
     } on ReownCoreError catch (e) {
-      _reOwnCore!.logger.e(
-        '[$runtimeType] createPaymentIntent ReownCoreError: $e',
-      );
+      _reOwnCore!.logger.e('[$runtimeType] connect error: $e');
       onPosEvent.broadcast(ConnectFailedEvent(e.message));
     } catch (e, s) {
-      _reOwnCore!.logger.e('[$runtimeType] createPaymentIntent error: $e, $s');
+      _reOwnCore!.logger.e('[$runtimeType] connect error: $e, $s');
       onPosEvent.broadcast(ConnectFailedEvent(e.toString()));
     }
   }
@@ -209,12 +203,11 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
 // listener handlers
 extension _SessionListeners on ReownPos {
   void _onSessionConnect(SessionConnect? event) async {
-    final json = jsonEncode(event?.session.toJson());
-    _reOwnCore!.logger.d('[$runtimeType] event: onSessionConnect, $json');
+    _reOwnCore!.logger.d('[$runtimeType] session connected: ${event?.session}');
     onPosEvent.broadcast(ConnectedEvent());
 
     final approvedSession = event!.session;
-    final chainId = _pendingIntent!.network.chainId;
+    final chainId = _pendingIntent!.token.network.chainId;
 
     isValidSessionApproved(approvedSession, chainId); // throws if not valid
 
@@ -225,11 +218,12 @@ extension _SessionListeners on ReownPos {
 
     try {
       // Blockchain API call
+      final transactionParams = BuildTransactionParams.fromPaymentIntent(
+        _pendingIntent!,
+        senderAddress,
+      );
       final response = await reownPosBuildTransaction(
-        params: BuildTransactionParams.fromPaymentIntent(
-          _pendingIntent!,
-          senderAddress,
-        ),
+        params: transactionParams,
         queryParams: _queryParams!,
       );
       _reOwnCore!.logger.d('[$runtimeType] api response ${response.result}');
@@ -253,7 +247,7 @@ extension _SessionListeners on ReownPos {
       _reOwnCore!.logger.d('[$runtimeType] sending request to wallet');
       final futureTxHash = reOwnSign!.request(
         topic: approvedSession.topic,
-        chainId: _pendingIntent!.network.chainId,
+        chainId: _pendingIntent!.token.network.chainId,
         request: SessionRequestParams(method: method, params: params),
       );
       onPosEvent.broadcast(PaymentRequestedEvent());
@@ -262,6 +256,7 @@ extension _SessionListeners on ReownPos {
 
       onPosEvent.broadcast(PaymentBroadcastedEvent());
 
+      // Loop on status check
       _statusCheckCompleter = Completer<String>();
       _loopOnStatusCheck(receiptId, txHash);
       final status = await _statusCheckCompleter.future;
@@ -276,17 +271,17 @@ extension _SessionListeners on ReownPos {
     } on JsonRpcError catch (e) {
       if (e.isUserRejected) {
         // User rejected payment
-        onPosEvent.broadcast(PaymentRejectedEvent());
+        onPosEvent.broadcast(PaymentRequestRejectedEvent());
       } else {
         _reOwnCore!.logger.e('[$runtimeType] JsonRpcError, $e');
-        onPosEvent.broadcast(PaymentFailedEvent(e.message ?? ''));
+        onPosEvent.broadcast(PaymentRequestFailedEvent(e.message ?? ''));
       }
     } on ReownCoreError catch (e) {
       _reOwnCore!.logger.e('[$runtimeType] ReownCoreError, $e');
-      onPosEvent.broadcast(PaymentFailedEvent(e.message));
+      onPosEvent.broadcast(PaymentRequestFailedEvent(e.message));
     } catch (e, s) {
       _reOwnCore!.logger.e('[$runtimeType] createPaymentIntent error: $e, $s');
-      onPosEvent.broadcast(PaymentFailedEvent(e.toString()));
+      onPosEvent.broadcast(PaymentRequestFailedEvent(e.toString()));
     }
 
     // Complete the completer to prevent hanging
@@ -302,7 +297,6 @@ extension _SessionListeners on ReownPos {
 
   void _onSessionDelete(SessionDelete? event) async {
     _reOwnCore!.logger.d('[$runtimeType] event: onSessionDelete, $event');
-    // await dispose();
     onPosEvent.broadcast(DisconnectedEvent());
   }
 

@@ -21,11 +21,9 @@ class NetworkScreen extends ConsumerStatefulWidget {
 class _NetworkScreenState extends ConsumerState<NetworkScreen> {
   void _createPaymentAndNavigate() {
     final paymentInfo = ref.read(paymentInfoProvider);
-
     // [ReownPos SDK API] 4. create a payment intent with the PaymentIntent object
     final posInstance = ref.read(reownPosProvider);
     posInstance.createPaymentIntent(paymentIntents: [paymentInfo]);
-
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => PaymentScreen()),
@@ -118,7 +116,7 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
                                   // subtitle: 'Fee ${network.fee}',
                                   trailing:
                                       network.chainId ==
-                                          paymentInfo.network.chainId
+                                          paymentInfo.token.network.chainId
                                       ? Icon(Icons.check)
                                       : null,
                                 ),

@@ -9,9 +9,6 @@ abstract class PosErrorEvent extends PosEvent {}
 class QrReadyEvent extends PosEvent {
   final Uri uri;
   QrReadyEvent(this.uri);
-
-  @override
-  String toString() => 'QrReadyEvent(uri: $uri)';
 }
 
 class ConnectedEvent extends PosEvent {}
@@ -19,45 +16,31 @@ class ConnectedEvent extends PosEvent {}
 class ConnectRejectedEvent extends PosErrorEvent {}
 
 class ConnectFailedEvent extends PosErrorEvent {
-  final String error;
-  ConnectFailedEvent(this.error);
-
-  @override
-  String toString() => 'ConnectFailedEvent(error: $error)';
+  final String message;
+  ConnectFailedEvent(this.message);
 }
 
 // payment request events
-
 class PaymentRequestedEvent extends PosEvent {}
 
-class PaymentBroadcastedEvent extends PosEvent {}
+class PaymentRequestRejectedEvent extends PosErrorEvent {}
 
-class PaymentRejectedEvent extends PosErrorEvent {}
+class PaymentRequestFailedEvent extends PosErrorEvent {
+  final String message;
+  PaymentRequestFailedEvent(this.message);
+}
 
 // payments checking events
+class PaymentBroadcastedEvent extends PosEvent {}
 
 class PaymentSuccessfulEvent extends PosEvent {
   final String txHash;
   PaymentSuccessfulEvent(this.txHash);
-
-  @override
-  String toString() => 'PaymentSuccessfulEvent(txHash: $txHash)';
 }
 
 class PaymentFailedEvent extends PosErrorEvent {
   final String message;
   PaymentFailedEvent(this.message);
-
-  @override
-  String toString() => 'PaymentFailedEvent(message: $message)';
 }
 
 class DisconnectedEvent extends PosEvent {}
-
-// class ErrorEvent extends PosEvent {
-//   final String error;
-//   ErrorEvent(this.error);
-
-//   @override
-//   String toString() => 'ErrorEvent(error: $error)';
-// }

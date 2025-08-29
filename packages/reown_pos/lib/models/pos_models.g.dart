@@ -9,7 +9,6 @@ part of 'pos_models.dart';
 _PaymentIntent _$PaymentIntentFromJson(Map<String, dynamic> json) =>
     _PaymentIntent(
       token: PosToken.fromJson(json['token'] as Map<String, dynamic>),
-      network: PosNetwork.fromJson(json['network'] as Map<String, dynamic>),
       amount: json['amount'] as String,
       recipient: json['recipient'] as String,
     );
@@ -17,7 +16,6 @@ _PaymentIntent _$PaymentIntentFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$PaymentIntentToJson(_PaymentIntent instance) =>
     <String, dynamic>{
       'token': instance.token,
-      'network': instance.network,
       'amount': instance.amount,
       'recipient': instance.recipient,
     };

@@ -6,10 +6,8 @@ part 'pos_models.freezed.dart';
 @freezed
 sealed class PaymentIntent with _$PaymentIntent {
   const factory PaymentIntent({
-    required PosToken token,
-    // TODO shouldn't be necessary during construction
-    required PosNetwork network,
-    required String amount, // double as string
+    required PosToken token, // PosToken value
+    required String amount, // double as String, i.e. "12.5"
     required String recipient, // recipient address, 0x..... for EVM
   }) = _PaymentIntent;
 

@@ -119,12 +119,12 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
     } else if (event is ConnectRejectedEvent) {
       _showDialogEvent(event.runtimeType.toString(), 'User rejected session');
     } else if (event is ConnectFailedEvent) {
-      _showDialogEvent(event.runtimeType.toString(), event.error);
+      _showDialogEvent(event.runtimeType.toString(), event.message);
     } else if (event is ConnectedEvent) {
       //
     } else if (event is PaymentRequestedEvent) {
       //
-    } else if (event is PaymentRejectedEvent) {
+    } else if (event is PaymentRequestRejectedEvent) {
       _showDialogEvent(event.runtimeType.toString(), 'User rejected payment');
     } else if (event is PaymentBroadcastedEvent) {
       //

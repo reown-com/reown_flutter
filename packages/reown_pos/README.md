@@ -4,7 +4,7 @@ A Flutter SDK for implementing Point of Sale (POS) cryptocurrency payments using
 
 ## Features
 
-- **Multi-chain Support**: Support for major EVM networks (Ethereum, Polygon, BSC, Avalanche, Arbitrum, Optimism, Base, Fantom, Cronos, Polygon zkEVM, Sepolia, etc..)
+- **Multi-token Support**: Support for major stablecoins
 - **Event-driven Architecture**: Real-time payment status updates through events
 - **Secure Transactions**: Built-in transaction validation and status checking
 - **Easy Integration**: Simple API for Flutter applications
@@ -57,14 +57,16 @@ final reownPos = ReownPos(
 // Define the tokens you want to accept
 final tokens = [
   PosToken(
-    network: PosNetwork.ethereum,
+    network: PosNetwork(name: 'Ethereum', chainId: 'eip155:1'),
     symbol: 'USDC',
-    address: '0xA0b86a33E6441b8c4C1C1b8Bc4C1C1b8Bc4C1C1b8', // USDC contract address
+    standard: 'erc20', // Token standard (erc20 for EVM tokens)
+    address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // USDC contract address on Ethereum
   ),
   PosToken(
-    network: PosNetwork.polygon,
-    symbol: 'MATIC',
-    address: '0x0000000000000000000000000000000000000000', // Native token
+    network: PosNetwork(name: 'Polygon', chainId: 'eip155:137'),
+    symbol: 'USDC',
+    standard: 'erc20',
+    address: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174', // USDC contract address on Polygon
   ),
 ];
 
@@ -72,21 +74,32 @@ final tokens = [
 reownPos.setTokens(tokens: tokens);
 ```
 
-### 3. Initialize the SDK
+### 3. Subscribe to events
+
+```dart
+// Initialize the SDK (this starts the core services)
+reownPos.onPosEvent.subscribe(_onPosEvent);
+```
+
+### 4. Initialize the SDK
 
 ```dart
 // Initialize the SDK (this starts the core services)
 await reownPos.init();
 ```
 
-### 4. Create Payment Intent
+### 5. Create Payment Intent
 
 ```dart
 // Create a payment intent
 final paymentIntent = PaymentIntent(
-  token: '0xA0b86a33E6441b8c4C1C1b8Bc4C1C1b8Bc4C1C1b8', // Token contract address
-  amount: '25.50', // Amount as string
-  chainId: 'eip155:1', // Ethereum mainnet
+  token: PosToken(
+    network: PosNetwork(name: 'Ethereum', chainId: 'eip155:1'),
+    symbol: 'USDC',
+    standard: 'erc20',
+    address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+  ),
+  amount: '25.50', // Amount as string (e.g., "12.5")
   recipient: '0xYourMerchantAddress', // Your wallet address
 );
 
@@ -96,78 +109,134 @@ await reownPos.createPaymentIntent(
 );
 ```
 
-### 5. Handle Events
+### 6. Handle Events
 
 Subscribe to events to track the payment flow:
 
 ```dart
-// Subscribe to POS events (happy-path, more events, includind errors, in the example)
-reownPos.onPosEvent.subscribe((event) {
+void _onPosEvent(PosEvent event) {
   if (event is QrReadyEvent) {
-    // When payment intent is created and connection with the relay is established, this event will contain the pairing URI to create the QR with
-    // A QrImageView(data: uri); Widget is available for you to use
+    // When payment intent is created and connection with the relay is established, this event will contain the pairing URI to create the QR.
+    // You can use your own QR Widget but `QrImageView(data: uri)` Widget is available for you to use.
+    status += '1. Scan QR code with your wallet';
+  } else if (event is ConnectRejectedEvent) {
+    // User rejected the wallet connection
+    status += '\n2. User rejected session';
+  } else if (event is ConnectFailedEvent) {
+    // Connection failed with error message
+    status += '\n2. Connection failed: ${event.message}';
   } else if (event is ConnectedEvent) {
-    // Customer connected their wallet upon scnning the QR code with the pairing URI
+    // Customer connected their wallet upon scanning the QR code with the pairing URI
+    status += '\n2. Connected!';
   } else if (event is PaymentRequestedEvent) {
     // Payment has been sent to the wallet for user approval
+    status += '\n3. Requesting payment...';
+  } else if (event is PaymentRequestRejectedEvent) {
+    // User rejected the payment request
+    status += '\n3. User rejected payment.';
   } else if (event is PaymentBroadcastedEvent) {
-    // User approved the payment
+    // User approved the payment and transaction was broadcasted
+    status += '\n4. Payment broadcasted, waiting confirmation...';
+  } else if (event is PaymentFailedEvent) {
+    // Payment failed with error message
+    status += '\n4. Payment failed: ${event.message}';
   } else if (event is PaymentSuccessfulEvent) {
     // Payment has been confirmed on the blockchain
+    status += '\n4. Payment successful!. Hash: ${event.txHash}';
+  } else if (event is DisconnectedEvent) {
+    // Session disconnected
+    status += '\n5. Disconnected';
   }
-});
+}
 ```
 
-### 6. Complete Example
+### 7. Complete and Working Example
 
 Here's a complete example of a payment screen:
 
 ```dart
 class PaymentScreen extends StatefulWidget {
+  const PaymentScreen({super.key});
+
   @override
-  _PaymentScreenState createState() => _PaymentScreenState();
+  State<PaymentScreen> createState() => _PaymentScreenState();
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  Uri? qrUri;
-  String status = 'Waiting for connection...';
+  PosEvent? _event;
+  String status = '';
+  late final IReownPos reownPos;
 
   @override
   void initState() {
     super.initState();
-    
-    // Subscribe to events
+    // [ReownPos SDK API] 1. Construct your ReownPos instance
+    final metadata = Metadata(
+      merchantName: 'DTC Pay',
+      description: 'Secure Crypto Payment Terminal',
+      url: 'https://appkit-lab.reown.com',
+      logoIcon: 'https://avatars.githubusercontent.com/u/179229932',
+    );
+    reownPos = ReownPos(
+      projectId: '50f81661a58229027394e0a19e9db752',
+      deviceId: "sample_pos_device_${DateTime.now().microsecondsSinceEpoch}",
+      metadata: metadata,
+    );
+    // [ReownPos SDK API] 2. call setTokens to construct namespaces with your supported tokens and network
+    reownPos.setTokens(
+      tokens: [
+        // USDC on Sepolia
+        PosToken(
+          network: PosNetwork(name: 'Sepolia ETH', chainId: 'eip155:11155111'),
+          symbol: 'USDC',
+          standard: 'erc20',
+          address: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
+        ),
+      ],
+    );
+
+    // [ReownPos SDK API] 3. Subscribe to events
     reownPos.onPosEvent.subscribe(_onPosEvent);
-    
-    // Create payment intent
-    _createPayment();
-  }
 
-  void _createPayment() async {
-    final paymentIntent = PaymentIntent(
-      token: '0xA0b86a33E6441b8c4C1C1b8Bc4C1C1b8Bc4C1C1b8',
-      amount: '25.50',
-      chainId: 'eip155:1',
-      recipient: '0xYourMerchantAddress',
-    );
-
-    await reownPos.createPaymentIntent(
-      paymentIntents: [paymentIntent],
-    );
+    // [ReownPos SDK API] 4. initialize ReownPos SDK. Can be awaited if needed
+    reownPos.init().then((_) {
+      // [ReownPos SDK API] 5. create a payment intent with the PaymentIntent. Can be awaited if needed
+      reownPos.createPaymentIntent(
+        paymentIntents: [
+          PaymentIntent(
+            token: reownPos.configuredTokens.first,
+            amount: '1.50',
+            recipient: '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
+          ),
+        ],
+      );
+    });
   }
 
   void _onPosEvent(PosEvent event) {
     setState(() {
       if (event is QrReadyEvent) {
-        qrUri = event.uri;
-        status = 'Scan QR code with your wallet';
+        status += '1. Scan QR code with your wallet';
+      } else if (event is ConnectRejectedEvent) {
+        status += '\n2. User rejected session';
+      } else if (event is ConnectFailedEvent) {
+        status += '\n2. Connection failed: ${event.message}';
       } else if (event is ConnectedEvent) {
-        status = 'Wallet connected, processing payment...';
-      } else if (event is PaymentSuccessfulEvent) {
-        status = 'Payment successful! TX: ${event.txHash}';
+        status += '\n2. Connected!';
+      } else if (event is PaymentRequestedEvent) {
+        status += '\n3. Requesting payment...';
+      } else if (event is PaymentRequestRejectedEvent) {
+        status += '\n3. User rejected payment.';
+      } else if (event is PaymentBroadcastedEvent) {
+        status += '\n4. Payment broadcasted, waiting confirmation...';
       } else if (event is PaymentFailedEvent) {
-        status = 'Payment failed: ${event.message}';
+        status += '\n4. Payment failed: ${event.message}';
+      } else if (event is PaymentSuccessfulEvent) {
+        status += '\n4. Payment successful!. Hash: ${event.txHash}';
+      } else if (event is DisconnectedEvent) {
+        status += '\n5. Disconnected';
       }
+      _event = event;
     });
   }
 
@@ -179,13 +248,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (qrUri != null)
-              QrImageView(
-                data: qrUri.toString(),
-                size: 250,
-              ),
+            (_event is QrReadyEvent)
+                ? QrImageView(
+                    data: (_event as QrReadyEvent).uri.toString(),
+                    size: 250,
+                  )
+                : SizedBox.shrink(),
             SizedBox(height: 20),
-            Text(status),
+            Padding(padding: const EdgeInsets.all(8.0), child: Text(status)),
           ],
         ),
       ),
@@ -200,9 +270,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
 }
 ```
 
-## Supported Networks
-
-The SDK currently supports EVM networks
 
 ## Event Types
 
@@ -211,6 +278,7 @@ The SDK currently supports EVM networks
 - `ConnectRejectedEvent` - Connection rejected by customer
 - `ConnectFailedEvent` - Connection failed
 - `PaymentRequestedEvent` - Payment request sent to wallet
+- `PaymentRequestRejectedEvent` - Payment request rejected by customer
 - `PaymentBroadcastedEvent` - Transaction broadcasted to network
 - `PaymentSuccessfulEvent` - Payment confirmed on blockchain
 - `PaymentFailedEvent` - Payment failed
@@ -229,6 +297,16 @@ The SDK provides comprehensive error handling through events. Always subscribe t
 ## Additional Information
 
 For more detailed examples, check the `/example` folder in this package. The example demonstrates a complete payment flow with UI components and state management.
+
+### Model Structure
+
+The SDK uses the following key models:
+
+- **`PaymentIntent`**: Contains the token (with network info), amount, and recipient address
+- **`PosToken`**: Represents a token with network, symbol, standard, and contract address
+- **`PosNetwork`**: Defines a blockchain network with name and chain ID
+- **`Metadata`**: Merchant information for the wallet connection
+
 
 ## Contributing
 

@@ -17,13 +17,10 @@ class WelcomeScreen extends ConsumerStatefulWidget {
 
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   void _initPosAndNavigate() {
-    // final networks = ref.watch(availableNetworksProvider);
-    // final chains = networks.map((e) => e.network).toList();
     final availableTokens = ref.watch(availableTokensProvider);
     final tokens = availableTokens.map((e) => e.posToken).toList();
     ref.read(reownPosProvider)
-      // [ReownPos SDK API] 2. call setChains to construct namespaces with your supported networks
-      // ..setChains(chains: chains)
+      // [ReownPos SDK API] 2. call setTokens to construct namespaces with your supported networks
       ..setTokens(tokens: tokens)
       // [ReownPos SDK API] 3. initialize ReownPos SDK
       ..init();

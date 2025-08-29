@@ -29,7 +29,7 @@ extension JsonRpcErrorExtensions on JsonRpcError {
 
 extension PaymentIntentExtension on PaymentIntent {
   String get caip19Token =>
-      '${network.chainId}/${token.standard}:${token.address}';
+      '${token.network.chainId}/${token.standard}:${token.address}';
 
-  String get caip10Recipient => '${network.chainId}:$recipient';
+  String get caip10Recipient => '${token.network.chainId}:$recipient';
 }

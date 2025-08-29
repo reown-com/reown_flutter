@@ -17,7 +17,6 @@ class PaymentInfoNotifier extends StateNotifier<PaymentIntent> {
       address: '',
     ),
     amount: '',
-    network: PosNetwork(name: '', chainId: ''),
     // Currently only EVM supported so we can hardcode it here
     // when non-EVM chains are available developer will have to write logic to pass the proper address based on the network
     recipient: '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
@@ -33,7 +32,6 @@ class PaymentInfoNotifier extends StateNotifier<PaymentIntent> {
   }) => state = state.copyWith(
     token: token ?? state.token,
     amount: amount ?? state.amount,
-    network: network ?? state.network,
     recipient: recipient ?? state.recipient,
   );
 

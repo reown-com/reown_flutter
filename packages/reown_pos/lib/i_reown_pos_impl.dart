@@ -7,6 +7,8 @@ abstract class IReownPos {
   abstract IReownSign? reOwnSign;
   abstract final Event<PosEvent> onPosEvent;
 
+  abstract final List<PosToken> configuredTokens;
+
   Future<void> init();
 
   void setTokens({required List<PosToken> tokens});

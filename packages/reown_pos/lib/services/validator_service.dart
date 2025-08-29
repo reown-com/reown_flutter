@@ -15,10 +15,9 @@ mixin ValidatorService implements IValidatorService {
         'invalid amount value. Should be double expressed as String (${intent.amount})',
       );
     }
-    if (!CaipValidator.isValidCaip2(intent.network.chainId)) {
-      throw StateError(
-        'PaymentIntent.network.chainId should conform to "CAIP-2" format (${intent.network.chainId})',
-      );
+    final chainId = intent.token.network.chainId;
+    if (!CaipValidator.isValidCaip2(chainId)) {
+      throw StateError('chainId should conform to "CAIP-2" format ($chainId)');
     }
     // if (!CaipValidator.isValidCaip19(intent.token)) {
     //   throw StateError(

@@ -1,8 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:example/models/available_token.dart';
 import 'package:example/providers/available_tokens_provider.dart';
-import 'package:example/providers/payment_info_provider.dart';
-// import 'package:example/providers/payment_info_provider.dart';
 import 'package:example/screens/network_screen.dart';
 import 'package:example/widgets/dtc_app_bar.dart';
 
@@ -22,8 +20,6 @@ class TokenScreen extends ConsumerStatefulWidget {
 
 class _TokenScreenState extends ConsumerState<TokenScreen> {
   void _navigateToNetworkScreen() {
-    final paymentInfo = ref.watch(paymentInfoProvider);
-    debugPrint('[ReownPos] paymentInfo ${paymentInfo.toJson()}');
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => NetworkScreen()),
@@ -87,7 +83,7 @@ class _TokenScreenState extends ConsumerState<TokenScreen> {
                           itemBuilder: (context, index) {
                             final token = reducedTokens[index];
                             return GestureDetector(
-                              onTap: () => _selectToken(token), // TODO CHECK
+                              onTap: () => _selectToken(token),
                               child: DtcCard(
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 0,
