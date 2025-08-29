@@ -289,12 +289,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
       ),
     );
   }
-
-  @override
-  void dispose() {
-    reownPos.dispose();
-    super.dispose();
-  }
 }
 ```
 
