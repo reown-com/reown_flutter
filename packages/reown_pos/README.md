@@ -77,7 +77,7 @@ reownPos.setTokens(tokens: tokens);
 ### 3. Subscribe to events
 
 ```dart
-// Initialize the SDK (this starts the core services)
+// Subscribe to events to update the UI accordingly
 reownPos.onPosEvent.subscribe(_onPosEvent);
 ```
 
