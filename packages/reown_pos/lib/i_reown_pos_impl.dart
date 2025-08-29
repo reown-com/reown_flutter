@@ -9,7 +9,6 @@ abstract class IReownPos {
 
   Future<void> init();
 
-  // void setChains({required List<PosNetwork> chains});
   void setTokens({required List<PosToken> tokens});
 
   Future<void> createPaymentIntent({

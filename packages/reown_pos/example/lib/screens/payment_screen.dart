@@ -268,15 +268,17 @@ class _PaymentInfoWidget extends ConsumerWidget {
     final paymentInfo = ref.watch(paymentInfoProvider);
     final networkSelected = ref
         .read(availableTokensProvider)
-        .firstWhereOrNull((token) => token.token.address == paymentInfo.token)
-        ?.token
+        .firstWhereOrNull(
+          (availableToken) =>
+              availableToken.posToken.address == paymentInfo.token.address,
+        )
+        ?.posToken
         .network
-        .networkData
         .name;
     final token = ref
         .watch(availableTokensProvider)
         .firstWhereOrNull((token) => token.selected)!
-        .token
+        .posToken
         .symbol;
     return DtcCard(
       child: Column(

@@ -40,7 +40,7 @@ class _TokenScreenState extends ConsumerState<TokenScreen> {
     final reducedTokens = availableTokens
         .toSet()
         .fold<Map<String, AvailableToken>>({}, (map, token) {
-          map.putIfAbsent(token.token.symbol, () => token);
+          map.putIfAbsent(token.posToken.symbol, () => token);
           return map;
         })
         .values
@@ -96,7 +96,7 @@ class _TokenScreenState extends ConsumerState<TokenScreen> {
                                 child: DtcItem(
                                   icon: Icons.circle,
                                   iconColor: token.color,
-                                  title: token.token.symbol.toUpperCase(),
+                                  title: token.posToken.symbol.toUpperCase(),
                                   // subtitle:
                                   //     'On ${token.token.network.networkData.name}',
                                   trailing: token.selected

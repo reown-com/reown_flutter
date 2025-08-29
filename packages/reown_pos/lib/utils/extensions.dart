@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:reown_pos/reown_pos.dart';
-import 'package:reown_pos/utils/caip_validator.dart';
 
 extension SessionDataExtensions on SessionData {
   String? getSenderCaip10Account(String chainId) {
@@ -29,14 +28,8 @@ extension JsonRpcErrorExtensions on JsonRpcError {
 }
 
 extension PaymentIntentExtension on PaymentIntent {
-  PaymentIntent toCAIP() {
-    return copyWith(
-      token: CaipValidator.isValidCaip19(token)
-          ? token
-          : '$chainId/erc20:$token',
-      recipient: CaipValidator.isValidCaip10(recipient)
-          ? recipient
-          : '$chainId:$recipient',
-    );
-  }
+  String get caip19Token =>
+      '${network.chainId}/${token.standard}:${token.address}';
+
+  String get caip10Recipient => '${network.chainId}:$recipient';
 }

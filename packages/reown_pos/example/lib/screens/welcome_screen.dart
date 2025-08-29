@@ -20,7 +20,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     // final networks = ref.watch(availableNetworksProvider);
     // final chains = networks.map((e) => e.network).toList();
     final availableTokens = ref.watch(availableTokensProvider);
-    final tokens = availableTokens.map((e) => e.token).toList();
+    final tokens = availableTokens.map((e) => e.posToken).toList();
     ref.read(reownPosProvider)
       // [ReownPos SDK API] 2. call setChains to construct namespaces with your supported networks
       // ..setChains(chains: chains)

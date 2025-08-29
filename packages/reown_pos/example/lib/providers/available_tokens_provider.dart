@@ -11,57 +11,14 @@ final availableTokensProvider =
 class TokenListNotifier extends StateNotifier<List<AvailableToken>> {
   TokenListNotifier()
     : super([
-        // USDC on ETHEREUM
-        const AvailableToken(
-          index: 1,
-          color: Colors.blue,
-          token: PosToken(
-            network: PosNetwork.ethereum,
-            symbol: 'USDC',
-            address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-          ),
-          selected: false,
-        ),
-        // USDT on ETHEREUM
-        const AvailableToken(
-          index: 2,
-          color: Colors.green,
-          token: PosToken(
-            network: PosNetwork.ethereum,
-            symbol: 'USDT',
-            address: '0xdAC17F958D2ee523a2206206994597C13D831ec7',
-          ),
-          selected: false,
-        ),
-        // USDC on ARBITRUM
-        const AvailableToken(
-          index: 3,
-          color: Colors.blue,
-          token: PosToken(
-            network: PosNetwork.arbitrum,
-            symbol: 'USDC',
-            address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-          ),
-          selected: false,
-        ),
-        // USDC on BASE
-        const AvailableToken(
-          index: 4,
-          color: Colors.blue,
-          token: PosToken(
-            network: PosNetwork.base,
-            symbol: 'USDC',
-            address: '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
-          ),
-          selected: false,
-        ),
         // USDC on SEPOLIA
-        const AvailableToken(
+        AvailableToken(
           index: 4,
           color: Colors.blue,
-          token: PosToken(
-            network: PosNetwork.sepolia,
+          posToken: PosToken(
+            network: SupportedPosNetwork.sepolia.networkData,
             symbol: 'USDC',
+            standard: 'erc20',
             address: '0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238',
           ),
           selected: false,
@@ -73,5 +30,67 @@ class TokenListNotifier extends StateNotifier<List<AvailableToken>> {
       for (final token in state)
         token.copyWith(selected: token.index == selected.index),
     ];
+  }
+}
+
+enum SupportedPosNetwork {
+  ethereum,
+  polygon,
+  binanceSmartChain,
+  avalanche,
+  arbitrum,
+  optimism,
+  base,
+  fantom,
+  cronos,
+  polygonZkEVM,
+  sepolia,
+  gnosis,
+  zkSyncEra,
+  mantle,
+  klaytn,
+  celo,
+  linea,
+  baseSepolia;
+
+  PosNetwork get networkData {
+    switch (this) {
+      case SupportedPosNetwork.ethereum:
+        return PosNetwork(name: 'Ethereum', chainId: 'eip155:1');
+      case SupportedPosNetwork.polygon:
+        return PosNetwork(name: 'Polygon', chainId: 'eip155:137');
+      case SupportedPosNetwork.binanceSmartChain:
+        return PosNetwork(name: 'BNB Smart Chain', chainId: 'eip155:56');
+      case SupportedPosNetwork.avalanche:
+        return PosNetwork(name: 'Avalanche', chainId: 'eip155:43114');
+      case SupportedPosNetwork.arbitrum:
+        return PosNetwork(name: 'Arbitrum One', chainId: 'eip155:42161');
+      case SupportedPosNetwork.optimism:
+        return PosNetwork(name: 'Optimism', chainId: 'eip155:10');
+      case SupportedPosNetwork.base:
+        return PosNetwork(name: 'Base', chainId: 'eip155:8453');
+      case SupportedPosNetwork.fantom:
+        return PosNetwork(name: 'Fantom', chainId: 'eip155:250');
+      case SupportedPosNetwork.cronos:
+        return PosNetwork(name: 'Cronos', chainId: 'eip155:25');
+      case SupportedPosNetwork.polygonZkEVM:
+        return PosNetwork(name: 'Polygon zkEVM', chainId: 'eip155:1101');
+      case SupportedPosNetwork.sepolia:
+        return PosNetwork(name: 'Sepolia ETH', chainId: 'eip155:11155111');
+      case SupportedPosNetwork.gnosis:
+        return PosNetwork(name: 'Gnosis Chain', chainId: 'eip155:100');
+      case SupportedPosNetwork.zkSyncEra:
+        return PosNetwork(name: 'zkSync Era', chainId: 'eip155:324');
+      case SupportedPosNetwork.mantle:
+        return PosNetwork(name: 'Mantle', chainId: 'eip155:5000');
+      case SupportedPosNetwork.klaytn:
+        return PosNetwork(name: 'Klaytn Mainnet', chainId: 'eip155:8217');
+      case SupportedPosNetwork.celo:
+        return PosNetwork(name: 'Celo', chainId: 'eip155:42220');
+      case SupportedPosNetwork.linea:
+        return PosNetwork(name: 'Linea', chainId: 'eip155:59144');
+      case SupportedPosNetwork.baseSepolia:
+        return PosNetwork(name: 'Base Sepolia', chainId: 'eip155:84531');
+    }
   }
 }

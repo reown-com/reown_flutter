@@ -35,30 +35,34 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
   String get tokenSymbol => ref
       .watch(availableTokensProvider)
       .firstWhereOrNull((token) => token.selected)!
-      .token
+      .posToken
       .symbol;
 
-  String _tokenAddress(String chainId) {
-    final token = ref.watch(availableTokensProvider).firstWhere((token) {
-      return token.token.symbol == tokenSymbol &&
-          token.token.network.networkData.chainId == chainId;
+  PosToken _tokenSelected(String chainId) {
+    final availableToken = ref.watch(availableTokensProvider).firstWhere((
+      availableToken,
+    ) {
+      return availableToken.posToken.symbol == tokenSymbol &&
+          availableToken.posToken.network.chainId == chainId;
     });
-    return token.token.address;
+    return availableToken.posToken;
   }
 
   void _selectNetwork(PosNetwork network) {
-    final chainId = network.networkData.chainId;
-    final tokenAddress = _tokenAddress(network.networkData.chainId);
+    // final chainId = network.chainId;
+    final tokenAddress = _tokenSelected(network.chainId);
     final paymentInfoNotifier = ref.read(paymentInfoProvider.notifier);
-    paymentInfoNotifier.update(token: tokenAddress, chainId: chainId);
+    paymentInfoNotifier.update(token: tokenAddress, network: network);
   }
 
   @override
   Widget build(BuildContext context) {
     final availableTokens = ref.watch(availableTokensProvider);
     final avaibleNetworks = availableTokens
-        .where((token) => token.token.symbol == tokenSymbol)
-        .map((e) => e.token.network)
+        .where(
+          (availableToken) => availableToken.posToken.symbol == tokenSymbol,
+        )
+        .map((e) => e.posToken.network)
         .toList();
     final paymentInfo = ref.watch(paymentInfoProvider);
     debugPrint('[ReownPos] paymentInfo ${paymentInfo.toJson()}');
@@ -110,11 +114,11 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
                                 child: DtcItem(
                                   icon: Icons.circle,
                                   iconColor: Colors.black,
-                                  title: network.networkData.name,
+                                  title: network.name,
                                   // subtitle: 'Fee ${network.fee}',
                                   trailing:
-                                      network.networkData.chainId ==
-                                          paymentInfo.chainId
+                                      network.chainId ==
+                                          paymentInfo.network.chainId
                                       ? Icon(Icons.check)
                                       : null,
                                 ),

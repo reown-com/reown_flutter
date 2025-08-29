@@ -4,13 +4,13 @@ import 'package:reown_pos/models/pos_models.dart';
 class AvailableToken {
   final int index;
   final Color color;
-  final PosToken token;
+  final PosToken posToken;
   final bool selected;
 
   const AvailableToken({
     required this.index,
     required this.color,
-    required this.token,
+    required this.posToken,
     this.selected = false,
   });
 
@@ -18,7 +18,7 @@ class AvailableToken {
     return AvailableToken(
       index: index,
       color: color,
-      token: token,
+      posToken: posToken,
       selected: selected ?? this.selected,
     );
   }

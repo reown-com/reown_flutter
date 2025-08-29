@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:event/event.dart';
-import 'package:collection/collection.dart';
 
 import 'package:reown_core/reown_core.dart' hide ErrorEvent;
 import 'package:reown_core/store/generic_store.dart';
@@ -10,15 +10,21 @@ import 'package:reown_pos/i_reown_pos_impl.dart';
 import 'package:reown_pos/models/events.dart';
 import 'package:reown_pos/models/pos_models.dart';
 import 'package:reown_pos/services/blockchain_service.dart';
-import 'package:reown_pos/utils/caip_validator.dart';
+import 'package:reown_pos/services/models/query_models.dart';
+import 'package:reown_pos/services/validator_service.dart';
 import 'package:reown_pos/utils/extensions.dart';
 import 'package:reown_sign/reown_sign.dart';
 
 export 'package:reown_core/reown_core.dart';
 export 'package:reown_sign/reown_sign.dart';
 
-class ReownPos implements IReownPos {
+class ReownPos with BlockchainService, ValidatorService implements IReownPos {
   bool _initialized = false;
+  QueryParams? _queryParams;
+  final Map<String, RequiredNamespace> _sessionNamespaces = {};
+  PaymentIntent? _pendingIntent;
+  Completer<String> _statusCheckCompleter = Completer<String>();
+  IReownCore? _reOwnCore;
 
   @override
   IReownSign? reOwnSign;
@@ -26,23 +32,18 @@ class ReownPos implements IReownPos {
   @override
   final Event<PosEvent> onPosEvent = Event();
 
-  // late final Map<String, dynamic> _initParams;
-  IReownCore? _reOwnCore;
-  final Map<String, RequiredNamespace> _sessionNamespaces = {};
-  PaymentIntent? _pendingIntent;
-  Completer<String> _statusCheckCompleter = Completer<String>();
-
   ReownPos({
     required String projectId,
-    required String deviceId, // to be used with blockchain api methods
+    required String deviceId,
     required Metadata metadata,
     LogLevel logLevel = LogLevel.all,
   }) {
-    // _initParams = Map.from({
-    //   'projectId': projectId,
-    //   'deviceId': deviceId,
-    //   ...metadata.toJson(),
-    // });
+    _queryParams = QueryParams(
+      projectId: projectId,
+      deviceId: deviceId,
+      st: 'flutter-${Platform.environment}',
+      sv: 'pos-flutter-$packageVersion',
+    );
     _reOwnCore = ReownCore(projectId: projectId, logLevel: logLevel);
     reOwnSign = ReownSign(
       core: _reOwnCore!,
@@ -101,8 +102,6 @@ class ReownPos implements IReownPos {
         },
       ),
     );
-
-    _registerListeners();
   }
 
   @override
@@ -112,61 +111,20 @@ class ReownPos implements IReownPos {
         return;
       }
 
+      _registerListeners();
+
       await _reOwnCore!.start();
       await reOwnSign!.init();
 
-      // TODO check on this
-      for (var session in reOwnSign!.sessions.getAll()) {
-        // if (!pairing.active) {
-        await reOwnSign!.disconnectSession(
-          topic: session.topic,
-          reason: ReownSignError(code: 6000, message: 'POS disconnected'),
-        );
-        // }
-      }
-      for (var pairing in reOwnSign!.pairings.getAll()) {
-        // if (!pairing.active) {
-        await reOwnSign!.core.expirer.expire(pairing.topic);
-        // }
-      }
+      await _expirePreviousPairings();
 
-      _reOwnCore!.logger.i('[$runtimeType] initialized');
+      _reOwnCore!.logger.d('[$runtimeType] initialized');
       _initialized = true;
     } catch (e) {
       _reOwnCore!.logger.e('[$runtimeType] init error: $e');
       rethrow;
     }
   }
-
-  // @override
-  // void setChains({required List<PosNetwork> chains}) {
-  //   if (chains.isEmpty) {
-  //     throw Errors.getSdkError(
-  //       Errors.MISSING_OR_INVALID,
-  //       context: 'No chainIds provided',
-  //     ).toSignError();
-  //   }
-
-  //   // for (var chain in chains) {
-  //   //   if (!NamespaceUtils.isValidChainId(chainId)) {
-  //   //     throw Errors.getSdkError(
-  //   //       Errors.UNSUPPORTED_CHAINS,
-  //   //       context: 'chainId should conform to "CAIP-2" format',
-  //   //     ).toSignError();
-  //   //   }
-
-  //   //   if (!chainId.startsWith('eip155')) {
-  //   //     throw Errors.getSdkError(
-  //   //       Errors.UNSUPPORTED_CHAINS,
-  //   //       context:
-  //   //           'Only EVM chains are supported, please provide eip155 chains',
-  //   //     ).toSignError();
-  //   //   }
-  //   // }
-
-  //   _reOwnCore!.logger.i('[$runtimeType] set chains $chains');
-  //   _setNamespaces(chains);
-  // }
 
   @override
   void setTokens({required List<PosToken> tokens}) {
@@ -177,7 +135,7 @@ class ReownPos implements IReownPos {
       ).toSignError();
     }
 
-    _reOwnCore!.logger.i('[$runtimeType] set tokens $tokens');
+    _reOwnCore!.logger.d('[$runtimeType] set tokens $tokens');
 
     final chains = tokens.map((e) => e.network).toList();
     _setNamespaces(chains);
@@ -193,14 +151,18 @@ class ReownPos implements IReownPos {
     if (paymentIntents.isEmpty) {
       throw StateError('No payment intents provided');
     }
+    _reOwnCore!.logger.d('[$runtimeType] namespaces $_sessionNamespaces');
+    _reOwnCore!.logger.d(
+      '[$runtimeType] payment intent ${paymentIntents.first}',
+    );
 
-    _pendingIntent = paymentIntents.first.toCAIP();
-    _isValidPaymentIntent(_pendingIntent!);
-    _reOwnCore!.logger.d('[$runtimeType] intents $_pendingIntent');
+    _pendingIntent = paymentIntents.first.copyWith();
+    isValidPaymentIntent(_pendingIntent!);
+    _reOwnCore!.logger.d('[$runtimeType] pending intent $_pendingIntent');
 
     try {
       // final CreateResponse pairing = await reOwnSign!.core.pairing.create();
-      // reOwnSign!.core.logger.d('[$runtimeType] pairing: $pairing');
+      // _reOwnCore!.logger.d('[$runtimeType] pairing: $pairing');
 
       final ConnectResponse connect = await reOwnSign!.connect(
         optionalNamespaces: _sessionNamespaces,
@@ -239,7 +201,8 @@ class ReownPos implements IReownPos {
     _safeCompleteStatus();
     _sessionNamespaces.clear();
     _pendingIntent = null;
-    // _initialized = false;
+    _unregisterListeners();
+    _initialized = false;
   }
 }
 
@@ -247,38 +210,27 @@ class ReownPos implements IReownPos {
 extension _SessionListeners on ReownPos {
   void _onSessionConnect(SessionConnect? event) async {
     final json = jsonEncode(event?.session.toJson());
-    reOwnSign!.core.logger.i('[$runtimeType] event: onSessionConnect, $json');
+    _reOwnCore!.logger.d('[$runtimeType] event: onSessionConnect, $json');
     onPosEvent.broadcast(ConnectedEvent());
 
     final approvedSession = event!.session;
-    final chainId = _pendingIntent!.chainId;
+    final chainId = _pendingIntent!.network.chainId;
 
-    final namespace = _sessionNamespaces.values.firstWhereOrNull((_) => true);
-    if (namespace == null) {
-      throw StateError('No namespace available');
-    }
-
-    // TODO `method` is returned by the api endpoing _reownPosBuildTransaction, is this needed?
-    final method = namespace.methods.firstWhereOrNull((_) => true);
-    if (method == null) {
-      throw StateError('No method available');
-    }
+    isValidSessionApproved(approvedSession, chainId); // throws if not valid
 
     final senderAddress = approvedSession.getSenderCaip10Account(chainId);
     if (senderAddress == null) {
-      throw StateError(
-        "No matching account found for chain ${_pendingIntent!.chainId}",
-      );
+      throw StateError("No matching account found for chain $chainId");
     }
 
     try {
       // Blockchain API call
-      final response = await BlockchainService.reownPosBuildTransaction(
-        token: _pendingIntent!.token,
-        recipient: _pendingIntent!.recipient,
-        amount: _pendingIntent!.amount,
-        sender: senderAddress,
-        projectId: _reOwnCore!.projectId,
+      final response = await reownPosBuildTransaction(
+        params: BuildTransactionParams.fromPaymentIntent(
+          _pendingIntent!,
+          senderAddress,
+        ),
+        queryParams: _queryParams!,
       );
       _reOwnCore!.logger.d('[$runtimeType] api response ${response.result}');
       final String receiptId = ReownCoreUtils.recursiveSearchForMapKey(
@@ -298,10 +250,10 @@ extension _SessionListeners on ReownPos {
         'method',
       );
 
-      reOwnSign!.core.logger.i('[$runtimeType] sending request to wallet');
+      _reOwnCore!.logger.d('[$runtimeType] sending request to wallet');
       final futureTxHash = reOwnSign!.request(
         topic: approvedSession.topic,
-        chainId: _pendingIntent!.chainId,
+        chainId: _pendingIntent!.network.chainId,
         request: SessionRequestParams(method: method, params: params),
       );
       onPosEvent.broadcast(PaymentRequestedEvent());
@@ -326,11 +278,11 @@ extension _SessionListeners on ReownPos {
         // User rejected payment
         onPosEvent.broadcast(PaymentRejectedEvent());
       } else {
-        reOwnSign!.core.logger.e('[$runtimeType] JsonRpcError, $e');
+        _reOwnCore!.logger.e('[$runtimeType] JsonRpcError, $e');
         onPosEvent.broadcast(PaymentFailedEvent(e.message ?? ''));
       }
     } on ReownCoreError catch (e) {
-      reOwnSign!.core.logger.e('[$runtimeType] ReownCoreError, $e');
+      _reOwnCore!.logger.e('[$runtimeType] ReownCoreError, $e');
       onPosEvent.broadcast(PaymentFailedEvent(e.message));
     } catch (e, s) {
       _reOwnCore!.logger.e('[$runtimeType] createPaymentIntent error: $e, $s');
@@ -341,7 +293,7 @@ extension _SessionListeners on ReownPos {
     _safeCompleteStatus();
 
     // disconnect the session when completing payment
-    reOwnSign!.core.logger.d('[$runtimeType] disconnecting session');
+    _reOwnCore!.logger.d('[$runtimeType] disconnecting session');
     await reOwnSign!.disconnectSession(
       topic: approvedSession.topic,
       reason: ReownSignError(code: 6000, message: 'POS disconnected'),
@@ -349,25 +301,25 @@ extension _SessionListeners on ReownPos {
   }
 
   void _onSessionDelete(SessionDelete? event) async {
-    reOwnSign!.core.logger.i('[$runtimeType] event: onSessionDelete, $event');
-    await dispose();
+    _reOwnCore!.logger.d('[$runtimeType] event: onSessionDelete, $event');
+    // await dispose();
     onPosEvent.broadcast(DisconnectedEvent());
   }
 
   void _onSessionExpire(SessionExpire? event) async {
-    reOwnSign!.core.logger.i('[$runtimeType] event: onSessionExpire, $event');
+    _reOwnCore!.logger.d('[$runtimeType] event: onSessionExpire, $event');
   }
 
   void _onSessionEvent(SessionEvent? event) {
-    reOwnSign!.core.logger.i('[$runtimeType] event: onSessionEvent, $event');
+    _reOwnCore!.logger.d('[$runtimeType] event: onSessionEvent, $event');
   }
 
   void _onSessionUpdate(SessionUpdate? event) {
-    reOwnSign!.core.logger.i('[$runtimeType] event: onSessionUpdate, $event');
+    _reOwnCore!.logger.d('[$runtimeType] event: onSessionUpdate, $event');
   }
 
   void _onSessionProposalError(SessionProposalErrorEvent? event) {
-    reOwnSign!.core.logger.i(
+    _reOwnCore!.logger.d(
       '[$runtimeType] event: onSessionProposalError, $event',
     );
   }
@@ -376,19 +328,19 @@ extension _SessionListeners on ReownPos {
 extension _PrivateMembers on ReownPos {
   void _setNamespaces(List<PosNetwork> chains) {
     final evmChains = chains
-        .where((chain) => chain.networkData.chainId.startsWith('eip155'))
+        .where((chain) => chain.chainId.startsWith('eip155'))
         .toSet()
         .toList();
     if (evmChains.isNotEmpty) {
       _sessionNamespaces['eip155'] = RequiredNamespace(
-        chains: evmChains.map((chain) => chain.networkData.chainId).toList(),
+        chains: evmChains.map((chain) => chain.chainId).toList(),
         methods: ['eth_sendTransaction'],
         events: ['chainChanged', 'accountsChanged'],
       );
     }
 
-    reOwnSign!.core.logger.d(
-      '[$runtimeType] namespaces: ${jsonEncode(_sessionNamespaces)}}',
+    _reOwnCore!.logger.d(
+      '[$runtimeType] set namespaces: ${jsonEncode(_sessionNamespaces)}}',
     );
   }
 
@@ -412,16 +364,52 @@ extension _PrivateMembers on ReownPos {
     // reOwnSign!.core.connectivity.isOnline.addListener(_connectivityListener);
   }
 
+  void _unregisterListeners() {
+    reOwnSign!.onSessionConnect.unsubscribe(_onSessionConnect);
+    reOwnSign!.onSessionDelete.unsubscribe(_onSessionDelete);
+    reOwnSign!.onSessionExpire.unsubscribe(_onSessionExpire);
+    reOwnSign!.onSessionEvent.unsubscribe(_onSessionEvent);
+    reOwnSign!.onSessionUpdate.unsubscribe(_onSessionUpdate);
+    reOwnSign!.onSessionProposalError.unsubscribe(_onSessionProposalError);
+    // TODO implement
+    // reOwnSign!.core.relayClient.onRelayClientConnect.subscribe(
+    //   _onRelayClientConnect,
+    // );
+    // reOwnSign!.core.relayClient.onRelayClientError.subscribe(
+    //   _onRelayClientError,
+    // );
+    // reOwnSign!.core.relayClient.onRelayClientDisconnect.subscribe(
+    //   _onRelayClientDisconnect,
+    // );
+    // reOwnSign!.core.connectivity.isOnline.addListener(_connectivityListener);
+  }
+
+  Future<void> _expirePreviousPairings() async {
+    // TODO check on this
+    for (var session in reOwnSign!.sessions.getAll()) {
+      // if (!pairing.active) {
+      await reOwnSign!.disconnectSession(
+        topic: session.topic,
+        reason: ReownSignError(code: 6000, message: 'POS disconnected'),
+      );
+      // }
+    }
+    for (var pairing in reOwnSign!.pairings.getAll()) {
+      // if (!pairing.active) {
+      await reOwnSign!.core.expirer.expire(pairing.topic);
+      // }
+    }
+  }
+
   void _loopOnStatusCheck(String receiptId, String txHash) async {
     int maxAttempts = 10;
     int currentAttempt = 0;
 
     while (currentAttempt < maxAttempts) {
       try {
-        final response = await BlockchainService.reownPosCheckTransaction(
-          id: receiptId,
-          txId: txHash,
-          projectId: _reOwnCore!.projectId,
+        final response = await reownPosCheckTransaction(
+          params: CheckTransactionParams(id: receiptId, txid: txHash),
+          queryParams: _queryParams!,
         );
         _reOwnCore!.logger.d('[$runtimeType] api response ${response.result}');
         final String status = ReownCoreUtils.recursiveSearchForMapKey(
@@ -453,31 +441,6 @@ extension _PrivateMembers on ReownPos {
   void _safeCompleteStatus({String status = ''}) {
     if (!_statusCheckCompleter.isCompleted) {
       _statusCheckCompleter.complete(status);
-    }
-  }
-
-  void _isValidPaymentIntent(PaymentIntent intent) {
-    try {
-      double.tryParse(_pendingIntent!.amount);
-    } catch (_) {
-      throw StateError(
-        'invalid amount value. Should be double expressed as String (${_pendingIntent!.amount})',
-      );
-    }
-    if (!CaipValidator.isValidCaip2(_pendingIntent!.chainId)) {
-      throw StateError(
-        'chainId should conform to "CAIP-2" format (${_pendingIntent!.chainId})',
-      );
-    }
-    if (!CaipValidator.isValidCaip19(_pendingIntent!.token)) {
-      throw StateError(
-        'token should conform to "CAIP-19" format (${_pendingIntent!.token})',
-      );
-    }
-    if (!CaipValidator.isValidCaip10(_pendingIntent!.recipient)) {
-      throw StateError(
-        'recipient should conform to "CAIP-10" format (${_pendingIntent!.recipient})',
-      );
     }
   }
 }

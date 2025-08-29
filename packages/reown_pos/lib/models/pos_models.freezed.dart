@@ -15,9 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PaymentIntent {
 
- String get token;// token address, 0x..... for EVM
- String get amount;// double as string
- String get chainId;// caip-2 chain id, i.e. `eip155:1`
+ PosToken get token; PosNetwork get network; String get amount;// double as string
  String get recipient;
 /// Create a copy of PaymentIntent
 /// with the given fields replaced by the non-null parameter values.
@@ -31,16 +29,16 @@ $PaymentIntentCopyWith<PaymentIntent> get copyWith => _$PaymentIntentCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentIntent&&(identical(other.token, token) || other.token == token)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.chainId, chainId) || other.chainId == chainId)&&(identical(other.recipient, recipient) || other.recipient == recipient));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentIntent&&(identical(other.token, token) || other.token == token)&&(identical(other.network, network) || other.network == network)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.recipient, recipient) || other.recipient == recipient));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,token,amount,chainId,recipient);
+int get hashCode => Object.hash(runtimeType,token,network,amount,recipient);
 
 @override
 String toString() {
-  return 'PaymentIntent(token: $token, amount: $amount, chainId: $chainId, recipient: $recipient)';
+  return 'PaymentIntent(token: $token, network: $network, amount: $amount, recipient: $recipient)';
 }
 
 
@@ -51,11 +49,11 @@ abstract mixin class $PaymentIntentCopyWith<$Res>  {
   factory $PaymentIntentCopyWith(PaymentIntent value, $Res Function(PaymentIntent) _then) = _$PaymentIntentCopyWithImpl;
 @useResult
 $Res call({
- String token, String amount, String chainId, String recipient
+ PosToken token, PosNetwork network, String amount, String recipient
 });
 
 
-
+$PosTokenCopyWith<$Res> get token;$PosNetworkCopyWith<$Res> get network;
 
 }
 /// @nodoc
@@ -68,16 +66,34 @@ class _$PaymentIntentCopyWithImpl<$Res>
 
 /// Create a copy of PaymentIntent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? token = null,Object? amount = null,Object? chainId = null,Object? recipient = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? token = null,Object? network = null,Object? amount = null,Object? recipient = null,}) {
   return _then(_self.copyWith(
 token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
-as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
-as String,chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
+as PosToken,network: null == network ? _self.network : network // ignore: cast_nullable_to_non_nullable
+as PosNetwork,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as String,recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
-
+/// Create a copy of PaymentIntent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PosTokenCopyWith<$Res> get token {
+  
+  return $PosTokenCopyWith<$Res>(_self.token, (value) {
+    return _then(_self.copyWith(token: value));
+  });
+}/// Create a copy of PaymentIntent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PosNetworkCopyWith<$Res> get network {
+  
+  return $PosNetworkCopyWith<$Res>(_self.network, (value) {
+    return _then(_self.copyWith(network: value));
+  });
+}
 }
 
 
@@ -156,10 +172,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String token,  String amount,  String chainId,  String recipient)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PosToken token,  PosNetwork network,  String amount,  String recipient)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PaymentIntent() when $default != null:
-return $default(_that.token,_that.amount,_that.chainId,_that.recipient);case _:
+return $default(_that.token,_that.network,_that.amount,_that.recipient);case _:
   return orElse();
 
 }
@@ -177,10 +193,10 @@ return $default(_that.token,_that.amount,_that.chainId,_that.recipient);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String token,  String amount,  String chainId,  String recipient)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PosToken token,  PosNetwork network,  String amount,  String recipient)  $default,) {final _that = this;
 switch (_that) {
 case _PaymentIntent():
-return $default(_that.token,_that.amount,_that.chainId,_that.recipient);}
+return $default(_that.token,_that.network,_that.amount,_that.recipient);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -194,10 +210,10 @@ return $default(_that.token,_that.amount,_that.chainId,_that.recipient);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String token,  String amount,  String chainId,  String recipient)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PosToken token,  PosNetwork network,  String amount,  String recipient)?  $default,) {final _that = this;
 switch (_that) {
 case _PaymentIntent() when $default != null:
-return $default(_that.token,_that.amount,_that.chainId,_that.recipient);case _:
+return $default(_that.token,_that.network,_that.amount,_that.recipient);case _:
   return null;
 
 }
@@ -209,15 +225,13 @@ return $default(_that.token,_that.amount,_that.chainId,_that.recipient);case _:
 @JsonSerializable()
 
 class _PaymentIntent implements PaymentIntent {
-  const _PaymentIntent({required this.token, required this.amount, required this.chainId, required this.recipient});
+  const _PaymentIntent({required this.token, required this.network, required this.amount, required this.recipient});
   factory _PaymentIntent.fromJson(Map<String, dynamic> json) => _$PaymentIntentFromJson(json);
 
-@override final  String token;
-// token address, 0x..... for EVM
+@override final  PosToken token;
+@override final  PosNetwork network;
 @override final  String amount;
 // double as string
-@override final  String chainId;
-// caip-2 chain id, i.e. `eip155:1`
 @override final  String recipient;
 
 /// Create a copy of PaymentIntent
@@ -233,16 +247,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaymentIntent&&(identical(other.token, token) || other.token == token)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.chainId, chainId) || other.chainId == chainId)&&(identical(other.recipient, recipient) || other.recipient == recipient));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaymentIntent&&(identical(other.token, token) || other.token == token)&&(identical(other.network, network) || other.network == network)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.recipient, recipient) || other.recipient == recipient));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,token,amount,chainId,recipient);
+int get hashCode => Object.hash(runtimeType,token,network,amount,recipient);
 
 @override
 String toString() {
-  return 'PaymentIntent(token: $token, amount: $amount, chainId: $chainId, recipient: $recipient)';
+  return 'PaymentIntent(token: $token, network: $network, amount: $amount, recipient: $recipient)';
 }
 
 
@@ -253,11 +267,11 @@ abstract mixin class _$PaymentIntentCopyWith<$Res> implements $PaymentIntentCopy
   factory _$PaymentIntentCopyWith(_PaymentIntent value, $Res Function(_PaymentIntent) _then) = __$PaymentIntentCopyWithImpl;
 @override @useResult
 $Res call({
- String token, String amount, String chainId, String recipient
+ PosToken token, PosNetwork network, String amount, String recipient
 });
 
 
-
+@override $PosTokenCopyWith<$Res> get token;@override $PosNetworkCopyWith<$Res> get network;
 
 }
 /// @nodoc
@@ -270,17 +284,35 @@ class __$PaymentIntentCopyWithImpl<$Res>
 
 /// Create a copy of PaymentIntent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? token = null,Object? amount = null,Object? chainId = null,Object? recipient = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? token = null,Object? network = null,Object? amount = null,Object? recipient = null,}) {
   return _then(_PaymentIntent(
 token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
-as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
-as String,chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
+as PosToken,network: null == network ? _self.network : network // ignore: cast_nullable_to_non_nullable
+as PosNetwork,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as String,recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
 
-
+/// Create a copy of PaymentIntent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PosTokenCopyWith<$Res> get token {
+  
+  return $PosTokenCopyWith<$Res>(_self.token, (value) {
+    return _then(_self.copyWith(token: value));
+  });
+}/// Create a copy of PaymentIntent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PosNetworkCopyWith<$Res> get network {
+  
+  return $PosNetworkCopyWith<$Res>(_self.network, (value) {
+    return _then(_self.copyWith(network: value));
+  });
+}
 }
 
 
@@ -551,42 +583,42 @@ as String,
 
 
 /// @nodoc
-mixin _$PosNetworkData {
+mixin _$PosNetwork {
 
- String get name; String get currency; String get chainId;
-/// Create a copy of PosNetworkData
+ String get name; String get chainId;
+/// Create a copy of PosNetwork
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$PosNetworkDataCopyWith<PosNetworkData> get copyWith => _$PosNetworkDataCopyWithImpl<PosNetworkData>(this as PosNetworkData, _$identity);
+$PosNetworkCopyWith<PosNetwork> get copyWith => _$PosNetworkCopyWithImpl<PosNetwork>(this as PosNetwork, _$identity);
 
-  /// Serializes this PosNetworkData to a JSON map.
+  /// Serializes this PosNetwork to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PosNetworkData&&(identical(other.name, name) || other.name == name)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.chainId, chainId) || other.chainId == chainId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PosNetwork&&(identical(other.name, name) || other.name == name)&&(identical(other.chainId, chainId) || other.chainId == chainId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,currency,chainId);
+int get hashCode => Object.hash(runtimeType,name,chainId);
 
 @override
 String toString() {
-  return 'PosNetworkData(name: $name, currency: $currency, chainId: $chainId)';
+  return 'PosNetwork(name: $name, chainId: $chainId)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $PosNetworkDataCopyWith<$Res>  {
-  factory $PosNetworkDataCopyWith(PosNetworkData value, $Res Function(PosNetworkData) _then) = _$PosNetworkDataCopyWithImpl;
+abstract mixin class $PosNetworkCopyWith<$Res>  {
+  factory $PosNetworkCopyWith(PosNetwork value, $Res Function(PosNetwork) _then) = _$PosNetworkCopyWithImpl;
 @useResult
 $Res call({
- String name, String currency, String chainId
+ String name, String chainId
 });
 
 
@@ -594,19 +626,18 @@ $Res call({
 
 }
 /// @nodoc
-class _$PosNetworkDataCopyWithImpl<$Res>
-    implements $PosNetworkDataCopyWith<$Res> {
-  _$PosNetworkDataCopyWithImpl(this._self, this._then);
+class _$PosNetworkCopyWithImpl<$Res>
+    implements $PosNetworkCopyWith<$Res> {
+  _$PosNetworkCopyWithImpl(this._self, this._then);
 
-  final PosNetworkData _self;
-  final $Res Function(PosNetworkData) _then;
+  final PosNetwork _self;
+  final $Res Function(PosNetwork) _then;
 
-/// Create a copy of PosNetworkData
+/// Create a copy of PosNetwork
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? currency = null,Object? chainId = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? chainId = null,}) {
   return _then(_self.copyWith(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
 as String,chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -615,8 +646,8 @@ as String,
 }
 
 
-/// Adds pattern-matching-related methods to [PosNetworkData].
-extension PosNetworkDataPatterns on PosNetworkData {
+/// Adds pattern-matching-related methods to [PosNetwork].
+extension PosNetworkPatterns on PosNetwork {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -629,10 +660,10 @@ extension PosNetworkDataPatterns on PosNetworkData {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _PosNetworkData value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _PosNetwork value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _PosNetworkData() when $default != null:
+case _PosNetwork() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -651,10 +682,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _PosNetworkData value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _PosNetwork value)  $default,){
 final _that = this;
 switch (_that) {
-case _PosNetworkData():
+case _PosNetwork():
 return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -669,10 +700,10 @@ return $default(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _PosNetworkData value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _PosNetwork value)?  $default,){
 final _that = this;
 switch (_that) {
-case _PosNetworkData() when $default != null:
+case _PosNetwork() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -690,10 +721,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String currency,  String chainId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  String chainId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _PosNetworkData() when $default != null:
-return $default(_that.name,_that.currency,_that.chainId);case _:
+case _PosNetwork() when $default != null:
+return $default(_that.name,_that.chainId);case _:
   return orElse();
 
 }
@@ -711,10 +742,10 @@ return $default(_that.name,_that.currency,_that.chainId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String currency,  String chainId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String chainId)  $default,) {final _that = this;
 switch (_that) {
-case _PosNetworkData():
-return $default(_that.name,_that.currency,_that.chainId);}
+case _PosNetwork():
+return $default(_that.name,_that.chainId);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -728,10 +759,10 @@ return $default(_that.name,_that.currency,_that.chainId);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String currency,  String chainId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  String chainId)?  $default,) {final _that = this;
 switch (_that) {
-case _PosNetworkData() when $default != null:
-return $default(_that.name,_that.currency,_that.chainId);case _:
+case _PosNetwork() when $default != null:
+return $default(_that.name,_that.chainId);case _:
   return null;
 
 }
@@ -742,48 +773,47 @@ return $default(_that.name,_that.currency,_that.chainId);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _PosNetworkData implements PosNetworkData {
-  const _PosNetworkData({required this.name, required this.currency, required this.chainId});
-  factory _PosNetworkData.fromJson(Map<String, dynamic> json) => _$PosNetworkDataFromJson(json);
+class _PosNetwork implements PosNetwork {
+  const _PosNetwork({required this.name, required this.chainId});
+  factory _PosNetwork.fromJson(Map<String, dynamic> json) => _$PosNetworkFromJson(json);
 
 @override final  String name;
-@override final  String currency;
 @override final  String chainId;
 
-/// Create a copy of PosNetworkData
+/// Create a copy of PosNetwork
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$PosNetworkDataCopyWith<_PosNetworkData> get copyWith => __$PosNetworkDataCopyWithImpl<_PosNetworkData>(this, _$identity);
+_$PosNetworkCopyWith<_PosNetwork> get copyWith => __$PosNetworkCopyWithImpl<_PosNetwork>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$PosNetworkDataToJson(this, );
+  return _$PosNetworkToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PosNetworkData&&(identical(other.name, name) || other.name == name)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.chainId, chainId) || other.chainId == chainId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PosNetwork&&(identical(other.name, name) || other.name == name)&&(identical(other.chainId, chainId) || other.chainId == chainId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,name,currency,chainId);
+int get hashCode => Object.hash(runtimeType,name,chainId);
 
 @override
 String toString() {
-  return 'PosNetworkData(name: $name, currency: $currency, chainId: $chainId)';
+  return 'PosNetwork(name: $name, chainId: $chainId)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$PosNetworkDataCopyWith<$Res> implements $PosNetworkDataCopyWith<$Res> {
-  factory _$PosNetworkDataCopyWith(_PosNetworkData value, $Res Function(_PosNetworkData) _then) = __$PosNetworkDataCopyWithImpl;
+abstract mixin class _$PosNetworkCopyWith<$Res> implements $PosNetworkCopyWith<$Res> {
+  factory _$PosNetworkCopyWith(_PosNetwork value, $Res Function(_PosNetwork) _then) = __$PosNetworkCopyWithImpl;
 @override @useResult
 $Res call({
- String name, String currency, String chainId
+ String name, String chainId
 });
 
 
@@ -791,19 +821,18 @@ $Res call({
 
 }
 /// @nodoc
-class __$PosNetworkDataCopyWithImpl<$Res>
-    implements _$PosNetworkDataCopyWith<$Res> {
-  __$PosNetworkDataCopyWithImpl(this._self, this._then);
+class __$PosNetworkCopyWithImpl<$Res>
+    implements _$PosNetworkCopyWith<$Res> {
+  __$PosNetworkCopyWithImpl(this._self, this._then);
 
-  final _PosNetworkData _self;
-  final $Res Function(_PosNetworkData) _then;
+  final _PosNetwork _self;
+  final $Res Function(_PosNetwork) _then;
 
-/// Create a copy of PosNetworkData
+/// Create a copy of PosNetwork
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? currency = null,Object? chainId = null,}) {
-  return _then(_PosNetworkData(
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? chainId = null,}) {
+  return _then(_PosNetwork(
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
 as String,chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
 as String,
   ));
@@ -816,7 +845,8 @@ as String,
 /// @nodoc
 mixin _$PosToken {
 
- PosNetwork get network; String get symbol; String get address;
+ PosNetwork get network; String get symbol; String get standard;// erc20 for EVM
+ String get address;
 /// Create a copy of PosToken
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -829,16 +859,16 @@ $PosTokenCopyWith<PosToken> get copyWith => _$PosTokenCopyWithImpl<PosToken>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PosToken&&(identical(other.network, network) || other.network == network)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.address, address) || other.address == address));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PosToken&&(identical(other.network, network) || other.network == network)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.standard, standard) || other.standard == standard)&&(identical(other.address, address) || other.address == address));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,network,symbol,address);
+int get hashCode => Object.hash(runtimeType,network,symbol,standard,address);
 
 @override
 String toString() {
-  return 'PosToken(network: $network, symbol: $symbol, address: $address)';
+  return 'PosToken(network: $network, symbol: $symbol, standard: $standard, address: $address)';
 }
 
 
@@ -849,11 +879,11 @@ abstract mixin class $PosTokenCopyWith<$Res>  {
   factory $PosTokenCopyWith(PosToken value, $Res Function(PosToken) _then) = _$PosTokenCopyWithImpl;
 @useResult
 $Res call({
- PosNetwork network, String symbol, String address
+ PosNetwork network, String symbol, String standard, String address
 });
 
 
-
+$PosNetworkCopyWith<$Res> get network;
 
 }
 /// @nodoc
@@ -866,15 +896,25 @@ class _$PosTokenCopyWithImpl<$Res>
 
 /// Create a copy of PosToken
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? network = null,Object? symbol = null,Object? address = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? network = null,Object? symbol = null,Object? standard = null,Object? address = null,}) {
   return _then(_self.copyWith(
 network: null == network ? _self.network : network // ignore: cast_nullable_to_non_nullable
 as PosNetwork,symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
+as String,standard: null == standard ? _self.standard : standard // ignore: cast_nullable_to_non_nullable
 as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
-
+/// Create a copy of PosToken
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PosNetworkCopyWith<$Res> get network {
+  
+  return $PosNetworkCopyWith<$Res>(_self.network, (value) {
+    return _then(_self.copyWith(network: value));
+  });
+}
 }
 
 
@@ -953,10 +993,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PosNetwork network,  String symbol,  String address)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( PosNetwork network,  String symbol,  String standard,  String address)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PosToken() when $default != null:
-return $default(_that.network,_that.symbol,_that.address);case _:
+return $default(_that.network,_that.symbol,_that.standard,_that.address);case _:
   return orElse();
 
 }
@@ -974,10 +1014,10 @@ return $default(_that.network,_that.symbol,_that.address);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PosNetwork network,  String symbol,  String address)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( PosNetwork network,  String symbol,  String standard,  String address)  $default,) {final _that = this;
 switch (_that) {
 case _PosToken():
-return $default(_that.network,_that.symbol,_that.address);}
+return $default(_that.network,_that.symbol,_that.standard,_that.address);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -991,10 +1031,10 @@ return $default(_that.network,_that.symbol,_that.address);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PosNetwork network,  String symbol,  String address)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( PosNetwork network,  String symbol,  String standard,  String address)?  $default,) {final _that = this;
 switch (_that) {
 case _PosToken() when $default != null:
-return $default(_that.network,_that.symbol,_that.address);case _:
+return $default(_that.network,_that.symbol,_that.standard,_that.address);case _:
   return null;
 
 }
@@ -1006,11 +1046,13 @@ return $default(_that.network,_that.symbol,_that.address);case _:
 @JsonSerializable()
 
 class _PosToken implements PosToken {
-  const _PosToken({required this.network, required this.symbol, required this.address});
+  const _PosToken({required this.network, required this.symbol, required this.standard, required this.address});
   factory _PosToken.fromJson(Map<String, dynamic> json) => _$PosTokenFromJson(json);
 
 @override final  PosNetwork network;
 @override final  String symbol;
+@override final  String standard;
+// erc20 for EVM
 @override final  String address;
 
 /// Create a copy of PosToken
@@ -1026,16 +1068,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PosToken&&(identical(other.network, network) || other.network == network)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.address, address) || other.address == address));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PosToken&&(identical(other.network, network) || other.network == network)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.standard, standard) || other.standard == standard)&&(identical(other.address, address) || other.address == address));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,network,symbol,address);
+int get hashCode => Object.hash(runtimeType,network,symbol,standard,address);
 
 @override
 String toString() {
-  return 'PosToken(network: $network, symbol: $symbol, address: $address)';
+  return 'PosToken(network: $network, symbol: $symbol, standard: $standard, address: $address)';
 }
 
 
@@ -1046,11 +1088,11 @@ abstract mixin class _$PosTokenCopyWith<$Res> implements $PosTokenCopyWith<$Res>
   factory _$PosTokenCopyWith(_PosToken value, $Res Function(_PosToken) _then) = __$PosTokenCopyWithImpl;
 @override @useResult
 $Res call({
- PosNetwork network, String symbol, String address
+ PosNetwork network, String symbol, String standard, String address
 });
 
 
-
+@override $PosNetworkCopyWith<$Res> get network;
 
 }
 /// @nodoc
@@ -1063,16 +1105,26 @@ class __$PosTokenCopyWithImpl<$Res>
 
 /// Create a copy of PosToken
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? network = null,Object? symbol = null,Object? address = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? network = null,Object? symbol = null,Object? standard = null,Object? address = null,}) {
   return _then(_PosToken(
 network: null == network ? _self.network : network // ignore: cast_nullable_to_non_nullable
 as PosNetwork,symbol: null == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
+as String,standard: null == standard ? _self.standard : standard // ignore: cast_nullable_to_non_nullable
 as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
 
-
+/// Create a copy of PosToken
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PosNetworkCopyWith<$Res> get network {
+  
+  return $PosNetworkCopyWith<$Res>(_self.network, (value) {
+    return _then(_self.copyWith(network: value));
+  });
+}
 }
 
 // dart format on

@@ -8,17 +8,17 @@ part of 'pos_models.dart';
 
 _PaymentIntent _$PaymentIntentFromJson(Map<String, dynamic> json) =>
     _PaymentIntent(
-      token: json['token'] as String,
+      token: PosToken.fromJson(json['token'] as Map<String, dynamic>),
+      network: PosNetwork.fromJson(json['network'] as Map<String, dynamic>),
       amount: json['amount'] as String,
-      chainId: json['chainId'] as String,
       recipient: json['recipient'] as String,
     );
 
 Map<String, dynamic> _$PaymentIntentToJson(_PaymentIntent instance) =>
     <String, dynamic>{
       'token': instance.token,
+      'network': instance.network,
       'amount': instance.amount,
-      'chainId': instance.chainId,
       'recipient': instance.recipient,
     };
 
@@ -36,42 +36,24 @@ Map<String, dynamic> _$MetadataToJson(_Metadata instance) => <String, dynamic>{
   'logoIcon': instance.logoIcon,
 };
 
-_PosNetworkData _$PosNetworkDataFromJson(Map<String, dynamic> json) =>
-    _PosNetworkData(
-      name: json['name'] as String,
-      currency: json['currency'] as String,
-      chainId: json['chainId'] as String,
-    );
+_PosNetwork _$PosNetworkFromJson(Map<String, dynamic> json) => _PosNetwork(
+  name: json['name'] as String,
+  chainId: json['chainId'] as String,
+);
 
-Map<String, dynamic> _$PosNetworkDataToJson(_PosNetworkData instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'currency': instance.currency,
-      'chainId': instance.chainId,
-    };
+Map<String, dynamic> _$PosNetworkToJson(_PosNetwork instance) =>
+    <String, dynamic>{'name': instance.name, 'chainId': instance.chainId};
 
 _PosToken _$PosTokenFromJson(Map<String, dynamic> json) => _PosToken(
-  network: $enumDecode(_$PosNetworkEnumMap, json['network']),
+  network: PosNetwork.fromJson(json['network'] as Map<String, dynamic>),
   symbol: json['symbol'] as String,
+  standard: json['standard'] as String,
   address: json['address'] as String,
 );
 
 Map<String, dynamic> _$PosTokenToJson(_PosToken instance) => <String, dynamic>{
-  'network': _$PosNetworkEnumMap[instance.network]!,
+  'network': instance.network,
   'symbol': instance.symbol,
+  'standard': instance.standard,
   'address': instance.address,
-};
-
-const _$PosNetworkEnumMap = {
-  PosNetwork.ethereum: 'ethereum',
-  PosNetwork.polygon: 'polygon',
-  PosNetwork.binanceSmartChain: 'binanceSmartChain',
-  PosNetwork.avalanche: 'avalanche',
-  PosNetwork.arbitrum: 'arbitrum',
-  PosNetwork.optimism: 'optimism',
-  PosNetwork.base: 'base',
-  PosNetwork.fantom: 'fantom',
-  PosNetwork.cronos: 'cronos',
-  PosNetwork.polygonZkEVM: 'polygonZkEVM',
-  PosNetwork.sepolia: 'sepolia',
 };

@@ -4,30 +4,25 @@ import 'package:reown_pos/reown_pos.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class BlockchainService {
-  static final String _baseUrl = 'https://rpc.walletconnect.org/v1/json-rpc';
-  IReownCore? core;
-  BlockchainService({required this.core});
+import 'package:reown_pos/services/i_blockchain_service.dart';
+import 'package:reown_pos/services/models/query_models.dart';
 
-  static Future<JsonRpcResponse> reownPosBuildTransaction({
-    required String token,
-    required String recipient,
-    required String amount,
-    required String sender,
-    required String projectId,
+mixin BlockchainService implements IBlockchainService {
+  static final String _baseUrl = 'https://rpc.walletconnect.org/v1/json-rpc';
+
+  @override
+  Future<JsonRpcResponse> reownPosBuildTransaction({
+    required BuildTransactionParams params,
+    required QueryParams queryParams,
   }) async {
     final jsonRpcRequest = JsonRpcRequest(
       id: JsonRpcUtils.payloadId(),
       method: 'reown_pos_buildTransaction',
-      params: {
-        'asset': token,
-        'amount': amount,
-        'recipient': recipient,
-        'sender': sender,
-      },
+      params: params.toJson(),
     );
 
-    final url = Uri.parse('$_baseUrl?projectId=$projectId');
+    final qParams = queryParams.toJson();
+    final url = Uri.parse(_baseUrl).replace(queryParameters: qParams);
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -44,18 +39,19 @@ class BlockchainService {
     return jsonResponse;
   }
 
-  static Future<JsonRpcResponse> reownPosCheckTransaction({
-    required String id,
-    required String txId,
-    required String projectId,
+  @override
+  Future<JsonRpcResponse> reownPosCheckTransaction({
+    required CheckTransactionParams params,
+    required QueryParams queryParams,
   }) async {
     final jsonRpcRequest = JsonRpcRequest(
       id: JsonRpcUtils.payloadId(),
       method: 'reown_pos_checkTransaction',
-      params: {'id': id, 'txid': txId},
+      params: params.toJson(),
     );
 
-    final url = Uri.parse('$_baseUrl?projectId=$projectId');
+    final qParams = queryParams.toJson();
+    final url = Uri.parse(_baseUrl).replace(queryParameters: qParams);
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
