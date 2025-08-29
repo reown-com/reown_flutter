@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+import 'dart:io' show Platform;
 
 import 'package:event/event.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:reown_core/reown_core.dart' hide ErrorEvent;
 import 'package:reown_core/store/generic_store.dart';
@@ -27,6 +28,18 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
   Completer<String> _statusCheckCompleter = Completer<String>();
   IReownCore? _reOwnCore;
 
+  /// Gets the environment string safely for both web and native platforms
+  String _getEnvironmentString() {
+    if (kIsWeb) {
+      return 'web';
+    }
+    try {
+      return Platform.environment['FLUTTER_ENV'] ?? 'mobile';
+    } catch (e) {
+      return 'mobile';
+    }
+  }
+
   @override
   IReownSign? reOwnSign;
 
@@ -45,7 +58,7 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
     _queryParams = QueryParams(
       projectId: projectId,
       deviceId: deviceId,
-      st: 'flutter-${Platform.environment}',
+      st: 'flutter-${_getEnvironmentString()}',
       sv: 'pos-flutter-$packageVersion',
     );
     _reOwnCore = ReownCore(projectId: projectId, logLevel: logLevel);
