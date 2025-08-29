@@ -72,6 +72,9 @@ final tokens = [
 
 // Set the tokens (this automatically configures supported networks)
 reownPos.setTokens(tokens: tokens);
+
+// Your configured tokens can be then accessed with
+final myConfiguredTokens = reownPos.configuredTokens;
 ```
 
 ### 3. Subscribe to events
