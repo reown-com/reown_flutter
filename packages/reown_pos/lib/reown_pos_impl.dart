@@ -117,7 +117,6 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
 
       await _reOwnCore!.start();
       await reOwnSign!.init();
-      await _expirePreviousPairings();
 
       _registerListeners();
 
@@ -148,6 +147,7 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
     _setNamespaces(chains);
   }
 
+  ConnectResponse? _connect;
   @override
   Future<void> createPaymentIntent({
     required List<PaymentIntent> paymentIntents,
@@ -164,18 +164,17 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
     _reOwnCore!.logger.d('[$runtimeType] paymentIntent $_pendingIntent');
 
     try {
-      final ConnectResponse connect = await reOwnSign!.connect(
+      _connect = await reOwnSign!.connect(
         optionalNamespaces: _sessionNamespaces,
       );
-      _reOwnCore!.logger.d('[$runtimeType] pairing uri: ${connect.uri}');
-      onPosEvent.broadcast(QrReadyEvent(connect.uri!));
+      _reOwnCore!.logger.d('[$runtimeType] pairing uri: ${_connect!.uri}');
+      onPosEvent.broadcast(QrReadyEvent(_connect!.uri!));
 
-      // We can await the session as follows or we can listen to onSessionConnected
-      // final connectedSession = await connect.session.future;
+      // We await the response in case of failure, success is handled in _onSessionConnect
+      await _connect!.session.future;
     } on JsonRpcError catch (e) {
       _reOwnCore!.logger.e('[$runtimeType] connect error: $e');
       if (e.isUserRejected) {
-        // TODO User rejected session is not coming from connect method rather from relay
         onPosEvent.broadcast(ConnectRejectedEvent());
       } else {
         onPosEvent.broadcast(ConnectFailedEvent(e.message ?? ''));
@@ -190,13 +189,21 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
   }
 
   @override
-  Future<void> dispose() async {
+  Future<void> restart({bool reinit = false}) async {
     // Complete any pending status check completer to prevent hanging
     _safeCompleteStatus();
-    _sessionNamespaces.clear();
     _pendingIntent = null;
-    _unregisterListeners();
-    _initialized = false;
+    await _expirePreviousPairings();
+    if (_connect?.session.isCompleted == false) {
+      _connect!.session.completeError(
+        ReownCoreError(code: -1, message: 'ABORTED'),
+      );
+    }
+    if (reinit) {
+      _sessionNamespaces.clear();
+      _unregisterListeners();
+      _initialized = false;
+    }
   }
 }
 
@@ -345,17 +352,6 @@ extension _PrivateMembers on ReownPos {
     reOwnSign!.onSessionEvent.subscribe(_onSessionEvent);
     reOwnSign!.onSessionUpdate.subscribe(_onSessionUpdate);
     reOwnSign!.onSessionProposalError.subscribe(_onSessionProposalError);
-    // TODO implement
-    // reOwnSign!.core.relayClient.onRelayClientConnect.subscribe(
-    //   _onRelayClientConnect,
-    // );
-    // reOwnSign!.core.relayClient.onRelayClientError.subscribe(
-    //   _onRelayClientError,
-    // );
-    // reOwnSign!.core.relayClient.onRelayClientDisconnect.subscribe(
-    //   _onRelayClientDisconnect,
-    // );
-    // reOwnSign!.core.connectivity.isOnline.addListener(_connectivityListener);
   }
 
   void _unregisterListeners() {
@@ -365,17 +361,6 @@ extension _PrivateMembers on ReownPos {
     reOwnSign!.onSessionEvent.unsubscribe(_onSessionEvent);
     reOwnSign!.onSessionUpdate.unsubscribe(_onSessionUpdate);
     reOwnSign!.onSessionProposalError.unsubscribe(_onSessionProposalError);
-    // TODO implement
-    // reOwnSign!.core.relayClient.onRelayClientConnect.subscribe(
-    //   _onRelayClientConnect,
-    // );
-    // reOwnSign!.core.relayClient.onRelayClientError.subscribe(
-    //   _onRelayClientError,
-    // );
-    // reOwnSign!.core.relayClient.onRelayClientDisconnect.subscribe(
-    //   _onRelayClientDisconnect,
-    // );
-    // reOwnSign!.core.connectivity.isOnline.addListener(_connectivityListener);
   }
 
   Future<void> _expirePreviousPairings() async {

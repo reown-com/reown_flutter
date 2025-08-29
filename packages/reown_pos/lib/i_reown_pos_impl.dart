@@ -9,13 +9,30 @@ abstract class IReownPos {
 
   abstract final List<PosToken> configuredTokens;
 
+  ///
+  /// ℹ️
+  /// init the SDK
+  ///
   Future<void> init();
 
+  ///
+  /// ℹ️
+  /// configure available tokens on your POS app
+  ///
   void setTokens({required List<PosToken> tokens});
 
+  ///
+  /// ℹ️
+  /// initiates the payment flow
+  ///
   Future<void> createPaymentIntent({
     required List<PaymentIntent> paymentIntents,
   });
 
-  Future<void> dispose();
+  ///
+  /// ℹ️
+  /// To be called when you want to abort an ongoing intent or restart the flow when a payment finished.
+  /// With reinit = true will clear the instance meaning that init() and setTokens() will have to be called again
+  ///
+  Future<void> restart({bool reinit = false});
 }

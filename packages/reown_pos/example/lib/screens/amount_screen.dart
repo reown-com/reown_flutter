@@ -1,5 +1,6 @@
 import 'package:example/providers/payment_info_provider.dart';
 import 'package:example/screens/token_screen.dart';
+import 'package:example/widgets/dtc_abort_button.dart';
 import 'package:example/widgets/dtc_app_bar.dart';
 import 'package:example/widgets/dtc_card.dart';
 import 'package:example/widgets/dtc_footer.dart';
@@ -168,6 +169,12 @@ class _AmountScreenState extends ConsumerState<AmountScreen> {
                             ),
                           ),
                         ),
+                      ),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: DtcRestartButton(),
                       ),
                     ],
                   ),

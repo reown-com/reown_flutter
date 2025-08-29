@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:example/models/available_token.dart';
 import 'package:example/providers/available_tokens_provider.dart';
 import 'package:example/screens/network_screen.dart';
+import 'package:example/widgets/dtc_abort_button.dart';
 import 'package:example/widgets/dtc_app_bar.dart';
 
 import 'package:example/widgets/dtc_card.dart';
@@ -134,7 +135,12 @@ class _TokenScreenState extends ConsumerState<TokenScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: DtcRestartButton(),
+                      ),
                     ],
                   ),
                 ),

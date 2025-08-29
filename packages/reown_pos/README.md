@@ -153,7 +153,32 @@ void _onPosEvent(PosEvent event) {
 }
 ```
 
-### 7. Complete and Working Example
+### 7. Restart and Abort
+
+The SDK provides a `restart()` function to handle payment flow interruptions and restarts:
+
+```dart
+// Abort current payment and restart the flow
+await reownPos.restart();
+
+// Full restart with reinitialization (clears all state)
+await reownPos.restart(reinit: true);
+```
+
+**Use cases:**
+- **Abort ongoing payment**: When a customer wants to cancel or restart the payment process
+- **Payment completion**: After a successful or failed payment to prepare for the next transaction
+- **Error recovery**: When you need to reset the SDK state due to errors
+- **Full reset**: Use `reinit: true` to completely clear the instance and require calling `init()` and `setTokens()` again
+
+**What happens during restart:**
+- Completes any pending status checks
+- Clears the current payment intent
+- Expires previous pairings
+- Aborts ongoing connection attempts
+- Optionally clears all configuration when `reinit: true`
+
+### 8. Complete and Working Example
 
 Here's a complete example of a payment screen:
 

@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:example/providers/available_tokens_provider.dart';
 import 'package:example/providers/payment_info_provider.dart';
 import 'package:example/providers/reown_pos_provider.dart';
+import 'package:example/widgets/dtc_abort_button.dart';
 import 'package:example/widgets/dtc_app_bar.dart';
 import 'package:example/widgets/dtc_card.dart';
 import 'package:example/widgets/dtc_footer.dart';
@@ -21,16 +22,24 @@ class PaymentScreen extends ConsumerStatefulWidget {
 
 class _PaymentScreenState extends ConsumerState<PaymentScreen> {
   Uri? _uri;
+  late final IReownPos _posInstance;
 
   @override
   void initState() {
     super.initState();
+    _posInstance = ref.read(reownPosProvider);
     // [ReownPos SDK API] 5. subscribe to events to update the UI accordingli
-    ref.read(reownPosProvider).onPosEvent.subscribe(_onPosEvent);
+    _posInstance.onPosEvent.subscribe(_onPosEvent);
+  }
+
+  @override
+  void dispose() {
+    _posInstance.onPosEvent.unsubscribe(_onPosEvent);
+    super.dispose();
   }
 
   void _onPosEvent(PosEvent event) {
-    if (event is QrReadyEvent) {
+    if (event is QrReadyEvent && mounted) {
       setState(() => _uri = event.uri);
     }
   }
@@ -83,6 +92,11 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                       // Payment Details Card
                       _PaymentInfoWidget(),
                       const SizedBox(height: 24),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: DtcRestartButton(),
+                      ),
                     ],
                   ),
                 ),
@@ -113,6 +127,12 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
     _posInstance.onPosEvent.subscribe(_onPosEvent);
   }
 
+  @override
+  void dispose() {
+    _posInstance.onPosEvent.unsubscribe(_onPosEvent);
+    super.dispose();
+  }
+
   void _onPosEvent(PosEvent event) {
     if (event is QrReadyEvent) {
       // Used on the main widget to render the QR Code
@@ -136,7 +156,9 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
       //
     }
     _eventsPool.add(event);
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -245,17 +267,7 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
         return AlertDialog(
           title: Text(title),
           content: Text(message),
-          actions: [
-            TextButton(
-              onPressed: () {
-                ref.read(paymentInfoProvider.notifier).clear();
-                Navigator.of(
-                  context,
-                ).popUntil((route) => route.settings.name == '/');
-              },
-              child: Text('Ok!'),
-            ),
-          ],
+          actions: [DtcRestartButton()],
         );
       },
     );
@@ -275,11 +287,13 @@ class _PaymentInfoWidget extends ConsumerWidget {
         ?.posToken
         .network
         .name;
-    final token = ref
-        .watch(availableTokensProvider)
-        .firstWhereOrNull((token) => token.selected)!
-        .posToken
-        .symbol;
+    final token =
+        ref
+            .watch(availableTokensProvider)
+            .firstWhereOrNull((token) => token.selected)
+            ?.posToken
+            .symbol ??
+        '';
     return DtcCard(
       child: Column(
         children: [

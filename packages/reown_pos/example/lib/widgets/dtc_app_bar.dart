@@ -12,12 +12,13 @@ class DtcAppBar extends ConsumerWidget implements PreferredSizeWidget {
     return AppBar(
       backgroundColor: const Color(0xFF4CAF50),
       elevation: 0,
-      leading: showBackButton
-          ? IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.pop(context),
-            )
-          : null,
+      // leading: showBackButton
+      //     ? IconButton(
+      //         icon: const Icon(Icons.arrow_back, color: Colors.white),
+      //         onPressed: () => Navigator.pop(context),
+      //       )
+      //     : null,
+      leading: const SizedBox.shrink(),
       title: Column(
         children: [
           Text(

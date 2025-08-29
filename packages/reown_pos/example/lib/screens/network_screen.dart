@@ -3,6 +3,7 @@ import 'package:example/providers/available_tokens_provider.dart';
 import 'package:example/providers/payment_info_provider.dart';
 import 'package:example/providers/reown_pos_provider.dart';
 import 'package:example/screens/payment_screen.dart';
+import 'package:example/widgets/dtc_abort_button.dart';
 import 'package:example/widgets/dtc_app_bar.dart';
 import 'package:example/widgets/dtc_card.dart';
 import 'package:example/widgets/dtc_footer.dart';
@@ -30,11 +31,13 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
     );
   }
 
-  String get tokenSymbol => ref
-      .watch(availableTokensProvider)
-      .firstWhereOrNull((token) => token.selected)!
-      .posToken
-      .symbol;
+  String get tokenSymbol =>
+      ref
+          .watch(availableTokensProvider)
+          .firstWhereOrNull((token) => token.selected)
+          ?.posToken
+          .symbol ??
+      '';
 
   PosToken _tokenSelected(String chainId) {
     final availableToken = ref.watch(availableTokensProvider).firstWhere((
@@ -154,7 +157,12 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 10),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: DtcRestartButton(),
+                      ),
                     ],
                   ),
                 ),
