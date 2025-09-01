@@ -388,15 +388,18 @@ extension _PrivateMembers on ReownPos {
     }
   }
 
-  void _loopOnStatusCheck(String id, String txHash) async {
+  void _loopOnStatusCheck(String id, dynamic result) async {
     int maxAttempts = 10;
     int currentAttempt = 0;
 
     while (currentAttempt < maxAttempts) {
       try {
-        _reOwnCore!.logger.d('[$runtimeType] check id $id, txid $txHash');
+        _reOwnCore!.logger.d('[$runtimeType] check id $id, sendResult $result');
         final response = await reownPosCheckTransaction(
-          params: CheckTransactionParams(id: id, txid: txHash),
+          params: CheckTransactionParams(
+            id: id,
+            sendResult: (result is String) ? result : jsonEncode(result),
+          ),
           queryParams: _queryParams!,
         );
         _reOwnCore!.logger.d('[$runtimeType] api response ${response.result}');
@@ -408,7 +411,11 @@ extension _PrivateMembers on ReownPos {
           currentAttempt++;
           if (currentAttempt < maxAttempts) {
             // Keep trying
-            await Future.delayed(Duration(seconds: 3));
+            final int ms = ReownCoreUtils.recursiveSearchForMapKey(
+              response.result,
+              'checkIn',
+            );
+            await Future.delayed(Duration(milliseconds: ms));
           } else {
             // Max attempts reached, complete with timeout status
             _safeCompleteStatus(status: 'TIMEOUT');
