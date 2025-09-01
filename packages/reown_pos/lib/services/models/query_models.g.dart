@@ -43,9 +43,9 @@ _CheckTransactionParams _$CheckTransactionParamsFromJson(
   Map<String, dynamic> json,
 ) => _CheckTransactionParams(
   id: json['id'] as String,
-  txid: json['txid'] as String,
+  sendResult: json['sendResult'] as String,
 );
 
 Map<String, dynamic> _$CheckTransactionParamsToJson(
   _CheckTransactionParams instance,
-) => <String, dynamic>{'id': instance.id, 'txid': instance.txid};
+) => <String, dynamic>{'id': instance.id, 'sendResult': instance.sendResult};

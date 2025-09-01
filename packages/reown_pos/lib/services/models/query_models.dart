@@ -46,7 +46,7 @@ sealed class BuildTransactionParams with _$BuildTransactionParams {
 sealed class CheckTransactionParams with _$CheckTransactionParams {
   const factory CheckTransactionParams({
     required String id,
-    required String txid,
+    required String sendResult,
   }) = _CheckTransactionParams;
 
   factory CheckTransactionParams.fromJson(Map<String, dynamic> json) =>

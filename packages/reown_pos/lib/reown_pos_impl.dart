@@ -242,6 +242,9 @@ extension _SessionListeners on ReownPos {
         _pendingIntent!,
         senderAddress,
       );
+      _reOwnCore!.logger.d(
+        '[$runtimeType] build transaction with params $transactionParams',
+      );
       final response = await reownPosBuildTransaction(
         params: transactionParams,
         queryParams: _queryParams!,
@@ -394,7 +397,9 @@ extension _PrivateMembers on ReownPos {
 
     while (currentAttempt < maxAttempts) {
       try {
-        _reOwnCore!.logger.d('[$runtimeType] check id $id, sendResult $result');
+        _reOwnCore!.logger.d(
+          '[$runtimeType] check transaction with params {$id, $result}',
+        );
         final response = await reownPosCheckTransaction(
           params: CheckTransactionParams(
             id: id,

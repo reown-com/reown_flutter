@@ -547,7 +547,7 @@ as String,
 /// @nodoc
 mixin _$CheckTransactionParams {
 
- String get id; String get txid;
+ String get id; String get sendResult;
 /// Create a copy of CheckTransactionParams
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -560,16 +560,16 @@ $CheckTransactionParamsCopyWith<CheckTransactionParams> get copyWith => _$CheckT
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CheckTransactionParams&&(identical(other.id, id) || other.id == id)&&(identical(other.txid, txid) || other.txid == txid));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CheckTransactionParams&&(identical(other.id, id) || other.id == id)&&(identical(other.sendResult, sendResult) || other.sendResult == sendResult));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,txid);
+int get hashCode => Object.hash(runtimeType,id,sendResult);
 
 @override
 String toString() {
-  return 'CheckTransactionParams(id: $id, txid: $txid)';
+  return 'CheckTransactionParams(id: $id, sendResult: $sendResult)';
 }
 
 
@@ -580,7 +580,7 @@ abstract mixin class $CheckTransactionParamsCopyWith<$Res>  {
   factory $CheckTransactionParamsCopyWith(CheckTransactionParams value, $Res Function(CheckTransactionParams) _then) = _$CheckTransactionParamsCopyWithImpl;
 @useResult
 $Res call({
- String id, String txid
+ String id, String sendResult
 });
 
 
@@ -597,10 +597,10 @@ class _$CheckTransactionParamsCopyWithImpl<$Res>
 
 /// Create a copy of CheckTransactionParams
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? txid = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? sendResult = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,txid: null == txid ? _self.txid : txid // ignore: cast_nullable_to_non_nullable
+as String,sendResult: null == sendResult ? _self.sendResult : sendResult // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -683,10 +683,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String txid)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String sendResult)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CheckTransactionParams() when $default != null:
-return $default(_that.id,_that.txid);case _:
+return $default(_that.id,_that.sendResult);case _:
   return orElse();
 
 }
@@ -704,10 +704,10 @@ return $default(_that.id,_that.txid);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String txid)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String sendResult)  $default,) {final _that = this;
 switch (_that) {
 case _CheckTransactionParams():
-return $default(_that.id,_that.txid);}
+return $default(_that.id,_that.sendResult);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -721,10 +721,10 @@ return $default(_that.id,_that.txid);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String txid)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String sendResult)?  $default,) {final _that = this;
 switch (_that) {
 case _CheckTransactionParams() when $default != null:
-return $default(_that.id,_that.txid);case _:
+return $default(_that.id,_that.sendResult);case _:
   return null;
 
 }
@@ -736,11 +736,11 @@ return $default(_that.id,_that.txid);case _:
 @JsonSerializable()
 
 class _CheckTransactionParams implements CheckTransactionParams {
-  const _CheckTransactionParams({required this.id, required this.txid});
+  const _CheckTransactionParams({required this.id, required this.sendResult});
   factory _CheckTransactionParams.fromJson(Map<String, dynamic> json) => _$CheckTransactionParamsFromJson(json);
 
 @override final  String id;
-@override final  String txid;
+@override final  String sendResult;
 
 /// Create a copy of CheckTransactionParams
 /// with the given fields replaced by the non-null parameter values.
@@ -755,16 +755,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CheckTransactionParams&&(identical(other.id, id) || other.id == id)&&(identical(other.txid, txid) || other.txid == txid));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CheckTransactionParams&&(identical(other.id, id) || other.id == id)&&(identical(other.sendResult, sendResult) || other.sendResult == sendResult));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,txid);
+int get hashCode => Object.hash(runtimeType,id,sendResult);
 
 @override
 String toString() {
-  return 'CheckTransactionParams(id: $id, txid: $txid)';
+  return 'CheckTransactionParams(id: $id, sendResult: $sendResult)';
 }
 
 
@@ -775,7 +775,7 @@ abstract mixin class _$CheckTransactionParamsCopyWith<$Res> implements $CheckTra
   factory _$CheckTransactionParamsCopyWith(_CheckTransactionParams value, $Res Function(_CheckTransactionParams) _then) = __$CheckTransactionParamsCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String txid
+ String id, String sendResult
 });
 
 
@@ -792,10 +792,10 @@ class __$CheckTransactionParamsCopyWithImpl<$Res>
 
 /// Create a copy of CheckTransactionParams
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? txid = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? sendResult = null,}) {
   return _then(_CheckTransactionParams(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,txid: null == txid ? _self.txid : txid // ignore: cast_nullable_to_non_nullable
+as String,sendResult: null == sendResult ? _self.sendResult : sendResult // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
