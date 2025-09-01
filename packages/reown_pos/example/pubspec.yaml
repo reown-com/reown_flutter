@@ -14,6 +14,7 @@ dependencies:
     sdk: flutter
   flutter_riverpod: ^2.6.1
   cupertino_icons: ^1.0.8
+  shared_preferences: ^2.2.2
   reown_pos:
     path: ../
 

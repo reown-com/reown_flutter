@@ -1,10 +1,13 @@
 // import 'package:example/providers/available_networks_provider.dart';
 import 'package:example/providers/available_tokens_provider.dart';
+import 'package:example/providers/payment_info_provider.dart';
 import 'package:example/providers/reown_pos_provider.dart';
+import 'package:example/providers/wallet_address_provider.dart';
 import 'package:example/screens/amount_screen.dart';
 import 'package:example/widgets/dtc_app_bar.dart';
 import 'package:example/widgets/dtc_card.dart';
 import 'package:example/widgets/dtc_footer.dart';
+import 'package:example/widgets/dtc_wallet_address_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,6 +20,16 @@ class WelcomeScreen extends ConsumerStatefulWidget {
 
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   void _initPosAndNavigate() {
+    final walletAddress = ref.read(walletAddressProvider);
+
+    if (walletAddress == null || walletAddress.isEmpty) {
+      _showSetRecipientDialog();
+      return;
+    }
+
+    final paymentInfoNotifier = ref.read(paymentInfoProvider.notifier);
+    paymentInfoNotifier.update(recipient: walletAddress);
+    
     final availableTokens = ref.watch(availableTokensProvider);
     final tokens = availableTokens.map((e) => e.posToken).toList();
     ref.read(reownPosProvider)
@@ -27,6 +40,20 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const AmountScreen()),
+    );
+  }
+
+  void _showSetRecipientDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => DtcWalletAddressDialog(
+        title: 'Set Recipient',
+        message:
+            'Please set a wallet address to receive payments before starting.',
+        buttonText: 'Set Address',
+        onSuccess: _initPosAndNavigate,
+      ),
     );
   }
 

@@ -19,16 +19,6 @@ mixin ValidatorService implements IValidatorService {
     if (!CaipValidator.isValidCaip2(chainId)) {
       throw StateError('chainId should conform to "CAIP-2" format ($chainId)');
     }
-    // if (!CaipValidator.isValidCaip19(intent.token)) {
-    //   throw StateError(
-    //     'token should conform to "CAIP-19" format (${intent.token})',
-    //   );
-    // }
-    // if (!CaipValidator.isValidCaip10(intent.recipient)) {
-    //   throw StateError(
-    //     'recipient should conform to "CAIP-10" format (${intent.recipient})',
-    //   );
-    // }
   }
 
   @override

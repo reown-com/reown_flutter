@@ -19,7 +19,7 @@ class PaymentInfoNotifier extends StateNotifier<PaymentIntent> {
     amount: '',
     // Currently only EVM supported so we can hardcode it here
     // when non-EVM chains are available developer will have to write logic to pass the proper address based on the network
-    recipient: '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
+    recipient: '',
   );
 
   PaymentInfoNotifier() : super(_initialPaymentIntent);

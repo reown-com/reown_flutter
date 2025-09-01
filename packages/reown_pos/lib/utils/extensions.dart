@@ -1,7 +1,15 @@
 import 'package:collection/collection.dart';
 import 'package:reown_pos/reown_pos.dart';
+import 'package:reown_pos/utils/caip_validator.dart';
 
 extension SessionDataExtensions on SessionData {
+  /// Get first CAIP-10 account for the given chain on the approved namespaces
+  /// This is currenctly a limitation in the SDK as an approved session could
+  /// have more than 1 account per chain approved and we currently pick the first one
+  /// in the list risking to pick an empty account (or an account with insufficient funds, for what it matter).
+  /// There is no way we can know (at least until wallet_pay) which account
+  /// is the more appropriate (or the only appropriate account) to make the
+  /// payment if the user decided to approve the session for every account they have in the wallet.
   String? getSenderCaip10Account(String chainId) {
     final ns = NamespaceUtils.getNamespaceFromChain(chainId);
     final namespace = namespaces[ns];
@@ -31,5 +39,10 @@ extension PaymentIntentExtension on PaymentIntent {
   String get caip19Token =>
       '${token.network.chainId}/${token.standard}:${token.address}';
 
-  String get caip10Recipient => '${token.network.chainId}:$recipient';
+  String get caip10Recipient {
+    if (CaipValidator.isValidCaip10(recipient)) {
+      return recipient;
+    }
+    return '${token.network.chainId}:$recipient';
+  }
 }

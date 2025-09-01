@@ -138,8 +138,9 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton(
-                          onPressed: _createPaymentAndNavigate,
-                          // onPressed: null,
+                          onPressed: paymentInfo.token.network.chainId.isEmpty
+                              ? null
+                              : _createPaymentAndNavigate,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF4CAF50),
                             foregroundColor: Colors.white,

@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:example/providers/available_tokens_provider.dart';
 import 'package:example/providers/payment_info_provider.dart';
 import 'package:example/providers/reown_pos_provider.dart';
+import 'package:example/providers/wallet_address_provider.dart';
 import 'package:example/widgets/dtc_abort_button.dart';
 import 'package:example/widgets/dtc_app_bar.dart';
 import 'package:example/widgets/dtc_card.dart';
@@ -46,6 +47,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final walletAddress = ref.watch(walletAddressProvider);
     return Scaffold(
       backgroundColor: const Color(0xFF4CAF50),
       appBar: const DtcAppBar(),
@@ -64,6 +66,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                         title: 'Scan to Pay',
                         description: 'Step 5: Customer scans QR',
                       ),
+                      Text('Recipient: $walletAddress'),
                       const SizedBox(height: 32),
                       // QR
                       SizedBox.square(
@@ -134,6 +137,7 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
   }
 
   void _onPosEvent(PosEvent event) {
+    debugPrint(event.toString());
     if (event is QrReadyEvent) {
       // Used on the main widget to render the QR Code
     } else if (event is ConnectRejectedEvent) {

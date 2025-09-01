@@ -1,4 +1,6 @@
 import 'package:example/providers/reown_pos_provider.dart';
+import 'package:example/providers/wallet_address_provider.dart';
+import 'package:example/widgets/dtc_wallet_address_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,15 +11,11 @@ class DtcAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final posInstance = ref.read(reownPosProvider);
+    final walletAddress = ref.watch(walletAddressProvider);
+    
     return AppBar(
       backgroundColor: const Color(0xFF4CAF50),
       elevation: 0,
-      // leading: showBackButton
-      //     ? IconButton(
-      //         icon: const Icon(Icons.arrow_back, color: Colors.white),
-      //         onPressed: () => Navigator.pop(context),
-      //       )
-      //     : null,
       leading: const SizedBox.shrink(),
       title: Column(
         children: [
@@ -40,6 +38,29 @@ class DtcAppBar extends ConsumerWidget implements PreferredSizeWidget {
         ],
       ),
       centerTitle: true,
+      actions: [
+        IconButton(
+          onPressed: () =>
+              _showWalletAddressDialog(context, ref, walletAddress),
+          icon: const Icon(Icons.settings, color: Colors.white),
+        ),
+      ],
+    );
+  }
+
+  void _showWalletAddressDialog(
+    BuildContext context,
+    WidgetRef ref,
+    String? currentAddress,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => DtcWalletAddressDialog(
+        initialValue: currentAddress,
+        title: 'Set Recipient',
+        message: 'Enter the wallet address where you want to receive payments:',
+        buttonText: 'Save',
+      ),
     );
   }
 

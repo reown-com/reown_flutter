@@ -343,8 +343,7 @@ extension _PrivateMembers on ReownPos {
   void _setNamespaces(List<PosNetwork> chains) {
     final evmChains = chains
         .where((chain) => chain.chainId.startsWith('eip155'))
-        .toSet()
-        .toList();
+        .toSet();
     if (evmChains.isNotEmpty) {
       _sessionNamespaces['eip155'] = RequiredNamespace(
         chains: evmChains.map((chain) => chain.chainId).toList(),
@@ -379,28 +378,25 @@ extension _PrivateMembers on ReownPos {
   Future<void> _expirePreviousPairings() async {
     // TODO check on this
     for (var session in reOwnSign!.sessions.getAll()) {
-      // if (!pairing.active) {
       await reOwnSign!.disconnectSession(
         topic: session.topic,
         reason: ReownSignError(code: 6000, message: 'POS disconnected'),
       );
-      // }
     }
     for (var pairing in reOwnSign!.pairings.getAll()) {
-      // if (!pairing.active) {
       await reOwnSign!.core.expirer.expire(pairing.topic);
-      // }
     }
   }
 
-  void _loopOnStatusCheck(String receiptId, String txHash) async {
+  void _loopOnStatusCheck(String id, String txHash) async {
     int maxAttempts = 10;
     int currentAttempt = 0;
 
     while (currentAttempt < maxAttempts) {
       try {
+        _reOwnCore!.logger.d('[$runtimeType] check id $id, txid $txHash');
         final response = await reownPosCheckTransaction(
-          params: CheckTransactionParams(id: receiptId, txid: txHash),
+          params: CheckTransactionParams(id: id, txid: txHash),
           queryParams: _queryParams!,
         );
         _reOwnCore!.logger.d('[$runtimeType] api response ${response.result}');
