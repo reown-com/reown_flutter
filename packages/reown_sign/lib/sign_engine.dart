@@ -2918,7 +2918,7 @@ class ReownSign implements IReownSign {
         return null;
       default:
         // default to EVM
-        return <String>[response.result];
+        return response.result is String ? [response.result] : null;
     }
   }
 }
