@@ -2726,7 +2726,7 @@ class ReownSign implements IReownSign {
             'signature',
           );
           if (signature != null) {
-            return List<String>.from([...signature]);
+            return <String>[...signature];
           }
           // if contain transactions it's solana_signAllTransactions
           final transactions = ReownCoreUtils.recursiveSearchForMapKey(
@@ -2752,7 +2752,7 @@ class ReownSign implements IReownSign {
             'hash',
           );
           if (txHash != null) {
-            return List<String>.from([txHash]);
+            return <String>[txHash];
           }
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: xrpl, $e');
@@ -2762,7 +2762,7 @@ class ReownSign implements IReownSign {
         try {
           final result = (response.result as List);
           final txHashesList = AlgorandChainUtils.calculateTxIDs(result);
-          return List<String>.from([...txHashesList]);
+          return <String>[...txHashesList];
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: algo, $e');
         }
@@ -2776,7 +2776,7 @@ class ReownSign implements IReownSign {
             'digest',
           );
           if (digest != null) {
-            return List<String>.from([digest]);
+            return <String>[digest];
           }
           // if sui_signTransaction the it'll contain signature and transactionBytes
           final signature = ReownCoreUtils.recursiveSearchForMapKey(
@@ -2792,7 +2792,7 @@ class ReownSign implements IReownSign {
               final computedHash = SuiChainUtils.getSuiDigestFromEncodedTx(
                 transactionBytes,
               );
-              return List<String>.from([computedHash]);
+              return <String>[computedHash];
             }
           }
         } catch (e) {
@@ -2804,7 +2804,7 @@ class ReownSign implements IReownSign {
           final result = (response.result as Map<String, dynamic>);
           final txID = ReownCoreUtils.recursiveSearchForMapKey(result, 'txID');
           if (txID != null) {
-            return List<String>.from([txID]);
+            return <String>[txID];
           }
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: tron, $e');
@@ -2818,7 +2818,7 @@ class ReownSign implements IReownSign {
             'transactionId',
           );
           if (transactionId != null) {
-            return List<String>.from([transactionId]);
+            return <String>[transactionId];
           }
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: hedera, $e');
@@ -2837,7 +2837,7 @@ class ReownSign implements IReownSign {
         try {
           final result = (response.result as Map<String, dynamic>);
           final txid = ReownCoreUtils.recursiveSearchForMapKey(result, 'txid');
-          return List<String>.from([txid]);
+          return <String>[txid];
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: stacks, $e');
         }
@@ -2880,7 +2880,7 @@ class ReownSign implements IReownSign {
             );
             final signedHex = hex.encode(extrinsic);
             final hash = PolkadotChainUtils.deriveExtrinsicHash(signedHex);
-            return List<String>.from([hash]);
+            return <String>[hash];
           }
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: polkadot, $e');
@@ -2910,7 +2910,7 @@ class ReownSign implements IReownSign {
               authInfoBytesBase64: authInfoBytes,
               signatureBase64: signature['signature'],
             );
-            return List<String>.from([hash]);
+            return <String>[hash];
           }
         } catch (e) {
           core.logger.e('[$runtimeType] _collectHashes: cosmos, $e');
@@ -2918,7 +2918,12 @@ class ReownSign implements IReownSign {
         return null;
       default:
         // default to EVM
-        return <String>[response.result];
+        try {
+          return <String>[response.result];
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: evm, $e');
+        }
+        return null;
     }
   }
 }

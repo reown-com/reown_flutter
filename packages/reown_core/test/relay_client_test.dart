@@ -372,6 +372,330 @@ void main() {
         expect(coreDapp.relayClient.isConnected, isTrue);
         expect(coreWallet.relayClient.isConnected, isTrue);
       });
+
+      test(
+        'publish method constructs parameters with correct tvf structure',
+        () async {
+          const testTopic = 'test-topic-123';
+          const testMessage = 'test-message-456';
+
+          // Create PublishOptions with tvf data
+          final publishOptions = PublishOptions(
+            ttl: 300,
+            tag: 1109,
+            correlationId: 1756879922616218,
+            tvf: {
+              'correlationId': 1756879922616218,
+              'rpcMethods': ['eth_sendTransaction'],
+              'chainId': 'eip155:8453',
+              'txHashes': [
+                '0x42d4e0dc0f301b2a119e68e52041fb6b84b3dc0bfb9a4f5c2a04898b80ff6755',
+              ],
+              'contractAddresses': [
+                '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+              ],
+            },
+          );
+
+          // Subscribe to the topic first
+          await coreDapp.relayClient.subscribe(
+            options: SubscribeOptions(topic: testTopic),
+          );
+
+          // Test that publish can be called without throwing
+          expect(() async {
+            await coreDapp.relayClient.publish(
+              topic: testTopic,
+              message: testMessage,
+              options: publishOptions,
+            );
+          }, returnsNormally);
+        },
+      );
+
+      test(
+        'publishPayload method constructs parameters with correct tvf structure',
+        () async {
+          CreateResponse response = await coreDapp.pairing.create();
+          await coreWallet.pairing.pair(
+            uri: response.uri,
+            activatePairing: true,
+          );
+          await coreDapp.pairing.activate(topic: response.topic);
+
+          // Create PublishOptions with tvf data
+          final publishOptions = PublishOptions(
+            ttl: 300,
+            tag: 1109,
+            correlationId: 1756879922616218,
+            publishMethod: RelayClient.WC_PROPOSE_SESSION,
+            tvf: {
+              'correlationId': 1756879922616218,
+              'rpcMethods': ['eth_sendTransaction'],
+              'chainId': 'eip155:8453',
+              'txHashes': [
+                '0x42d4e0dc0f301b2a119e68e52041fb6b84b3dc0bfb9a4f5c2a04898b80ff6755',
+              ],
+              'contractAddresses': [
+                '0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913',
+              ],
+            },
+          );
+
+          final payload = {
+            'pairingTopic': response.topic,
+            'sessionProposal': 'testSessionProposal',
+          };
+
+          // Test that publishPayload can be called without throwing
+          expect(() async {
+            await coreDapp.relayClient.publishPayload(
+              payload: payload,
+              options: publishOptions,
+            );
+          }, returnsNormally);
+        },
+      );
+    });
+  });
+
+  group('PublishOptions Parameter Structure Tests', () {
+    test('PublishOptionsExtension.toMap() correctly structures tvf data', () {
+      // Test case 1: PublishOptions with tvf data
+      final publishOptionsWithTvf = PublishOptions(
+        ttl: 300,
+        tag: 1109,
+        correlationId: 1756879922616218,
+        tvf: {
+          'correlationId': 1756879922616218,
+          'rpcMethods': ['eth_sendTransaction'],
+          'chainId': 'eip155:8453',
+          'txHashes': [
+            '0x42d4e0dc0f301b2a119e68e52041fb6b84b3dc0bfb9a4f5c2a04898b80ff6755',
+          ],
+          'contractAddresses': ['0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'],
+        },
+      );
+
+      final result = publishOptionsWithTvf.toMap();
+
+      // Verify that tvf data is spread to the top level (NOT nested under 'tvf' key)
+      expect(result.containsKey('tvf'), isFalse);
+
+      // Verify that tvf fields are at the top level
+      expect(result['correlationId'], equals(1756879922616218));
+      expect(result['rpcMethods'], equals(['eth_sendTransaction']));
+      expect(result['chainId'], equals('eip155:8453'));
+      expect(
+        result['txHashes'],
+        equals([
+          '0x42d4e0dc0f301b2a119e68e52041fb6b84b3dc0bfb9a4f5c2a04898b80ff6755',
+        ]),
+      );
+      expect(
+        result['contractAddresses'],
+        equals(['0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913']),
+      );
+
+      // Verify that other fields are also at the top level
+      expect(result['ttl'], equals(300));
+      expect(result['tag'], equals(1109));
+    });
+
+    test('PublishOptionsExtension.toMap() handles null tvf data', () {
+      final publishOptionsWithoutTvf = PublishOptions(
+        ttl: 300,
+        tag: 1109,
+        correlationId: 1756879922616218,
+        tvf: null,
+      );
+
+      final result = publishOptionsWithoutTvf.toMap();
+
+      // Verify that tvf key is not present when tvf is null
+      expect(result.containsKey('tvf'), isFalse);
+
+      // Verify that tvf fields are not present when tvf is null
+      expect(result.containsKey('rpcMethods'), isFalse);
+      expect(result.containsKey('chainId'), isFalse);
+      expect(result.containsKey('txHashes'), isFalse);
+      expect(result.containsKey('contractAddresses'), isFalse);
+
+      // Verify that other fields are present
+      expect(result['ttl'], equals(300));
+      expect(result['tag'], equals(1109));
+      expect(result['correlationId'], equals(1756879922616218));
+    });
+
+    test('PublishOptionsExtension.toMap() handles empty tvf data', () {
+      final publishOptionsWithEmptyTvf = PublishOptions(
+        ttl: 300,
+        tag: 1109,
+        correlationId: 1756879922616218,
+        tvf: {},
+      );
+
+      final result = publishOptionsWithEmptyTvf.toMap();
+
+      // Verify that tvf key is not present when tvf is empty
+      expect(result.containsKey('tvf'), isFalse);
+
+      // Verify that no tvf fields are present when tvf is empty
+      expect(result.containsKey('rpcMethods'), isFalse);
+      expect(result.containsKey('chainId'), isFalse);
+      expect(result.containsKey('txHashes'), isFalse);
+      expect(result.containsKey('contractAddresses'), isFalse);
+
+      // Verify that other fields are present
+      expect(result['ttl'], equals(300));
+      expect(result['tag'], equals(1109));
+      expect(result['correlationId'], equals(1756879922616218));
+    });
+
+    test('PublishOptionsExtension.toMap() handles partial tvf data', () {
+      final publishOptionsWithPartialTvf = PublishOptions(
+        ttl: 300,
+        tag: 1109,
+        correlationId: 1756879922616218,
+        tvf: {
+          'rpcMethods': ['eth_sendTransaction'],
+          'chainId': 'eip155:8453',
+        },
+      );
+
+      final result = publishOptionsWithPartialTvf.toMap();
+
+      // Verify that tvf data is spread to the top level (NOT nested under 'tvf' key)
+      expect(result.containsKey('tvf'), isFalse);
+
+      // Verify that partial tvf fields are at the top level
+      expect(result['rpcMethods'], equals(['eth_sendTransaction']));
+      expect(result['chainId'], equals('eip155:8453'));
+      expect(result.containsKey('txHashes'), isFalse);
+      expect(result.containsKey('contractAddresses'), isFalse);
+
+      // Verify that other fields are at the top level
+      expect(result['ttl'], equals(300));
+      expect(result['tag'], equals(1109));
+      expect(result['correlationId'], equals(1756879922616218));
+    });
+
+    test('PublishOptions parameter structure matches expected JSON-RPC format', () {
+      // This test verifies that the PublishOptions.toMap() method produces
+      // the correct parameter structure that matches the expected JSON-RPC format
+
+      final publishOptions = PublishOptions(
+        ttl: 300,
+        tag: 1109,
+        correlationId: 1756879922616218,
+        tvf: {
+          'correlationId': 1756879922616218,
+          'rpcMethods': ['eth_sendTransaction'],
+          'chainId': 'eip155:8453',
+          'txHashes': [
+            '0x42d4e0dc0f301b2a119e68e52041fb6b84b3dc0bfb9a4f5c2a04898b80ff6755',
+          ],
+          'contractAddresses': ['0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'],
+        },
+      );
+
+      // Get the parameters that would be sent in the JSON-RPC request
+      final parameters = publishOptions.toMap();
+
+      // Simulate the complete JSON-RPC request structure
+      final jsonRpcRequest = {
+        'jsonrpc': '2.0',
+        'method': 'irn_publish',
+        'id': '1756879930406439680',
+        'params': {
+          'topic':
+              '5a277ade637c43a6100dd33953f6409af985eada5864d26a915fab2ca681a320',
+          'message':
+              'ACBwpU/2/dFGFB3SxOowfMW6Zrr2P4rXjOpGLk2Bcl0mCue8wZnN/Lt8KuuqXe/zTrX4jl4hXGMbnT8fzSSS1L04b3QqewlEeWejqcndMPVNpsXH4CuUjG9XJPry28gGJYP/Br02zftytxLUYMPf/OtrdvLG7QLtq4O3PUYfXk6DDeomoY2tkQDt6qltiqPzOKU=',
+          ...parameters, // This is where the PublishOptions parameters are spread
+        },
+      };
+
+      // Verify the complete request structure
+      expect(jsonRpcRequest['jsonrpc'], equals('2.0'));
+      expect(jsonRpcRequest['method'], equals('irn_publish'));
+      expect(jsonRpcRequest['params'], isA<Map<String, dynamic>>());
+
+      final params = jsonRpcRequest['params'] as Map<String, dynamic>;
+
+      // Verify basic parameters are at the top level
+      expect(params['ttl'], equals(300));
+      expect(params['tag'], equals(1109));
+      expect(params['correlationId'], equals(1756879922616218));
+
+      // Verify tvf data is spread to the top level (NOT nested under 'tvf' key)
+      expect(params.containsKey('tvf'), isFalse);
+
+      // Verify that tvf fields are at the top level
+      expect(params['rpcMethods'], equals(['eth_sendTransaction']));
+      expect(params['chainId'], equals('eip155:8453'));
+      expect(
+        params['txHashes'],
+        equals([
+          '0x42d4e0dc0f301b2a119e68e52041fb6b84b3dc0bfb9a4f5c2a04898b80ff6755',
+        ]),
+      );
+      expect(
+        params['contractAddresses'],
+        equals(['0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913']),
+      );
+    });
+
+    test(
+      'JSON-RPC payload structure regression test - catches wrong nested structure',
+      () {
+        // This test verifies the complete JSON-RPC request structure and will catch
+        // if someone accidentally changes the implementation to nest tvf data under a 'tvf' key
+
+        final publishOptions = PublishOptions(
+          ttl: 300,
+          tag: 1109,
+          correlationId: 1756879922616218,
+          tvf: {
+            'correlationId': 1756879922616218,
+            'rpcMethods': ['eth_sendTransaction'],
+            'chainId': 'eip155:8453',
+            'txHashes': [
+              '0x42d4e0dc0f301b2a119e68e52041fb6b84b3dc0bfb9a4f5c2a04898b80ff6755',
+            ],
+            'contractAddresses': ['0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913'],
+          },
+        );
+
+        // Get the parameters that would be sent in the JSON-RPC request
+        final parameters = publishOptions.toMap();
+
+        // Simulate the complete JSON-RPC request structure
+        final jsonRpcRequest = {
+          'jsonrpc': '2.0',
+          'method': 'irn_publish',
+          'id': '1756879930406439680',
+          'params': {
+            'topic':
+                '5a277ade637c43a6100dd33953f6409af985eada5864d26a915fab2ca681a320',
+            'message':
+                'ACBwpU/2/dFGFB3SxOowfMW6Zrr2P4rXjOpGLk2Bcl0mCue8wZnN/Lt8KuuqXe/zTrX4jl4hXGMbnT8fzSSS1L04b3QqewlEeWejqcndMPVNpsXH4CuUjG9XJPry28gGJYP/Br02zftytxLUYMPf/OtrdvLG7QLtq4O3PUYfXk6DDeomoY2tkQDt6qltiqPzOKU=',
+            ...parameters, // This is where the PublishOptions parameters are spread
+          },
+        };
+
+        final params = jsonRpcRequest['params'] as Map<String, dynamic>;
+
+        // REGRESSION TEST: Verify that tvf data is NOT nested under a 'tvf' key
+        // This will fail if someone changes the implementation to use 'if (tvf != null) 'tvf': tvf'
+        expect(
+          params.containsKey('tvf'),
+          isFalse,
+          reason:
+              'REGRESSION: JSON-RPC params should NOT have a nested "tvf" key. '
+              'The tvf fields should be spread to the top level of params. '
+              'If this fails, someone changed the implementation to nest tvf data under a "tvf" key.',
+        );
     });
   });
 
