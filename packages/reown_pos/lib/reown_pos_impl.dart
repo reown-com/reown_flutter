@@ -429,7 +429,8 @@ extension _PrivateMembers on ReownPos {
         final String status = ReownCoreUtils.recursiveSearchForMapKey(
           response.result,
           'status',
-        );
+            ) ??
+            'PENDING';
         if (status.toUpperCase() == 'PENDING') {
           currentAttempt++;
           if (currentAttempt < maxAttempts) {
@@ -446,7 +447,7 @@ extension _PrivateMembers on ReownPos {
           }
         } else {
           // Either CONFIRMED or FAILED received
-          final String txid = ReownCoreUtils.recursiveSearchForMapKey(
+          final String? txid = ReownCoreUtils.recursiveSearchForMapKey(
             response.result,
             'txid',
           );
