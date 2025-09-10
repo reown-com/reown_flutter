@@ -17,5 +17,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: walletconnect/actions/github/cta-assistant@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          cta-document-url: "https://github.com/reown-com/copyright-transfer-agreement/blob/main/copyright-transfer-agreement/v1/Copyright-Transfer-Agreement-GITHUB.pdf"
+          # signatures-path: "legal/signatures/cta.json"
+          # signatures-branch: "cta-signatures"
+          # create-file-commit-message: "docs: initialize CTA signatures file"
+          # signed-commit-message: "docs: @$contributorName signed the CTA"
+          custom-pr-sign-comment: "I have read the CTA Document and I hereby sign the CTA"
+          custom-allsigned-prcomment: "All contributors have signed the CTA ✍️ ✅"
+          lock-pullrequest-aftermerge: "true"
+          # allowlist: "external-contributor1,external-contributor2"
