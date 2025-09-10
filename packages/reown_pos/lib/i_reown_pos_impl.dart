@@ -23,7 +23,7 @@ abstract class IReownPos {
 
   ///
   /// ℹ️
-  /// initiates the payment flow
+  /// Initiates the payment flow. Best practice is to wrap it with try/catch
   ///
   Future<void> createPaymentIntent({
     required List<PaymentIntent> paymentIntents,

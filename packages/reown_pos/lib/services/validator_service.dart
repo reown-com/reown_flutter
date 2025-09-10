@@ -7,17 +7,21 @@ import 'package:reown_sign/utils/namespace_utils.dart';
 
 mixin ValidatorService implements IValidatorService {
   @override
-  void isValidPaymentIntent(PaymentIntent intent) {
-    try {
-      double.tryParse(intent.amount);
-    } catch (_) {
-      throw StateError(
-        'invalid amount value. Should be double expressed as String (${intent.amount})',
-      );
-    }
-    final chainId = intent.token.network.chainId;
-    if (!CaipValidator.isValidCaip2(chainId)) {
-      throw StateError('chainId should conform to "CAIP-2" format ($chainId)');
+  void isValidPaymentIntents(List<PaymentIntent> intents) {
+    for (var intent in intents) {
+      try {
+        double.tryParse(intent.amount);
+      } catch (_) {
+        throw StateError(
+          'invalid amount value. Should be double expressed as String (${intent.amount})',
+        );
+      }
+      final chainId = intent.token.network.chainId;
+      if (!CaipValidator.isValidCaip2(chainId)) {
+        throw StateError(
+          'chainId should conform to "CAIP-2" format ($chainId)',
+        );
+      }
     }
   }
 
