@@ -1,8 +1,5 @@
-import 'package:collection/collection.dart';
-import 'package:example/providers/available_tokens_provider.dart';
 import 'package:example/providers/payment_info_provider.dart';
 import 'package:example/providers/reown_pos_provider.dart';
-import 'package:example/providers/wallet_address_provider.dart';
 import 'package:example/widgets/dtc_abort_button.dart';
 import 'package:example/widgets/dtc_app_bar.dart';
 import 'package:example/widgets/dtc_card.dart';
@@ -47,7 +44,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final walletAddress = ref.watch(walletAddressProvider);
+    final paymentInfo = ref.watch(paymentInfoProvider);
     return Scaffold(
       backgroundColor: const Color(0xFF4CAF50),
       appBar: const DtcAppBar(),
@@ -66,7 +63,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
                         title: 'Scan to Pay',
                         description: 'Step 5: Customer scans QR',
                       ),
-                      Text('Recipient: $walletAddress'),
+                      Text('Recipient: ${paymentInfo.recipient}'),
                       const SizedBox(height: 32),
                       // QR
                       SizedBox.square(
@@ -148,6 +145,8 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
       //
     } else if (event is PaymentRequestedEvent) {
       //
+    } else if (event is PaymentRequestFailedEvent) {
+      _showDialogEvent(event.runtimeType.toString(), event.message);
     } else if (event is PaymentRequestRejectedEvent) {
       _showDialogEvent(event.runtimeType.toString(), 'User rejected payment');
     } else if (event is PaymentBroadcastedEvent) {
@@ -282,22 +281,6 @@ class _PaymentInfoWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final paymentInfo = ref.watch(paymentInfoProvider);
-    final networkSelected = ref
-        .read(availableTokensProvider)
-        .firstWhereOrNull(
-          (availableToken) =>
-              availableToken.posToken.address == paymentInfo.token.address,
-        )
-        ?.posToken
-        .network
-        .name;
-    final token =
-        ref
-            .watch(availableTokensProvider)
-            .firstWhereOrNull((token) => token.selected)
-            ?.posToken
-            .symbol ??
-        '';
     return DtcCard(
       child: Column(
         children: [
@@ -312,7 +295,7 @@ class _PaymentInfoWidget extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            '${token.toUpperCase()} on $networkSelected',
+            '${paymentInfo.token.symbol.toUpperCase()} on ${paymentInfo.token.network.name}',
             style: TextStyle(
               color: Colors.black,
               fontSize: 16,

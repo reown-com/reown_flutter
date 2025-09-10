@@ -1,8 +1,7 @@
 // import 'package:example/providers/available_networks_provider.dart';
 import 'package:example/providers/available_tokens_provider.dart';
-import 'package:example/providers/payment_info_provider.dart';
 import 'package:example/providers/reown_pos_provider.dart';
-import 'package:example/providers/wallet_address_provider.dart';
+import 'package:example/providers/multi_wallet_address_provider.dart';
 import 'package:example/screens/amount_screen.dart';
 import 'package:example/widgets/dtc_app_bar.dart';
 import 'package:example/widgets/dtc_card.dart';
@@ -20,15 +19,22 @@ class WelcomeScreen extends ConsumerStatefulWidget {
 
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   void _initPosAndNavigate() {
-    final walletAddress = ref.read(walletAddressProvider);
+    final multiWalletAddresses = ref.read(multiWalletAddressProvider);
 
-    if (walletAddress == null || walletAddress.isEmpty) {
+    if (!multiWalletAddresses.hasAnyAddress) {
       _showSetRecipientDialog();
       return;
     }
 
-    final paymentInfoNotifier = ref.read(paymentInfoProvider.notifier);
-    paymentInfoNotifier.update(recipient: walletAddress);
+    // // For now, we'll use the EVM address as the default recipient
+    // // This will be updated later when token and network is selected
+    // final defaultRecipient =
+    //     multiWalletAddresses.evmWalletAddress ??
+    //     multiWalletAddresses.solanaWalletAddress ??
+    //     multiWalletAddresses.tronWalletAddress;
+
+    // final paymentInfoNotifier = ref.read(paymentInfoProvider.notifier);
+    // paymentInfoNotifier.update(recipient: defaultRecipient!);
     
     final availableTokens = ref.watch(availableTokensProvider);
     final tokens = availableTokens.map((e) => e.posToken).toList();
@@ -44,14 +50,18 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
   }
 
   void _showSetRecipientDialog() {
+    final multiWalletAddresses = ref.read(multiWalletAddressProvider);
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) => DtcWalletAddressDialog(
-        title: 'Set Recipient',
+        initialEvmValue: multiWalletAddresses.evmWalletAddress,
+        initialSolanaValue: multiWalletAddresses.solanaWalletAddress,
+        initialTronValue: multiWalletAddresses.tronWalletAddress,
+        title: 'Set Recipient Addresses',
         message:
-            'Please set a wallet address to receive payments before starting.',
-        buttonText: 'Set Address',
+            'Please set wallet addresses for different networks to receive payments before starting.',
+        buttonText: 'Set Addresses',
         onSuccess: _initPosAndNavigate,
       ),
     );

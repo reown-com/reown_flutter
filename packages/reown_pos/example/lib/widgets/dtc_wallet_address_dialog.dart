@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:example/providers/wallet_address_provider.dart';
+import 'package:example/providers/multi_wallet_address_provider.dart';
 
 class DtcWalletAddressDialog extends ConsumerStatefulWidget {
-  final String? initialValue;
+  final String? initialEvmValue;
+  final String? initialSolanaValue;
+  final String? initialTronValue;
   final String title;
   final String message;
   final String buttonText;
@@ -11,9 +13,11 @@ class DtcWalletAddressDialog extends ConsumerStatefulWidget {
 
   const DtcWalletAddressDialog({
     super.key,
-    this.initialValue,
-    this.title = 'Set Recipient',
-    this.message = 'Enter the wallet address where you want to receive payments:',
+    this.initialEvmValue,
+    this.initialSolanaValue,
+    this.initialTronValue,
+    this.title = 'Set Recipient Addresses',
+    this.message = 'Enter wallet addresses for different networks:',
     this.buttonText = 'Save',
     this.onSuccess,
   });
@@ -23,17 +27,25 @@ class DtcWalletAddressDialog extends ConsumerStatefulWidget {
 }
 
 class _DtcWalletAddressDialogState extends ConsumerState<DtcWalletAddressDialog> {
-  late TextEditingController controller;
+  late TextEditingController evmController;
+  late TextEditingController solanaController;
+  late TextEditingController tronController;
 
   @override
   void initState() {
     super.initState();
-    controller = TextEditingController(text: widget.initialValue ?? '');
+    evmController = TextEditingController(text: widget.initialEvmValue ?? '');
+    solanaController = TextEditingController(
+      text: widget.initialSolanaValue ?? '',
+    );
+    tronController = TextEditingController(text: widget.initialTronValue ?? '');
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    evmController.dispose();
+    solanaController.dispose();
+    tronController.dispose();
     super.dispose();
   }
 
@@ -41,20 +53,53 @@ class _DtcWalletAddressDialogState extends ConsumerState<DtcWalletAddressDialog>
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.title),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(widget.message),
-          const SizedBox(height: 16),
-          TextField(
-            controller: controller,
-            decoration: const InputDecoration(
-              labelText: 'Wallet Address',
-              hintText: '0x...',
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(widget.message),
+            const SizedBox(height: 16),
+            // EVM Address
+            TextField(
+              controller: evmController,
+              decoration: const InputDecoration(
+                labelText: 'EVM Wallet Address (Ethereum, Polygon, etc.)',
+                hintText: '0x...',
+                prefixIcon: Icon(
+                  Icons.account_balance_wallet,
+                  color: Colors.blue,
+                ),
+              ),
             ),
-          ),
-        ],
+            const SizedBox(height: 12),
+            // Solana Address
+            TextField(
+              controller: solanaController,
+              decoration: const InputDecoration(
+                labelText: 'Solana Wallet Address',
+                hintText: 'Base58...',
+                prefixIcon: Icon(
+                  Icons.account_balance_wallet,
+                  color: Colors.purple,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Tron Address
+            TextField(
+              controller: tronController,
+              decoration: const InputDecoration(
+                labelText: 'Tron Wallet Address',
+                hintText: 'T...',
+                prefixIcon: Icon(
+                  Icons.account_balance_wallet,
+                  color: Colors.red,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       actions: [
         TextButton(
@@ -63,12 +108,26 @@ class _DtcWalletAddressDialogState extends ConsumerState<DtcWalletAddressDialog>
         ),
         ElevatedButton(
           onPressed: () async {
-            if (controller.text.isNotEmpty) {
-              await ref.read(walletAddressProvider.notifier).save(controller.text);
-              if (context.mounted) {
-                Navigator.pop(context);
-                widget.onSuccess?.call();
-              }
+            final multiWalletNotifier = ref.read(
+              multiWalletAddressProvider.notifier,
+            );
+
+            // Save addresses if they are not empty
+            if (evmController.text.isNotEmpty) {
+              await multiWalletNotifier.saveEvmAddress(evmController.text);
+            }
+            if (solanaController.text.isNotEmpty) {
+              await multiWalletNotifier.saveSolanaAddress(
+                solanaController.text,
+              );
+            }
+            if (tronController.text.isNotEmpty) {
+              await multiWalletNotifier.saveTronAddress(tronController.text);
+            }
+
+            if (context.mounted) {
+              Navigator.pop(context);
+              widget.onSuccess?.call();
             }
           },
           child: Text(widget.buttonText),

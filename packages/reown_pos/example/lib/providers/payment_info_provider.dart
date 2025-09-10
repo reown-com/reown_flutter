@@ -1,13 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reown_pos/models/pos_models.dart';
+import 'package:example/providers/multi_wallet_address_provider.dart';
 
 /// PaymentIntent state provider
 final paymentInfoProvider =
     StateNotifierProvider<PaymentInfoNotifier, PaymentIntent>(
-      (ref) => PaymentInfoNotifier(),
+      (ref) => PaymentInfoNotifier(ref),
     );
 
 class PaymentInfoNotifier extends StateNotifier<PaymentIntent> {
+  final Ref _ref;
+
   // initial state
   static const _initialPaymentIntent = PaymentIntent(
     token: PosToken(
@@ -17,23 +20,30 @@ class PaymentInfoNotifier extends StateNotifier<PaymentIntent> {
       address: '',
     ),
     amount: '',
-    // Currently only EVM supported so we can hardcode it here
-    // when non-EVM chains are available developer will have to write logic to pass the proper address based on the network
     recipient: '',
   );
 
-  PaymentInfoNotifier() : super(_initialPaymentIntent);
+  PaymentInfoNotifier(this._ref) : super(_initialPaymentIntent);
 
   void update({
     PosToken? token,
     String? amount,
     PosNetwork? network,
     String? recipient,
-  }) => state = state.copyWith(
-    token: token ?? state.token,
-    amount: amount ?? state.amount,
-    recipient: recipient ?? state.recipient,
-  );
+  }) {
+    // If token is being updated, automatically set the appropriate recipient address
+    String? newRecipient = recipient;
+    if (token != null && recipient == null) {
+      final multiWalletAddresses = _ref.read(multiWalletAddressProvider);
+      newRecipient = multiWalletAddresses.getRecipientForChain(token.network);
+    }
+
+    state = state.copyWith(
+      token: token ?? state.token,
+      amount: amount ?? state.amount,
+      recipient: newRecipient ?? state.recipient,
+    );
+  }
 
   void clear() => state = _initialPaymentIntent;
 }

@@ -107,6 +107,54 @@ class TokenListNotifier extends StateNotifier<List<AvailableToken>> {
           ),
           selected: false,
         ),
+        // USDC on Solana
+        AvailableToken(
+          index: 6,
+          color: Colors.blue,
+          posToken: PosToken(
+            network: SupportedNetwork.solana.posNetwork,
+            symbol: 'USDC',
+            standard: 'token',
+            address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+          ),
+          selected: false,
+        ),
+        // USDC on Solana Devnet
+        AvailableToken(
+          index: 6,
+          color: Colors.blue,
+          posToken: PosToken(
+            network: SupportedNetwork.solanaDevnet.posNetwork,
+            symbol: 'USDC',
+            standard: 'token',
+            address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+          ),
+          selected: false,
+        ),
+        // USDT on Tron
+        AvailableToken(
+          index: 7,
+          color: Colors.blue,
+          posToken: PosToken(
+            network: SupportedNetwork.tron.posNetwork,
+            symbol: 'USDT',
+            standard: 'trc20',
+            address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+          ),
+          selected: false,
+        ),
+        // USDT on Tron Testnet
+        AvailableToken(
+          index: 7,
+          color: Colors.blue,
+          posToken: PosToken(
+            network: SupportedNetwork.tronTestnet.posNetwork,
+            symbol: 'USDT',
+            standard: 'trc20',
+            address: 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf',
+          ),
+          selected: false,
+        ),
       ]);
 
   void select(AvailableToken selected) {
@@ -139,7 +187,11 @@ enum SupportedNetwork {
   klaytn,
   celo,
   linea,
-  baseSepolia;
+  baseSepolia,
+  solana,
+  solanaDevnet,
+  tron,
+  tronTestnet;
 
   PosNetwork get posNetwork {
     switch (this) {
@@ -179,6 +231,20 @@ enum SupportedNetwork {
         return PosNetwork(name: 'Linea', chainId: 'eip155:59144');
       case SupportedNetwork.baseSepolia:
         return PosNetwork(name: 'Base Sepolia', chainId: 'eip155:84531');
+      case SupportedNetwork.solana:
+        return PosNetwork(
+          name: 'Solana',
+          chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+        );
+      case SupportedNetwork.solanaDevnet:
+        return PosNetwork(
+          name: 'Solana Devnet',
+          chainId: 'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
+        );
+      case SupportedNetwork.tron:
+        return PosNetwork(name: 'Tron', chainId: 'tron:0x2b6653dc');
+      case SupportedNetwork.tronTestnet:
+        return PosNetwork(name: 'Tron Testnet', chainId: 'tron:0xcd8690dc');
     }
   }
 }
