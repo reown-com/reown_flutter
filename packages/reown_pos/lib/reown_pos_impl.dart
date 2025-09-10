@@ -197,10 +197,7 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
       }
     } on ReownCoreError catch (e) {
       _reOwnCore!.logger.e('[$runtimeType] connect error: $e');
-      // If session request fails due to the POS restar function we don't need to propagate this error.
-      if (e.code != 5090 && e.message != 'ABORTED') {
-        onPosEvent.broadcast(ConnectFailedEvent(e.message));
-      }
+      onPosEvent.broadcast(ConnectFailedEvent(e.message));
     } catch (e, s) {
       _reOwnCore!.logger.e('[$runtimeType] connect error: $e, $s');
       onPosEvent.broadcast(ConnectFailedEvent(e.toString()));
