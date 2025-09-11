@@ -250,7 +250,7 @@ class ReownAppKitModal
     GetIt.I.registerSingletonIfAbsent<IExplorerService>(
       () => ExplorerService(
         core: _appKit.core,
-        referer: _appKit.metadata.name.replaceAll(' ', ''),
+        referer: _appKit.metadata.name.replaceAll(RegExp(r'[^a-zA-Z0-9]'), ''),
         featuredWalletIds: featuredWalletIds,
         includedWalletIds: includedWalletIds,
         excludedWalletIds: excludedWalletIds,

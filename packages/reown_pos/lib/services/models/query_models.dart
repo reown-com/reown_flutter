@@ -19,27 +19,38 @@ sealed class QueryParams with _$QueryParams {
 }
 
 @freezed
-sealed class BuildTransactionParams with _$BuildTransactionParams {
-  const factory BuildTransactionParams({
+sealed class PaymentIntentParams with _$PaymentIntentParams {
+  const factory PaymentIntentParams({
     required String asset,
     required String amount,
     required String sender,
     required String recipient,
-  }) = _BuildTransactionParams;
+  }) = _PaymentIntentParams;
 
-  factory BuildTransactionParams.fromJson(Map<String, dynamic> json) =>
-      _$BuildTransactionParamsFromJson(json);
+  factory PaymentIntentParams.fromJson(Map<String, dynamic> json) =>
+      _$PaymentIntentParamsFromJson(json);
 
-  factory BuildTransactionParams.fromPaymentIntent(
+  factory PaymentIntentParams.fromPaymentIntent(
     PaymentIntent intent,
     String sender,
-  ) => BuildTransactionParams(
+  ) => PaymentIntentParams(
     /// CAIP-19 Asset ID (e.g. `eip155:1/erc20:0xabc...`)
     asset: intent.caip19Token,
     amount: intent.amount,
     sender: sender, // should already be CAIP-10
     recipient: intent.caip10Recipient,
   );
+}
+
+@freezed
+sealed class BuildTransactionParams with _$BuildTransactionParams {
+  const factory BuildTransactionParams({
+    required List<PaymentIntentParams> paymentIntents,
+    dynamic capabilities,
+  }) = _BuildTransactionParams;
+
+  factory BuildTransactionParams.fromJson(Map<String, dynamic> json) =>
+      _$BuildTransactionParamsFromJson(json);
 }
 
 @freezed

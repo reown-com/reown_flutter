@@ -279,9 +279,275 @@ as String,
 
 
 /// @nodoc
-mixin _$BuildTransactionParams {
+mixin _$PaymentIntentParams {
 
  String get asset; String get amount; String get sender; String get recipient;
+/// Create a copy of PaymentIntentParams
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PaymentIntentParamsCopyWith<PaymentIntentParams> get copyWith => _$PaymentIntentParamsCopyWithImpl<PaymentIntentParams>(this as PaymentIntentParams, _$identity);
+
+  /// Serializes this PaymentIntentParams to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentIntentParams&&(identical(other.asset, asset) || other.asset == asset)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.sender, sender) || other.sender == sender)&&(identical(other.recipient, recipient) || other.recipient == recipient));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,asset,amount,sender,recipient);
+
+@override
+String toString() {
+  return 'PaymentIntentParams(asset: $asset, amount: $amount, sender: $sender, recipient: $recipient)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PaymentIntentParamsCopyWith<$Res>  {
+  factory $PaymentIntentParamsCopyWith(PaymentIntentParams value, $Res Function(PaymentIntentParams) _then) = _$PaymentIntentParamsCopyWithImpl;
+@useResult
+$Res call({
+ String asset, String amount, String sender, String recipient
+});
+
+
+
+
+}
+/// @nodoc
+class _$PaymentIntentParamsCopyWithImpl<$Res>
+    implements $PaymentIntentParamsCopyWith<$Res> {
+  _$PaymentIntentParamsCopyWithImpl(this._self, this._then);
+
+  final PaymentIntentParams _self;
+  final $Res Function(PaymentIntentParams) _then;
+
+/// Create a copy of PaymentIntentParams
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? asset = null,Object? amount = null,Object? sender = null,Object? recipient = null,}) {
+  return _then(_self.copyWith(
+asset: null == asset ? _self.asset : asset // ignore: cast_nullable_to_non_nullable
+as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
+as String,sender: null == sender ? _self.sender : sender // ignore: cast_nullable_to_non_nullable
+as String,recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [PaymentIntentParams].
+extension PaymentIntentParamsPatterns on PaymentIntentParams {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _PaymentIntentParams value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _PaymentIntentParams() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _PaymentIntentParams value)  $default,){
+final _that = this;
+switch (_that) {
+case _PaymentIntentParams():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _PaymentIntentParams value)?  $default,){
+final _that = this;
+switch (_that) {
+case _PaymentIntentParams() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String asset,  String amount,  String sender,  String recipient)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _PaymentIntentParams() when $default != null:
+return $default(_that.asset,_that.amount,_that.sender,_that.recipient);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String asset,  String amount,  String sender,  String recipient)  $default,) {final _that = this;
+switch (_that) {
+case _PaymentIntentParams():
+return $default(_that.asset,_that.amount,_that.sender,_that.recipient);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String asset,  String amount,  String sender,  String recipient)?  $default,) {final _that = this;
+switch (_that) {
+case _PaymentIntentParams() when $default != null:
+return $default(_that.asset,_that.amount,_that.sender,_that.recipient);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _PaymentIntentParams implements PaymentIntentParams {
+  const _PaymentIntentParams({required this.asset, required this.amount, required this.sender, required this.recipient});
+  factory _PaymentIntentParams.fromJson(Map<String, dynamic> json) => _$PaymentIntentParamsFromJson(json);
+
+@override final  String asset;
+@override final  String amount;
+@override final  String sender;
+@override final  String recipient;
+
+/// Create a copy of PaymentIntentParams
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PaymentIntentParamsCopyWith<_PaymentIntentParams> get copyWith => __$PaymentIntentParamsCopyWithImpl<_PaymentIntentParams>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$PaymentIntentParamsToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaymentIntentParams&&(identical(other.asset, asset) || other.asset == asset)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.sender, sender) || other.sender == sender)&&(identical(other.recipient, recipient) || other.recipient == recipient));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,asset,amount,sender,recipient);
+
+@override
+String toString() {
+  return 'PaymentIntentParams(asset: $asset, amount: $amount, sender: $sender, recipient: $recipient)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$PaymentIntentParamsCopyWith<$Res> implements $PaymentIntentParamsCopyWith<$Res> {
+  factory _$PaymentIntentParamsCopyWith(_PaymentIntentParams value, $Res Function(_PaymentIntentParams) _then) = __$PaymentIntentParamsCopyWithImpl;
+@override @useResult
+$Res call({
+ String asset, String amount, String sender, String recipient
+});
+
+
+
+
+}
+/// @nodoc
+class __$PaymentIntentParamsCopyWithImpl<$Res>
+    implements _$PaymentIntentParamsCopyWith<$Res> {
+  __$PaymentIntentParamsCopyWithImpl(this._self, this._then);
+
+  final _PaymentIntentParams _self;
+  final $Res Function(_PaymentIntentParams) _then;
+
+/// Create a copy of PaymentIntentParams
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? asset = null,Object? amount = null,Object? sender = null,Object? recipient = null,}) {
+  return _then(_PaymentIntentParams(
+asset: null == asset ? _self.asset : asset // ignore: cast_nullable_to_non_nullable
+as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
+as String,sender: null == sender ? _self.sender : sender // ignore: cast_nullable_to_non_nullable
+as String,recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$BuildTransactionParams {
+
+ List<PaymentIntentParams> get paymentIntents; dynamic get capabilities;
 /// Create a copy of BuildTransactionParams
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -294,16 +560,16 @@ $BuildTransactionParamsCopyWith<BuildTransactionParams> get copyWith => _$BuildT
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BuildTransactionParams&&(identical(other.asset, asset) || other.asset == asset)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.sender, sender) || other.sender == sender)&&(identical(other.recipient, recipient) || other.recipient == recipient));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BuildTransactionParams&&const DeepCollectionEquality().equals(other.paymentIntents, paymentIntents)&&const DeepCollectionEquality().equals(other.capabilities, capabilities));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,asset,amount,sender,recipient);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(paymentIntents),const DeepCollectionEquality().hash(capabilities));
 
 @override
 String toString() {
-  return 'BuildTransactionParams(asset: $asset, amount: $amount, sender: $sender, recipient: $recipient)';
+  return 'BuildTransactionParams(paymentIntents: $paymentIntents, capabilities: $capabilities)';
 }
 
 
@@ -314,7 +580,7 @@ abstract mixin class $BuildTransactionParamsCopyWith<$Res>  {
   factory $BuildTransactionParamsCopyWith(BuildTransactionParams value, $Res Function(BuildTransactionParams) _then) = _$BuildTransactionParamsCopyWithImpl;
 @useResult
 $Res call({
- String asset, String amount, String sender, String recipient
+ List<PaymentIntentParams> paymentIntents, dynamic capabilities
 });
 
 
@@ -331,13 +597,11 @@ class _$BuildTransactionParamsCopyWithImpl<$Res>
 
 /// Create a copy of BuildTransactionParams
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? asset = null,Object? amount = null,Object? sender = null,Object? recipient = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? paymentIntents = null,Object? capabilities = freezed,}) {
   return _then(_self.copyWith(
-asset: null == asset ? _self.asset : asset // ignore: cast_nullable_to_non_nullable
-as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
-as String,sender: null == sender ? _self.sender : sender // ignore: cast_nullable_to_non_nullable
-as String,recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
-as String,
+paymentIntents: null == paymentIntents ? _self.paymentIntents : paymentIntents // ignore: cast_nullable_to_non_nullable
+as List<PaymentIntentParams>,capabilities: freezed == capabilities ? _self.capabilities : capabilities // ignore: cast_nullable_to_non_nullable
+as dynamic,
   ));
 }
 
@@ -419,10 +683,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String asset,  String amount,  String sender,  String recipient)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<PaymentIntentParams> paymentIntents,  dynamic capabilities)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BuildTransactionParams() when $default != null:
-return $default(_that.asset,_that.amount,_that.sender,_that.recipient);case _:
+return $default(_that.paymentIntents,_that.capabilities);case _:
   return orElse();
 
 }
@@ -440,10 +704,10 @@ return $default(_that.asset,_that.amount,_that.sender,_that.recipient);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String asset,  String amount,  String sender,  String recipient)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<PaymentIntentParams> paymentIntents,  dynamic capabilities)  $default,) {final _that = this;
 switch (_that) {
 case _BuildTransactionParams():
-return $default(_that.asset,_that.amount,_that.sender,_that.recipient);}
+return $default(_that.paymentIntents,_that.capabilities);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -457,10 +721,10 @@ return $default(_that.asset,_that.amount,_that.sender,_that.recipient);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String asset,  String amount,  String sender,  String recipient)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<PaymentIntentParams> paymentIntents,  dynamic capabilities)?  $default,) {final _that = this;
 switch (_that) {
 case _BuildTransactionParams() when $default != null:
-return $default(_that.asset,_that.amount,_that.sender,_that.recipient);case _:
+return $default(_that.paymentIntents,_that.capabilities);case _:
   return null;
 
 }
@@ -472,13 +736,17 @@ return $default(_that.asset,_that.amount,_that.sender,_that.recipient);case _:
 @JsonSerializable()
 
 class _BuildTransactionParams implements BuildTransactionParams {
-  const _BuildTransactionParams({required this.asset, required this.amount, required this.sender, required this.recipient});
+  const _BuildTransactionParams({required final  List<PaymentIntentParams> paymentIntents, this.capabilities}): _paymentIntents = paymentIntents;
   factory _BuildTransactionParams.fromJson(Map<String, dynamic> json) => _$BuildTransactionParamsFromJson(json);
 
-@override final  String asset;
-@override final  String amount;
-@override final  String sender;
-@override final  String recipient;
+ final  List<PaymentIntentParams> _paymentIntents;
+@override List<PaymentIntentParams> get paymentIntents {
+  if (_paymentIntents is EqualUnmodifiableListView) return _paymentIntents;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_paymentIntents);
+}
+
+@override final  dynamic capabilities;
 
 /// Create a copy of BuildTransactionParams
 /// with the given fields replaced by the non-null parameter values.
@@ -493,16 +761,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BuildTransactionParams&&(identical(other.asset, asset) || other.asset == asset)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.sender, sender) || other.sender == sender)&&(identical(other.recipient, recipient) || other.recipient == recipient));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BuildTransactionParams&&const DeepCollectionEquality().equals(other._paymentIntents, _paymentIntents)&&const DeepCollectionEquality().equals(other.capabilities, capabilities));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,asset,amount,sender,recipient);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_paymentIntents),const DeepCollectionEquality().hash(capabilities));
 
 @override
 String toString() {
-  return 'BuildTransactionParams(asset: $asset, amount: $amount, sender: $sender, recipient: $recipient)';
+  return 'BuildTransactionParams(paymentIntents: $paymentIntents, capabilities: $capabilities)';
 }
 
 
@@ -513,7 +781,7 @@ abstract mixin class _$BuildTransactionParamsCopyWith<$Res> implements $BuildTra
   factory _$BuildTransactionParamsCopyWith(_BuildTransactionParams value, $Res Function(_BuildTransactionParams) _then) = __$BuildTransactionParamsCopyWithImpl;
 @override @useResult
 $Res call({
- String asset, String amount, String sender, String recipient
+ List<PaymentIntentParams> paymentIntents, dynamic capabilities
 });
 
 
@@ -530,13 +798,11 @@ class __$BuildTransactionParamsCopyWithImpl<$Res>
 
 /// Create a copy of BuildTransactionParams
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? asset = null,Object? amount = null,Object? sender = null,Object? recipient = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? paymentIntents = null,Object? capabilities = freezed,}) {
   return _then(_BuildTransactionParams(
-asset: null == asset ? _self.asset : asset // ignore: cast_nullable_to_non_nullable
-as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
-as String,sender: null == sender ? _self.sender : sender // ignore: cast_nullable_to_non_nullable
-as String,recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
-as String,
+paymentIntents: null == paymentIntents ? _self._paymentIntents : paymentIntents // ignore: cast_nullable_to_non_nullable
+as List<PaymentIntentParams>,capabilities: freezed == capabilities ? _self.capabilities : capabilities // ignore: cast_nullable_to_non_nullable
+as dynamic,
   ));
 }
 

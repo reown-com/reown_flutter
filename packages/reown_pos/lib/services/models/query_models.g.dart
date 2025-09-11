@@ -21,22 +21,37 @@ Map<String, dynamic> _$QueryParamsToJson(_QueryParams instance) =>
       'sv': instance.sv,
     };
 
-_BuildTransactionParams _$BuildTransactionParamsFromJson(
-  Map<String, dynamic> json,
-) => _BuildTransactionParams(
-  asset: json['asset'] as String,
-  amount: json['amount'] as String,
-  sender: json['sender'] as String,
-  recipient: json['recipient'] as String,
-);
+_PaymentIntentParams _$PaymentIntentParamsFromJson(Map<String, dynamic> json) =>
+    _PaymentIntentParams(
+      asset: json['asset'] as String,
+      amount: json['amount'] as String,
+      sender: json['sender'] as String,
+      recipient: json['recipient'] as String,
+    );
 
-Map<String, dynamic> _$BuildTransactionParamsToJson(
-  _BuildTransactionParams instance,
+Map<String, dynamic> _$PaymentIntentParamsToJson(
+  _PaymentIntentParams instance,
 ) => <String, dynamic>{
   'asset': instance.asset,
   'amount': instance.amount,
   'sender': instance.sender,
   'recipient': instance.recipient,
+};
+
+_BuildTransactionParams _$BuildTransactionParamsFromJson(
+  Map<String, dynamic> json,
+) => _BuildTransactionParams(
+  paymentIntents: (json['paymentIntents'] as List<dynamic>)
+      .map((e) => PaymentIntentParams.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  capabilities: json['capabilities'],
+);
+
+Map<String, dynamic> _$BuildTransactionParamsToJson(
+  _BuildTransactionParams instance,
+) => <String, dynamic>{
+  'paymentIntents': instance.paymentIntents,
+  'capabilities': instance.capabilities,
 };
 
 _CheckTransactionParams _$CheckTransactionParamsFromJson(

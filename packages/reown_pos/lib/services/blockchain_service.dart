@@ -11,25 +11,26 @@ mixin BlockchainService implements IBlockchainService {
   static final String _baseUrl = 'https://rpc.walletconnect.org/v1/json-rpc';
 
   @override
-  Future<JsonRpcResponse> reownPosBuildTransaction({
+  Future<JsonRpcResponse> posBuildTransaction({
     required BuildTransactionParams params,
     required QueryParams queryParams,
   }) async {
     final jsonRpcRequest = JsonRpcRequest(
       id: JsonRpcUtils.payloadId(),
-      method: 'reown_pos_buildTransaction',
+      method: 'wc_pos_buildTransactions',
       params: params.toJson(),
     );
 
     final qParams = queryParams.toJson();
+    final jsonRequest = jsonRpcRequest.toJson();
     final url = Uri.parse(_baseUrl).replace(queryParameters: qParams);
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(jsonRpcRequest.toJson()),
+      body: jsonEncode(jsonRequest),
     );
 
-    final responseData = json.decode(response.body);
+    final responseData = jsonDecode(response.body);
     final jsonResponse = JsonRpcResponse.fromJson(responseData);
 
     if (jsonResponse.error != null) {
@@ -40,25 +41,55 @@ mixin BlockchainService implements IBlockchainService {
   }
 
   @override
-  Future<JsonRpcResponse> reownPosCheckTransaction({
+  Future<JsonRpcResponse> posCheckTransaction({
     required CheckTransactionParams params,
     required QueryParams queryParams,
   }) async {
     final jsonRpcRequest = JsonRpcRequest(
       id: JsonRpcUtils.payloadId(),
-      method: 'reown_pos_checkTransaction',
+      method: 'wc_pos_checkTransaction',
       params: params.toJson(),
     );
 
     final qParams = queryParams.toJson();
+    final jsonRequest = jsonRpcRequest.toJson();
     final url = Uri.parse(_baseUrl).replace(queryParameters: qParams);
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(jsonRpcRequest.toJson()),
+      body: jsonEncode(jsonRequest),
     );
 
-    final responseData = json.decode(response.body);
+    final responseData = jsonDecode(response.body);
+    final jsonResponse = JsonRpcResponse.fromJson(responseData);
+
+    if (jsonResponse.error != null) {
+      throw jsonResponse.error!;
+    }
+
+    return jsonResponse;
+  }
+
+  @override
+  Future<JsonRpcResponse> posSupportedNetworks({
+    required QueryParams queryParams,
+  }) async {
+    final jsonRpcRequest = JsonRpcRequest(
+      id: JsonRpcUtils.payloadId(),
+      method: 'wc_pos_supportedNetworks',
+      params: {},
+    );
+
+    final qParams = queryParams.toJson();
+    final jsonRequest = jsonRpcRequest.toJson();
+    final url = Uri.parse(_baseUrl).replace(queryParameters: qParams);
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(jsonRequest),
+    );
+
+    final responseData = jsonDecode(response.body);
     final jsonResponse = JsonRpcResponse.fromJson(responseData);
 
     if (jsonResponse.error != null) {
