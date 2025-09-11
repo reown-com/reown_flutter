@@ -167,7 +167,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_core* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_core"
+            text: "*reown_core*: ^${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_core"
 
   publish-sign:
     name: Publish reown_sign
@@ -277,11 +277,11 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_sign* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_sign"
+            text: "*reown_sign*: ^${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_sign"
 
   publish-appkit:
     name: Publish reown_appkit
-    needs: [create-branch, publish-core, publish-sign]
+    needs: [create-branch, publish-core, publish-sign, publish-walletkit]
     runs-on: ubuntu-latest
     steps:
       - name: Check if reown_appkit should be published
@@ -320,8 +320,8 @@ jobs:
             echo "Setting reown_core to ^$CORE_VERSION"
             yq e ".dependencies.reown_core = \"^$CORE_VERSION\"" -i pubspec.yaml
           fi
-          # Update reown_sign if it was published (either by its own change or due to core change)
-          if [[ ("${{ github.event.inputs.sign }}" == 'true' || "${{ github.event.inputs.core }}" == 'true') && -n "$SIGN_VERSION" ]]; then
+          # Update reown_sign if it was published
+          if [[ "${{ github.event.inputs.sign }}" == 'true' && -n "$SIGN_VERSION" ]]; then
             echo "Setting reown_sign to ^$SIGN_VERSION"
             yq e ".dependencies.reown_sign = \"^$SIGN_VERSION\"" -i pubspec.yaml
           fi
@@ -390,7 +390,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_appkit* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_appkit"
+            text: "*reown_appkit*: ^${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_appkit"
 
   publish-walletkit:
     name: Publish reown_walletkit
@@ -433,7 +433,7 @@ jobs:
             echo "Setting reown_core to ^$CORE_VERSION"
             yq e ".dependencies.reown_core = \"^$CORE_VERSION\"" -i pubspec.yaml
           fi
-          if [[ ("${{ github.event.inputs.sign }}" == 'true' || "${{ github.event.inputs.core }}" == 'true') && -n "$SIGN_VERSION" ]]; then
+          if [[ "${{ github.event.inputs.sign }}" == 'true' && -n "$SIGN_VERSION" ]]; then
             echo "Setting reown_sign to ^$SIGN_VERSION"
             yq e ".dependencies.reown_sign = \"^$SIGN_VERSION\"" -i pubspec.yaml
           fi
@@ -506,7 +506,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_walletkit* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_walletkit"
+            text: "*reown_walletkit*: ^${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_walletkit"
 
   publish-yttrium:
     name: Publish reown_yttrium
@@ -587,7 +587,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_yttrium* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_yttrium"
+            text: "*reown_yttrium*: ^${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_yttrium"
 
   publish-cli:
     name: Publish reown_cli
@@ -668,7 +668,7 @@ jobs:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
           payload: |
-            text: "*reown_cli* version ${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_cli"
+            text: "*reown_cli*: ^${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_cli"
 
   create-pull-request:
     name: Create Pull Request
@@ -682,15 +682,13 @@ jobs:
           ref: ${{ needs.create-branch.outputs.branch_name }}
           fetch-depth: 0
 
-      - name: Check if branch is ahead of develop
+      - name: Check if there are any changes to commit
         id: check_changes
         run: |
           BRANCH_NAME="${{ needs.create-branch.outputs.branch_name }}"
-          # Fetch develop to ensure we have the latest
-          git fetch origin develop:develop
-          # Count commits in branch not in develop
-          COMMITS_AHEAD=$(git rev-list ${BRANCH_NAME} ^develop --count)
-          if [[ "$COMMITS_AHEAD" -gt 0 ]]; then
+          git fetch origin develop
+          COMMITS_AHEAD=$(git rev-list --count origin/develop..HEAD)
+          if [ "$COMMITS_AHEAD" -gt 0 ]; then
             echo "has_changes=true" >> $GITHUB_OUTPUT
             echo "Branch is ahead of develop by $COMMITS_AHEAD commits, will create PR"
           else

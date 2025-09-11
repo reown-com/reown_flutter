@@ -1,3 +1,7 @@
+## 1.6.1
+
+- Bug fix #230
+
 ## 1.6.0
 
 - LICENSE UPDATE

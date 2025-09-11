@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs
 
-import 'package:reown_appkit/reown_appkit.dart' as reown_appkit;
+import 'package:reown_appkit/version.dart' as reown_appkit;
 import 'package:reown_core/version.dart' as reown_core;
 import 'package:reown_sign/version.dart' as reown_sign;
 
