@@ -682,20 +682,15 @@ jobs:
           ref: ${{ needs.create-branch.outputs.branch_name }}
           fetch-depth: 0
 
-      - name: Check if branch is ahead of develop
+      - name: Check if there are any changes to commit
         id: check_changes
         run: |
-          BRANCH_NAME="${{ needs.create-branch.outputs.branch_name }}"
-          # Fetch develop to ensure we have the latest
-          git fetch origin develop:develop
-          # Count commits in branch not in develop
-          COMMITS_AHEAD=$(git rev-list ${BRANCH_NAME} ^develop --count)
-          if [[ "$COMMITS_AHEAD" -gt 0 ]]; then
+          if [[ -n $(git status --porcelain) ]]; then
             echo "has_changes=true" >> $GITHUB_OUTPUT
-            echo "Branch is ahead of develop by $COMMITS_AHEAD commits, will create PR"
+            echo "Changes detected, will create PR"
           else
             echo "has_changes=false" >> $GITHUB_OUTPUT
-            echo "Branch is not ahead of develop, skipping PR creation"
+            echo "No changes detected, skipping PR creation"
           fi
 
       - name: Push all changes
