@@ -17,7 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: walletconnect/actions/github/cta-assistant@master
-        with:
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           cta-document-url: "https://github.com/reown-com/copyright-transfer-agreement/blob/main/copyright-transfer-agreement/v1/Copyright-Transfer-Agreement-GITHUB.pdf"
           # signatures-path: "legal/signatures/cta.json"
           # signatures-branch: "cta-signatures"
