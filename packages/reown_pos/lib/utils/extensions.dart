@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:reown_pos/reown_pos.dart';
 import 'package:reown_pos/utils/caip_validator.dart';
@@ -44,5 +46,28 @@ extension PaymentIntentExtension on PaymentIntent {
       return recipient;
     }
     return '${token.network.chainId}:$recipient';
+  }
+}
+
+extension ListTokenExtension on List<PosToken> {
+  String toJson() {
+    return map((t) => jsonEncode(t.toJson())).toList().toString();
+  }
+
+  List<String> extractNetworks() {
+    return map((e) => e.network.chainId).toSet().toList();
+  }
+
+  List<String> getChainsByNamespace(String ns) {
+    return extractNetworks().where((e) {
+      return NamespaceUtils.getNamespaceFromChain(e) == ns;
+    }).toList();
+  }
+
+  List<PosToken> removeUnsupported(Iterable<String> supportedNamespaces) {
+    return this..removeWhere((e) {
+      final ns = NamespaceUtils.getNamespaceFromChain(e.network.chainId);
+      return supportedNamespaces.contains(ns) == false;
+    });
   }
 }

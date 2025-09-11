@@ -116,3 +116,27 @@ sealed class BuildTransactionResult with _$BuildTransactionResult {
   factory BuildTransactionResult.fromJson(Map<String, dynamic> json) =>
       _$BuildTransactionResultFromJson(json);
 }
+
+@freezed
+sealed class SupportedNamespace with _$SupportedNamespace {
+  const factory SupportedNamespace({
+    required List<String> assetNamespaces,
+    dynamic capabilities,
+    required List<String> events,
+    required List<String> methods,
+    required String name,
+  }) = _SupportedNamespace;
+
+  factory SupportedNamespace.fromJson(Map<String, dynamic> json) =>
+      _$SupportedNamespaceFromJson(json);
+}
+
+@freezed
+sealed class SupportedNetworksResult with _$SupportedNetworksResult {
+  const factory SupportedNetworksResult({
+    required List<SupportedNamespace> namespaces,
+  }) = _SupportedNetworksResult;
+
+  factory SupportedNetworksResult.fromJson(Map<String, dynamic> json) =>
+      _$SupportedNetworksResultFromJson(json);
+}

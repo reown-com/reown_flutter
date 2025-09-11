@@ -74,28 +74,58 @@ mixin BlockchainService implements IBlockchainService {
   Future<JsonRpcResponse> posSupportedNetworks({
     required QueryParams queryParams,
   }) async {
-    final jsonRpcRequest = JsonRpcRequest(
-      id: JsonRpcUtils.payloadId(),
-      method: 'wc_pos_supportedNetworks',
-      params: {},
-    );
+    await Future.delayed(Duration(seconds: 1));
+    return JsonRpcResponse.fromJson({
+      'id': 1,
+      'result': {
+        "namespaces": [
+          {
+            "assetNamespaces": ["erc20", "slip44"],
+            "capabilities": null,
+            "events": [],
+            "methods": ["eth_sendTransaction"],
+            "name": "eip155",
+          },
+          // {
+          //   "assetNamespaces": ["token", "slip44"],
+          //   "capabilities": null,
+          //   "events": [],
+          //   "methods": ["solana_signAndSendTransaction"],
+          //   "name": "solana",
+          // },
+          // {
+          //   "assetNamespaces": ["trc20", "slip44"],
+          //   "capabilities": null,
+          //   "events": [],
+          //   "methods": ["tron_signTransaction"],
+          //   "name": "tron",
+          // },
+        ],
+      },
+    });
 
-    final qParams = queryParams.toJson();
-    final jsonRequest = jsonRpcRequest.toJson();
-    final url = Uri.parse(_baseUrl).replace(queryParameters: qParams);
-    final response = await http.post(
-      url,
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(jsonRequest),
-    );
+    // final jsonRpcRequest = JsonRpcRequest(
+    //   id: JsonRpcUtils.payloadId(),
+    //   method: 'wc_pos_supportedNetworks',
+    //   params: {},
+    // );
 
-    final responseData = jsonDecode(response.body);
-    final jsonResponse = JsonRpcResponse.fromJson(responseData);
+    // final qParams = queryParams.toJson();
+    // final jsonRequest = jsonRpcRequest.toJson();
+    // final url = Uri.parse(_baseUrl).replace(queryParameters: qParams);
+    // final response = await http.post(
+    //   url,
+    //   headers: {'Content-Type': 'application/json'},
+    //   body: jsonEncode(jsonRequest),
+    // );
 
-    if (jsonResponse.error != null) {
-      throw jsonResponse.error!;
-    }
+    // final responseData = jsonDecode(response.body);
+    // final jsonResponse = JsonRpcResponse.fromJson(responseData);
 
-    return jsonResponse;
+    // if (jsonResponse.error != null) {
+    //   throw jsonResponse.error!;
+    // }
+
+    // return jsonResponse;
   }
 }

@@ -18,6 +18,7 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
   IReownCore? _reOwnCore;
 
   final List<PosToken> _configuredTokens = [];
+  final List<SupportedNamespace> _supportedNamespaces = [];
   final Map<String, RequiredNamespace> _posNamespaces = {};
   final List<PaymentIntent> _pendingIntents = [];
   // var _statusCheckCompleter = Completer<CheckResponse>();
@@ -113,13 +114,15 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
       await _reOwnCore!.start();
       await reOwnSign!.init();
 
-      // TODO implement posSupportedNetworks
-      // final JsonRpcResponse response = await posSupportedNetworks(
-      //   queryParams: _queryParams!,
-      // );
-      // _reOwnCore!.logger.d(
-      //   '[$runtimeType] posSupportedNetworks ${jsonEncode(response.result)}',
-      // );
+      final JsonRpcResponse response = await posSupportedNetworks(
+        queryParams: _queryParams!,
+      );
+      final result = SupportedNetworksResult.fromJson(response.result);
+      _supportedNamespaces
+        ..clear()
+        ..addAll(result.namespaces);
+
+      _configurePosNamespaces();
 
       _registerListeners();
 
@@ -146,7 +149,7 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
       ..clear()
       ..addAll(tokens);
 
-    _setNamespacesFromTokens(tokens);
+    _configurePosNamespaces();
   }
 
   ConnectResponse? _connectResponse;
@@ -330,44 +333,26 @@ extension _SignEventListeners on ReownPos {
 }
 
 extension _PrivateMembers on ReownPos {
-  void _setNamespacesFromTokens(List<PosToken> tokens) {
-    final List<PosNetwork> chains = tokens.map((e) => e.network).toList();
-    // TODO implement posSupportedNetworks to actually check the supported namespaces
-    final evmChains = chains
-        .where((chain) => chain.chainId.startsWith('eip155'))
-        .toSet();
-    if (evmChains.isNotEmpty) {
-      _posNamespaces['eip155'] = RequiredNamespace(
-        chains: evmChains.map((chain) => chain.chainId).toList(),
-        methods: ['eth_sendTransaction'],
-        events: ['chainChanged', 'accountsChanged'],
+  void _configurePosNamespaces() {
+    for (var supportedNamespace in _supportedNamespaces) {
+      final namespace = supportedNamespace.name;
+      final chains = _configuredTokens.getChainsByNamespace(namespace);
+      final methods = supportedNamespace.methods;
+      final events = supportedNamespace.events;
+      _posNamespaces[namespace] = RequiredNamespace(
+        chains: chains,
+        methods: methods,
+        events: events,
       );
     }
 
-    final solanaChains = chains
-        .where((chain) => chain.chainId.startsWith('solana'))
-        .toSet();
-    if (solanaChains.isNotEmpty) {
-      _posNamespaces['solana'] = RequiredNamespace(
-        chains: solanaChains.map((chain) => chain.chainId).toList(),
-        methods: ['solana_signAndSendTransaction'],
-        events: [],
-      );
-    }
-
-    final tronChains = chains
-        .where((chain) => chain.chainId.startsWith('tron'))
-        .toSet();
-    if (tronChains.isNotEmpty) {
-      _posNamespaces['tron'] = RequiredNamespace(
-        chains: tronChains.map((chain) => chain.chainId).toList(),
-        methods: ['tron_signTransaction'],
-        events: [],
-      );
+    if (_supportedNamespaces.isNotEmpty) {
+      final supportedNamespaces = _posNamespaces.keys.toList();
+      _configuredTokens.removeUnsupported(supportedNamespaces);
     }
 
     _reOwnCore!.logger.d(
-      '[$runtimeType] set namespaces: ${jsonEncode(_posNamespaces)}}',
+      '[$runtimeType] namespaces: ${jsonEncode(_posNamespaces)}',
     );
   }
 

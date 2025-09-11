@@ -2401,4 +2401,554 @@ as List<TransactionRpc>,
 
 }
 
+
+/// @nodoc
+mixin _$SupportedNamespace {
+
+ List<String> get assetNamespaces; dynamic get capabilities; List<String> get events; List<String> get methods; String get name;
+/// Create a copy of SupportedNamespace
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SupportedNamespaceCopyWith<SupportedNamespace> get copyWith => _$SupportedNamespaceCopyWithImpl<SupportedNamespace>(this as SupportedNamespace, _$identity);
+
+  /// Serializes this SupportedNamespace to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SupportedNamespace&&const DeepCollectionEquality().equals(other.assetNamespaces, assetNamespaces)&&const DeepCollectionEquality().equals(other.capabilities, capabilities)&&const DeepCollectionEquality().equals(other.events, events)&&const DeepCollectionEquality().equals(other.methods, methods)&&(identical(other.name, name) || other.name == name));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(assetNamespaces),const DeepCollectionEquality().hash(capabilities),const DeepCollectionEquality().hash(events),const DeepCollectionEquality().hash(methods),name);
+
+@override
+String toString() {
+  return 'SupportedNamespace(assetNamespaces: $assetNamespaces, capabilities: $capabilities, events: $events, methods: $methods, name: $name)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SupportedNamespaceCopyWith<$Res>  {
+  factory $SupportedNamespaceCopyWith(SupportedNamespace value, $Res Function(SupportedNamespace) _then) = _$SupportedNamespaceCopyWithImpl;
+@useResult
+$Res call({
+ List<String> assetNamespaces, dynamic capabilities, List<String> events, List<String> methods, String name
+});
+
+
+
+
+}
+/// @nodoc
+class _$SupportedNamespaceCopyWithImpl<$Res>
+    implements $SupportedNamespaceCopyWith<$Res> {
+  _$SupportedNamespaceCopyWithImpl(this._self, this._then);
+
+  final SupportedNamespace _self;
+  final $Res Function(SupportedNamespace) _then;
+
+/// Create a copy of SupportedNamespace
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? assetNamespaces = null,Object? capabilities = freezed,Object? events = null,Object? methods = null,Object? name = null,}) {
+  return _then(_self.copyWith(
+assetNamespaces: null == assetNamespaces ? _self.assetNamespaces : assetNamespaces // ignore: cast_nullable_to_non_nullable
+as List<String>,capabilities: freezed == capabilities ? _self.capabilities : capabilities // ignore: cast_nullable_to_non_nullable
+as dynamic,events: null == events ? _self.events : events // ignore: cast_nullable_to_non_nullable
+as List<String>,methods: null == methods ? _self.methods : methods // ignore: cast_nullable_to_non_nullable
+as List<String>,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SupportedNamespace].
+extension SupportedNamespacePatterns on SupportedNamespace {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SupportedNamespace value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SupportedNamespace() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SupportedNamespace value)  $default,){
+final _that = this;
+switch (_that) {
+case _SupportedNamespace():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SupportedNamespace value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SupportedNamespace() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<String> assetNamespaces,  dynamic capabilities,  List<String> events,  List<String> methods,  String name)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SupportedNamespace() when $default != null:
+return $default(_that.assetNamespaces,_that.capabilities,_that.events,_that.methods,_that.name);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<String> assetNamespaces,  dynamic capabilities,  List<String> events,  List<String> methods,  String name)  $default,) {final _that = this;
+switch (_that) {
+case _SupportedNamespace():
+return $default(_that.assetNamespaces,_that.capabilities,_that.events,_that.methods,_that.name);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<String> assetNamespaces,  dynamic capabilities,  List<String> events,  List<String> methods,  String name)?  $default,) {final _that = this;
+switch (_that) {
+case _SupportedNamespace() when $default != null:
+return $default(_that.assetNamespaces,_that.capabilities,_that.events,_that.methods,_that.name);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _SupportedNamespace implements SupportedNamespace {
+  const _SupportedNamespace({required final  List<String> assetNamespaces, this.capabilities, required final  List<String> events, required final  List<String> methods, required this.name}): _assetNamespaces = assetNamespaces,_events = events,_methods = methods;
+  factory _SupportedNamespace.fromJson(Map<String, dynamic> json) => _$SupportedNamespaceFromJson(json);
+
+ final  List<String> _assetNamespaces;
+@override List<String> get assetNamespaces {
+  if (_assetNamespaces is EqualUnmodifiableListView) return _assetNamespaces;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_assetNamespaces);
+}
+
+@override final  dynamic capabilities;
+ final  List<String> _events;
+@override List<String> get events {
+  if (_events is EqualUnmodifiableListView) return _events;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_events);
+}
+
+ final  List<String> _methods;
+@override List<String> get methods {
+  if (_methods is EqualUnmodifiableListView) return _methods;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_methods);
+}
+
+@override final  String name;
+
+/// Create a copy of SupportedNamespace
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SupportedNamespaceCopyWith<_SupportedNamespace> get copyWith => __$SupportedNamespaceCopyWithImpl<_SupportedNamespace>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SupportedNamespaceToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SupportedNamespace&&const DeepCollectionEquality().equals(other._assetNamespaces, _assetNamespaces)&&const DeepCollectionEquality().equals(other.capabilities, capabilities)&&const DeepCollectionEquality().equals(other._events, _events)&&const DeepCollectionEquality().equals(other._methods, _methods)&&(identical(other.name, name) || other.name == name));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_assetNamespaces),const DeepCollectionEquality().hash(capabilities),const DeepCollectionEquality().hash(_events),const DeepCollectionEquality().hash(_methods),name);
+
+@override
+String toString() {
+  return 'SupportedNamespace(assetNamespaces: $assetNamespaces, capabilities: $capabilities, events: $events, methods: $methods, name: $name)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SupportedNamespaceCopyWith<$Res> implements $SupportedNamespaceCopyWith<$Res> {
+  factory _$SupportedNamespaceCopyWith(_SupportedNamespace value, $Res Function(_SupportedNamespace) _then) = __$SupportedNamespaceCopyWithImpl;
+@override @useResult
+$Res call({
+ List<String> assetNamespaces, dynamic capabilities, List<String> events, List<String> methods, String name
+});
+
+
+
+
+}
+/// @nodoc
+class __$SupportedNamespaceCopyWithImpl<$Res>
+    implements _$SupportedNamespaceCopyWith<$Res> {
+  __$SupportedNamespaceCopyWithImpl(this._self, this._then);
+
+  final _SupportedNamespace _self;
+  final $Res Function(_SupportedNamespace) _then;
+
+/// Create a copy of SupportedNamespace
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? assetNamespaces = null,Object? capabilities = freezed,Object? events = null,Object? methods = null,Object? name = null,}) {
+  return _then(_SupportedNamespace(
+assetNamespaces: null == assetNamespaces ? _self._assetNamespaces : assetNamespaces // ignore: cast_nullable_to_non_nullable
+as List<String>,capabilities: freezed == capabilities ? _self.capabilities : capabilities // ignore: cast_nullable_to_non_nullable
+as dynamic,events: null == events ? _self._events : events // ignore: cast_nullable_to_non_nullable
+as List<String>,methods: null == methods ? _self._methods : methods // ignore: cast_nullable_to_non_nullable
+as List<String>,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$SupportedNetworksResult {
+
+ List<SupportedNamespace> get namespaces;
+/// Create a copy of SupportedNetworksResult
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SupportedNetworksResultCopyWith<SupportedNetworksResult> get copyWith => _$SupportedNetworksResultCopyWithImpl<SupportedNetworksResult>(this as SupportedNetworksResult, _$identity);
+
+  /// Serializes this SupportedNetworksResult to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SupportedNetworksResult&&const DeepCollectionEquality().equals(other.namespaces, namespaces));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(namespaces));
+
+@override
+String toString() {
+  return 'SupportedNetworksResult(namespaces: $namespaces)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SupportedNetworksResultCopyWith<$Res>  {
+  factory $SupportedNetworksResultCopyWith(SupportedNetworksResult value, $Res Function(SupportedNetworksResult) _then) = _$SupportedNetworksResultCopyWithImpl;
+@useResult
+$Res call({
+ List<SupportedNamespace> namespaces
+});
+
+
+
+
+}
+/// @nodoc
+class _$SupportedNetworksResultCopyWithImpl<$Res>
+    implements $SupportedNetworksResultCopyWith<$Res> {
+  _$SupportedNetworksResultCopyWithImpl(this._self, this._then);
+
+  final SupportedNetworksResult _self;
+  final $Res Function(SupportedNetworksResult) _then;
+
+/// Create a copy of SupportedNetworksResult
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? namespaces = null,}) {
+  return _then(_self.copyWith(
+namespaces: null == namespaces ? _self.namespaces : namespaces // ignore: cast_nullable_to_non_nullable
+as List<SupportedNamespace>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SupportedNetworksResult].
+extension SupportedNetworksResultPatterns on SupportedNetworksResult {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SupportedNetworksResult value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SupportedNetworksResult() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SupportedNetworksResult value)  $default,){
+final _that = this;
+switch (_that) {
+case _SupportedNetworksResult():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SupportedNetworksResult value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SupportedNetworksResult() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<SupportedNamespace> namespaces)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SupportedNetworksResult() when $default != null:
+return $default(_that.namespaces);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<SupportedNamespace> namespaces)  $default,) {final _that = this;
+switch (_that) {
+case _SupportedNetworksResult():
+return $default(_that.namespaces);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<SupportedNamespace> namespaces)?  $default,) {final _that = this;
+switch (_that) {
+case _SupportedNetworksResult() when $default != null:
+return $default(_that.namespaces);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _SupportedNetworksResult implements SupportedNetworksResult {
+  const _SupportedNetworksResult({required final  List<SupportedNamespace> namespaces}): _namespaces = namespaces;
+  factory _SupportedNetworksResult.fromJson(Map<String, dynamic> json) => _$SupportedNetworksResultFromJson(json);
+
+ final  List<SupportedNamespace> _namespaces;
+@override List<SupportedNamespace> get namespaces {
+  if (_namespaces is EqualUnmodifiableListView) return _namespaces;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_namespaces);
+}
+
+
+/// Create a copy of SupportedNetworksResult
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SupportedNetworksResultCopyWith<_SupportedNetworksResult> get copyWith => __$SupportedNetworksResultCopyWithImpl<_SupportedNetworksResult>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SupportedNetworksResultToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SupportedNetworksResult&&const DeepCollectionEquality().equals(other._namespaces, _namespaces));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_namespaces));
+
+@override
+String toString() {
+  return 'SupportedNetworksResult(namespaces: $namespaces)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SupportedNetworksResultCopyWith<$Res> implements $SupportedNetworksResultCopyWith<$Res> {
+  factory _$SupportedNetworksResultCopyWith(_SupportedNetworksResult value, $Res Function(_SupportedNetworksResult) _then) = __$SupportedNetworksResultCopyWithImpl;
+@override @useResult
+$Res call({
+ List<SupportedNamespace> namespaces
+});
+
+
+
+
+}
+/// @nodoc
+class __$SupportedNetworksResultCopyWithImpl<$Res>
+    implements _$SupportedNetworksResultCopyWith<$Res> {
+  __$SupportedNetworksResultCopyWithImpl(this._self, this._then);
+
+  final _SupportedNetworksResult _self;
+  final $Res Function(_SupportedNetworksResult) _then;
+
+/// Create a copy of SupportedNetworksResult
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? namespaces = null,}) {
+  return _then(_SupportedNetworksResult(
+namespaces: null == namespaces ? _self._namespaces : namespaces // ignore: cast_nullable_to_non_nullable
+as List<SupportedNamespace>,
+  ));
+}
+
+
+}
+
 // dart format on
