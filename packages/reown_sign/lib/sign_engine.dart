@@ -2850,7 +2850,7 @@ class ReownSign implements IReownSign {
         try {
           final result = NearChainUtils.parseResponse(response.result);
           final hash = NearChainUtils.computeNearHashFromTxBytes(result);
-          return <String>[hash.toString()];
+          return <String>[hash];
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: near, $e');
         }
@@ -2884,7 +2884,7 @@ class ReownSign implements IReownSign {
             );
             final signedHex = hex.encode(extrinsic);
             final hash = PolkadotChainUtils.deriveExtrinsicHash(signedHex);
-            return <String>[hash.toString()];
+            return <String>[hash];
           }
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: polkadot, $e');
@@ -2914,7 +2914,7 @@ class ReownSign implements IReownSign {
               authInfoBytesBase64: authInfoBytes,
               signatureBase64: signature['signature'],
             );
-            return <String>[hash.toString()];
+            return <String>[hash];
           }
         } catch (e) {
           core.logger.e('[$runtimeType] collectHashes: cosmos, $e');
