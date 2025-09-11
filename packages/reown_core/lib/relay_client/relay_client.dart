@@ -116,20 +116,20 @@ class RelayClient implements IRelayClient {
   }) async {
     _checkInitialized();
 
-    final Map<String, dynamic> data = {
+    final Map<String, dynamic> parameters = {
       'topic': topic,
       'message': message,
-      ...options.toJson(),
+      ...options.toMap(),
     };
 
-    core.logger.i('[$runtimeType] publish topic: $topic, ${options.toJson()}');
+    core.logger.d('[$runtimeType] publish topic: $topic, $parameters');
 
     try {
       await messageTracker.recordMessageEvent(topic, message);
       final _ = await _sendJsonRpcRequest(
         id: JsonRpcUtils.payloadId(entropy: 6),
         method: _buildIRNMethod(IRN_PUBLISH),
-        parameters: data,
+        parameters: parameters,
       );
     } catch (e, s) {
       core.logger.e('[$runtimeType], publish: $e', stackTrace: s);
@@ -144,26 +144,18 @@ class RelayClient implements IRelayClient {
   }) async {
     _checkInitialized();
 
-    final Map<String, dynamic> parameters = {
-      ...payload,
-      ...options.toJson(),
-    };
+    final Map<String, dynamic> parameters = {...payload, ...options.toMap()};
+    core.logger.d('[$runtimeType] publishPayload, $parameters');
 
     try {
       if (options.publishMethod == RelayClient.WC_PROPOSE_SESSION) {
         final topic = payload['pairingTopic'];
         final message = payload['sessionProposal'];
         await messageTracker.recordMessageEvent(topic, message);
-        core.logger.i(
-          '[$runtimeType] publishPayload, topic: $topic, ${options.toJson()}',
-        );
       } else {
         final topic = payload['sessionTopic'];
         final message = payload['sessionProposalResponse'];
         await messageTracker.recordMessageEvent(topic, message);
-        core.logger.i(
-          '[$runtimeType] publishPayload, topic: $topic, ${options.toJson()}',
-        );
       }
       final _ = await _sendJsonRpcRequest(
         id: JsonRpcUtils.payloadId(entropy: 6),
@@ -177,9 +169,7 @@ class RelayClient implements IRelayClient {
   }
 
   @override
-  Future<String> subscribe({
-    required SubscribeOptions options,
-  }) async {
+  Future<String> subscribe({required SubscribeOptions options}) async {
     _checkInitialized();
 
     final topic = options.topic;
