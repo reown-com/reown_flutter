@@ -8,7 +8,7 @@
 
 // SOLANA
 // Failed to estimate gas? Does exists? Unable to reproduce
-// transfer amount exceeds balance error doesn't exist apparently, when this happens it fails on check endpoint.
+// transfer amount exceeds balance error doesn't exist apparently, when this happens it fails on check endpoint. check endpoint response would have to include an error message along with the FAILED key
 // JsonRpcError(code: -9, message: wc_pos_buildTransactions: Validation error: Invalid Recipient: Wrong CAIP-10 format: intent.caip10Recipient)
 // JsonRpcError(code: -9, message: wc_pos_buildTransactions: Validation error: Unable to parse amount with 6 decimals: digit 18 is out of range for base 10)
 // JsonRpcError(code: -9, message: wc_pos_buildTransactions: Validation error: Invalid token mint address: String is the wrong size)
