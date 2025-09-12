@@ -55,14 +55,11 @@ class MultiWalletAddressNotifier extends StateNotifier<MultiWalletAddresses> {
     final prefs = await SharedPreferences.getInstance();
     state = MultiWalletAddresses(
       evmWalletAddress:
-          prefs.getString('evm_wallet_address') ??
-          '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
+          prefs.getString('evm_wallet_address'),
       solanaWalletAddress:
-          prefs.getString('solana_wallet_address') ??
-          '3ZFT4Cwvy17qzEvjvjyVhgQDYrkzfaXHe8wrpFX8Z5tL',
+          prefs.getString('solana_wallet_address'),
       tronWalletAddress:
-          prefs.getString('tron_wallet_address') ??
-          'TEf3WT4YWnxy49uLBCSixXWFpPWZXBP1WP',
+          prefs.getString('tron_wallet_address'),
     );
   }
 
