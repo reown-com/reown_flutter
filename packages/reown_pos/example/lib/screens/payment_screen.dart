@@ -149,10 +149,13 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
       //
     } else if (event is PaymentRequestFailedEvent) {
       final PosApiError apiError = event.apiError;
-      final String message = event.message;
-      final String fullErrorMessage = event.fullError ?? '';
+      final String shortMessage = event.shortMessage;
+      final String fullErrorMessage = event.message;
       print(fullErrorMessage);
-      _showDialogEvent('Error', 'code: ${apiError.name}\nmessage: $message');
+      _showDialogEvent(
+        'Error',
+        'code: ${apiError.name}\nmessage: $shortMessage',
+      );
     } else if (event is PaymentRequestRejectedEvent) {
       _showDialogEvent(event.runtimeType.toString(), 'User rejected payment');
     } else if (event is PaymentBroadcastedEvent) {

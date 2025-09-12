@@ -485,14 +485,12 @@ extension _PrivateMembers on ReownPos {
           onPosEvent.broadcast(PaymentRequestRejectedEvent());
         } else {
           final posApiError = PosApiError.fromJsonRpcError(error);
-          // final errorMessage = cleanErrorMessage(error);
-          final errorMessage = camelToSentence(posApiError.name);
           _reOwnCore!.logger.e('[$runtimeType] JsonRpcError, $error');
           onPosEvent.broadcast(
             PaymentRequestFailedEvent(
-              errorMessage,
+              error.message ?? '',
               posApiError,
-              cleanErrorMessage(error),
+              posApiError.shortMessage,
             ),
           );
         }

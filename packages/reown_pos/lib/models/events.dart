@@ -33,11 +33,11 @@ class PaymentRequestRejectedEvent extends PosErrorEvent {}
 class PaymentRequestFailedEvent extends PosErrorEvent {
   final String message;
   final PosApiError apiError;
-  final String? fullError;
+  final String shortMessage;
   PaymentRequestFailedEvent(
     this.message, [
     this.apiError = PosApiError.unknown,
-    this.fullError,
+    this.shortMessage = '',
   ]);
 }
 
@@ -52,11 +52,11 @@ class PaymentSuccessfulEvent extends PosEvent {
 class PaymentFailedEvent extends PosErrorEvent {
   final String message;
   final PosApiError apiError;
-  final String? fullError;
+  final String shortMessage;
   PaymentFailedEvent(
     this.message, [
     this.apiError = PosApiError.unknown,
-    this.fullError,
+    this.shortMessage = '',
   ]);
 }
 

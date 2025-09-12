@@ -66,6 +66,10 @@ enum PosApiError {
     }
     return PosApiError.unknown;
   }
+
+  String get shortMessage {
+    return camelToSentence(name);
+  }
 }
 
 String cleanErrorMessage(JsonRpcError error) {
