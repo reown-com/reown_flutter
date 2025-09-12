@@ -1,4 +1,5 @@
 import 'package:event/event.dart';
+import 'package:reown_pos/utils/errors.dart';
 
 abstract class PosEvent extends EventArgs {}
 
@@ -6,6 +7,10 @@ abstract class PosErrorEvent extends PosEvent {}
 
 // connection events
 
+///
+/// ℹ️
+/// Pairing URI is created, QR is ready to be displayed
+///
 class QrReadyEvent extends PosEvent {
   final Uri uri;
   QrReadyEvent(this.uri);
@@ -27,7 +32,13 @@ class PaymentRequestRejectedEvent extends PosErrorEvent {}
 
 class PaymentRequestFailedEvent extends PosErrorEvent {
   final String message;
-  PaymentRequestFailedEvent(this.message);
+  final PosApiError apiError;
+  final String? fullError;
+  PaymentRequestFailedEvent(
+    this.message, [
+    this.apiError = PosApiError.unknown,
+    this.fullError,
+  ]);
 }
 
 // payments checking events
@@ -40,7 +51,13 @@ class PaymentSuccessfulEvent extends PosEvent {
 
 class PaymentFailedEvent extends PosErrorEvent {
   final String message;
-  PaymentFailedEvent(this.message);
+  final PosApiError apiError;
+  final String? fullError;
+  PaymentFailedEvent(
+    this.message, [
+    this.apiError = PosApiError.unknown,
+    this.fullError,
+  ]);
 }
 
 class DisconnectedEvent extends PosEvent {}

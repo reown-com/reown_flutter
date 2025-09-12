@@ -9,6 +9,7 @@ import 'package:example/widgets/dtc_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reown_pos/reown_pos.dart';
+import 'package:reown_pos/utils/errors.dart';
 //
 
 class PaymentScreen extends ConsumerStatefulWidget {
@@ -147,7 +148,11 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
     } else if (event is PaymentRequestedEvent) {
       //
     } else if (event is PaymentRequestFailedEvent) {
-      _showDialogEvent(event.runtimeType.toString(), event.message);
+      final PosApiError apiError = event.apiError;
+      final String message = event.message;
+      final String fullErrorMessage = event.fullError ?? '';
+      print(fullErrorMessage);
+      _showDialogEvent('Error', 'code: ${apiError.name}\nmessage: $message');
     } else if (event is PaymentRequestRejectedEvent) {
       _showDialogEvent(event.runtimeType.toString(), 'User rejected payment');
     } else if (event is PaymentBroadcastedEvent) {

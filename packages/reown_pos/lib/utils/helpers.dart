@@ -37,3 +37,39 @@ String toCamelCase(String input) {
     (m) => m[1]!.toUpperCase(),
   );
 }
+
+/// "unableToParseAmountWith6Decimals" -> "Unable To Parse Amount With 6 Decimals"
+/// "parseHTTPResponse2xx" -> "Parse HTTP Response 2xx"
+String camelToTitle(String input) {
+  if (input.isEmpty) return input;
+
+  // Split on boundaries: a) lower/digit -> Upper, b) ACRONYM -> Word,
+  // c) letter <-> digit. Also handle stray '_' or '-' just in case.
+  final words = input
+      .replaceAll(RegExp(r'[_\-]+'), ' ')
+      .split(
+        RegExp(
+          r'(?<=[a-z0-9])(?=[A-Z])' // fooBar
+          r'|(?<=[A-Z])(?=[A-Z][a-z])' // HTTPResponse
+          r'|(?<=[A-Za-z])(?=[0-9])' // value2
+          r'|(?<=[0-9])(?=[A-Za-z])', // 2value
+        ),
+      )
+      .expand((w) => w.split(' '))
+      .where((w) => w.isNotEmpty)
+      .toList();
+
+  String toWord(String s) {
+    final isAcronym = s.length > 1 && !s.contains(RegExp(r'[a-z]'));
+    return isAcronym ? s : s[0].toUpperCase() + s.substring(1).toLowerCase();
+  }
+
+  return words.map(toWord).join(' ');
+}
+
+String camelToSentence(String input) {
+  final title = camelToTitle(input);
+  return title.isEmpty
+      ? title
+      : title[0].toUpperCase() + title.substring(1).toLowerCase();
+}
