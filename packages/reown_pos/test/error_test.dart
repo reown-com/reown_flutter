@@ -50,7 +50,6 @@ void main() {
       for (var i = 0; i < evmErrors.length; i++) {
         final JsonRpcError error = evmErrors[i];
         final PosApiError posApiError = PosApiError.fromJsonRpcError(error);
-        print('$i: $error => $posApiError');
 
         if (i == 0) {
           expect(posApiError, PosApiError.insufficientFundsForTransfer);
@@ -112,7 +111,6 @@ void main() {
       for (var i = 0; i < solanaErrors.length; i++) {
         final JsonRpcError error = solanaErrors[i];
         final PosApiError posApiError = PosApiError.fromJsonRpcError(error);
-        print('$i: $error => $posApiError');
 
         if (i == 0) {
           expect(posApiError, PosApiError.invalidRecipient);

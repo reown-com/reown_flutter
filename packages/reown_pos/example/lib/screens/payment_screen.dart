@@ -140,9 +140,9 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
     if (event is QrReadyEvent) {
       // Used on the main widget to render the QR Code
     } else if (event is ConnectRejectedEvent) {
-      _showDialogEvent(event.runtimeType.toString(), 'User rejected session');
+      _showDialogEvent('${event.runtimeType}', 'User rejected session');
     } else if (event is ConnectFailedEvent) {
-      _showDialogEvent(event.runtimeType.toString(), event.message);
+      _showDialogEvent('${event.runtimeType}', event.message);
     } else if (event is ConnectedEvent) {
       //
     } else if (event is PaymentRequestedEvent) {
@@ -150,20 +150,18 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
     } else if (event is PaymentRequestFailedEvent) {
       final PosApiError apiError = event.apiError;
       final String shortMessage = event.shortMessage;
+      // previously only this 👇 was given, is the full RPC error
       final String fullErrorMessage = event.message;
-      print(fullErrorMessage);
-      _showDialogEvent(
-        'Error',
-        'code: ${apiError.name}\nmessage: $shortMessage',
-      );
+      debugPrint(fullErrorMessage);
+      _showDialogEvent(apiError.name, shortMessage);
     } else if (event is PaymentRequestRejectedEvent) {
-      _showDialogEvent(event.runtimeType.toString(), 'User rejected payment');
+      _showDialogEvent('${event.runtimeType}', 'User rejected payment');
     } else if (event is PaymentBroadcastedEvent) {
       //
     } else if (event is PaymentFailedEvent) {
-      _showDialogEvent(event.runtimeType.toString(), event.message);
+      _showDialogEvent('${event.runtimeType}', event.message);
     } else if (event is PaymentSuccessfulEvent) {
-      _showDialogEvent(event.runtimeType.toString(), event.txHash);
+      _showDialogEvent('${event.runtimeType}', event.txHash);
     } else if (event is DisconnectedEvent) {
       //
     }
