@@ -7,8 +7,8 @@
 // JsonRpcError(code: -9, message: wc_pos_buildTransactions: Validation error: Invalid Sender: Wrong CAIP-10 format: sender)
 
 // SOLANA
-// Failed to estimate gas?
-// transfer amount exceeds balance?? (doesn't exist apparently, it fails on check endpoint)
+// Failed to estimate gas? Does exists? Unable to reproduce
+// transfer amount exceeds balance error doesn't exist apparently, when this happens it fails on check endpoint.
 // JsonRpcError(code: -9, message: wc_pos_buildTransactions: Validation error: Invalid Recipient: Wrong CAIP-10 format: intent.caip10Recipient)
 // JsonRpcError(code: -9, message: wc_pos_buildTransactions: Validation error: Unable to parse amount with 6 decimals: digit 18 is out of range for base 10)
 // JsonRpcError(code: -9, message: wc_pos_buildTransactions: Validation error: Invalid token mint address: String is the wrong size)
@@ -16,8 +16,7 @@
 // JsonRpcError(code: -9, message: wc_pos_buildTransactions: Validation error: Invalid mint account owner: 11111111111111111111111111111111. Expected SPL Token program.)
 
 // TRON
-// When amount is bigger than balance
-// JsonRpcError(code: -9, message: wc_pos_buildTransactions: Internal error: Failed to parse response from /wallet/estimateenergy: error decoding response body)
+// JsonRpcError(code: -9, message: wc_pos_buildTransactions: Internal error: Failed to parse response from /wallet/estimateenergy: error decoding response body) // We get this when amount is bigger than balance. Kind of difficult to associate to an "insufficient funds" error.
 
 import 'package:reown_core/models/json_rpc_models.dart';
 import 'package:reown_pos/utils/helpers.dart';
