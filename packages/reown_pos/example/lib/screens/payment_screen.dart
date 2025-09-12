@@ -38,6 +38,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
 
   void _onPosEvent(PosEvent event) {
     if (event is QrReadyEvent && mounted) {
+      print(event.uri);
       setState(() => _uri = event.uri);
     }
   }
@@ -134,7 +135,7 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
   }
 
   void _onPosEvent(PosEvent event) {
-    debugPrint(event.toString());
+    print(event.toString());
     if (event is QrReadyEvent) {
       // Used on the main widget to render the QR Code
     } else if (event is ConnectRejectedEvent) {

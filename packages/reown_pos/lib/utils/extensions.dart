@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:reown_pos/reown_pos.dart';
+import 'package:reown_pos/services/models/query_models.dart';
+import 'package:reown_pos/services/models/result_models.dart';
 import 'package:reown_pos/utils/caip_validator.dart';
 
 extension SessionDataExtensions on SessionData {
@@ -47,6 +49,23 @@ extension PaymentIntentExtension on PaymentIntent {
     }
     return '${token.network.chainId}:$recipient';
   }
+
+  PaymentIntentParams toPaymentIntentParams(String senderAddress) {
+    return PaymentIntentParams.fromPaymentIntent(this, senderAddress);
+  }
+}
+
+extension ListPaymentIntentExtension on List<PaymentIntent> {
+  List<PaymentIntentParams> toPaymentIntentParamsList(
+    SessionData approvedSession,
+  ) {
+    return map((intent) {
+      final senderAddress = approvedSession.getSenderCaip10Account(
+        intent.token.network.chainId,
+      )!;
+      return intent.toPaymentIntentParams(senderAddress);
+    }).toList();
+  }
 }
 
 extension ListTokenExtension on List<PosToken> {
@@ -69,5 +88,16 @@ extension ListTokenExtension on List<PosToken> {
       final ns = NamespaceUtils.getNamespaceFromChain(e.network.chainId);
       return supportedNamespaces.contains(ns) == false;
     });
+  }
+}
+
+extension ListSupportedNamespaceExtension on List<SupportedNamespace> {
+  dynamic getCapabilities() {
+    Map<String, dynamic> capabilities = {};
+    for (var entry in this) {
+      if (entry.capabilities != null) {
+        capabilities[entry.name] = entry.capabilities;
+      }
+    }
   }
 }
