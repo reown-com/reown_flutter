@@ -31,6 +31,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
 
   void _onPosEvent(PosEvent event) {
     if (event is InitializedEvent) {
+      setState(() => _initializing = false);
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const AmountScreen()),

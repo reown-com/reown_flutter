@@ -137,6 +137,8 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
         ..clear()
         ..addAll(result.namespaces);
 
+      await _expirePreviousPairings();
+
       _configurePosNamespaces();
 
       _registerListeners();
@@ -233,8 +235,11 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
       );
     }
     if (reinit) {
-      _posNamespaces.clear();
       _unregisterListeners();
+      _configuredTokens.clear();
+      _supportedNamespaces.clear();
+      _posNamespaces.clear();
+      _posNamespaces.clear();
       _initialized = false;
     }
   }
@@ -298,14 +303,14 @@ extension _SessionListeners on ReownPos {
 
       // Loop on status check
       final String receiptId = transaction.id;
-      _loopOnStatusCheck(receiptId, requestResponse, (checkResponse) {
+      _loopOnStatusCheck(receiptId, requestResponse, (checkResponse) async {
         _checkResponseHandler(checkResponse, transaction.chainId);
+        await _disconnect(approvedSession.topic);
       });
     } catch (e, s) {
       _errorHandling(e, s, ErrorStep.payment);
+      await _disconnect(approvedSession.topic);
     }
-
-    await _disconnect(approvedSession.topic);
   }
 
   void _checkResponseHandler(CheckResponse checkResponse, String chainId) {
@@ -337,12 +342,12 @@ extension _SignEventListeners on ReownPos {
   }
 
   void _unregisterListeners() {
-    reOwnSign!.onSessionConnect.unsubscribe(_onSessionConnect);
-    reOwnSign!.onSessionDelete.unsubscribe(_onSessionDelete);
-    reOwnSign!.onSessionExpire.unsubscribe(_onSessionExpire);
-    reOwnSign!.onSessionEvent.unsubscribe(_onSessionEvent);
-    reOwnSign!.onSessionUpdate.unsubscribe(_onSessionUpdate);
-    reOwnSign!.onSessionProposalError.unsubscribe(_onSessionProposalError);
+    reOwnSign!.onSessionConnect.unsubscribeAll();
+    reOwnSign!.onSessionDelete.unsubscribeAll();
+    reOwnSign!.onSessionExpire.unsubscribeAll();
+    reOwnSign!.onSessionEvent.unsubscribeAll();
+    reOwnSign!.onSessionUpdate.unsubscribeAll();
+    reOwnSign!.onSessionProposalError.unsubscribeAll();
   }
 
   void _onSessionDelete(SessionDelete? event) async {
