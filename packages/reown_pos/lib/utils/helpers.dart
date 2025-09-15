@@ -11,12 +11,21 @@ String get environment {
   }
 }
 
+// status, txid
 typedef CheckResponse = (String, String?);
 
-enum ErrorStep {
-  connection,
-  payment,
-  statusCheck,
+enum ErrorStep { connection, payment, statusCheck }
+
+// statuses responses from check status endpoint, timeout is added locally
+enum StatusCheck {
+  confirmed,
+  pending,
+  failed,
+  timeout;
+
+  String get value {
+    return name.toUpperCase();
+  }
 }
 
 List<String> splitComplex(String input) {

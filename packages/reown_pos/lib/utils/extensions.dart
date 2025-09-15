@@ -37,6 +37,15 @@ extension JsonRpcErrorExtensions on JsonRpcError {
     }
     return regexp.hasMatch(toString());
   }
+
+  String get cleanMessage {
+    return (message ?? '')
+        .replaceAll('wc_pos_buildTransactions:', '')
+        .replaceAll('wc_pos_checkTransaction:', '')
+        .replaceAll('Internal error:', '')
+        .replaceAll('Validation error:', '')
+        .trim();
+  }
 }
 
 extension PaymentIntentExtension on PaymentIntent {

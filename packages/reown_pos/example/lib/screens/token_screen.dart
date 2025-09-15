@@ -34,12 +34,11 @@ class _TokenScreenState extends ConsumerState<TokenScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final supportedTokens = ref.watch(reownPosProvider).configuredTokens;
+    final configuredTokens = ref.watch(reownPosProvider).configuredTokens;
     final availableTokens = ref.watch(availableTokensProvider);
-    
     // Filter availableTokens to only include those that match supportedTokens
     final filteredAvailableTokens = availableTokens.where((availableToken) {
-      return supportedTokens.any(
+      return configuredTokens.any(
         (supportedToken) =>
             supportedToken.symbol == availableToken.posToken.symbol &&
             supportedToken.network.chainId ==

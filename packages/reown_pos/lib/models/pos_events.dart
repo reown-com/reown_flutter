@@ -5,6 +5,8 @@ abstract class PosEvent extends EventArgs {}
 
 abstract class PosErrorEvent extends PosEvent {}
 
+class InitializedEvent extends PosEvent {}
+
 // connection events
 
 ///
@@ -16,6 +18,10 @@ class QrReadyEvent extends PosEvent {
   QrReadyEvent(this.uri);
 }
 
+///
+/// ℹ️
+/// Wallet is connected
+///
 class ConnectedEvent extends PosEvent {}
 
 class ConnectRejectedEvent extends PosErrorEvent {}
@@ -26,6 +32,11 @@ class ConnectFailedEvent extends PosErrorEvent {
 }
 
 // payment request events
+
+///
+/// ℹ️
+/// Payment was sent to wallet
+///
 class PaymentRequestedEvent extends PosEvent {}
 
 class PaymentRequestRejectedEvent extends PosErrorEvent {}
@@ -42,6 +53,11 @@ class PaymentRequestFailedEvent extends PosErrorEvent {
 }
 
 // payments checking events
+
+///
+/// ℹ️
+/// Payment was sent to blockchain
+///
 class PaymentBroadcastedEvent extends PosEvent {}
 
 class PaymentSuccessfulEvent extends PosEvent {
@@ -60,4 +76,8 @@ class PaymentFailedEvent extends PosErrorEvent {
   ]);
 }
 
+///
+/// ℹ️
+/// Wallet/POS session got disconnected
+///
 class DisconnectedEvent extends PosEvent {}

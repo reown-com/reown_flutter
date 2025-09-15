@@ -1,5 +1,5 @@
 import 'package:event/event.dart';
-import 'package:reown_pos/models/events.dart';
+import 'package:reown_pos/models/pos_events.dart';
 import 'package:reown_pos/models/pos_models.dart';
 import 'package:reown_sign/i_sign_engine.dart';
 
@@ -34,7 +34,7 @@ abstract class IReownPos {
 
   ///
   /// ℹ️
-  /// Initiates the payment flow. Best practice is to wrap it with try/catch 
+  /// Initiates the payment flow. Best practice is to wrap it with try/catch
   /// for any implementation error
   ///
   Future<void> createPaymentIntent({

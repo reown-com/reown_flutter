@@ -9,7 +9,6 @@ import 'package:reown_pos/services/models/query_models.dart';
 import 'package:reown_pos/services/models/result_models.dart';
 import 'package:reown_pos/services/validator_service.dart';
 import 'package:reown_pos/src/version.dart';
-import 'package:reown_pos/utils/errors.dart';
 import 'package:reown_pos/utils/extensions.dart';
 import 'package:reown_pos/utils/helpers.dart';
 
@@ -133,6 +132,7 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
         queryParams: _queryParams!,
       );
       final result = SupportedNetworksResult.fromJson(response.result);
+      _reOwnCore!.logger.d('[$runtimeType] supported networks: $result');
       _supportedNamespaces
         ..clear()
         ..addAll(result.namespaces);
@@ -143,6 +143,7 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
 
       _reOwnCore!.logger.d('[$runtimeType] initialized');
       _initialized = true;
+      onPosEvent.broadcast(InitializedEvent());
     } catch (e) {
       _reOwnCore!.logger.e('[$runtimeType] init error: $e');
       rethrow;
@@ -162,7 +163,7 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
       ).toSignError();
     }
 
-    _reOwnCore!.logger.d('[$runtimeType] set tokens $tokens');
+    _reOwnCore!.logger.d('[$runtimeType] setTokens: $tokens');
 
     _configuredTokens
       ..clear()
@@ -192,16 +193,14 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
       throw StateError('Currently 1 payment at a time is supported');
     }
 
+    _reOwnCore!.logger.d('[$runtimeType] createPaymentIntent: $paymentIntents');
+
     _pendingIntents
       ..clear
       ..addAll(paymentIntents);
 
     // throws if some payment intent is not valid
     isValidPaymentIntents(_pendingIntents.first);
-
-    _reOwnCore!.logger.d(
-      '[$runtimeType] pending intent ${_pendingIntents.first}',
-    );
 
     try {
       _connectResponse = await reOwnSign!.connect(
@@ -225,8 +224,7 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
   ///
   @override
   Future<void> restart({bool reinit = false}) async {
-    // Complete any pending status check completer to prevent hanging
-    // _safeCompleteStatus();
+    _reOwnCore!.logger.d('[$runtimeType] restart');
     _pendingIntents.clear();
     await _expirePreviousPairings();
     if (_connectResponse?.session.isCompleted == false) {
@@ -251,13 +249,13 @@ extension _SessionListeners on ReownPos {
       return;
     }
 
-    _reOwnCore!.logger.d('[$runtimeType] session connected: $approvedSession');
+    _reOwnCore!.logger.d('[$runtimeType] onSessionConnect: $approvedSession');
     onPosEvent.broadcast(ConnectedEvent());
 
-    // TODO
     try {
       isValidSessionApproved(approvedSession, _pendingIntents.first);
     } catch (e) {
+      _reOwnCore!.logger.e('[$runtimeType] invalid session: $e');
       onPosEvent.broadcast(ConnectFailedEvent(e.toString()));
       await _disconnect(approvedSession.topic);
       return;
@@ -276,6 +274,9 @@ extension _SessionListeners on ReownPos {
       );
       final buildTransaction = BuildTransactionResult.fromJson(
         buildResponse.result,
+      );
+      _reOwnCore!.logger.d(
+        '[$runtimeType] build transaction: $buildTransaction',
       );
 
       // Since only one PyamentIntent is supported currently
@@ -297,21 +298,31 @@ extension _SessionListeners on ReownPos {
 
       // Loop on status check
       final String receiptId = transaction.id;
-      _loopOnStatusCheck(receiptId, requestResponse, (CheckResponse response) {
-        // PENDING is handled inside the loop
-        if (response.$1 == 'CONFIRMED') {
-          onPosEvent.broadcast(PaymentSuccessfulEvent(response.$2!));
-        } else if (response.$1 == 'FAILED') {
-          onPosEvent.broadcast(PaymentFailedEvent('Transaction failed'));
-        } else if (response.$1 == 'TIMEOUT') {
-          onPosEvent.broadcast(PaymentFailedEvent('Failed to check status'));
-        }
+      _loopOnStatusCheck(receiptId, requestResponse, (checkResponse) {
+        _checkResponseHandler(checkResponse, transaction.chainId);
       });
     } catch (e, s) {
       _errorHandling(e, s, ErrorStep.payment);
     }
 
     await _disconnect(approvedSession.topic);
+  }
+
+  void _checkResponseHandler(CheckResponse checkResponse, String chainId) {
+    // PENDING is handled inside the loop
+    if (checkResponse.$1 == StatusCheck.confirmed.value) {
+      onPosEvent.broadcast(PaymentSuccessfulEvent(checkResponse.$2!));
+    } else if (checkResponse.$1 == StatusCheck.failed.value) {
+      String message = 'Transaction failed.';
+      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+      if (namespace == 'eip155') {
+        onPosEvent.broadcast(PaymentFailedEvent(message));
+      } else {
+        onPosEvent.broadcast(PaymentFailedEvent('$message Check your balance'));
+      }
+    } else if (checkResponse.$1 == StatusCheck.timeout.value) {
+      onPosEvent.broadcast(PaymentFailedEvent('Failed to check status'));
+    }
   }
 }
 
@@ -397,16 +408,15 @@ extension _PrivateMembers on ReownPos {
   void _loopOnStatusCheck(
     String id,
     dynamic result,
-    Function(CheckResponse response) completer,
+    Function(CheckResponse) completer,
   ) async {
     int maxAttempts = 30;
     int currentAttempt = 0;
-    // _statusCheckCompleter = Completer<(String, String?)>();
 
     while (currentAttempt < maxAttempts) {
       try {
         _reOwnCore!.logger.d(
-          '[$runtimeType] check transaction with params {$id, $result}',
+          '[$runtimeType] check transaction: {$id, $result}',
         );
         final response = await posCheckTransaction(
           params: CheckTransactionParams(
@@ -415,14 +425,15 @@ extension _PrivateMembers on ReownPos {
           ),
           queryParams: _queryParams!,
         );
-        _reOwnCore!.logger.d('[$runtimeType] api response ${response.result}');
-        final String status =
-            ReownCoreUtils.recursiveSearchForMapKey(
-              response.result,
-              'status',
-            ) ??
-            'PENDING';
-        if (status.toUpperCase() == 'PENDING') {
+        _reOwnCore!.logger.d(
+          '[$runtimeType] check response: ${response.result}',
+        );
+        String? status = ReownCoreUtils.recursiveSearchForMapKey(
+          response.result,
+          'status',
+        );
+        status = status ?? StatusCheck.pending.value;
+        if (status == StatusCheck.pending.value) {
           currentAttempt++;
           if (currentAttempt < maxAttempts) {
             // Keep trying
@@ -433,7 +444,7 @@ extension _PrivateMembers on ReownPos {
             await Future.delayed(Duration(milliseconds: ms));
           } else {
             // Max attempts reached, complete with timeout status
-            completer.call(('TIMEOUT', null));
+            completer.call((StatusCheck.timeout.value, null));
             break;
           }
         } else {
@@ -447,34 +458,28 @@ extension _PrivateMembers on ReownPos {
         }
       } catch (e, s) {
         _errorHandling(e, s, ErrorStep.statusCheck);
+        break;
       }
     }
   }
 
-  /// Safely completes the status completer if it hasn't been completed yet
-  // void _safeCompleteStatus({String status = '', String? txid}) {
-  //   if (!_statusCheckCompleter.isCompleted) {
-  //     _statusCheckCompleter.complete((status, txid));
-  //   }
-  // }
-
-  void _errorHandling(dynamic error, dynamic stackTrace, ErrorStep errorStep) {
+  void _errorHandling(dynamic error, dynamic trace, ErrorStep errorStep) {
+    _reOwnCore!.logger.e(
+      '[$runtimeType] ${errorStep.name} error: $error, $trace',
+    );
     if (errorStep == ErrorStep.connection) {
       if (error is JsonRpcError) {
-        _reOwnCore!.logger.e('[$runtimeType] connect error: $error');
         if (error.isUserRejected) {
           onPosEvent.broadcast(ConnectRejectedEvent());
         } else {
           onPosEvent.broadcast(ConnectFailedEvent(error.message ?? ''));
         }
       } else if (error is ReownCoreError) {
-        _reOwnCore!.logger.e('[$runtimeType] error: $error');
         // If session request fails due to the POS restar function we don't need to propagate this error.
         if (error.code != 5090 && error.message != 'ABORTED') {
           onPosEvent.broadcast(ConnectFailedEvent(error.message));
         }
       } else {
-        _reOwnCore!.logger.e('[$runtimeType] error: $error, $stackTrace');
         onPosEvent.broadcast(ConnectFailedEvent(error.toString()));
       }
     } else {
@@ -485,29 +490,23 @@ extension _PrivateMembers on ReownPos {
           onPosEvent.broadcast(PaymentRequestRejectedEvent());
         } else {
           final posApiError = PosApiError.fromJsonRpcError(error);
-          _reOwnCore!.logger.e('[$runtimeType] JsonRpcError, $error');
           onPosEvent.broadcast(
             PaymentRequestFailedEvent(
-              error.message ?? '',
+              error.cleanMessage,
               posApiError,
               posApiError.shortMessage,
             ),
           );
         }
       } else if (error is ReownCoreError) {
-        _reOwnCore!.logger.e('[$runtimeType] ReownCoreError, $error');
         onPosEvent.broadcast(PaymentRequestFailedEvent(error.message));
       } else {
-        _reOwnCore!.logger.e('[$runtimeType] error: $error, $stackTrace');
         onPosEvent.broadcast(PaymentRequestFailedEvent(error.toString()));
       }
     }
   }
 
   Future<void> _disconnect(String topic) async {
-    // Complete the completer to prevent hanging
-    // _safeCompleteStatus();
-
     // disconnect the session when completing payment
     _reOwnCore!.logger.d('[$runtimeType] disconnecting session');
     await reOwnSign!.disconnectSession(

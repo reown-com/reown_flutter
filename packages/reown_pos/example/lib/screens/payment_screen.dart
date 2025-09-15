@@ -9,7 +9,6 @@ import 'package:example/widgets/dtc_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reown_pos/reown_pos.dart';
-import 'package:reown_pos/utils/errors.dart';
 //
 
 class PaymentScreen extends ConsumerStatefulWidget {
@@ -153,7 +152,7 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
       // previously only this 👇 was given, is the full RPC error
       final String fullErrorMessage = event.message;
       debugPrint(fullErrorMessage);
-      _showDialogEvent(apiError.name, shortMessage);
+      _showDialogEvent(apiError.name, '$shortMessage\n\n$fullErrorMessage');
     } else if (event is PaymentRequestRejectedEvent) {
       _showDialogEvent('${event.runtimeType}', 'User rejected payment');
     } else if (event is PaymentBroadcastedEvent) {

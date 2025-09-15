@@ -58,8 +58,22 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final configuredTokens = ref.watch(reownPosProvider).configuredTokens;
     final availableTokens = ref.watch(availableTokensProvider);
-    final avaibleNetworks = availableTokens
+
+    // Filter availableTokens to only include those that match supportedTokens
+    final filteredAvailableTokens = availableTokens.where((availableToken) {
+      return configuredTokens.any(
+        (supportedToken) =>
+            supportedToken.symbol == availableToken.posToken.symbol &&
+            supportedToken.network.chainId ==
+                availableToken.posToken.network.chainId &&
+            supportedToken.address.toLowerCase() ==
+                availableToken.posToken.address.toLowerCase(),
+      );
+    }).toList();
+
+    final avaibleNetworks = filteredAvailableTokens
         .where(
           (availableToken) => availableToken.posToken.symbol == tokenSymbol,
         )

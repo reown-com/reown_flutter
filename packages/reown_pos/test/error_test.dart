@@ -61,7 +61,7 @@ void main() {
           expect(posApiError, PosApiError.invalidRecipient);
         }
         if (i == 3) {
-          expect(posApiError, PosApiError.unableToParseAmountWith6Decimals);
+          expect(posApiError, PosApiError.invalidAmount);
         }
         if (i == 4) {
           expect(posApiError, PosApiError.invalidAsset);
@@ -116,16 +116,36 @@ void main() {
           expect(posApiError, PosApiError.invalidRecipient);
         }
         if (i == 1) {
-          expect(posApiError, PosApiError.unableToParseAmountWith6Decimals);
+          expect(posApiError, PosApiError.invalidAmount);
         }
         if (i == 2) {
-          expect(posApiError, PosApiError.invalidTokenMintAddress);
+          expect(posApiError, PosApiError.invalidAsset);
         }
         if (i == 3) {
           expect(posApiError, PosApiError.invalidSender);
         }
         if (i == 4) {
-          expect(posApiError, PosApiError.invalidMintAccountOwner);
+          expect(posApiError, PosApiError.invalidAsset);
+        }
+      }
+    });
+  });
+
+  group('Tron JsonRpcError parsing', () {
+    final solanaErrors = [
+      JsonRpcError(
+        code: -10,
+        message:
+            'wc_pos_checkTransaction: Validation error: Internal error: Broadcast failed: SIGERROR 56616c6964617465207369676e6174757265206572726f723a205369676e61747572652073697a65206973203634',
+      ),
+    ];
+    test('should parse from JSON correctly', () {
+      for (var i = 0; i < solanaErrors.length; i++) {
+        final JsonRpcError error = solanaErrors[i];
+        final PosApiError posApiError = PosApiError.fromJsonRpcError(error);
+
+        if (i == 0) {
+          expect(posApiError, PosApiError.broadcastFailed);
         }
       }
     });
