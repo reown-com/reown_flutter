@@ -32,6 +32,7 @@ enum PosApiError {
   internal,
   invalidFormat,
   invalidChainId,
+  // extra error values
   insufficientFundsForTransfer,
   transferAmountExceedsBalance,
   broadcastFailed,
