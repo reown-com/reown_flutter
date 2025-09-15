@@ -9,7 +9,7 @@ const _posApiErrorsCodeMap = {
   -18905: PosApiError.invalidAddress,
   -18906: PosApiError.invalidWalletResponse,
   -18907: PosApiError.invalidTransactionId,
-  // GasEstimation, can be `insufficientFundsForTransfer` or `transferAmountExceedsBalance`
+  // GasEstimation is parsed as `failedToEstimateGas`, which then is converted internally to `insufficientFundsForTransfer` or `transferAmountExceedsBalance` if possible
   -18920: PosApiError.failedToEstimateGas,
   -18940: PosApiError.invalidProviderUrl,
   -18941: PosApiError.rpcError,
