@@ -44,6 +44,7 @@ extension JsonRpcErrorExtensions on JsonRpcError {
         .replaceAll('wc_pos_checkTransaction:', '')
         .replaceAll('Internal error:', '')
         .replaceAll('Validation error:', '')
+        .replaceAll('Execution error:', '')
         .trim();
   }
 }

@@ -150,4 +150,122 @@ void main() {
       }
     });
   });
+
+  group('codes JsonRpcError parsing', () {
+    final List<Map<JsonRpcError, PosApiError>> evmErrors = [
+      {
+        JsonRpcError(
+          code: -18901,
+          message:
+              'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
+        ): PosApiError.invalidAsset,
+      },
+      {
+        JsonRpcError(
+          code: -18902,
+          message:
+              'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
+        ): PosApiError.invalidRecipient,
+      },
+      {
+        JsonRpcError(
+          code: -18903,
+          message:
+              'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
+        ): PosApiError.invalidSender,
+      },
+      {
+        JsonRpcError(
+          code: -18904,
+          message:
+              'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
+        ): PosApiError.invalidAmount,
+      },
+      {
+        JsonRpcError(
+          code: -18905,
+          message:
+              'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
+        ): PosApiError.invalidAddress,
+      },
+      {
+        JsonRpcError(
+          code: -18906,
+          message:
+              'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
+        ): PosApiError.invalidWalletResponse,
+      },
+      {
+        JsonRpcError(
+          code: -18907,
+          message:
+              'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
+        ): PosApiError.invalidTransactionId,
+      },
+      {
+        JsonRpcError(
+          code: -18920,
+          message:
+              'wc_pos_buildTransactions: Validation error: Failed to estimate gas: server returned an error response: error code -32000: insufficient funds for transfer',
+        ): PosApiError.insufficientFundsForTransfer,
+      },
+      {
+        JsonRpcError(
+          code: -18920,
+          message:
+              'wc_pos_buildTransactions: Validation error: Failed to estimate gas: server returned an error response: error code 3: execution reverted: ERC20: transfer amount exceeds balance, data: "0x08c379a00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000002645524332303a207472616e7366657220616d6f756e7420657863656564732062616c616e63650000000000000000000000000000000000000000000000000000"',
+        ): PosApiError.transferAmountExceedsBalance,
+      },
+      {
+        JsonRpcError(
+          code: -18920,
+          message:
+              'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
+        ): PosApiError.failedToEstimateGas,
+      },
+      {
+        JsonRpcError(
+          code: -18940,
+          message:
+              'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
+        ): PosApiError.invalidProviderUrl,
+      },
+      {
+        JsonRpcError(
+          code: -18941,
+          message:
+              'wc_pos_buildTransactions: Validation error: Failed to estimate gas: server returned an error response',
+        ): PosApiError.failedToEstimateGas,
+      },
+      {
+        JsonRpcError(
+          code: -18942,
+          message:
+              'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
+        ): PosApiError.unknown,
+      },
+      {
+        JsonRpcError(
+          code: -18970,
+          message:
+              'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
+        ): PosApiError.invalidFormat,
+      },
+      {
+        JsonRpcError(
+          code: -18971,
+          message:
+              'wc_pos_buildTransactions: Validation error: asiuys adsga diuasg do saodsaugdas',
+        ): PosApiError.invalidChainId,
+      },
+    ];
+    test('should parse from JSON correctly', () {
+      for (var i = 0; i < evmErrors.length; i++) {
+        final JsonRpcError error = evmErrors[i].entries.first.key;
+        final PosApiError posApiError = PosApiError.fromJsonRpcError(error);
+
+        expect(posApiError, evmErrors[i].entries.first.value);
+      }
+    });
+  });
 }

@@ -1,14 +1,39 @@
 import 'package:reown_core/models/json_rpc_models.dart';
 import 'package:reown_pos/utils/helpers.dart';
 
+const _posApiErrorsCodeMap = {
+  -18901: PosApiError.invalidAsset,
+  -18902: PosApiError.invalidRecipient,
+  -18903: PosApiError.invalidSender,
+  -18904: PosApiError.invalidAmount,
+  -18905: PosApiError.invalidAddress,
+  -18906: PosApiError.invalidWalletResponse,
+  -18907: PosApiError.invalidTransactionId,
+  // GasEstimation, can be `insufficientFundsForTransfer` or `transferAmountExceedsBalance`
+  -18920: PosApiError.failedToEstimateGas,
+  -18940: PosApiError.invalidProviderUrl,
+  -18941: PosApiError.rpcError,
+  -18942: PosApiError.internal,
+  -18970: PosApiError.invalidFormat,
+  -18971: PosApiError.invalidChainId,
+};
+
 enum PosApiError {
-  failedToEstimateGas, // EVM specific
-  insufficientFundsForTransfer, // EVM specific
-  transferAmountExceedsBalance, // EVM specific
-  invalidRecipient, // EVM and Solana. i.e non CAIP-10 account or some other wrong format
-  invalidAmount, // EVM and Solana
   invalidAsset, // EVM specific, Invalid Contract Address, non CAIP-19 or some other wrong format
+  invalidRecipient, // EVM and Solana. i.e non CAIP-10 account or some other wrong format
   invalidSender, // EVM and Solana. i.e non CAIP-10 account or some other wrong format
+  invalidAmount,
+  invalidAddress,
+  invalidWalletResponse,
+  invalidTransactionId,
+  failedToEstimateGas,
+  invalidProviderUrl,
+  rpcError,
+  internal,
+  invalidFormat,
+  invalidChainId,
+  insufficientFundsForTransfer,
+  transferAmountExceedsBalance,
   broadcastFailed,
   unknown;
 
@@ -18,6 +43,13 @@ enum PosApiError {
     } catch (e) {
       return null;
     }
+  }
+
+  static PosApiError? _fromErrorCode(int? errorCode) {
+    if (errorCode != null) {
+      return _posApiErrorsCodeMap[errorCode];
+    }
+    return null;
   }
 
   static PosApiError fromJsonRpcError(JsonRpcError error) {
@@ -32,18 +64,7 @@ enum PosApiError {
       ...extraTypes,
     ];
 
-    String? checkExtraType(String part) {
-      if (extraTypes.contains(part)) {
-        if (part == 'invalidTokenMintAddress' ||
-            part == 'invalidMintAccountOwner') {
-          return 'invalidAsset';
-        }
-        return 'invalidAmount';
-      }
-      return null;
-    }
-
-    PosApiError? checkFailedToEstimateGasType(PosApiError? posApiError) {
+    PosApiError? checkFailedToEstimateGasReason(PosApiError? posApiError) {
       if (posApiError == PosApiError.failedToEstimateGas) {
         final insufficientFunds = PosApiError.insufficientFundsForTransfer;
         if (errorParts.contains(insufficientFunds.name)) {
@@ -57,14 +78,45 @@ enum PosApiError {
       return null;
     }
 
+    // Fist try to parse the error from its code
+    PosApiError? apiErrorFromCode = _fromErrorCode(error.code);
+    if (apiErrorFromCode != null) {
+      if (apiErrorFromCode == PosApiError.failedToEstimateGas) {
+        return checkFailedToEstimateGasReason(apiErrorFromCode) ??
+            apiErrorFromCode;
+      }
+      // rpcError and internal will be identified by message value
+      if (apiErrorFromCode != PosApiError.rpcError &&
+          apiErrorFromCode != PosApiError.internal) {
+        return apiErrorFromCode;
+      }
+    }
+
+    String? mergeTypes(String part) {
+      if (extraTypes.contains(part)) {
+        // invalidTokenMintAddress and invalidMintAccountOwner are merged with invalidAsset
+        if (part == 'invalidTokenMintAddress' ||
+            part == 'invalidMintAccountOwner') {
+          return 'invalidAsset';
+        }
+        // unableToParseAmountWith6Decimals is merged with invalidAmount
+        return 'invalidAmount';
+      }
+      return null;
+    }
+
+    // if _fromErrorCode gives null error then parse the message value
     for (var part in errorParts) {
       if (errorTypes.contains(part)) {
-        part = checkExtraType(part) ?? part;
+        part = mergeTypes(part) ?? part;
         PosApiError? posApiError = PosApiError._fromName(part);
-        posApiError = checkFailedToEstimateGasType(posApiError) ?? posApiError;
+        posApiError =
+            checkFailedToEstimateGasReason(posApiError) ?? posApiError;
         return posApiError ?? PosApiError.unknown;
       }
     }
+
+    // if everything fails return unknown
     return PosApiError.unknown;
   }
 
