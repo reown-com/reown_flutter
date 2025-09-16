@@ -38,6 +38,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
 
   void _onPosEvent(PosEvent event) {
     if (event is QrReadyEvent && mounted) {
+      print(event.uri);
       setState(() => _uri = event.uri);
     }
   }
@@ -134,27 +135,32 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
   }
 
   void _onPosEvent(PosEvent event) {
-    debugPrint(event.toString());
+    print(event.toString());
     if (event is QrReadyEvent) {
       // Used on the main widget to render the QR Code
     } else if (event is ConnectRejectedEvent) {
-      _showDialogEvent(event.runtimeType.toString(), 'User rejected session');
+      _showDialogEvent('${event.runtimeType}', 'User rejected session');
     } else if (event is ConnectFailedEvent) {
-      _showDialogEvent(event.runtimeType.toString(), event.message);
+      _showDialogEvent('${event.runtimeType}', event.message);
     } else if (event is ConnectedEvent) {
       //
     } else if (event is PaymentRequestedEvent) {
       //
     } else if (event is PaymentRequestFailedEvent) {
-      _showDialogEvent(event.runtimeType.toString(), event.message);
+      final PosApiError apiError = event.apiError;
+      final String shortMessage = event.shortMessage;
+      // previously only this 👇 was given, is the full RPC error
+      final String fullErrorMessage = event.message;
+      debugPrint(fullErrorMessage);
+      _showDialogEvent(apiError.name, '$shortMessage\n\n$fullErrorMessage');
     } else if (event is PaymentRequestRejectedEvent) {
-      _showDialogEvent(event.runtimeType.toString(), 'User rejected payment');
+      _showDialogEvent('${event.runtimeType}', 'User rejected payment');
     } else if (event is PaymentBroadcastedEvent) {
       //
     } else if (event is PaymentFailedEvent) {
-      _showDialogEvent(event.runtimeType.toString(), event.message);
+      _showDialogEvent('${event.runtimeType}', event.message);
     } else if (event is PaymentSuccessfulEvent) {
-      _showDialogEvent(event.runtimeType.toString(), event.txHash);
+      _showDialogEvent('${event.runtimeType}', event.txHash);
     } else if (event is DisconnectedEvent) {
       //
     }

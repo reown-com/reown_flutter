@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:example/models/available_token.dart';
+import 'package:example/providers/reown_pos_provider.dart';
 import 'package:example/providers/available_tokens_provider.dart';
 import 'package:example/screens/network_screen.dart';
 import 'package:example/widgets/dtc_abort_button.dart';
@@ -33,8 +34,21 @@ class _TokenScreenState extends ConsumerState<TokenScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final configuredTokens = ref.watch(reownPosProvider).configuredTokens;
     final availableTokens = ref.watch(availableTokensProvider);
-    final reducedTokens = availableTokens
+    // Filter availableTokens to only include those that match supportedTokens
+    final filteredAvailableTokens = availableTokens.where((availableToken) {
+      return configuredTokens.any(
+        (supportedToken) =>
+            supportedToken.symbol == availableToken.posToken.symbol &&
+            supportedToken.network.chainId ==
+                availableToken.posToken.network.chainId &&
+            supportedToken.address.toLowerCase() ==
+                availableToken.posToken.address.toLowerCase(),
+      );
+    }).toList();
+
+    final reducedTokens = filteredAvailableTokens
         .toSet()
         .fold<Map<String, AvailableToken>>({}, (map, token) {
           map.putIfAbsent(token.posToken.symbol, () => token);

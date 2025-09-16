@@ -337,3 +337,7 @@ Contributions are welcome! Please feel free to submit issues and pull requests.
 ## License
 
 This package is licensed under the terms specified in the LICENSE file.
+
+## Testing
+
+Test the web implementation of this SDK at the following url: https://pos-flutter-demo.pages.dev

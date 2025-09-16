@@ -177,3 +177,36 @@ _BuildTransactionResult _$BuildTransactionResultFromJson(
 Map<String, dynamic> _$BuildTransactionResultToJson(
   _BuildTransactionResult instance,
 ) => <String, dynamic>{'transactions': instance.transactions};
+
+_SupportedNamespace _$SupportedNamespaceFromJson(
+  Map<String, dynamic> json,
+) => _SupportedNamespace(
+  assetNamespaces: (json['assetNamespaces'] as List<dynamic>)
+      .map((e) => e as String)
+      .toList(),
+  capabilities: json['capabilities'],
+  events: (json['events'] as List<dynamic>).map((e) => e as String).toList(),
+  methods: (json['methods'] as List<dynamic>).map((e) => e as String).toList(),
+  name: json['name'] as String,
+);
+
+Map<String, dynamic> _$SupportedNamespaceToJson(_SupportedNamespace instance) =>
+    <String, dynamic>{
+      'assetNamespaces': instance.assetNamespaces,
+      'capabilities': instance.capabilities,
+      'events': instance.events,
+      'methods': instance.methods,
+      'name': instance.name,
+    };
+
+_SupportedNetworksResult _$SupportedNetworksResultFromJson(
+  Map<String, dynamic> json,
+) => _SupportedNetworksResult(
+  namespaces: (json['namespaces'] as List<dynamic>)
+      .map((e) => SupportedNamespace.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
+
+Map<String, dynamic> _$SupportedNetworksResultToJson(
+  _SupportedNetworksResult instance,
+) => <String, dynamic>{'namespaces': instance.namespaces};

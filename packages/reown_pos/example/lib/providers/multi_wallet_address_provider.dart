@@ -1,3 +1,4 @@
+import 'package:example/dart_defines.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:reown_pos/models/pos_models.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,15 +37,16 @@ class MultiWalletAddresses {
     }
   }
 
-  bool get hasAnyAddress => 
-      evmWalletAddress != null || 
-      solanaWalletAddress != null || 
+  bool get hasAnyAddress =>
+      evmWalletAddress != null ||
+      solanaWalletAddress != null ||
       tronWalletAddress != null;
 }
 
-final multiWalletAddressProvider = StateNotifierProvider<MultiWalletAddressNotifier, MultiWalletAddresses>(
-  (ref) => MultiWalletAddressNotifier(),
-);
+final multiWalletAddressProvider =
+    StateNotifierProvider<MultiWalletAddressNotifier, MultiWalletAddresses>(
+      (ref) => MultiWalletAddressNotifier(),
+    );
 
 class MultiWalletAddressNotifier extends StateNotifier<MultiWalletAddresses> {
   MultiWalletAddressNotifier() : super(const MultiWalletAddresses()) {
@@ -54,9 +56,14 @@ class MultiWalletAddressNotifier extends StateNotifier<MultiWalletAddresses> {
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
     state = MultiWalletAddresses(
-      evmWalletAddress: prefs.getString('evm_wallet_address'),
-      solanaWalletAddress: prefs.getString('solana_wallet_address'),
-      tronWalletAddress: prefs.getString('tron_wallet_address'),
+      evmWalletAddress:
+          prefs.getString('evm_wallet_address') ?? DartDefines.evmWalletAddress,
+      solanaWalletAddress:
+          prefs.getString('solana_wallet_address') ??
+          DartDefines.solanaWalletAddress,
+      tronWalletAddress:
+          prefs.getString('tron_wallet_address') ??
+          DartDefines.tronWalletAddress,
     );
   }
 

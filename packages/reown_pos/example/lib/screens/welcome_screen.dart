@@ -9,6 +9,7 @@ import 'package:example/widgets/dtc_footer.dart';
 import 'package:example/widgets/dtc_wallet_address_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reown_pos/reown_pos.dart';
 
 class WelcomeScreen extends ConsumerStatefulWidget {
   const WelcomeScreen({super.key});
@@ -18,7 +19,29 @@ class WelcomeScreen extends ConsumerStatefulWidget {
 }
 
 class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
+  bool _initializing = false;
+  late final IReownPos _posInstance;
+
+  @override
+  void initState() {
+    super.initState();
+    _posInstance = ref.read(reownPosProvider);
+    _posInstance.onPosEvent.subscribe(_onPosEvent);
+  }
+
+  void _onPosEvent(PosEvent event) {
+    if (event is InitializedEvent) {
+      setState(() => _initializing = false);
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const AmountScreen()),
+      );
+    }
+  }
+
   void _initPosAndNavigate() {
+    setState(() => _initializing = true);
+
     final multiWalletAddresses = ref.read(multiWalletAddressProvider);
 
     if (!multiWalletAddresses.hasAnyAddress) {
@@ -26,27 +49,14 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
       return;
     }
 
-    // // For now, we'll use the EVM address as the default recipient
-    // // This will be updated later when token and network is selected
-    // final defaultRecipient =
-    //     multiWalletAddresses.evmWalletAddress ??
-    //     multiWalletAddresses.solanaWalletAddress ??
-    //     multiWalletAddresses.tronWalletAddress;
-
-    // final paymentInfoNotifier = ref.read(paymentInfoProvider.notifier);
-    // paymentInfoNotifier.update(recipient: defaultRecipient!);
-    
     final availableTokens = ref.watch(availableTokensProvider);
     final tokens = availableTokens.map((e) => e.posToken).toList();
-    ref.read(reownPosProvider)
-      // [ReownPos SDK API] 2. call setTokens to construct namespaces with your supported networks
+    final posIntance = ref.read(reownPosProvider);
+    // [ReownPos SDK API] 2. call setTokens to construct namespaces with your supported networks
+    posIntance
       ..setTokens(tokens: tokens)
       // [ReownPos SDK API] 3. initialize ReownPos SDK
       ..init();
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const AmountScreen()),
-    );
   }
 
   void _showSetRecipientDialog() {
@@ -135,7 +145,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton(
-                          onPressed: _initPosAndNavigate,
+                          onPressed: _initializing ? null : _initPosAndNavigate,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF4CAF50),
                             foregroundColor: Colors.white,
@@ -144,29 +154,25 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                             ),
                             elevation: 0,
                           ),
-                          child: const Text(
-                            'Start',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          child: (_initializing)
+                              ? Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : const Text(
+                                  'Start',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                         ),
                       ),
                       const SizedBox(height: 20),
                       // Version Information
                       const Text(
-                        'V1: Multi-step payment flow',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        'Manual token & network selection',
+                        'v$packageVersion - Multi-step payment flow',
                         style: TextStyle(
                           color: Colors.grey,
                           fontSize: 14,

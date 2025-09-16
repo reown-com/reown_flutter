@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:reown_pos/reown_pos.dart';
+import 'package:reown_pos/services/models/query_models.dart';
+import 'package:reown_pos/services/models/result_models.dart';
 import 'package:reown_pos/utils/caip_validator.dart';
 
 extension SessionDataExtensions on SessionData {
@@ -33,6 +37,16 @@ extension JsonRpcErrorExtensions on JsonRpcError {
     }
     return regexp.hasMatch(toString());
   }
+
+  String get cleanMessage {
+    return (message ?? '')
+        .replaceAll('wc_pos_buildTransactions:', '')
+        .replaceAll('wc_pos_checkTransaction:', '')
+        .replaceAll('Internal error:', '')
+        .replaceAll('Validation error:', '')
+        .replaceAll('Execution error:', '')
+        .trim();
+  }
 }
 
 extension PaymentIntentExtension on PaymentIntent {
@@ -44,5 +58,56 @@ extension PaymentIntentExtension on PaymentIntent {
       return recipient;
     }
     return '${token.network.chainId}:$recipient';
+  }
+
+  PaymentIntentParams toPaymentIntentParams(String senderAddress) {
+    return PaymentIntentParams.fromPaymentIntent(this, senderAddress);
+  }
+}
+
+extension ListPaymentIntentExtension on List<PaymentIntent> {
+  List<PaymentIntentParams> toPaymentIntentParamsList(
+    SessionData approvedSession,
+  ) {
+    return map((intent) {
+      final senderAddress = approvedSession.getSenderCaip10Account(
+        intent.token.network.chainId,
+      )!;
+      return intent.toPaymentIntentParams(senderAddress);
+    }).toList();
+  }
+}
+
+extension ListTokenExtension on List<PosToken> {
+  String toJson() {
+    return map((t) => jsonEncode(t.toJson())).toList().toString();
+  }
+
+  List<String> extractNetworks() {
+    return map((e) => e.network.chainId).toSet().toList();
+  }
+
+  List<String> getChainsByNamespace(String ns) {
+    return extractNetworks().where((e) {
+      return NamespaceUtils.getNamespaceFromChain(e) == ns;
+    }).toList();
+  }
+
+  List<PosToken> removeUnsupported(Iterable<String> supportedNamespaces) {
+    return this..removeWhere((e) {
+      final ns = NamespaceUtils.getNamespaceFromChain(e.network.chainId);
+      return supportedNamespaces.contains(ns) == false;
+    });
+  }
+}
+
+extension ListSupportedNamespaceExtension on List<SupportedNamespace> {
+  dynamic getCapabilities() {
+    Map<String, dynamic> capabilities = {};
+    for (var entry in this) {
+      if (entry.capabilities != null) {
+        capabilities[entry.name] = entry.capabilities;
+      }
+    }
   }
 }

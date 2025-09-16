@@ -1,16 +1,27 @@
 import 'package:event/event.dart';
+import 'package:reown_pos/utils/errors.dart';
 
 abstract class PosEvent extends EventArgs {}
 
 abstract class PosErrorEvent extends PosEvent {}
 
+class InitializedEvent extends PosEvent {}
+
 // connection events
 
+///
+/// ℹ️
+/// Pairing URI is created, QR is ready to be displayed
+///
 class QrReadyEvent extends PosEvent {
   final Uri uri;
   QrReadyEvent(this.uri);
 }
 
+///
+/// ℹ️
+/// Wallet is connected
+///
 class ConnectedEvent extends PosEvent {}
 
 class ConnectRejectedEvent extends PosErrorEvent {}
@@ -21,16 +32,32 @@ class ConnectFailedEvent extends PosErrorEvent {
 }
 
 // payment request events
+
+///
+/// ℹ️
+/// Payment was sent to wallet
+///
 class PaymentRequestedEvent extends PosEvent {}
 
 class PaymentRequestRejectedEvent extends PosErrorEvent {}
 
 class PaymentRequestFailedEvent extends PosErrorEvent {
   final String message;
-  PaymentRequestFailedEvent(this.message);
+  final PosApiError apiError;
+  final String shortMessage;
+  PaymentRequestFailedEvent(
+    this.message, [
+    this.apiError = PosApiError.unknown,
+    this.shortMessage = '',
+  ]);
 }
 
 // payments checking events
+
+///
+/// ℹ️
+/// Payment was sent to blockchain
+///
 class PaymentBroadcastedEvent extends PosEvent {}
 
 class PaymentSuccessfulEvent extends PosEvent {
@@ -40,7 +67,17 @@ class PaymentSuccessfulEvent extends PosEvent {
 
 class PaymentFailedEvent extends PosErrorEvent {
   final String message;
-  PaymentFailedEvent(this.message);
+  final PosApiError apiError;
+  final String shortMessage;
+  PaymentFailedEvent(
+    this.message, [
+    this.apiError = PosApiError.unknown,
+    this.shortMessage = '',
+  ]);
 }
 
+///
+/// ℹ️
+/// Wallet/POS session got disconnected
+///
 class DisconnectedEvent extends PosEvent {}

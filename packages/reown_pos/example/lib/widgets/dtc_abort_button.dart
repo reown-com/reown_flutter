@@ -13,7 +13,7 @@ class DtcRestartButton extends ConsumerWidget {
       onPressed: () {
         ref.read(paymentInfoProvider.notifier).clear();
         ref.read(availableTokensProvider.notifier).clear();
-        ref.read(reownPosProvider).restart();
+        ref.read(reownPosProvider).restart(reinit: true);
         Navigator.of(context).popUntil((route) => route.settings.name == '/');
       },
       style: ElevatedButton.styleFrom(
