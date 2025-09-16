@@ -3,7 +3,7 @@ library;
 export 'i_reown_pos_impl.dart';
 export 'reown_pos_impl.dart';
 export 'utils/errors.dart';
-
+export '/src/version.dart';
 export 'models/pos_models.dart';
 export 'models/pos_events.dart';
 export 'package:qr_flutter_wc/qr_flutter_wc.dart';

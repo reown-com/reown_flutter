@@ -172,17 +172,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       const SizedBox(height: 20),
                       // Version Information
                       const Text(
-                        'V1: Multi-step payment flow',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14,
-                          fontWeight: FontWeight.normal,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        'Manual token & network selection',
+                        'v$packageVersion - Multi-step payment flow',
                         style: TextStyle(
                           color: Colors.grey,
                           fontSize: 14,
