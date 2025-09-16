@@ -1,3 +1,6 @@
+import 'package:reown_appkit/base/services/models/asset_models.dart';
+import 'package:reown_appkit/base/services/models/query_models.dart';
+import 'package:reown_appkit/base/services/models/result_models.dart';
 import 'package:reown_sign/i_sign_dapp.dart';
 import 'package:reown_sign/reown_sign.dart';
 
@@ -11,4 +14,16 @@ abstract class IReownAppKit implements IReownSignDapp {
 
   ///
   abstract final IReownSign reOwnSign;
+
+  // DWE
+
+  List<ExchangeAsset> getPaymentAssetsForNetwork(String caip2chainId);
+
+  Future<GetExchangesResult> getExchanges({required GetExchangesParams params});
+  Future<GetExchangeUrlResult> getExchangeUrl({
+    required GetExchangeUrlParams params,
+  });
+  Future<dynamic> getExchangeByStatus({
+    required GetExchangeByStatusParams params,
+  });
 }

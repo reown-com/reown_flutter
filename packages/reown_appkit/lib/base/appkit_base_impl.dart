@@ -1,3 +1,8 @@
+import 'package:reown_appkit/base/services/exchange_service.dart';
+import 'package:reown_appkit/base/services/i_exchange_service.dart';
+import 'package:reown_appkit/base/services/models/asset_models.dart';
+import 'package:reown_appkit/base/services/models/query_models.dart';
+import 'package:reown_appkit/base/services/models/result_models.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_core/relay_client/websocket/http_client.dart';
 import 'package:reown_core/store/generic_store.dart';
@@ -7,10 +12,7 @@ import 'package:reown_core/store/i_generic_store.dart';
 class ReownAppKit implements IReownAppKit {
   ///
   static const List<List<String>> DEFAULT_METHODS = [
-    [
-      MethodConstants.WC_SESSION_PROPOSE,
-      MethodConstants.WC_SESSION_REQUEST,
-    ],
+    [MethodConstants.WC_SESSION_PROPOSE, MethodConstants.WC_SESSION_REQUEST],
     // [
     //   // Deprecated method but still supported for retrocompatibility
     //   MethodConstants.WC_AUTH_REQUEST,
@@ -57,11 +59,10 @@ class ReownAppKit implements IReownAppKit {
   @override
   final PairingMetadata metadata;
 
+  late final IExchangeService _exchangeService;
+
   ///
-  ReownAppKit({
-    required this.core,
-    required this.metadata,
-  }) {
+  ReownAppKit({required this.core, required this.metadata}) {
     reOwnSign = ReownSign(
       core: core,
       metadata: metadata,
@@ -114,6 +115,8 @@ class ReownAppKit implements IReownAppKit {
         },
       ),
     );
+
+    _exchangeService = ExchangeService(core: core);
   }
 
   @override
@@ -232,9 +235,7 @@ class ReownAppKit implements IReownAppKit {
   }
 
   @override
-  Future<void> ping({
-    required String topic,
-  }) async {
+  Future<void> ping({required String topic}) async {
     try {
       return await reOwnSign.ping(topic: topic);
     } catch (e) {
@@ -248,10 +249,7 @@ class ReownAppKit implements IReownAppKit {
     required ReownSignError reason,
   }) async {
     try {
-      return await reOwnSign.disconnectSession(
-        topic: topic,
-        reason: reason,
-      );
+      return await reOwnSign.disconnectSession(topic: topic, reason: reason);
     } catch (e) {
       rethrow;
     }
@@ -271,9 +269,7 @@ class ReownAppKit implements IReownAppKit {
     required String pairingTopic,
   }) {
     try {
-      return reOwnSign.getSessionsForPairing(
-        pairingTopic: pairingTopic,
-      );
+      return reOwnSign.getSessionsForPairing(pairingTopic: pairingTopic);
     } catch (e) {
       rethrow;
     }
@@ -302,10 +298,7 @@ class ReownAppKit implements IReownAppKit {
     required String topic,
     required Redirect? redirect,
   }) {
-    return reOwnSign.redirectToWallet(
-      topic: topic,
-      redirect: redirect,
-    );
+    return reOwnSign.redirectToWallet(topic: topic, redirect: redirect);
   }
 
   @override
@@ -321,7 +314,7 @@ class ReownAppKit implements IReownAppKit {
     String? pairingTopic,
     String? walletUniversalLink,
     List<List<String>>? methods = const [
-      [MethodConstants.WC_SESSION_AUTHENTICATE]
+      [MethodConstants.WC_SESSION_AUTHENTICATE],
     ],
   }) async {
     try {
@@ -342,10 +335,7 @@ class ReownAppKit implements IReownAppKit {
     required String projectId,
   }) {
     try {
-      return reOwnSign.validateSignedCacao(
-        cacao: cacao,
-        projectId: projectId,
-      );
+      return reOwnSign.validateSignedCacao(cacao: cacao, projectId: projectId);
     } catch (e) {
       rethrow;
     }
@@ -357,10 +347,7 @@ class ReownAppKit implements IReownAppKit {
     required CacaoRequestPayload cacaoPayload,
   }) {
     try {
-      return reOwnSign.formatAuthMessage(
-        iss: iss,
-        cacaoPayload: cacaoPayload,
-      );
+      return reOwnSign.formatAuthMessage(iss: iss, cacaoPayload: cacaoPayload);
     } catch (e) {
       rethrow;
     }
@@ -371,4 +358,45 @@ class ReownAppKit implements IReownAppKit {
 
   @override
   IGenericStore<String> get pairingTopics => reOwnSign.pairingTopics;
+
+  @override
+  List<ExchangeAsset> getPaymentAssetsForNetwork(String caip2chainId) {
+    return allExchangeAssets.where((a) => a.network == caip2chainId).toList();
+  }
+
+  @override
+  Future<GetExchangesResult> getExchanges({
+    required GetExchangesParams params,
+  }) async {
+    try {
+      final result = await _exchangeService.getExchanges(params: params);
+      return GetExchangesResult.fromJson(result.result);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<GetExchangeUrlResult> getExchangeUrl({
+    required GetExchangeUrlParams params,
+  }) async {
+    try {
+      final result = await _exchangeService.getExchangeUrl(params: params);
+      return GetExchangeUrlResult.fromJson(result.result);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<dynamic> getExchangeByStatus({
+    required GetExchangeByStatusParams params,
+  }) async {
+    try {
+      final result = await _exchangeService.getExchangeByStatus(params: params);
+      return result.result;
+    } catch (e) {
+      rethrow;
+    }
+  }
 }
