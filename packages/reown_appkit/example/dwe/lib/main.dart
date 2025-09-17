@@ -35,7 +35,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late final ReownAppKitModal _appKitModal;
+  late final IReownAppKit _appKit;
+
   String _breadcrambs = '';
   String? selectedNetwork;
   ExchangeAsset? selectedAsset;
@@ -46,11 +47,11 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _appKitModal = ReownAppKitModal(
-      context: context,
-      projectId: '876c626bd43841c04f50fc96ea1e31a2',
-      logLevel: LogLevel.all,
-      disconnectOnDispose: false,
+    _appKit = ReownAppKit(
+      core: ReownCore(
+        projectId: '876c626bd43841c04f50fc96ea1e31a2',
+        logLevel: LogLevel.all,
+      ),
       metadata: PairingMetadata(
         name: 'DWE',
         description: 'Deposit With Exchange Demo',
@@ -60,11 +61,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
         redirect: Redirect(native: 'dwedemo://'),
       ),
-      featuresConfig: FeaturesConfig(socials: [AppKitSocialOption.Email]),
-      enableAnalytics: true, // OPTIONAL - null by default
     );
 
-    _appKitModal.init().then((_) => setState(() {}));
+    _appKit.init().then((_) => setState(() {}));
   }
 
   void _restart() {
@@ -103,7 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       },
                     ),
                     AssetsWrap(
-                      appKitModal: _appKitModal,
+                      appKit: _appKit,
                       visible: selectedAsset == null,
                       network: selectedNetwork,
                       onAsset: (a) {
@@ -112,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       },
                     ),
                     GetExchangesButton(
-                      appKitModal: _appKitModal,
+                      appKit: _appKit,
                       visible: exchanges.isEmpty,
                       asset: selectedAsset,
                       exchanges: (e) {
@@ -124,21 +123,21 @@ class _MyHomePageState extends State<MyHomePage> {
                       },
                     ),
                     ExchangesWrap(
-                      appKitModal: _appKitModal,
+                      appKit: _appKit,
                       visible: selectedExchange == null,
                       selectedAsset: selectedAsset,
                       exchanges: exchanges,
                       onExchange: (exchange, urlResult) async {
                         selectedExchange = exchange;
                         sessionId = urlResult.sessionId;
-                        _breadcrambs += 'Selected exchange: ${exchange.name}\n';
-                        _breadcrambs += 'Session id: $sessionId\n';
+                        _breadcrambs +=
+                            'Selected exchange: ${exchange.name}\nSession id: $sessionId\n';
                         setState(() {});
                         await ReownCoreUtils.openURL(urlResult.url);
                       },
                     ),
                     CheckStatusWidget(
-                      appKitModal: _appKitModal,
+                      appKit: _appKit,
                       exchangeId: selectedExchange?.id,
                       sessionId: sessionId,
                       onStatus: (status) {
@@ -191,7 +190,6 @@ class NetworksWrap extends StatelessWidget {
       child: Wrap(
         alignment: WrapAlignment.center,
         spacing: 10,
-        // runSpacing: 10,
         children: networks.map((e) {
           return GestureDetector(
             onTap: () {
@@ -206,14 +204,14 @@ class NetworksWrap extends StatelessWidget {
 }
 
 class AssetsWrap extends StatelessWidget {
-  final ReownAppKitModal appKitModal;
+  final IReownAppKit appKit;
   final bool visible;
   final String? network;
   final Function(ExchangeAsset) onAsset;
   const AssetsWrap({
     super.key,
     required this.visible,
-    required this.appKitModal,
+    required this.appKit,
     required this.network,
     required this.onAsset,
   });
@@ -224,9 +222,9 @@ class AssetsWrap extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    final assets = appKitModal.appKit!.getPaymentAssetsForNetwork(
-      chainId: network!,
-    );
+    // 1. [DWE Get supported assets on the given chainId (CAIP-2) Null value will return all supported assets in all networks]
+    final assets = appKit.getPaymentAssetsForNetwork(chainId: network!);
+    //
     return Wrap(
       alignment: WrapAlignment.center,
       spacing: 10,
@@ -248,14 +246,14 @@ class AssetsWrap extends StatelessWidget {
 }
 
 class GetExchangesButton extends StatelessWidget {
-  final ReownAppKitModal appKitModal;
+  final IReownAppKit appKit;
   final bool visible;
   final ExchangeAsset? asset;
   final Function(List<Exchange>) exchanges;
   const GetExchangesButton({
     super.key,
     required this.visible,
-    required this.appKitModal,
+    required this.appKit,
     required this.asset,
     required this.exchanges,
   });
@@ -269,9 +267,10 @@ class GetExchangesButton extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         try {
-          final result = await appKitModal.appKit!.getExchanges(
-            params: GetExchangesParams(page: 1, asset: asset),
-          );
+          // 2. [DWE Get a list of Exchanges supporting the given configuration Use includeOnly, exclude to filter the results]
+          final params = GetExchangesParams(page: 1, asset: asset);
+          final result = await appKit.getExchanges(params: params);
+          //
           exchanges.call(result.exchanges);
         } catch (e) {
           debugPrint(e.toString());
@@ -288,14 +287,14 @@ class GetExchangesButton extends StatelessWidget {
 }
 
 class ExchangesWrap extends StatelessWidget {
-  final ReownAppKitModal appKitModal;
+  final IReownAppKit appKit;
   final bool visible;
   final List<Exchange> exchanges;
   final ExchangeAsset? selectedAsset;
   final Function(Exchange, GetExchangeUrlResult) onExchange;
   const ExchangesWrap({
     super.key,
-    required this.appKitModal,
+    required this.appKit,
     required this.visible,
     required this.selectedAsset,
     required this.exchanges,
@@ -318,15 +317,16 @@ class ExchangesWrap extends StatelessWidget {
         return GestureDetector(
           onTap: () async {
             try {
-              final result = await appKitModal.appKit!.getExchangeUrl(
-                params: GetExchangeUrlParams(
-                  exchangeId: exchange.id,
-                  asset: selectedAsset!,
-                  amount: '1.0',
-                  recipient:
-                      '${selectedAsset!.network}:0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
-                ),
+              // 3. [DWE Get the deposit/payment URL on the selected exchange]
+              final params = GetExchangeUrlParams(
+                exchangeId: exchange.id,
+                asset: selectedAsset!,
+                amount: '1.0',
+                recipient:
+                    '${selectedAsset!.network}:0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
               );
+              final result = await appKit.getExchangeUrl(params: params);
+              //
               onExchange.call(exchange, result);
             } catch (e) {
               debugPrint(e.toString());
@@ -345,13 +345,13 @@ class ExchangesWrap extends StatelessWidget {
 }
 
 class CheckStatusWidget extends StatefulWidget {
-  final ReownAppKitModal appKitModal;
+  final IReownAppKit appKit;
   final String? exchangeId;
   final String? sessionId;
   final Function(GetExchangeByStatusResult?) onStatus;
   const CheckStatusWidget({
     super.key,
-    required this.appKitModal,
+    required this.appKit,
     required this.exchangeId,
     required this.sessionId,
     required this.onStatus,
@@ -362,6 +362,14 @@ class CheckStatusWidget extends StatefulWidget {
 }
 
 class _CheckStatusWidgetState extends State<CheckStatusWidget> {
+  late final IReownAppKit appKit;
+
+  @override
+  void initState() {
+    super.initState();
+    appKit = widget.appKit;
+  }
+
   @override
   void didUpdateWidget(covariant CheckStatusWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -401,12 +409,13 @@ class _CheckStatusWidgetState extends State<CheckStatusWidget> {
 
     while (currentAttempt < maxAttempts) {
       try {
-        final response = await widget.appKitModal.appKit!.getExchangeByStatus(
-          params: GetExchangeByStatusParams(
-            exchangeId: exchangeId,
-            sessionId: sessionId,
-          ),
+        // 4. [DWE Check the status of the deposit/transaction Better to call this in a loop]
+        final params = GetExchangeByStatusParams(
+          exchangeId: exchangeId,
+          sessionId: sessionId,
         );
+        final response = await appKit.getExchangeByStatus(params: params);
+        //
         debugPrint(jsonEncode(response));
         if (response.status == 'UNKNOWN' || response.status == 'IN_PROGRESS') {
           currentAttempt++;
