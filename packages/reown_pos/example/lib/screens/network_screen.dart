@@ -10,7 +10,9 @@ import 'package:example/widgets/dtc_footer.dart';
 import 'package:example/widgets/dtc_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:reown_pos/i_reown_pos_impl.dart';
 import 'package:reown_pos/models/pos_models.dart';
+import 'package:reown_pos/reown_pos.dart';
 
 class NetworkScreen extends ConsumerStatefulWidget {
   const NetworkScreen({super.key});
@@ -20,6 +22,38 @@ class NetworkScreen extends ConsumerStatefulWidget {
 }
 
 class _NetworkScreenState extends ConsumerState<NetworkScreen> {
+  late final IReownPos _posInstance;
+
+  @override
+  void initState() {
+    super.initState();
+    _posInstance = ref.read(reownPosProvider);
+    // [ReownPos SDK API] 5. subscribe to events to update the UI accordingli
+    _posInstance.onPosEvent.subscribe(_onPosEvent);
+  }
+
+  @override
+  void dispose() {
+    _posInstance.onPosEvent.unsubscribe(_onPosEvent);
+    super.dispose();
+  }
+
+  void _onPosEvent(PosEvent event) {
+    if (event is ConnectFailedEvent && mounted) {
+      showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('${event.runtimeType}'),
+            content: Text(event.message),
+            actions: [DtcRestartButton()],
+          );
+        },
+      );
+    }
+  }
+
   void _createPaymentAndNavigate() {
     final paymentInfo = ref.read(paymentInfoProvider);
     // [ReownPos SDK API] 4. create a payment intent with the PaymentIntent object
