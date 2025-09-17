@@ -80,7 +80,6 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
         .map((e) => e.posToken.network)
         .toList();
     final paymentInfo = ref.watch(paymentInfoProvider);
-    debugPrint('[ReownPos] paymentInfo ${paymentInfo.toJson()}');
     return Scaffold(
       backgroundColor: const Color(0xFF4CAF50),
       appBar: const DtcAppBar(),
