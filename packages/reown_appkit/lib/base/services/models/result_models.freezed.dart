@@ -800,4 +800,264 @@ as String,
 
 }
 
+
+/// @nodoc
+mixin _$GetExchangeByStatusResult {
+
+ String get status; String? get txHash;
+/// Create a copy of GetExchangeByStatusResult
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$GetExchangeByStatusResultCopyWith<GetExchangeByStatusResult> get copyWith => _$GetExchangeByStatusResultCopyWithImpl<GetExchangeByStatusResult>(this as GetExchangeByStatusResult, _$identity);
+
+  /// Serializes this GetExchangeByStatusResult to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetExchangeByStatusResult&&(identical(other.status, status) || other.status == status)&&(identical(other.txHash, txHash) || other.txHash == txHash));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,status,txHash);
+
+@override
+String toString() {
+  return 'GetExchangeByStatusResult(status: $status, txHash: $txHash)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $GetExchangeByStatusResultCopyWith<$Res>  {
+  factory $GetExchangeByStatusResultCopyWith(GetExchangeByStatusResult value, $Res Function(GetExchangeByStatusResult) _then) = _$GetExchangeByStatusResultCopyWithImpl;
+@useResult
+$Res call({
+ String status, String? txHash
+});
+
+
+
+
+}
+/// @nodoc
+class _$GetExchangeByStatusResultCopyWithImpl<$Res>
+    implements $GetExchangeByStatusResultCopyWith<$Res> {
+  _$GetExchangeByStatusResultCopyWithImpl(this._self, this._then);
+
+  final GetExchangeByStatusResult _self;
+  final $Res Function(GetExchangeByStatusResult) _then;
+
+/// Create a copy of GetExchangeByStatusResult
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? txHash = freezed,}) {
+  return _then(_self.copyWith(
+status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,txHash: freezed == txHash ? _self.txHash : txHash // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [GetExchangeByStatusResult].
+extension GetExchangeByStatusResultPatterns on GetExchangeByStatusResult {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _GetExchangeByStatusResult value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _GetExchangeByStatusResult() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _GetExchangeByStatusResult value)  $default,){
+final _that = this;
+switch (_that) {
+case _GetExchangeByStatusResult():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _GetExchangeByStatusResult value)?  $default,){
+final _that = this;
+switch (_that) {
+case _GetExchangeByStatusResult() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String status,  String? txHash)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _GetExchangeByStatusResult() when $default != null:
+return $default(_that.status,_that.txHash);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String status,  String? txHash)  $default,) {final _that = this;
+switch (_that) {
+case _GetExchangeByStatusResult():
+return $default(_that.status,_that.txHash);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String status,  String? txHash)?  $default,) {final _that = this;
+switch (_that) {
+case _GetExchangeByStatusResult() when $default != null:
+return $default(_that.status,_that.txHash);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _GetExchangeByStatusResult implements GetExchangeByStatusResult {
+  const _GetExchangeByStatusResult({required this.status, this.txHash});
+  factory _GetExchangeByStatusResult.fromJson(Map<String, dynamic> json) => _$GetExchangeByStatusResultFromJson(json);
+
+@override final  String status;
+@override final  String? txHash;
+
+/// Create a copy of GetExchangeByStatusResult
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$GetExchangeByStatusResultCopyWith<_GetExchangeByStatusResult> get copyWith => __$GetExchangeByStatusResultCopyWithImpl<_GetExchangeByStatusResult>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$GetExchangeByStatusResultToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetExchangeByStatusResult&&(identical(other.status, status) || other.status == status)&&(identical(other.txHash, txHash) || other.txHash == txHash));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,status,txHash);
+
+@override
+String toString() {
+  return 'GetExchangeByStatusResult(status: $status, txHash: $txHash)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$GetExchangeByStatusResultCopyWith<$Res> implements $GetExchangeByStatusResultCopyWith<$Res> {
+  factory _$GetExchangeByStatusResultCopyWith(_GetExchangeByStatusResult value, $Res Function(_GetExchangeByStatusResult) _then) = __$GetExchangeByStatusResultCopyWithImpl;
+@override @useResult
+$Res call({
+ String status, String? txHash
+});
+
+
+
+
+}
+/// @nodoc
+class __$GetExchangeByStatusResultCopyWithImpl<$Res>
+    implements _$GetExchangeByStatusResultCopyWith<$Res> {
+  __$GetExchangeByStatusResultCopyWithImpl(this._self, this._then);
+
+  final _GetExchangeByStatusResult _self;
+  final $Res Function(_GetExchangeByStatusResult) _then;
+
+/// Create a copy of GetExchangeByStatusResult
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? txHash = freezed,}) {
+  return _then(_GetExchangeByStatusResult(
+status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String,txHash: freezed == txHash ? _self.txHash : txHash // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
 // dart format on

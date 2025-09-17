@@ -36,3 +36,14 @@ sealed class GetExchangeUrlResult with _$GetExchangeUrlResult {
   factory GetExchangeUrlResult.fromJson(Map<String, dynamic> json) =>
       _$GetExchangeUrlResultFromJson(json);
 }
+
+@freezed
+sealed class GetExchangeByStatusResult with _$GetExchangeByStatusResult {
+  const factory GetExchangeByStatusResult({
+    required String status,
+    String? txHash,
+  }) = _GetExchangeByStatusResult;
+
+  factory GetExchangeByStatusResult.fromJson(Map<String, dynamic> json) =>
+      _$GetExchangeByStatusResultFromJson(json);
+}

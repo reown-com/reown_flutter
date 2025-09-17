@@ -20,10 +20,12 @@ abstract class IReownAppKit implements IReownSignDapp {
   List<ExchangeAsset> getPaymentAssetsForNetwork({String? chainId});
 
   Future<GetExchangesResult> getExchanges({required GetExchangesParams params});
+
   Future<GetExchangeUrlResult> getExchangeUrl({
     required GetExchangeUrlParams params,
   });
-  Future<dynamic> getExchangeByStatus({
+
+  Future<GetExchangeByStatusResult> getExchangeByStatus({
     required GetExchangeByStatusParams params,
   });
 }

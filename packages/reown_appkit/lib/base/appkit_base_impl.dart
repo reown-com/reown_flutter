@@ -399,12 +399,12 @@ class ReownAppKit implements IReownAppKit {
   }
 
   @override
-  Future<dynamic> getExchangeByStatus({
+  Future<GetExchangeByStatusResult> getExchangeByStatus({
     required GetExchangeByStatusParams params,
   }) async {
     try {
       final result = await _exchangeService.getExchangeByStatus(params: params);
-      return result.result;
+      return GetExchangeByStatusResult.fromJson(result.result);
     } catch (e) {
       rethrow;
     }

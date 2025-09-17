@@ -42,3 +42,14 @@ _GetExchangeUrlResult _$GetExchangeUrlResultFromJson(
 Map<String, dynamic> _$GetExchangeUrlResultToJson(
   _GetExchangeUrlResult instance,
 ) => <String, dynamic>{'sessionId': instance.sessionId, 'url': instance.url};
+
+_GetExchangeByStatusResult _$GetExchangeByStatusResultFromJson(
+  Map<String, dynamic> json,
+) => _GetExchangeByStatusResult(
+  status: json['status'] as String,
+  txHash: json['txHash'] as String?,
+);
+
+Map<String, dynamic> _$GetExchangeByStatusResultToJson(
+  _GetExchangeByStatusResult instance,
+) => <String, dynamic>{'status': instance.status, 'txHash': instance.txHash};
