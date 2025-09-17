@@ -44,7 +44,7 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
     required String projectId,
     required String deviceId,
     required Metadata metadata,
-    LogLevel logLevel = LogLevel.debug,
+    LogLevel logLevel = LogLevel.all,
   }) {
     _queryParams = QueryParams(
       projectId: projectId,
@@ -110,7 +110,7 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
         },
       ),
     );
-    _reOwnCore!.logger.d('[$runtimeType] $hashCode, instance creation');
+    // _reOwnCore!.logger.d('[$runtimeType] $hashCode, instance creation');
   }
 
   ///
