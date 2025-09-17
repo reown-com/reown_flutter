@@ -20,7 +20,7 @@ class ExchangeService implements IExchangeService {
     final rpcRequest = JsonRpcRequest(
       id: JsonRpcUtils.payloadId(),
       method: 'reown_getExchanges',
-      params: params.toJson(),
+      params: params.toParams(),
     );
     core.logger.d('[$runtimeType] getExchanges ${rpcRequest.toJson()}');
 
@@ -38,7 +38,7 @@ class ExchangeService implements IExchangeService {
     final rpcRequest = JsonRpcRequest(
       id: JsonRpcUtils.payloadId(),
       method: 'reown_getExchangePayUrl',
-      params: params.toJson(),
+      params: params.toParams(),
     );
     core.logger.d('[$runtimeType] getExchangeUrl ${rpcRequest.toJson()}');
 

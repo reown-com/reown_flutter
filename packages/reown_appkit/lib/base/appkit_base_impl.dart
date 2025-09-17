@@ -360,8 +360,18 @@ class ReownAppKit implements IReownAppKit {
   IGenericStore<String> get pairingTopics => reOwnSign.pairingTopics;
 
   @override
-  List<ExchangeAsset> getPaymentAssetsForNetwork(String caip2chainId) {
-    return allExchangeAssets.where((a) => a.network == caip2chainId).toList();
+  List<ExchangeAsset> getPaymentAssetsForNetwork({String? chainId}) {
+    if (chainId == null) {
+      return allExchangeAssets;
+    }
+
+    if (!NamespaceUtils.isValidChainId(chainId)) {
+      throw Errors.getSdkError(
+        Errors.UNSUPPORTED_CHAINS,
+        context: 'chainId should conform to "CAIP-2" format',
+      ).toSignError();
+    }
+    return allExchangeAssets.where((a) => a.network == chainId).toList();
   }
 
   @override

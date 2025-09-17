@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/base/services/models/asset_models.dart';
 import 'package:reown_appkit/base/services/models/query_models.dart';
+import 'package:reown_appkit/base/services/models/result_models.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 void main() {
@@ -33,12 +34,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   late final ReownAppKitModal _appKitModal;
-
-  // final ethUSDC = 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
-  // final baseUSDC = 'eip155:8453/erc20:0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913';
-  // final nativeETH = 'eip155:1/slip44:60';
-  // final nativeSOL = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
-  // final unsupportedAsset = 'eip155:999/erc20:0x1234567890123456789012345678901234567890';
+  String _breadcrambs = '';
+  String? network;
+  ExchangeAsset? asset;
+  final List<Exchange> exchanges = [];
 
   @override
   void initState() {
@@ -71,42 +70,230 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            TextButton(
-              onPressed: () async {
-                final result = await _appKitModal.appKit!.getExchanges(
-                  params: GetExchangesParams(page: 1),
-                );
-                debugPrint(result.exchanges.toString());
-                debugPrint(result.total.toString());
-                final result2 = await _appKitModal.appKit!.getExchangeUrl(
-                  params: GetExchangeUrlParams(
-                    exchangeId: 'reown_test',
-                    asset: sepoliaETH,
-                    amount: '1.0',
-                    recipient:
-                        'eip155:1:0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
+      body: Column(
+        children: [
+          Text(_breadcrambs, textAlign: TextAlign.center),
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  NetworksWrap(
+                    visible: network == null,
+                    onNetwork: (n) {
+                      _breadcrambs += 'Network: $n\n';
+                      setState(() => network = n);
+                    },
                   ),
-                );
-                debugPrint(result2.sessionId.toString());
-                debugPrint(result2.url.toString());
-                final result3 = await _appKitModal.appKit!.getExchangeByStatus(
-                  params: GetExchangeByStatusParams(
-                    exchangeId: 'reown_test',
-                    sessionId: result2.sessionId,
+                  AssetsWrap(
+                    appKitModal: _appKitModal,
+                    visible: asset == null,
+                    network: network,
+                    onAsset: (a) {
+                      _breadcrambs += 'Asset: ${a.toCaip19()}\n';
+                      setState(() => asset = a);
+                    },
                   ),
-                );
-                debugPrint(result3.toString());
-              },
-              child: Text('Get Exchanges'),
+                  GetExchangesButton(
+                    appKitModal: _appKitModal,
+                    visible: exchanges.isEmpty,
+                    asset: asset,
+                    exchanges: (e) {
+                      setState(
+                        () => exchanges
+                          ..clear()
+                          ..addAll(e),
+                      );
+                    },
+                  ),
+                  // ExchangesWrap(
+                  //   exchanges: exchanges,
+                  //   onExchange: (e) async {
+                  //     // final result = await _appKitModal.appKit!.getExchangeUrl(
+                  //     //   params: GetExchangeUrlParams(
+                  //     //     exchangeId: e.id,
+                  //     //     asset: sepoliaETH,
+                  //     //     amount: '1.0',
+                  //     //     recipient:
+                  //     //         'eip155:1:0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
+                  //     //   ),
+                  //     // );
+                  //   },
+                  // ),
+                ],
+              ),
             ),
-          ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class NetworksWrap extends StatelessWidget {
+  final bool visible;
+  final Function(String chainId) onNetwork;
+  const NetworksWrap({
+    super.key,
+    required this.visible,
+    required this.onNetwork,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final networks = allExchangeAssets.map((asset) => asset.network).toSet();
+    return Visibility(
+      visible: visible,
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 10,
+        // runSpacing: 10,
+        children: networks.map((e) {
+          return GestureDetector(
+            onTap: () {
+              onNetwork.call(e);
+            },
+            child: Chip(label: Text(e.toUpperCase())),
+          );
+        }).toList(),
+      ),
+    );
+  }
+}
+
+class AssetsWrap extends StatelessWidget {
+  final ReownAppKitModal appKitModal;
+  final bool visible;
+  final String? network;
+  final Function(ExchangeAsset) onAsset;
+  const AssetsWrap({
+    super.key,
+    required this.visible,
+    required this.appKitModal,
+    required this.network,
+    required this.onAsset,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (network == null || !visible) {
+      return const SizedBox.shrink();
+    }
+
+    final assets = appKitModal.appKit!.getPaymentAssetsForNetwork(
+      chainId: network!,
+    );
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 10,
+      // runSpacing: 10,
+      children: assets.map((asset) {
+        final namespace = NamespaceUtils.getNamespaceFromChain(asset.network);
+        final name = namespace == 'solana'
+            ? 'SOLANA'
+            : asset.network.toUpperCase();
+        return GestureDetector(
+          onTap: () {
+            onAsset.call(asset);
+          },
+          child: Chip(label: Text('${asset.metadata.symbol} ($name)')),
+        );
+      }).toList(),
+    );
+  }
+}
+
+class GetExchangesButton extends StatelessWidget {
+  final ReownAppKitModal appKitModal;
+  final bool visible;
+  final ExchangeAsset? asset;
+  final Function(List<Exchange>) exchanges;
+  const GetExchangesButton({
+    super.key,
+    required this.visible,
+    required this.appKitModal,
+    required this.asset,
+    required this.exchanges,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (asset == null || !visible) {
+      return const SizedBox.shrink();
+    }
+
+    // final namespace = NamespaceUtils.getNamespaceFromChain(asset!.network);
+    // final name = namespace == 'solana'
+    //     ? 'SOLANA'
+    //     : asset!.network.toUpperCase();
+    return Column(
+      children: [
+        // Chip(label: Text('${asset!.metadata.symbol} ($name)')),
+        // TextButton(
+        //   onPressed: () async {
+        //     final result = await appKitModal.appKit!.getExchanges(
+        //       params: GetExchangesParams(page: 1, asset: asset),
+        //     );
+        //     exchanges.call(result.exchanges);
+        //   },
+        //   child: Text('Get Exchanges'),
+        // ),
+        GestureDetector(
+          onTap: () async {
+            final result = await appKitModal.appKit!.getExchanges(
+              params: GetExchangesParams(page: 1, asset: asset),
+            );
+            exchanges.call(result.exchanges);
+          },
+          child: Chip(label: Text('GET EXCHANGES')),
         ),
+      ],
+    );
+  }
+}
+
+class ExchangesWrap extends StatelessWidget {
+  final List<Exchange> exchanges;
+  final Function(Exchange) onExchange;
+  const ExchangesWrap({
+    super.key,
+    required this.exchanges,
+    required this.onExchange,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: exchanges.isNotEmpty,
+      child: Wrap(
+        spacing: 10,
+        // runSpacing: 10,
+        children: exchanges.map((Exchange exchange) {
+          exchange.id;
+          exchange.imageUrl;
+          return GestureDetector(
+            onTap: () {
+              // onExchange.call(exchange);
+              // final result = await _appKitModal.appKit!.getExchangeUrl(
+              //   params: GetExchangeUrlParams(
+              //     exchangeId: e.id,
+              //     asset: sepoliaETH,
+              //     amount: '1.0',
+              //     recipient:
+              //         'eip155:1:0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
+              //   ),
+              // );
+            },
+            child: Chip(
+              avatar: CircleAvatar(
+                backgroundImage: NetworkImage(exchange.imageUrl),
+              ),
+              label: Text(exchange.name),
+            ),
+          );
+        }).toList(),
       ),
     );
   }

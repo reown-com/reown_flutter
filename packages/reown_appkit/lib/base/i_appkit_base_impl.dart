@@ -17,7 +17,7 @@ abstract class IReownAppKit implements IReownSignDapp {
 
   // DWE
 
-  List<ExchangeAsset> getPaymentAssetsForNetwork(String caip2chainId);
+  List<ExchangeAsset> getPaymentAssetsForNetwork({String? chainId});
 
   Future<GetExchangesResult> getExchanges({required GetExchangesParams params});
   Future<GetExchangeUrlResult> getExchangeUrl({

@@ -11,6 +11,532 @@ part of 'asset_models.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
+/// @nodoc
+mixin _$AssetInfo {
+
+ NativeInfo get native; String get standard;
+/// Create a copy of AssetInfo
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AssetInfoCopyWith<AssetInfo> get copyWith => _$AssetInfoCopyWithImpl<AssetInfo>(this as AssetInfo, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AssetInfo&&(identical(other.native, native) || other.native == native)&&(identical(other.standard, standard) || other.standard == standard));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,native,standard);
+
+@override
+String toString() {
+  return 'AssetInfo(native: $native, standard: $standard)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AssetInfoCopyWith<$Res>  {
+  factory $AssetInfoCopyWith(AssetInfo value, $Res Function(AssetInfo) _then) = _$AssetInfoCopyWithImpl;
+@useResult
+$Res call({
+ NativeInfo native, String standard
+});
+
+
+$NativeInfoCopyWith<$Res> get native;
+
+}
+/// @nodoc
+class _$AssetInfoCopyWithImpl<$Res>
+    implements $AssetInfoCopyWith<$Res> {
+  _$AssetInfoCopyWithImpl(this._self, this._then);
+
+  final AssetInfo _self;
+  final $Res Function(AssetInfo) _then;
+
+/// Create a copy of AssetInfo
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? native = null,Object? standard = null,}) {
+  return _then(_self.copyWith(
+native: null == native ? _self.native : native // ignore: cast_nullable_to_non_nullable
+as NativeInfo,standard: null == standard ? _self.standard : standard // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+/// Create a copy of AssetInfo
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$NativeInfoCopyWith<$Res> get native {
+  
+  return $NativeInfoCopyWith<$Res>(_self.native, (value) {
+    return _then(_self.copyWith(native: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [AssetInfo].
+extension AssetInfoPatterns on AssetInfo {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AssetInfo value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AssetInfo() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AssetInfo value)  $default,){
+final _that = this;
+switch (_that) {
+case _AssetInfo():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AssetInfo value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AssetInfo() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( NativeInfo native,  String standard)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AssetInfo() when $default != null:
+return $default(_that.native,_that.standard);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( NativeInfo native,  String standard)  $default,) {final _that = this;
+switch (_that) {
+case _AssetInfo():
+return $default(_that.native,_that.standard);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( NativeInfo native,  String standard)?  $default,) {final _that = this;
+switch (_that) {
+case _AssetInfo() when $default != null:
+return $default(_that.native,_that.standard);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _AssetInfo implements AssetInfo {
+  const _AssetInfo({required this.native, required this.standard});
+  
+
+@override final  NativeInfo native;
+@override final  String standard;
+
+/// Create a copy of AssetInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AssetInfoCopyWith<_AssetInfo> get copyWith => __$AssetInfoCopyWithImpl<_AssetInfo>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AssetInfo&&(identical(other.native, native) || other.native == native)&&(identical(other.standard, standard) || other.standard == standard));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,native,standard);
+
+@override
+String toString() {
+  return 'AssetInfo(native: $native, standard: $standard)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AssetInfoCopyWith<$Res> implements $AssetInfoCopyWith<$Res> {
+  factory _$AssetInfoCopyWith(_AssetInfo value, $Res Function(_AssetInfo) _then) = __$AssetInfoCopyWithImpl;
+@override @useResult
+$Res call({
+ NativeInfo native, String standard
+});
+
+
+@override $NativeInfoCopyWith<$Res> get native;
+
+}
+/// @nodoc
+class __$AssetInfoCopyWithImpl<$Res>
+    implements _$AssetInfoCopyWith<$Res> {
+  __$AssetInfoCopyWithImpl(this._self, this._then);
+
+  final _AssetInfo _self;
+  final $Res Function(_AssetInfo) _then;
+
+/// Create a copy of AssetInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? native = null,Object? standard = null,}) {
+  return _then(_AssetInfo(
+native: null == native ? _self.native : native // ignore: cast_nullable_to_non_nullable
+as NativeInfo,standard: null == standard ? _self.standard : standard // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+/// Create a copy of AssetInfo
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$NativeInfoCopyWith<$Res> get native {
+  
+  return $NativeInfoCopyWith<$Res>(_self.native, (value) {
+    return _then(_self.copyWith(native: value));
+  });
+}
+}
+
+/// @nodoc
+mixin _$NativeInfo {
+
+ String get namespace; String get reference;
+/// Create a copy of NativeInfo
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$NativeInfoCopyWith<NativeInfo> get copyWith => _$NativeInfoCopyWithImpl<NativeInfo>(this as NativeInfo, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NativeInfo&&(identical(other.namespace, namespace) || other.namespace == namespace)&&(identical(other.reference, reference) || other.reference == reference));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,namespace,reference);
+
+@override
+String toString() {
+  return 'NativeInfo(namespace: $namespace, reference: $reference)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $NativeInfoCopyWith<$Res>  {
+  factory $NativeInfoCopyWith(NativeInfo value, $Res Function(NativeInfo) _then) = _$NativeInfoCopyWithImpl;
+@useResult
+$Res call({
+ String namespace, String reference
+});
+
+
+
+
+}
+/// @nodoc
+class _$NativeInfoCopyWithImpl<$Res>
+    implements $NativeInfoCopyWith<$Res> {
+  _$NativeInfoCopyWithImpl(this._self, this._then);
+
+  final NativeInfo _self;
+  final $Res Function(NativeInfo) _then;
+
+/// Create a copy of NativeInfo
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? namespace = null,Object? reference = null,}) {
+  return _then(_self.copyWith(
+namespace: null == namespace ? _self.namespace : namespace // ignore: cast_nullable_to_non_nullable
+as String,reference: null == reference ? _self.reference : reference // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [NativeInfo].
+extension NativeInfoPatterns on NativeInfo {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _NativeInfo value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _NativeInfo() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _NativeInfo value)  $default,){
+final _that = this;
+switch (_that) {
+case _NativeInfo():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _NativeInfo value)?  $default,){
+final _that = this;
+switch (_that) {
+case _NativeInfo() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String namespace,  String reference)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _NativeInfo() when $default != null:
+return $default(_that.namespace,_that.reference);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String namespace,  String reference)  $default,) {final _that = this;
+switch (_that) {
+case _NativeInfo():
+return $default(_that.namespace,_that.reference);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String namespace,  String reference)?  $default,) {final _that = this;
+switch (_that) {
+case _NativeInfo() when $default != null:
+return $default(_that.namespace,_that.reference);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+
+class _NativeInfo implements NativeInfo {
+  const _NativeInfo({required this.namespace, required this.reference});
+  
+
+@override final  String namespace;
+@override final  String reference;
+
+/// Create a copy of NativeInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$NativeInfoCopyWith<_NativeInfo> get copyWith => __$NativeInfoCopyWithImpl<_NativeInfo>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NativeInfo&&(identical(other.namespace, namespace) || other.namespace == namespace)&&(identical(other.reference, reference) || other.reference == reference));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,namespace,reference);
+
+@override
+String toString() {
+  return 'NativeInfo(namespace: $namespace, reference: $reference)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$NativeInfoCopyWith<$Res> implements $NativeInfoCopyWith<$Res> {
+  factory _$NativeInfoCopyWith(_NativeInfo value, $Res Function(_NativeInfo) _then) = __$NativeInfoCopyWithImpl;
+@override @useResult
+$Res call({
+ String namespace, String reference
+});
+
+
+
+
+}
+/// @nodoc
+class __$NativeInfoCopyWithImpl<$Res>
+    implements _$NativeInfoCopyWith<$Res> {
+  __$NativeInfoCopyWithImpl(this._self, this._then);
+
+  final _NativeInfo _self;
+  final $Res Function(_NativeInfo) _then;
+
+/// Create a copy of NativeInfo
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? namespace = null,Object? reference = null,}) {
+  return _then(_NativeInfo(
+namespace: null == namespace ? _self.namespace : namespace // ignore: cast_nullable_to_non_nullable
+as String,reference: null == reference ? _self.reference : reference // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$AssetMetadata {
@@ -278,7 +804,7 @@ as int,
 /// @nodoc
 mixin _$ExchangeAsset {
 
- String get network; String get asset; AssetMetadata get metadata;
+ String get network; String get address; AssetMetadata get metadata;
 /// Create a copy of ExchangeAsset
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -291,16 +817,16 @@ $ExchangeAssetCopyWith<ExchangeAsset> get copyWith => _$ExchangeAssetCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExchangeAsset&&(identical(other.network, network) || other.network == network)&&(identical(other.asset, asset) || other.asset == asset)&&(identical(other.metadata, metadata) || other.metadata == metadata));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ExchangeAsset&&(identical(other.network, network) || other.network == network)&&(identical(other.address, address) || other.address == address)&&(identical(other.metadata, metadata) || other.metadata == metadata));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,network,asset,metadata);
+int get hashCode => Object.hash(runtimeType,network,address,metadata);
 
 @override
 String toString() {
-  return 'ExchangeAsset(network: $network, asset: $asset, metadata: $metadata)';
+  return 'ExchangeAsset(network: $network, address: $address, metadata: $metadata)';
 }
 
 
@@ -311,7 +837,7 @@ abstract mixin class $ExchangeAssetCopyWith<$Res>  {
   factory $ExchangeAssetCopyWith(ExchangeAsset value, $Res Function(ExchangeAsset) _then) = _$ExchangeAssetCopyWithImpl;
 @useResult
 $Res call({
- String network, String asset, AssetMetadata metadata
+ String network, String address, AssetMetadata metadata
 });
 
 
@@ -328,10 +854,10 @@ class _$ExchangeAssetCopyWithImpl<$Res>
 
 /// Create a copy of ExchangeAsset
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? network = null,Object? asset = null,Object? metadata = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? network = null,Object? address = null,Object? metadata = null,}) {
   return _then(_self.copyWith(
 network: null == network ? _self.network : network // ignore: cast_nullable_to_non_nullable
-as String,asset: null == asset ? _self.asset : asset // ignore: cast_nullable_to_non_nullable
+as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
 as String,metadata: null == metadata ? _self.metadata : metadata // ignore: cast_nullable_to_non_nullable
 as AssetMetadata,
   ));
@@ -424,10 +950,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String network,  String asset,  AssetMetadata metadata)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String network,  String address,  AssetMetadata metadata)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ExchangeAsset() when $default != null:
-return $default(_that.network,_that.asset,_that.metadata);case _:
+return $default(_that.network,_that.address,_that.metadata);case _:
   return orElse();
 
 }
@@ -445,10 +971,10 @@ return $default(_that.network,_that.asset,_that.metadata);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String network,  String asset,  AssetMetadata metadata)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String network,  String address,  AssetMetadata metadata)  $default,) {final _that = this;
 switch (_that) {
 case _ExchangeAsset():
-return $default(_that.network,_that.asset,_that.metadata);}
+return $default(_that.network,_that.address,_that.metadata);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -462,10 +988,10 @@ return $default(_that.network,_that.asset,_that.metadata);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String network,  String asset,  AssetMetadata metadata)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String network,  String address,  AssetMetadata metadata)?  $default,) {final _that = this;
 switch (_that) {
 case _ExchangeAsset() when $default != null:
-return $default(_that.network,_that.asset,_that.metadata);case _:
+return $default(_that.network,_that.address,_that.metadata);case _:
   return null;
 
 }
@@ -477,11 +1003,11 @@ return $default(_that.network,_that.asset,_that.metadata);case _:
 @JsonSerializable()
 
 class _ExchangeAsset implements ExchangeAsset {
-  const _ExchangeAsset({required this.network, required this.asset, required this.metadata});
+  const _ExchangeAsset({required this.network, required this.address, required this.metadata});
   factory _ExchangeAsset.fromJson(Map<String, dynamic> json) => _$ExchangeAssetFromJson(json);
 
 @override final  String network;
-@override final  String asset;
+@override final  String address;
 @override final  AssetMetadata metadata;
 
 /// Create a copy of ExchangeAsset
@@ -497,16 +1023,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExchangeAsset&&(identical(other.network, network) || other.network == network)&&(identical(other.asset, asset) || other.asset == asset)&&(identical(other.metadata, metadata) || other.metadata == metadata));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ExchangeAsset&&(identical(other.network, network) || other.network == network)&&(identical(other.address, address) || other.address == address)&&(identical(other.metadata, metadata) || other.metadata == metadata));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,network,asset,metadata);
+int get hashCode => Object.hash(runtimeType,network,address,metadata);
 
 @override
 String toString() {
-  return 'ExchangeAsset(network: $network, asset: $asset, metadata: $metadata)';
+  return 'ExchangeAsset(network: $network, address: $address, metadata: $metadata)';
 }
 
 
@@ -517,7 +1043,7 @@ abstract mixin class _$ExchangeAssetCopyWith<$Res> implements $ExchangeAssetCopy
   factory _$ExchangeAssetCopyWith(_ExchangeAsset value, $Res Function(_ExchangeAsset) _then) = __$ExchangeAssetCopyWithImpl;
 @override @useResult
 $Res call({
- String network, String asset, AssetMetadata metadata
+ String network, String address, AssetMetadata metadata
 });
 
 
@@ -534,10 +1060,10 @@ class __$ExchangeAssetCopyWithImpl<$Res>
 
 /// Create a copy of ExchangeAsset
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? network = null,Object? asset = null,Object? metadata = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? network = null,Object? address = null,Object? metadata = null,}) {
   return _then(_ExchangeAsset(
 network: null == network ? _self.network : network // ignore: cast_nullable_to_non_nullable
-as String,asset: null == asset ? _self.asset : asset // ignore: cast_nullable_to_non_nullable
+as String,address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
 as String,metadata: null == metadata ? _self.metadata : metadata // ignore: cast_nullable_to_non_nullable
 as AssetMetadata,
   ));

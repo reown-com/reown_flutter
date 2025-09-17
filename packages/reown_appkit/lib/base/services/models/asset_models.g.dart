@@ -23,7 +23,7 @@ Map<String, dynamic> _$AssetMetadataToJson(_AssetMetadata instance) =>
 _ExchangeAsset _$ExchangeAssetFromJson(Map<String, dynamic> json) =>
     _ExchangeAsset(
       network: json['network'] as String,
-      asset: json['asset'] as String,
+      address: json['address'] as String,
       metadata: AssetMetadata.fromJson(
         json['metadata'] as Map<String, dynamic>,
       ),
@@ -32,6 +32,6 @@ _ExchangeAsset _$ExchangeAssetFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$ExchangeAssetToJson(_ExchangeAsset instance) =>
     <String, dynamic>{
       'network': instance.network,
-      'asset': instance.asset,
+      'address': instance.address,
       'metadata': instance.metadata.toJson(),
     };

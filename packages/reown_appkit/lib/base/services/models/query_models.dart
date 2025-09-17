@@ -31,6 +31,17 @@ sealed class GetExchangesParams with _$GetExchangesParams {
       _$GetExchangesParamsFromJson(json);
 }
 
+extension GetExchangesParamsExtensions on GetExchangesParams {
+  Map<String, dynamic> toParams() {
+    return {
+      'page': page,
+      if (asset != null) 'asset': asset!.toCaip19(),
+      if (includeOnly != null) 'includeOnly': includeOnly,
+      if (exclude != null) 'exclude': exclude,
+    };
+  }
+}
+
 @freezed
 sealed class GetExchangeUrlParams with _$GetExchangeUrlParams {
   const factory GetExchangeUrlParams({
@@ -42,6 +53,17 @@ sealed class GetExchangeUrlParams with _$GetExchangeUrlParams {
 
   factory GetExchangeUrlParams.fromJson(Map<String, dynamic> json) =>
       _$GetExchangeUrlParamsFromJson(json);
+}
+
+extension GetExchangeUrlParamsExtension on GetExchangeUrlParams {
+  Map<String, dynamic> toParams() {
+    return {
+      'exchangeId': exchangeId,
+      'asset': asset.toCaip19(),
+      'amount': amount,
+      'recipient': recipient,
+    };
+  }
 }
 
 @freezed
