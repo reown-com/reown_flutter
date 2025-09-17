@@ -1,8 +1,3 @@
-import 'package:reown_appkit/base/services/exchange_service.dart';
-import 'package:reown_appkit/base/services/i_exchange_service.dart';
-import 'package:reown_appkit/base/services/models/asset_models.dart';
-import 'package:reown_appkit/base/services/models/query_models.dart';
-import 'package:reown_appkit/base/services/models/result_models.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_core/relay_client/websocket/http_client.dart';
 import 'package:reown_core/store/generic_store.dart';

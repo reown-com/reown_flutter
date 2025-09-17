@@ -1,9 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:reown_appkit/base/services/models/asset_models.dart';
-import 'package:reown_appkit/base/services/models/query_models.dart';
-import 'package:reown_appkit/base/services/models/result_models.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 void main() {
