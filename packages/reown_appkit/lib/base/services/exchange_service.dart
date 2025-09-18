@@ -1,5 +1,6 @@
 import 'package:reown_appkit/base/services/i_exchange_service.dart';
 import 'package:reown_appkit/base/services/models/query_models.dart';
+import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_core/i_core_impl.dart';
 import 'package:reown_core/models/json_rpc_models.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
@@ -80,7 +81,12 @@ class ExchangeService implements IExchangeService {
   }
 
   Future<JsonRpcResponse> _request(JsonRpcRequest rpcRequest) async {
-    final qParams = QueryParams(projectId: core.projectId).toJson();
+    final qParams = QueryParams(
+      projectId: core.projectId,
+      source: 'fund-wallet',
+      st: CoreConstants.X_SDK_TYPE,
+      sv: CoreConstants.X_SDK_VERSION,
+    ).toJson();
     final jsonRequest = rpcRequest.toJson();
     final url = Uri.parse(_baseUrl).replace(queryParameters: qParams);
     final response = await http.post(

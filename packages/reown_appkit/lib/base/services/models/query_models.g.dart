@@ -6,11 +6,20 @@ part of 'query_models.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_QueryParams _$QueryParamsFromJson(Map<String, dynamic> json) =>
-    _QueryParams(projectId: json['projectId'] as String);
+_QueryParams _$QueryParamsFromJson(Map<String, dynamic> json) => _QueryParams(
+  projectId: json['projectId'] as String,
+  source: json['source'] as String,
+  st: json['st'] as String,
+  sv: json['sv'] as String,
+);
 
 Map<String, dynamic> _$QueryParamsToJson(_QueryParams instance) =>
-    <String, dynamic>{'projectId': instance.projectId};
+    <String, dynamic>{
+      'projectId': instance.projectId,
+      'source': instance.source,
+      'st': instance.st,
+      'sv': instance.sv,
+    };
 
 _GetExchangesParams _$GetExchangesParamsFromJson(Map<String, dynamic> json) =>
     _GetExchangesParams(

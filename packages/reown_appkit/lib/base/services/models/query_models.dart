@@ -8,9 +8,9 @@ part 'query_models.freezed.dart';
 sealed class QueryParams with _$QueryParams {
   const factory QueryParams({
     required String projectId,
-    // required String deviceId,
-    // required String st,
-    // required String sv,
+    required String source,
+    required String st,
+    required String sv,
   }) = _QueryParams;
 
   factory QueryParams.fromJson(Map<String, dynamic> json) =>

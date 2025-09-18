@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$QueryParams {
 
- String get projectId;
+ String get projectId; String get source; String get st; String get sv;
 /// Create a copy of QueryParams
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $QueryParamsCopyWith<QueryParams> get copyWith => _$QueryParamsCopyWithImpl<Quer
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QueryParams&&(identical(other.projectId, projectId) || other.projectId == projectId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QueryParams&&(identical(other.projectId, projectId) || other.projectId == projectId)&&(identical(other.source, source) || other.source == source)&&(identical(other.st, st) || other.st == st)&&(identical(other.sv, sv) || other.sv == sv));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,projectId);
+int get hashCode => Object.hash(runtimeType,projectId,source,st,sv);
 
 @override
 String toString() {
-  return 'QueryParams(projectId: $projectId)';
+  return 'QueryParams(projectId: $projectId, source: $source, st: $st, sv: $sv)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $QueryParamsCopyWith<$Res>  {
   factory $QueryParamsCopyWith(QueryParams value, $Res Function(QueryParams) _then) = _$QueryParamsCopyWithImpl;
 @useResult
 $Res call({
- String projectId
+ String projectId, String source, String st, String sv
 });
 
 
@@ -65,9 +65,12 @@ class _$QueryParamsCopyWithImpl<$Res>
 
 /// Create a copy of QueryParams
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? projectId = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? projectId = null,Object? source = null,Object? st = null,Object? sv = null,}) {
   return _then(_self.copyWith(
 projectId: null == projectId ? _self.projectId : projectId // ignore: cast_nullable_to_non_nullable
+as String,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as String,st: null == st ? _self.st : st // ignore: cast_nullable_to_non_nullable
+as String,sv: null == sv ? _self.sv : sv // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -150,10 +153,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String projectId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String projectId,  String source,  String st,  String sv)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _QueryParams() when $default != null:
-return $default(_that.projectId);case _:
+return $default(_that.projectId,_that.source,_that.st,_that.sv);case _:
   return orElse();
 
 }
@@ -171,10 +174,10 @@ return $default(_that.projectId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String projectId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String projectId,  String source,  String st,  String sv)  $default,) {final _that = this;
 switch (_that) {
 case _QueryParams():
-return $default(_that.projectId);}
+return $default(_that.projectId,_that.source,_that.st,_that.sv);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -188,10 +191,10 @@ return $default(_that.projectId);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String projectId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String projectId,  String source,  String st,  String sv)?  $default,) {final _that = this;
 switch (_that) {
 case _QueryParams() when $default != null:
-return $default(_that.projectId);case _:
+return $default(_that.projectId,_that.source,_that.st,_that.sv);case _:
   return null;
 
 }
@@ -203,10 +206,13 @@ return $default(_that.projectId);case _:
 @JsonSerializable()
 
 class _QueryParams implements QueryParams {
-  const _QueryParams({required this.projectId});
+  const _QueryParams({required this.projectId, required this.source, required this.st, required this.sv});
   factory _QueryParams.fromJson(Map<String, dynamic> json) => _$QueryParamsFromJson(json);
 
 @override final  String projectId;
+@override final  String source;
+@override final  String st;
+@override final  String sv;
 
 /// Create a copy of QueryParams
 /// with the given fields replaced by the non-null parameter values.
@@ -221,16 +227,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QueryParams&&(identical(other.projectId, projectId) || other.projectId == projectId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QueryParams&&(identical(other.projectId, projectId) || other.projectId == projectId)&&(identical(other.source, source) || other.source == source)&&(identical(other.st, st) || other.st == st)&&(identical(other.sv, sv) || other.sv == sv));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,projectId);
+int get hashCode => Object.hash(runtimeType,projectId,source,st,sv);
 
 @override
 String toString() {
-  return 'QueryParams(projectId: $projectId)';
+  return 'QueryParams(projectId: $projectId, source: $source, st: $st, sv: $sv)';
 }
 
 
@@ -241,7 +247,7 @@ abstract mixin class _$QueryParamsCopyWith<$Res> implements $QueryParamsCopyWith
   factory _$QueryParamsCopyWith(_QueryParams value, $Res Function(_QueryParams) _then) = __$QueryParamsCopyWithImpl;
 @override @useResult
 $Res call({
- String projectId
+ String projectId, String source, String st, String sv
 });
 
 
@@ -258,9 +264,12 @@ class __$QueryParamsCopyWithImpl<$Res>
 
 /// Create a copy of QueryParams
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? projectId = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? projectId = null,Object? source = null,Object? st = null,Object? sv = null,}) {
   return _then(_QueryParams(
 projectId: null == projectId ? _self.projectId : projectId // ignore: cast_nullable_to_non_nullable
+as String,source: null == source ? _self.source : source // ignore: cast_nullable_to_non_nullable
+as String,st: null == st ? _self.st : st // ignore: cast_nullable_to_non_nullable
+as String,sv: null == sv ? _self.sv : sv // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
