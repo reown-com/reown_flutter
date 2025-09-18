@@ -61,15 +61,15 @@ Map<String, dynamic> _$GetExchangeUrlParamsToJson(
   'recipient': instance.recipient,
 };
 
-_GetExchangeByStatusParams _$GetExchangeByStatusParamsFromJson(
+_GetExchangeDepositStatusParams _$GetExchangeDepositStatusParamsFromJson(
   Map<String, dynamic> json,
-) => _GetExchangeByStatusParams(
+) => _GetExchangeDepositStatusParams(
   exchangeId: json['exchangeId'] as String,
   sessionId: json['sessionId'] as String,
 );
 
-Map<String, dynamic> _$GetExchangeByStatusParamsToJson(
-  _GetExchangeByStatusParams instance,
+Map<String, dynamic> _$GetExchangeDepositStatusParamsToJson(
+  _GetExchangeDepositStatusParams instance,
 ) => <String, dynamic>{
   'exchangeId': instance.exchangeId,
   'sessionId': instance.sessionId,

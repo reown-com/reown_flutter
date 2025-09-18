@@ -59,8 +59,8 @@ class ExchangeService implements IExchangeService {
   }
 
   @override
-  Future<JsonRpcResponse> getExchangeByStatus({
-    required GetExchangeByStatusParams params,
+  Future<JsonRpcResponse> getExchangeDepositStatus({
+    required GetExchangeDepositStatusParams params,
   }) async {
     final rpcRequest = JsonRpcRequest(
       id: JsonRpcUtils.payloadId(),
@@ -68,7 +68,7 @@ class ExchangeService implements IExchangeService {
       params: params.toJson(),
     );
     core.logger.d(
-      '[$runtimeType] getExchangeByStatus ${jsonEncode(rpcRequest.toJson())}',
+      '[$runtimeType] getExchangeDepositStatus ${jsonEncode(rpcRequest.toJson())}',
     );
 
     // return JsonRpcResponse.fromJson(_getExchangeBuyStatusMockResponse);

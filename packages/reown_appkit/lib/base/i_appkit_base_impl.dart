@@ -40,7 +40,7 @@ abstract class IReownAppKit implements IReownSignDapp {
   /// ℹ️ Check the status of the deposit/transaction
   /// Better to call this in a loop
   ///
-  Future<GetExchangeByStatusResult> getExchangeByStatus({
-    required GetExchangeByStatusParams params,
+  Future<GetExchangeDepositStatusResult> getExchangeDepositStatus({
+    required GetExchangeDepositStatusParams params,
   });
 }

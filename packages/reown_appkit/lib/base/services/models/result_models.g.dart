@@ -43,13 +43,13 @@ Map<String, dynamic> _$GetExchangeUrlResultToJson(
   _GetExchangeUrlResult instance,
 ) => <String, dynamic>{'sessionId': instance.sessionId, 'url': instance.url};
 
-_GetExchangeByStatusResult _$GetExchangeByStatusResultFromJson(
+_GetExchangeDepositStatusResult _$GetExchangeDepositStatusResultFromJson(
   Map<String, dynamic> json,
-) => _GetExchangeByStatusResult(
+) => _GetExchangeDepositStatusResult(
   status: json['status'] as String,
   txHash: json['txHash'] as String?,
 );
 
-Map<String, dynamic> _$GetExchangeByStatusResultToJson(
-  _GetExchangeByStatusResult instance,
+Map<String, dynamic> _$GetExchangeDepositStatusResultToJson(
+  _GetExchangeDepositStatusResult instance,
 ) => <String, dynamic>{'status': instance.status, 'txHash': instance.txHash};

@@ -879,22 +879,22 @@ $ExchangeAssetCopyWith<$Res> get asset {
 
 
 /// @nodoc
-mixin _$GetExchangeByStatusParams {
+mixin _$GetExchangeDepositStatusParams {
 
  String get exchangeId; String get sessionId;
-/// Create a copy of GetExchangeByStatusParams
+/// Create a copy of GetExchangeDepositStatusParams
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$GetExchangeByStatusParamsCopyWith<GetExchangeByStatusParams> get copyWith => _$GetExchangeByStatusParamsCopyWithImpl<GetExchangeByStatusParams>(this as GetExchangeByStatusParams, _$identity);
+$GetExchangeDepositStatusParamsCopyWith<GetExchangeDepositStatusParams> get copyWith => _$GetExchangeDepositStatusParamsCopyWithImpl<GetExchangeDepositStatusParams>(this as GetExchangeDepositStatusParams, _$identity);
 
-  /// Serializes this GetExchangeByStatusParams to a JSON map.
+  /// Serializes this GetExchangeDepositStatusParams to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetExchangeByStatusParams&&(identical(other.exchangeId, exchangeId) || other.exchangeId == exchangeId)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetExchangeDepositStatusParams&&(identical(other.exchangeId, exchangeId) || other.exchangeId == exchangeId)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -903,15 +903,15 @@ int get hashCode => Object.hash(runtimeType,exchangeId,sessionId);
 
 @override
 String toString() {
-  return 'GetExchangeByStatusParams(exchangeId: $exchangeId, sessionId: $sessionId)';
+  return 'GetExchangeDepositStatusParams(exchangeId: $exchangeId, sessionId: $sessionId)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $GetExchangeByStatusParamsCopyWith<$Res>  {
-  factory $GetExchangeByStatusParamsCopyWith(GetExchangeByStatusParams value, $Res Function(GetExchangeByStatusParams) _then) = _$GetExchangeByStatusParamsCopyWithImpl;
+abstract mixin class $GetExchangeDepositStatusParamsCopyWith<$Res>  {
+  factory $GetExchangeDepositStatusParamsCopyWith(GetExchangeDepositStatusParams value, $Res Function(GetExchangeDepositStatusParams) _then) = _$GetExchangeDepositStatusParamsCopyWithImpl;
 @useResult
 $Res call({
  String exchangeId, String sessionId
@@ -922,14 +922,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$GetExchangeByStatusParamsCopyWithImpl<$Res>
-    implements $GetExchangeByStatusParamsCopyWith<$Res> {
-  _$GetExchangeByStatusParamsCopyWithImpl(this._self, this._then);
+class _$GetExchangeDepositStatusParamsCopyWithImpl<$Res>
+    implements $GetExchangeDepositStatusParamsCopyWith<$Res> {
+  _$GetExchangeDepositStatusParamsCopyWithImpl(this._self, this._then);
 
-  final GetExchangeByStatusParams _self;
-  final $Res Function(GetExchangeByStatusParams) _then;
+  final GetExchangeDepositStatusParams _self;
+  final $Res Function(GetExchangeDepositStatusParams) _then;
 
-/// Create a copy of GetExchangeByStatusParams
+/// Create a copy of GetExchangeDepositStatusParams
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? exchangeId = null,Object? sessionId = null,}) {
   return _then(_self.copyWith(
@@ -942,8 +942,8 @@ as String,
 }
 
 
-/// Adds pattern-matching-related methods to [GetExchangeByStatusParams].
-extension GetExchangeByStatusParamsPatterns on GetExchangeByStatusParams {
+/// Adds pattern-matching-related methods to [GetExchangeDepositStatusParams].
+extension GetExchangeDepositStatusParamsPatterns on GetExchangeDepositStatusParams {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -956,10 +956,10 @@ extension GetExchangeByStatusParamsPatterns on GetExchangeByStatusParams {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _GetExchangeByStatusParams value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _GetExchangeDepositStatusParams value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _GetExchangeByStatusParams() when $default != null:
+case _GetExchangeDepositStatusParams() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -978,10 +978,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _GetExchangeByStatusParams value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _GetExchangeDepositStatusParams value)  $default,){
 final _that = this;
 switch (_that) {
-case _GetExchangeByStatusParams():
+case _GetExchangeDepositStatusParams():
 return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -996,10 +996,10 @@ return $default(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _GetExchangeByStatusParams value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _GetExchangeDepositStatusParams value)?  $default,){
 final _that = this;
 switch (_that) {
-case _GetExchangeByStatusParams() when $default != null:
+case _GetExchangeDepositStatusParams() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -1019,7 +1019,7 @@ return $default(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String exchangeId,  String sessionId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _GetExchangeByStatusParams() when $default != null:
+case _GetExchangeDepositStatusParams() when $default != null:
 return $default(_that.exchangeId,_that.sessionId);case _:
   return orElse();
 
@@ -1040,7 +1040,7 @@ return $default(_that.exchangeId,_that.sessionId);case _:
 
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String exchangeId,  String sessionId)  $default,) {final _that = this;
 switch (_that) {
-case _GetExchangeByStatusParams():
+case _GetExchangeDepositStatusParams():
 return $default(_that.exchangeId,_that.sessionId);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -1057,7 +1057,7 @@ return $default(_that.exchangeId,_that.sessionId);}
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String exchangeId,  String sessionId)?  $default,) {final _that = this;
 switch (_that) {
-case _GetExchangeByStatusParams() when $default != null:
+case _GetExchangeDepositStatusParams() when $default != null:
 return $default(_that.exchangeId,_that.sessionId);case _:
   return null;
 
@@ -1069,27 +1069,27 @@ return $default(_that.exchangeId,_that.sessionId);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _GetExchangeByStatusParams implements GetExchangeByStatusParams {
-  const _GetExchangeByStatusParams({required this.exchangeId, required this.sessionId});
-  factory _GetExchangeByStatusParams.fromJson(Map<String, dynamic> json) => _$GetExchangeByStatusParamsFromJson(json);
+class _GetExchangeDepositStatusParams implements GetExchangeDepositStatusParams {
+  const _GetExchangeDepositStatusParams({required this.exchangeId, required this.sessionId});
+  factory _GetExchangeDepositStatusParams.fromJson(Map<String, dynamic> json) => _$GetExchangeDepositStatusParamsFromJson(json);
 
 @override final  String exchangeId;
 @override final  String sessionId;
 
-/// Create a copy of GetExchangeByStatusParams
+/// Create a copy of GetExchangeDepositStatusParams
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$GetExchangeByStatusParamsCopyWith<_GetExchangeByStatusParams> get copyWith => __$GetExchangeByStatusParamsCopyWithImpl<_GetExchangeByStatusParams>(this, _$identity);
+_$GetExchangeDepositStatusParamsCopyWith<_GetExchangeDepositStatusParams> get copyWith => __$GetExchangeDepositStatusParamsCopyWithImpl<_GetExchangeDepositStatusParams>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$GetExchangeByStatusParamsToJson(this, );
+  return _$GetExchangeDepositStatusParamsToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetExchangeByStatusParams&&(identical(other.exchangeId, exchangeId) || other.exchangeId == exchangeId)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetExchangeDepositStatusParams&&(identical(other.exchangeId, exchangeId) || other.exchangeId == exchangeId)&&(identical(other.sessionId, sessionId) || other.sessionId == sessionId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1098,15 +1098,15 @@ int get hashCode => Object.hash(runtimeType,exchangeId,sessionId);
 
 @override
 String toString() {
-  return 'GetExchangeByStatusParams(exchangeId: $exchangeId, sessionId: $sessionId)';
+  return 'GetExchangeDepositStatusParams(exchangeId: $exchangeId, sessionId: $sessionId)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$GetExchangeByStatusParamsCopyWith<$Res> implements $GetExchangeByStatusParamsCopyWith<$Res> {
-  factory _$GetExchangeByStatusParamsCopyWith(_GetExchangeByStatusParams value, $Res Function(_GetExchangeByStatusParams) _then) = __$GetExchangeByStatusParamsCopyWithImpl;
+abstract mixin class _$GetExchangeDepositStatusParamsCopyWith<$Res> implements $GetExchangeDepositStatusParamsCopyWith<$Res> {
+  factory _$GetExchangeDepositStatusParamsCopyWith(_GetExchangeDepositStatusParams value, $Res Function(_GetExchangeDepositStatusParams) _then) = __$GetExchangeDepositStatusParamsCopyWithImpl;
 @override @useResult
 $Res call({
  String exchangeId, String sessionId
@@ -1117,17 +1117,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$GetExchangeByStatusParamsCopyWithImpl<$Res>
-    implements _$GetExchangeByStatusParamsCopyWith<$Res> {
-  __$GetExchangeByStatusParamsCopyWithImpl(this._self, this._then);
+class __$GetExchangeDepositStatusParamsCopyWithImpl<$Res>
+    implements _$GetExchangeDepositStatusParamsCopyWith<$Res> {
+  __$GetExchangeDepositStatusParamsCopyWithImpl(this._self, this._then);
 
-  final _GetExchangeByStatusParams _self;
-  final $Res Function(_GetExchangeByStatusParams) _then;
+  final _GetExchangeDepositStatusParams _self;
+  final $Res Function(_GetExchangeDepositStatusParams) _then;
 
-/// Create a copy of GetExchangeByStatusParams
+/// Create a copy of GetExchangeDepositStatusParams
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? exchangeId = null,Object? sessionId = null,}) {
-  return _then(_GetExchangeByStatusParams(
+  return _then(_GetExchangeDepositStatusParams(
 exchangeId: null == exchangeId ? _self.exchangeId : exchangeId // ignore: cast_nullable_to_non_nullable
 as String,sessionId: null == sessionId ? _self.sessionId : sessionId // ignore: cast_nullable_to_non_nullable
 as String,

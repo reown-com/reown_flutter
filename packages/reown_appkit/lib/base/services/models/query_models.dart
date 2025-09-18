@@ -67,12 +67,13 @@ extension GetExchangeUrlParamsExtension on GetExchangeUrlParams {
 }
 
 @freezed
-sealed class GetExchangeByStatusParams with _$GetExchangeByStatusParams {
-  const factory GetExchangeByStatusParams({
+sealed class GetExchangeDepositStatusParams
+    with _$GetExchangeDepositStatusParams {
+  const factory GetExchangeDepositStatusParams({
     required String exchangeId,
     required String sessionId,
-  }) = _GetExchangeByStatusParams;
+  }) = _GetExchangeDepositStatusParams;
 
-  factory GetExchangeByStatusParams.fromJson(Map<String, dynamic> json) =>
-      _$GetExchangeByStatusParamsFromJson(json);
+  factory GetExchangeDepositStatusParams.fromJson(Map<String, dynamic> json) =>
+      _$GetExchangeDepositStatusParamsFromJson(json);
 }

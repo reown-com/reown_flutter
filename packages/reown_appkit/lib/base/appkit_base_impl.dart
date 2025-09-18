@@ -1,3 +1,4 @@
+import 'package:reown_appkit/base/services/models/query_models.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_core/relay_client/websocket/http_client.dart';
 import 'package:reown_core/store/generic_store.dart';
@@ -396,12 +397,14 @@ class ReownAppKit implements IReownAppKit {
   }
 
   @override
-  Future<GetExchangeByStatusResult> getExchangeByStatus({
-    required GetExchangeByStatusParams params,
+  Future<GetExchangeDepositStatusResult> getExchangeDepositStatus({
+    required GetExchangeDepositStatusParams params,
   }) async {
     try {
-      final result = await _exchangeService.getExchangeByStatus(params: params);
-      return GetExchangeByStatusResult.fromJson(result.result);
+      final result = await _exchangeService.getExchangeDepositStatus(
+        params: params,
+      );
+      return GetExchangeDepositStatusResult.fromJson(result.result);
     } catch (e) {
       rethrow;
     }

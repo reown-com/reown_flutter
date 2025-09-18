@@ -9,7 +9,7 @@ abstract class IExchangeService {
     required GetExchangeUrlParams params,
   });
 
-  Future<JsonRpcResponse> getExchangeByStatus({
-    required GetExchangeByStatusParams params,
+  Future<JsonRpcResponse> getExchangeDepositStatus({
+    required GetExchangeDepositStatusParams params,
   });
 }
