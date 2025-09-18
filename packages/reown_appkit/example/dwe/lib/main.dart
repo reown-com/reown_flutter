@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,6 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'DWE',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
@@ -59,7 +61,6 @@ class _MyHomePageState extends State<MyHomePage> {
         redirect: Redirect(native: 'dwedemo://'),
       ),
     );
-
     _appKit.init().then((_) => setState(() {}));
   }
 
@@ -77,93 +78,113 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        backgroundColor: Theme.of(context).colorScheme.scrim,
+        title: Text(widget.title, style: TextStyle(color: Colors.white)),
+        actions: [
+          SettingsButton(
+            onSetValue: (String value) async {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.setString('dwe_demo_recipient', value);
+              setState(() {});
+            },
+          ),
+        ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            Text(_breadcrambs, textAlign: TextAlign.left),
-            Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    NetworksWrap(
-                      visible: selectedNetwork == null,
-                      onNetwork: (n) {
-                        _breadcrambs += 'Network selected: $n\n';
-                        setState(() => selectedNetwork = n);
-                      },
-                    ),
-                    AssetsWrap(
-                      appKit: _appKit,
-                      visible: selectedAsset == null,
-                      network: selectedNetwork,
-                      onAsset: (a) {
-                        _breadcrambs += 'Asset selected: ${a.toCaip19()}\n';
-                        setState(() => selectedAsset = a);
-                      },
-                    ),
-                    GetExchangesButton(
-                      appKit: _appKit,
-                      visible: exchanges.isEmpty,
-                      asset: selectedAsset,
-                      exchanges: (e) {
-                        setState(
-                          () => exchanges
-                            ..clear()
-                            ..addAll(e),
-                        );
-                      },
-                    ),
-                    ExchangesWrap(
-                      appKit: _appKit,
-                      visible: selectedExchange == null,
-                      selectedAsset: selectedAsset,
-                      exchanges: exchanges,
-                      onExchange: (exchange, urlResult) async {
-                        selectedExchange = exchange;
-                        sessionId = urlResult.sessionId;
-                        _breadcrambs +=
-                            'Selected exchange: ${exchange.name}\nSession id: $sessionId\n';
-                        setState(() {});
-                        await ReownCoreUtils.openURL(urlResult.url);
-                      },
-                    ),
-                    CheckStatusWidget(
-                      appKit: _appKit,
-                      exchangeId: selectedExchange?.id,
-                      sessionId: sessionId,
-                      onStatus: (status) {
-                        _restart();
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              content: Text(jsonEncode(status?.toJson())),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Visibility(
-              visible: _breadcrambs.isNotEmpty,
-              child: TextButton(
-                onPressed: _restart,
-                child: Text(
-                  'RESTART',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ],
+        child: FutureBuilder(
+          future: SharedPreferences.getInstance(),
+          builder: (context, snapshot) {
+            final recipient = snapshot.data?.getString('dwe_demo_recipient');
+            return ((recipient ?? '').isEmpty)
+                ? Center(child: Text('Set recipient address on Settings'))
+                : Column(
+                    children: [
+                      Text(_breadcrambs, textAlign: TextAlign.left),
+                      Expanded(
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              NetworksWrap(
+                                visible: selectedNetwork == null,
+                                onNetwork: (n) {
+                                  _breadcrambs += 'Network selected: $n\n';
+                                  setState(() => selectedNetwork = n);
+                                },
+                              ),
+                              AssetsWrap(
+                                appKit: _appKit,
+                                visible: selectedAsset == null,
+                                network: selectedNetwork,
+                                onAsset: (a) {
+                                  _breadcrambs +=
+                                      'Asset selected: ${a.toCaip19()}\n';
+                                  setState(() => selectedAsset = a);
+                                },
+                              ),
+                              GetExchangesButton(
+                                appKit: _appKit,
+                                visible: exchanges.isEmpty,
+                                asset: selectedAsset,
+                                exchanges: (e) {
+                                  setState(
+                                    () => exchanges
+                                      ..clear()
+                                      ..addAll(e),
+                                  );
+                                },
+                              ),
+                              ExchangesWrap(
+                                appKit: _appKit,
+                                visible: selectedExchange == null,
+                                selectedAsset: selectedAsset,
+                                exchanges: exchanges,
+                                onExchange: (exchange, urlResult) async {
+                                  selectedExchange = exchange;
+                                  sessionId = urlResult.sessionId;
+                                  _breadcrambs +=
+                                      'Selected exchange: ${exchange.name}\nSession id: $sessionId\n';
+                                  setState(() {});
+                                  await ReownCoreUtils.openURL(urlResult.url);
+                                },
+                              ),
+                              CheckStatusWidget(
+                                appKit: _appKit,
+                                exchangeId: selectedExchange?.id,
+                                sessionId: sessionId,
+                                onStatus: (status) {
+                                  _restart();
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        content: Text(
+                                          jsonEncode(status?.toJson()),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Visibility(
+                        visible: _breadcrambs.isNotEmpty,
+                        child: TextButton(
+                          onPressed: _restart,
+                          child: Text(
+                            'RESTART',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+          },
         ),
       ),
     );
@@ -309,18 +330,17 @@ class ExchangesWrap extends StatelessWidget {
       spacing: 10,
       // runSpacing: 10,
       children: exchanges.map((Exchange exchange) {
-        exchange.id;
-        exchange.imageUrl;
         return GestureDetector(
           onTap: () async {
             try {
+              final prefs = await SharedPreferences.getInstance();
+              final recipient = prefs.getString('dwe_demo_recipient') ?? '';
               // 3. [DWE Get the deposit/payment URL on the selected exchange]
               final params = GetExchangeUrlParams(
                 exchangeId: exchange.id,
                 asset: selectedAsset!,
                 amount: '1.0',
-                recipient:
-                    '${selectedAsset!.network}:0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
+                recipient: '${selectedAsset!.network}:$recipient',
               );
               final result = await appKit.getExchangeUrl(params: params);
               //
@@ -331,7 +351,12 @@ class ExchangesWrap extends StatelessWidget {
           },
           child: Chip(
             avatar: CircleAvatar(
-              backgroundImage: NetworkImage(exchange.imageUrl),
+              child: Image(
+                image: NetworkImage(
+                  exchange.imageUrl,
+                  webHtmlElementStrategy: WebHtmlElementStrategy.prefer,
+                ),
+              ),
             ),
             label: Text(exchange.name),
           ),
@@ -435,5 +460,69 @@ class _CheckStatusWidgetState extends State<CheckStatusWidget> {
         break;
       }
     }
+  }
+}
+
+class SettingsButton extends StatefulWidget {
+  const SettingsButton({super.key, required this.onSetValue});
+  final Function(String) onSetValue;
+
+  @override
+  State<SettingsButton> createState() => _SettingsButtonState();
+}
+
+class _SettingsButtonState extends State<SettingsButton> {
+  String recipient = '';
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () async {
+        final prefs = await SharedPreferences.getInstance();
+        final storedValue = prefs.getString('dwe_demo_recipient') ?? '';
+        final result = await showDialog(
+          // ignore: use_build_context_synchronously
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    onChanged: (value) => recipient = value,
+                    controller: TextEditingController(text: storedValue),
+                    decoration: const InputDecoration(
+                      labelText: 'Recipient address',
+                      hintText: '0x...',
+                      prefixIcon: Icon(
+                        Icons.account_balance_wallet,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(recipient);
+                  },
+                  child: Text(
+                    'Ok',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+        if ((result ?? '').isNotEmpty) {
+          widget.onSetValue.call(result.toString());
+        } else {
+          widget.onSetValue.call(storedValue);
+        }
+      },
+      icon: Icon(Icons.settings, color: Colors.white),
+    );
   }
 }

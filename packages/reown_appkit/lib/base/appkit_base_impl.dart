@@ -354,6 +354,8 @@ class ReownAppKit implements IReownAppKit {
   @override
   IGenericStore<String> get pairingTopics => reOwnSign.pairingTopics;
 
+  // Exchange Service
+
   @override
   List<ExchangeAsset> getPaymentAssetsForNetwork({String? chainId}) {
     if (chainId == null) {
