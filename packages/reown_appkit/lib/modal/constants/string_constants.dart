@@ -4,6 +4,7 @@ import 'package:reown_appkit/version.dart' as reown_appkit;
 import 'package:reown_core/version.dart' as reown_core;
 import 'package:reown_sign/version.dart' as reown_sign;
 
+// TODO move to /base folder
 class CoreConstants {
   // Request Headers
   static const X_SDK_TYPE = 'appkit';
