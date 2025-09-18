@@ -205,17 +205,27 @@ class NetworksWrap extends StatelessWidget {
     final networks = allExchangeAssets.map((asset) => asset.network).toSet();
     return Visibility(
       visible: visible,
-      child: Wrap(
-        alignment: WrapAlignment.center,
-        spacing: 10,
-        children: networks.map((e) {
-          return GestureDetector(
-            onTap: () {
-              onNetwork.call(e);
-            },
-            child: Chip(label: Text(e.toUpperCase())),
-          );
-        }).toList(),
+      child: Column(
+        children: [
+          Text('Select Network', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox.square(dimension: 10),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 10,
+            runSpacing: 10,
+            children: networks.map((e) {
+              return GestureDetector(
+                onTap: () {
+                  onNetwork.call(e);
+                },
+                child: Chip(
+                  avatar: CircleAvatar(child: Icon(Icons.hub, size: 20.0)),
+                  label: Text(e.toUpperCase()),
+                ),
+              );
+            }).toList(),
+          ),
+        ],
       ),
     );
   }
@@ -243,22 +253,35 @@ class AssetsWrap extends StatelessWidget {
     // 1. [DWE Get supported assets on the given chainId (CAIP-2) Null value will return all supported assets in all networks]
     final assets = appKit.getPaymentAssetsForNetwork(chainId: network!);
     //
-    return Wrap(
-      alignment: WrapAlignment.center,
-      spacing: 10,
-      // runSpacing: 10,
-      children: assets.map((asset) {
-        final namespace = NamespaceUtils.getNamespaceFromChain(asset.network);
-        final name = namespace == 'solana'
-            ? 'SOLANA'
-            : asset.network.toUpperCase();
-        return GestureDetector(
-          onTap: () {
-            onAsset.call(asset);
-          },
-          child: Chip(label: Text('${asset.metadata.symbol} ($name)')),
-        );
-      }).toList(),
+    return Column(
+      children: [
+        Text('Select Asset', style: TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox.square(dimension: 10),
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 10,
+          runSpacing: 10,
+          children: assets.map((asset) {
+            // final namespace = NamespaceUtils.getNamespaceFromChain(
+            //   asset.network,
+            // );
+            // final name = namespace == 'solana'
+            //     ? 'SOLANA'
+            //     : asset.network.toUpperCase();
+            return GestureDetector(
+              onTap: () {
+                onAsset.call(asset);
+              },
+              child: Chip(
+                avatar: CircleAvatar(
+                  child: Icon(Icons.currency_exchange, size: 20.0),
+                ),
+                label: Text(asset.metadata.symbol),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }
@@ -396,11 +419,10 @@ class _CheckStatusWidgetState extends State<CheckStatusWidget> {
   void didUpdateWidget(covariant CheckStatusWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.sessionId != null && widget.exchangeId != null) {
-      _loopOnStatusCheck(
-        widget.exchangeId!,
-        widget.sessionId!,
-        widget.onStatus,
-      );
+      _loopOnStatusCheck(widget.exchangeId!, widget.sessionId!, (status) {
+        _isLooping = false;
+        widget.onStatus.call(status);
+      });
     }
   }
 
@@ -421,11 +443,14 @@ class _CheckStatusWidgetState extends State<CheckStatusWidget> {
     );
   }
 
+  bool _isLooping = false;
   void _loopOnStatusCheck(
     String exchangeId,
     String sessionId,
     Function(GetExchangeByStatusResult?) completer,
   ) async {
+    if (_isLooping) return;
+    _isLooping = true;
     int maxAttempts = 30;
     int currentAttempt = 0;
 
