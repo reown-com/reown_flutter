@@ -23,8 +23,8 @@ import 'package:reown_core/store/i_store.dart' as _i12;
 import 'package:reown_core/store/link_mode_store.dart' as _i11;
 import 'package:reown_core/verify/i_verify.dart' as _i9;
 import 'package:reown_pos/reown_pos.dart' as _i15;
-import 'package:reown_pos/services/blockchain_service.dart' as _i17;
 import 'package:reown_pos/services/models/query_models.dart' as _i19;
+import 'package:reown_pos/services/pos_rpc_service.dart' as _i17;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -147,11 +147,11 @@ class _FakeSessionAuthRequestResponse_19 extends _i1.SmartFake
     : super(parent, parentInvocation);
 }
 
-/// A class which mocks [BlockchainService].
+/// A class which mocks [PosRpcService].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockBlockchainService extends _i1.Mock implements _i17.BlockchainService {
-  MockBlockchainService() {
+class MockPosRpcService extends _i1.Mock implements _i17.PosRpcService {
+  MockPosRpcService() {
     _i1.throwOnMissingStub(this);
   }
 

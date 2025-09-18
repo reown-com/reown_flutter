@@ -4,14 +4,14 @@ import 'package:event/event.dart';
 
 import 'package:reown_core/store/generic_store.dart';
 import 'package:reown_pos/reown_pos.dart';
-import 'package:reown_pos/services/blockchain_service.dart';
+import 'package:reown_pos/services/pos_rpc_service.dart';
 import 'package:reown_pos/services/models/query_models.dart';
 import 'package:reown_pos/services/models/result_models.dart';
 import 'package:reown_pos/services/validator_service.dart';
 import 'package:reown_pos/utils/extensions.dart';
 import 'package:reown_pos/utils/helpers.dart';
 
-class ReownPos with BlockchainService, ValidatorService implements IReownPos {
+class ReownPos with PosRpcService, ValidatorService implements IReownPos {
   bool _initialized = false;
   QueryParams? _queryParams;
   IReownCore? _reOwnCore;

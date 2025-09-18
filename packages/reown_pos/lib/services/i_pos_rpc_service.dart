@@ -1,7 +1,7 @@
 import 'package:reown_core/models/json_rpc_models.dart';
 import 'package:reown_pos/services/models/query_models.dart';
 
-abstract class IBlockchainService {
+abstract class IPosRpcService {
   Future<JsonRpcResponse> posBuildTransaction({
     required BuildTransactionParams params,
     required QueryParams queryParams,
