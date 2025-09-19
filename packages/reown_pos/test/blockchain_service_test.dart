@@ -2,12 +2,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:reown_pos/reown_pos.dart';
-import 'package:reown_pos/services/blockchain_service.dart';
+import 'package:reown_pos/services/pos_rpc_service.dart';
 import 'package:reown_pos/services/models/query_models.dart';
 
 import 'blockchain_service_test.mocks.dart';
 
-@GenerateMocks([BlockchainService, ReownCore, ReownSign])
+@GenerateMocks([PosRpcService, ReownCore, ReownSign])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -18,12 +18,12 @@ void main() {
   });
 
   group('ReownPos Tests', () {
-    late MockBlockchainService mockBlockchainService;
+    late MockPosRpcService mockPosRpcService;
     late MockReownCore mockCore;
     late MockReownSign mockSign;
 
     setUp(() {
-      mockBlockchainService = MockBlockchainService();
+      mockPosRpcService = MockPosRpcService();
       mockCore = MockReownCore();
       mockSign = MockReownSign();
     });
@@ -38,7 +38,7 @@ void main() {
           url: 'url',
           logoIcon: 'logoIcon',
         ),
-        blockchainService: mockBlockchainService,
+        blockchainService: mockPosRpcService,
         core: mockCore,
         sign: mockSign,
       );
@@ -77,7 +77,7 @@ void main() {
           url: 'url',
           logoIcon: 'logoIcon',
         ),
-        blockchainService: mockBlockchainService,
+        blockchainService: mockPosRpcService,
         core: mockCore,
         sign: mockSign,
       );
@@ -112,7 +112,7 @@ void main() {
       });
 
       when(
-        mockBlockchainService.posSupportedNetworks(
+        mockPosRpcService.posSupportedNetworks(
           queryParams: anyNamed('queryParams'),
         ),
       ).thenAnswer((_) async => response);
@@ -126,7 +126,7 @@ void main() {
           url: 'url',
           logoIcon: 'logoIcon',
         ),
-        blockchainService: mockBlockchainService,
+        blockchainService: mockPosRpcService,
         core: mockCore,
         sign: mockSign,
       );
@@ -143,7 +143,7 @@ void main() {
       );
 
       verify(
-        mockBlockchainService.posSupportedNetworks(
+        mockPosRpcService.posSupportedNetworks(
           queryParams: anyNamed('queryParams'),
         ),
       ).called(1);
@@ -157,7 +157,7 @@ void main() {
 
 // Test implementation that allows injecting the mock services
 class TestReownPos extends ReownPos {
-  final BlockchainService blockchainService;
+  final PosRpcService blockchainService;
   final ReownCore core;
   final ReownSign sign;
 

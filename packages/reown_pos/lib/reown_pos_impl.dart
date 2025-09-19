@@ -4,15 +4,14 @@ import 'package:event/event.dart';
 
 import 'package:reown_core/store/generic_store.dart';
 import 'package:reown_pos/reown_pos.dart';
-import 'package:reown_pos/services/blockchain_service.dart';
+import 'package:reown_pos/services/pos_rpc_service.dart';
 import 'package:reown_pos/services/models/query_models.dart';
 import 'package:reown_pos/services/models/result_models.dart';
 import 'package:reown_pos/services/validator_service.dart';
-import 'package:reown_pos/src/version.dart';
 import 'package:reown_pos/utils/extensions.dart';
 import 'package:reown_pos/utils/helpers.dart';
 
-class ReownPos with BlockchainService, ValidatorService implements IReownPos {
+class ReownPos with PosRpcService, ValidatorService implements IReownPos {
   bool _initialized = false;
   QueryParams? _queryParams;
   IReownCore? _reOwnCore;
@@ -123,7 +122,7 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
       if (_initialized) {
         return;
       }
-      _reOwnCore!.logger.d('[$runtimeType] initializing...');
+      _reOwnCore!.logger.d('[$runtimeType] $hashCode, initializing...');
 
       await _reOwnCore!.start();
       await reOwnSign!.init();
@@ -243,10 +242,58 @@ class ReownPos with BlockchainService, ValidatorService implements IReownPos {
       _initialized = false;
     }
   }
-}
 
-// listener handlers
-extension _SessionListeners on ReownPos {
+  // Listeners
+
+  void _registerListeners() {
+    reOwnSign!.onSessionConnect.subscribe(_onSessionConnect);
+    reOwnSign!.onSessionDelete.subscribe(_onSessionDelete);
+    reOwnSign!.onSessionExpire.subscribe(_onSessionExpire);
+    reOwnSign!.onSessionEvent.subscribe(_onSessionEvent);
+    reOwnSign!.onSessionUpdate.subscribe(_onSessionUpdate);
+    reOwnSign!.onSessionProposalError.subscribe(_onSessionProposalError);
+    onPosEvent.subscribe(_posEventsLogger);
+    _reOwnCore!.logger.d('[$runtimeType] $hashCode, register listeners');
+  }
+
+  void _unregisterListeners() {
+    reOwnSign!.onSessionConnect.unsubscribe(_onSessionConnect);
+    reOwnSign!.onSessionDelete.unsubscribe(_onSessionDelete);
+    reOwnSign!.onSessionExpire.unsubscribe(_onSessionExpire);
+    reOwnSign!.onSessionEvent.unsubscribe(_onSessionEvent);
+    reOwnSign!.onSessionUpdate.unsubscribe(_onSessionUpdate);
+    reOwnSign!.onSessionProposalError.unsubscribe(_onSessionProposalError);
+    onPosEvent.unsubscribe(_posEventsLogger);
+    _reOwnCore!.logger.d('[$runtimeType] $hashCode, unregister listeners');
+  }
+
+  void _posEventsLogger(PosEvent event) async {
+    _reOwnCore!.logger.d('[$runtimeType] $hashCode, posEvent: $event');
+  }
+
+  void _onSessionDelete(SessionDelete? event) async {
+    _reOwnCore!.logger.d('[$runtimeType] event: onSessionDelete, $event');
+    onPosEvent.broadcast(DisconnectedEvent());
+  }
+
+  void _onSessionExpire(SessionExpire? event) async {
+    _reOwnCore!.logger.d('[$runtimeType] event: onSessionExpire, $event');
+  }
+
+  void _onSessionEvent(SessionEvent? event) {
+    _reOwnCore!.logger.d('[$runtimeType] event: onSessionEvent, $event');
+  }
+
+  void _onSessionUpdate(SessionUpdate? event) {
+    _reOwnCore!.logger.d('[$runtimeType] event: onSessionUpdate, $event');
+  }
+
+  void _onSessionProposalError(SessionProposalErrorEvent? event) {
+    _reOwnCore!.logger.d(
+      '[$runtimeType] event: onSessionProposalError, $event',
+    );
+  }
+
   void _onSessionConnect(SessionConnect? args) async {
     final approvedSession = args?.session;
     if (approvedSession == null) {
@@ -328,49 +375,6 @@ extension _SessionListeners on ReownPos {
     } else if (checkResponse.$1 == StatusCheck.timeout.value) {
       onPosEvent.broadcast(PaymentFailedEvent('Failed to check status'));
     }
-  }
-}
-
-extension _SignEventListeners on ReownPos {
-  void _registerListeners() {
-    reOwnSign!.onSessionConnect.subscribe(_onSessionConnect);
-    reOwnSign!.onSessionDelete.subscribe(_onSessionDelete);
-    reOwnSign!.onSessionExpire.subscribe(_onSessionExpire);
-    reOwnSign!.onSessionEvent.subscribe(_onSessionEvent);
-    reOwnSign!.onSessionUpdate.subscribe(_onSessionUpdate);
-    reOwnSign!.onSessionProposalError.subscribe(_onSessionProposalError);
-  }
-
-  void _unregisterListeners() {
-    reOwnSign!.onSessionConnect.unsubscribeAll();
-    reOwnSign!.onSessionDelete.unsubscribeAll();
-    reOwnSign!.onSessionExpire.unsubscribeAll();
-    reOwnSign!.onSessionEvent.unsubscribeAll();
-    reOwnSign!.onSessionUpdate.unsubscribeAll();
-    reOwnSign!.onSessionProposalError.unsubscribeAll();
-  }
-
-  void _onSessionDelete(SessionDelete? event) async {
-    _reOwnCore!.logger.d('[$runtimeType] event: onSessionDelete, $event');
-    onPosEvent.broadcast(DisconnectedEvent());
-  }
-
-  void _onSessionExpire(SessionExpire? event) async {
-    _reOwnCore!.logger.d('[$runtimeType] event: onSessionExpire, $event');
-  }
-
-  void _onSessionEvent(SessionEvent? event) {
-    _reOwnCore!.logger.d('[$runtimeType] event: onSessionEvent, $event');
-  }
-
-  void _onSessionUpdate(SessionUpdate? event) {
-    _reOwnCore!.logger.d('[$runtimeType] event: onSessionUpdate, $event');
-  }
-
-  void _onSessionProposalError(SessionProposalErrorEvent? event) {
-    _reOwnCore!.logger.d(
-      '[$runtimeType] event: onSessionProposalError, $event',
-    );
   }
 }
 

@@ -4,10 +4,10 @@ import 'package:reown_pos/reown_pos.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:reown_pos/services/i_blockchain_service.dart';
+import 'package:reown_pos/services/i_pos_rpc_service.dart';
 import 'package:reown_pos/services/models/query_models.dart';
 
-mixin BlockchainService implements IBlockchainService {
+mixin PosRpcService implements IPosRpcService {
   static final String _baseUrl = 'https://rpc.walletconnect.org/v1/json-rpc';
 
   @override
