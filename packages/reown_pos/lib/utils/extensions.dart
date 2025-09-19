@@ -17,9 +17,10 @@ extension SessionDataExtensions on SessionData {
   String? getSenderCaip10Account(String chainId) {
     final ns = NamespaceUtils.getNamespaceFromChain(chainId);
     final namespace = namespaces[ns];
-    final account = namespace?.accounts.firstWhereOrNull(
-      (account) => account.startsWith(chainId),
-    );
+    final account = namespace?.accounts.firstWhereOrNull((account) {
+      final accountChain = NamespaceUtils.getChainFromAccount(account);
+      return accountChain == chainId;
+    });
     return account;
   }
 }
