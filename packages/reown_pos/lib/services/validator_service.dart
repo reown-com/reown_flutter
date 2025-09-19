@@ -29,17 +29,18 @@ mixin ValidatorService implements IValidatorService {
     PaymentIntent intent,
   ) {
     final chainId = intent.token.network.chainId;
+
+    final senderAddress = approvedSession.getSenderCaip10Account(chainId);
+    if (senderAddress == null) {
+      throw StateError("No matching account found for chain $chainId");
+    }
+
     final methods = NamespaceUtils.getNamespacesMethodsForChainId(
       chainId: chainId,
       namespaces: approvedSession.namespaces,
     );
     if (methods.isEmpty) {
-      throw StateError('No method available');
-    }
-
-    final senderAddress = approvedSession.getSenderCaip10Account(chainId);
-    if (senderAddress == null) {
-      throw StateError("No matching account found for chain $chainId");
+      throw StateError('No method available for chain $chainId');
     }
   }
 }

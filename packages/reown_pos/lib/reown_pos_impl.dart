@@ -110,7 +110,6 @@ class ReownPos with PosRpcService, ValidatorService implements IReownPos {
         },
       ),
     );
-    // _reOwnCore!.logger.d('[$runtimeType] $hashCode, instance creation');
   }
 
   ///
