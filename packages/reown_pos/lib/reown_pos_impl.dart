@@ -301,7 +301,7 @@ class ReownPos with PosRpcService, ValidatorService implements IReownPos {
       return;
     }
 
-    _reOwnCore!.logger.d('[$runtimeType] onSessionConnect: $approvedSession');
+    print('[$runtimeType] onSessionConnect: $approvedSession');
     onPosEvent.broadcast(ConnectedEvent());
 
     try {
