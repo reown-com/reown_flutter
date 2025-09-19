@@ -46,7 +46,7 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
         } else {
           _tokens = await _blockchainService.getBalance(
             address: address,
-            caip2Chain: '$namespace:$chainId',
+            caip2Chain: chainId,
           );
         }
         setState(() {});
@@ -88,9 +88,7 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
             ..._tokens.mapIndexed((index, token) {
               return AccountListItem(
                 padding: const EdgeInsets.all(0.0),
-                backgroundColor: WidgetStatePropertyAll(
-                  Colors.transparent,
-                ),
+                backgroundColor: WidgetStatePropertyAll(Colors.transparent),
                 iconWidget: Padding(
                   padding: const EdgeInsets.only(left: kPadding6),
                   child: Stack(
@@ -114,8 +112,9 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
                                     assetPath:
                                         'lib/modal/assets/icons/coin.svg',
                                     assetColor: themeColors.inverse100,
-                                    borderRadius:
-                                        radiuses.isSquare() ? 0.0 : null,
+                                    borderRadius: radiuses.isSquare()
+                                        ? 0.0
+                                        : null,
                                   );
                                 },
                               ),
@@ -126,8 +125,9 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: themeColors.background150,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(30.0)),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30.0),
+                            ),
                           ),
                           padding: const EdgeInsets.all(1.0),
                           clipBehavior: Clip.antiAlias,
@@ -145,9 +145,8 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
                 titleStyle: themeData.textStyles.paragraph500.copyWith(
                   color: themeColors.foreground100,
                 ),
-                subtitle: '${CoreUtils.formatStringBalance(
-                  _tokens[index].quantity?.numeric ?? '0.0',
-                )} ${_tokens[index].symbol ?? ''}',
+                subtitle:
+                    '${CoreUtils.formatStringBalance(_tokens[index].quantity?.numeric ?? '0.0')} ${_tokens[index].symbol ?? ''}',
                 subtitleStyle: themeData.textStyles.small400.copyWith(
                   color: themeColors.foreground200,
                 ),
