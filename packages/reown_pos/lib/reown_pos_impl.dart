@@ -381,16 +381,19 @@ class ReownPos with PosRpcService, ValidatorService implements IReownPos {
 
 extension _PrivateMembers on ReownPos {
   void _configurePosNamespaces() {
+    final tokenNamespaces = _configuredTokens.getNamespaces();
     for (var supportedNamespace in _supportedNamespaces) {
-      final namespace = supportedNamespace.name;
-      final chains = _configuredTokens.getChainsByNamespace(namespace);
-      final methods = supportedNamespace.methods;
-      final events = supportedNamespace.events;
-      _posNamespaces[namespace] = RequiredNamespace(
-        chains: chains,
-        methods: methods,
-        events: events,
-      );
+      if (tokenNamespaces.contains(supportedNamespace.name)) {
+        final namespace = supportedNamespace.name;
+        final chains = _configuredTokens.getChainsByNamespace(namespace);
+        final methods = supportedNamespace.methods;
+        final events = supportedNamespace.events;
+        _posNamespaces[namespace] = RequiredNamespace(
+          chains: chains,
+          methods: methods,
+          events: events,
+        );
+      }
     }
 
     if (_supportedNamespaces.isNotEmpty) {

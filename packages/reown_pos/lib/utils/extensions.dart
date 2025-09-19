@@ -99,6 +99,12 @@ extension ListTokenExtension on List<PosToken> {
       return supportedNamespaces.contains(ns) == false;
     });
   }
+
+  List<String> getNamespaces() {
+    return map((e) {
+      return NamespaceUtils.getNamespaceFromChain(e.network.chainId);
+    }).toList();
+  }
 }
 
 extension ListSupportedNamespaceExtension on List<SupportedNamespace> {
