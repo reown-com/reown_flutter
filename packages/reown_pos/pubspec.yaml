@@ -28,6 +28,7 @@ dev_dependencies:
     sdk: flutter
   freezed: ^3.2.0
   json_serializable: ^6.10.0
+  logger: ^2.6.1
   mockito: ^5.4.4
 
 # For information on the generic Dart part of this file, see the
