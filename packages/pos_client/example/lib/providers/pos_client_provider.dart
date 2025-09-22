@@ -14,6 +14,5 @@ final posClilentProvider = Provider<IPosClient>((ref) {
     projectId: '50f81661a58229027394e0a19e9db752',
     deviceId: "sample_pos_device_${DateTime.now().microsecondsSinceEpoch}",
     metadata: metadata,
-    maxCheckAttempts: 30,
   );
 });
