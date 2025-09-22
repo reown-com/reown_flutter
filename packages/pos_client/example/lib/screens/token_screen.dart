@@ -1,98 +1,41 @@
 import 'package:collection/collection.dart';
+import 'package:example/models/available_token.dart';
+import 'package:example/providers/pos_client_provider.dart';
 import 'package:example/providers/available_tokens_provider.dart';
-import 'package:example/providers/payment_info_provider.dart';
-import 'package:example/providers/reown_pos_provider.dart';
-import 'package:example/screens/payment_screen.dart';
+import 'package:example/screens/network_screen.dart';
 import 'package:example/widgets/dtc_abort_button.dart';
 import 'package:example/widgets/dtc_app_bar.dart';
+
 import 'package:example/widgets/dtc_card.dart';
 import 'package:example/widgets/dtc_footer.dart';
 import 'package:example/widgets/dtc_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:reown_pos/reown_pos.dart';
+//
 
-class NetworkScreen extends ConsumerStatefulWidget {
-  const NetworkScreen({super.key});
+class TokenScreen extends ConsumerStatefulWidget {
+  const TokenScreen({super.key});
 
   @override
-  ConsumerState<NetworkScreen> createState() => _NetworkScreenState();
+  ConsumerState<TokenScreen> createState() => _TokenScreenState();
 }
 
-class _NetworkScreenState extends ConsumerState<NetworkScreen> {
-  late final IReownPos _posInstance;
-
-  @override
-  void initState() {
-    super.initState();
-    _posInstance = ref.read(reownPosProvider);
-    // [ReownPos SDK API] 5. subscribe to events to update the UI accordingli
-    _posInstance.onPosEvent.subscribe(_onPosEvent);
-  }
-
-  @override
-  void dispose() {
-    _posInstance.onPosEvent.unsubscribe(_onPosEvent);
-    super.dispose();
-  }
-
-  void _onPosEvent(PosEvent event) {
-    if (event is ConnectFailedEvent && mounted) {
-      showDialog(
-        barrierDismissible: false,
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('${event.runtimeType}'),
-            content: Text(event.message),
-            actions: [DtcRestartButton()],
-          );
-        },
-      );
-    }
-  }
-
-  void _createPaymentAndNavigate() {
-    final paymentInfo = ref.read(paymentInfoProvider);
-    // [ReownPos SDK API] 4. create a payment intent with the PaymentIntent object
-    final posInstance = ref.read(reownPosProvider);
-    posInstance.createPaymentIntent(paymentIntents: [paymentInfo]);
+class _TokenScreenState extends ConsumerState<TokenScreen> {
+  void _navigateToNetworkScreen() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => PaymentScreen()),
+      MaterialPageRoute(builder: (context) => NetworkScreen()),
     );
   }
 
-  String get tokenSymbol =>
-      ref
-          .watch(availableTokensProvider)
-          .firstWhereOrNull((token) => token.selected)
-          ?.posToken
-          .symbol ??
-      '';
-
-  PosToken _tokenSelected(String chainId) {
-    final availableToken = ref.watch(availableTokensProvider).firstWhere((
-      availableToken,
-    ) {
-      return availableToken.posToken.symbol == tokenSymbol &&
-          availableToken.posToken.network.chainId == chainId;
-    });
-    return availableToken.posToken;
-  }
-
-  void _selectNetwork(PosNetwork network) {
-    // final chainId = network.chainId;
-    final tokenAddress = _tokenSelected(network.chainId);
-    final paymentInfoNotifier = ref.read(paymentInfoProvider.notifier);
-    paymentInfoNotifier.update(token: tokenAddress, network: network);
+  void _selectToken(AvailableToken token) {
+    ref.read(availableTokensProvider.notifier).select(token);
   }
 
   @override
   Widget build(BuildContext context) {
-    final configuredTokens = ref.watch(reownPosProvider).configuredTokens;
+    final configuredTokens = ref.watch(posClilentProvider).configuredTokens;
     final availableTokens = ref.watch(availableTokensProvider);
-
     // Filter availableTokens to only include those that match supportedTokens
     final filteredAvailableTokens = availableTokens.where((availableToken) {
       return configuredTokens.any(
@@ -105,13 +48,17 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
       );
     }).toList();
 
-    final avaibleNetworks = filteredAvailableTokens
-        .where(
-          (availableToken) => availableToken.posToken.symbol == tokenSymbol,
-        )
-        .map((e) => e.posToken.network)
+    final reducedTokens = filteredAvailableTokens
+        .toSet()
+        .fold<Map<String, AvailableToken>>({}, (map, token) {
+          map.putIfAbsent(token.posToken.symbol, () => token);
+          return map;
+        })
+        .values
         .toList();
-    final paymentInfo = ref.watch(paymentInfoProvider);
+    final tokenSelected = ref
+        .watch(availableTokensProvider)
+        .firstWhereOrNull((token) => token.selected);
     return Scaffold(
       backgroundColor: const Color(0xFF4CAF50),
       appBar: const DtcAppBar(),
@@ -126,7 +73,7 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
                   child: Column(
                     children: [
                       const Text(
-                        'Select Network',
+                        'Select Token',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 32,
@@ -136,7 +83,7 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
                       ),
                       const SizedBox(height: 12),
                       const Text(
-                        'Step 4: Choose blockchain network',
+                        'Step 3: Choose payment token',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 18,
@@ -145,13 +92,13 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 20),
-                      // Network Selection Cards
+                      // Token Selection Card
                       Expanded(
                         child: ListView.separated(
-                          itemBuilder: (BuildContext context, int index) {
-                            final network = avaibleNetworks[index];
+                          itemBuilder: (context, index) {
+                            final token = reducedTokens[index];
                             return GestureDetector(
-                              onTap: () => _selectNetwork(network),
+                              onTap: () => _selectToken(token),
                               child: DtcCard(
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 0,
@@ -159,33 +106,31 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
                                 ),
                                 child: DtcItem(
                                   icon: Icons.circle,
-                                  iconColor: Colors.black,
-                                  title: network.name,
-                                  // subtitle: 'Fee ${network.fee}',
+                                  iconColor: token.color,
+                                  title: token.posToken.symbol.toUpperCase(),
+                                  // subtitle:
+                                  //     'On ${token.token.network.networkData.name}',
                                   trailing:
-                                      network.chainId ==
-                                          paymentInfo.token.network.chainId
-                                      ? Icon(Icons.check)
-                                      : null,
+                                      token.selected ? Icon(Icons.check) : null,
                                 ),
                               ),
                             );
                           },
-                          itemCount: avaibleNetworks.length,
+                          itemCount: reducedTokens.length,
                           separatorBuilder: (BuildContext context, int index) {
                             return SizedBox.square(dimension: 12.0);
                           },
                         ),
                       ),
                       const SizedBox(height: 20),
-                      // Select Network button
+                      // Select Network Button
                       SizedBox(
                         width: double.infinity,
                         height: 56,
                         child: ElevatedButton(
-                          onPressed: paymentInfo.token.network.chainId.isEmpty
-                              ? null
-                              : _createPaymentAndNavigate,
+                          onPressed: tokenSelected != null
+                              ? _navigateToNetworkScreen
+                              : null,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF4CAF50),
                             foregroundColor: Colors.white,
@@ -195,7 +140,7 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
                             elevation: 0,
                           ),
                           child: const Text(
-                            'Start Payment',
+                            'Select Network',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,

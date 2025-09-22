@@ -1,0 +1,18 @@
+import 'package:reown_core/models/json_rpc_models.dart';
+import 'package:pos_client/services/models/query_models.dart';
+
+abstract class IPosRpcService {
+  Future<JsonRpcResponse> posBuildTransaction({
+    required BuildTransactionParams params,
+    required QueryParams queryParams,
+  });
+
+  Future<JsonRpcResponse> posCheckTransaction({
+    required CheckTransactionParams params,
+    required QueryParams queryParams,
+  });
+
+  Future<JsonRpcResponse> posSupportedNetworks({
+    required QueryParams queryParams,
+  });
+}
