@@ -16,7 +16,6 @@ import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
-import 'package:reown_walletkit_wallet/pages/chain_abstraction_prepare_page.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/recover_from_seed.dart';
@@ -497,38 +496,38 @@ class _EVMAccountsState extends State<_EVMAccounts> {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(
-            left: 12.0,
-            right: 12.0,
-          ),
-          child: Row(
-            children: [
-              CustomButton(
-                type: CustomButtonType.normal,
-                onTap: () => showModalBottomSheet(
-                  context: context,
-                  isScrollControlled: true,
-                  enableDrag: false,
-                  showDragHandle: false,
-                  isDismissible: false,
-                  useRootNavigator: true,
-                  useSafeArea: true,
-                  builder: (context) => ChainAbstractionPreparePage(),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Chain Abstraction',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        // Padding(
+        //   padding: const EdgeInsets.only(
+        //     left: 12.0,
+        //     right: 12.0,
+        //   ),
+        //   child: Row(
+        //     children: [
+        //       CustomButton(
+        //         type: CustomButtonType.normal,
+        //         onTap: () => showModalBottomSheet(
+        //           context: context,
+        //           isScrollControlled: true,
+        //           enableDrag: false,
+        //           showDragHandle: false,
+        //           isDismissible: false,
+        //           useRootNavigator: true,
+        //           useSafeArea: true,
+        //           builder: (context) => ChainAbstractionPreparePage(),
+        //         ),
+        //         child: const Center(
+        //           child: Text(
+        //             'Chain Abstraction',
+        //             style: TextStyle(
+        //               color: Colors.white,
+        //               fontWeight: FontWeight.bold,
+        //             ),
+        //           ),
+        //         ),
+        //       ),
+        //     ],
+        //   ),
+        // ),
         SizedBox(
           height: 300.0,
           child: PageView.builder(
