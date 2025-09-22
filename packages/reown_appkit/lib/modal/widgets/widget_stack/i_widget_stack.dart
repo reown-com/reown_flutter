@@ -8,7 +8,7 @@ abstract class IWidgetStack with ChangeNotifier {
   Widget getCurrent();
 
   /// Pushes a widget to the stack.
-  void push(
+  Future<dynamic> push(
     Widget widget, {
     bool renderScreen = false,
     bool replace = false,
@@ -16,7 +16,7 @@ abstract class IWidgetStack with ChangeNotifier {
   });
 
   /// Removes a widget from the stack.
-  void pop();
+  void pop([dynamic value]);
 
   /// Checks if the stack can be popped.
   bool canPop();

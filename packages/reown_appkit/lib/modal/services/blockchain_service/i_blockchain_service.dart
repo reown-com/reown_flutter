@@ -10,9 +10,7 @@ abstract class IBlockChainService {
   Future<void> init();
 
   /// Gets the name and avatar of a provided address on the given chain
-  Future<BlockchainIdentity> getIdentity({
-    required String address,
-  });
+  Future<BlockchainIdentity> getIdentity({required String address});
 
   Future<ActivityData> getHistory({
     required String address,
@@ -27,9 +25,7 @@ abstract class IBlockChainService {
 
   void selectSendToken(TokenBalance? token);
 
-  Future<GasPrice> gasPrice({
-    required String caip2Chain,
-  });
+  Future<GasPrice> gasPrice({required String caip2Chain});
 
   Future<double> getTokenBalance({
     required String address,
@@ -49,10 +45,9 @@ abstract class IBlockChainService {
     required String caip2Chain,
   });
 
-  Future<String> rawCall({
-    required String chainId,
-    required Map params,
-  });
+  Future<dynamic> getFungiblePrice({required List<String> addresses});
+
+  Future<String> rawCall({required String chainId, required Map params});
 
   void dispose();
 }

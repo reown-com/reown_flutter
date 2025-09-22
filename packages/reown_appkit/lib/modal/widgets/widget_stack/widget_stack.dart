@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -20,13 +22,15 @@ class WidgetStack extends IWidgetStack {
   @override
   Widget getCurrent() => _stack.last;
 
+  Completer _completer = Completer();
   @override
-  void push(
+  Future<dynamic> push(
     Widget widget, {
     bool replace = false,
     bool renderScreen = false,
     BasicCoreEvent? event,
-  }) {
+  }) async {
+    _completer = Completer();
     _core.logger.d(
       '[$runtimeType] push ${widget.key}, replace: $replace, renderScreen: $renderScreen, event: $event',
     );
@@ -39,15 +43,17 @@ class WidgetStack extends IWidgetStack {
     }
     _stack.add(widget);
     notifyListeners();
+    return await _completer.future;
   }
 
   @override
-  void pop() {
+  void pop([dynamic value]) {
     _core.logger.d('[$runtimeType] pop');
     if (_stack.isNotEmpty) {
       onRenderScreen.value = false;
       _stack.removeLast();
       notifyListeners();
+      _completer.complete(value);
     } else {
       throw Exception('The stack is empty. No widget to pop.');
     }

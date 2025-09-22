@@ -68,6 +68,34 @@ class BlockChainService implements IBlockChainService {
   }
 
   @override
+  Future<dynamic> getFungiblePrice({required List<String> addresses}) async {
+    final url = Uri.parse('$_baseUrl/fungible/price');
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'addresses': addresses,
+        'currency': 'usd',
+        'projectId': _core.projectId,
+      }),
+    );
+
+    _core.logger.i('[$runtimeType] getFungiblePrice $url => ${response.body}');
+    if (response.statusCode == 200 && response.body.isNotEmpty) {
+      return jsonDecode(response.body);
+    }
+    try {
+      final reason = _parseResponseError(response.body);
+      throw Exception(reason);
+    } catch (e) {
+      _core.logger.e(
+        '[$runtimeType] getFungiblePrice, decode result error => $e',
+      );
+      rethrow;
+    }
+  }
+
+  @override
   Future<ActivityData> getHistory({
     required String address,
     String? caip2Chain,

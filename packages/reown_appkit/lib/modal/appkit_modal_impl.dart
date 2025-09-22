@@ -775,6 +775,7 @@ class ReownAppKitModal
     KeyConstants.eoAccountPage,
     KeyConstants.walletFeaturesPage,
     KeyConstants.socialLoginPage,
+    KeyConstants.depositPageKey,
   ];
 
   final List<Key> _allowedScreensWhenDisconnected = [
