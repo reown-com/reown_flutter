@@ -1,8 +1,8 @@
-name: reown_pos
-description: "A new Flutter package project."
+name: pos_client
+description: "A Flutter SDK that enables Point of Sale (POS) systems to accept cryptocurrency payments through WalletConnect network"
 version: 0.0.1
 homepage: https://github.com/reown-com/reown_flutter
-repository: https://github.com/reown-com/reown_flutter/tree/master/packages/reown_pos
+repository: https://github.com/reown-com/reown_flutter/tree/master/packages/pos_client
 
 environment:
   sdk: ^3.8.0
@@ -28,7 +28,7 @@ dev_dependencies:
     sdk: flutter
   freezed: ^3.2.0
   json_serializable: ^6.10.0
-  logger: ^2.6.1
+  logger: ^2.5.0
   mockito: ^5.4.4
 
 # For information on the generic Dart part of this file, see the

@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:example/providers/available_tokens_provider.dart';
 import 'package:example/providers/payment_info_provider.dart';
-import 'package:example/providers/reown_pos_provider.dart';
+import 'package:example/providers/pos_client_provider.dart';
 import 'package:example/screens/payment_screen.dart';
 import 'package:example/widgets/dtc_abort_button.dart';
 import 'package:example/widgets/dtc_app_bar.dart';
@@ -10,7 +10,7 @@ import 'package:example/widgets/dtc_footer.dart';
 import 'package:example/widgets/dtc_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:reown_pos/reown_pos.dart';
+import 'package:pos_client/pos_client.dart';
 
 class NetworkScreen extends ConsumerStatefulWidget {
   const NetworkScreen({super.key});
@@ -20,13 +20,13 @@ class NetworkScreen extends ConsumerStatefulWidget {
 }
 
 class _NetworkScreenState extends ConsumerState<NetworkScreen> {
-  late final IReownPos _posInstance;
+  late final IPosClient _posInstance;
 
   @override
   void initState() {
     super.initState();
-    _posInstance = ref.read(reownPosProvider);
-    // [ReownPos SDK API] 5. subscribe to events to update the UI accordingli
+    _posInstance = ref.read(posClilentProvider);
+    // [PosClient SDK API] 5. subscribe to events to update the UI accordingli
     _posInstance.onPosEvent.subscribe(_onPosEvent);
   }
 
@@ -54,8 +54,8 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
 
   void _createPaymentAndNavigate() {
     final paymentInfo = ref.read(paymentInfoProvider);
-    // [ReownPos SDK API] 4. create a payment intent with the PaymentIntent object
-    final posInstance = ref.read(reownPosProvider);
+    // [PosClient SDK API] 4. create a payment intent with the PaymentIntent object
+    final posInstance = ref.read(posClilentProvider);
     posInstance.createPaymentIntent(paymentIntents: [paymentInfo]);
     Navigator.push(
       context,
@@ -90,7 +90,7 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final configuredTokens = ref.watch(reownPosProvider).configuredTokens;
+    final configuredTokens = ref.watch(posClilentProvider).configuredTokens;
     final availableTokens = ref.watch(availableTokensProvider);
 
     // Filter availableTokens to only include those that match supportedTokens
