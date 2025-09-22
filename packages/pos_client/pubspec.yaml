@@ -1,6 +1,6 @@
 name: pos_client
 description: "A Flutter SDK that enables Point of Sale (POS) systems to accept cryptocurrency payments through WalletConnect network"
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/reown-com/reown_flutter
 repository: https://github.com/reown-com/reown_flutter/tree/master/packages/pos_client
 

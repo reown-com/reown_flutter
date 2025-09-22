@@ -14,19 +14,11 @@ A Flutter SDK for implementing Point of Sale (POS) cryptocurrency payments using
 ### Prerequisites
 
 - Flutter 3.0 or higher
-- A Reown project ID (get one from [Reown](https://reown.com))
+- A Reown project ID (get one from [Reown](https://dashboard.reown.com/))
 
 ### Installation
 
-Add the package to your `pubspec.yaml` using the git repository (as the SDK is not yet published):
-
-```yaml
-dependencies:
-  pos_client:
-    git:
-      url: https://github.com/reown-com/reown_flutter.git
-      path: packages/pos_client
-```
+Add the package to your `pubspec.yaml`, see [install](https://pub.dev/packages/pos_client/install) section
 
 ## Usage
 
