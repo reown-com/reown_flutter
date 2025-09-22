@@ -1,3 +1,7 @@
+## 1.3.2
+
+- Remove Yttrium dependency
+
 ## 1.3.1
 
 - Bug fixes

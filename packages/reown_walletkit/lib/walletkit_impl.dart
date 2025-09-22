@@ -3,11 +3,8 @@ import 'package:reown_core/relay_client/websocket/http_client.dart';
 import 'package:reown_core/relay_client/websocket/i_http_client.dart';
 import 'package:reown_core/store/generic_store.dart';
 import 'package:reown_core/store/i_generic_store.dart';
-// import 'package:reown_walletkit/chain_abstraction/chain_abstraction.dart';
-// import 'package:reown_walletkit/chain_abstraction/i_chain_abstraction.dart';
 
 import 'package:reown_walletkit/reown_walletkit.dart';
-// import 'package:reown_walletkit/version.dart' as wk;
 
 class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   bool _initialized = false;
@@ -104,15 +101,6 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
         },
       ),
     );
-
-    // chainAbstraction = ChainAbstraction(
-    //   core: core,
-    //   pulseMetadata: PulseMetadataCompat(
-    //     url: metadata.url,
-    //     sdkVersion: wk.packageVersion,
-    //     sdkPlatform: ReownCoreUtils.getId(),
-    //   ),
-    // );
   }
 
   @override
@@ -123,7 +111,6 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
 
     await core.start();
     await reOwnSign.init();
-    // await chainAbstraction.init();
 
     WidgetsBinding.instance.addObserver(this);
     _initialized = true;
@@ -466,63 +453,4 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
       }
     }
   }
-
-  ///---------- CHAIN ABSTRACTION CLIENT ----------///
-  ///
-  // @override
-  // late final IChainAbstraction chainAbstraction;
-
-  // @override
-  // Future<String> erc20TokenBalance({
-  //   required String chainId,
-  //   required String token,
-  //   required String owner,
-  // }) async {
-  //   return await chainAbstraction.erc20TokenBalance(
-  //     chainId: chainId,
-  //     token: token,
-  //     owner: owner,
-  //   );
-  // }
-
-  // @override
-  // Future<Eip1559EstimationCompat> estimateFees({
-  //   required String chainId,
-  // }) async {
-  //   return await chainAbstraction.estimateFees(chainId: chainId);
-  // }
-
-  // /// ---------------------------------
-  // /// ⚠️ This method is experimental. Use with caution.
-  // /// ---------------------------------
-  // @override
-  // Future<PrepareDetailedResponseCompat> prepare({
-  //   required String chainId,
-  //   required String from,
-  //   required CallCompat call,
-  //   Currency? localCurrency,
-  // }) async {
-  //   return await chainAbstraction.prepare(
-  //     chainId: chainId,
-  //     from: from,
-  //     call: call,
-  //     localCurrency: localCurrency,
-  //   );
-  // }
-
-  // /// ---------------------------------
-  // /// ⚠️ This method is experimental. Use with caution.
-  // /// ---------------------------------
-  // @override
-  // Future<ExecuteDetailsCompat> execute({
-  //   required UiFieldsCompat uiFields,
-  //   required List<String> routeTxnSigs,
-  //   required String initialTxnSig,
-  // }) async {
-  //   return await chainAbstraction.execute(
-  //     uiFields: uiFields,
-  //     routeTxnSigs: routeTxnSigs,
-  //     initialTxnSig: initialTxnSig,
-  //   );
-  // }
 }
