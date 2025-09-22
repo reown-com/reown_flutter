@@ -60,3 +60,11 @@ sh generate_files.sh
 
 cd ..
 cd ..
+
+echo "******* GENERATING POS CLIENT *******"
+
+cd packages/pos_client/
+sh generate_files.sh
+
+cd ..
+cd ..
