@@ -250,13 +250,13 @@ class ReownAppKitModalNetworks {
     }
     if (NamespaceUtils.isValidChainId(chainId)) {
       final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-      return getAllSupportedNetworks(namespace: namespace).firstWhereOrNull(
-        (e) => e.chainId == chainId,
-      );
+      return getAllSupportedNetworks(
+        namespace: namespace,
+      ).firstWhereOrNull((e) => e.chainId == chainId);
     }
-    return getAllSupportedNetworks(namespace: namespace).firstWhereOrNull(
-      (e) => e.chainId == '$namespace:$chainId',
-    );
+    return getAllSupportedNetworks(
+      namespace: namespace,
+    ).firstWhereOrNull((e) => e.chainId == '$namespace:$chainId');
   }
 
   static void removeSupportedNetworks(
@@ -320,10 +320,12 @@ class ReownAppKitModalNetworks {
   }
 
   static List<String> getAllSupportedNamespaces() {
-    final mainNamespaces =
-        _mainnets.keys.where((key) => _mainnets[key]!.isNotEmpty).toList();
-    final testNamespaces =
-        _testnets.keys.where((key) => _testnets[key]!.isNotEmpty).toList();
+    final mainNamespaces = _mainnets.keys
+        .where((key) => _mainnets[key]!.isNotEmpty)
+        .toList();
+    final testNamespaces = _testnets.keys
+        .where((key) => _testnets[key]!.isNotEmpty)
+        .toList();
     return <String>{...mainNamespaces, ...testNamespaces}.toList();
   }
 
@@ -334,11 +336,7 @@ class ReownAppKitModalNetworks {
         .map((e) {
           final ns = e.key;
           final chains = e.value;
-          return chains.map(
-            (c) => c.copyWith(
-              chainId: '$ns:${c.chainId}',
-            ),
-          );
+          return chains.map((c) => c.copyWith(chainId: '$ns:${c.chainId}'));
         })
         .expand((e) => e)
         .where((e) {
@@ -354,11 +352,7 @@ class ReownAppKitModalNetworks {
         .map((e) {
           final ns = e.key;
           final chains = e.value;
-          return chains.map(
-            (c) => c.copyWith(
-              chainId: '$ns:${c.chainId}',
-            ),
-          );
+          return chains.map((c) => c.copyWith(chainId: '$ns:${c.chainId}'));
         })
         .expand((e) => e)
         .where((e) {

@@ -69,6 +69,14 @@ extension ExchangeAssetExtension on ExchangeAsset {
     final standard = assetInfo.standard;
     return '$network/$standard:$address';
   }
+
+  String toCaip10() {
+    if (address == 'native') {
+      throw StateError('Can\'t convert to CAIP-10 native token');
+    }
+    // 'eip155:1:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
+    return '$network:$address';
+  }
 }
 
 const ethereumETH = ExchangeAsset(

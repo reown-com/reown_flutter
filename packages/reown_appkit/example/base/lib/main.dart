@@ -551,6 +551,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
+    print(
+        '_appKit!.core.relayClient.isConnected ${_appKit!.core.relayClient.isConnected}');
     return Scaffold(
       appBar: AppBar(
         title: Text(_pageDatas[_selectedIndex].title),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:reown_appkit/base/services/models/query_models.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -393,7 +394,7 @@ class CheckStatusWidget extends StatefulWidget {
   final IReownAppKit appKit;
   final String? exchangeId;
   final String? sessionId;
-  final Function(GetExchangeByStatusResult?) onStatus;
+  final Function(GetExchangeDepositStatusResult?) onStatus;
   const CheckStatusWidget({
     super.key,
     required this.appKit,
@@ -447,7 +448,7 @@ class _CheckStatusWidgetState extends State<CheckStatusWidget> {
   void _loopOnStatusCheck(
     String exchangeId,
     String sessionId,
-    Function(GetExchangeByStatusResult?) completer,
+    Function(GetExchangeDepositStatusResult?) completer,
   ) async {
     if (_isLooping) return;
     _isLooping = true;
@@ -457,11 +458,11 @@ class _CheckStatusWidgetState extends State<CheckStatusWidget> {
     while (currentAttempt < maxAttempts) {
       try {
         // 4. [DWE Check the status of the deposit/transaction Better to call this in a loop]
-        final params = GetExchangeByStatusParams(
+        final params = GetExchangeDepositStatusParams(
           exchangeId: exchangeId,
           sessionId: sessionId,
         );
-        final response = await appKit.getExchangeByStatus(params: params);
+        final response = await appKit.getExchangeDepositStatus(params: params);
         //
         debugPrint(jsonEncode(response));
         if (response.status == 'UNKNOWN' || response.status == 'IN_PROGRESS') {

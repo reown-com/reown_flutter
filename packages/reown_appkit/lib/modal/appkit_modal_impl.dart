@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/dwe_service/dwe_service.dart';
 import 'package:reown_appkit/modal/services/solflare_service/i_solflare_service.dart';
 import 'package:reown_appkit/modal/services/solflare_service/models/solflare_events.dart';
 import 'package:reown_appkit/modal/services/solflare_service/solflare_service.dart';
@@ -262,6 +263,9 @@ class ReownAppKitModal
     GetIt.I.registerSingletonIfAbsent<IToastService>(() => ToastService());
     GetIt.I.registerSingletonIfAbsent<IBlockChainService>(
       () => BlockChainService(core: _appKit.core),
+    );
+    GetIt.I.registerSingletonIfAbsent<DWEService>(
+      () => DWEService(core: _appKit.core),
     );
     GetIt.I.registerSingletonIfAbsent<IMagicService>(
       () => MagicService(
