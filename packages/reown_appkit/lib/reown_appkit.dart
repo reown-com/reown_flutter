@@ -13,7 +13,10 @@ export 'package:event/event.dart';
 // export 'i_appkit_base.dart';
 export 'appkit_base.dart';
 export 'base/services/models/query_models.dart'
-    show GetExchangesParams, GetExchangeUrlParams, GetExchangeByStatusParams;
+    show
+        GetExchangesParams,
+        GetExchangeUrlParams,
+        GetExchangeDepositStatusParams;
 export 'base/services/models/asset_models.dart'
     show
         ExchangeAsset,
@@ -41,3 +44,8 @@ export 'base/services/exchange_service.dart';
 
 // export 'i_appkit_base.dart';
 export 'appkit_modal.dart';
+
+export 'modal/widgets/buttons/primary_button.dart';
+export 'modal/widgets/buttons/secondary_button.dart';
+
+export 'modal/pages/public/appkit_modal_pages.dart';

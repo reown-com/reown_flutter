@@ -68,68 +68,6 @@ class BlockChainService implements IBlockChainService {
   }
 
   @override
-  Future<List<TokenBalance>> getFungiblePrices({
-    required List<String> addresses,
-  }) async {
-    final url = Uri.parse('$_baseUrl/fungible/price');
-    final response = await http.post(
-      url,
-      headers: _requiredHeaders,
-      body: jsonEncode({
-        'addresses': addresses,
-        'currency': 'usd',
-        'projectId': _core.projectId,
-      }),
-    );
-
-    _core.logger.i('[$runtimeType] getFungiblePrices $url => ${response.body}');
-    if (response.statusCode == 200 && response.body.isNotEmpty) {
-      final jsonResponse = jsonDecode(response.body);
-      final fungibles = jsonResponse['fungibles'] as List;
-      return fungibles.map((f) => TokenBalance.fromJson(f)).toList();
-    }
-    try {
-      final reason = _parseResponseError(response.body);
-      throw Exception(reason);
-    } catch (e) {
-      _core.logger.e(
-        '[$runtimeType] getFungiblePrices, decode result error => $e',
-      );
-      rethrow;
-    }
-  }
-
-  @override
-  Future<TokenBalance> getFungiblePrice({required String address}) async {
-    final url = Uri.parse('$_baseUrl/fungible/price');
-    final response = await http.post(
-      url,
-      headers: _requiredHeaders,
-      body: jsonEncode({
-        'addresses': [address],
-        'currency': 'usd',
-        'projectId': _core.projectId,
-      }),
-    );
-
-    _core.logger.i('[$runtimeType] getFungiblePrice $url => ${response.body}');
-    if (response.statusCode == 200 && response.body.isNotEmpty) {
-      final jsonResponse = jsonDecode(response.body);
-      final fungibles = jsonResponse['fungibles'] as List;
-      return fungibles.map((f) => TokenBalance.fromJson(f)).first;
-    }
-    try {
-      final reason = _parseResponseError(response.body);
-      throw Exception(reason);
-    } catch (e) {
-      _core.logger.e(
-        '[$runtimeType] getFungiblePrice, decode result error => $e',
-      );
-      rethrow;
-    }
-  }
-
-  @override
   Future<ActivityData> getHistory({
     required String address,
     String? caip2Chain,

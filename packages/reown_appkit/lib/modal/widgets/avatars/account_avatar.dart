@@ -53,10 +53,13 @@ class _AccountAvatarState extends State<AccountAvatar> {
           ),
           child: (_avatarUrl ?? '').isNotEmpty
               ? CachedNetworkImage(
-                  imageUrl: _avatarUrl!,
-                  httpHeaders: CoreUtils.getAPIHeaders(
-                    widget.appKit.appKit!.core.projectId,
-                  ),
+                  imageUrl: Uri.parse(_avatarUrl!)
+                      .replace(
+                        queryParameters: CoreUtils.getImageQueryParams(
+                          widget.appKit.appKit!.core.projectId,
+                        ),
+                      )
+                      .toString(),
                   fadeInDuration: const Duration(milliseconds: 500),
                   fadeOutDuration: const Duration(milliseconds: 500),
                 )

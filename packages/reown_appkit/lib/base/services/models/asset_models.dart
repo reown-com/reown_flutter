@@ -56,10 +56,14 @@ sealed class ExchangeAsset with _$ExchangeAsset {
 }
 
 extension ExchangeAssetExtension on ExchangeAsset {
+  bool isNative() {
+    return address == 'native';
+  }
+
   String toCaip19() {
     final namespace = NamespaceUtils.getNamespaceFromChain(network);
     final assetInfo = _chainAssetInfoMap[namespace]!;
-    if (address == 'native') {
+    if (isNative()) {
       // 'eip155:1/slip44:60';
       final namespace = assetInfo.native.namespace;
       final reference = assetInfo.native.reference;
@@ -71,13 +75,29 @@ extension ExchangeAssetExtension on ExchangeAsset {
   }
 
   String toCaip10() {
-    if (address == 'native') {
-      throw StateError('Can\'t convert to CAIP-10 native token');
+    try {
+      if (!isNative()) {
+        return '$network:$address';
+      }
+
+      final ns = NamespaceUtils.getNamespaceFromChain(network);
+      final nativeAddress = _nativeTokenAddress[ns]!;
+      return '$network:$nativeAddress';
+    } catch (e) {
+      return '';
     }
-    // 'eip155:1:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
-    return '$network:$address';
   }
 }
+
+final _nativeTokenAddress = {
+  'eip155': '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  'solana': 'So11111111111111111111111111111111111111111',
+  'polkadot': '0x',
+  'bip122': '0x',
+  'cosmos': '0x',
+  'sui': '0x',
+  'stacks': '0x',
+};
 
 const ethereumETH = ExchangeAsset(
   network: 'eip155:1',

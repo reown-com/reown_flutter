@@ -45,12 +45,6 @@ abstract class IBlockChainService {
     required String caip2Chain,
   });
 
-  Future<List<TokenBalance>> getFungiblePrices({
-    required List<String> addresses,
-  });
-
-  Future<TokenBalance> getFungiblePrice({required String address});
-
   Future<String> rawCall({required String chainId, required Map params});
 
   void dispose();

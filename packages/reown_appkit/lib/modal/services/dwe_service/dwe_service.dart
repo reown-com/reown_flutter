@@ -1,26 +1,22 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
+import 'package:reown_appkit/modal/services/blockchain_service/models/token_balance.dart';
+import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
-import 'package:reown_appkit/solana/solana_web3/src/rpc/models/token_balance.dart';
 
 import 'package:http/http.dart' as http;
 
-class DWEService {
+class DWEService implements IDWEService {
   late final IReownCore _core;
   late final String _baseUrl;
   String? _bundleId;
-  String? _clientId;
 
   DWEService({required IReownCore core})
     : _core = core,
       _baseUrl = '${UrlConstants.blockChainService}/v1';
-
-  Map<String, String?> get _requiredParams => {
-    'projectId': _core.projectId,
-    'clientId': _clientId,
-  };
 
   Map<String, String> get _requiredHeaders => {
     'x-sdk-type': CoreConstants.X_SDK_TYPE,
@@ -28,46 +24,70 @@ class DWEService {
     'origin': _bundleId ?? 'flutter-appkit',
   };
 
-  List<TokenBalance>? _tokensList;
-  // @override
-  // List<TokenBalance>? get tokensList => _tokensList;
+  final List<ExchangeAsset> _supportedAssets = [];
+  @override
+  List<ExchangeAsset> get supportedAssets => _supportedAssets;
 
-  TokenBalance? _selectedToken;
-  // @override
-  // TokenBalance? get selectedSendToken => _selectedToken;
+  @override
+  final selectedAsset = ValueNotifier<ExchangeAsset?>(null);
 
-  List<ExchangeAsset>? _supportedAssets;
-  ValueNotifier<List<ExchangeAsset>> supportedAssets =
-      ValueNotifier<List<ExchangeAsset>>([]);
+  @override
+  final selectedAmount = ValueNotifier<int>(10);
 
-  ExchangeAsset? _selectedAsset;
-  ValueNotifier<ExchangeAsset?> selectedAsset = ValueNotifier<ExchangeAsset?>(
-    null,
-  );
-
-  // @override
-  void selectAsset(ExchangeAsset? token) => selectedAsset.value = token;
-
+  @override
   Future<void> init() async {
     _bundleId = await ReownCoreUtils.getPackageName();
-    _clientId = await _core.crypto.getClientId();
   }
 
-  Future<List<TokenBalance>> getFungiblePrices({
+  @override
+  void setSupportedAssets(List<ExchangeAsset> assets) {
+    _supportedAssets
+      ..clear()
+      ..addAll(assets);
+  }
+
+  @override
+  Future<TokenBalance?> getFungiblePrice({required ExchangeAsset asset}) async {
+    try {
+      _fetchedTokens.removeWhere((token) => _tokenPriceIsOld(token.$2));
+      final cachedToken = _getCachedToken(asset);
+      // always fetch price for native tokens
+      if (cachedToken == null || asset.isNative()) {
+        final tokens = await _getFungiblePrices(addresses: [asset.toCaip10()]);
+        if (tokens.isNotEmpty) {
+          final tokenBalance = tokens.first.copyWith(chainId: asset.network);
+          if (!asset.isNative()) {
+            _setCachedToken(tokenBalance);
+          }
+          _core.logger.d('[$runtimeType] token fetched: $tokenBalance');
+          return tokenBalance;
+        }
+        return null;
+      }
+      return cachedToken;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // TokenBalance, timestamp
+  final List<(TokenBalance, int)> _fetchedTokens = [];
+
+  Future<List<TokenBalance>> _getFungiblePrices({
     required List<String> addresses,
   }) async {
     final url = Uri.parse('$_baseUrl/fungible/price');
+    final body = jsonEncode({
+      'addresses': addresses,
+      'currency': 'usd',
+      'projectId': _core.projectId,
+    });
     final response = await http.post(
       url,
       headers: _requiredHeaders,
-      body: jsonEncode({
-        'addresses': addresses,
-        'currency': 'usd',
-        'projectId': _core.projectId,
-      }),
+      body: body,
     );
 
-    _core.logger.i('[$runtimeType] getFungiblePrices $url => ${response.body}');
     if (response.statusCode == 200 && response.body.isNotEmpty) {
       final jsonResponse = jsonDecode(response.body);
       final fungibles = jsonResponse['fungibles'] as List;
@@ -77,9 +97,7 @@ class DWEService {
       final reason = _parseResponseError(response.body);
       throw Exception(reason);
     } catch (e) {
-      _core.logger.e(
-        '[$runtimeType] getFungiblePrices, decode result error => $e',
-      );
+      _core.logger.e('[$runtimeType] getFungiblePrices error: $e');
       rethrow;
     }
   }
@@ -90,5 +108,31 @@ class DWEService {
     return reasons.isNotEmpty
         ? reasons.first['description'] ?? ''
         : responseBody;
+  }
+
+  void _setCachedToken(TokenBalance asset) {
+    final cachedAsset = _fetchedTokens.firstWhereOrNull((t) {
+      return asset.address == t.$1.address && !_tokenPriceIsOld(t.$2);
+    })?.$1;
+    if (cachedAsset == null) {
+      _fetchedTokens.add((asset, DateTime.now().millisecondsSinceEpoch));
+    }
+  }
+
+  TokenBalance? _getCachedToken(ExchangeAsset asset) {
+    return _fetchedTokens.firstWhereOrNull((t) {
+      final address1 = t.$1.address;
+      final address2 = asset.toCaip10();
+      return address1 == address2 && !_tokenPriceIsOld(t.$2);
+    })?.$1;
+  }
+
+  bool _tokenPriceIsOld(int timestampSeconds) {
+    final now = DateTime.now();
+    final timestamp = DateTime.fromMillisecondsSinceEpoch(
+      timestampSeconds * 1000,
+    );
+    final difference = now.difference(timestamp);
+    return difference.inMinutes > 5;
   }
 }

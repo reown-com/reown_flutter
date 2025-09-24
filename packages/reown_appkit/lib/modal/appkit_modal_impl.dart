@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/services/dwe_service/dwe_service.dart';
+import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/modal/services/solflare_service/i_solflare_service.dart';
 import 'package:reown_appkit/modal/services/solflare_service/models/solflare_events.dart';
 import 'package:reown_appkit/modal/services/solflare_service/solflare_service.dart';
@@ -58,6 +59,8 @@ import 'package:reown_appkit/modal/services/blockchain_service/blockchain_servic
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/widgets/modal_container.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:webview_flutter_web/webview_flutter_web.dart';
 
 /// Either a [projectId] and [metadata] must be provided or an already created [appKit].
 /// optionalNamespaces is mostly not needed, if you use it, the values set here will override every optionalNamespaces set in evey chain
@@ -201,6 +204,17 @@ class ReownAppKitModal
       }
     }
 
+    // if (kIsWeb) {
+    //   try {
+    //     // Solo si el paquete está incluido
+    //     WebViewPlatform.instance = WebWebViewPlatform();
+    //   } catch (e) {
+    //     debugPrint(
+    //       'WebWebViewPlatform not available. Did you forget to add webview_flutter_web?',
+    //     );
+    //   }
+    // }
+
     this.featuresConfig = featuresConfig ?? FeaturesConfig();
 
     _context = context;
@@ -264,7 +278,7 @@ class ReownAppKitModal
     GetIt.I.registerSingletonIfAbsent<IBlockChainService>(
       () => BlockChainService(core: _appKit.core),
     );
-    GetIt.I.registerSingletonIfAbsent<DWEService>(
+    GetIt.I.registerSingletonIfAbsent<IDWEService>(
       () => DWEService(core: _appKit.core),
     );
     GetIt.I.registerSingletonIfAbsent<IMagicService>(
@@ -787,6 +801,7 @@ class ReownAppKitModal
     KeyConstants.walletListLongPageKey,
     KeyConstants.qrCodePageKey,
     KeyConstants.selectNetworkPage,
+    KeyConstants.depositPageKey,
   ];
 
   Future<void> _showModalView({

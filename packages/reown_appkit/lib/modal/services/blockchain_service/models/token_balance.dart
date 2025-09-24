@@ -48,6 +48,28 @@ class TokenBalance {
         'iconUrl': iconUrl,
       };
 
+  TokenBalance copyWith({
+    String? name,
+    String? symbol,
+    String? chainId,
+    String? address,
+    double? value,
+    double? price,
+    Quantity? quantity,
+    String? iconUrl,
+  }) {
+    return TokenBalance(
+      name: name ?? this.name,
+      symbol: symbol ?? this.symbol,
+      chainId: chainId ?? this.chainId,
+      address: address ?? this.address,
+      value: value ?? this.value,
+      price: price ?? this.price,
+      quantity: quantity ?? this.quantity,
+      iconUrl: iconUrl ?? this.iconUrl,
+    );
+  }
+
   @override
   String toString() => json.encode(toJson());
 }
