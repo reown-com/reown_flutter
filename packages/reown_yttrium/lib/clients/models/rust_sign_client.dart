@@ -4,7 +4,7 @@ part 'rust_sign_client.g.dart';
 part 'rust_sign_client.freezed.dart';
 
 @freezed
-class SessionProposalFfi with _$SessionProposalFfi {
+sealed class SessionProposalFfi with _$SessionProposalFfi {
   const factory SessionProposalFfi({
     required String id,
     required String topic,
@@ -24,7 +24,7 @@ class SessionProposalFfi with _$SessionProposalFfi {
 }
 
 @freezed
-class SettleNamespaceFfi with _$SettleNamespaceFfi {
+sealed class SettleNamespaceFfi with _$SettleNamespaceFfi {
   const factory SettleNamespaceFfi({
     required List<String> accounts,
     required List<String> methods,
@@ -37,7 +37,7 @@ class SettleNamespaceFfi with _$SettleNamespaceFfi {
 }
 
 @freezed
-class MetadataFfi with _$MetadataFfi {
+sealed class MetadataFfi with _$MetadataFfi {
   @JsonSerializable(includeIfNull: false)
   const factory MetadataFfi({
     required String name,
@@ -53,7 +53,7 @@ class MetadataFfi with _$MetadataFfi {
 }
 
 @freezed
-class RedirectFfi with _$RedirectFfi {
+sealed class RedirectFfi with _$RedirectFfi {
   @JsonSerializable()
   const factory RedirectFfi({
     String? native,
@@ -66,7 +66,7 @@ class RedirectFfi with _$RedirectFfi {
 }
 
 @freezed
-class ApproveResultFfi with _$ApproveResultFfi {
+sealed class ApproveResultFfi with _$ApproveResultFfi {
   @JsonSerializable()
   const factory ApproveResultFfi({
     required List<int> sessionSymKey,
@@ -79,7 +79,7 @@ class ApproveResultFfi with _$ApproveResultFfi {
 
 // RUST
 @freezed
-class SessionRequestRequestFfi with _$SessionRequestRequestFfi {
+sealed class SessionRequestRequestFfi with _$SessionRequestRequestFfi {
   const factory SessionRequestRequestFfi({
     required String method,
     required String params, // JSON string
@@ -93,7 +93,7 @@ class SessionRequestRequestFfi with _$SessionRequestRequestFfi {
 // RUST
 // Should be paired with WcSessionRequestRequest in reow_sign
 @freezed
-class SessionRequestFfi with _$SessionRequestFfi {
+sealed class SessionRequestFfi with _$SessionRequestFfi {
   const factory SessionRequestFfi({
     required String chainId,
     required SessionRequestRequestFfi request,
@@ -106,7 +106,7 @@ class SessionRequestFfi with _$SessionRequestFfi {
 // RUST
 // Should be paired with JsonRpcRequest in reow_core
 @freezed
-class SessionRequestJsonRpcFfi with _$SessionRequestJsonRpcFfi {
+sealed class SessionRequestJsonRpcFfi with _$SessionRequestJsonRpcFfi {
   const factory SessionRequestJsonRpcFfi({
     required int id,
     required String method,
@@ -120,7 +120,7 @@ class SessionRequestJsonRpcFfi with _$SessionRequestJsonRpcFfi {
 // Comes from native through EventChannel
 // should probably go in a different file as it does not pertains to rust itself
 @freezed
-class SessionRequestNativeEvent with _$SessionRequestNativeEvent {
+sealed class SessionRequestNativeEvent with _$SessionRequestNativeEvent {
   const factory SessionRequestNativeEvent({
     required String topic,
     // JSON String. Should be transformed into SessionRequestJsonRpcFfi
@@ -180,7 +180,7 @@ sealed class SessionRequestJsonRpcResponseFfi
 }
 
 @freezed
-class ErrorDataFfi with _$ErrorDataFfi {
+sealed class ErrorDataFfi with _$ErrorDataFfi {
   const factory ErrorDataFfi({
     required int code,
     required String message,
@@ -190,3 +190,4 @@ class ErrorDataFfi with _$ErrorDataFfi {
   factory ErrorDataFfi.fromJson(Map<String, dynamic> json) =>
       _$ErrorDataFfiFromJson(json);
 }
+// All of these is what we refer when we say "fixing crypto UX" but it's a common effort.

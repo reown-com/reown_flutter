@@ -25,11 +25,10 @@ Map<String, dynamic> _$AmountCompatToJson(_AmountCompat instance) =>
     };
 
 _CallCompat _$CallCompatFromJson(Map<String, dynamic> json) => _CallCompat(
-      to: json['to'] as String,
-      input: json['input'] as String,
-      value:
-          json['value'] == null ? null : BigInt.parse(json['value'] as String),
-    );
+  to: json['to'] as String,
+  input: json['input'] as String,
+  value: json['value'] == null ? null : BigInt.parse(json['value'] as String),
+);
 
 Map<String, dynamic> _$CallCompatToJson(_CallCompat instance) =>
     <String, dynamic>{
@@ -40,111 +39,101 @@ Map<String, dynamic> _$CallCompatToJson(_CallCompat instance) =>
 
 _Eip1559EstimationCompat _$Eip1559EstimationCompatFromJson(
   Map<String, dynamic> json,
-) =>
-    _Eip1559EstimationCompat(
-      maxFeePerGas: json['maxFeePerGas'] as String,
-      maxPriorityFeePerGas: json['maxPriorityFeePerGas'] as String,
-    );
+) => _Eip1559EstimationCompat(
+  maxFeePerGas: json['maxFeePerGas'] as String,
+  maxPriorityFeePerGas: json['maxPriorityFeePerGas'] as String,
+);
 
 Map<String, dynamic> _$Eip1559EstimationCompatToJson(
   _Eip1559EstimationCompat instance,
-) =>
-    <String, dynamic>{
-      'maxFeePerGas': instance.maxFeePerGas,
-      'maxPriorityFeePerGas': instance.maxPriorityFeePerGas,
-    };
+) => <String, dynamic>{
+  'maxFeePerGas': instance.maxFeePerGas,
+  'maxPriorityFeePerGas': instance.maxPriorityFeePerGas,
+};
 
 _ExecuteDetailsCompat _$ExecuteDetailsCompatFromJson(
   Map<String, dynamic> json,
-) =>
-    _ExecuteDetailsCompat(
-      initialTxnReceipt: json['initialTxnReceipt'] as String,
-      initialTxnHash: json['initialTxnHash'] as String,
-    );
+) => _ExecuteDetailsCompat(
+  initialTxnReceipt: json['initialTxnReceipt'] as String,
+  initialTxnHash: json['initialTxnHash'] as String,
+);
 
 Map<String, dynamic> _$ExecuteDetailsCompatToJson(
   _ExecuteDetailsCompat instance,
-) =>
-    <String, dynamic>{
-      'initialTxnReceipt': instance.initialTxnReceipt,
-      'initialTxnHash': instance.initialTxnHash,
-    };
+) => <String, dynamic>{
+  'initialTxnReceipt': instance.initialTxnReceipt,
+  'initialTxnHash': instance.initialTxnHash,
+};
 
 _FeeEstimatedTransactionCompat _$FeeEstimatedTransactionCompatFromJson(
   Map<String, dynamic> json,
-) =>
-    _FeeEstimatedTransactionCompat(
-      chainId: json['chainId'] as String,
-      from: json['from'] as String,
-      to: json['to'] as String,
-      value: json['value'] as String,
-      input: json['input'] as String,
-      gasLimit: json['gasLimit'] as String,
-      nonce: json['nonce'] as String,
-      maxFeePerGas: json['maxFeePerGas'] as String,
-      maxPriorityFeePerGas: json['maxPriorityFeePerGas'] as String,
-    );
+) => _FeeEstimatedTransactionCompat(
+  chainId: json['chainId'] as String,
+  from: json['from'] as String,
+  to: json['to'] as String,
+  value: json['value'] as String,
+  input: json['input'] as String,
+  gasLimit: json['gasLimit'] as String,
+  nonce: json['nonce'] as String,
+  maxFeePerGas: json['maxFeePerGas'] as String,
+  maxPriorityFeePerGas: json['maxPriorityFeePerGas'] as String,
+);
 
 Map<String, dynamic> _$FeeEstimatedTransactionCompatToJson(
   _FeeEstimatedTransactionCompat instance,
-) =>
-    <String, dynamic>{
-      'chainId': instance.chainId,
-      'from': instance.from,
-      'to': instance.to,
-      'value': instance.value,
-      'input': instance.input,
-      'gasLimit': instance.gasLimit,
-      'nonce': instance.nonce,
-      'maxFeePerGas': instance.maxFeePerGas,
-      'maxPriorityFeePerGas': instance.maxPriorityFeePerGas,
-    };
+) => <String, dynamic>{
+  'chainId': instance.chainId,
+  'from': instance.from,
+  'to': instance.to,
+  'value': instance.value,
+  'input': instance.input,
+  'gasLimit': instance.gasLimit,
+  'nonce': instance.nonce,
+  'maxFeePerGas': instance.maxFeePerGas,
+  'maxPriorityFeePerGas': instance.maxPriorityFeePerGas,
+};
 
 _FundingMetadataCompat _$FundingMetadataCompatFromJson(
   Map<String, dynamic> json,
-) =>
-    _FundingMetadataCompat(
-      chainId: json['chainId'] as String,
-      tokenContract: json['tokenContract'] as String,
-      symbol: json['symbol'] as String,
-      amount: json['amount'] as String,
-      bridgingFee: json['bridgingFee'] as String,
-      decimals: (json['decimals'] as num).toInt(),
-    );
+) => _FundingMetadataCompat(
+  chainId: json['chainId'] as String,
+  tokenContract: json['tokenContract'] as String,
+  symbol: json['symbol'] as String,
+  amount: json['amount'] as String,
+  bridgingFee: json['bridgingFee'] as String,
+  decimals: (json['decimals'] as num).toInt(),
+);
 
 Map<String, dynamic> _$FundingMetadataCompatToJson(
   _FundingMetadataCompat instance,
-) =>
-    <String, dynamic>{
-      'chainId': instance.chainId,
-      'tokenContract': instance.tokenContract,
-      'symbol': instance.symbol,
-      'amount': instance.amount,
-      'bridgingFee': instance.bridgingFee,
-      'decimals': instance.decimals,
-    };
+) => <String, dynamic>{
+  'chainId': instance.chainId,
+  'tokenContract': instance.tokenContract,
+  'symbol': instance.symbol,
+  'amount': instance.amount,
+  'bridgingFee': instance.bridgingFee,
+  'decimals': instance.decimals,
+};
 
 _InitialTransactionMetadataCompat _$InitialTransactionMetadataCompatFromJson(
   Map<String, dynamic> json,
-) =>
-    _InitialTransactionMetadataCompat(
-      transferTo: json['transferTo'] as String,
-      amount: json['amount'] as String,
-      tokenContract: json['tokenContract'] as String,
-      symbol: json['symbol'] as String,
-      decimals: (json['decimals'] as num).toInt(),
-    );
+) => _InitialTransactionMetadataCompat(
+  transferTo: json['transferTo'] as String,
+  amount: json['amount'] as String,
+  tokenContract: json['tokenContract'] as String,
+  symbol: json['symbol'] as String,
+  decimals: (json['decimals'] as num).toInt(),
+);
 
 Map<String, dynamic> _$InitialTransactionMetadataCompatToJson(
   _InitialTransactionMetadataCompat instance,
-) =>
-    <String, dynamic>{
-      'transferTo': instance.transferTo,
-      'amount': instance.amount,
-      'tokenContract': instance.tokenContract,
-      'symbol': instance.symbol,
-      'decimals': instance.decimals,
-    };
+) => <String, dynamic>{
+  'transferTo': instance.transferTo,
+  'amount': instance.amount,
+  'tokenContract': instance.tokenContract,
+  'symbol': instance.symbol,
+  'decimals': instance.decimals,
+};
 
 _MetadataCompat _$MetadataCompatFromJson(Map<String, dynamic> json) =>
     _MetadataCompat(
@@ -165,89 +154,79 @@ Map<String, dynamic> _$MetadataCompatToJson(_MetadataCompat instance) =>
     };
 
 PrepareDetailedResponseSuccessCompat_Available
-    _$PrepareDetailedResponseSuccessCompat_AvailableFromJson(
+_$PrepareDetailedResponseSuccessCompat_AvailableFromJson(
   Map<String, dynamic> json,
-) =>
-        PrepareDetailedResponseSuccessCompat_Available(
-          value: UiFieldsCompat.fromJson(json['value'] as Map<String, dynamic>),
-          $type: json['runtimeType'] as String?,
-        );
+) => PrepareDetailedResponseSuccessCompat_Available(
+  value: UiFieldsCompat.fromJson(json['value'] as Map<String, dynamic>),
+  $type: json['runtimeType'] as String?,
+);
 
 Map<String, dynamic> _$PrepareDetailedResponseSuccessCompat_AvailableToJson(
   PrepareDetailedResponseSuccessCompat_Available instance,
-) =>
-    <String, dynamic>{
-      'value': instance.value.toJson(),
-      'runtimeType': instance.$type,
-    };
+) => <String, dynamic>{
+  'value': instance.value.toJson(),
+  'runtimeType': instance.$type,
+};
 
 PrepareDetailedResponseSuccessCompat_NotRequired
-    _$PrepareDetailedResponseSuccessCompat_NotRequiredFromJson(
+_$PrepareDetailedResponseSuccessCompat_NotRequiredFromJson(
   Map<String, dynamic> json,
-) =>
-        PrepareDetailedResponseSuccessCompat_NotRequired(
-          value: PrepareResponseNotRequiredCompat.fromJson(
-            json['value'] as Map<String, dynamic>,
-          ),
-          $type: json['runtimeType'] as String?,
-        );
+) => PrepareDetailedResponseSuccessCompat_NotRequired(
+  value: PrepareResponseNotRequiredCompat.fromJson(
+    json['value'] as Map<String, dynamic>,
+  ),
+  $type: json['runtimeType'] as String?,
+);
 
 Map<String, dynamic> _$PrepareDetailedResponseSuccessCompat_NotRequiredToJson(
   PrepareDetailedResponseSuccessCompat_NotRequired instance,
-) =>
-    <String, dynamic>{
-      'value': instance.value.toJson(),
-      'runtimeType': instance.$type,
-    };
+) => <String, dynamic>{
+  'value': instance.value.toJson(),
+  'runtimeType': instance.$type,
+};
 
 _PrepareResponseAvailableCompat _$PrepareResponseAvailableCompatFromJson(
   Map<String, dynamic> json,
-) =>
-    _PrepareResponseAvailableCompat(
-      orchestrationId: json['orchestrationId'] as String,
-      initialTransaction: TransactionCompat.fromJson(
-        json['initialTransaction'] as Map<String, dynamic>,
-      ),
-      transactions: (json['transactions'] as List<dynamic>)
-          .map((e) => TransactionCompat.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      metadata:
-          MetadataCompat.fromJson(json['metadata'] as Map<String, dynamic>),
-    );
+) => _PrepareResponseAvailableCompat(
+  orchestrationId: json['orchestrationId'] as String,
+  initialTransaction: TransactionCompat.fromJson(
+    json['initialTransaction'] as Map<String, dynamic>,
+  ),
+  transactions: (json['transactions'] as List<dynamic>)
+      .map((e) => TransactionCompat.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  metadata: MetadataCompat.fromJson(json['metadata'] as Map<String, dynamic>),
+);
 
 Map<String, dynamic> _$PrepareResponseAvailableCompatToJson(
   _PrepareResponseAvailableCompat instance,
-) =>
-    <String, dynamic>{
-      'orchestrationId': instance.orchestrationId,
-      'initialTransaction': instance.initialTransaction.toJson(),
-      'transactions': instance.transactions.map((e) => e.toJson()).toList(),
-      'metadata': instance.metadata.toJson(),
-    };
+) => <String, dynamic>{
+  'orchestrationId': instance.orchestrationId,
+  'initialTransaction': instance.initialTransaction.toJson(),
+  'transactions': instance.transactions.map((e) => e.toJson()).toList(),
+  'metadata': instance.metadata.toJson(),
+};
 
 _PrepareResponseNotRequiredCompat _$PrepareResponseNotRequiredCompatFromJson(
   Map<String, dynamic> json,
-) =>
-    _PrepareResponseNotRequiredCompat(
-      initialTransaction: TransactionCompat.fromJson(
-        json['initialTransaction'] as Map<String, dynamic>,
-      ),
-      transactions: (json['transactions'] as List<dynamic>)
-          .map((e) => TransactionCompat.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
+) => _PrepareResponseNotRequiredCompat(
+  initialTransaction: TransactionCompat.fromJson(
+    json['initialTransaction'] as Map<String, dynamic>,
+  ),
+  transactions: (json['transactions'] as List<dynamic>)
+      .map((e) => TransactionCompat.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
 
 Map<String, dynamic> _$PrepareResponseNotRequiredCompatToJson(
   _PrepareResponseNotRequiredCompat instance,
-) =>
-    <String, dynamic>{
-      'initialTransaction': instance.initialTransaction.toJson(),
-      'transactions': instance.transactions.map((e) => e.toJson()).toList(),
-    };
+) => <String, dynamic>{
+  'initialTransaction': instance.initialTransaction.toJson(),
+  'transactions': instance.transactions.map((e) => e.toJson()).toList(),
+};
 
-_$TransactionCompatImpl _$$TransactionCompatImplFromJson(
-        Map<String, dynamic> json) =>
-    _$TransactionCompatImpl(
+_TransactionCompat _$TransactionCompatFromJson(Map<String, dynamic> json) =>
+    _TransactionCompat(
       chainId: json['chainId'] as String,
       from: json['from'] as String,
       to: json['to'] as String,
@@ -270,59 +249,55 @@ Map<String, dynamic> _$TransactionCompatToJson(_TransactionCompat instance) =>
 
 _TransactionFeeCompat _$TransactionFeeCompatFromJson(
   Map<String, dynamic> json,
-) =>
-    _TransactionFeeCompat(
-      fee: AmountCompat.fromJson(json['fee'] as Map<String, dynamic>),
-      localFee: AmountCompat.fromJson(json['localFee'] as Map<String, dynamic>),
-    );
+) => _TransactionFeeCompat(
+  fee: AmountCompat.fromJson(json['fee'] as Map<String, dynamic>),
+  localFee: AmountCompat.fromJson(json['localFee'] as Map<String, dynamic>),
+);
 
 Map<String, dynamic> _$TransactionFeeCompatToJson(
   _TransactionFeeCompat instance,
-) =>
-    <String, dynamic>{
-      'fee': instance.fee.toJson(),
-      'localFee': instance.localFee.toJson(),
-    };
+) => <String, dynamic>{
+  'fee': instance.fee.toJson(),
+  'localFee': instance.localFee.toJson(),
+};
 
 _TransactionReceiptCompat _$TransactionReceiptCompatFromJson(
   Map<String, dynamic> json,
-) =>
-    _TransactionReceiptCompat(
-      transactionHash: json['transactionHash'] as String,
-      transactionIndex: json['transactionIndex'] == null
-          ? null
-          : BigInt.parse(json['transactionIndex'] as String),
-      blockHash: json['blockHash'] as String?,
-      blockNumber: json['blockNumber'] == null
-          ? null
-          : BigInt.parse(json['blockNumber'] as String),
-      gasUsed: BigInt.parse(json['gasUsed'] as String),
-      effectiveGasPrice: json['effectiveGasPrice'] as String,
-      blobGasUsed: json['blobGasUsed'] == null
-          ? null
-          : BigInt.parse(json['blobGasUsed'] as String),
-      blobGasPrice: json['blobGasPrice'] as String?,
-      from: json['from'] as String,
-      to: json['to'] as String?,
-      contractAddress: json['contractAddress'] as String?,
-    );
+) => _TransactionReceiptCompat(
+  transactionHash: json['transactionHash'] as String,
+  transactionIndex: json['transactionIndex'] == null
+      ? null
+      : BigInt.parse(json['transactionIndex'] as String),
+  blockHash: json['blockHash'] as String?,
+  blockNumber: json['blockNumber'] == null
+      ? null
+      : BigInt.parse(json['blockNumber'] as String),
+  gasUsed: BigInt.parse(json['gasUsed'] as String),
+  effectiveGasPrice: json['effectiveGasPrice'] as String,
+  blobGasUsed: json['blobGasUsed'] == null
+      ? null
+      : BigInt.parse(json['blobGasUsed'] as String),
+  blobGasPrice: json['blobGasPrice'] as String?,
+  from: json['from'] as String,
+  to: json['to'] as String?,
+  contractAddress: json['contractAddress'] as String?,
+);
 
 Map<String, dynamic> _$TransactionReceiptCompatToJson(
   _TransactionReceiptCompat instance,
-) =>
-    <String, dynamic>{
-      'transactionHash': instance.transactionHash,
-      'transactionIndex': instance.transactionIndex?.toString(),
-      'blockHash': instance.blockHash,
-      'blockNumber': instance.blockNumber?.toString(),
-      'gasUsed': instance.gasUsed.toString(),
-      'effectiveGasPrice': instance.effectiveGasPrice,
-      'blobGasUsed': instance.blobGasUsed?.toString(),
-      'blobGasPrice': instance.blobGasPrice,
-      'from': instance.from,
-      'to': instance.to,
-      'contractAddress': instance.contractAddress,
-    };
+) => <String, dynamic>{
+  'transactionHash': instance.transactionHash,
+  'transactionIndex': instance.transactionIndex?.toString(),
+  'blockHash': instance.blockHash,
+  'blockNumber': instance.blockNumber?.toString(),
+  'gasUsed': instance.gasUsed.toString(),
+  'effectiveGasPrice': instance.effectiveGasPrice,
+  'blobGasUsed': instance.blobGasUsed?.toString(),
+  'blobGasPrice': instance.blobGasPrice,
+  'from': instance.from,
+  'to': instance.to,
+  'contractAddress': instance.contractAddress,
+};
 
 _TxnDetailsCompat _$TxnDetailsCompatFromJson(Map<String, dynamic> json) =>
     _TxnDetailsCompat(
@@ -342,28 +317,25 @@ Map<String, dynamic> _$TxnDetailsCompatToJson(_TxnDetailsCompat instance) =>
 
 _UiFieldsCompat _$UiFieldsCompatFromJson(
   Map<String, dynamic> json,
-) =>
-    _UiFieldsCompat(
-      routeResponse: PrepareResponseAvailableCompat.fromJson(
-        json['routeResponse'] as Map<String, dynamic>,
-      ),
-      route: (json['route'] as List<dynamic>)
-          .map((e) => TxnDetailsCompat.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      localRouteTotal: AmountCompat.fromJson(
-        json['localRouteTotal'] as Map<String, dynamic>,
-      ),
-      bridge: (json['bridge'] as List<dynamic>)
-          .map((e) => TransactionFeeCompat.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      localBridgeTotal: AmountCompat.fromJson(
-        json['localBridgeTotal'] as Map<String, dynamic>,
-      ),
-      initial:
-          TxnDetailsCompat.fromJson(json['initial'] as Map<String, dynamic>),
-      localTotal:
-          AmountCompat.fromJson(json['localTotal'] as Map<String, dynamic>),
-    );
+) => _UiFieldsCompat(
+  routeResponse: PrepareResponseAvailableCompat.fromJson(
+    json['routeResponse'] as Map<String, dynamic>,
+  ),
+  route: (json['route'] as List<dynamic>)
+      .map((e) => TxnDetailsCompat.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  localRouteTotal: AmountCompat.fromJson(
+    json['localRouteTotal'] as Map<String, dynamic>,
+  ),
+  bridge: (json['bridge'] as List<dynamic>)
+      .map((e) => TransactionFeeCompat.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  localBridgeTotal: AmountCompat.fromJson(
+    json['localBridgeTotal'] as Map<String, dynamic>,
+  ),
+  initial: TxnDetailsCompat.fromJson(json['initial'] as Map<String, dynamic>),
+  localTotal: AmountCompat.fromJson(json['localTotal'] as Map<String, dynamic>),
+);
 
 Map<String, dynamic> _$UiFieldsCompatToJson(_UiFieldsCompat instance) =>
     <String, dynamic>{

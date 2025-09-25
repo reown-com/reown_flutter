@@ -6,9 +6,8 @@ part of 'shared.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$PulseMetadataCompatImpl _$$PulseMetadataCompatImplFromJson(
-        Map<String, dynamic> json) =>
-    _$PulseMetadataCompatImpl(
+_PulseMetadataCompat _$PulseMetadataCompatFromJson(Map<String, dynamic> json) =>
+    _PulseMetadataCompat(
       url: json['url'] as String?,
       bundleId: json['bundleId'] as String?,
       packageName: json['packageName'] as String?,
@@ -16,12 +15,12 @@ _$PulseMetadataCompatImpl _$$PulseMetadataCompatImplFromJson(
       sdkPlatform: json['sdkPlatform'] as String,
     );
 
-Map<String, dynamic> _$$PulseMetadataCompatImplToJson(
-        _$PulseMetadataCompatImpl instance) =>
-    <String, dynamic>{
-      'url': instance.url,
-      'bundleId': instance.bundleId,
-      'packageName': instance.packageName,
-      'sdkVersion': instance.sdkVersion,
-      'sdkPlatform': instance.sdkPlatform,
-    };
+Map<String, dynamic> _$PulseMetadataCompatToJson(
+  _PulseMetadataCompat instance,
+) => <String, dynamic>{
+  'url': instance.url,
+  'bundleId': instance.bundleId,
+  'packageName': instance.packageName,
+  'sdkVersion': instance.sdkVersion,
+  'sdkPlatform': instance.sdkPlatform,
+};

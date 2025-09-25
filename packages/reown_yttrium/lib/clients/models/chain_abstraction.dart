@@ -278,7 +278,7 @@ class PrimitiveSignatureCompat {
 }
 
 @freezed
-class TransactionCompat with _$TransactionCompat {
+sealed class TransactionCompat with _$TransactionCompat {
   const factory TransactionCompat({
     required String chainId,
     required String from,
