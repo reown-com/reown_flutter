@@ -57,7 +57,7 @@ class WebSocketHandler implements IWebSocketHandler {
     final outputController = StreamController<String>.broadcast(sync: true);
 
     // Split the incoming stream to support multiple listeners
-    _socket!.stream.cast<String>().listen(
+    _socket?.stream.cast<String>().listen(
           (data) => inputController.add(data),
           onError: (error) => inputController.addError(error),
           onDone: () => inputController.close(),
@@ -65,9 +65,9 @@ class WebSocketHandler implements IWebSocketHandler {
 
     // Route outgoing messages through the output controller
     outputController.stream.listen(
-      (data) => _socket!.sink.add(data),
-      onError: (error) => _socket!.sink.addError(error),
-      onDone: () => _socket!.sink.close(),
+      (data) => _socket?.sink.add(data),
+      onError: (error) => _socket?.sink.addError(error),
+      onDone: () => _socket?.sink.close(),
     );
 
     _channel = StreamChannel(
@@ -84,7 +84,7 @@ class WebSocketHandler implements IWebSocketHandler {
       }
     }
 
-    await _socket!.ready;
+    await _socket?.ready;
 
     // Check if the request was successful (status code 200)
     // try {} catch (e) {
