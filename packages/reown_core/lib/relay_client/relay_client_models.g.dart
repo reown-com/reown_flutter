@@ -11,5 +11,5 @@ Relay _$RelayFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$RelayToJson(Relay instance) => <String, dynamic>{
   'protocol': instance.protocol,
-  'data': instance.data,
+  'data': ?instance.data,
 };

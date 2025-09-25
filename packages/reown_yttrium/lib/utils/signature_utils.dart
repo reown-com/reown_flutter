@@ -1,7 +1,7 @@
 import 'package:eth_sig_util/eth_sig_util.dart';
 import 'package:eth_sig_util/util/bigint.dart';
 import 'package:eth_sig_util/util/utils.dart';
-import 'package:reown_yttrium/models/chain_abstraction.dart';
+import 'package:reown_yttrium/clients/models/chain_abstraction.dart';
 
 extension SignatureExtension on String {
   PrimitiveSignatureCompat toPrimitiveSignature() {

@@ -39,6 +39,8 @@ import 'package:reown_core/verify/verify.dart';
 import 'package:reown_core/utils/log_level.dart';
 import 'package:reown_core/utils/utils.dart';
 import 'package:reown_core/models/basic_models.dart';
+import 'package:reown_core/yttrium/i_rust_sign_client.dart';
+import 'package:reown_core/yttrium/rust_sign_client.dart';
 import 'package:reown_core/store/secure_store.dart';
 
 class ReownCore implements IReownCore {
@@ -85,6 +87,9 @@ class ReownCore implements IReownCore {
 
   @override
   late ILinkModeStore linkModeStore;
+
+  @override
+  late IRustSignClient rustSignClient;
 
   late final LogLevel _logLevel;
   late final LogCallback? _logCallback;
@@ -232,6 +237,9 @@ class ReownCore implements IReownCore {
       version: StoreVersions.VERSION_LINKMODE,
       fromJson: (dynamic value) => value as List<String>,
     );
+    rustSignClient = RustSignClient(
+      core: this,
+    );
   }
 
   @override
@@ -245,6 +253,7 @@ class ReownCore implements IReownCore {
     await events.init();
     await connectivity.init();
     await linkModeStore.init();
+    await rustSignClient.init();
     heartbeat.init();
   }
 

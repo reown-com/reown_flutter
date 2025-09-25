@@ -1,64 +1,23 @@
-import 'package:reown_yttrium/models/chain_abstraction.dart';
-import 'reown_yttrium_platform_interface.dart';
+import 'package:reown_yttrium/clients/chain_abstraction_client.dart';
+import 'package:reown_yttrium/clients/i_chain_abstraction_client.dart';
+import 'package:reown_yttrium/clients/i_rust_sign_client.dart';
+import 'package:reown_yttrium/clients/rust_sign_client.dart';
 
 export 'utils/signature_utils.dart';
+export 'clients/models/chain_abstraction.dart';
+export 'clients/models/rust_sign_client.dart';
+export 'clients/models/shared.dart';
 
 class ReownYttrium {
-  ReownYttriumPlatform get _yttrium => ReownYttriumPlatform.instance;
+  ReownYttrium._internal();
 
-  Future<bool> init({
-    required String projectId,
-    required PulseMetadataCompat pulseMetadata,
-  }) async {
-    return await _yttrium.init(
-      projectId: projectId,
-      pulseMetadata: pulseMetadata,
-    );
-  }
+  static final _instance = ReownYttrium._internal();
+  factory ReownYttrium() => _instance;
 
-  Future<String> erc20TokenBalance({
-    required String chainId,
-    required String token,
-    required String owner,
-  }) async {
-    return await _yttrium.erc20TokenBalance(
-      chainId: chainId,
-      token: token,
-      owner: owner,
-    );
-  }
+  // TODO remove CA
+  final _chainAbstractionClient = ChainAbstractionClient();
+  IChainAbstractionClient get chainAbstractionClient => _chainAbstractionClient;
 
-  Future<Eip1559EstimationCompat> estimateFees({
-    required String chainId,
-  }) async {
-    return await _yttrium.estimateFees(
-      chainId: chainId,
-    );
-  }
-
-  Future<PrepareDetailedResponseCompat> prepareDetailed({
-    required String chainId,
-    required String from,
-    required CallCompat call,
-    required Currency localCurrency,
-  }) async {
-    return await _yttrium.prepareDetailed(
-      chainId: chainId,
-      from: from,
-      call: call,
-      localCurrency: localCurrency,
-    );
-  }
-
-  Future<ExecuteDetailsCompat> execute({
-    required UiFieldsCompat uiFields,
-    required List<PrimitiveSignatureCompat> routeTxnSigs,
-    required PrimitiveSignatureCompat initialTxnSig,
-  }) async {
-    return await _yttrium.execute(
-      uiFields: uiFields,
-      routeTxnSigs: routeTxnSigs,
-      initialTxnSig: initialTxnSig,
-    );
-  }
+  final _signClient = SignClient();
+  ISignClient get signClient => _signClient;
 }

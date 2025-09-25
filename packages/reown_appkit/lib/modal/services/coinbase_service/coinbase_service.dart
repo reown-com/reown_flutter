@@ -7,7 +7,7 @@ import 'package:reown_appkit/modal/services/coinbase_service/i_coinbase_service.
 import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_data.dart';
 import 'package:reown_appkit/modal/services/coinbase_service/models/coinbase_events.dart';
 
-import 'package:coinbase_wallet_sdk/currency.dart';
+import 'package:coinbase_wallet_sdk/currency.dart' as cb;
 import 'package:coinbase_wallet_sdk/action.dart';
 import 'package:coinbase_wallet_sdk/coinbase_wallet_sdk.dart';
 import 'package:coinbase_wallet_sdk/configuration.dart';
@@ -336,7 +336,7 @@ extension on SessionRequestParams {
             chainId: chainInfo.chainId,
             rpcUrls: [chainInfo.rpcUrl],
             chainName: chainInfo.name,
-            nativeCurrency: Currency(
+            nativeCurrency: cb.Currency(
               name: chainInfo.currency,
               symbol: chainInfo.currency,
               decimals: 18,

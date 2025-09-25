@@ -2,7 +2,8 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' } // TODO document this.
+//        maven { url 'https://jitpack.io' } // TODO document this.
+        mavenLocal { url '/Users/alfreedom/.m2/repository' }
     }
 }
 

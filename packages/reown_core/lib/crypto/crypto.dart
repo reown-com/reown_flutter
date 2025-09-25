@@ -26,10 +26,12 @@ class Crypto implements ICrypto {
 
   final IReownCore core;
 
+  final ICryptoUtils utils;
+
   @override
   IGenericStore<String> keyChain;
 
-  ICryptoUtils utils;
+  @override
   IRelayAuth relayAuth;
 
   Crypto({
@@ -99,6 +101,12 @@ class Crypto implements ICrypto {
     // print('crypto setSymKey, symKey: $symKey, overrideTopic: $topic');
     await keyChain.set(topic, symKey);
     return topic;
+  }
+
+  @override
+  String? getSymKey(String topic) {
+    _checkInitialized();
+    return keyChain.get(topic);
   }
 
   @override

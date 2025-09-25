@@ -7,9 +7,9 @@ import uniffi.yttrium.ExecuteDetails
 import uniffi.yttrium.FeeEstimatedTransaction
 import uniffi.yttrium.FundingMetadata
 import uniffi.yttrium.InitialTransactionMetadata
-import uniffi.yttrium.Metadata
 import uniffi.yttrium.PrepareResponseAvailable
 import uniffi.yttrium.PrepareResponseError
+import uniffi.yttrium.PrepareResponseMetadata
 import uniffi.yttrium.PrepareResponseNotRequired
 import uniffi.yttrium.Transaction
 import uniffi.yttrium.TransactionFee
@@ -17,6 +17,7 @@ import uniffi.yttrium.TxnDetails
 import uniffi.yttrium.SolanaTxnDetails
 import uniffi.yttrium.UiFields
 import uniffi.yttrium.Route
+import uniffi.yttrium.SettleNamespace
 import uniffi.yttrium.SolanaTransaction
 import uniffi.yttrium.Transactions
 
@@ -66,7 +67,8 @@ fun Transactions.toMap(): List<Map<String, Any>> = when (this) {
 }
 
 fun PrepareResponseAvailable.toMap(): Map<String, Any> {
-    val transactions = transactions.map { it.toMap() }.first() // Route does not have toMap() so it's done here
+    val transactions =
+        transactions.map { it.toMap() }.first() // Route does not have toMap() so it's done here
     return mapOf(
         "orchestrationId" to orchestrationId,
         "initialTransaction" to initialTransaction.toMap(),
@@ -87,7 +89,7 @@ fun Transaction.toMap(): Map<String, Any> {
     )
 }
 
-fun Metadata.toMap(): Map<String, Any> {
+fun PrepareResponseMetadata.toMap(): Map<String, Any> {
     return mapOf(
         "fundingFrom" to fundingFrom.map { it.toMap() },
         "initialTransaction" to initialTransaction.toMap(),
@@ -183,4 +185,36 @@ fun ExecuteDetails.toMap(): Map<String, Any> {
         "initialTxnReceipt" to initialTxnReceipt,
         "initialTxnHash" to initialTxnHash
     )
+}
+
+fun String.hexStringToByteArray(): ByteArray {
+    require(length % 2 == 0) { "Hex string must have an even length" }
+    return chunked(2)
+        .map { it.toInt(16).toByte() }
+        .toByteArray()
+}
+
+fun ByteArray.byteArrayToHexString(): String =
+    joinToString("") { "%02x".format(it) }
+
+fun Map<*, *>.toSettleNamespace(): SettleNamespace {
+    val accounts = (this["accounts"] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+    val chains = (this["chains"] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+    val methods = (this["methods"] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+    val events = (this["events"] as? List<*>)?.filterIsInstance<String>() ?: emptyList()
+
+    return SettleNamespace(
+        accounts = accounts,
+        chains = chains,
+        methods = methods,
+        events = events,
+    )
+}
+
+fun Map<*, *>.toApprovedNamespace(): Map<String, SettleNamespace> {
+    return this.mapNotNull { (key, value) ->
+        val k = key as? String
+        val v = (value as? Map<*, *>)?.toSettleNamespace()
+        if (k != null && v != null) k to v else null
+    }.toMap()
 }

@@ -26,3 +26,4 @@ export 'core_impl.dart';
 export 'package:bs58/bs58.dart';
 export 'package:ed25519_edwards/ed25519_edwards.dart' show PublicKey;
 export 'package:pointycastle/digests/sha256.dart';
+export 'package:reown_yttrium/reown_yttrium.dart';

@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:convert/convert.dart';
 import 'package:event/event.dart';
+import 'package:reown_core/models/rust_sign_client_models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
@@ -283,21 +284,43 @@ class ReownSign implements IReownSign {
 
     final ProposalData proposal = proposals.get(id.toString())!;
 
-    final String selfPubKey = await core.crypto.generateKeyPair();
+    // selfPubKey is now generated on rust side and returned on the approval response
     final String peerPubKey = proposal.proposer.publicKey;
-    final String sessionTopic = await core.crypto.generateSharedKey(
-      selfPubKey,
-      peerPubKey,
+    // sessionTopic is now generated  from `sessionSymKey` returned on the approval response
+
+    // pairingSymKey was previously saved on secure storage during pair function on core package
+    final String pairingSymKey = core.crypto.getSymKey(proposal.pairingTopic)!;
+    final proposalFfi = SessionProposalFfi.fromJson({
+      ...proposal.toJson(),
+      'id': proposal.id.toString(),
+      'topic': proposal.pairingTopic,
+      'pairingSymKey': hex.decode(pairingSymKey),
+      'proposerPublicKey': hex.decode(peerPubKey),
+      'metadata': proposal.proposer.metadata.toJson(),
+    });
+    final approvedNamespaces = namespaces.map(
+      (key, namespace) => MapEntry(key, namespace.toJson()),
     );
-    // print('approve session topic: $sessionTopic');
+    final ApproveResult approveResult = await core.rustSignClient
+        .approve(
+          proposal: proposalFfi,
+          approvedNamespaces: approvedNamespaces,
+          selfMetadata: metadata.toJson(),
+        )
+        .timeout(const Duration(seconds: 60));
+
+    final String selfPubKey = approveResult.selfPublicKey;
+    final String sessionTopic = await core.crypto.setSymKey(
+      approveResult.sessionSymKey,
+    );
     final protocol = relayProtocol ?? ReownConstants.RELAYER_DEFAULT_PROTOCOL;
     final relay = Relay(protocol);
 
-    // Respond to the proposal
-    final sessionProposalResponse = WcSessionProposeResponse(
-      relay: relay,
-      responderPublicKey: selfPubKey,
-    );
+    // No needed anymore, will be handled by Rust Client
+    // final sessionProposalResponse = WcSessionProposeResponse(
+    //   relay: relay,
+    //   responderPublicKey: selfPubKey,
+    // );
     await _deleteProposal(id);
     await core.pairing.activate(topic: proposal.pairingTopic);
 
@@ -307,7 +330,9 @@ class ReownSign implements IReownSign {
     );
 
     await core.relayClient.subscribe(
-      options: SubscribeOptions(topic: sessionTopic, skipSubscribe: true),
+      options: SubscribeOptions(
+        topic: sessionTopic,
+      ),
     );
 
     final int expiry = ReownCoreUtils.calculateExpiry(
@@ -319,7 +344,7 @@ class ReownSign implements IReownSign {
       pairingTopic: proposal.pairingTopic,
       relay: relay,
       expiry: expiry,
-      acknowledged: false,
+      acknowledged: true,
       controller: selfPubKey,
       namespaces: namespaces,
       self: ConnectionMetadata(publicKey: selfPubKey, metadata: metadata),
@@ -333,29 +358,34 @@ class ReownSign implements IReownSign {
     await sessions.set(sessionTopic, session);
     await _setSessionExpiry(sessionTopic, expiry);
 
-    // `wc_sessionSettle` is not critical throughout the entire session.
-    final sessionSettleRequest = WcSessionSettleRequest(
-      relay: relay,
-      namespaces: namespaces,
-      sessionProperties: sessionProperties,
-      expiry: expiry,
-      controller: ConnectionMetadata(publicKey: selfPubKey, metadata: metadata),
-    );
-    bool acknowledged = await core.pairing
-        .sendApproveSessionRequest(
-          sessionTopic,
-          proposal.pairingTopic,
-          responseId: proposal.id,
-          sessionProposalResponse: sessionProposalResponse.toJson(),
-          sessionSettlementRequest: sessionSettleRequest.toJson(),
-        )
-        .timeout(const Duration(seconds: 60))
-        .catchError((_) => false)
-        .then((_) => true);
+    // No needed anymore, will be handled by Rust Client
+    // final sessionSettleRequest = WcSessionSettleRequest(
+    //   relay: relay,
+    //   namespaces: namespaces,
+    //   sessionProperties: sessionProperties,
+    //   expiry: expiry,
+    //   controller: ConnectionMetadata(
+    //     publicKey: selfPubKey,
+    //     metadata: metadata,
+    //   ),
+    // );
+    // bool acknowledged = await core.pairing
+    //     .sendApproveSessionRequest(
+    //       sessionTopic,
+    //       proposal.pairingTopic,
+    //       responseId: proposal.id,
+    //       sessionProposalResponse: sessionProposalResponse.toJson(),
+    //       sessionSettlementRequest: sessionSettleRequest.toJson(),
+    //     )
+    //     .timeout(const Duration(seconds: 60))
+    //     .catchError((_) => false)
+    //     .then((_) => true);
 
-    session = session.copyWith(acknowledged: acknowledged);
+    // session = session.copyWith(
+    //   acknowledged: acknowledged,
+    // );
 
-    if (acknowledged && sessions.has(sessionTopic)) {
+    if (session.acknowledged && sessions.has(sessionTopic)) {
       // We directly update the latest value.
       await sessions.set(sessionTopic, session);
     }
@@ -378,20 +408,27 @@ class ReownSign implements IReownSign {
       // Attempt to send a response, if the pairing is not active, this will fail
       // but we don't care
       try {
-        final method = MethodConstants.WC_SESSION_PROPOSE;
-        final rpcOpts = MethodConstants.RPC_OPTS[method];
-        await core.pairing.sendError(
-          id,
+        final String pairingSymKey = core.crypto.getSymKey(
           proposal.pairingTopic,
-          method,
-          JsonRpcError(code: reason.code, message: reason.message),
-          rpcOptions: rpcOpts?['reject'],
+        )!;
+        final proposalFfi = SessionProposalFfi.fromJson({
+          ...proposal.toJson(),
+          'id': proposal.id.toString(),
+          'topic': proposal.pairingTopic,
+          'pairingSymKey': hex.decode(pairingSymKey),
+          'proposerPublicKey': hex.decode(proposal.proposer.publicKey),
+          'metadata': proposal.proposer.metadata.toJson(),
+        });
+        await core.rustSignClient.reject(
+          proposal: proposalFfi,
+          error: ErrorDataFfi.fromJson(reason.toJson()),
         );
-      } catch (_) {
+
+        await _deleteProposal(id);
+      } catch (e) {
         // print('got here');
       }
     }
-    await _deleteProposal(id);
   }
 
   @override
@@ -851,9 +888,10 @@ class ReownSign implements IReownSign {
   /// ---- Relay Events ---- ///
 
   void _registerRelayClientFunctions() {
+    core.rustSignClient.onSessionProposeRequest = _onSessionProposeRequest;
     core.pairing.register(
       method: MethodConstants.WC_SESSION_PROPOSE,
-      function: _onSessionProposeRequest,
+      function: _dummyCallback,
       type: ProtocolType.sign,
     );
     core.pairing.register(
@@ -881,9 +919,10 @@ class ReownSign implements IReownSign {
       function: _onSessionDeleteRequest,
       type: ProtocolType.sign,
     );
+    core.rustSignClient.onSessionRequest = _onSessionRequest;
     core.pairing.register(
       method: MethodConstants.WC_SESSION_REQUEST,
-      function: _onSessionRequest,
+      function: _dummyCallback,
       type: ProtocolType.sign,
     );
     core.pairing.register(
@@ -902,6 +941,10 @@ class ReownSign implements IReownSign {
     //   function: _onAuthRequest,
     //   type: ProtocolType.sign,
     // );
+  }
+
+  void _dummyCallback(String topic, JsonRpcRequest payload, [dynamic _]) {
+    // dummy callback to hold flutter logic on reown_sign
   }
 
   bool _shouldIgnoreSessionPropose(String topic) {
@@ -1029,8 +1072,8 @@ class ReownSign implements IReownSign {
     try {
       await _isValidSessionSettleRequest(request.namespaces, request.expiry);
 
-      final SessionProposalCompleter sProposalCompleter = pendingProposals
-          .removeLast();
+      final SessionProposalCompleter sProposalCompleter =
+          pendingProposals.removeLast();
       // print(sProposalCompleter);
 
       // Create the session
@@ -1808,14 +1851,13 @@ class ReownSign implements IReownSign {
     final expirationTime = (cacaoPayload.exp != null)
         ? 'Expiration Time: ${cacaoPayload.exp}'
         : null;
-    final notBefore = (cacaoPayload.nbf != null)
-        ? 'Not Before: ${cacaoPayload.nbf}'
-        : null;
+    final notBefore =
+        (cacaoPayload.nbf != null) ? 'Not Before: ${cacaoPayload.nbf}' : null;
     final requestId = (cacaoPayload.requestId != null)
         ? 'Request ID: ${cacaoPayload.requestId}'
         : null;
-    final resources =
-        cacaoPayload.resources != null && cacaoPayload.resources!.isNotEmpty
+    final resources = cacaoPayload.resources != null &&
+            cacaoPayload.resources!.isNotEmpty
         ? 'Resources:\n${cacaoPayload.resources!.map((resource) => '- $resource').join('\n')}'
         : null;
     final recap = ReCapsUtils.getRecapFromResources(
@@ -1864,8 +1906,7 @@ class ReownSign implements IReownSign {
     final walletUniversalLink = (walletLink ?? '');
     final linkModeApps = core.getLinkModeSupportedApps();
     final containsLink = linkModeApps.contains(walletLink);
-    final isLinkMode =
-        selfLinkMode &&
+    final isLinkMode = selfLinkMode &&
         selfLink.isNotEmpty &&
         walletUniversalLink.isNotEmpty &&
         containsLink;
@@ -1890,9 +1931,8 @@ class ReownSign implements IReownSign {
     AuthApiValidators.isValidAuthenticate(params);
 
     final isLinkMode = _isLinkModeAuthenticate(walletUniversalLink);
-    final transportType = isLinkMode
-        ? TransportType.linkMode
-        : TransportType.relay;
+    final transportType =
+        isLinkMode ? TransportType.linkMode : TransportType.relay;
     if (!transportType.isLinkMode) {
       _confirmOnlineStateOrThrow();
     }
@@ -2191,17 +2231,15 @@ class ReownSign implements IReownSign {
           methods: approvedMethods,
         ),
         authentication: cacaos,
-        transportType: isLinkMode
-            ? TransportType.linkMode
-            : TransportType.relay,
+        transportType:
+            isLinkMode ? TransportType.linkMode : TransportType.relay,
       );
 
       await core.relayClient.subscribe(
         options: SubscribeOptions(
           topic: sessionTopic,
-          transportType: isLinkMode
-              ? TransportType.linkMode
-              : TransportType.relay,
+          transportType:
+              isLinkMode ? TransportType.linkMode : TransportType.relay,
         ),
       );
       await sessions.set(sessionTopic, session);
@@ -2269,8 +2307,7 @@ class ReownSign implements IReownSign {
     if (!pendingSessionAuthRequests.containsKey(id)) {
       throw Errors.getInternalError(
         Errors.MISSING_OR_INVALID,
-        context:
-            'approveSessionAuthenticate() '
+        context: 'approveSessionAuthenticate() '
             'Could not find pending auth request with id $id',
       ).toSignError();
     }
@@ -2412,8 +2449,7 @@ class ReownSign implements IReownSign {
     if (!pendingSessionAuthRequests.containsKey(id)) {
       throw Errors.getInternalError(
         Errors.MISSING_OR_INVALID,
-        context:
-            'rejectSessionAuthenticate() '
+        context: 'rejectSessionAuthenticate() '
             'Could not find pending auth request with id $id',
       ).toSignError();
     }

@@ -10,6 +10,7 @@ import 'package:reown_core/relay_client/i_relay_client.dart';
 import 'package:reown_core/store/i_store.dart';
 import 'package:reown_core/store/link_mode_store.dart';
 import 'package:reown_core/verify/i_verify.dart';
+import 'package:reown_core/yttrium/i_rust_sign_client.dart';
 
 abstract class IReownCore {
   final String protocol = 'wc';
@@ -33,6 +34,7 @@ abstract class IReownCore {
   abstract final Logger logger;
   abstract IVerify verify;
   abstract ILinkModeStore linkModeStore;
+  abstract IRustSignClient rustSignClient;
 
   Future<void> start();
 
