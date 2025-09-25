@@ -125,10 +125,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _SessionProposalFfi():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -187,10 +184,7 @@ return $default(_that.id,_that.topic,_that.pairingSymKey,_that.proposerPublicKey
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String topic,  List<int> pairingSymKey,  List<int> proposerPublicKey,  List<Map<String, dynamic>> relays,  Map<String, Map<String, dynamic>> requiredNamespaces,  Map<String, Map<String, dynamic>>? optionalNamespaces,  Map<String, dynamic> metadata,  Map<String, String>? sessionProperties,  Map<String, String>? scopedProperties,  int? expiryTimestamp)  $default,) {final _that = this;
 switch (_that) {
 case _SessionProposalFfi():
-return $default(_that.id,_that.topic,_that.pairingSymKey,_that.proposerPublicKey,_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.metadata,_that.sessionProperties,_that.scopedProperties,_that.expiryTimestamp);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.id,_that.topic,_that.pairingSymKey,_that.proposerPublicKey,_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.metadata,_that.sessionProperties,_that.scopedProperties,_that.expiryTimestamp);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -465,10 +459,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _SettleNamespaceFfi():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -527,10 +518,7 @@ return $default(_that.accounts,_that.methods,_that.events,_that.chains);case _:
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<String> accounts,  List<String> methods,  List<String> events,  List<String> chains)  $default,) {final _that = this;
 switch (_that) {
 case _SettleNamespaceFfi():
-return $default(_that.accounts,_that.methods,_that.events,_that.chains);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.accounts,_that.methods,_that.events,_that.chains);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -775,10 +763,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _MetadataFfi():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -837,10 +822,7 @@ return $default(_that.name,_that.description,_that.url,_that.icons,_that.verifyU
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String description,  String url,  List<String> icons,  String? verifyUrl,  RedirectFfi? redirect)  $default,) {final _that = this;
 switch (_that) {
 case _MetadataFfi():
-return $default(_that.name,_that.description,_that.url,_that.icons,_that.verifyUrl,_that.redirect);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.name,_that.description,_that.url,_that.icons,_that.verifyUrl,_that.redirect);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1068,10 +1050,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _RedirectFfi():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -1130,10 +1109,7 @@ return $default(_that.native,_that.universal,_that.linkMode);case _:
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? native,  String? universal,  bool linkMode)  $default,) {final _that = this;
 switch (_that) {
 case _RedirectFfi():
-return $default(_that.native,_that.universal,_that.linkMode);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.native,_that.universal,_that.linkMode);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1336,10 +1312,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _ApproveResultFfi():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -1398,10 +1371,7 @@ return $default(_that.sessionSymKey,_that.selfPublicKey);case _:
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<int> sessionSymKey,  List<int> selfPublicKey)  $default,) {final _that = this;
 switch (_that) {
 case _ApproveResultFfi():
-return $default(_that.sessionSymKey,_that.selfPublicKey);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.sessionSymKey,_that.selfPublicKey);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1616,10 +1586,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _SessionRequestRequestFfi():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -1678,10 +1645,7 @@ return $default(_that.method,_that.params,_that.expiry);case _:
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String method,  String params,  int? expiry)  $default,) {final _that = this;
 switch (_that) {
 case _SessionRequestRequestFfi():
-return $default(_that.method,_that.params,_that.expiry);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.method,_that.params,_that.expiry);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1894,10 +1858,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _SessionRequestFfi():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -1956,10 +1917,7 @@ return $default(_that.chainId,_that.request);case _:
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String chainId,  SessionRequestRequestFfi request)  $default,) {final _that = this;
 switch (_that) {
 case _SessionRequestFfi():
-return $default(_that.chainId,_that.request);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.chainId,_that.request);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -2179,10 +2137,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _SessionRequestJsonRpcFfi():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -2241,10 +2196,7 @@ return $default(_that.id,_that.method,_that.params);case _:
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String method,  SessionRequestFfi params)  $default,) {final _that = this;
 switch (_that) {
 case _SessionRequestJsonRpcFfi():
-return $default(_that.id,_that.method,_that.params);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.id,_that.method,_that.params);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -2457,10 +2409,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _SessionRequestNativeEvent():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -2519,10 +2468,7 @@ return $default(_that.topic,_that.sessionRequest);case _:
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String topic,  String sessionRequest)  $default,) {final _that = this;
 switch (_that) {
 case _SessionRequestNativeEvent():
-return $default(_that.topic,_that.sessionRequest);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.topic,_that.sessionRequest);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -3097,10 +3043,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _ErrorDataFfi():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -3159,10 +3102,7 @@ return $default(_that.code,_that.message,_that.data);case _:
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int code,  String message,  String? data)  $default,) {final _that = this;
 switch (_that) {
 case _ErrorDataFfi():
-return $default(_that.code,_that.message,_that.data);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.code,_that.message,_that.data);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

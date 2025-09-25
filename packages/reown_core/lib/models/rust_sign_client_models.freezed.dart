@@ -127,10 +127,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _SessionProposal():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -189,10 +186,7 @@ return $default(_that.id,_that.pairingTopic,_that.pairingSymKey,_that.proposerPu
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String pairingTopic,  String pairingSymKey,  String proposerPublicKey,  List<Map<String, dynamic>> relays,  Map<String, Map<String, dynamic>> requiredNamespaces,  Map<String, Map<String, dynamic>>? optionalNamespaces,  Map<String, dynamic> metadata,  Map<String, String>? sessionProperties,  Map<String, String>? scopedProperties,  int? expiry)  $default,) {final _that = this;
 switch (_that) {
 case _SessionProposal():
-return $default(_that.id,_that.pairingTopic,_that.pairingSymKey,_that.proposerPublicKey,_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.metadata,_that.sessionProperties,_that.scopedProperties,_that.expiry);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.id,_that.pairingTopic,_that.pairingSymKey,_that.proposerPublicKey,_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.metadata,_that.sessionProperties,_that.scopedProperties,_that.expiry);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -457,10 +451,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _ApproveResult():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -519,10 +510,7 @@ return $default(_that.sessionSymKey,_that.selfPublicKey);case _:
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String sessionSymKey,  String selfPublicKey)  $default,) {final _that = this;
 switch (_that) {
 case _ApproveResult():
-return $default(_that.sessionSymKey,_that.selfPublicKey);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.sessionSymKey,_that.selfPublicKey);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
