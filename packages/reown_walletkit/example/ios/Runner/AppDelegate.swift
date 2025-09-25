@@ -16,21 +16,22 @@ import Flutter
     override func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         GeneratedPluginRegistrant.register(with: self)
         
-        let controller = window.rootViewController as! FlutterViewController
-        eventsChannel = FlutterEventChannel(name: AppDelegate.EVENTS_CHANNEL, binaryMessenger: controller.binaryMessenger)
-        eventsChannel?.setStreamHandler(linkStreamHandler)
-        
-        methodsChannel = FlutterMethodChannel(name: AppDelegate.METHODS_CHANNEL, binaryMessenger: controller.binaryMessenger)
-        methodsChannel?.setMethodCallHandler({ [weak self] (call: FlutterMethodCall, result: FlutterResult) -> Void in
-            if (call.method == "initialLink") {
-                if let link = self?.initialLink {
-                    let handled = self?.linkStreamHandler.handleLink(link)
-                    if (handled == true) {
-                        self?.initialLink = nil
+        if let window = self.window, let controller = window.rootViewController as? FlutterViewController {
+            eventsChannel = FlutterEventChannel(name: AppDelegate.EVENTS_CHANNEL, binaryMessenger: controller.binaryMessenger)
+            eventsChannel?.setStreamHandler(linkStreamHandler)
+
+            methodsChannel = FlutterMethodChannel(name: AppDelegate.METHODS_CHANNEL, binaryMessenger: controller.binaryMessenger)
+            methodsChannel?.setMethodCallHandler({ [weak self] (call: FlutterMethodCall, result: FlutterResult) -> Void in
+                if (call.method == "initialLink") {
+                    if let link = self?.initialLink {
+                        let handled = self?.linkStreamHandler.handleLink(link)
+                        if (handled == true) {
+                            self?.initialLink = nil
+                        }
                     }
                 }
-            }
-        })
+            })
+        }
         
         // Add your deep link handling logic here
         if let url = launchOptions?[.url] as? URL {

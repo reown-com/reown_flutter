@@ -36,6 +36,15 @@ sealed class PublishOptions with _$PublishOptions {
       _$PublishOptionsFromJson(json);
 }
 
+extension PublishOptionsExtension on PublishOptions {
+  Map<String, dynamic> toMap() => {
+    'ttl': ttl,
+    'tag': tag,
+    'correlationId': correlationId,
+    ...?tvf,
+  };
+}
+
 @freezed
 sealed class SubscribeOptions with _$SubscribeOptions {
   @JsonSerializable(includeIfNull: false)

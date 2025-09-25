@@ -3,11 +3,8 @@ import 'package:reown_core/relay_client/websocket/http_client.dart';
 import 'package:reown_core/relay_client/websocket/i_http_client.dart';
 import 'package:reown_core/store/generic_store.dart';
 import 'package:reown_core/store/i_generic_store.dart';
-import 'package:reown_walletkit/chain_abstraction/chain_abstraction.dart';
-import 'package:reown_walletkit/chain_abstraction/i_chain_abstraction.dart';
 
 import 'package:reown_walletkit/reown_walletkit.dart';
-import 'package:reown_walletkit/version.dart' as wk;
 
 class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   bool _initialized = false;
@@ -51,17 +48,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   @override
   final PairingMetadata metadata;
 
-  /// ---------------------------------
-  /// ⚠️ This client is experimental. Use with caution.
-  /// ---------------------------------
-  // TODO Yttrium is now part of reown_core. We shouldn't need this instance anymore and rather using it from core thrown a mixin
-  @override
-  late final IChainAbstractionClient chainAbstractionClient;
-
-  ReownWalletKit({
-    required this.core,
-    required this.metadata,
-  }) {
+  ReownWalletKit({required this.core, required this.metadata}) {
     reOwnSign = ReownSign(
       core: core,
       metadata: metadata,
@@ -114,15 +101,6 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
         },
       ),
     );
-
-    chainAbstractionClient = ChainAbstractionClient(
-      core: core,
-      pulseMetadata: PulseMetadataCompat(
-        url: metadata.url,
-        sdkVersion: wk.packageVersion,
-        sdkPlatform: ReownCoreUtils.getId(),
-      ),
-    );
   }
 
   @override
@@ -133,16 +111,13 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
 
     await core.start();
     await reOwnSign.init();
-    await chainAbstractionClient.init();
 
     WidgetsBinding.instance.addObserver(this);
     _initialized = true;
   }
 
   @override
-  Future<PairingInfo> pair({
-    required Uri uri,
-  }) async {
+  Future<PairingInfo> pair({required Uri uri}) async {
     try {
       return await reOwnSign.pair(uri: uri);
     } catch (e) {
@@ -217,10 +192,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     required ReownSignError reason,
   }) async {
     try {
-      return await reOwnSign.rejectSession(
-        id: id,
-        reason: reason,
-      );
+      return await reOwnSign.rejectSession(id: id, reason: reason);
     } catch (e) {
       rethrow;
     }
@@ -243,9 +215,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   }
 
   @override
-  Future<void> extendSession({
-    required String topic,
-  }) async {
+  Future<void> extendSession({required String topic}) async {
     try {
       return await reOwnSign.extendSession(topic: topic);
     } catch (e) {
@@ -276,25 +246,16 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     required JsonRpcResponse response,
   }) {
     try {
-      return reOwnSign.respondSessionRequest(
-        topic: topic,
-        response: response,
-      );
+      return reOwnSign.respondSessionRequest(topic: topic, response: response);
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  void registerEventEmitter({
-    required String chainId,
-    required String event,
-  }) {
+  void registerEventEmitter({required String chainId, required String event}) {
     try {
-      return reOwnSign.registerEventEmitter(
-        chainId: chainId,
-        event: event,
-      );
+      return reOwnSign.registerEventEmitter(chainId: chainId, event: event);
     } catch (e) {
       rethrow;
     }
@@ -338,10 +299,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     required ReownSignError reason,
   }) async {
     try {
-      return await reOwnSign.disconnectSession(
-        topic: topic,
-        reason: reason,
-      );
+      return await reOwnSign.disconnectSession(topic: topic, reason: reason);
     } catch (e) {
       rethrow;
     }
@@ -372,9 +330,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     required String pairingTopic,
   }) {
     try {
-      return reOwnSign.getSessionsForPairing(
-        pairingTopic: pairingTopic,
-      );
+      return reOwnSign.getSessionsForPairing(pairingTopic: pairingTopic);
     } catch (e) {
       rethrow;
     }
@@ -412,10 +368,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     required String topic,
     required Redirect? redirect,
   }) {
-    return reOwnSign.redirectToDapp(
-      topic: topic,
-      redirect: redirect,
-    );
+    return reOwnSign.redirectToDapp(topic: topic, redirect: redirect);
   }
 
   @override
@@ -435,10 +388,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     List<Cacao>? auths,
   }) {
     try {
-      return reOwnSign.approveSessionAuthenticate(
-        id: id,
-        auths: auths,
-      );
+      return reOwnSign.approveSessionAuthenticate(id: id, auths: auths);
     } catch (e) {
       rethrow;
     }
@@ -450,10 +400,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     required ReownSignError reason,
   }) {
     try {
-      return reOwnSign.rejectSessionAuthenticate(
-        id: id,
-        reason: reason,
-      );
+      return reOwnSign.rejectSessionAuthenticate(id: id, reason: reason);
     } catch (e) {
       rethrow;
     }
@@ -474,10 +421,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     required CacaoRequestPayload cacaoPayload,
   }) {
     try {
-      return reOwnSign.formatAuthMessage(
-        iss: iss,
-        cacaoPayload: cacaoPayload,
-      );
+      return reOwnSign.formatAuthMessage(iss: iss, cacaoPayload: cacaoPayload);
     } catch (e) {
       rethrow;
     }
@@ -489,10 +433,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     required String projectId,
   }) {
     try {
-      return reOwnSign.validateSignedCacao(
-        cacao: cacao,
-        projectId: projectId,
-      );
+      return reOwnSign.validateSignedCacao(cacao: cacao, projectId: projectId);
     } catch (e) {
       rethrow;
     }

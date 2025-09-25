@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
 import 'package:event/event.dart';
 import 'package:reown_core/models/rust_sign_client_models.dart';
+import 'package:flutter/foundation.dart';
 import 'package:reown_core/models/tvf_data.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:reown_core/reown_core.dart';
@@ -505,7 +505,7 @@ class ReownSign implements IReownSign {
     );
 
     final id = requestId ?? JsonRpcUtils.payloadId();
-    final tvf = _collectRequestTVF(id, sessionRequest);
+    final tvf = collectRequestTVF(id, sessionRequest);
     core.logger.d('[$runtimeType] _collect Request TVF, id: $id, $tvf');
 
     return await core.pairing.sendRequest(
@@ -532,7 +532,7 @@ class ReownSign implements IReownSign {
     _checkInitialized();
     await _isValidResponse(topic, response);
 
-    final tvf = _collectResponseTVF(response);
+    final tvf = collectResponseTVF(response);
     core.logger.d(
       '[$runtimeType] _collect Response TVF, id: ${response.id}, $tvf',
     );
@@ -1250,7 +1250,7 @@ class ReownSign implements IReownSign {
       final request = WcSessionRequestRequest.fromJson(payload.params);
       await _isValidRequest(topic, request.chainId, request.request);
 
-      final tvf = _collectRequestTVF(payload.id, request);
+      final tvf = collectRequestTVF(payload.id, request);
       core.logger.d(
         '[$runtimeType] _collect Request TVF, id: ${payload.id}, $tvf',
       );
@@ -2678,7 +2678,8 @@ class ReownSign implements IReownSign {
   /// ******* TVF *********** ///
   /// collection during request from dapp
   ///
-  TVFData? _collectRequestTVF(int id, WcSessionRequestRequest request) {
+  @visibleForTesting
+  TVFData? collectRequestTVF(int id, WcSessionRequestRequest request) {
     final method = request.request.method;
     // if (!TVFData.tvfRequestMethods.contains(method)) {
     //   return null;
@@ -2689,7 +2690,7 @@ class ReownSign implements IReownSign {
     final rpcMethods = List<String>.from([method]);
     final chainId = request.chainId;
     List<String>? contractAddresses;
-    final contractAddress = _collectContractAddressIfNeeded(chainId, params);
+    final contractAddress = collectContractAddressIfNeeded(chainId, params);
     if (contractAddress != null) {
       contractAddresses = [contractAddress];
     }
@@ -2708,7 +2709,8 @@ class ReownSign implements IReownSign {
     return tvfData;
   }
 
-  String? _collectContractAddressIfNeeded(String chainId, dynamic params) {
+  @visibleForTesting
+  String? collectContractAddressIfNeeded(String chainId, dynamic params) {
     // only EVM request could have `data` parameter for contract call
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     if (namespace == 'eip155') {
@@ -2732,13 +2734,14 @@ class ReownSign implements IReownSign {
   /// ******* TVF *********** ///
   /// collection during response from wallet
   ///
-  TVFData? _collectResponseTVF(JsonRpcResponse payload) {
+  @visibleForTesting
+  TVFData? collectResponseTVF(JsonRpcResponse payload) {
     final id = payload.id;
     if (pendingTVFRequests.containsKey(id)) {
       final chainId = pendingTVFRequests[id]!.chainId!;
       final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
       final tvfData = pendingTVFRequests[id]!.copyWith(
-        txHashes: _collectHashes(namespace, payload),
+        txHashes: collectHashes(namespace, payload),
       );
       pendingTVFRequests.remove(id);
       return tvfData;
@@ -2747,7 +2750,8 @@ class ReownSign implements IReownSign {
     return null;
   }
 
-  List<String>? _collectHashes(String namespace, JsonRpcResponse response) {
+  @visibleForTesting
+  List<String>? collectHashes(String namespace, JsonRpcResponse response) {
     if (response.result == null || response.error != null) {
       return null;
     }
@@ -2762,7 +2766,7 @@ class ReownSign implements IReownSign {
             'signature',
           );
           if (signature != null) {
-            return List<String>.from([...signature]);
+            return <String>[...signature];
           }
           // if contain transactions it's solana_signAllTransactions
           final transactions = ReownCoreUtils.recursiveSearchForMapKey(
@@ -2788,7 +2792,7 @@ class ReownSign implements IReownSign {
             'hash',
           );
           if (txHash != null) {
-            return List<String>.from([txHash]);
+            return <String>[txHash];
           }
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: xrpl, $e');
@@ -2798,7 +2802,7 @@ class ReownSign implements IReownSign {
         try {
           final result = (response.result as List);
           final txHashesList = AlgorandChainUtils.calculateTxIDs(result);
-          return List<String>.from([...txHashesList]);
+          return <String>[...txHashesList];
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: algo, $e');
         }
@@ -2812,7 +2816,7 @@ class ReownSign implements IReownSign {
             'digest',
           );
           if (digest != null) {
-            return List<String>.from([digest]);
+            return <String>[digest];
           }
           // if sui_signTransaction the it'll contain signature and transactionBytes
           final signature = ReownCoreUtils.recursiveSearchForMapKey(
@@ -2828,7 +2832,7 @@ class ReownSign implements IReownSign {
               final computedHash = SuiChainUtils.getSuiDigestFromEncodedTx(
                 transactionBytes,
               );
-              return List<String>.from([computedHash]);
+              return <String>[computedHash.toString()];
             }
           }
         } catch (e) {
@@ -2840,7 +2844,7 @@ class ReownSign implements IReownSign {
           final result = (response.result as Map<String, dynamic>);
           final txID = ReownCoreUtils.recursiveSearchForMapKey(result, 'txID');
           if (txID != null) {
-            return List<String>.from([txID]);
+            return <String>[txID.toString()];
           }
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: tron, $e');
@@ -2854,7 +2858,7 @@ class ReownSign implements IReownSign {
             'transactionId',
           );
           if (transactionId != null) {
-            return List<String>.from([transactionId]);
+            return <String>[transactionId.toString()];
           }
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: hedera, $e');
@@ -2864,7 +2868,7 @@ class ReownSign implements IReownSign {
         try {
           final result = (response.result as Map<String, dynamic>);
           final txid = ReownCoreUtils.recursiveSearchForMapKey(result, 'txid');
-          return <String>[txid];
+          return <String>[txid.toString()];
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: bip122, $e');
         }
@@ -2873,7 +2877,7 @@ class ReownSign implements IReownSign {
         try {
           final result = (response.result as Map<String, dynamic>);
           final txid = ReownCoreUtils.recursiveSearchForMapKey(result, 'txid');
-          return List<String>.from([txid]);
+          return <String>[txid.toString()];
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: stacks, $e');
         }
@@ -2916,7 +2920,7 @@ class ReownSign implements IReownSign {
             );
             final signedHex = hex.encode(extrinsic);
             final hash = PolkadotChainUtils.deriveExtrinsicHash(signedHex);
-            return List<String>.from([hash]);
+            return <String>[hash];
           }
         } catch (e) {
           core.logger.e('[$runtimeType] _tvf data: polkadot, $e');
@@ -2946,15 +2950,39 @@ class ReownSign implements IReownSign {
               authInfoBytesBase64: authInfoBytes,
               signatureBase64: signature['signature'],
             );
-            return List<String>.from([hash]);
+            return <String>[hash];
           }
         } catch (e) {
-          core.logger.e('[$runtimeType] _collectHashes: cosmos, $e');
+          core.logger.e('[$runtimeType] collectHashes: cosmos, $e');
         }
         return null;
       default:
         // default to EVM
-        return <String>[response.result];
+        try {
+          if (response.result is Map) {
+            // wallet_sendCalls 2.0.0
+            final id = ReownCoreUtils.recursiveSearchForMapKey(
+              response.result,
+              'id',
+            );
+            if (id != null) {
+              final transactionHashes =
+                  (ReownCoreUtils.recursiveSearchForMapKey(
+                            response.result,
+                            'transactionHashes',
+                          )
+                          as List)
+                      .map((e) => e.toString())
+                      .toList();
+              return <String>[id.toString(), ...transactionHashes];
+            }
+            return null;
+          }
+          return <String>[response.result.toString()];
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: evm, $e');
+        }
+        return null;
     }
   }
 }
