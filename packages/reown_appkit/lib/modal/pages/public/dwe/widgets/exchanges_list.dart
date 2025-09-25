@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
-import 'package:reown_appkit/modal/services/dwe_service/dwe_service.dart';
+import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
+import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
+import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
+import 'package:reown_appkit/modal/widgets/circular_loader.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/account_list_item.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
@@ -17,7 +20,7 @@ class ExchangesListWidget extends StatefulWidget {
 }
 
 class _ExchangesListWidgetState extends State<ExchangesListWidget> {
-  DWEService get _dweService => GetIt.I<DWEService>();
+  IDWEService get _dweService => GetIt.I<IDWEService>();
 
   @override
   Widget build(BuildContext context) {
@@ -36,32 +39,57 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
             params: GetExchangesParams(page: 1, asset: selectedAsset),
           ),
           builder: (context, snapshot) {
-            return Column(
-              children: (snapshot.data?.exchanges ?? [])
-                  .map(
-                    (exchange) => Padding(
-                      padding: const EdgeInsets.only(top: kPadding8),
-                      child: AccountListItem(
-                        iconWidget: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                          child: RoundedIcon(
-                            borderRadius: radiuses.isSquare() ? 0.0 : null,
-                            imageUrl: exchange.imageUrl,
-                            assetColor: themeColors.background100,
-                          ),
-                        ),
-                        title: exchange.name,
-                        titleStyle: themeData.textStyles.paragraph500.copyWith(
-                          color: themeColors.foreground100,
-                        ),
-                        onTap: () {
-                          widget.onSelect.call(exchange);
-                        },
+            if (!snapshot.hasData && !snapshot.hasError) {
+              return CircularLoader();
+            }
+            if (snapshot.hasError) {
+              GetIt.I<IToastService>().show(
+                ToastMessage(
+                  type: ToastType.error,
+                  text: 'Unable to get exchanges',
+                ),
+              );
+            }
+            final exchanges = snapshot.data?.exchanges ?? [];
+            return exchanges.isEmpty
+                ? Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      'No exchanges available at the moment',
+                      style: themeData.textStyles.paragraph400.copyWith(
+                        color: themeColors.foreground100,
                       ),
                     ),
                   )
-                  .toList(),
-            );
+                : Column(
+                    children: exchanges
+                        .map(
+                          (exchange) => Padding(
+                            padding: const EdgeInsets.only(top: kPadding8),
+                            child: AccountListItem(
+                              iconWidget: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 4.0,
+                                ),
+                                child: RoundedIcon(
+                                  borderRadius: radiuses.isSquare()
+                                      ? 0.0
+                                      : null,
+                                  imageUrl: exchange.imageUrl,
+                                  assetColor: themeColors.background100,
+                                ),
+                              ),
+                              title: exchange.name,
+                              titleStyle: themeData.textStyles.paragraph500
+                                  .copyWith(color: themeColors.foreground100),
+                              onTap: () {
+                                widget.onSelect.call(exchange);
+                              },
+                            ),
+                          ),
+                        )
+                        .toList(),
+                  );
           },
         );
       },

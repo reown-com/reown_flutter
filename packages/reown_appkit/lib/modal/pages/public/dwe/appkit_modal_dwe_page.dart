@@ -6,7 +6,7 @@ import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/pages/public/dwe/widgets/amount_selector.dart';
 import 'package:reown_appkit/modal/pages/public/dwe/widgets/asset_button.dart';
 import 'package:reown_appkit/modal/pages/public/dwe/widgets/exchanges_list.dart';
-import 'package:reown_appkit/modal/services/dwe_service/dwe_service.dart';
+import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
 import 'package:reown_appkit/reown_appkit.dart';
@@ -26,7 +26,7 @@ class ReownAppKitModalDepositScreen extends StatefulWidget {
 
 class _ReownAppKitModalDepositScreenState
     extends State<ReownAppKitModalDepositScreen> {
-  DWEService get _dweService => GetIt.I<DWEService>();
+  IDWEService get _dweService => GetIt.I<IDWEService>();
 
   @override
   void initState() {

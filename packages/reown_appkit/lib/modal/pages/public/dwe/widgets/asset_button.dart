@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/pages/public/dwe/widgets/asset_selector_page.dart';
-import 'package:reown_appkit/modal/services/dwe_service/dwe_service.dart';
+import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
@@ -26,7 +26,7 @@ class AssetsButton extends StatefulWidget {
 
 class _AssetsButtonState extends State<AssetsButton> {
   IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
-  DWEService get _dweService => GetIt.I<DWEService>();
+  IDWEService get _dweService => GetIt.I<IDWEService>();
 
   @override
   Widget build(BuildContext context) {

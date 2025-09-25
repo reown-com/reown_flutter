@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
-import 'package:reown_appkit/modal/services/dwe_service/dwe_service.dart';
+import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -11,7 +11,7 @@ class AmountSelector extends StatefulWidget {
 }
 
 class _AmountSelectorState extends State<AmountSelector> {
-  DWEService get _dweService => GetIt.I<DWEService>();
+  IDWEService get _dweService => GetIt.I<IDWEService>();
 
   @override
   Widget build(BuildContext context) {

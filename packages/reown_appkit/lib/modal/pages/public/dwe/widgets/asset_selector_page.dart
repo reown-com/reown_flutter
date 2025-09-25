@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
-import 'package:reown_appkit/modal/services/dwe_service/dwe_service.dart';
+import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/account_list_item.dart';
@@ -13,8 +13,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 
 class AssetSelectorPage extends StatelessWidget {
   IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
-
-  DWEService get _dweService => GetIt.I<DWEService>();
+  IDWEService get _dweService => GetIt.I<IDWEService>();
 
   @override
   Widget build(BuildContext context) {

@@ -157,7 +157,7 @@ class _DWEHomePageState extends State<DWEHomePage> {
                   context: context,
                 ),
                 Visibility(
-                  visible: true, //_appKitModal!.isConnected,
+                  visible: _appKitModal!.isConnected,
                   child: Column(
                     children: [
                       AppKitModalNetworkSelectButton(
@@ -173,10 +173,7 @@ class _DWEHomePageState extends State<DWEHomePage> {
                           size: BaseButtonSize.regular,
                           onTap: () {
                             _appKitModal!.openModalView(
-                              ReownAppKitModalDepositScreen(
-                                recipient:
-                                    '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
-                              ),
+                              ReownAppKitModalDepositScreen(),
                             );
                           },
                         ),
