@@ -610,7 +610,7 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
         if (!mounted) return;
         setState(() => _balance = value);
       }).catchError((error) {
-        debugPrint(error);
+        debugPrint(error.toString());
       });
     } catch (e) {
       debugPrint(e.toString());

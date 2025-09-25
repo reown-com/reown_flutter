@@ -20,9 +20,10 @@ class SignClient implements ISignClient {
   ) onSessionRequest;
 
   @override
-  Future<bool> init({required String projectId}) async {
+  Future<bool> init({required String projectId, required String key}) async {
     final result = await _methodChannelSign.init(
       projectId: projectId,
+      key: key,
     );
     _initialized = result;
     return _initialized;
@@ -50,13 +51,6 @@ class SignClient implements ISignClient {
   @override
   Future<String> generateKey() async {
     return await _methodChannelSign.generateKey();
-  }
-
-  @override
-  Future<bool> setKey({required String key}) async {
-    return await _methodChannelSign.setKey(
-      key: key,
-    );
   }
 
   @override

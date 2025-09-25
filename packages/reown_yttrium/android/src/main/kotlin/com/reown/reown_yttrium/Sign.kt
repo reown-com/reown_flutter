@@ -8,20 +8,22 @@ import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import uniffi.yttrium.PairingFfi
 import uniffi.yttrium.SessionFfi
 import uniffi.yttrium.SessionProposalFfi
 import uniffi.yttrium.SessionRequestJsonRpcFfi
 import uniffi.yttrium.SessionRequestJsonRpcResponseFfi
-import uniffi.yttrium.SessionStoreFfi
+import uniffi.yttrium.SettleNamespace
 import uniffi.yttrium.SignClient
 import uniffi.yttrium.SignListener
-import uniffi.yttrium.errorDataFfiFromJson
+import uniffi.yttrium.StorageFfi
+import uniffi.yttrium.Topic
 import uniffi.yttrium.metadataFromJson
+import uniffi.yttrium.rejectReasonFromJson
 import uniffi.yttrium.sessionFfiToJson
 import uniffi.yttrium.sessionProposalFfiFromJson
 import uniffi.yttrium.sessionProposalFfiToJson
 import uniffi.yttrium.sessionRequestJsonRpcErrorResponseFfiFromJson
-import uniffi.yttrium.sessionRequestJsonRpcFfiFromJson
 import uniffi.yttrium.sessionRequestJsonRpcFfiToJson
 import uniffi.yttrium.sessionRequestJsonRpcResultResponseFfiFromJson
 import kotlin.collections.get
@@ -41,15 +43,16 @@ class Sign {
         fun initialize(params: Any?, result: MethodChannel.Result) {
             val dict = params as? Map<*, *> ?: return result.error("Yttrium.Sign.initialize", "Invalid parameters: not a map", null)
             val projectId = dict["projectId"] as? String ?: return result.error("Yttrium.Sign.initialize", "Invalid projectId", null)
-            val key = dict["key"] as? String ?: return result.error("Yttrium.Sign.setKey", "Invalid parameters: not a String", null)
+            val key = dict["key"] as? String ?: return result.error("Yttrium.Sign.initialize", "Invalid key", null)
 
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     signClient = SignClient(
                         projectId = projectId,
                         key = key.hexStringToByteArray(),
-                        sessionStore = SessionStoreFfi(), // TODO
+                        sessionStore = SignStorage(), // TODO
                     )
+                    signClient.start()
                     signClient.registerSignListener(signListenerHandler)
                     Log.d("🤖 Yttrium.Sign", "initialize success")
                     result.success(true)
@@ -58,21 +61,6 @@ class Sign {
                 }
             }
         }
-
-//        fun setKey(params: Any?, result: MethodChannel.Result) {
-//            check(::signClient.isInitialized) { "Initialize Yttrium.Sign.SignClient before using it." }
-//
-//            val key = params as? String ?: return result.error("Yttrium.Sign.setKey", "Invalid parameters: not a String", null)
-//
-//            CoroutineScope(Dispatchers.IO).launch {
-//                try {
-//                    signClient.setKey(key = key.hexStringToByteArray())
-//                    result.success(true)
-//                } catch (e: Exception) {
-//                    result.error("Yttrium.Sign.setKey", e.message, null)
-//                }
-//            }
-//        }
 
         fun generateKey(result: MethodChannel.Result) {
             check(::signClient.isInitialized) { "Initialize Yttrium.Sign.SignClient before using it." }
@@ -135,7 +123,7 @@ class Sign {
                 try {
                     signClient.reject(
                         proposal = sessionProposalFfiFromJson(proposal),
-                        reason = errorDataFfiFromJson(reason),
+                        reason = rejectReasonFromJson(reason),
                         );
                     result.success(true)
                 } catch (e: Exception) {
@@ -224,14 +212,82 @@ class SignListenerHandler : SignListener, StreamHandler {
     }
 
     override fun onSessionRequest(topic: String, sessionRequest: SessionRequestJsonRpcFfi) {
-        android.os.Handler(android.os.Looper.getMainLooper()).post {  }
-        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
-            Log.d("🤖 Yttrium.Sign", "onSessionRequest: $eventChannelSink")
-            val sessionRequestEvent = mapOf(
-                "topic" to topic,
-                "sessionRequest" to sessionRequestJsonRpcFfiToJson(sessionRequest),
-            )
-            eventChannelSink?.success(sessionRequestEvent)
-        }, 200)
+        Log.d("🤖 Yttrium.Sign", "onSessionRequest: $eventChannelSink")
+        val sessionRequestEvent = mapOf(
+            "topic" to topic,
+            "sessionRequest" to sessionRequestJsonRpcFfiToJson(sessionRequest),
+        )
+        eventChannelSink?.success(sessionRequestEvent)
+    }
+
+    override fun onSessionConnect(id: ULong, topic: String) {
+        Log.d("🤖 Yttrium.Sign", "onSessionConnect: $id, $topic")
+    }
+
+    override fun onSessionDisconnect(id: ULong, topic: String) {
+        Log.d("🤖 Yttrium.Sign", "onSessionDisconnect: $id, $topic")
+    }
+
+    override fun onSessionEvent(topic: String, name: String, data: String, chainId: String) {
+        Log.d("🤖 Yttrium.Sign", "onSessionEvent: $topic, $name, $data, $chainId")
+    }
+
+    override fun onSessionExtend(id: ULong, topic: String) {
+        Log.d("🤖 Yttrium.Sign", "onSessionExtend: $id, $topic")
+    }
+
+    override fun onSessionReject(id: ULong, topic: String) {
+        Log.d("🤖 Yttrium.Sign", "onSessionReject: $id, $topic")
+    }
+
+    override fun onSessionRequestResponse(id: ULong, topic: String, response: SessionRequestJsonRpcResponseFfi) {
+        Log.d("🤖 Yttrium.Sign", "onSessionRequestResponse: $id, $topic, $response")
+    }
+
+    override fun onSessionUpdate(id: ULong, topic: String, namespaces: Map<String, SettleNamespace>) {
+        Log.d("🤖 Yttrium.Sign", "onSessionUpdate: $id, $topic, $namespaces")
+    }
+}
+
+internal class SignStorage : StorageFfi {
+    override fun addSession(session: SessionFfi) {
+        Log.d("🤖 Yttrium.Sign", "addSession: $session")
+    }
+
+    override fun deleteSession(topic: String) {
+        Log.d("🤖 Yttrium.Sign", "deleteSession: $topic")
+    }
+
+    override fun getAllSessions(): List<SessionFfi> {
+        Log.d("🤖 Yttrium.Sign", "getAllSessions")
+        return arrayListOf()
+    }
+
+    override fun getAllTopics(): List<Topic> {
+        Log.d("🤖 Yttrium.Sign", "getAllTopics")
+        return arrayListOf()
+    }
+
+    override fun getDecryptionKeyForTopic(topic: String): ByteArray? {
+        Log.d("🤖 Yttrium.Sign", "getDecryptionKeyForTopic: $topic")
+        return null
+    }
+
+    override fun getPairing(topic: String, rpcId: ULong): PairingFfi? {
+        Log.d("🤖 Yttrium.Sign", "getPairing: $topic, $rpcId")
+        return null
+    }
+
+    override fun getSession(topic: String): SessionFfi? {
+        Log.d("🤖 Yttrium.Sign", "getSession: $topic")
+        return null
+    }
+
+    override fun savePairing(topic: String, rpcId: ULong, symKey: ByteArray, selfKey: ByteArray) {
+        Log.d("🤖 Yttrium.Sign", "savePairing: $topic, $rpcId, $symKey, $selfKey")
+    }
+
+    override fun savePartialSession(topic: String, symKey: ByteArray) {
+        Log.d("🤖 Yttrium.Sign", "savePartialSession: $topic, $symKey")
     }
 }

@@ -10,27 +10,16 @@ class MethodChannelSign {
 
   Future<bool> init({
     required String projectId,
+    required String key,
   }) async {
     try {
       final result = await _methodChannel.invokeMethod<bool>('sign_init', {
         'projectId': projectId,
+        'key': key,
       });
       return result!;
     } on PlatformException catch (e) {
       debugPrint('[$runtimeType] sign_init $e');
-      rethrow;
-    }
-  }
-
-  Future<bool> setKey({
-    required String key,
-  }) async {
-    try {
-      final result =
-          await _methodChannel.invokeMethod<bool>('sign_setKey', key);
-      return result!;
-    } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] sign_setKey $e');
       rethrow;
     }
   }
