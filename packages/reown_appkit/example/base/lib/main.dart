@@ -124,7 +124,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   primary: ReownAppKitModalThemeData().lightColors.accent100,
                 ),
         ),
-        home: const MyHomePage(),
+        home: const DWEHomePage(),
       ),
     );
   }
@@ -228,7 +228,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     _appKit = ReownAppKit(
       core: ReownCore(
-        projectId: DartDefines.projectId,
+        projectId: '876c626bd43841c04f50fc96ea1e31a2',
         logLevel: LogLevel.all,
       ),
       metadata: _pairingMetadata(linkModeEnabled),
@@ -551,6 +551,8 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
+    print(
+        '_appKit!.core.relayClient.isConnected ${_appKit!.core.relayClient.isConnected}');
     return Scaffold(
       appBar: AppBar(
         title: Text(_pageDatas[_selectedIndex].title),
@@ -766,5 +768,96 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       duration: Duration(seconds: 2),
     ));
+  }
+}
+
+class DWEHomePage extends StatefulWidget {
+  const DWEHomePage({super.key});
+
+  @override
+  State<DWEHomePage> createState() => _DWEHomePageState();
+}
+
+class _DWEHomePageState extends State<DWEHomePage> {
+  ReownAppKitModal? _appKitModal;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeService();
+  }
+
+  Future<void> _initializeService() async {
+    _appKitModal = ReownAppKitModal(
+      context: context,
+      projectId: '876c626bd43841c04f50fc96ea1e31a2',
+      logLevel: LogLevel.all,
+      metadata: PairingMetadata(
+        name: 'DwE Demo',
+        description: 'Deposit With Exchange Demo',
+        // url: _universalLink(),
+        icons: [
+          'https://avatars.githubusercontent.com/u/37784886?s=200&v=4',
+        ],
+        // redirect: _constructRedirect(linkModeEnabled),
+      ),
+    );
+    _appKitModal!.onModalConnect.subscribe(_eventHandler);
+    _appKitModal!.onModalDisconnect.subscribe(_eventHandler);
+    await _appKitModal!.init();
+    setState(() {});
+  }
+
+  void _eventHandler(dynamic event) {
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('DwE Demo'),
+      ),
+      body: Center(
+        child: _appKitModal?.status.isInitialized == true
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  AppKitModalConnectButton(
+                    appKit: _appKitModal!,
+                    context: context,
+                  ),
+                  Visibility(
+                    visible: _appKitModal!.isConnected,
+                    child: Column(
+                      children: [
+                        AppKitModalNetworkSelectButton(
+                          appKit: _appKitModal!,
+                          context: context,
+                          closeAfterPick: true,
+                        ),
+                        AppKitModalAccountButton(
+                          appKitModal: _appKitModal!,
+                          context: context,
+                          custom: ElevatedButton(
+                            onPressed: () {
+                              _appKitModal!
+                                  .openModalView(ReownAppKitModalDepositScreen(
+                                recipient:
+                                    '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
+                              ));
+                            },
+                            child: Text('Deposit with Exchange'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              )
+            : CircularProgressIndicator(),
+      ),
+    );
   }
 }

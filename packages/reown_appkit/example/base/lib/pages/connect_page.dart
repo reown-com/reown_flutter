@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:reown_appkit/modal/widgets/buttons/primary_button.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
@@ -139,7 +138,10 @@ class ConnectPageState extends State<ConnectPage> {
                       children: [
                         AppKitModalBalanceButton(
                           appKitModal: widget.appKitModal,
-                          onTap: widget.appKitModal.openNetworksView,
+                          onTap: () {
+                            widget.appKitModal
+                                .openModalView(ReownAppKitModalDepositScreen());
+                          },
                         ),
                         const SizedBox.square(dimension: 8.0),
                         AppKitModalAddressButton(

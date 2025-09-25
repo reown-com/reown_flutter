@@ -48,13 +48,16 @@ class RoundedIcon extends StatelessWidget {
           ? ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(radius)),
               child: CachedNetworkImage(
-                imageUrl: imageUrl!,
+                imageUrl: Uri.parse(imageUrl!)
+                    .replace(
+                      queryParameters: CoreUtils.getImageQueryParams(projectId),
+                    )
+                    .toString(),
                 width: size,
                 height: size,
                 fit: BoxFit.fill,
                 fadeInDuration: const Duration(milliseconds: 500),
                 fadeOutDuration: const Duration(milliseconds: 500),
-                httpHeaders: CoreUtils.getAPIHeaders(projectId),
                 errorWidget: (context, url, error) => ColoredBox(
                   color: themeColors.grayGlass005,
                 ),
