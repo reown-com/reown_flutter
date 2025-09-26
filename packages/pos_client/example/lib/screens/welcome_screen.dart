@@ -175,7 +175,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       const SizedBox(height: 20),
                       // Version Information
                       const Text(
-                        'pos_client v$packageVersion, preview - ref: fb2056aa669855b23150920161cd5e1c267d4922',
+                        'pos_client v$packageVersion, ref: 4686f69d5c03d9508c733191d94b5874df52df3d',
                         style: TextStyle(
                           color: Colors.grey,
                           fontSize: 14,
