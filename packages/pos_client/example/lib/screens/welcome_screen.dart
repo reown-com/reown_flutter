@@ -73,6 +73,9 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
             'Please set wallet addresses for different networks to receive payments before starting.',
         buttonText: 'Set Addresses',
         onSuccess: _initPosAndNavigate,
+        onCancel: () {
+          setState(() => _initializing = false);
+        },
       ),
     );
   }
@@ -172,7 +175,7 @@ class _WelcomeScreenState extends ConsumerState<WelcomeScreen> {
                       const SizedBox(height: 20),
                       // Version Information
                       const Text(
-                        'v$packageVersion, preview - ref: fb2056aa669855b23150920161cd5e1c267d4922',
+                        'pos_client v$packageVersion, preview - ref: fb2056aa669855b23150920161cd5e1c267d4922',
                         style: TextStyle(
                           color: Colors.grey,
                           fontSize: 14,

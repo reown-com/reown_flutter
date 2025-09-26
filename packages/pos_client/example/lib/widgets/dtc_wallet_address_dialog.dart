@@ -10,6 +10,7 @@ class DtcWalletAddressDialog extends ConsumerStatefulWidget {
   final String message;
   final String buttonText;
   final VoidCallback? onSuccess;
+  final VoidCallback? onCancel;
 
   const DtcWalletAddressDialog({
     super.key,
@@ -20,6 +21,7 @@ class DtcWalletAddressDialog extends ConsumerStatefulWidget {
     this.message = 'Enter wallet addresses for different networks:',
     this.buttonText = 'Save',
     this.onSuccess,
+    this.onCancel,
   });
 
   @override
@@ -103,8 +105,11 @@ class _DtcWalletAddressDialogState extends ConsumerState<DtcWalletAddressDialog>
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context),
           child: const Text('Cancel'),
+          onPressed: () {
+            Navigator.pop(context);
+            widget.onCancel?.call();
+          },
         ),
         ElevatedButton(
           onPressed: () async {
