@@ -16,7 +16,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   bool _isDarkMode = false;
-  bool _isCustomTheme = false;
+  bool _isCustomTheme = true;
 
   @override
   void initState() {
@@ -52,7 +52,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return ReownAppKitModalTheme(
-      isDarkMode: _isDarkMode,
+      isDarkMode: true,
       themeData: _isCustomTheme
           ? ReownAppKitModalThemeData(
               darkColors: ReownAppKitModalColors.darkMode.copyWith(
@@ -145,7 +145,11 @@ class _DWEHomePageState extends State<DWEHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('DwE Demo')),
+      appBar: AppBar(
+        title: Text('DwE Demo', style: TextStyle(color: Colors.white)),
+        backgroundColor: const Color.fromARGB(255, 34, 34, 34),
+      ),
+      backgroundColor: const Color.fromARGB(255, 34, 34, 34),
       body: _appKitModal?.status.isInitialized == true
           ? Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -183,7 +187,7 @@ class _DWEHomePageState extends State<DWEHomePage> {
                 ),
               ],
             )
-          : CircularProgressIndicator(),
+          : Center(child: CircularProgressIndicator()),
     );
   }
 }
