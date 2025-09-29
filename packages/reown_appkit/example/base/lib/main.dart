@@ -74,6 +74,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   bool _isDarkMode = false;
+  bool _isCustomTheme = false;
 
   @override
   void initState() {
@@ -110,6 +111,39 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return ReownAppKitModalTheme(
       isDarkMode: _isDarkMode,
+      themeData: _isCustomTheme
+          ? ReownAppKitModalThemeData(
+              darkColors: ReownAppKitModalColors.darkMode.copyWith(
+                accent100: const Color.fromARGB(255, 55, 186, 149),
+                accent090: const Color.fromARGB(255, 55, 186, 149),
+                accent080: const Color.fromARGB(255, 55, 186, 149),
+                grayGlass100: const Color.fromARGB(255, 55, 186, 149),
+                // Main Modal's background color
+                background125: const Color.fromARGB(255, 0, 0, 0),
+                // Main Modal's text
+                foreground100: const Color.fromARGB(255, 55, 186, 149),
+                // Secondary Modal's text
+                foreground125: const Color.fromARGB(255, 255, 255, 255),
+                foreground200: const Color.fromARGB(255, 255, 255, 255),
+                foreground300: const Color.fromARGB(255, 255, 255, 255),
+              ),
+              lightColors: ReownAppKitModalColors.darkMode.copyWith(
+                accent100: const Color.fromARGB(255, 55, 186, 149),
+                accent090: const Color.fromARGB(255, 55, 186, 149),
+                accent080: const Color.fromARGB(255, 55, 186, 149),
+                grayGlass100: const Color.fromARGB(255, 55, 186, 149),
+                // Main Modal's background color
+                background125: const Color.fromARGB(255, 255, 255, 255),
+                // Main Modal's text
+                foreground100: const Color.fromARGB(255, 55, 186, 149),
+                // Secondary Modal's text
+                foreground125: const Color.fromARGB(255, 0, 0, 0),
+                foreground200: const Color.fromARGB(255, 0, 0, 0),
+                foreground300: const Color.fromARGB(255, 0, 0, 0),
+              ),
+              radiuses: ReownAppKitModalRadiuses.square,
+            )
+          : null,
       child: MaterialApp(
         navigatorObservers: [
           SentryNavigatorObserver(),
@@ -124,14 +158,26 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   primary: ReownAppKitModalThemeData().lightColors.accent100,
                 ),
         ),
-        home: const MyHomePage(),
+        home: MyHomePage(
+            isCustomTheme: _isCustomTheme,
+            toggleTheme: () {
+              setState(() {
+                _isCustomTheme = !_isCustomTheme;
+              });
+            }),
       ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+  const MyHomePage({
+    super.key,
+    required this.isCustomTheme,
+    required this.toggleTheme,
+  });
+  final VoidCallback toggleTheme;
+  final bool isCustomTheme;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -551,12 +597,20 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
 
-    print(
-        '_appKit!.core.relayClient.isConnected ${_appKit!.core.relayClient.isConnected}');
     return Scaffold(
       appBar: AppBar(
         title: Text(_pageDatas[_selectedIndex].title),
         actions: [
+          const Text('Themed '),
+          Transform.scale(
+            scale: 0.7,
+            alignment: Alignment.centerLeft,
+            child: Switch(
+                value: widget.isCustomTheme,
+                onChanged: (_) {
+                  widget.toggleTheme.call();
+                }),
+          ),
           const Text('Relay '),
           CircleAvatar(
             radius: 6.0,

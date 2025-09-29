@@ -79,8 +79,9 @@ class ConnectPageState extends State<ConnectPage> {
   @override
   Widget build(BuildContext context) {
     // Build the list of chain buttons, clear if the textnet changed
-    final isDarkMode =
-        ReownAppKitModalTheme.maybeOf(context)?.isDarkMode ?? false;
+    final modalTheme = ReownAppKitModalTheme.maybeOf(context);
+    final isDarkMode = modalTheme?.isDarkMode ?? false;
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return RefreshIndicator(
       onRefresh: _refreshData,
       child: Stack(
@@ -89,9 +90,9 @@ class ConnectPageState extends State<ConnectPage> {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Center(
-                  child: Image.asset('assets/appkit-logo.png', width: 200.0),
-                ),
+                // Center(
+                //   child: Image.asset('assets/appkit-logo.png', width: 200.0),
+                // ),
                 Container(
                   color: isDarkMode
                       ? Colors.black.withValues(alpha: 0.8)
@@ -129,14 +130,17 @@ class ConnectPageState extends State<ConnectPage> {
                 children: [
                   PrimaryButton(
                     buttonSize: BaseButtonSize.regular,
-                    onTap: () {
-                      widget.appKitModal
-                          .openModalView(ReownAppKitModalDepositScreen());
-                    },
+                    onTap: widget.appKitModal.isConnected
+                        ? () {
+                            widget.appKitModal
+                                .openModalView(ReownAppKitModalDepositScreen());
+                          }
+                        : null,
                     title: 'Deposit with Exchange',
                   ),
                 ],
               ),
+              Divider(color: themeColors.grayGlass010),
               const SizedBox(height: StyleConstants.linear8),
               Visibility(
                 visible: widget.appKitModal.isConnected,

@@ -1,3 +1,7 @@
+## 1.7.0
+
+- NEW FEATURE: Deposit From Exchange
+
 ## 1.6.1
 
 - Bug fix #230

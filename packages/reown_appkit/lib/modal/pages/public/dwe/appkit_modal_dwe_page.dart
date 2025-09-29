@@ -95,7 +95,31 @@ class _ReownAppKitModalDepositScreenState
               ),
             ),
             const SizedBox.square(dimension: kPadding12),
-            _isLooping ? CircularProgressIndicator() : AmountSelector(),
+            _isLooping
+                ? Column(
+                    children: [
+                      CircularProgressIndicator(
+                        color: themeColors.foreground200,
+                      ),
+                      const SizedBox.square(dimension: kPadding16),
+                      Text(
+                        'Waiting confirmation..',
+                        style: themeData.textStyles.small400.copyWith(
+                          color: themeColors.foreground300,
+                        ),
+                      ),
+                      const SizedBox.square(dimension: kPadding16),
+                      SecondaryButton(
+                        title: 'Abort',
+                        onTap: () {
+                          setState(() {
+                            _isLooping = false;
+                          });
+                        },
+                      ),
+                    ],
+                  )
+                : AmountSelector(),
             const SizedBox.square(dimension: kPadding16),
             Divider(color: themeColors.grayGlass005, height: 0.0),
             const SizedBox.square(dimension: kPadding12),
@@ -174,7 +198,7 @@ class _ReownAppKitModalDepositScreenState
           } else {
             // Max attempts reached, complete with timeout status
             _isLooping = false;
-            completer.call(response);
+            completer.call(GetExchangeDepositStatusResult(status: 'TIMEOUT'));
             break;
           }
         } else {

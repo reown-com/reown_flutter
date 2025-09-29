@@ -85,6 +85,13 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
                               onTap: () {
                                 widget.onSelect.call(exchange);
                               },
+                              // trailing: SizedBox.square(
+                              //   dimension: 15.0,
+                              //   child: CircularProgressIndicator(
+                              //     strokeWidth: 1.5,
+                              //     color: themeColors.foreground200,
+                              //   ),
+                              // )
                             ),
                           ),
                         )
