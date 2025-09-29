@@ -19,7 +19,6 @@ import Flutter
         if let window = self.window, let controller = window.rootViewController as? FlutterViewController {
             eventsChannel = FlutterEventChannel(name: AppDelegate.EVENTS_CHANNEL, binaryMessenger: controller.binaryMessenger)
             eventsChannel?.setStreamHandler(linkStreamHandler)
-            
             methodsChannel = FlutterMethodChannel(name: AppDelegate.METHODS_CHANNEL, binaryMessenger: controller.binaryMessenger)
             methodsChannel?.setMethodCallHandler({ [weak self] (call: FlutterMethodCall, result: FlutterResult) -> Void in
                 if (call.method == "initialLink") {
