@@ -1,0 +1,28 @@
+name: example
+description: "A new Flutter project."
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  collection: ^1.19.1
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.6.1
+  cupertino_icons: ^1.0.8
+  shared_preferences: ^2.2.2
+  pos_client:
+    path: ../
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true

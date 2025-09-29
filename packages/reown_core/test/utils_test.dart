@@ -196,18 +196,29 @@ void main() {
       final jsonRPCResponse = {
         'jsonrpc': '2.0',
         'id': 1,
+        'result': {'txid': 'stack_tx_id', 'transaction': 'raw_tx_hex'},
+      };
+      final response = JsonRpcResponse.fromJson(jsonRPCResponse);
+      final result = (response.result as Map<String, dynamic>);
+      final txid = ReownCoreUtils.recursiveSearchForMapKey(result, 'txid');
+      expect(txid, 'stack_tx_id');
+    });
+
+    test('should return null', () {
+      final jsonRPCResponse = {
+        'jsonrpc': '2.0',
+        'id': 1,
         'result': {
-          'txid': 'stack_tx_id',
           'transaction': 'raw_tx_hex',
         },
       };
       final response = JsonRpcResponse.fromJson(jsonRPCResponse);
       final result = (response.result as Map<String, dynamic>);
-      final txid = ReownCoreUtils.recursiveSearchForMapKey(
+      final String? txid = ReownCoreUtils.recursiveSearchForMapKey(
         result,
         'txid',
       );
-      expect(txid, 'stack_tx_id');
+      expect(txid, null);
     });
   });
 }
