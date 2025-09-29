@@ -1,0 +1,41 @@
+PODS:
+  - Flutter (1.0.0)
+  - flutter_secure_storage (6.0.0):
+    - Flutter
+  - MTBBarcodeScanner (5.0.11)
+  - qr_bar_code_scanner_dialog (0.0.1):
+    - Flutter
+  - qr_code_scanner (0.2.0):
+    - Flutter
+    - MTBBarcodeScanner
+
+DEPENDENCIES:
+  - Flutter (from `Flutter`)
+  - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - qr_bar_code_scanner_dialog (from `.symlinks/plugins/qr_bar_code_scanner_dialog/ios`)
+  - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
+
+SPEC REPOS:
+  trunk:
+    - MTBBarcodeScanner
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: Flutter
+  flutter_secure_storage:
+    :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  qr_bar_code_scanner_dialog:
+    :path: ".symlinks/plugins/qr_bar_code_scanner_dialog/ios"
+  qr_code_scanner:
+    :path: ".symlinks/plugins/qr_code_scanner/ios"
+
+SPEC CHECKSUMS:
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
+  MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
+  qr_bar_code_scanner_dialog: a4cb7ad7201cbf8b888f3e6e58972b611ac43b28
+  qr_code_scanner: d77f94ecc9abf96d9b9b8fc04ef13f611e5a147a
+
+PODFILE CHECKSUM: 0772a2bd8cd4c7aaeb2576ddfaf6b03be722593b
+
+COCOAPODS: 1.16.2
