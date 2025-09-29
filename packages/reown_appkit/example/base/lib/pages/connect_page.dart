@@ -124,6 +124,19 @@ class ConnectPageState extends State<ConnectPage> {
                   ),
                 ],
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  PrimaryButton(
+                    buttonSize: BaseButtonSize.regular,
+                    onTap: () {
+                      widget.appKitModal
+                          .openModalView(ReownAppKitModalDepositScreen());
+                    },
+                    title: 'Deposit with Exchange',
+                  ),
+                ],
+              ),
               const SizedBox(height: StyleConstants.linear8),
               Visibility(
                 visible: widget.appKitModal.isConnected,
