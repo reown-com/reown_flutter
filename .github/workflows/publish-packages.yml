@@ -4,53 +4,61 @@ on:
   workflow_dispatch: # Allows manual triggering
     inputs:
       core:
-        description: 'Publish Core?'
+        description: "Publish Core?"
         required: false
-        default: 'false'
+        default: "false"
         type: choice
         options:
-          - 'true'
-          - 'false'
+          - "true"
+          - "false"
       sign:
-        description: 'Publish Sign?'
+        description: "Publish Sign?"
         required: false
-        default: 'false'
+        default: "false"
         type: choice
         options:
-          - 'true'
-          - 'false'
+          - "true"
+          - "false"
       appkit:
-        description: 'Publish AppKit?'
+        description: "Publish AppKit?"
         required: false
-        default: 'false'
+        default: "false"
         type: choice
         options:
-          - 'true'
-          - 'false'
+          - "true"
+          - "false"
       walletkit:
-        description: 'Publish WalletKit?'
+        description: "Publish WalletKit?"
         required: false
-        default: 'false'
+        default: "false"
         type: choice
         options:
-          - 'true'
-          - 'false'
+          - "true"
+          - "false"
       cli:
-        description: 'Publish CLI?'
+        description: "Publish CLI?"
         required: false
-        default: 'false'
+        default: "false"
         type: choice
         options:
-          - 'true'
-          - 'false'
+          - "true"
+          - "false"
       yttrium:
-        description: 'Publish Yttrium?'
+        description: "Publish Yttrium?"
         required: false
-        default: 'false'
+        default: "false"
         type: choice
         options:
-          - 'true'
-          - 'false'
+          - "true"
+          - "false"
+      pos:
+        description: "Publish POS?"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "true"
+          - "false"
 
 permissions:
   contents: write # Required to commit pubspec.yaml changes back to the repo
@@ -75,13 +83,13 @@ jobs:
         run: |
           BRANCH_NAME="publish_workflow_${{ github.run_number }}"
           echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
-          
+
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          
+
           git checkout -b $BRANCH_NAME
           git push -u https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} $BRANCH_NAME
-          
+
           echo "Created and pushed branch: $BRANCH_NAME"
 
   publish-core:
@@ -108,7 +116,7 @@ jobs:
         if: github.event.inputs.core == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.35.1'
+          flutter-version: "3.35.1"
 
       - name: Install yq
         if: github.event.inputs.core == 'true'
@@ -132,7 +140,7 @@ jobs:
         run: |
           chmod +x generate_files.sh
           sh ./generate_files.sh
-      
+
       - name: Check Publish Warnings
         if: github.event.inputs.core == 'true'
         shell: bash
@@ -193,7 +201,7 @@ jobs:
         if: github.event.inputs.sign == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.35.1'
+          flutter-version: "3.35.1"
 
       - name: Install yq
         if: github.event.inputs.sign == 'true'
@@ -301,7 +309,7 @@ jobs:
         if: github.event.inputs.appkit == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.35.1'
+          flutter-version: "3.35.1"
 
       - name: Install yq
         if: github.event.inputs.appkit == 'true'
@@ -414,7 +422,7 @@ jobs:
         if: github.event.inputs.walletkit == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.35.1'
+          flutter-version: "3.35.1"
 
       - name: Install yq
         if: github.event.inputs.walletkit == 'true'
@@ -532,7 +540,7 @@ jobs:
         if: github.event.inputs.yttrium == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.35.1'
+          flutter-version: "3.35.1"
 
       - name: Get package version from reown_yttrium/pubspec.yaml
         if: github.event.inputs.yttrium == 'true'
@@ -613,7 +621,7 @@ jobs:
         if: github.event.inputs.cli == 'true'
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.35.1'
+          flutter-version: "3.35.1"
 
       - name: Get package version from reown_cli/pubspec.yaml
         if: github.event.inputs.cli == 'true'
@@ -670,9 +678,99 @@ jobs:
           payload: |
             text: "*reown_cli*: ^${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/reown_cli"
 
+  publish-pos:
+    name: Publish pos_client
+    needs: [create-branch] # Not really needed in this package but still used in case is needed in the future
+    runs-on: ubuntu-latest
+    outputs:
+      package_version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - name: Check if pos_client should be published
+        if: github.event.inputs.pos == 'false'
+        run: |
+          echo "Skipping pos_client publishing because input was false."
+        continue-on-error: false
+
+      - name: Checkout code
+        if: github.event.inputs.pos == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.create-branch.outputs.branch_name }} # Not really needed in this package but still used in case is needed in the future
+          fetch-depth: 0 # Required for git push
+
+      - name: Set up Flutter
+        if: github.event.inputs.pos == 'true'
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.35.1"
+
+      - name: Get package version from pos_client/pubspec.yaml
+        if: github.event.inputs.pos == 'true'
+        id: get_version
+        working-directory: packages/pos_client
+        run: echo "version=$(yq e '.version' pubspec.yaml)" >> $GITHUB_OUTPUT
+
+      - name: Configure pub.dev credentials
+        if: github.event.inputs.pos == 'true'
+        run: |
+          mkdir -p $HOME/.config/dart
+          echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json
+
+      - name: Run generate_files.sh for pos_client
+        if: github.event.inputs.pos == 'true'
+        working-directory: packages/pos_client
+        run: |
+          chmod +x generate_files.sh
+          sh ./generate_files.sh
+
+      - name: Check Publish Warnings
+        if: github.event.inputs.pos == 'true'
+        shell: bash
+        run: |
+          set -o pipefail
+
+          OUTPUT=$(flutter pub publish --dry-run 2>&1 || true)
+          echo "$OUTPUT"
+
+          if echo "$OUTPUT" | grep -iE "^Error:|validation.*error|validation.*failed"; then
+            echo "❌ Real error(s) detected in pub publish dry-run"
+            exit 1
+          else
+            echo "✅ No real errors, only warnings (e.g. missing CHANGELOG.md)"
+          fi
+
+      - name: Publish pos_client to pub.dev
+        if: github.event.inputs.pos == 'true'
+        working-directory: packages/pos_client
+        run: flutter pub publish --force
+
+      - name: Wait for pos_client to be available on pub.dev
+        if: github.event.inputs.pos == 'true'
+        run: |
+          chmod +x .github/scripts/wait_for_package.sh
+          .github/scripts/wait_for_package.sh pos_client ${{ steps.get_version.outputs.version }}
+
+      - name: Post a message in a channel
+        uses: slackapi/slack-github-action@v2.1.0
+        if: github.event.inputs.pos == 'true'
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "*pos_client*: ^${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/pos_client"
+
   create-pull-request:
     name: Create Pull Request
-    needs: [create-branch, publish-core, publish-sign, publish-appkit, publish-walletkit, publish-yttrium, publish-cli]
+    needs:
+      [
+        create-branch,
+        publish-core,
+        publish-sign,
+        publish-appkit,
+        publish-walletkit,
+        publish-yttrium,
+        publish-cli,
+      ]
     runs-on: ubuntu-latest
     if: always() && (needs.publish-core.result == 'success' || needs.publish-sign.result == 'success' || needs.publish-appkit.result == 'success' || needs.publish-walletkit.result == 'success' || needs.publish-yttrium.result == 'success' || needs.publish-cli.result == 'success')
     steps:
@@ -715,7 +813,7 @@ jobs:
           title: "ci: Package dependency updates and releases"
           body: |
             This PR contains package dependency updates and releases from the automated publishing workflow.
-            
+
             ## Packages Published
             ${{ github.event.inputs.core == 'true' && '- reown_core' || '' }}
             ${{ github.event.inputs.sign == 'true' && '- reown_sign' || '' }}
@@ -723,11 +821,11 @@ jobs:
             ${{ github.event.inputs.walletkit == 'true' && '- reown_walletkit' || '' }}
             ${{ github.event.inputs.yttrium == 'true' && '- reown_yttrium' || '' }}
             ${{ github.event.inputs.cli == 'true' && '- reown_cli' || '' }}
-            
+
             ## Changes
             - Updated package dependencies to latest published versions
             - All packages have been successfully published to pub.dev
-            
+
             This PR was automatically created by the GitHub Actions workflow.
 
 # Launch locally
