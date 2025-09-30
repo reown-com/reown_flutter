@@ -32,11 +32,18 @@ class DWEService implements IDWEService {
   final selectedAsset = ValueNotifier<ExchangeAsset?>(null);
 
   @override
-  final selectedAmount = ValueNotifier<int>(10);
+  final selectedAmount = ValueNotifier<double>(0.0);
 
   @override
   Future<void> init() async {
     _bundleId = await ReownCoreUtils.getPackageName();
+  }
+
+  @override
+  void clearState() {
+    selectedAmount.value = 0.0;
+    selectedAsset.value = null;
+    _supportedAssets.clear();
   }
 
   @override

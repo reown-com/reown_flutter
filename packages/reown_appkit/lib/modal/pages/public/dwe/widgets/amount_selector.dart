@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
@@ -12,6 +13,25 @@ class AmountSelector extends StatefulWidget {
 
 class _AmountSelectorState extends State<AmountSelector> {
   IDWEService get _dweService => GetIt.I<IDWEService>();
+
+  late final TextEditingController _amountController;
+
+  @override
+  void initState() {
+    super.initState();
+    _amountController = TextEditingController(
+      text: _dweService.selectedAmount.value > 0.0
+          ? _dweService.selectedAmount.value.toString()
+          : '',
+    );
+    _amountController.addListener(() {
+      try {
+        _dweService.selectedAmount.value = _amountController.text.isEmpty
+            ? 0.0
+            : double.parse(_amountController.text);
+      } catch (_) {}
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,17 +59,40 @@ class _AmountSelectorState extends State<AmountSelector> {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text(
-                          _dweService.selectedAmount.value.toString(),
-                          style: themeData.textStyles.title400.copyWith(
-                            color: themeColors.foreground275,
-                            fontSize: 40.0,
+                        const SizedBox(width: 40.0),
+                        IntrinsicWidth(
+                          child: TextField(
+                            maxLines: 1,
+                            cursorHeight: 40.0,
+                            controller: _amountController,
+                            style: themeData.textStyles.title400.copyWith(
+                              color: themeColors.foreground150,
+                              fontSize: 40.0,
+                            ),
+                            keyboardType: const TextInputType.numberWithOptions(
+                              decimal: true,
+                            ),
+                            inputFormatters: [
+                              DecimalTextInputFormatter(),
+                              FilteringTextInputFormatter.allow(
+                                RegExp(r'^\d*\.?\d{0,2}$'),
+                              ),
+                              LengthLimitingTextInputFormatter(10),
+                            ],
+                            textAlign: TextAlign.center,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: '0.00',
+                              hintStyle: themeData.textStyles.title400.copyWith(
+                                color: themeColors.foreground275,
+                                fontSize: 40.0,
+                              ),
+                            ),
                           ),
                         ),
                         Text(
-                          'USD',
+                          ' USD',
                           style: themeData.textStyles.paragraph500.copyWith(
                             color: themeColors.foreground275,
                           ),
@@ -70,7 +113,12 @@ class _AmountSelectorState extends State<AmountSelector> {
                             value: e,
                             selected: _dweService.selectedAmount.value == e,
                             onTap: () {
-                              _dweService.selectedAmount.value = e;
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              _dweService.selectedAmount.value = e.toDouble();
+                              _amountController.text = _dweService
+                                  .selectedAmount
+                                  .value
+                                  .toString();
                             },
                           ),
                         );
@@ -139,6 +187,20 @@ class _AmountButton extends StatelessWidget {
           }),
         ),
       ),
+    );
+  }
+}
+
+class DecimalTextInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final text = newValue.text.replaceAll(',', '.');
+    return newValue.copyWith(
+      text: text,
+      selection: TextSelection.collapsed(offset: text.length),
     );
   }
 }

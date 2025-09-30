@@ -321,6 +321,7 @@ class ReownAppKitModal
   IExplorerService get _explorerService => GetIt.I<IExplorerService>();
   INetworkService get _networkService => GetIt.I<INetworkService>();
   IBlockChainService get _blockchainService => GetIt.I<IBlockChainService>();
+  IDWEService get _dweService => GetIt.I<IDWEService>();
   ISiweService get _siweService => GetIt.I<ISiweService>();
 
   bool _isValidProjectID() {
@@ -1364,6 +1365,7 @@ class ReownAppKitModal
     }
     _toastService.clear();
     _blockchainService.selectSendToken(null);
+    _dweService.clearState();
     _analyticsService.sendEvent(ModalCloseEvent(connected: _isConnected));
   }
 

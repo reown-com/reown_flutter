@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:reown_appkit/base/services/i_exchange_service.dart';
 import 'package:reown_appkit/base/services/models/query_models.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
@@ -27,6 +29,7 @@ class ExchangeService implements IExchangeService {
       '[$runtimeType] getExchanges ${jsonEncode(rpcRequest.toJson())}',
     );
 
+    // await Future.delayed(Duration(seconds: 1));
     // return JsonRpcResponse.fromJson(_getExchangesMockResponse);
 
     try {
@@ -49,6 +52,7 @@ class ExchangeService implements IExchangeService {
       '[$runtimeType] getExchangePayUrl ${jsonEncode(rpcRequest.toJson())}',
     );
 
+    // await Future.delayed(Duration(seconds: 1));
     // return JsonRpcResponse.fromJson(_getExchangeUrlMockResponse);
 
     try {
@@ -71,6 +75,7 @@ class ExchangeService implements IExchangeService {
       '[$runtimeType] getExchangeDepositStatus ${jsonEncode(rpcRequest.toJson())}',
     );
 
+    // await Future.delayed(Duration(seconds: 1));
     // return JsonRpcResponse.fromJson(_getExchangeBuyStatusMockResponse);
 
     try {
@@ -107,48 +112,48 @@ class ExchangeService implements IExchangeService {
   }
 }
 
-// // TODO move to tests
-// const _getExchangesMockResponse = {
-//   'id': 1,
-//   'jsonrpc': '2.0',
-//   'result': {
-//     'exchanges': [
-//       {
-//         'id': 'binance',
-//         'imageUrl': 'https://pay-assets.reown.com/binance_128_128.webp',
-//         'name': 'Binance',
-//       },
-//       {
-//         'id': 'coinbase',
-//         'imageUrl': 'https://pay-assets.reown.com/coinbase_128_128.webp',
-//         'name': 'Coinbase',
-//       },
-//       {
-//         'id': 'reown_test',
-//         'imageUrl': 'https://pay-assets.reown.com/reown_test_128_128.webp',
-//         'name': 'Reown Test Exchange',
-//       },
-//     ],
-//     'total': 3,
-//   },
-// };
+// TODO move to tests
+const _getExchangesMockResponse = {
+  'id': 1,
+  'jsonrpc': '2.0',
+  'result': {
+    'exchanges': [
+      {
+        'id': 'binance',
+        'imageUrl': 'https://pay-assets.reown.com/binance_128_128.webp',
+        'name': 'Binance',
+      },
+      {
+        'id': 'coinbase',
+        'imageUrl': 'https://pay-assets.reown.com/coinbase_128_128.webp',
+        'name': 'Coinbase',
+      },
+      {
+        'id': 'reown_test',
+        'imageUrl': 'https://pay-assets.reown.com/reown_test_128_128.webp',
+        'name': 'Reown Test Exchange',
+      },
+    ],
+    'total': 3,
+  },
+};
 
-// const _getExchangeUrlMockResponse = {
-//   'id': 1,
-//   'jsonrpc': '2.0',
-//   'result': {
-//     'sessionId': '57a5ac338fc4470abb069c34a2228711',
-//     'url':
-//         'https://appkit-pay-test-exchange.reown.com/?asset=eip155:84532/slip44:60&amount=0.00001&recipient=0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340&sessionId=6f938cd753aa4f9b9cc413f1e407adf6&projectId=702e2d45d9debca66795614cddb5c1ca',
-//   },
-// };
+const _getExchangeUrlMockResponse = {
+  'id': 1,
+  'jsonrpc': '2.0',
+  'result': {
+    'sessionId': '57a5ac338fc4470abb069c34a2228711',
+    'url':
+        'https://appkit-pay-test-exchange.reown.com/?asset=eip155:84532/slip44:60&amount=0.00001&recipient=0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340&sessionId=6f938cd753aa4f9b9cc413f1e407adf6&projectId=702e2d45d9debca66795614cddb5c1ca',
+  },
+};
 
-// const _getExchangeBuyStatusMockResponse = {
-//   'id': 1,
-//   'jsonrpc': '2.0',
-//   'result': {
-//     'status': 'UNKNOWN',
-//     'txHash':
-//         null, // 'UNKNOWN' | 'IN_PROGRESS' | 'FAILED' | 'SUCCESS' (with txHash)
-//   },
-// };
+const _getExchangeBuyStatusMockResponse = {
+  'id': 1,
+  'jsonrpc': '2.0',
+  'result': {
+    'status': 'UNKNOWN',
+    'txHash':
+        null, // 'UNKNOWN' | 'IN_PROGRESS' | 'FAILED' | 'SUCCESS' (with txHash)
+  },
+};

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/base/services/models/query_models.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
@@ -12,7 +15,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 
 class ExchangesListWidget extends StatefulWidget {
   final String? recipient;
-  final Function(Exchange) onSelect;
+  final Function(Exchange exchange, GetExchangeUrlResult result) onSelect;
   const ExchangesListWidget({this.recipient, required this.onSelect});
 
   @override
@@ -21,6 +24,7 @@ class ExchangesListWidget extends StatefulWidget {
 
 class _ExchangesListWidgetState extends State<ExchangesListWidget> {
   IDWEService get _dweService => GetIt.I<IDWEService>();
+  Exchange? _selectedExchange;
 
   @override
   Widget build(BuildContext context) {
@@ -66,32 +70,51 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
                         .map(
                           (exchange) => Padding(
                             padding: const EdgeInsets.only(top: kPadding8),
-                            child: AccountListItem(
-                              iconWidget: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 4.0,
-                                ),
-                                child: RoundedIcon(
-                                  borderRadius: radiuses.isSquare()
-                                      ? 0.0
+                            child: ValueListenableBuilder(
+                              valueListenable: _dweService.selectedAmount,
+                              builder: (context, amount, _) {
+                                return AccountListItem(
+                                  iconWidget: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 4.0,
+                                    ),
+                                    child: RoundedIcon(
+                                      borderRadius: radiuses.isSquare()
+                                          ? 0.0
+                                          : null,
+                                      imageUrl: exchange.imageUrl,
+                                      assetColor: themeColors.background100,
+                                    ),
+                                  ),
+                                  title: exchange.name,
+                                  titleStyle: themeData.textStyles.paragraph500
+                                      .copyWith(
+                                        color: themeColors.foreground100,
+                                      ),
+                                  onTap: amount > 0.0
+                                      ? () => _selectExchange(exchange)
                                       : null,
-                                  imageUrl: exchange.imageUrl,
-                                  assetColor: themeColors.background100,
-                                ),
-                              ),
-                              title: exchange.name,
-                              titleStyle: themeData.textStyles.paragraph500
-                                  .copyWith(color: themeColors.foreground100),
-                              onTap: () {
-                                widget.onSelect.call(exchange);
+                                  trailing: _selectedExchange?.id == exchange.id
+                                      ? Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox.square(
+                                              dimension: 15.0,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 1.8,
+                                                color:
+                                                    themeColors.foreground200,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 10.0),
+                                          ],
+                                        )
+                                      : null,
+                                );
                               },
-                              // trailing: SizedBox.square(
-                              //   dimension: 15.0,
-                              //   child: CircularProgressIndicator(
-                              //     strokeWidth: 1.5,
-                              //     color: themeColors.foreground200,
-                              //   ),
-                              // )
                             ),
                           ),
                         )
@@ -101,5 +124,35 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
         );
       },
     );
+  }
+
+  Future<void> _selectExchange(Exchange exchange) async {
+    // 2 GET PAYMENT URL
+    setState(() => _selectedExchange = exchange);
+    final selectedAsset = _dweService.selectedAsset.value!;
+    final chainId = selectedAsset.network;
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    final appKitModal = ModalProvider.of(context).instance;
+    String? address = appKitModal.session?.getAddress(namespace);
+    address = address ?? widget.recipient;
+    if (address == null) {
+      appKitModal.onModalError.broadcast(ModalError('No recipient found'));
+      return;
+    }
+
+    final amount = _dweService.selectedAmount.value;
+    final getExchangeUrlParams = GetExchangeUrlParams(
+      exchangeId: exchange.id,
+      asset: selectedAsset,
+      amount: '${amount.toDouble()}',
+      recipient: '$chainId:$address',
+    );
+    debugPrint(jsonEncode(getExchangeUrlParams.toParams()));
+    final GetExchangeUrlResult result = await appKitModal.appKit!
+        .getExchangeUrl(params: getExchangeUrlParams);
+
+    setState(() => _selectedExchange = null);
+    widget.onSelect.call(exchange, result);
+    ReownCoreUtils.openURL(result.url);
   }
 }

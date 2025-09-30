@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/base/services/models/query_models.dart';
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/pages/public/dwe/widgets/amount_selector.dart';
@@ -27,6 +28,8 @@ class ReownAppKitModalDepositScreen extends StatefulWidget {
 class _ReownAppKitModalDepositScreenState
     extends State<ReownAppKitModalDepositScreen> {
   IDWEService get _dweService => GetIt.I<IDWEService>();
+  bool _isLooping = false;
+  bool _shouldStopLooping = false;
 
   @override
   void initState() {
@@ -76,100 +79,80 @@ class _ReownAppKitModalDepositScreenState
           right: kPadding12,
           bottom: kPadding12,
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: Row(
-                children: [
-                  Text(
-                    'Asset',
-                    style: themeData.textStyles.large400.copyWith(
-                      color: themeColors.foreground300,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: Row(
+                  children: [
+                    Text(
+                      'Asset',
+                      style: themeData.textStyles.large400.copyWith(
+                        color: themeColors.foreground300,
+                      ),
                     ),
-                  ),
-                  Spacer(),
-                  AssetsButton(),
-                ],
+                    Spacer(),
+                    AssetsButton(),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox.square(dimension: kPadding12),
-            _isLooping
-                ? Column(
-                    children: [
-                      CircularProgressIndicator(
-                        color: themeColors.foreground200,
-                      ),
-                      const SizedBox.square(dimension: kPadding16),
-                      Text(
-                        'Waiting confirmation..',
-                        style: themeData.textStyles.small400.copyWith(
-                          color: themeColors.foreground300,
+              const SizedBox.square(dimension: kPadding12),
+              _isLooping
+                  ? Column(
+                      children: [
+                        CircularProgressIndicator(
+                          color: themeColors.foreground200,
                         ),
+                        const SizedBox.square(dimension: kPadding16),
+                        Text(
+                          'Waiting confirmation..',
+                          style: themeData.textStyles.small400.copyWith(
+                            color: themeColors.foreground300,
+                          ),
+                        ),
+                        const SizedBox.square(dimension: kPadding16),
+                        SecondaryButton(
+                          title: 'Stop checking',
+                          onTap: () {
+                            setState(() {
+                              _isLooping = false;
+                              _shouldStopLooping = true;
+                            });
+                          },
+                        ),
+                      ],
+                    )
+                  : AmountSelector(),
+              const SizedBox.square(dimension: kPadding16),
+              Divider(color: themeColors.grayGlass005, height: 0.0),
+              const SizedBox.square(dimension: kPadding12),
+              ExchangesListWidget(
+                recipient: widget.recipient,
+                onSelect: (exchange, urlResult) {
+                  _loopOnStatusCheck(exchange.id, urlResult.sessionId, (
+                    result,
+                  ) {
+                    GetIt.I<IToastService>().show(
+                      ToastMessage(
+                        type: result!.status == 'SUCCESS'
+                            ? ToastType.success
+                            : ToastType.error,
+                        text: result.status,
                       ),
-                      const SizedBox.square(dimension: kPadding16),
-                      SecondaryButton(
-                        title: 'Abort',
-                        onTap: () {
-                          setState(() {
-                            _isLooping = false;
-                          });
-                        },
-                      ),
-                    ],
-                  )
-                : AmountSelector(),
-            const SizedBox.square(dimension: kPadding16),
-            Divider(color: themeColors.grayGlass005, height: 0.0),
-            const SizedBox.square(dimension: kPadding12),
-            ExchangesListWidget(
-              recipient: widget.recipient,
-              onSelect: (exchange) async {
-                // 2 GET PAYMENT URL
-                final selectedAsset = _dweService.selectedAsset.value!;
-                final chainId = selectedAsset.network;
-                final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-                final appKitModal = ModalProvider.of(context).instance;
-                String? address = appKitModal.session?.getAddress(namespace);
-                address = address ?? widget.recipient;
-                if (address == null) {
-                  appKitModal.onModalError.broadcast(
-                    ModalError('No recipient found'),
-                  );
-                  return;
-                }
-                final amount = _dweService.selectedAmount.value;
-                final getExchangeUrlParams = GetExchangeUrlParams(
-                  exchangeId: exchange.id,
-                  asset: selectedAsset,
-                  amount: '${amount.toDouble()}',
-                  recipient: '$chainId:$address',
-                );
-                final urlResult = await appKitModal.appKit!.getExchangeUrl(
-                  params: getExchangeUrlParams,
-                );
-                await ReownCoreUtils.openURL(urlResult.url);
-                _loopOnStatusCheck(exchange.id, urlResult.sessionId, (result) {
-                  GetIt.I<IToastService>().show(
-                    ToastMessage(
-                      type: result!.status == 'SUCCESS'
-                          ? ToastType.success
-                          : ToastType.error,
-                      text: result.status,
-                    ),
-                  );
-                  setState(() {});
-                });
-              },
-            ),
-          ],
+                    );
+                    setState(() {});
+                  });
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  bool _isLooping = false;
   void _loopOnStatusCheck(
     String exchangeId,
     String sessionId,
@@ -177,11 +160,12 @@ class _ReownAppKitModalDepositScreenState
   ) async {
     if (_isLooping) return;
     _isLooping = true;
+    _shouldStopLooping = false;
     int maxAttempts = 30;
     int currentAttempt = 0;
 
     final appKit = ModalProvider.of(context).instance.appKit!;
-    while (currentAttempt < maxAttempts) {
+    while (currentAttempt < maxAttempts && !_shouldStopLooping) {
       try {
         // 4. TODO [DWE Check the status of the deposit/transaction Better to call this in a loop]
         final params = GetExchangeDepositStatusParams(
@@ -192,13 +176,17 @@ class _ReownAppKitModalDepositScreenState
         //
         if (response.status == 'UNKNOWN' || response.status == 'IN_PROGRESS') {
           currentAttempt++;
-          if (currentAttempt < maxAttempts) {
+          if (currentAttempt < maxAttempts && !_shouldStopLooping) {
             // Keep trying
             await Future.delayed(Duration(seconds: 5));
           } else {
-            // Max attempts reached, complete with timeout status
+            // Max attempts reached or stopped by user, complete with appropriate status
             _isLooping = false;
-            completer.call(GetExchangeDepositStatusResult(status: 'TIMEOUT'));
+            completer.call(
+              _shouldStopLooping
+                  ? GetExchangeDepositStatusResult(status: 'CANCELLED')
+                  : GetExchangeDepositStatusResult(status: 'TIMEOUT'),
+            );
             break;
           }
         } else {
