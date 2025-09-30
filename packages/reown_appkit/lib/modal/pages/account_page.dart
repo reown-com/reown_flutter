@@ -79,9 +79,7 @@ class _AccountPageState extends State<AccountPage> with WidgetsBindingObserver {
       divider: false,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kPadding12),
-        child: _DefaultAccountView(
-          appKitModal: _appKitModal!,
-        ),
+        child: _DefaultAccountView(appKitModal: _appKitModal!),
       ),
     );
   }
@@ -89,7 +87,7 @@ class _AccountPageState extends State<AccountPage> with WidgetsBindingObserver {
 
 class _DefaultAccountView extends StatelessWidget {
   const _DefaultAccountView({required IReownAppKitModal appKitModal})
-      : _appKitMoldal = appKitModal;
+    : _appKitMoldal = appKitModal;
   final IReownAppKitModal _appKitMoldal;
 
   @override
@@ -145,14 +143,12 @@ class _DefaultAccountView extends StatelessWidget {
         //   child: _ConnectedWalletButton(),
         // ),
         _SelectNetworkButton(),
+        _FundWalletButton(),
         Visibility(
           visible: !isMagicService && !smartAccounts,
           child: _ActivityButton(),
         ),
-        Visibility(
-          visible: smartAccounts,
-          child: _SwitchSmartAccountButton(),
-        ),
+        Visibility(visible: smartAccounts, child: _SwitchSmartAccountButton()),
         _DisconnectButton(),
       ],
     );
@@ -181,8 +177,8 @@ class _UpgradeWalletButton extends StatelessWidget {
               borderRadius: radiuses.isSquare()
                   ? 0.0
                   : radiuses.isCircular()
-                      ? 40.0
-                      : 8.0,
+                  ? 40.0
+                  : 8.0,
               size: 40.0,
               assetPath: 'lib/modal/assets/icons/regular/wallet.svg',
               assetColor: themeColors.accent100,
@@ -211,12 +207,10 @@ class _EmailAndSocialLoginButton extends StatelessWidget {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
-    final provider = AppKitSocialOption.values.firstWhereOrNull(
-      (e) {
-        final socialProvider = modalInstance.session!.socialProvider ?? '';
-        return e.name.toLowerCase() == socialProvider.toString().toLowerCase();
-      },
-    );
+    final provider = AppKitSocialOption.values.firstWhereOrNull((e) {
+      final socialProvider = modalInstance.session!.socialProvider ?? '';
+      return e.name.toLowerCase() == socialProvider.toString().toLowerCase();
+    });
     final title = modalInstance.session!.sessionUsername;
     if (provider == null) {
       return SizedBox.shrink();
@@ -254,8 +248,8 @@ class _EmailAndSocialLoginButton extends StatelessWidget {
           ),
           onTap: provider == AppKitSocialOption.Email
               ? () {
-                  final walletInfo =
-                      GetIt.I<IExplorerService>().getConnectedWallet();
+                  final walletInfo = GetIt.I<IExplorerService>()
+                      .getConnectedWallet();
                   final url = walletInfo!.listing.webappLink;
                   final topic = modalInstance.session!.topic;
                   ReownCoreUtils.openURL('${url}emailUpdate/$topic');
@@ -367,6 +361,52 @@ class _SelectNetworkButton extends StatelessWidget {
           onTap: () => _widgetStack.push(
             ReownAppKitModalSelectNetworkPage(),
             event: ClickNetworksEvent(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _FundWalletButton extends StatelessWidget {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
+  @override
+  Widget build(BuildContext context) {
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    return Column(
+      children: [
+        const SizedBox.square(dimension: kPadding8),
+        AccountListItem(
+          iconWidget: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(17.0)),
+                border: Border.fromBorderSide(
+                  BorderSide(
+                    color: themeColors.grayGlass002,
+                    width: 2.0,
+                    strokeAlign: BorderSide.strokeAlignOutside,
+                  ),
+                ),
+              ),
+              child: CircleAvatar(
+                radius: 17.0,
+                child: Icon(
+                  Icons.attach_money_outlined,
+                  color: themeColors.accent100,
+                  size: 26.0,
+                ),
+                backgroundColor: themeColors.accenGlass015,
+                foregroundColor: themeColors.accent100,
+              ),
+            ),
+          ),
+          title: 'Fund wallet',
+          onTap: () => _widgetStack.push(
+            ReownAppKitModalDepositScreen(),
+            // event: ClickNetworksEvent(),
           ),
         ),
       ],
