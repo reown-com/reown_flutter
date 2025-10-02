@@ -111,28 +111,37 @@ class ExplorerService implements IExplorerService {
 
   @override
   Future<void> init() async {
-    if (initialized.value) {
-      return;
-    }
+    if (initialized.value) return;
+
     _bundleId = await ReownCoreUtils.getPackageName();
 
-    if ((includedWalletIds ?? {}).isNotEmpty) {
+    final hasIncludedIds = (includedWalletIds?.isNotEmpty ?? false);
+    if (hasIncludedIds) {
       featuredWalletIds = {};
       excludedWalletIds = {};
     }
 
     _chains = NamespaceUtils.getChainIdsFromRequiredNamespaces(
       requiredNamespaces: namespaces,
-    ).map((chainId) => NamespaceUtils.getNamespaceFromChain(chainId)).toSet();
+    ).map(NamespaceUtils.getNamespaceFromChain).toSet();
 
     // TODO ideally we should call this at every opening to be able to detect newly installed wallets.
     final nativeData = await _fetchNativeAppData();
-    final installed = (await nativeData.getInstalledApps())
-        .where((e) => !(excludedWalletIds ?? {}).contains(e.id))
-        .toList();
+    var installed = await nativeData.getInstalledApps();
+
+    installed = installed.where((e) => !(excludedWalletIds ?? {}).contains(e.id)).toList();
+
+    if (hasIncludedIds) {
+      installed = installed.where((e) => includedWalletIds!.contains(e.id)).toList();
+    }
     _installedWalletIds = Set<String>.from(installed.map((e) => e.id));
 
     await _fetchInitialWallets();
+
+    if (hasIncludedIds) {
+      _listings = _listings.where((wallet) => includedWalletIds!.contains(wallet.id)).toList();
+      listings.value = _listings;
+    }
 
     initialized.value = true;
   }
