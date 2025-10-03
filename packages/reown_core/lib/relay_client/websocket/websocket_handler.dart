@@ -25,7 +25,7 @@ class WebSocketHandler implements IWebSocketHandler {
   StreamController<String>? _outputController;
 
   @override
-  Future<void> get ready => _socket!.ready;
+  Future<void> get ready => _socket?.ready ?? Future.value();
 
   // const WebSocketHandler();
 
@@ -61,16 +61,16 @@ class WebSocketHandler implements IWebSocketHandler {
 
     // Split the incoming stream to support multiple listeners
     _socket!.stream.cast<String>().listen(
-      (data) => _inputController!.add(data),
-      onError: (error) => _inputController!.addError(error),
-      onDone: () => _inputController!.close(),
+      (data) => _inputController?.add(data),
+      onError: (error) => _inputController?.addError(error),
+      onDone: () => _inputController?.close(),
         );
 
     // Route outgoing messages through the output controller
     _outputController!.stream.listen(
-      (data) => _socket!.sink.add(data),
-      onError: (error) => _socket!.sink.addError(error),
-      onDone: () => _socket!.sink.close(),
+      (data) => _socket?.sink.add(data),
+      onError: (error) => _socket?.sink.addError(error),
+      onDone: () => _socket?.sink.close(),
     );
 
     _channel = StreamChannel(
@@ -87,7 +87,7 @@ class WebSocketHandler implements IWebSocketHandler {
       }
     }
 
-    await _socket!.ready;
+    await _socket?.ready;
 
     // Check if the request was successful (status code 200)
     // try {} catch (e) {
@@ -101,9 +101,7 @@ class WebSocketHandler implements IWebSocketHandler {
   @override
   Future<void> close() async {
     try {
-      if (_socket != null) {
-        await _socket?.sink.close();
-      }
+      await _socket?.sink.close();
     } catch (_) {}
     
     // Close the controllers to prevent further messages and race conditions
