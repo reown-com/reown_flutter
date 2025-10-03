@@ -628,14 +628,6 @@ class MockCrypto extends _i1.Mock implements _i25.Crypto {
           as _i24.Future<String>);
 
   @override
-  _i24.Future<bool> verifyJWT(String? jwt) =>
-      (super.noSuchMethod(
-            Invocation.method(#verifyJWT, [jwt]),
-            returnValue: _i24.Future<bool>.value(false),
-          )
-          as _i24.Future<bool>);
-
-  @override
   int getPayloadType(String? encoded) =>
       (super.noSuchMethod(
             Invocation.method(#getPayloadType, [encoded]),
