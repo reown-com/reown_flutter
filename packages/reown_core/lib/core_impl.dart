@@ -40,6 +40,7 @@ import 'package:reown_core/utils/log_level.dart';
 import 'package:reown_core/utils/utils.dart';
 import 'package:reown_core/models/basic_models.dart';
 import 'package:reown_core/store/secure_store.dart';
+import 'package:reown_core/verify/verify_store.dart';
 
 class ReownCore implements IReownCore {
   @override
@@ -221,6 +222,12 @@ class ReownCore implements IReownCore {
     verify = Verify(
       core: this,
       httpClient: httpClient,
+      verifyStore: VerifyStore(
+        storage: storage,
+        context: 'verify',
+        version: '1.0',
+        fromJson: (dynamic value) => value as String,
+      ),
     );
     connectivity = ConnectivityState(
       core: this,

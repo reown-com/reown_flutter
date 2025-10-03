@@ -25,6 +25,7 @@ _PublishOptions _$PublishOptionsFromJson(Map<String, dynamic> json) =>
       ttl: (json['ttl'] as num?)?.toInt(),
       tag: (json['tag'] as num?)?.toInt(),
       correlationId: (json['correlationId'] as num?)?.toInt(),
+      attestation: json['attestation'] as String?,
       tvf: json['tvf'] as Map<String, dynamic>?,
       publishMethod: json['publishMethod'] as String?,
     );
@@ -34,6 +35,7 @@ Map<String, dynamic> _$PublishOptionsToJson(_PublishOptions instance) =>
       'ttl': ?instance.ttl,
       'tag': ?instance.tag,
       'correlationId': ?instance.correlationId,
+      'attestation': ?instance.attestation,
       'tvf': ?instance.tvf,
       'publishMethod': ?instance.publishMethod,
     };

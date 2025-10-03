@@ -27,7 +27,8 @@ abstract class IPairing {
   Future<void> activate({required String topic});
   void register({
     required String method,
-    required Function(String, JsonRpcRequest, [TransportType]) function,
+    required Function(String, JsonRpcRequest, [String?, TransportType])
+    function,
     required ProtocolType type,
   });
   Future<void> setReceiverPublicKey({
