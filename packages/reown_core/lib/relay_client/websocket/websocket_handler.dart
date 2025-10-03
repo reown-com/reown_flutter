@@ -74,7 +74,8 @@ class WebSocketHandler implements IWebSocketHandler {
     );
 
     _channel = StreamChannel(
-      _inputController!.stream, _outputController!.sink,
+      _inputController!.stream,
+      _outputController!.sink,
     );
 
     if (_channel == null) {
