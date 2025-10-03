@@ -37,7 +37,7 @@ class VerifyStore extends GenericStore<String> implements IVerifyStore {
   @override
   Future<void> setItem(JWK jwk) async {
     try {
-      // await set(_key, jsonEncode(jwk.toJson()));
+      await set(_key, jsonEncode(jwk.toJson()));
     } catch (e) {
       debugPrint('[$runtimeType] setItem error: $e');
     }

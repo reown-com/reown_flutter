@@ -15,8 +15,8 @@ class Verify implements IVerify {
   final IVerifyStore _verifyStore;
   JWK? _publicKey;
 
-  static final String _verifyUrl = ReownConstants.VERIFY_SERVER;
-  static final String _verifyUrlV2 = '$_verifyUrl/v2';
+  static const String _verifyUrl = ReownConstants.VERIFY_SERVER;
+  static const String _verifyUrlV2 = '$_verifyUrl/v2';
 
   Verify({
     required IReownCore core,
