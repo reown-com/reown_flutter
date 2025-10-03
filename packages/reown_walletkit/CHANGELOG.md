@@ -1,3 +1,7 @@
+## 1.3.3
+
+- Dependency updates
+
 ## 1.3.2
 
 - Remove Yttrium dependency

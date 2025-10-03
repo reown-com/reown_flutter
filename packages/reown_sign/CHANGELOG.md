@@ -1,3 +1,7 @@
+## 1.3.2
+
+- Verify V2
+
 ## 1.3.1
 
 - Bug fixes

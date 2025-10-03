@@ -224,8 +224,8 @@ class ReownCore implements IReownCore {
       httpClient: httpClient,
       verifyStore: VerifyStore(
         storage: storage,
-        context: 'verify',
-        version: '1.0',
+        context: StoreVersions.CONTEXT_VERIFY,
+        version: StoreVersions.VERSION_VERIFY,
         fromJson: (dynamic value) => value as String,
       ),
     );
