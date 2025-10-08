@@ -13,6 +13,8 @@ dependencies:
   event: ^3.1.0
   flutter:
     sdk: flutter
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.9.0
   reown_core: ^1.3.1
   reown_sign: ^1.3.1
 
@@ -22,17 +24,29 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
+  freezed: ^3.2.0
   http: ^1.2.2
+  json_serializable: ^6.10.0
   logger: ^2.5.0
   mockito: ^5.4.4
   package_info_plus: ^8.1.2
   reown_appkit:
     path: ../reown_appkit/
 
+# The following section is specific to Flutter packages.
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.walletconnect.reown_walletkit
+        pluginClass: ReownWalletkitPlugin
+      ios:
+        pluginClass: ReownWalletkitPlugin
+
 platforms:
   android:
   ios:
-  web:
-  macos:
-  linux:
-  windows:
+  # web:
+  # macos:
+  # linux:
+  # windows:

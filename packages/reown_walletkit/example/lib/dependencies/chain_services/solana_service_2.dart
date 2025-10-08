@@ -40,7 +40,10 @@ class SolanaService2 {
 
   Future<void> solanaSignMessage(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] solanaSignMessage request: $parameters');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
@@ -101,7 +104,10 @@ class SolanaService2 {
   Future<void> solanaSignTransaction(String topic, dynamic parameters) async {
     debugPrint(
         '[SampleWallet] solanaSignTransaction: ${jsonEncode(parameters)}');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
@@ -195,7 +201,10 @@ class SolanaService2 {
   ) async {
     debugPrint(
         '[SampleWallet] solanaSignAllTransactions: ${jsonEncode(parameters)}');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
@@ -278,7 +287,10 @@ class SolanaService2 {
   }
 
   void _handleResponseForTopic(String topic, JsonRpcResponse response) async {
-    final session = _walletKit.sessions.get(topic);
+    final activeSessions = await _walletKit.getActiveSessionByTopic(
+      sessionTopic: topic,
+    );
+    final session = activeSessions.values.last;
 
     try {
       debugPrint('[SampleWallet] response: ${jsonEncode(response.result)}');
@@ -303,7 +315,7 @@ class SolanaService2 {
   Future<dynamic> getBalance({required String address}) async {
     final uri = Uri.parse('https://rpc.walletconnect.org/v1');
     final queryParams = {
-      'projectId': _walletKit.core.projectId,
+      'projectId': _walletKit.projectId,
       'chainId': chainSupported.chainId
     };
     final response = await http.post(

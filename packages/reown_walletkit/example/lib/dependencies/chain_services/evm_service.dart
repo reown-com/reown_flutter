@@ -96,7 +96,7 @@ class EVMService {
       );
     }
 
-    _walletKit.onSessionRequest.subscribe(_onSessionRequest);
+    // _walletKit.onSessionRequest.subscribe(_onSessionRequest);
   }
 
   EthPrivateKey get _credentials {
@@ -111,7 +111,10 @@ class EVMService {
 
   Future<void> personalSignHandler(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] personalSign request: $parameters');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     final address = EthUtils.getAddressFromSessionRequest(pRequest);
     final data = EthUtils.getDataFromSessionRequest(pRequest);
     final message = EthUtils.getUtf8Message(data.toString());
@@ -166,7 +169,10 @@ class EVMService {
 
   Future<void> ethSignHandler(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] ethSign request: $parameters');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     final address = EthUtils.getAddressFromSessionRequest(pRequest);
     final data = EthUtils.getDataFromSessionRequest(pRequest);
     final message = EthUtils.getUtf8Message(data.toString());
@@ -220,7 +226,10 @@ class EVMService {
 
   Future<void> ethSignTypedDataHandler(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] ethSignTypedData request: $parameters');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     final address = EthUtils.getAddressFromSessionRequest(pRequest);
     final data = EthUtils.getDataFromSessionRequest(pRequest);
     var response = JsonRpcResponse(
@@ -276,7 +285,10 @@ class EVMService {
     dynamic parameters,
   ) async {
     debugPrint('[SampleWallet] ethSignTypedDataV4 request: $parameters');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     final address = EthUtils.getAddressFromSessionRequest(pRequest);
     final data = EthUtils.getDataFromSessionRequest(pRequest);
     var response = JsonRpcResponse(
@@ -328,7 +340,10 @@ class EVMService {
     dynamic parameters,
   ) async {
     debugPrint('[SampleWallet] ethSignTransaction request: $parameters');
-    final SessionRequest pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
 
     final data = EthUtils.getTransactionFromSessionRequest(pRequest);
     if (data == null) return;
@@ -393,7 +408,10 @@ class EVMService {
     dynamic parameters,
   ) async {
     debugPrint('[SampleWallet] ethSendTransaction request: $parameters');
-    final SessionRequest pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
 
     final txParams = EthUtils.getTransactionFromSessionRequest(pRequest);
     if (txParams == null) {
@@ -459,7 +477,10 @@ class EVMService {
 
   Future<void> switchChainHandler(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] switchChain request: $topic $parameters');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
     try {
       final params = (parameters as List).first as Map<String, dynamic>;
@@ -495,7 +516,10 @@ class EVMService {
 
   Future<void> addChainHandler(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] addChain request: $topic $parameters');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(
       id: pRequest.id,
       jsonrpc: '2.0',
@@ -533,10 +557,13 @@ class EVMService {
         final keysService = GetIt.I<IKeyService>();
         final chainKeys = keysService.getKeysForChain('eip155');
         final address = chainKeys.first.address;
-        _walletKit.registerAccount(chainId: chainId, accountAddress: address);
+        _walletKit.registerAccount(chainId: chainId, accountAddress: address); // TODO [WRAP REFACTOR]
 
         // update session's namespaces
-        final currentSession = _walletKit.sessions.get(topic)!;
+        final activeSessions = await _walletKit.getActiveSessionByTopic(
+          sessionTopic: topic,
+        );
+        final currentSession = activeSessions.values.last;
         final namespaces = _updateNamespaces(
           currentSession.namespaces,
           'eip155',
@@ -665,7 +692,7 @@ class EVMService {
   Future<dynamic> getBalance({required String address}) async {
     final uri = Uri.parse('https://rpc.walletconnect.org/v1');
     final queryParams = {
-      'projectId': _walletKit.core.projectId,
+      'projectId': _walletKit.projectId,
       'chainId': chainSupported.chainId
     };
     final response = await http.post(
@@ -784,7 +811,10 @@ class EVMService {
         response.error == null,
       );
     }
-    final session = _walletKit.sessions.get(topic);
+    final activeSessions = await _walletKit.getActiveSessionByTopic(
+      sessionTopic: topic,
+    );
+    final session = activeSessions.values.last;
     try {
       await _walletKit.respondSessionRequest(
         topic: topic,

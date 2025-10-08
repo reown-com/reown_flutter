@@ -16,7 +16,7 @@ import 'package:kadena_dart_sdk/kadena_dart_sdk.dart';
 
 class KadenaService {
   final _bottomSheetService = GetIt.I<IBottomSheetService>();
-  late final ReownWalletKit _walletKit;
+  final _walletKit = GetIt.I<IWalletKitService>().walletKit;
 
   final ChainMetadata chainSupported;
   late final SigningApi kadenaClient;
@@ -28,7 +28,6 @@ class KadenaService {
       };
 
   KadenaService({required this.chainSupported}) {
-    _walletKit = GetIt.I<IWalletKitService>().walletKit;
     kadenaClient = SigningApi();
 
     _walletKit.registerEventEmitter(
@@ -44,12 +43,15 @@ class KadenaService {
       );
     }
 
-    _walletKit.onSessionRequest.subscribe(_onSessionRequest);
+    // _walletKit.onSessionRequest.subscribe(_onSessionRequest);
   }
 
   Future<void> kadenaGetAccountsV1(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] kadenaGetAccountsV1 request: $parameters');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(
       id: pRequest.id,
       jsonrpc: '2.0',
@@ -106,7 +108,10 @@ class KadenaService {
   Future<void> kadenaSignV1(String topic, dynamic parameters) async {
     debugPrint(
         '[SampleWallet] kadenaSignV1 request: ${jsonEncode(parameters)}');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(
       id: pRequest.id,
       jsonrpc: '2.0',
@@ -181,7 +186,10 @@ class KadenaService {
   Future<void> kadenaQuicksignV1(String topic, dynamic parameters) async {
     debugPrint(
         '[SampleWallet] kadenaQuicksignV1 request: ${jsonEncode(parameters)}');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(
       id: pRequest.id,
       jsonrpc: '2.0',
@@ -268,7 +276,10 @@ class KadenaService {
   }
 
   void _handleResponseForTopic(String topic, JsonRpcResponse response) async {
-    final session = _walletKit.sessions.get(topic);
+    final activeSessions = await _walletKit.getActiveSessionByTopic(
+      sessionTopic: topic,
+    );
+    final session = activeSessions.values.last;
 
     try {
       await _walletKit.respondSessionRequest(

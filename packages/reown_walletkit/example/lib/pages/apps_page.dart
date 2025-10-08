@@ -35,35 +35,35 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
     super.initState();
     _walletKitService = GetIt.I<IWalletKitService>();
     _walletKit = _walletKitService.walletKit;
-    _pairings = _walletKit.pairings.getAll();
-    _pairings = _pairings.where((p) => p.active).toList();
-    //
-    _registerListeners();
+    // _pairings = _walletKit.pairings.getAll();
+    // _pairings = _pairings.where((p) => p.active).toList();
+    // //
+    // _registerListeners();
   }
 
-  void _registerListeners() {
-    _walletKit.core.relayClient.onRelayClientMessage.subscribe(
-      _onRelayClientMessage,
-    );
-    _walletKit.pairings.onSync.subscribe(_refreshState);
-    _walletKit.pairings.onUpdate.subscribe(_refreshState);
-    _walletKit.onSessionConnect.subscribe(_refreshState);
-    _walletKit.onSessionDelete.subscribe(_refreshState);
-  }
+  // void _registerListeners() {
+  //   _walletKit.core.relayClient.onRelayClientMessage.subscribe(
+  //     _onRelayClientMessage,
+  //   );
+  //   _walletKit.pairings.onSync.subscribe(_refreshState);
+  //   _walletKit.pairings.onUpdate.subscribe(_refreshState);
+  //   _walletKit.onSessionConnect.subscribe(_refreshState);
+  //   _walletKit.onSessionDelete.subscribe(_refreshState);
+  // }
 
-  void _unregisterListeners() {
-    _walletKit.onSessionDelete.unsubscribe(_refreshState);
-    _walletKit.onSessionConnect.unsubscribe(_refreshState);
-    _walletKit.pairings.onSync.unsubscribe(_refreshState);
-    _walletKit.pairings.onUpdate.unsubscribe(_refreshState);
-    _walletKit.core.relayClient.onRelayClientMessage.unsubscribe(
-      _onRelayClientMessage,
-    );
-  }
+  // void _unregisterListeners() {
+  //   _walletKit.onSessionDelete.unsubscribe(_refreshState);
+  //   _walletKit.onSessionConnect.unsubscribe(_refreshState);
+  //   _walletKit.pairings.onSync.unsubscribe(_refreshState);
+  //   _walletKit.pairings.onUpdate.unsubscribe(_refreshState);
+  //   _walletKit.core.relayClient.onRelayClientMessage.unsubscribe(
+  //     _onRelayClientMessage,
+  //   );
+  // }
 
   @override
   void dispose() {
-    _unregisterListeners();
+    // _unregisterListeners();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -72,26 +72,26 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
     setState(() {});
   }
 
-  void _onRelayClientMessage(MessageEvent? event) async {
-    _refreshState(event);
-    if (event != null) {
-      final jsonObject = await EthUtils.decodeMessageEvent(event);
-      if (!mounted) return;
-      if (jsonObject is JsonRpcRequest &&
-          jsonObject.method == MethodConstants.WC_SESSION_PING) {
-        toastification.show(
-          title: Text(jsonObject.method, maxLines: 1),
-          context: context,
-          autoCloseDuration: Duration(seconds: 2),
-          alignment: Alignment.bottomCenter,
-        );
-      }
-    }
-  }
+  // void _onRelayClientMessage(MessageEvent? event) async {
+  //   _refreshState(event);
+  //   if (event != null) {
+  //     final jsonObject = await EthUtils.decodeMessageEvent(event);
+  //     if (!mounted) return;
+  //     if (jsonObject is JsonRpcRequest &&
+  //         jsonObject.method == MethodConstants.WC_SESSION_PING) {
+  //       toastification.show(
+  //         title: Text(jsonObject.method, maxLines: 1),
+  //         context: context,
+  //         autoCloseDuration: Duration(seconds: 2),
+  //         alignment: Alignment.bottomCenter,
+  //       );
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    _pairings = _walletKit.pairings.getAll();
+    // _pairings = _walletKit.pairings.getAll();
     _pairings = _pairings.where((p) => p.active).toList();
     return Stack(
       children: [

@@ -76,10 +76,10 @@ class MethodsUtils {
     await Future.delayed(Duration(milliseconds: delay));
     DeepLinkHandler.waiting.value = false;
     try {
-      await walletKit.redirectToDapp(
-        topic: topic,
-        redirect: redirect,
-      );
+      // await walletKit.redirectToDapp(
+      //   topic: topic,
+      //   redirect: redirect,
+      // ); // TODO
     } on ReownSignError catch (e) {
       onFail?.call(e);
     }

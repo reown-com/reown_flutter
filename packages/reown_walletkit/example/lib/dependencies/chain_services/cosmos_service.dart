@@ -10,7 +10,7 @@ import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
 
 class CosmosService {
-  late final ReownWalletKit _walletKit;
+  final _walletKit = GetIt.I<IWalletKitService>().walletKit;
 
   final ChainMetadata chainSupported;
 
@@ -21,7 +21,6 @@ class CosmosService {
       };
 
   CosmosService({required this.chainSupported}) {
-    _walletKit = GetIt.I<IWalletKitService>().walletKit;
     for (var handler in cosmosRequestHandlers.entries) {
       _walletKit.registerRequestHandler(
         chainId: chainSupported.chainId,
@@ -33,7 +32,10 @@ class CosmosService {
 
   Future<void> cosmosGetAccounts(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] cosmosGetAccounts request: $parameters');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(
       id: pRequest.id,
       jsonrpc: '2.0',
@@ -77,7 +79,10 @@ class CosmosService {
 
   Future<void> cosmosSignDirect(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] cosmosSignDirect request: $parameters');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(
       id: pRequest.id,
       jsonrpc: '2.0',
@@ -137,7 +142,10 @@ class CosmosService {
 
   Future<void> cosmosSignAmino(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] cosmosSignAmino request: $parameters');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     final error = Errors.getSdkError(Errors.UNSUPPORTED_METHODS);
     // TODO method not yest implemented due to lack of documentation
     final response = JsonRpcResponse(
@@ -153,7 +161,10 @@ class CosmosService {
   }
 
   void _handleResponseForTopic(String topic, JsonRpcResponse response) async {
-    final session = _walletKit.sessions.get(topic);
+    final activeSessions = await _walletKit.getActiveSessionByTopic(
+      sessionTopic: topic,
+    );
+    final session = activeSessions.values.last;
 
     try {
       await _walletKit.respondSessionRequest(
@@ -162,13 +173,13 @@ class CosmosService {
       );
       MethodsUtils.handleRedirect(
         topic,
-        session!.peer.metadata.redirect,
+        session.peer.metadata.redirect,
         response.error?.message,
       );
     } on ReownSignError catch (error) {
       MethodsUtils.handleRedirect(
         topic,
-        session!.peer.metadata.redirect,
+        session.peer.metadata.redirect,
         error.message,
       );
     }

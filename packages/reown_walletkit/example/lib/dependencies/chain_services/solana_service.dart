@@ -21,11 +21,10 @@ class SolanaService {
         'solana_signAllTransactions': solanaSignAllTransaction,
       };
 
-  late final ReownWalletKit _walletKit;
+  final _walletKit = GetIt.I<IWalletKitService>().walletKit;
   final ChainMetadata chainSupported;
 
   SolanaService({required this.chainSupported}) {
-    _walletKit = GetIt.I<IWalletKitService>().walletKit;
     for (var handler in solanaRequestHandlers.entries) {
       _walletKit.registerRequestHandler(
         chainId: chainSupported.chainId,
@@ -37,7 +36,10 @@ class SolanaService {
 
   Future<void> solanaSignMessage(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] solanaSignMessage request: $parameters');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
@@ -95,7 +97,10 @@ class SolanaService {
   Future<void> solanaSignTransaction(String topic, dynamic parameters) async {
     debugPrint(
         '[SampleWallet] solanaSignTransaction: ${jsonEncode(parameters)}');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
@@ -193,7 +198,10 @@ class SolanaService {
     debugPrint(
       '[SampleWallet] solanaSignAllTransaction: ${jsonEncode(parameters)}',
     );
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
@@ -274,7 +282,10 @@ class SolanaService {
   }
 
   void _handleResponseForTopic(String topic, JsonRpcResponse response) async {
-    final session = _walletKit.sessions.get(topic);
+    final activeSessions = await _walletKit.getActiveSessionByTopic(
+      sessionTopic: topic,
+    );
+    final session = activeSessions.values.last;
 
     try {
       await _walletKit.respondSessionRequest(
@@ -298,7 +309,7 @@ class SolanaService {
   Future<dynamic> getBalance({required String address}) async {
     final uri = Uri.parse('https://rpc.walletconnect.org/v1');
     final queryParams = {
-      'projectId': _walletKit.core.projectId,
+      'projectId': _walletKit.projectId,
       'chainId': chainSupported.chainId
     };
     final response = await http.post(

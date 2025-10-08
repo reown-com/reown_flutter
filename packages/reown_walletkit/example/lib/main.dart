@@ -182,18 +182,18 @@ class _MyHomePageState extends State<MyHomePage> {
       await walletKitService.setUpAccounts();
       await walletKitService.init();
 
-      walletKitService.walletKit.core.relayClient.onRelayClientConnect
-          .subscribe(
-        _setState,
-      );
-      walletKitService.walletKit.core.relayClient.onRelayClientDisconnect
-          .subscribe(
-        _setState,
-      );
+      // walletKitService.walletKit.core.relayClient.onRelayClientConnect
+      //     .subscribe(
+      //   _setState,
+      // );
+      // walletKitService.walletKit.core.relayClient.onRelayClientDisconnect
+      //     .subscribe(
+      //   _setState,
+      // );
 
-      walletKitService.walletKit.core.connectivity.isOnline.addListener(
-        _onLine,
-      );
+      // walletKitService.walletKit.core.connectivity.isOnline.addListener(
+      //   _onLine,
+      // );
 
       // Support EVM Chains
       for (final chainData in ChainsDataList.eip155Chains) {
@@ -307,22 +307,22 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(_pageDatas[_selectedIndex].title),
-        actions: [
-          const Text('Relay '),
-          Builder(
-            builder: (context) {
-              final walletKit = GetIt.I<IWalletKitService>().walletKit;
-              return CircleAvatar(
-                radius: 6.0,
-                backgroundColor: walletKit.core.relayClient.isConnected &&
-                        walletKit.core.connectivity.isOnline.value
-                    ? Colors.green
-                    : Colors.red,
-              );
-            },
-          ),
-          const SizedBox(width: 16.0),
-        ],
+        // actions: [
+        //   const Text('Relay '),
+        //   Builder(
+        //     builder: (context) {
+        //       final walletKit = GetIt.I<IWalletKitService>().walletKit;
+        //       return CircleAvatar(
+        //         radius: 6.0,
+        //         backgroundColor: walletKit.core.relayClient.isConnected &&
+        //                 walletKit.core.connectivity.isOnline.value
+        //             ? Colors.green
+        //             : Colors.red,
+        //       );
+        //     },
+        //   ),
+        //   const SizedBox(width: 16.0),
+        // ],
       ),
       body: Stack(
         children: [

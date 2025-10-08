@@ -14,8 +14,7 @@ import 'package:reown_walletkit_wallet/dependencies/bip32/utils/ecurve.dart'
     as bip32;
 
 class TronService {
-  late final ReownWalletKit _walletKit;
-
+  final _walletKit = GetIt.I<IWalletKitService>().walletKit;
   final ChainMetadata chainSupported;
 
   Map<String, dynamic Function(String, dynamic)> get tronRequestHandlers => {
@@ -24,8 +23,6 @@ class TronService {
       };
 
   TronService({required this.chainSupported}) {
-    _walletKit = GetIt.I<IWalletKitService>().walletKit;
-
     for (var handler in tronRequestHandlers.entries) {
       _walletKit.registerRequestHandler(
         chainId: chainSupported.chainId,
@@ -34,12 +31,15 @@ class TronService {
       );
     }
 
-    _walletKit.onSessionRequest.subscribe(_onSessionRequest);
+    // _walletKit.onSessionRequest.subscribe(_onSessionRequest);
   }
 
   Future<void> tronSignMessage(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] tronSignMessage: $parameters');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(
       id: pRequest.id,
       jsonrpc: '2.0',
@@ -117,7 +117,10 @@ class TronService {
 
   Future<void> tronSignTransaction(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] tronSignTransaction: ${jsonEncode(parameters)}');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(
       id: pRequest.id,
       jsonrpc: '2.0',
@@ -190,7 +193,10 @@ class TronService {
   }
 
   void _handleResponseForTopic(String topic, JsonRpcResponse response) async {
-    final session = _walletKit.sessions.get(topic);
+    final activeSessions = await _walletKit.getActiveSessionByTopic(
+      sessionTopic: topic,
+    );
+    final session = activeSessions.values.last;
 
     try {
       await _walletKit.respondSessionRequest(

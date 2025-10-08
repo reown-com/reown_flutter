@@ -62,10 +62,11 @@ class WalletKitService extends IWalletKitService {
 
     // Create the ReownWalletKit instance
     _walletKit = ReownWalletKit(
-      core: ReownCore(
-        projectId: DartDefines.projectId,
-        logLevel: LogLevel.all,
-      ),
+      // core: ReownCore(
+      //   projectId: DartDefines.projectId,
+      //   logLevel: LogLevel.all,
+      // ),
+      projectId: DartDefines.projectId,
       metadata: PairingMetadata(
         name: 'FL WalletKit Sample',
         description: 'Reown\'s sample wallet with Flutter',
@@ -77,23 +78,23 @@ class WalletKitService extends IWalletKitService {
       ),
     );
 
-    _walletKit!.core.addLogListener(_logListener);
+    // _walletKit!.core.addLogListener(_logListener);
 
     // Setup our listeners
     debugPrint('[SampleWallet] create');
-    _walletKit!.core.pairing.onPairingInvalid.subscribe(_onPairingInvalid);
-    _walletKit!.core.pairing.onPairingCreate.subscribe(_onPairingCreate);
-    _walletKit!.core.relayClient.onRelayClientError.subscribe(
-      _onRelayClientError,
-    );
-    _walletKit!.core.relayClient.onRelayClientMessage.subscribe(
-      _onRelayClientMessage,
-    );
+    // _walletKit!.core.pairing.onPairingInvalid.subscribe(_onPairingInvalid);
+    // _walletKit!.core.pairing.onPairingCreate.subscribe(_onPairingCreate);
+    // _walletKit!.core.relayClient.onRelayClientError.subscribe(
+    //   _onRelayClientError,
+    // );
+    // _walletKit!.core.relayClient.onRelayClientMessage.subscribe(
+    //   _onRelayClientMessage,
+    // );
 
     _walletKit!.onSessionProposal.subscribe(_onSessionProposal);
-    _walletKit!.onSessionProposalError.subscribe(_onSessionProposalError);
-    _walletKit!.onSessionConnect.subscribe(_onSessionConnect);
-    _walletKit!.onSessionAuthRequest.subscribe(_onSessionAuthRequest);
+    // _walletKit!.onSessionProposalError.subscribe(_onSessionProposalError);
+    // _walletKit!.onSessionConnect.subscribe(_onSessionConnect);
+    // _walletKit!.onSessionAuthRequest.subscribe(_onSessionAuthRequest);
   }
 
   @override
@@ -129,19 +130,19 @@ class WalletKitService extends IWalletKitService {
   Future<void> init() async {
     // Await the initialization of the ReownWalletKit instance
     await _walletKit!.init();
-    await _emitEvent();
+    // await _emitEvent();
   }
 
   Future<void> _emitEvent() async {
-    final isOnline = _walletKit!.core.connectivity.isOnline.value;
-    if (!isOnline) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      _emitEvent();
-      return;
-    }
+    // final isOnline = _walletKit!.core.connectivity.isOnline.value;
+    // if (!isOnline) {
+    //   await Future.delayed(const Duration(milliseconds: 500));
+    //   _emitEvent();
+    //   return;
+    // }
 
-    final sessions = _walletKit!.sessions.getAll();
-    for (var session in sessions) {
+    final sessions = await _walletKit!.getActiveSessions();
+    for (var session in sessions.values) {
       try {
         final events = NamespaceUtils.getNamespacesEventsForChain(
           chainId: 'eip155:1',
@@ -168,21 +169,21 @@ class WalletKitService extends IWalletKitService {
 
   @override
   FutureOr onDispose() {
-    _walletKit!.core.removeLogListener(_logListener);
+    // _walletKit!.core.removeLogListener(_logListener);
 
-    _walletKit!.core.pairing.onPairingInvalid.unsubscribe(_onPairingInvalid);
-    _walletKit!.core.pairing.onPairingCreate.unsubscribe(_onPairingCreate);
-    _walletKit!.core.relayClient.onRelayClientError.unsubscribe(
-      _onRelayClientError,
-    );
-    _walletKit!.core.relayClient.onRelayClientMessage.unsubscribe(
-      _onRelayClientMessage,
-    );
+    // _walletKit!.core.pairing.onPairingInvalid.unsubscribe(_onPairingInvalid);
+    // _walletKit!.core.pairing.onPairingCreate.unsubscribe(_onPairingCreate);
+    // _walletKit!.core.relayClient.onRelayClientError.unsubscribe(
+    //   _onRelayClientError,
+    // );
+    // _walletKit!.core.relayClient.onRelayClientMessage.unsubscribe(
+    //   _onRelayClientMessage,
+    // );
 
-    _walletKit!.onSessionProposal.unsubscribe(_onSessionProposal);
-    _walletKit!.onSessionProposalError.unsubscribe(_onSessionProposalError);
-    _walletKit!.onSessionConnect.unsubscribe(_onSessionConnect);
-    _walletKit!.onSessionAuthRequest.unsubscribe(_onSessionAuthRequest);
+    // _walletKit!.onSessionProposal.unsubscribe(_onSessionProposal);
+    // _walletKit!.onSessionProposalError.unsubscribe(_onSessionProposalError);
+    // _walletKit!.onSessionConnect.unsubscribe(_onSessionConnect);
+    // _walletKit!.onSessionAuthRequest.unsubscribe(_onSessionAuthRequest);
   }
 
   @override
@@ -194,17 +195,17 @@ class WalletKitService extends IWalletKitService {
         MethodConstants.WC_SESSION_AUTHENTICATE,
       ];
 
-  void _onRelayClientMessage(MessageEvent? event) async {
-    if (event != null) {
-      final jsonObject = await EthUtils.decodeMessageEvent(event);
-      debugPrint('[SampleWallet] _onRelayClientMessage $jsonObject');
-      if (jsonObject is JsonRpcRequest) {
-        DeepLinkHandler.waiting.value = _loaderMethods.contains(
-          jsonObject.method,
-        );
-      }
-    }
-  }
+  // void _onRelayClientMessage(MessageEvent? event) async {
+  //   if (event != null) {
+  //     final jsonObject = await EthUtils.decodeMessageEvent(event);
+  //     debugPrint('[SampleWallet] _onRelayClientMessage $jsonObject');
+  //     if (jsonObject is JsonRpcRequest) {
+  //       DeepLinkHandler.waiting.value = _loaderMethods.contains(
+  //         jsonObject.method,
+  //       );
+  //     }
+  //   }
+  // }
 
   void _onSessionProposal(SessionProposalEvent? args) async {
     debugPrint('[SampleWallet] _onSessionProposal ${jsonEncode(args?.params)}');
@@ -227,7 +228,8 @@ class WalletKitService extends IWalletKitService {
         // so if you want to handle requests using onSessionRequest event then you would need to manually add that method in the approved namespaces
         try {
           _walletKit!.approveSession(
-            id: args.id,
+            // id: args.id,
+            proposalPublicKey: args.params.proposer.publicKey,
             namespaces: args.params.generatedNamespaces!,
             sessionProperties: args.params.sessionProperties,
           );
@@ -246,10 +248,14 @@ class WalletKitService extends IWalletKitService {
         }
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED).toSignError();
-        await _walletKit!.rejectSession(id: args.id, reason: error);
-        await _walletKit!.core.pairing.disconnect(
-          topic: args.params.pairingTopic,
+        await _walletKit!.rejectSession(
+          // id: args.id,
+          proposalPublicKey: args.params.proposer.publicKey,
+          reason: error,
         );
+        // await _walletKit!.core.pairing.disconnect(
+        //   topic: args.params.pairingTopic,
+        // );
         MethodsUtils.handleRedirect(
           '',
           proposer.metadata.redirect,
@@ -378,12 +384,12 @@ class WalletKitService extends IWalletKitService {
             auths: cacaos,
           );
           debugPrint('[$runtimeType] approveSessionAuthenticate $session');
-          MethodsUtils.handleRedirect(
-            session.topic,
-            session.session?.peer.metadata.redirect,
-            '',
-            true,
-          );
+          // MethodsUtils.handleRedirect(
+          //   session.topic,
+          //   session.session?.peer.metadata.redirect,
+          //   '',
+          //   true,
+          // );
         } on ReownSignError catch (error) {
           MethodsUtils.handleRedirect(
             args.topic,

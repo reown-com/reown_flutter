@@ -53,14 +53,19 @@ class WCConnectionRequestWidget extends StatelessWidget {
           ),
           const SizedBox(height: StyleConstants.linear8),
           (sessionAuthPayload != null)
-              ? _buildSessionAuthRequestView()
+              ? FutureBuilder(
+                  future: _buildSessionAuthRequestView(),
+                  builder: (context, snapshot) {
+                    return snapshot.data ?? SizedBox.shrink();
+                  },
+                )
               : _buildSessionProposalView(),
         ],
       ),
     );
   }
 
-  Widget _buildSessionAuthRequestView() {
+  Future<Widget> _buildSessionAuthRequestView() async {
     final walletKit = GetIt.I<IWalletKitService>().walletKit;
     //
     final cacaoPayload = CacaoRequestPayload.fromSessionAuthPayload(
@@ -71,7 +76,7 @@ class WCConnectionRequestWidget extends StatelessWidget {
     for (var chain in sessionAuthPayload!.chains) {
       final chainKeys = GetIt.I<IKeyService>().getKeysForChain(chain);
       final iss = 'did:pkh:$chain:${chainKeys.first.address}';
-      final message = walletKit.formatAuthMessage(
+      final message = await walletKit.formatAuthMessage(
         iss: iss,
         cacaoPayload: cacaoPayload,
       );
