@@ -1,6 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:reown_yttrium/channels/ton_channel.dart';
 import 'package:reown_yttrium/models/chain_abstraction.dart';
+import 'package:reown_yttrium/models/shared.dart';
+import 'package:reown_yttrium/utils/channel_utils.dart';
 
 import 'reown_yttrium_platform_interface.dart';
 
@@ -85,7 +88,9 @@ class MethodChannelReownYttrium extends ReownYttriumPlatform {
       );
 
       if (response.containsKey('available')) {
-        final responseData = _handlePlatformResult(response['available']);
+        final responseData = ChannelUtils.handlePlatformResult(
+          response['available'],
+        );
         return PrepareDetailedResponseCompat.success(
           value: PrepareDetailedResponseSuccessCompat.available(
             value: UiFieldsCompat.fromJson(
@@ -95,7 +100,9 @@ class MethodChannelReownYttrium extends ReownYttriumPlatform {
         );
       }
       if (response.containsKey('notRequired')) {
-        final responseData = _handlePlatformResult(response['notRequired']);
+        final responseData = ChannelUtils.handlePlatformResult(
+          response['notRequired'],
+        );
         return PrepareDetailedResponseCompat.success(
           value: PrepareDetailedResponseSuccessCompat.notRequired(
             value: PrepareResponseNotRequiredCompat.fromJson(
@@ -168,19 +175,6 @@ class MethodChannelReownYttrium extends ReownYttriumPlatform {
     }
   }
 
-  dynamic _handlePlatformResult(dynamic input) {
-    if (input == null) {
-      return null; // Handle null explicitly
-    } else if (input is Map) {
-      return input.map((key, value) {
-        // Recursively convert the value, preserving its type
-        return MapEntry('$key', _handlePlatformResult(value));
-      });
-    } else if (input is List) {
-      // Handle lists by recursively converting their elements
-      return input.map((item) => _handlePlatformResult(item)).toList();
-    }
-    // Return scalar values (int, String, bool, double, etc.) as-is
-    return input;
-  }
+  @override
+  MethodChannelTon get tonChannel => MethodChannelTon();
 }

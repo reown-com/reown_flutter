@@ -1,5 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
+import 'package:reown_yttrium/channels/ton_channel.dart';
 import 'package:reown_yttrium/models/chain_abstraction.dart';
+import 'package:reown_yttrium/models/shared.dart';
 
 import 'reown_yttrium_method_channel.dart';
 
@@ -51,4 +53,6 @@ abstract class ReownYttriumPlatform extends PlatformInterface {
     required List<PrimitiveSignatureCompat> routeTxnSigs,
     required PrimitiveSignatureCompat initialTxnSig,
   });
+
+  abstract final MethodChannelTon tonChannel;
 }

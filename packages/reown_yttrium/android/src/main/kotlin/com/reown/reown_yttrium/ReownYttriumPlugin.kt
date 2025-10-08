@@ -44,6 +44,12 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
       "estimateFees" -> estimateFees(call.arguments, result)
       "prepareDetailed" -> prepareDetailed(call.arguments, result)
       "execute" -> execute(call.arguments, result)
+      "ton_init" -> Ton.init(applicationContext, call.arguments, result)
+      "ton_generateKeypair" -> Ton.generateKeypair(result)
+      "ton_getAddressFromKeypair" -> Ton.getAddressFromKeypair(call.arguments, result)
+      "ton_signData" -> Ton.signData(call.arguments, result)
+      "ton_sendMessage" -> Ton.sendMessage(call.arguments, result)
+      "ton_broadcastMessage" -> Ton.broadcastMessage(call.arguments, result)
       else -> result.notImplemented()
     }
   }

@@ -1,4 +1,6 @@
+import 'package:reown_yttrium/channels/ton_channel.dart';
 import 'package:reown_yttrium/models/chain_abstraction.dart';
+import 'package:reown_yttrium/models/shared.dart';
 import 'reown_yttrium_platform_interface.dart';
 
 export 'utils/signature_utils.dart';
@@ -61,4 +63,6 @@ class ReownYttrium {
       initialTxnSig: initialTxnSig,
     );
   }
+
+  MethodChannelTon get tonClient => _yttrium.tonChannel;
 }

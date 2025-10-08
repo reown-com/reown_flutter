@@ -271,20 +271,6 @@ class PrimitiveSignatureCompat {
 }
 
 @freezed
-sealed class PulseMetadataCompat with _$PulseMetadataCompat {
-  const factory PulseMetadataCompat({
-    String? url,
-    String? bundleId,
-    String? packageName,
-    required String sdkVersion,
-    required String sdkPlatform,
-  }) = _PulseMetadataCompat;
-
-  factory PulseMetadataCompat.fromJson(Map<String, dynamic> json) =>
-      _$PulseMetadataCompatFromJson(json);
-}
-
-@freezed
 sealed class TransactionCompat with _$TransactionCompat {
   const factory TransactionCompat({
     required String chainId,
