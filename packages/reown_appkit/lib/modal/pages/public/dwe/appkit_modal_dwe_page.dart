@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:reown_appkit/base/services/models/query_models.dart';
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/pages/public/dwe/widgets/amount_selector.dart';
@@ -16,9 +15,12 @@ import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 
 class ReownAppKitModalDepositScreen extends StatefulWidget {
-  final String? recipient;
-  const ReownAppKitModalDepositScreen({this.recipient})
-    : super(key: KeyConstants.depositPageKey);
+  final String? preselectedRecipient;
+  final ExchangeAsset? preselectedAsset;
+  const ReownAppKitModalDepositScreen({
+    this.preselectedRecipient,
+    this.preselectedAsset,
+  }) : super(key: KeyConstants.depositPageKey);
 
   @override
   State<ReownAppKitModalDepositScreen> createState() =>
@@ -36,33 +38,59 @@ class _ReownAppKitModalDepositScreenState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final appKitModal = ModalProvider.of(context).instance;
+      // IF PRESELECTED ASSET
+      if (widget.preselectedAsset != null) {
+        final assetChainId = widget.preselectedAsset!.network;
+        if (NamespaceUtils.isValidChainId(assetChainId)) {
+          final namespace = assetChainId.split(':').first;
+          final id = assetChainId.split(':').last;
+          final networkInfo = ReownAppKitModalNetworks.getNetworkInfo(
+            namespace,
+            id,
+          );
+          if (networkInfo == null) {
+            final errorMessage =
+                '$assetChainId has not been added to `ReownAppKitModalNetworks`. '
+                'Please call `ReownAppKitModalNetworks.addSupportedNetworks()`, '
+                'See docs: https://docs.reown.com/appkit/flutter/core/custom-chains#custom-networks-addition-and-selection';
+            appKitModal.appKit!.core.logger.e(errorMessage);
+            throw errorMessage;
+          }
+          await appKitModal.selectChain(networkInfo);
+          _dweService.selectedAsset.value = widget.preselectedAsset;
+          _dweService.setSupportedAssets([widget.preselectedAsset!]);
+        } else {
+          appKitModal.appKit!.core.logger.e(
+            'Asset\'s network should conform to "CAIP-2" format',
+          );
+        }
+      }
+      // IF NO SELECTED CHAIN
       if (appKitModal.selectedChain == null) {
-        final netforInfo = ReownAppKitModalNetworks.getNetworkInfo(
-          'eip155',
-          '1',
+        final networks = ReownAppKitModalNetworks.getAllSupportedNetworks();
+        await appKitModal.selectChain(networks.first);
+        final chainId = appKitModal.selectedChain?.chainId;
+        debugPrint('[$runtimeType] selected chain id: $chainId');
+        final supportedAssets = appKitModal.appKit!.getPaymentAssetsForNetwork(
+          chainId: chainId,
         );
-        await appKitModal.selectChain(netforInfo);
+        if (_dweService.selectedAsset.value?.network != chainId) {
+          _dweService.selectedAsset.value =
+              supportedAssets.firstWhereOrNull(
+                (asset) => asset.address != 'native',
+              ) ??
+              supportedAssets.first;
+        } else {
+          _dweService.selectedAsset.value =
+              _dweService.selectedAsset.value ??
+              supportedAssets.firstWhereOrNull(
+                (asset) => asset.address != 'native',
+              ) ??
+              supportedAssets.first;
+        }
+        _dweService.setSupportedAssets(supportedAssets);
       }
-      final chainId = appKitModal.selectedChain?.chainId;
-      final supportedAssets = appKitModal.appKit!.getPaymentAssetsForNetwork(
-        chainId: chainId,
-      );
-      // _dweService.supportedAssets.value = supportedAssets;
-      if (_dweService.selectedAsset.value?.network != chainId) {
-        _dweService.selectedAsset.value =
-            supportedAssets.firstWhereOrNull(
-              (asset) => asset.address != 'native',
-            ) ??
-            supportedAssets.first;
-      } else {
-        _dweService.selectedAsset.value =
-            _dweService.selectedAsset.value ??
-            supportedAssets.firstWhereOrNull(
-              (asset) => asset.address != 'native',
-            ) ??
-            supportedAssets.first;
-      }
-      _dweService.setSupportedAssets(supportedAssets);
+      setState(() {});
     });
   }
 
@@ -94,7 +122,10 @@ class _ReownAppKitModalDepositScreenState
                       ),
                     ),
                     Spacer(),
-                    AssetsButton(),
+                    AbsorbPointer(
+                      absorbing: widget.preselectedAsset != null,
+                      child: AssetsButton(),
+                    ),
                   ],
                 ),
               ),
@@ -129,7 +160,7 @@ class _ReownAppKitModalDepositScreenState
               Divider(color: themeColors.grayGlass005, height: 0.0),
               const SizedBox.square(dimension: kPadding12),
               ExchangesListWidget(
-                recipient: widget.recipient,
+                recipient: widget.preselectedRecipient,
                 onSelect: (exchange, urlResult) {
                   _loopOnStatusCheck(exchange.id, urlResult.sessionId, (
                     result,

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
@@ -130,12 +131,7 @@ class ConnectPageState extends State<ConnectPage> {
                 children: [
                   PrimaryButton(
                     buttonSize: BaseButtonSize.regular,
-                    onTap: widget.appKitModal.isConnected
-                        ? () {
-                            widget.appKitModal
-                                .openModalView(ReownAppKitModalDepositScreen());
-                          }
-                        : null,
+                    onTap: _openDepositScreen,
                     title: 'Deposit with Exchange',
                   ),
                 ],
@@ -192,6 +188,15 @@ class ConnectPageState extends State<ConnectPage> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  void _openDepositScreen() {
+    widget.appKitModal.openModalView(
+      ReownAppKitModalDepositScreen(
+        preselectedRecipient: '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
+        preselectedAsset: solanaUSDC,
       ),
     );
   }

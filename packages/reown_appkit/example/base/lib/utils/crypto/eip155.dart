@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:eth_sig_util/util/utils.dart';
-import 'package:reown_appkit/modal/utils/public/appkit_modal_networks_utils.dart';
+import 'package:reown_appkit/reown_appkit.dart';
 
 enum EIP155Methods {
   personalSign,

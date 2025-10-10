@@ -37,7 +37,9 @@ export 'base/services/models/asset_models.dart'
         solanaUSDT,
         solanaUSDC,
         allExchangeAssets,
-        ExchangeAssetExtension;
+        ExchangeAssetExtension,
+        AssetMetadata;
+
 export 'base/services/models/result_models.dart';
 export 'base/services/i_exchange_service.dart';
 export 'base/services/exchange_service.dart';

@@ -105,57 +105,9 @@ const ethereumETH = ExchangeAsset(
   metadata: AssetMetadata(name: 'Ethereum', symbol: 'ETH', decimals: 18),
 );
 
-const baseETH = ExchangeAsset(
-  network: 'eip155:8453',
-  address: 'native',
-  metadata: AssetMetadata(name: 'Ethereum', symbol: 'ETH', decimals: 18),
-);
-
-const baseUSDC = ExchangeAsset(
-  network: 'eip155:8453',
-  address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
-  metadata: AssetMetadata(name: 'USD Coin', symbol: 'USDC', decimals: 6),
-);
-
-const baseSepoliaUSDC = ExchangeAsset(
-  network: 'eip155:84532',
-  address: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
-  metadata: AssetMetadata(name: 'USD Coin', symbol: 'USDC', decimals: 6),
-);
-
-const baseSepoliaETH = ExchangeAsset(
-  network: 'eip155:84532',
-  address: 'native',
-  metadata: AssetMetadata(name: 'Ethereum', symbol: 'ETH', decimals: 18),
-);
-
-const sepoliaETH = ExchangeAsset(
-  network: 'eip155:11155111',
-  address: 'native',
-  metadata: AssetMetadata(name: 'Ethereum', symbol: 'ETH', decimals: 18),
-);
-
 const ethereumUSDC = ExchangeAsset(
   network: 'eip155:1',
   address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-  metadata: AssetMetadata(name: 'USD Coin', symbol: 'USDC', decimals: 6),
-);
-
-const arbitrumUSDC = ExchangeAsset(
-  network: 'eip155:42161',
-  address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
-  metadata: AssetMetadata(name: 'USD Coin', symbol: 'USDC', decimals: 6),
-);
-
-const polygonUSDC = ExchangeAsset(
-  network: 'eip155:137',
-  address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-  metadata: AssetMetadata(name: 'USD Coin', symbol: 'USDC', decimals: 6),
-);
-
-const solanaUSDC = ExchangeAsset(
-  network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-  address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
   metadata: AssetMetadata(name: 'USD Coin', symbol: 'USDC', decimals: 6),
 );
 
@@ -171,10 +123,10 @@ const optimismUSDT = ExchangeAsset(
   metadata: AssetMetadata(name: 'Tether USD', symbol: 'USDT', decimals: 6),
 );
 
-const arbitrumUSDT = ExchangeAsset(
-  network: 'eip155:42161',
-  address: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
-  metadata: AssetMetadata(name: 'Tether USD', symbol: 'USDT', decimals: 6),
+const polygonUSDC = ExchangeAsset(
+  network: 'eip155:137',
+  address: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+  metadata: AssetMetadata(name: 'USD Coin', symbol: 'USDC', decimals: 6),
 );
 
 const polygonUSDT = ExchangeAsset(
@@ -183,10 +135,46 @@ const polygonUSDT = ExchangeAsset(
   metadata: AssetMetadata(name: 'Tether USD', symbol: 'USDT', decimals: 6),
 );
 
-const solanaUSDT = ExchangeAsset(
-  network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-  address: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+const baseETH = ExchangeAsset(
+  network: 'eip155:8453',
+  address: 'native',
+  metadata: AssetMetadata(name: 'Ethereum', symbol: 'ETH', decimals: 18),
+);
+
+const baseUSDC = ExchangeAsset(
+  network: 'eip155:8453',
+  address: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+  metadata: AssetMetadata(name: 'USD Coin', symbol: 'USDC', decimals: 6),
+);
+
+const arbitrumUSDC = ExchangeAsset(
+  network: 'eip155:42161',
+  address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
+  metadata: AssetMetadata(name: 'USD Coin', symbol: 'USDC', decimals: 6),
+);
+
+const arbitrumUSDT = ExchangeAsset(
+  network: 'eip155:42161',
+  address: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
   metadata: AssetMetadata(name: 'Tether USD', symbol: 'USDT', decimals: 6),
+);
+
+const baseSepoliaETH = ExchangeAsset(
+  network: 'eip155:84532',
+  address: 'native',
+  metadata: AssetMetadata(name: 'Ethereum', symbol: 'ETH', decimals: 18),
+);
+
+const baseSepoliaUSDC = ExchangeAsset(
+  network: 'eip155:84532',
+  address: '0x036CbD53842c5426634e7929541eC2318f3dCF7e',
+  metadata: AssetMetadata(name: 'USD Coin', symbol: 'USDC', decimals: 6),
+);
+
+const sepoliaETH = ExchangeAsset(
+  network: 'eip155:11155111',
+  address: 'native',
+  metadata: AssetMetadata(name: 'Ethereum', symbol: 'ETH', decimals: 18),
 );
 
 const solanaSOL = ExchangeAsset(
@@ -195,21 +183,33 @@ const solanaSOL = ExchangeAsset(
   metadata: AssetMetadata(name: 'Solana', symbol: 'SOL', decimals: 9),
 );
 
+const solanaUSDC = ExchangeAsset(
+  network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+  metadata: AssetMetadata(name: 'USD Coin', symbol: 'USDC', decimals: 6),
+);
+
+const solanaUSDT = ExchangeAsset(
+  network: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  address: 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB',
+  metadata: AssetMetadata(name: 'Tether USD', symbol: 'USDT', decimals: 6),
+);
+
 const List<ExchangeAsset> allExchangeAssets = [
   ethereumETH,
-  baseETH,
-  baseUSDC,
-  baseSepoliaUSDC,
-  baseSepoliaETH,
-  sepoliaETH,
   ethereumUSDC,
-  arbitrumUSDC,
-  polygonUSDC,
-  solanaUSDC,
   ethereumUSDT,
   optimismUSDT,
-  arbitrumUSDT,
+  polygonUSDC,
   polygonUSDT,
-  solanaUSDT,
+  baseETH,
+  baseUSDC,
+  arbitrumUSDC,
+  arbitrumUSDT,
+  baseSepoliaETH,
+  baseSepoliaUSDC,
+  sepoliaETH,
   solanaSOL,
+  solanaUSDC,
+  solanaUSDT,
 ];
