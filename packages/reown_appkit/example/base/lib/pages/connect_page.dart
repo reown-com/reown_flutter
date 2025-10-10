@@ -196,7 +196,7 @@ class ConnectPageState extends State<ConnectPage> {
     widget.appKitModal.openModalView(
       ReownAppKitModalDepositScreen(
         preselectedRecipient: '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
-        preselectedAsset: solanaUSDC,
+        preselectedAsset: solanaUSDT,
       ),
     );
   }

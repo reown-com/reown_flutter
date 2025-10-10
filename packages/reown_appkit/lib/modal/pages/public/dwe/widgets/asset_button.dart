@@ -48,7 +48,7 @@ class _AssetsButtonState extends State<AssetsButton> {
         return FutureBuilder(
           future: _dweService.getFungiblePrice(asset: selectedAsset),
           builder: (context, snapshot) {
-            final token = snapshot.data;
+            final fungible = snapshot.data;
             return Stack(
               children: [
                 widget.iconOnly
@@ -57,7 +57,7 @@ class _AssetsButtonState extends State<AssetsButton> {
                         children: [
                           RoundedIcon(
                             assetPath: 'lib/modal/assets/icons/coin.svg',
-                            imageUrl: token?.iconUrl ?? chainIcon,
+                            imageUrl: fungible?.iconUrl ?? chainIcon,
                             size: widget.size.height * 0.7,
                             assetColor: themeColors.inverse100,
                             padding: widget.size == BaseButtonSize.small
@@ -106,7 +106,7 @@ class _AssetsButtonState extends State<AssetsButton> {
                                   RoundedIcon(
                                     assetPath:
                                         'lib/modal/assets/icons/coin.svg',
-                                    imageUrl: token?.iconUrl ?? chainIcon,
+                                    imageUrl: fungible?.iconUrl ?? chainIcon,
                                     size: widget.size.height * 0.6,
                                     assetColor: themeColors.inverse100,
                                     padding: widget.size == BaseButtonSize.small
@@ -124,7 +124,7 @@ class _AssetsButtonState extends State<AssetsButton> {
                                   RoundedIcon(
                                     assetPath:
                                         'lib/modal/assets/icons/coin.svg',
-                                    imageUrl: token?.iconUrl ?? chainIcon,
+                                    imageUrl: fungible?.iconUrl ?? chainIcon,
                                     size: widget.size.height * 0.6,
                                     assetColor: themeColors.inverse100,
                                     padding: widget.size == BaseButtonSize.small
