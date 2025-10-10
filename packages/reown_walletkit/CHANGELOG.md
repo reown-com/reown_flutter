@@ -1,6 +1,6 @@
 ## 1.3.3
 
-- Verify V2
+- Security Improvements
 
 ## 1.3.2
 

@@ -1,6 +1,6 @@
 ## 1.6.2
 
-- Verify V2
+- Security Improvements
 
 ## 1.6.1
 
