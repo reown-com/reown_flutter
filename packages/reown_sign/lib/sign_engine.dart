@@ -104,7 +104,7 @@ class ReownSign implements IReownSign {
     }
 
     await core.pairing.init();
-    await core.verify.init(verifyUrl: metadata.verifyUrl);
+    await core.verify.init();
     await proposals.init();
     await sessions.init();
     await pendingRequests.init();
@@ -916,6 +916,7 @@ class ReownSign implements IReownSign {
   Future<void> _onSessionProposeRequest(
     String topic,
     JsonRpcRequest payload, [
+    String? attestation,
     _,
   ]) async {
     if (_shouldIgnoreSessionPropose(topic)) {
@@ -1000,6 +1001,7 @@ class ReownSign implements IReownSign {
       final verifyContext = await _getVerifyContext(
         payload,
         proposal.proposer.metadata,
+        attestation,
         TransportType.relay,
       );
 
@@ -1022,6 +1024,7 @@ class ReownSign implements IReownSign {
   Future<void> _onSessionSettleRequest(
     String topic,
     JsonRpcRequest payload, [
+    __,
     _,
   ]) async {
     core.logger.d('_onSessionSettleRequest, topic: $topic, payload: $payload');
@@ -1089,6 +1092,7 @@ class ReownSign implements IReownSign {
   Future<void> _onSessionUpdateRequest(
     String topic,
     JsonRpcRequest payload, [
+    __,
     _,
   ]) async {
     try {
@@ -1119,6 +1123,7 @@ class ReownSign implements IReownSign {
   Future<void> _onSessionExtendRequest(
     String topic,
     JsonRpcRequest payload, [
+    __,
     _,
   ]) async {
     try {
@@ -1148,6 +1153,7 @@ class ReownSign implements IReownSign {
   Future<void> _onSessionPingRequest(
     String topic,
     JsonRpcRequest payload, [
+    __,
     _,
   ]) async {
     try {
@@ -1173,6 +1179,7 @@ class ReownSign implements IReownSign {
   Future<void> _onSessionDeleteRequest(
     String topic,
     JsonRpcRequest payload, [
+    __,
     _,
   ]) async {
     try {
@@ -1201,6 +1208,7 @@ class ReownSign implements IReownSign {
   Future<void> _onSessionRequest(
     String topic,
     JsonRpcRequest payload, [
+    String? attestation,
     TransportType transportType = TransportType.relay,
   ]) async {
     try {
@@ -1216,6 +1224,7 @@ class ReownSign implements IReownSign {
       final verifyContext = await _getVerifyContext(
         payload,
         session.peer.metadata,
+        attestation,
         transportType,
       );
 
@@ -1290,6 +1299,7 @@ class ReownSign implements IReownSign {
   Future<void> _onSessionEventRequest(
     String topic,
     JsonRpcRequest payload, [
+    __,
     _,
   ]) async {
     try {
@@ -1685,6 +1695,7 @@ class ReownSign implements IReownSign {
   Future<VerifyContext> _getVerifyContext(
     JsonRpcRequest payload,
     PairingMetadata proposerMetada,
+    String? attestationJWT,
     TransportType transportType,
   ) async {
     if (transportType.isLinkMode) {
@@ -1698,8 +1709,11 @@ class ReownSign implements IReownSign {
       final metadataUri = Uri.tryParse(proposerMetada.url);
 
       final jsonStringify = jsonEncode(payload.toJson());
-      final hash = core.crypto.getUtils().hashMessage(jsonStringify);
-      final attestation = await core.verify.resolve(attestationId: hash);
+      final attestationId = core.crypto.getUtils().hashMessage(jsonStringify);
+      final attestation = await core.verify.resolve(
+        attestationId: attestationId,
+        attestationJWT: attestationJWT,
+      );
       final validation = core.verify.getValidation(attestation, metadataUri);
       final origin = attestation?.origin;
       return VerifyContext(
@@ -2464,6 +2478,7 @@ class ReownSign implements IReownSign {
   void _onSessionAuthenticateRequest(
     String topic,
     JsonRpcRequest payload, [
+    String? attestation,
     TransportType transportType = TransportType.relay,
   ]) async {
     core.logger.d(
@@ -2495,6 +2510,7 @@ class ReownSign implements IReownSign {
       final verifyContext = await _getVerifyContext(
         payload,
         saRequest.requester.metadata,
+        attestation,
         transportType,
       );
 
