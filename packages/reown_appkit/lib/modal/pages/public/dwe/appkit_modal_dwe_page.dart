@@ -69,7 +69,8 @@ class _ReownAppKitModalDepositScreenState
       if (appKitModal.selectedChain == null) {
         final networks = ReownAppKitModalNetworks.getAllSupportedNetworks();
         await appKitModal.selectChain(networks.first);
-        final chainId = appKitModal.selectedChain?.chainId;
+      }
+      final chainId = appKitModal.selectedChain?.chainId;
         debugPrint('[$runtimeType] selected chain id: $chainId');
         final supportedAssets = appKitModal.appKit!.getPaymentAssetsForNetwork(
           chainId: chainId,
@@ -88,8 +89,7 @@ class _ReownAppKitModalDepositScreenState
               ) ??
               supportedAssets.first;
         }
-        _dweService.setSupportedAssets(supportedAssets);
-      }
+      _dweService.setSupportedAssets(supportedAssets);
       setState(() {});
     });
   }
