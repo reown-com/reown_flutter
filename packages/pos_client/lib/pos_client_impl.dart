@@ -304,7 +304,6 @@ class PosClient with PosRpcService, ValidatorService implements IPosClient {
       return;
     }
 
-    print('[$runtimeType] onSessionConnect: $approvedSession');
     onPosEvent.broadcast(ConnectedEvent());
 
     try {

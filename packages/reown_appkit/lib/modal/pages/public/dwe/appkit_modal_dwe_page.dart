@@ -198,7 +198,7 @@ class _ReownAppKitModalDepositScreenState
     final appKit = ModalProvider.of(context).instance.appKit!;
     while (currentAttempt < maxAttempts && !_shouldStopLooping) {
       try {
-        // 4. TODO [DWE Check the status of the deposit/transaction Better to call this in a loop]
+        // 4. [DWE Check the status of the deposit/transaction Better to call this in a loop]
         final params = GetExchangeDepositStatusParams(
           exchangeId: exchangeId,
           sessionId: sessionId,

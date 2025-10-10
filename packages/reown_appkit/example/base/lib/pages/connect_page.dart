@@ -131,7 +131,9 @@ class ConnectPageState extends State<ConnectPage> {
                 children: [
                   PrimaryButton(
                     buttonSize: BaseButtonSize.regular,
-                    onTap: _openDepositScreen,
+                    onTap: widget.appKitModal.isConnected
+                        ? _openDepositScreen
+                        : null,
                     title: 'Deposit with Exchange',
                   ),
                 ],
@@ -151,10 +153,7 @@ class ConnectPageState extends State<ConnectPage> {
                       children: [
                         AppKitModalBalanceButton(
                           appKitModal: widget.appKitModal,
-                          onTap: () {
-                            widget.appKitModal
-                                .openModalView(ReownAppKitModalDepositScreen());
-                          },
+                          onTap: widget.appKitModal.openModalView,
                         ),
                         const SizedBox.square(dimension: 8.0),
                         AppKitModalAddressButton(
@@ -193,12 +192,7 @@ class ConnectPageState extends State<ConnectPage> {
   }
 
   void _openDepositScreen() {
-    widget.appKitModal.openModalView(
-      ReownAppKitModalDepositScreen(
-        preselectedRecipient: '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
-        preselectedAsset: solanaUSDT,
-      ),
-    );
+    widget.appKitModal.openModalView(ReownAppKitModalDepositScreen());
   }
 
   void _onSessionConnect(SessionConnect? event) async {
