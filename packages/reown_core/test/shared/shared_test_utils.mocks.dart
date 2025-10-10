@@ -1602,9 +1602,13 @@ class MockRelayClient extends _i1.Mock implements _i33.RelayClient {
           as _i26.Future<bool>);
 
   @override
-  _i26.Future<bool> handlePublish(String? topic, String? message) =>
+  _i26.Future<bool> handlePublish(
+    String? topic,
+    String? message, [
+    String? attestation,
+  ]) =>
       (super.noSuchMethod(
-            Invocation.method(#handlePublish, [topic, message]),
+            Invocation.method(#handlePublish, [topic, message, attestation]),
             returnValue: _i26.Future<bool>.value(false),
           )
           as _i26.Future<bool>);

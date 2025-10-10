@@ -259,7 +259,8 @@ class Pairing implements IPairing {
   @override
   void register({
     required String method,
-    required Function(String, JsonRpcRequest, [TransportType]) function,
+    required Function(String, JsonRpcRequest, [String?, TransportType])
+    function,
     required ProtocolType type,
   }) {
     if (routerMapRequest.containsKey(method)) {
@@ -979,6 +980,7 @@ class Pairing implements IPairing {
         routerMapRequest[request.method]!.function(
           event.topic,
           request,
+          event.attestation,
           event.transportType,
         );
       } else {
@@ -1033,6 +1035,7 @@ class Pairing implements IPairing {
   Future<void> _onPairingPingRequest(
     String topic,
     JsonRpcRequest request, [
+    __,
     _,
   ]) async {
     final int id = request.id;
@@ -1065,6 +1068,7 @@ class Pairing implements IPairing {
   Future<void> _onPairingDeleteRequest(
     String topic,
     JsonRpcRequest request, [
+    __,
     _,
   ]) async {
     core.logger.d(

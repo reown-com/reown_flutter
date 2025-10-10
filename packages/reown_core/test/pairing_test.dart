@@ -381,7 +381,7 @@ void main() {
           );
           coreA.pairing.register(
             method: 'wc_sessionPropose',
-            function: (s, r, [t = TransportType.relay]) => {},
+            function: (s, r, [a, t = TransportType.relay]) => {},
             type: ProtocolType.sign,
           );
           expect(
@@ -420,7 +420,7 @@ void main() {
           List<RegisteredFunction> registeredFunctions = [
             RegisteredFunction(
               method: MethodConstants.WC_SESSION_PROPOSE,
-              function: (s, r, [t = TransportType.relay]) => {},
+                function: (s, r, [a, t = TransportType.relay]) => {},
               type: ProtocolType.sign,
             ),
             // RegisteredFunction(
@@ -430,7 +430,7 @@ void main() {
             // ),
             RegisteredFunction(
               method: 'wc_authBatchRequest',
-              function: (s, r, [t = TransportType.relay]) => {},
+                function: (s, r, [a, t = TransportType.relay]) => {},
               type: ProtocolType.sign,
             )
           ];

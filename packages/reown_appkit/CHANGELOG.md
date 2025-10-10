@@ -1,6 +1,9 @@
 ## 1.7.0
 
 - NEW FEATURE: Deposit From Exchange
+## 1.6.2
+
+- Security Improvements
 
 ## 1.6.1
 

@@ -1,3 +1,7 @@
+## 1.3.2
+
+- Security Improvements
+
 ## 1.3.1
 
 - Bug fixes
