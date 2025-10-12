@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:reown_appkit/base/services/models/query_models.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
@@ -137,22 +134,30 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
     address = address ?? widget.recipient;
     if (address == null) {
       appKitModal.onModalError.broadcast(ModalError('No recipient found'));
+      setState(() => _selectedExchange = null);
       return;
     }
 
-    final amount = _dweService.selectedAmount.value;
-    final getExchangeUrlParams = GetExchangeUrlParams(
-      exchangeId: exchange.id,
-      asset: selectedAsset,
-      amount: '${amount.toDouble()}',
-      recipient: '$chainId:$address',
-    );
-    debugPrint(jsonEncode(getExchangeUrlParams.toParams()));
-    final GetExchangeUrlResult result = await appKitModal.appKit!
-        .getExchangeUrl(params: getExchangeUrlParams);
+    try {
+      final amount = _dweService.selectedAmount.value;
+      final getExchangeUrlParams = GetExchangeUrlParams(
+        exchangeId: exchange.id,
+        asset: selectedAsset,
+        amount: '${amount.toDouble()}',
+        recipient: '$chainId:$address',
+      );
+      final GetExchangeUrlResult result = await appKitModal.appKit!
+          .getExchangeUrl(params: getExchangeUrlParams);
 
-    setState(() => _selectedExchange = null);
-    widget.onSelect.call(exchange, result);
-    ReownCoreUtils.openURL(result.url);
+      setState(() => _selectedExchange = null);
+      widget.onSelect.call(exchange, result);
+      ReownCoreUtils.openURL(result.url);
+    } on JsonRpcError catch (e) {
+      appKitModal.onModalError.broadcast(ModalError(e.message!));
+      setState(() => _selectedExchange = null);
+    } catch (e) {
+      appKitModal.onModalError.broadcast(ModalError('Something wrong happened'));
+      setState(() => _selectedExchange = null);
+    }
   }
 }

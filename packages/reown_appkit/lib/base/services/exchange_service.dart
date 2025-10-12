@@ -1,10 +1,8 @@
 // ignore_for_file: unused_element
 
-import 'package:reown_appkit/base/services/i_exchange_service.dart';
 import 'package:reown_appkit/base/services/models/query_models.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
-import 'package:reown_core/i_core_impl.dart';
-import 'package:reown_core/models/json_rpc_models.dart';
+import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -99,12 +97,17 @@ class ExchangeService implements IExchangeService {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(jsonRequest),
     );
-    core.logger.d('[$runtimeType] response ${response.body}');
+    core.logger.d(
+      '[$runtimeType] ${rpcRequest.method} response: ${response.body}',
+    );
 
     final responseData = jsonDecode(response.body) as Map<String, dynamic>;
     final jsonResponse = JsonRpcResponse.fromJson(responseData);
 
     if (jsonResponse.error != null) {
+      core.logger.e(
+        '[$runtimeType] ${rpcRequest.method} error: ${jsonResponse.error?.toJson()}',
+      );
       throw jsonResponse.error!;
     }
 
