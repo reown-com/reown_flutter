@@ -1,0 +1,49 @@
+name: Claude Auto Review
+
+on:
+  pull_request:
+    types: [opened]
+    branches: [main, develop]
+  issue_comment:
+    types: [created]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    if: |
+      github.event_name == 'pull_request'
+      || (
+        github.event_name == 'issue_comment'
+        && github.event.issue.pull_request
+        && contains(github.event.comment.body, '@claude review')
+      )
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Claude Review
+        uses: WalletConnect/actions/claude/auto-review@974cce051b8452198a144e0e6c4df4d2328a132c
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          project_context: |
+            This is a Flutter/Dart SDK implementing the WalletConnect protocol for Flutter applications.
+            
+            Tech Stack:
+            - Flutter SDK with Dart 3.3.3+
+            - AppKit and WalletKit implementations
+            - Multi-chain support (EVM, Solana, Polkadot, Kadena, Tron, Cosmos)
+            
+            Key Considerations:
+            - Follow Flutter/Dart best practices and conventions
+            - Ensure proper async/await patterns
+            - Maintain type safety and null safety
+            - Cross-platform compatibility (iOS, Android, Web)
+            - Proper error handling for blockchain operations
