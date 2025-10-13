@@ -481,7 +481,7 @@ class RelayClient implements IRelayClient {
     core.logger.d('[$runtimeType] _handleSubscription ${params.asMap}');
     String topic = params['data']['topic'].value;
     String message = params['data']['message'].value;
-    String? attestation = params['data']['attestation'].value;
+    String? attestation = params['data']['attestation'].valueOr(null);
     return await handlePublish(topic, message, attestation);
   }
 
