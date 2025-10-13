@@ -114,11 +114,11 @@ extension VerifyV2 on Verify {
     if (_publicKey != null && _publicKey!.isExpired()) {
       _core.logger.d('[$runtimeType] verify v2 public key has expired');
       await removePublicKey();
-    } else {
-      _core.logger.d('[$runtimeType] verify v2 publicKey is still valid');
     }
     if (_publicKey == null) {
       await fetchAndPersistPublicKey();
+    } else {
+      _core.logger.d('[$runtimeType] verify v2 publicKey is still valid');
     }
   }
 
