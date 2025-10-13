@@ -10,8 +10,6 @@ abstract class IWebSocketHandler {
 
   StreamChannel<String>? get channel;
 
-  Future<void> get ready;
-
   Future<void> setup({required String url});
 
   Future<void> connect();

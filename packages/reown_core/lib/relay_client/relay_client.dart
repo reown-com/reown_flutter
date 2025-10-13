@@ -417,6 +417,7 @@ class RelayClient implements IRelayClient {
         topic,
         message,
         DateTime.now().millisecondsSinceEpoch,
+        null,
         TransportType.linkMode,
       ),
     );
@@ -425,7 +426,11 @@ class RelayClient implements IRelayClient {
 
   /// JSON RPC MESSAGE HANDLERS
 
-  Future<bool> handlePublish(String topic, String message) async {
+  Future<bool> handlePublish(
+    String topic,
+    String message, [
+    String? attestation,
+  ]) async {
     core.logger.d('[$runtimeType]: Handling Publish Message: $topic, $message');
     // If we want to ignore the message, stop
     if (await _shouldIgnoreMessageEvent(topic, message)) {
@@ -442,6 +447,7 @@ class RelayClient implements IRelayClient {
         topic,
         message,
         DateTime.now().millisecondsSinceEpoch,
+        attestation,
         TransportType.relay,
       ),
     );
@@ -472,9 +478,11 @@ class RelayClient implements IRelayClient {
   }
 
   Future<bool> _handleSubscription(Parameters params) async {
+    core.logger.d('[$runtimeType] _handleSubscription ${params.asMap}');
     String topic = params['data']['topic'].value;
     String message = params['data']['message'].value;
-    return await handlePublish(topic, message);
+    String? attestation = params['data']['attestation'].valueOr(null);
+    return await handlePublish(topic, message, attestation);
   }
 
   int _handleSubscribe(Parameters params) {

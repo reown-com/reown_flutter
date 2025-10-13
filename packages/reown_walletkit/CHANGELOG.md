@@ -1,3 +1,7 @@
+## 1.3.4
+
+- Security Improvements
+
 ## 1.3.2
 
 - Remove Yttrium dependency

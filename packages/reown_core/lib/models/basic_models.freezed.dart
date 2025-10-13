@@ -278,7 +278,7 @@ as String?,
 /// @nodoc
 mixin _$PublishOptions {
 
- int? get ttl; int? get tag; int? get correlationId; Map<String, dynamic>? get tvf; String? get publishMethod;
+ int? get ttl; int? get tag; int? get correlationId; String? get attestation; Map<String, dynamic>? get tvf; String? get publishMethod;
 /// Create a copy of PublishOptions
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -291,16 +291,16 @@ $PublishOptionsCopyWith<PublishOptions> get copyWith => _$PublishOptionsCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublishOptions&&(identical(other.ttl, ttl) || other.ttl == ttl)&&(identical(other.tag, tag) || other.tag == tag)&&(identical(other.correlationId, correlationId) || other.correlationId == correlationId)&&const DeepCollectionEquality().equals(other.tvf, tvf)&&(identical(other.publishMethod, publishMethod) || other.publishMethod == publishMethod));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PublishOptions&&(identical(other.ttl, ttl) || other.ttl == ttl)&&(identical(other.tag, tag) || other.tag == tag)&&(identical(other.correlationId, correlationId) || other.correlationId == correlationId)&&(identical(other.attestation, attestation) || other.attestation == attestation)&&const DeepCollectionEquality().equals(other.tvf, tvf)&&(identical(other.publishMethod, publishMethod) || other.publishMethod == publishMethod));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ttl,tag,correlationId,const DeepCollectionEquality().hash(tvf),publishMethod);
+int get hashCode => Object.hash(runtimeType,ttl,tag,correlationId,attestation,const DeepCollectionEquality().hash(tvf),publishMethod);
 
 @override
 String toString() {
-  return 'PublishOptions(ttl: $ttl, tag: $tag, correlationId: $correlationId, tvf: $tvf, publishMethod: $publishMethod)';
+  return 'PublishOptions(ttl: $ttl, tag: $tag, correlationId: $correlationId, attestation: $attestation, tvf: $tvf, publishMethod: $publishMethod)';
 }
 
 
@@ -311,7 +311,7 @@ abstract mixin class $PublishOptionsCopyWith<$Res>  {
   factory $PublishOptionsCopyWith(PublishOptions value, $Res Function(PublishOptions) _then) = _$PublishOptionsCopyWithImpl;
 @useResult
 $Res call({
- int? ttl, int? tag, int? correlationId, Map<String, dynamic>? tvf, String? publishMethod
+ int? ttl, int? tag, int? correlationId, String? attestation, Map<String, dynamic>? tvf, String? publishMethod
 });
 
 
@@ -328,12 +328,13 @@ class _$PublishOptionsCopyWithImpl<$Res>
 
 /// Create a copy of PublishOptions
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? ttl = freezed,Object? tag = freezed,Object? correlationId = freezed,Object? tvf = freezed,Object? publishMethod = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? ttl = freezed,Object? tag = freezed,Object? correlationId = freezed,Object? attestation = freezed,Object? tvf = freezed,Object? publishMethod = freezed,}) {
   return _then(_self.copyWith(
 ttl: freezed == ttl ? _self.ttl : ttl // ignore: cast_nullable_to_non_nullable
 as int?,tag: freezed == tag ? _self.tag : tag // ignore: cast_nullable_to_non_nullable
 as int?,correlationId: freezed == correlationId ? _self.correlationId : correlationId // ignore: cast_nullable_to_non_nullable
-as int?,tvf: freezed == tvf ? _self.tvf : tvf // ignore: cast_nullable_to_non_nullable
+as int?,attestation: freezed == attestation ? _self.attestation : attestation // ignore: cast_nullable_to_non_nullable
+as String?,tvf: freezed == tvf ? _self.tvf : tvf // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>?,publishMethod: freezed == publishMethod ? _self.publishMethod : publishMethod // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -417,10 +418,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? ttl,  int? tag,  int? correlationId,  Map<String, dynamic>? tvf,  String? publishMethod)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? ttl,  int? tag,  int? correlationId,  String? attestation,  Map<String, dynamic>? tvf,  String? publishMethod)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PublishOptions() when $default != null:
-return $default(_that.ttl,_that.tag,_that.correlationId,_that.tvf,_that.publishMethod);case _:
+return $default(_that.ttl,_that.tag,_that.correlationId,_that.attestation,_that.tvf,_that.publishMethod);case _:
   return orElse();
 
 }
@@ -438,10 +439,10 @@ return $default(_that.ttl,_that.tag,_that.correlationId,_that.tvf,_that.publishM
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? ttl,  int? tag,  int? correlationId,  Map<String, dynamic>? tvf,  String? publishMethod)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? ttl,  int? tag,  int? correlationId,  String? attestation,  Map<String, dynamic>? tvf,  String? publishMethod)  $default,) {final _that = this;
 switch (_that) {
 case _PublishOptions():
-return $default(_that.ttl,_that.tag,_that.correlationId,_that.tvf,_that.publishMethod);}
+return $default(_that.ttl,_that.tag,_that.correlationId,_that.attestation,_that.tvf,_that.publishMethod);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -455,10 +456,10 @@ return $default(_that.ttl,_that.tag,_that.correlationId,_that.tvf,_that.publishM
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? ttl,  int? tag,  int? correlationId,  Map<String, dynamic>? tvf,  String? publishMethod)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? ttl,  int? tag,  int? correlationId,  String? attestation,  Map<String, dynamic>? tvf,  String? publishMethod)?  $default,) {final _that = this;
 switch (_that) {
 case _PublishOptions() when $default != null:
-return $default(_that.ttl,_that.tag,_that.correlationId,_that.tvf,_that.publishMethod);case _:
+return $default(_that.ttl,_that.tag,_that.correlationId,_that.attestation,_that.tvf,_that.publishMethod);case _:
   return null;
 
 }
@@ -470,12 +471,13 @@ return $default(_that.ttl,_that.tag,_that.correlationId,_that.tvf,_that.publishM
 
 @JsonSerializable(includeIfNull: false)
 class _PublishOptions implements PublishOptions {
-  const _PublishOptions({this.ttl, this.tag, this.correlationId, final  Map<String, dynamic>? tvf, this.publishMethod}): _tvf = tvf;
+  const _PublishOptions({this.ttl, this.tag, this.correlationId, this.attestation, final  Map<String, dynamic>? tvf, this.publishMethod}): _tvf = tvf;
   factory _PublishOptions.fromJson(Map<String, dynamic> json) => _$PublishOptionsFromJson(json);
 
 @override final  int? ttl;
 @override final  int? tag;
 @override final  int? correlationId;
+@override final  String? attestation;
  final  Map<String, dynamic>? _tvf;
 @override Map<String, dynamic>? get tvf {
   final value = _tvf;
@@ -500,16 +502,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublishOptions&&(identical(other.ttl, ttl) || other.ttl == ttl)&&(identical(other.tag, tag) || other.tag == tag)&&(identical(other.correlationId, correlationId) || other.correlationId == correlationId)&&const DeepCollectionEquality().equals(other._tvf, _tvf)&&(identical(other.publishMethod, publishMethod) || other.publishMethod == publishMethod));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PublishOptions&&(identical(other.ttl, ttl) || other.ttl == ttl)&&(identical(other.tag, tag) || other.tag == tag)&&(identical(other.correlationId, correlationId) || other.correlationId == correlationId)&&(identical(other.attestation, attestation) || other.attestation == attestation)&&const DeepCollectionEquality().equals(other._tvf, _tvf)&&(identical(other.publishMethod, publishMethod) || other.publishMethod == publishMethod));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,ttl,tag,correlationId,const DeepCollectionEquality().hash(_tvf),publishMethod);
+int get hashCode => Object.hash(runtimeType,ttl,tag,correlationId,attestation,const DeepCollectionEquality().hash(_tvf),publishMethod);
 
 @override
 String toString() {
-  return 'PublishOptions(ttl: $ttl, tag: $tag, correlationId: $correlationId, tvf: $tvf, publishMethod: $publishMethod)';
+  return 'PublishOptions(ttl: $ttl, tag: $tag, correlationId: $correlationId, attestation: $attestation, tvf: $tvf, publishMethod: $publishMethod)';
 }
 
 
@@ -520,7 +522,7 @@ abstract mixin class _$PublishOptionsCopyWith<$Res> implements $PublishOptionsCo
   factory _$PublishOptionsCopyWith(_PublishOptions value, $Res Function(_PublishOptions) _then) = __$PublishOptionsCopyWithImpl;
 @override @useResult
 $Res call({
- int? ttl, int? tag, int? correlationId, Map<String, dynamic>? tvf, String? publishMethod
+ int? ttl, int? tag, int? correlationId, String? attestation, Map<String, dynamic>? tvf, String? publishMethod
 });
 
 
@@ -537,12 +539,13 @@ class __$PublishOptionsCopyWithImpl<$Res>
 
 /// Create a copy of PublishOptions
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? ttl = freezed,Object? tag = freezed,Object? correlationId = freezed,Object? tvf = freezed,Object? publishMethod = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? ttl = freezed,Object? tag = freezed,Object? correlationId = freezed,Object? attestation = freezed,Object? tvf = freezed,Object? publishMethod = freezed,}) {
   return _then(_PublishOptions(
 ttl: freezed == ttl ? _self.ttl : ttl // ignore: cast_nullable_to_non_nullable
 as int?,tag: freezed == tag ? _self.tag : tag // ignore: cast_nullable_to_non_nullable
 as int?,correlationId: freezed == correlationId ? _self.correlationId : correlationId // ignore: cast_nullable_to_non_nullable
-as int?,tvf: freezed == tvf ? _self._tvf : tvf // ignore: cast_nullable_to_non_nullable
+as int?,attestation: freezed == attestation ? _self.attestation : attestation // ignore: cast_nullable_to_non_nullable
+as String?,tvf: freezed == tvf ? _self._tvf : tvf // ignore: cast_nullable_to_non_nullable
 as Map<String, dynamic>?,publishMethod: freezed == publishMethod ? _self.publishMethod : publishMethod // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

@@ -183,7 +183,7 @@ sealed class ReceiverPublicKey with _$ReceiverPublicKey {
 
 class RegisteredFunction {
   String method;
-  Function(String, JsonRpcRequest, [TransportType]) function;
+  Function(String, JsonRpcRequest, [String?, TransportType]) function;
   ProtocolType type;
 
   RegisteredFunction({

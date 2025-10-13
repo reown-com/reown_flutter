@@ -31,12 +31,14 @@ class MessageEvent extends EventArgs {
   String topic;
   String message;
   int publishedAt;
+  String? attestation;
   TransportType transportType;
 
   MessageEvent(
     this.topic,
     this.message,
     this.publishedAt,
+    this.attestation,
     this.transportType,
   );
 
@@ -44,6 +46,7 @@ class MessageEvent extends EventArgs {
         'topic': topic,
         'message': message,
         'publishedAt': publishedAt,
+        if (attestation != null) 'attestation': attestation,
         'transportType': transportType.name,
       };
 

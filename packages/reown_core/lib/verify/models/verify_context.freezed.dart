@@ -540,4 +540,273 @@ as bool?,
 
 }
 
+
+/// @nodoc
+mixin _$VerifyClaims {
+
+@JsonKey(name: 'origin') String get origin;@JsonKey(name: 'id') String get id;@JsonKey(name: 'isScam') bool? get isScam;@JsonKey(name: 'exp') int get expiration;@JsonKey(name: 'isVerified') bool get isVerified;
+/// Create a copy of VerifyClaims
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$VerifyClaimsCopyWith<VerifyClaims> get copyWith => _$VerifyClaimsCopyWithImpl<VerifyClaims>(this as VerifyClaims, _$identity);
+
+  /// Serializes this VerifyClaims to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VerifyClaims&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.id, id) || other.id == id)&&(identical(other.isScam, isScam) || other.isScam == isScam)&&(identical(other.expiration, expiration) || other.expiration == expiration)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,origin,id,isScam,expiration,isVerified);
+
+@override
+String toString() {
+  return 'VerifyClaims(origin: $origin, id: $id, isScam: $isScam, expiration: $expiration, isVerified: $isVerified)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $VerifyClaimsCopyWith<$Res>  {
+  factory $VerifyClaimsCopyWith(VerifyClaims value, $Res Function(VerifyClaims) _then) = _$VerifyClaimsCopyWithImpl;
+@useResult
+$Res call({
+@JsonKey(name: 'origin') String origin,@JsonKey(name: 'id') String id,@JsonKey(name: 'isScam') bool? isScam,@JsonKey(name: 'exp') int expiration,@JsonKey(name: 'isVerified') bool isVerified
+});
+
+
+
+
+}
+/// @nodoc
+class _$VerifyClaimsCopyWithImpl<$Res>
+    implements $VerifyClaimsCopyWith<$Res> {
+  _$VerifyClaimsCopyWithImpl(this._self, this._then);
+
+  final VerifyClaims _self;
+  final $Res Function(VerifyClaims) _then;
+
+/// Create a copy of VerifyClaims
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? origin = null,Object? id = null,Object? isScam = freezed,Object? expiration = null,Object? isVerified = null,}) {
+  return _then(_self.copyWith(
+origin: null == origin ? _self.origin : origin // ignore: cast_nullable_to_non_nullable
+as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,isScam: freezed == isScam ? _self.isScam : isScam // ignore: cast_nullable_to_non_nullable
+as bool?,expiration: null == expiration ? _self.expiration : expiration // ignore: cast_nullable_to_non_nullable
+as int,isVerified: null == isVerified ? _self.isVerified : isVerified // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [VerifyClaims].
+extension VerifyClaimsPatterns on VerifyClaims {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _VerifyClaims value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _VerifyClaims() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _VerifyClaims value)  $default,){
+final _that = this;
+switch (_that) {
+case _VerifyClaims():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _VerifyClaims value)?  $default,){
+final _that = this;
+switch (_that) {
+case _VerifyClaims() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'origin')  String origin, @JsonKey(name: 'id')  String id, @JsonKey(name: 'isScam')  bool? isScam, @JsonKey(name: 'exp')  int expiration, @JsonKey(name: 'isVerified')  bool isVerified)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _VerifyClaims() when $default != null:
+return $default(_that.origin,_that.id,_that.isScam,_that.expiration,_that.isVerified);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'origin')  String origin, @JsonKey(name: 'id')  String id, @JsonKey(name: 'isScam')  bool? isScam, @JsonKey(name: 'exp')  int expiration, @JsonKey(name: 'isVerified')  bool isVerified)  $default,) {final _that = this;
+switch (_that) {
+case _VerifyClaims():
+return $default(_that.origin,_that.id,_that.isScam,_that.expiration,_that.isVerified);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'origin')  String origin, @JsonKey(name: 'id')  String id, @JsonKey(name: 'isScam')  bool? isScam, @JsonKey(name: 'exp')  int expiration, @JsonKey(name: 'isVerified')  bool isVerified)?  $default,) {final _that = this;
+switch (_that) {
+case _VerifyClaims() when $default != null:
+return $default(_that.origin,_that.id,_that.isScam,_that.expiration,_that.isVerified);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _VerifyClaims implements VerifyClaims {
+  const _VerifyClaims({@JsonKey(name: 'origin') required this.origin, @JsonKey(name: 'id') required this.id, @JsonKey(name: 'isScam') this.isScam, @JsonKey(name: 'exp') required this.expiration, @JsonKey(name: 'isVerified') required this.isVerified});
+  factory _VerifyClaims.fromJson(Map<String, dynamic> json) => _$VerifyClaimsFromJson(json);
+
+@override@JsonKey(name: 'origin') final  String origin;
+@override@JsonKey(name: 'id') final  String id;
+@override@JsonKey(name: 'isScam') final  bool? isScam;
+@override@JsonKey(name: 'exp') final  int expiration;
+@override@JsonKey(name: 'isVerified') final  bool isVerified;
+
+/// Create a copy of VerifyClaims
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$VerifyClaimsCopyWith<_VerifyClaims> get copyWith => __$VerifyClaimsCopyWithImpl<_VerifyClaims>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$VerifyClaimsToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VerifyClaims&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.id, id) || other.id == id)&&(identical(other.isScam, isScam) || other.isScam == isScam)&&(identical(other.expiration, expiration) || other.expiration == expiration)&&(identical(other.isVerified, isVerified) || other.isVerified == isVerified));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,origin,id,isScam,expiration,isVerified);
+
+@override
+String toString() {
+  return 'VerifyClaims(origin: $origin, id: $id, isScam: $isScam, expiration: $expiration, isVerified: $isVerified)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$VerifyClaimsCopyWith<$Res> implements $VerifyClaimsCopyWith<$Res> {
+  factory _$VerifyClaimsCopyWith(_VerifyClaims value, $Res Function(_VerifyClaims) _then) = __$VerifyClaimsCopyWithImpl;
+@override @useResult
+$Res call({
+@JsonKey(name: 'origin') String origin,@JsonKey(name: 'id') String id,@JsonKey(name: 'isScam') bool? isScam,@JsonKey(name: 'exp') int expiration,@JsonKey(name: 'isVerified') bool isVerified
+});
+
+
+
+
+}
+/// @nodoc
+class __$VerifyClaimsCopyWithImpl<$Res>
+    implements _$VerifyClaimsCopyWith<$Res> {
+  __$VerifyClaimsCopyWithImpl(this._self, this._then);
+
+  final _VerifyClaims _self;
+  final $Res Function(_VerifyClaims) _then;
+
+/// Create a copy of VerifyClaims
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? origin = null,Object? id = null,Object? isScam = freezed,Object? expiration = null,Object? isVerified = null,}) {
+  return _then(_VerifyClaims(
+origin: null == origin ? _self.origin : origin // ignore: cast_nullable_to_non_nullable
+as String,id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,isScam: freezed == isScam ? _self.isScam : isScam // ignore: cast_nullable_to_non_nullable
+as bool?,expiration: null == expiration ? _self.expiration : expiration // ignore: cast_nullable_to_non_nullable
+as int,isVerified: null == isVerified ? _self.isVerified : isVerified // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
+
 // dart format on
