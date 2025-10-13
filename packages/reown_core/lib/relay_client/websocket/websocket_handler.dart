@@ -25,11 +25,6 @@ class WebSocketHandler implements IWebSocketHandler {
   StreamController<String>? _outputController;
 
   @override
-  Future<void> get ready => _socket?.ready ?? Future.value();
-
-  // const WebSocketHandler();
-
-  @override
   Future<void> setup({
     required String url,
   }) async {
