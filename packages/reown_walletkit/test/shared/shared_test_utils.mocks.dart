@@ -1578,12 +1578,6 @@ class MockWebSocketHandler extends _i1.Mock implements _i30.WebSocketHandler {
   }
 
   @override
-  _i24.Future<void> get ready => (super.noSuchMethod(
-        Invocation.getter(#ready),
-        returnValue: _i24.Future<void>.value(),
-      ) as _i24.Future<void>);
-
-  @override
   _i24.Future<void> setup({required String? url}) => (super.noSuchMethod(
         Invocation.method(
           #setup,

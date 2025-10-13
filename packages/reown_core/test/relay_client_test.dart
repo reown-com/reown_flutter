@@ -834,14 +834,14 @@ void main() {
           .thenAnswer((_) async {});
       when(mockWebSocketHandlerDapp.connect()).thenAnswer((_) async {});
       when(mockWebSocketHandlerDapp.close()).thenAnswer((_) async {});
-      when(mockWebSocketHandlerDapp.ready).thenAnswer((_) async {});
+      // when(mockWebSocketHandlerDapp.ready).thenAnswer((_) async {});
       when(mockWebSocketHandlerDapp.channel).thenReturn(null);
 
       when(mockWebSocketHandlerWallet.setup(url: anyNamed('url')))
           .thenAnswer((_) async {});
       when(mockWebSocketHandlerWallet.connect()).thenAnswer((_) async {});
       when(mockWebSocketHandlerWallet.close()).thenAnswer((_) async {});
-      when(mockWebSocketHandlerWallet.ready).thenAnswer((_) async {});
+      // when(mockWebSocketHandlerWallet.ready).thenAnswer((_) async {});
       when(mockWebSocketHandlerWallet.channel).thenReturn(null);
 
       coreDapp = ReownCore(
