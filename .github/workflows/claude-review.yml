@@ -34,16 +34,46 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           project_context: |
-            This is a Flutter/Dart SDK implementing the WalletConnect protocol for Flutter applications.
+            This is a Flutter/Dart SDK implementing the WalletConnect protocol for multi-platform applications.
+            
+            Repository Structure (Monorepo):
+            - reown_core: Foundation layer with networking (WebSocket via web_socket_channel), cryptography (ed25519, x25519, pointycastle), secure storage (flutter_secure_storage), connectivity detection, and MessagePack serialization
+            - reown_sign: Sign protocol implementation using web3dart for EVM chain interactions, freezed for immutable models
+            - reown_walletkit: Wallet implementation that orchestrates core networking and sign protocol, provides wallet-side WalletConnect functionality
+            - reown_appkit: Full-featured UI toolkit with Coinbase Wallet SDK integration, WebView support for WalletConnect, QR code generation, and comprehensive modal components
+            - reown_yttrium: Chain abstraction layer (early access) with eth_sig_util for transaction signing across multiple chains
+            - reown_cli: Command-line tools for development and testing
+            - pos_client: Proof-of-stake client utilities
             
             Tech Stack:
-            - Flutter SDK with Dart 3.3.3+
-            - AppKit and WalletKit implementations
-            - Multi-chain support (EVM, Solana, Polkadot, Kadena, Tron, Cosmos)
+            - Dart 3.8.0+ with null safety
+            - Flutter 1.10.0+ for cross-platform UI
+            - Multi-platform support: Android, iOS, Web, macOS, Linux, Windows
+            - Cryptography: ed25519_edwards, x25519, pinenacl, crypto, pointycastle
+            - Networking: http, web_socket_channel, connectivity_plus
+            - Storage: flutter_secure_storage, shared_preferences
+            - UI Components: flutter_svg, cached_network_image, custom_sliding_segmented_control, shimmer
+            - Blockchain: web3dart, eth_sig_util, bs58
+            - Testing: build_runner, flutter_test, mockito, flutter_lints
+            
+            Multi-Chain Support:
+            - EVM chains (Ethereum, Polygon, Arbitrum, Optimism, etc.)
+            - Solana
+            - Polkadot
+            - Kadena
+            - Tron
+            - Cosmos
             
             Key Considerations:
-            - Follow Flutter/Dart best practices and conventions
-            - Ensure proper async/await patterns
-            - Maintain type safety and null safety
-            - Cross-platform compatibility (iOS, Android, Web)
-            - Proper error handling for blockchain operations
+            - Follow Flutter/Dart best practices and style guide
+            - Ensure proper async/await patterns with Future and Stream
+            - Maintain strict null safety and type safety
+            - Cross-platform compatibility - test platform-specific code paths
+            - Proper error handling for network failures and blockchain operations
+            - Secure key management using flutter_secure_storage
+            - Event-driven architecture using event package
+            - Freezed models for immutable data classes
+            - Build code generation with build_runner for freezed and json_serializable
+            - Follow pubspec.yaml version constraints
+            - Use package_info_plus for runtime app metadata
+            - WebView security for embedded wallet connections
