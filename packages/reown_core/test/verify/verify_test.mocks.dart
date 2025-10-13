@@ -530,57 +530,60 @@ class MockIVerifyStore extends _i1.Mock implements _i20.IVerifyStore {
           as String);
 
   @override
-  String Function(dynamic) get fromJson =>
+  Map<String, dynamic> Function(dynamic) get fromJson =>
       (super.noSuchMethod(
             Invocation.getter(#fromJson),
-            returnValue: (dynamic __p0) =>
-                _i17.dummyValue<String>(this, Invocation.getter(#fromJson)),
+            returnValue: (dynamic __p0) => <String, dynamic>{},
           )
-          as String Function(dynamic));
+          as Map<String, dynamic> Function(dynamic));
 
   @override
-  _i15.Event<_i21.StoreCreateEvent<String>> get onCreate =>
+  _i15.Event<_i21.StoreCreateEvent<Map<String, dynamic>>> get onCreate =>
       (super.noSuchMethod(
             Invocation.getter(#onCreate),
-            returnValue: _FakeEvent_13<_i21.StoreCreateEvent<String>>(
-              this,
-              Invocation.getter(#onCreate),
-            ),
+            returnValue:
+                _FakeEvent_13<_i21.StoreCreateEvent<Map<String, dynamic>>>(
+                  this,
+                  Invocation.getter(#onCreate),
+                ),
           )
-          as _i15.Event<_i21.StoreCreateEvent<String>>);
+          as _i15.Event<_i21.StoreCreateEvent<Map<String, dynamic>>>);
 
   @override
-  _i15.Event<_i21.StoreUpdateEvent<String>> get onUpdate =>
+  _i15.Event<_i21.StoreUpdateEvent<Map<String, dynamic>>> get onUpdate =>
       (super.noSuchMethod(
             Invocation.getter(#onUpdate),
-            returnValue: _FakeEvent_13<_i21.StoreUpdateEvent<String>>(
-              this,
-              Invocation.getter(#onUpdate),
-            ),
+            returnValue:
+                _FakeEvent_13<_i21.StoreUpdateEvent<Map<String, dynamic>>>(
+                  this,
+                  Invocation.getter(#onUpdate),
+                ),
           )
-          as _i15.Event<_i21.StoreUpdateEvent<String>>);
+          as _i15.Event<_i21.StoreUpdateEvent<Map<String, dynamic>>>);
 
   @override
-  _i15.Event<_i21.StoreDeleteEvent<String>> get onDelete =>
+  _i15.Event<_i21.StoreDeleteEvent<Map<String, dynamic>>> get onDelete =>
       (super.noSuchMethod(
             Invocation.getter(#onDelete),
-            returnValue: _FakeEvent_13<_i21.StoreDeleteEvent<String>>(
-              this,
-              Invocation.getter(#onDelete),
-            ),
+            returnValue:
+                _FakeEvent_13<_i21.StoreDeleteEvent<Map<String, dynamic>>>(
+                  this,
+                  Invocation.getter(#onDelete),
+                ),
           )
-          as _i15.Event<_i21.StoreDeleteEvent<String>>);
+          as _i15.Event<_i21.StoreDeleteEvent<Map<String, dynamic>>>);
 
   @override
-  _i15.Event<_i21.StoreErrorEvent<String>> get onError =>
+  _i15.Event<_i21.StoreErrorEvent<Map<String, dynamic>>> get onError =>
       (super.noSuchMethod(
             Invocation.getter(#onError),
-            returnValue: _FakeEvent_13<_i21.StoreErrorEvent<String>>(
-              this,
-              Invocation.getter(#onError),
-            ),
+            returnValue:
+                _FakeEvent_13<_i21.StoreErrorEvent<Map<String, dynamic>>>(
+                  this,
+                  Invocation.getter(#onError),
+                ),
           )
-          as _i15.Event<_i21.StoreErrorEvent<String>>);
+          as _i15.Event<_i21.StoreErrorEvent<Map<String, dynamic>>>);
 
   @override
   _i15.Event<_i21.StoreSyncEvent> get onSync =>
@@ -626,7 +629,7 @@ class MockIVerifyStore extends _i1.Mock implements _i20.IVerifyStore {
           as bool);
 
   @override
-  _i18.Future<void> set(String? key, String? value) =>
+  _i18.Future<void> set(String? key, Map<String, dynamic>? value) =>
       (super.noSuchMethod(
             Invocation.method(#set, [key, value]),
             returnValue: _i18.Future<void>.value(),
@@ -635,16 +638,17 @@ class MockIVerifyStore extends _i1.Mock implements _i20.IVerifyStore {
           as _i18.Future<void>);
 
   @override
-  String? get(String? key) =>
-      (super.noSuchMethod(Invocation.method(#get, [key])) as String?);
+  Map<String, dynamic>? get(String? key) =>
+      (super.noSuchMethod(Invocation.method(#get, [key]))
+          as Map<String, dynamic>?);
 
   @override
-  List<String> getAll() =>
+  List<Map<String, dynamic>> getAll() =>
       (super.noSuchMethod(
             Invocation.method(#getAll, []),
-            returnValue: <String>[],
+            returnValue: <Map<String, dynamic>>[],
           )
-          as List<String>);
+          as List<Map<String, dynamic>>);
 
   @override
   _i18.Future<void> delete(String? key) =>

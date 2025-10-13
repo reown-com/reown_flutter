@@ -220,6 +220,69 @@ void main() {
       ).called(1);
     });
 
+    test('Handle publish with null attestation', () async {
+      await relayClient.topicMap.set(TEST_TOPIC, 'test');
+
+      MessageEvent? capturedEvent;
+      relayClient.onRelayClientMessage.subscribe((MessageEvent? args) {
+        capturedEvent = args;
+      });
+
+      when(
+        messageTracker.messageIsRecorded(TEST_TOPIC, TEST_MESSAGE),
+      ).thenAnswer((_) => false);
+
+      bool published = await relayClient.handlePublish(
+        TEST_TOPIC,
+        TEST_MESSAGE,
+        null, // Explicitly pass null attestation
+      );
+
+      expect(published, true);
+      expect(capturedEvent, isNotNull);
+      expect(capturedEvent!.attestation, isNull);
+      expect(capturedEvent!.topic, equals(TEST_TOPIC));
+      expect(capturedEvent!.message, equals(TEST_MESSAGE));
+      expect(capturedEvent!.transportType, equals(TransportType.relay));
+
+      verify(
+        messageTracker.recordMessageEvent(TEST_TOPIC, TEST_MESSAGE),
+      ).called(1);
+    });
+
+    test('Handle publish with non-null attestation', () async {
+      await relayClient.topicMap.set(TEST_TOPIC, 'test');
+
+      const testAttestation =
+          'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.test.attestation';
+
+      MessageEvent? capturedEvent;
+      relayClient.onRelayClientMessage.subscribe((MessageEvent? args) {
+        capturedEvent = args;
+      });
+
+      when(
+        messageTracker.messageIsRecorded(TEST_TOPIC, TEST_MESSAGE),
+      ).thenAnswer((_) => false);
+
+      bool published = await relayClient.handlePublish(
+        TEST_TOPIC,
+        TEST_MESSAGE,
+        testAttestation, // Pass non-null attestation
+      );
+
+      expect(published, true);
+      expect(capturedEvent, isNotNull);
+      expect(capturedEvent!.attestation, equals(testAttestation));
+      expect(capturedEvent!.topic, equals(TEST_TOPIC));
+      expect(capturedEvent!.message, equals(TEST_MESSAGE));
+      expect(capturedEvent!.transportType, equals(TransportType.relay));
+
+      verify(
+        messageTracker.recordMessageEvent(TEST_TOPIC, TEST_MESSAGE),
+      ).called(1);
+    });
+
     group('JSON RPC', () {
       late IReownCore coreDapp;
       late IReownCore coreWallet;
@@ -371,6 +434,63 @@ void main() {
         // Ensure both relay clients are properly initialized and connected
         expect(coreDapp.relayClient.isConnected, isTrue);
         expect(coreWallet.relayClient.isConnected, isTrue);
+      });
+
+      test('MessageEvent handles null attestation correctly', () async {
+        // Test that MessageEvent properly handles null attestation
+        const testTopic = 'test-topic-null-attestation';
+        const testMessage = 'test-message-null-attestation';
+
+        final messageEvent = MessageEvent(
+          testTopic,
+          testMessage,
+          DateTime.now().millisecondsSinceEpoch,
+          null, // null attestation
+          TransportType.relay,
+        );
+
+        expect(messageEvent.topic, equals(testTopic));
+        expect(messageEvent.message, equals(testMessage));
+        expect(messageEvent.attestation, isNull);
+        expect(messageEvent.transportType, equals(TransportType.relay));
+
+        // Test JSON serialization with null attestation
+        final json = messageEvent.toJson();
+        expect(json['topic'], equals(testTopic));
+        expect(json['message'], equals(testMessage));
+        expect(
+          json.containsKey('attestation'),
+          isFalse,
+        ); // Should not include null attestation
+        expect(json['transportType'], equals('relay'));
+      });
+
+      test('MessageEvent handles non-null attestation correctly', () async {
+        // Test that MessageEvent properly handles non-null attestation
+        const testTopic = 'test-topic-with-attestation';
+        const testMessage = 'test-message-with-attestation';
+        const testAttestation =
+            'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.test.attestation';
+
+        final messageEvent = MessageEvent(
+          testTopic,
+          testMessage,
+          DateTime.now().millisecondsSinceEpoch,
+          testAttestation, // non-null attestation
+          TransportType.relay,
+        );
+
+        expect(messageEvent.topic, equals(testTopic));
+        expect(messageEvent.message, equals(testMessage));
+        expect(messageEvent.attestation, equals(testAttestation));
+        expect(messageEvent.transportType, equals(TransportType.relay));
+
+        // Test JSON serialization with non-null attestation
+        final json = messageEvent.toJson();
+        expect(json['topic'], equals(testTopic));
+        expect(json['message'], equals(testMessage));
+        expect(json['attestation'], equals(testAttestation));
+        expect(json['transportType'], equals('relay'));
       });
 
       test(

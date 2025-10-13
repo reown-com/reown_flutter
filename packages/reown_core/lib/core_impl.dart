@@ -226,13 +226,10 @@ class ReownCore implements IReownCore {
         storage: storage,
         context: StoreVersions.CONTEXT_VERIFY,
         version: StoreVersions.VERSION_VERIFY,
-        fromJson: (dynamic value) => value as String,
+        fromJson: (dynamic value) => value as Map<String, dynamic>,
       ),
     );
-    connectivity = ConnectivityState(
-      core: this,
-      connectivity: Connectivity(),
-    );
+    connectivity = ConnectivityState(core: this, connectivity: Connectivity());
     linkModeStore = LinkModeStore(
       storage: storage,
       context: StoreVersions.CONTEXT_LINKMODE,

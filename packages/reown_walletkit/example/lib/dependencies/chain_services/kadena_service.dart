@@ -293,6 +293,7 @@ class KadenaService {
         topic,
         session!.peer.metadata.redirect,
         response.error?.message,
+        response.result != null,
       );
     } on ReownSignError catch (error) {
       MethodsUtils.handleRedirect(
