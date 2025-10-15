@@ -32,9 +32,7 @@ abstract class IReownSignDapp extends IReownSignCommon {
     required String event,
     dynamic Function(String, dynamic)? handler,
   });
-  Future<void> ping({
-    required String topic,
-  });
+  Future<void> ping({required String topic});
 
   Future<SessionAuthRequestResponse> authenticate({
     required SessionAuthRequestParams params,

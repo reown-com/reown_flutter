@@ -1,9 +1,6 @@
 import 'package:reown_core/relay_client/relay_client_models.dart';
 
-enum URIVersion {
-  v1,
-  v2,
-}
+enum URIVersion { v1, v2 }
 
 class URIParseResult {
   final String protocol;
@@ -25,10 +22,7 @@ class URIV1ParsedData {
   final String key;
   final String bridge;
 
-  URIV1ParsedData({
-    required this.key,
-    required this.bridge,
-  });
+  URIV1ParsedData({required this.key, required this.bridge});
 }
 
 class URIV2ParsedData {

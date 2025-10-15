@@ -24,10 +24,9 @@ class AddressCopyButton extends StatelessWidget {
         final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
         final address = appKitModal.session!.getAddress(namespace)!;
         await Clipboard.setData(ClipboardData(text: address));
-        GetIt.I<IToastService>().show(ToastMessage(
-          type: ToastType.success,
-          text: 'Address copied',
-        ));
+        GetIt.I<IToastService>().show(
+          ToastMessage(type: ToastType.success, text: 'Address copied'),
+        );
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

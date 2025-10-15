@@ -14,12 +14,7 @@ import 'package:reown_core/verify/verify.dart' as verify_module;
 
 import 'verify_test.mocks.dart';
 
-@GenerateMocks([
-  IReownCore,
-  IHttpClient,
-  IVerifyStore,
-  Logger,
-])
+@GenerateMocks([IReownCore, IHttpClient, IVerifyStore, Logger])
 void main() {
   group('Verify', () {
     late MockIReownCore mockCore;
@@ -33,10 +28,10 @@ void main() {
       mockHttpClient = MockIHttpClient();
       mockVerifyStore = MockIVerifyStore();
       mockLogger = MockLogger();
-      
+
       // Mock the logger property
       when(mockCore.logger).thenReturn(mockLogger);
-      
+
       verify = verify_module.Verify(
         core: mockCore,
         httpClient: mockHttpClient,
@@ -49,20 +44,26 @@ void main() {
         // Arrange
         when(mockVerifyStore.init()).thenAnswer((_) async {});
         when(mockVerifyStore.getItem()).thenReturn(null);
-        when(mockHttpClient.get(any)).thenAnswer((_) async => http.Response(
-          jsonEncode({
-            'publicKey': {
-              'crv': 'P-256',
-              'ext': true,
-              'key_ops': ['verify'],
-              'kty': 'EC',
-              'x': 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
-              'y': 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
-            },
-            'expiresAt': DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
-          }),
-          200,
-        ));
+        when(mockHttpClient.get(any)).thenAnswer(
+          (_) async => http.Response(
+            jsonEncode({
+              'publicKey': {
+                'crv': 'P-256',
+                'ext': true,
+                'key_ops': ['verify'],
+                'kty': 'EC',
+                'x': 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
+                'y': 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
+              },
+              'expiresAt':
+                  DateTime.now()
+                      .add(Duration(hours: 1))
+                      .millisecondsSinceEpoch ~/
+                  1000,
+            }),
+            200,
+          ),
+        );
         when(mockVerifyStore.setItem(any)).thenAnswer((_) async {});
 
         // Act
@@ -88,26 +89,36 @@ void main() {
             x: 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
             y: 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
           ),
-          expiresAt: DateTime.now().subtract(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
+          expiresAt:
+              DateTime.now()
+                  .subtract(Duration(hours: 1))
+                  .millisecondsSinceEpoch ~/
+              1000,
         );
-        
+
         when(mockVerifyStore.init()).thenAnswer((_) async {});
         when(mockVerifyStore.getItem()).thenReturn(expiredKey);
         when(mockVerifyStore.removeItem()).thenAnswer((_) async {});
-        when(mockHttpClient.get(any)).thenAnswer((_) async => http.Response(
-          jsonEncode({
-            'publicKey': {
-              'crv': 'P-256',
-              'ext': true,
-              'key_ops': ['verify'],
-              'kty': 'EC',
-              'x': 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
-              'y': 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
-            },
-            'expiresAt': DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
-          }),
-          200,
-        ));
+        when(mockHttpClient.get(any)).thenAnswer(
+          (_) async => http.Response(
+            jsonEncode({
+              'publicKey': {
+                'crv': 'P-256',
+                'ext': true,
+                'key_ops': ['verify'],
+                'kty': 'EC',
+                'x': 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
+                'y': 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
+              },
+              'expiresAt':
+                  DateTime.now()
+                      .add(Duration(hours: 1))
+                      .millisecondsSinceEpoch ~/
+                  1000,
+            }),
+            200,
+          ),
+        );
         when(mockVerifyStore.setItem(any)).thenAnswer((_) async {});
 
         // Act
@@ -128,27 +139,33 @@ void main() {
         const attestationId = 'test-id';
         const attestationJWT = 'test-jwt';
 
-        when(mockVerifyStore.getItem()).thenReturn(JWK(
-          publicKey: PublicKey(
-            crv: 'P-256',
-            ext: true,
-            keyOps: ['verify'],
-            kty: 'EC',
-            x: 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
-            y: 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
+        when(mockVerifyStore.getItem()).thenReturn(
+          JWK(
+            publicKey: PublicKey(
+              crv: 'P-256',
+              ext: true,
+              keyOps: ['verify'],
+              kty: 'EC',
+              x: 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
+              y: 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
+            ),
+            expiresAt:
+                DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/
+                1000,
           ),
-          expiresAt: DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
-        ));
+        );
 
         // Mock HTTP client for v1 fallback
-        when(mockHttpClient.get(any)).thenAnswer((_) async => http.Response(
-          jsonEncode({
-            'origin': 'https://example.com',
-            'attestationId': attestationId,
-            'isScam': false,
-          }),
-          200,
-        ));
+        when(mockHttpClient.get(any)).thenAnswer(
+          (_) async => http.Response(
+            jsonEncode({
+              'origin': 'https://example.com',
+              'attestationId': attestationId,
+              'isScam': false,
+            }),
+            200,
+          ),
+        );
 
         // Act
         await verify.resolve(
@@ -171,10 +188,10 @@ void main() {
           isScam: false,
         );
 
-        when(mockHttpClient.get(any)).thenAnswer((_) async => http.Response(
-          jsonEncode(expectedResponse.toJson()),
-          200,
-        ));
+        when(mockHttpClient.get(any)).thenAnswer(
+          (_) async =>
+              http.Response(jsonEncode(expectedResponse.toJson()), 200),
+        );
 
         // Act
         final result = await verify.resolve(
@@ -194,7 +211,9 @@ void main() {
         const attestationId = 'test-id';
         const attestationJWT = null;
 
-        when(mockHttpClient.get(any)).thenAnswer((_) async => http.Response('', 404));
+        when(
+          mockHttpClient.get(any),
+        ).thenAnswer((_) async => http.Response('', 404));
 
         // Act & Assert
         expect(
@@ -211,7 +230,9 @@ void main() {
         const attestationId = 'test-id';
         const attestationJWT = null;
 
-        when(mockHttpClient.get(any)).thenAnswer((_) async => http.Response('', 500));
+        when(
+          mockHttpClient.get(any),
+        ).thenAnswer((_) async => http.Response('', 500));
 
         // Act & Assert
         expect(
@@ -318,23 +339,27 @@ void main() {
               x: 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
               y: 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
             ),
-            expiresAt: DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
+            expiresAt:
+                DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/
+                1000,
           );
 
-          when(mockHttpClient.get(any)).thenAnswer((_) async => http.Response(
-            jsonEncode({
-              'publicKey': {
-                'crv': 'P-256',
-                'ext': true,
-                'key_ops': ['verify'],
-                'kty': 'EC',
-                'x': 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
-                'y': 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
-              },
-              'expiresAt': expectedJwk.expiresAt,
-            }),
-            200,
-          ));
+          when(mockHttpClient.get(any)).thenAnswer(
+            (_) async => http.Response(
+              jsonEncode({
+                'publicKey': {
+                  'crv': 'P-256',
+                  'ext': true,
+                  'key_ops': ['verify'],
+                  'kty': 'EC',
+                  'x': 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
+                  'y': 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
+                },
+                'expiresAt': expectedJwk.expiresAt,
+              }),
+              200,
+            ),
+          );
 
           // Act
           final result = await verify.fetchPublicKey();
@@ -370,7 +395,9 @@ void main() {
               x: 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
               y: 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
             ),
-            expiresAt: DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
+            expiresAt:
+                DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/
+                1000,
           );
 
           when(mockVerifyStore.setItem(any)).thenAnswer((_) async {});
@@ -408,7 +435,9 @@ void main() {
               x: 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
               y: 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
             ),
-            expiresAt: DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
+            expiresAt:
+                DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/
+                1000,
           );
 
           when(mockVerifyStore.getItem()).thenReturn(expectedJwk);
@@ -446,7 +475,9 @@ void main() {
               x: 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
               y: 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
             ),
-            expiresAt: DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
+            expiresAt:
+                DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/
+                1000,
           );
 
           // First initialize the verify instance to set the internal _publicKey
@@ -461,35 +492,44 @@ void main() {
           expect(result, equals(cachedJwk));
         });
 
-        test('should fetch and persist new key when cached key is null', () async {
-          // Arrange
-          when(mockVerifyStore.getItem()).thenReturn(null);
-          when(mockHttpClient.get(any)).thenAnswer((_) async => http.Response(
-            jsonEncode({
-              'publicKey': {
-                'crv': 'P-256',
-                'ext': true,
-                'key_ops': ['verify'],
-                'kty': 'EC',
-                'x': 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
-                'y': 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
-              },
-              'expiresAt': DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
-            }),
-            200,
-          ));
-          when(mockVerifyStore.setItem(any)).thenAnswer((_) async {});
+        test(
+          'should fetch and persist new key when cached key is null',
+          () async {
+            // Arrange
+            when(mockVerifyStore.getItem()).thenReturn(null);
+            when(mockHttpClient.get(any)).thenAnswer(
+              (_) async => http.Response(
+                jsonEncode({
+                  'publicKey': {
+                    'crv': 'P-256',
+                    'ext': true,
+                    'key_ops': ['verify'],
+                    'kty': 'EC',
+                    'x': 'CbL4DOYOb1ntd-8OmExO-oS0DWCMC00DntrymJoB8tk',
+                    'y': 'KTFwjHtQxGTDR91VsOypcdBfvbo6sAMj5p4Wb-9hRA0',
+                  },
+                  'expiresAt':
+                      DateTime.now()
+                          .add(Duration(hours: 1))
+                          .millisecondsSinceEpoch ~/
+                      1000,
+                }),
+                200,
+              ),
+            );
+            when(mockVerifyStore.setItem(any)).thenAnswer((_) async {});
 
-          // Act
-          final result = await verify.getPublicKey();
+            // Act
+            final result = await verify.getPublicKey();
 
-          // Assert
-          expect(result, isNotNull);
-          verifyInOrder([
-            mockHttpClient.get(any),
-            mockVerifyStore.setItem(any),
-          ]);
-        });
+            // Assert
+            expect(result, isNotNull);
+            verifyInOrder([
+              mockHttpClient.get(any),
+              mockVerifyStore.setItem(any),
+            ]);
+          },
+        );
       });
     });
 
@@ -500,27 +540,20 @@ void main() {
 
         // Act & Assert
         expect(
-          () => verify.resolve(
-            attestationId: 'test-id',
-            attestationJWT: null,
-          ),
+          () => verify.resolve(attestationId: 'test-id', attestationJWT: null),
           throwsA(isA<Exception>()),
         );
       });
 
       test('should handle malformed JSON response', () async {
         // Arrange
-        when(mockHttpClient.get(any)).thenAnswer((_) async => http.Response(
-          'invalid json',
-          200,
-        ));
+        when(
+          mockHttpClient.get(any),
+        ).thenAnswer((_) async => http.Response('invalid json', 200));
 
         // Act & Assert
         expect(
-          () => verify.resolve(
-            attestationId: 'test-id',
-            attestationJWT: null,
-          ),
+          () => verify.resolve(attestationId: 'test-id', attestationJWT: null),
           throwsA(isA<Exception>()),
         );
       });

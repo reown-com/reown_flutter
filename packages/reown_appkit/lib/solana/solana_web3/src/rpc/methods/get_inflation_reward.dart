@@ -19,23 +19,17 @@ class GetInflationReward
     final List<String> addresses, {
     final GetInflationRewardConfig? config,
   }) : super(
-          'getInflationReward',
-          values: [addresses],
-          config: config ?? const GetInflationRewardConfig(),
-        );
+         'getInflationReward',
+         values: [addresses],
+         config: config ?? const GetInflationRewardConfig(),
+       );
 
   factory GetInflationReward.map(
     final Iterable<Pubkey> addresses, {
     final GetInflationRewardConfig? config,
-  }) =>
-      GetInflationReward(
-        addresses.toJson(),
-        config: config,
-      );
+  }) => GetInflationReward(addresses.toJson(), config: config);
 
   @override
-  InflationReward? itemDecoder(
-    final Map<String, dynamic>? item,
-  ) =>
+  InflationReward? itemDecoder(final Map<String, dynamic>? item) =>
       item != null ? InflationReward.fromJson(item) : null;
 }

@@ -51,18 +51,16 @@ class SendAndConfirmTransactionConfig extends CommitmentConfig {
   }
 
   ConfirmTransactionConfig? toConfirmTransactionConfig() {
-    return ConfirmTransactionConfig(
-      commitment: commitment,
-    );
+    return ConfirmTransactionConfig(commitment: commitment);
   }
 
   @override
   Map<String, dynamic> toJson() => {
-        'skipPreflight': skipPreflight,
-        'commitment': commitment?.name,
-        'preflightCommitment': preflightCommitment?.name,
-        'encoding': encoding.name,
-        'maxRetries': maxRetries,
-        'minContextSlot': minContextSlot,
-      };
+    'skipPreflight': skipPreflight,
+    'commitment': commitment?.name,
+    'preflightCommitment': preflightCommitment?.name,
+    'encoding': encoding.name,
+    'maxRetries': maxRetries,
+    'minContextSlot': minContextSlot,
+  };
 }

@@ -17,10 +17,7 @@ class Relay {
   final String protocol;
   final String? data;
 
-  Relay(
-    this.protocol, {
-    this.data,
-  });
+  Relay(this.protocol, {this.data});
 
   factory Relay.fromJson(Map<String, dynamic> json) => _$RelayFromJson(json);
 
@@ -43,12 +40,12 @@ class MessageEvent extends EventArgs {
   );
 
   Map<String, dynamic> toJson() => {
-        'topic': topic,
-        'message': message,
-        'publishedAt': publishedAt,
-        if (attestation != null) 'attestation': attestation,
-        'transportType': transportType.name,
-      };
+    'topic': topic,
+    'message': message,
+    'publishedAt': publishedAt,
+    if (attestation != null) 'attestation': attestation,
+    'transportType': transportType.name,
+  };
 
   @override
   String toString() => 'MessageEvent(${jsonEncode(toJson())})';
@@ -57,24 +54,17 @@ class MessageEvent extends EventArgs {
 class ErrorEvent extends EventArgs {
   dynamic error;
 
-  ErrorEvent(
-    this.error,
-  );
+  ErrorEvent(this.error);
 }
 
 class SubscriptionEvent extends EventArgs {
   String id;
 
-  SubscriptionEvent(
-    this.id,
-  );
+  SubscriptionEvent(this.id);
 }
 
 class SubscriptionDeletionEvent extends SubscriptionEvent {
   String reason;
 
-  SubscriptionDeletionEvent(
-    super.id,
-    this.reason,
-  );
+  SubscriptionDeletionEvent(super.id, this.reason);
 }

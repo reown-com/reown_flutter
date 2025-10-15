@@ -10,10 +10,7 @@ import 'package:reown_appkit/solana/solana_common/types.dart' show u64;
 
 class BlockCommitment extends Serializable {
   /// The block commitment for a particular block.
-  const BlockCommitment({
-    required this.commitment,
-    required this.totalStake,
-  });
+  const BlockCommitment({required this.commitment, required this.totalStake});
 
   /// An array of u64 integers logging the amount of cluster stake in lamports that has voted on the
   /// block at each depth from 0 to MAX_LOCKOUT_HISTORY + 1.
@@ -35,7 +32,7 @@ class BlockCommitment extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'commitment': commitment,
-        'totalStake': totalStake,
-      };
+    'commitment': commitment,
+    'totalStake': totalStake,
+  };
 }

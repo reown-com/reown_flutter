@@ -90,14 +90,17 @@ class Connection with HttpConnection, WebsocketConnection {
     final Pubkey pubkey, {
     final GetAddressLookupTableConfig? config,
   }) async {
-    final AccountInfo? accountInfo = await getAccountInfo(pubkey,
-        config: GetAccountInfoConfig(
-          commitment: config?.commitment,
-          encoding: AccountEncoding.base64,
-          minContextSlot: config?.minContextSlot,
-        ));
-    final state =
-        AddressLookupTableState.tryFromBorshBase64(accountInfo?.binaryData);
+    final AccountInfo? accountInfo = await getAccountInfo(
+      pubkey,
+      config: GetAccountInfoConfig(
+        commitment: config?.commitment,
+        encoding: AccountEncoding.base64,
+        minContextSlot: config?.minContextSlot,
+      ),
+    );
+    final state = AddressLookupTableState.tryFromBorshBase64(
+      accountInfo?.binaryData,
+    );
     return state != null
         ? AddressLookupTableAccount(key: pubkey, state: state)
         : null;
@@ -111,10 +114,15 @@ class Connection with HttpConnection, WebsocketConnection {
     final u64 lamports, {
     final CommitmentConfig? config,
   }) async {
-    final TransactionSignature signature =
-        await requestAirdrop(pubkey, lamports, config: config);
-    final SignatureNotification notification =
-        await confirmTransaction(signature, config: config);
+    final TransactionSignature signature = await requestAirdrop(
+      pubkey,
+      lamports,
+      config: config,
+    );
+    final SignatureNotification notification = await confirmTransaction(
+      signature,
+      config: config,
+    );
     return notification.err != null
         ? Future.error(notification.err)
         : Future.value(signature);
@@ -171,8 +179,9 @@ class Connection with HttpConnection, WebsocketConnection {
   ) {
     return Future.delayed(
       Duration(
-        seconds:
-            commitment == null || commitment == Commitment.finalized ? 60 : 30,
+        seconds: commitment == null || commitment == Commitment.finalized
+            ? 60
+            : 30,
       ),
       () => Future.error(
         TimeoutException('Transaction signature confirmation timed out.'),
@@ -182,8 +191,10 @@ class Connection with HttpConnection, WebsocketConnection {
 
   /// Returns an error when the [nonce] information has changed.
   Future<SignatureNotification> _confirmTransactionNonceInvalid(
-      final NonceWithMinContextSlot nonce, final Commitment? commitment,
-      {final int maxAttempts = 10}) async {
+    final NonceWithMinContextSlot nonce,
+    final Commitment? commitment, {
+    final int maxAttempts = 10,
+  }) async {
     for (int i = 0; i < maxAttempts; ++i) {
       try {
         final nonceResponse = await getNonceAccountRaw(
@@ -208,7 +219,8 @@ class Connection with HttpConnection, WebsocketConnection {
     }
 
     return Future.error(
-        TimeoutException('Transaction signature nonce timed out.'));
+      TimeoutException('Transaction signature nonce timed out.'),
+    );
   }
 
   /// Confirms a transaction by subscribing to receive a [signature] notification when the
@@ -226,11 +238,14 @@ class Connection with HttpConnection, WebsocketConnection {
 
     try {
       final Uint8List decodedSignature = base58.decode(signature);
-      check(decodedSignature.length == nacl.signatureLength,
-          'Invalid signature length.');
+      check(
+        decodedSignature.length == nacl.signatureLength,
+        'Invalid signature length.',
+      );
     } catch (error) {
       throw TransactionException(
-          'Failed to decode base58 signature $signature.');
+        'Failed to decode base58 signature $signature.',
+      );
     }
 
     final SafeCompleter<SignatureNotification> completer = SafeCompleter();
@@ -240,9 +255,7 @@ class Connection with HttpConnection, WebsocketConnection {
       onError: completer.completeError,
       onDone: () => completer.completeError('Subscription closed.'),
       cancelOnError: true,
-      config: SignatureSubscribeConfig(
-        commitment: config?.commitment,
-      ),
+      config: SignatureSubscribeConfig(commitment: config?.commitment),
     );
 
     // Wait for a signature notification or one of the timeout strategies to expire.
@@ -325,8 +338,10 @@ class Connection with HttpConnection, WebsocketConnection {
     final Commitment? commitment,
     final int? minContext,
   }) async {
-    SignatureStatus? status =
-        await getSignatureStatus(signature, config: config);
+    SignatureStatus? status = await getSignatureStatus(
+      signature,
+      config: config,
+    );
     while (status != null && minContext != null && status.slot < minContext) {
       final int slots = minContext - status.slot;
       final int delay = slots * millisecondsPerSlot.floor();
@@ -335,22 +350,19 @@ class Connection with HttpConnection, WebsocketConnection {
     }
     if (status == null) {
       return const SignatureNotification(
-        err: TransactionException(
-          'Transaction signature status not found.',
-        ),
+        err: TransactionException('Transaction signature status not found.'),
       );
     }
     if (status.err != null) {
-      return SignatureNotification(
-        err: status.err,
-      );
+      return SignatureNotification(err: status.err);
     }
     final Commitment commitmentLevel =
         commitment ?? this.commitment ?? Commitment.finalized;
     return SignatureNotification(
       err: commitmentLevel.compareTo(status.confirmationStatus) > 0
           ? const TransactionException(
-              'Transaction signature status has not been confirmed.')
+              'Transaction signature status has not been confirmed.',
+            )
           : null,
     );
   }
@@ -399,7 +411,8 @@ class Connection with HttpConnection, WebsocketConnection {
     const int encodedLengthSize = 4;
     const int optionFlagSize = 1;
 
-    const int creatorsOffset = keySize +
+    const int creatorsOffset =
+        keySize +
         updateAuthoritySize +
         mintSize +
         encodedLengthSize +
@@ -417,7 +430,8 @@ class Connection with HttpConnection, WebsocketConnection {
     final int currentCreatorsSize = numberOfCreators * creatorsSize;
     const int maxCreatorsSize = maxCreators * creatorsSize;
 
-    final int collectionOffset = creatorsOffset +
+    final int collectionOffset =
+        creatorsOffset +
         currentCreatorsSize +
         primarySaleHappenedSize +
         isMutableSize +
@@ -427,7 +441,8 @@ class Connection with HttpConnection, WebsocketConnection {
         tokenStandardSize +
         optionFlagSize; // Collection field's option flag (1).
 
-    final int maxDataSize = collectionOffset +
+    final int maxDataSize =
+        collectionOffset +
         collectionVerifiedSize +
         collectionKeySize +
         optionFlagSize +
@@ -450,9 +465,7 @@ class Connection with HttpConnection, WebsocketConnection {
         dataSlice: dataSlice,
         minContextSlot: minContextSlot,
         filters: [
-          DataSize(
-            dataSize: maxDataSize,
-          ),
+          DataSize(dataSize: maxDataSize),
           MemCmp(
             offset: collectionOffset + collectionVerifiedSize,
             bytes: collectionMint.toBase58(),

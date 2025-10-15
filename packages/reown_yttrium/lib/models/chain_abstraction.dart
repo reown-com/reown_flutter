@@ -3,17 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'chain_abstraction.freezed.dart';
 part 'chain_abstraction.g.dart';
 
-enum Currency {
-  usd,
-  eur,
-  gbp,
-  aud,
-  cad,
-  inr,
-  jpy,
-  btc,
-  eth;
-}
+enum Currency { usd, eur, gbp, aud, cad, inr, jpy, btc, eth }
 
 enum BridgingError {
   noRoutesAvailable,
@@ -105,9 +95,8 @@ sealed class Eip1559EstimationCompat with _$Eip1559EstimationCompat {
 sealed class ErrorCompat with _$ErrorCompat {
   const ErrorCompat._();
 
-  const factory ErrorCompat.general({
-    required String message,
-  }) = ErrorCompat_General;
+  const factory ErrorCompat.general({required String message}) =
+      ErrorCompat_General;
 }
 
 @freezed
@@ -168,8 +157,8 @@ sealed class InitialTransactionMetadataCompat
   }) = _InitialTransactionMetadataCompat;
 
   factory InitialTransactionMetadataCompat.fromJson(
-          Map<String, dynamic> json) =>
-      _$InitialTransactionMetadataCompatFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$InitialTransactionMetadataCompatFromJson(json);
 }
 
 @freezed
@@ -210,8 +199,8 @@ sealed class PrepareDetailedResponseSuccessCompat
   }) = PrepareDetailedResponseSuccessCompat_NotRequired;
 
   factory PrepareDetailedResponseSuccessCompat.fromJson(
-          Map<String, dynamic> json) =>
-      _$PrepareDetailedResponseSuccessCompatFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$PrepareDetailedResponseSuccessCompatFromJson(json);
 }
 
 @freezed
@@ -237,8 +226,8 @@ sealed class PrepareResponseNotRequiredCompat
   }) = _PrepareResponseNotRequiredCompat;
 
   factory PrepareResponseNotRequiredCompat.fromJson(
-          Map<String, dynamic> json) =>
-      _$PrepareResponseNotRequiredCompatFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$PrepareResponseNotRequiredCompatFromJson(json);
 }
 
 class PrimitiveSignatureCompat {
@@ -270,11 +259,11 @@ class PrimitiveSignatureCompat {
 
   // Not originally included in Yttrium but added for usage with Swift's pod
   Map<String, dynamic> toJson() => {
-        'yParity': yParity,
-        'r': r,
-        's': s,
-        'hexValue': hexValue,
-      };
+    'yParity': yParity,
+    'r': r,
+    's': s,
+    'hexValue': hexValue,
+  };
 }
 
 @freezed

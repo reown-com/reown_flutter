@@ -22,9 +22,8 @@ import 'package:reown_appkit/reown_appkit.dart';
 class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
   IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
 
-  const ReownAppKitModalSelectNetworkPage({
-    this.onTapNetwork,
-  }) : super(key: KeyConstants.selectNetworkPage);
+  const ReownAppKitModalSelectNetworkPage({this.onTapNetwork})
+    : super(key: KeyConstants.selectNetworkPage);
 
   final Function(ReownAppKitModalNetworkInfo)? onTapNetwork;
 
@@ -53,10 +52,9 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
         }
       } else if (isChainApproved || isMagic) {
         if (isMagic) {
-          _widgetStack.push(ConnectNetworkPage(
-            chainInfo: chainInfo,
-            isMagic: true,
-          ));
+          _widgetStack.push(
+            ConnectNetworkPage(chainInfo: chainInfo, isMagic: true),
+          );
         } else {
           await appKitModal.selectChain(chainInfo, switchChain: true);
           if (_widgetStack.canPop()) {
@@ -101,10 +99,8 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
                 return ConstrainedBox(
                   constraints: BoxConstraints(maxHeight: maxHeight),
                   child: NetworksGrid(
-                    onTapNetwork: (chainInfo) => _onSelectNetwork(
-                      context,
-                      chainInfo,
-                    ),
+                    onTapNetwork: (chainInfo) =>
+                        _onSelectNetwork(context, chainInfo),
                     itemList: items,
                   ),
                 );

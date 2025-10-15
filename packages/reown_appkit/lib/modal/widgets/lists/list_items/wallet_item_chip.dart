@@ -26,7 +26,8 @@ class WalletItemChip extends StatelessWidget {
       margin: const EdgeInsets.only(right: 8.0),
       child: Text(
         value,
-        style: textStyle ??
+        style:
+            textStyle ??
             themeData.textStyles.micro700.copyWith(
               color: themeColors.foreground150,
             ),

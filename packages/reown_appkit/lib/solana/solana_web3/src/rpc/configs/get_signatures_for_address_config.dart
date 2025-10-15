@@ -30,27 +30,28 @@ class GetSignaturesForAddressConfig extends CommitmentAndMinContextSlotConfig {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory GetSignaturesForAddressConfig.fromJson(
-          final Map<String, dynamic> json) =>
-      GetSignaturesForAddressConfig(
-        limit: json['limit'],
-        before: json['before'],
-        until: json['until'],
-        commitment: json['commitment'],
-        minContextSlot: json['minContextSlot'],
-      );
+    final Map<String, dynamic> json,
+  ) => GetSignaturesForAddressConfig(
+    limit: json['limit'],
+    before: json['before'],
+    until: json['until'],
+    commitment: json['commitment'],
+    minContextSlot: json['minContextSlot'],
+  );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static GetSignaturesForAddressConfig? tryFromJson(
-      final Map<String, dynamic>? json) {
+    final Map<String, dynamic>? json,
+  ) {
     return json != null ? GetSignaturesForAddressConfig.fromJson(json) : null;
   }
 
   @override
   Map<String, dynamic> toJson() => {
-        'limit': limit,
-        'before': before,
-        'until': until,
-        'commitment': commitment?.name,
-        'minContextSlot': minContextSlot,
-      };
+    'limit': limit,
+    'before': before,
+    'until': until,
+    'commitment': commitment?.name,
+    'minContextSlot': minContextSlot,
+  };
 }

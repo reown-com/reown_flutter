@@ -307,34 +307,23 @@ class RelayClient implements IRelayClient {
       _buildIRNMethod(IRN_SUBSCRIPTION),
       _handleSubscription,
     );
-    jsonRPC!.registerMethod(
-      _buildIRNMethod(IRN_SUBSCRIBE),
-      _handleSubscribe,
-    );
+    jsonRPC!.registerMethod(_buildIRNMethod(IRN_SUBSCRIBE), _handleSubscribe);
     jsonRPC!.registerMethod(
       _buildIRNMethod(IRN_UNSUBSCRIBE),
       _handleUnsubscribe,
     );
 
     if (jsonRPC!.isClosed) {
-      throw const ReownCoreError(
-        code: 0,
-        message: 'WebSocket closed',
-      );
+      throw const ReownCoreError(code: 0, message: 'WebSocket closed');
     }
 
     jsonRPC!.listen();
 
     // When jsonRPC closes, emit the event
     _handledClose = false;
-    jsonRPC!.done.then(
-      (value) {
-        _handleRelayClose(
-          socketHandler.closeCode,
-          socketHandler.closeReason,
-        );
-      },
-    );
+    jsonRPC!.done.then((value) {
+      _handleRelayClose(socketHandler.closeCode, socketHandler.closeReason);
+    });
 
     onRelayClientConnect.broadcast();
     core.logger.i('[$runtimeType]: Connected to relay ${core.relayUrl}');
@@ -366,10 +355,7 @@ class RelayClient implements IRelayClient {
             ? reason ?? WebSocketErrors.INVALID_PROJECT_ID_OR_JWT
             : '';
         onRelayClientError.broadcast(
-          ErrorEvent(ReownCoreError(
-            code: code,
-            message: errorReason,
-          )),
+          ErrorEvent(ReownCoreError(code: code, message: errorReason)),
         );
         core.logger.e('[$runtimeType], _handleRelayClose: $core, $errorReason');
       }
@@ -523,11 +509,7 @@ class RelayClient implements IRelayClient {
     else {
       return null;
     }
-    return await jsonRPC!.sendRequest(
-      method,
-      parameters,
-      id,
-    );
+    return await jsonRPC!.sendRequest(method, parameters, id);
   }
 
   Future<String> _onSubscribe(SubscribeOptions options) async {

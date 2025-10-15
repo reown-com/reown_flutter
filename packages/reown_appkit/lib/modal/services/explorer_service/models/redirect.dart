@@ -4,12 +4,7 @@ class WalletRedirect {
   String? desktop;
   String? web;
 
-  WalletRedirect({
-    this.mobile,
-    this.linkMode,
-    this.desktop,
-    this.web,
-  });
+  WalletRedirect({this.mobile, this.linkMode, this.desktop, this.web});
 
   bool get mobileOnly => desktop == null && web == null;
   bool get webOnly => desktop == null && mobile == null;

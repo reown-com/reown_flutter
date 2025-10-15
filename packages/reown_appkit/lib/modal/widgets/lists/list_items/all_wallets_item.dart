@@ -28,35 +28,36 @@ class AllWalletsItem extends StatelessWidget {
     return BaseListItem(
       semanticsLabel: semanticsLabel ?? 'AllWalletsItem',
       onTap: onTap,
-      child: LayoutBuilder(builder: (_, constraints) {
-        return Row(
-          children: [
-            SizedBox.square(
-              dimension: constraints.maxHeight,
-              child: leading ??
-                  ThemedIcon(
-                    iconPath: 'lib/modal/assets/icons/dots.svg',
-                  ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Text(
-                  title,
-                  textAlign: titleAlign,
-                  style: themeData.textStyles.paragraph500.copyWith(
-                    color: themeColors.foreground100,
+      child: LayoutBuilder(
+        builder: (_, constraints) {
+          return Row(
+            children: [
+              SizedBox.square(
+                dimension: constraints.maxHeight,
+                child:
+                    leading ??
+                    ThemedIcon(iconPath: 'lib/modal/assets/icons/dots.svg'),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Text(
+                    title,
+                    textAlign: titleAlign,
+                    style: themeData.textStyles.paragraph500.copyWith(
+                      color: themeColors.foreground100,
+                    ),
                   ),
                 ),
               ),
-            ),
-            SizedBox.square(
-              dimension: constraints.maxHeight,
-              child: Container(),
-            ),
-          ],
-        );
-      }),
+              SizedBox.square(
+                dimension: constraints.maxHeight,
+                child: Container(),
+              ),
+            ],
+          );
+        },
+      ),
       trailing: trailing,
     );
   }

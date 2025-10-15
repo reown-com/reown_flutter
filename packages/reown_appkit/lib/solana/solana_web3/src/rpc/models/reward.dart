@@ -37,19 +37,19 @@ class Reward extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory Reward.fromJson(final Map<String, dynamic> json) => Reward(
-        pubkey: json['pubkey'],
-        lamports: json['lamports'],
-        postBalance: json['postBalance'],
-        rewardType: RewardType.tryFromJson(json['rewardType']),
-        commission: json['commission'],
-      );
+    pubkey: json['pubkey'],
+    lamports: json['lamports'],
+    postBalance: json['postBalance'],
+    rewardType: RewardType.tryFromJson(json['rewardType']),
+    commission: json['commission'],
+  );
 
   @override
   Map<String, dynamic> toJson() => {
-        'pubkey': pubkey,
-        'lamports': lamports,
-        'postBalance': postBalance,
-        'rewardType': rewardType?.toJson(),
-        'commission': commission,
-      };
+    'pubkey': pubkey,
+    'lamports': lamports,
+    'postBalance': postBalance,
+    'rewardType': rewardType?.toJson(),
+    'commission': commission,
+  };
 }

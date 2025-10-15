@@ -66,11 +66,7 @@ class MagicRequestEvent implements EventArgs {
   dynamic result;
   bool? success;
 
-  MagicRequestEvent({
-    required this.request,
-    this.result,
-    this.success,
-  });
+  MagicRequestEvent({required this.request, this.result, this.success});
 
   @override
   String toString() => 'request: $request, success: $success, result: $result';
@@ -111,39 +107,31 @@ class IsConnectedErrorEvent extends MagicErrorEvent {
 class ConnectEmailErrorEvent extends MagicErrorEvent {
   final String? message;
   ConnectEmailErrorEvent({this.message})
-      : super(
-          message ?? 'Error connecting email',
-        );
+    : super(message ?? 'Error connecting email');
 }
 
 class UpdateEmailErrorEvent extends MagicErrorEvent {
   final String? message;
   UpdateEmailErrorEvent({this.message})
-      : super(message ?? 'Error updating email');
+    : super(message ?? 'Error updating email');
 }
 
 class UpdateEmailPrimaryOtpErrorEvent extends MagicErrorEvent {
   final String? message;
   UpdateEmailPrimaryOtpErrorEvent({this.message})
-      : super(
-          message ?? 'Error validating OTP code',
-        );
+    : super(message ?? 'Error validating OTP code');
 }
 
 class UpdateEmailSecondaryOtpErrorEvent extends MagicErrorEvent {
   final String? message;
   UpdateEmailSecondaryOtpErrorEvent({this.message})
-      : super(
-          message ?? 'Error validating OTP code',
-        );
+    : super(message ?? 'Error validating OTP code');
 }
 
 class ConnectOtpErrorEvent extends MagicErrorEvent {
   final String? message;
   ConnectOtpErrorEvent({this.message})
-      : super(
-          message ?? 'Error validating OTP code',
-        );
+    : super(message ?? 'Error validating OTP code');
 }
 
 class GetUserErrorEvent extends MagicErrorEvent {
@@ -154,9 +142,7 @@ class GetUserErrorEvent extends MagicErrorEvent {
 class SwitchNetworkErrorEvent extends MagicErrorEvent {
   final String? message;
   SwitchNetworkErrorEvent({this.message})
-      : super(
-          message ?? 'Error switching network',
-        );
+    : super(message ?? 'Error switching network');
 }
 
 class SignOutErrorEvent extends MagicErrorEvent {
@@ -165,7 +151,7 @@ class SignOutErrorEvent extends MagicErrorEvent {
 
 class RpcRequestErrorEvent extends MagicErrorEvent {
   RpcRequestErrorEvent(String? message)
-      : super(message ?? 'Error during request');
+    : super(message ?? 'Error during request');
 }
 
 // class CompleteSocialLoginEvent implements EventArgs {

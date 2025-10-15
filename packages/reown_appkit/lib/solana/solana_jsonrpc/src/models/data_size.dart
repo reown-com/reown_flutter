@@ -15,9 +15,7 @@ part 'data_size.g.dart';
 @JsonSerializable()
 class DataSize extends Filter {
   /// Creates a filter that compares the program account data length with the provided data size.
-  const DataSize({
-    required this.dataSize,
-  });
+  const DataSize({required this.dataSize});
 
   /// Compares the program account data length with the provided data size.
   final u64 dataSize;

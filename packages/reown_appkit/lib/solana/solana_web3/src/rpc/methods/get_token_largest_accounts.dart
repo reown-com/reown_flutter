@@ -18,14 +18,12 @@ class GetTokenLargestAccounts
     final Pubkey mint, {
     final GetTokenLargestAccountsConfig? config,
   }) : super(
-          'getTokenLargestAccounts',
-          values: [mint.toBase58()],
-          config: config ?? const GetTokenLargestAccountsConfig(),
-        );
+         'getTokenLargestAccounts',
+         values: [mint.toBase58()],
+         config: config ?? const GetTokenLargestAccountsConfig(),
+       );
 
   @override
-  TokenAmount itemDecoder(
-    final Map<String, dynamic> item,
-  ) =>
+  TokenAmount itemDecoder(final Map<String, dynamic> item) =>
       TokenAmount.fromJson(item);
 }

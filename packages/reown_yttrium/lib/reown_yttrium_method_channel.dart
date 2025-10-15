@@ -5,7 +5,6 @@ import 'reown_yttrium_platform_interface.dart';
 
 /// An implementation of [ReownYttriumPlatform] that uses method channels.
 class MethodChannelReownYttrium extends ReownYttriumPlatform {
-
   @override
   MethodChannelChainAbstraction get chainAbstractionChannel =>
       MethodChannelChainAbstraction();

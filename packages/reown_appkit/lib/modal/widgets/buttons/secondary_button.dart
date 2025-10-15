@@ -5,11 +5,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 class SecondaryButton extends StatelessWidget {
   final String title;
   final VoidCallback? onTap;
-  const SecondaryButton({
-    super.key,
-    required this.title,
-    this.onTap,
-  });
+  const SecondaryButton({super.key, required this.title, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -27,19 +23,16 @@ class SecondaryButton extends StatelessWidget {
         foregroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) => themeColors.foreground200,
         ),
-        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
-          (states) {
-            return RoundedRectangleBorder(
-              side: BorderSide(
-                color: themeColors.grayGlass002,
-                width: 1.0,
-              ),
-              borderRadius: radiuses.isSquare()
-                  ? BorderRadius.all(Radius.zero)
-                  : BorderRadius.circular(16.0),
-            );
-          },
-        ),
+        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>((
+          states,
+        ) {
+          return RoundedRectangleBorder(
+            side: BorderSide(color: themeColors.grayGlass002, width: 1.0),
+            borderRadius: radiuses.isSquare()
+                ? BorderRadius.all(Radius.zero)
+                : BorderRadius.circular(16.0),
+          );
+        }),
       ),
     );
   }

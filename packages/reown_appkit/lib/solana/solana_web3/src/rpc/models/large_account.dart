@@ -11,10 +11,7 @@ import '../../crypto/pubkey.dart';
 
 class LargeAccount extends Serializable {
   /// A large account (by lamport balance).
-  const LargeAccount({
-    required this.address,
-    required this.lamports,
-  });
+  const LargeAccount({required this.address, required this.lamports});
 
   /// The address of the account.
   final Pubkey address;
@@ -34,8 +31,5 @@ class LargeAccount extends Serializable {
       json == null ? null : LargeAccount.fromJson(json);
 
   @override
-  Map<String, dynamic> toJson() => {
-        'address': address,
-        'lamports': lamports,
-      };
+  Map<String, dynamic> toJson() => {'address': address, 'lamports': lamports};
 }

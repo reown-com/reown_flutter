@@ -8,9 +8,7 @@ export 'models/ton.dart';
 export 'utils/signature_utils.dart';
 
 class ReownYttrium {
-
   static final chainAbstractionClient = ChainAbstractionClient();
 
   static final tonClient = TonClient();
-
 }

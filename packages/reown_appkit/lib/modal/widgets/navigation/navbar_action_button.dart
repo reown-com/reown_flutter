@@ -23,7 +23,8 @@ class NavbarActionButton extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return SizedBox.square(
       dimension: dimension,
-      child: child ??
+      child:
+          child ??
           IconButton(
             onPressed: action,
             padding: const EdgeInsets.all(0.0),

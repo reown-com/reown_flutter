@@ -35,12 +35,12 @@ class AddressLookupTableState extends Serializable {
   final List<Pubkey> addresses;
 
   static BorshStructCodec get metaCodec => borsh.struct({
-        'typeIndex': borsh.u32,
-        'deactivationSlot': borsh.u64,
-        'lastExtendedSlot': borsh.u64,
-        'lastExtendedSlotStartIndex': borsh.u8,
-        'authority': borsh.pubkey.option(),
-      });
+    'typeIndex': borsh.u32,
+    'deactivationSlot': borsh.u64,
+    'lastExtendedSlot': borsh.u64,
+    'lastExtendedSlotStartIndex': borsh.u8,
+    'authority': borsh.pubkey.option(),
+  });
 
   /// {@macro solana_borsh.BorshObject.fromBorsh}
   static AddressLookupTableState fromBorsh(final Iterable<int> buffer) {
@@ -49,7 +49,7 @@ class AddressLookupTableState extends Serializable {
     final metaSchema = metaCodec.schema;
     final int addressesLength = (buffer.length - metaLength) ~/ 32;
     final addressesSchema = {
-      addressesKey: borsh.arraySized(borsh.pubkey, addressesLength)
+      addressesKey: borsh.arraySized(borsh.pubkey, addressesLength),
     };
     final Map<String, dynamic> json = borsh.decode(metaSchema, buffer);
     json.addAll(borsh.decode(addressesSchema, buffer.skip(metaLength)));
@@ -68,38 +68,35 @@ class AddressLookupTableState extends Serializable {
   static AddressLookupTableState? tryFromBorshBase64(final String? encoded) =>
       encoded != null ? AddressLookupTableState.fromBorshBase64(encoded) : null;
 
-  factory AddressLookupTableState.fromJson(
-    final Map<String, dynamic> json,
-  ) =>
+  factory AddressLookupTableState.fromJson(final Map<String, dynamic> json) =>
       AddressLookupTableState(
         typeIndex: json['typeIndex'],
         deactivationSlot: json['deactivationSlot'],
         lastExtendedSlot: json['lastExtendedSlot'],
         lastExtendedSlotStartIndex: json['lastExtendedSlotStartIndex'],
         authority: Pubkey.tryFromBase58(json['authority']),
-        addresses:
-            IterableSerializable.fromJson(json['addresses'], Pubkey.fromBase58),
+        addresses: IterableSerializable.fromJson(
+          json['addresses'],
+          Pubkey.fromBase58,
+        ),
       );
 
   @override
   Map<String, dynamic> toJson() => {
-        'typeIndex': typeIndex,
-        'deactivationSlot': deactivationSlot,
-        'lastExtendedSlot': lastExtendedSlot,
-        'lastExtendedSlotStartIndex': lastExtendedSlotStartIndex,
-        'authority': authority?.toBase58(),
-        'addresses': addresses.toJson(),
-      };
+    'typeIndex': typeIndex,
+    'deactivationSlot': deactivationSlot,
+    'lastExtendedSlot': lastExtendedSlot,
+    'lastExtendedSlotStartIndex': lastExtendedSlotStartIndex,
+    'authority': authority?.toBase58(),
+    'addresses': addresses.toJson(),
+  };
 }
 
 /// Address Lookup Table Account
 /// ------------------------------------------------------------------------------------------------
 
 class AddressLookupTableAccount extends Serializable {
-  const AddressLookupTableAccount({
-    required this.key,
-    required this.state,
-  });
+  const AddressLookupTableAccount({required this.key, required this.state});
 
   final Pubkey key;
 
@@ -111,17 +108,12 @@ class AddressLookupTableAccount extends Serializable {
   }
 
   /// {@macro solana_common.Serializable.fromJson}
-  factory AddressLookupTableAccount.fromJson(
-    final Map<String, dynamic> json,
-  ) =>
+  factory AddressLookupTableAccount.fromJson(final Map<String, dynamic> json) =>
       AddressLookupTableAccount(
         key: json['key'],
         state: AddressLookupTableState.fromJson(json['state']),
       );
 
   @override
-  Map<String, dynamic> toJson() => {
-        'key': key,
-        'state': state.toJson(),
-      };
+  Map<String, dynamic> toJson() => {'key': key, 'state': state.toJson()};
 }

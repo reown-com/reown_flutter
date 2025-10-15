@@ -16,7 +16,8 @@ mixin SerializableMixin {
   /// Creates an [UnimplementedError] for missing [method] implementations.
   static UnimplementedError _unimplementedError(final String method) =>
       UnimplementedError(
-          'Derived classes of [SerializableMixin] must implement [$method].');
+        'Derived classes of [SerializableMixin] must implement [$method].',
+      );
 
   /// {@template solana_common.Serializable.fromJson}
   /// Creates an instance of `this` class from the constructor parameters defined in the [json]

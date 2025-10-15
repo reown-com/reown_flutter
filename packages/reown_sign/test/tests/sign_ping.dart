@@ -26,10 +26,7 @@ void signPing({
       clients.add(clientA);
       clients.add(clientB);
 
-      await clientA.sessions.set(
-        TEST_SESSION_VALID_TOPIC,
-        testSessionValid,
-      );
+      await clientA.sessions.set(TEST_SESSION_VALID_TOPIC, testSessionValid);
       await clientA.sessions.set(
         TEST_SESSION_EXPIRED_TOPIC,
         testSessionExpired,
@@ -91,9 +88,7 @@ void signPing({
 
     test('invalid topic', () async {
       expect(
-        () async => await clientA.ping(
-          topic: TEST_SESSION_INVALID_TOPIC,
-        ),
+        () async => await clientA.ping(topic: TEST_SESSION_INVALID_TOPIC),
         throwsA(
           isA<ReownSignError>().having(
             (e) => e.message,
@@ -116,9 +111,7 @@ void signPing({
         completerSession.complete();
       });
       expect(
-        () async => await clientA.ping(
-          topic: TEST_SESSION_EXPIRED_TOPIC,
-        ),
+        () async => await clientA.ping(topic: TEST_SESSION_EXPIRED_TOPIC),
         throwsA(
           isA<ReownSignError>().having(
             (e) => e.message,
@@ -135,12 +128,7 @@ void signPing({
         await completerSession.future;
       }
 
-      expect(
-        clientA.sessions.has(
-          TEST_SESSION_EXPIRED_TOPIC,
-        ),
-        false,
-      );
+      expect(clientA.sessions.has(TEST_SESSION_EXPIRED_TOPIC), false);
       expect(counter, 1);
       expect(counterSession, 1);
       clientA.core.expirer.onExpire.unsubscribeAll();

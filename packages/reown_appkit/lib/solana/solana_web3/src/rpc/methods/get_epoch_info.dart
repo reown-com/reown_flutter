@@ -12,12 +12,8 @@ import '../models/epoch_info.dart';
 /// A codec for `getEpochInfo` JSON RPC methods.
 class GetEpochInfo extends JsonRpcMethod<Map<String, dynamic>, EpochInfo> {
   /// Creates a codec for `getEpochInfo` JSON RPC methods.
-  GetEpochInfo({
-    final GetEpochInfoConfig? config,
-  }) : super(
-          'getEpochInfo',
-          config: config ?? const GetEpochInfoConfig(),
-        );
+  GetEpochInfo({final GetEpochInfoConfig? config})
+    : super('getEpochInfo', config: config ?? const GetEpochInfoConfig());
 
   @override
   EpochInfo decoder(final Map<String, dynamic> value) =>

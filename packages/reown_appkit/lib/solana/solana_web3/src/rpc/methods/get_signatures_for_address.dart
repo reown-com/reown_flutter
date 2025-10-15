@@ -18,14 +18,12 @@ class GetSignaturesForAddress
     final Pubkey address, {
     final GetSignaturesForAddressConfig? config,
   }) : super(
-          'getSignaturesForAddress',
-          values: [address.toBase58()],
-          config: config ?? const GetSignaturesForAddressConfig(),
-        );
+         'getSignaturesForAddress',
+         values: [address.toBase58()],
+         config: config ?? const GetSignaturesForAddressConfig(),
+       );
 
   @override
-  ConfirmedSignatureInfo itemDecoder(
-    final Map<String, dynamic> item,
-  ) =>
+  ConfirmedSignatureInfo itemDecoder(final Map<String, dynamic> item) =>
       ConfirmedSignatureInfo.fromJson(item);
 }

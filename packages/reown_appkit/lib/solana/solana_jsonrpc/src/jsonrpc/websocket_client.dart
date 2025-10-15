@@ -32,8 +32,8 @@ typedef JsonRpcWebsocketClientOnDisconnect = void Function();
 typedef JsonRpcWebsocketClientOnData<R> = void Function(dynamic data);
 
 /// The `onError` callback handler.
-typedef JsonRpcWebsocketClientOnError = void Function(Object error,
-    [StackTrace? stackTrace]);
+typedef JsonRpcWebsocketClientOnError =
+    void Function(Object error, [StackTrace? stackTrace]);
 
 /// The `onPing` callback handler.
 typedef JsonRpcWebsocketClientOnPing<R> = void Function(R data);
@@ -78,9 +78,9 @@ class JsonRpcWebsocketClient<R> extends Client<R> {
     required this.isPing,
     final JsonRpcClientEncoder? encoder,
     required super.decoder,
-  })  : maxAttempts = maxAttempts ?? 1,
-        backoffSchedule = backoffSchedule ?? const [],
-        super(encoder: encoder ?? const JsonToBytesEncoder());
+  }) : maxAttempts = maxAttempts ?? 1,
+       backoffSchedule = backoffSchedule ?? const [],
+       super(encoder: encoder ?? const JsonToBytesEncoder());
 
   /// Creates a JSON RPC Client for Websocket methods that return [String] data.
   static JsonRpcWebsocketClient<String> withStringDecoder(
@@ -94,21 +94,20 @@ class JsonRpcWebsocketClient<R> extends Client<R> {
     final JsonRpcWebsocketClientOnData<String>? onData,
     final JsonRpcWebsocketClientOnError? onError,
     final JsonRpcWebsocketClientOnPing? onPing,
-  }) =>
-      JsonRpcWebsocketClient(
-        uri,
-        timeLimit: timeLimit,
-        maxAttempts: maxAttempts,
-        backoffSchedule: backoffSchedule,
-        protocols: protocols,
-        onConnect: onConnect,
-        onDisconnect: onDisconnect,
-        onData: onData,
-        onError: onError,
-        onPing: onPing,
-        isPing: (data) => data.isEmpty,
-        decoder: const JsonDecoder(),
-      );
+  }) => JsonRpcWebsocketClient(
+    uri,
+    timeLimit: timeLimit,
+    maxAttempts: maxAttempts,
+    backoffSchedule: backoffSchedule,
+    protocols: protocols,
+    onConnect: onConnect,
+    onDisconnect: onDisconnect,
+    onData: onData,
+    onError: onError,
+    onPing: onPing,
+    isPing: (data) => data.isEmpty,
+    decoder: const JsonDecoder(),
+  );
 
   /// Creates a JSON RPC Client for Websocket methods that return byte data.
   static JsonRpcWebsocketClient<List<int>> withByteDecoder(
@@ -122,21 +121,20 @@ class JsonRpcWebsocketClient<R> extends Client<R> {
     final JsonRpcWebsocketClientOnData<List<int>>? onData,
     final JsonRpcWebsocketClientOnError? onError,
     final JsonRpcWebsocketClientOnPing<List<int>>? onPing,
-  }) =>
-      JsonRpcWebsocketClient(
-        uri,
-        timeLimit: timeLimit,
-        maxAttempts: maxAttempts,
-        backoffSchedule: backoffSchedule,
-        protocols: protocols,
-        onConnect: onConnect,
-        onDisconnect: onDisconnect,
-        onData: onData,
-        onError: onError,
-        onPing: onPing,
-        isPing: (data) => data.isEmpty,
-        decoder: const JsonToBytesDecoder(),
-      );
+  }) => JsonRpcWebsocketClient(
+    uri,
+    timeLimit: timeLimit,
+    maxAttempts: maxAttempts,
+    backoffSchedule: backoffSchedule,
+    protocols: protocols,
+    onConnect: onConnect,
+    onDisconnect: onDisconnect,
+    onData: onData,
+    onError: onError,
+    onPing: onPing,
+    isPing: (data) => data.isEmpty,
+    decoder: const JsonToBytesDecoder(),
+  );
 
   /// Websocket client.
   WebSocketChannel? _client;
@@ -233,9 +231,7 @@ class JsonRpcWebsocketClient<R> extends Client<R> {
   /// Establishes a websocket connection to [uri].
   ///
   /// This method can be called multiple times and will always result in a single connection.
-  Future<void> connect({
-    final Duration? timeLimit,
-  }) {
+  Future<void> connect({final Duration? timeLimit}) {
     final DateTime start = _now();
     return _lock.synchronized(
       timeout: timeLimit,
@@ -246,9 +242,7 @@ class JsonRpcWebsocketClient<R> extends Client<R> {
   /// Establishes a websocket connection to [uri].
   ///
   /// This method must be called within [Lock.synchronized].
-  Future<void> _connect({
-    final Duration? timeLimit,
-  }) async {
+  Future<void> _connect({final Duration? timeLimit}) async {
     assert(!_disposed);
     assert(_lock.locked);
 
@@ -263,13 +257,20 @@ class JsonRpcWebsocketClient<R> extends Client<R> {
     for (int i = 0; i < maxAttempts && !_disposed; ++i) {
       try {
         final Duration? remaining = _remaining(start, timeLimit: timeLimit);
-        final Duration delay =
-            await _backoff(i, schedule: backoffSchedule, timeLimit: remaining);
-        final WebSocketChannel client =
-            WebSocketChannel.connect(uri, protocols: protocols);
+        final Duration delay = await _backoff(
+          i,
+          schedule: backoffSchedule,
+          timeLimit: remaining,
+        );
+        final WebSocketChannel client = WebSocketChannel.connect(
+          uri,
+          protocols: protocols,
+        );
         _subscribe(client.stream.cast<R>());
         await timeout(
-            client.ready, remaining != null ? remaining - delay : null);
+          client.ready,
+          remaining != null ? remaining - delay : null,
+        );
         _client = client;
         onConnect?.call();
         return;
@@ -329,8 +330,9 @@ class JsonRpcWebsocketClient<R> extends Client<R> {
     } else if (_isHandshakePending) {
       _complete(_handshakeId, data);
     } else {
-      final dynamic decoded =
-          await decoder.convert(data); // Map or List<Map> or Empty List (PING).
+      final dynamic decoded = await decoder.convert(
+        data,
+      ); // Map or List<Map> or Empty List (PING).
       assert(decoded is List || decoded is Map);
       final int? id = _responseId(decoded);
       _pending.containsKey(id) ? _complete(id, decoded) : onData?.call(decoded);
@@ -363,8 +365,11 @@ class JsonRpcWebsocketClient<R> extends Client<R> {
   }
 
   /// Cancels a pending request with [error].
-  void _cancel(final int? id, final Object error,
-      [final StackTrace? stackTrace]) {
+  void _cancel(
+    final int? id,
+    final Object error, [
+    final StackTrace? stackTrace,
+  ]) {
     final Completer? pending = _pending.remove(id);
     pending?.completeError(error, stackTrace);
   }
@@ -392,8 +397,7 @@ class JsonRpcWebsocketClient<R> extends Client<R> {
     final List<int> encoded, {
     final JsonRpcClientConfig? config,
     final int? id,
-  }) =>
-      _handler<T>(encoded, config: config, id: id);
+  }) => _handler<T>(encoded, config: config, id: id);
 
   Future<T> _handler<T>(
     final List<int> encoded, {
@@ -405,7 +409,8 @@ class JsonRpcWebsocketClient<R> extends Client<R> {
 
       if (id == null) {
         throw const JsonRpcException(
-            'Websocket requests must define a unique `id`.');
+          'Websocket requests must define a unique `id`.',
+        );
       }
 
       if (!isConnected) {

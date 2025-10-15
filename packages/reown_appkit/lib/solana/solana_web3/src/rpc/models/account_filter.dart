@@ -4,8 +4,7 @@ library;
 
 enum AccountFilter {
   circulating,
-  nonCirculating,
-  ;
+  nonCirculating;
 
   /// Returns the enum variant where [EnumName.name] is equal to [name].
   ///

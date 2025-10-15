@@ -43,15 +43,17 @@ class TransactionData<T extends Object> extends Serializable
   /// TransactionData.parse({ '<parameter>': <value> });
   /// ```
   static TransactionData parse(final Map<String, dynamic> json) {
-    final Object transaction =
-        DataSerializableMixin.decode(json[transactionKey]);
+    final Object transaction = DataSerializableMixin.decode(
+      json[transactionKey],
+    );
     if (transaction is List) {
       return TransactionData<List<String>>.fromJson(json);
     } else if (transaction is Map) {
       return TransactionData<Map<String, dynamic>>.fromJson(json);
     } else {
       throw TransactionException(
-          'Unknown data type ${transaction.runtimeType}');
+        'Unknown data type ${transaction.runtimeType}',
+      );
     }
   }
 
@@ -66,8 +68,8 @@ class TransactionData<T extends Object> extends Serializable
 
   @override
   Map<String, dynamic> toJson() => {
-        transactionKey: transaction,
-        'meta': meta,
-        'version': version,
-      };
+    transactionKey: transaction,
+    'meta': meta,
+    'version': version,
+  };
 }

@@ -99,12 +99,7 @@ void signApproveSession({
       await completer.future;
       await completer2.future;
 
-      expect(
-        clientB.proposals.has(
-          TEST_PROPOSAL_EXPIRED_ID.toString(),
-        ),
-        false,
-      );
+      expect(clientB.proposals.has(TEST_PROPOSAL_EXPIRED_ID.toString()), false);
       expect(counter, 1);
       expect(counterSession, 1);
       clientB.core.expirer.onExpire.unsubscribeAll();

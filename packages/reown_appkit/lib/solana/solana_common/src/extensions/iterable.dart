@@ -12,8 +12,7 @@ extension IterableSerializable on Iterable<SerializableMixin> {
   static List<T> fromJson<T extends SerializableMixin, U>(
     final Iterable json,
     T Function(U) decode,
-  ) =>
-      json.cast<U>().map(decode).toList(growable: true);
+  ) => json.cast<U>().map(decode).toList(growable: true);
 
   /// Creates a list of [Serializable] objects from [json].
   ///
@@ -21,11 +20,10 @@ extension IterableSerializable on Iterable<SerializableMixin> {
   static List<T>? tryFromJson<T extends SerializableMixin, U>(
     final Iterable? json,
     T Function(U) decode,
-  ) =>
-      json != null ? fromJson(json, decode) : null;
+  ) => json != null ? fromJson(json, decode) : null;
 
   /// Serializes this lists into a list of JSON data.
-  List<T> toJson<T>() =>
-      map<T>((final SerializableMixin object) => object.toJson())
-          .toList(growable: false);
+  List<T> toJson<T>() => map<T>(
+    (final SerializableMixin object) => object.toJson(),
+  ).toList(growable: false);
 }

@@ -15,9 +15,7 @@ part 'context.g.dart';
 @JsonSerializable()
 class JsonRpcContext extends Serializable {
   /// Creates a JSON RPC response context.
-  const JsonRpcContext({
-    required this.slot,
-  });
+  const JsonRpcContext({required this.slot});
 
   /// The slot at which the operation was evaluated.
   final int slot;

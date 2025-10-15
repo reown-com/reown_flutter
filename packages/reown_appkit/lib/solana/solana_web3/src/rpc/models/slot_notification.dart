@@ -39,8 +39,8 @@ class SlotNotification extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'parent': parent,
-        'root': root,
-        'slot': slot,
-      };
+    'parent': parent,
+    'root': root,
+    'slot': slot,
+  };
 }

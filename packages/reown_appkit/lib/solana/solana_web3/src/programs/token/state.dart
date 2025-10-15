@@ -14,5 +14,4 @@ enum AuthorityType {
 
   /// Authority to close a token account
   closeAccount,
-  ;
 }

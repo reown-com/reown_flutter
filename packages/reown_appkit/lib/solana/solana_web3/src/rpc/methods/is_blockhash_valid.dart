@@ -15,8 +15,8 @@ class IsBlockhashValid extends JsonRpcTypeContextMethod<bool> {
     final String blockhash, {
     final IsBlockhashValidConfig? config,
   }) : super(
-          'isBlockhashValid',
-          values: [blockhash],
-          config: config ?? const IsBlockhashValidConfig(),
-        );
+         'isBlockhashValid',
+         values: [blockhash],
+         config: config ?? const IsBlockhashValidConfig(),
+       );
 }

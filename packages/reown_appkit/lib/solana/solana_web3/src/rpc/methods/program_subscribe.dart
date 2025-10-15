@@ -18,8 +18,8 @@ class ProgramSubscribe extends JsonRpcTypeMethod<SubscriptionId> {
     final Pubkey programId, {
     final ProgramSubscribeConfig? config,
   }) : super(
-          'programSubscribe',
-          values: [programId.toBase58()],
-          config: config ?? const ProgramSubscribeConfig(),
-        );
+         'programSubscribe',
+         values: [programId.toBase58()],
+         config: config ?? const ProgramSubscribeConfig(),
+       );
 }

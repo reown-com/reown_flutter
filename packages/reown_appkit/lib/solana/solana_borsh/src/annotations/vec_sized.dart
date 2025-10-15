@@ -17,10 +17,7 @@ import 'vec_typed.dart';
 class BorshVecSized<T> extends BorshVecTyped<T, BorshAnnotationSized<T>>
     implements BorshAnnotationSized<List<T>> {
   /// Creates an annotation for a dynamically sized array with sized data types.
-  const BorshVecSized(
-    super.subtype,
-    this.capacity,
-  );
+  const BorshVecSized(super.subtype, this.capacity);
 
   /// The maximum length.
   final int capacity;

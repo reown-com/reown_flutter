@@ -45,7 +45,6 @@ class BorshRustEnumSizedCodec<T>
 /// constructors).
 class BorshRustEnumSizedEncoder<T>
     extends BorshRustEnumTypedEncoder<T, BorshCodecFixedSized<T>>
-
 /// Not using [BorshEncoderFixedSized] to prevent `0` padding.
 {
   /// Creates an encoder for complex Rust style enums with sized data types (tuple or struct

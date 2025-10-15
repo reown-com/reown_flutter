@@ -28,10 +28,7 @@ class HelpSection extends StatelessWidget {
                 .map(
                   (path) => Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                    child: SvgPicture.asset(
-                      path,
-                      package: 'reown_appkit',
-                    ),
+                    child: SvgPicture.asset(path, package: 'reown_appkit'),
                   ),
                 )
                 .toList(),

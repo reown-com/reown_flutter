@@ -39,7 +39,6 @@ class TonService {
         handler: handler.value,
       );
     }
-
   }
 
   Future<void> init() async {

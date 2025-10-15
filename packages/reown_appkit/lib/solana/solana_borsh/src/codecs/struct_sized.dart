@@ -31,7 +31,6 @@ class BorshStructSizedCodec extends BorshStructTypedCodec<BorshCodecFixedSized>
 /// An encoder for borsh serializable objects with sized fields.
 class BorshStructSizedEncoder
     extends BorshStructTypedEncoder<BorshCodecFixedSized>
-
 /// Not using [BorshEncoderFixedSized] to prevent `0` padding.
 {
   /// Creates an encoder for borsh serializable objects with sized fields.

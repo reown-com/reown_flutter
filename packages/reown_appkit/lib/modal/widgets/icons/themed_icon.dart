@@ -4,11 +4,7 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class ThemedIcon extends StatelessWidget {
-  const ThemedIcon({
-    super.key,
-    required this.iconPath,
-    this.size,
-  });
+  const ThemedIcon({super.key, required this.iconPath, this.size});
   final String iconPath;
   final double? size;
 
@@ -33,10 +29,7 @@ class ThemedIcon extends StatelessWidget {
       child: SvgPicture.asset(
         iconPath,
         package: 'reown_appkit',
-        colorFilter: ColorFilter.mode(
-          themeColors.accent100,
-          BlendMode.srcIn,
-        ),
+        colorFilter: ColorFilter.mode(themeColors.accent100, BlendMode.srcIn),
       ),
     );
   }
@@ -70,24 +63,19 @@ class ThemedButton extends StatelessWidget {
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         iconSize: WidgetStateProperty.all<double?>(0.0),
         elevation: WidgetStateProperty.all<double?>(0.0),
-        overlayColor: WidgetStateProperty.all<Color>(
-          themeColors.accenGlass010,
-        ),
+        overlayColor: WidgetStateProperty.all<Color>(themeColors.accenGlass010),
         padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
           const EdgeInsets.all(0.0),
         ),
-        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
-          (states) {
-            return RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(radiuses.radius2XS),
-            );
-          },
-        ),
+        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>((
+          states,
+        ) {
+          return RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(radiuses.radius2XS),
+          );
+        }),
       ),
-      child: ThemedIcon(
-        size: size,
-        iconPath: iconPath,
-      ),
+      child: ThemedIcon(size: size, iconPath: iconPath),
     );
   }
 }

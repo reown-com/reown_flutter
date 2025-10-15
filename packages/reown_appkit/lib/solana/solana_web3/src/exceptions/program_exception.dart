@@ -13,10 +13,7 @@ part 'program_exception.g.dart';
 @JsonSerializable(createToJson: false)
 class ProgramException extends SolanaException {
   /// Creates an exception for a program error.
-  const ProgramException(
-    super.message, {
-    super.code,
-  });
+  const ProgramException(super.message, {super.code});
 
   /// {@macro solana_common.Serializable.fromJson}
   factory ProgramException.fromJson(final Map<String, dynamic> json) =>

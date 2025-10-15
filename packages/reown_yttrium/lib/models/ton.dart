@@ -5,10 +5,8 @@ part 'ton.g.dart';
 
 @freezed
 sealed class TonKeyPair with _$TonKeyPair {
-  const factory TonKeyPair({
-    required String sk,
-    required String pk,
-  }) = _TonKeyPair;
+  const factory TonKeyPair({required String sk, required String pk}) =
+      _TonKeyPair;
 
   factory TonKeyPair.fromJson(Map<String, dynamic> json) =>
       _$TonKeyPairFromJson(json);

@@ -13,12 +13,10 @@ import '../interfaces/json_rpc_type_context_method.dart';
 /// A method handler for `getBalance`.
 class GetBalance extends JsonRpcTypeContextMethod<u64> {
   /// Creates a method handler for `GetBalance`.
-  GetBalance(
-    final Pubkey pubkey, {
-    final GetBalanceConfig? config,
-  }) : super(
-          'getBalance',
-          values: [pubkey.toBase58()],
-          config: config ?? const GetBalanceConfig(),
-        );
+  GetBalance(final Pubkey pubkey, {final GetBalanceConfig? config})
+    : super(
+        'getBalance',
+        values: [pubkey.toBase58()],
+        config: config ?? const GetBalanceConfig(),
+      );
 }

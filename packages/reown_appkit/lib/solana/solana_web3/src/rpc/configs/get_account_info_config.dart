@@ -17,9 +17,11 @@ class GetAccountInfoConfig extends CommitmentAndMinContextSlotConfig {
     this.encoding = AccountEncoding.base64,
     this.dataSlice,
     super.minContextSlot,
-  })  : assert(dataSlice == null || encoding.isBinary,
-            'Must use binary encoding for [DataSlice].'),
-        assert(minContextSlot == null || minContextSlot >= 0);
+  }) : assert(
+         dataSlice == null || encoding.isBinary,
+         'Must use binary encoding for [DataSlice].',
+       ),
+       assert(minContextSlot == null || minContextSlot >= 0);
 
   /// The account data's encoding (default: [AccountEncoding.base64]).
   ///
@@ -32,9 +34,9 @@ class GetAccountInfoConfig extends CommitmentAndMinContextSlotConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        'commitment': commitment?.name,
-        'encoding': encoding.name,
-        'dataSlice': dataSlice?.toJson(),
-        'minContextSlot': minContextSlot,
-      };
+    'commitment': commitment?.name,
+    'encoding': encoding.name,
+    'dataSlice': dataSlice?.toJson(),
+    'minContextSlot': minContextSlot,
+  };
 }

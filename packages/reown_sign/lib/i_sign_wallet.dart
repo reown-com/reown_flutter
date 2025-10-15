@@ -21,26 +21,19 @@ abstract class IReownSignWallet extends IReownSignCommon {
   abstract final Event<SessionAuthRequest> onSessionAuthRequest;
   abstract final IGenericStore<PendingSessionAuthRequest> sessionAuthRequests;
 
-  Future<PairingInfo> pair({
-    required Uri uri,
-  });
+  Future<PairingInfo> pair({required Uri uri});
   Future<ApproveResponse> approveSession({
     required int id,
     required Map<String, Namespace> namespaces,
     Map<String, String>? sessionProperties,
     String? relayProtocol,
   });
-  Future<void> rejectSession({
-    required int id,
-    required ReownSignError reason,
-  });
+  Future<void> rejectSession({required int id, required ReownSignError reason});
   Future<void> updateSession({
     required String topic,
     required Map<String, Namespace> namespaces,
   });
-  Future<void> extendSession({
-    required String topic,
-  });
+  Future<void> extendSession({required String topic});
   void registerRequestHandler({
     required String chainId,
     required String method,
@@ -62,10 +55,7 @@ abstract class IReownSignWallet extends IReownSignCommon {
 
   /// Register event emitters for a given namespace or chainId
   /// Used to construct the Namespaces map for the session proposal
-  void registerEventEmitter({
-    required String chainId,
-    required String event,
-  });
+  void registerEventEmitter({required String chainId, required String event});
 
   /// Register accounts for a given namespace or chainId.
   /// Used to construct the Namespaces map for the session proposal.

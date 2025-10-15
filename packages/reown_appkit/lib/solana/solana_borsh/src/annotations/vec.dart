@@ -16,7 +16,5 @@ import 'vec_typed.dart';
 /// ```
 class BorshVec<T> extends BorshVecTyped<T, BorshAnnotation<T>> {
   /// Creates an annotation for a dynamically sized array.
-  const BorshVec(
-    super.subtype,
-  );
+  const BorshVec(super.subtype);
 }

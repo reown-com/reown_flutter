@@ -42,11 +42,11 @@ class _AppKitModalQRCodePageState extends State<ReownAppKitModalQRCodePage> {
   }
 
   void _buildWidget() => setState(() {
-        _qrQodeWidget = QRCodeView(
-          uri: _appKitModal!.wcUri!,
-          logoPath: 'lib/modal/assets/png/logo_wc.png',
-        );
-      });
+    _qrQodeWidget = QRCodeView(
+      uri: _appKitModal!.wcUri!,
+      logoPath: 'lib/modal/assets/png/logo_wc.png',
+    );
+  });
 
   void _onPairingExpire(EventArgs? args) async {
     await _appKitModal!.buildConnectionUri();
@@ -79,7 +79,8 @@ class _AppKitModalQRCodePageState extends State<ReownAppKitModalQRCodePage> {
           children: [
             Padding(
               padding: EdgeInsets.all(20.0),
-              child: _qrQodeWidget ??
+              child:
+                  _qrQodeWidget ??
                   AspectRatio(
                     aspectRatio: 1.0,
                     child: Shimmer.fromColors(
@@ -99,8 +100,8 @@ class _AppKitModalQRCodePageState extends State<ReownAppKitModalQRCodePage> {
                 maxWidth: isPortrait
                     ? ResponsiveData.maxWidthOf(context)
                     : (ResponsiveData.maxHeightOf(context) -
-                        kNavbarHeight -
-                        32.0),
+                          kNavbarHeight -
+                          32.0),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
@@ -141,9 +142,8 @@ class _AppKitModalQRCodePageState extends State<ReownAppKitModalQRCodePage> {
   Future<void> _copyToClipboard(BuildContext context) async {
     final service = ModalProvider.of(context).instance;
     await Clipboard.setData(ClipboardData(text: service.wcUri!));
-    GetIt.I<IToastService>().show(ToastMessage(
-      type: ToastType.success,
-      text: 'Link copied',
-    ));
+    GetIt.I<IToastService>().show(
+      ToastMessage(type: ToastType.success, text: 'Link copied'),
+    );
   }
 }

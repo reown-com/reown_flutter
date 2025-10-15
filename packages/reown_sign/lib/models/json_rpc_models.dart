@@ -24,9 +24,8 @@ sealed class WcPairingDeleteRequest with _$WcPairingDeleteRequest {
 @freezed
 sealed class WcPairingPingRequest with _$WcPairingPingRequest {
   @JsonSerializable()
-  const factory WcPairingPingRequest({
-    required Map<String, dynamic> data,
-  }) = _WcPairingPingRequest;
+  const factory WcPairingPingRequest({required Map<String, dynamic> data}) =
+      _WcPairingPingRequest;
 
   factory WcPairingPingRequest.fromJson(Map<String, dynamic> json) =>
       _$WcPairingPingRequestFromJson(json);
@@ -90,9 +89,8 @@ sealed class WcSessionUpdateRequest with _$WcSessionUpdateRequest {
 @freezed
 sealed class WcSessionExtendRequest with _$WcSessionExtendRequest {
   @JsonSerializable(includeIfNull: false)
-  const factory WcSessionExtendRequest({
-    Map<String, dynamic>? data,
-  }) = _WcSessionExtendRequest;
+  const factory WcSessionExtendRequest({Map<String, dynamic>? data}) =
+      _WcSessionExtendRequest;
 
   factory WcSessionExtendRequest.fromJson(Map<String, dynamic> json) =>
       _$WcSessionExtendRequestFromJson(json);
@@ -114,9 +112,8 @@ sealed class WcSessionDeleteRequest with _$WcSessionDeleteRequest {
 @freezed
 sealed class WcSessionPingRequest with _$WcSessionPingRequest {
   @JsonSerializable(includeIfNull: false)
-  const factory WcSessionPingRequest({
-    Map<String, dynamic>? data,
-  }) = _WcSessionPingRequest;
+  const factory WcSessionPingRequest({Map<String, dynamic>? data}) =
+      _WcSessionPingRequest;
 
   factory WcSessionPingRequest.fromJson(Map<String, dynamic> json) =>
       _$WcSessionPingRequestFromJson(json);

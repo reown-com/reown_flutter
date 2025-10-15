@@ -50,9 +50,7 @@ class MethodChannelChainAbstraction {
     try {
       final response = await methodChannel.invokeMethod<dynamic>(
         'ca_estimateFees',
-        {
-          'chainId': chainId,
-        },
+        {'chainId': chainId},
       );
       return Eip1559EstimationCompat.fromJson({
         'maxPriorityFeePerGas': response['maxPriorityFeePerGas'],
@@ -93,24 +91,22 @@ class MethodChannelChainAbstraction {
         '[$runtimeType] prepareDetailed, response: ${jsonEncode(response)}',
       );
       if (response.containsKey('available')) {
-        final responseData =
-            ChannelUtils.handlePlatformResult(response['available']);
+        final responseData = ChannelUtils.handlePlatformResult(
+          response['available'],
+        );
         return PrepareDetailedResponseCompat.success(
           value: PrepareDetailedResponseSuccessCompat.available(
-            value: UiFieldsCompat.fromJson(
-              responseData!,
-            ),
+            value: UiFieldsCompat.fromJson(responseData!),
           ),
         );
       }
       if (response.containsKey('notRequired')) {
-        final responseData =
-            ChannelUtils.handlePlatformResult(response['notRequired']);
+        final responseData = ChannelUtils.handlePlatformResult(
+          response['notRequired'],
+        );
         return PrepareDetailedResponseCompat.success(
           value: PrepareDetailedResponseSuccessCompat.notRequired(
-            value: PrepareResponseNotRequiredCompat.fromJson(
-              responseData!,
-            ),
+            value: PrepareResponseNotRequiredCompat.fromJson(responseData!),
           ),
         );
       }
@@ -148,14 +144,11 @@ class MethodChannelChainAbstraction {
     required PrimitiveSignatureCompat initialTxnSig,
   }) async {
     try {
-      final response = await methodChannel.invokeMethod<dynamic>(
-        'ca_execute',
-        {
-          'orchestrationId': uiFields.routeResponse.orchestrationId,
-          'routeTxnSigs': routeTxnSigs.map((e) => e.hexValue).toList(),
-          'initialTxnSig': initialTxnSig.hexValue,
-        },
-      );
+      final response = await methodChannel.invokeMethod<dynamic>('ca_execute', {
+        'orchestrationId': uiFields.routeResponse.orchestrationId,
+        'routeTxnSigs': routeTxnSigs.map((e) => e.hexValue).toList(),
+        'initialTxnSig': initialTxnSig.hexValue,
+      });
 
       if (response is Map) {
         return ExecuteDetailsCompat(

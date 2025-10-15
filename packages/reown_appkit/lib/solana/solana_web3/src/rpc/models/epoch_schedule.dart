@@ -79,12 +79,12 @@ class EpochSchedule extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'slotsPerEpoch': slotsPerEpoch,
-        'leaderScheduleSlotOffset': leaderScheduleSlotOffset,
-        'warmup': warmup,
-        'firstNormalEpoch': firstNormalEpoch,
-        'firstNormalSlot': firstNormalSlot,
-      };
+    'slotsPerEpoch': slotsPerEpoch,
+    'leaderScheduleSlotOffset': leaderScheduleSlotOffset,
+    'warmup': warmup,
+    'firstNormalEpoch': firstNormalEpoch,
+    'firstNormalSlot': firstNormalSlot,
+  };
 
   u64 getEpoch(final u64 slot) => getEpochAndSlotIndex(slot)[0];
 
@@ -92,8 +92,8 @@ class EpochSchedule extends Serializable {
     if (slot < firstNormalSlot) {
       final epoch =
           _trailingZeros(_nextPowerOfTwo(slot + minimumSlotPerEpoch + 1)) -
-              _trailingZeros(minimumSlotPerEpoch) -
-              1;
+          _trailingZeros(minimumSlotPerEpoch) -
+          1;
       final epochLen = getSlotsInEpoch(epoch);
       final slotIndex = slot - (epochLen - minimumSlotPerEpoch);
       return [epoch, slotIndex];

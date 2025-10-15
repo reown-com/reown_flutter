@@ -110,8 +110,9 @@ class _TokenScreenState extends ConsumerState<TokenScreen> {
                                   title: token.posToken.symbol.toUpperCase(),
                                   // subtitle:
                                   //     'On ${token.token.network.networkData.name}',
-                                  trailing:
-                                      token.selected ? Icon(Icons.check) : null,
+                                  trailing: token.selected
+                                      ? Icon(Icons.check)
+                                      : null,
                                 ),
                               ),
                             );

@@ -50,26 +50,19 @@ abstract class IReownSignClient {
     List<Relay>? relays,
     List<List<String>>? methods,
   });
-  Future<PairingInfo> pair({
-    required Uri uri,
-  });
+  Future<PairingInfo> pair({required Uri uri});
   Future<ApproveResponse> approve({
     required int id,
     required Map<String, Namespace> namespaces,
     Map<String, String>? sessionProperties,
     String? relayProtocol,
   });
-  Future<void> reject({
-    required int id,
-    required ReownSignError reason,
-  });
+  Future<void> reject({required int id, required ReownSignError reason});
   Future<void> update({
     required String topic,
     required Map<String, Namespace> namespaces,
   });
-  Future<void> extend({
-    required String topic,
-  });
+  Future<void> extend({required String topic});
   void registerRequestHandler({
     required String chainId,
     required String method,
@@ -95,9 +88,7 @@ abstract class IReownSignClient {
     required String event,
     required dynamic Function(String, dynamic)? handler,
   });
-  Future<void> ping({
-    required String topic,
-  });
+  Future<void> ping({required String topic});
   Future<void> disconnect({
     required String topic,
     required ReownSignError reason,
@@ -115,10 +106,7 @@ abstract class IReownSignClient {
 
   /// Register event emitters for a given namespace or chainId
   /// Used to construct the Namespaces map for the session proposal
-  void registerEventEmitter({
-    required String chainId,
-    required String event,
-  });
+  void registerEventEmitter({required String chainId, required String event});
 
   /// Register accounts for a given namespace or chainId.
   /// Used to construct the Namespaces map for the session proposal.

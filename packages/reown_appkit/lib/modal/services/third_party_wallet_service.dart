@@ -5,21 +5,18 @@ class ThirdPartyWalletException implements Exception {
   final dynamic error;
   final dynamic stackTrace;
 
-  ThirdPartyWalletException(
-    this.message, [
-    this.error,
-    this.stackTrace,
-  ]) : super();
+  ThirdPartyWalletException(this.message, [this.error, this.stackTrace])
+    : super();
 }
 
 class ThirdPartyWalletNotInstalled extends ThirdPartyWalletException {
   ThirdPartyWalletNotInstalled({required String walletName})
-      : super('$walletName is not installed');
+    : super('$walletName is not installed');
 }
 
 class ThirdPartyWalletNotEnabled extends ThirdPartyWalletException {
   ThirdPartyWalletNotEnabled({required String walletName})
-      : super('$walletName is disabled');
+    : super('$walletName is disabled');
 }
 
 class ThirdPartyWalletUnsupportedChains extends ThirdPartyWalletException {
@@ -27,9 +24,9 @@ class ThirdPartyWalletUnsupportedChains extends ThirdPartyWalletException {
     required String walletName,
     String? message,
   }) : super(
-          message ??
-              'The current configured chains are not supported by $walletName',
-        );
+         message ??
+             'The current configured chains are not supported by $walletName',
+       );
 }
 
 abstract class IThirdPartyWalletService {

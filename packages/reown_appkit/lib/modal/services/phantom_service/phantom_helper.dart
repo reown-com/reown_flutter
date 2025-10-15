@@ -23,9 +23,8 @@ class PhantomHelper {
 
   /// Private/Public keypair for encryption and decryption of phantom responses
   CryptoKeyPair? _currentKeyPair;
-  String get dappPublicKey => base58.encode(
-        _currentKeyPair!.getPublicKeyBytes(),
-      );
+  String get dappPublicKey =>
+      base58.encode(_currentKeyPair!.getPublicKeyBytes());
 
   /// When a user connects to Phantom Wallet for the first time, Phantom will return a session token param that represents the user's connection.
   /// Will have to be securely stored
@@ -64,8 +63,9 @@ class PhantomHelper {
   Future<bool> restoreSession() async {
     try {
       if (_core.secureStorage.has(StorageConstants.phantomSession)) {
-        final session =
-            _core.secureStorage.get(StorageConstants.phantomSession)!;
+        final session = _core.secureStorage.get(
+          StorageConstants.phantomSession,
+        )!;
         _currentKeyPair = CryptoKeyPair(
           hex.encode(_getKeyBytes('${session['self_private_key']}')),
           hex.encode(_getKeyBytes('${session['self_public_key']}')),
@@ -120,7 +120,8 @@ class PhantomHelper {
 
   bool _isBase58String(String input) {
     final base58Regex = RegExp(
-        r'^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$');
+      r'^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]+$',
+    );
     return base58Regex.hasMatch(input);
   }
 
@@ -136,9 +137,7 @@ class PhantomHelper {
       'session': _sessionToken,
       'message': _isBase58String(message)
           ? message
-          : base58.encode(
-              Uint8List.fromList(hashedMessage.codeUnits),
-            ),
+          : base58.encode(Uint8List.fromList(hashedMessage.codeUnits)),
     };
     final encryptedPayload = encryptPayload(payload, requestNonce);
 
@@ -165,9 +164,7 @@ class PhantomHelper {
     final payload = {
       'session': _sessionToken,
       'transaction': base58.encode(
-        Uint8List.fromList(
-          base64.decode(transaction),
-        ),
+        Uint8List.fromList(base64.decode(transaction)),
       ),
     };
     final encryptedPayload = encryptPayload(payload, requestNonce);
@@ -186,17 +183,12 @@ class PhantomHelper {
   }
 
   /// Generate an URL with given [transaction] to sign it with Phantom Wallet.
-  Uri buildSignTransactionUri({
-    required String transaction,
-    Uint8List? nonce,
-  }) {
+  Uri buildSignTransactionUri({required String transaction, Uint8List? nonce}) {
     final requestNonce = nonce ?? _core.crypto.getUtils().randomBytes(24);
 
     final payload = {
       'transaction': base58.encode(
-        Uint8List.fromList(
-          base64.decode(transaction),
-        ),
+        Uint8List.fromList(base64.decode(transaction)),
       ),
       'session': _sessionToken,
     };
@@ -225,11 +217,7 @@ class PhantomHelper {
 
     final payload = {
       'transactions': transactions
-          .map((e) => base58.encode(
-                Uint8List.fromList(
-                  base64.decode(e),
-                ),
-              ))
+          .map((e) => base58.encode(Uint8List.fromList(base64.decode(e))))
           .toList(),
       'session': _sessionToken,
     };
@@ -265,8 +253,8 @@ class PhantomHelper {
     try {
       final currentData =
           _core.secureStorage.has(StorageConstants.phantomSession)
-              ? _core.secureStorage.get(StorageConstants.phantomSession)!
-              : {};
+          ? _core.secureStorage.get(StorageConstants.phantomSession)!
+          : {};
       await _core.secureStorage.set(StorageConstants.phantomSession, {
         ...currentData,
         'session_token': _sessionToken,
@@ -309,9 +297,7 @@ class PhantomHelper {
       );
 
       final payload = <String, dynamic>{
-        ...JsonDecoder().convert(String.fromCharCodes(
-          decryptedData!,
-        )),
+        ...JsonDecoder().convert(String.fromCharCodes(decryptedData!)),
         if (phantomKey.isNotEmpty) 'phantom_encryption_public_key': phantomKey,
         if (phantomRequest.isNotEmpty) 'phantomRequest': phantomRequest,
       };
@@ -324,10 +310,7 @@ class PhantomHelper {
       if (queryParams.containsKey('errorCode')) {
         final errorCode = queryParams['errorCode'];
         final errorMessage = params['errorMessage'];
-        return {
-          'errorCode': errorCode,
-          'errorMessage': errorMessage,
-        };
+        return {'errorCode': errorCode, 'errorMessage': errorMessage};
       } else {
         return Errors.getInternalError(
           Errors.MISSING_OR_INVALID,
@@ -374,8 +357,8 @@ class PhantomHelper {
     try {
       final currentData =
           _core.secureStorage.has(StorageConstants.phantomSession)
-              ? _core.secureStorage.get(StorageConstants.phantomSession)!
-              : {};
+          ? _core.secureStorage.get(StorageConstants.phantomSession)!
+          : {};
       await _core.secureStorage.set(StorageConstants.phantomSession, {
         ...currentData,
         'self_private_key': _currentKeyPair!.getPrivateKeyBs58(),

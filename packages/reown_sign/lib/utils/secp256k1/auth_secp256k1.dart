@@ -5,9 +5,7 @@ import 'package:convert/convert.dart';
 import 'package:pointycastle/ecc/api.dart';
 import 'package:pointycastle/ecc/curves/secp256k1.dart';
 
-enum Endian {
-  be,
-}
+enum Endian { be }
 
 class AuthSecp256k1 {
   static final ECDomainParameters _params = ECCurve_secp256k1();
@@ -88,8 +86,9 @@ class AuthSecp256k1 {
 
     //Parameter q of curve
     final prime = BigInt.parse(
-        'fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f',
-        radix: 16);
+      'fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f',
+      radix: 16,
+    );
     if (x.compareTo(prime) >= 0) return null;
 
     final R = _decompressKey(x, (recId & 1) == 1, _params.curve);

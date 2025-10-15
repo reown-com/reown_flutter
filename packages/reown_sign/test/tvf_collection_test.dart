@@ -81,7 +81,7 @@ void main() {
               'to': '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
               'value': '0x0',
               'data': '0x',
-            }
+            },
           ],
         );
 
@@ -145,7 +145,7 @@ void main() {
               'to': '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
               'value': '0x0',
               'data': 'invalid_data',
-            }
+            },
           ],
         );
 
@@ -196,97 +196,100 @@ void main() {
       });
 
       test(
-          'should collect response TVF data when calling respondSessionRequest()',
-          () async {
-        // Arrange
-        final id = 127;
-        final request = SessionRequestParams(
-          method: 'eth_sendTransaction',
-          params: [
-            {
-              'to': '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
-              'value': '0x0',
-              'data': '0x',
-            }
-          ],
-        );
+        'should collect response TVF data when calling respondSessionRequest()',
+        () async {
+          // Arrange
+          final id = 127;
+          final request = SessionRequestParams(
+            method: 'eth_sendTransaction',
+            params: [
+              {
+                'to': '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
+                'value': '0x0',
+                'data': '0x',
+              },
+            ],
+          );
 
-        // Create a mock session
-        final session = SessionData(
-          topic: 'test_topic_5',
-          pairingTopic: 'test_pairing_topic_5',
-          relay: Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
-          expiry: ReownCoreUtils.calculateExpiry(ReownConstants.SEVEN_DAYS),
-          acknowledged: true,
-          controller: 'test_controller_5',
-          namespaces: {
-            'eip155': Namespace(
-              accounts: ['eip155:1:0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'],
-              methods: ['eth_sendTransaction'],
-              events: ['chainChanged'],
+          // Create a mock session
+          final session = SessionData(
+            topic: 'test_topic_5',
+            pairingTopic: 'test_pairing_topic_5',
+            relay: Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
+            expiry: ReownCoreUtils.calculateExpiry(ReownConstants.SEVEN_DAYS),
+            acknowledged: true,
+            controller: 'test_controller_5',
+            namespaces: {
+              'eip155': Namespace(
+                accounts: [
+                  'eip155:1:0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
+                ],
+                methods: ['eth_sendTransaction'],
+                events: ['chainChanged'],
+              ),
+            },
+            self: ConnectionMetadata(
+              publicKey: 'test_self_key_5',
+              metadata: RESPONDER,
             ),
-          },
-          self: ConnectionMetadata(
-            publicKey: 'test_self_key_5',
-            metadata: RESPONDER,
-          ),
-          peer: ConnectionMetadata(
-            publicKey: 'test_peer_key_5',
-            metadata: PROPOSER,
-          ),
-        );
+            peer: ConnectionMetadata(
+              publicKey: 'test_peer_key_5',
+              metadata: PROPOSER,
+            ),
+          );
 
-        await signEngine.sessions.set('test_topic_5', session);
+          await signEngine.sessions.set('test_topic_5', session);
 
-        // First collect the request TVF
-        try {
-          await signEngine.request(
-            requestId: id,
+          // First collect the request TVF
+          try {
+            await signEngine.request(
+              requestId: id,
+              topic: 'test_topic_5',
+              chainId: 'eip155:1',
+              request: request,
+            );
+          } catch (e) {
+            // Expected to fail due to relay connection
+          }
+
+          // Verify request TVF was collected
+          expect(signEngine.pendingTVFRequests.containsKey(id), isTrue);
+
+          // Create a pending request in the store (required for validation)
+          final sessionRequest = SessionRequest(
+            id: id,
             topic: 'test_topic_5',
+            method: 'eth_sendTransaction',
             chainId: 'eip155:1',
-            request: request,
+            params: request.params,
+            verifyContext: VerifyContext(
+              origin: 'test_origin',
+              verifyUrl: 'test_verify_url',
+              validation: Validation.VALID,
+            ),
           );
-        } catch (e) {
-          // Expected to fail due to relay connection
-        }
+          await signEngine.pendingRequests.set(id.toString(), sessionRequest);
 
-        // Verify request TVF was collected
-        expect(signEngine.pendingTVFRequests.containsKey(id), isTrue);
-
-        // Create a pending request in the store (required for validation)
-        final sessionRequest = SessionRequest(
-          id: id,
-          topic: 'test_topic_5',
-          method: 'eth_sendTransaction',
-          chainId: 'eip155:1',
-          params: request.params,
-          verifyContext: VerifyContext(
-            origin: 'test_origin',
-            verifyUrl: 'test_verify_url',
-            validation: Validation.VALID,
-          ),
-        );
-        await signEngine.pendingRequests.set(id.toString(), sessionRequest);
-
-        // Create response
-        final response = JsonRpcResponse(
-          id: id,
-          result: '0x1234567890abcdef',
-        );
-
-        // Act
-        try {
-          await signEngine.respondSessionRequest(
-            topic: 'test_topic_5',
-            response: response,
+          // Create response
+          final response = JsonRpcResponse(
+            id: id,
+            result: '0x1234567890abcdef',
           );
-        } catch (e) {
-          // Expected to fail due to relay connection, but TVF should be processed
-        }
 
-        // Assert - check if pending TVF request was removed
-        expect(signEngine.pendingTVFRequests.containsKey(id), isFalse);
-      });
+          // Act
+          try {
+            await signEngine.respondSessionRequest(
+              topic: 'test_topic_5',
+              response: response,
+            );
+          } catch (e) {
+            // Expected to fail due to relay connection, but TVF should be processed
+          }
+
+          // Assert - check if pending TVF request was removed
+          expect(signEngine.pendingTVFRequests.containsKey(id), isFalse);
+        },
+      );
 
       test('should handle response with error gracefully', () async {
         // Arrange
@@ -298,7 +301,7 @@ void main() {
               'to': '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
               'value': '0x0',
               'data': '0x',
-            }
+            },
           ],
         );
 
@@ -379,112 +382,119 @@ void main() {
         expect(signEngine.pendingTVFRequests.containsKey(id), isFalse);
       });
 
-      test('should collect EVM wallet_sendCalls 2.0.0 hashes correctly',
-          () async {
-        // Arrange
-        final id = 129;
-        final request = SessionRequestParams(
-          method: 'wallet_sendCalls',
-          params: [
-            {
-              'to': '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
-              'value': '0x0',
-              'data': '0x',
-            }
-          ],
-        );
-
-        // Create a mock session
-        final session = SessionData(
-          topic: 'test_topic_7',
-          pairingTopic: 'test_pairing_topic_7',
-          relay: Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
-          expiry: ReownCoreUtils.calculateExpiry(ReownConstants.SEVEN_DAYS),
-          acknowledged: true,
-          controller: 'test_controller_7',
-          namespaces: {
-            'eip155': Namespace(
-              accounts: ['eip155:1:0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'],
-              methods: ['wallet_sendCalls'],
-              events: ['chainChanged'],
-            ),
-          },
-          self: ConnectionMetadata(
-            publicKey: 'test_self_key_7',
-            metadata: RESPONDER,
-          ),
-          peer: ConnectionMetadata(
-            publicKey: 'test_peer_key_7',
-            metadata: PROPOSER,
-          ),
-        );
-
-        await signEngine.sessions.set('test_topic_7', session);
-
-        // First collect the request TVF
-        try {
-          await signEngine.request(
-            requestId: id,
-            topic: 'test_topic_7',
-            chainId: 'eip155:1',
-            request: request,
+      test(
+        'should collect EVM wallet_sendCalls 2.0.0 hashes correctly',
+        () async {
+          // Arrange
+          final id = 129;
+          final request = SessionRequestParams(
+            method: 'wallet_sendCalls',
+            params: [
+              {
+                'to': '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
+                'value': '0x0',
+                'data': '0x',
+              },
+            ],
           );
-        } catch (e) {
-          // Expected to fail due to relay connection
-        }
 
-        // Verify request TVF was collected
-        expect(signEngine.pendingTVFRequests.containsKey(id), isTrue);
-
-        // Create a pending request in the store (required for validation)
-        final sessionRequest = SessionRequest(
-          id: id,
-          topic: 'test_topic_7',
-          method: 'wallet_sendCalls',
-          chainId: 'eip155:1',
-          params: request.params,
-          verifyContext: VerifyContext(
-            origin: 'test_origin',
-            verifyUrl: 'test_verify_url',
-            validation: Validation.VALID,
-          ),
-        );
-        await signEngine.pendingRequests.set(id.toString(), sessionRequest);
-
-        // Create response with wallet_sendCalls 2.0.0 format
-        final response = JsonRpcResponse(
-          id: id,
-          result: {
-            'id': '0x1234567890abcdef',
-            'capabilities': {
-              'caip345': {
-                'caip2': 'eip155:1',
-                'transactionHashes': [
-                  '0xabcdef1234567890',
-                  '0xfedcba0987654321'
+          // Create a mock session
+          final session = SessionData(
+            topic: 'test_topic_7',
+            pairingTopic: 'test_pairing_topic_7',
+            relay: Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
+            expiry: ReownCoreUtils.calculateExpiry(ReownConstants.SEVEN_DAYS),
+            acknowledged: true,
+            controller: 'test_controller_7',
+            namespaces: {
+              'eip155': Namespace(
+                accounts: [
+                  'eip155:1:0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
                 ],
-              }
+                methods: ['wallet_sendCalls'],
+                events: ['chainChanged'],
+              ),
             },
-          },
-        );
-
-        // Act
-        try {
-          await signEngine.respondSessionRequest(
-            topic: 'test_topic_7',
-            response: response,
+            self: ConnectionMetadata(
+              publicKey: 'test_self_key_7',
+              metadata: RESPONDER,
+            ),
+            peer: ConnectionMetadata(
+              publicKey: 'test_peer_key_7',
+              metadata: PROPOSER,
+            ),
           );
-        } catch (e) {
-          // Expected to fail due to relay connection, but TVF should be processed
-        }
 
-        // Assert - check if pending TVF request was removed
-        expect(signEngine.pendingTVFRequests.containsKey(id), isFalse);
-        final hashes = signEngine.collectHashes('eip155', response);
-        expect(hashes?.length, 3);
-        expect(hashes,
-            ['0x1234567890abcdef', '0xabcdef1234567890', '0xfedcba0987654321']);
-      });
+          await signEngine.sessions.set('test_topic_7', session);
+
+          // First collect the request TVF
+          try {
+            await signEngine.request(
+              requestId: id,
+              topic: 'test_topic_7',
+              chainId: 'eip155:1',
+              request: request,
+            );
+          } catch (e) {
+            // Expected to fail due to relay connection
+          }
+
+          // Verify request TVF was collected
+          expect(signEngine.pendingTVFRequests.containsKey(id), isTrue);
+
+          // Create a pending request in the store (required for validation)
+          final sessionRequest = SessionRequest(
+            id: id,
+            topic: 'test_topic_7',
+            method: 'wallet_sendCalls',
+            chainId: 'eip155:1',
+            params: request.params,
+            verifyContext: VerifyContext(
+              origin: 'test_origin',
+              verifyUrl: 'test_verify_url',
+              validation: Validation.VALID,
+            ),
+          );
+          await signEngine.pendingRequests.set(id.toString(), sessionRequest);
+
+          // Create response with wallet_sendCalls 2.0.0 format
+          final response = JsonRpcResponse(
+            id: id,
+            result: {
+              'id': '0x1234567890abcdef',
+              'capabilities': {
+                'caip345': {
+                  'caip2': 'eip155:1',
+                  'transactionHashes': [
+                    '0xabcdef1234567890',
+                    '0xfedcba0987654321',
+                  ],
+                },
+              },
+            },
+          );
+
+          // Act
+          try {
+            await signEngine.respondSessionRequest(
+              topic: 'test_topic_7',
+              response: response,
+            );
+          } catch (e) {
+            // Expected to fail due to relay connection, but TVF should be processed
+          }
+
+          // Assert - check if pending TVF request was removed
+          expect(signEngine.pendingTVFRequests.containsKey(id), isFalse);
+          final hashes = signEngine.collectHashes('eip155', response);
+          expect(hashes?.length, 3);
+          expect(hashes, [
+            '0x1234567890abcdef',
+            '0xabcdef1234567890',
+            '0xfedcba0987654321',
+          ]);
+        },
+      );
 
       test('should collect simple EVM transaction hash correctly', () async {
         // Arrange
@@ -496,7 +506,7 @@ void main() {
               'to': '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
               'value': '0x0',
               'data': '0x',
-            }
+            },
           ],
         );
 
@@ -558,10 +568,7 @@ void main() {
         await signEngine.pendingRequests.set(id.toString(), sessionRequest);
 
         // Create response with simple transaction hash
-        final response = JsonRpcResponse(
-          id: id,
-          result: '0x1234567890abcdef',
-        );
+        final response = JsonRpcResponse(id: id, result: '0x1234567890abcdef');
 
         // Act
         try {
@@ -591,7 +598,7 @@ void main() {
                 'to': '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
                 'value': '0x0',
                 'data': '0x',
-              }
+              },
             ],
           ),
         );
@@ -623,9 +630,10 @@ void main() {
               {
                 'to': '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
                 'value': '0x0',
-                'data': '0xa9059cbb000000000000000000000000742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6' +
+                'data':
+                    '0xa9059cbb000000000000000000000000742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6' +
                     '000000000000000000000000000000000000000000000000000000000000000001',
-              }
+              },
             ],
           ),
         );
@@ -651,7 +659,7 @@ void main() {
             method: 'personal_sign',
             params: [
               'Hello World',
-              '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'
+              '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
             ],
           ),
         );
@@ -675,9 +683,7 @@ void main() {
           request: SessionRequestParams(
             method: 'solana_signTransaction',
             params: [
-              {
-                'transaction': 'base64_encoded_transaction',
-              }
+              {'transaction': 'base64_encoded_transaction'},
             ],
           ),
         );
@@ -707,7 +713,7 @@ void main() {
                 'to': '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
                 'value': '0x0',
                 'data': '0x',
-              }
+              },
             ],
           ),
         );
@@ -717,10 +723,7 @@ void main() {
         expect(signEngine.pendingTVFRequests.containsKey(id), isTrue);
 
         // Create response
-        final response = JsonRpcResponse(
-          id: id,
-          result: '0x1234567890abcdef',
-        );
+        final response = JsonRpcResponse(id: id, result: '0x1234567890abcdef');
 
         // Act
         final tvfData = signEngine.collectResponseTVF(response);
@@ -741,10 +744,7 @@ void main() {
 
       test('should return null for non-existent request ID', () {
         // Arrange
-        final response = JsonRpcResponse(
-          id: 999,
-          result: '0x1234567890abcdef',
-        );
+        final response = JsonRpcResponse(id: 999, result: '0x1234567890abcdef');
 
         // Act
         final tvfData = signEngine.collectResponseTVF(response);
@@ -765,7 +765,7 @@ void main() {
                 'to': '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
                 'value': '0x0',
                 'data': '0x',
-              }
+              },
             ],
           ),
         );
@@ -801,9 +801,9 @@ void main() {
                 'caip2': 'eip155:1',
                 'transactionHashes': [
                   '0xabcdef1234567890',
-                  '0xfedcba0987654321'
+                  '0xfedcba0987654321',
                 ],
-              }
+              },
             },
           },
         );
@@ -816,17 +816,18 @@ void main() {
         expect(hashes!.length, equals(3));
         expect(hashes[0], equals('0x1234567890abcdef')); // id
         expect(
-            hashes[1], equals('0xabcdef1234567890')); // first transaction hash
+          hashes[1],
+          equals('0xabcdef1234567890'),
+        ); // first transaction hash
         expect(
-            hashes[2], equals('0xfedcba0987654321')); // second transaction hash
+          hashes[2],
+          equals('0xfedcba0987654321'),
+        ); // second transaction hash
       });
 
       test('should collect simple EVM transaction hash', () {
         // Arrange
-        final response = JsonRpcResponse(
-          id: 401,
-          result: '0x1234567890abcdef',
-        );
+        final response = JsonRpcResponse(id: 401, result: '0x1234567890abcdef');
 
         // Act
         final hashes = signEngine.collectHashes('eip155', response);
@@ -853,10 +854,7 @@ void main() {
 
       test('should return null for EVM response with null result', () {
         // Arrange
-        final response = JsonRpcResponse(
-          id: 403,
-          result: null,
-        );
+        final response = JsonRpcResponse(id: 403, result: null);
 
         // Act
         final hashes = signEngine.collectHashes('eip155', response);

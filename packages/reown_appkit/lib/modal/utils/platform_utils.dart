@@ -2,12 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_core/reown_core.dart';
 
-enum PlatformType {
-  mobile,
-  desktop,
-  web,
-  unknown,
-}
+enum PlatformType { mobile, desktop, web, unknown }
 
 enum PlatformExact {
   ios,

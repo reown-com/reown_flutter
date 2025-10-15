@@ -21,9 +21,11 @@ class GetProgramAccountsConfig extends CommitmentConfig {
     this.dataSlice,
     this.filters,
     this.minContextSlot,
-  })  : assert(dataSlice == null || encoding.isBinary,
-            'Must use binary encoding for [DataSlice].'),
-        assert(minContextSlot == null || minContextSlot >= 0);
+  }) : assert(
+         dataSlice == null || encoding.isBinary,
+         'Must use binary encoding for [DataSlice].',
+       ),
+       assert(minContextSlot == null || minContextSlot >= 0);
 
   /// The account data's encoding (default: [AccountEncoding.base64]).
   ///
@@ -43,10 +45,10 @@ class GetProgramAccountsConfig extends CommitmentConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        'commitment': commitment?.name,
-        'encoding': encoding.name,
-        'dataSlice': dataSlice?.toJson(),
-        'filters': filters?.toJson(),
-        'minContextSlot': minContextSlot,
-      };
+    'commitment': commitment?.name,
+    'encoding': encoding.name,
+    'dataSlice': dataSlice?.toJson(),
+    'filters': filters?.toJson(),
+    'minContextSlot': minContextSlot,
+  };
 }

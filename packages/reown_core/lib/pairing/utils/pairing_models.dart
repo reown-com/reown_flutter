@@ -6,10 +6,7 @@ import 'package:reown_core/relay_client/relay_client_models.dart';
 part 'pairing_models.g.dart';
 part 'pairing_models.freezed.dart';
 
-enum ProtocolType {
-  pair,
-  sign,
-}
+enum ProtocolType { pair, sign }
 
 @freezed
 sealed class PairingInfo with _$PairingInfo {
@@ -39,12 +36,8 @@ sealed class PairingMetadata with _$PairingMetadata {
     Redirect? redirect,
   }) = _PairingMetadata;
 
-  factory PairingMetadata.empty() => const PairingMetadata(
-        name: '',
-        description: '',
-        url: '',
-        icons: [],
-      );
+  factory PairingMetadata.empty() =>
+      const PairingMetadata(name: '', description: '', url: '', icons: []);
 
   factory PairingMetadata.fromJson(Map<String, dynamic> json) =>
       _$PairingMetadataFromJson(json);
@@ -84,10 +77,7 @@ class ExpirationEvent extends EventArgs {
   String target;
   int expiry;
 
-  ExpirationEvent({
-    required this.target,
-    required this.expiry,
-  });
+  ExpirationEvent({required this.target, required this.expiry});
 
   @override
   String toString() {
@@ -109,9 +99,7 @@ class HistoryEvent extends EventArgs {
 class PairingInvalidEvent extends EventArgs {
   String message;
 
-  PairingInvalidEvent({
-    required this.message,
-  });
+  PairingInvalidEvent({required this.message});
 
   @override
   String toString() {
@@ -124,11 +112,7 @@ class PairingEvent extends EventArgs {
   String? topic;
   JsonRpcError? error;
 
-  PairingEvent({
-    this.id,
-    this.topic,
-    this.error,
-  });
+  PairingEvent({this.id, this.topic, this.error});
 
   @override
   String toString() {
@@ -140,10 +124,7 @@ class PairingActivateEvent extends EventArgs {
   String topic;
   int expiry;
 
-  PairingActivateEvent({
-    required this.topic,
-    required this.expiry,
-  });
+  PairingActivateEvent({required this.topic, required this.expiry});
 
   @override
   String toString() {

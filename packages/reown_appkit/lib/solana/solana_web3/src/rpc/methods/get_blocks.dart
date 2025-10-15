@@ -16,10 +16,10 @@ class GetBlocks extends JsonRpcListTypeMethod<u64> {
     final u64 startSlot, {
     final u64? endSlot,
     final GetBlocksConfig? config,
-  })  : assert(endSlot == null || (endSlot - startSlot) <= 500000),
-        super(
-          'getBlocks',
-          values: endSlot != null ? [startSlot, endSlot] : [startSlot],
-          config: config ?? const GetBlocksConfig(),
-        );
+  }) : assert(endSlot == null || (endSlot - startSlot) <= 500000),
+       super(
+         'getBlocks',
+         values: endSlot != null ? [startSlot, endSlot] : [startSlot],
+         config: config ?? const GetBlocksConfig(),
+       );
 }

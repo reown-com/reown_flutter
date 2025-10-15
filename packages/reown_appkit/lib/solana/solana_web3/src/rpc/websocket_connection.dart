@@ -58,8 +58,9 @@ mixin WebsocketConnection {
   /// Closes all notification dispatchers.
   @protected
   void onWebsocketDisconnect() {
-    final List<WebsocketNotifier> notifiers =
-        _notifiers.values.toList(growable: false);
+    final List<WebsocketNotifier> notifiers = _notifiers.values.toList(
+      growable: false,
+    );
     _notifiers.clear();
     for (final WebsocketNotifier notifier in notifiers) {
       notifier.close();
@@ -95,8 +96,9 @@ mixin WebsocketConnection {
   /// Forwards stream errors to the notification dispatchers.
   @protected
   void onWebsocketError(final Object error, [final StackTrace? stackTrace]) {
-    final List<WebsocketNotifier> notifiers =
-        _notifiers.values.toList(growable: false);
+    final List<WebsocketNotifier> notifiers = _notifiers.values.toList(
+      growable: false,
+    );
     for (final WebsocketNotifier notifier in notifiers) {
       _onNotifyError(notifier, error, stackTrace);
     }
@@ -181,14 +183,15 @@ mixin WebsocketConnection {
     /// Get or create a notification dispatcher for the subscription.
     final WebsocketNotifier<T> notifier =
         (_notifiers[subscriptionId] ??= WebsocketNotifier<T>(
-      method.method,
-      subscriptionId: subscriptionId,
-      cancelOnError: cancelOnError,
-      autoUnsubscribes: autoUnsubscribes,
-      decoder: decoder,
-      timeLimit: timeLimit,
-      onTimeout: () => _onTimeout(subscriptionId),
-    )) as WebsocketNotifier<T>;
+              method.method,
+              subscriptionId: subscriptionId,
+              cancelOnError: cancelOnError,
+              autoUnsubscribes: autoUnsubscribes,
+              decoder: decoder,
+              timeLimit: timeLimit,
+              onTimeout: () => _onTimeout(subscriptionId),
+            ))
+            as WebsocketNotifier<T>;
 
     /// Add a listener to the dispatcher's queue.
     return notifier.addListener(
@@ -214,17 +217,24 @@ mixin WebsocketConnection {
 
   /// Unsubscribes a JSON RPC notification [method].
   Future<bool> _unsubscribe(
-      final String method, final SubscriptionId subscriptionId) async {
+    final String method,
+    final SubscriptionId subscriptionId,
+  ) async {
     _close(subscriptionId);
-    final RegExp suffixRegexp =
-        RegExp(r'(Subscribe|Unsubscribe|Notification)$');
+    final RegExp suffixRegexp = RegExp(
+      r'(Subscribe|Unsubscribe|Notification)$',
+    );
     assert(suffixRegexp.hasMatch(method));
-    final String unsubscribeMethod =
-        method.replaceFirst(suffixRegexp, 'Unsubscribe');
+    final String unsubscribeMethod = method.replaceFirst(
+      suffixRegexp,
+      'Unsubscribe',
+    );
     final rpc = Unsubscribe(unsubscribeMethod, subscriptionId);
     try {
-      return (await websocketClient.send(rpc.request(commitment), rpc.response))
-          .result!;
+      return (await websocketClient.send(
+        rpc.request(commitment),
+        rpc.response,
+      )).result!;
     } on JsonRpcException catch (error) {
       return error.code == JsonRpcExceptionCode.invalidParams
           ? Future.value(false)
@@ -479,22 +489,20 @@ mixin WebsocketConnection {
     final bool cancelOnError = false,
     final Duration? timeLimit,
     final AccountSubscribeConfig? config,
-  }) =>
-      subscribe(
-        AccountSubscribe(pubkey, config: config),
-        _contextDecoder(AccountInfo.fromJson),
-        onData: onData,
-        onError: onError,
-        onDone: onDone,
-        timeLimit: timeLimit,
-        cancelOnError: cancelOnError,
-      );
+  }) => subscribe(
+    AccountSubscribe(pubkey, config: config),
+    _contextDecoder(AccountInfo.fromJson),
+    onData: onData,
+    onError: onError,
+    onDone: onDone,
+    timeLimit: timeLimit,
+    cancelOnError: cancelOnError,
+  );
 
   /// Unsubscribes from account change notifications.
   Future<bool> accountUnsubscribe(
     final WebsocketSubscription<AccountInfo> subscription,
-  ) =>
-      unsubscribe(subscription);
+  ) => unsubscribe(subscription);
 
   /// {@template solana_web3.Connection.logsSubscribe}
   /// Subscribes to transaction logging.
@@ -507,22 +515,20 @@ mixin WebsocketConnection {
     final bool cancelOnError = false,
     final Duration? timeLimit,
     final LogsSubscribeConfig? config,
-  }) =>
-      subscribe(
-        LogsSubscribe(filter, config: config),
-        _contextDecoder(LogsNotification.fromJson),
-        onData: onData,
-        onError: onError,
-        onDone: onDone,
-        timeLimit: timeLimit,
-        cancelOnError: cancelOnError,
-      );
+  }) => subscribe(
+    LogsSubscribe(filter, config: config),
+    _contextDecoder(LogsNotification.fromJson),
+    onData: onData,
+    onError: onError,
+    onDone: onDone,
+    timeLimit: timeLimit,
+    cancelOnError: cancelOnError,
+  );
 
   /// Unsubscribes from transaction logging.
   Future<bool> logsUnsubscribe(
     final WebsocketSubscription<LogsNotification> subscription,
-  ) =>
-      unsubscribe(subscription);
+  ) => unsubscribe(subscription);
 
   /// {@template solana_web3.Connection.programSubscribe}
   /// Subscribes to a program to receive notifications when the lamports or data for an account
@@ -536,22 +542,20 @@ mixin WebsocketConnection {
     final bool cancelOnError = false,
     final Duration? timeLimit,
     final ProgramSubscribeConfig? config,
-  }) =>
-      subscribe(
-        ProgramSubscribe(programId, config: config),
-        _contextDecoder(ProgramAccount.fromJson),
-        onData: onData,
-        onError: onError,
-        onDone: onDone,
-        timeLimit: timeLimit,
-        cancelOnError: cancelOnError,
-      );
+  }) => subscribe(
+    ProgramSubscribe(programId, config: config),
+    _contextDecoder(ProgramAccount.fromJson),
+    onData: onData,
+    onError: onError,
+    onDone: onDone,
+    timeLimit: timeLimit,
+    cancelOnError: cancelOnError,
+  );
 
   /// Unsubscribes from program-owned account change notifications.
   Future<bool> programUnsubscribe(
     final WebsocketSubscription<ProgramAccount> subscription,
-  ) =>
-      unsubscribe(subscription);
+  ) => unsubscribe(subscription);
 
   /// {@template solana_web3.Connection.signatureSubscribe}
   /// Subscribes to a transaction signature to receive a notification when the given transaction
@@ -565,23 +569,21 @@ mixin WebsocketConnection {
     final bool cancelOnError = true,
     final Duration? timeLimit,
     final SignatureSubscribeConfig? config,
-  }) =>
-      subscribe(
-        SignatureSubscribe(signature, config: config),
-        _contextDecoder(SignatureNotification.fromJson),
-        onData: onData,
-        onError: onError,
-        onDone: onDone,
-        timeLimit: timeLimit,
-        cancelOnError: cancelOnError,
-        autoUnsubscribes: true,
-      );
+  }) => subscribe(
+    SignatureSubscribe(signature, config: config),
+    _contextDecoder(SignatureNotification.fromJson),
+    onData: onData,
+    onError: onError,
+    onDone: onDone,
+    timeLimit: timeLimit,
+    cancelOnError: cancelOnError,
+    autoUnsubscribes: true,
+  );
 
   /// Unsubscribes from signature confirmation notifications.
   Future<bool> signatureUnsubscribe(
     final WebsocketSubscription<SignatureNotification> subscription,
-  ) =>
-      unsubscribe(subscription);
+  ) => unsubscribe(subscription);
 
   /// {@template solana_web3.Connection.slotSubscribe}
   /// Subscribes to receive notification anytime a slot is processed by the validator.
@@ -593,20 +595,18 @@ mixin WebsocketConnection {
     final WebsocketOnDoneHandler? onDone,
     final bool cancelOnError = false,
     final Duration? timeLimit,
-  }) =>
-      subscribe(
-        const SlotSubscribe(),
-        SlotNotification.fromJson,
-        onData: onData,
-        onError: onError,
-        onDone: onDone,
-        timeLimit: timeLimit,
-        cancelOnError: cancelOnError,
-      );
+  }) => subscribe(
+    const SlotSubscribe(),
+    SlotNotification.fromJson,
+    onData: onData,
+    onError: onError,
+    onDone: onDone,
+    timeLimit: timeLimit,
+    cancelOnError: cancelOnError,
+  );
 
   /// Unsubscribes from slot notifications.
   Future<bool> slotUnsubscribe(
     final WebsocketSubscription<SlotNotification> subscription,
-  ) =>
-      unsubscribe(subscription);
+  ) => unsubscribe(subscription);
 }

@@ -18,14 +18,12 @@ class GetStakeActivation
     final Pubkey account, {
     final GetStakeActivationConfig? config,
   }) : super(
-          'getStakeActivation',
-          values: [account.toBase58()],
-          config: config ?? const GetStakeActivationConfig(),
-        );
+         'getStakeActivation',
+         values: [account.toBase58()],
+         config: config ?? const GetStakeActivationConfig(),
+       );
 
   @override
-  StakeActivation decoder(
-    final Map<String, dynamic> value,
-  ) =>
+  StakeActivation decoder(final Map<String, dynamic> value) =>
       StakeActivation.fromJson(value);
 }

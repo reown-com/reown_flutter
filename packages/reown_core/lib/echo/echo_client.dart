@@ -38,8 +38,10 @@ class EchoClient implements IEchoClient {
     required String clientId,
   }) async {
     final url = Uri.parse('$baseUrl/$projectId/clients/$clientId');
-    final http.Response response =
-        await httpClient.delete(url, headers: headers);
+    final http.Response response = await httpClient.delete(
+      url,
+      headers: headers,
+    );
 
     final jsonMap = json.decode(response.body);
     return EchoResponse.fromJson(jsonMap);

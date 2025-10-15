@@ -8,17 +8,13 @@ class BasicCoreEvent {
   final String event;
   final CoreEventProperties? properties;
 
-  BasicCoreEvent({
-    this.type,
-    required this.event,
-    required this.properties,
-  });
+  BasicCoreEvent({this.type, required this.event, required this.properties});
 
   Map<String, dynamic> toJson() => {
-        'type': type,
-        'event': event,
-        if (properties != null) 'properties': properties?.toJson(),
-      };
+    'type': type,
+    'event': event,
+    if (properties != null) 'properties': properties?.toJson(),
+  };
 }
 
 @freezed

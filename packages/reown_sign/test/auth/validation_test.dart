@@ -15,14 +15,7 @@ void main() {
         StringConstants.AUTH_REQUEST_EXPIRY_MAX,
         StringConstants.AUTH_REQUEST_EXPIRY_MAX + 1,
       ];
-      final List<bool> expiryResults = [
-        false,
-        true,
-        true,
-        true,
-        true,
-        false,
-      ];
+      final List<bool> expiryResults = [false, true, true, true, true, false];
 
       // Loop through the expiries and expect the results
       for (var i = 0; i < expiries.length; i++) {

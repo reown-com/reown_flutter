@@ -71,10 +71,7 @@ class MethodsConstants {
   static const walletSwitchEthChain = 'wallet_switchEthereumChain';
   static const walletAddEthChain = 'wallet_addEthereumChain';
   static const ethSendTransaction = 'eth_sendTransaction';
-  static const requiredMethods = [
-    ethSendTransaction,
-    'personal_sign',
-  ];
+  static const requiredMethods = [ethSendTransaction, 'personal_sign'];
   static const optionalMethods = [
     'eth_accounts',
     'eth_requestAccounts',
@@ -98,14 +95,7 @@ class MethodsConstants {
 class EventsConstants {
   static const chainChanged = 'chainChanged';
   static const accountsChanged = 'accountsChanged';
-  static const requiredEvents = [
-    chainChanged,
-    accountsChanged,
-  ];
-  static const optionalEvents = [
-    'message',
-    'disconnect',
-    'connect',
-  ];
+  static const requiredEvents = [chainChanged, accountsChanged];
+  static const optionalEvents = ['message', 'disconnect', 'connect'];
   static const allEvents = [...requiredEvents, ...optionalEvents];
 }

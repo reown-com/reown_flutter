@@ -40,13 +40,8 @@ extension ReownAppKitModalNetworkInfoExtension on ReownAppKitModalNetworkInfo {
         'symbol': currency,
         'decimals': decimals ?? 18,
       },
-      'rpcUrls': [
-        rpcUrl,
-        ...extraRpcUrls,
-      ],
-      'blockExplorerUrls': [
-        explorerUrl,
-      ],
+      'rpcUrls': [rpcUrl, ...extraRpcUrls],
+      'blockExplorerUrls': [explorerUrl],
     };
   }
 }

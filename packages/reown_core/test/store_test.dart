@@ -20,9 +20,7 @@ void main() {
     late IStore<Map<String, dynamic>> store;
 
     setUp(() async {
-      store = SharedPrefsStores(
-        memoryStore: true,
-      );
+      store = SharedPrefsStores(memoryStore: true);
       await store.init();
     });
 
@@ -95,16 +93,12 @@ void main() {
               'key': 'value',
             },
             '${ReownConstants.CORE_STORAGE_PREFIX}swag//invalid': {
-              'key': {
-                'invalid': 'value',
-              },
+              'key': {'invalid': 'value'},
             },
             '${ReownConstants.CORE_STORAGE_PREFIX}keychain': {
               'version': 'swag',
             },
-            '${ReownConstants.CORE_STORAGE_PREFIX}invalid': {
-              'version': 'swag',
-            },
+            '${ReownConstants.CORE_STORAGE_PREFIX}invalid': {'version': 'swag'},
           },
           memoryStore: true,
         );
@@ -257,13 +251,10 @@ void main() {
         await messageTracker.recordMessageEvent('test', 'message');
         await createComplete.future;
 
-        expect(
-          messageTracker.get('test'),
-          {
-            'ab530a13e45914982b79f9b7e3fba994cfd1f3fb22f71cea1afbf02b460c6d1d':
-                'message',
-          },
-        );
+        expect(messageTracker.get('test'), {
+          'ab530a13e45914982b79f9b7e3fba994cfd1f3fb22f71cea1afbf02b460c6d1d':
+              'message',
+        });
 
         expect(messageTracker.messageIsRecorded('test', 'message'), true);
       });
@@ -299,20 +290,12 @@ void main() {
           syncComplete.complete();
         });
 
-        await specialStore.resolve(
-          {
-            'id': 1,
-            'result': 'result',
-          },
-        );
+        await specialStore.resolve({'id': 1, 'result': 'result'});
 
         await updateComplete.future;
         await syncComplete.future;
 
-        expect(
-          specialStore.get('1')!.response,
-          'result',
-        );
+        expect(specialStore.get('1')!.response, 'result');
       });
 
       test('pairing store', () async {
@@ -331,9 +314,7 @@ void main() {
           PairingInfo(
             topic: 'expired',
             expiry: -1,
-            relay: Relay(
-              ReownConstants.RELAYER_DEFAULT_PROTOCOL,
-            ),
+            relay: Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
             active: true,
           ),
         );
@@ -347,23 +328,14 @@ void main() {
           syncComplete.complete();
         });
 
-        expect(
-          specialStore.get('1')!.expiry,
-          -1,
-        );
+        expect(specialStore.get('1')!.expiry, -1);
 
-        await specialStore.update(
-          '1',
-          expiry: 2,
-        );
+        await specialStore.update('1', expiry: 2);
 
         await updateComplete.future;
         await syncComplete.future;
 
-        expect(
-          specialStore.get('1')!.expiry,
-          2,
-        );
+        expect(specialStore.get('1')!.expiry, 2);
       });
     });
   });

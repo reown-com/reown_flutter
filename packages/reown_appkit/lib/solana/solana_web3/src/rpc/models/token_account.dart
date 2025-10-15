@@ -10,10 +10,7 @@ import 'program_account.dart';
 
 class TokenAccount extends ProgramAccount {
   /// An SPL token account.
-  const TokenAccount({
-    required super.pubkey,
-    required super.account,
-  });
+  const TokenAccount({required super.pubkey, required super.account});
 
   /// {@macro solana_common.Serializable.fromJson}
   factory TokenAccount.fromJson(final Map<String, dynamic> json) =>

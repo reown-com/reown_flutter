@@ -2,6 +2,4 @@
 /// ------------------------------------------------------------------------------------------------
 library;
 
-enum MemoInstruction {
-  create,
-}
+enum MemoInstruction { create }

@@ -15,21 +15,21 @@ void main() {
     context: 'SignClient',
     clientACreator: (PairingMetadata metadata) async =>
         await SignClientTestWrapper.createInstance(
-      projectId: TEST_PROJECT_ID,
-      relayUrl: TEST_RELAY_URL,
-      metadata: metadata,
-      memoryStore: true,
-      logLevel: LogLevel.info,
-      httpClient: getHttpWrapper(),
-    ),
+          projectId: TEST_PROJECT_ID,
+          relayUrl: TEST_RELAY_URL,
+          metadata: metadata,
+          memoryStore: true,
+          logLevel: LogLevel.info,
+          httpClient: getHttpWrapper(),
+        ),
     clientBCreator: (PairingMetadata metadata) async =>
         await SignClientTestWrapper.createInstance(
-      projectId: TEST_PROJECT_ID,
-      relayUrl: TEST_RELAY_URL,
-      metadata: metadata,
-      memoryStore: true,
-      logLevel: LogLevel.info,
-      httpClient: getHttpWrapper(),
-    ),
+          projectId: TEST_PROJECT_ID,
+          relayUrl: TEST_RELAY_URL,
+          metadata: metadata,
+          memoryStore: true,
+          logLevel: LogLevel.info,
+          httpClient: getHttpWrapper(),
+        ),
   );
 }

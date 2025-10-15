@@ -66,14 +66,16 @@ class _BalanceTextState extends State<BalanceText> {
             children: [
               TextSpan(
                 text: value.split('.').first,
-                style: widget.textStyle ??
+                style:
+                    widget.textStyle ??
                     themeData.textStyles.paragraph500.copyWith(
                       color: themeColors.foreground200,
                     ),
               ),
               TextSpan(
                 text: '.${value.split('.').last}',
-                style: widget.textStyle?.copyWith(
+                style:
+                    widget.textStyle?.copyWith(
                       color: themeColors.foreground200,
                     ) ??
                     themeData.textStyles.paragraph500.copyWith(

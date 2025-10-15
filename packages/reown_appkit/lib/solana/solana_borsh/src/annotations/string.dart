@@ -17,10 +17,7 @@ import 'annotation.dart';
 /// ```
 class BorshString extends BorshAnnotation<String> {
   /// Creates an annotation for a string.
-  const BorshString({
-    this.lengthPadding,
-    this.encoding,
-  });
+  const BorshString({this.lengthPadding, this.encoding});
 
   /// The zero padding added to the end of the encoded length.
   final int? lengthPadding;

@@ -26,10 +26,7 @@ void signUpdateSession({
       clients.add(clientA);
       clients.add(clientB);
 
-      await clientB.sessions.set(
-        TEST_SESSION_VALID_TOPIC,
-        testSessionValid,
-      );
+      await clientB.sessions.set(TEST_SESSION_VALID_TOPIC, testSessionValid);
       await clientB.sessions.set(
         TEST_SESSION_EXPIRED_TOPIC,
         testSessionExpired,
@@ -50,9 +47,7 @@ void signUpdateSession({
       final connectionInfo = await SignClientHelpers.testConnectPairApprove(
         clientA,
         clientB,
-        requiredNamespaces: {
-          EVM_NAMESPACE: TEST_ETH_ARB_REQUIRED_NAMESPACE,
-        },
+        requiredNamespaces: {EVM_NAMESPACE: TEST_ETH_ARB_REQUIRED_NAMESPACE},
         accounts: {
           TEST_ETHEREUM_CHAIN: [TEST_ETHEREUM_ADDRESS],
           TEST_ARBITRUM_CHAIN: [TEST_ETHEREUM_ADDRESS],
@@ -83,10 +78,12 @@ void signUpdateSession({
       // await Future.delayed(Duration(milliseconds: 100));
       await completer.future;
 
-      final resultA =
-          clientA.sessions.get(connectionInfo.session.topic)!.namespaces;
-      final resultB =
-          clientB.sessions.get(connectionInfo.session.topic)!.namespaces;
+      final resultA = clientA.sessions
+          .get(connectionInfo.session.topic)!
+          .namespaces;
+      final resultB = clientB.sessions
+          .get(connectionInfo.session.topic)!
+          .namespaces;
       expect(resultA, equals({EVM_NAMESPACE: TEST_ETH_ARB_NAMESPACE}));
       expect(resultB, equals({EVM_NAMESPACE: TEST_ETH_ARB_NAMESPACE}));
       expect(counter, 1);
@@ -138,12 +135,7 @@ void signUpdateSession({
       await completerExpire.future;
       await completerSession.future;
 
-      expect(
-        clientB.sessions.has(
-          TEST_SESSION_EXPIRED_TOPIC,
-        ),
-        false,
-      );
+      expect(clientB.sessions.has(TEST_SESSION_EXPIRED_TOPIC), false);
       expect(counterExpire, 1);
       expect(counterSession, 1);
       clientB.core.expirer.onExpire.unsubscribeAll();
