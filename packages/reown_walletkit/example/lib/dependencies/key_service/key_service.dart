@@ -6,12 +6,16 @@ import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
 import 'package:eth_sig_util/util/utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get_it/get_it.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pointycastle/digests/ripemd160.dart';
 import 'package:pointycastle/digests/keccak.dart';
 import 'package:pointycastle/ecc/curves/secp256k1.dart';
 import 'package:polkadart_keyring/polkadart_keyring.dart' as keyring;
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bip32/bip32_base.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/ton/ton_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
@@ -45,10 +49,27 @@ class KeyService extends IKeyService {
     }
   }
 
+  Future<(bool, int)> _isUpdated() async {
+    final prevBuildNumber = _prefs.getString('rwkt_build_number') ?? '0';
+    final packageInfo = await PackageInfo.fromPlatform();
+    final currBuildNumber = packageInfo.buildNumber.toString();
+
+    return (
+      int.parse(currBuildNumber) > int.parse(prevBuildNumber),
+      int.parse(currBuildNumber),
+    );
+  }
+
   @override
   Future<List<ChainKey>> loadKeys() async {
     // ⚠️ WARNING: SharedPreferences is not the best way to store your keys! This is just for example purposes!
     try {
+      final isUpdated = await _isUpdated();
+      if (isUpdated.$1) {
+        // regenerate the wallet after an update
+        await restoreWallet(mnemonicOrPrivate: getMnemonic());
+        await _prefs.setString('rwkt_build_number', isUpdated.$2.toString());
+      }
       final savedKeys = _prefs.getStringList('rwkt_chain_keys')!;
       final chainKeys = savedKeys.map((e) => ChainKey.fromJson(jsonDecode(e)));
       _keys = List<ChainKey>.from(chainKeys.toList());
@@ -74,7 +95,15 @@ class KeyService extends IKeyService {
     if (value.contains(':')) {
       namespace = NamespaceUtils.getNamespaceFromChain(value);
     }
-    return _keys.where((e) => e.namespace == namespace).toList();
+    final keys = [
+      ..._keys.where((e) => e.namespace == namespace),
+      ..._keys.where((e) => e.namespace == '${namespace}_test'),
+    ];
+    try {
+      return [keys.firstWhere((e) => e.chains.contains(value))];
+    } catch (e) {
+      return _keys.where((e) => e.namespace == namespace).toList();
+    }
   }
 
   @override
@@ -89,9 +118,7 @@ class KeyService extends IKeyService {
   }
 
   @override
-  Future<String> getMnemonic() async {
-    return _prefs.getString('rwkt_mnemonic') ?? '';
-  }
+  String getMnemonic() => _prefs.getString('rwkt_mnemonic') ?? '';
 
   // ** bip39/bip32 - EIP155 **
 
@@ -101,19 +128,12 @@ class KeyService extends IKeyService {
     await restoreWallet(mnemonicOrPrivate: mnemonic);
   }
 
-  bool _isPrivateKey(String privateKeyHex) {
-    final regex = RegExp(r'^[0-9a-fA-F]{64}$');
-    return regex.hasMatch(privateKeyHex);
-  }
-
   @override
-  Future<void> restoreWallet({required String mnemonicOrPrivate}) async {
-    _keys.clear();
-    if (_isPrivateKey(mnemonicOrPrivate)) {
-      await _restoreWalletFromPrivateKey(mnemonicOrPrivate);
-    } else {
-      await _restoreFromMnemonic(mnemonicOrPrivate);
-    }
+  Future<void> regenerateStoredWallet() async {
+    try {
+      final mnemonic = _prefs.getString('rwkt_mnemonic')!;
+      await restoreWallet(mnemonicOrPrivate: mnemonic);
+    } catch (_) {}
   }
 
   @override
@@ -129,6 +149,21 @@ class KeyService extends IKeyService {
     _keys.add(chainKey);
 
     await _saveKeys();
+  }
+
+  @override
+  Future<void> restoreWallet({required String mnemonicOrPrivate}) async {
+    _keys.clear();
+    if (_isPrivateKey(mnemonicOrPrivate)) {
+      await _restoreWalletFromPrivateKey(mnemonicOrPrivate);
+    } else {
+      await _restoreFromMnemonic(mnemonicOrPrivate);
+    }
+  }
+
+  bool _isPrivateKey(String privateKeyHex) {
+    final regex = RegExp(r'^[0-9a-fA-F]{64}$');
+    return regex.hasMatch(privateKeyHex);
   }
 
   Future<void> _restoreWalletFromPrivateKey(privateKey) async {
@@ -162,6 +197,8 @@ class KeyService extends IKeyService {
     final kadenaChainKey = _kadenaChainKey(mnemonic);
     final tronChainKey = _tronChainKey(mnemonic);
     final cosmosChainKey = _cosmosChainKey(mnemonic);
+    final tonChainKey = await _tonChainKey(mnemonic);
+    // final tonTestChainKey = await _tonTestChainKey(mnemonic);
     // final bitcoinChainKeys = await _bitcoinChainKey(mnemonic);
 
     _keys = List<ChainKey>.from([
@@ -172,6 +209,8 @@ class KeyService extends IKeyService {
       kadenaChainKey,
       tronChainKey,
       cosmosChainKey,
+      tonChainKey,
+      // tonTestChainKey,
     ]);
 
     await _saveKeys();
@@ -329,6 +368,45 @@ class KeyService extends IKeyService {
     );
   }
 
+  Future<ChainKey> _tonChainKey(String mnemonic) async {
+    final walletKitService = GetIt.I<IWalletKitService>();
+    final chainIds = ChainsDataList.tonChains
+        .where((c) => !c.isTestnet)
+        .map((e) => e.chainId)
+        .toList();
+    final tonService =
+        walletKitService.getChainService<TonService>(chainId: chainIds.first);
+    final keyPair = await tonService.generateKeypairFromBip39Mnemonic(mnemonic);
+    final address = await tonService.getAddressFromKeypair(keyPair);
+
+    return ChainKey(
+      chains: chainIds,
+      privateKey: keyPair.sk,
+      publicKey: keyPair.pk,
+      address: address.friendlyEq,
+      namespace: 'ton',
+    );
+  }
+
+  // Future<ChainKey> _tonTestChainKey(String mnemonic) async {
+  //   final walletKitService = GetIt.I<IWalletKitService>();
+  //   final chainIds = ChainsDataList.tonChains
+  //       .where((c) => c.isTestnet)
+  //       .map((e) => e.chainId)
+  //       .toList();
+  //   final tonService = walletKitService.tonService(chainId: chainIds.first);
+  //   final keyPair = await tonService.generateKeypair();
+  //   final address = await tonService.getAddressFromKeypair(keyPair);
+
+  //   return ChainKey(
+  //     chains: chainIds,
+  //     privateKey: keyPair.sk,
+  //     publicKey: keyPair.pk,
+  //     address: address.friendlyEq,
+  //     namespace: 'ton_test',
+  //   );
+  // }
+
   List<int> _convertBits(Uint8List data, int fromBits, int toBits, bool pad) {
     int acc = 0;
     int bits = 0;
@@ -394,7 +472,7 @@ class KeyService extends IKeyService {
 
   // ignore: unused_element
   Future<ChainKey> _bitcoinChainKey(String mnemonic) async {
-    final mnemonic = await getMnemonic();
+    final mnemonic = getMnemonic();
     final seed = bip39.mnemonicToSeed(mnemonic);
     final root = bip32.BIP32.fromSeed(seed, BITCOIN);
     final bitcoinNode = root.derivePath("m/84'/0'/0'/0/0");

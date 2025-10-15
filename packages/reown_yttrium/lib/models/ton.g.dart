@@ -28,8 +28,8 @@ Map<String, dynamic> _$TonIdentityToJson(_TonIdentity instance) =>
 _TonMessage _$TonMessageFromJson(Map<String, dynamic> json) => _TonMessage(
   address: json['address'] as String,
   amount: json['amount'] as String,
-  payload: json['payload'] as String,
-  stateInit: json['stateInit'] as String,
+  payload: json['payload'] as String?,
+  stateInit: json['stateInit'] as String?,
 );
 
 Map<String, dynamic> _$TonMessageToJson(_TonMessage instance) =>

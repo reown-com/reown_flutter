@@ -31,8 +31,8 @@ sealed class TonMessage with _$TonMessage {
   const factory TonMessage({
     required String address,
     required String amount,
-    required String payload,
-    required String stateInit,
+    String? payload,
+    String? stateInit,
   }) = _TonMessage;
 
   factory TonMessage.fromJson(Map<String, dynamic> json) =>

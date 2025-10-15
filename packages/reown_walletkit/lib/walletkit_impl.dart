@@ -5,10 +5,6 @@ import 'package:reown_core/store/generic_store.dart';
 import 'package:reown_core/store/i_generic_store.dart';
 
 import 'package:reown_walletkit/reown_walletkit.dart';
-import 'package:reown_walletkit/ton/i_ton_client.dart';
-import 'package:reown_walletkit/ton/ton_client.dart';
-import 'package:reown_walletkit/version.dart' as wk;
-import 'package:reown_yttrium/models/shared.dart';
 
 class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   bool _initialized = false;
@@ -51,9 +47,6 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
 
   @override
   final PairingMetadata metadata;
-
-  @override
-  late final ITonClient tonClient;
 
   ReownWalletKit({required this.core, required this.metadata}) {
     reOwnSign = ReownSign(
@@ -109,14 +102,6 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
       ),
     );
 
-    tonClient = TonClient(
-      core: core,
-      pulseMetadata: PulseMetadataCompat(
-        url: metadata.url,
-        sdkVersion: wk.packageVersion,
-        sdkPlatform: ReownCoreUtils.getId(),
-      ),
-    );
   }
 
   @override
@@ -127,7 +112,6 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
 
     await core.start();
     await reOwnSign.init();
-    await tonClient.init();
 
     WidgetsBinding.instance.addObserver(this);
     _initialized = true;

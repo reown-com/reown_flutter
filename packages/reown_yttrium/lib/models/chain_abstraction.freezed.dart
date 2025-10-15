@@ -2533,7 +2533,7 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( PrepareDetailedResponseSuccessCompat value)?  success,TResult Function( PrepareResponseError value)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( PrepareDetailedResponseSuccessCompat value)?  success,TResult Function( PrepareDetailedResponseError value)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case PrepareDetailedResponseCompat_Success() when success != null:
 return success(_that.value);case PrepareDetailedResponseCompat_Error() when error != null:
@@ -2555,7 +2555,7 @@ return error(_that.value);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( PrepareDetailedResponseSuccessCompat value)  success,required TResult Function( PrepareResponseError value)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( PrepareDetailedResponseSuccessCompat value)  success,required TResult Function( PrepareDetailedResponseError value)  error,}) {final _that = this;
 switch (_that) {
 case PrepareDetailedResponseCompat_Success():
 return success(_that.value);case PrepareDetailedResponseCompat_Error():
@@ -2573,7 +2573,7 @@ return error(_that.value);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( PrepareDetailedResponseSuccessCompat value)?  success,TResult? Function( PrepareResponseError value)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( PrepareDetailedResponseSuccessCompat value)?  success,TResult? Function( PrepareDetailedResponseError value)?  error,}) {final _that = this;
 switch (_that) {
 case PrepareDetailedResponseCompat_Success() when success != null:
 return success(_that.value);case PrepareDetailedResponseCompat_Error() when error != null:
@@ -2667,7 +2667,7 @@ class PrepareDetailedResponseCompat_Error extends PrepareDetailedResponseCompat 
   const PrepareDetailedResponseCompat_Error({required this.value}): super._();
   
 
-@override final  PrepareResponseError value;
+@override final  PrepareDetailedResponseError value;
 
 /// Create a copy of PrepareDetailedResponseCompat
 /// with the given fields replaced by the non-null parameter values.
@@ -2699,7 +2699,7 @@ abstract mixin class $PrepareDetailedResponseCompat_ErrorCopyWith<$Res> implemen
   factory $PrepareDetailedResponseCompat_ErrorCopyWith(PrepareDetailedResponseCompat_Error value, $Res Function(PrepareDetailedResponseCompat_Error) _then) = _$PrepareDetailedResponseCompat_ErrorCopyWithImpl;
 @useResult
 $Res call({
- PrepareResponseError value
+ PrepareDetailedResponseError value
 });
 
 
@@ -2719,7 +2719,7 @@ class _$PrepareDetailedResponseCompat_ErrorCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? value = null,}) {
   return _then(PrepareDetailedResponseCompat_Error(
 value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
-as PrepareResponseError,
+as PrepareDetailedResponseError,
   ));
 }
 

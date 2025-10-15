@@ -538,7 +538,7 @@ as String,
 /// @nodoc
 mixin _$TonMessage {
 
- String get address; String get amount; String get payload; String get stateInit;
+ String get address; String get amount; String? get payload; String? get stateInit;
 /// Create a copy of TonMessage
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -571,7 +571,7 @@ abstract mixin class $TonMessageCopyWith<$Res>  {
   factory $TonMessageCopyWith(TonMessage value, $Res Function(TonMessage) _then) = _$TonMessageCopyWithImpl;
 @useResult
 $Res call({
- String address, String amount, String payload, String stateInit
+ String address, String amount, String? payload, String? stateInit
 });
 
 
@@ -588,13 +588,13 @@ class _$TonMessageCopyWithImpl<$Res>
 
 /// Create a copy of TonMessage
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? address = null,Object? amount = null,Object? payload = null,Object? stateInit = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? address = null,Object? amount = null,Object? payload = freezed,Object? stateInit = freezed,}) {
   return _then(_self.copyWith(
 address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
-as String,payload: null == payload ? _self.payload : payload // ignore: cast_nullable_to_non_nullable
-as String,stateInit: null == stateInit ? _self.stateInit : stateInit // ignore: cast_nullable_to_non_nullable
-as String,
+as String,payload: freezed == payload ? _self.payload : payload // ignore: cast_nullable_to_non_nullable
+as String?,stateInit: freezed == stateInit ? _self.stateInit : stateInit // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -676,7 +676,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String address,  String amount,  String payload,  String stateInit)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String address,  String amount,  String? payload,  String? stateInit)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _TonMessage() when $default != null:
 return $default(_that.address,_that.amount,_that.payload,_that.stateInit);case _:
@@ -697,7 +697,7 @@ return $default(_that.address,_that.amount,_that.payload,_that.stateInit);case _
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String address,  String amount,  String payload,  String stateInit)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String address,  String amount,  String? payload,  String? stateInit)  $default,) {final _that = this;
 switch (_that) {
 case _TonMessage():
 return $default(_that.address,_that.amount,_that.payload,_that.stateInit);}
@@ -714,7 +714,7 @@ return $default(_that.address,_that.amount,_that.payload,_that.stateInit);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String address,  String amount,  String payload,  String stateInit)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String address,  String amount,  String? payload,  String? stateInit)?  $default,) {final _that = this;
 switch (_that) {
 case _TonMessage() when $default != null:
 return $default(_that.address,_that.amount,_that.payload,_that.stateInit);case _:
@@ -729,13 +729,13 @@ return $default(_that.address,_that.amount,_that.payload,_that.stateInit);case _
 @JsonSerializable()
 
 class _TonMessage implements TonMessage {
-  const _TonMessage({required this.address, required this.amount, required this.payload, required this.stateInit});
+  const _TonMessage({required this.address, required this.amount, this.payload, this.stateInit});
   factory _TonMessage.fromJson(Map<String, dynamic> json) => _$TonMessageFromJson(json);
 
 @override final  String address;
 @override final  String amount;
-@override final  String payload;
-@override final  String stateInit;
+@override final  String? payload;
+@override final  String? stateInit;
 
 /// Create a copy of TonMessage
 /// with the given fields replaced by the non-null parameter values.
@@ -770,7 +770,7 @@ abstract mixin class _$TonMessageCopyWith<$Res> implements $TonMessageCopyWith<$
   factory _$TonMessageCopyWith(_TonMessage value, $Res Function(_TonMessage) _then) = __$TonMessageCopyWithImpl;
 @override @useResult
 $Res call({
- String address, String amount, String payload, String stateInit
+ String address, String amount, String? payload, String? stateInit
 });
 
 
@@ -787,13 +787,13 @@ class __$TonMessageCopyWithImpl<$Res>
 
 /// Create a copy of TonMessage
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? address = null,Object? amount = null,Object? payload = null,Object? stateInit = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? address = null,Object? amount = null,Object? payload = freezed,Object? stateInit = freezed,}) {
   return _then(_TonMessage(
 address: null == address ? _self.address : address // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
-as String,payload: null == payload ? _self.payload : payload // ignore: cast_nullable_to_non_nullable
-as String,stateInit: null == stateInit ? _self.stateInit : stateInit // ignore: cast_nullable_to_non_nullable
-as String,
+as String,payload: freezed == payload ? _self.payload : payload // ignore: cast_nullable_to_non_nullable
+as String?,stateInit: freezed == stateInit ? _self.stateInit : stateInit // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

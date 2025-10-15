@@ -7,6 +7,7 @@ abstract class IWalletKitService extends Disposable {
   Future<void> create();
   Future<void> setUpAccounts();
   Future<void> init();
+  T getChainService<T extends Object>({required String chainId});
 
   abstract final ValueNotifier<ChainMetadata?> currentSelectedChain;
   ReownWalletKit get walletKit;

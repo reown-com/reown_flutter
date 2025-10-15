@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 import 'package:pos_client/pos_client.dart';
 
@@ -20,17 +22,18 @@ mixin PosRpcService implements IPosRpcService {
       method: 'wc_pos_buildTransactions',
       params: params.toJson(),
     );
+    print(
+      '[$runtimeType] posBuildTransaction ${jsonEncode(jsonRpcRequest.toJson())}',
+    );
 
     final qParams = queryParams.toJson();
     final jsonRequest = jsonRpcRequest.toJson();
-    print('build transaction request: ${jsonEncode(jsonRequest)}');
     final url = Uri.parse(_baseUrl).replace(queryParameters: qParams);
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(jsonRequest),
     );
-    print('build transaction response: ${response.body}');
 
     final responseData = jsonDecode(response.body);
     final jsonResponse = JsonRpcResponse.fromJson(responseData);
@@ -51,6 +54,9 @@ mixin PosRpcService implements IPosRpcService {
       id: JsonRpcUtils.payloadId(),
       method: 'wc_pos_checkTransaction',
       params: params.toJson(),
+    );
+    print(
+      '[$runtimeType] posCheckTransaction ${jsonEncode(jsonRpcRequest.toJson())}',
     );
 
     final qParams = queryParams.toJson();

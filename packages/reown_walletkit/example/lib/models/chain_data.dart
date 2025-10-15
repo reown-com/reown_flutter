@@ -298,7 +298,7 @@ class ChainsDataList {
 
   static final List<ChainMetadata> tonChains = [
     const ChainMetadata(
-      type: ChainType.tron,
+      type: ChainType.ton,
       chainId: 'ton:-239',
       name: 'Ton Mainnet',
       logo:
@@ -309,14 +309,14 @@ class ChainsDataList {
       ],
     ),
     const ChainMetadata(
-      type: ChainType.tron,
+      type: ChainType.ton,
       chainId: 'ton:-3',
       name: 'Ton Testnet',
       logo:
           'https://pbs.twimg.com/profile_images/1931243733439115264/HfLnjCPR_400x400.jpg',
       color: Color.fromARGB(255, 48, 207, 255),
       rpc: [
-        // 'https://rpc.walletconnect.org/v1', // TODO
+        'https://rpc.walletconnect.org/v1',
       ],
       isTestnet: true,
     ),

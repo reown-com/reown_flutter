@@ -33,6 +33,8 @@ dependencies:
     path: packages/qr-bar-code-scanner-dialog
   reown_walletkit:
     path: ../
+  reown_yttrium:
+    path: ../../reown_yttrium/
   sentry_flutter: ^8.14.2
   shared_preferences: ^2.3.4
   solana: ^0.31.2+1

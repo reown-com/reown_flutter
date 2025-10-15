@@ -21,10 +21,6 @@ import uniffi.yttrium.UiFields
 
 /** ReownYttriumPlugin */
 class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
-  /// The MethodChannel that will the communication between Flutter and native Android
-  ///
-  /// This local reference serves to register the plugin with the Flutter Engine and unregister it
-  /// when the Flutter Engine is detached from the Activity
   private lateinit var channel : MethodChannel
   private lateinit var applicationContext: Context // ✅ Store application context
 
@@ -39,17 +35,22 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
 
   override fun onMethodCall(call: MethodCall, result: Result) {
     when (call.method) {
-      "init" -> initialize(call.arguments, result)
-      "erc20TokenBalance" -> erc20TokenBalance(call.arguments, result)
-      "estimateFees" -> estimateFees(call.arguments, result)
-      "prepareDetailed" -> prepareDetailed(call.arguments, result)
-      "execute" -> execute(call.arguments, result)
+      // === CHAIN ABSTRACTION METHODS ===
+      "ca_init" -> ChainAbstraction.initialize(applicationContext, call.arguments, result)
+      "ca_erc20TokenBalance" -> ChainAbstraction.erc20TokenBalance(call.arguments, result)
+      "ca_estimateFees" -> ChainAbstraction.estimateFees(call.arguments, result)
+      "ca_prepareDetailed" -> ChainAbstraction.prepareDetailed(call.arguments, result)
+      "ca_execute" -> ChainAbstraction.execute(call.arguments, result)
+      // === TON METHODS ===
       "ton_init" -> Ton.init(applicationContext, call.arguments, result)
-      "ton_generateKeypair" -> Ton.generateKeypair(result)
+      "ton_generateKeypair" -> Ton.generateKeypair(call.arguments, result)
+      "ton_generateKeypairFromTonMnemonic" -> Ton.generateKeypairFromTonMnemonic(call.arguments, result)
+      "ton_generateKeypairFromBip39Mnemonic" -> Ton.generateKeypairFromBip39Mnemonic(call.arguments, result)
       "ton_getAddressFromKeypair" -> Ton.getAddressFromKeypair(call.arguments, result)
       "ton_signData" -> Ton.signData(call.arguments, result)
       "ton_sendMessage" -> Ton.sendMessage(call.arguments, result)
       "ton_broadcastMessage" -> Ton.broadcastMessage(call.arguments, result)
+      "ton_dispose" -> Ton.dispose(call.arguments, result)
       else -> result.notImplemented()
     }
   }
