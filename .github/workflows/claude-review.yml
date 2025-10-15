@@ -43,7 +43,7 @@ jobs:
             - reown_appkit: Full-featured UI toolkit with Coinbase Wallet SDK integration, WebView support for WalletConnect, QR code generation, and comprehensive modal components
             - reown_yttrium: Chain abstraction layer (early access) with eth_sig_util for transaction signing across multiple chains
             - reown_cli: Command-line tool to easily create a reown_appkit project from scratch
-            - pos_client: Proof-of-stake client utilities
+            - pos_client: Point of sale SDK
             
             Tech Stack:
             - Dart 3.8.0+ with null safety
