@@ -101,7 +101,6 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
         },
       ),
     );
-
   }
 
   @override
