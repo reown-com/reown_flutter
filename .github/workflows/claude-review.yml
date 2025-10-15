@@ -42,7 +42,7 @@ jobs:
             - reown_walletkit: Wallet implementation that orchestrates core networking and sign protocol, provides wallet-side WalletConnect functionality
             - reown_appkit: Full-featured UI toolkit with Coinbase Wallet SDK integration, WebView support for WalletConnect, QR code generation, and comprehensive modal components
             - reown_yttrium: Chain abstraction layer (early access) with eth_sig_util for transaction signing across multiple chains
-            - reown_cli: Command-line tools for development and testing
+            - reown_cli: Command-line tool to easily create a reown_appkit project from scratch
             - pos_client: Proof-of-stake client utilities
             
             Tech Stack:
