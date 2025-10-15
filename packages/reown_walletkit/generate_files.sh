@@ -19,9 +19,10 @@ dart run build_runner build --delete-conflicting-outputs
 # dart run dependency_validator
 
 cd ios
-rm Podfile.lock
+# rm Podfile.lock
 # pod deintegrate
 # pod cache clean --all
+# pod repo update
 pod install
 cd ..
 

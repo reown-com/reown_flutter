@@ -174,6 +174,7 @@ class Ton(private val projectId: String, private val networkId: String, private 
             val packageName = applicationContext.packageName ?: pulseMetadataDict["packageName"] as? String ?: return errorMissing("packageName", params, result)
             val sdkVersion = pulseMetadataDict["sdkVersion"] as? String ?: return errorMissing("sdkVersion", params, result)
             val sdkPlatform = pulseMetadataDict["sdkPlatform"] as? String ?: return errorMissing("sdkPlatform", params, result)
+
             val pulseMetadata = PulseMetadata(url, packageName, sdkVersion, sdkPlatform)
 
             val ton = Ton(projectId, networkId, pulseMetadata)

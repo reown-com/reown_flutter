@@ -45,6 +45,7 @@ class TonService {
   Future<void> init() async {
     try {
       await _tonClient.init();
+      debugPrint('[$runtimeType] _tonClient initialized');
     } catch (e) {
       debugPrint('❌ [$runtimeType] _tonClient init error, $e');
     }

@@ -13,8 +13,6 @@ class TonClient {
     required this.networkId,
   });
 
-  // ReownYttrium get _reownYttrium => ReownYttrium();
-
   Future<void> init() async {
     try {
       final packageName = await ReownCoreUtils.getPackageName();

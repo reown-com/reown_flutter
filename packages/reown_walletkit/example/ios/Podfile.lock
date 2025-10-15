@@ -10,8 +10,10 @@ PODS:
     - MTBBarcodeScanner
   - reown_yttrium (0.0.1):
     - Flutter
-    - YttriumWrapper (= 0.8.35)
-  - YttriumWrapper (0.8.35)
+    - YttriumUtilsWrapper (= 0.9.78)
+    - YttriumWrapper (= 0.9.77)
+  - YttriumUtilsWrapper (0.9.78)
+  - YttriumWrapper (0.9.77)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
@@ -23,6 +25,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - MTBBarcodeScanner
+    - YttriumUtilsWrapper
     - YttriumWrapper
 
 EXTERNAL SOURCES:
@@ -43,8 +46,9 @@ SPEC CHECKSUMS:
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   qr_bar_code_scanner_dialog: a4cb7ad7201cbf8b888f3e6e58972b611ac43b28
   qr_code_scanner: d77f94ecc9abf96d9b9b8fc04ef13f611e5a147a
-  reown_yttrium: cee334ade64725b1d83f7b34c706a6aae2696d58
-  YttriumWrapper: 31e937fe9fbe0f1314d2ca6be9ce9b379a059966
+  reown_yttrium: ebf4bd803172b957ccac9a2b1ff1fe0a06c1daef
+  YttriumUtilsWrapper: 3eb1eae1f55322f4e921e154e5b54972cef90731
+  YttriumWrapper: e68163709dab1b30460a560854a83567a7b7a3bd
 
 PODFILE CHECKSUM: 0772a2bd8cd4c7aaeb2576ddfaf6b03be722593b
 

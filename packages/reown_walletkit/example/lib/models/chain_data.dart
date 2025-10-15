@@ -308,17 +308,17 @@ class ChainsDataList {
         'https://rpc.walletconnect.org/v1',
       ],
     ),
-    const ChainMetadata(
-      type: ChainType.ton,
-      chainId: 'ton:-3',
-      name: 'Ton Testnet',
-      logo:
-          'https://pbs.twimg.com/profile_images/1931243733439115264/HfLnjCPR_400x400.jpg',
-      color: Color.fromARGB(255, 48, 207, 255),
-      rpc: [
-        'https://rpc.walletconnect.org/v1',
-      ],
-      isTestnet: true,
-    ),
+    // const ChainMetadata(
+    //   type: ChainType.ton,
+    //   chainId: 'ton:-3',
+    //   name: 'Ton Testnet',
+    //   logo:
+    //       'https://pbs.twimg.com/profile_images/1931243733439115264/HfLnjCPR_400x400.jpg',
+    //   color: Color.fromARGB(255, 48, 207, 255),
+    //   rpc: [
+    //     'https://rpc.walletconnect.org/v1',
+    //   ],
+    //   isTestnet: true,
+    // ),
   ];
 }

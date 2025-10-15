@@ -20,7 +20,7 @@ class TonClient {
       );
       return result;
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] ton_init $e');
+      debugPrint('[$runtimeType] init $e');
       rethrow;
     }
   }
@@ -32,7 +32,7 @@ class TonClient {
       );
       return result;
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] ton_generateKeypair $e');
+      debugPrint('[$runtimeType] generateKeypair $e');
       rethrow;
     }
   }
@@ -49,7 +49,7 @@ class TonClient {
           );
       return result;
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] ton_generateKeypairFromTonMnemonic $e');
+      debugPrint('[$runtimeType] generateKeypairFromTonMnemonic $e');
       rethrow;
     }
   }
@@ -66,7 +66,7 @@ class TonClient {
           );
       return result;
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] ton_generateKeypairFromBip39Mnemonic $e');
+      debugPrint('[$runtimeType] generateKeypairFromBip39Mnemonic $e');
       rethrow;
     }
   }
@@ -82,7 +82,7 @@ class TonClient {
       );
       return result;
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] ton_getAddressFromKeypair $e');
+      debugPrint('[$runtimeType] getAddressFromKeypair $e');
       rethrow;
     }
   }
@@ -100,7 +100,7 @@ class TonClient {
       );
       return result;
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] ton_signData $e');
+      debugPrint('[$runtimeType] signData $e');
       throw Exception(e.message);
     }
   }
@@ -122,7 +122,7 @@ class TonClient {
       );
       return result;
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] ton_sendMessage $e');
+      debugPrint('[$runtimeType] sendMessage $e');
       throw Exception(e.message);
     }
   }
@@ -144,7 +144,7 @@ class TonClient {
       );
       return result;
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] ton_broadcastMessage $e');
+      debugPrint('[$runtimeType] broadcastMessage $e');
       throw Exception(e.message);
     }
   }
