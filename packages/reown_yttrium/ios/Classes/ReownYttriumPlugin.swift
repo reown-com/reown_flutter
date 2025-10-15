@@ -28,9 +28,9 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
         case "ton_generateKeypair":
             Ton.generateKeypair(call.arguments ?? {}, result: result)
         case "ton_generateKeypairFromTonMnemonic":
-            Ton.generateKeypair(call.arguments ?? {}, result: result) // TODO
+            Ton.generateKeypairFromTonMnemonic(call.arguments ?? {}, result: result) // TODO
         case "ton_generateKeypairFromBip39Mnemonic":
-            Ton.generateKeypair(call.arguments ?? {}, result: result) // TODO
+            Ton.generateKeypairFromBip39Mnemonic(call.arguments ?? {}, result: result) // TODO
         case "ton_getAddressFromKeypair":
             Ton.getAddressFromKeypair(call.arguments ?? {}, result: result)
         case "ton_signData":
