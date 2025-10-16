@@ -80,8 +80,7 @@ class _AppKitModalAllWalletsPageState
           FocusManager.instance.primaryFocus?.unfocus();
           _explorerService.search(query: null);
           _widgetStack.pop();
-        } catch (_) {
-        }
+        } catch (_) {}
       },
       safeAreaBottom: false,
       safeAreaLeft: true,

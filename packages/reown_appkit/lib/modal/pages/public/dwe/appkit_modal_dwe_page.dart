@@ -71,24 +71,24 @@ class _ReownAppKitModalDepositScreenState
         await appKitModal.selectChain(networks.first);
       }
       final chainId = appKitModal.selectedChain?.chainId;
-        debugPrint('[$runtimeType] selected chain id: $chainId');
-        final supportedAssets = appKitModal.appKit!.getPaymentAssetsForNetwork(
-          chainId: chainId,
-        );
-        if (_dweService.selectedAsset.value?.network != chainId) {
-          _dweService.selectedAsset.value =
-              supportedAssets.firstWhereOrNull(
-                (asset) => asset.address != 'native',
-              ) ??
-              supportedAssets.first;
-        } else {
-          _dweService.selectedAsset.value =
-              _dweService.selectedAsset.value ??
-              supportedAssets.firstWhereOrNull(
-                (asset) => asset.address != 'native',
-              ) ??
-              supportedAssets.first;
-        }
+      debugPrint('[$runtimeType] selected chain id: $chainId');
+      final supportedAssets = appKitModal.appKit!.getPaymentAssetsForNetwork(
+        chainId: chainId,
+      );
+      if (_dweService.selectedAsset.value?.network != chainId) {
+        _dweService.selectedAsset.value =
+            supportedAssets.firstWhereOrNull(
+              (asset) => asset.address != 'native',
+            ) ??
+            supportedAssets.first;
+      } else {
+        _dweService.selectedAsset.value =
+            _dweService.selectedAsset.value ??
+            supportedAssets.firstWhereOrNull(
+              (asset) => asset.address != 'native',
+            ) ??
+            supportedAssets.first;
+      }
       _dweService.setSupportedAssets(supportedAssets);
       setState(() {});
     });

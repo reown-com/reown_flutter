@@ -156,7 +156,9 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
       appKitModal.onModalError.broadcast(ModalError(e.message!));
       setState(() => _selectedExchange = null);
     } catch (e) {
-      appKitModal.onModalError.broadcast(ModalError('Something wrong happened'));
+      appKitModal.onModalError.broadcast(
+        ModalError('Something wrong happened'),
+      );
       setState(() => _selectedExchange = null);
     }
   }
