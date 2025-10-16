@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 
 class ChainsDataList {
+  // https://github.com/reown-com/blockchain-api/blob/master/SUPPORTED_CHAINS.md
+
   static final List<ChainMetadata> eip155Chains = [
     ChainMetadata(
       type: ChainType.eip155,
@@ -213,7 +215,8 @@ class ChainsDataList {
       type: ChainType.cosmos,
       chainId: 'cosmos:cosmoshub-4',
       name: 'Cosmos Mainnet',
-      logo: 'https://cryptologos.cc/logos/cosmos-atom-logo.png',
+      logo:
+          'https://pbs.twimg.com/profile_images/1910273399282159616/OLSiIjEx_400x400.png',
       color: Colors.purple,
       rpc: [
         'https://cosmos-rpc.polkachu.com:443',
@@ -228,7 +231,8 @@ class ChainsDataList {
       type: ChainType.kadena,
       chainId: 'kadena:mainnet01',
       name: 'Kadena Mainnet',
-      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
+      logo:
+          'https://pbs.twimg.com/profile_images/1820556208455172096/PQHyA3TU_400x400.jpg',
       color: Colors.green,
       rpc: [
         'https://api.chainweb.com',
@@ -238,7 +242,8 @@ class ChainsDataList {
       type: ChainType.kadena,
       chainId: 'kadena:testnet04',
       name: 'Kadena Testnet',
-      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
+      logo:
+          'https://pbs.twimg.com/profile_images/1820556208455172096/PQHyA3TU_400x400.jpg',
       color: Colors.green,
       isTestnet: true,
       rpc: [
@@ -252,7 +257,8 @@ class ChainsDataList {
       type: ChainType.polkadot,
       chainId: 'polkadot:91b171bb158e2d3848fa23a9f1c25182',
       name: 'Polkadot Mainnet',
-      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
+      logo:
+          'https://pbs.twimg.com/profile_images/1944665239502323712/0FMaAZ31_400x400.jpg',
       color: Color.fromARGB(255, 174, 57, 220),
       rpc: [
         'wss://rpc.polkadot.io',
@@ -263,7 +269,8 @@ class ChainsDataList {
       type: ChainType.polkadot,
       chainId: 'polkadot:e143f23803ac50e8f6f8e62695d1ce9e',
       name: 'Polkadot Testnet (Westend)',
-      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
+      logo:
+          'https://pbs.twimg.com/profile_images/1944665239502323712/0FMaAZ31_400x400.jpg',
       color: Color.fromARGB(255, 174, 57, 220),
       isTestnet: true,
       rpc: [
@@ -277,7 +284,8 @@ class ChainsDataList {
       type: ChainType.tron,
       chainId: 'tron:0x2b6653dc',
       name: 'Tron Mainnet',
-      logo: 'https://cdn-icons-png.flaticon.com/512/12114/12114250.png',
+      logo:
+          'https://pbs.twimg.com/profile_images/1970541264568520704/J6wYDxYk_400x400.jpg',
       color: Color.fromARGB(255, 223, 0, 0),
       rpc: [
         'https://rpc.walletconnect.org/v1',
@@ -287,7 +295,8 @@ class ChainsDataList {
       type: ChainType.tron,
       chainId: 'tron:0xcd8690dc',
       name: 'Tron Nile',
-      logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
+      logo:
+          'https://pbs.twimg.com/profile_images/1970541264568520704/J6wYDxYk_400x400.jpg',
       color: Color.fromARGB(255, 223, 0, 0),
       rpc: [
         'https://nile.trongrid.io',
@@ -320,5 +329,81 @@ class ChainsDataList {
     //   ],
     //   isTestnet: true,
     // ),
+  ];
+
+  static final List<ChainMetadata> stacksChains = [
+    const ChainMetadata(
+      type: ChainType.stacks,
+      chainId: 'stacks:1',
+      name: 'Stacks Mainnet',
+      logo:
+          'https://pbs.twimg.com/profile_images/1764968185399267328/lrmnHOuN_400x400.jpg',
+      color: Colors.orange,
+      rpc: [
+        'https://rpc.walletconnect.org/v1',
+      ],
+    ),
+    const ChainMetadata(
+      type: ChainType.stacks,
+      chainId: 'stacks:2147483648',
+      name: 'Stacks Testnet',
+      logo:
+          'https://pbs.twimg.com/profile_images/1764968185399267328/lrmnHOuN_400x400.jpg',
+      color: Colors.orange,
+      rpc: [
+        'https://rpc.walletconnect.org/v1',
+      ],
+      isTestnet: true,
+    ),
+  ];
+
+  static final List<ChainMetadata> suiChains = [
+    const ChainMetadata(
+      type: ChainType.sui,
+      chainId: 'sui:mainnet',
+      name: 'Sui Mainnet',
+      logo:
+          'https://pbs.twimg.com/profile_images/1966183924880572416/__KrQPZP_400x400.jpg',
+      color: Colors.blue,
+      rpc: ['https://fullnode.mainnet.sui.io:443'],
+    ),
+    const ChainMetadata(
+      type: ChainType.sui,
+      chainId: 'sui:testnet',
+      name: 'Sui Testnet',
+      logo:
+          'https://pbs.twimg.com/profile_images/1966183924880572416/__KrQPZP_400x400.jpg',
+      color: Colors.blue,
+      rpc: [
+        'https://rpc.walletconnect.org/v1',
+      ],
+      isTestnet: true,
+    ),
+    const ChainMetadata(
+      type: ChainType.sui,
+      chainId: 'sui:devnet',
+      name: 'Sui Devnet',
+      logo:
+          'https://pbs.twimg.com/profile_images/1928528183466373120/4xpp6RSr_400x400.jpg',
+      color: Colors.blue,
+      rpc: [
+        'https://rpc.walletconnect.org/v1',
+      ],
+      isTestnet: true,
+    ),
+  ];
+
+  static final List<ChainMetadata> allChains = [
+    ...eip155Chains,
+    ...chainAbstraction,
+    ...solanaChains,
+    ...bitcoinChains,
+    ...cosmosChains,
+    ...kadenaChains,
+    ...polkadotChains,
+    ...tronChains,
+    ...tonChains,
+    ...stacksChains,
+    ...suiChains,
   ];
 }

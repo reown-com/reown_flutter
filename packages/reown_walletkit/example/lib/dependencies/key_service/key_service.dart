@@ -14,6 +14,8 @@ import 'package:pointycastle/ecc/curves/secp256k1.dart';
 import 'package:polkadart_keyring/polkadart_keyring.dart' as keyring;
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bip32/bip32_base.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/stacks/stacks_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/sui/sui_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/ton/ton_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
@@ -23,9 +25,12 @@ import 'package:reown_walletkit_wallet/dependencies/bip39/bip39_base.dart'
     as bip39;
 import 'package:reown_walletkit_wallet/dependencies/bip32/bip32_base.dart'
     as bip32;
+import 'package:reown_yttrium/reown_yttrium.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solana/solana.dart' as solana;
 import 'package:bitcoin_base/bitcoin_base.dart' as bitcoin;
+// ignore: depend_on_referenced_packages
+import 'package:ed25519_hd_key/ed25519_hd_key.dart' as ed25519_hd_key;
 
 class KeyService extends IKeyService {
   List<ChainKey> _keys = [];
@@ -199,6 +204,9 @@ class KeyService extends IKeyService {
     final cosmosChainKey = _cosmosChainKey(mnemonic);
     final tonChainKey = await _tonChainKey(mnemonic);
     // final tonTestChainKey = await _tonTestChainKey(mnemonic);
+    final stacksChainKey = await _stacksChainKey(mnemonic);
+    final stacksTestChainKey = await _stacksTestChainKey(mnemonic);
+    final suiChainKey = await _suiChainKey(mnemonic);
     // final bitcoinChainKeys = await _bitcoinChainKey(mnemonic);
 
     _keys = List<ChainKey>.from([
@@ -210,6 +218,9 @@ class KeyService extends IKeyService {
       if (tronChainKey != null) tronChainKey,
       if (cosmosChainKey != null) cosmosChainKey,
       if (tonChainKey != null) tonChainKey,
+      if (stacksChainKey != null) stacksChainKey,
+      if (stacksTestChainKey != null) stacksTestChainKey,
+      if (suiChainKey != null) suiChainKey,
       // tonTestChainKey,
     ]);
 
@@ -436,23 +447,35 @@ class KeyService extends IKeyService {
     }
   }
 
-  // Future<ChainKey> _tonTestChainKey(String mnemonic) async {
-  //   final walletKitService = GetIt.I<IWalletKitService>();
-  //   final chainIds = ChainsDataList.tonChains
-  //       .where((c) => c.isTestnet)
-  //       .map((e) => e.chainId)
-  //       .toList();
-  //   final tonService = walletKitService.tonService(chainId: chainIds.first);
-  //   final keyPair = await tonService.generateKeypair();
-  //   final address = await tonService.getAddressFromKeypair(keyPair);
+  // Future<ChainKey?> _tonTestChainKey(String mnemonic) async {
+  //   try {
+  //     final service = GetIt.I<IWalletKitService>();
+  //     final chainIds = ChainsDataList.tonChains
+  //         .where((c) => c.isTestnet)
+  //         .map((e) => e.chainId)
+  //         .toList();
+  //     final tonService = service.getChainService<TonService>(
+  //       chainId: chainIds.first,
+  //     );
+  //     final keyPair = await tonService.generateKeypairFromBip39Mnemonic(
+  //       mnemonic,
+  //     );
+  //     final address = await tonService.getAddressFromKeypair(
+  //       keyPair,
+  //     );
 
-  //   return ChainKey(
-  //     chains: chainIds,
-  //     privateKey: keyPair.sk,
-  //     publicKey: keyPair.pk,
-  //     address: address.friendlyEq,
-  //     namespace: 'ton_test',
-  //   );
+  //     return ChainKey(
+  //       chains: chainIds,
+  //       privateKey: keyPair.sk,
+  //       publicKey: keyPair.pk,
+  //       address: address.friendlyEq,
+  //       namespace: 'ton_test',
+  //     );
+  //   } catch (e, s) {
+  //     debugPrint('[$runtimeType] _tonTestChainKey error: $e');
+  //     debugPrint('[$runtimeType] _tonTestChainKey error: $s');
+  //     return null;
+  //   }
   // }
 
   ChainKey? _tronChainKey(String mnemonic) {
@@ -515,6 +538,113 @@ class KeyService extends IKeyService {
     } catch (e, s) {
       debugPrint('[$runtimeType] _bitcoinChainKey error: $e');
       debugPrint('[$runtimeType] _bitcoinChainKey error: $s');
+      return null;
+    }
+  }
+
+  Future<ChainKey?> _stacksChainKey(String mnemonic) async {
+    try {
+      final service = GetIt.I<IWalletKitService>();
+      final chainIds = ChainsDataList.stacksChains
+          .where((c) => !c.isTestnet)
+          .map((e) => e.chainId)
+          .toList();
+      final stacksService = service.getChainService<StacksService>(
+        chainId: chainIds.first,
+      );
+      // final privateKey = await walletKit.stacksClient.generateWallet();
+      final address = await stacksService.stacksClient.getAddress(
+        wallet: mnemonic,
+        version: StacksVersion.mainnet_p2pkh,
+      );
+
+      return ChainKey(
+        chains: chainIds,
+        privateKey: mnemonic,
+        publicKey: address,
+        address: address,
+        namespace: 'stacks',
+      );
+    } catch (e, s) {
+      debugPrint('[$runtimeType] _stacksChainKey error: $e');
+      debugPrint('[$runtimeType] _stacksChainKey error: $s');
+      return null;
+    }
+  }
+
+  Future<ChainKey?> _stacksTestChainKey(String mnemonic) async {
+    try {
+      final service = GetIt.I<IWalletKitService>();
+      final chainIds = ChainsDataList.stacksChains
+          .where((c) => c.isTestnet)
+          .map((e) => e.chainId)
+          .toList();
+      final stacksService = service.getChainService<StacksService>(
+        chainId: chainIds.first,
+      );
+      // final privateKey = await walletKit.stacksClient.generateWallet();
+      final address = await stacksService.stacksClient.getAddress(
+        wallet: mnemonic,
+        version: StacksVersion.testnet_p2pkh,
+      );
+
+      return ChainKey(
+        chains: chainIds,
+        privateKey: mnemonic,
+        publicKey: address,
+        address: address,
+        namespace: 'stacks_test',
+      );
+    } catch (e, s) {
+      debugPrint('[$runtimeType] _stacksTestChainKey error: $e');
+      debugPrint('[$runtimeType] _stacksTestChainKey error: $s');
+      return null;
+    }
+  }
+
+  Future<ChainKey?> _suiChainKey(String mnemonic) async {
+    try {
+      final service = GetIt.I<IWalletKitService>();
+      final chainIds = ChainsDataList.suiChains.map((e) => e.chainId).toList();
+      final suiService = service.getChainService<SUIService>(
+        chainId: chainIds.first,
+      );
+
+      final seed = bip39.mnemonicToSeed(mnemonic);
+      final suiKeyPair = await ed25519_hd_key.ED25519_HD_KEY.derivePath(
+        "m/44'/501'/0'/0'",
+        seed,
+      );
+
+      // Prefix with Ed25519 scheme flag
+      final suiPrivBytes = Uint8List(33)
+        ..[0] = 0x00
+        ..setRange(1, 33, suiKeyPair.key);
+
+      // Convert to 5-bit words for bech32 encoding
+      final words = _convertBits(suiPrivBytes, 8, 5, true);
+
+      // Encode as bech32 string with prefix suiprivkey
+      final bech32PrivKey = Bech32('suiprivkey', words);
+      final privateKey = bech32.encode(bech32PrivKey);
+
+      final publicKey = await suiService.suiClient.getPublicKeyFromKeyPair(
+        keyPair: privateKey,
+      );
+      final address = await suiService.suiClient.getAddressFromPublicKey(
+        publicKey: publicKey,
+      );
+
+      return ChainKey(
+        chains: chainIds,
+        privateKey: privateKey,
+        publicKey: publicKey,
+        address: address,
+        namespace: 'sui',
+      );
+    } catch (e, s) {
+      debugPrint('[$runtimeType] _suiChainKey error: $e');
+      debugPrint('[$runtimeType] _suiChainKey error: $s');
       return null;
     }
   }

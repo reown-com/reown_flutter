@@ -1,5 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import 'package:reown_yttrium/channels/chain_abstraction_channel.dart';
+import 'package:reown_yttrium/channels/stacks_channel.dart';
+import 'package:reown_yttrium/channels/sui_channel.dart';
 import 'package:reown_yttrium/channels/ton_channel.dart';
 
 import 'reown_yttrium_method_channel.dart';
@@ -26,6 +28,7 @@ abstract class ReownYttriumPlatform extends PlatformInterface {
   }
 
   abstract final MethodChannelChainAbstraction chainAbstractionChannel;
-
   abstract final MethodChannelTon tonChannel;
+  abstract final MethodChannelStacks stacksChannel;
+  abstract final MethodChannelSui suiChannel;
 }

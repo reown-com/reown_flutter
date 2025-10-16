@@ -17,7 +17,6 @@ import 'package:reown_yttrium/models/ton.dart';
 class TonService {
   late final ReownWalletKit _walletKit;
   late final TonClient _tonClient;
-
   final ChainMetadata chainSupported;
 
   Map<String, dynamic Function(String, dynamic)> get tonRequestHandlers => {

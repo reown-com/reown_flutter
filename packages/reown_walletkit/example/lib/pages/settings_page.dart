@@ -367,12 +367,22 @@ class _EVMAccountsState extends State<_EVMAccounts> {
   @override
   Widget build(BuildContext context) {
     final chainKeys = _keysService.getKeysForChain('eip155');
+    final chainData = ChainsDataList.allChains.firstWhere(
+      (e) => e.chainId == chainKeys.first.chains.first,
+    );
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Row(
             children: [
+              CachedNetworkImage(
+                imageUrl: chainData.logo,
+                width: 20.0,
+                height: 20.0,
+                errorWidget: (context, url, error) => const SizedBox.shrink(),
+              ),
+              SizedBox.square(dimension: 8.0),
               Expanded(
                 child: Text(
                   'EVM Accounts (${_currentPage + 1}/${chainKeys.length})',
@@ -642,14 +652,24 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
     final keysService = GetIt.I<IKeyService>();
     final chainKeys = keysService.getKeysForChain('solana');
     if (chainKeys.isEmpty) return const SizedBox.shrink();
+    final chainData = ChainsDataList.allChains.firstWhere(
+      (e) => e.chainId == chainKeys.first.chains.first,
+    );
     return Column(
       children: [
         const SizedBox(height: 20.0),
         const Divider(height: 1.0, color: Colors.grey),
-        const Padding(
+        Padding(
           padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 12.0),
           child: Row(
             children: [
+              CachedNetworkImage(
+                imageUrl: chainData.logo,
+                width: 20.0,
+                height: 20.0,
+                errorWidget: (context, url, error) => const SizedBox.shrink(),
+              ),
+              SizedBox.square(dimension: 8.0),
               Expanded(
                 child: Text(
                   'solana Accounts',
@@ -767,6 +787,9 @@ class _ChainKeyView extends StatelessWidget {
     final keysService = GetIt.I<IKeyService>();
     final chainKeys = keysService.getKeysForChain(chain);
     if (chainKeys.isEmpty) return const SizedBox.shrink();
+    final chainData = ChainsDataList.allChains.firstWhere(
+      (e) => e.chainId == chainKeys.first.chains.first,
+    );
     return Column(
       children: [
         const SizedBox(height: 20.0),
@@ -775,6 +798,12 @@ class _ChainKeyView extends StatelessWidget {
           padding: EdgeInsets.all(12.0),
           child: Row(
             children: [
+              CachedNetworkImage(
+                imageUrl: chainData.logo,
+                width: 20.0,
+                height: 20.0,
+                errorWidget: (context, url, error) => const SizedBox.shrink(),
+              ),
               SizedBox.square(dimension: 8.0),
               Expanded(
                 child: Text(

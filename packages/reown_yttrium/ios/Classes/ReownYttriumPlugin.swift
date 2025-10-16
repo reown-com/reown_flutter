@@ -22,6 +22,32 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
             //            ChainAbstraction.prepareDetailed(call.arguments ?? {}, result: result)
             //        case "ca_execute":
             //            ChainAbstraction.execute(call.arguments ?? {}, result: result)
+            // === STACKS METHODS ===
+        case "stx_init":
+            Stacks.initialize(call.arguments ?? {}, result: result)
+        case "stx_generateWallet":
+            Stacks.generateWallet(result: result)
+        case "stx_getAddress":
+            Stacks.getAddress(call.arguments ?? {}, result: result)
+        case "stx_signMessage":
+            Stacks.signMessage(call.arguments ?? {}, result: result)
+        case "stx_transferStx":
+            Stacks.transferStx(call.arguments ?? {}, result: result)
+            // === SUI METHODS ===
+        case "sui_init":
+            Sui.initialize(call.arguments ?? {}, result: result)
+        case "sui_generateKeyPair":
+            Sui.generateKeyPair(result: result)
+        case "sui_getPublicKeyFromKeyPair":
+            Sui.getPublicKeyFromKeyPair(call.arguments ?? {}, result: result)
+        case "sui_getAddressFromPublicKey":
+            Sui.getAddressFromPublicKey(call.arguments ?? {}, result: result)
+        case "sui_personalSign":
+            Sui.personalSign(call.arguments ?? {}, result: result)
+        case "sui_signTransaction":
+            Sui.signTransaction(call.arguments ?? {}, result: result)
+        case "sui_signAndExecuteTransaction":
+            Sui.signAndExecuteTransaction(call.arguments ?? {}, result: result)
             // === TON METHODS ===
         case "ton_init":
             Ton.initialize(call.arguments ?? {}, result: result)
@@ -46,4 +72,3 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
         }
     }
 }
-
