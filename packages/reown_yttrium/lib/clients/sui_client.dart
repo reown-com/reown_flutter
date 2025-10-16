@@ -6,59 +6,73 @@ class SuiClient {
 
   Future<bool> init({
     required String projectId,
+    required String networkId,
     required PulseMetadataCompat pulseMetadata,
   }) async {
     return await _methodChannel.suiChannel.init(
       projectId: projectId,
+      networkId: networkId,
       pulseMetadata: pulseMetadata,
     );
   }
 
-  Future<String> generateKeyPair() async {
-    return await _methodChannel.suiChannel.generateKeyPair();
-  }
-
-  Future<String> getAddressFromPublicKey({required String publicKey}) async {
-    return await _methodChannel.suiChannel.getAddressFromPublicKey(
-      publicKey: publicKey,
+  Future<String> generateKeyPair({required String networkId}) async {
+    return await _methodChannel.suiChannel.generateKeyPair(
+      networkId: networkId,
     );
   }
 
-  Future<String> getPublicKeyFromKeyPair({required String keyPair}) async {
+  Future<String> getAddressFromPublicKey({
+    required String publicKey,
+    required String networkId,
+  }) async {
+    return await _methodChannel.suiChannel.getAddressFromPublicKey(
+      publicKey: publicKey,
+      networkId: networkId,
+    );
+  }
+
+  Future<String> getPublicKeyFromKeyPair({
+    required String keyPair,
+    required String networkId,
+  }) async {
     return await _methodChannel.suiChannel.getPublicKeyFromKeyPair(
       keyPair: keyPair,
+      networkId: networkId,
     );
   }
 
   Future<String> personalSign({
     required String keyPair,
     required String message,
+    required String networkId,
   }) async {
     return await _methodChannel.suiChannel.personalSign(
       keyPair: keyPair,
       message: message,
+      networkId: networkId,
     );
   }
 
   Future<String> signAndExecuteTransaction({
-    required String chainId,
+    required String networkId,
     required String keyPair,
     required String txData,
   }) async {
     return await _methodChannel.suiChannel.signAndExecuteTransaction(
-      chainId: chainId,
+      networkId: networkId,
       keyPair: keyPair,
       txData: txData,
     );
   }
 
   Future<(String, String)> signTransaction({
-    required String chainId,
+    required String networkId,
     required String keyPair,
     required String txData,
   }) async {
     return await _methodChannel.suiChannel.signTransaction(
-      chainId: chainId,
+      networkId: networkId,
       keyPair: keyPair,
       txData: txData,
     );

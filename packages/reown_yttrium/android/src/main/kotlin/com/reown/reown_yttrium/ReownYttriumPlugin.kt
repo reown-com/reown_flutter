@@ -29,7 +29,7 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
       "ca_execute" -> ChainAbstraction.execute(call.arguments, result)
       // === STACKS METHODS ===
       "stx_init" -> Stacks.init(applicationContext, call.arguments, result)
-      "stx_generateWallet" -> Stacks.generateWallet(result)
+      "stx_generateWallet" -> Stacks.generateWallet(call.arguments, result)
       "stx_getAddress" -> Stacks.getAddress(call.arguments, result)
       "stx_signMessage" -> Stacks.signMessage(call.arguments, result)
       "stx_transferStx" -> Stacks.transferStx(call.arguments, result)
@@ -37,14 +37,16 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
       "stx_transferFeeRate" -> Stacks.transferFeeRate(call.arguments, result)
       // "stx_estimateFees" -> Stacks.estimateFees(call.arguments, result)
       // "stx_getNonce" -> Stacks.getNonce(call.arguments, result)
+      "stx_dispose" -> Stacks.dispose(call.arguments, result)
       // === SUI METHODS ===
       "sui_init" -> Sui.init(applicationContext, call.arguments, result)
-      "sui_generateKeyPair" -> Sui.generateKeyPair(result)
+      "sui_generateKeyPair" -> Sui.generateKeyPair(call.arguments, result)
       "sui_getPublicKeyFromKeyPair" -> Sui.getPublicKeyFromKeyPair(call.arguments, result)
       "sui_getAddressFromPublicKey" -> Sui.getAddressFromPublicKey(call.arguments, result)
       "sui_personalSign" -> Sui.personalSign(call.arguments, result)
       "sui_signTransaction" -> Sui.signTransaction(call.arguments, result)
       "sui_signAndExecuteTransaction" -> Sui.signAndExecuteTransaction(call.arguments, result)
+      "sui_dispose" -> Sui.dispose(call.arguments, result)
       // === TON METHODS ===
       "ton_init" -> Ton.init(applicationContext, call.arguments, result)
       "ton_generateKeypair" -> Ton.generateKeypair(call.arguments, result)

@@ -6,14 +6,16 @@ import 'package:reown_yttrium/reown_yttrium.dart';
 
 class SuiClient {
   final String projectId;
+  final String networkId;
 
-  SuiClient({required this.projectId});
+  SuiClient({required this.projectId, required this.networkId});
 
   Future<void> init() async {
     try {
       final packageName = await ReownCoreUtils.getPackageName();
       await ReownYttrium.suiClient.init(
         projectId: projectId,
+        networkId: networkId,
         pulseMetadata: PulseMetadataCompat(
           sdkVersion: wk.packageVersion,
           sdkPlatform: ReownCoreUtils.getId(),
@@ -26,51 +28,63 @@ class SuiClient {
     }
   }
 
-  Future<String> generateKeyPair() async {
-    return await ReownYttrium.suiClient.generateKeyPair();
-  }
-
-  Future<String> getAddressFromPublicKey({required String publicKey}) async {
-    return await ReownYttrium.suiClient.getAddressFromPublicKey(
-      publicKey: publicKey,
+  Future<String> generateKeyPair({required String networkId}) async {
+    return await ReownYttrium.suiClient.generateKeyPair(
+      networkId: networkId,
     );
   }
 
-  Future<String> getPublicKeyFromKeyPair({required String keyPair}) async {
+  Future<String> getAddressFromPublicKey({
+    required String publicKey,
+    required String networkId,
+  }) async {
+    return await ReownYttrium.suiClient.getAddressFromPublicKey(
+      publicKey: publicKey,
+      networkId: networkId,
+    );
+  }
+
+  Future<String> getPublicKeyFromKeyPair({
+    required String keyPair,
+    required String networkId,
+  }) async {
     return await ReownYttrium.suiClient.getPublicKeyFromKeyPair(
       keyPair: keyPair,
+      networkId: networkId,
     );
   }
 
   Future<String> personalSign({
     required String keyPair,
     required String message,
+    required String networkId,
   }) async {
     return await ReownYttrium.suiClient.personalSign(
       keyPair: keyPair,
       message: message,
+      networkId: networkId,
     );
   }
 
   Future<String> signAndExecuteTransaction({
-    required String chainId,
+    required String networkId,
     required String keyPair,
     required String txData,
   }) async {
     return await ReownYttrium.suiClient.signAndExecuteTransaction(
-      chainId: chainId,
+      networkId: networkId,
       keyPair: keyPair,
       txData: txData,
     );
   }
 
   Future<(String, String)> signTransaction({
-    required String chainId,
+    required String networkId,
     required String keyPair,
     required String txData,
   }) async {
     return await ReownYttrium.suiClient.signTransaction(
-      chainId: chainId,
+      networkId: networkId,
       keyPair: keyPair,
       txData: txData,
     );

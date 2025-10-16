@@ -14,7 +14,7 @@ import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
 
 class SUIService {
   late final ReownWalletKit _walletKit;
-  late final SuiClient suiClient;
+  late final SuiClient _suiClient;
   final ChainMetadata chainSupported;
 
   Map<String, dynamic Function(String, dynamic)> get suiRequestHandlers => {
@@ -25,8 +25,9 @@ class SUIService {
 
   SUIService({required this.chainSupported}) {
     _walletKit = GetIt.I<IWalletKitService>().walletKit;
-    suiClient = SuiClient(
+    _suiClient = SuiClient(
       projectId: _walletKit.core.projectId,
+      networkId: chainSupported.chainId,
     );
 
     for (var handler in suiRequestHandlers.entries) {
@@ -42,11 +43,37 @@ class SUIService {
 
   Future<void> init() async {
     try {
-      await suiClient.init();
-      debugPrint('[$runtimeType] suiClient initialized');
+      await _suiClient.init();
+      debugPrint('[$runtimeType] _suiClient initialized');
     } catch (e) {
-      debugPrint('❌ [$runtimeType] suiClient init error, $e');
+      debugPrint('❌ [$runtimeType] _suiClient init error, $e');
     }
+  }
+
+  Future<String> generateKeyPair({required String networkId}) async {
+    return await _suiClient.generateKeyPair(
+      networkId: networkId,
+    );
+  }
+
+  Future<String> getAddressFromPublicKey({
+    required String publicKey,
+    required String networkId,
+  }) async {
+    return await _suiClient.getAddressFromPublicKey(
+      publicKey: publicKey,
+      networkId: networkId,
+    );
+  }
+
+  Future<String> getPublicKeyFromKeyPair({
+    required String keyPair,
+    required String networkId,
+  }) async {
+    return await _suiClient.getPublicKeyFromKeyPair(
+      keyPair: keyPair,
+      networkId: networkId,
+    );
   }
 
   Future<void> suiSignPersonalMessage(String topic, dynamic parameters) async {
@@ -75,9 +102,10 @@ class SUIService {
         );
         final suiPrivateKey = keys[0].privateKey;
 
-        final signature = await suiClient.personalSign(
+        final signature = await _suiClient.personalSign(
           keyPair: suiPrivateKey,
           message: message,
+          networkId: chainSupported.chainId,
         );
 
         // TODO Check response format
@@ -139,9 +167,9 @@ class SUIService {
         );
         final suiPrivateKey = keys[0].privateKey;
 
-        final result = await suiClient.signTransaction(
+        final result = await _suiClient.signTransaction(
           keyPair: suiPrivateKey,
-          chainId: chainSupported.chainId,
+          networkId: chainSupported.chainId,
           txData: transaction,
         );
 
@@ -217,9 +245,9 @@ class SUIService {
         );
         final suiPrivateKey = keys[0].privateKey;
 
-        final digest = await suiClient.signAndExecuteTransaction(
+        final digest = await _suiClient.signAndExecuteTransaction(
           keyPair: suiPrivateKey,
-          chainId: chainSupported.chainId,
+          networkId: chainSupported.chainId,
           txData: transaction,
         );
 

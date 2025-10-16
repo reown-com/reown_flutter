@@ -26,7 +26,7 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
         case "stx_init":
             Stacks.initialize(call.arguments ?? {}, result: result)
         case "stx_generateWallet":
-            Stacks.generateWallet(result: result)
+            Stacks.generateWallet(call.arguments ?? {}, result: result)
         case "stx_getAddress":
             Stacks.getAddress(call.arguments ?? {}, result: result)
         case "stx_signMessage":
@@ -37,7 +37,7 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
         case "sui_init":
             Sui.initialize(call.arguments ?? {}, result: result)
         case "sui_generateKeyPair":
-            Sui.generateKeyPair(result: result)
+            Sui.generateKeyPair(call.arguments ?? {}, result: result)
         case "sui_getPublicKeyFromKeyPair":
             Sui.getPublicKeyFromKeyPair(call.arguments ?? {}, result: result)
         case "sui_getAddressFromPublicKey":

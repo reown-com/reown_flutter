@@ -14,7 +14,7 @@ import 'package:reown_yttrium/reown_yttrium.dart';
 
 class StacksService {
   late final ReownWalletKit _walletKit;
-  late final StacksClient stacksClient;
+  late final StacksClient _stacksClient;
   final ChainMetadata chainSupported;
 
   Map<String, dynamic Function(String, dynamic)> get stacksRequestHandlers => {
@@ -24,8 +24,9 @@ class StacksService {
 
   StacksService({required this.chainSupported}) {
     _walletKit = GetIt.I<IWalletKitService>().walletKit;
-    stacksClient = StacksClient(
+    _stacksClient = StacksClient(
       projectId: _walletKit.core.projectId,
+      networkId: chainSupported.chainId,
     );
 
     for (var handler in stacksRequestHandlers.entries) {
@@ -41,11 +42,23 @@ class StacksService {
 
   Future<void> init() async {
     try {
-      await stacksClient.init();
-      debugPrint('[$runtimeType] stacksClient initialized');
+      await _stacksClient.init();
+      debugPrint('[$runtimeType] _stacksClient initialized');
     } catch (e) {
-      debugPrint('❌ [$runtimeType] stacksClient init error, $e');
+      debugPrint('❌ [$runtimeType] _stacksClient init error, $e');
     }
+  }
+
+  Future<String> getAddress({
+    required String wallet,
+    required StacksVersion version,
+    required String networkId,
+  }) async {
+    return await _stacksClient.getAddress(
+      wallet: wallet,
+      version: version,
+      networkId: networkId,
+    );
   }
 
   Future<void> stxSignMessage(String topic, dynamic parameters) async {
@@ -61,18 +74,18 @@ class StacksService {
       final message = params['message'].toString();
       final address = params['address'].toString();
 
-      // final feeRate = await _walletKit.stacksClient.transferFees(
+      // final feeRate = await _walletKit._stacksClient.transferFees(
       //   network: chainSupported.chainId,
       // );
       // debugPrint('[SampleWallet] transferFees $feeRate');
 
-      // final account = await _walletKit.stacksClient.getAccount(
+      // final account = await _walletKit._stacksClient.getAccount(
       //   principal: address,
       //   network: chainSupported.chainId,
       // );
       // debugPrint('[SampleWallet] getAccount ${jsonEncode(account.toJson())}');
 
-      // final nonce = await _walletKit.stacksClient.getNonce(
+      // final nonce = await _walletKit._stacksClient.getNonce(
       //   principal: address,
       //   network: chainSupported.chainId,
       // );
@@ -94,9 +107,10 @@ class StacksService {
         }
 
         final privateKey = keys[0].privateKey;
-        final signature = await stacksClient.signMessage(
+        final signature = await _stacksClient.signMessage(
           wallet: privateKey,
           message: message,
+          networkId: chainSupported.chainId,
         );
 
         response = response.copyWith(
@@ -155,9 +169,9 @@ class StacksService {
         );
         final privateKey = keys[0].privateKey;
 
-        final result = await stacksClient.transferStx(
+        final result = await _stacksClient.transferStx(
           wallet: privateKey,
-          network: chainSupported.chainId,
+          networkId: chainSupported.chainId,
           request: TransferStxRequest(
             sender: sender,
             recipient: recipient,

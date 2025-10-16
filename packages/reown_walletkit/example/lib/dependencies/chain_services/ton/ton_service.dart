@@ -136,8 +136,7 @@ class TonService {
     );
 
     try {
-      final params = parameters as List;
-      final paramsMap = params.first as Map<String, dynamic>;
+      final paramsMap = parameters as Map<String, dynamic>;
       final validUntil = paramsMap['valid_until'] as int;
       final address = paramsMap['from'] as String;
       final messages = (paramsMap['messages'] as List)

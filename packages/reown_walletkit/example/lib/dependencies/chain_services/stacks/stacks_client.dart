@@ -6,14 +6,16 @@ import 'package:reown_yttrium/reown_yttrium.dart';
 
 class StacksClient {
   final String projectId;
+  final String networkId;
 
-  StacksClient({required this.projectId});
+  StacksClient({required this.projectId, required this.networkId});
 
   Future<void> init() async {
     try {
       final packageName = await ReownCoreUtils.getPackageName();
       await ReownYttrium.stacksClient.init(
         projectId: projectId,
+        networkId: networkId,
         pulseMetadata: PulseMetadataCompat(
           sdkVersion: wk.packageVersion,
           sdkPlatform: ReownCoreUtils.getId(),
@@ -26,9 +28,11 @@ class StacksClient {
     }
   }
 
-  Future<String> generateWallet() async {
+  Future<String> generateWallet({required String networkId}) async {
     try {
-      return await ReownYttrium.stacksClient.generateWallet();
+      return await ReownYttrium.stacksClient.generateWallet(
+        networkId: networkId,
+      );
     } catch (e) {
       rethrow;
     }
@@ -37,11 +41,13 @@ class StacksClient {
   Future<String> getAddress({
     required String wallet,
     required StacksVersion version,
+    required String networkId,
   }) async {
     try {
       return await ReownYttrium.stacksClient.getAddress(
         wallet: wallet,
         version: version,
+        networkId: networkId,
       );
     } catch (e) {
       rethrow;
@@ -51,11 +57,13 @@ class StacksClient {
   Future<String> signMessage({
     required String wallet,
     required String message,
+    required String networkId,
   }) async {
     try {
       return await ReownYttrium.stacksClient.signMessage(
         wallet: wallet,
         message: message,
+        networkId: networkId,
       );
     } catch (e) {
       rethrow;
@@ -64,13 +72,13 @@ class StacksClient {
 
   Future<TransferStxResponse> transferStx({
     required String wallet,
-    required String network,
+    required String networkId,
     required TransferStxRequest request,
   }) async {
     try {
       return await ReownYttrium.stacksClient.transferStx(
         wallet: wallet,
-        network: network,
+        networkId: networkId,
         request: request,
       );
     } catch (e) {
@@ -80,22 +88,22 @@ class StacksClient {
 
   Future<StacksAccount> getAccount({
     required String principal,
-    required String network,
+    required String networkId,
   }) async {
     try {
       return await ReownYttrium.stacksClient.getAccount(
         principal: principal,
-        network: network,
+        networkId: networkId,
       );
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<BigInt> transferFees({required String network}) async {
+  Future<BigInt> transferFees({required String networkId}) async {
     try {
       return await ReownYttrium.stacksClient.transferFees(
-        network: network,
+        networkId: networkId,
       );
     } catch (e) {
       rethrow;

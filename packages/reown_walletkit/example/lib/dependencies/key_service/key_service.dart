@@ -136,14 +136,14 @@ class KeyService extends IKeyService {
   @override
   Future<void> regenerateStoredWallet() async {
     try {
-      final mnemonic = _prefs.getString('rwkt_mnemonic')!;
+      final mnemonic = getMnemonic();
       await restoreWallet(mnemonicOrPrivate: mnemonic);
     } catch (_) {}
   }
 
   @override
   Future<void> createAddressFromSeed() async {
-    final mnemonic = _prefs.getString('rwkt_mnemonic')!;
+    final mnemonic = getMnemonic();
 
     final chainKeys = getKeysForChain('eip155');
     final index = chainKeys.length;
@@ -175,6 +175,7 @@ class KeyService extends IKeyService {
     // ⚠️ WARNING: SharedPreferences is not the best way to store your keys! This is just for example purposes!
     await _prefs.remove('rwkt_chain_keys');
     await _prefs.remove('rwkt_mnemonic');
+    debugPrint('[$runtimeType] _restoreWalletFromPrivateKey $privateKey');
 
     final ecDomain = ECCurve_secp256k1();
     final bigIntPrivateKey = BigInt.parse(privateKey, radix: 16);
@@ -194,6 +195,7 @@ class KeyService extends IKeyService {
     // ⚠️ WARNING: SharedPreferences is not the best way to store your keys! This is just for example purposes!
     await _prefs.remove('rwkt_chain_keys');
     await _prefs.setString('rwkt_mnemonic', mnemonic);
+    debugPrint('[$runtimeType] _restoreFromMnemonic $mnemonic');
 
     final eip155ChainKey = _evmChainKey(mnemonic);
     final solanaChainKey = await _solanaChainKey(mnemonic);
@@ -553,9 +555,10 @@ class KeyService extends IKeyService {
         chainId: chainIds.first,
       );
       // final privateKey = await walletKit.stacksClient.generateWallet();
-      final address = await stacksService.stacksClient.getAddress(
+      final address = await stacksService.getAddress(
         wallet: mnemonic,
         version: StacksVersion.mainnet_p2pkh,
+        networkId: chainIds.first,
       );
 
       return ChainKey(
@@ -583,9 +586,10 @@ class KeyService extends IKeyService {
         chainId: chainIds.first,
       );
       // final privateKey = await walletKit.stacksClient.generateWallet();
-      final address = await stacksService.stacksClient.getAddress(
+      final address = await stacksService.getAddress(
         wallet: mnemonic,
         version: StacksVersion.testnet_p2pkh,
+        networkId: chainIds.first,
       );
 
       return ChainKey(
@@ -628,11 +632,13 @@ class KeyService extends IKeyService {
       final bech32PrivKey = Bech32('suiprivkey', words);
       final privateKey = bech32.encode(bech32PrivKey);
 
-      final publicKey = await suiService.suiClient.getPublicKeyFromKeyPair(
+      final publicKey = await suiService.getPublicKeyFromKeyPair(
         keyPair: privateKey,
+        networkId: chainIds.first,
       );
-      final address = await suiService.suiClient.getAddressFromPublicKey(
+      final address = await suiService.getAddressFromPublicKey(
         publicKey: publicKey,
+        networkId: chainIds.first,
       );
 
       return ChainKey(

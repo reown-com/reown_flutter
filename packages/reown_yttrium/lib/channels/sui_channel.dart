@@ -9,11 +9,13 @@ class MethodChannelSui {
 
   Future<bool> init({
     required String projectId,
+    required String networkId,
     required PulseMetadataCompat pulseMetadata,
   }) async {
     try {
       final result = await methodChannel.invokeMethod<bool>('sui_init', {
         'projectId': projectId,
+        'networkId': networkId,
         'pulseMetadata': pulseMetadata.toJson(),
       });
       return result!;
@@ -23,10 +25,11 @@ class MethodChannelSui {
     }
   }
 
-  Future<String> generateKeyPair() async {
+  Future<String> generateKeyPair({required String networkId}) async {
     try {
       final result = await methodChannel.invokeMethod<String>(
         'sui_generateKeyPair',
+        {'networkId': networkId},
       );
       return result!;
     } on PlatformException catch (e) {
@@ -35,13 +38,14 @@ class MethodChannelSui {
     }
   }
 
-  Future<String> getPublicKeyFromKeyPair({required String keyPair}) async {
+  Future<String> getPublicKeyFromKeyPair({
+    required String keyPair,
+    required String networkId,
+  }) async {
     try {
       final result = await methodChannel.invokeMethod<String>(
         'sui_getPublicKeyFromKeyPair',
-        {
-          'keyPair': keyPair,
-        },
+        {'keyPair': keyPair, 'networkId': networkId},
       );
       return result!;
     } on PlatformException catch (e) {
@@ -50,13 +54,14 @@ class MethodChannelSui {
     }
   }
 
-  Future<String> getAddressFromPublicKey({required String publicKey}) async {
+  Future<String> getAddressFromPublicKey({
+    required String publicKey,
+    required String networkId,
+  }) async {
     try {
       final result = await methodChannel.invokeMethod<String>(
         'sui_getAddressFromPublicKey',
-        {
-          'publicKey': publicKey,
-        },
+        {'publicKey': publicKey, 'networkId': networkId},
       );
       return result!;
     } on PlatformException catch (e) {
@@ -68,6 +73,7 @@ class MethodChannelSui {
   Future<String> personalSign({
     required String keyPair,
     required String message,
+    required String networkId,
   }) async {
     try {
       final result = await methodChannel.invokeMethod<String>(
@@ -75,6 +81,7 @@ class MethodChannelSui {
         {
           'keyPair': keyPair,
           'message': message, // base64 encoded message
+          'networkId': networkId,
         },
       );
       return result!;
@@ -85,7 +92,7 @@ class MethodChannelSui {
   }
 
   Future<(String, String)> signTransaction({
-    required String chainId,
+    required String networkId,
     required String keyPair,
     required String txData,
   }) async {
@@ -93,7 +100,7 @@ class MethodChannelSui {
       final result = await methodChannel.invokeMethod<dynamic>(
         'sui_signTransaction',
         {
-          'chainId': chainId,
+          'networkId': networkId,
           'keyPair': keyPair,
           'txData': txData, // base64 encoded txData
         },
@@ -109,7 +116,7 @@ class MethodChannelSui {
   }
 
   Future<String> signAndExecuteTransaction({
-    required String chainId,
+    required String networkId,
     required String keyPair,
     required String txData,
   }) async {
@@ -117,7 +124,7 @@ class MethodChannelSui {
       final result = await methodChannel.invokeMethod<String>(
         'sui_signAndExecuteTransaction',
         {
-          'chainId': chainId,
+          'networkId': networkId,
           'keyPair': keyPair,
           'txData': txData, // base64 encoded txData
         },

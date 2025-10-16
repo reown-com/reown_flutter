@@ -7,11 +7,13 @@ class StacksClient {
 
   Future<bool> init({
     required String projectId,
+    required String networkId,
     required PulseMetadataCompat pulseMetadata,
   }) async {
     try {
       return await _methodChannel.stacksChannel.init(
         projectId: projectId,
+        networkId: networkId,
         pulseMetadata: pulseMetadata,
       );
     } catch (e) {
@@ -19,9 +21,11 @@ class StacksClient {
     }
   }
 
-  Future<String> generateWallet() async {
+  Future<String> generateWallet({required String networkId}) async {
     try {
-      return await _methodChannel.stacksChannel.generateWallet();
+      return await _methodChannel.stacksChannel.generateWallet(
+        networkId: networkId,
+      );
     } catch (e) {
       rethrow;
     }
@@ -30,11 +34,13 @@ class StacksClient {
   Future<String> getAddress({
     required String wallet,
     required StacksVersion version,
+    required String networkId,
   }) async {
     try {
       return await _methodChannel.stacksChannel.getAddress(
         wallet: wallet,
         version: version.toString(),
+        networkId: networkId,
       );
     } catch (e) {
       rethrow;
@@ -44,11 +50,13 @@ class StacksClient {
   Future<String> signMessage({
     required String wallet,
     required String message,
+    required String networkId,
   }) async {
     try {
       return await _methodChannel.stacksChannel.signMessage(
         wallet: wallet,
         message: message,
+        networkId: networkId,
       );
     } catch (e) {
       rethrow;
@@ -57,13 +65,13 @@ class StacksClient {
 
   Future<TransferStxResponse> transferStx({
     required String wallet,
-    required String network,
+    required String networkId,
     required TransferStxRequest request,
   }) async {
     try {
       final response = await _methodChannel.stacksChannel.transferStx(
         wallet: wallet,
-        network: network,
+        networkId: networkId,
         request: request.toJson(),
       );
       return TransferStxResponse.fromJson(response);
@@ -74,12 +82,12 @@ class StacksClient {
 
   Future<StacksAccount> getAccount({
     required String principal,
-    required String network,
+    required String networkId,
   }) async {
     try {
       final response = await _methodChannel.stacksChannel.getAccount(
         principal: principal,
-        network: network,
+        networkId: networkId,
       );
       return StacksAccount.fromJson(response);
     } catch (e) {
@@ -87,10 +95,10 @@ class StacksClient {
     }
   }
 
-  Future<BigInt> transferFees({required String network}) async {
+  Future<BigInt> transferFees({required String networkId}) async {
     try {
       final response = await _methodChannel.stacksChannel.transferFees(
-        network: network,
+        networkId: networkId,
       );
       return response;
     } catch (e) {
