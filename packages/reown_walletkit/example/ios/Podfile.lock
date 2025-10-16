@@ -3,6 +3,8 @@ PODS:
   - flutter_secure_storage (6.0.0):
     - Flutter
   - MTBBarcodeScanner (5.0.11)
+  - objective_c (0.0.1):
+    - Flutter
   - qr_bar_code_scanner_dialog (0.0.1):
     - Flutter
   - qr_code_scanner (0.2.0):
@@ -18,6 +20,7 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - objective_c (from `.symlinks/plugins/objective_c/ios`)
   - qr_bar_code_scanner_dialog (from `.symlinks/plugins/qr_bar_code_scanner_dialog/ios`)
   - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
   - reown_yttrium (from `.symlinks/plugins/reown_yttrium/ios`)
@@ -33,6 +36,8 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  objective_c:
+    :path: ".symlinks/plugins/objective_c/ios"
   qr_bar_code_scanner_dialog:
     :path: ".symlinks/plugins/qr_bar_code_scanner_dialog/ios"
   qr_code_scanner:
@@ -44,6 +49,7 @@ SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
+  objective_c: 89e720c30d716b036faf9c9684022048eee1eee2
   qr_bar_code_scanner_dialog: a4cb7ad7201cbf8b888f3e6e58972b611ac43b28
   qr_code_scanner: d77f94ecc9abf96d9b9b8fc04ef13f611e5a147a
   reown_yttrium: ebf4bd803172b957ccac9a2b1ff1fe0a06c1daef

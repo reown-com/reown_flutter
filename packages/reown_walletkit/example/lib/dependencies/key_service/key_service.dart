@@ -123,7 +123,11 @@ class KeyService extends IKeyService {
   }
 
   @override
-  String getMnemonic() => _prefs.getString('rwkt_mnemonic') ?? '';
+  String getMnemonic() {
+    final mnemonic = _prefs.getString('rwkt_mnemonic') ?? '';
+    debugPrint('[$runtimeType] getMnemonic $mnemonic');
+    return mnemonic;
+  }
 
   // ** bip39/bip32 - EIP155 **
 
@@ -137,6 +141,7 @@ class KeyService extends IKeyService {
   Future<void> regenerateStoredWallet() async {
     try {
       final mnemonic = getMnemonic();
+      await clearAll();
       await restoreWallet(mnemonicOrPrivate: mnemonic);
     } catch (_) {}
   }

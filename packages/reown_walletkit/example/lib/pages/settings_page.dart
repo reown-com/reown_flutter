@@ -69,7 +69,6 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<void> _onRegenerateSeed() async {
-    await _keysService.clearAll();
     await _keysService.regenerateStoredWallet();
     await _keysService.loadKeys();
     await showDialog(
