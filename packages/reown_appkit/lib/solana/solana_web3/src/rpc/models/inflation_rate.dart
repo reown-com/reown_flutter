@@ -44,9 +44,9 @@ class InflationRate extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'total': total,
-        'validator': validator,
-        'foundation': foundation,
-        'epoch': epoch,
-      };
+    'total': total,
+    'validator': validator,
+    'foundation': foundation,
+    'epoch': epoch,
+  };
 }

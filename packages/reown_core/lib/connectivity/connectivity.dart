@@ -12,8 +12,8 @@ class ConnectivityState implements IConnectivity {
   ConnectivityState({
     required IReownCore core,
     required Connectivity connectivity,
-  })  : _core = core,
-        _connectivity = connectivity;
+  }) : _core = core,
+       _connectivity = connectivity;
 
   late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
 

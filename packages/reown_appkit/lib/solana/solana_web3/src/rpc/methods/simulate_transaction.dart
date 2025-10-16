@@ -17,14 +17,12 @@ class SimulateTransaction
     final String signedTransaction, {
     final SimulateTransactionConfig? config,
   }) : super(
-          'simulateTransaction',
-          values: [signedTransaction],
-          config: config ?? SimulateTransactionConfig(),
-        );
+         'simulateTransaction',
+         values: [signedTransaction],
+         config: config ?? SimulateTransactionConfig(),
+       );
 
   @override
-  TransactionStatus valueDecoder(
-    final Map<String, dynamic> value,
-  ) =>
+  TransactionStatus valueDecoder(final Map<String, dynamic> value) =>
       TransactionStatus.fromJson(value);
 }

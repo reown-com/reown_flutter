@@ -55,7 +55,7 @@ class SIWEConfig {
 }
 
 @freezed
-class SIWECreateMessageArgs with _$SIWECreateMessageArgs {
+sealed class SIWECreateMessageArgs with _$SIWECreateMessageArgs {
   const factory SIWECreateMessageArgs({
     required String chainId,
     required String domain,
@@ -86,7 +86,8 @@ class SIWECreateMessageArgs with _$SIWECreateMessageArgs {
       nonce: nonce,
       address: address,
       version: '1',
-      iat: params.iat ??
+      iat:
+          params.iat ??
           DateTime.utc(
             now.year,
             now.month,
@@ -113,7 +114,7 @@ class SIWECreateMessageArgs with _$SIWECreateMessageArgs {
 }
 
 @freezed
-class SIWEMessageArgs with _$SIWEMessageArgs {
+sealed class SIWEMessageArgs with _$SIWEMessageArgs {
   const factory SIWEMessageArgs({
     required String domain,
     required String uri,
@@ -133,7 +134,7 @@ class SIWEMessageArgs with _$SIWEMessageArgs {
 }
 
 @freezed
-class SIWEVerifyMessageArgs with _$SIWEVerifyMessageArgs {
+sealed class SIWEVerifyMessageArgs with _$SIWEVerifyMessageArgs {
   const factory SIWEVerifyMessageArgs({
     required String message,
     required String signature,
@@ -146,7 +147,7 @@ class SIWEVerifyMessageArgs with _$SIWEVerifyMessageArgs {
 }
 
 @freezed
-class SIWESession with _$SIWESession {
+sealed class SIWESession with _$SIWESession {
   const factory SIWESession({
     required String address,
     required List<String> chains,

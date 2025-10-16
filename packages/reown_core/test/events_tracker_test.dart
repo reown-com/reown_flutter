@@ -34,8 +34,8 @@ void main() {
     'properties': {
       'correlation_id': 1,
       'direction': 'sent',
-      'method': 'wc_sessionAuthenticate'
-    }
+      'method': 'wc_sessionAuthenticate',
+    },
   });
   final event2 = jsonEncode({
     'eventId': 2,
@@ -43,8 +43,8 @@ void main() {
     'properties': {
       'correlation_id': 1,
       'direction': 'received',
-      'method': 'wc_sessionAuthenticate'
-    }
+      'method': 'wc_sessionAuthenticate',
+    },
   });
   final event3 = jsonEncode({
     'eventId': 3,
@@ -52,8 +52,8 @@ void main() {
     'properties': {
       'correlation_id': 2,
       'direction': 'sent',
-      'method': 'wc_sessionRequest'
-    }
+      'method': 'wc_sessionRequest',
+    },
   });
   final event4 = jsonEncode({
     'eventId': 4,
@@ -61,8 +61,8 @@ void main() {
     'properties': {
       'correlation_id': 2,
       'direction': 'received',
-      'method': 'wc_sessionRequest'
-    }
+      'method': 'wc_sessionRequest',
+    },
   });
 
   setUp(() async {
@@ -103,16 +103,18 @@ void main() {
         final result = await eventsTracker.storeEvent(event);
 
         expect(result, true);
-        verify(mockStore.set('eventsStore', {
-          'eventsStore': [event]
-        })).called(1);
+        verify(
+          mockStore.set('eventsStore', {
+            'eventsStore': [event],
+          }),
+        ).called(1);
       });
 
       test('should not store duplicate event', () async {
         final event = '{"eventId": 1, "type": "test"}';
         when(mockStore.has('eventsStore')).thenReturn(true);
         when(mockStore.get('eventsStore')).thenReturn({
-          'eventsStore': [event]
+          'eventsStore': [event],
         });
 
         final result = await eventsTracker.storeEvent(event);
@@ -155,8 +157,9 @@ void main() {
       });
 
       test('should handle storage error', () {
-        when(mockStore.has('eventsStore'))
-            .thenThrow(Exception('Storage error'));
+        when(
+          mockStore.has('eventsStore'),
+        ).thenThrow(Exception('Storage error'));
 
         final result = eventsTracker.getStoredEvents();
 
@@ -179,7 +182,7 @@ void main() {
 
         // Store all events
         await realStore.set('eventsStore', {
-          'eventsStore': [event1, event2, event3, event4]
+          'eventsStore': [event1, event2, event3, event4],
         });
 
         // Clear specific events
@@ -203,22 +206,24 @@ void main() {
         final eventsToClear = [event2, event3, event4];
         when(mockStore.has('eventsStore')).thenReturn(true);
         when(mockStore.get('eventsStore')).thenReturn({
-          'eventsStore': [...eventsToClear, event1]
+          'eventsStore': [...eventsToClear, event1],
         });
 
         final result = await eventsTracker.clearEvents(eventsToClear);
 
         expect(result, true);
-        verify(mockStore.set('eventsStore', {
-          'eventsStore': [event1]
-        })).called(1);
+        verify(
+          mockStore.set('eventsStore', {
+            'eventsStore': [event1],
+          }),
+        ).called(1);
       });
 
       test('should handle storage error', () async {
         final eventsToClear = ['{"eventId": 1}'];
-        when(mockStore.has('eventsStore')).thenThrow(
-          Exception('Storage error'),
-        );
+        when(
+          mockStore.has('eventsStore'),
+        ).thenThrow(Exception('Storage error'));
 
         final result = await eventsTracker.clearEvents(eventsToClear);
         expect(result, false);
@@ -236,9 +241,9 @@ void main() {
       });
 
       test('should handle storage error', () async {
-        when(mockStore.delete('eventsStore')).thenThrow(
-          Exception('Storage error'),
-        );
+        when(
+          mockStore.delete('eventsStore'),
+        ).thenThrow(Exception('Storage error'));
 
         final result = await eventsTracker.clearAll();
         expect(result, false);
@@ -304,9 +309,7 @@ void main() {
       expect(storedEvents, hasLength(2));
 
       // Clear specific event
-      final result = await eventsTracker.clearEvents([
-        storedEvents.first,
-      ]);
+      final result = await eventsTracker.clearEvents([storedEvents.first]);
       expect(result, true);
 
       // Verify only one event remains

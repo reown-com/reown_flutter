@@ -21,7 +21,7 @@ import '../../transactions/transaction_instruction.dart';
 class StakePoolProgram extends Program {
   /// Stake pool program.
   StakePoolProgram._()
-      : super(Pubkey.fromBase58('SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy'));
+    : super(Pubkey.fromBase58('SPoo1Ku8WFXoNDMHPsrGSTSG1Y47rzgn41SLUNakuHy'));
 
   /// Internal singleton instance.
   static final StakePoolProgram _instance = StakePoolProgram._();
@@ -52,26 +52,20 @@ class StakePoolProgram extends Program {
   static ProgramAddress findDepositAuthorityProgramAddress(
     final Pubkey stakePoolAddress,
   ) {
-    return Pubkey.findProgramAddress(
-      [
-        stakePoolAddress.toBytes(),
-        utf8.encode(depositAuthoritySeed),
-      ],
-      StakePoolProgram.programId,
-    );
+    return Pubkey.findProgramAddress([
+      stakePoolAddress.toBytes(),
+      utf8.encode(depositAuthoritySeed),
+    ], StakePoolProgram.programId);
   }
 
   /// Find the withdraw authority account address of the given [stakePoolAddress].
   static ProgramAddress findWithdrawAuthorityProgramAddress(
     final Pubkey stakePoolAddress,
   ) {
-    return Pubkey.findProgramAddress(
-      [
-        stakePoolAddress.toBytes(),
-        utf8.encode(withdrawAuthoritySeed),
-      ],
-      StakePoolProgram.programId,
-    );
+    return Pubkey.findProgramAddress([
+      stakePoolAddress.toBytes(),
+      utf8.encode(withdrawAuthoritySeed),
+    ], StakePoolProgram.programId);
   }
 
   /// Find the stake account address of the given validator [voteAccountAddress] and
@@ -81,14 +75,11 @@ class StakePoolProgram extends Program {
     final Pubkey stakePoolAddress, [
     final bu64? seed,
   ]) {
-    return Pubkey.findProgramAddress(
-      [
-        voteAccountAddress.toBytes(),
-        stakePoolAddress.toBytes(),
-        if (seed != null) seed.toUint8List(8),
-      ],
-      StakePoolProgram.programId,
-    );
+    return Pubkey.findProgramAddress([
+      voteAccountAddress.toBytes(),
+      stakePoolAddress.toBytes(),
+      if (seed != null) seed.toUint8List(8),
+    ], StakePoolProgram.programId);
   }
 
   /// Find the transient stake account address of the given validator [voteAccountAddress],
@@ -98,15 +89,12 @@ class StakePoolProgram extends Program {
     final Pubkey stakePoolAddress,
     final bu64 seed,
   ) {
-    return Pubkey.findProgramAddress(
-      [
-        utf8.encode(transientStakeSeedPrefix),
-        voteAccountAddress.toBytes(),
-        stakePoolAddress.toBytes(),
-        seed.toUint8List(8),
-      ],
-      StakePoolProgram.programId,
-    );
+    return Pubkey.findProgramAddress([
+      utf8.encode(transientStakeSeedPrefix),
+      voteAccountAddress.toBytes(),
+      stakePoolAddress.toBytes(),
+      seed.toUint8List(8),
+    ], StakePoolProgram.programId);
   }
 
   /// Find the ephemeral stake account address of [stakePoolAddress] and [seed] (u64).
@@ -114,14 +102,11 @@ class StakePoolProgram extends Program {
     final Pubkey stakePoolAddress,
     final bu64 seed,
   ) {
-    return Pubkey.findProgramAddress(
-      [
-        utf8.encode(ephemeralStakeSeedPrefix),
-        stakePoolAddress.toBytes(),
-        seed.toUint8List(8),
-      ],
-      StakePoolProgram.programId,
-    );
+    return Pubkey.findProgramAddress([
+      utf8.encode(ephemeralStakeSeedPrefix),
+      stakePoolAddress.toBytes(),
+      seed.toUint8List(8),
+    ], StakePoolProgram.programId);
   }
 
   /// Initializes a new [StakePool].
@@ -181,8 +166,10 @@ class StakePoolProgram extends Program {
       AccountMeta.writable(stakePoolAddress),
       AccountMeta.signer(manager),
       AccountMeta(staker),
-      AccountMeta(withdrawAuthority ??
-          findWithdrawAuthorityProgramAddress(stakePoolAddress).pubkey),
+      AccountMeta(
+        withdrawAuthority ??
+            findWithdrawAuthorityProgramAddress(stakePoolAddress).pubkey,
+      ),
       AccountMeta.writable(validatorList),
       AccountMeta(reserveStake),
       AccountMeta(poolMint),
@@ -266,9 +253,7 @@ class StakePoolProgram extends Program {
       AccountMeta(StakeProgram.programId),
     ];
 
-    final List<Iterable<int>> data = [
-      borsh.u32.option().encode(seed),
-    ];
+    final List<Iterable<int>> data = [borsh.u32.option().encode(seed)];
 
     return _instance.createTransactionIntruction(
       StakePoolInstruction.addValidatorToPool,
@@ -796,9 +781,7 @@ class StakePoolProgram extends Program {
       AccountMeta(StakeProgram.programId),
     ];
 
-    final List<Iterable<int>> data = [
-      borsh.u64.encode(lamports),
-    ];
+    final List<Iterable<int>> data = [borsh.u64.encode(lamports)];
 
     return _instance.createTransactionIntruction(
       StakePoolInstruction.withdrawStake,
@@ -863,9 +846,7 @@ class StakePoolProgram extends Program {
       FeeType.codecs,
     );
 
-    final List<Iterable<int>> data = [
-      feeTypeCode.encode(fee),
-    ];
+    final List<Iterable<int>> data = [feeTypeCode.encode(fee)];
 
     return _instance.createTransactionIntruction(
       StakePoolInstruction.setFee,
@@ -955,9 +936,7 @@ class StakePoolProgram extends Program {
       if (depositAuthority != null) AccountMeta.signer(depositAuthority),
     ];
 
-    final List<Iterable<int>> data = [
-      borsh.u64.encode(lamports),
-    ];
+    final List<Iterable<int>> data = [borsh.u64.encode(lamports)];
 
     return _instance.createTransactionIntruction(
       StakePoolInstruction.depositSol,
@@ -1055,12 +1034,11 @@ class StakePoolProgram extends Program {
       AccountMeta(sysvarStakeHistoryPubkey),
       AccountMeta(StakeProgram.programId),
       AccountMeta(TokenProgram.programId),
-      if (solWithdrawAuthority != null) AccountMeta.signer(solWithdrawAuthority)
+      if (solWithdrawAuthority != null)
+        AccountMeta.signer(solWithdrawAuthority),
     ];
 
-    final List<Iterable<int>> data = [
-      borsh.u64.encode(lamports),
-    ];
+    final List<Iterable<int>> data = [borsh.u64.encode(lamports)];
 
     return _instance.createTransactionIntruction(
       StakePoolInstruction.withdrawSol,

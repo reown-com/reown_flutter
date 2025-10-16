@@ -9,8 +9,8 @@ typedef JsonRpcNotificationDecoder<T> = T Function(Map<String, dynamic> result);
 typedef WebsocketOnDataHandler<T> = void Function(T data);
 
 /// The websocket error handler.
-typedef WebsocketOnErrorHandler = void Function(Object error,
-    [StackTrace? stackTrace]);
+typedef WebsocketOnErrorHandler =
+    void Function(Object error, [StackTrace? stackTrace]);
 
 /// The websocket done handler.
 typedef WebsocketOnDoneHandler = void Function();

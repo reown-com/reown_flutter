@@ -54,11 +54,7 @@ class NamespaceUtils {
   static List<String> getChainsFromAccounts(List<String> accounts) {
     Set<String> chains = {};
     for (var account in accounts) {
-      chains.add(
-        getChainFromAccount(
-          account,
-        ),
-      );
+      chains.add(getChainFromAccount(account));
     }
 
     return chains.toList();
@@ -83,21 +79,11 @@ class NamespaceUtils {
       final ns = account.split(':')[0];
       final cid = account.split(':')[1];
       if (namespaces[ns] == null) {
-        namespaces[ns] = const Namespace(
-          accounts: [],
-          methods: [],
-          events: [],
-        );
+        namespaces[ns] = const Namespace(accounts: [], methods: [], events: []);
       }
       namespaces[ns] = namespaces[ns]!.copyWith(
-        accounts: [
-          ...namespaces[ns]!.accounts,
-          account,
-        ],
-        chains: [
-          ...(namespaces[ns]?.chains ?? []),
-          '$ns:$cid',
-        ],
+        accounts: [...namespaces[ns]!.accounts, account],
+        chains: [...(namespaces[ns]?.chains ?? []), '$ns:$cid'],
       );
     }
 
@@ -126,10 +112,7 @@ class NamespaceUtils {
 
     namespaces.forEach((String ns, Namespace namespace) {
       chainIds.addAll(
-        getChainIdsFromNamespace(
-          nsOrChainId: ns,
-          namespace: namespace,
-        ),
+        getChainIdsFromNamespace(nsOrChainId: ns, namespace: namespace),
       );
     });
 
@@ -290,8 +273,9 @@ class NamespaceUtils {
         if (optionalNamespace.chains != null) {
           mergedChains.addAll(optionalNamespace.chains!);
         }
-        final finalChains =
-            mergedChains.isNotEmpty ? mergedChains.toList() : null;
+        final finalChains = mergedChains.isNotEmpty
+            ? mergedChains.toList()
+            : null;
 
         // Merge accounts (remove duplicates)
         final mergedAccounts = <String>{};
@@ -356,8 +340,9 @@ class NamespaceUtils {
         if (existingNamespace.chains != null) {
           mergedChains.addAll(existingNamespace.chains!);
         }
-        final finalChains =
-            mergedChains.isNotEmpty ? mergedChains.toList() : null;
+        final finalChains = mergedChains.isNotEmpty
+            ? mergedChains.toList()
+            : null;
 
         // Merge methods (remove duplicates)
         final mergedMethods = <String>{};

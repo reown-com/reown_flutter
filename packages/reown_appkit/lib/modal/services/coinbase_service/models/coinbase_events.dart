@@ -31,11 +31,7 @@ class CoinbaseSessionEvent implements EventArgs {
   String? chainName;
   String? chainId;
 
-  CoinbaseSessionEvent({
-    this.address,
-    this.chainName,
-    this.chainId,
-  });
+  CoinbaseSessionEvent({this.address, this.chainName, this.chainId});
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> params = {};

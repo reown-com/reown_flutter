@@ -13,16 +13,13 @@ import '../models/inflation_governor.dart';
 class GetInflationGovernor
     extends JsonRpcMethod<Map<String, dynamic>, InflationGovernor> {
   /// Creates a codec for `getInflationGovernor` JSON RPC methods.
-  GetInflationGovernor({
-    final GetInflationGovernorConfig? config,
-  }) : super(
-          'getInflationGovernor',
-          config: config ?? const GetInflationGovernorConfig(),
-        );
+  GetInflationGovernor({final GetInflationGovernorConfig? config})
+    : super(
+        'getInflationGovernor',
+        config: config ?? const GetInflationGovernorConfig(),
+      );
 
   @override
-  InflationGovernor decoder(
-    final Map<String, dynamic> value,
-  ) =>
+  InflationGovernor decoder(final Map<String, dynamic> value) =>
       InflationGovernor.fromJson(value);
 }

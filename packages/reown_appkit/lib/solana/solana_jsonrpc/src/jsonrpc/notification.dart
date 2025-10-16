@@ -11,10 +11,7 @@ import 'package:reown_appkit/solana/solana_common/models.dart'
 /// A JSON RPC notification `params` property.
 class JsonRpcNotification<T> extends Serializable {
   /// Creates a JSON RPC notification `params` object.
-  const JsonRpcNotification({
-    required this.result,
-    required this.subscription,
-  });
+  const JsonRpcNotification({required this.result, required this.subscription});
 
   /// The JSON RPC protocol version.
   final T result;
@@ -31,7 +28,7 @@ class JsonRpcNotification<T> extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'result': result,
-        'subscription': subscription,
-      };
+    'result': result,
+    'subscription': subscription,
+  };
 }

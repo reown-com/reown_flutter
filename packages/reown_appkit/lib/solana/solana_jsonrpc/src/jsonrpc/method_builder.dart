@@ -44,7 +44,7 @@ import 'response.dart';
 class JsonRpcMethodBuilder<S, T> {
   /// An additive method builder.
   JsonRpcMethodBuilder([final List<JsonRpcMethod<S, T>>? methods])
-      : _methods = methods ?? [];
+    : _methods = methods ?? [];
 
   /// The JSON RPC methods.
   final List<JsonRpcMethod<S, T>> _methods;
@@ -57,21 +57,16 @@ class JsonRpcMethodBuilder<S, T> {
 
   /// Creates a batch [JsonRpcRequest] to invoke multiple methods in a single request. The
   /// [commitment] level is applied as the default value to all methods that query bank state.
-  List<JsonRpcRequest> request([
-    final Commitment? commitment,
-  ]) =>
-      [
-        for (final JsonRpcMethod<S, T> method in _methods)
-          method.request(commitment)
-      ];
+  List<JsonRpcRequest> request([final Commitment? commitment]) => [
+    for (final JsonRpcMethod<S, T> method in _methods)
+      method.request(commitment),
+  ];
 
   /// Parses the [json] RPC response and returns the batch result.
-  List<JsonRpcResponse<T>> response(
-    final List<Map<String, dynamic>> json,
-  ) {
+  List<JsonRpcResponse<T>> response(final List<Map<String, dynamic>> json) {
     assert(json.length == _methods.length);
     return [
-      for (int i = 0; i < json.length; ++i) _methods[i].response(json[i])
+      for (int i = 0; i < json.length; ++i) _methods[i].response(json[i]),
     ];
   }
 }

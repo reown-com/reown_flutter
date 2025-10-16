@@ -5,11 +5,8 @@ class CoinbaseServiceException implements Exception {
   final String message;
   final dynamic error;
   final dynamic stackTrace;
-  CoinbaseServiceException(
-    this.message, [
-    this.error,
-    this.stackTrace,
-  ]) : super();
+  CoinbaseServiceException(this.message, [this.error, this.stackTrace])
+    : super();
 }
 
 class CoinbaseWalletNotInstalledException extends CoinbaseServiceException {

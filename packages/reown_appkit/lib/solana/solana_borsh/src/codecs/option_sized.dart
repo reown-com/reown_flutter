@@ -37,7 +37,6 @@ class BorshOptionSizedCodec<T>
 /// An encoder for optional values.
 class BorshOptionSizedEncoder<T>
     extends BorshOptionTypedEncoder<T, BorshCodecFixedSized<T>>
-
 /// Not using [BorshEncoderFixedSized] to prevent `0` padding.
 {
   /// Creates an encoder for optional values.

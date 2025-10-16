@@ -55,18 +55,11 @@ void signExpiration({
         TEST_PROPOSAL_EXPIRED.expiry,
       );
 
-      await clientA.core.expirer.expire(
-        TEST_PROPOSAL_EXPIRED_ID.toString(),
-      );
+      await clientA.core.expirer.expire(TEST_PROPOSAL_EXPIRED_ID.toString());
 
       // await Future.delayed(Duration(milliseconds: 150));
 
-      expect(
-        clientA.proposals.has(
-          TEST_PROPOSAL_EXPIRED_ID.toString(),
-        ),
-        false,
-      );
+      expect(clientA.proposals.has(TEST_PROPOSAL_EXPIRED_ID.toString()), false);
     });
   });
 }

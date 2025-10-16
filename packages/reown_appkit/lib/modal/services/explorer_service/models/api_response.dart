@@ -7,10 +7,8 @@ class ApiResponse<T> {
 
   ApiResponse({required this.count, required this.data});
 
-  ApiResponse<T> copyWith({int? count, List<T>? data}) => ApiResponse<T>(
-        count: count ?? this.count,
-        data: data ?? this.data,
-      );
+  ApiResponse<T> copyWith({int? count, List<T>? data}) =>
+      ApiResponse<T>(count: count ?? this.count, data: data ?? this.data);
 
   factory ApiResponse.fromJson(
     final Map<String, dynamic> json,
@@ -23,17 +21,17 @@ class ApiResponse<T> {
   }
 
   Map<String, dynamic> toJson() => {
-        'count': count,
-        'data': List<T>.from(data.map(
-          (x) {
-            if (T is AppKitModalWalletListing) {
-              return (x as AppKitModalWalletListing).toJson();
-            } else if (T is NativeAppData) {
-              return (x as NativeAppData).toJson();
-            } else {
-              throw Exception('Invalid Type');
-            }
-          },
-        )),
-      };
+    'count': count,
+    'data': List<T>.from(
+      data.map((x) {
+        if (T is AppKitModalWalletListing) {
+          return (x as AppKitModalWalletListing).toJson();
+        } else if (T is NativeAppData) {
+          return (x as NativeAppData).toJson();
+        } else {
+          throw Exception('Invalid Type');
+        }
+      }),
+    ),
+  };
 }

@@ -116,20 +116,20 @@ class RelayClient implements IRelayClient {
   }) async {
     _checkInitialized();
 
-    final Map<String, dynamic> data = {
+    final Map<String, dynamic> parameters = {
       'topic': topic,
       'message': message,
-      ...options.toJson(),
+      ...options.toMap(),
     };
 
-    core.logger.i('[$runtimeType] publish topic: $topic, ${options.toJson()}');
+    core.logger.d('[$runtimeType] publish topic: $topic, $parameters');
 
     try {
       await messageTracker.recordMessageEvent(topic, message);
       final _ = await _sendJsonRpcRequest(
         id: JsonRpcUtils.payloadId(entropy: 6),
         method: _buildIRNMethod(IRN_PUBLISH),
-        parameters: data,
+        parameters: parameters,
       );
     } catch (e, s) {
       core.logger.e('[$runtimeType], publish: $e', stackTrace: s);
@@ -144,26 +144,18 @@ class RelayClient implements IRelayClient {
   }) async {
     _checkInitialized();
 
-    final Map<String, dynamic> parameters = {
-      ...payload,
-      ...options.toJson(),
-    };
+    final Map<String, dynamic> parameters = {...payload, ...options.toMap()};
+    core.logger.d('[$runtimeType] publishPayload, $parameters');
 
     try {
       if (options.publishMethod == RelayClient.WC_PROPOSE_SESSION) {
         final topic = payload['pairingTopic'];
         final message = payload['sessionProposal'];
         await messageTracker.recordMessageEvent(topic, message);
-        core.logger.i(
-          '[$runtimeType] publishPayload, topic: $topic, ${options.toJson()}',
-        );
       } else {
         final topic = payload['sessionTopic'];
         final message = payload['sessionProposalResponse'];
         await messageTracker.recordMessageEvent(topic, message);
-        core.logger.i(
-          '[$runtimeType] publishPayload, topic: $topic, ${options.toJson()}',
-        );
       }
       final _ = await _sendJsonRpcRequest(
         id: JsonRpcUtils.payloadId(entropy: 6),
@@ -177,9 +169,7 @@ class RelayClient implements IRelayClient {
   }
 
   @override
-  Future<String> subscribe({
-    required SubscribeOptions options,
-  }) async {
+  Future<String> subscribe({required SubscribeOptions options}) async {
     _checkInitialized();
 
     final topic = options.topic;
@@ -311,40 +301,29 @@ class RelayClient implements IRelayClient {
     await socketHandler.setup(url: url);
     await socketHandler.connect();
 
-    jsonRPC = Peer(socketHandler.channel!);
+    jsonRPC = Peer(socketHandler.channel!, logCallback: _handleJsonRpcLog);
 
     jsonRPC!.registerMethod(
       _buildIRNMethod(IRN_SUBSCRIPTION),
       _handleSubscription,
     );
-    jsonRPC!.registerMethod(
-      _buildIRNMethod(IRN_SUBSCRIBE),
-      _handleSubscribe,
-    );
+    jsonRPC!.registerMethod(_buildIRNMethod(IRN_SUBSCRIBE), _handleSubscribe);
     jsonRPC!.registerMethod(
       _buildIRNMethod(IRN_UNSUBSCRIBE),
       _handleUnsubscribe,
     );
 
     if (jsonRPC!.isClosed) {
-      throw const ReownCoreError(
-        code: 0,
-        message: 'WebSocket closed',
-      );
+      throw const ReownCoreError(code: 0, message: 'WebSocket closed');
     }
 
     jsonRPC!.listen();
 
     // When jsonRPC closes, emit the event
     _handledClose = false;
-    jsonRPC!.done.then(
-      (value) {
-        _handleRelayClose(
-          socketHandler.closeCode,
-          socketHandler.closeReason,
-        );
-      },
-    );
+    jsonRPC!.done.then((value) {
+      _handleRelayClose(socketHandler.closeCode, socketHandler.closeReason);
+    });
 
     onRelayClientConnect.broadcast();
     core.logger.i('[$runtimeType]: Connected to relay ${core.relayUrl}');
@@ -376,10 +355,7 @@ class RelayClient implements IRelayClient {
             ? reason ?? WebSocketErrors.INVALID_PROJECT_ID_OR_JWT
             : '';
         onRelayClientError.broadcast(
-          ErrorEvent(ReownCoreError(
-            code: code,
-            message: errorReason,
-          )),
+          ErrorEvent(ReownCoreError(code: code, message: errorReason)),
         );
         core.logger.e('[$runtimeType], _handleRelayClose: $core, $errorReason');
       }
@@ -427,6 +403,7 @@ class RelayClient implements IRelayClient {
         topic,
         message,
         DateTime.now().millisecondsSinceEpoch,
+        null,
         TransportType.linkMode,
       ),
     );
@@ -435,7 +412,11 @@ class RelayClient implements IRelayClient {
 
   /// JSON RPC MESSAGE HANDLERS
 
-  Future<bool> handlePublish(String topic, String message) async {
+  Future<bool> handlePublish(
+    String topic,
+    String message, [
+    String? attestation,
+  ]) async {
     core.logger.d('[$runtimeType]: Handling Publish Message: $topic, $message');
     // If we want to ignore the message, stop
     if (await _shouldIgnoreMessageEvent(topic, message)) {
@@ -452,16 +433,42 @@ class RelayClient implements IRelayClient {
         topic,
         message,
         DateTime.now().millisecondsSinceEpoch,
+        attestation,
         TransportType.relay,
       ),
     );
     return true;
   }
 
+  /// Handles JSON-RPC logging from the underlying Peer, Client, and Server classes.
+  /// This centralizes all JSON-RPC logging in the relay client for better control.
+  void _handleJsonRpcLog(
+    String level,
+    String message, [
+    Object? error,
+    StackTrace? stackTrace,
+  ]) {
+    final prefix = '[JSON-RPC]';
+
+    switch (level.toLowerCase()) {
+      case 'debug':
+        core.logger.d('$prefix $message');
+        break;
+      case 'error':
+        core.logger.e('$prefix $message', error: error, stackTrace: stackTrace);
+        break;
+      default:
+        core.logger.i('$prefix $message');
+        break;
+    }
+  }
+
   Future<bool> _handleSubscription(Parameters params) async {
+    core.logger.d('[$runtimeType] _handleSubscription ${params.asMap}');
     String topic = params['data']['topic'].value;
     String message = params['data']['message'].value;
-    return await handlePublish(topic, message);
+    String? attestation = params['data']['attestation'].valueOr(null);
+    return await handlePublish(topic, message, attestation);
   }
 
   int _handleSubscribe(Parameters params) {
@@ -502,11 +509,7 @@ class RelayClient implements IRelayClient {
     else {
       return null;
     }
-    return await jsonRPC!.sendRequest(
-      method,
-      parameters,
-      id,
-    );
+    return await jsonRPC!.sendRequest(method, parameters, id);
   }
 
   Future<String> _onSubscribe(SubscribeOptions options) async {

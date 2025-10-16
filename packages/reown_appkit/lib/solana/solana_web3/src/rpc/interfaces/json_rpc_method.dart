@@ -12,11 +12,8 @@ import 'json_rpc_params_mixin.dart';
 /// A JSON RPC handler for method calls.
 abstract class JsonRpcMethod<S, T> extends jsonrpc.JsonRpcMethod<S, T>
     with JsonRpcParamsMixin {
-  const JsonRpcMethod(
-    super.method, {
-    final List<Object?>? values,
-    this.config,
-  }) : values = values ?? const [];
+  const JsonRpcMethod(super.method, {final List<Object?>? values, this.config})
+    : values = values ?? const [];
 
   @override
   final List<Object?> values;

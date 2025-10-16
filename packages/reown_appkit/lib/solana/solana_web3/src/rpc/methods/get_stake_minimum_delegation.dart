@@ -12,10 +12,9 @@ import '../interfaces/json_rpc_type_context_method.dart';
 /// A codec for `getStakeMinimumDelegation` JSON RPC methods.
 class GetStakeMinimumDelegation extends JsonRpcTypeContextMethod<u64> {
   /// Creates a codec for `getStakeMinimumDelegation` JSON RPC methods.
-  GetStakeMinimumDelegation({
-    final GetStakeMinimumDelegationConfig? config,
-  }) : super(
-          'getStakeMinimumDelegation',
-          config: config ?? const GetStakeMinimumDelegationConfig(),
-        );
+  GetStakeMinimumDelegation({final GetStakeMinimumDelegationConfig? config})
+    : super(
+        'getStakeMinimumDelegation',
+        config: config ?? const GetStakeMinimumDelegationConfig(),
+      );
 }

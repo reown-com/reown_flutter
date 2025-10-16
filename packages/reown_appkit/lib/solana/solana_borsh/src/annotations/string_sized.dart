@@ -17,10 +17,7 @@ import 'annotation_sized.dart';
 /// ```
 class BorshStringSized extends BorshAnnotationSized<String> {
   /// Creates an annotation for a fixed-length string.
-  const BorshStringSized(
-    this.byteLength, [
-    this.encoding,
-  ]);
+  const BorshStringSized(this.byteLength, [this.encoding]);
 
   /// The encoded byte length.
   final int byteLength;

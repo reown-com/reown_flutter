@@ -1,3 +1,20 @@
+## 1.3.4
+
+- Security Improvements
+
+## 1.3.2
+
+- Remove Yttrium dependency
+
+## 1.3.1
+
+- Bug fixes
+
+## 1.3.0
+
+- LICENSE UPDATE
+- Flutter SDK upgrade to 3.35.1
+
 ## 1.2.0
 
 - New relay methods for latency improvements

@@ -1,3 +1,19 @@
+## 1.6.2
+
+- Security Improvements
+
+## 1.6.1
+
+- Bug fix #230
+
+## 1.6.0
+
+- LICENSE UPDATE
+- Flutter SDK upgrade to 3.35.1
+- Dependency updates
+- Solflare Wallet support
+- Bug fixes
+
 ## 1.5.0
 
 - New relay methods for latency improvements

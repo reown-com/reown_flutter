@@ -5,12 +5,7 @@ class CircularLoader extends StatelessWidget {
   final double? size;
   final double? strokeWidth;
   final EdgeInsetsGeometry? padding;
-  const CircularLoader({
-    super.key,
-    this.size,
-    this.strokeWidth,
-    this.padding,
-  });
+  const CircularLoader({super.key, this.size, this.strokeWidth, this.padding});
 
   @override
   Widget build(BuildContext context) {

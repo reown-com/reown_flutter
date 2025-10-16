@@ -1,3 +1,15 @@
+## 1.3.3
+
+- Security Improvements
+
+## 1.3.1
+
+- Bug fixes
+
+## 1.3.0
+
+- LICENSE UPDATE
+
 ## 1.2.0
 
 - New relay methods for latency improvements

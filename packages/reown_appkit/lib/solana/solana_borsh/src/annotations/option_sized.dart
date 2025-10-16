@@ -17,8 +17,5 @@ import 'option_typed.dart';
 class BorshOptionSized<T> extends BorshOptionTyped<T, BorshAnnotationSized<T>>
     implements BorshAnnotationSized<T?> {
   /// Creates an annotation for an optional sized value.
-  const BorshOptionSized(
-    super.subtype, [
-    super.type,
-  ]);
+  const BorshOptionSized(super.subtype, [super.type]);
 }

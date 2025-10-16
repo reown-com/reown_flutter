@@ -2,7 +2,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get_it/get_it.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:reown_walletkit/reown_walletkit.dart';
+// import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/cosmos_service.dart';
@@ -169,21 +169,21 @@ void main() {
     expect(ecdsaSignature.v, 27);
   });
 
-  test('toPrimitive', () {
-    final ecdsaSignature =
-        '0xf7d4d35037d8cf5c757f0761fe84e312ba40a9493e868b5d3066b84a8dfc1bbb13dafc39e0dd6ef6a44cf17007580ef3ec8051097bfdab3996070971ae5cb13a1b'
-            .toPrimitiveSignature();
+  // test('toPrimitive', () {
+  //   final ecdsaSignature =
+  //       '0xf7d4d35037d8cf5c757f0761fe84e312ba40a9493e868b5d3066b84a8dfc1bbb13dafc39e0dd6ef6a44cf17007580ef3ec8051097bfdab3996070971ae5cb13a1b'
+  //           .toPrimitiveSignature();
 
-    expect(
-      ecdsaSignature.r,
-      'f7d4d35037d8cf5c757f0761fe84e312ba40a9493e868b5d3066b84a8dfc1bbb',
-    );
+  //   expect(
+  //     ecdsaSignature.r,
+  //     'f7d4d35037d8cf5c757f0761fe84e312ba40a9493e868b5d3066b84a8dfc1bbb',
+  //   );
 
-    expect(
-      ecdsaSignature.s,
-      '13dafc39e0dd6ef6a44cf17007580ef3ec8051097bfdab3996070971ae5cb13a',
-    );
+  //   expect(
+  //     ecdsaSignature.s,
+  //     '13dafc39e0dd6ef6a44cf17007580ef3ec8051097bfdab3996070971ae5cb13a',
+  //   );
 
-    expect(ecdsaSignature.yParity, false);
-  });
+  //   expect(ecdsaSignature.yParity, false);
+  // });
 }

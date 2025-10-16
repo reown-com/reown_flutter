@@ -65,9 +65,8 @@ class NetworkService implements INetworkService {
 
     itemList.value = itemListComplete
         .where(
-          (element) => element.title.toLowerCase().contains(
-                query.toLowerCase(),
-              ),
+          (element) =>
+              element.title.toLowerCase().contains(query.toLowerCase()),
         )
         .toList();
   }

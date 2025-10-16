@@ -23,10 +23,10 @@ class WebsocketNotifier<T> {
     required this.decoder,
     required final Duration? timeLimit,
     required void Function()? onTimeout,
-  })  : assert(timeLimit == null || onTimeout != null),
-        _timer = timeLimit != null && onTimeout != null
-            ? Timer(timeLimit, onTimeout)
-            : null;
+  }) : assert(timeLimit == null || onTimeout != null),
+       _timer = timeLimit != null && onTimeout != null
+           ? Timer(timeLimit, onTimeout)
+           : null;
 
   /// The notification listeners.
   final List<WebsocketListener<T>> _listeners = [];
@@ -73,9 +73,7 @@ class WebsocketNotifier<T> {
   }
 
   /// Removes a websocket subscription handler from the dispatcher.
-  bool removeListener(
-    final WebsocketSubscription<T> listener,
-  ) =>
+  bool removeListener(final WebsocketSubscription<T> listener) =>
       _listeners.remove(listener);
 
   /// Notifies all listeners of [data] received by the websocket.

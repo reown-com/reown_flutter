@@ -9,6 +9,9 @@ enum ChainType {
   polkadot,
   bitcoin,
   tron,
+  ton,
+  stacks,
+  sui,
 }
 
 class ChainMetadata {

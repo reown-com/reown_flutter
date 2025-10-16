@@ -22,9 +22,7 @@ import 'nacl_low_level.dart' as nacl_low_level;
 
 class Pubkey extends Serializable {
   /// Creates a [Pubkey] from an `ed25519` public key [value].
-  const Pubkey(
-    final BigInt value,
-  ) : _value = value;
+  const Pubkey(final BigInt value) : _value = value;
 
   /// The public key's `ed25519` value.
   final BigInt _value;
@@ -168,8 +166,10 @@ class Pubkey extends Serializable {
     final digestBytes = Uint8List.fromList(sha256.convert(buffer).bytes);
 
     if (isOnCurve(digestBytes)) {
-      throw ED25519Exception('Invalid seeds $seeds\n'
-          'The public key address must fall off the `ed25519` curve.');
+      throw ED25519Exception(
+        'Invalid seeds $seeds\n'
+        'The public key address must fall off the `ed25519` curve.',
+      );
     }
 
     return Pubkey.fromUint8List(digestBytes);
@@ -189,9 +189,10 @@ class Pubkey extends Serializable {
   ) {
     for (int nonce = 255; nonce > 0; --nonce) {
       try {
-        final List<List<int>> seedsWithNonce = seeds +
+        final List<List<int>> seedsWithNonce =
+            seeds +
             [
-              [nonce]
+              [nonce],
             ];
         final Pubkey address = createProgramAddress(seedsWithNonce, programId);
         return ProgramAddress(address, nonce);
@@ -201,7 +202,8 @@ class Pubkey extends Serializable {
     }
 
     throw const PubkeyException(
-        'Unable to find a viable program address nonce.');
+      'Unable to find a viable program address nonce.',
+    );
   }
 
   /// Finds the associated token address for an existing [wallet] and [tokenMint].
@@ -209,14 +211,11 @@ class Pubkey extends Serializable {
     final Pubkey wallet,
     final Pubkey tokenMint,
   ) {
-    return Pubkey.findProgramAddress(
-      [
-        wallet.toBytes(),
-        TokenProgram.programId.toBytes(),
-        tokenMint.toBytes(),
-      ],
-      AssociatedTokenProgram.programId,
-    );
+    return Pubkey.findProgramAddress([
+      wallet.toBytes(),
+      TokenProgram.programId.toBytes(),
+      tokenMint.toBytes(),
+    ], AssociatedTokenProgram.programId);
   }
 
   /// Returns true if [pubkey] falls on the `ed25519` curve.

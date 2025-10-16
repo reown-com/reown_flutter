@@ -42,10 +42,12 @@ abstract class Program {
     final AccountInfo? programInfo = await connection.getAccountInfo(pubkey);
     if (programInfo == null) {
       throw ProgramException(
-          'The program $runtimeType ($pubkey) has not been deployed.');
+        'The program $runtimeType ($pubkey) has not been deployed.',
+      );
     } else if (!programInfo.executable) {
       throw ProgramException(
-          'The program $runtimeType ($pubkey) is not executable.');
+        'The program $runtimeType ($pubkey) is not executable.',
+      );
     }
   }
 
@@ -62,8 +64,10 @@ abstract class Program {
     return TransactionInstruction(
       keys: keys,
       programId: pubkey,
-      data: Buffer.flatten([encodeInstruction(instruction), ...data])
-          .asUint8List(),
+      data: Buffer.flatten([
+        encodeInstruction(instruction),
+        ...data,
+      ]).asUint8List(),
     );
   }
 }

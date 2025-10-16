@@ -6,14 +6,7 @@ import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
 
-enum ConnectButtonState {
-  error,
-  idle,
-  disabled,
-  connecting,
-  connected,
-  none,
-}
+enum ConnectButtonState { error, idle, disabled, connecting, connected, none }
 
 class ConnectButton extends StatelessWidget {
   const ConnectButton({
@@ -44,45 +37,38 @@ class ConnectButton extends StatelessWidget {
       onTap: disabled || connecting
           ? null
           : serviceStatus.isInitialized
-              ? onTap
-              : null,
+          ? onTap
+          : null,
       size: size,
       buttonStyle: ButtonStyle(
-        backgroundColor: WidgetStateProperty.resolveWith<Color>(
-          (states) {
-            if (connecting) {
-              return themeColors.grayGlass002;
-            }
-            if (states.contains(WidgetState.disabled)) {
-              return themeColors.grayGlass002;
-            }
+        backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (connecting) {
+            return themeColors.grayGlass002;
+          }
+          if (states.contains(WidgetState.disabled)) {
+            return themeColors.grayGlass002;
+          }
+          return themeColors.accent100;
+        }),
+        foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (connecting) {
             return themeColors.accent100;
-          },
-        ),
-        foregroundColor: WidgetStateProperty.resolveWith<Color>(
-          (states) {
-            if (connecting) {
-              return themeColors.accent100;
-            }
-            if (states.contains(WidgetState.disabled)) {
-              return themeColors.grayGlass015;
-            }
-            return themeColors.inverse100;
-          },
-        ),
-        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
-          (states) {
-            return RoundedRectangleBorder(
-              side: (states.contains(WidgetState.disabled) || connecting)
-                  ? BorderSide(
-                      color: themeColors.grayGlass002,
-                      width: 1.0,
-                    )
-                  : BorderSide.none,
-              borderRadius: BorderRadius.circular(borderRadius),
-            );
-          },
-        ),
+          }
+          if (states.contains(WidgetState.disabled)) {
+            return themeColors.grayGlass015;
+          }
+          return themeColors.inverse100;
+        }),
+        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>((
+          states,
+        ) {
+          return RoundedRectangleBorder(
+            side: (states.contains(WidgetState.disabled) || connecting)
+                ? BorderSide(color: themeColors.grayGlass002, width: 1.0)
+                : BorderSide.none,
+            borderRadius: BorderRadius.circular(borderRadius),
+          );
+        }),
       ),
       overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
         showLoading
@@ -104,15 +90,16 @@ class ConnectButton extends StatelessWidget {
                 if (serviceStatus.isLoading)
                   size == BaseButtonSize.small
                       ? Text(
-                          titleOverride ?? UIConstants.connectButtonIdleShort)
+                          titleOverride ?? UIConstants.connectButtonIdleShort,
+                        )
                       : Text(titleOverride ?? UIConstants.connectButtonIdle),
               ],
             )
           : connected
-              ? Text(titleOverride ?? UIConstants.connectButtonConnected)
-              : size == BaseButtonSize.small
-                  ? Text(titleOverride ?? UIConstants.connectButtonIdleShort)
-                  : Text(titleOverride ?? UIConstants.connectButtonIdle),
+          ? Text(titleOverride ?? UIConstants.connectButtonConnected)
+          : size == BaseButtonSize.small
+          ? Text(titleOverride ?? UIConstants.connectButtonIdleShort)
+          : Text(titleOverride ?? UIConstants.connectButtonIdle),
     );
   }
 }

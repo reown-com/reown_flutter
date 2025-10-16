@@ -16,18 +16,18 @@ class BlockChainService implements IBlockChainService {
   String? _clientId;
 
   BlockChainService({required IReownCore core})
-      : _core = core,
-        _baseUrl = '${UrlConstants.blockChainService}/v1';
+    : _core = core,
+      _baseUrl = '${UrlConstants.blockChainService}/v1';
 
   Map<String, String?> get _requiredParams => {
-        'projectId': _core.projectId,
-        'clientId': _clientId,
-      };
+    'projectId': _core.projectId,
+    'clientId': _clientId,
+  };
 
   Map<String, String> get _requiredHeaders => {
-        'x-sdk-type': CoreConstants.X_SDK_TYPE,
-        'x-sdk-version': ReownCoreUtils.coreSdkVersion(packageVersion),
-      };
+    'x-sdk-type': CoreConstants.X_SDK_TYPE,
+    'x-sdk-version': ReownCoreUtils.coreSdkVersion(packageVersion),
+  };
 
   List<TokenBalance>? _tokensList;
   @override
@@ -139,10 +139,7 @@ class BlockChainService implements IBlockChainService {
       'id': 1,
       'jsonrpc': '2.0',
       'method': _balanceMetod(namespace),
-      'params': [
-        address,
-        if (namespace == NetworkUtils.eip155) 'latest',
-      ],
+      'params': [address, if (namespace == NetworkUtils.eip155) 'latest'],
     });
     final response = await http.post(
       url,
@@ -216,9 +213,9 @@ class BlockChainService implements IBlockChainService {
         return _parseEstimateGasResult(response.body);
       } on JsonRpcError catch (e) {
         _core.logger.e('[$runtimeType] estimateGas, parse error => $e');
-        if ((e.message ?? '')
-            .toLowerCase()
-            .contains('insufficient funds for gas')) {
+        if ((e.message ?? '').toLowerCase().contains(
+          'insufficient funds for gas',
+        )) {
           throw 'Insufficient funds for gas';
         }
         throw 'Failed to estimate gas';
@@ -246,8 +243,9 @@ class BlockChainService implements IBlockChainService {
     // Keccak-256 of "allowance(address,address)"
     final functionSelector = 'dd62ed3e';
     final ownerPadded = senderAddress.replaceFirst('0x', '').padLeft(64, '0');
-    final spenderPadded =
-        receiverAddress.replaceFirst('0x', '').padLeft(64, '0');
+    final spenderPadded = receiverAddress
+        .replaceFirst('0x', '')
+        .padLeft(64, '0');
     final data = '0x$functionSelector$ownerPadded$spenderPadded';
     //
     final uri = Uri.parse(_baseUrl);
@@ -259,8 +257,8 @@ class BlockChainService implements IBlockChainService {
       'method': 'eth_call',
       'params': [
         {'to': contractAddress, 'data': data},
-        'latest'
-      ]
+        'latest',
+      ],
     });
     final response = await http.post(
       url,
@@ -299,20 +297,14 @@ class BlockChainService implements IBlockChainService {
 
   T _parseRpcResultAs<T>(String body) {
     try {
-      final result = Map<String, dynamic>.from({
-        ...jsonDecode(body),
-        'id': 1,
-      });
+      final result = Map<String, dynamic>.from({...jsonDecode(body), 'id': 1});
       final jsonResponse = JsonRpcResponse.fromJson(result);
       if (jsonResponse.result != null) {
         return jsonResponse.result;
       }
       throw jsonResponse.error ??
           // TODO ReownAppKitModal change this error
-          ReownSignError(
-            code: 0,
-            message: 'Error parsing result',
-          );
+          ReownSignError(code: 0, message: 'Error parsing result');
     } catch (e) {
       rethrow;
     }
@@ -334,10 +326,7 @@ class BlockChainService implements IBlockChainService {
       return value / 1000000000.0;
     } else if (namespace == NetworkUtils.eip155) {
       final result = _parseRpcResultAs<String>(balanceResult);
-      final amount = EtherAmount.fromBigInt(
-        EtherUnit.wei,
-        hexToInt(result),
-      );
+      final amount = EtherAmount.fromBigInt(EtherUnit.wei, hexToInt(result));
       final value = amount.getValueInUnit(EtherUnit.ether);
       if (value < 0.00001) {
         return 0.0;
@@ -365,10 +354,7 @@ class BlockChainService implements IBlockChainService {
   }
 
   @override
-  Future<String> rawCall({
-    required String chainId,
-    required Map params,
-  }) async {
+  Future<String> rawCall({required String chainId, required Map params}) async {
     final uri = Uri.parse(_baseUrl);
     final queryParams = {..._requiredParams, 'chainId': chainId};
     final url = uri.replace(queryParameters: queryParams);
@@ -376,7 +362,7 @@ class BlockChainService implements IBlockChainService {
       'jsonrpc': '2.0',
       'id': 1,
       'method': 'eth_call',
-      'params': [params, 'latest']
+      'params': [params, 'latest'],
     });
     final response = await http.post(
       url,

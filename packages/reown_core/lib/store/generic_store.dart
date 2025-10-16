@@ -79,19 +79,9 @@ class GenericStore<T> implements IGenericStore<T> {
     checkInitialized();
 
     if (data.containsKey(key)) {
-      onUpdate.broadcast(
-        StoreUpdateEvent(
-          key,
-          value,
-        ),
-      );
+      onUpdate.broadcast(StoreUpdateEvent(key, value));
     } else {
-      onCreate.broadcast(
-        StoreCreateEvent(
-          key,
-          value,
-        ),
-      );
+      onCreate.broadcast(StoreCreateEvent(key, value));
     }
 
     data[key] = value;
@@ -107,12 +97,7 @@ class GenericStore<T> implements IGenericStore<T> {
       return;
     }
 
-    onDelete.broadcast(
-      StoreDeleteEvent(
-        key,
-        data.remove(key) as T,
-      ),
-    );
+    onDelete.broadcast(StoreDeleteEvent(key, data.remove(key) as T));
 
     await persist();
   }
@@ -121,9 +106,7 @@ class GenericStore<T> implements IGenericStore<T> {
   Future<void> persist() async {
     checkInitialized();
 
-    onSync.broadcast(
-      StoreSyncEvent(),
-    );
+    onSync.broadcast(StoreSyncEvent());
 
     await storage.set(storageKey, data);
   }
@@ -160,10 +143,7 @@ class GenericStore<T> implements IGenericStore<T> {
       } catch (e) {
         // print('Error restoring $storageKey: $e');
         await storage.delete(storedVersion);
-        onError.broadcast(StoreErrorEvent<String>(
-          storedVersion,
-          e.toString(),
-        ));
+        onError.broadcast(StoreErrorEvent<String>(storedVersion, e.toString()));
       }
     }
   }

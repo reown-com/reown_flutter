@@ -7,8 +7,8 @@ part of 'transaction_signature_exception.dart';
 // **************************************************************************
 
 TransactionSignatureException _$TransactionSignatureExceptionFromJson(
-        Map<String, dynamic> json) =>
-    TransactionSignatureException(
-      json['message'] as String,
-      code: (json['code'] as num?)?.toInt(),
-    );
+  Map<String, dynamic> json,
+) => TransactionSignatureException(
+  json['message'] as String,
+  code: (json['code'] as num?)?.toInt(),
+);

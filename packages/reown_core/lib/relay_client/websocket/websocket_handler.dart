@@ -21,15 +21,11 @@ class WebSocketHandler implements IWebSocketHandler {
   @override
   StreamChannel<String>? get channel => _channel;
 
-  @override
-  Future<void> get ready => _socket!.ready;
-
-  // const WebSocketHandler();
+  StreamController<String>? _inputController;
+  StreamController<String>? _outputController;
 
   @override
-  Future<void> setup({
-    required String url,
-  }) async {
+  Future<void> setup({required String url}) async {
     _url = url;
 
     await close();
@@ -40,9 +36,7 @@ class WebSocketHandler implements IWebSocketHandler {
     // print('connecting');
     try {
       _socket = WebSocketChannel.connect(
-        Uri.parse(
-          '$url&useOnCloseEvent=true',
-        ),
+        Uri.parse('$url&useOnCloseEvent=true'),
       );
     } catch (e) {
       throw ReownCoreError(
@@ -51,10 +45,27 @@ class WebSocketHandler implements IWebSocketHandler {
       );
     }
 
-    _channel = StreamChannel(
-      _socket!.stream.asBroadcastStream().cast(),
-      StreamController.broadcast(sync: true)..stream.cast().pipe(_socket!.sink),
+    // Create a multi-subscription capable stream channel using stream splitting
+    // This approach enables multiple listeners without broadcast streams
+    _inputController = StreamController<String>.broadcast(sync: true);
+    _outputController = StreamController<String>.broadcast(sync: true);
+
+    // Split the incoming stream to support multiple listeners
+    _socket!.stream.cast<String>().listen(
+      (data) => _inputController?.add(data),
+      onError: (error) => _inputController?.addError(error),
+      onDone: () => _inputController?.close(),
     );
+
+    // Route outgoing messages through the output controller
+    _outputController!.stream.listen(
+      (data) => _socket?.sink.add(data),
+      onError: (error) => _socket?.sink.addError(error),
+      onDone: () => _socket?.sink.close(),
+    );
+
+    _channel = StreamChannel(_inputController!.stream, _outputController!.sink);
+
     if (_channel == null) {
       // print('Socket channel is null, waiting...');
       await Future.delayed(const Duration(milliseconds: 500));
@@ -64,7 +75,7 @@ class WebSocketHandler implements IWebSocketHandler {
       }
     }
 
-    await _socket!.ready;
+    await _socket?.ready;
 
     // Check if the request was successful (status code 200)
     // try {} catch (e) {
@@ -78,10 +89,20 @@ class WebSocketHandler implements IWebSocketHandler {
   @override
   Future<void> close() async {
     try {
-      if (_socket != null) {
-        await _socket?.sink.close();
-      }
+      await _socket?.sink.close();
     } catch (_) {}
+
+    // Close the controllers to prevent further messages and race conditions
+    try {
+      await _inputController?.close();
+    } catch (_) {}
+    try {
+      await _outputController?.close();
+    } catch (_) {}
+
+    _inputController = null;
+    _outputController = null;
+    _channel = null;
     _socket = null;
   }
 

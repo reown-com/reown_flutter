@@ -3,44 +3,41 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'chain_abstraction.freezed.dart';
 part 'chain_abstraction.g.dart';
 
-enum Currency {
-  usd,
-  eur,
-  gbp,
-  aud,
-  cad,
-  inr,
-  jpy,
-  btc,
-  eth,
-  ;
-}
+enum Currency { usd, eur, gbp, aud, cad, inr, jpy, btc, eth }
 
 enum BridgingError {
   noRoutesAvailable,
   insufficientFunds,
   insufficientGasFunds,
+  assetNotSupported,
+  transactionSimulationFailed,
   unknown;
 
   factory BridgingError.fromString(String value) {
-    if (value == 'noRoutesAvailable') {
-      return BridgingError.noRoutesAvailable;
-    } else if (value == 'insufficientFunds') {
-      return BridgingError.insufficientFunds;
-    } else if (value == 'insufficientGasFunds') {
-      return BridgingError.insufficientGasFunds;
+    switch (value) {
+      case 'noRoutesAvailable':
+        return BridgingError.noRoutesAvailable;
+      case 'insufficientFunds':
+        return BridgingError.insufficientFunds;
+      case 'insufficientGasFunds':
+        return BridgingError.insufficientGasFunds;
+      case 'assetNotSupported':
+        return BridgingError.assetNotSupported;
+      case 'transactionSimulationFailed':
+        return BridgingError.transactionSimulationFailed;
+      default:
+        return BridgingError.unknown;
     }
-    return BridgingError.unknown;
   }
 }
 
 /// Bridging check error response that should be returned as a normal HTTP 200
 /// response
-class PrepareResponseError {
+class PrepareDetailedResponseError {
   final BridgingError error;
   final String reason;
 
-  const PrepareResponseError({
+  const PrepareDetailedResponseError({
     required this.error,
     required this.reason,
   });
@@ -51,14 +48,14 @@ class PrepareResponseError {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PrepareResponseError &&
+      other is PrepareDetailedResponseError &&
           runtimeType == other.runtimeType &&
           error == other.error &&
           reason == other.reason;
 }
 
 @freezed
-class AmountCompat with _$AmountCompat {
+sealed class AmountCompat with _$AmountCompat {
   const factory AmountCompat({
     required String symbol,
     required String amount,
@@ -72,7 +69,7 @@ class AmountCompat with _$AmountCompat {
 }
 
 @freezed
-class CallCompat with _$CallCompat {
+sealed class CallCompat with _$CallCompat {
   const factory CallCompat({
     required String to,
     required String input,
@@ -84,7 +81,7 @@ class CallCompat with _$CallCompat {
 }
 
 @freezed
-class Eip1559EstimationCompat with _$Eip1559EstimationCompat {
+sealed class Eip1559EstimationCompat with _$Eip1559EstimationCompat {
   const factory Eip1559EstimationCompat({
     required String maxFeePerGas,
     required String maxPriorityFeePerGas,
@@ -98,13 +95,12 @@ class Eip1559EstimationCompat with _$Eip1559EstimationCompat {
 sealed class ErrorCompat with _$ErrorCompat {
   const ErrorCompat._();
 
-  const factory ErrorCompat.general({
-    required String message,
-  }) = ErrorCompat_General;
+  const factory ErrorCompat.general({required String message}) =
+      ErrorCompat_General;
 }
 
 @freezed
-class ExecuteDetailsCompat with _$ExecuteDetailsCompat {
+sealed class ExecuteDetailsCompat with _$ExecuteDetailsCompat {
   const factory ExecuteDetailsCompat({
     // required TransactionReceiptCompat initialTxnReceipt,
     required String initialTxnReceipt,
@@ -116,7 +112,8 @@ class ExecuteDetailsCompat with _$ExecuteDetailsCompat {
 }
 
 @freezed
-class FeeEstimatedTransactionCompat with _$FeeEstimatedTransactionCompat {
+sealed class FeeEstimatedTransactionCompat
+    with _$FeeEstimatedTransactionCompat {
   const factory FeeEstimatedTransactionCompat({
     required String chainId,
     required String from,
@@ -134,7 +131,7 @@ class FeeEstimatedTransactionCompat with _$FeeEstimatedTransactionCompat {
 }
 
 @freezed
-class FundingMetadataCompat with _$FundingMetadataCompat {
+sealed class FundingMetadataCompat with _$FundingMetadataCompat {
   const factory FundingMetadataCompat({
     required String chainId,
     required String tokenContract,
@@ -149,7 +146,8 @@ class FundingMetadataCompat with _$FundingMetadataCompat {
 }
 
 @freezed
-class InitialTransactionMetadataCompat with _$InitialTransactionMetadataCompat {
+sealed class InitialTransactionMetadataCompat
+    with _$InitialTransactionMetadataCompat {
   const factory InitialTransactionMetadataCompat({
     required String transferTo,
     required String amount,
@@ -159,12 +157,12 @@ class InitialTransactionMetadataCompat with _$InitialTransactionMetadataCompat {
   }) = _InitialTransactionMetadataCompat;
 
   factory InitialTransactionMetadataCompat.fromJson(
-          Map<String, dynamic> json) =>
-      _$InitialTransactionMetadataCompatFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$InitialTransactionMetadataCompatFromJson(json);
 }
 
 @freezed
-class MetadataCompat with _$MetadataCompat {
+sealed class MetadataCompat with _$MetadataCompat {
   const factory MetadataCompat({
     required List<FundingMetadataCompat> fundingFrom,
     required InitialTransactionMetadataCompat initialTransaction,
@@ -184,7 +182,7 @@ sealed class PrepareDetailedResponseCompat
     required PrepareDetailedResponseSuccessCompat value,
   }) = PrepareDetailedResponseCompat_Success;
   const factory PrepareDetailedResponseCompat.error({
-    required PrepareResponseError value,
+    required PrepareDetailedResponseError value,
   }) = PrepareDetailedResponseCompat_Error;
 }
 
@@ -201,12 +199,13 @@ sealed class PrepareDetailedResponseSuccessCompat
   }) = PrepareDetailedResponseSuccessCompat_NotRequired;
 
   factory PrepareDetailedResponseSuccessCompat.fromJson(
-          Map<String, dynamic> json) =>
-      _$PrepareDetailedResponseSuccessCompatFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$PrepareDetailedResponseSuccessCompatFromJson(json);
 }
 
 @freezed
-class PrepareResponseAvailableCompat with _$PrepareResponseAvailableCompat {
+sealed class PrepareResponseAvailableCompat
+    with _$PrepareResponseAvailableCompat {
   const factory PrepareResponseAvailableCompat({
     required String orchestrationId,
     required TransactionCompat initialTransaction,
@@ -219,15 +218,16 @@ class PrepareResponseAvailableCompat with _$PrepareResponseAvailableCompat {
 }
 
 @freezed
-class PrepareResponseNotRequiredCompat with _$PrepareResponseNotRequiredCompat {
+sealed class PrepareResponseNotRequiredCompat
+    with _$PrepareResponseNotRequiredCompat {
   const factory PrepareResponseNotRequiredCompat({
     required TransactionCompat initialTransaction,
     required List<TransactionCompat> transactions,
   }) = _PrepareResponseNotRequiredCompat;
 
   factory PrepareResponseNotRequiredCompat.fromJson(
-          Map<String, dynamic> json) =>
-      _$PrepareResponseNotRequiredCompatFromJson(json);
+    Map<String, dynamic> json,
+  ) => _$PrepareResponseNotRequiredCompatFromJson(json);
 }
 
 class PrimitiveSignatureCompat {
@@ -259,29 +259,15 @@ class PrimitiveSignatureCompat {
 
   // Not originally included in Yttrium but added for usage with Swift's pod
   Map<String, dynamic> toJson() => {
-        'yParity': yParity,
-        'r': r,
-        's': s,
-        'hexValue': hexValue,
-      };
+    'yParity': yParity,
+    'r': r,
+    's': s,
+    'hexValue': hexValue,
+  };
 }
 
 @freezed
-class PulseMetadataCompat with _$PulseMetadataCompat {
-  const factory PulseMetadataCompat({
-    String? url,
-    String? bundleId,
-    String? packageName,
-    required String sdkVersion,
-    required String sdkPlatform,
-  }) = _PulseMetadataCompat;
-
-  factory PulseMetadataCompat.fromJson(Map<String, dynamic> json) =>
-      _$PulseMetadataCompatFromJson(json);
-}
-
-@freezed
-class TransactionCompat with _$TransactionCompat {
+sealed class TransactionCompat with _$TransactionCompat {
   const factory TransactionCompat({
     required String chainId,
     required String from,
@@ -296,8 +282,20 @@ class TransactionCompat with _$TransactionCompat {
       _$TransactionCompatFromJson(json);
 }
 
+// @freezed
+// class SolanaTransactionCompat with _$SolanaTransactionCompat {
+//   const factory SolanaTransactionCompat({
+//     required String chainId,
+//     required String from,
+//     required String transaction,
+//   }) = _SolanaTransactionCompat;
+
+//   factory SolanaTransactionCompat.fromJson(Map<String, dynamic> json) =>
+//       _$SolanaTransactionCompatJson(json);
+// }
+
 @freezed
-class TransactionFeeCompat with _$TransactionFeeCompat {
+sealed class TransactionFeeCompat with _$TransactionFeeCompat {
   const factory TransactionFeeCompat({
     required AmountCompat fee,
     required AmountCompat localFee,
@@ -308,7 +306,7 @@ class TransactionFeeCompat with _$TransactionFeeCompat {
 }
 
 @freezed
-class TransactionReceiptCompat with _$TransactionReceiptCompat {
+sealed class TransactionReceiptCompat with _$TransactionReceiptCompat {
   const factory TransactionReceiptCompat({
     required String transactionHash,
     BigInt? transactionIndex,
@@ -328,7 +326,7 @@ class TransactionReceiptCompat with _$TransactionReceiptCompat {
 }
 
 @freezed
-class TxnDetailsCompat with _$TxnDetailsCompat {
+sealed class TxnDetailsCompat with _$TxnDetailsCompat {
   const factory TxnDetailsCompat({
     required FeeEstimatedTransactionCompat transaction,
     required String transactionHashToSign,
@@ -339,8 +337,20 @@ class TxnDetailsCompat with _$TxnDetailsCompat {
       _$TxnDetailsCompatFromJson(json);
 }
 
+// @freezed
+// class SolanaTxnDetailsCompat with _$SolanaTxnDetailsCompat {
+//   const factory SolanaTxnDetailsCompat({
+//     required String chainId,
+//     required String from,
+//     required String transaction,
+//   }) = _SolanaTxnDetailsCompat;
+
+//   factory SolanaTxnDetailsCompat.fromJson(Map<String, dynamic> json) =>
+//       _$SolanaTxnDetailsCompatJson(json);
+// }
+
 @freezed
-class UiFieldsCompat with _$UiFieldsCompat {
+sealed class UiFieldsCompat with _$UiFieldsCompat {
   const factory UiFieldsCompat({
     required PrepareResponseAvailableCompat routeResponse,
     required List<TxnDetailsCompat> route,

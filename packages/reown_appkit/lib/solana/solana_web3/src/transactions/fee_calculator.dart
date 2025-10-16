@@ -25,9 +25,7 @@ class FeeCalculator extends BorshObject {
 
   /// {@macro solana_borsh.BorshObject.borshCodec}
   static BorshStructSizedCodec get codec {
-    return borsh.structSized({
-      'lamportsPerSignature': borsh.u64.string(),
-    });
+    return borsh.structSized({'lamportsPerSignature': borsh.u64.string()});
   }
 
   /// {@macro solana_common.Serializable.fromJson}

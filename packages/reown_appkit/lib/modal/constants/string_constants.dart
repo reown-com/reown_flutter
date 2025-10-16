@@ -1,6 +1,6 @@
 // ignore_for_file: public_member_api_docs
 
-import 'package:reown_appkit/reown_appkit.dart' as reown_appkit;
+import 'package:reown_appkit/version.dart' as reown_appkit;
 import 'package:reown_core/version.dart' as reown_core;
 import 'package:reown_sign/version.dart' as reown_sign;
 
@@ -41,6 +41,7 @@ class StorageConstants {
   static const String selectedChainId = '${prefix}selectedChainId';
   static const String modalSession = '${prefix}session';
   static const String phantomSession = '${prefix}phantomSession';
+  static const String solflareSession = '${prefix}solflareSession';
 }
 
 class UrlConstants {

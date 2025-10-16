@@ -25,19 +25,20 @@ class WalletsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final loadingList = [
-      const WalletListItem(title: ''),
-      const WalletListItem(title: ''),
-      const WalletListItem(title: ''),
-      const WalletListItem(title: ''),
-      const WalletListItem(title: ''),
-    ].map(
-      (e) => Shimmer.fromColors(
-        baseColor: themeColors.grayGlass100,
-        highlightColor: themeColors.grayGlass025,
-        child: e,
-      ),
-    );
+    final loadingList =
+        [
+          const WalletListItem(title: ''),
+          const WalletListItem(title: ''),
+          const WalletListItem(title: ''),
+          const WalletListItem(title: ''),
+          const WalletListItem(title: ''),
+        ].map(
+          (e) => Shimmer.fromColors(
+            baseColor: themeColors.grayGlass100,
+            highlightColor: themeColors.grayGlass025,
+            child: e,
+          ),
+        );
 
     final walletsListItems = isLoading
         ? loadingList.map(
@@ -74,14 +75,10 @@ class WalletsList extends StatelessWidget {
         vertical: kPadding12,
       ),
       itemBuilder: (context, index) {
-        return SizedBox(
-          width: 1000.0,
-          child: items[index],
-        );
+        return SizedBox(width: 1000.0, child: items[index]);
       },
-      separatorBuilder: (_, index) => SizedBox.square(
-        dimension: kListViewSeparatorHeight,
-      ),
+      separatorBuilder: (_, index) =>
+          SizedBox.square(dimension: kListViewSeparatorHeight),
       itemCount: items.length,
     );
   }

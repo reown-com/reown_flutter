@@ -39,11 +39,11 @@ class SimulateTransactionConfig extends CommitmentAndMinContextSlotConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        'sigVerify': sigVerify,
-        'commitment': commitment?.name,
-        'encoding': encoding.name,
-        'replaceRecentBlockhash': replaceRecentBlockhash,
-        'accounts': accounts?.toJson(),
-        'minContextSlot': minContextSlot,
-      };
+    'sigVerify': sigVerify,
+    'commitment': commitment?.name,
+    'encoding': encoding.name,
+    'replaceRecentBlockhash': replaceRecentBlockhash,
+    'accounts': accounts?.toJson(),
+    'minContextSlot': minContextSlot,
+  };
 }

@@ -53,12 +53,7 @@ class Expirer extends GenericStore<int> implements IExpirer {
       return;
     }
     // print('Expiring $key');
-    onExpire.broadcast(
-      ExpirationEvent(
-        target: key,
-        expiry: expiry,
-      ),
-    );
+    onExpire.broadcast(ExpirationEvent(target: key, expiry: expiry));
     await persist();
   }
 }

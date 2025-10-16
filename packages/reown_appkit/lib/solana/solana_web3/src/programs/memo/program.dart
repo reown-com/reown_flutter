@@ -16,7 +16,7 @@ import 'instruction.dart';
 
 class MemoProgram extends Program {
   MemoProgram._()
-      : super(Pubkey.fromBase58('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'));
+    : super(Pubkey.fromBase58('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr'));
 
   /// Internal singleton instance.
   static final MemoProgram _instance = MemoProgram._();
@@ -55,9 +55,7 @@ class MemoProgram extends Program {
     // represented as 11-bytes.
     check((encoded.length + keys.length * 44) <= maxLength);
 
-    final List<Iterable<u8>> data = [
-      encoded,
-    ];
+    final List<Iterable<u8>> data = [encoded];
 
     return _instance.createTransactionIntruction(
       MemoInstruction.create,

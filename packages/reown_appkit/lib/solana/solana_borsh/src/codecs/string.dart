@@ -16,8 +16,8 @@ class BorshStringCodec extends BorshCodec<String> {
   const BorshStringCodec({
     final int? lengthPadding,
     final BufferEncoding? encoding,
-  })  : lengthPadding = lengthPadding ?? 0,
-        encoding = encoding ?? BufferEncoding.utf8;
+  }) : lengthPadding = lengthPadding ?? 0,
+       encoding = encoding ?? BufferEncoding.utf8;
 
   /// The number of zeros added to the end of the encoded length.
   final int lengthPadding;
@@ -26,16 +26,12 @@ class BorshStringCodec extends BorshCodec<String> {
   final BufferEncoding encoding;
 
   @override
-  BorshStringEncoder get encoder => BorshStringEncoder(
-        lengthPadding: lengthPadding,
-        encoding: encoding,
-      );
+  BorshStringEncoder get encoder =>
+      BorshStringEncoder(lengthPadding: lengthPadding, encoding: encoding);
 
   @override
-  BorshStringDecoder get decoder => BorshStringDecoder(
-        lengthPadding: lengthPadding,
-        encoding: encoding,
-      );
+  BorshStringDecoder get decoder =>
+      BorshStringDecoder(lengthPadding: lengthPadding, encoding: encoding);
 
   @override
   int size(final String input) {

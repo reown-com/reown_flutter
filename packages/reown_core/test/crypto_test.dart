@@ -68,12 +68,10 @@ void main() {
           final privateKey = CryptoUtils().generateRandomBytes32();
           final publicKey = CryptoUtils().generateRandomBytes32();
           mockUtils = MockCryptoUtils();
-          when(mockUtils.generateKeyPair()).thenReturn(
-            CryptoKeyPair(privateKey, publicKey),
-          );
-          cryptoAPI = getCrypto(
-            utils: mockUtils,
-          );
+          when(
+            mockUtils.generateKeyPair(),
+          ).thenReturn(CryptoKeyPair(privateKey, publicKey));
+          cryptoAPI = getCrypto(utils: mockUtils);
           await cryptoAPI.init();
 
           final String pubKeyActual = await cryptoAPI.generateKeyPair();
@@ -106,13 +104,10 @@ void main() {
           );
 
           mockUtils = MockCryptoUtils();
-          when(mockUtils.deriveSymKey(selfKP.privateKey, peerPublicKey))
-              .thenAnswer(
-            (_) async => expectedSymKey,
-          );
-          cryptoAPI = getCrypto(
-            utils: mockUtils,
-          );
+          when(
+            mockUtils.deriveSymKey(selfKP.privateKey, peerPublicKey),
+          ).thenAnswer((_) async => expectedSymKey);
+          cryptoAPI = getCrypto(utils: mockUtils);
           await cryptoAPI.init();
           await cryptoAPI.keyChain.set(selfKP.publicKey, selfKP.privateKey);
 
@@ -121,8 +116,9 @@ void main() {
             peerPublicKey,
             overrideTopic: overrideTopic,
           );
-          verify(mockUtils.deriveSymKey(selfKP.privateKey, peerPublicKey))
-              .called(1);
+          verify(
+            mockUtils.deriveSymKey(selfKP.privateKey, peerPublicKey),
+          ).called(1);
           expect(topicActual, overrideTopic);
         },
       );
@@ -228,31 +224,25 @@ void main() {
         );
       });
 
-      test(
-        'encrypts payload if the passed topic is known',
-        () async {
-          final topic = await cryptoAPI.setSymKey(SYM_KEY);
-          final String? encoded = await cryptoAPI.encode(topic, PAYLOAD);
+      test('encrypts payload if the passed topic is known', () async {
+        final topic = await cryptoAPI.setSymKey(SYM_KEY);
+        final String? encoded = await cryptoAPI.encode(topic, PAYLOAD);
 
-          final String? decoded = await cryptoAPI.decode(topic, encoded!);
-          expect(decoded, jsonEncode(PAYLOAD));
+        final String? decoded = await cryptoAPI.decode(topic, encoded!);
+        expect(decoded, jsonEncode(PAYLOAD));
 
-          final String? decoded2 = await cryptoAPI.decode(topic, ENCODED);
-          expect(decoded2, jsonEncode(PAYLOAD));
-        },
-      );
+        final String? decoded2 = await cryptoAPI.decode(topic, ENCODED);
+        expect(decoded2, jsonEncode(PAYLOAD));
+      });
 
-      test(
-        'returns null if the passed topic is known',
-        () async {
-          final topic = CryptoUtils().hashKey(SYM_KEY);
-          final String? encoded = await cryptoAPI.encode(topic, PAYLOAD);
-          expect(encoded, isNull);
+      test('returns null if the passed topic is known', () async {
+        final topic = CryptoUtils().hashKey(SYM_KEY);
+        final String? encoded = await cryptoAPI.encode(topic, PAYLOAD);
+        expect(encoded, isNull);
 
-          final String? decoded = await cryptoAPI.decode(topic, ENCODED);
-          expect(decoded, isNull);
-        },
-      );
+        final String? decoded = await cryptoAPI.decode(topic, ENCODED);
+        expect(decoded, isNull);
+      });
     });
   });
 
@@ -341,7 +331,9 @@ void main() {
       // print(
       //     await utils.deriveSymKey(TEST_PEER.privateKey, TEST_SELF.publicKey));
       final String symKey = await utils.deriveSymKey(
-          testPeer.privateKey, params.senderPublicKey!);
+        testPeer.privateKey,
+        params.senderPublicKey!,
+      );
       expect(symKey, TEST_SYM_KEY);
       final String decrypted = await utils.decrypt(symKey, encoded);
       expect(decrypted, testMessage);

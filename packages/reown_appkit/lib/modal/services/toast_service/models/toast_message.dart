@@ -26,7 +26,7 @@ class ToastMessage {
         return RoundedIcon(
           assetPath: 'lib/modal/assets/icons/checkmark.svg',
           assetColor: themeColors.success100,
-          circleColor: themeColors.success100.withOpacity(0.15),
+          circleColor: themeColors.success100.withValues(alpha: 0.15),
           borderColor: Colors.transparent,
           padding: 5.0,
           size: 24.0,
@@ -36,7 +36,7 @@ class ToastMessage {
         return RoundedIcon(
           assetPath: 'lib/modal/assets/icons/close.svg',
           assetColor: themeColors.error100,
-          circleColor: themeColors.error100.withOpacity(0.15),
+          circleColor: themeColors.error100.withValues(alpha: 0.15),
           borderColor: Colors.transparent,
           padding: 5.0,
           size: 24.0,
@@ -46,7 +46,7 @@ class ToastMessage {
         return RoundedIcon(
           assetPath: 'lib/modal/assets/icons/info.svg',
           assetColor: themeColors.accent100,
-          circleColor: themeColors.accent100.withOpacity(0.15),
+          circleColor: themeColors.accent100.withValues(alpha: 0.15),
           borderColor: Colors.transparent,
           padding: 5.0,
           size: 24.0,

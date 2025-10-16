@@ -16,5 +16,4 @@ enum SystemInstruction {
   assignWithSeed, // 10
   transferWithSeed, // 11
   upgradeNonceAccount, // 12
-  ;
 }

@@ -36,8 +36,10 @@ class GetWalletPage extends StatelessWidget {
             }
 
             final notInstalledItems = items
-                .where((GridItem<ReownAppKitModalWalletInfo> w) =>
-                    !w.data.installed && !w.data.recent)
+                .where(
+                  (GridItem<ReownAppKitModalWalletInfo> w) =>
+                      !w.data.installed && !w.data.recent,
+                )
                 .toList();
             final itemsToShow = notInstalledItems
                 .getRange(0, min(5, notInstalledItems.length))
@@ -55,15 +57,12 @@ class GetWalletPage extends StatelessWidget {
               },
               bottomItems: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4.0,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: AllWalletsItem(
                     title: 'Explore all',
                     semanticsLabel: 'ExploreAllWallets',
-                    onTap: () => ReownCoreUtils.openURL(
-                      UrlConstants.exploreWallets,
-                    ),
+                    onTap: () =>
+                        ReownCoreUtils.openURL(UrlConstants.exploreWallets),
                     trailing: Padding(
                       padding: const EdgeInsets.only(right: 8.0),
                       child: SvgPicture.asset(

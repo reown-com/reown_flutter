@@ -169,9 +169,7 @@ class ReownSignClient implements IReownSignClient {
   }
 
   @override
-  Future<PairingInfo> pair({
-    required Uri uri,
-  }) async {
+  Future<PairingInfo> pair({required Uri uri}) async {
     try {
       return await engine.pair(uri: uri);
     } catch (e) {
@@ -199,15 +197,9 @@ class ReownSignClient implements IReownSignClient {
   }
 
   @override
-  Future<void> reject({
-    required int id,
-    required ReownSignError reason,
-  }) async {
+  Future<void> reject({required int id, required ReownSignError reason}) async {
     try {
-      return await engine.rejectSession(
-        id: id,
-        reason: reason,
-      );
+      return await engine.rejectSession(id: id, reason: reason);
     } catch (e) {
       rethrow;
     }
@@ -219,10 +211,7 @@ class ReownSignClient implements IReownSignClient {
     required Map<String, Namespace> namespaces,
   }) async {
     try {
-      return await engine.updateSession(
-        topic: topic,
-        namespaces: namespaces,
-      );
+      return await engine.updateSession(topic: topic, namespaces: namespaces);
     } catch (e) {
       // final error = e as WCError;
       rethrow;
@@ -230,9 +219,7 @@ class ReownSignClient implements IReownSignClient {
   }
 
   @override
-  Future<void> extend({
-    required String topic,
-  }) async {
+  Future<void> extend({required String topic}) async {
     try {
       return await engine.extendSession(topic: topic);
     } catch (e) {
@@ -282,10 +269,7 @@ class ReownSignClient implements IReownSignClient {
     required JsonRpcResponse response,
   }) {
     try {
-      return engine.respondSessionRequest(
-        topic: topic,
-        response: response,
-      );
+      return engine.respondSessionRequest(topic: topic, response: response);
     } catch (e) {
       rethrow;
     }
@@ -309,15 +293,9 @@ class ReownSignClient implements IReownSignClient {
   }
 
   @override
-  void registerEventEmitter({
-    required String chainId,
-    required String event,
-  }) {
+  void registerEventEmitter({required String chainId, required String event}) {
     try {
-      return engine.registerEventEmitter(
-        chainId: chainId,
-        event: event,
-      );
+      return engine.registerEventEmitter(chainId: chainId, event: event);
     } catch (e) {
       rethrow;
     }
@@ -356,9 +334,7 @@ class ReownSignClient implements IReownSignClient {
   }
 
   @override
-  Future<void> ping({
-    required String topic,
-  }) async {
+  Future<void> ping({required String topic}) async {
     try {
       return await engine.ping(topic: topic);
     } catch (e) {
@@ -372,10 +348,7 @@ class ReownSignClient implements IReownSignClient {
     required ReownSignError reason,
   }) async {
     try {
-      return await engine.disconnectSession(
-        topic: topic,
-        reason: reason,
-      );
+      return await engine.disconnectSession(topic: topic, reason: reason);
     } catch (e) {
       rethrow;
     }
@@ -406,9 +379,7 @@ class ReownSignClient implements IReownSignClient {
     required String pairingTopic,
   }) {
     try {
-      return engine.getSessionsForPairing(
-        pairingTopic: pairingTopic,
-      );
+      return engine.getSessionsForPairing(pairingTopic: pairingTopic);
     } catch (e) {
       rethrow;
     }
@@ -463,7 +434,7 @@ class ReownSignClient implements IReownSignClient {
     String? walletUniversalLink,
     String? pairingTopic,
     List<List<String>>? methods = const [
-      [MethodConstants.WC_SESSION_AUTHENTICATE]
+      [MethodConstants.WC_SESSION_AUTHENTICATE],
     ],
   }) {
     try {
@@ -484,10 +455,7 @@ class ReownSignClient implements IReownSignClient {
     List<Cacao>? auths,
   }) {
     try {
-      return engine.approveSessionAuthenticate(
-        id: id,
-        auths: auths,
-      );
+      return engine.approveSessionAuthenticate(id: id, auths: auths);
     } catch (e) {
       rethrow;
     }
@@ -499,10 +467,7 @@ class ReownSignClient implements IReownSignClient {
     required ReownSignError reason,
   }) {
     try {
-      return engine.rejectSessionAuthenticate(
-        id: id,
-        reason: reason,
-      );
+      return engine.rejectSessionAuthenticate(id: id, reason: reason);
     } catch (e) {
       rethrow;
     }
@@ -517,10 +482,7 @@ class ReownSignClient implements IReownSignClient {
     required String projectId,
   }) {
     try {
-      return engine.validateSignedCacao(
-        cacao: cacao,
-        projectId: projectId,
-      );
+      return engine.validateSignedCacao(cacao: cacao, projectId: projectId);
     } catch (e) {
       rethrow;
     }
@@ -532,10 +494,7 @@ class ReownSignClient implements IReownSignClient {
     required CacaoRequestPayload cacaoPayload,
   }) {
     try {
-      return engine.formatAuthMessage(
-        iss: iss,
-        cacaoPayload: cacaoPayload,
-      );
+      return engine.formatAuthMessage(iss: iss, cacaoPayload: cacaoPayload);
     } catch (e) {
       rethrow;
     }
@@ -551,10 +510,7 @@ class ReownSignClient implements IReownSignClient {
     required String topic,
     required Redirect? redirect,
   }) {
-    return engine.redirectToDapp(
-      topic: topic,
-      redirect: redirect,
-    );
+    return engine.redirectToDapp(topic: topic, redirect: redirect);
   }
 
   @override
@@ -562,10 +518,7 @@ class ReownSignClient implements IReownSignClient {
     required String topic,
     required Redirect? redirect,
   }) {
-    return engine.redirectToWallet(
-      topic: topic,
-      redirect: redirect,
-    );
+    return engine.redirectToWallet(topic: topic, redirect: redirect);
   }
 
   @override

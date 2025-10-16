@@ -138,11 +138,7 @@ class _WebViewWidgetState extends State<_WebViewWidget> {
   Widget build(BuildContext context) {
     final farcasterIncluded = _magicService.isFarcasterEnabled.value;
     if (farcasterIncluded && _show) {
-      return SizedBox(
-        width: 0.5,
-        height: 0.5,
-        child: _magicService.webview,
-      );
+      return SizedBox(width: 0.5, height: 0.5, child: _magicService.webview);
     }
     return const SizedBox.shrink();
   }

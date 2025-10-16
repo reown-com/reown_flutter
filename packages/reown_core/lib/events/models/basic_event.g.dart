@@ -6,9 +6,8 @@ part of 'basic_event.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$CoreEventPropertiesImpl _$$CoreEventPropertiesImplFromJson(
-        Map<String, dynamic> json) =>
-    _$CoreEventPropertiesImpl(
+_CoreEventProperties _$CoreEventPropertiesFromJson(Map<String, dynamic> json) =>
+    _CoreEventProperties(
       message: json['message'] as String?,
       name: json['name'] as String?,
       method: json['method'] as String?,
@@ -17,8 +16,9 @@ _$CoreEventPropertiesImpl _$$CoreEventPropertiesImplFromJson(
       explorer_id: json['explorer_id'] as String?,
       provider: json['provider'] as String?,
       platform: json['platform'] as String?,
-      trace:
-          (json['trace'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      trace: (json['trace'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
       topic: json['topic'] as String?,
       correlation_id: (json['correlation_id'] as num?)?.toInt(),
       client_id: json['client_id'] as String?,
@@ -31,26 +31,26 @@ _$CoreEventPropertiesImpl _$$CoreEventPropertiesImplFromJson(
       cursor: json['cursor'] as String?,
     );
 
-Map<String, dynamic> _$$CoreEventPropertiesImplToJson(
-        _$CoreEventPropertiesImpl instance) =>
-    <String, dynamic>{
-      if (instance.message case final value?) 'message': value,
-      if (instance.name case final value?) 'name': value,
-      if (instance.method case final value?) 'method': value,
-      if (instance.connected case final value?) 'connected': value,
-      if (instance.network case final value?) 'network': value,
-      if (instance.explorer_id case final value?) 'explorer_id': value,
-      if (instance.provider case final value?) 'provider': value,
-      if (instance.platform case final value?) 'platform': value,
-      if (instance.trace case final value?) 'trace': value,
-      if (instance.topic case final value?) 'topic': value,
-      if (instance.correlation_id case final value?) 'correlation_id': value,
-      if (instance.client_id case final value?) 'client_id': value,
-      if (instance.direction case final value?) 'direction': value,
-      if (instance.userAgent case final value?) 'userAgent': value,
-      if (instance.sendToken case final value?) 'sendToken': value,
-      if (instance.sendAmount case final value?) 'sendAmount': value,
-      if (instance.address case final value?) 'address': value,
-      if (instance.project_id case final value?) 'project_id': value,
-      if (instance.cursor case final value?) 'cursor': value,
-    };
+Map<String, dynamic> _$CoreEventPropertiesToJson(
+  _CoreEventProperties instance,
+) => <String, dynamic>{
+  'message': ?instance.message,
+  'name': ?instance.name,
+  'method': ?instance.method,
+  'connected': ?instance.connected,
+  'network': ?instance.network,
+  'explorer_id': ?instance.explorer_id,
+  'provider': ?instance.provider,
+  'platform': ?instance.platform,
+  'trace': ?instance.trace,
+  'topic': ?instance.topic,
+  'correlation_id': ?instance.correlation_id,
+  'client_id': ?instance.client_id,
+  'direction': ?instance.direction,
+  'userAgent': ?instance.userAgent,
+  'sendToken': ?instance.sendToken,
+  'sendAmount': ?instance.sendAmount,
+  'address': ?instance.address,
+  'project_id': ?instance.project_id,
+  'cursor': ?instance.cursor,
+};

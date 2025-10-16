@@ -47,9 +47,9 @@ class TransactionInstruction extends Serializable {
   MessageInstruction toMessageInstruction(final List<Pubkey> keys) =>
       MessageInstruction(
         programIdIndex: keys.indexOf(programId),
-        accounts: this
-            .keys
-            .map((final AccountMeta meta) => keys.indexOf(meta.pubkey)),
+        accounts: this.keys.map(
+          (final AccountMeta meta) => keys.indexOf(meta.pubkey),
+        ),
         data: base58.encode(Uint8List.fromList(data)),
       );
 }

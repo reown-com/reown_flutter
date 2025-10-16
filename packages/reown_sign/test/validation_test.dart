@@ -377,11 +377,7 @@ void main() {
           context: 'test',
         ),
         throwsA(
-          isA<ReownSignError>().having(
-            (e) => e.message,
-            'message',
-            errors[i],
-          ),
+          isA<ReownSignError>().having((e) => e.message, 'message', errors[i]),
         ),
       );
     }

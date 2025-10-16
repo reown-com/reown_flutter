@@ -26,7 +26,8 @@ void checkThrow(final bool condition, final Object Function() callback) {
 void checkEq(final int value, final int limit, [final Object? label]) {
   if (value != limit) {
     throw AssertionError(
-        'The ${label ?? 'value'} $value must be `equal to` $limit.');
+      'The ${label ?? 'value'} $value must be `equal to` $limit.',
+    );
   }
 }
 
@@ -36,7 +37,8 @@ void checkEq(final int value, final int limit, [final Object? label]) {
 void checkGt(final int value, final int limit, [final Object? label]) {
   if (value <= limit) {
     throw AssertionError(
-        'The ${label ?? 'value'} $value must be `greater than` $limit.');
+      'The ${label ?? 'value'} $value must be `greater than` $limit.',
+    );
   }
 }
 
@@ -57,7 +59,8 @@ void checkGte(final int value, final int limit, [final Object? label]) {
 void checkLt(final int value, final int limit, [final Object? label]) {
   if (value >= limit) {
     throw AssertionError(
-        'The ${label ?? 'value'} $value must be `less than` $limit.');
+      'The ${label ?? 'value'} $value must be `less than` $limit.',
+    );
   }
 }
 
@@ -67,6 +70,7 @@ void checkLt(final int value, final int limit, [final Object? label]) {
 void checkLte(final int value, final int limit, [final Object? label]) {
   if (value > limit) {
     throw AssertionError(
-        'The ${label ?? 'value'} $value must be `less than or equal to` $limit.');
+      'The ${label ?? 'value'} $value must be `less than or equal to` $limit.',
+    );
   }
 }

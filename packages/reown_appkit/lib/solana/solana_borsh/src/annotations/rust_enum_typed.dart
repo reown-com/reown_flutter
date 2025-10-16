@@ -12,9 +12,7 @@ import 'annotation.dart';
 abstract class BorshRustEnumTyped<T, U extends BorshAnnotation>
     extends BorshAnnotation<RustEnum<T>> {
   /// Creates an annotation for complex Rust style enums (tuple or struct constructors).
-  const BorshRustEnumTyped(
-    this.variants,
-  );
+  const BorshRustEnumTyped(this.variants);
 
   /// The enum variants constructor parameters.
   final List<U?> variants;

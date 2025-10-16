@@ -40,10 +40,10 @@ class SendTransactionConfig extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'skipPreflight': skipPreflight,
-        'preflightCommitment': preflightCommitment?.name,
-        'encoding': encoding.name,
-        'maxRetries': maxRetries,
-        'minContextSlot': minContextSlot,
-      };
+    'skipPreflight': skipPreflight,
+    'preflightCommitment': preflightCommitment?.name,
+    'encoding': encoding.name,
+    'maxRetries': maxRetries,
+    'minContextSlot': minContextSlot,
+  };
 }

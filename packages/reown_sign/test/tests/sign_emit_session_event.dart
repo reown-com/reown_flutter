@@ -26,10 +26,7 @@ void signEmitSessionEvent({
       clients.add(clientA);
       clients.add(clientB);
 
-      await clientB.sessions.set(
-        TEST_SESSION_VALID_TOPIC,
-        testSessionValid,
-      );
+      await clientB.sessions.set(TEST_SESSION_VALID_TOPIC, testSessionValid);
       await clientB.sessions.set(
         TEST_SESSION_EXPIRED_TOPIC,
         testSessionExpired,
@@ -167,12 +164,7 @@ void signEmitSessionEvent({
       await completer.future;
       await completerSession.future;
 
-      expect(
-        clientB.sessions.has(
-          TEST_SESSION_EXPIRED_TOPIC,
-        ),
-        false,
-      );
+      expect(clientB.sessions.has(TEST_SESSION_EXPIRED_TOPIC), false);
       expect(counter, 1);
       expect(counterSession, 1);
       clientB.core.expirer.onExpire.unsubscribeAll();

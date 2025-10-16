@@ -149,11 +149,10 @@ class TronService {
         final keys = GetIt.I<IKeyService>().getKeysForChain(
           chainSupported.chainId,
         );
-        final tronPrivateKey = keys[0].privateKey; // 0x.....
-        final privateKeyBytes = Uint8List.fromList(hex.decode(
-            tronPrivateKey.startsWith('0x')
-                ? tronPrivateKey.substring(2)
-                : tronPrivateKey));
+        final tronPrivateKey = keys[0].privateKey.startsWith('0x')
+            ? keys[0].privateKey.substring(2)
+            : keys[0].privateKey; // 0x.....
+        final privateKeyBytes = Uint8List.fromList(hex.decode(tronPrivateKey));
 
         // Step 3: Sign
         final sigBytes = bip32.sign(hash, privateKeyBytes);
@@ -201,6 +200,7 @@ class TronService {
         topic,
         session!.peer.metadata.redirect,
         response.error?.message,
+        response.result != null,
       );
     } on ReownSignError catch (error) {
       MethodsUtils.handleRedirect(

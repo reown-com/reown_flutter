@@ -11,10 +11,8 @@ import 'package:reown_walletkit/reown_walletkit.dart';
 
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
-import 'package:reown_walletkit_wallet/main.dart';
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
-import 'package:reown_walletkit_wallet/pages/chain_abstraction_execute_page.dart';
 import 'package:reown_walletkit_wallet/utils/eth_utils.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_model.dart';
@@ -72,7 +70,6 @@ class EVMService {
       };
 
   EVMService({required this.chainSupported}) {
-    ethClient = Web3Client(chainSupported.rpc.first, http.Client());
     _walletKitService = GetIt.I<IWalletKitService>();
     _walletKit = _walletKitService.walletKit;
 
@@ -99,6 +96,22 @@ class EVMService {
     }
 
     _walletKit.onSessionRequest.subscribe(_onSessionRequest);
+
+    ethClient = Web3Client('${_formatRpcUrl(chainSupported)}', http.Client());
+  }
+
+  Uri _formatRpcUrl(ChainMetadata chainSupported) {
+    if (chainSupported.rpc.isEmpty) {
+      return Uri.parse('');
+    }
+
+    String rpcUrl = chainSupported.rpc.first;
+    if (Uri.parse(rpcUrl).host == 'rpc.walletconnect.org') {
+      rpcUrl += '?chainId=${chainSupported.chainId}';
+      rpcUrl += '&projectId=${_walletKit.core.projectId}';
+    }
+    debugPrint('[SampleWallet] rpcUrl: $rpcUrl');
+    return Uri.parse(rpcUrl);
   }
 
   EthPrivateKey get _credentials {
@@ -402,39 +415,6 @@ class EVMService {
       return;
     }
 
-    // ************
-    // Intercept to check if Chain Abstraction is required
-    // Otherwise continue with regular send transaction flow
-    // ************
-    if (txParams.containsKey('input') || txParams.containsKey('data')) {
-      final caResponse = await handleChainAbstractionIfNeeded(
-        pRequest.id,
-        pRequest.chainId,
-        txParams,
-      );
-      // caResponse could be JsonRpcResponse, TransactionCompat, BridgingError
-      // if chainAbstractionResponse?.result is not null it means it had been handled by Chain Abstraction
-      // We return that response and stop the flow
-      if (caResponse is JsonRpcResponse) {
-        return _handleResponseForTopic(
-          topic,
-          caResponse,
-        );
-      } else {
-        if (caResponse is BridgingError) {
-          final error = caResponse.name;
-          return _handleResponseForTopic(
-            topic,
-            JsonRpcResponse(
-              id: pRequest.id,
-              jsonrpc: '2.0',
-              error: JsonRpcError(code: -1, message: error),
-            ),
-          );
-        }
-      }
-    }
-
     // otherwise we continue with regular flow for eth_sendTransaction
     await approveAndSendTransaction(
       pRequest.id,
@@ -490,132 +470,6 @@ class EVMService {
     }
 
     _handleResponseForTopic(topic, response);
-  }
-
-  Future<dynamic> handleChainAbstractionIfNeeded(
-    int requestId,
-    String chainId,
-    Map<String, dynamic> txParams,
-  ) async {
-    final txData = txParams['input'] ?? txParams['data'];
-    final prepareResponse = await _chainAbstractionPrepareHandler(
-      chainId,
-      txParams['from'],
-      txParams['to'],
-      txData,
-    );
-    if (prepareResponse is UiFieldsCompat) {
-      final context = navigatorKey.currentState!.context;
-      final executeResponse = await Navigator.of(context).push(
-        MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (context) => ChainAbstractionDetailsAndExecute(
-            uiFieldsCompat: prepareResponse,
-          ),
-        ),
-      );
-      var rpcResponse = JsonRpcResponse(id: requestId, jsonrpc: '2.0');
-      if (executeResponse is ReownSignError) {
-        // Error from execution fron-end
-        rpcResponse = rpcResponse.copyWith(
-          error: JsonRpcError(
-            code: executeResponse.code,
-            message: executeResponse.message,
-          ),
-        );
-      } else if (executeResponse is ErrorCompat) {
-        // Error from execution back-end
-        rpcResponse = rpcResponse.copyWith(
-          error: JsonRpcError(
-            code: -1,
-            message: executeResponse.message,
-          ),
-        );
-      } else if (executeResponse is ExecuteDetailsCompat) {
-        // Success response
-        rpcResponse = rpcResponse.copyWith(
-          result: executeResponse.initialTxnReceipt,
-        );
-      }
-      return rpcResponse; // JsonRpcResponse
-    } else if (prepareResponse is PrepareResponseNotRequiredCompat) {
-      // chain abstraction notRequired, continue with initialTransaction
-      return prepareResponse.initialTransaction; // TransactionCompat
-    } else if (prepareResponse is PrepareResponseError) {
-      // chain abstraction error
-      return prepareResponse.error; // BridgingError
-    }
-  }
-
-  Future<dynamic> _chainAbstractionPrepareHandler(
-    String chainId,
-    String from,
-    String to,
-    String input,
-  ) async {
-    dynamic prepareResponse;
-    try {
-      final response = await _walletKit.prepare(
-        chainId: chainId,
-        from: from,
-        call: CallCompat(to: to, input: input),
-      );
-      response.when(
-        success: (PrepareDetailedResponseSuccessCompat deatailResponse) {
-          deatailResponse.when(
-            available: (UiFieldsCompat uiFieldsCompat) {
-              prepareResponse = uiFieldsCompat;
-            },
-            notRequired: (PrepareResponseNotRequiredCompat notRequired) {
-              // it means that no bridging is required
-              // proceeds as normal transaction with initial transaction
-              prepareResponse = notRequired;
-            },
-          );
-        },
-        error: (PrepareResponseError error) {
-          prepareResponse = error;
-        },
-      );
-    } catch (e) {
-      // if prepare fails for any reason we should let the flow continue as usual with the regular approval
-      debugPrint('[SampleWallet] prepare error $e');
-      prepareResponse = null;
-    }
-
-    return prepareResponse;
-  }
-
-  Future<dynamic> chainAbstractionExecuteHandler(
-    UiFieldsCompat uiFields,
-  ) async {
-    final TxnDetailsCompat initial = uiFields.initial;
-    final List<TxnDetailsCompat> route = uiFields.route;
-
-    final String initialSignature = signHash(initial.transactionHashToSign);
-    final isValid = isValidSignature(
-      initial.transactionHashToSign,
-      initialSignature,
-    );
-    if (isValid) {
-      final List<String> routeSignatures = route.map((route) {
-        final String rSignature = signHash(route.transactionHashToSign);
-        return rSignature;
-      }).toList();
-      try {
-        return await _walletKit.execute(
-          uiFields: uiFields,
-          initialTxnSig: initialSignature,
-          routeTxnSigs: routeSignatures,
-        );
-      } catch (e) {
-        rethrow;
-      }
-    } else {
-      return Errors.getSdkError(
-        Errors.SIGNATURE_VERIFICATION_FAILED,
-      ).toSignError();
-    }
   }
 
   Future<void> switchChainHandler(String topic, dynamic parameters) async {

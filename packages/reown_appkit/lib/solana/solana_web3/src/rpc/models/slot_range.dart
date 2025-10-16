@@ -10,10 +10,8 @@ import 'package:reown_appkit/solana/solana_common/types.dart' show u64;
 
 class SlotRange extends Serializable {
   /// Defines the slot range to return block production for.
-  const SlotRange({
-    required this.firstSlot,
-    this.lastSlot,
-  }) : assert(firstSlot >= 0 && (lastSlot == null || lastSlot >= 0));
+  const SlotRange({required this.firstSlot, this.lastSlot})
+    : assert(firstSlot >= 0 && (lastSlot == null || lastSlot >= 0));
 
   /// The first slot to return block production information for (inclusive).
   final u64 firstSlot;
@@ -23,10 +21,8 @@ class SlotRange extends Serializable {
   final u64? lastSlot;
 
   /// {@macro solana_common.Serializable.fromJson}
-  factory SlotRange.fromJson(final Map<String, dynamic> json) => SlotRange(
-        firstSlot: json['firstSlot'],
-        lastSlot: json['lastSlot'],
-      );
+  factory SlotRange.fromJson(final Map<String, dynamic> json) =>
+      SlotRange(firstSlot: json['firstSlot'], lastSlot: json['lastSlot']);
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static SlotRange? tryFromJson(final Map<String, dynamic>? json) =>
@@ -34,7 +30,7 @@ class SlotRange extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'firstSlot': firstSlot,
-        'lastSlot': lastSlot,
-      };
+    'firstSlot': firstSlot,
+    'lastSlot': lastSlot,
+  };
 }

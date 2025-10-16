@@ -8,21 +8,17 @@ class BasicCoreEvent {
   final String event;
   final CoreEventProperties? properties;
 
-  BasicCoreEvent({
-    this.type,
-    required this.event,
-    required this.properties,
-  });
+  BasicCoreEvent({this.type, required this.event, required this.properties});
 
   Map<String, dynamic> toJson() => {
-        'type': type,
-        'event': event,
-        if (properties != null) 'properties': properties?.toJson(),
-      };
+    'type': type,
+    'event': event,
+    if (properties != null) 'properties': properties?.toJson(),
+  };
 }
 
 @freezed
-class CoreEventProperties with _$CoreEventProperties {
+sealed class CoreEventProperties with _$CoreEventProperties {
   @JsonSerializable(includeIfNull: false)
   const factory CoreEventProperties({
     String? message,

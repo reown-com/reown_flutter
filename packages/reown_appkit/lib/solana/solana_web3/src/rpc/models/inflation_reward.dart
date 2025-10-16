@@ -49,10 +49,10 @@ class InflationReward extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'epoch': epoch,
-        'effectiveSlot': effectiveSlot,
-        'amount': amount,
-        'postBalance': postBalance,
-        'commission': commission,
-      };
+    'epoch': epoch,
+    'effectiveSlot': effectiveSlot,
+    'amount': amount,
+    'postBalance': postBalance,
+    'commission': commission,
+  };
 }

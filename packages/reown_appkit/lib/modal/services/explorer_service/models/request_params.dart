@@ -49,24 +49,23 @@ class RequestParams {
     String? exclude,
     String? platform,
     String? chains,
-  }) =>
-      RequestParams(
-        page: page ?? this.page,
-        entries: entries ?? this.entries,
-        search: search ?? this.search,
-        include: include ?? this.include,
-        exclude: exclude ?? this.exclude,
-        platform: platform ?? this.platform,
-        chains: chains ?? this.chains,
-      );
+  }) => RequestParams(
+    page: page ?? this.page,
+    entries: entries ?? this.entries,
+    search: search ?? this.search,
+    include: include ?? this.include,
+    exclude: exclude ?? this.exclude,
+    platform: platform ?? this.platform,
+    chains: chains ?? this.chains,
+  );
 
   RequestParams nextPage() => RequestParams(
-        page: page + 1,
-        entries: entries,
-        search: search,
-        include: include,
-        exclude: exclude,
-        platform: platform,
-        chains: chains,
-      );
+    page: page + 1,
+    entries: entries,
+    search: search,
+    include: include,
+    exclude: exclude,
+    platform: platform,
+    chains: chains,
+  );
 }

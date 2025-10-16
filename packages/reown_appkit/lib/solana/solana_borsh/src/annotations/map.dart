@@ -15,10 +15,7 @@ import '../annotations/annotation.dart';
 /// ```
 class BorshMap<K, V> extends BorshAnnotation<Map<K, V>> {
   /// Creates an annotation for a map data type.
-  const BorshMap(
-    this.keySubtype,
-    this.valueSubtype,
-  );
+  const BorshMap(this.keySubtype, this.valueSubtype);
 
   /// The key data type's annotation.
   final BorshAnnotation<K> keySubtype;

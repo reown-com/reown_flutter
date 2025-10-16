@@ -48,9 +48,7 @@ typedef JsonRpcUnsubscribeMethod = JsonRpcMethod<bool, bool>;
 /// ```
 abstract class JsonRpcMethod<S, T> {
   /// Creates a handler to invoke [method] with [params].
-  const JsonRpcMethod(
-    this.method,
-  );
+  const JsonRpcMethod(this.method);
 
   /// Auto increment id.
   static int _id = 0;
@@ -72,19 +70,11 @@ abstract class JsonRpcMethod<S, T> {
 
   /// Creates a [JsonRpcRequest] to invoke [method] with [params]. The [commitment] level is
   /// provided as a default value to all methods that query bank state.
-  JsonRpcRequest request([
-    final Commitment? commitment,
-  ]) =>
-      JsonRpcRequest(
-        id: ++_id,
-        method: method,
-        params: params(commitment),
-      );
+  JsonRpcRequest request([final Commitment? commitment]) =>
+      JsonRpcRequest(id: ++_id, method: method, params: params(commitment));
 
   /// Parses the [json] RPC response and returns the result.
-  JsonRpcResponse<T> response(
-    final Map<String, dynamic> json,
-  ) {
+  JsonRpcResponse<T> response(final Map<String, dynamic> json) {
     // Success responses contain a 'result' key.
     if (json.containsKey(JsonRpcSuccessResponse.resultKey)) {
       final S result = json[JsonRpcSuccessResponse.resultKey];

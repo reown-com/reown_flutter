@@ -16,8 +16,8 @@ class GetMinimumBalanceForRentExemption extends JsonRpcTypeMethod<u64> {
     final usize length, {
     final GetMinimumBalanceForRentExemptionConfig? config,
   }) : super(
-          'getMinimumBalanceForRentExemption',
-          values: [length],
-          config: config ?? const GetMinimumBalanceForRentExemptionConfig(),
-        );
+         'getMinimumBalanceForRentExemption',
+         values: [length],
+         config: config ?? const GetMinimumBalanceForRentExemptionConfig(),
+       );
 }

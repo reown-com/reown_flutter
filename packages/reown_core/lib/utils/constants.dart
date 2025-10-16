@@ -38,6 +38,8 @@ class StoreVersions {
   static const VERSION_MESSAGE_TRACKER = '1.0';
   static const CONTEXT_EVENTS_TRACKER = 'eventsTracker';
   static const VERSION_EVENTS_TRACKER = '1.0';
+  static const CONTEXT_VERIFY = 'eventsTracker';
+  static const VERSION_VERIFY = '2.0';
   static const CONTEXT_TOPIC_MAP = 'topicMap';
   static const VERSION_TOPIC_MAP = '1.0';
   static const CONTEXT_TOPIC_TO_RECEIVER_PUBLIC_KEY =
@@ -69,10 +71,7 @@ class MethodsConstants {
   static const walletSwitchEthChain = 'wallet_switchEthereumChain';
   static const walletAddEthChain = 'wallet_addEthereumChain';
   static const ethSendTransaction = 'eth_sendTransaction';
-  static const requiredMethods = [
-    ethSendTransaction,
-    'personal_sign',
-  ];
+  static const requiredMethods = [ethSendTransaction, 'personal_sign'];
   static const optionalMethods = [
     'eth_accounts',
     'eth_requestAccounts',
@@ -96,14 +95,7 @@ class MethodsConstants {
 class EventsConstants {
   static const chainChanged = 'chainChanged';
   static const accountsChanged = 'accountsChanged';
-  static const requiredEvents = [
-    chainChanged,
-    accountsChanged,
-  ];
-  static const optionalEvents = [
-    'message',
-    'disconnect',
-    'connect',
-  ];
+  static const requiredEvents = [chainChanged, accountsChanged];
+  static const optionalEvents = ['message', 'disconnect', 'connect'];
   static const allEvents = [...requiredEvents, ...optionalEvents];
 }

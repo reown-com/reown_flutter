@@ -38,7 +38,7 @@ class PhantomData {
   @override
   String toString() => toJson().toString();
 
-  PhantomData copytWith({
+  PhantomData copyWith({
     String? address,
     String? chainId,
     ConnectionMetadata? self,

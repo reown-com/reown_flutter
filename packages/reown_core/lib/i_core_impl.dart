@@ -23,6 +23,7 @@ abstract class IReownCore {
   abstract ICrypto crypto;
   abstract IRelayClient relayClient;
   abstract IStore<Map<String, dynamic>> storage;
+  abstract IStore<Map<String, dynamic>> secureStorage;
 
   abstract IConnectivity connectivity;
   abstract IExpirer expirer;

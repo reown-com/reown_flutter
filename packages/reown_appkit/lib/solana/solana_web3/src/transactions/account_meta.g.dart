@@ -7,10 +7,10 @@ part of 'account_meta.dart';
 // **************************************************************************
 
 AccountMeta _$AccountMetaFromJson(Map<String, dynamic> json) => AccountMeta(
-      Pubkey.fromJson(json['pubkey'] as String),
-      isSigner: json['isSigner'] as bool? ?? false,
-      isWritable: json['isWritable'] as bool? ?? false,
-    );
+  Pubkey.fromJson(json['pubkey'] as String),
+  isSigner: json['isSigner'] as bool? ?? false,
+  isWritable: json['isWritable'] as bool? ?? false,
+);
 
 Map<String, dynamic> _$AccountMetaToJson(AccountMeta instance) =>
     <String, dynamic>{

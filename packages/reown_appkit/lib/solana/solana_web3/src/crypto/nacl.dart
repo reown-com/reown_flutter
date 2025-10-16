@@ -64,8 +64,10 @@ class NaClKeypair {
   /// Throws an [AssertionError] if the [seckey] is invalid.
   /// {@endtemplate}
   Ed25519Keypair fromSeckeySync(final Uint8List seckey) {
-    check(seckey.length == seckeyLength,
-        'Invalid secret key length ${seckey.length}.');
+    check(
+      seckey.length == seckeyLength,
+      'Invalid secret key length ${seckey.length}.',
+    );
     final Uint8List pubkey = seckey.sublist(seckey.length - pubkeyLength);
     return Ed25519Keypair(pubkey: pubkey, seckey: seckey);
   }
@@ -119,16 +121,21 @@ class NaClDetached {
   }
 
   /// {@macro NaClDetached.verifySync}
-  Future<bool> verify(final Uint8List message, final Uint8List signature,
-          final Uint8List pubkey) =>
-      compute((_) => verifySync(message, signature, pubkey), null);
+  Future<bool> verify(
+    final Uint8List message,
+    final Uint8List signature,
+    final Uint8List pubkey,
+  ) => compute((_) => verifySync(message, signature, pubkey), null);
 
   /// {@template NaClDetached.verifySync}
   /// Returns true if the [signature] was derived by signing the [message] using [pubkey]'s
   /// `secret key`.
   /// {@endtemplate}
-  bool verifySync(final Uint8List message, final Uint8List signature,
-      final Uint8List pubkey) {
+  bool verifySync(
+    final Uint8List message,
+    final Uint8List signature,
+    final Uint8List pubkey,
+  ) {
     check(signature.length == signatureLength, 'Invalid signature length.');
     final Uint8List signedMessage = Uint8List.fromList(signature + message);
     final Uint8List buffer = Uint8List(signedMessage.length);

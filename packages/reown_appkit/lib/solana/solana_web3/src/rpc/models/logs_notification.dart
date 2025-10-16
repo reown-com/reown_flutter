@@ -43,8 +43,8 @@ class LogsNotification extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'signature': signature,
-        'err': err,
-        'logs': logs,
-      };
+    'signature': signature,
+    'err': err,
+    'logs': logs,
+  };
 }

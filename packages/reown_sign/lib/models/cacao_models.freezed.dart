@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,1576 +9,1753 @@ part of 'cacao_models.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-CacaoRequestPayload _$CacaoRequestPayloadFromJson(Map<String, dynamic> json) {
-  return _CacaoRequestPayload.fromJson(json);
-}
 
 /// @nodoc
 mixin _$CacaoRequestPayload {
-  String get domain => throw _privateConstructorUsedError;
-  String get aud => throw _privateConstructorUsedError;
-  String get version => throw _privateConstructorUsedError;
-  String get nonce => throw _privateConstructorUsedError;
-  String get iat => throw _privateConstructorUsedError;
-  String? get nbf => throw _privateConstructorUsedError;
-  String? get exp => throw _privateConstructorUsedError;
-  String? get statement => throw _privateConstructorUsedError;
-  String? get requestId => throw _privateConstructorUsedError;
-  List<String>? get resources => throw _privateConstructorUsedError;
+
+ String get domain; String get aud; String get version; String get nonce; String get iat; String? get nbf; String? get exp; String? get statement; String? get requestId; List<String>? get resources;
+/// Create a copy of CacaoRequestPayload
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CacaoRequestPayloadCopyWith<CacaoRequestPayload> get copyWith => _$CacaoRequestPayloadCopyWithImpl<CacaoRequestPayload>(this as CacaoRequestPayload, _$identity);
 
   /// Serializes this CacaoRequestPayload to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of CacaoRequestPayload
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $CacaoRequestPayloadCopyWith<CacaoRequestPayload> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CacaoRequestPayload&&(identical(other.domain, domain) || other.domain == domain)&&(identical(other.aud, aud) || other.aud == aud)&&(identical(other.version, version) || other.version == version)&&(identical(other.nonce, nonce) || other.nonce == nonce)&&(identical(other.iat, iat) || other.iat == iat)&&(identical(other.nbf, nbf) || other.nbf == nbf)&&(identical(other.exp, exp) || other.exp == exp)&&(identical(other.statement, statement) || other.statement == statement)&&(identical(other.requestId, requestId) || other.requestId == requestId)&&const DeepCollectionEquality().equals(other.resources, resources));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,domain,aud,version,nonce,iat,nbf,exp,statement,requestId,const DeepCollectionEquality().hash(resources));
+
+@override
+String toString() {
+  return 'CacaoRequestPayload(domain: $domain, aud: $aud, version: $version, nonce: $nonce, iat: $iat, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $CacaoRequestPayloadCopyWith<$Res> {
-  factory $CacaoRequestPayloadCopyWith(
-          CacaoRequestPayload value, $Res Function(CacaoRequestPayload) then) =
-      _$CacaoRequestPayloadCopyWithImpl<$Res, CacaoRequestPayload>;
-  @useResult
-  $Res call(
-      {String domain,
-      String aud,
-      String version,
-      String nonce,
-      String iat,
-      String? nbf,
-      String? exp,
-      String? statement,
-      String? requestId,
-      List<String>? resources});
-}
+abstract mixin class $CacaoRequestPayloadCopyWith<$Res>  {
+  factory $CacaoRequestPayloadCopyWith(CacaoRequestPayload value, $Res Function(CacaoRequestPayload) _then) = _$CacaoRequestPayloadCopyWithImpl;
+@useResult
+$Res call({
+ String domain, String aud, String version, String nonce, String iat, String? nbf, String? exp, String? statement, String? requestId, List<String>? resources
+});
 
+
+
+
+}
 /// @nodoc
-class _$CacaoRequestPayloadCopyWithImpl<$Res, $Val extends CacaoRequestPayload>
+class _$CacaoRequestPayloadCopyWithImpl<$Res>
     implements $CacaoRequestPayloadCopyWith<$Res> {
-  _$CacaoRequestPayloadCopyWithImpl(this._value, this._then);
+  _$CacaoRequestPayloadCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final CacaoRequestPayload _self;
+  final $Res Function(CacaoRequestPayload) _then;
 
-  /// Create a copy of CacaoRequestPayload
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? domain = null,
-    Object? aud = null,
-    Object? version = null,
-    Object? nonce = null,
-    Object? iat = null,
-    Object? nbf = freezed,
-    Object? exp = freezed,
-    Object? statement = freezed,
-    Object? requestId = freezed,
-    Object? resources = freezed,
-  }) {
-    return _then(_value.copyWith(
-      domain: null == domain
-          ? _value.domain
-          : domain // ignore: cast_nullable_to_non_nullable
-              as String,
-      aud: null == aud
-          ? _value.aud
-          : aud // ignore: cast_nullable_to_non_nullable
-              as String,
-      version: null == version
-          ? _value.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String,
-      nonce: null == nonce
-          ? _value.nonce
-          : nonce // ignore: cast_nullable_to_non_nullable
-              as String,
-      iat: null == iat
-          ? _value.iat
-          : iat // ignore: cast_nullable_to_non_nullable
-              as String,
-      nbf: freezed == nbf
-          ? _value.nbf
-          : nbf // ignore: cast_nullable_to_non_nullable
-              as String?,
-      exp: freezed == exp
-          ? _value.exp
-          : exp // ignore: cast_nullable_to_non_nullable
-              as String?,
-      statement: freezed == statement
-          ? _value.statement
-          : statement // ignore: cast_nullable_to_non_nullable
-              as String?,
-      requestId: freezed == requestId
-          ? _value.requestId
-          : requestId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      resources: freezed == resources
-          ? _value.resources
-          : resources // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-    ) as $Val);
-  }
+/// Create a copy of CacaoRequestPayload
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? domain = null,Object? aud = null,Object? version = null,Object? nonce = null,Object? iat = null,Object? nbf = freezed,Object? exp = freezed,Object? statement = freezed,Object? requestId = freezed,Object? resources = freezed,}) {
+  return _then(_self.copyWith(
+domain: null == domain ? _self.domain : domain // ignore: cast_nullable_to_non_nullable
+as String,aud: null == aud ? _self.aud : aud // ignore: cast_nullable_to_non_nullable
+as String,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as String,nonce: null == nonce ? _self.nonce : nonce // ignore: cast_nullable_to_non_nullable
+as String,iat: null == iat ? _self.iat : iat // ignore: cast_nullable_to_non_nullable
+as String,nbf: freezed == nbf ? _self.nbf : nbf // ignore: cast_nullable_to_non_nullable
+as String?,exp: freezed == exp ? _self.exp : exp // ignore: cast_nullable_to_non_nullable
+as String?,statement: freezed == statement ? _self.statement : statement // ignore: cast_nullable_to_non_nullable
+as String?,requestId: freezed == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
+as String?,resources: freezed == resources ? _self.resources : resources // ignore: cast_nullable_to_non_nullable
+as List<String>?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$CacaoRequestPayloadImplCopyWith<$Res>
-    implements $CacaoRequestPayloadCopyWith<$Res> {
-  factory _$$CacaoRequestPayloadImplCopyWith(_$CacaoRequestPayloadImpl value,
-          $Res Function(_$CacaoRequestPayloadImpl) then) =
-      __$$CacaoRequestPayloadImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String domain,
-      String aud,
-      String version,
-      String nonce,
-      String iat,
-      String? nbf,
-      String? exp,
-      String? statement,
-      String? requestId,
-      List<String>? resources});
 }
 
-/// @nodoc
-class __$$CacaoRequestPayloadImplCopyWithImpl<$Res>
-    extends _$CacaoRequestPayloadCopyWithImpl<$Res, _$CacaoRequestPayloadImpl>
-    implements _$$CacaoRequestPayloadImplCopyWith<$Res> {
-  __$$CacaoRequestPayloadImplCopyWithImpl(_$CacaoRequestPayloadImpl _value,
-      $Res Function(_$CacaoRequestPayloadImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of CacaoRequestPayload
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? domain = null,
-    Object? aud = null,
-    Object? version = null,
-    Object? nonce = null,
-    Object? iat = null,
-    Object? nbf = freezed,
-    Object? exp = freezed,
-    Object? statement = freezed,
-    Object? requestId = freezed,
-    Object? resources = freezed,
-  }) {
-    return _then(_$CacaoRequestPayloadImpl(
-      domain: null == domain
-          ? _value.domain
-          : domain // ignore: cast_nullable_to_non_nullable
-              as String,
-      aud: null == aud
-          ? _value.aud
-          : aud // ignore: cast_nullable_to_non_nullable
-              as String,
-      version: null == version
-          ? _value.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String,
-      nonce: null == nonce
-          ? _value.nonce
-          : nonce // ignore: cast_nullable_to_non_nullable
-              as String,
-      iat: null == iat
-          ? _value.iat
-          : iat // ignore: cast_nullable_to_non_nullable
-              as String,
-      nbf: freezed == nbf
-          ? _value.nbf
-          : nbf // ignore: cast_nullable_to_non_nullable
-              as String?,
-      exp: freezed == exp
-          ? _value.exp
-          : exp // ignore: cast_nullable_to_non_nullable
-              as String?,
-      statement: freezed == statement
-          ? _value.statement
-          : statement // ignore: cast_nullable_to_non_nullable
-              as String?,
-      requestId: freezed == requestId
-          ? _value.requestId
-          : requestId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      resources: freezed == resources
-          ? _value._resources
-          : resources // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-    ));
-  }
+/// Adds pattern-matching-related methods to [CacaoRequestPayload].
+extension CacaoRequestPayloadPatterns on CacaoRequestPayload {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CacaoRequestPayload value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _CacaoRequestPayload() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CacaoRequestPayload value)  $default,){
+final _that = this;
+switch (_that) {
+case _CacaoRequestPayload():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CacaoRequestPayload value)?  $default,){
+final _that = this;
+switch (_that) {
+case _CacaoRequestPayload() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String domain,  String aud,  String version,  String nonce,  String iat,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _CacaoRequestPayload() when $default != null:
+return $default(_that.domain,_that.aud,_that.version,_that.nonce,_that.iat,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String domain,  String aud,  String version,  String nonce,  String iat,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources)  $default,) {final _that = this;
+switch (_that) {
+case _CacaoRequestPayload():
+return $default(_that.domain,_that.aud,_that.version,_that.nonce,_that.iat,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String domain,  String aud,  String version,  String nonce,  String iat,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources)?  $default,) {final _that = this;
+switch (_that) {
+case _CacaoRequestPayload() when $default != null:
+return $default(_that.domain,_that.aud,_that.version,_that.nonce,_that.iat,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable(includeIfNull: false)
-class _$CacaoRequestPayloadImpl implements _CacaoRequestPayload {
-  const _$CacaoRequestPayloadImpl(
-      {required this.domain,
-      required this.aud,
-      required this.version,
-      required this.nonce,
-      required this.iat,
-      this.nbf,
-      this.exp,
-      this.statement,
-      this.requestId,
-      final List<String>? resources})
-      : _resources = resources;
+class _CacaoRequestPayload implements CacaoRequestPayload {
+  const _CacaoRequestPayload({required this.domain, required this.aud, required this.version, required this.nonce, required this.iat, this.nbf, this.exp, this.statement, this.requestId, final  List<String>? resources}): _resources = resources;
+  factory _CacaoRequestPayload.fromJson(Map<String, dynamic> json) => _$CacaoRequestPayloadFromJson(json);
 
-  factory _$CacaoRequestPayloadImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CacaoRequestPayloadImplFromJson(json);
-
-  @override
-  final String domain;
-  @override
-  final String aud;
-  @override
-  final String version;
-  @override
-  final String nonce;
-  @override
-  final String iat;
-  @override
-  final String? nbf;
-  @override
-  final String? exp;
-  @override
-  final String? statement;
-  @override
-  final String? requestId;
-  final List<String>? _resources;
-  @override
-  List<String>? get resources {
-    final value = _resources;
-    if (value == null) return null;
-    if (_resources is EqualUnmodifiableListView) return _resources;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
-  @override
-  String toString() {
-    return 'CacaoRequestPayload(domain: $domain, aud: $aud, version: $version, nonce: $nonce, iat: $iat, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CacaoRequestPayloadImpl &&
-            (identical(other.domain, domain) || other.domain == domain) &&
-            (identical(other.aud, aud) || other.aud == aud) &&
-            (identical(other.version, version) || other.version == version) &&
-            (identical(other.nonce, nonce) || other.nonce == nonce) &&
-            (identical(other.iat, iat) || other.iat == iat) &&
-            (identical(other.nbf, nbf) || other.nbf == nbf) &&
-            (identical(other.exp, exp) || other.exp == exp) &&
-            (identical(other.statement, statement) ||
-                other.statement == statement) &&
-            (identical(other.requestId, requestId) ||
-                other.requestId == requestId) &&
-            const DeepCollectionEquality()
-                .equals(other._resources, _resources));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      domain,
-      aud,
-      version,
-      nonce,
-      iat,
-      nbf,
-      exp,
-      statement,
-      requestId,
-      const DeepCollectionEquality().hash(_resources));
-
-  /// Create a copy of CacaoRequestPayload
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CacaoRequestPayloadImplCopyWith<_$CacaoRequestPayloadImpl> get copyWith =>
-      __$$CacaoRequestPayloadImplCopyWithImpl<_$CacaoRequestPayloadImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CacaoRequestPayloadImplToJson(
-      this,
-    );
-  }
+@override final  String domain;
+@override final  String aud;
+@override final  String version;
+@override final  String nonce;
+@override final  String iat;
+@override final  String? nbf;
+@override final  String? exp;
+@override final  String? statement;
+@override final  String? requestId;
+ final  List<String>? _resources;
+@override List<String>? get resources {
+  final value = _resources;
+  if (value == null) return null;
+  if (_resources is EqualUnmodifiableListView) return _resources;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
 }
 
-abstract class _CacaoRequestPayload implements CacaoRequestPayload {
-  const factory _CacaoRequestPayload(
-      {required final String domain,
-      required final String aud,
-      required final String version,
-      required final String nonce,
-      required final String iat,
-      final String? nbf,
-      final String? exp,
-      final String? statement,
-      final String? requestId,
-      final List<String>? resources}) = _$CacaoRequestPayloadImpl;
 
-  factory _CacaoRequestPayload.fromJson(Map<String, dynamic> json) =
-      _$CacaoRequestPayloadImpl.fromJson;
+/// Create a copy of CacaoRequestPayload
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CacaoRequestPayloadCopyWith<_CacaoRequestPayload> get copyWith => __$CacaoRequestPayloadCopyWithImpl<_CacaoRequestPayload>(this, _$identity);
 
-  @override
-  String get domain;
-  @override
-  String get aud;
-  @override
-  String get version;
-  @override
-  String get nonce;
-  @override
-  String get iat;
-  @override
-  String? get nbf;
-  @override
-  String? get exp;
-  @override
-  String? get statement;
-  @override
-  String? get requestId;
-  @override
-  List<String>? get resources;
-
-  /// Create a copy of CacaoRequestPayload
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CacaoRequestPayloadImplCopyWith<_$CacaoRequestPayloadImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+Map<String, dynamic> toJson() {
+  return _$CacaoRequestPayloadToJson(this, );
 }
 
-CacaoPayload _$CacaoPayloadFromJson(Map<String, dynamic> json) {
-  return _CacaoPayload.fromJson(json);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CacaoRequestPayload&&(identical(other.domain, domain) || other.domain == domain)&&(identical(other.aud, aud) || other.aud == aud)&&(identical(other.version, version) || other.version == version)&&(identical(other.nonce, nonce) || other.nonce == nonce)&&(identical(other.iat, iat) || other.iat == iat)&&(identical(other.nbf, nbf) || other.nbf == nbf)&&(identical(other.exp, exp) || other.exp == exp)&&(identical(other.statement, statement) || other.statement == statement)&&(identical(other.requestId, requestId) || other.requestId == requestId)&&const DeepCollectionEquality().equals(other._resources, _resources));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,domain,aud,version,nonce,iat,nbf,exp,statement,requestId,const DeepCollectionEquality().hash(_resources));
+
+@override
+String toString() {
+  return 'CacaoRequestPayload(domain: $domain, aud: $aud, version: $version, nonce: $nonce, iat: $iat, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CacaoRequestPayloadCopyWith<$Res> implements $CacaoRequestPayloadCopyWith<$Res> {
+  factory _$CacaoRequestPayloadCopyWith(_CacaoRequestPayload value, $Res Function(_CacaoRequestPayload) _then) = __$CacaoRequestPayloadCopyWithImpl;
+@override @useResult
+$Res call({
+ String domain, String aud, String version, String nonce, String iat, String? nbf, String? exp, String? statement, String? requestId, List<String>? resources
+});
+
+
+
+
+}
+/// @nodoc
+class __$CacaoRequestPayloadCopyWithImpl<$Res>
+    implements _$CacaoRequestPayloadCopyWith<$Res> {
+  __$CacaoRequestPayloadCopyWithImpl(this._self, this._then);
+
+  final _CacaoRequestPayload _self;
+  final $Res Function(_CacaoRequestPayload) _then;
+
+/// Create a copy of CacaoRequestPayload
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? domain = null,Object? aud = null,Object? version = null,Object? nonce = null,Object? iat = null,Object? nbf = freezed,Object? exp = freezed,Object? statement = freezed,Object? requestId = freezed,Object? resources = freezed,}) {
+  return _then(_CacaoRequestPayload(
+domain: null == domain ? _self.domain : domain // ignore: cast_nullable_to_non_nullable
+as String,aud: null == aud ? _self.aud : aud // ignore: cast_nullable_to_non_nullable
+as String,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as String,nonce: null == nonce ? _self.nonce : nonce // ignore: cast_nullable_to_non_nullable
+as String,iat: null == iat ? _self.iat : iat // ignore: cast_nullable_to_non_nullable
+as String,nbf: freezed == nbf ? _self.nbf : nbf // ignore: cast_nullable_to_non_nullable
+as String?,exp: freezed == exp ? _self.exp : exp // ignore: cast_nullable_to_non_nullable
+as String?,statement: freezed == statement ? _self.statement : statement // ignore: cast_nullable_to_non_nullable
+as String?,requestId: freezed == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
+as String?,resources: freezed == resources ? _self._resources : resources // ignore: cast_nullable_to_non_nullable
+as List<String>?,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$CacaoPayload {
-  String get iss => throw _privateConstructorUsedError;
-  String get domain => throw _privateConstructorUsedError;
-  String get aud => throw _privateConstructorUsedError;
-  String get version => throw _privateConstructorUsedError;
-  String get nonce => throw _privateConstructorUsedError;
-  String get iat => throw _privateConstructorUsedError;
-  String? get nbf => throw _privateConstructorUsedError;
-  String? get exp => throw _privateConstructorUsedError;
-  String? get statement => throw _privateConstructorUsedError;
-  String? get requestId => throw _privateConstructorUsedError;
-  List<String>? get resources => throw _privateConstructorUsedError;
+
+ String get iss; String get domain; String get aud; String get version; String get nonce; String get iat; String? get nbf; String? get exp; String? get statement; String? get requestId; List<String>? get resources;
+/// Create a copy of CacaoPayload
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CacaoPayloadCopyWith<CacaoPayload> get copyWith => _$CacaoPayloadCopyWithImpl<CacaoPayload>(this as CacaoPayload, _$identity);
 
   /// Serializes this CacaoPayload to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of CacaoPayload
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $CacaoPayloadCopyWith<CacaoPayload> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CacaoPayload&&(identical(other.iss, iss) || other.iss == iss)&&(identical(other.domain, domain) || other.domain == domain)&&(identical(other.aud, aud) || other.aud == aud)&&(identical(other.version, version) || other.version == version)&&(identical(other.nonce, nonce) || other.nonce == nonce)&&(identical(other.iat, iat) || other.iat == iat)&&(identical(other.nbf, nbf) || other.nbf == nbf)&&(identical(other.exp, exp) || other.exp == exp)&&(identical(other.statement, statement) || other.statement == statement)&&(identical(other.requestId, requestId) || other.requestId == requestId)&&const DeepCollectionEquality().equals(other.resources, resources));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,iss,domain,aud,version,nonce,iat,nbf,exp,statement,requestId,const DeepCollectionEquality().hash(resources));
+
+@override
+String toString() {
+  return 'CacaoPayload(iss: $iss, domain: $domain, aud: $aud, version: $version, nonce: $nonce, iat: $iat, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $CacaoPayloadCopyWith<$Res> {
-  factory $CacaoPayloadCopyWith(
-          CacaoPayload value, $Res Function(CacaoPayload) then) =
-      _$CacaoPayloadCopyWithImpl<$Res, CacaoPayload>;
-  @useResult
-  $Res call(
-      {String iss,
-      String domain,
-      String aud,
-      String version,
-      String nonce,
-      String iat,
-      String? nbf,
-      String? exp,
-      String? statement,
-      String? requestId,
-      List<String>? resources});
-}
+abstract mixin class $CacaoPayloadCopyWith<$Res>  {
+  factory $CacaoPayloadCopyWith(CacaoPayload value, $Res Function(CacaoPayload) _then) = _$CacaoPayloadCopyWithImpl;
+@useResult
+$Res call({
+ String iss, String domain, String aud, String version, String nonce, String iat, String? nbf, String? exp, String? statement, String? requestId, List<String>? resources
+});
 
+
+
+
+}
 /// @nodoc
-class _$CacaoPayloadCopyWithImpl<$Res, $Val extends CacaoPayload>
+class _$CacaoPayloadCopyWithImpl<$Res>
     implements $CacaoPayloadCopyWith<$Res> {
-  _$CacaoPayloadCopyWithImpl(this._value, this._then);
+  _$CacaoPayloadCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final CacaoPayload _self;
+  final $Res Function(CacaoPayload) _then;
 
-  /// Create a copy of CacaoPayload
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? iss = null,
-    Object? domain = null,
-    Object? aud = null,
-    Object? version = null,
-    Object? nonce = null,
-    Object? iat = null,
-    Object? nbf = freezed,
-    Object? exp = freezed,
-    Object? statement = freezed,
-    Object? requestId = freezed,
-    Object? resources = freezed,
-  }) {
-    return _then(_value.copyWith(
-      iss: null == iss
-          ? _value.iss
-          : iss // ignore: cast_nullable_to_non_nullable
-              as String,
-      domain: null == domain
-          ? _value.domain
-          : domain // ignore: cast_nullable_to_non_nullable
-              as String,
-      aud: null == aud
-          ? _value.aud
-          : aud // ignore: cast_nullable_to_non_nullable
-              as String,
-      version: null == version
-          ? _value.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String,
-      nonce: null == nonce
-          ? _value.nonce
-          : nonce // ignore: cast_nullable_to_non_nullable
-              as String,
-      iat: null == iat
-          ? _value.iat
-          : iat // ignore: cast_nullable_to_non_nullable
-              as String,
-      nbf: freezed == nbf
-          ? _value.nbf
-          : nbf // ignore: cast_nullable_to_non_nullable
-              as String?,
-      exp: freezed == exp
-          ? _value.exp
-          : exp // ignore: cast_nullable_to_non_nullable
-              as String?,
-      statement: freezed == statement
-          ? _value.statement
-          : statement // ignore: cast_nullable_to_non_nullable
-              as String?,
-      requestId: freezed == requestId
-          ? _value.requestId
-          : requestId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      resources: freezed == resources
-          ? _value.resources
-          : resources // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-    ) as $Val);
-  }
+/// Create a copy of CacaoPayload
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? iss = null,Object? domain = null,Object? aud = null,Object? version = null,Object? nonce = null,Object? iat = null,Object? nbf = freezed,Object? exp = freezed,Object? statement = freezed,Object? requestId = freezed,Object? resources = freezed,}) {
+  return _then(_self.copyWith(
+iss: null == iss ? _self.iss : iss // ignore: cast_nullable_to_non_nullable
+as String,domain: null == domain ? _self.domain : domain // ignore: cast_nullable_to_non_nullable
+as String,aud: null == aud ? _self.aud : aud // ignore: cast_nullable_to_non_nullable
+as String,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as String,nonce: null == nonce ? _self.nonce : nonce // ignore: cast_nullable_to_non_nullable
+as String,iat: null == iat ? _self.iat : iat // ignore: cast_nullable_to_non_nullable
+as String,nbf: freezed == nbf ? _self.nbf : nbf // ignore: cast_nullable_to_non_nullable
+as String?,exp: freezed == exp ? _self.exp : exp // ignore: cast_nullable_to_non_nullable
+as String?,statement: freezed == statement ? _self.statement : statement // ignore: cast_nullable_to_non_nullable
+as String?,requestId: freezed == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
+as String?,resources: freezed == resources ? _self.resources : resources // ignore: cast_nullable_to_non_nullable
+as List<String>?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$CacaoPayloadImplCopyWith<$Res>
-    implements $CacaoPayloadCopyWith<$Res> {
-  factory _$$CacaoPayloadImplCopyWith(
-          _$CacaoPayloadImpl value, $Res Function(_$CacaoPayloadImpl) then) =
-      __$$CacaoPayloadImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String iss,
-      String domain,
-      String aud,
-      String version,
-      String nonce,
-      String iat,
-      String? nbf,
-      String? exp,
-      String? statement,
-      String? requestId,
-      List<String>? resources});
 }
 
-/// @nodoc
-class __$$CacaoPayloadImplCopyWithImpl<$Res>
-    extends _$CacaoPayloadCopyWithImpl<$Res, _$CacaoPayloadImpl>
-    implements _$$CacaoPayloadImplCopyWith<$Res> {
-  __$$CacaoPayloadImplCopyWithImpl(
-      _$CacaoPayloadImpl _value, $Res Function(_$CacaoPayloadImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of CacaoPayload
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? iss = null,
-    Object? domain = null,
-    Object? aud = null,
-    Object? version = null,
-    Object? nonce = null,
-    Object? iat = null,
-    Object? nbf = freezed,
-    Object? exp = freezed,
-    Object? statement = freezed,
-    Object? requestId = freezed,
-    Object? resources = freezed,
-  }) {
-    return _then(_$CacaoPayloadImpl(
-      iss: null == iss
-          ? _value.iss
-          : iss // ignore: cast_nullable_to_non_nullable
-              as String,
-      domain: null == domain
-          ? _value.domain
-          : domain // ignore: cast_nullable_to_non_nullable
-              as String,
-      aud: null == aud
-          ? _value.aud
-          : aud // ignore: cast_nullable_to_non_nullable
-              as String,
-      version: null == version
-          ? _value.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String,
-      nonce: null == nonce
-          ? _value.nonce
-          : nonce // ignore: cast_nullable_to_non_nullable
-              as String,
-      iat: null == iat
-          ? _value.iat
-          : iat // ignore: cast_nullable_to_non_nullable
-              as String,
-      nbf: freezed == nbf
-          ? _value.nbf
-          : nbf // ignore: cast_nullable_to_non_nullable
-              as String?,
-      exp: freezed == exp
-          ? _value.exp
-          : exp // ignore: cast_nullable_to_non_nullable
-              as String?,
-      statement: freezed == statement
-          ? _value.statement
-          : statement // ignore: cast_nullable_to_non_nullable
-              as String?,
-      requestId: freezed == requestId
-          ? _value.requestId
-          : requestId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      resources: freezed == resources
-          ? _value._resources
-          : resources // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
-    ));
-  }
+/// Adds pattern-matching-related methods to [CacaoPayload].
+extension CacaoPayloadPatterns on CacaoPayload {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CacaoPayload value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _CacaoPayload() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CacaoPayload value)  $default,){
+final _that = this;
+switch (_that) {
+case _CacaoPayload():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CacaoPayload value)?  $default,){
+final _that = this;
+switch (_that) {
+case _CacaoPayload() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String iss,  String domain,  String aud,  String version,  String nonce,  String iat,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _CacaoPayload() when $default != null:
+return $default(_that.iss,_that.domain,_that.aud,_that.version,_that.nonce,_that.iat,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String iss,  String domain,  String aud,  String version,  String nonce,  String iat,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources)  $default,) {final _that = this;
+switch (_that) {
+case _CacaoPayload():
+return $default(_that.iss,_that.domain,_that.aud,_that.version,_that.nonce,_that.iat,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String iss,  String domain,  String aud,  String version,  String nonce,  String iat,  String? nbf,  String? exp,  String? statement,  String? requestId,  List<String>? resources)?  $default,) {final _that = this;
+switch (_that) {
+case _CacaoPayload() when $default != null:
+return $default(_that.iss,_that.domain,_that.aud,_that.version,_that.nonce,_that.iat,_that.nbf,_that.exp,_that.statement,_that.requestId,_that.resources);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable(includeIfNull: false)
-class _$CacaoPayloadImpl implements _CacaoPayload {
-  const _$CacaoPayloadImpl(
-      {required this.iss,
-      required this.domain,
-      required this.aud,
-      required this.version,
-      required this.nonce,
-      required this.iat,
-      this.nbf,
-      this.exp,
-      this.statement,
-      this.requestId,
-      final List<String>? resources})
-      : _resources = resources;
+class _CacaoPayload implements CacaoPayload {
+  const _CacaoPayload({required this.iss, required this.domain, required this.aud, required this.version, required this.nonce, required this.iat, this.nbf, this.exp, this.statement, this.requestId, final  List<String>? resources}): _resources = resources;
+  factory _CacaoPayload.fromJson(Map<String, dynamic> json) => _$CacaoPayloadFromJson(json);
 
-  factory _$CacaoPayloadImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CacaoPayloadImplFromJson(json);
-
-  @override
-  final String iss;
-  @override
-  final String domain;
-  @override
-  final String aud;
-  @override
-  final String version;
-  @override
-  final String nonce;
-  @override
-  final String iat;
-  @override
-  final String? nbf;
-  @override
-  final String? exp;
-  @override
-  final String? statement;
-  @override
-  final String? requestId;
-  final List<String>? _resources;
-  @override
-  List<String>? get resources {
-    final value = _resources;
-    if (value == null) return null;
-    if (_resources is EqualUnmodifiableListView) return _resources;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
-  @override
-  String toString() {
-    return 'CacaoPayload(iss: $iss, domain: $domain, aud: $aud, version: $version, nonce: $nonce, iat: $iat, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CacaoPayloadImpl &&
-            (identical(other.iss, iss) || other.iss == iss) &&
-            (identical(other.domain, domain) || other.domain == domain) &&
-            (identical(other.aud, aud) || other.aud == aud) &&
-            (identical(other.version, version) || other.version == version) &&
-            (identical(other.nonce, nonce) || other.nonce == nonce) &&
-            (identical(other.iat, iat) || other.iat == iat) &&
-            (identical(other.nbf, nbf) || other.nbf == nbf) &&
-            (identical(other.exp, exp) || other.exp == exp) &&
-            (identical(other.statement, statement) ||
-                other.statement == statement) &&
-            (identical(other.requestId, requestId) ||
-                other.requestId == requestId) &&
-            const DeepCollectionEquality()
-                .equals(other._resources, _resources));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      iss,
-      domain,
-      aud,
-      version,
-      nonce,
-      iat,
-      nbf,
-      exp,
-      statement,
-      requestId,
-      const DeepCollectionEquality().hash(_resources));
-
-  /// Create a copy of CacaoPayload
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CacaoPayloadImplCopyWith<_$CacaoPayloadImpl> get copyWith =>
-      __$$CacaoPayloadImplCopyWithImpl<_$CacaoPayloadImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CacaoPayloadImplToJson(
-      this,
-    );
-  }
+@override final  String iss;
+@override final  String domain;
+@override final  String aud;
+@override final  String version;
+@override final  String nonce;
+@override final  String iat;
+@override final  String? nbf;
+@override final  String? exp;
+@override final  String? statement;
+@override final  String? requestId;
+ final  List<String>? _resources;
+@override List<String>? get resources {
+  final value = _resources;
+  if (value == null) return null;
+  if (_resources is EqualUnmodifiableListView) return _resources;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
 }
 
-abstract class _CacaoPayload implements CacaoPayload {
-  const factory _CacaoPayload(
-      {required final String iss,
-      required final String domain,
-      required final String aud,
-      required final String version,
-      required final String nonce,
-      required final String iat,
-      final String? nbf,
-      final String? exp,
-      final String? statement,
-      final String? requestId,
-      final List<String>? resources}) = _$CacaoPayloadImpl;
 
-  factory _CacaoPayload.fromJson(Map<String, dynamic> json) =
-      _$CacaoPayloadImpl.fromJson;
+/// Create a copy of CacaoPayload
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CacaoPayloadCopyWith<_CacaoPayload> get copyWith => __$CacaoPayloadCopyWithImpl<_CacaoPayload>(this, _$identity);
 
-  @override
-  String get iss;
-  @override
-  String get domain;
-  @override
-  String get aud;
-  @override
-  String get version;
-  @override
-  String get nonce;
-  @override
-  String get iat;
-  @override
-  String? get nbf;
-  @override
-  String? get exp;
-  @override
-  String? get statement;
-  @override
-  String? get requestId;
-  @override
-  List<String>? get resources;
-
-  /// Create a copy of CacaoPayload
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CacaoPayloadImplCopyWith<_$CacaoPayloadImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+Map<String, dynamic> toJson() {
+  return _$CacaoPayloadToJson(this, );
 }
 
-CacaoHeader _$CacaoHeaderFromJson(Map<String, dynamic> json) {
-  return _CacaoHeader.fromJson(json);
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CacaoPayload&&(identical(other.iss, iss) || other.iss == iss)&&(identical(other.domain, domain) || other.domain == domain)&&(identical(other.aud, aud) || other.aud == aud)&&(identical(other.version, version) || other.version == version)&&(identical(other.nonce, nonce) || other.nonce == nonce)&&(identical(other.iat, iat) || other.iat == iat)&&(identical(other.nbf, nbf) || other.nbf == nbf)&&(identical(other.exp, exp) || other.exp == exp)&&(identical(other.statement, statement) || other.statement == statement)&&(identical(other.requestId, requestId) || other.requestId == requestId)&&const DeepCollectionEquality().equals(other._resources, _resources));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,iss,domain,aud,version,nonce,iat,nbf,exp,statement,requestId,const DeepCollectionEquality().hash(_resources));
+
+@override
+String toString() {
+  return 'CacaoPayload(iss: $iss, domain: $domain, aud: $aud, version: $version, nonce: $nonce, iat: $iat, nbf: $nbf, exp: $exp, statement: $statement, requestId: $requestId, resources: $resources)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CacaoPayloadCopyWith<$Res> implements $CacaoPayloadCopyWith<$Res> {
+  factory _$CacaoPayloadCopyWith(_CacaoPayload value, $Res Function(_CacaoPayload) _then) = __$CacaoPayloadCopyWithImpl;
+@override @useResult
+$Res call({
+ String iss, String domain, String aud, String version, String nonce, String iat, String? nbf, String? exp, String? statement, String? requestId, List<String>? resources
+});
+
+
+
+
+}
+/// @nodoc
+class __$CacaoPayloadCopyWithImpl<$Res>
+    implements _$CacaoPayloadCopyWith<$Res> {
+  __$CacaoPayloadCopyWithImpl(this._self, this._then);
+
+  final _CacaoPayload _self;
+  final $Res Function(_CacaoPayload) _then;
+
+/// Create a copy of CacaoPayload
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? iss = null,Object? domain = null,Object? aud = null,Object? version = null,Object? nonce = null,Object? iat = null,Object? nbf = freezed,Object? exp = freezed,Object? statement = freezed,Object? requestId = freezed,Object? resources = freezed,}) {
+  return _then(_CacaoPayload(
+iss: null == iss ? _self.iss : iss // ignore: cast_nullable_to_non_nullable
+as String,domain: null == domain ? _self.domain : domain // ignore: cast_nullable_to_non_nullable
+as String,aud: null == aud ? _self.aud : aud // ignore: cast_nullable_to_non_nullable
+as String,version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as String,nonce: null == nonce ? _self.nonce : nonce // ignore: cast_nullable_to_non_nullable
+as String,iat: null == iat ? _self.iat : iat // ignore: cast_nullable_to_non_nullable
+as String,nbf: freezed == nbf ? _self.nbf : nbf // ignore: cast_nullable_to_non_nullable
+as String?,exp: freezed == exp ? _self.exp : exp // ignore: cast_nullable_to_non_nullable
+as String?,statement: freezed == statement ? _self.statement : statement // ignore: cast_nullable_to_non_nullable
+as String?,requestId: freezed == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
+as String?,resources: freezed == resources ? _self._resources : resources // ignore: cast_nullable_to_non_nullable
+as List<String>?,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$CacaoHeader {
-  String get t => throw _privateConstructorUsedError;
+
+ String get t;
+/// Create a copy of CacaoHeader
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CacaoHeaderCopyWith<CacaoHeader> get copyWith => _$CacaoHeaderCopyWithImpl<CacaoHeader>(this as CacaoHeader, _$identity);
 
   /// Serializes this CacaoHeader to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of CacaoHeader
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $CacaoHeaderCopyWith<CacaoHeader> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CacaoHeader&&(identical(other.t, t) || other.t == t));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,t);
+
+@override
+String toString() {
+  return 'CacaoHeader(t: $t)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $CacaoHeaderCopyWith<$Res> {
-  factory $CacaoHeaderCopyWith(
-          CacaoHeader value, $Res Function(CacaoHeader) then) =
-      _$CacaoHeaderCopyWithImpl<$Res, CacaoHeader>;
-  @useResult
-  $Res call({String t});
-}
+abstract mixin class $CacaoHeaderCopyWith<$Res>  {
+  factory $CacaoHeaderCopyWith(CacaoHeader value, $Res Function(CacaoHeader) _then) = _$CacaoHeaderCopyWithImpl;
+@useResult
+$Res call({
+ String t
+});
 
+
+
+
+}
 /// @nodoc
-class _$CacaoHeaderCopyWithImpl<$Res, $Val extends CacaoHeader>
+class _$CacaoHeaderCopyWithImpl<$Res>
     implements $CacaoHeaderCopyWith<$Res> {
-  _$CacaoHeaderCopyWithImpl(this._value, this._then);
+  _$CacaoHeaderCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final CacaoHeader _self;
+  final $Res Function(CacaoHeader) _then;
 
-  /// Create a copy of CacaoHeader
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? t = null,
-  }) {
-    return _then(_value.copyWith(
-      t: null == t
-          ? _value.t
-          : t // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
+/// Create a copy of CacaoHeader
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? t = null,}) {
+  return _then(_self.copyWith(
+t: null == t ? _self.t : t // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-/// @nodoc
-abstract class _$$CacaoHeaderImplCopyWith<$Res>
-    implements $CacaoHeaderCopyWith<$Res> {
-  factory _$$CacaoHeaderImplCopyWith(
-          _$CacaoHeaderImpl value, $Res Function(_$CacaoHeaderImpl) then) =
-      __$$CacaoHeaderImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String t});
 }
 
-/// @nodoc
-class __$$CacaoHeaderImplCopyWithImpl<$Res>
-    extends _$CacaoHeaderCopyWithImpl<$Res, _$CacaoHeaderImpl>
-    implements _$$CacaoHeaderImplCopyWith<$Res> {
-  __$$CacaoHeaderImplCopyWithImpl(
-      _$CacaoHeaderImpl _value, $Res Function(_$CacaoHeaderImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of CacaoHeader
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? t = null,
-  }) {
-    return _then(_$CacaoHeaderImpl(
-      t: null == t
-          ? _value.t
-          : t // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
+/// Adds pattern-matching-related methods to [CacaoHeader].
+extension CacaoHeaderPatterns on CacaoHeader {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CacaoHeader value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _CacaoHeader() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CacaoHeader value)  $default,){
+final _that = this;
+switch (_that) {
+case _CacaoHeader():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CacaoHeader value)?  $default,){
+final _that = this;
+switch (_that) {
+case _CacaoHeader() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String t)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _CacaoHeader() when $default != null:
+return $default(_that.t);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String t)  $default,) {final _that = this;
+switch (_that) {
+case _CacaoHeader():
+return $default(_that.t);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String t)?  $default,) {final _that = this;
+switch (_that) {
+case _CacaoHeader() when $default != null:
+return $default(_that.t);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable(includeIfNull: false)
-class _$CacaoHeaderImpl implements _CacaoHeader {
-  const _$CacaoHeaderImpl({this.t = 'eip4361'});
+class _CacaoHeader implements CacaoHeader {
+  const _CacaoHeader({this.t = 'eip4361'});
+  factory _CacaoHeader.fromJson(Map<String, dynamic> json) => _$CacaoHeaderFromJson(json);
 
-  factory _$CacaoHeaderImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CacaoHeaderImplFromJson(json);
+@override@JsonKey() final  String t;
 
-  @override
-  @JsonKey()
-  final String t;
+/// Create a copy of CacaoHeader
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CacaoHeaderCopyWith<_CacaoHeader> get copyWith => __$CacaoHeaderCopyWithImpl<_CacaoHeader>(this, _$identity);
 
-  @override
-  String toString() {
-    return 'CacaoHeader(t: $t)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CacaoHeaderImpl &&
-            (identical(other.t, t) || other.t == t));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, t);
-
-  /// Create a copy of CacaoHeader
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CacaoHeaderImplCopyWith<_$CacaoHeaderImpl> get copyWith =>
-      __$$CacaoHeaderImplCopyWithImpl<_$CacaoHeaderImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CacaoHeaderImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$CacaoHeaderToJson(this, );
 }
 
-abstract class _CacaoHeader implements CacaoHeader {
-  const factory _CacaoHeader({final String t}) = _$CacaoHeaderImpl;
-
-  factory _CacaoHeader.fromJson(Map<String, dynamic> json) =
-      _$CacaoHeaderImpl.fromJson;
-
-  @override
-  String get t;
-
-  /// Create a copy of CacaoHeader
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CacaoHeaderImplCopyWith<_$CacaoHeaderImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CacaoHeader&&(identical(other.t, t) || other.t == t));
 }
 
-CacaoSignature _$CacaoSignatureFromJson(Map<String, dynamic> json) {
-  return _CacaoSignature.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,t);
+
+@override
+String toString() {
+  return 'CacaoHeader(t: $t)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CacaoHeaderCopyWith<$Res> implements $CacaoHeaderCopyWith<$Res> {
+  factory _$CacaoHeaderCopyWith(_CacaoHeader value, $Res Function(_CacaoHeader) _then) = __$CacaoHeaderCopyWithImpl;
+@override @useResult
+$Res call({
+ String t
+});
+
+
+
+
+}
+/// @nodoc
+class __$CacaoHeaderCopyWithImpl<$Res>
+    implements _$CacaoHeaderCopyWith<$Res> {
+  __$CacaoHeaderCopyWithImpl(this._self, this._then);
+
+  final _CacaoHeader _self;
+  final $Res Function(_CacaoHeader) _then;
+
+/// Create a copy of CacaoHeader
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? t = null,}) {
+  return _then(_CacaoHeader(
+t: null == t ? _self.t : t // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$CacaoSignature {
-  String get t => throw _privateConstructorUsedError;
-  String get s => throw _privateConstructorUsedError;
-  String? get m => throw _privateConstructorUsedError;
+
+ String get t; String get s; String? get m;
+/// Create a copy of CacaoSignature
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CacaoSignatureCopyWith<CacaoSignature> get copyWith => _$CacaoSignatureCopyWithImpl<CacaoSignature>(this as CacaoSignature, _$identity);
 
   /// Serializes this CacaoSignature to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of CacaoSignature
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $CacaoSignatureCopyWith<CacaoSignature> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CacaoSignature&&(identical(other.t, t) || other.t == t)&&(identical(other.s, s) || other.s == s)&&(identical(other.m, m) || other.m == m));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,t,s,m);
+
+@override
+String toString() {
+  return 'CacaoSignature(t: $t, s: $s, m: $m)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $CacaoSignatureCopyWith<$Res> {
-  factory $CacaoSignatureCopyWith(
-          CacaoSignature value, $Res Function(CacaoSignature) then) =
-      _$CacaoSignatureCopyWithImpl<$Res, CacaoSignature>;
-  @useResult
-  $Res call({String t, String s, String? m});
-}
+abstract mixin class $CacaoSignatureCopyWith<$Res>  {
+  factory $CacaoSignatureCopyWith(CacaoSignature value, $Res Function(CacaoSignature) _then) = _$CacaoSignatureCopyWithImpl;
+@useResult
+$Res call({
+ String t, String s, String? m
+});
 
+
+
+
+}
 /// @nodoc
-class _$CacaoSignatureCopyWithImpl<$Res, $Val extends CacaoSignature>
+class _$CacaoSignatureCopyWithImpl<$Res>
     implements $CacaoSignatureCopyWith<$Res> {
-  _$CacaoSignatureCopyWithImpl(this._value, this._then);
+  _$CacaoSignatureCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final CacaoSignature _self;
+  final $Res Function(CacaoSignature) _then;
 
-  /// Create a copy of CacaoSignature
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? t = null,
-    Object? s = null,
-    Object? m = freezed,
-  }) {
-    return _then(_value.copyWith(
-      t: null == t
-          ? _value.t
-          : t // ignore: cast_nullable_to_non_nullable
-              as String,
-      s: null == s
-          ? _value.s
-          : s // ignore: cast_nullable_to_non_nullable
-              as String,
-      m: freezed == m
-          ? _value.m
-          : m // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
-  }
+/// Create a copy of CacaoSignature
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? t = null,Object? s = null,Object? m = freezed,}) {
+  return _then(_self.copyWith(
+t: null == t ? _self.t : t // ignore: cast_nullable_to_non_nullable
+as String,s: null == s ? _self.s : s // ignore: cast_nullable_to_non_nullable
+as String,m: freezed == m ? _self.m : m // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
 }
 
-/// @nodoc
-abstract class _$$CacaoSignatureImplCopyWith<$Res>
-    implements $CacaoSignatureCopyWith<$Res> {
-  factory _$$CacaoSignatureImplCopyWith(_$CacaoSignatureImpl value,
-          $Res Function(_$CacaoSignatureImpl) then) =
-      __$$CacaoSignatureImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String t, String s, String? m});
 }
 
-/// @nodoc
-class __$$CacaoSignatureImplCopyWithImpl<$Res>
-    extends _$CacaoSignatureCopyWithImpl<$Res, _$CacaoSignatureImpl>
-    implements _$$CacaoSignatureImplCopyWith<$Res> {
-  __$$CacaoSignatureImplCopyWithImpl(
-      _$CacaoSignatureImpl _value, $Res Function(_$CacaoSignatureImpl) _then)
-      : super(_value, _then);
 
-  /// Create a copy of CacaoSignature
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? t = null,
-    Object? s = null,
-    Object? m = freezed,
-  }) {
-    return _then(_$CacaoSignatureImpl(
-      t: null == t
-          ? _value.t
-          : t // ignore: cast_nullable_to_non_nullable
-              as String,
-      s: null == s
-          ? _value.s
-          : s // ignore: cast_nullable_to_non_nullable
-              as String,
-      m: freezed == m
-          ? _value.m
-          : m // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
-  }
+/// Adds pattern-matching-related methods to [CacaoSignature].
+extension CacaoSignaturePatterns on CacaoSignature {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CacaoSignature value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _CacaoSignature() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CacaoSignature value)  $default,){
+final _that = this;
+switch (_that) {
+case _CacaoSignature():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CacaoSignature value)?  $default,){
+final _that = this;
+switch (_that) {
+case _CacaoSignature() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String t,  String s,  String? m)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _CacaoSignature() when $default != null:
+return $default(_that.t,_that.s,_that.m);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String t,  String s,  String? m)  $default,) {final _that = this;
+switch (_that) {
+case _CacaoSignature():
+return $default(_that.t,_that.s,_that.m);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String t,  String s,  String? m)?  $default,) {final _that = this;
+switch (_that) {
+case _CacaoSignature() when $default != null:
+return $default(_that.t,_that.s,_that.m);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 
 @JsonSerializable(includeIfNull: false)
-class _$CacaoSignatureImpl implements _CacaoSignature {
-  const _$CacaoSignatureImpl({required this.t, required this.s, this.m});
+class _CacaoSignature implements CacaoSignature {
+  const _CacaoSignature({required this.t, required this.s, this.m});
+  factory _CacaoSignature.fromJson(Map<String, dynamic> json) => _$CacaoSignatureFromJson(json);
 
-  factory _$CacaoSignatureImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CacaoSignatureImplFromJson(json);
+@override final  String t;
+@override final  String s;
+@override final  String? m;
 
-  @override
-  final String t;
-  @override
-  final String s;
-  @override
-  final String? m;
+/// Create a copy of CacaoSignature
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CacaoSignatureCopyWith<_CacaoSignature> get copyWith => __$CacaoSignatureCopyWithImpl<_CacaoSignature>(this, _$identity);
 
-  @override
-  String toString() {
-    return 'CacaoSignature(t: $t, s: $s, m: $m)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CacaoSignatureImpl &&
-            (identical(other.t, t) || other.t == t) &&
-            (identical(other.s, s) || other.s == s) &&
-            (identical(other.m, m) || other.m == m));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, t, s, m);
-
-  /// Create a copy of CacaoSignature
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CacaoSignatureImplCopyWith<_$CacaoSignatureImpl> get copyWith =>
-      __$$CacaoSignatureImplCopyWithImpl<_$CacaoSignatureImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CacaoSignatureImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$CacaoSignatureToJson(this, );
 }
 
-abstract class _CacaoSignature implements CacaoSignature {
-  const factory _CacaoSignature(
-      {required final String t,
-      required final String s,
-      final String? m}) = _$CacaoSignatureImpl;
-
-  factory _CacaoSignature.fromJson(Map<String, dynamic> json) =
-      _$CacaoSignatureImpl.fromJson;
-
-  @override
-  String get t;
-  @override
-  String get s;
-  @override
-  String? get m;
-
-  /// Create a copy of CacaoSignature
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CacaoSignatureImplCopyWith<_$CacaoSignatureImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CacaoSignature&&(identical(other.t, t) || other.t == t)&&(identical(other.s, s) || other.s == s)&&(identical(other.m, m) || other.m == m));
 }
 
-Cacao _$CacaoFromJson(Map<String, dynamic> json) {
-  return _Cacao.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,t,s,m);
+
+@override
+String toString() {
+  return 'CacaoSignature(t: $t, s: $s, m: $m)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CacaoSignatureCopyWith<$Res> implements $CacaoSignatureCopyWith<$Res> {
+  factory _$CacaoSignatureCopyWith(_CacaoSignature value, $Res Function(_CacaoSignature) _then) = __$CacaoSignatureCopyWithImpl;
+@override @useResult
+$Res call({
+ String t, String s, String? m
+});
+
+
+
+
+}
+/// @nodoc
+class __$CacaoSignatureCopyWithImpl<$Res>
+    implements _$CacaoSignatureCopyWith<$Res> {
+  __$CacaoSignatureCopyWithImpl(this._self, this._then);
+
+  final _CacaoSignature _self;
+  final $Res Function(_CacaoSignature) _then;
+
+/// Create a copy of CacaoSignature
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? t = null,Object? s = null,Object? m = freezed,}) {
+  return _then(_CacaoSignature(
+t: null == t ? _self.t : t // ignore: cast_nullable_to_non_nullable
+as String,s: null == s ? _self.s : s // ignore: cast_nullable_to_non_nullable
+as String,m: freezed == m ? _self.m : m // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
 
 /// @nodoc
 mixin _$Cacao {
-  CacaoHeader get h => throw _privateConstructorUsedError;
-  CacaoPayload get p => throw _privateConstructorUsedError;
-  CacaoSignature get s => throw _privateConstructorUsedError;
+
+ CacaoHeader get h; CacaoPayload get p; CacaoSignature get s;
+/// Create a copy of Cacao
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CacaoCopyWith<Cacao> get copyWith => _$CacaoCopyWithImpl<Cacao>(this as Cacao, _$identity);
 
   /// Serializes this Cacao to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of Cacao
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $CacaoCopyWith<Cacao> get copyWith => throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Cacao&&(identical(other.h, h) || other.h == h)&&(identical(other.p, p) || other.p == p)&&(identical(other.s, s) || other.s == s));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,h,p,s);
+
+@override
+String toString() {
+  return 'Cacao(h: $h, p: $p, s: $s)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $CacaoCopyWith<$Res> {
-  factory $CacaoCopyWith(Cacao value, $Res Function(Cacao) then) =
-      _$CacaoCopyWithImpl<$Res, Cacao>;
-  @useResult
-  $Res call({CacaoHeader h, CacaoPayload p, CacaoSignature s});
+abstract mixin class $CacaoCopyWith<$Res>  {
+  factory $CacaoCopyWith(Cacao value, $Res Function(Cacao) _then) = _$CacaoCopyWithImpl;
+@useResult
+$Res call({
+ CacaoHeader h, CacaoPayload p, CacaoSignature s
+});
 
-  $CacaoHeaderCopyWith<$Res> get h;
-  $CacaoPayloadCopyWith<$Res> get p;
-  $CacaoSignatureCopyWith<$Res> get s;
+
+$CacaoHeaderCopyWith<$Res> get h;$CacaoPayloadCopyWith<$Res> get p;$CacaoSignatureCopyWith<$Res> get s;
+
 }
-
 /// @nodoc
-class _$CacaoCopyWithImpl<$Res, $Val extends Cacao>
+class _$CacaoCopyWithImpl<$Res>
     implements $CacaoCopyWith<$Res> {
-  _$CacaoCopyWithImpl(this._value, this._then);
+  _$CacaoCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final Cacao _self;
+  final $Res Function(Cacao) _then;
 
-  /// Create a copy of Cacao
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? h = null,
-    Object? p = null,
-    Object? s = null,
-  }) {
-    return _then(_value.copyWith(
-      h: null == h
-          ? _value.h
-          : h // ignore: cast_nullable_to_non_nullable
-              as CacaoHeader,
-      p: null == p
-          ? _value.p
-          : p // ignore: cast_nullable_to_non_nullable
-              as CacaoPayload,
-      s: null == s
-          ? _value.s
-          : s // ignore: cast_nullable_to_non_nullable
-              as CacaoSignature,
-    ) as $Val);
-  }
-
-  /// Create a copy of Cacao
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $CacaoHeaderCopyWith<$Res> get h {
-    return $CacaoHeaderCopyWith<$Res>(_value.h, (value) {
-      return _then(_value.copyWith(h: value) as $Val);
-    });
-  }
-
-  /// Create a copy of Cacao
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $CacaoPayloadCopyWith<$Res> get p {
-    return $CacaoPayloadCopyWith<$Res>(_value.p, (value) {
-      return _then(_value.copyWith(p: value) as $Val);
-    });
-  }
-
-  /// Create a copy of Cacao
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $CacaoSignatureCopyWith<$Res> get s {
-    return $CacaoSignatureCopyWith<$Res>(_value.s, (value) {
-      return _then(_value.copyWith(s: value) as $Val);
-    });
-  }
+/// Create a copy of Cacao
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? h = null,Object? p = null,Object? s = null,}) {
+  return _then(_self.copyWith(
+h: null == h ? _self.h : h // ignore: cast_nullable_to_non_nullable
+as CacaoHeader,p: null == p ? _self.p : p // ignore: cast_nullable_to_non_nullable
+as CacaoPayload,s: null == s ? _self.s : s // ignore: cast_nullable_to_non_nullable
+as CacaoSignature,
+  ));
+}
+/// Create a copy of Cacao
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoHeaderCopyWith<$Res> get h {
+  
+  return $CacaoHeaderCopyWith<$Res>(_self.h, (value) {
+    return _then(_self.copyWith(h: value));
+  });
+}/// Create a copy of Cacao
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoPayloadCopyWith<$Res> get p {
+  
+  return $CacaoPayloadCopyWith<$Res>(_self.p, (value) {
+    return _then(_self.copyWith(p: value));
+  });
+}/// Create a copy of Cacao
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoSignatureCopyWith<$Res> get s {
+  
+  return $CacaoSignatureCopyWith<$Res>(_self.s, (value) {
+    return _then(_self.copyWith(s: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$CacaoImplCopyWith<$Res> implements $CacaoCopyWith<$Res> {
-  factory _$$CacaoImplCopyWith(
-          _$CacaoImpl value, $Res Function(_$CacaoImpl) then) =
-      __$$CacaoImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({CacaoHeader h, CacaoPayload p, CacaoSignature s});
 
-  @override
-  $CacaoHeaderCopyWith<$Res> get h;
-  @override
-  $CacaoPayloadCopyWith<$Res> get p;
-  @override
-  $CacaoSignatureCopyWith<$Res> get s;
+/// Adds pattern-matching-related methods to [Cacao].
+extension CacaoPatterns on Cacao {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Cacao value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _Cacao() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Cacao value)  $default,){
+final _that = this;
+switch (_that) {
+case _Cacao():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Cacao value)?  $default,){
+final _that = this;
+switch (_that) {
+case _Cacao() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( CacaoHeader h,  CacaoPayload p,  CacaoSignature s)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _Cacao() when $default != null:
+return $default(_that.h,_that.p,_that.s);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( CacaoHeader h,  CacaoPayload p,  CacaoSignature s)  $default,) {final _that = this;
+switch (_that) {
+case _Cacao():
+return $default(_that.h,_that.p,_that.s);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( CacaoHeader h,  CacaoPayload p,  CacaoSignature s)?  $default,) {final _that = this;
+switch (_that) {
+case _Cacao() when $default != null:
+return $default(_that.h,_that.p,_that.s);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$CacaoImplCopyWithImpl<$Res>
-    extends _$CacaoCopyWithImpl<$Res, _$CacaoImpl>
-    implements _$$CacaoImplCopyWith<$Res> {
-  __$$CacaoImplCopyWithImpl(
-      _$CacaoImpl _value, $Res Function(_$CacaoImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of Cacao
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? h = null,
-    Object? p = null,
-    Object? s = null,
-  }) {
-    return _then(_$CacaoImpl(
-      h: null == h
-          ? _value.h
-          : h // ignore: cast_nullable_to_non_nullable
-              as CacaoHeader,
-      p: null == p
-          ? _value.p
-          : p // ignore: cast_nullable_to_non_nullable
-              as CacaoPayload,
-      s: null == s
-          ? _value.s
-          : s // ignore: cast_nullable_to_non_nullable
-              as CacaoSignature,
-    ));
-  }
 }
 
 /// @nodoc
 
 @JsonSerializable(includeIfNull: false)
-class _$CacaoImpl implements _Cacao {
-  const _$CacaoImpl({required this.h, required this.p, required this.s});
+class _Cacao implements Cacao {
+  const _Cacao({required this.h, required this.p, required this.s});
+  factory _Cacao.fromJson(Map<String, dynamic> json) => _$CacaoFromJson(json);
 
-  factory _$CacaoImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CacaoImplFromJson(json);
+@override final  CacaoHeader h;
+@override final  CacaoPayload p;
+@override final  CacaoSignature s;
 
-  @override
-  final CacaoHeader h;
-  @override
-  final CacaoPayload p;
-  @override
-  final CacaoSignature s;
+/// Create a copy of Cacao
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CacaoCopyWith<_Cacao> get copyWith => __$CacaoCopyWithImpl<_Cacao>(this, _$identity);
 
-  @override
-  String toString() {
-    return 'Cacao(h: $h, p: $p, s: $s)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CacaoImpl &&
-            (identical(other.h, h) || other.h == h) &&
-            (identical(other.p, p) || other.p == p) &&
-            (identical(other.s, s) || other.s == s));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, h, p, s);
-
-  /// Create a copy of Cacao
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CacaoImplCopyWith<_$CacaoImpl> get copyWith =>
-      __$$CacaoImplCopyWithImpl<_$CacaoImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CacaoImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$CacaoToJson(this, );
 }
 
-abstract class _Cacao implements Cacao {
-  const factory _Cacao(
-      {required final CacaoHeader h,
-      required final CacaoPayload p,
-      required final CacaoSignature s}) = _$CacaoImpl;
-
-  factory _Cacao.fromJson(Map<String, dynamic> json) = _$CacaoImpl.fromJson;
-
-  @override
-  CacaoHeader get h;
-  @override
-  CacaoPayload get p;
-  @override
-  CacaoSignature get s;
-
-  /// Create a copy of Cacao
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CacaoImplCopyWith<_$CacaoImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Cacao&&(identical(other.h, h) || other.h == h)&&(identical(other.p, p) || other.p == p)&&(identical(other.s, s) || other.s == s));
 }
 
-StoredCacao _$StoredCacaoFromJson(Map<String, dynamic> json) {
-  return _StoredCacao.fromJson(json);
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,h,p,s);
+
+@override
+String toString() {
+  return 'Cacao(h: $h, p: $p, s: $s)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CacaoCopyWith<$Res> implements $CacaoCopyWith<$Res> {
+  factory _$CacaoCopyWith(_Cacao value, $Res Function(_Cacao) _then) = __$CacaoCopyWithImpl;
+@override @useResult
+$Res call({
+ CacaoHeader h, CacaoPayload p, CacaoSignature s
+});
+
+
+@override $CacaoHeaderCopyWith<$Res> get h;@override $CacaoPayloadCopyWith<$Res> get p;@override $CacaoSignatureCopyWith<$Res> get s;
+
+}
+/// @nodoc
+class __$CacaoCopyWithImpl<$Res>
+    implements _$CacaoCopyWith<$Res> {
+  __$CacaoCopyWithImpl(this._self, this._then);
+
+  final _Cacao _self;
+  final $Res Function(_Cacao) _then;
+
+/// Create a copy of Cacao
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? h = null,Object? p = null,Object? s = null,}) {
+  return _then(_Cacao(
+h: null == h ? _self.h : h // ignore: cast_nullable_to_non_nullable
+as CacaoHeader,p: null == p ? _self.p : p // ignore: cast_nullable_to_non_nullable
+as CacaoPayload,s: null == s ? _self.s : s // ignore: cast_nullable_to_non_nullable
+as CacaoSignature,
+  ));
+}
+
+/// Create a copy of Cacao
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoHeaderCopyWith<$Res> get h {
+  
+  return $CacaoHeaderCopyWith<$Res>(_self.h, (value) {
+    return _then(_self.copyWith(h: value));
+  });
+}/// Create a copy of Cacao
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoPayloadCopyWith<$Res> get p {
+  
+  return $CacaoPayloadCopyWith<$Res>(_self.p, (value) {
+    return _then(_self.copyWith(p: value));
+  });
+}/// Create a copy of Cacao
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoSignatureCopyWith<$Res> get s {
+  
+  return $CacaoSignatureCopyWith<$Res>(_self.s, (value) {
+    return _then(_self.copyWith(s: value));
+  });
+}
+}
+
 
 /// @nodoc
 mixin _$StoredCacao {
-  int get id => throw _privateConstructorUsedError;
-  String get pairingTopic => throw _privateConstructorUsedError;
-  CacaoHeader get h => throw _privateConstructorUsedError;
-  CacaoPayload get p => throw _privateConstructorUsedError;
-  CacaoSignature get s => throw _privateConstructorUsedError;
+
+ int get id; String get pairingTopic; CacaoHeader get h; CacaoPayload get p; CacaoSignature get s;
+/// Create a copy of StoredCacao
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$StoredCacaoCopyWith<StoredCacao> get copyWith => _$StoredCacaoCopyWithImpl<StoredCacao>(this as StoredCacao, _$identity);
 
   /// Serializes this StoredCacao to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of StoredCacao
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $StoredCacaoCopyWith<StoredCacao> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StoredCacao&&(identical(other.id, id) || other.id == id)&&(identical(other.pairingTopic, pairingTopic) || other.pairingTopic == pairingTopic)&&(identical(other.h, h) || other.h == h)&&(identical(other.p, p) || other.p == p)&&(identical(other.s, s) || other.s == s));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,pairingTopic,h,p,s);
+
+@override
+String toString() {
+  return 'StoredCacao(id: $id, pairingTopic: $pairingTopic, h: $h, p: $p, s: $s)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $StoredCacaoCopyWith<$Res> {
-  factory $StoredCacaoCopyWith(
-          StoredCacao value, $Res Function(StoredCacao) then) =
-      _$StoredCacaoCopyWithImpl<$Res, StoredCacao>;
-  @useResult
-  $Res call(
-      {int id,
-      String pairingTopic,
-      CacaoHeader h,
-      CacaoPayload p,
-      CacaoSignature s});
+abstract mixin class $StoredCacaoCopyWith<$Res>  {
+  factory $StoredCacaoCopyWith(StoredCacao value, $Res Function(StoredCacao) _then) = _$StoredCacaoCopyWithImpl;
+@useResult
+$Res call({
+ int id, String pairingTopic, CacaoHeader h, CacaoPayload p, CacaoSignature s
+});
 
-  $CacaoHeaderCopyWith<$Res> get h;
-  $CacaoPayloadCopyWith<$Res> get p;
-  $CacaoSignatureCopyWith<$Res> get s;
+
+$CacaoHeaderCopyWith<$Res> get h;$CacaoPayloadCopyWith<$Res> get p;$CacaoSignatureCopyWith<$Res> get s;
+
 }
-
 /// @nodoc
-class _$StoredCacaoCopyWithImpl<$Res, $Val extends StoredCacao>
+class _$StoredCacaoCopyWithImpl<$Res>
     implements $StoredCacaoCopyWith<$Res> {
-  _$StoredCacaoCopyWithImpl(this._value, this._then);
+  _$StoredCacaoCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final StoredCacao _self;
+  final $Res Function(StoredCacao) _then;
 
-  /// Create a copy of StoredCacao
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? pairingTopic = null,
-    Object? h = null,
-    Object? p = null,
-    Object? s = null,
-  }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      pairingTopic: null == pairingTopic
-          ? _value.pairingTopic
-          : pairingTopic // ignore: cast_nullable_to_non_nullable
-              as String,
-      h: null == h
-          ? _value.h
-          : h // ignore: cast_nullable_to_non_nullable
-              as CacaoHeader,
-      p: null == p
-          ? _value.p
-          : p // ignore: cast_nullable_to_non_nullable
-              as CacaoPayload,
-      s: null == s
-          ? _value.s
-          : s // ignore: cast_nullable_to_non_nullable
-              as CacaoSignature,
-    ) as $Val);
-  }
-
-  /// Create a copy of StoredCacao
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $CacaoHeaderCopyWith<$Res> get h {
-    return $CacaoHeaderCopyWith<$Res>(_value.h, (value) {
-      return _then(_value.copyWith(h: value) as $Val);
-    });
-  }
-
-  /// Create a copy of StoredCacao
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $CacaoPayloadCopyWith<$Res> get p {
-    return $CacaoPayloadCopyWith<$Res>(_value.p, (value) {
-      return _then(_value.copyWith(p: value) as $Val);
-    });
-  }
-
-  /// Create a copy of StoredCacao
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $CacaoSignatureCopyWith<$Res> get s {
-    return $CacaoSignatureCopyWith<$Res>(_value.s, (value) {
-      return _then(_value.copyWith(s: value) as $Val);
-    });
-  }
+/// Create a copy of StoredCacao
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? pairingTopic = null,Object? h = null,Object? p = null,Object? s = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,pairingTopic: null == pairingTopic ? _self.pairingTopic : pairingTopic // ignore: cast_nullable_to_non_nullable
+as String,h: null == h ? _self.h : h // ignore: cast_nullable_to_non_nullable
+as CacaoHeader,p: null == p ? _self.p : p // ignore: cast_nullable_to_non_nullable
+as CacaoPayload,s: null == s ? _self.s : s // ignore: cast_nullable_to_non_nullable
+as CacaoSignature,
+  ));
+}
+/// Create a copy of StoredCacao
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoHeaderCopyWith<$Res> get h {
+  
+  return $CacaoHeaderCopyWith<$Res>(_self.h, (value) {
+    return _then(_self.copyWith(h: value));
+  });
+}/// Create a copy of StoredCacao
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoPayloadCopyWith<$Res> get p {
+  
+  return $CacaoPayloadCopyWith<$Res>(_self.p, (value) {
+    return _then(_self.copyWith(p: value));
+  });
+}/// Create a copy of StoredCacao
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoSignatureCopyWith<$Res> get s {
+  
+  return $CacaoSignatureCopyWith<$Res>(_self.s, (value) {
+    return _then(_self.copyWith(s: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$StoredCacaoImplCopyWith<$Res>
-    implements $StoredCacaoCopyWith<$Res> {
-  factory _$$StoredCacaoImplCopyWith(
-          _$StoredCacaoImpl value, $Res Function(_$StoredCacaoImpl) then) =
-      __$$StoredCacaoImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {int id,
-      String pairingTopic,
-      CacaoHeader h,
-      CacaoPayload p,
-      CacaoSignature s});
 
-  @override
-  $CacaoHeaderCopyWith<$Res> get h;
-  @override
-  $CacaoPayloadCopyWith<$Res> get p;
-  @override
-  $CacaoSignatureCopyWith<$Res> get s;
+/// Adds pattern-matching-related methods to [StoredCacao].
+extension StoredCacaoPatterns on StoredCacao {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _StoredCacao value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _StoredCacao() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _StoredCacao value)  $default,){
+final _that = this;
+switch (_that) {
+case _StoredCacao():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _StoredCacao value)?  $default,){
+final _that = this;
+switch (_that) {
+case _StoredCacao() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String pairingTopic,  CacaoHeader h,  CacaoPayload p,  CacaoSignature s)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _StoredCacao() when $default != null:
+return $default(_that.id,_that.pairingTopic,_that.h,_that.p,_that.s);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String pairingTopic,  CacaoHeader h,  CacaoPayload p,  CacaoSignature s)  $default,) {final _that = this;
+switch (_that) {
+case _StoredCacao():
+return $default(_that.id,_that.pairingTopic,_that.h,_that.p,_that.s);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String pairingTopic,  CacaoHeader h,  CacaoPayload p,  CacaoSignature s)?  $default,) {final _that = this;
+switch (_that) {
+case _StoredCacao() when $default != null:
+return $default(_that.id,_that.pairingTopic,_that.h,_that.p,_that.s);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$StoredCacaoImplCopyWithImpl<$Res>
-    extends _$StoredCacaoCopyWithImpl<$Res, _$StoredCacaoImpl>
-    implements _$$StoredCacaoImplCopyWith<$Res> {
-  __$$StoredCacaoImplCopyWithImpl(
-      _$StoredCacaoImpl _value, $Res Function(_$StoredCacaoImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of StoredCacao
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? pairingTopic = null,
-    Object? h = null,
-    Object? p = null,
-    Object? s = null,
-  }) {
-    return _then(_$StoredCacaoImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as int,
-      pairingTopic: null == pairingTopic
-          ? _value.pairingTopic
-          : pairingTopic // ignore: cast_nullable_to_non_nullable
-              as String,
-      h: null == h
-          ? _value.h
-          : h // ignore: cast_nullable_to_non_nullable
-              as CacaoHeader,
-      p: null == p
-          ? _value.p
-          : p // ignore: cast_nullable_to_non_nullable
-              as CacaoPayload,
-      s: null == s
-          ? _value.s
-          : s // ignore: cast_nullable_to_non_nullable
-              as CacaoSignature,
-    ));
-  }
 }
 
 /// @nodoc
 
 @JsonSerializable(includeIfNull: false)
-class _$StoredCacaoImpl implements _StoredCacao {
-  const _$StoredCacaoImpl(
-      {required this.id,
-      required this.pairingTopic,
-      required this.h,
-      required this.p,
-      required this.s});
+class _StoredCacao implements StoredCacao {
+  const _StoredCacao({required this.id, required this.pairingTopic, required this.h, required this.p, required this.s});
+  factory _StoredCacao.fromJson(Map<String, dynamic> json) => _$StoredCacaoFromJson(json);
 
-  factory _$StoredCacaoImpl.fromJson(Map<String, dynamic> json) =>
-      _$$StoredCacaoImplFromJson(json);
+@override final  int id;
+@override final  String pairingTopic;
+@override final  CacaoHeader h;
+@override final  CacaoPayload p;
+@override final  CacaoSignature s;
 
-  @override
-  final int id;
-  @override
-  final String pairingTopic;
-  @override
-  final CacaoHeader h;
-  @override
-  final CacaoPayload p;
-  @override
-  final CacaoSignature s;
+/// Create a copy of StoredCacao
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$StoredCacaoCopyWith<_StoredCacao> get copyWith => __$StoredCacaoCopyWithImpl<_StoredCacao>(this, _$identity);
 
-  @override
-  String toString() {
-    return 'StoredCacao(id: $id, pairingTopic: $pairingTopic, h: $h, p: $p, s: $s)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$StoredCacaoImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.pairingTopic, pairingTopic) ||
-                other.pairingTopic == pairingTopic) &&
-            (identical(other.h, h) || other.h == h) &&
-            (identical(other.p, p) || other.p == p) &&
-            (identical(other.s, s) || other.s == s));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, pairingTopic, h, p, s);
-
-  /// Create a copy of StoredCacao
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$StoredCacaoImplCopyWith<_$StoredCacaoImpl> get copyWith =>
-      __$$StoredCacaoImplCopyWithImpl<_$StoredCacaoImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$StoredCacaoImplToJson(
-      this,
-    );
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$StoredCacaoToJson(this, );
 }
 
-abstract class _StoredCacao implements StoredCacao {
-  const factory _StoredCacao(
-      {required final int id,
-      required final String pairingTopic,
-      required final CacaoHeader h,
-      required final CacaoPayload p,
-      required final CacaoSignature s}) = _$StoredCacaoImpl;
-
-  factory _StoredCacao.fromJson(Map<String, dynamic> json) =
-      _$StoredCacaoImpl.fromJson;
-
-  @override
-  int get id;
-  @override
-  String get pairingTopic;
-  @override
-  CacaoHeader get h;
-  @override
-  CacaoPayload get p;
-  @override
-  CacaoSignature get s;
-
-  /// Create a copy of StoredCacao
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$StoredCacaoImplCopyWith<_$StoredCacaoImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoredCacao&&(identical(other.id, id) || other.id == id)&&(identical(other.pairingTopic, pairingTopic) || other.pairingTopic == pairingTopic)&&(identical(other.h, h) || other.h == h)&&(identical(other.p, p) || other.p == p)&&(identical(other.s, s) || other.s == s));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,pairingTopic,h,p,s);
+
+@override
+String toString() {
+  return 'StoredCacao(id: $id, pairingTopic: $pairingTopic, h: $h, p: $p, s: $s)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$StoredCacaoCopyWith<$Res> implements $StoredCacaoCopyWith<$Res> {
+  factory _$StoredCacaoCopyWith(_StoredCacao value, $Res Function(_StoredCacao) _then) = __$StoredCacaoCopyWithImpl;
+@override @useResult
+$Res call({
+ int id, String pairingTopic, CacaoHeader h, CacaoPayload p, CacaoSignature s
+});
+
+
+@override $CacaoHeaderCopyWith<$Res> get h;@override $CacaoPayloadCopyWith<$Res> get p;@override $CacaoSignatureCopyWith<$Res> get s;
+
+}
+/// @nodoc
+class __$StoredCacaoCopyWithImpl<$Res>
+    implements _$StoredCacaoCopyWith<$Res> {
+  __$StoredCacaoCopyWithImpl(this._self, this._then);
+
+  final _StoredCacao _self;
+  final $Res Function(_StoredCacao) _then;
+
+/// Create a copy of StoredCacao
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? pairingTopic = null,Object? h = null,Object? p = null,Object? s = null,}) {
+  return _then(_StoredCacao(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as int,pairingTopic: null == pairingTopic ? _self.pairingTopic : pairingTopic // ignore: cast_nullable_to_non_nullable
+as String,h: null == h ? _self.h : h // ignore: cast_nullable_to_non_nullable
+as CacaoHeader,p: null == p ? _self.p : p // ignore: cast_nullable_to_non_nullable
+as CacaoPayload,s: null == s ? _self.s : s // ignore: cast_nullable_to_non_nullable
+as CacaoSignature,
+  ));
+}
+
+/// Create a copy of StoredCacao
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoHeaderCopyWith<$Res> get h {
+  
+  return $CacaoHeaderCopyWith<$Res>(_self.h, (value) {
+    return _then(_self.copyWith(h: value));
+  });
+}/// Create a copy of StoredCacao
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoPayloadCopyWith<$Res> get p {
+  
+  return $CacaoPayloadCopyWith<$Res>(_self.p, (value) {
+    return _then(_self.copyWith(p: value));
+  });
+}/// Create a copy of StoredCacao
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$CacaoSignatureCopyWith<$Res> get s {
+  
+  return $CacaoSignatureCopyWith<$Res>(_self.s, (value) {
+    return _then(_self.copyWith(s: value));
+  });
+}
+}
+
+// dart format on

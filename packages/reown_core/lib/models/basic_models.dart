@@ -9,7 +9,7 @@ part 'basic_models.freezed.dart';
 class ReownCoreErrorSilent {}
 
 @freezed
-class ReownCoreError with _$ReownCoreError {
+sealed class ReownCoreError with _$ReownCoreError {
   @JsonSerializable(includeIfNull: false)
   const factory ReownCoreError({
     required int code,
@@ -22,12 +22,13 @@ class ReownCoreError with _$ReownCoreError {
 }
 
 @freezed
-class PublishOptions with _$PublishOptions {
+sealed class PublishOptions with _$PublishOptions {
   @JsonSerializable(includeIfNull: false)
   const factory PublishOptions({
     int? ttl,
     int? tag,
     int? correlationId,
+    String? attestation,
     Map<String, dynamic>? tvf,
     String? publishMethod,
   }) = _PublishOptions;
@@ -36,8 +37,18 @@ class PublishOptions with _$PublishOptions {
       _$PublishOptionsFromJson(json);
 }
 
+extension PublishOptionsExtension on PublishOptions {
+  Map<String, dynamic> toMap() => {
+    'ttl': ttl,
+    'tag': tag,
+    'correlationId': correlationId,
+    if (attestation != null) 'attestation': attestation,
+    ...?tvf,
+  };
+}
+
 @freezed
-class SubscribeOptions with _$SubscribeOptions {
+sealed class SubscribeOptions with _$SubscribeOptions {
   @JsonSerializable(includeIfNull: false)
   const factory SubscribeOptions({
     required String topic,

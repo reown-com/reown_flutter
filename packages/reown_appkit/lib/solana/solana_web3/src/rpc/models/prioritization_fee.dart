@@ -10,10 +10,8 @@ import 'package:reown_appkit/solana/solana_common/types.dart' show u64;
 
 class PrioritizationFee extends Serializable {
   /// A prioritization fees from recent blocks.
-  const PrioritizationFee({
-    required this.slot,
-    required this.prioritizationFee,
-  }) : assert(slot >= 0);
+  const PrioritizationFee({required this.slot, required this.prioritizationFee})
+    : assert(slot >= 0);
 
   /// The slot in which the fee was observed.
   final u64 slot;
@@ -35,7 +33,7 @@ class PrioritizationFee extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'slot': slot,
-        'prioritizationFee': prioritizationFee,
-      };
+    'slot': slot,
+    'prioritizationFee': prioritizationFee,
+  };
 }

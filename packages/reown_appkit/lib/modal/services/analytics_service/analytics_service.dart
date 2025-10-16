@@ -11,10 +11,7 @@ class AnalyticsService implements IAnalyticsService {
   bool? _enableAnalytics;
   late final IReownCore _core;
 
-  AnalyticsService({
-    required IReownCore core,
-    bool? enableAnalytics,
-  }) {
+  AnalyticsService({required IReownCore core, bool? enableAnalytics}) {
     _core = core;
     _enableAnalytics = enableAnalytics;
   }

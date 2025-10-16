@@ -24,7 +24,9 @@ abstract class IKeyService {
 
   Future<void> createRandomWallet();
 
-  Future<String> getMnemonic();
+  Future<void> regenerateStoredWallet();
+
+  String getMnemonic();
 
   Future<void> restoreWallet({required String mnemonicOrPrivate});
 }

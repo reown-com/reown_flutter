@@ -4,7 +4,7 @@ part 'json_rpc_models.g.dart';
 part 'json_rpc_models.freezed.dart';
 
 @freezed
-class RpcOptions with _$RpcOptions {
+sealed class RpcOptions with _$RpcOptions {
   // @JsonSerializable()
   const factory RpcOptions({
     required int ttl,
@@ -14,12 +14,9 @@ class RpcOptions with _$RpcOptions {
 }
 
 @freezed
-class JsonRpcError with _$JsonRpcError {
+sealed class JsonRpcError with _$JsonRpcError {
   @JsonSerializable(includeIfNull: false)
-  const factory JsonRpcError({
-    int? code,
-    String? message,
-  }) = _JsonRpcError;
+  const factory JsonRpcError({int? code, String? message}) = _JsonRpcError;
 
   factory JsonRpcError.serverError(String message) =>
       JsonRpcError(code: -32000, message: message);
@@ -37,7 +34,7 @@ class JsonRpcError with _$JsonRpcError {
 }
 
 @freezed
-class JsonRpcRequest with _$JsonRpcRequest {
+sealed class JsonRpcRequest with _$JsonRpcRequest {
   @JsonSerializable()
   const factory JsonRpcRequest({
     required int id,
@@ -51,7 +48,7 @@ class JsonRpcRequest with _$JsonRpcRequest {
 }
 
 @Freezed(genericArgumentFactories: true)
-class JsonRpcResponse<T> with _$JsonRpcResponse<T> {
+sealed class JsonRpcResponse<T> with _$JsonRpcResponse<T> {
   // @JsonSerializable(genericArgumentFactories: true)
   const factory JsonRpcResponse({
     required int id,

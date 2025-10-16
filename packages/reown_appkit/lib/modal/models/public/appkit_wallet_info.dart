@@ -6,7 +6,7 @@ part 'appkit_wallet_info.freezed.dart';
 part 'appkit_wallet_info.g.dart';
 
 @freezed
-class ReownAppKitModalWalletInfo with _$ReownAppKitModalWalletInfo {
+sealed class ReownAppKitModalWalletInfo with _$ReownAppKitModalWalletInfo {
   const factory ReownAppKitModalWalletInfo({
     required AppKitModalWalletListing listing,
     @Default(false) bool installed,
@@ -24,6 +24,9 @@ extension ReownAppKitWalletInfoExtension on ReownAppKitModalWalletInfo {
   bool get isPhantom =>
       listing.id ==
       'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393';
+  bool get isSolflare =>
+      listing.id ==
+      '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79';
 }
 
 class AppKitModalWalletListing {
@@ -74,23 +77,22 @@ class AppKitModalWalletListing {
     String? rdns,
     List<Injected>? injected,
     String? description,
-  }) =>
-      AppKitModalWalletListing(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        homepage: homepage ?? this.homepage,
-        imageId: imageId ?? this.imageId,
-        order: order ?? this.order,
-        mobileLink: mobileLink ?? this.mobileLink,
-        desktopLink: desktopLink ?? this.desktopLink,
-        webappLink: webappLink ?? this.webappLink,
-        linkMode: linkMode ?? this.linkMode,
-        appStore: appStore ?? this.appStore,
-        playStore: playStore ?? this.playStore,
-        rdns: rdns ?? this.rdns,
-        injected: injected ?? this.injected,
-        description: description ?? this.description,
-      );
+  }) => AppKitModalWalletListing(
+    id: id ?? this.id,
+    name: name ?? this.name,
+    homepage: homepage ?? this.homepage,
+    imageId: imageId ?? this.imageId,
+    order: order ?? this.order,
+    mobileLink: mobileLink ?? this.mobileLink,
+    desktopLink: desktopLink ?? this.desktopLink,
+    webappLink: webappLink ?? this.webappLink,
+    linkMode: linkMode ?? this.linkMode,
+    appStore: appStore ?? this.appStore,
+    playStore: playStore ?? this.playStore,
+    rdns: rdns ?? this.rdns,
+    injected: injected ?? this.injected,
+    description: description ?? this.description,
+  );
 
   factory AppKitModalWalletListing.fromRawJson(String str) =>
       AppKitModalWalletListing.fromJson(json.decode(str));
@@ -122,23 +124,23 @@ class AppKitModalWalletListing {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'homepage': homepage,
-        'image_id': imageId,
-        'order': order,
-        'mobile_link': mobileLink,
-        'desktop_link': desktopLink,
-        'webapp_link': webappLink,
-        'link_mode': linkMode,
-        'app_store': appStore,
-        'play_store': playStore,
-        'rdns': rdns,
-        'injected': injected == null
-            ? []
-            : List<dynamic>.from(injected!.map((x) => x.toJson())),
-        'description': description,
-      };
+    'id': id,
+    'name': name,
+    'homepage': homepage,
+    'image_id': imageId,
+    'order': order,
+    'mobile_link': mobileLink,
+    'desktop_link': desktopLink,
+    'webapp_link': webappLink,
+    'link_mode': linkMode,
+    'app_store': appStore,
+    'play_store': playStore,
+    'rdns': rdns,
+    'injected': injected == null
+        ? []
+        : List<dynamic>.from(injected!.map((x) => x.toJson())),
+    'description': description,
+  };
 }
 
 class Injected {
@@ -148,22 +150,20 @@ class Injected {
   Injected({required this.namespace, required this.injectedId});
 
   Injected copyWith({String? namespace, String? injectedId}) => Injected(
-        namespace: namespace ?? this.namespace,
-        injectedId: injectedId ?? this.injectedId,
-      );
+    namespace: namespace ?? this.namespace,
+    injectedId: injectedId ?? this.injectedId,
+  );
 
   factory Injected.fromRawJson(String str) =>
       Injected.fromJson(json.decode(str));
 
   String toRawJson() => json.encode(toJson());
 
-  factory Injected.fromJson(Map<String, dynamic> json) => Injected(
-        namespace: json['namespace'],
-        injectedId: json['injected_id'],
-      );
+  factory Injected.fromJson(Map<String, dynamic> json) =>
+      Injected(namespace: json['namespace'], injectedId: json['injected_id']);
 
   Map<String, dynamic> toJson() => {
-        'namespace': namespace,
-        'injected_id': injectedId,
-      };
+    'namespace': namespace,
+    'injected_id': injectedId,
+  };
 }

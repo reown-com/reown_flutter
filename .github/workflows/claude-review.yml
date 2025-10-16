@@ -1,0 +1,79 @@
+name: Claude Auto Review
+
+on:
+  pull_request:
+    types: [opened]
+    branches: [main, develop]
+  issue_comment:
+    types: [created]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    if: |
+      github.event_name == 'pull_request'
+      || (
+        github.event_name == 'issue_comment'
+        && github.event.issue.pull_request
+        && contains(github.event.comment.body, '@claude review')
+      )
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Claude Review
+        uses: WalletConnect/actions/claude/auto-review@974cce051b8452198a144e0e6c4df4d2328a132c
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          project_context: |
+            This is a Flutter/Dart SDK implementing the WalletConnect protocol for multi-platform applications.
+            
+            Repository Structure (Monorepo):
+            - reown_core: Foundation layer with networking (WebSocket via web_socket_channel), cryptography (ed25519, x25519, pointycastle), secure storage (flutter_secure_storage), connectivity detection, and MessagePack serialization
+            - reown_sign: Sign protocol implementation using web3dart for EVM chain interactions, freezed for immutable models
+            - reown_walletkit: Wallet implementation that orchestrates core networking and sign protocol, provides wallet-side WalletConnect functionality
+            - reown_appkit: Full-featured UI toolkit with Coinbase Wallet SDK integration, WebView support for WalletConnect, QR code generation, and comprehensive modal components
+            - reown_yttrium: Chain abstraction layer (early access) with eth_sig_util for transaction signing across multiple chains
+            - reown_cli: Command-line tool to easily create a reown_appkit project from scratch
+            - pos_client: Point of sale SDK
+            
+            Tech Stack:
+            - Dart 3.8.0+ with null safety
+            - Flutter 1.10.0+ for cross-platform UI
+            - Multi-platform support: Android, iOS, Web, macOS, Linux, Windows
+            - Cryptography: ed25519_edwards, x25519, pinenacl, crypto, pointycastle
+            - Networking: http, web_socket_channel, connectivity_plus
+            - Storage: flutter_secure_storage, shared_preferences
+            - UI Components: flutter_svg, cached_network_image, custom_sliding_segmented_control, shimmer
+            - Blockchain: web3dart, eth_sig_util, bs58
+            - Testing: build_runner, flutter_test, mockito, flutter_lints
+            
+            Multi-Chain Support:
+            - EVM chains (Ethereum, Polygon, Arbitrum, Optimism, etc.)
+            - Solana
+            - Polkadot
+            - Kadena
+            - Tron
+            - Cosmos
+            
+            Key Considerations:
+            - Follow Flutter/Dart best practices and style guide
+            - Ensure proper async/await patterns with Future and Stream
+            - Maintain strict null safety and type safety
+            - Cross-platform compatibility - test platform-specific code paths
+            - Proper error handling for network failures and blockchain operations
+            - Secure key management using flutter_secure_storage
+            - Event-driven architecture using event package
+            - Freezed models for immutable data classes
+            - Build code generation with build_runner for freezed and json_serializable
+            - Follow pubspec.yaml version constraints
+            - Use package_info_plus for runtime app metadata
+            - WebView security for embedded wallet connections

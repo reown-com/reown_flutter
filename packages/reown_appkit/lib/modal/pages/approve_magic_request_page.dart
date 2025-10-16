@@ -7,7 +7,7 @@ import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 
 class ApproveTransactionPage extends StatefulWidget {
   const ApproveTransactionPage()
-      : super(key: KeyConstants.approveTransactionPage);
+    : super(key: KeyConstants.approveTransactionPage);
 
   @override
   State<ApproveTransactionPage> createState() => _ApproveTransactionPageState();

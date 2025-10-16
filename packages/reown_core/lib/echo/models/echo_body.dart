@@ -8,11 +8,7 @@ class EchoBody {
   final String token;
   final String type;
 
-  EchoBody({
-    required this.clientId,
-    required this.token,
-    this.type = 'fcm',
-  });
+  EchoBody({required this.clientId, required this.token, this.type = 'fcm'});
 
   factory EchoBody.fromJson(Map<String, dynamic> json) =>
       _$EchoBodyFromJson(json);

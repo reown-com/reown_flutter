@@ -79,7 +79,8 @@ mixin BorshObjectMixin implements SerializableMixin {
   /// Creates an [UnimplementedError].
   static UnimplementedError _unimplementedError(final String method) =>
       UnimplementedError(
-          'Derived classes of [BorshObjectMixin] must implement $method');
+        'Derived classes of [BorshObjectMixin] must implement $method',
+      );
 
   /// {@template solana_borsh.BorshObject.fromBorsh}
   /// Creates an instance of `this` class from a buffer.
@@ -93,8 +94,8 @@ mixin BorshObjectMixin implements SerializableMixin {
   /// Returns `null` if [buffer] is omitted.
   /// {@endtemplate}
   static T? tryFromBorsh<T extends BorshObjectMixin>(
-          final Iterable<int>? buffer) =>
-      throw _unimplementedError('tryFromBorsh');
+    final Iterable<int>? buffer,
+  ) => throw _unimplementedError('tryFromBorsh');
 
   /// {@template solana_borsh.BorshObject.fromBorshBase64}
   /// Creates an instance of `this` class from a base-64 encoded string.
@@ -108,8 +109,8 @@ mixin BorshObjectMixin implements SerializableMixin {
   /// Returns `null` if [encoded] is omitted.
   /// {@endtemplate}
   static T? tryFromBorshBase64<T extends BorshObjectMixin>(
-          final String? encoded) =>
-      throw _unimplementedError('tryFromBorshBase64');
+    final String? encoded,
+  ) => throw _unimplementedError('tryFromBorshBase64');
 
   /// Serializes `this` instance into a buffer.
   Iterable<int> toBorsh() => borsh.serialize(this);

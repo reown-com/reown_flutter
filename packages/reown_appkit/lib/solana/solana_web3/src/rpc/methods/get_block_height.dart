@@ -12,10 +12,6 @@ import '../interfaces/json_rpc_type_method.dart';
 /// A method handler for `getBlockHeight`.
 class GetBlockHeight extends JsonRpcTypeMethod<u64> {
   /// Creates a method handler for `getBlockHeight`.
-  GetBlockHeight({
-    final GetBlockHeightConfig? config,
-  }) : super(
-          'getBlockHeight',
-          config: config ?? const GetBlockHeightConfig(),
-        );
+  GetBlockHeight({final GetBlockHeightConfig? config})
+    : super('getBlockHeight', config: config ?? const GetBlockHeightConfig());
 }

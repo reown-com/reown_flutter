@@ -9,8 +9,8 @@ import 'response_context.dart';
 /// ------------------------------------------------------------------------------------------------
 
 /// A [JsonRpcSuccessResponse] for context methods.
-typedef JsonRpcContextResponse<T>
-    = JsonRpcSuccessResponse<JsonRpcResponseContext<T>>;
+typedef JsonRpcContextResponse<T> =
+    JsonRpcSuccessResponse<JsonRpcResponseContext<T>>;
 
 /// A [JsonRpcSuccessResponse] subscribe methods.
 typedef JsonRpcSubscribeResponse = JsonRpcSuccessResponse<int>;
@@ -37,9 +37,7 @@ class JsonRpcSuccessResponse<T> extends JsonRpcResponse<T> {
   static const String resultKey = 'result';
 
   /// {@macro solana_common.Serializable.fromJson}
-  factory JsonRpcSuccessResponse.fromJson(
-    final Map<String, dynamic> json,
-  ) =>
+  factory JsonRpcSuccessResponse.fromJson(final Map<String, dynamic> json) =>
       JsonRpcSuccessResponse<T>(
         jsonrpc: json[JsonRpcResponse.jsonrpcKey],
         result: json[JsonRpcSuccessResponse.resultKey],
@@ -48,8 +46,8 @@ class JsonRpcSuccessResponse<T> extends JsonRpcResponse<T> {
 
   @override
   Map<String, dynamic> toJson() => {
-        JsonRpcResponse.jsonrpcKey: jsonrpc,
-        JsonRpcSuccessResponse.resultKey: result,
-        JsonRpcResponse.idKey: id,
-      };
+    JsonRpcResponse.jsonrpcKey: jsonrpc,
+    JsonRpcSuccessResponse.resultKey: result,
+    JsonRpcResponse.idKey: id,
+  };
 }

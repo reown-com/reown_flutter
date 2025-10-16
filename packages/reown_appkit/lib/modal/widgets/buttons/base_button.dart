@@ -66,20 +66,14 @@ class BaseButton extends StatelessWidget {
         child: child,
         style: ButtonStyle(
           textStyle: WidgetStateProperty.all<TextStyle>(textStyle),
-          minimumSize: WidgetStateProperty.all<Size>(Size(
-            size.height,
-            size.height,
-          )),
-          maximumSize: WidgetStateProperty.all<Size>(Size(
-            1000.0,
-            size.height,
-          )),
-          padding: overridePadding ??
+          minimumSize: WidgetStateProperty.all<Size>(
+            Size(size.height, size.height),
+          ),
+          maximumSize: WidgetStateProperty.all<Size>(Size(1000.0, size.height)),
+          padding:
+              overridePadding ??
               WidgetStateProperty.all<EdgeInsetsGeometry>(
-                const EdgeInsets.only(
-                  left: 16.0,
-                  right: 16.0,
-                ),
+                const EdgeInsets.only(left: 16.0, right: 16.0),
               ),
         ).merge(buttonStyle),
       ),

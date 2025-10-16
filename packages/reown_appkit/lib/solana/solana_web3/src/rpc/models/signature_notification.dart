@@ -9,9 +9,7 @@ import 'package:reown_appkit/solana/solana_common/models.dart';
 
 class SignatureNotification extends Serializable {
   /// Signature notification.
-  const SignatureNotification({
-    required this.err,
-  });
+  const SignatureNotification({required this.err});
 
   /// The error if transaction failed, null if transaction succeeded.
   ///
@@ -20,9 +18,7 @@ class SignatureNotification extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   static SignatureNotification fromJson(final Map<String, dynamic> json) =>
-      SignatureNotification(
-        err: json['err'],
-      );
+      SignatureNotification(err: json['err']);
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static SignatureNotification? tryFromJson(final Map<String, dynamic>? json) {
@@ -30,7 +26,5 @@ class SignatureNotification extends Serializable {
   }
 
   @override
-  Map<String, dynamic> toJson() => {
-        'err': err,
-      };
+  Map<String, dynamic> toJson() => {'err': err};
 }

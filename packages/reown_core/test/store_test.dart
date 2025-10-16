@@ -11,6 +11,7 @@ import 'package:reown_core/store/generic_store.dart';
 import 'package:reown_core/store/i_generic_store.dart';
 import 'package:reown_core/store/i_store.dart';
 import 'package:reown_core/store/shared_prefs_store.dart';
+import 'package:reown_core/store/secure_store.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -19,9 +20,7 @@ void main() {
     late IStore<Map<String, dynamic>> store;
 
     setUp(() async {
-      store = SharedPrefsStores(
-        memoryStore: true,
-      );
+      store = SharedPrefsStores(memoryStore: true);
       await store.init();
     });
 
@@ -94,16 +93,12 @@ void main() {
               'key': 'value',
             },
             '${ReownConstants.CORE_STORAGE_PREFIX}swag//invalid': {
-              'key': {
-                'invalid': 'value',
-              },
+              'key': {'invalid': 'value'},
             },
             '${ReownConstants.CORE_STORAGE_PREFIX}keychain': {
               'version': 'swag',
             },
-            '${ReownConstants.CORE_STORAGE_PREFIX}invalid': {
-              'version': 'swag',
-            },
+            '${ReownConstants.CORE_STORAGE_PREFIX}invalid': {'version': 'swag'},
           },
           memoryStore: true,
         );
@@ -169,6 +164,70 @@ void main() {
       });
     });
 
+    group('Secure', () {
+      late IGenericStore<String> secureGenericStore;
+
+      setUp(() async {
+        secureGenericStore = GenericStore(
+          storage: SecureStore(
+            fallbackStorage: store,
+          ), // Use memory mode for testing
+          context: 'secure_keychain',
+          version: 'secure_swag',
+          fromJson: (value) => value as String,
+        );
+        await secureGenericStore.init();
+      });
+
+      test('has correct outcome', () async {
+        Completer createComplete = Completer();
+        Completer updateComplete = Completer();
+        Completer deleteComplete = Completer();
+        Completer syncComplete = Completer();
+        secureGenericStore.onCreate.subscribe((args) {
+          createComplete.complete();
+        });
+        secureGenericStore.onUpdate.subscribe((args) {
+          updateComplete.complete();
+        });
+        secureGenericStore.onDelete.subscribe((args) {
+          deleteComplete.complete();
+        });
+        secureGenericStore.onSync.subscribe((args) {
+          syncComplete.complete();
+        });
+
+        expect(secureGenericStore.get('key'), null);
+        expect(secureGenericStore.has('key'), false);
+        await secureGenericStore.set('key', 'value');
+        await createComplete.future;
+        await syncComplete.future;
+        expect(secureGenericStore.get('key'), 'value');
+        expect(secureGenericStore.has('key'), true);
+        expect(secureGenericStore.getAll(), ['value']);
+
+        secureGenericStore.onCreate.unsubscribeAll();
+        syncComplete = Completer();
+
+        await secureGenericStore.set('key', 'value2');
+        await updateComplete.future;
+        await syncComplete.future;
+        expect(secureGenericStore.get('key'), 'value2');
+        expect(secureGenericStore.getAll(), ['value2']);
+
+        secureGenericStore.onUpdate.unsubscribeAll();
+        syncComplete = Completer();
+
+        await secureGenericStore.delete('key');
+        await deleteComplete.future;
+        await syncComplete.future;
+        expect(secureGenericStore.get('key'), null);
+        expect(secureGenericStore.has('key'), false);
+
+        secureGenericStore.onDelete.unsubscribeAll();
+      });
+    });
+
     group('special stores', () {
       test('message tracker', () async {
         IMessageTracker messageTracker = MessageTracker(
@@ -192,13 +251,10 @@ void main() {
         await messageTracker.recordMessageEvent('test', 'message');
         await createComplete.future;
 
-        expect(
-          messageTracker.get('test'),
-          {
-            'ab530a13e45914982b79f9b7e3fba994cfd1f3fb22f71cea1afbf02b460c6d1d':
-                'message',
-          },
-        );
+        expect(messageTracker.get('test'), {
+          'ab530a13e45914982b79f9b7e3fba994cfd1f3fb22f71cea1afbf02b460c6d1d':
+              'message',
+        });
 
         expect(messageTracker.messageIsRecorded('test', 'message'), true);
       });
@@ -234,20 +290,12 @@ void main() {
           syncComplete.complete();
         });
 
-        await specialStore.resolve(
-          {
-            'id': 1,
-            'result': 'result',
-          },
-        );
+        await specialStore.resolve({'id': 1, 'result': 'result'});
 
         await updateComplete.future;
         await syncComplete.future;
 
-        expect(
-          specialStore.get('1')!.response,
-          'result',
-        );
+        expect(specialStore.get('1')!.response, 'result');
       });
 
       test('pairing store', () async {
@@ -266,9 +314,7 @@ void main() {
           PairingInfo(
             topic: 'expired',
             expiry: -1,
-            relay: Relay(
-              ReownConstants.RELAYER_DEFAULT_PROTOCOL,
-            ),
+            relay: Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
             active: true,
           ),
         );
@@ -282,23 +328,14 @@ void main() {
           syncComplete.complete();
         });
 
-        expect(
-          specialStore.get('1')!.expiry,
-          -1,
-        );
+        expect(specialStore.get('1')!.expiry, -1);
 
-        await specialStore.update(
-          '1',
-          expiry: 2,
-        );
+        await specialStore.update('1', expiry: 2);
 
         await updateComplete.future;
         await syncComplete.future;
 
-        expect(
-          specialStore.get('1')!.expiry,
-          2,
-        );
+        expect(specialStore.get('1')!.expiry, 2);
       });
     });
   });

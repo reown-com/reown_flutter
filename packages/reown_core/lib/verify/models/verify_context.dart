@@ -16,7 +16,7 @@ enum Validation {
 }
 
 @freezed
-class VerifyContext with _$VerifyContext {
+sealed class VerifyContext with _$VerifyContext {
   @JsonSerializable()
   const factory VerifyContext({
     required String origin,
@@ -30,7 +30,7 @@ class VerifyContext with _$VerifyContext {
 }
 
 @freezed
-class AttestationResponse with _$AttestationResponse {
+sealed class AttestationResponse with _$AttestationResponse {
   @JsonSerializable()
   const factory AttestationResponse({
     required String origin,
@@ -40,6 +40,27 @@ class AttestationResponse with _$AttestationResponse {
 
   factory AttestationResponse.fromJson(Map<String, dynamic> json) =>
       _$AttestationResponseFromJson(json);
+}
+
+@freezed
+sealed class VerifyClaims with _$VerifyClaims {
+  const factory VerifyClaims({
+    @JsonKey(name: 'origin') required String origin,
+    @JsonKey(name: 'id') required String id,
+    @JsonKey(name: 'isScam') bool? isScam,
+    @JsonKey(name: 'exp') required int expiration,
+    @JsonKey(name: 'isVerified') required bool isVerified,
+  }) = _VerifyClaims;
+
+  factory VerifyClaims.fromJson(Map<String, dynamic> json) =>
+      _$VerifyClaimsFromJson(json);
+}
+
+extension VerifyClaimsExtension on VerifyClaims {
+  bool isExpired() {
+    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+    return expiration < now;
+  }
 }
 
 class AttestationNotFound implements Exception {

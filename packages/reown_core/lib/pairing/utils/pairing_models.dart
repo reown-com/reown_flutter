@@ -6,13 +6,10 @@ import 'package:reown_core/relay_client/relay_client_models.dart';
 part 'pairing_models.g.dart';
 part 'pairing_models.freezed.dart';
 
-enum ProtocolType {
-  pair,
-  sign,
-}
+enum ProtocolType { pair, sign }
 
 @freezed
-class PairingInfo with _$PairingInfo {
+sealed class PairingInfo with _$PairingInfo {
   @JsonSerializable()
   const factory PairingInfo({
     required String topic,
@@ -28,7 +25,7 @@ class PairingInfo with _$PairingInfo {
 }
 
 @freezed
-class PairingMetadata with _$PairingMetadata {
+sealed class PairingMetadata with _$PairingMetadata {
   @JsonSerializable(includeIfNull: false)
   const factory PairingMetadata({
     required String name,
@@ -39,19 +36,15 @@ class PairingMetadata with _$PairingMetadata {
     Redirect? redirect,
   }) = _PairingMetadata;
 
-  factory PairingMetadata.empty() => const PairingMetadata(
-        name: '',
-        description: '',
-        url: '',
-        icons: [],
-      );
+  factory PairingMetadata.empty() =>
+      const PairingMetadata(name: '', description: '', url: '', icons: []);
 
   factory PairingMetadata.fromJson(Map<String, dynamic> json) =>
       _$PairingMetadataFromJson(json);
 }
 
 @freezed
-class Redirect with _$Redirect {
+sealed class Redirect with _$Redirect {
   @JsonSerializable()
   const factory Redirect({
     String? native,
@@ -84,10 +77,7 @@ class ExpirationEvent extends EventArgs {
   String target;
   int expiry;
 
-  ExpirationEvent({
-    required this.target,
-    required this.expiry,
-  });
+  ExpirationEvent({required this.target, required this.expiry});
 
   @override
   String toString() {
@@ -109,9 +99,7 @@ class HistoryEvent extends EventArgs {
 class PairingInvalidEvent extends EventArgs {
   String message;
 
-  PairingInvalidEvent({
-    required this.message,
-  });
+  PairingInvalidEvent({required this.message});
 
   @override
   String toString() {
@@ -124,11 +112,7 @@ class PairingEvent extends EventArgs {
   String? topic;
   JsonRpcError? error;
 
-  PairingEvent({
-    this.id,
-    this.topic,
-    this.error,
-  });
+  PairingEvent({this.id, this.topic, this.error});
 
   @override
   String toString() {
@@ -140,10 +124,7 @@ class PairingActivateEvent extends EventArgs {
   String topic;
   int expiry;
 
-  PairingActivateEvent({
-    required this.topic,
-    required this.expiry,
-  });
+  PairingActivateEvent({required this.topic, required this.expiry});
 
   @override
   String toString() {
@@ -152,7 +133,7 @@ class PairingActivateEvent extends EventArgs {
 }
 
 @freezed
-class JsonRpcRecord with _$JsonRpcRecord {
+sealed class JsonRpcRecord with _$JsonRpcRecord {
   @JsonSerializable(includeIfNull: false)
   const factory JsonRpcRecord({
     required int id,
@@ -169,7 +150,7 @@ class JsonRpcRecord with _$JsonRpcRecord {
 }
 
 @freezed
-class ReceiverPublicKey with _$ReceiverPublicKey {
+sealed class ReceiverPublicKey with _$ReceiverPublicKey {
   @JsonSerializable(includeIfNull: false)
   const factory ReceiverPublicKey({
     required String topic,
@@ -183,7 +164,7 @@ class ReceiverPublicKey with _$ReceiverPublicKey {
 
 class RegisteredFunction {
   String method;
-  Function(String, JsonRpcRequest, [TransportType]) function;
+  Function(String, JsonRpcRequest, [String?, TransportType]) function;
   ProtocolType type;
 
   RegisteredFunction({

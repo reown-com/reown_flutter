@@ -14,18 +14,14 @@ import '../models/token_amount.dart';
 class GetTokenSupply
     extends JsonRpcContextMethod<Map<String, dynamic>, TokenAmount> {
   /// Creates a codec for `getTokenSupply` JSON RPC methods.
-  GetTokenSupply(
-    final Pubkey mint, {
-    final GetTokenSupplyConfig? config,
-  }) : super(
-          'getTokenSupply',
-          values: [mint.toBase58()],
-          config: config ?? const GetTokenSupplyConfig(),
-        );
+  GetTokenSupply(final Pubkey mint, {final GetTokenSupplyConfig? config})
+    : super(
+        'getTokenSupply',
+        values: [mint.toBase58()],
+        config: config ?? const GetTokenSupplyConfig(),
+      );
 
   @override
-  TokenAmount valueDecoder(
-    final Map<String, dynamic> value,
-  ) =>
+  TokenAmount valueDecoder(final Map<String, dynamic> value) =>
       TokenAmount.fromJson(value);
 }

@@ -16,10 +16,7 @@ import 'stake_account_info.dart';
 
 class StakeAccount extends BorshObject {
   /// Stake Account Information.
-  const StakeAccount({
-    required this.type,
-    required this.info,
-  });
+  const StakeAccount({required this.type, required this.info});
 
   final StakeAccountType type;
 
@@ -84,8 +81,5 @@ class StakeAccount extends BorshObject {
       json != null ? StakeAccount.fromJson(json) : null;
 
   @override
-  Map<String, dynamic> toJson() => {
-        'type': type,
-        'info': info?.toJson(),
-      };
+  Map<String, dynamic> toJson() => {'type': type, 'info': info?.toJson()};
 }

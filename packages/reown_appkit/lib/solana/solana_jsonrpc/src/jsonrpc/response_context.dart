@@ -13,10 +13,7 @@ import 'context.dart';
 /// A JSON RPC Response-Context result.
 class JsonRpcResponseContext<T> extends Serializable {
   /// Creates a JSON RPC response-context result.
-  const JsonRpcResponseContext({
-    required this.context,
-    required this.value,
-  });
+  const JsonRpcResponseContext({required this.context, required this.value});
 
   /// The slot at which the operation was evaluated.
   final JsonRpcContext context;
@@ -43,7 +40,7 @@ class JsonRpcResponseContext<T> extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'context': context.toJson(),
-        'value': value,
-      };
+    'context': context.toJson(),
+    'value': value,
+  };
 }
