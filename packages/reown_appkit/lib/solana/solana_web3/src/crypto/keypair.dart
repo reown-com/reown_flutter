@@ -13,10 +13,7 @@ import 'pubkey.dart';
 
 abstract class Signer {
   /// Keypair signer.
-  Signer({
-    required this.pubkey,
-    required this.seckey,
-  });
+  Signer({required this.pubkey, required this.seckey});
 
   /// The keypair's public key.
   final Pubkey pubkey;
@@ -30,11 +27,9 @@ abstract class Signer {
 
 class Ed25519Keypair {
   /// Ed25519 keypair.
-  const Ed25519Keypair({
-    required this.pubkey,
-    required this.seckey,
-  })  : assert(pubkey.length == nacl.pubkeyLength),
-        assert(seckey.length == nacl.seckeyLength);
+  const Ed25519Keypair({required this.pubkey, required this.seckey})
+    : assert(pubkey.length == nacl.pubkeyLength),
+      assert(seckey.length == nacl.seckeyLength);
 
   /// The Ed25519 public key.
   final Uint8List pubkey;
@@ -48,9 +43,7 @@ class Ed25519Keypair {
 
 class Keypair implements Signer {
   /// Creates an account keypair used for signing transactions.
-  const Keypair(
-    this._keypair,
-  );
+  const Keypair(this._keypair);
 
   /// The public key and secret key pair.
   final Ed25519Keypair _keypair;
@@ -76,10 +69,10 @@ class Keypair implements Signer {
   static Future<Keypair> fromSeckey(
     final Uint8List seckey, {
     final bool skipValidation = false,
-  }) =>
-      compute(
-          (_) => Keypair.fromSeckeySync(seckey, skipValidation: skipValidation),
-          null);
+  }) => compute(
+    (_) => Keypair.fromSeckeySync(seckey, skipValidation: skipValidation),
+    null,
+  );
 
   /// {@template Keypair.fromSeckeySync}
   /// Creates a [Keypair] from a [seckey] byte array.
@@ -97,8 +90,10 @@ class Keypair implements Signer {
     if (!skipValidation) {
       const String message = 'solana/web3.dart';
       final Uint8List signData = Uint8List.fromList(utf8.encode(message));
-      final Uint8List signature =
-          nacl.sign.detached.sync(signData, keypair.seckey);
+      final Uint8List signature = nacl.sign.detached.sync(
+        signData,
+        keypair.seckey,
+      );
       if (!nacl.sign.detached.verifySync(signData, signature, keypair.pubkey)) {
         throw const KeypairException('Invalid secret key.');
       }

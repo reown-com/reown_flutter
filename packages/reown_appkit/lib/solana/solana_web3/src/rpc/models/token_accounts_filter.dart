@@ -10,23 +10,15 @@ import '../../crypto/pubkey.dart';
 
 class TokenAccountsFilter extends Serializable {
   /// JSON RPC parameters for `getTokenAccountsBy` methods.
-  TokenAccountsFilter._({
-    required this.key,
-    required this.address,
-  });
+  TokenAccountsFilter._({required this.key, required this.address});
 
   /// The public key of the specific token Mint to limit accounts to.
-  factory TokenAccountsFilter.mint(final Pubkey mint) => TokenAccountsFilter._(
-        key: 'mint',
-        address: mint,
-      );
+  factory TokenAccountsFilter.mint(final Pubkey mint) =>
+      TokenAccountsFilter._(key: 'mint', address: mint);
 
   /// The public key of the Token program that owns the accounts.
   factory TokenAccountsFilter.programId(final Pubkey programId) =>
-      TokenAccountsFilter._(
-        key: 'programId',
-        address: programId,
-      );
+      TokenAccountsFilter._(key: 'programId', address: programId);
 
   /// The public key to filter the account by.
   final Pubkey address;

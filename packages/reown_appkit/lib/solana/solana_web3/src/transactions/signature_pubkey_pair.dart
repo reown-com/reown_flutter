@@ -16,10 +16,7 @@ part 'signature_pubkey_pair.g.dart';
 @JsonSerializable()
 class SignaturePubkeyPair extends Serializable {
   /// A signature and its corresponding public key.
-  const SignaturePubkeyPair({
-    this.signature,
-    required this.pubkey,
-  });
+  const SignaturePubkeyPair({this.signature, required this.pubkey});
 
   /// The signature.
   @Uint8ListJsonConverter()
@@ -39,9 +36,8 @@ class SignaturePubkeyPair extends Serializable {
   SignaturePubkeyPair copyWith({
     final Uint8List? signature,
     final Pubkey? pubkey,
-  }) =>
-      SignaturePubkeyPair(
-        signature: signature ?? this.signature,
-        pubkey: pubkey ?? this.pubkey,
-      );
+  }) => SignaturePubkeyPair(
+    signature: signature ?? this.signature,
+    pubkey: pubkey ?? this.pubkey,
+  );
 }

@@ -48,7 +48,8 @@ class BaseListItem extends StatelessWidget {
                   const Size(1000.0, kListItemHeight),
                 )
               : null,
-          backgroundColor: backgroundColor ??
+          backgroundColor:
+              backgroundColor ??
               WidgetStateProperty.all<Color>(
                 hightlighted
                     ? themeColors.accenGlass015

@@ -10,8 +10,9 @@ class CoreUtils {
 
   static bool isValidEmail(String email) {
     if (email.contains(' ')) return false;
-    return RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
-        .hasMatch(email);
+    return RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    ).hasMatch(email);
   }
 
   static bool isHttpUrl(String url) {
@@ -115,7 +116,8 @@ class CoreUtils {
 
   // TODO move to Core SDK
   static String getUserAgent() {
-    String userAgent = '${CoreConstants.X_SDK_TYPE}/'
+    String userAgent =
+        '${CoreConstants.X_SDK_TYPE}/'
         '${CoreConstants.X_SDK_VERSION}/'
         '${CoreConstants.X_CORE_SDK_VERSION}/'
         '${ReownCoreUtils.getOS()}';

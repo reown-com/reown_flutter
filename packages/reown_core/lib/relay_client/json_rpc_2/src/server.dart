@@ -18,8 +18,13 @@ import 'utils.dart';
 typedef ErrorCallback = void Function(dynamic error, dynamic stackTrace);
 
 /// A callback for logging messages from the JSON-RPC server.
-typedef JsonRpcLogCallback = void Function(String level, String message,
-    [Object? error, StackTrace? stackTrace]);
+typedef JsonRpcLogCallback =
+    void Function(
+      String level,
+      String message, [
+      Object? error,
+      StackTrace? stackTrace,
+    ]);
 
 /// A JSON-RPC 2.0 server.
 ///
@@ -129,7 +134,8 @@ class Server {
   }) : _logCallback = logCallback {
     _inputStream = _channel.stream;
     _logDebug(
-        'Server initialized with ${strictProtocolChecks ? 'strict' : 'lenient'} protocol checks');
+      'Server initialized with ${strictProtocolChecks ? 'strict' : 'lenient'} protocol checks',
+    );
   }
 
   /// Starts listening to the underlying stream.
@@ -168,7 +174,8 @@ class Server {
   /// This is the same as [done].
   Future<dynamic> close() {
     _logDebug(
-        'Closing server, cleaning up ${_managedSubscriptions.length} subscriptions');
+      'Closing server, cleaning up ${_managedSubscriptions.length} subscriptions',
+    );
     _channel.sink.close();
     if (!_done.isCompleted) _done.complete();
     _terminateAllSubscriptions();
@@ -222,9 +229,10 @@ class Server {
       if (request is List) {
         if (request.isEmpty) {
           _logError('Empty batch request received');
-          response = RpcException(error_code.INVALID_REQUEST,
-                  'A batch must contain at least one request.')
-              .serialize(request);
+          response = RpcException(
+            error_code.INVALID_REQUEST,
+            'A batch must contain at least one request.',
+          ).serialize(request);
         } else {
           _logDebug('Handling batch request with ${request.length} items');
           var results = await Future.wait(request.map(_handleSingleRequest));
@@ -260,8 +268,10 @@ class Server {
       Object? result;
       if (method is ZeroArgumentFunction) {
         if (request.containsKey('params')) {
-          throw RpcException.invalidParams('No parameters are allowed for '
-              'method "$name".');
+          throw RpcException.invalidParams(
+            'No parameters are allowed for '
+            'method "$name".',
+          );
         }
         result = await method();
       } else {
@@ -290,12 +300,15 @@ class Server {
       }
       final chain = Chain.forTrace(stackTrace);
       _logError(
-          'Unexpected error in method ${request['method']}', error, stackTrace);
-      return RpcException(error_code.SERVER_ERROR, getErrorMessage(error),
-          data: {
-            'full': '$error',
-            'stack': '$chain',
-          }).serialize(request);
+        'Unexpected error in method ${request['method']}',
+        error,
+        stackTrace,
+      );
+      return RpcException(
+        error_code.SERVER_ERROR,
+        getErrorMessage(error),
+        data: {'full': '$error', 'stack': '$chain'},
+      ).serialize(request);
     }
   }
 
@@ -303,57 +316,64 @@ class Server {
   void _validateRequest(request) {
     if (request is! Map) {
       throw RpcException(
-          error_code.INVALID_REQUEST,
-          'Request must be '
-          'an Array or an Object.');
+        error_code.INVALID_REQUEST,
+        'Request must be '
+        'an Array or an Object.',
+      );
     }
 
     if (strictProtocolChecks && !request.containsKey('jsonrpc')) {
       throw RpcException(
-          error_code.INVALID_REQUEST,
-          'Request must '
-          'contain a "jsonrpc" key.');
+        error_code.INVALID_REQUEST,
+        'Request must '
+        'contain a "jsonrpc" key.',
+      );
     }
 
     if ((strictProtocolChecks || request.containsKey('jsonrpc')) &&
         request['jsonrpc'] != '2.0') {
       throw RpcException(
-          error_code.INVALID_REQUEST,
-          'Invalid JSON-RPC '
-          'version ${jsonEncode(request['jsonrpc'])}, expected "2.0".');
+        error_code.INVALID_REQUEST,
+        'Invalid JSON-RPC '
+        'version ${jsonEncode(request['jsonrpc'])}, expected "2.0".',
+      );
     }
 
     if (!request.containsKey('method')) {
       throw RpcException(
-          error_code.INVALID_REQUEST,
-          'Request must '
-          'contain a "method" key.');
+        error_code.INVALID_REQUEST,
+        'Request must '
+        'contain a "method" key.',
+      );
     }
 
     var method = request['method'];
     if (request['method'] is! String) {
       throw RpcException(
-          error_code.INVALID_REQUEST,
-          'Request method must '
-          'be a string, but was ${jsonEncode(method)}.');
+        error_code.INVALID_REQUEST,
+        'Request method must '
+        'be a string, but was ${jsonEncode(method)}.',
+      );
     }
 
     if (request.containsKey('params')) {
       var params = request['params'];
       if (params is! List && params is! Map) {
         throw RpcException(
-            error_code.INVALID_REQUEST,
-            'Request params must '
-            'be an Array or an Object, but was ${jsonEncode(params)}.');
+          error_code.INVALID_REQUEST,
+          'Request params must '
+          'be an Array or an Object, but was ${jsonEncode(params)}.',
+        );
       }
     }
 
     var id = request['id'];
     if (id != null && id is! String && id is! num) {
       throw RpcException(
-          error_code.INVALID_REQUEST,
-          'Request id must be a '
-          'string, number, or null, but was ${jsonEncode(id)}.');
+        error_code.INVALID_REQUEST,
+        'Request id must be a '
+        'string, number, or null, but was ${jsonEncode(id)}.',
+      );
     }
   }
 
@@ -381,7 +401,8 @@ class Server {
   void _unregisterSubscription(StreamSubscription<dynamic> subscription) {
     _managedSubscriptions.remove(subscription);
     _logDebug(
-        'Unregistered subscription, ${_managedSubscriptions.length} remaining');
+      'Unregistered subscription, ${_managedSubscriptions.length} remaining',
+    );
   }
 
   /// Terminates all managed subscriptions.
@@ -402,7 +423,11 @@ class Server {
   /// Logs error information.
   void _logError(String message, [Object? error, StackTrace? stackTrace]) {
     _logCallback?.call(
-        'error', '[$_debugId] ERROR: $message', error, stackTrace);
+      'error',
+      '[$_debugId] ERROR: $message',
+      error,
+      stackTrace,
+    );
   }
 
   /// Generates a unique debug identifier for this server instance.

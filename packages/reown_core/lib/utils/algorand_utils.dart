@@ -16,8 +16,10 @@ class AlgorandChainUtils {
 
       // Step 3: Prefix with "TX"
       final prefix = ascii.encode('TX');
-      final prefixedBytes =
-          Uint8List.fromList([...prefix, ...canonicalTxnBytes]);
+      final prefixedBytes = Uint8List.fromList([
+        ...prefix,
+        ...canonicalTxnBytes,
+      ]);
 
       // Step 4: SHA-512/256
       final digest = SHA512tDigest(32);

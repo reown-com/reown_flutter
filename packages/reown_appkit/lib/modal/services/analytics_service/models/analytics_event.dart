@@ -1,12 +1,6 @@
 import 'package:reown_core/events/models/basic_event.dart';
 
-enum AnalyticsPlatform {
-  mobile,
-  web,
-  qrcode,
-  email,
-  unsupported,
-}
+enum AnalyticsPlatform { mobile, web, qrcode, email, unsupported }
 
 abstract class _AnalyticsEvent implements BasicCoreEvent {
   @override
@@ -17,10 +11,10 @@ abstract class _AnalyticsEvent implements BasicCoreEvent {
 
   @override
   Map<String, dynamic> toJson() => {
-        'type': type,
-        'event': event,
-        if (properties != null) 'properties': properties?.toJson(),
-      };
+    'type': type,
+    'event': event,
+    if (properties != null) 'properties': properties?.toJson(),
+  };
 }
 
 class ModalCreatedEvent extends _AnalyticsEvent {
@@ -35,32 +29,26 @@ class ModalLoadedEvent extends _AnalyticsEvent {
 
 class ModalOpenEvent extends _AnalyticsEvent {
   final bool _connected;
-  ModalOpenEvent({
-    required bool connected,
-  }) : _connected = connected;
+  ModalOpenEvent({required bool connected}) : _connected = connected;
 
   @override
   String get event => CoreEventEvent.Track.MODAL_OPEN;
 
   @override
-  CoreEventProperties? get properties => CoreEventProperties(
-        connected: _connected,
-      );
+  CoreEventProperties? get properties =>
+      CoreEventProperties(connected: _connected);
 }
 
 class ModalCloseEvent extends _AnalyticsEvent {
   final bool _connected;
-  ModalCloseEvent({
-    required bool connected,
-  }) : _connected = connected;
+  ModalCloseEvent({required bool connected}) : _connected = connected;
 
   @override
   String get event => CoreEventEvent.Track.MODAL_CLOSE;
 
   @override
-  CoreEventProperties? get properties => CoreEventProperties(
-        connected: _connected,
-      );
+  CoreEventProperties? get properties =>
+      CoreEventProperties(connected: _connected);
 }
 
 class ClickAllWalletsEvent extends _AnalyticsEvent {
@@ -75,17 +63,13 @@ class ClickNetworksEvent extends _AnalyticsEvent {
 
 class SwitchNetworkEvent extends _AnalyticsEvent {
   final String _network;
-  SwitchNetworkEvent({
-    required String network,
-  }) : _network = network;
+  SwitchNetworkEvent({required String network}) : _network = network;
 
   @override
   String get event => CoreEventEvent.Track.SWITCH_NETWORK;
 
   @override
-  CoreEventProperties? get properties => CoreEventProperties(
-        network: _network,
-      );
+  CoreEventProperties? get properties => CoreEventProperties(network: _network);
 }
 
 class SelectWalletEvent extends _AnalyticsEvent {
@@ -96,19 +80,19 @@ class SelectWalletEvent extends _AnalyticsEvent {
     required String name,
     String? explorerId,
     AnalyticsPlatform? platform,
-  })  : _name = name,
-        _explorerId = explorerId,
-        _platform = platform?.name;
+  }) : _name = name,
+       _explorerId = explorerId,
+       _platform = platform?.name;
 
   @override
   String get event => CoreEventEvent.Track.SELECT_WALLET;
 
   @override
   CoreEventProperties? get properties => CoreEventProperties(
-        name: _name,
-        explorer_id: _explorerId,
-        platform: _platform,
-      );
+    name: _name,
+    explorer_id: _explorerId,
+    platform: _platform,
+  );
 }
 
 class ConnectSuccessEvent extends _AnalyticsEvent {
@@ -119,34 +103,30 @@ class ConnectSuccessEvent extends _AnalyticsEvent {
     required String name,
     String? explorerId,
     AnalyticsPlatform? method,
-  })  : _name = name,
-        _explorerId = explorerId,
-        _method = method?.name;
+  }) : _name = name,
+       _explorerId = explorerId,
+       _method = method?.name;
 
   @override
   String get event => CoreEventEvent.Track.CONNECT_SUCCESS;
 
   @override
   CoreEventProperties? get properties => CoreEventProperties(
-        name: _name,
-        explorer_id: _explorerId,
-        method: _method,
-      );
+    name: _name,
+    explorer_id: _explorerId,
+    method: _method,
+  );
 }
 
 class ConnectErrorEvent extends _AnalyticsEvent {
   final String _message;
-  ConnectErrorEvent({
-    required String message,
-  }) : _message = message;
+  ConnectErrorEvent({required String message}) : _message = message;
 
   @override
   String get event => CoreEventEvent.Track.CONNECT_ERROR;
 
   @override
-  CoreEventProperties? get properties => CoreEventProperties(
-        message: _message,
-      );
+  CoreEventProperties? get properties => CoreEventProperties(message: _message);
 }
 
 class DisconnectSuccessEvent extends _AnalyticsEvent {
@@ -227,9 +207,7 @@ class ClickSignSiweMessage extends _AnalyticsEvent {
   String get event => CoreEventEvent.Track.CLICK_SIGN_SIWE_MESSAGE;
 
   @override
-  CoreEventProperties? get properties => CoreEventProperties(
-        network: _network,
-      );
+  CoreEventProperties? get properties => CoreEventProperties(network: _network);
 }
 
 class ClickCancelSiwe extends _AnalyticsEvent {
@@ -240,9 +218,7 @@ class ClickCancelSiwe extends _AnalyticsEvent {
   String get event => CoreEventEvent.Track.CLICK_CANCEL_SIWE;
 
   @override
-  CoreEventProperties? get properties => CoreEventProperties(
-        network: _network,
-      );
+  CoreEventProperties? get properties => CoreEventProperties(network: _network);
 }
 
 class SiweAuthSuccess extends _AnalyticsEvent {
@@ -253,9 +229,7 @@ class SiweAuthSuccess extends _AnalyticsEvent {
   String get event => CoreEventEvent.Track.SIWE_AUTH_SUCCESS;
 
   @override
-  CoreEventProperties? get properties => CoreEventProperties(
-        network: _network,
-      );
+  CoreEventProperties? get properties => CoreEventProperties(network: _network);
 }
 
 class SiweAuthError extends _AnalyticsEvent {
@@ -266,9 +240,7 @@ class SiweAuthError extends _AnalyticsEvent {
   String get event => CoreEventEvent.Track.SIWE_AUTH_ERROR;
 
   @override
-  CoreEventProperties? get properties => CoreEventProperties(
-        network: _network,
-      );
+  CoreEventProperties? get properties => CoreEventProperties(network: _network);
 }
 
 class SocialLoginStarted extends _AnalyticsEvent {
@@ -279,9 +251,8 @@ class SocialLoginStarted extends _AnalyticsEvent {
   String get event => CoreEventEvent.Track.SOCIAL_LOGIN_STARTED;
 
   @override
-  CoreEventProperties? get properties => CoreEventProperties(
-        provider: _provider,
-      );
+  CoreEventProperties? get properties =>
+      CoreEventProperties(provider: _provider);
 }
 
 class SocialLoginSuccess extends _AnalyticsEvent {
@@ -292,9 +263,8 @@ class SocialLoginSuccess extends _AnalyticsEvent {
   String get event => CoreEventEvent.Track.SOCIAL_LOGIN_SUCCESS;
 
   @override
-  CoreEventProperties? get properties => CoreEventProperties(
-        provider: _provider,
-      );
+  CoreEventProperties? get properties =>
+      CoreEventProperties(provider: _provider);
 }
 
 class SocialLoginError extends _AnalyticsEvent {
@@ -305,9 +275,8 @@ class SocialLoginError extends _AnalyticsEvent {
   String get event => CoreEventEvent.Track.SOCIAL_LOGIN_ERROR;
 
   @override
-  CoreEventProperties? get properties => CoreEventProperties(
-        provider: _provider,
-      );
+  CoreEventProperties? get properties =>
+      CoreEventProperties(provider: _provider);
 }
 
 class SocialLoginRequestUserData extends _AnalyticsEvent {
@@ -318,9 +287,8 @@ class SocialLoginRequestUserData extends _AnalyticsEvent {
   String get event => CoreEventEvent.Track.SOCIAL_LOGIN_REQUEST_USER_DATA;
 
   @override
-  CoreEventProperties? get properties => CoreEventProperties(
-        provider: _provider,
-      );
+  CoreEventProperties? get properties =>
+      CoreEventProperties(provider: _provider);
 }
 
 class SocialLoginCanceled extends _AnalyticsEvent {
@@ -331,9 +299,8 @@ class SocialLoginCanceled extends _AnalyticsEvent {
   String get event => CoreEventEvent.Track.SOCIAL_LOGIN_CANCELED;
 
   @override
-  CoreEventProperties? get properties => CoreEventProperties(
-        provider: _provider,
-      );
+  CoreEventProperties? get properties =>
+      CoreEventProperties(provider: _provider);
 }
 
 class WalletFeatureOpenSend extends _AnalyticsEvent {
@@ -344,9 +311,7 @@ class WalletFeatureOpenSend extends _AnalyticsEvent {
   String get event => CoreEventEvent.Track.OPEN_SEND;
 
   @override
-  CoreEventProperties? get properties => CoreEventProperties(
-        network: _network,
-      );
+  CoreEventProperties? get properties => CoreEventProperties(network: _network);
 }
 
 class WalletFeatureSendInitiated extends _AnalyticsEvent {
@@ -358,19 +323,19 @@ class WalletFeatureSendInitiated extends _AnalyticsEvent {
     required String network,
     required String sendToken,
     required String sendAmount,
-  })  : _network = network,
-        _sendToken = sendToken,
-        _sendAmount = sendAmount;
+  }) : _network = network,
+       _sendToken = sendToken,
+       _sendAmount = sendAmount;
 
   @override
   String get event => CoreEventEvent.Track.SEND_INITIATED;
 
   @override
   CoreEventProperties? get properties => CoreEventProperties(
-        network: _network,
-        sendToken: _sendToken,
-        sendAmount: _sendAmount,
-      );
+    network: _network,
+    sendToken: _sendToken,
+    sendAmount: _sendAmount,
+  );
 }
 
 class WalletFeatureSendSuccess extends _AnalyticsEvent {
@@ -382,19 +347,19 @@ class WalletFeatureSendSuccess extends _AnalyticsEvent {
     required String network,
     required String sendToken,
     required String sendAmount,
-  })  : _network = network,
-        _sendToken = sendToken,
-        _sendAmount = sendAmount;
+  }) : _network = network,
+       _sendToken = sendToken,
+       _sendAmount = sendAmount;
 
   @override
   String get event => CoreEventEvent.Track.SEND_SUCCESS;
 
   @override
   CoreEventProperties? get properties => CoreEventProperties(
-        network: _network,
-        sendToken: _sendToken,
-        sendAmount: _sendAmount,
-      );
+    network: _network,
+    sendToken: _sendToken,
+    sendAmount: _sendAmount,
+  );
 }
 
 class WalletFeatureSendError extends _AnalyticsEvent {
@@ -406,19 +371,19 @@ class WalletFeatureSendError extends _AnalyticsEvent {
     required String network,
     required String sendToken,
     required String sendAmount,
-  })  : _network = network,
-        _sendToken = sendToken,
-        _sendAmount = sendAmount;
+  }) : _network = network,
+       _sendToken = sendToken,
+       _sendAmount = sendAmount;
 
   @override
   String get event => CoreEventEvent.Track.SEND_ERROR;
 
   @override
   CoreEventProperties? get properties => CoreEventProperties(
-        network: _network,
-        sendToken: _sendToken,
-        sendAmount: _sendAmount,
-      );
+    network: _network,
+    sendToken: _sendToken,
+    sendAmount: _sendAmount,
+  );
 }
 
 class WalletFeatureSignTransaction extends _AnalyticsEvent {
@@ -430,19 +395,19 @@ class WalletFeatureSignTransaction extends _AnalyticsEvent {
     required String network,
     required String sendToken,
     required String sendAmount,
-  })  : _network = network,
-        _sendToken = sendToken,
-        _sendAmount = sendAmount;
+  }) : _network = network,
+       _sendToken = sendToken,
+       _sendAmount = sendAmount;
 
   @override
   String get event => CoreEventEvent.Track.SIGN_TRANSACTION;
 
   @override
   CoreEventProperties? get properties => CoreEventProperties(
-        network: _network,
-        sendToken: _sendToken,
-        sendAmount: _sendAmount,
-      );
+    network: _network,
+    sendToken: _sendToken,
+    sendAmount: _sendAmount,
+  );
 }
 
 class ClickTransactionsEvent extends _AnalyticsEvent {
@@ -458,19 +423,19 @@ class LoadMoreTransactionsEvent extends _AnalyticsEvent {
     required String projectId,
     String? address,
     String? cursor,
-  })  : _address = address,
-        _projectId = projectId,
-        _cursor = cursor;
+  }) : _address = address,
+       _projectId = projectId,
+       _cursor = cursor;
 
   @override
   String get event => CoreEventEvent.Track.LOAD_MORE_TRANSACTIONS;
 
   @override
   CoreEventProperties? get properties => CoreEventProperties(
-        address: _address,
-        project_id: _projectId,
-        cursor: _cursor,
-      );
+    address: _address,
+    project_id: _projectId,
+    cursor: _cursor,
+  );
 }
 
 class ErrorFetchTransactionsEvent extends _AnalyticsEvent {
@@ -481,17 +446,17 @@ class ErrorFetchTransactionsEvent extends _AnalyticsEvent {
     required String projectId,
     String? address,
     String? cursor,
-  })  : _address = address,
-        _projectId = projectId,
-        _cursor = cursor;
+  }) : _address = address,
+       _projectId = projectId,
+       _cursor = cursor;
 
   @override
   String get event => CoreEventEvent.Track.LOAD_MORE_TRANSACTIONS;
 
   @override
   CoreEventProperties? get properties => CoreEventProperties(
-        address: _address,
-        project_id: _projectId,
-        cursor: _cursor,
-      );
+    address: _address,
+    project_id: _projectId,
+    cursor: _cursor,
+  );
 }

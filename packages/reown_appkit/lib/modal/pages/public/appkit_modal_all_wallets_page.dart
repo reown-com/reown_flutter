@@ -17,7 +17,7 @@ import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 
 class ReownAppKitModalAllWalletsPage extends StatefulWidget {
   const ReownAppKitModalAllWalletsPage()
-      : super(key: KeyConstants.walletListLongPageKey);
+    : super(key: KeyConstants.walletListLongPageKey);
 
   @override
   State<ReownAppKitModalAllWalletsPage> createState() =>
@@ -63,7 +63,8 @@ class _AppKitModalAllWalletsPageState
     final totalListings = _explorerService.totalListings.value;
     final rows = (totalListings / 4.0).ceil();
     final isSearchAvailable = totalListings >= kShortWalletListCount;
-    final maxHeight = (rows * kGridItemHeight) +
+    final maxHeight =
+        (rows * kGridItemHeight) +
         (kPadding16 * 4.0) +
         (isSearchAvailable ? kSearchFieldHeight : 0.0) +
         ResponsiveData.paddingBottomOf(context);
@@ -101,8 +102,9 @@ class _AppKitModalAllWalletsPageState
                   listen: !_paginating,
                   builder: (context, initialised, items, searching) {
                     if (!initialised || searching) {
-                      final loadingCount =
-                          items.isNotEmpty ? min(16, items.length) : 16;
+                      final loadingCount = items.isNotEmpty
+                          ? min(16, items.length)
+                          : 16;
                       return WalletsGrid(
                         paddingTop: isSearchAvailable ? 0.0 : kPadding16,
                         showLoading: true,

@@ -38,8 +38,8 @@ class SimpleIconButton extends StatelessWidget {
     final radius = radiuses.isSquare()
         ? 0.0
         : radiuses.isCircular()
-            ? 100.0
-            : borderRadius ?? (size.height / 2);
+        ? 100.0
+        : borderRadius ?? (size.height / 2);
     return BaseButton(
       semanticsLabel: 'SimpleIconButton',
       onTap: onTap,
@@ -68,20 +68,19 @@ class SimpleIconButton extends StatelessWidget {
             overlayColor ??
             WidgetStateProperty.all<Color>(themeColors.accenGlass010),
         shape: withBorder
-            ? WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
-                (states) {
-                  return RoundedRectangleBorder(
-                    side: BorderSide(
-                      color: backgroundColor ?? themeColors.grayGlass010,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(radius),
-                  );
-                },
-              )
+            ? WidgetStateProperty.resolveWith<RoundedRectangleBorder>((states) {
+                return RoundedRectangleBorder(
+                  side: BorderSide(
+                    color: backgroundColor ?? themeColors.grayGlass010,
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(radius),
+                );
+              })
             : null,
-        padding:
-            WidgetStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.all(0.0)),
+        padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+          EdgeInsets.all(0.0),
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

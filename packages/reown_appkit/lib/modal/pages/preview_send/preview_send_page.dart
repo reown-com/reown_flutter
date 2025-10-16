@@ -20,14 +20,13 @@ class PreviewSendPage extends StatelessWidget {
     required this.networkTokenData,
   }) : super(key: KeyConstants.previewSendPageKey);
 
-  String get _namespace => NamespaceUtils.getNamespaceFromChain(
-        sendTokenData.chainId!,
-      );
+  String get _namespace =>
+      NamespaceUtils.getNamespaceFromChain(sendTokenData.chainId!);
 
   String get _originalSendValue => CoreUtils.formatStringBalance(
-        sendData.amount!,
-        precision: _getDecimals(nativeToken: false),
-      );
+    sendData.amount!,
+    precision: _getDecimals(nativeToken: false),
+  );
 
   bool get _isMaxSend {
     final maxAllowance = CoreUtils.formatStringBalance(

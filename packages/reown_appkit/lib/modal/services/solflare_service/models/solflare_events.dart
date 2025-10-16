@@ -37,11 +37,7 @@ class SolflareSessionEvent implements EventArgs {
   String? chainName;
   String? chainId;
 
-  SolflareSessionEvent({
-    this.address,
-    this.chainName,
-    this.chainId,
-  });
+  SolflareSessionEvent({this.address, this.chainName, this.chainId});
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> params = {};

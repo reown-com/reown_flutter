@@ -10,9 +10,7 @@ class SignApiValidatorUtils {
     required List<dynamic> contained,
   }) {
     List<dynamic> matches = contained
-        .where(
-          (x) => container.contains(x),
-        )
+        .where((x) => container.contains(x))
         .toList();
     return matches.length == contained.length;
   }
@@ -217,7 +215,9 @@ class SignApiValidatorUtils {
 
     // If the namespaces doesn't have the correct keys, we can fail automatically
     if (!isContainedIn(
-        container: namespaceKeys, contained: requiredNamespaceKeys)) {
+      container: namespaceKeys,
+      contained: requiredNamespaceKeys,
+    )) {
       throw Errors.getSdkError(
         Errors.UNSUPPORTED_NAMESPACE_KEY,
         context: "$context namespaces keys don't satisfy requiredNamespaces",
@@ -226,9 +226,9 @@ class SignApiValidatorUtils {
       for (var key in requiredNamespaceKeys) {
         List<String> requiredNamespaceChains =
             NamespaceUtils.getChainsFromRequiredNamespace(
-          nsOrChainId: key,
-          requiredNamespace: requiredNamespaces[key]!,
-        );
+              nsOrChainId: key,
+              requiredNamespace: requiredNamespaces[key]!,
+            );
         List<String> namespaceChains = NamespaceUtils.getChainIdsFromNamespace(
           nsOrChainId: key,
           namespace: namespaces[key]!,
@@ -291,9 +291,9 @@ class SignApiValidatorUtils {
       RequiredNamespace requiredNamespace = requiredNamespaces[key]!;
       List<String> requiredNamespaceChains =
           NamespaceUtils.getChainsFromRequiredNamespace(
-        nsOrChainId: key,
-        requiredNamespace: requiredNamespace,
-      );
+            nsOrChainId: key,
+            requiredNamespace: requiredNamespace,
+          );
       List<String> namespaceChains = NamespaceUtils.getChainIdsFromNamespace(
         nsOrChainId: key,
         namespace: namespace,

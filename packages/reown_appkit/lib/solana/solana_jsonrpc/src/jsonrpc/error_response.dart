@@ -26,14 +26,15 @@ class JsonRpcErrorResponse<T> extends JsonRpcResponse<T> {
   /// {@macro solana_common.Serializable.fromJson}
   factory JsonRpcErrorResponse.fromJson(final Map<String, dynamic> json) =>
       JsonRpcErrorResponse(
-          jsonrpc: json[JsonRpcResponse.jsonrpcKey],
-          error: json[JsonRpcErrorResponse.errorKey],
-          id: json[JsonRpcResponse.idKey]);
+        jsonrpc: json[JsonRpcResponse.jsonrpcKey],
+        error: json[JsonRpcErrorResponse.errorKey],
+        id: json[JsonRpcResponse.idKey],
+      );
 
   @override
   Map<String, dynamic> toJson() => {
-        JsonRpcResponse.jsonrpcKey: jsonrpc,
-        JsonRpcErrorResponse.errorKey: error,
-        JsonRpcResponse.idKey: id,
-      };
+    JsonRpcResponse.jsonrpcKey: jsonrpc,
+    JsonRpcErrorResponse.errorKey: error,
+    JsonRpcResponse.idKey: id,
+  };
 }

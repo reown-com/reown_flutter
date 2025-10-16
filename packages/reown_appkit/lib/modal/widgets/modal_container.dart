@@ -69,19 +69,14 @@ class _ModalContainerState extends State<ModalContainer> {
             topLeft: Radius.circular(maxRadius),
             topRight: Radius.circular(maxRadius),
           )
-        : BorderRadius.all(
-            Radius.circular(maxRadius),
-          );
+        : BorderRadius.all(Radius.circular(maxRadius));
 
     return ResponsiveContainer(
       child: ClipRRect(
         borderRadius: innerContainerBorderRadius,
         child: DecoratedBox(
           decoration: BoxDecoration(
-            border: Border.all(
-              color: themeColors.grayGlass005,
-              width: 1,
-            ),
+            border: Border.all(color: themeColors.grayGlass005, width: 1),
             color: themeColors.background125,
           ),
           child: Stack(

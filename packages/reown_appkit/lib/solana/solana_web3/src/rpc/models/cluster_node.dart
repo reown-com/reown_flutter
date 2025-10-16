@@ -43,14 +43,14 @@ class ClusterNode extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory ClusterNode.fromJson(final Map<String, dynamic> json) => ClusterNode(
-        pubkey: json['pubkey'],
-        gossip: json['gossip'],
-        tpu: json['tpu'],
-        rpc: json['rpc'],
-        version: json['version'],
-        featureSet: json['featureSet'],
-        shredVersion: json['shredVersion'],
-      );
+    pubkey: json['pubkey'],
+    gossip: json['gossip'],
+    tpu: json['tpu'],
+    rpc: json['rpc'],
+    version: json['version'],
+    featureSet: json['featureSet'],
+    shredVersion: json['shredVersion'],
+  );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static ClusterNode? tryFromJson(final Map<String, dynamic>? json) {
@@ -59,12 +59,12 @@ class ClusterNode extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'pubkey': pubkey,
-        'gossip': gossip,
-        'tpu': tpu,
-        'rpc': rpc,
-        'version': version,
-        'featureSet': featureSet,
-        'shredVersion': shredVersion,
-      };
+    'pubkey': pubkey,
+    'gossip': gossip,
+    'tpu': tpu,
+    'rpc': rpc,
+    'version': version,
+    'featureSet': featureSet,
+    'shredVersion': shredVersion,
+  };
 }

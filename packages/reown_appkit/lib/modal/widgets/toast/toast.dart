@@ -5,10 +5,7 @@ import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
 
 class ToastWidget extends StatefulWidget {
-  const ToastWidget({
-    super.key,
-    required this.message,
-  });
+  const ToastWidget({super.key, required this.message});
 
   final ToastMessage message;
 
@@ -62,21 +59,14 @@ class _ToastWidgetState extends State<ToastWidget>
         child: FadeTransition(
           opacity: _opacityAnimation,
           child: Container(
-            constraints: BoxConstraints(
-              minHeight: 40.0,
-            ),
+            constraints: BoxConstraints(minHeight: 40.0),
             decoration: BoxDecoration(
               color: themeColors.background175,
               borderRadius: BorderRadius.circular(radiuses.radiusM),
-              border: Border.all(
-                color: themeColors.grayGlass005,
-                width: 1,
-              ),
+              border: Border.all(color: themeColors.grayGlass005, width: 1),
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,

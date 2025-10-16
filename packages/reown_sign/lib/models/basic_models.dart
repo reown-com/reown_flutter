@@ -35,9 +35,7 @@ sealed class ConnectionMetadata with _$ConnectionMetadata {
 @freezed
 sealed class AuthPublicKey with _$AuthPublicKey {
   @JsonSerializable(includeIfNull: false)
-  const factory AuthPublicKey({
-    required String publicKey,
-  }) = _AuthPublicKey;
+  const factory AuthPublicKey({required String publicKey}) = _AuthPublicKey;
 
   factory AuthPublicKey.fromJson(Map<String, dynamic> json) =>
       _$AuthPublicKeyFromJson(json);

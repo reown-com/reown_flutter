@@ -18,8 +18,8 @@ class SignatureSubscribe extends JsonRpcTypeMethod<SubscriptionId> {
     final TransactionSignature signature, {
     final SignatureSubscribeConfig? config,
   }) : super(
-          'signatureSubscribe',
-          values: [signature],
-          config: config ?? const SignatureSubscribeConfig(),
-        );
+         'signatureSubscribe',
+         values: [signature],
+         config: config ?? const SignatureSubscribeConfig(),
+       );
 }

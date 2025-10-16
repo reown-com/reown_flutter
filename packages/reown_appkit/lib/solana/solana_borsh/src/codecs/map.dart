@@ -13,10 +13,7 @@ import '../converters/codec.dart';
 /// A codec for map data types.
 class BorshMapCodec<K, V> extends BorshCodec<Map<K, V>> {
   /// Creates a codec for map data types.
-  const BorshMapCodec(
-    this.keySubtype,
-    this.valueSubtype,
-  );
+  const BorshMapCodec(this.keySubtype, this.valueSubtype);
 
   /// The key data type's codec.
   final BorshCodec<K> keySubtype;
@@ -48,10 +45,7 @@ class BorshMapCodec<K, V> extends BorshCodec<Map<K, V>> {
 /// An encoder for map data types.
 class BorshMapEncoder<K, V> extends BorshEncoder<Map<K, V>> {
   /// Creates an encoder for map data types.
-  const BorshMapEncoder(
-    this.keySubtype,
-    this.valueSubtype,
-  );
+  const BorshMapEncoder(this.keySubtype, this.valueSubtype);
 
   /// The key data type's codec.
   final BorshCodec<K> keySubtype;
@@ -75,10 +69,7 @@ class BorshMapEncoder<K, V> extends BorshEncoder<Map<K, V>> {
 /// A decoder for map data types.
 class BorshMapDecoder<K, V> extends BorshDecoder<Map<K, V>> {
   /// Creates a decoder for map data types.
-  const BorshMapDecoder(
-    this.keySubtype,
-    this.valueSubtype,
-  );
+  const BorshMapDecoder(this.keySubtype, this.valueSubtype);
 
   /// The key data type's codec.
   final BorshCodec<K> keySubtype;

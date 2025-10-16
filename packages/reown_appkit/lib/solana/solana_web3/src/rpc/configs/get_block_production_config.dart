@@ -12,11 +12,7 @@ import '../models/slot_range.dart';
 
 class GetBlockProductionConfig extends CommitmentConfig {
   /// JSON RPC configurations for `getBlockProduction` methods.
-  const GetBlockProductionConfig({
-    super.commitment,
-    this.range,
-    this.identity,
-  });
+  const GetBlockProductionConfig({super.commitment, this.range, this.identity});
 
   /// The slot range to return block production for. If omitted, it defaults to the current epoch.
   final SlotRange? range;
@@ -26,8 +22,8 @@ class GetBlockProductionConfig extends CommitmentConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        'commitment': commitment?.name,
-        'range': range?.toJson(),
-        'identity': identity?.toBase58(),
-      };
+    'commitment': commitment?.name,
+    'range': range?.toJson(),
+    'identity': identity?.toBase58(),
+  };
 }

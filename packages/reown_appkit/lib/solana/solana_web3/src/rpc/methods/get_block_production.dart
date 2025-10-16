@@ -13,16 +13,13 @@ import '../models/block_production.dart';
 class GetBlockProduction
     extends JsonRpcContextMethod<Map<String, dynamic>, BlockProduction> {
   /// Creates a codec for `getBlockProduction` JSON RPC methods.
-  GetBlockProduction({
-    final GetBlockProductionConfig? config,
-  }) : super(
-          'getBlockProduction',
-          config: config ?? const GetBlockProductionConfig(),
-        );
+  GetBlockProduction({final GetBlockProductionConfig? config})
+    : super(
+        'getBlockProduction',
+        config: config ?? const GetBlockProductionConfig(),
+      );
 
   @override
-  BlockProduction valueDecoder(
-    final Map<String, dynamic> value,
-  ) =>
+  BlockProduction valueDecoder(final Map<String, dynamic> value) =>
       BlockProduction.fromJson(value);
 }

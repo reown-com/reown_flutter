@@ -54,7 +54,7 @@ class WalletNotInstalled extends ModalError {
 /// Error opening wallet
 class ErrorOpeningWallet extends ModalError {
   ErrorOpeningWallet({String? description})
-      : super('Unable to open Wallet app', description: description);
+    : super('Unable to open Wallet app', description: description);
 }
 
 /// Event fired when user rejects connection in the wallet

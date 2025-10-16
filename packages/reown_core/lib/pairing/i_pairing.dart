@@ -16,10 +16,7 @@ abstract class IPairing {
   abstract final Event<PairingEvent> onPairingExpire;
 
   Future<void> init();
-  Future<PairingInfo> pair({
-    required Uri uri,
-    bool activatePairing,
-  });
+  Future<PairingInfo> pair({required Uri uri, bool activatePairing});
   Future<CreateResponse> create({
     List<List<String>>? methods,
     TransportType transportType = TransportType.relay,
@@ -36,10 +33,7 @@ abstract class IPairing {
     required String publicKey,
     int? expiry,
   });
-  Future<void> updateExpiry({
-    required String topic,
-    required int expiry,
-  });
+  Future<void> updateExpiry({required String topic, required int expiry});
   Future<void> updateMetadata({
     required String topic,
     required PairingMetadata metadata,
@@ -100,12 +94,7 @@ abstract class IPairing {
     EncodeOptions? encodeOptions,
   });
 
-  Future<void> isValidPairingTopic({
-    required String topic,
-  });
+  Future<void> isValidPairingTopic({required String topic});
 
-  void dispatchEnvelope({
-    required String topic,
-    required String envelope,
-  });
+  void dispatchEnvelope({required String topic, required String envelope});
 }

@@ -18,14 +18,12 @@ class GetTokenAccountBalance
     final Pubkey account, {
     final GetTokenAccountBalanceConfig? config,
   }) : super(
-          'getTokenAccountBalance',
-          values: [account.toBase58()],
-          config: config ?? const GetTokenAccountBalanceConfig(),
-        );
+         'getTokenAccountBalance',
+         values: [account.toBase58()],
+         config: config ?? const GetTokenAccountBalanceConfig(),
+       );
 
   @override
-  TokenAmount valueDecoder(
-    final Map<String, dynamic> value,
-  ) =>
+  TokenAmount valueDecoder(final Map<String, dynamic> value) =>
       TokenAmount.fromJson(value);
 }

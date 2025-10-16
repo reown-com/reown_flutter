@@ -6,8 +6,7 @@ enum AccountEncoding {
   base58('base58'),
   base64('base64'),
   base64Zstd('base64+zstd'),
-  jsonParsed('jsonParsed'),
-  ;
+  jsonParsed('jsonParsed');
 
   /// Stores the encoding's [_name] as a property of the enum variant.
   const AccountEncoding(this._name);
@@ -38,8 +37,9 @@ enum AccountEncoding {
   /// AccountEncoding.fromJson('base58');
   /// ```
   factory AccountEncoding.fromJson(final String name) {
-    return values
-        .firstWhere((final AccountEncoding property) => property._name == name);
+    return values.firstWhere(
+      (final AccountEncoding property) => property._name == name,
+    );
   }
 
   /// Returns the enum variant where [AccountEncoding.name] is equal to [name].

@@ -15,10 +15,7 @@ part 'nonce_information.g.dart';
 @JsonSerializable(explicitToJson: true)
 class NonceInformation extends Serializable {
   /// Nonce information to be used to build an offline Transaction.
-  const NonceInformation({
-    required this.nonce,
-    required this.nonceInstruction,
-  });
+  const NonceInformation({required this.nonce, required this.nonceInstruction});
 
   /// The current blockhash stored in the nonce.
   final Blockhash nonce;

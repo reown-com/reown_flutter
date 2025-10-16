@@ -16,10 +16,8 @@ import '../converters/encoder.dart';
 abstract class BorshOptionTypedCodec<T, U extends BorshCodec<T>>
     extends BorshCodec<T?> {
   /// Creates a codec for optional values.
-  const BorshOptionTypedCodec(
-    this.subtype, [
-    final BorshOptionType? type,
-  ]) : type = type ?? BorshOptionType.rust;
+  const BorshOptionTypedCodec(this.subtype, [final BorshOptionType? type])
+    : type = type ?? BorshOptionType.rust;
 
   /// The data type's codec.
   final U subtype;
@@ -35,10 +33,8 @@ abstract class BorshOptionTypedCodec<T, U extends BorshCodec<T>>
 abstract class BorshOptionTypedEncoder<T, U extends BorshCodec<T>>
     extends BorshEncoder<T?> {
   /// Creates an encoder for optional values.
-  const BorshOptionTypedEncoder(
-    this.subtype, [
-    final BorshOptionType? type,
-  ]) : type = type ?? BorshOptionType.rust;
+  const BorshOptionTypedEncoder(this.subtype, [final BorshOptionType? type])
+    : type = type ?? BorshOptionType.rust;
 
   /// The data type's codec.
   final U subtype;
@@ -64,10 +60,8 @@ abstract class BorshOptionTypedEncoder<T, U extends BorshCodec<T>>
 abstract class BorshOptionTypedDecoder<T, U extends BorshCodec<T>>
     extends BorshDecoder<T?> {
   /// Creates a decoder for optional values.
-  const BorshOptionTypedDecoder(
-    this.subtype, [
-    final BorshOptionType? type,
-  ]) : type = type ?? BorshOptionType.rust;
+  const BorshOptionTypedDecoder(this.subtype, [final BorshOptionType? type])
+    : type = type ?? BorshOptionType.rust;
 
   /// The data type's codec.
   final U subtype;

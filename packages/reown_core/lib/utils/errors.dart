@@ -39,14 +39,8 @@ class Errors {
 
   static const SDK_ERRORS = {
     /* ----- INVALID (1xxx) ----- */
-    INVALID_METHOD: {
-      'message': 'Invalid method.',
-      'code': 1001,
-    },
-    INVALID_EVENT: {
-      'message': 'Invalid event.',
-      'code': 1002,
-    },
+    INVALID_METHOD: {'message': 'Invalid method.', 'code': 1001},
+    INVALID_EVENT: {'message': 'Invalid event.', 'code': 1002},
     INVALID_UPDATE_REQUEST: {
       'message': 'Invalid update request.',
       'code': 1003,
@@ -60,14 +54,8 @@ class Errors {
       'code': 1005,
     },
     /* ----- UNAUTHORIZED (3xxx) ----- */
-    UNAUTHORIZED_METHOD: {
-      'message': 'Unauthorized method.',
-      'code': 3001,
-    },
-    UNAUTHORIZED_EVENT: {
-      'message': 'Unauthorized event.',
-      'code': 3002,
-    },
+    UNAUTHORIZED_METHOD: {'message': 'Unauthorized method.', 'code': 3001},
+    UNAUTHORIZED_EVENT: {'message': 'Unauthorized event.', 'code': 3002},
     UNAUTHORIZED_UPDATE_REQUEST: {
       'message': 'Unauthorized update request.',
       'code': 3003,
@@ -77,61 +65,28 @@ class Errors {
       'code': 3004,
     },
     /* ----- REJECTED (5xxx) ----- */
-    USER_REJECTED_SIGN: {
-      'message': 'User rejected.',
-      'code': 4001,
-    },
+    USER_REJECTED_SIGN: {'message': 'User rejected.', 'code': 4001},
     /* ----- REJECTED (5xxx) ----- */
-    USER_REJECTED: {
-      'message': 'User rejected.',
-      'code': 5000,
-    },
-    USER_REJECTED_CHAINS: {
-      'message': 'User rejected chains.',
-      'code': 5001,
-    },
-    USER_REJECTED_METHODS: {
-      'message': 'User rejected methods.',
-      'code': 5002,
-    },
-    USER_REJECTED_EVENTS: {
-      'message': 'User rejected events.',
-      'code': 5003,
-    },
-    UNSUPPORTED_CHAINS: {
-      'message': 'Unsupported chains.',
-      'code': 5100,
-    },
-    UNSUPPORTED_METHODS: {
-      'message': 'Unsupported methods.',
-      'code': 5101,
-    },
-    UNSUPPORTED_EVENTS: {
-      'message': 'Unsupported events.',
-      'code': 5102,
-    },
-    UNSUPPORTED_ACCOUNTS: {
-      'message': 'Unsupported accounts.',
-      'code': 5103,
-    },
+    USER_REJECTED: {'message': 'User rejected.', 'code': 5000},
+    USER_REJECTED_CHAINS: {'message': 'User rejected chains.', 'code': 5001},
+    USER_REJECTED_METHODS: {'message': 'User rejected methods.', 'code': 5002},
+    USER_REJECTED_EVENTS: {'message': 'User rejected events.', 'code': 5003},
+    UNSUPPORTED_CHAINS: {'message': 'Unsupported chains.', 'code': 5100},
+    UNSUPPORTED_METHODS: {'message': 'Unsupported methods.', 'code': 5101},
+    UNSUPPORTED_EVENTS: {'message': 'Unsupported events.', 'code': 5102},
+    UNSUPPORTED_ACCOUNTS: {'message': 'Unsupported accounts.', 'code': 5103},
     UNSUPPORTED_NAMESPACE_KEY: {
       'message': 'Unsupported namespace key.',
       'code': 5104,
     },
     /* ----- REASON (6xxx) ----- */
-    USER_DISCONNECTED: {
-      'message': 'User disconnected.',
-      'code': 6000,
-    },
+    USER_DISCONNECTED: {'message': 'User disconnected.', 'code': 6000},
     /* ----- FAILURE (7xxx) ----- */
     SESSION_SETTLEMENT_FAILED: {
       'message': 'Session settlement failed.',
       'code': 7000,
     },
-    NO_SESSION_FOR_TOPIC: {
-      'message': 'No session for topic.',
-      'code': 7001,
-    },
+    NO_SESSION_FOR_TOPIC: {'message': 'No session for topic.', 'code': 7001},
     /* ----- FAILURE (8xxx) ----- */
     REQUEST_EXPIRED_SESSION: {
       'message': 'Session request expired.',
@@ -151,31 +106,19 @@ class Errors {
       'message': 'Malformed request parameters.',
       'code': 11002,
     },
-    MESSAGE_COMPROMISED: {
-      'message': 'Message compromised.',
-      'code': 11003,
-    },
+    MESSAGE_COMPROMISED: {'message': 'Message compromised.', 'code': 11003},
     SIGNATURE_VERIFICATION_FAILED: {
       'message': 'Signature verification failed.',
       'code': 11004,
     },
-    REQUEST_EXPIRED_AUTH: {
-      'message': 'Auth request expired.',
-      'code': 11005,
-    },
-    MISSING_ISSUER_AUTH: {
-      'message': 'Missing Issuer.',
-      'code': 11006,
-    },
+    REQUEST_EXPIRED_AUTH: {'message': 'Auth request expired.', 'code': 11005},
+    MISSING_ISSUER_AUTH: {'message': 'Missing Issuer.', 'code': 11006},
     /* ----- AUTH REJECTED (12xxx) ----- */
     USER_REJECTED_AUTH: {
       'message': 'User rejected auth request.',
       'code': 12001,
     },
-    USER_DISCONNECTED_AUTH: {
-      'message': 'User disconnect auth.',
-      'code': 12002,
-    },
+    USER_DISCONNECTED_AUTH: {'message': 'User disconnect auth.', 'code': 12002},
   };
 
   static const NOT_INITIALIZED = 'NOT_INITIALIZED';
@@ -189,48 +132,21 @@ class Errors {
   static const NON_CONFORMING_NAMESPACES = 'NON_CONFORMING_NAMESPACES';
 
   static const INTERNAL_ERRORS = {
-    NOT_INITIALIZED: {
-      'message': 'Not initialized.',
-      'code': 1,
-    },
-    NO_MATCHING_KEY: {
-      'message': 'No matching key.',
-      'code': 2,
-    },
-    RESTORE_WILL_OVERRIDE: {
-      'message': 'Restore will override.',
-      'code': 3,
-    },
-    RESUBSCRIBED: {
-      'message': 'Resubscribed.',
-      'code': 4,
-    },
-    MISSING_OR_INVALID: {
-      'message': 'Missing or invalid.',
-      'code': 5,
-    },
-    EXPIRED: {
-      'message': 'Expired.',
-      'code': 6,
-    },
-    UNKNOWN_TYPE: {
-      'message': 'Unknown type.',
-      'code': 7,
-    },
-    MISMATCHED_TOPIC: {
-      'message': 'Mismatched topic.',
-      'code': 8,
-    },
+    NOT_INITIALIZED: {'message': 'Not initialized.', 'code': 1},
+    NO_MATCHING_KEY: {'message': 'No matching key.', 'code': 2},
+    RESTORE_WILL_OVERRIDE: {'message': 'Restore will override.', 'code': 3},
+    RESUBSCRIBED: {'message': 'Resubscribed.', 'code': 4},
+    MISSING_OR_INVALID: {'message': 'Missing or invalid.', 'code': 5},
+    EXPIRED: {'message': 'Expired.', 'code': 6},
+    UNKNOWN_TYPE: {'message': 'Unknown type.', 'code': 7},
+    MISMATCHED_TOPIC: {'message': 'Mismatched topic.', 'code': 8},
     NON_CONFORMING_NAMESPACES: {
       'message': 'Non conforming namespaces.',
       'code': 9,
     },
   };
 
-  static ReownCoreError getInternalError(
-    String key, {
-    String context = '',
-  }) {
+  static ReownCoreError getInternalError(String key, {String context = ''}) {
     if (INTERNAL_ERRORS.containsKey(key)) {
       return ReownCoreError(
         code: INTERNAL_ERRORS[key]!['code']! as int,
@@ -242,10 +158,7 @@ class Errors {
     return const ReownCoreError(code: -1, message: 'UNKNOWN INTERNAL ERROR');
   }
 
-  static ReownCoreError getSdkError(
-    String key, {
-    String context = '',
-  }) {
+  static ReownCoreError getSdkError(String key, {String context = ''}) {
     if (SDK_ERRORS.containsKey(key)) {
       return ReownCoreError(
         code: SDK_ERRORS[key]!['code']! as int,

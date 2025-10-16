@@ -24,8 +24,10 @@ extension BufferSerializable on BigInt {
   /// is used.
   Uint8List toUint8List([final int? length]) {
     final int byteLength = length ?? this.byteLength;
-    assert(length == null || length >= byteLength,
-        'The value $this overflows $byteLength byte(s)');
+    assert(
+      length == null || length >= byteLength,
+      'The value $this overflows $byteLength byte(s)',
+    );
     return (Buffer(byteLength)..setBigInt(this, 0, byteLength)).asUint8List();
   }
 
@@ -35,8 +37,10 @@ extension BufferSerializable on BigInt {
   /// final BigInt value = BigIntExtension.fromUint8List([255, 255, 255, 255, 255, 255, 255, 255]);
   /// print(value); // 18446744073709551615
   /// ```
-  static BigInt fromUint8List(final Iterable<int> bytes,
-      [final Endian endian = Endian.little]) {
+  static BigInt fromUint8List(
+    final Iterable<int> bytes, [
+    final Endian endian = Endian.little,
+  ]) {
     return Buffer.fromList(bytes).getBigUint(0, bytes.length, endian);
   }
 

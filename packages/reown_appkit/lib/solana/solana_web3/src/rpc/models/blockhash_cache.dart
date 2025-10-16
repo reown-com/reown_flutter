@@ -17,9 +17,7 @@ import 'blockhash_with_expiry_block_height.dart';
 
 class BlockhashCache {
   /// Stores the latest `blockhash` fetched from [HttpConnection.getLatestBlockhash].
-  BlockhashCache({
-    this.timeout = const Duration(seconds: 30),
-  });
+  BlockhashCache({this.timeout = const Duration(seconds: 30)});
 
   /// The cached [value]'s expiration time.
   final Duration timeout;
@@ -94,7 +92,8 @@ class BlockhashCache {
   ///
   /// Throws a [TransactionException] if the latest blockhash could not be retrieved.
   FutureOr<BlockhashWithExpiryBlockHeight> _syncFetch(
-      final HttpConnection connection) async {
+    final HttpConnection connection,
+  ) async {
     await _fetchCompleter?.future;
     return value ?? _fetch(connection);
   }
@@ -103,7 +102,8 @@ class BlockhashCache {
   ///
   /// Throws a [TransactionException] if the latest blockhash could not be retrieved.
   FutureOr<BlockhashWithExpiryBlockHeight> _fetch(
-      final HttpConnection connection) async {
+    final HttpConnection connection,
+  ) async {
     /// Create a local [fetchCompleter] to be resolved when this method completes.
     final Completer<void> fetchCompleter = Completer.sync();
 
@@ -119,20 +119,23 @@ class BlockhashCache {
       const config = GetLatestBlockhashConfig(commitment: Commitment.finalized);
 
       for (int i = 0; i < _maxFetchAttempts; ++i) {
-        final latestBlockhash =
-            await connection.getLatestBlockhash(config: config);
+        final latestBlockhash = await connection.getLatestBlockhash(
+          config: config,
+        );
         if (cachedBlockhash != latestBlockhash.blockhash) {
           _set(latestBlockhash);
           return latestBlockhash;
         }
         // Sleep for approximately half a slot
         await Future.delayed(
-            const Duration(milliseconds: millisecondsPerSlot ~/ 2));
+          const Duration(milliseconds: millisecondsPerSlot ~/ 2),
+        );
       }
 
       final int elapsed = _timestamp() - fetchTimestamp;
       throw TransactionException(
-          'Unable to obtain a new blockhash after ${elapsed}ms');
+        'Unable to obtain a new blockhash after ${elapsed}ms',
+      );
     } finally {
       /// Resolve the request's completer.
       fetchCompleter.complete();

@@ -33,11 +33,11 @@ class Supply extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory Supply.fromJson(final Map<String, dynamic> json) => Supply(
-        total: json['total'],
-        circulating: json['circulating'],
-        nonCirculating: json['nonCirculating'],
-        nonCirculatingAccounts: List.from(json['nonCirculatingAccounts']),
-      );
+    total: json['total'],
+    circulating: json['circulating'],
+    nonCirculating: json['nonCirculating'],
+    nonCirculatingAccounts: List.from(json['nonCirculatingAccounts']),
+  );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static Supply? tryFromJson(final Map<String, dynamic>? json) =>
@@ -45,9 +45,9 @@ class Supply extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'total': total,
-        'circulating': circulating,
-        'nonCirculating': nonCirculating,
-        'nonCirculatingAccounts': nonCirculatingAccounts,
-      };
+    'total': total,
+    'circulating': circulating,
+    'nonCirculating': nonCirculating,
+    'nonCirculatingAccounts': nonCirculatingAccounts,
+  };
 }

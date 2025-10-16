@@ -76,13 +76,12 @@ class Message extends Serializable {
     required final Pubkey payer,
     required final List<TransactionInstruction> instructions,
     required final Blockhash recentBlockhash,
-  }) =>
-      Message.compile(
-        version: null,
-        payer: payer,
-        instructions: instructions,
-        recentBlockhash: recentBlockhash,
-      );
+  }) => Message.compile(
+    version: null,
+    payer: payer,
+    instructions: instructions,
+    recentBlockhash: recentBlockhash,
+  );
 
   /// Creates a `v0` message.
   factory Message.v0({
@@ -90,14 +89,13 @@ class Message extends Serializable {
     required final List<TransactionInstruction> instructions,
     required final Blockhash recentBlockhash,
     final List<AddressLookupTableAccount>? addressLookupTableAccounts,
-  }) =>
-      Message.compile(
-        version: 0,
-        payer: payer,
-        instructions: instructions,
-        recentBlockhash: recentBlockhash,
-        addressLookupTableAccounts: addressLookupTableAccounts,
-      );
+  }) => Message.compile(
+    version: 0,
+    payer: payer,
+    instructions: instructions,
+    recentBlockhash: recentBlockhash,
+    addressLookupTableAccounts: addressLookupTableAccounts,
+  );
 
   /// Creates a transaction message.
   factory Message.compile({
@@ -123,7 +121,8 @@ class Message extends Serializable {
       staticAccountMetasMap[instruction.programId] ??= programMeta;
       for (final AccountMeta key in instruction.keys) {
         final AccountMeta? meta = staticAccountMetasMap[key.pubkey];
-        staticAccountMetasMap[key.pubkey] = meta?.copyWith(
+        staticAccountMetasMap[key.pubkey] =
+            meta?.copyWith(
               isSigner: meta.isSigner || key.isSigner,
               isWritable: meta.isWritable || key.isWritable,
             ) ??
@@ -171,8 +170,8 @@ class Message extends Serializable {
     }
 
     // Sort by signer accounts, followed by writable accounts.
-    final List<AccountMeta> staticAccountMetas =
-        staticAccountMetasMap.values.toList(growable: false);
+    final List<AccountMeta> staticAccountMetas = staticAccountMetasMap.values
+        .toList(growable: false);
     staticAccountMetas.sort((final AccountMeta x, final AccountMeta y) {
       // Signers must be placed before non-signers.
       if (x.isSigner != y.isSigner) {
@@ -210,7 +209,8 @@ class Message extends Serializable {
     );
 
     // Collect static account keys.
-    final List<Pubkey> staticAccountKeys = writableSigners +
+    final List<Pubkey> staticAccountKeys =
+        writableSigners +
         readonlySigners +
         writableNonSigners +
         readonlyNonSigners;
@@ -255,12 +255,10 @@ class Message extends Serializable {
 
   /// The number of account keys contained within [addressTableLookups].
   int get numAccountKeysFromLookups => addressTableLookups.fold(
-        0,
-        (total, lookup) =>
-            total +
-            lookup.readonlyIndexes.length +
-            lookup.writableIndexes.length,
-      );
+    0,
+    (total, lookup) =>
+        total + lookup.readonlyIndexes.length + lookup.writableIndexes.length,
+  );
 
   // /// Map each program id index to its corresponding account key.
   // final Map<int, Pubkey> _indexToProgramIds = {};
@@ -346,8 +344,9 @@ class Message extends Serializable {
     final instructionsBuffer = BufferWriter(packetDataSize);
 
     // Write the encoded instructions length.
-    final List<int> ixsEncodedLength =
-        shortvec.encodeLength(instructions.length);
+    final List<int> ixsEncodedLength = shortvec.encodeLength(
+      instructions.length,
+    );
     instructionsBuffer.setBuffer(ixsEncodedLength);
 
     // Write the message instructions.
@@ -357,8 +356,9 @@ class Message extends Serializable {
       instructionsBuffer.setUint8(programIdIndex);
 
       // Compact array of account address indexes.
-      final List<int> keyIndicesCount =
-          shortvec.encodeLength(instruction.accounts.length);
+      final List<int> keyIndicesCount = shortvec.encodeLength(
+        instruction.accounts.length,
+      );
       instructionsBuffer.setBuffer(keyIndicesCount);
       final Iterable<int> keyIndices = instruction.accounts;
       instructionsBuffer.setBuffer(keyIndices);
@@ -374,24 +374,28 @@ class Message extends Serializable {
     final addressTableLookupsBuffer = BufferWriter(packetDataSize);
     if (version != null) {
       // Write the encoded table lookups length.
-      final List<int> addressTableLookupsLength =
-          shortvec.encodeLength(addressTableLookups.length);
+      final List<int> addressTableLookupsLength = shortvec.encodeLength(
+        addressTableLookups.length,
+      );
       addressTableLookupsBuffer.setBuffer(addressTableLookupsLength);
 
       for (final MessageAddressTableLookup addressTableLookup
           in addressTableLookups) {
         // Compact array of the writable indexes length.
         final List<int> writableIndexes = addressTableLookup.writableIndexes;
-        final List<int> writableIndexesCount =
-            shortvec.encodeLength(writableIndexes.length);
+        final List<int> writableIndexesCount = shortvec.encodeLength(
+          writableIndexes.length,
+        );
 
         // Compact array of the readonly indexes length.
         final List<int> readonlyIndexes = addressTableLookup.readonlyIndexes;
-        final List<int> readonlyIndexesCount =
-            shortvec.encodeLength(readonlyIndexes.length);
+        final List<int> readonlyIndexesCount = shortvec.encodeLength(
+          readonlyIndexes.length,
+        );
 
-        addressTableLookupsBuffer
-            .setBuffer(addressTableLookup.accountKey.toBytes());
+        addressTableLookupsBuffer.setBuffer(
+          addressTableLookup.accountKey.toBytes(),
+        );
         addressTableLookupsBuffer.setBuffer(writableIndexesCount);
         addressTableLookupsBuffer.setBuffer(writableIndexes);
         addressTableLookupsBuffer.setBuffer(readonlyIndexesCount);
@@ -471,13 +475,16 @@ class Message extends Serializable {
       final int addressTableLookupsCount = shortvec.decodeLength(reader);
       for (int i = 0; i < addressTableLookupsCount; ++i) {
         final Pubkey accountKey = Pubkey.fromBase58(
-            reader.getString(nacl.pubkeyLength, BufferEncoding.base58));
+          reader.getString(nacl.pubkeyLength, BufferEncoding.base58),
+        );
         final int writableIndexesCount = shortvec.decodeLength(reader);
-        final Iterable<int> writableIndexes =
-            reader.getBuffer(writableIndexesCount);
+        final Iterable<int> writableIndexes = reader.getBuffer(
+          writableIndexesCount,
+        );
         final int readonlyIndexesCount = shortvec.decodeLength(reader);
-        final Iterable<int> readonlyIndexes =
-            reader.getBuffer(readonlyIndexesCount);
+        final Iterable<int> readonlyIndexes = reader.getBuffer(
+          readonlyIndexesCount,
+        );
         addressTableLookups.add(
           MessageAddressTableLookup(
             accountKey: accountKey,
@@ -504,8 +511,6 @@ class Message extends Serializable {
 
   /// Serializes this message into an encoded string.
   @override
-  String toString([
-    final BufferEncoding encoding = BufferEncoding.base64,
-  ]) =>
+  String toString([final BufferEncoding encoding = BufferEncoding.base64]) =>
       serialize().getString(encoding);
 }

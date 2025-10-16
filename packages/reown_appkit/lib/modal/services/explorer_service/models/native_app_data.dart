@@ -6,10 +6,8 @@ class NativeAppData {
 
   NativeAppData({required this.id, this.schema});
 
-  NativeAppData copyWith({String? id, String? schema}) => NativeAppData(
-        id: id ?? this.id,
-        schema: schema ?? this.schema,
-      );
+  NativeAppData copyWith({String? id, String? schema}) =>
+      NativeAppData(id: id ?? this.id, schema: schema ?? this.schema);
 
   factory NativeAppData.fromRawJson(String str) =>
       NativeAppData.fromJson(json.decode(str));
@@ -24,8 +22,5 @@ class NativeAppData {
     );
   }
 
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'schema': schema,
-      };
+  Map<String, dynamic> toJson() => {'id': id, 'schema': schema};
 }

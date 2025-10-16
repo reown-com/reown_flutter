@@ -22,7 +22,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 
 class SocialLoginPage extends StatefulWidget {
   const SocialLoginPage({required this.socialOption, this.farcasterCompleter})
-      : super(key: KeyConstants.socialLoginPage);
+    : super(key: KeyConstants.socialLoginPage);
   final AppKitSocialOption socialOption;
   final Future<bool>? farcasterCompleter;
 
@@ -123,8 +123,8 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
     final maxWidth = isPortrait
         ? ResponsiveData.maxWidthOf(context)
         : ResponsiveData.maxHeightOf(context) -
-            kNavbarHeight -
-            (kPadding16 * 2);
+              kNavbarHeight -
+              (kPadding16 * 2);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     return ModalNavbar(
       title: widget.socialOption.name,
@@ -149,7 +149,8 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
                             borderRadius: radiuses.isSquare()
                                 ? BorderRadius.zero
                                 : BorderRadius.circular(maxWidth),
-                            child: (widget.socialOption ==
+                            child:
+                                (widget.socialOption ==
                                     AppKitSocialOption.Email)
                                 ? RoundedIcon(
                                     padding: 20.0,
@@ -257,24 +258,22 @@ final _webWallet = ReownAppKitModalWalletInfo(
   recent: false,
 );
 
-final _webWalletListing = AppKitModalWalletListing.fromJson(
-  {
-    'id': '0000000000000001',
-    'name': 'Reown Web Wallet',
-    'homepage': 'https://reown.com',
-    'image_id': 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
-    'order': 10,
-    'mobile_link': null,
-    'desktop_link': null,
-    'link_mode': null,
-    'webapp_link': kDebugMode
-        ? UrlConstants.webWalletUrlInternal
-        : UrlConstants.webWalletUrl,
-    'app_store': null,
-    'play_store': null,
-    'rdns': null,
-    'chrome_store': null,
-    'description': 'Reown Web Wallet',
-    'badge_type': 'certified'
-  },
-);
+final _webWalletListing = AppKitModalWalletListing.fromJson({
+  'id': '0000000000000001',
+  'name': 'Reown Web Wallet',
+  'homepage': 'https://reown.com',
+  'image_id': 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
+  'order': 10,
+  'mobile_link': null,
+  'desktop_link': null,
+  'link_mode': null,
+  'webapp_link': kDebugMode
+      ? UrlConstants.webWalletUrlInternal
+      : UrlConstants.webWalletUrl,
+  'app_store': null,
+  'play_store': null,
+  'rdns': null,
+  'chrome_store': null,
+  'description': 'Reown Web Wallet',
+  'badge_type': 'certified',
+});

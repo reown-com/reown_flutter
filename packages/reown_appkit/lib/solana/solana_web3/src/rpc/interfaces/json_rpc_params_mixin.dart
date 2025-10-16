@@ -18,9 +18,7 @@ mixin JsonRpcParamsMixin<S, T> on JsonRpcMethod<S, T> {
   Serializable? get config;
 
   @override
-  Object? params([
-    final Commitment? commitment,
-  ]) {
+  Object? params([final Commitment? commitment]) {
     // Serialize the configurations object.
     final Map<String, dynamic> object = config?.toJson() ?? const {};
 

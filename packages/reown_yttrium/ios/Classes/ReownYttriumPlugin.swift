@@ -1,14 +1,7 @@
 import Flutter
 import UIKit
-import YttriumWrapper
 
 public class ReownYttriumPlugin: NSObject, FlutterPlugin {
-    struct CustomError: Error {
-        let message: String
-    }
-    
-    private var client: ChainAbstractionClient?
-    private var pendingPrepareDetailed: [String: UiFields] = [:]
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(name: "reown_yttrium", binaryMessenger: registrar.messenger())
@@ -18,166 +11,64 @@ public class ReownYttriumPlugin: NSObject, FlutterPlugin {
     
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
         switch call.method {
-        case "init":
-            initialize(call.arguments ?? {}, result: result)
-        case "erc20TokenBalance":
-            erc20TokenBalance(call.arguments ?? {}, result: result)
-        case "estimateFees":
-            estimateFees(call.arguments ?? {}, result: result)
-        case "prepareDetailed":
-            prepareDetailed(call.arguments ?? {}, result: result)
-        case "execute":
-            execute(call.arguments ?? {}, result: result)
+            // === CHAIN ABSTRACTION METHODS ===
+            //        case "ca_init":
+            //            ChainAbstraction.initialize(call.arguments ?? {}, result: result)
+            //        case "ca_erc20TokenBalance":
+            //            ChainAbstraction.erc20TokenBalance(call.arguments ?? {}, result: result)
+            //        case "ca_estimateFees":
+            //            ChainAbstraction.estimateFees(call.arguments ?? {}, result: result)
+            //        case "ca_prepareDetailed":
+            //            ChainAbstraction.prepareDetailed(call.arguments ?? {}, result: result)
+            //        case "ca_execute":
+            //            ChainAbstraction.execute(call.arguments ?? {}, result: result)
+            // === STACKS METHODS ===
+        case "stx_init":
+            Stacks.initialize(call.arguments ?? {}, result: result)
+        case "stx_generateWallet":
+            Stacks.generateWallet(call.arguments ?? {}, result: result)
+        case "stx_getAddress":
+            Stacks.getAddress(call.arguments ?? {}, result: result)
+        case "stx_signMessage":
+            Stacks.signMessage(call.arguments ?? {}, result: result)
+        case "stx_transferStx":
+            Stacks.transferStx(call.arguments ?? {}, result: result)
+            // === SUI METHODS ===
+        case "sui_init":
+            Sui.initialize(call.arguments ?? {}, result: result)
+        case "sui_generateKeyPair":
+            Sui.generateKeyPair(call.arguments ?? {}, result: result)
+        case "sui_getPublicKeyFromKeyPair":
+            Sui.getPublicKeyFromKeyPair(call.arguments ?? {}, result: result)
+        case "sui_getAddressFromPublicKey":
+            Sui.getAddressFromPublicKey(call.arguments ?? {}, result: result)
+        case "sui_personalSign":
+            Sui.personalSign(call.arguments ?? {}, result: result)
+        case "sui_signTransaction":
+            Sui.signTransaction(call.arguments ?? {}, result: result)
+        case "sui_signAndExecuteTransaction":
+            Sui.signAndExecuteTransaction(call.arguments ?? {}, result: result)
+            // === TON METHODS ===
+        case "ton_init":
+            Ton.initialize(call.arguments ?? {}, result: result)
+        case "ton_generateKeypair":
+            Ton.generateKeypair(call.arguments ?? {}, result: result)
+        case "ton_generateKeypairFromTonMnemonic":
+            Ton.generateKeypairFromTonMnemonic(call.arguments ?? {}, result: result) // TODO
+        case "ton_generateKeypairFromBip39Mnemonic":
+            Ton.generateKeypairFromBip39Mnemonic(call.arguments ?? {}, result: result) // TODO
+        case "ton_getAddressFromKeypair":
+            Ton.getAddressFromKeypair(call.arguments ?? {}, result: result)
+        case "ton_signData":
+            Ton.signData(call.arguments ?? {}, result: result)
+        case "ton_sendMessage":
+            Ton.sendMessage(call.arguments ?? {}, result: result)
+        case "ton_broadcastMessage":
+            Ton.broadcastMessage(call.arguments ?? {}, result: result)
+        case "ton_dispose":
+            Ton.dispose(call.arguments ?? {}, result: result)
         default:
             result(FlutterMethodNotImplemented)
         }
     }
-    
-    func initialize(_ params: Any, result: @escaping FlutterResult) {
-        guard let dict = params as? [String: Any],
-              let projectId = dict["projectId"] as? String,
-              let pulseMetadataDict = dict["pulseMetadata"] as? [String: Any],
-              let url = pulseMetadataDict["url"] as? String,
-              let bundleId = pulseMetadataDict["bundleId"] as? String,
-              let sdkVersion = pulseMetadataDict["sdkVersion"] as? String,
-              let sdkPlatform = pulseMetadataDict["sdkPlatform"] as? String else {
-            result(FlutterError(code: "initialize", message: "Invalid parameters", details: params))
-            return
-        }
-        
-        let bundleID = Bundle.main.bundleIdentifier ?? bundleId
-        let pulseMetadata = PulseMetadata(url: url, bundleId: bundleID, sdkVersion: sdkVersion, sdkPlatform: sdkPlatform)
-        
-        client = ChainAbstractionClient(projectId: projectId, pulseMetadata: pulseMetadata)
-        
-        result(true)
-    }
-    
-    func erc20TokenBalance(_ params: Any, result: @escaping FlutterResult) {
-        print("erc20TokenBalance called with ", params)
-        
-        guard let dict = params as? [String: Any],
-              let chainId = dict["chainId"] as? String,
-              let token = dict["token"] as? FfiAddress,  // aka String
-              let owner = dict["owner"] as? FfiAddress,
-              let client = client else {
-            result(FlutterError(code: "erc20TokenBalance", message: "Invalid parameters", details: params))
-            return
-        }
-        
-        Task {
-            do {
-                let balanceResponse = try await client.erc20TokenBalance(chainId: chainId, token: token, owner: owner)
-                
-                if let balance = balanceResponse as String? {
-                    print("balanceResponse", balance)
-                    result(balance)
-                } else {
-                    result(FlutterError(code: "erc20TokenBalance", message: "Response error: balance is nil", details: nil))
-                }
-            } catch {
-                result(FlutterError(code: "erc20TokenBalance", message: error.localizedDescription, details: nil))
-            }
-        }
-    }
-    
-    func estimateFees(_ params: Any, result: @escaping FlutterResult) {
-        print("estimateFees called with ", params)
-        
-        guard let dict = params as? [String: Any],
-              let chainId = dict["chainId"] as? String,
-              let client = client else {
-            result(FlutterError(code: "estimateFees", message: "Invalid parameters", details: params))
-            return
-        }
-        
-        Task {
-            do {
-                let feesResponse = try await client.estimateFees(chainId: chainId)
-                
-                if let fees = feesResponse as Eip1559Estimation? {
-                    print("feesResponse", fees)
-                    result(fees.toJson())
-                } else {
-                    result(FlutterError(code: "estimateFees", message: "Response error: fees is nil", details: nil))
-                }
-            } catch {
-                result(FlutterError(code: "estimateFees", message: error.localizedDescription, details: nil))
-            }
-        }
-    }
-    
-    func prepareDetailed(_ params: Any, result: @escaping FlutterResult) {
-        print("prepareDetailed called with ", params)
-        
-        guard let dict = params as? [String: Any],
-              let chainId = dict["chainId"] as? String,
-              let from = dict["from"] as? String,
-              let call = dict["call"] as? [String: Any],
-              let to = call["to"] as? String,  // Address (String)
-              let value = call["value"] as? String,  // U256 (String)
-              let input = call["input"] as? String,  // Bytes (String)
-              let localCurrency = dict["localCurrency"] as? String,
-              let client = client else {
-            result(FlutterError(code: "prepareDetailed", message: "Invalid parameters", details: nil))
-            return
-        }
-        
-        Task {
-            do {
-                let currency = Currency.fromString(value: localCurrency)
-                let call = Call(to: to, value: value, input: input)
-                let prepareResponse = try await client.prepareDetailed(chainId: chainId, from: from, call: call, localCurrency: currency)
-                
-                switch prepareResponse {
-                case .success(let successData):
-                    switch successData {
-                    case .available(let uiFields):
-                        pendingPrepareDetailed[uiFields.routeResponse.orchestrationId] = uiFields
-                        result(["available": uiFields.toJson()])
-                    case .notRequired(let prepareResponseNotRequired):
-                        result(["notRequired": prepareResponseNotRequired.toJson()])
-                    }
-                case .error(let errorData):
-                    result(errorData.toJson())
-                }
-            } catch {
-                result(FlutterError(code: "prepareDetailed", message: error.localizedDescription, details: nil))
-            }
-        }
-    }
-    
-    func execute(_ params: Any, result: @escaping FlutterResult) {
-        print("execute called with ", params)
-        
-        guard let dict = params as? [String: Any],
-              let orchestrationId = dict["orchestrationId"] as? String,
-              let routeTxnSigs = dict["routeTxnSigs"] as? [String],
-              let initialTxnSig = dict["initialTxnSig"] as? String,
-              let client = client else {
-            result(FlutterError(code: "execute", message: "Invalid parameters", details: params))
-            return
-        }
-        
-        Task {
-            do {
-                guard let uiFields = pendingPrepareDetailed[orchestrationId] else {
-                    throw CustomError(message: "prepareDetailed result not found, try again")
-                }
-                
-                let executeResponse = try await client.execute(uiFields: uiFields,
-                                                               routeTxnSigs: routeTxnSigs,
-                                                               initialTxnSig: initialTxnSig)
-                
-                pendingPrepareDetailed.removeValue(forKey: orchestrationId)
-                
-                let jsonResponse = executeResponse.toJson()
-                print("execute success", jsonResponse)
-                result(jsonResponse)
-            } catch {
-                result(FlutterError(code: "execute", message: error.localizedDescription, details: nil))
-            }
-        }
-    }
-    
 }

@@ -86,7 +86,8 @@ sealed class SIWECreateMessageArgs with _$SIWECreateMessageArgs {
       nonce: nonce,
       address: address,
       version: '1',
-      iat: params.iat ??
+      iat:
+          params.iat ??
           DateTime.utc(
             now.year,
             now.month,

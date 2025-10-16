@@ -14,9 +14,9 @@ class SiweService implements ISiweService {
     required IReownAppKit appKit,
     required SIWEConfig? siweConfig,
     required Map<String, RequiredNamespace> namespaces,
-  })  : _appKit = appKit,
-        _siweConfig = siweConfig,
-        _namespaces = namespaces;
+  }) : _appKit = appKit,
+       _siweConfig = siweConfig,
+       _namespaces = namespaces;
 
   @override
   SIWEConfig? get config => _siweConfig;

@@ -3,10 +3,7 @@ import 'package:http/http.dart' as http;
 abstract class IHttpClient {
   const IHttpClient();
 
-  Future<http.Response> get(
-    Uri url, {
-    Map<String, String>? headers,
-  });
+  Future<http.Response> get(Uri url, {Map<String, String>? headers});
 
   Future<http.Response> post(
     Uri url, {
@@ -14,8 +11,5 @@ abstract class IHttpClient {
     Object? body,
   });
 
-  Future<http.Response> delete(
-    Uri url, {
-    Map<String, String>? headers,
-  });
+  Future<http.Response> delete(Uri url, {Map<String, String>? headers});
 }

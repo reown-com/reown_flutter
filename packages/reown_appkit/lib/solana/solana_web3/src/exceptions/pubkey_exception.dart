@@ -14,10 +14,7 @@ part 'pubkey_exception.g.dart';
 @JsonSerializable(createToJson: false)
 class PubkeyException extends SolanaException {
   /// Creates an exception for an invalid public key.
-  const PubkeyException(
-    super.message, {
-    super.code,
-  });
+  const PubkeyException(super.message, {super.code});
 
   /// Creates an exception for an invalid public key length.
   ///
@@ -31,9 +28,9 @@ class PubkeyException extends SolanaException {
   factory PubkeyException.length(
     final int length, {
     final int maxLength = nacl.pubkeyLength,
-  }) =>
-      PubkeyException(
-          'Invalid public key length of $length, expected $maxLength.');
+  }) => PubkeyException(
+    'Invalid public key length of $length, expected $maxLength.',
+  );
 
   /// {@macro solana_common.Serializable.fromJson}
   factory PubkeyException.fromJson(final Map<String, dynamic> json) =>

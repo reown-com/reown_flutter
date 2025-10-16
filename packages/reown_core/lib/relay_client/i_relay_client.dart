@@ -42,9 +42,7 @@ abstract class IRelayClient {
     required PublishOptions options,
   });
 
-  Future<String> subscribe({
-    required SubscribeOptions options,
-  });
+  Future<String> subscribe({required SubscribeOptions options});
 
   Future<void> unsubscribe({required String topic});
 

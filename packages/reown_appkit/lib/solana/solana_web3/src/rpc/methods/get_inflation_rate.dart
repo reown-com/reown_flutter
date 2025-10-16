@@ -15,8 +15,6 @@ class GetInflationRate
   GetInflationRate() : super('getInflationRate');
 
   @override
-  InflationRate decoder(
-    final Map<String, dynamic> value,
-  ) =>
+  InflationRate decoder(final Map<String, dynamic> value) =>
       InflationRate.fromJson(value);
 }

@@ -64,11 +64,7 @@ class EncodingValidation {
   String? senderPublicKey;
   String? receiverPublicKey;
 
-  EncodingValidation(
-    this.type, {
-    this.senderPublicKey,
-    this.receiverPublicKey,
-  });
+  EncodingValidation(this.type, {this.senderPublicKey, this.receiverPublicKey});
 }
 
 class EncodeOptions {
@@ -80,17 +76,11 @@ class EncodeOptions {
   String? senderPublicKey;
   String? receiverPublicKey;
 
-  EncodeOptions({
-    this.type,
-    this.senderPublicKey,
-    this.receiverPublicKey,
-  });
+  EncodeOptions({this.type, this.senderPublicKey, this.receiverPublicKey});
 }
 
 class DecodeOptions {
   String? receiverPublicKey;
 
-  DecodeOptions({
-    this.receiverPublicKey,
-  });
+  DecodeOptions({this.receiverPublicKey});
 }

@@ -8,8 +8,5 @@ abstract class IVerify {
     required String? attestationJWT,
   });
 
-  Validation getValidation(
-    AttestationResponse? attestation,
-    Uri? metadataUri,
-  );
+  Validation getValidation(AttestationResponse? attestation, Uri? metadataUri);
 }

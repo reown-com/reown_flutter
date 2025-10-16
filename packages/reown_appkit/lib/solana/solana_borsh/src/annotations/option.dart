@@ -16,8 +16,5 @@ import 'option_typed.dart';
 /// ```
 class BorshOption<T> extends BorshOptionTyped<T, BorshAnnotation<T>> {
   /// Creates an annotation for an optional value.
-  const BorshOption(
-    super.subtype, [
-    super.type,
-  ]);
+  const BorshOption(super.subtype, [super.type]);
 }

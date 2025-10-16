@@ -14,14 +14,12 @@ import '../models/account_info.dart';
 class GetAccountInfo<T>
     extends JsonRpcContextMethod<Map<String, dynamic>?, AccountInfo<T>?> {
   /// Creates a method handler for `getAccountInfo`.
-  GetAccountInfo(
-    final Pubkey pubkey, {
-    final GetAccountInfoConfig? config,
-  }) : super(
-          'getAccountInfo',
-          values: [pubkey.toBase58()],
-          config: config ?? GetAccountInfoConfig(),
-        );
+  GetAccountInfo(final Pubkey pubkey, {final GetAccountInfoConfig? config})
+    : super(
+        'getAccountInfo',
+        values: [pubkey.toBase58()],
+        config: config ?? GetAccountInfoConfig(),
+      );
 
   @override
   AccountInfo<T>? valueDecoder(final Map<String, dynamic>? value) =>

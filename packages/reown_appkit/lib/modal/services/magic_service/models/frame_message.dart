@@ -10,10 +10,8 @@ class FrameMessage {
 
   FrameMessage({this.data, this.origin});
 
-  FrameMessage copyWith({MessageData? data, String? origin}) => FrameMessage(
-        data: data ?? this.data,
-        origin: origin ?? this.origin,
-      );
+  FrameMessage copyWith({MessageData? data, String? origin}) =>
+      FrameMessage(data: data ?? this.data, origin: origin ?? this.origin);
 
   factory FrameMessage.fromRawJson(String str) {
     return FrameMessage.fromJson(json.decode(str));
@@ -22,14 +20,11 @@ class FrameMessage {
   String toRawJson() => json.encode(toJson());
 
   factory FrameMessage.fromJson(Map<String, dynamic> json) => FrameMessage(
-        data: MessageData.fromJson(json['data']),
-        origin: json['origin'],
-      );
+    data: MessageData.fromJson(json['data']),
+    origin: json['origin'],
+  );
 
-  Map<String, dynamic> toJson() => {
-        'data': data?.toJson(),
-        'origin': origin,
-      };
+  Map<String, dynamic> toJson() => {'data': data?.toJson(), 'origin': origin};
 
   bool get isValidOrigin {
     final authority1 = Uri.parse(UrlConstants.secureDashboard).authority;
@@ -62,15 +57,13 @@ class MessageData {
 
   String toRawJson() => json.encode(toJson());
 
-  factory MessageData.fromJson(Map<String, dynamic> json) => MessageData(
-        type: json['type'],
-        payload: json['payload'],
-      );
+  factory MessageData.fromJson(Map<String, dynamic> json) =>
+      MessageData(type: json['type'], payload: json['payload']);
 
   Map<String, dynamic> toJson() => {
-        'type': type,
-        if (payload != null) 'payload': payload,
-      };
+    'type': type,
+    if (payload != null) 'payload': payload,
+  };
 
   T getPayloadMapKey<T>(String key) {
     final p = payload as Map<String, dynamic>;
@@ -134,9 +127,8 @@ class IsConnected extends MessageData {
 
 class SwitchNetwork extends MessageData {
   final String chainId;
-  SwitchNetwork({
-    required this.chainId,
-  }) : super(type: '@w3m-app/SWITCH_NETWORK');
+  SwitchNetwork({required this.chainId})
+    : super(type: '@w3m-app/SWITCH_NETWORK');
 
   @override
   String toString() => '{type:"${super.type}",payload:{chainId:"$chainId"}}';
@@ -145,10 +137,8 @@ class SwitchNetwork extends MessageData {
 class GetSocialRedirectUri extends MessageData {
   final String provider;
   final String? schema;
-  GetSocialRedirectUri({
-    required this.provider,
-    this.schema,
-  }) : super(type: '@w3m-app/GET_SOCIAL_REDIRECT_URI');
+  GetSocialRedirectUri({required this.provider, this.schema})
+    : super(type: '@w3m-app/GET_SOCIAL_REDIRECT_URI');
 
   @override
   String toString() {
@@ -164,9 +154,7 @@ class GetSocialRedirectUri extends MessageData {
 
 class ConnectSocial extends MessageData {
   final String uri;
-  ConnectSocial({
-    required this.uri,
-  }) : super(type: '@w3m-app/CONNECT_SOCIAL');
+  ConnectSocial({required this.uri}) : super(type: '@w3m-app/CONNECT_SOCIAL');
 
   @override
   String toString() => '{type:"${super.type}",payload:{uri:"$uri"}}';
@@ -204,9 +192,8 @@ class UpdateEmail extends MessageData {
 
 class UpdateEmailPrimaryOtp extends MessageData {
   final String otp;
-  UpdateEmailPrimaryOtp({
-    required this.otp,
-  }) : super(type: '@w3m-app/UPDATE_EMAIL_PRIMARY_OTP');
+  UpdateEmailPrimaryOtp({required this.otp})
+    : super(type: '@w3m-app/UPDATE_EMAIL_PRIMARY_OTP');
 
   @override
   String toString() => '{type:"${super.type}",payload:{otp:"$otp"}}';
@@ -214,9 +201,8 @@ class UpdateEmailPrimaryOtp extends MessageData {
 
 class UpdateEmailSecondaryOtp extends MessageData {
   final String otp;
-  UpdateEmailSecondaryOtp({
-    required this.otp,
-  }) : super(type: '@w3m-app/UPDATE_EMAIL_SECONDARY_OTP');
+  UpdateEmailSecondaryOtp({required this.otp})
+    : super(type: '@w3m-app/UPDATE_EMAIL_SECONDARY_OTP');
 
   @override
   String toString() => '{type:"${super.type}",payload:{otp:"$otp"}}';
@@ -261,10 +247,8 @@ class RpcRequest extends MessageData {
   final String method;
   final dynamic params;
 
-  RpcRequest({
-    required this.method,
-    required this.params,
-  }) : super(type: '@w3m-app/RPC_REQUEST');
+  RpcRequest({required this.method, required this.params})
+    : super(type: '@w3m-app/RPC_REQUEST');
 
   @override
   String toString() {
@@ -272,8 +256,9 @@ class RpcRequest extends MessageData {
     final t = 'type:"${super.type}"';
 
     if (params is Map) {
-      List<String> ps =
-          (params as Map).entries.map((e) => '${e.key}:"${e.value}"').toList();
+      List<String> ps = (params as Map).entries
+          .map((e) => '${e.key}:"${e.value}"')
+          .toList();
       final pString = ps.join(',');
       return '{$t,payload:{$m,params:{$pString}}}';
     }

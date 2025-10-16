@@ -15,9 +15,7 @@ import '../annotations/annotation.dart';
 /// ```
 class BorshList<T> extends BorshAnnotation<List<T>> {
   /// Creates an annotation for a dynamically sized array.
-  const BorshList(
-    this.subtype,
-  );
+  const BorshList(this.subtype);
 
   /// The data type's annotation.
   final BorshAnnotation<T> subtype;

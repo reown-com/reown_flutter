@@ -32,7 +32,5 @@ import 'struct_typed.dart';
 /// ```
 class BorshStruct extends BorshStructTyped<BorshAnnotation> {
   /// Creates an annotation for borsh serializable objects.
-  const BorshStruct(
-    super.schema,
-  );
+  const BorshStruct(super.schema);
 }

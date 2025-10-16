@@ -13,22 +13,14 @@ import '../../crypto/pubkey.dart';
 /// Stake State
 /// ------------------------------------------------------------------------------------------------
 
-enum StakeState {
-  uninitialized,
-  initialized,
-  stake,
-  rewardsPool,
-}
+enum StakeState { uninitialized, initialized, stake, rewardsPool }
 
 /// Authorized
 /// ------------------------------------------------------------------------------------------------
 
 class Authorized extends BorshObject {
   /// Stake account authority info.
-  const Authorized({
-    required this.staker,
-    required this.withdrawer,
-  });
+  const Authorized({required this.staker, required this.withdrawer});
 
   /// Stake authority.
   final String staker;
@@ -37,38 +29,28 @@ class Authorized extends BorshObject {
   final String withdrawer;
 
   /// {@macro solana_borsh.BorshObject.borshCodec}
-  static BorshStructSizedCodec get codec => borsh.structSized({
-        'staker': borsh.pubkey,
-        'withdrawer': borsh.pubkey,
-      });
+  static BorshStructSizedCodec get codec =>
+      borsh.structSized({'staker': borsh.pubkey, 'withdrawer': borsh.pubkey});
 
   @override
   BorshSchema get borshSchema => codec.schema;
 
   /// {@macro solana_common.Serializable.fromJson}
-  factory Authorized.fromJson(final Map<String, dynamic> json) => Authorized(
-        staker: json['staker'],
-        withdrawer: json['withdrawer'],
-      );
+  factory Authorized.fromJson(final Map<String, dynamic> json) =>
+      Authorized(staker: json['staker'], withdrawer: json['withdrawer']);
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static Authorized? tryFromJson(final Map<String, dynamic>? json) =>
       json != null ? Authorized.fromJson(json) : null;
 
   @override
-  Map<String, dynamic> toJson() => {
-        'staker': staker,
-        'withdrawer': withdrawer,
-      };
+  Map<String, dynamic> toJson() => {'staker': staker, 'withdrawer': withdrawer};
 }
 
 /// Stake Authorize
 /// ------------------------------------------------------------------------------------------------
 
-enum StakeAuthorize {
-  staker,
-  withdrawer,
-}
+enum StakeAuthorize { staker, withdrawer }
 
 /// Lockup
 /// ------------------------------------------------------------------------------------------------
@@ -92,38 +74,35 @@ class Lockup extends BorshObject {
 
   /// {@macro solana_borsh.BorshObject.borshCodec}
   static BorshStructSizedCodec get codec => borsh.structSized({
-        'unixTimestamp': borsh.i64,
-        'epoch': borsh.i64,
-        'custodian': borsh.pubkey,
-      });
+    'unixTimestamp': borsh.i64,
+    'epoch': borsh.i64,
+    'custodian': borsh.pubkey,
+  });
 
   @override
   BorshSchema get borshSchema => codec.schema;
 
   /// {@macro solana_common.Serializable.fromJson}
   factory Lockup.fromJson(final Map<String, dynamic> json) => Lockup(
-        unixTimestamp: json['unixTimestamp'],
-        epoch: json['epoch'],
-        custodian: json['custodian'],
-      );
+    unixTimestamp: json['unixTimestamp'],
+    epoch: json['epoch'],
+    custodian: json['custodian'],
+  );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static Lockup? tryFromJson(final Map<String, dynamic>? json) =>
       json != null ? Lockup.fromJson(json) : null;
 
   /// The default, inactive lockup value.
-  static Lockup get inactive => Lockup(
-        unixTimestamp: 0,
-        epoch: 0,
-        custodian: Pubkey.zero().toBase58(),
-      );
+  static Lockup get inactive =>
+      Lockup(unixTimestamp: 0, epoch: 0, custodian: Pubkey.zero().toBase58());
 
   @override
   Map<String, dynamic> toJson() => {
-        'unixTimestamp': unixTimestamp,
-        'epoch': epoch,
-        'custodian': custodian,
-      };
+    'unixTimestamp': unixTimestamp,
+    'epoch': epoch,
+    'custodian': custodian,
+  };
 }
 
 /// Lockup Args
@@ -131,11 +110,7 @@ class Lockup extends BorshObject {
 
 class LockupArgs extends BorshObject {
   /// Stake account lockup arguments.
-  const LockupArgs({
-    this.unixTimestamp,
-    this.epoch,
-    this.custodian,
-  });
+  const LockupArgs({this.unixTimestamp, this.epoch, this.custodian});
 
   /// Unix timestamp of lockup expiration.
   final i64? unixTimestamp;
@@ -148,20 +123,20 @@ class LockupArgs extends BorshObject {
 
   /// {@macro solana_borsh.BorshObject.borshCodec}
   static BorshStructCodec get codec => borsh.struct({
-        'unixTimestamp': borsh.i64.option(),
-        'epoch': borsh.i64.option(),
-        'custodian': borsh.pubkey.option(),
-      });
+    'unixTimestamp': borsh.i64.option(),
+    'epoch': borsh.i64.option(),
+    'custodian': borsh.pubkey.option(),
+  });
 
   @override
   BorshSchema get borshSchema => codec.schema;
 
   /// {@macro solana_common.Serializable.fromJson}
   factory LockupArgs.fromJson(final Map<String, dynamic> json) => LockupArgs(
-        unixTimestamp: json['unixTimestamp'],
-        epoch: json['epoch'],
-        custodian: json['custodian'],
-      );
+    unixTimestamp: json['unixTimestamp'],
+    epoch: json['epoch'],
+    custodian: json['custodian'],
+  );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static LockupArgs? tryFromJson(final Map<String, dynamic>? json) =>
@@ -169,10 +144,10 @@ class LockupArgs extends BorshObject {
 
   @override
   Map<String, dynamic> toJson() => {
-        'unixTimestamp': unixTimestamp,
-        'epoch': epoch,
-        'custodian': custodian,
-      };
+    'unixTimestamp': unixTimestamp,
+    'epoch': epoch,
+    'custodian': custodian,
+  };
 }
 
 /// Lockup Checked Args
@@ -180,10 +155,7 @@ class LockupArgs extends BorshObject {
 
 class LockupCheckedArgs extends BorshObject {
   /// Stake account lockup arguments.
-  const LockupCheckedArgs({
-    this.unixTimestamp,
-    this.epoch,
-  });
+  const LockupCheckedArgs({this.unixTimestamp, this.epoch});
 
   /// Unix timestamp of lockup expiration.
   final i64? unixTimestamp;
@@ -193,9 +165,9 @@ class LockupCheckedArgs extends BorshObject {
 
   /// {@macro solana_borsh.BorshObject.borshCodec}
   static BorshStructSizedCodec get codec => borsh.structSized({
-        'unixTimestamp': borsh.i64.option(),
-        'epoch': borsh.i64.option(),
-      });
+    'unixTimestamp': borsh.i64.option(),
+    'epoch': borsh.i64.option(),
+  });
 
   @override
   BorshSchema get borshSchema => codec.schema;
@@ -213,29 +185,21 @@ class LockupCheckedArgs extends BorshObject {
 
   @override
   Map<String, dynamic> toJson() => {
-        'unixTimestamp': unixTimestamp,
-        'epoch': epoch,
-      };
+    'unixTimestamp': unixTimestamp,
+    'epoch': epoch,
+  };
 }
 
 /// Stake Account Type
 /// ------------------------------------------------------------------------------------------------
 
-enum StakeAccountType {
-  uninitialized,
-  initialized,
-  delegated,
-  rewardsPool,
-}
+enum StakeAccountType { uninitialized, initialized, delegated, rewardsPool }
 
 /// Stake
 /// ------------------------------------------------------------------------------------------------
 
 class Stake extends BorshObject {
-  const Stake({
-    required this.delegation,
-    required this.creditsObserved,
-  });
+  const Stake({required this.delegation, required this.creditsObserved});
 
   final Delegation delegation;
 
@@ -244,9 +208,9 @@ class Stake extends BorshObject {
 
   /// {@macro solana_borsh.BorshObject.borshCodec}
   static BorshStructSizedCodec get codec => borsh.structSized({
-        'delegation': Delegation.codec,
-        'creditsObserved': borsh.u64,
-      });
+    'delegation': Delegation.codec,
+    'creditsObserved': borsh.u64,
+  });
 
   @override
   BorshSchema get borshSchema => codec.schema;
@@ -269,9 +233,9 @@ class Stake extends BorshObject {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory Stake.fromJson(final Map<String, dynamic> json) => Stake(
-        delegation: Delegation.fromJson(json['delegation']),
-        creditsObserved: json['creditsObserved'],
-      );
+    delegation: Delegation.fromJson(json['delegation']),
+    creditsObserved: json['creditsObserved'],
+  );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static Stake? tryFromJson(final Map<String, dynamic>? json) =>
@@ -279,9 +243,9 @@ class Stake extends BorshObject {
 
   @override
   Map<String, dynamic> toJson() => {
-        'delegation': delegation.toJson(),
-        'creditsObserved': creditsObserved,
-      };
+    'delegation': delegation.toJson(),
+    'creditsObserved': creditsObserved,
+  };
 }
 
 /// Delegation
@@ -313,12 +277,12 @@ class Delegation extends BorshObject {
 
   /// {@macro solana_borsh.BorshObject.borshCodec}
   static BorshStructSizedCodec get codec => borsh.structSized({
-        'voterPubkey': borsh.pubkey,
-        'stake': borsh.u64,
-        'activationEpoch': borsh.u64,
-        'deactivationEpoch': borsh.u64,
-        'warmupCooldownRate': borsh.f64,
-      });
+    'voterPubkey': borsh.pubkey,
+    'stake': borsh.u64,
+    'activationEpoch': borsh.u64,
+    'deactivationEpoch': borsh.u64,
+    'warmupCooldownRate': borsh.f64,
+  });
 
   @override
   BorshSchema get borshSchema => codec.schema;
@@ -341,12 +305,12 @@ class Delegation extends BorshObject {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory Delegation.fromJson(final Map<String, dynamic> json) => Delegation(
-        voterPubkey: json['voterPubkey'],
-        stake: json['stake'],
-        activationEpoch: json['activationEpoch'],
-        deactivationEpoch: json['deactivationEpoch'],
-        warmupCooldownRate: json['warmupCooldownRate'],
-      );
+    voterPubkey: json['voterPubkey'],
+    stake: json['stake'],
+    activationEpoch: json['activationEpoch'],
+    deactivationEpoch: json['deactivationEpoch'],
+    warmupCooldownRate: json['warmupCooldownRate'],
+  );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static Delegation? tryFromJson(final Map<String, dynamic>? json) =>
@@ -354,12 +318,12 @@ class Delegation extends BorshObject {
 
   @override
   Map<String, dynamic> toJson() => {
-        'voterPubkey': voterPubkey,
-        'stake': stake,
-        'activationEpoch': activationEpoch,
-        'deactivationEpoch': deactivationEpoch,
-        'warmupCooldownRate': warmupCooldownRate,
-      };
+    'voterPubkey': voterPubkey,
+    'stake': stake,
+    'activationEpoch': activationEpoch,
+    'deactivationEpoch': deactivationEpoch,
+    'warmupCooldownRate': warmupCooldownRate,
+  };
 }
 
 /// Meta
@@ -404,10 +368,10 @@ class StakeMeta extends BorshObject {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory StakeMeta.fromJson(final Map<String, dynamic> json) => StakeMeta(
-        rentExemptReserve: json['rentExemptReserve'],
-        authorized: Authorized.fromJson(json['authorized']),
-        lockup: Lockup.fromJson(json['lockup']),
-      );
+    rentExemptReserve: json['rentExemptReserve'],
+    authorized: Authorized.fromJson(json['authorized']),
+    lockup: Lockup.fromJson(json['lockup']),
+  );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static StakeMeta? tryFromJson(final Map<String, dynamic>? json) =>
@@ -415,8 +379,8 @@ class StakeMeta extends BorshObject {
 
   @override
   Map<String, dynamic> toJson() => {
-        'rentExemptReserve': rentExemptReserve,
-        'authorized': authorized.toJson(),
-        'lockup': lockup.toJson(),
-      };
+    'rentExemptReserve': rentExemptReserve,
+    'authorized': authorized.toJson(),
+    'lockup': lockup.toJson(),
+  };
 }

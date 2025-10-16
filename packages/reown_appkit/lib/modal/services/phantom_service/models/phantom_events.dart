@@ -37,11 +37,7 @@ class PhantomSessionEvent implements EventArgs {
   String? chainName;
   String? chainId;
 
-  PhantomSessionEvent({
-    this.address,
-    this.chainName,
-    this.chainId,
-  });
+  PhantomSessionEvent({this.address, this.chainName, this.chainId});
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> params = {};

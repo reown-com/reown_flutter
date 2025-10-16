@@ -26,30 +26,26 @@ class Borsh {
   Iterable<int> encode(
     final BorshSchema schema,
     final Map<String, dynamic> input,
-  ) =>
-      struct(schema).encode(input);
+  ) => struct(schema).encode(input);
 
   /// Decodes [input] using [schema].
   Map<String, dynamic> decode(
     final BorshSchema schema,
     final Iterable<int> input,
-  ) =>
-      struct(schema).decode(input);
+  ) => struct(schema).decode(input);
 
   /// Encodes [input] using [schema] and writes the result to [buffer].
   void pack(
     final BorshSchema schema,
     final BufferWriter buffer,
     final Map<String, dynamic> input,
-  ) =>
-      struct(schema).pack(buffer, input);
+  ) => struct(schema).pack(buffer, input);
 
   /// Decodes [buffer] using [schema].
   Map<String, dynamic> unpack(
     final BorshSchema schema,
     final BufferReader buffer,
-  ) =>
-      struct(schema).unpack(buffer);
+  ) => struct(schema).unpack(buffer);
 
   /// Returns `true` if the borsh serializable [input] defines a `schema` and `toJson()` mapping
   /// that contain the same keys.
@@ -61,9 +57,7 @@ class Borsh {
   }
 
   /// Encodes [input] using [BorshObjectMixin.borshSchema].
-  Iterable<int> serialize<T extends BorshObjectMixin>(
-    final T input,
-  ) {
+  Iterable<int> serialize<T extends BorshObjectMixin>(final T input) {
     assert(
       _debugSerialize(input),
       'Keys found in `schema` do not match the keys found in `toJson()` for $input.',
@@ -84,41 +78,29 @@ class Borsh {
   /// Creates a `struct` codec.
   ///
   /// {@macro Borsh.codec}
-  BorshStructCodec call(
-    final BorshSchema schema,
-  ) =>
-      BorshStructCodec(schema);
+  BorshStructCodec call(final BorshSchema schema) => BorshStructCodec(schema);
 
   /// Creates a `struct` codec for fixed size data types.
   ///
   /// {@macro Borsh.codec}
-  BorshStructSizedCodec structSized(
-    final BorshSchemaSized schema,
-  ) =>
+  BorshStructSizedCodec structSized(final BorshSchemaSized schema) =>
       BorshStructSizedCodec(schema);
 
   /// Creates a `struct` codec.
   ///
   /// {@macro Borsh.codec}
-  BorshStructCodec struct(
-    final BorshSchema schema,
-  ) =>
-      BorshStructCodec(schema);
+  BorshStructCodec struct(final BorshSchema schema) => BorshStructCodec(schema);
 
   /// Creates an `tuple` codec for fixed size data types.
   ///
   /// {@macro Borsh.codec}
-  BorshTupleSizedCodec tupleSized(
-    final List<BorshCodecFixedSized> fields,
-  ) =>
+  BorshTupleSizedCodec tupleSized(final List<BorshCodecFixedSized> fields) =>
       BorshTupleSizedCodec(fields);
 
   /// Creates an `tuple` codec.
   ///
   /// {@macro Borsh.codec}
-  BorshTupleCodec tuple(
-    final List<BorshCodec> fields,
-  ) =>
+  BorshTupleCodec tuple(final List<BorshCodec> fields) =>
       BorshTupleCodec(fields);
 
   /// Creates a `bool` codec.
@@ -132,8 +114,7 @@ class Borsh {
   BorshEnumCodec<T> enumeration<T extends Enum>(
     final List<T> values, [
     final int? byteLength,
-  ]) =>
-      BorshEnumCodec(values, byteLength);
+  ]) => BorshEnumCodec(values, byteLength);
 
   /// Creates an `enum` codec for Rust style enums (tuple or struct constructors) for fixed size
   /// data types.
@@ -141,16 +122,14 @@ class Borsh {
   /// {@macro Borsh.codec}
   BorshRustEnumSizedCodec<T> rustEnumerationSized<T>(
     final List<BorshCodecFixedSized<T>?> variants,
-  ) =>
-      BorshRustEnumSizedCodec(variants);
+  ) => BorshRustEnumSizedCodec(variants);
 
   /// Creates an `enum` codec for Rust style enums (tuple or struct constructors).
   ///
   /// {@macro Borsh.codec}
   BorshRustEnumCodec<T> rustEnumeration<T>(
     final List<BorshCodec<T>?> variants,
-  ) =>
-      BorshRustEnumCodec(variants);
+  ) => BorshRustEnumCodec(variants);
 
   /// Creates a `date time` codec.
   ///
@@ -163,8 +142,7 @@ class Borsh {
   BorshStringSizedCodec stringSized(
     final int length, {
     final BufferEncoding? encoding,
-  }) =>
-      BorshStringSizedCodec(length, encoding: encoding);
+  }) => BorshStringSizedCodec(length, encoding: encoding);
 
   /// Creates a `string` codec.
   ///
@@ -172,8 +150,7 @@ class Borsh {
   BorshStringCodec string({
     final int? lengthPadding,
     final BufferEncoding? encoding,
-  }) =>
-      BorshStringCodec(lengthPadding: lengthPadding, encoding: encoding);
+  }) => BorshStringCodec(lengthPadding: lengthPadding, encoding: encoding);
 
   /// Creates a `string` codec for Rust string types.
   ///
@@ -181,8 +158,7 @@ class Borsh {
   BorshStringCodec rustString({
     final int lengthPadding = ByteLength.u32,
     final BufferEncoding? encoding,
-  }) =>
-      string(lengthPadding: lengthPadding, encoding: encoding);
+  }) => string(lengthPadding: lengthPadding, encoding: encoding);
 
   /// Creates an `i8` codec.
   ///
@@ -247,18 +223,13 @@ class Borsh {
   /// Creates an `buffer` codec.
   ///
   /// {@macro Borsh.codec}
-  BorshBufferCodec buffer(
-    final int length,
-  ) =>
-      BorshBufferCodec(length);
+  BorshBufferCodec buffer(final int length) => BorshBufferCodec(length);
 
   /// Creates a base-58 `public key` codec.
   ///
   /// {@macro Borsh.codec}
-  BorshStringSizedCodec get pubkey => const BorshStringSizedCodec(
-        32,
-        encoding: BufferEncoding.base58,
-      );
+  BorshStringSizedCodec get pubkey =>
+      const BorshStringSizedCodec(32, encoding: BufferEncoding.base58);
 
   /// Creates an `array` codec.
   ///
@@ -266,25 +237,18 @@ class Borsh {
   BorshArraySizedCodec<T> arraySized<T>(
     final BorshCodecFixedSized<T> subtype,
     final int length,
-  ) =>
-      BorshArraySizedCodec(subtype, length);
+  ) => BorshArraySizedCodec(subtype, length);
 
   /// Creates an `array` codec.
   ///
   /// {@macro Borsh.codec}
-  BorshArrayCodec<T> array<T>(
-    final BorshCodec<T> subtype,
-    final int length,
-  ) =>
+  BorshArrayCodec<T> array<T>(final BorshCodec<T> subtype, final int length) =>
       BorshArrayCodec(subtype, length);
 
   /// Creates an `array` codec.
   ///
   /// {@macro Borsh.codec}
-  BorshListCodec<T> list<T>(
-    final BorshCodec<T> subtype,
-    final int length,
-  ) =>
+  BorshListCodec<T> list<T>(final BorshCodec<T> subtype, final int length) =>
       BorshListCodec(subtype);
 
   /// Creates an `vec` codec.
@@ -293,16 +257,12 @@ class Borsh {
   BorshVecSizedCodec<T> vecSized<T>(
     final BorshCodecFixedSized<T> subtype,
     final int capacity,
-  ) =>
-      BorshVecSizedCodec(subtype, capacity);
+  ) => BorshVecSizedCodec(subtype, capacity);
 
   /// Creates an `vec` codec.
   ///
   /// {@macro Borsh.codec}
-  BorshVecCodec<T> vec<T>(
-    final BorshCodec<T> codec,
-  ) =>
-      BorshVecCodec(codec);
+  BorshVecCodec<T> vec<T>(final BorshCodec<T> codec) => BorshVecCodec(codec);
 
   /// Creates an `map` codec.
   ///
@@ -310,6 +270,5 @@ class Borsh {
   BorshMapCodec<K, V> map<K, V>(
     final BorshCodec<K> keyCodec,
     final BorshCodec<V> valueCodec,
-  ) =>
-      BorshMapCodec(keyCodec, valueCodec);
+  ) => BorshMapCodec(keyCodec, valueCodec);
 }

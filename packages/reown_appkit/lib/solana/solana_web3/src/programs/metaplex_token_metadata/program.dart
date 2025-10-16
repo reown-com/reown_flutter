@@ -23,7 +23,7 @@ import 'instruction.dart';
 
 class MetaplexTokenMetadataProgram extends Program {
   MetaplexTokenMetadataProgram._()
-      : super(Pubkey.fromBase58('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'));
+    : super(Pubkey.fromBase58('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'));
 
   /// Internal singleton instance.
   static final MetaplexTokenMetadataProgram _instance =
@@ -41,34 +41,25 @@ class MetaplexTokenMetadataProgram extends Program {
   @override
   Iterable<int> encodeInstruction<T extends Enum>(final T instruction) =>
       Buffer.fromUint8(
-          (instruction as MetaplexTokenMetadataInstruction).discriminator);
+        (instruction as MetaplexTokenMetadataInstruction).discriminator,
+      );
 
   /// Find the metadata account address of the given [mint].
-  static ProgramAddress findMetadataAddress(
-    final Pubkey mint,
-  ) =>
-      Pubkey.findProgramAddress(
-        [
-          utf8.encode(metadataSeed),
-          programId.toBytes(),
-          mint.toBytes(),
-        ],
-        programId,
-      );
+  static ProgramAddress findMetadataAddress(final Pubkey mint) =>
+      Pubkey.findProgramAddress([
+        utf8.encode(metadataSeed),
+        programId.toBytes(),
+        mint.toBytes(),
+      ], programId);
 
   /// Find the master edition account address of the given [mint].
-  static ProgramAddress findEditionAddress(
-    final Pubkey mint,
-  ) =>
-      Pubkey.findProgramAddress(
-        [
-          utf8.encode(metadataSeed),
-          programId.toBytes(),
-          mint.toBytes(),
-          utf8.encode(editionSeed),
-        ],
-        programId,
-      );
+  static ProgramAddress findEditionAddress(final Pubkey mint) =>
+      Pubkey.findProgramAddress([
+        utf8.encode(metadataSeed),
+        programId.toBytes(),
+        mint.toBytes(),
+        utf8.encode(editionSeed),
+      ], programId);
 
   // Codecs
   static BorshStringCodec get metadataNameCodec => borsh.string();
@@ -148,8 +139,9 @@ class MetaplexTokenMetadataProgram extends Program {
           ...metadataNameCodec.encode(dataV2.name),
           ...metadataSymbolCodec.encode(dataV2.symbol),
           ...metadataUriCodec.encode(dataV2.uri),
-          ...metadataSellerFeeBasisPointsCodec
-              .encode(dataV2.sellerFeeBasisPoints),
+          ...metadataSellerFeeBasisPointsCodec.encode(
+            dataV2.sellerFeeBasisPoints,
+          ),
           ...metadataCreatorsCodec.encode(dataV2.creators?.toJson()),
           ...metadataCollectionCodec.encode(dataV2.collection?.toJson()),
           ...metadataUsesCodec.encode(dataV2.uses?.toJson()),

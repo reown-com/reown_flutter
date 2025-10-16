@@ -10,10 +10,7 @@ import 'slot_range.dart';
 
 class BlockProduction extends Serializable {
   /// Block production information.
-  const BlockProduction({
-    required this.byIdentity,
-    required this.range,
-  });
+  const BlockProduction({required this.byIdentity, required this.range});
 
   // ***********************************************************************************************
   // ** Do not change the type to Map<String, List<int>>, a bug in dart throws an error when you  **
@@ -43,7 +40,7 @@ class BlockProduction extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'byIdentity': byIdentity,
-        'range': range.toJson(),
-      };
+    'byIdentity': byIdentity,
+    'range': range.toJson(),
+  };
 }

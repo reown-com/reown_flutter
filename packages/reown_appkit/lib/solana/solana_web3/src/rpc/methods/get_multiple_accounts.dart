@@ -19,23 +19,17 @@ class GetMultipleAccounts
     final List<String> pubkeys, {
     final GetMultipleAccountsConfig? config,
   }) : super(
-          'getMultipleAccounts',
-          values: [pubkeys],
-          config: config ?? GetMultipleAccountsConfig(),
-        );
+         'getMultipleAccounts',
+         values: [pubkeys],
+         config: config ?? GetMultipleAccountsConfig(),
+       );
 
   factory GetMultipleAccounts.map(
     final Iterable<Pubkey> pubkeys, {
     final GetMultipleAccountsConfig? config,
-  }) =>
-      GetMultipleAccounts(
-        pubkeys.toJson(),
-        config: config,
-      );
+  }) => GetMultipleAccounts(pubkeys.toJson(), config: config);
 
   @override
-  AccountInfo? itemDecoder(
-    final Map<String, dynamic>? item,
-  ) =>
+  AccountInfo? itemDecoder(final Map<String, dynamic>? item) =>
       item != null ? AccountInfo.fromJson(item) : null;
 }

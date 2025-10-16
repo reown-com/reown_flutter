@@ -1,6 +1,5 @@
 // ignore: library_annotations
 @Timeout(Duration(seconds: 45))
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:reown_core/reown_core.dart';
 import 'package:reown_sign/i_sign_common.dart';
@@ -48,29 +47,21 @@ void signEngineTests({
       await clientB.core.relayClient.disconnect();
     });
 
-    signExpiration(
-      clientACreator: clientACreator,
-    );
+    signExpiration(clientACreator: clientACreator);
 
     signHappyPath(
       clientACreator: clientACreator,
       clientBCreator: clientBCreator,
     );
 
-    signConnect(
-      clientACreator: clientACreator,
-      clientBCreator: clientBCreator,
-    );
+    signConnect(clientACreator: clientACreator, clientBCreator: clientBCreator);
 
     signAuthenticate(
       clientACreator: clientACreator,
       clientBCreator: clientBCreator,
     );
 
-    signPair(
-      clientACreator: clientACreator,
-      clientBCreator: clientBCreator,
-    );
+    signPair(clientACreator: clientACreator, clientBCreator: clientBCreator);
 
     signApproveSession(
       clientACreator: clientACreator,
@@ -107,10 +98,7 @@ void signEngineTests({
       clientBCreator: clientBCreator,
     );
 
-    signPing(
-      clientACreator: clientACreator,
-      clientBCreator: clientBCreator,
-    );
+    signPing(clientACreator: clientACreator, clientBCreator: clientBCreator);
 
     signDisconnect(
       clientACreator: clientACreator,
@@ -119,10 +107,7 @@ void signEngineTests({
 
     group('find', () {
       test('works', () async {
-        await clientB.sessions.set(
-          TEST_SESSION_VALID_TOPIC,
-          testSessionValid,
-        );
+        await clientB.sessions.set(TEST_SESSION_VALID_TOPIC, testSessionValid);
 
         final sessionData = clientB.find(
           requiredNamespaces: TEST_REQUIRED_NAMESPACES,

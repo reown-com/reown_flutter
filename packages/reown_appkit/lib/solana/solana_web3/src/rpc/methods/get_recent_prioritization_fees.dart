@@ -14,24 +14,14 @@ import '../models/prioritization_fee.dart';
 class GetRecentPrioritizationFees
     extends JsonRpcListMethod<Map<String, dynamic>, PrioritizationFee> {
   /// Creates a codec for `getRecentPrioritizationFees` JSON RPC methods.
-  GetRecentPrioritizationFees(
-    final List<String>? addresses,
-  )   : assert(addresses == null || addresses.length <= 128),
-        super(
-          'getRecentPrioritizationFees',
-          values: [addresses],
-        );
+  GetRecentPrioritizationFees(final List<String>? addresses)
+    : assert(addresses == null || addresses.length <= 128),
+      super('getRecentPrioritizationFees', values: [addresses]);
 
-  factory GetRecentPrioritizationFees.map(
-    final Iterable<Pubkey>? addresses,
-  ) =>
-      GetRecentPrioritizationFees(
-        addresses?.toJson(),
-      );
+  factory GetRecentPrioritizationFees.map(final Iterable<Pubkey>? addresses) =>
+      GetRecentPrioritizationFees(addresses?.toJson());
 
   @override
-  PrioritizationFee itemDecoder(
-    final Map<String, dynamic> item,
-  ) =>
+  PrioritizationFee itemDecoder(final Map<String, dynamic> item) =>
       PrioritizationFee.fromJson(item);
 }

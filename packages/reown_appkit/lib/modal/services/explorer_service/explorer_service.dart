@@ -104,10 +104,10 @@ class ExplorerService implements IExplorerService {
     this.excludedWalletIds,
     this.namespaces = const {},
     List<ReownAppKitModalWalletInfo> customWallets = const [],
-  })  : _core = core,
-        _referer = referer,
-        _customWallets = customWallets,
-        _client = http.Client();
+  }) : _core = core,
+       _referer = referer,
+       _customWallets = customWallets,
+       _client = http.Client();
 
   @override
   Future<void> init() async {
@@ -276,7 +276,8 @@ class ExplorerService implements IExplorerService {
     // this query gives me a count of installedWalletsParam.length
     final installedWallets = await _fetchListings(params: params);
     _core.logger.d(
-        '[$runtimeType] installed wallets: ${installedWallets.map((e) => e.listing.name).join(', ')}');
+      '[$runtimeType] installed wallets: ${installedWallets.map((e) => e.listing.name).join(', ')}',
+    );
     return installedWallets.setInstalledFlag();
   }
 
@@ -312,9 +313,9 @@ class ExplorerService implements IExplorerService {
       _referer,
       _bundleId,
     );
-    final uri = Uri.parse('${UrlConstants.apiService}/getWallets').replace(
-      queryParameters: params?.toJson(),
-    );
+    final uri = Uri.parse(
+      '${UrlConstants.apiService}/getWallets',
+    ).replace(queryParameters: params?.toJson());
     _core.logger.d(
       '[$runtimeType] _fetchListings, ${Uri.decodeFull(uri.toString())}',
     );
@@ -341,10 +342,7 @@ class ExplorerService implements IExplorerService {
         return <ReownAppKitModalWalletInfo>[];
       }
     } catch (e) {
-      _core.logger.e(
-        '[$runtimeType] error fetching listings: $uri',
-        error: e,
-      );
+      _core.logger.e('[$runtimeType] error fetching listings: $uri', error: e);
       return [];
     }
   }

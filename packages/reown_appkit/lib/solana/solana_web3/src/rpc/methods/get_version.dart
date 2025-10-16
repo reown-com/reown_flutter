@@ -14,8 +14,5 @@ class GetVersion extends JsonRpcMethod<Map<String, dynamic>, Version> {
   GetVersion() : super('getVersion');
 
   @override
-  Version decoder(
-    final Map<String, dynamic> value,
-  ) =>
-      Version.fromJson(value);
+  Version decoder(final Map<String, dynamic> value) => Version.fromJson(value);
 }

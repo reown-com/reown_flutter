@@ -42,7 +42,6 @@ sealed class AttestationResponse with _$AttestationResponse {
       _$AttestationResponseFromJson(json);
 }
 
-
 @freezed
 sealed class VerifyClaims with _$VerifyClaims {
   const factory VerifyClaims({

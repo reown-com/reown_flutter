@@ -51,21 +51,23 @@ class ReceivePage extends StatelessWidget {
               assetPath: 'lib/modal/assets/icons/copy.svg',
               showNetwork: true,
               onTap: () async {
-                final address = appKitModal.session!.getAddress(
-                  namespace,
-                )!;
+                final address = appKitModal.session!.getAddress(namespace)!;
                 final identityName =
                     (appKitModal.blockchainIdentity?.name ?? '').isNotEmpty
-                        ? appKitModal.blockchainIdentity!.name!
-                        : null;
+                    ? appKitModal.blockchainIdentity!.name!
+                    : null;
 
-                await Clipboard.setData(ClipboardData(
-                  text: identityName ?? address,
-                ));
-                GetIt.I<IToastService>().show(ToastMessage(
-                  type: ToastType.success,
-                  text: identityName != null ? 'Name copied' : 'Address copied',
-                ));
+                await Clipboard.setData(
+                  ClipboardData(text: identityName ?? address),
+                );
+                GetIt.I<IToastService>().show(
+                  ToastMessage(
+                    type: ToastType.success,
+                    text: identityName != null
+                        ? 'Name copied'
+                        : 'Address copied',
+                  ),
+                );
               },
             ),
             if (isDarkMode) const SizedBox.square(dimension: kPadding12),
@@ -86,8 +88,8 @@ class ReceivePage extends StatelessWidget {
                 maxWidth: isPortrait
                     ? ResponsiveData.maxWidthOf(context)
                     : (ResponsiveData.maxHeightOf(context) -
-                        kNavbarHeight -
-                        32.0),
+                          kNavbarHeight -
+                          32.0),
               ),
               padding: const EdgeInsets.only(
                 left: kPadding16,
@@ -127,10 +129,9 @@ class ReceivePage extends StatelessWidget {
                           child: Stack(
                             alignment: Alignment.centerRight,
                             children: [
-                              ...(_networkIcons(context)
-                                  .asMap()
-                                  .entries
-                                  .map((e) {
+                              ...(_networkIcons(context).asMap().entries.map((
+                                e,
+                              ) {
                                 return Positioned(
                                   right: 15.0 * e.key,
                                   child: e.value,

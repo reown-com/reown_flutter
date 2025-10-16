@@ -139,13 +139,11 @@ void main() {
     0,
     0,
     0,
-    0
+    0,
   ];
 
   Map<String, int> toJsonTypeResponse(List<int> input) {
-    return {
-      for (int i = 0; i < input.length; i++) i.toString(): input[i],
-    };
+    return {for (int i = 0; i < input.length; i++) i.toString(): input[i]};
   }
 
   group('computeNearHashFromTxBytes', () {

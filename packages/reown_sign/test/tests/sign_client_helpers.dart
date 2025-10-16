@@ -42,21 +42,24 @@ class SignClientHelpers {
 
     Map<String, Namespace> workingNamespaces = namespaces ?? TEST_NAMESPACES;
 
-    Map<String, List<String>> workingAccounts = accounts ??
+    Map<String, List<String>> workingAccounts =
+        accounts ??
         {
           TEST_ETHEREUM_CHAIN: [TEST_ETHEREUM_ADDRESS],
           TEST_ARBITRUM_CHAIN: [TEST_ETHEREUM_ADDRESS],
           TEST_AVALANCHE_CHAIN: [TEST_ETHEREUM_ADDRESS],
         };
 
-    Map<String, List<String>> workingMethods = methods ??
+    Map<String, List<String>> workingMethods =
+        methods ??
         {
           TEST_ETHEREUM_CHAIN: TEST_METHODS_1,
           TEST_ARBITRUM_CHAIN: TEST_METHODS_1,
           TEST_AVALANCHE_CHAIN: TEST_METHODS_2,
         };
 
-    Map<String, List<String>> workingEvents = events ??
+    Map<String, List<String>> workingEvents =
+        events ??
         {
           TEST_ETHEREUM_CHAIN: [TEST_EVENT_1],
           TEST_ARBITRUM_CHAIN: [TEST_EVENT_1],
@@ -66,10 +69,7 @@ class SignClientHelpers {
     // Register the data: accounts, methods, events
     for (final chainId in workingAccounts.keys) {
       for (final account in workingAccounts[chainId]!) {
-        b.registerAccount(
-          chainId: chainId,
-          accountAddress: account,
-        );
+        b.registerAccount(chainId: chainId, accountAddress: account);
       }
     }
     for (final chainId in workingMethods.keys) {
@@ -79,10 +79,7 @@ class SignClientHelpers {
     }
     for (final chainId in workingEvents.keys) {
       for (final event in workingEvents[chainId]!) {
-        b.registerEventEmitter(
-          chainId: chainId,
-          event: event,
-        );
+        b.registerEventEmitter(chainId: chainId, event: event);
       }
     }
 
@@ -136,9 +133,7 @@ class SignClientHelpers {
       pairingTopic: pairingTopic,
       relays: relays,
     );
-    connectResponse.session.future.then(
-      (value) => sessionA = value,
-    );
+    connectResponse.session.future.then((value) => sessionA = value);
     Uri? uri = connectResponse.uri;
 
     // Track latency
@@ -155,11 +150,7 @@ class SignClientHelpers {
         throw Exception('uri is missing');
       }
       if (qrCodeScanLatencyMs != null) {
-        await Future.delayed(
-          Duration(
-            milliseconds: qrCodeScanLatencyMs,
-          ),
-        );
+        await Future.delayed(Duration(milliseconds: qrCodeScanLatencyMs));
       }
 
       final uriParams = ReownCoreUtils.parseUri(connectResponse.uri!);
@@ -196,7 +187,8 @@ class SignClientHelpers {
       await connectResponse.session.future;
     }
 
-    final settlePairingLatencyMs = DateTime.now().millisecondsSinceEpoch -
+    final settlePairingLatencyMs =
+        DateTime.now().millisecondsSinceEpoch -
         start -
         (qrCodeScanLatencyMs ?? 0);
 
@@ -210,10 +202,7 @@ class SignClientHelpers {
 
     expect(sessionA.topic, sessionB!.topic);
     // relay
-    expect(
-      sessionA.relay.protocol,
-      TEST_RELAY_OPTIONS['protocol'],
-    );
+    expect(sessionA.relay.protocol, TEST_RELAY_OPTIONS['protocol']);
     expect(sessionA.relay.protocol, sessionB!.relay.protocol);
     // namespaces
     expect(sessionA.namespaces, workingNamespaces);
@@ -248,26 +237,14 @@ class SignClientHelpers {
     // topic
     expect(pairingA!.topic, pairingB!.topic);
     // relay
-    expect(
-      pairingA.relay.protocol,
-      TEST_RELAY_OPTIONS['protocol'],
-    );
-    expect(
-      pairingB.relay.protocol,
-      TEST_RELAY_OPTIONS['protocol'],
-    );
+    expect(pairingA.relay.protocol, TEST_RELAY_OPTIONS['protocol']);
+    expect(pairingB.relay.protocol, TEST_RELAY_OPTIONS['protocol']);
     // active
     expect(pairingA.active, true);
     expect(pairingB.active, true);
     // metadata
-    expect(
-      pairingA.peerMetadata,
-      sessionA.peer.metadata,
-    );
-    expect(
-      pairingB.peerMetadata,
-      sessionB!.peer.metadata,
-    );
+    expect(pairingA.peerMetadata, sessionA.peer.metadata);
+    expect(pairingB.peerMetadata, sessionB!.peer.metadata);
 
     b.onSessionProposal.unsubscribe(func);
 
@@ -343,11 +320,7 @@ class SignClientHelpers {
         throw Exception('uri is missing');
       }
       if (qrCodeScanLatencyMs != null) {
-        await Future.delayed(
-          Duration(
-            milliseconds: qrCodeScanLatencyMs,
-          ),
-        );
+        await Future.delayed(Duration(milliseconds: qrCodeScanLatencyMs));
       }
 
       final uriParams = ReownCoreUtils.parseUri(connectResponse.uri!);

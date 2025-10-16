@@ -72,31 +72,19 @@ class Cluster extends Serializable {
   static Cluster get mainnet => Cluster.https('api.mainnet-beta.solana.com');
 
   /// Creates a `HTTP` RPC URL for [host].
-  factory Cluster.http(
-    final String host, {
-    final int? port,
-  }) =>
+  factory Cluster.http(final String host, {final int? port}) =>
       Cluster(Uri(scheme: 'http', host: host, port: port));
 
   /// Creates a `HTTPS` RPC URL for [host].
-  factory Cluster.https(
-    final String host, {
-    final int? port,
-  }) =>
+  factory Cluster.https(final String host, {final int? port}) =>
       Cluster(Uri(scheme: 'https', host: host, port: port));
 
   /// Creates a `WS` RPC URL for [host].
-  factory Cluster.ws(
-    final String host, {
-    final int? port,
-  }) =>
+  factory Cluster.ws(final String host, {final int? port}) =>
       Cluster(Uri(scheme: 'ws', host: host, port: port));
 
   /// Creates a `WSS` RPC URL for [host].
-  factory Cluster.wss(
-    final String host, {
-    final int? port,
-  }) =>
+  factory Cluster.wss(final String host, {final int? port}) =>
       Cluster(Uri(scheme: 'wss', host: host, port: port));
 
   /// Creates a new [Cluster] from `this` for a websocket server.

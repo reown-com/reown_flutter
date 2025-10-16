@@ -27,10 +27,8 @@ part 'transaction.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Transaction extends Serializable with TransactionSerializableMixin {
   /// Transaction.
-  Transaction({
-    final List<Uint8List>? signatures,
-    required this.message,
-  }) : signatures = signatures ?? [] {
+  Transaction({final List<Uint8List>? signatures, required this.message})
+    : signatures = signatures ?? [] {
     if (this.signatures.isEmpty) {
       for (int i = 0; i < message.header.numRequiredSignatures; ++i) {
         this.signatures.add(Uint8List(nacl.signatureLength));
@@ -65,15 +63,14 @@ class Transaction extends Serializable with TransactionSerializableMixin {
     required final Pubkey payer,
     required final List<TransactionInstruction> instructions,
     required final Blockhash recentBlockhash,
-  }) =>
-      Transaction(
-        signatures: signatures,
-        message: Message.legacy(
-          payer: payer,
-          instructions: instructions,
-          recentBlockhash: recentBlockhash,
-        ),
-      );
+  }) => Transaction(
+    signatures: signatures,
+    message: Message.legacy(
+      payer: payer,
+      instructions: instructions,
+      recentBlockhash: recentBlockhash,
+    ),
+  );
 
   /// Creates a `v0` transaction.
   factory Transaction.v0({
@@ -82,16 +79,15 @@ class Transaction extends Serializable with TransactionSerializableMixin {
     required final List<TransactionInstruction> instructions,
     required final Blockhash recentBlockhash,
     final List<AddressLookupTableAccount>? addressLookupTableAccounts,
-  }) =>
-      Transaction(
-        signatures: signatures,
-        message: Message.v0(
-          payer: payer,
-          instructions: instructions,
-          recentBlockhash: recentBlockhash,
-          addressLookupTableAccounts: addressLookupTableAccounts,
-        ),
-      );
+  }) => Transaction(
+    signatures: signatures,
+    message: Message.v0(
+      payer: payer,
+      instructions: instructions,
+      recentBlockhash: recentBlockhash,
+      addressLookupTableAccounts: addressLookupTableAccounts,
+    ),
+  );
 
   /// {@macro solana_common.Serializable.fromJson}
   factory Transaction.fromJson(final Map<String, dynamic> json) =>
@@ -109,8 +105,9 @@ class Transaction extends Serializable with TransactionSerializableMixin {
     final Buffer serializedMessage = message.serialize();
 
     // Write the [signatures] encoded length.
-    final List<int> signaturesEncodedLength =
-        shortvec.encodeLength(signatures.length);
+    final List<int> signaturesEncodedLength = shortvec.encodeLength(
+      signatures.length,
+    );
     serializedTransaction.setBuffer(signaturesEncodedLength);
 
     /// Write the [signatures].
@@ -137,9 +134,7 @@ class Transaction extends Serializable with TransactionSerializableMixin {
       Transaction.deserialize(base64.decode(encoded));
 
   /// Decodes a serialized transaction into a [Transaction] object.
-  factory Transaction.deserialize(
-    final Iterable<int> bytes,
-  ) {
+  factory Transaction.deserialize(final Iterable<int> bytes) {
     // Create a buffer reader over the serialized transaction data.
     final BufferReader reader = BufferReader.fromList(bytes);
 
@@ -163,26 +158,35 @@ class Transaction extends Serializable with TransactionSerializableMixin {
   void sign(final List<Signer> signers) {
     final Uint8List serializedMessage = message.serialize().asUint8List();
     final int numRequiredSignatures = message.header.numRequiredSignatures;
-    final List<Pubkey> signerPubkeys =
-        message.accountKeys.sublist(0, numRequiredSignatures);
+    final List<Pubkey> signerPubkeys = message.accountKeys.sublist(
+      0,
+      numRequiredSignatures,
+    );
     for (final Signer signer in signers) {
       final int signerIndex = signerPubkeys.indexOf(signer.pubkey);
       check(signerIndex >= 0, 'Unknown transaction signer.');
-      signatures[signerIndex] =
-          nacl.sign.detached.sync(serializedMessage, signer.seckey);
+      signatures[signerIndex] = nacl.sign.detached.sync(
+        serializedMessage,
+        signer.seckey,
+      );
     }
   }
 
   /// Add an externally created [signature] to a transaction. The [pubkey] must correspond to the
   /// fee payer or a signer account in the transaction instructions ([Message.accountKeys]).
   void addSignature(final Pubkey pubkey, final Uint8List signature) {
-    check(signature.length == nacl.signatureLength,
-        'Invalid signature length ${signature.length}');
+    check(
+      signature.length == nacl.signatureLength,
+      'Invalid signature length ${signature.length}',
+    );
     final int numRequiredSignatures = message.header.numRequiredSignatures;
-    final List<Pubkey> signerPubkeys =
-        message.accountKeys.sublist(0, numRequiredSignatures);
-    final int signerIndex =
-        signerPubkeys.indexWhere((signerPubkey) => signerPubkey == pubkey);
+    final List<Pubkey> signerPubkeys = message.accountKeys.sublist(
+      0,
+      numRequiredSignatures,
+    );
+    final int signerIndex = signerPubkeys.indexWhere(
+      (signerPubkey) => signerPubkey == pubkey,
+    );
     check(signerIndex >= 0, 'Unknown transaction signer.');
     signatures[signerIndex] = signature;
   }

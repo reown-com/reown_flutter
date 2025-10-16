@@ -110,17 +110,19 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
       );
     } catch (e) {
       _isLoadingActivities = false;
-      widget.appKitModal.onModalError.broadcast(ModalError(
-        'Error fetching activity',
-      ));
+      widget.appKitModal.onModalError.broadcast(
+        ModalError('Error fetching activity'),
+      );
       final namespace = NamespaceUtils.getNamespaceFromChain(
         widget.appKitModal.selectedChain?.chainId ?? '',
       );
-      GetIt.I<IAnalyticsService>().sendEvent(ErrorFetchTransactionsEvent(
-        address: widget.appKitModal.session!.getAddress(namespace),
-        projectId: widget.appKitModal.appKit!.core.projectId,
-        cursor: _currentCursor,
-      ));
+      GetIt.I<IAnalyticsService>().sendEvent(
+        ErrorFetchTransactionsEvent(
+          address: widget.appKitModal.session!.getAddress(namespace),
+          projectId: widget.appKitModal.appKit!.core.projectId,
+          cursor: _currentCursor,
+        ),
+      );
     }
     setState(() {});
   }
@@ -130,11 +132,13 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
 
     final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-    GetIt.I<IAnalyticsService>().sendEvent(LoadMoreTransactionsEvent(
-      address: widget.appKitModal.session!.getAddress(namespace),
-      projectId: widget.appKitModal.appKit!.core.projectId,
-      cursor: _currentCursor,
-    ));
+    GetIt.I<IAnalyticsService>().sendEvent(
+      LoadMoreTransactionsEvent(
+        address: widget.appKitModal.session!.getAddress(namespace),
+        projectId: widget.appKitModal.appKit!.core.projectId,
+        cursor: _currentCursor,
+      ),
+    );
     await _fetchActivities();
   }
 
@@ -149,21 +153,22 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     if (_isLoadingActivities && _activities.isEmpty) {
-      final loadingList = [
-        ActivityListItemLoader(),
-        ActivityListItemLoader(),
-        ActivityListItemLoader(),
-        ActivityListItemLoader(),
-        ActivityListItemLoader(),
-      ]
-          .map(
-            (e) => Shimmer.fromColors(
-              baseColor: themeColors.grayGlass100,
-              highlightColor: themeColors.grayGlass025,
-              child: e,
-            ),
-          )
-          .toList();
+      final loadingList =
+          [
+                ActivityListItemLoader(),
+                ActivityListItemLoader(),
+                ActivityListItemLoader(),
+                ActivityListItemLoader(),
+                ActivityListItemLoader(),
+              ]
+              .map(
+                (e) => Shimmer.fromColors(
+                  baseColor: themeColors.grayGlass100,
+                  highlightColor: themeColors.grayGlass025,
+                  child: e,
+                ),
+              )
+              .toList();
       return ListView.builder(
         itemCount: loadingList.length,
         padding: const EdgeInsets.only(bottom: 30.0, top: 10.0),
@@ -208,9 +213,7 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
     }
 
     final groupedByYearMonth = groupBy(_activities, (Activity obj) {
-      final monthName = DateFormat.MMMM().format(
-        obj.metadata!.minedAt!,
-      );
+      final monthName = DateFormat.MMMM().format(obj.metadata!.minedAt!);
       return '$monthName ${obj.metadata!.minedAt!.year}';
     });
 
@@ -261,10 +264,7 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
         } else {
           // Display the object details
           final activity = entry.value.first;
-          return ActivityListItem(
-            activity: activity,
-            onTap: () {},
-          );
+          return ActivityListItem(activity: activity, onTap: () {});
         }
       },
     );
@@ -280,12 +280,9 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
         .toList()
         .map((a) {
           final transfers = List<Transfer>.from(
-              (a.transfers ?? []).where((e) => e.fungibleInfo != null));
-          return Activity(
-            id: a.id,
-            metadata: a.metadata,
-            transfers: transfers,
+            (a.transfers ?? []).where((e) => e.fungibleInfo != null),
           );
+          return Activity(id: a.id, metadata: a.metadata, transfers: transfers);
         })
         .where((element) {
           return (element.transfers ?? []).isNotEmpty;

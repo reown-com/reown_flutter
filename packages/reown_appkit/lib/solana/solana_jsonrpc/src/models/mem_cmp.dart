@@ -16,10 +16,7 @@ part 'mem_cmp.g.dart';
 class MemCmp extends Filter {
   /// Creates a filter that compares the provided series of [bytes] with the program account data at
   /// a particular [offset].
-  const MemCmp({
-    required this.offset,
-    required this.bytes,
-  });
+  const MemCmp({required this.offset, required this.bytes});
 
   /// The offset into program account data to start comparison.
   final usize offset;
@@ -39,7 +36,5 @@ class MemCmp extends Filter {
       json == null ? null : _$MemCmpFromJson(json);
 
   @override
-  Map<String, dynamic> toJson() => {
-        memcmpKey: _$MemCmpToJson(this),
-      };
+  Map<String, dynamic> toJson() => {memcmpKey: _$MemCmpToJson(this)};
 }

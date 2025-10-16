@@ -13,10 +13,7 @@ class InnerInstruction extends Serializable {
   /// The Solana runtime records the cross-program instructions that are invoked during transaction
   /// processing and makes these available for greater transparency of what was executed on-chain
   /// per transaction instruction.
-  const InnerInstruction({
-    required this.index,
-    required this.instructions,
-  });
+  const InnerInstruction({required this.index, required this.instructions});
 
   /// The index of the transaction instruction from which the inner instruction(s) originated.
   final num index;
@@ -30,12 +27,14 @@ class InnerInstruction extends Serializable {
       InnerInstruction(
         index: json['index'],
         instructions: IterableSerializable.fromJson(
-            json['instructions'], MessageInstruction.fromJson),
+          json['instructions'],
+          MessageInstruction.fromJson,
+        ),
       );
 
   @override
   Map<String, dynamic> toJson() => {
-        'index': index,
-        'instructions': instructions.toJson(),
-      };
+    'index': index,
+    'instructions': instructions.toJson(),
+  };
 }

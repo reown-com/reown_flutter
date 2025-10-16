@@ -65,7 +65,8 @@ class _FarcasterQRCodePageState extends State<FarcasterQRCodePage> {
           children: [
             Padding(
               padding: EdgeInsets.all(20.0),
-              child: _qrQodeWidget ??
+              child:
+                  _qrQodeWidget ??
                   AspectRatio(
                     aspectRatio: 1.0,
                     child: Shimmer.fromColors(
@@ -85,8 +86,8 @@ class _FarcasterQRCodePageState extends State<FarcasterQRCodePage> {
                 maxWidth: isPortrait
                     ? ResponsiveData.maxWidthOf(context)
                     : (ResponsiveData.maxHeightOf(context) -
-                        kNavbarHeight -
-                        32.0),
+                          kNavbarHeight -
+                          32.0),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
@@ -107,7 +108,8 @@ class _FarcasterQRCodePageState extends State<FarcasterQRCodePage> {
                       borderRadius: (radiuses.isSquare()
                           ? BorderRadius.all(Radius.zero)
                           : BorderRadius.circular(
-                              BaseButtonSize.big.height / 2)),
+                              BaseButtonSize.big.height / 2,
+                            )),
                       onTap: () async {
                         await ReownCoreUtils.openURL(widget.farcasterUri);
                       },

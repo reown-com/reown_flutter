@@ -4,7 +4,7 @@ flutter clean
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs
 # dart pub outdated --no-dev-dependencies --up-to-date --no-dependency-overrides
-# dart format .
+dart format .
 # dart run dependency_validator
 
 cd example/base
@@ -15,7 +15,7 @@ flutter clean
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs
 # dart pub outdated --no-dev-dependencies --up-to-date --no-dependency-overrides
-# dart format .
+dart format .
 # dart run dependency_validator
 # rm -Rf lib/generated/*
 # dart run polkadart_cli:generate -v
@@ -38,7 +38,7 @@ flutter clean
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs
 # dart pub outdated --no-dev-dependencies --up-to-date --no-dependency-overrides
-# dart format .
+dart format .
 # dart run dependency_validator
 
 cd ios

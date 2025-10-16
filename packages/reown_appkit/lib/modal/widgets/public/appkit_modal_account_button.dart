@@ -86,13 +86,13 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
     if (args == null) return;
     final isOpen = widget.appKitModal.isOpen;
     if (isOpen) {
-      _widgetStack.popAllAndPush(SocialLoginPage(
-        socialOption: AppKitSocialOption.Farcaster,
-      ));
+      _widgetStack.popAllAndPush(
+        SocialLoginPage(socialOption: AppKitSocialOption.Farcaster),
+      );
     } else {
-      widget.appKitModal.openModalView(SocialLoginPage(
-        socialOption: AppKitSocialOption.Farcaster,
-      ));
+      widget.appKitModal.openModalView(
+        SocialLoginPage(socialOption: AppKitSocialOption.Farcaster),
+      );
     }
   }
 
@@ -122,22 +122,20 @@ class _AppKitModalAccountButtonState extends State<AppKitModalAccountButton> {
             backgroundColor: WidgetStateProperty.resolveWith<Color>(
               (states) => themeColors.grayGlass002,
             ),
-            foregroundColor: WidgetStateProperty.resolveWith<Color>(
-              (states) {
-                if (states.contains(WidgetState.disabled)) {
-                  return themeColors.grayGlass015;
-                }
-                return themeColors.foreground175;
-              },
-            ),
-            shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
-              (states) {
-                return RoundedRectangleBorder(
-                  side: BorderSide(color: themeColors.grayGlass002, width: 1.0),
-                  borderRadius: BorderRadius.circular(borderRadius),
-                );
-              },
-            ),
+            foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+              if (states.contains(WidgetState.disabled)) {
+                return themeColors.grayGlass015;
+              }
+              return themeColors.foreground175;
+            }),
+            shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>((
+              states,
+            ) {
+              return RoundedRectangleBorder(
+                side: BorderSide(color: themeColors.grayGlass002, width: 1.0),
+                borderRadius: BorderRadius.circular(borderRadius),
+              );
+            }),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -197,14 +195,12 @@ class _BalanceButton extends StatelessWidget {
       ),
       buttonStyle: ButtonStyle(
         backgroundColor: WidgetStateProperty.all<Color>(Colors.transparent),
-        foregroundColor: WidgetStateProperty.resolveWith<Color>(
-          (states) {
-            if (states.contains(WidgetState.disabled)) {
-              return themeColors.grayGlass005;
-            }
-            return themeColors.foreground100;
-          },
-        ),
+        foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return themeColors.grayGlass005;
+          }
+          return themeColors.foreground100;
+        }),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -213,32 +209,26 @@ class _BalanceButton extends StatelessWidget {
               ? Row(
                   children: [
                     const SizedBox.square(dimension: kPadding6),
-                    CircularLoader(
-                      size: 16.0,
-                      strokeWidth: 1.5,
-                    ),
+                    CircularLoader(size: 16.0, strokeWidth: 1.5),
                     const SizedBox.square(dimension: kPadding6),
                   ],
                 )
               : tokenImage.isEmpty
-                  ? RoundedIcon(
-                      assetPath: 'lib/modal/assets/icons/network.svg',
-                      size: buttonSize.iconSize,
-                      assetColor: themeColors.inverse100,
-                      padding: 4.0,
-                    )
-                  : RoundedIcon(
-                      imageUrl: tokenImage,
-                      size: buttonSize.iconSize + 2.0,
-                    ),
+              ? RoundedIcon(
+                  assetPath: 'lib/modal/assets/icons/network.svg',
+                  size: buttonSize.iconSize,
+                  assetColor: themeColors.inverse100,
+                  padding: 4.0,
+                )
+              : RoundedIcon(
+                  imageUrl: tokenImage,
+                  size: buttonSize.iconSize + 2.0,
+                ),
           const SizedBox.square(dimension: 4.0),
           ValueListenableBuilder<String>(
             valueListenable: appKit.balanceNotifier,
             builder: (_, balance, __) {
-              return Text(
-                balance,
-                style: textStyle,
-              );
+              return Text(balance, style: textStyle);
             },
           ),
         ],
