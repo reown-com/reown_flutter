@@ -13,16 +13,10 @@ import '../models/vote_account_status.dart';
 class GetVoteAccounts
     extends JsonRpcMethod<Map<String, dynamic>, VoteAccountStatus> {
   /// Creates a codec for `getVoteAccounts` JSON RPC methods.
-  GetVoteAccounts({
-    final GetVoteAccountsConfig? config,
-  }) : super(
-          'getVoteAccounts',
-          config: config ?? const GetVoteAccountsConfig(),
-        );
+  GetVoteAccounts({final GetVoteAccountsConfig? config})
+    : super('getVoteAccounts', config: config ?? const GetVoteAccountsConfig());
 
   @override
-  VoteAccountStatus decoder(
-    final Map<String, dynamic> value,
-  ) =>
+  VoteAccountStatus decoder(final Map<String, dynamic> value) =>
       VoteAccountStatus.fromJson(value);
 }

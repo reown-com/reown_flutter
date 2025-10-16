@@ -25,9 +25,7 @@ class WebSocketHandler implements IWebSocketHandler {
   StreamController<String>? _outputController;
 
   @override
-  Future<void> setup({
-    required String url,
-  }) async {
+  Future<void> setup({required String url}) async {
     _url = url;
 
     await close();
@@ -38,9 +36,7 @@ class WebSocketHandler implements IWebSocketHandler {
     // print('connecting');
     try {
       _socket = WebSocketChannel.connect(
-        Uri.parse(
-          '$url&useOnCloseEvent=true',
-        ),
+        Uri.parse('$url&useOnCloseEvent=true'),
       );
     } catch (e) {
       throw ReownCoreError(
@@ -59,7 +55,7 @@ class WebSocketHandler implements IWebSocketHandler {
       (data) => _inputController?.add(data),
       onError: (error) => _inputController?.addError(error),
       onDone: () => _inputController?.close(),
-        );
+    );
 
     // Route outgoing messages through the output controller
     _outputController!.stream.listen(
@@ -68,10 +64,7 @@ class WebSocketHandler implements IWebSocketHandler {
       onDone: () => _socket?.sink.close(),
     );
 
-    _channel = StreamChannel(
-      _inputController!.stream,
-      _outputController!.sink,
-    );
+    _channel = StreamChannel(_inputController!.stream, _outputController!.sink);
 
     if (_channel == null) {
       // print('Socket channel is null, waiting...');
@@ -98,7 +91,7 @@ class WebSocketHandler implements IWebSocketHandler {
     try {
       await _socket?.sink.close();
     } catch (_) {}
-    
+
     // Close the controllers to prevent further messages and race conditions
     try {
       await _inputController?.close();

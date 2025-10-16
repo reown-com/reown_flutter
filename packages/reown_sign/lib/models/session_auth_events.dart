@@ -27,13 +27,13 @@ class SessionAuthRequest extends EventArgs {
   });
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'topic': topic,
-        'authPayload': authPayload.toJson(),
-        'requester': requester.toJson(),
-        'transportType': transportType.name,
-        if (verifyContext != null) 'verifyContext': verifyContext!.toJson(),
-      };
+    'id': id,
+    'topic': topic,
+    'authPayload': authPayload.toJson(),
+    'requester': requester.toJson(),
+    'transportType': transportType.name,
+    if (verifyContext != null) 'verifyContext': verifyContext!.toJson(),
+  };
 
   @override
   String toString() {
@@ -59,13 +59,13 @@ class SessionAuthResponse extends EventArgs {
   });
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'topic': topic,
-        if (auths != null) 'auths': auths,
-        if (session != null) 'session': session!.toJson(),
-        if (error != null) 'error': error!.toJson(),
-        if (jsonRpcError != null) 'jsonRpcError': jsonRpcError!.toJson(),
-      };
+    'id': id,
+    'topic': topic,
+    if (auths != null) 'auths': auths,
+    if (session != null) 'session': session!.toJson(),
+    if (error != null) 'error': error!.toJson(),
+    if (jsonRpcError != null) 'jsonRpcError': jsonRpcError!.toJson(),
+  };
 
   @override
   String toString() {

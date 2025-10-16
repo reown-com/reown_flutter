@@ -70,7 +70,6 @@ class EVMService {
       };
 
   EVMService({required this.chainSupported}) {
-    ethClient = Web3Client(chainSupported.rpc.first, http.Client());
     _walletKitService = GetIt.I<IWalletKitService>();
     _walletKit = _walletKitService.walletKit;
 
@@ -97,6 +96,22 @@ class EVMService {
     }
 
     _walletKit.onSessionRequest.subscribe(_onSessionRequest);
+
+    ethClient = Web3Client('${_formatRpcUrl(chainSupported)}', http.Client());
+  }
+
+  Uri _formatRpcUrl(ChainMetadata chainSupported) {
+    if (chainSupported.rpc.isEmpty) {
+      return Uri.parse('');
+    }
+
+    String rpcUrl = chainSupported.rpc.first;
+    if (Uri.parse(rpcUrl).host == 'rpc.walletconnect.org') {
+      rpcUrl += '?chainId=${chainSupported.chainId}';
+      rpcUrl += '&projectId=${_walletKit.core.projectId}';
+    }
+    debugPrint('[SampleWallet] rpcUrl: $rpcUrl');
+    return Uri.parse(rpcUrl);
   }
 
   EthPrivateKey get _credentials {

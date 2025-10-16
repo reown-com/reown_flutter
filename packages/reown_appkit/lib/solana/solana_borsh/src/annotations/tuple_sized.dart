@@ -18,7 +18,5 @@ import 'tuple_typed.dart';
 class BorshTupleSized extends BorshTupleTyped<BorshAnnotationSized>
     implements BorshAnnotationSized<Tuple> {
   /// Creates an annotation for a fixed-length array with multiple sized data types.
-  const BorshTupleSized(
-    super.fields,
-  );
+  const BorshTupleSized(super.fields);
 }

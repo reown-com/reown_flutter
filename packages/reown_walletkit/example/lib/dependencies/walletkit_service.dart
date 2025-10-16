@@ -6,7 +6,15 @@ import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/cosmos_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/polkadot_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/stacks/stacks_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/sui/sui_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/ton/ton_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/tron_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/deep_link_handler.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
@@ -94,6 +102,91 @@ class WalletKitService extends IWalletKitService {
     _walletKit!.onSessionProposalError.subscribe(_onSessionProposalError);
     _walletKit!.onSessionConnect.subscribe(_onSessionConnect);
     _walletKit!.onSessionAuthRequest.subscribe(_onSessionAuthRequest);
+
+    // Support EVM Chains
+    for (final chainData in ChainsDataList.eip155Chains) {
+      GetIt.I.registerSingleton<EVMService>(
+        EVMService(chainSupported: chainData),
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Kadena Chains
+    for (final chainData in ChainsDataList.kadenaChains) {
+      GetIt.I.registerSingleton<KadenaService>(
+        KadenaService(chainSupported: chainData),
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Polkadot Chains
+    for (final chainData in ChainsDataList.polkadotChains) {
+      GetIt.I.registerSingleton<PolkadotService>(
+        PolkadotService(chainSupported: chainData),
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Solana Chains
+    // Change SolanaService to SolanaService2 to switch between `solana` package and `solana_web3` package
+    for (final chainData in ChainsDataList.solanaChains) {
+      GetIt.I.registerSingleton<SolanaService>(
+        SolanaService(chainSupported: chainData),
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Cosmos Chains
+    for (final chainData in ChainsDataList.cosmosChains) {
+      GetIt.I.registerSingleton<CosmosService>(
+        CosmosService(chainSupported: chainData),
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Tron Chains
+    for (final chainData in ChainsDataList.tronChains) {
+      GetIt.I.registerSingleton<TronService>(
+        TronService(chainSupported: chainData),
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Tron Chains
+    for (final chainData in ChainsDataList.tonChains) {
+      GetIt.I.registerSingletonAsync<TonService>(
+        () async {
+          final tonService = TonService(chainSupported: chainData);
+          await tonService.init();
+          return tonService;
+        },
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Stacks Chains
+    for (final chainData in ChainsDataList.stacksChains) {
+      GetIt.I.registerSingletonAsync<StacksService>(
+        () async {
+          final stacksService = StacksService(chainSupported: chainData);
+          await stacksService.init();
+          return stacksService;
+        },
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Sui Chains
+    for (final chainData in ChainsDataList.suiChains) {
+      GetIt.I.registerSingletonAsync<SUIService>(
+        () async {
+          final suiService = SUIService(chainSupported: chainData);
+          await suiService.init();
+          return suiService;
+        },
+        instanceName: chainData.chainId,
+      );
+    }
   }
 
   @override
@@ -187,6 +280,10 @@ class WalletKitService extends IWalletKitService {
 
   @override
   ReownWalletKit get walletKit => _walletKit!;
+
+  @override
+  T getChainService<T extends Object>({required String chainId}) =>
+      GetIt.I.get<T>(instanceName: chainId);
 
   List<String> get _loaderMethods => [
         MethodConstants.WC_SESSION_PROPOSE,

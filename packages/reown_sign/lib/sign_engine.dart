@@ -659,8 +659,8 @@ class ReownSign implements IReownSign {
         .getAll()
         .where((session) => session.pairingTopic == pairingTopic)
         .forEach((session) {
-      pairingSessions[session.topic] = session;
-    });
+          pairingSessions[session.topic] = session;
+        });
 
     return pairingSessions;
   }

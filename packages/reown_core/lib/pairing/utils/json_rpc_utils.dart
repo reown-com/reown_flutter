@@ -25,23 +25,12 @@ class JsonRpcUtils {
     };
   }
 
-  static Map<String, dynamic> formatJsonRpcResponse<T>(
-    int id,
-    T result,
-  ) {
-    return {
-      'id': id,
-      'jsonrpc': '2.0',
-      'result': result,
-    };
+  static Map<String, dynamic> formatJsonRpcResponse<T>(int id, T result) {
+    return {'id': id, 'jsonrpc': '2.0', 'result': result};
   }
 
   static Map<String, dynamic> formatJsonRpcError(int id, JsonRpcError error) {
-    return {
-      'id': id,
-      'jsonrpc': '2.0',
-      'error': error.toJson(),
-    };
+    return {'id': id, 'jsonrpc': '2.0', 'error': error.toJson()};
   }
 
   static bool validateMethods(

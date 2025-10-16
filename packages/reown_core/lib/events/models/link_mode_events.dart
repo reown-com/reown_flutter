@@ -6,27 +6,25 @@ abstract class LinkModeEvent implements BasicCoreEvent {
   final int _correlationId;
   final String _direction;
 
-  LinkModeEvent({
-    required String direction,
-    required int correlationId,
-  })  : _direction = direction,
-        _correlationId = correlationId;
+  LinkModeEvent({required String direction, required int correlationId})
+    : _direction = direction,
+      _correlationId = correlationId;
 
   @override
   String get event => CoreEventType.SUCCESS;
 
   @override
   CoreEventProperties? get properties => CoreEventProperties(
-        correlation_id: _correlationId,
-        direction: _direction,
-      );
+    correlation_id: _correlationId,
+    direction: _direction,
+  );
 
   @override
   Map<String, dynamic> toJson() => {
-        'type': type,
-        'event': event,
-        if (properties != null) 'properties': properties?.toJson(),
-      };
+    'type': type,
+    'event': event,
+    if (properties != null) 'properties': properties?.toJson(),
+  };
 }
 
 ///

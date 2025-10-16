@@ -54,15 +54,16 @@ class ListAvatar extends StatelessWidget {
                               httpHeaders: CoreUtils.getAPIHeaders(projectId),
                               fit: BoxFit.cover,
                               fadeInDuration: const Duration(milliseconds: 500),
-                              fadeOutDuration:
-                                  const Duration(milliseconds: 500),
-                              errorWidget: (context, url, error) => ColoredBox(
-                                color: themeColors.grayGlass005,
+                              fadeOutDuration: const Duration(
+                                milliseconds: 500,
                               ),
+                              errorWidget: (context, url, error) =>
+                                  ColoredBox(color: themeColors.grayGlass005),
                             )
                           : Padding(
-                              padding:
-                                  EdgeInsets.all(constraints.maxHeight / 3),
+                              padding: EdgeInsets.all(
+                                constraints.maxHeight / 3,
+                              ),
                               child: SvgPicture.asset(
                                 'lib/modal/assets/icons/network.svg',
                                 package: 'reown_appkit',
@@ -92,9 +93,8 @@ class ListAvatar extends StatelessWidget {
                           httpHeaders: CoreUtils.getAPIHeaders(projectId),
                           fadeInDuration: const Duration(milliseconds: 500),
                           fadeOutDuration: const Duration(milliseconds: 500),
-                          errorWidget: (context, url, error) => ColoredBox(
-                            color: themeColors.grayGlass005,
-                          ),
+                          errorWidget: (context, url, error) =>
+                              ColoredBox(color: themeColors.grayGlass005),
                         ),
                       )
                     : ColoredBox(color: themeColors.grayGlass005),

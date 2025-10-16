@@ -23,7 +23,5 @@ class BorshRustEnumSized<T> extends BorshRustEnumTyped<T, BorshAnnotationSized>
     implements BorshAnnotationSized<RustEnum<T>> {
   /// Creates an annotation for Rust style enums with sized data types (tuple or struct
   /// constructors).
-  const BorshRustEnumSized(
-    super.variants,
-  );
+  const BorshRustEnumSized(super.variants);
 }

@@ -55,10 +55,7 @@ void signRejectSession({
     });
 
     test('throws catchable error properly', () async {
-      await SignClientHelpers.testConnectPairReject(
-        clientA,
-        clientB,
-      );
+      await SignClientHelpers.testConnectPairReject(clientA, clientB);
     });
 
     test('deletes the proposal', () async {
@@ -67,12 +64,7 @@ void signRejectSession({
         reason: const ReownSignError(code: -1, message: 'reason'),
       );
 
-      expect(
-        clientB.proposals.has(
-          TEST_PROPOSAL_VALID_ID.toString(),
-        ),
-        false,
-      );
+      expect(clientB.proposals.has(TEST_PROPOSAL_VALID_ID.toString()), false);
     });
 
     test('invalid proposal id', () async {
@@ -120,12 +112,7 @@ void signRejectSession({
       await completer.future;
       await completer2.future;
 
-      expect(
-        clientB.proposals.has(
-          TEST_PROPOSAL_EXPIRED_ID.toString(),
-        ),
-        false,
-      );
+      expect(clientB.proposals.has(TEST_PROPOSAL_EXPIRED_ID.toString()), false);
       expect(counter, 1);
       expect(counter2, 1);
       clientB.core.expirer.onExpire.unsubscribeAll();

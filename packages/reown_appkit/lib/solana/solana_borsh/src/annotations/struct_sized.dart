@@ -33,7 +33,5 @@ import 'struct_typed.dart';
 class BorshStructSized extends BorshStructTyped<BorshAnnotationSized>
     implements BorshAnnotationSized<Map<String, dynamic>> {
   /// Creates an annotation for borsh serializable objects.
-  const BorshStructSized(
-    super.schema,
-  );
+  const BorshStructSized(super.schema);
 }

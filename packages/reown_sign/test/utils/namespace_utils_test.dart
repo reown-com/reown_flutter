@@ -11,31 +11,20 @@ void main() {
 
   group('NamespaceUtils', () {
     test('isValidChainId', () {
-      expect(
-        NamespaceUtils.isValidChainId(TEST_ETHEREUM_CHAIN),
-        true,
-      );
+      expect(NamespaceUtils.isValidChainId(TEST_ETHEREUM_CHAIN), true);
       expect(NamespaceUtils.isValidChainId(TEST_CHAIN_INVALID_1), false);
       expect(NamespaceUtils.isValidChainId(TEST_CHAIN_INVALID_2), false);
     });
 
     test('isValidAccount', () {
-      expect(
-        NamespaceUtils.isValidAccount(
-          TEST_ETHEREUM_ACCOUNT,
-        ),
-        true,
-      );
+      expect(NamespaceUtils.isValidAccount(TEST_ETHEREUM_ACCOUNT), true);
       expect(NamespaceUtils.isValidAccount(TEST_ACCOUNT_INVALID_1), false);
       expect(NamespaceUtils.isValidAccount(TEST_ACCOUNT_INVALID_2), false);
       expect(NamespaceUtils.isValidAccount(TEST_ACCOUNT_INVALID_3), false);
     });
 
     test('isValidUrl', () {
-      expect(
-        NamespaceUtils.isValidUrl(TEST_RELAY_URL),
-        true,
-      );
+      expect(NamespaceUtils.isValidUrl(TEST_RELAY_URL), true);
     });
 
     test('getAccount', () {
@@ -56,17 +45,12 @@ void main() {
 
     test('getChainsFromAccounts', () {
       expect(NamespaceUtils.getChainsFromAccounts([]), []);
+      expect(NamespaceUtils.getChainsFromAccounts(TEST_ACCOUNTS), TEST_CHAINS);
       expect(
-        NamespaceUtils.getChainsFromAccounts(TEST_ACCOUNTS),
-        TEST_CHAINS,
-      );
-      expect(
-        NamespaceUtils.getChainsFromAccounts(
-          [
-            ...TEST_ACCOUNTS,
-            ...TEST_ACCOUNTS,
-          ],
-        ),
+        NamespaceUtils.getChainsFromAccounts([
+          ...TEST_ACCOUNTS,
+          ...TEST_ACCOUNTS,
+        ]),
         TEST_CHAINS,
       );
     });
@@ -98,9 +82,7 @@ void main() {
 
     test('getChainsFromNamespaces', () {
       expect(
-        NamespaceUtils.getChainIdsFromNamespaces(
-          namespaces: TEST_NAMESPACES,
-        ),
+        NamespaceUtils.getChainIdsFromNamespaces(namespaces: TEST_NAMESPACES),
         [...TEST_CHAINS, TEST_AVALANCHE_CHAIN],
       );
     });
@@ -189,32 +171,20 @@ void main() {
         );
 
         expect(namespaces.length, 2);
-        expect(
-          namespaces['namespace1:chain1']!.accounts,
-          ['namespace1:chain1:address1', 'namespace1:chain1:address2'],
-        );
-        expect(
-          namespaces['namespace1:chain1']!.methods,
-          ['method1'],
-        );
-        expect(
-          namespaces['namespace1:chain1']!.events,
-          ['event1'],
-        );
+        expect(namespaces['namespace1:chain1']!.accounts, [
+          'namespace1:chain1:address1',
+          'namespace1:chain1:address2',
+        ]);
+        expect(namespaces['namespace1:chain1']!.methods, ['method1']);
+        expect(namespaces['namespace1:chain1']!.events, ['event1']);
 
         expect(namespaces['namespace2']!.accounts, [
           'namespace2:chain1:address3',
           'namespace2:chain1:address4',
           'namespace2:chain2:address5',
         ]);
-        expect(
-          namespaces['namespace2']!.methods,
-          ['method3'],
-        );
-        expect(
-          namespaces['namespace2']!.events,
-          ['event3'],
-        );
+        expect(namespaces['namespace2']!.methods, ['method3']);
+        expect(namespaces['namespace2']!.events, ['event3']);
 
         expect(
           SignApiValidatorUtils.isConformingNamespaces(
@@ -233,32 +203,20 @@ void main() {
         );
 
         expect(namespaces.length, 2);
-        expect(
-          namespaces['namespace1']!.accounts,
-          ['namespace1:chain1:address1', 'namespace1:chain1:address2'],
-        );
-        expect(
-          namespaces['namespace1']!.methods,
-          ['method1'],
-        );
-        expect(
-          namespaces['namespace1']!.events,
-          ['event1'],
-        );
+        expect(namespaces['namespace1']!.accounts, [
+          'namespace1:chain1:address1',
+          'namespace1:chain1:address2',
+        ]);
+        expect(namespaces['namespace1']!.methods, ['method1']);
+        expect(namespaces['namespace1']!.events, ['event1']);
 
         expect(namespaces['namespace2']!.accounts, [
           'namespace2:chain1:address3',
           'namespace2:chain1:address4',
           'namespace2:chain2:address5',
         ]);
-        expect(
-          namespaces['namespace2']!.methods,
-          ['method3'],
-        );
-        expect(
-          namespaces['namespace2']!.events,
-          ['event3'],
-        );
+        expect(namespaces['namespace2']!.methods, ['method3']);
+        expect(namespaces['namespace2']!.events, ['event3']);
 
         expect(
           SignApiValidatorUtils.isConformingNamespaces(
@@ -277,31 +235,22 @@ void main() {
         );
 
         expect(namespaces.length, 2);
-        expect(
-          namespaces['namespace1:chain1']!.accounts,
-          ['namespace1:chain1:address1', 'namespace1:chain1:address2'],
-        );
-        expect(
-          namespaces['namespace1:chain1']!.methods,
-          ['method1', 'method2'],
-        );
-        expect(
-          namespaces['namespace1:chain1']!.events,
-          ['event1', 'event2'],
-        );
+        expect(namespaces['namespace1:chain1']!.accounts, [
+          'namespace1:chain1:address1',
+          'namespace1:chain1:address2',
+        ]);
+        expect(namespaces['namespace1:chain1']!.methods, [
+          'method1',
+          'method2',
+        ]);
+        expect(namespaces['namespace1:chain1']!.events, ['event1', 'event2']);
 
         expect(namespaces['namespace2']!.accounts, [
           'namespace2:chain1:address3',
           'namespace2:chain1:address4',
         ]);
-        expect(
-          namespaces['namespace2']!.methods,
-          ['method3', 'method4'],
-        );
-        expect(
-          namespaces['namespace2']!.events,
-          ['event3', 'event4'],
-        );
+        expect(namespaces['namespace2']!.methods, ['method3', 'method4']);
+        expect(namespaces['namespace2']!.events, ['event3', 'event4']);
 
         expect(
           SignApiValidatorUtils.isConformingNamespaces(
@@ -323,10 +272,7 @@ void main() {
         );
 
         expect(namespaces.length, 1);
-        expect(
-          namespaces['eip155']!.accounts,
-          availableAccounts3.toList(),
-        );
+        expect(namespaces['eip155']!.accounts, availableAccounts3.toList());
         expect(
           namespaces['eip155']!.methods,
           availableMethods3.map((m) => m.split(':').last).toList(),
@@ -349,9 +295,10 @@ void main() {
       test('constructNamespaces trims off unrequested', () {
         final reqNamespace = {
           'eip155': const RequiredNamespace(
-              chains: ['eip155:1'],
-              methods: ['eth_sendTransaction', 'personal_sign'],
-              events: ['chainChanged', 'accountsChanged']),
+            chains: ['eip155:1'],
+            methods: ['eth_sendTransaction', 'personal_sign'],
+            events: ['chainChanged', 'accountsChanged'],
+          ),
         };
         final optionalNamespace = {
           'eip155': const RequiredNamespace(
@@ -375,16 +322,16 @@ void main() {
               'wallet_requestPermissions',
               'wallet_registerOnboarding',
               'wallet_watchAsset',
-              'wallet_scanQRCode'
+              'wallet_scanQRCode',
             ],
             events: [
               'chainChanged',
               'accountsChanged',
               'message',
               'disconnect',
-              'connect'
+              'connect',
             ],
-          )
+          ),
         };
         final Set<String> availableAccounts = {
           'eip155:1:0x83ba3013f776d4e2801010ee88581aedf5349b43',
@@ -427,41 +374,31 @@ void main() {
 
         final Map<String, Namespace> namespaces =
             NamespaceUtils.generateNamespaces(
-          availableAccounts: availableAccounts,
-          availableMethods: availableMethods,
-          availableEvents: availableEvents,
-          requiredNamespaces: reqNamespace,
-          optionalNamespaces: optionalNamespace,
-        );
+              availableAccounts: availableAccounts,
+              availableMethods: availableMethods,
+              availableEvents: availableEvents,
+              requiredNamespaces: reqNamespace,
+              optionalNamespaces: optionalNamespace,
+            );
         final Namespace? eip155 = namespaces['eip155'];
         // print(eip155);
 
         expect(eip155 != null, true);
-        expect(
-          eip155!.accounts,
-          [
-            'eip155:1:0x83ba3013f776d4e2801010ee88581aedf5349b43',
-            'eip155:137:0x83ba3013f776d4e2801010ee88581aedf5349b43'
-          ],
-        );
-        expect(
-          eip155.methods,
-          [
-            'personal_sign',
-            'eth_sendTransaction',
-            'eth_sign',
-            'eth_signTransaction',
-            'eth_signTypedData'
-          ],
-        );
-        expect(
-          eip155.events,
-          ['chainChanged', 'accountsChanged'],
-        );
+        expect(eip155!.accounts, [
+          'eip155:1:0x83ba3013f776d4e2801010ee88581aedf5349b43',
+          'eip155:137:0x83ba3013f776d4e2801010ee88581aedf5349b43',
+        ]);
+        expect(eip155.methods, [
+          'personal_sign',
+          'eth_sendTransaction',
+          'eth_sign',
+          'eth_signTransaction',
+          'eth_signTypedData',
+        ]);
+        expect(eip155.events, ['chainChanged', 'accountsChanged']);
       });
 
-      test('nonconforming if available information does not satisfy required',
-          () {
+      test('nonconforming if available information does not satisfy required', () {
         final List nonconforming = [
           requiredNamespacesNonconformingAccounts1,
           requiredNamespacesNonconformingMethods1,
@@ -535,18 +472,11 @@ void main() {
         // print(namespaces);
         expect(namespaces.keys.length, 3);
 
-        expect(
-          namespaces['namespace4:chain1']!.accounts,
-          ['namespace4:chain1:address6'],
-        );
-        expect(
-          namespaces['namespace4:chain1']!.methods,
-          ['method5'],
-        );
-        expect(
-          namespaces['namespace4:chain1']!.events,
-          ['event5'],
-        );
+        expect(namespaces['namespace4:chain1']!.accounts, [
+          'namespace4:chain1:address6',
+        ]);
+        expect(namespaces['namespace4:chain1']!.methods, ['method5']);
+        expect(namespaces['namespace4:chain1']!.events, ['event5']);
 
         expect(
           SignApiValidatorUtils.isConformingNamespaces(
@@ -602,48 +532,60 @@ void main() {
 
         expect(result.length, 1);
         expect(result['eip155']!.chains, ['eip155:1', 'eip155:137']);
-        expect(result['eip155']!.methods,
-            ['eth_sendTransaction', 'personal_sign']);
+        expect(result['eip155']!.methods, [
+          'eth_sendTransaction',
+          'personal_sign',
+        ]);
         expect(result['eip155']!.events, ['chainChanged', 'accountsChanged']);
       });
 
       test(
-          'merges overlapping chains, methods, and events with duplicates removed',
-          () {
-        final requiredNamespaces = {
-          'eip155': const RequiredNamespace(
-            chains: ['eip155:1', 'eip155:137'],
-            methods: ['eth_sendTransaction', 'personal_sign'],
-            events: ['chainChanged', 'accountsChanged'],
-          ),
-        };
-        final optionalNamespaces = {
-          'eip155': const RequiredNamespace(
-            chains: ['eip155:137', 'eip155:80001'], // eip155:137 is duplicate
-            methods: [
-              'personal_sign',
-              'eth_call'
-            ], // personal_sign is duplicate
-            events: [
-              'accountsChanged',
-              'message'
-            ], // accountsChanged is duplicate
-          ),
-        };
+        'merges overlapping chains, methods, and events with duplicates removed',
+        () {
+          final requiredNamespaces = {
+            'eip155': const RequiredNamespace(
+              chains: ['eip155:1', 'eip155:137'],
+              methods: ['eth_sendTransaction', 'personal_sign'],
+              events: ['chainChanged', 'accountsChanged'],
+            ),
+          };
+          final optionalNamespaces = {
+            'eip155': const RequiredNamespace(
+              chains: ['eip155:137', 'eip155:80001'], // eip155:137 is duplicate
+              methods: [
+                'personal_sign',
+                'eth_call',
+              ], // personal_sign is duplicate
+              events: [
+                'accountsChanged',
+                'message',
+              ], // accountsChanged is duplicate
+            ),
+          };
 
-        final result = NamespaceUtils.mergeRequiredIntoOptionalNamespaces(
-          requiredNamespaces,
-          optionalNamespaces,
-        );
+          final result = NamespaceUtils.mergeRequiredIntoOptionalNamespaces(
+            requiredNamespaces,
+            optionalNamespaces,
+          );
 
-        expect(result.length, 1);
-        expect(result['eip155']!.chains,
-            ['eip155:1', 'eip155:137', 'eip155:80001']);
-        expect(result['eip155']!.methods,
-            ['eth_sendTransaction', 'personal_sign', 'eth_call']);
-        expect(result['eip155']!.events,
-            ['chainChanged', 'accountsChanged', 'message']);
-      });
+          expect(result.length, 1);
+          expect(result['eip155']!.chains, [
+            'eip155:1',
+            'eip155:137',
+            'eip155:80001',
+          ]);
+          expect(result['eip155']!.methods, [
+            'eth_sendTransaction',
+            'personal_sign',
+            'eth_call',
+          ]);
+          expect(result['eip155']!.events, [
+            'chainChanged',
+            'accountsChanged',
+            'message',
+          ]);
+        },
+      );
 
       test('handles multiple namespaces correctly', () {
         final requiredNamespaces = {
@@ -680,8 +622,10 @@ void main() {
 
         // Check eip155 (merged)
         expect(result['eip155']!.chains, ['eip155:1', 'eip155:137']);
-        expect(result['eip155']!.methods,
-            ['eth_sendTransaction', 'personal_sign']);
+        expect(result['eip155']!.methods, [
+          'eth_sendTransaction',
+          'personal_sign',
+        ]);
         expect(result['eip155']!.events, ['chainChanged', 'accountsChanged']);
 
         // Check solana (only in required)
@@ -718,8 +662,10 @@ void main() {
 
         expect(result.length, 1);
         expect(result['eip155']!.chains, ['eip155:1', 'eip155:137']);
-        expect(result['eip155']!.methods,
-            ['eth_sendTransaction', 'personal_sign']);
+        expect(result['eip155']!.methods, [
+          'eth_sendTransaction',
+          'personal_sign',
+        ]);
         expect(result['eip155']!.events, ['chainChanged', 'accountsChanged']);
       });
 
@@ -746,8 +692,10 @@ void main() {
 
         expect(result.length, 1);
         expect(result['eip155']!.chains, null);
-        expect(result['eip155']!.methods,
-            ['eth_sendTransaction', 'personal_sign']);
+        expect(result['eip155']!.methods, [
+          'eth_sendTransaction',
+          'personal_sign',
+        ]);
         expect(result['eip155']!.events, ['chainChanged', 'accountsChanged']);
       });
 
@@ -777,10 +725,14 @@ void main() {
           'eth_sendTransaction',
           'personal_sign',
           'eth_call',
-          'eth_getBalance'
+          'eth_getBalance',
         ]);
-        expect(result['eip155']!.events,
-            ['chainChanged', 'accountsChanged', 'message', 'disconnect']);
+        expect(result['eip155']!.events, [
+          'chainChanged',
+          'accountsChanged',
+          'message',
+          'disconnect',
+        ]);
       });
 
       test('handles empty required namespaces', () {

@@ -16,7 +16,5 @@ import 'tuple_typed.dart';
 /// ```
 class BorshTuple extends BorshTupleTyped<BorshAnnotation> {
   /// Creates an annotation for a fixed-length array with multiple data types.
-  const BorshTuple(
-    super.fields,
-  );
+  const BorshTuple(super.fields);
 }

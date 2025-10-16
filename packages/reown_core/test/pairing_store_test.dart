@@ -102,20 +102,14 @@ void main() {
           PairingInfo(
             topic: 'expired',
             expiry: -1,
-            relay: Relay(
-              ReownConstants.RELAYER_DEFAULT_PROTOCOL,
-            ),
+            relay: Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
             active: true,
           ),
         );
         await topicToReceiverPublicKey.init();
         await topicToReceiverPublicKey.set(
           'abc',
-          const ReceiverPublicKey(
-            topic: 'abc',
-            publicKey: 'def',
-            expiry: -1,
-          ),
+          const ReceiverPublicKey(topic: 'abc', publicKey: 'def', expiry: -1),
         );
 
         expect(history.getAll().length, 2);

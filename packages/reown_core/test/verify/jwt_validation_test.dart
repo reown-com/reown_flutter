@@ -27,7 +27,10 @@ void main() {
 
   test('verifyJWT should return true for valid JWT', () {
     final publicKey = JWTValidator.generateP256PublicKeyFromJWK(jwk);
-    final isValid = JWTValidator.verifyES256JWT(validJwt, Uint8List.fromList(hex.decode(publicKey)));
+    final isValid = JWTValidator.verifyES256JWT(
+      validJwt,
+      Uint8List.fromList(hex.decode(publicKey)),
+    );
     expect(isValid, isTrue);
   });
 
@@ -39,7 +42,10 @@ void main() {
   test('verifyJWT should return false for invalid JWT', () {
     final invalidJwt = 'invalid.jwt.sig';
     final publicKey = JWTValidator.generateP256PublicKeyFromJWK(jwk);
-    final isValid = JWTValidator.verifyES256JWT(invalidJwt, Uint8List.fromList(hex.decode(publicKey)));
+    final isValid = JWTValidator.verifyES256JWT(
+      invalidJwt,
+      Uint8List.fromList(hex.decode(publicKey)),
+    );
     expect(isValid, isFalse);
   });
 

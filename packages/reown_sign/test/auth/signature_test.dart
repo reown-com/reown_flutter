@@ -26,10 +26,7 @@ void main() {
 
       for (int i = 0; i < messages.length; i++) {
         final hash = AuthSignature.hashMessage(messages[i]);
-        expect(
-          '0x${hex.encode(hash)}',
-          hashes[i],
-        );
+        expect('0x${hex.encode(hash)}', hashes[i]);
       }
     });
 
@@ -73,9 +70,7 @@ void main() {
     });
 
     test('getAddressFromMessage', () {
-      final address = AuthSignature.getAddressFromMessage(
-        TEST_MESSAGE_EIP1271,
-      );
+      final address = AuthSignature.getAddressFromMessage(TEST_MESSAGE_EIP1271);
       expect(address, TEST_ADDRESS_EIP1271);
 
       final address2 = AuthSignature.getAddressFromMessage(
@@ -90,9 +85,7 @@ void main() {
     });
 
     test('getChainIdFromMessage', () {
-      final chainId = AuthSignature.getChainIdFromMessage(
-        TEST_MESSAGE_EIP1271,
-      );
+      final chainId = AuthSignature.getChainIdFromMessage(TEST_MESSAGE_EIP1271);
       expect(chainId, '1');
 
       final chainId2 = AuthSignature.getChainIdFromMessage(

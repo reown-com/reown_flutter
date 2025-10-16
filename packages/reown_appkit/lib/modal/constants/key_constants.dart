@@ -25,8 +25,9 @@ class KeyConstants {
   static const Key walletListLongPageKey = Key('walletListLongPageKey');
   static const Key connectWalletPageKey = Key('connectWalletPageKey');
   static const Key connecNetworkPageKey = Key('connecNetworkPageKey');
-  static const Key qrCodeAndWalletListPageKey =
-      Key('qrCodeAndWalletListFullPageKey');
+  static const Key qrCodeAndWalletListPageKey = Key(
+    'qrCodeAndWalletListFullPageKey',
+  );
   static const Key getAWalletPageKey = Key('getAWalletPageKey');
   static const Key receiveNetworksKey = Key('receiveNetworksKey');
   static const Key approveTransactionPage = Key('approveTransactionPage');

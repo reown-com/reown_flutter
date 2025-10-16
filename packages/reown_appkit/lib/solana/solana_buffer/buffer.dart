@@ -17,8 +17,7 @@ enum BufferEncoding {
   base58,
   base64,
   hex,
-  utf8,
-  ;
+  utf8;
 
   /// Returns the enum variant where [BufferEncoding.name] is equal to [name].
   ///
@@ -71,11 +70,11 @@ class BufferReader extends Iterable<int> {
 
   /// Creates a [BufferReader] from a list of [bytes].
   BufferReader.fromList(final Iterable<int> bytes)
-      : buffer = Buffer.fromList(bytes);
+    : buffer = Buffer.fromList(bytes);
 
   /// Creates a [BufferReader] from a [Uint8List]
   BufferReader.fromUint8List(final Uint8List bytes)
-      : buffer = Buffer.fromUint8List(bytes);
+    : buffer = Buffer.fromUint8List(bytes);
 
   /// The buffer to traverse.
   @protected
@@ -106,8 +105,10 @@ class BufferReader extends Iterable<int> {
   }
 
   /// {@macro solana_common.Buffer.getString}
-  String getString(final int length,
-      [final BufferEncoding encoding = BufferEncoding.utf8]) {
+  String getString(
+    final int length, [
+    final BufferEncoding encoding = BufferEncoding.utf8,
+  ]) {
     final String value = buffer.getString(encoding, offset, length);
     offset += length;
     return value;
@@ -243,10 +244,8 @@ class BufferWriter {
   /// writer.set([3, 4, 5, 6]);
   /// print(writer); // [1, 2, 3, 4, 5, 6, 0, 0]
   /// ```
-  BufferWriter(
-    final int length, {
-    this.growable = false,
-  }) : buffer = Buffer(length);
+  BufferWriter(final int length, {this.growable = false})
+    : buffer = Buffer(length);
 
   /// The buffer to write to.
   Buffer buffer;
@@ -486,8 +485,7 @@ class Buffer extends Iterable<int> {
   factory Buffer.fromString(
     final String encoded, [
     final BufferEncoding encoding = BufferEncoding.utf8,
-  ]) =>
-      Buffer.fromList(_decode(encoded, encoding));
+  ]) => Buffer.fromList(_decode(encoded, encoding));
 
   /// Creates a [Buffer] from a List of [Buffer]s.
   ///
@@ -529,10 +527,7 @@ class Buffer extends Iterable<int> {
   /// final Buffer buffer = Buffer.random(4);
   /// print(buffer); // [47, 0, 255, 6]
   /// ```
-  factory Buffer.random(
-    final int length, [
-    final Random? random,
-  ]) {
+  factory Buffer.random(final int length, [final Random? random]) {
     final Random rand = random ?? Random.secure();
     return Buffer.generate(length, (_) => rand.nextInt(_maxUint8 + 1));
   }
@@ -630,9 +625,7 @@ class Buffer extends Iterable<int> {
   /// print(buf.getAll(4)); // [5, 6, 7, 8]
   /// print(buf.getAll(8)); // []
   /// ```
-  Iterable<int> getAll(
-    final int offset,
-  ) {
+  Iterable<int> getAll(final int offset) {
     return _data.getRange(offset, length);
   }
 
@@ -651,10 +644,7 @@ class Buffer extends Iterable<int> {
   /// buf.setAll(6, [5, 6, 7, 8]);
   /// print(buf); // [0, 0, 1, 2, 3, 4, 5, 6]
   /// ```
-  void setAll(
-    final int offset,
-    final Iterable<int> bytes,
-  ) {
+  void setAll(final int offset, final Iterable<int> bytes) {
     _data.setAll(offset, bytes);
   }
 
@@ -672,8 +662,11 @@ class Buffer extends Iterable<int> {
   /// final String hex = buffer.getString(BufferEncoding.hex);
   /// print(hex); // '4869204B617465'
   /// ```
-  String getString(final BufferEncoding encoding,
-      [final int offset = 0, final int? length]) {
+  String getString(
+    final BufferEncoding encoding, [
+    final int offset = 0,
+    final int? length,
+  ]) {
     final int end = length != null ? offset + length : this.length;
     final Iterable<int> bytes = _data.getRange(offset, end);
     return _encode(Uint8List.fromList(bytes.toList(growable: false)), encoding);
@@ -758,8 +751,11 @@ class Buffer extends Iterable<int> {
   /// final int value = buffer.getInt(0, 3);
   /// print(value); // 4091987
   /// ```
-  int getInt(final int offset, final int length,
-      [final Endian endian = Endian.little]) {
+  int getInt(
+    final int offset,
+    final int length, [
+    final Endian endian = Endian.little,
+  ]) {
     return getUint(offset, length, endian).toSigned(length * _bitLength);
   }
 
@@ -800,8 +796,11 @@ class Buffer extends Iterable<int> {
   /// final BigInt value = buffer.getBigInt(0, buffer.length);
   /// print(value); // 9818446744073709551615
   /// ```
-  BigInt getBigInt(final int offset, final int length,
-      [final Endian endian = Endian.little]) {
+  BigInt getBigInt(
+    final int offset,
+    final int length, [
+    final Endian endian = Endian.little,
+  ]) {
     return getBigUint(offset, length, endian).toSigned(length * _bitLength);
   }
 
@@ -886,8 +885,11 @@ class Buffer extends Iterable<int> {
   /// buffer.setInt16(4104, 0);
   /// print(buffer); // [8, 16]
   /// ```
-  void setInt16(final int value, final int offset,
-      [final Endian endian = Endian.little]) {
+  void setInt16(
+    final int value,
+    final int offset, [
+    final Endian endian = Endian.little,
+  ]) {
     return asByteData().setInt16(offset, value, endian);
   }
 
@@ -917,8 +919,11 @@ class Buffer extends Iterable<int> {
   /// buffer.setInt32(1075843080, 0);
   /// print(buffer); // [8, 16, 32, 64]
   /// ```
-  void setInt32(final int value, final int offset,
-      [final Endian endian = Endian.little]) {
+  void setInt32(
+    final int value,
+    final int offset, [
+    final Endian endian = Endian.little,
+  ]) {
     return asByteData().setInt32(offset, value, endian);
   }
 
@@ -948,8 +953,11 @@ class Buffer extends Iterable<int> {
   /// buffer.setInt64(2310355955765743624, 0);
   /// print(buffer); // [8, 16, 32, 64, 128, 8, 16, 32]
   /// ```
-  void setInt64(final int value, final int offset,
-      [final Endian endian = Endian.little]) {
+  void setInt64(
+    final int value,
+    final int offset, [
+    final Endian endian = Endian.little,
+  ]) {
     return asByteData().setInt64(offset, value, endian);
   }
 
@@ -967,24 +975,29 @@ class Buffer extends Iterable<int> {
   ///
   /// The [offset] must satisy the relations `0` ≤ `offset` ≤ `offset+8` ≤ `this.length`.
   /// {@endtemplate}
-  void setInt128(final BigInt value, final int offset,
-      [final Endian endian = Endian.little]) {
+  void setInt128(
+    final BigInt value,
+    final int offset, [
+    final Endian endian = Endian.little,
+  ]) {
     setBigInt(value, offset, ByteLength.i128, endian);
   }
 
   /// Reads a region of the buffer as a `big endian unsigned integer`.
   int _getUintBE(final Iterable<int> bytes) {
     return bytes.fold(
-        0, (final int value, final int byte) => value << _bitLength | byte);
+      0,
+      (final int value, final int byte) => value << _bitLength | byte,
+    );
   }
 
   /// Reads a region of the buffer as a `little endian unsigned integer`.
   int _getUintLE(final Iterable<int> bytes) {
     int i = 0;
     return bytes.fold(
-        0,
-        (final int value, final int byte) =>
-            byte << (i++ * _bitLength) | value);
+      0,
+      (final int value, final int byte) => byte << (i++ * _bitLength) | value,
+    );
   }
 
   /// {@template solana_common.Buffer.getUint}
@@ -1000,8 +1013,11 @@ class Buffer extends Iterable<int> {
   /// final int value = buffer.getUint(0, 3);
   /// print(value); // 4950584
   /// ```
-  int getUint(final int offset, final int length,
-      [final Endian endian = Endian.little]) {
+  int getUint(
+    final int offset,
+    final int length, [
+    final Endian endian = Endian.little,
+  ]) {
     final Iterable<int> values = _data.getRange(offset, offset + length);
     return endian == Endian.big ? _getUintBE(values) : _getUintLE(values);
   }
@@ -1063,8 +1079,11 @@ class Buffer extends Iterable<int> {
   /// final BigInt value = buffer.getBigUint(0, buffer.length);
   /// print(value); // 18446744073709551615
   /// ```
-  BigInt getBigUint(final int offset, final int length,
-      [final Endian endian = Endian.little]) {
+  BigInt getBigUint(
+    final int offset,
+    final int length, [
+    final Endian endian = Endian.little,
+  ]) {
     final Iterable<int> bytes = _data.getRange(offset, offset + length);
     return endian == Endian.big ? _getBigUintBE(bytes) : _getBigUintLE(bytes);
   }
@@ -1091,8 +1110,10 @@ class Buffer extends Iterable<int> {
     final int? length,
     final Endian endian = Endian.little,
   ]) {
-    assert(value >= BigInt.zero,
-        'The [BigInt] value $value must be a positive integer.');
+    assert(
+      value >= BigInt.zero,
+      'The [BigInt] value $value must be a positive integer.',
+    );
     return setBigInt(value, offset, length, endian);
   }
 
@@ -1155,8 +1176,11 @@ class Buffer extends Iterable<int> {
   /// buffer.setUint16(27231, 0);
   /// print(buffer); // [95, 106]
   /// ```
-  void setUint16(final int value, final int offset,
-      [final Endian endian = Endian.little]) {
+  void setUint16(
+    final int value,
+    final int offset, [
+    final Endian endian = Endian.little,
+  ]) {
     return asByteData().setUint16(offset, value, endian);
   }
 
@@ -1186,8 +1210,11 @@ class Buffer extends Iterable<int> {
   /// buffer.setUint32(135282712, 0);
   /// print(buffer); // [24, 64, 16, 8]
   /// ```
-  void setUint32(final int value, final int offset,
-      [final Endian endian = Endian.little]) {
+  void setUint32(
+    final int value,
+    final int offset, [
+    final Endian endian = Endian.little,
+  ]) {
     return asByteData().setUint32(offset, value, endian);
   }
 
@@ -1217,8 +1244,11 @@ class Buffer extends Iterable<int> {
   /// buffer.setInt64(6797927951541548548, 0);
   /// print(buffer); // [4, 54, 85, 120, 116, 23, 87, 94]
   /// ```
-  void setUint64(final BigInt value, final int offset,
-      [final Endian endian = Endian.little]) {
+  void setUint64(
+    final BigInt value,
+    final int offset, [
+    final Endian endian = Endian.little,
+  ]) {
     setBigUint(value, offset, ByteLength.u64, endian);
   }
 
@@ -1236,8 +1266,11 @@ class Buffer extends Iterable<int> {
   ///
   /// The [offset] must satisy the relations `0` ≤ `offset` ≤ `offset+8` ≤ `this.length`.
   /// {@endtemplate}
-  void setUint128(final BigInt value, final int offset,
-      [final Endian endian = Endian.little]) {
+  void setUint128(
+    final BigInt value,
+    final int offset, [
+    final Endian endian = Endian.little,
+  ]) {
     setBigUint(value, offset, ByteLength.u128, endian);
   }
 
@@ -1267,8 +1300,11 @@ class Buffer extends Iterable<int> {
   /// buffer.setFloat32(2.1426990032196045, 0);
   /// print(buffer); // [251, 33, 9, 64]
   /// ```
-  void setFloat32(final double value, final int offset,
-      [final Endian endian = Endian.little]) {
+  void setFloat32(
+    final double value,
+    final int offset, [
+    final Endian endian = Endian.little,
+  ]) {
     return asByteData().setFloat32(offset, value, endian);
   }
 
@@ -1298,8 +1334,11 @@ class Buffer extends Iterable<int> {
   /// buffer.setFloat64(3.14159265359, 0);
   /// print(buffer); // [234, 46, 68, 84, 251, 33, 9, 64]
   /// ```
-  void setFloat64(final double value, final int offset,
-      [final Endian endian = Endian.little]) {
+  void setFloat64(
+    final double value,
+    final int offset, [
+    final Endian endian = Endian.little,
+  ]) {
     return asByteData().setFloat64(offset, value, endian);
   }
 
@@ -1308,8 +1347,10 @@ class Buffer extends Iterable<int> {
   ///
   /// The [offset] must satisy the relations `0` ≤ `offset` ≤ `offset+8` ≤ `this.length`.
   /// {@endtemplate}
-  DateTime getDateTime(final int offset,
-      [final Endian endian = Endian.little]) {
+  DateTime getDateTime(
+    final int offset, [
+    final Endian endian = Endian.little,
+  ]) {
     return DateTime.fromMicrosecondsSinceEpoch(getInt64(offset, endian));
   }
 
@@ -1318,8 +1359,11 @@ class Buffer extends Iterable<int> {
   ///
   /// The [offset] must satisy the relations `0` ≤ `offset` ≤ `offset+8` ≤ `this.length`.
   /// {@endtemplate}
-  void setDateTime(final DateTime value, final int offset,
-      [final Endian endian = Endian.little]) {
+  void setDateTime(
+    final DateTime value,
+    final int offset, [
+    final Endian endian = Endian.little,
+  ]) {
     return setInt64(value.microsecondsSinceEpoch, offset, endian);
   }
 
@@ -1352,8 +1396,10 @@ class Buffer extends Iterable<int> {
       bytes[i] = remaining & _maxUint8;
       remaining >>= _bitLength;
     }
-    assert(remaining <= 0,
-        'The [int] value $value overflows ${bytes.length} byte(s).');
+    assert(
+      remaining <= 0,
+      'The [int] value $value overflows ${bytes.length} byte(s).',
+    );
     return bytes;
   }
 
@@ -1375,8 +1421,10 @@ class Buffer extends Iterable<int> {
       bytes[i] = (remaining & mask).toInt();
       remaining >>= _bitLength;
     }
-    assert(remaining <= BigInt.zero,
-        'The [BigInt] value $value overflows ${bytes.length} byte(s).');
+    assert(
+      remaining <= BigInt.zero,
+      'The [BigInt] value $value overflows ${bytes.length} byte(s).',
+    );
     return bytes;
   }
 
@@ -1396,7 +1444,9 @@ class Buffer extends Iterable<int> {
 
   /// Converts an [encoded] string to an array of bytes.
   static Iterable<int> _decode(
-      final String encoded, final BufferEncoding encoding) {
+    final String encoded,
+    final BufferEncoding encoding,
+  ) {
     switch (encoding) {
       case BufferEncoding.base58:
         return base58.decode(encoded);

@@ -27,10 +27,10 @@ class TokenAmount extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory TokenAmount.fromJson(final Map<String, dynamic> json) => TokenAmount(
-        amount: BigInt.parse(json['amount']),
-        decimals: json['decimals'],
-        uiAmountString: json['uiAmountString'],
-      );
+    amount: BigInt.parse(json['amount']),
+    decimals: json['decimals'],
+    uiAmountString: json['uiAmountString'],
+  );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static TokenAmount? tryFromJson(final Map<String, dynamic>? json) {
@@ -39,8 +39,8 @@ class TokenAmount extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'amount': amount.toString(),
-        'decimals': decimals,
-        'uiAmountString': uiAmountString,
-      };
+    'amount': amount.toString(),
+    'decimals': decimals,
+    'uiAmountString': uiAmountString,
+  };
 }

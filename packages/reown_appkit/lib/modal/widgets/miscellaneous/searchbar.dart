@@ -124,8 +124,8 @@ class _ModalSearchBarState extends State<ModalSearchBar>
         borderRadius: radiuses.isSquare()
             ? BorderRadius.zero
             : (radiuses.isCircular()
-                ? BorderRadius.circular(widget.height)
-                : BorderRadius.circular(widget.height * 0.4)),
+                  ? BorderRadius.circular(widget.height)
+                  : BorderRadius.circular(widget.height * 0.4)),
         boxShadow: [
           BoxShadow(
             color: Colors.transparent,
@@ -140,8 +140,8 @@ class _ModalSearchBarState extends State<ModalSearchBar>
         borderRadius: radiuses.isSquare()
             ? BorderRadius.zero
             : (radiuses.isCircular()
-                ? BorderRadius.circular(widget.height)
-                : BorderRadius.circular(widget.height * 0.4)),
+                  ? BorderRadius.circular(widget.height)
+                  : BorderRadius.circular(widget.height * 0.4)),
         boxShadow: [
           BoxShadow(
             color: themeColors.accenGlass015,
@@ -196,8 +196,8 @@ class _ModalSearchBarState extends State<ModalSearchBar>
       borderRadius: radiuses.isSquare()
           ? BorderRadius.zero
           : (radiuses.isCircular()
-              ? BorderRadius.circular(widget.height)
-              : BorderRadius.circular(widget.height * 0.3)),
+                ? BorderRadius.circular(widget.height)
+                : BorderRadius.circular(widget.height * 0.3)),
     );
     final focusedBorder = unfocusedBorder.copyWith(
       borderSide: BorderSide(color: themeColors.accent100, width: 1.0),
@@ -207,9 +207,7 @@ class _ModalSearchBarState extends State<ModalSearchBar>
     );
 
     return DecoratedBoxTransition(
-      decoration: _decorationTween.animate(
-        _animationController,
-      ),
+      decoration: _decorationTween.animate(_animationController),
       child: Container(
         height: widget.height + 8.0,
         width: widget.width,
@@ -245,7 +243,8 @@ class _ModalSearchBarState extends State<ModalSearchBar>
           showCursor: widget.showCursor,
           decoration: InputDecoration(
             isDense: true,
-            prefixIcon: widget.prefixIcon ??
+            prefixIcon:
+                widget.prefixIcon ??
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -279,21 +278,20 @@ class _ModalSearchBarState extends State<ModalSearchBar>
               maxWidth: 40.0,
               minWidth: widget.noIcons ? 0.0 : 40.0,
             ),
-            labelStyle: widget.textStyle?.copyWith(
-                  color: themeColors.inverse100,
-                ) ??
+            labelStyle:
+                widget.textStyle?.copyWith(color: themeColors.inverse100) ??
                 themeData.textStyles.paragraph500.copyWith(
                   color: themeColors.inverse100,
                 ),
             hintText: widget.hint,
-            hintStyle: widget.textStyle?.copyWith(
-                  color: themeColors.foreground275,
-                ) ??
+            hintStyle:
+                widget.textStyle?.copyWith(color: themeColors.foreground275) ??
                 themeData.textStyles.paragraph500.copyWith(
                   color: themeColors.foreground275,
                   height: 1.5,
                 ),
-            suffixIcon: widget.suffixIcon ??
+            suffixIcon:
+                widget.suffixIcon ??
                 (_controller.value.text.isNotEmpty || _focusNode.hasFocus
                     ? Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -332,8 +330,9 @@ class _ModalSearchBarState extends State<ModalSearchBar>
             errorBorder: unfocusedBorder,
             enabledBorder: unfocusedBorder,
             disabledBorder: disabledBorder,
-            focusedBorder:
-                widget.borderOnFocus ? focusedBorder : unfocusedBorder,
+            focusedBorder: widget.borderOnFocus
+                ? focusedBorder
+                : unfocusedBorder,
             filled: true,
             fillColor: themeColors.grayGlass002,
             contentPadding: const EdgeInsets.all(0.0),
@@ -346,10 +345,8 @@ class _ModalSearchBarState extends State<ModalSearchBar>
 
 // ignore: unused_element
 class _DecoratedInputBorder extends InputBorder {
-  _DecoratedInputBorder({
-    required this.child,
-    required this.shadow,
-  }) : super(borderSide: child.borderSide);
+  _DecoratedInputBorder({required this.child, required this.shadow})
+    : super(borderSide: child.borderSide);
 
   final InputBorder child;
 
@@ -412,11 +409,14 @@ class _DecoratedInputBorder extends InputBorder {
 
     canvas.drawPath(getOuterPath(bounds), paint);
 
-    child.paint(canvas, rect,
-        gapStart: gapStart,
-        gapExtent: gapExtent,
-        gapPercentage: gapPercentage,
-        textDirection: textDirection);
+    child.paint(
+      canvas,
+      rect,
+      gapStart: gapStart,
+      gapExtent: gapExtent,
+      gapPercentage: gapPercentage,
+      textDirection: textDirection,
+    );
   }
 
   @override

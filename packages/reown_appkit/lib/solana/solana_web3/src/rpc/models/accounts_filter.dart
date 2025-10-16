@@ -12,10 +12,8 @@ import '../../encodings/account_encoding.dart';
 
 class AccountsFilter extends Serializable {
   /// JSON RPC parameters for `simulateTransaction` methods.
-  AccountsFilter({
-    this.encoding,
-    this.addresses = const [],
-  }) : assert(encoding == null || encoding != AccountEncoding.base58);
+  AccountsFilter({this.encoding, this.addresses = const []})
+    : assert(encoding == null || encoding != AccountEncoding.base58);
 
   /// The returned account data's encoding (default: [AccountEncoding.base64]).
   final AccountEncoding? encoding;
@@ -25,7 +23,7 @@ class AccountsFilter extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'encoding': encoding?.name,
-        'addresses': addresses.toJson(),
-      };
+    'encoding': encoding?.name,
+    'addresses': addresses.toJson(),
+  };
 }

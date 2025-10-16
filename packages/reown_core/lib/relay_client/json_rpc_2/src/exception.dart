@@ -32,14 +32,14 @@ class RpcException implements Exception {
   ///
   /// This should usually be used only by fallback handlers.
   RpcException.methodNotFound(String methodName)
-      : this(error_code.METHOD_NOT_FOUND, 'Unknown method "$methodName".');
+    : this(error_code.METHOD_NOT_FOUND, 'Unknown method "$methodName".');
 
   /// An exception indicating that the parameters for the requested method were
   /// invalid.
   ///
   /// Methods can use this to reject requests with invalid parameters.
   RpcException.invalidParams(String message)
-      : this(error_code.INVALID_PARAMS, message);
+    : this(error_code.INVALID_PARAMS, message);
 
   /// Converts this exception into a JSON-serializable object that's a valid
   /// JSON-RPC 2.0 error response.
@@ -59,7 +59,7 @@ class RpcException implements Exception {
     return {
       'jsonrpc': '2.0',
       'error': {'code': code, 'message': message, 'data': modifiedData},
-      'id': id
+      'id': id,
     };
   }
 

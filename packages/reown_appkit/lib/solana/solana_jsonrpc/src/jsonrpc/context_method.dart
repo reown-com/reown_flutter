@@ -30,9 +30,7 @@ import 'response_context.dart';
 abstract class JsonRpcContextMethod<S, T>
     extends JsonRpcMethod<Map<String, dynamic>, JsonRpcResponseContext<T>> {
   /// Creates a JSON RPC response-context decoder.
-  const JsonRpcContextMethod(
-    super.method,
-  );
+  const JsonRpcContextMethod(super.method);
 
   /// Decodes the `value` property of a successful JSON RPC response-context.
   ///

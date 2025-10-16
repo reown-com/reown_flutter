@@ -75,7 +75,8 @@ class AccountListItem extends StatelessWidget {
                     title,
                     overflow: TextOverflow.ellipsis,
                     maxLines: flexible ? 100 : 1,
-                    style: titleStyle ??
+                    style:
+                        titleStyle ??
                         themeData.textStyles.paragraph600.copyWith(
                           color: themeColors.foreground100,
                         ),
@@ -84,7 +85,8 @@ class AccountListItem extends StatelessWidget {
                     Text(
                       subtitle!,
                       overflow: TextOverflow.ellipsis,
-                      style: subtitleStyle ??
+                      style:
+                          subtitleStyle ??
                           themeData.textStyles.small400.copyWith(
                             color: themeColors.foreground150,
                           ),

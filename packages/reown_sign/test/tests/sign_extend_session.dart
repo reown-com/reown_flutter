@@ -48,10 +48,12 @@ void signExtendSession({
         clientB,
       );
 
-      final startingExpiryA =
-          clientA.sessions.get(connectionInfo.session.topic)!.expiry;
-      final startingExpiryB =
-          clientB.sessions.get(connectionInfo.session.topic)!.expiry;
+      final startingExpiryA = clientA.sessions
+          .get(connectionInfo.session.topic)!
+          .expiry;
+      final startingExpiryB = clientB.sessions
+          .get(connectionInfo.session.topic)!
+          .expiry;
       // TODO: Figure out why the expirer and session expiry are not the same
       // expect(
       //   clientA.core.expirer.get(connectionInfo.session.topic) ==
@@ -75,9 +77,7 @@ void signExtendSession({
       const offset = 100;
       await Future.delayed(const Duration(milliseconds: offset));
 
-      await clientB.extendSession(
-        topic: connectionInfo.session.topic,
-      );
+      await clientB.extendSession(topic: connectionInfo.session.topic);
 
       // await Future.delayed(Duration(milliseconds: 100));
 
@@ -85,19 +85,15 @@ void signExtendSession({
         await completer.future;
       }
 
-      final endingExpiryA =
-          clientA.sessions.get(connectionInfo.session.topic)!.expiry;
-      final endingExpiryB =
-          clientB.sessions.get(connectionInfo.session.topic)!.expiry;
+      final endingExpiryA = clientA.sessions
+          .get(connectionInfo.session.topic)!
+          .expiry;
+      final endingExpiryB = clientB.sessions
+          .get(connectionInfo.session.topic)!
+          .expiry;
 
-      expect(
-        endingExpiryA >= startingExpiryA,
-        true,
-      );
-      expect(
-        endingExpiryB >= startingExpiryB,
-        true,
-      );
+      expect(endingExpiryA >= startingExpiryA, true);
+      expect(endingExpiryB >= startingExpiryB, true);
       expect(
         clientA.core.expirer.get(connectionInfo.session.topic) == endingExpiryA,
         true,
@@ -112,9 +108,8 @@ void signExtendSession({
     });
     test('invalid session topic', () async {
       expect(
-        () async => await clientB.extendSession(
-          topic: TEST_SESSION_INVALID_TOPIC,
-        ),
+        () async =>
+            await clientB.extendSession(topic: TEST_SESSION_INVALID_TOPIC),
         throwsA(
           isA<ReownSignError>().having(
             (e) => e.message,
@@ -137,9 +132,8 @@ void signExtendSession({
         completerSession.complete();
       });
       expect(
-        () async => await clientB.extendSession(
-          topic: TEST_SESSION_EXPIRED_TOPIC,
-        ),
+        () async =>
+            await clientB.extendSession(topic: TEST_SESSION_EXPIRED_TOPIC),
         throwsA(
           isA<ReownSignError>().having(
             (e) => e.message,
@@ -153,12 +147,7 @@ void signExtendSession({
       await completer.future;
       await completerSession.future;
 
-      expect(
-        clientB.sessions.has(
-          TEST_SESSION_EXPIRED_TOPIC,
-        ),
-        false,
-      );
+      expect(clientB.sessions.has(TEST_SESSION_EXPIRED_TOPIC), false);
       expect(counter, 1);
       expect(counterSession, 1);
       clientB.core.expirer.onExpire.unsubscribeAll();

@@ -175,12 +175,7 @@ void pack25519(final Uint8List o, final List<int> n) {
 
 /// Returns a non-zero value if [publicKey] falls on the `ed25519` curve.
 int isOnCurve(final Uint8List publicKey) {
-  final List<List<int>> r = [
-    gf(),
-    gf(),
-    gf(),
-    gf(),
-  ];
+  final List<List<int>> r = [gf(), gf(), gf(), gf()];
 
   final List<int> t = gf(),
       chk = gf(),

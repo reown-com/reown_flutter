@@ -9,15 +9,13 @@ import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 
 class NetworkServiceItemsListener extends StatelessWidget {
   INetworkService get _networkService => GetIt.I<INetworkService>();
-  const NetworkServiceItemsListener({
-    super.key,
-    required this.builder,
-  });
+  const NetworkServiceItemsListener({super.key, required this.builder});
   final Function(
     BuildContext context,
     bool initialised,
     List<GridItem<ReownAppKitModalNetworkInfo>> items,
-  ) builder;
+  )
+  builder;
 
   @override
   Widget build(BuildContext context) {
@@ -47,37 +45,7 @@ extension on List<GridItem<ReownAppKitModalNetworkInfo>> {
         .map((e) => e.chainId)
         .toList();
     if (supportedChains == null) {
-      return this
-        ..sort((a, b) {
-          final disabledA = a.disabled ? 0 : 1;
-          final disabledB = b.disabled ? 0 : 1;
-          final testNetworkA = a.data.isTestNetwork ? 0 : 1;
-          final testNetworkB = b.data.isTestNetwork ? 0 : 1;
-
-          // First sort by disabled status, then by test network status
-          if (disabledA != disabledB) {
-            return disabledB.compareTo(disabledA);
-          }
-          if (testNetworkA != testNetworkB) {
-            return testNetworkB.compareTo(testNetworkA);
-          }
-
-          // Then sort by order in allNetworks
-          final indexA = allNetworks.indexOf(a.data.chainId);
-          final indexB = allNetworks.indexOf(b.data.chainId);
-          final adjustedIndexA = indexA == -1 ? allNetworks.length : indexA;
-          final adjustedIndexB = indexB == -1 ? allNetworks.length : indexB;
-          return adjustedIndexA.compareTo(adjustedIndexB);
-        });
-    }
-    return map((item) {
-      return item.copyWith(
-        disabled: !supportedChains.contains(
-          item.data.chainId,
-        ),
-      );
-    }).toList()
-      ..sort((a, b) {
+      return this..sort((a, b) {
         final disabledA = a.disabled ? 0 : 1;
         final disabledB = b.disabled ? 0 : 1;
         final testNetworkA = a.data.isTestNetwork ? 0 : 1;
@@ -94,7 +62,33 @@ extension on List<GridItem<ReownAppKitModalNetworkInfo>> {
         // Then sort by order in allNetworks
         final indexA = allNetworks.indexOf(a.data.chainId);
         final indexB = allNetworks.indexOf(b.data.chainId);
-        return indexA.compareTo(indexB);
+        final adjustedIndexA = indexA == -1 ? allNetworks.length : indexA;
+        final adjustedIndexB = indexB == -1 ? allNetworks.length : indexB;
+        return adjustedIndexA.compareTo(adjustedIndexB);
       });
+    }
+    return map((item) {
+      return item.copyWith(
+        disabled: !supportedChains.contains(item.data.chainId),
+      );
+    }).toList()..sort((a, b) {
+      final disabledA = a.disabled ? 0 : 1;
+      final disabledB = b.disabled ? 0 : 1;
+      final testNetworkA = a.data.isTestNetwork ? 0 : 1;
+      final testNetworkB = b.data.isTestNetwork ? 0 : 1;
+
+      // First sort by disabled status, then by test network status
+      if (disabledA != disabledB) {
+        return disabledB.compareTo(disabledA);
+      }
+      if (testNetworkA != testNetworkB) {
+        return testNetworkB.compareTo(testNetworkA);
+      }
+
+      // Then sort by order in allNetworks
+      final indexA = allNetworks.indexOf(a.data.chainId);
+      final indexB = allNetworks.indexOf(b.data.chainId);
+      return indexA.compareTo(indexB);
+    });
   }
 }

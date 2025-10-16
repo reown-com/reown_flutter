@@ -76,17 +76,13 @@ void signHappyPath({
       expect(clientB.getActiveSessions().length, 1);
       expect(
         clientA
-            .getSessionsForPairing(
-              pairingTopic: connectionInfo.pairing.topic,
-            )
+            .getSessionsForPairing(pairingTopic: connectionInfo.pairing.topic)
             .length,
         1,
       );
       expect(
         clientB
-            .getSessionsForPairing(
-              pairingTopic: connectionInfo.pairing.topic,
-            )
+            .getSessionsForPairing(pairingTopic: connectionInfo.pairing.topic)
             .length,
         1,
       );

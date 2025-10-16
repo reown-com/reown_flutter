@@ -14,15 +14,11 @@ void main() {
   group('ReownCore throws errors', () {
     test('on start if there is no internet connection', () async {
       final MockWebSocketHandler mockWebSocketHandler = MockWebSocketHandler();
-      when(mockWebSocketHandler.connect()).thenThrow(const ReownCoreError(
-        code: -1,
-        message: 'No internet connection: test',
-      ));
-
-      IReownCore core = ReownCore(
-        projectId: 'abc',
-        memoryStore: true,
+      when(mockWebSocketHandler.connect()).thenThrow(
+        const ReownCoreError(code: -1, message: 'No internet connection: test'),
       );
+
+      IReownCore core = ReownCore(projectId: 'abc', memoryStore: true);
       core.relayClient = RelayClient(
         core: core,
         messageTracker: getMessageTracker(core: core),
@@ -42,9 +38,7 @@ void main() {
       verifyInOrder([
         mockWebSocketHandler.setup(
           url: argThat(
-            contains(
-              ReownConstants.DEFAULT_RELAY_URL,
-            ),
+            contains(ReownConstants.DEFAULT_RELAY_URL),
             named: 'url',
           ),
         ),
@@ -76,10 +70,7 @@ void main() {
       // Check that setup was called once for custom URL
       verify(
         mockWebSocketHandler.setup(
-          url: argThat(
-            contains(testRelayUrl),
-            named: 'url',
-          ),
+          url: argThat(contains(testRelayUrl), named: 'url'),
         ),
       ).called(1);
       verify(mockWebSocketHandler.connect()).called(1);

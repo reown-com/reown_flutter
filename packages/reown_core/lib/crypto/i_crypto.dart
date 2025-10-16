@@ -17,10 +17,7 @@ abstract class ICrypto {
     String peerPublicKey, {
     String? overrideTopic,
   });
-  Future<String> setSymKey(
-    String symKey, {
-    String? overrideTopic,
-  });
+  Future<String> setSymKey(String symKey, {String? overrideTopic});
   Future<void> deleteKeyPair(String publicKey);
   Future<void> deleteSymKey(String topic);
   Future<String?> encode(

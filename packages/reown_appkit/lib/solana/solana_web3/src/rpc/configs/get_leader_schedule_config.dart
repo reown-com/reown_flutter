@@ -11,17 +11,14 @@ import '../../crypto/pubkey.dart';
 
 class GetLeaderScheduleConfig extends CommitmentConfig {
   /// JSON RPC configurations for `getLeaderSchedule` methods.
-  const GetLeaderScheduleConfig({
-    super.commitment,
-    this.identity,
-  });
+  const GetLeaderScheduleConfig({super.commitment, this.identity});
 
   /// If set, only return results for this validator identity.
   final Pubkey? identity;
 
   @override
   Map<String, dynamic> toJson() => {
-        'commitment': commitment?.name,
-        'identity': identity?.toBase58(),
-      };
+    'commitment': commitment?.name,
+    'identity': identity?.toBase58(),
+  };
 }

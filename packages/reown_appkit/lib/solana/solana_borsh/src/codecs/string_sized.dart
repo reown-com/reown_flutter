@@ -17,10 +17,8 @@ import '../utils/assert.dart';
 class BorshStringSizedCodec extends BorshCodec<String>
     with BorshCodecFixedSized {
   /// Creates a codec for fixed-length string data types.
-  const BorshStringSizedCodec(
-    this.byteLength, {
-    final BufferEncoding? encoding,
-  }) : encoding = encoding ?? BufferEncoding.utf8;
+  const BorshStringSizedCodec(this.byteLength, {final BufferEncoding? encoding})
+    : encoding = encoding ?? BufferEncoding.utf8;
 
   @override
   final int byteLength;
@@ -29,16 +27,12 @@ class BorshStringSizedCodec extends BorshCodec<String>
   final BufferEncoding encoding;
 
   @override
-  BorshStringSizedEncoder get encoder => BorshStringSizedEncoder(
-        byteLength,
-        encoding: encoding,
-      );
+  BorshStringSizedEncoder get encoder =>
+      BorshStringSizedEncoder(byteLength, encoding: encoding);
 
   @override
-  BorshStringSizedDecoder get decoder => BorshStringSizedDecoder(
-        byteLength,
-        encoding: encoding,
-      );
+  BorshStringSizedDecoder get decoder =>
+      BorshStringSizedDecoder(byteLength, encoding: encoding);
 
   @override
   int size(final String input) => byteLength;

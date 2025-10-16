@@ -73,25 +73,20 @@ class NetworkButton extends StatelessWidget {
               backgroundColor: WidgetStateProperty.resolveWith<Color>(
                 (states) => themeColors.grayGlass002,
               ),
-              foregroundColor: WidgetStateProperty.resolveWith<Color>(
-                (states) {
-                  if (states.contains(WidgetState.disabled)) {
-                    return themeColors.grayGlass015;
-                  }
-                  return themeColors.foreground100;
-                },
-              ),
-              shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
-                (states) {
-                  return RoundedRectangleBorder(
-                    side: BorderSide(
-                      color: themeColors.grayGlass002,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(borderRadius),
-                  );
-                },
-              ),
+              foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+                if (states.contains(WidgetState.disabled)) {
+                  return themeColors.grayGlass015;
+                }
+                return themeColors.foreground100;
+              }),
+              shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>((
+                states,
+              ) {
+                return RoundedRectangleBorder(
+                  side: BorderSide(color: themeColors.grayGlass002, width: 1.0),
+                  borderRadius: BorderRadius.circular(borderRadius),
+                );
+              }),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -105,8 +100,9 @@ class NetworkButton extends StatelessWidget {
                                 const SizedBox.square(dimension: kPadding6),
                                 CircularLoader(
                                   size: size.height * 0.4,
-                                  strokeWidth:
-                                      size == BaseButtonSize.small ? 1.0 : 1.5,
+                                  strokeWidth: size == BaseButtonSize.small
+                                      ? 1.0
+                                      : 1.5,
                                 ),
                                 const SizedBox.square(dimension: kPadding6),
                               ],
@@ -137,8 +133,9 @@ class NetworkButton extends StatelessWidget {
                                 const SizedBox.square(dimension: kPadding6),
                                 CircularLoader(
                                   size: size.height * 0.4,
-                                  strokeWidth:
-                                      size == BaseButtonSize.small ? 1.0 : 1.5,
+                                  strokeWidth: size == BaseButtonSize.small
+                                      ? 1.0
+                                      : 1.5,
                                 ),
                                 const SizedBox.square(dimension: kPadding6),
                               ],

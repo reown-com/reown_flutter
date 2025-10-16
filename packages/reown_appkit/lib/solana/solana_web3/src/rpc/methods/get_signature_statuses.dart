@@ -17,14 +17,12 @@ class GetSignatureStatuses
     final List<String> signatures, {
     final GetSignatureStatusesConfig? config,
   }) : super(
-          'getSignatureStatuses',
-          values: [signatures],
-          config: config ?? const GetSignatureStatusesConfig(),
-        );
+         'getSignatureStatuses',
+         values: [signatures],
+         config: config ?? const GetSignatureStatusesConfig(),
+       );
 
   @override
-  SignatureStatus? itemDecoder(
-    final Map<String, dynamic>? item,
-  ) =>
+  SignatureStatus? itemDecoder(final Map<String, dynamic>? item) =>
       item != null ? SignatureStatus.fromJson(item) : null;
 }

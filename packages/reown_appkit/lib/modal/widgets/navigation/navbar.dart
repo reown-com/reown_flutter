@@ -43,8 +43,9 @@ class ModalNavbar extends StatelessWidget {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final keyboardOpened = ResponsiveData.isKeyboardShown(context);
-    final paddingBottom =
-        keyboardOpened ? ResponsiveData.paddingBottomOf(context) : 0.0;
+    final paddingBottom = keyboardOpened
+        ? ResponsiveData.paddingBottomOf(context)
+        : 0.0;
     return Padding(
       padding: EdgeInsets.only(bottom: paddingBottom),
       child: Column(
@@ -70,7 +71,9 @@ class ModalNavbar extends StatelessWidget {
                               action: onBack ?? _widgetStack.pop,
                             )
                           : (leftAction ??
-                              const SizedBox.square(dimension: kNavbarHeight)),
+                                const SizedBox.square(
+                                  dimension: kNavbarHeight,
+                                )),
                       Expanded(
                         child: GestureDetector(
                           onTap: () => onTapTitle?.call(),
@@ -92,9 +95,7 @@ class ModalNavbar extends StatelessWidget {
                                 ModalProvider.of(context).instance.closeModal();
                               },
                             ),
-                      Row(
-                        children: rightActions,
-                      ),
+                      Row(children: rightActions),
                     ],
                   );
                 },

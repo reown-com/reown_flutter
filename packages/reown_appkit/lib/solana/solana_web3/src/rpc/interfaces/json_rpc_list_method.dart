@@ -10,11 +10,7 @@ import 'json_rpc_method.dart';
 /// A JSON RPC handler for methods that return a [List].
 abstract class JsonRpcListMethod<S, T> extends JsonRpcMethod<List, List<T>> {
   /// Creates a JSON RPC handler for methods that return a [List].
-  const JsonRpcListMethod(
-    super.method, {
-    super.values,
-    super.config,
-  });
+  const JsonRpcListMethod(super.method, {super.values, super.config});
 
   @override
   List<T> decoder(final List value) =>

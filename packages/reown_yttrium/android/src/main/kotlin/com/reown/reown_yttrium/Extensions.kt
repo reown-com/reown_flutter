@@ -7,9 +7,9 @@ import uniffi.yttrium.ExecuteDetails
 import uniffi.yttrium.FeeEstimatedTransaction
 import uniffi.yttrium.FundingMetadata
 import uniffi.yttrium.InitialTransactionMetadata
-import uniffi.yttrium.Metadata
 import uniffi.yttrium.PrepareResponseAvailable
 import uniffi.yttrium.PrepareResponseError
+import uniffi.yttrium.PrepareResponseMetadata
 import uniffi.yttrium.PrepareResponseNotRequired
 import uniffi.yttrium.Transaction
 import uniffi.yttrium.TransactionFee
@@ -87,7 +87,7 @@ fun Transaction.toMap(): Map<String, Any> {
     )
 }
 
-fun Metadata.toMap(): Map<String, Any> {
+fun PrepareResponseMetadata.toMap(): Map<String, Any> {
     return mapOf(
         "fundingFrom" to fundingFrom.map { it.toMap() },
         "initialTransaction" to initialTransaction.toMap(),
@@ -183,4 +183,28 @@ fun ExecuteDetails.toMap(): Map<String, Any> {
         "initialTxnReceipt" to initialTxnReceipt,
         "initialTxnHash" to initialTxnHash
     )
+}
+
+fun Map<*, *>.toSendTxMessage(): uniffi.yttrium.SendTxMessage {
+    val address = this["address"] as? String
+        ?: error("Missing or invalid 'address' in SendTxMessage map")
+
+    val amount = this["amount"] as? String
+        ?: error("Missing or invalid 'amount' in SendTxMessage map")
+
+    val stateInit = this["stateInit"] as? String
+    val payload = this["payload"] as? String
+
+    return uniffi.yttrium.SendTxMessage(
+        address = address,
+        amount = amount,
+        stateInit = stateInit,
+        payload = payload
+    )
+}
+
+fun List<*>.toSendTxMessageList(): List<uniffi.yttrium.SendTxMessage> {
+    return this.mapNotNull { item ->
+        (item as? Map<*, *>)?.toSendTxMessage()
+    }
 }

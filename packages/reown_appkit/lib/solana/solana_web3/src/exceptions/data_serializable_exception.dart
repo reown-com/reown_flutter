@@ -14,10 +14,7 @@ part 'data_serializable_exception.g.dart';
 @JsonSerializable(createToJson: false)
 class DataSerializableException extends SolanaException {
   /// Creates an exception for invalid [DataSerializableMixin] objects.
-  const DataSerializableException(
-    super.message, {
-    super.code,
-  });
+  const DataSerializableException(super.message, {super.code});
 
   /// {@macro solana_common.Serializable.fromJson}
   factory DataSerializableException.fromJson(final Map<String, dynamic> json) =>

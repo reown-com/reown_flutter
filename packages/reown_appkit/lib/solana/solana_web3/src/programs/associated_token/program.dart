@@ -17,8 +17,7 @@ import 'instruction.dart';
 class AssociatedTokenProgram extends Program {
   /// Associated Token Program
   AssociatedTokenProgram._()
-      : super(
-            Pubkey.fromBase58('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'));
+    : super(Pubkey.fromBase58('ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL'));
 
   /// Internal singleton instance.
   static final AssociatedTokenProgram _instance = AssociatedTokenProgram._();
@@ -55,10 +54,7 @@ class AssociatedTokenProgram extends Program {
       AccountMeta(TokenProgram.programId),
     ];
 
-    return _instance.createTransactionIntruction(
-      instruction,
-      keys: keys,
-    );
+    return _instance.createTransactionIntruction(instruction, keys: keys);
   }
 
   /// Creates an associated token account for the given wallet address and token mint.

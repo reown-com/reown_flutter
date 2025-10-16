@@ -19,8 +19,7 @@ enum HealthStatus {
   behind,
 
   /// No slot information from known validators is currently available.
-  unknown,
-  ;
+  unknown;
 
   /// {@macro solana_common.Serializable.fromJson}
   factory HealthStatus.fromJson(final String json) => values.byName(json);

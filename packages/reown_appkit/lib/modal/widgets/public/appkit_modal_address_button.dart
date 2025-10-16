@@ -56,16 +56,17 @@ class _AppKitModalAddressButtonState extends State<AppKitModalAddressButton> {
     }
     final identityName =
         (widget.appKitModal.blockchainIdentity?.name ?? '').isNotEmpty
-            ? widget.appKitModal.blockchainIdentity!.name!
-            : null;
+        ? widget.appKitModal.blockchainIdentity!.name!
+        : null;
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final textStyle = widget.size == BaseButtonSize.small
         ? themeData.textStyles.small600
         : themeData.textStyles.paragraph600;
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
-    final innerBorderRadius =
-        radiuses.isSquare() ? 0.0 : widget.size.height / 2;
+    final innerBorderRadius = radiuses.isSquare()
+        ? 0.0
+        : widget.size.height / 2;
     // TODO replace with AddressButton()
     return Padding(
       padding: EdgeInsets.only(
@@ -86,25 +87,20 @@ class _AppKitModalAddressButtonState extends State<AppKitModalAddressButton> {
           backgroundColor: WidgetStateProperty.resolveWith<Color>(
             (states) => themeColors.grayGlass002,
           ),
-          foregroundColor: WidgetStateProperty.resolveWith<Color>(
-            (states) {
-              if (states.contains(WidgetState.disabled)) {
-                return themeColors.grayGlass015;
-              }
-              return themeColors.foreground175;
-            },
-          ),
-          shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
-            (states) {
-              return RoundedRectangleBorder(
-                side: BorderSide(
-                  color: themeColors.grayGlass002,
-                  width: 1.0,
-                ),
-                borderRadius: BorderRadius.circular(innerBorderRadius),
-              );
-            },
-          ),
+          foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+            if (states.contains(WidgetState.disabled)) {
+              return themeColors.grayGlass015;
+            }
+            return themeColors.foreground175;
+          }),
+          shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>((
+            states,
+          ) {
+            return RoundedRectangleBorder(
+              side: BorderSide(color: themeColors.grayGlass002, width: 1.0),
+              borderRadius: BorderRadius.circular(innerBorderRadius),
+            );
+          }),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -113,10 +109,7 @@ class _AppKitModalAddressButtonState extends State<AppKitModalAddressButton> {
                 ? Row(
                     children: [
                       const SizedBox.square(dimension: 4.0),
-                      CircularLoader(
-                        size: 16.0,
-                        strokeWidth: 1.5,
-                      ),
+                      CircularLoader(size: 16.0, strokeWidth: 1.5),
                     ],
                   )
                 : Container(

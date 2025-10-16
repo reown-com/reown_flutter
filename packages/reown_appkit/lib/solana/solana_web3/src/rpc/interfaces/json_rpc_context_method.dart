@@ -11,7 +11,8 @@ import 'json_rpc_params_mixin.dart';
 
 /// A JSON RPC handler for context methods.
 abstract class JsonRpcContextMethod<S, T>
-    extends jsonrpc.JsonRpcContextMethod<S, T> with JsonRpcParamsMixin {
+    extends jsonrpc.JsonRpcContextMethod<S, T>
+    with JsonRpcParamsMixin {
   /// Creates a JSON RPC handler for context methods.
   const JsonRpcContextMethod(
     super.method, {

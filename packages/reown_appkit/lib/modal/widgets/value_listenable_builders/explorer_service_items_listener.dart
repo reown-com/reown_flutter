@@ -16,7 +16,8 @@ class ExplorerServiceItemsListener extends StatefulWidget {
     bool initialised,
     List<GridItem<ReownAppKitModalWalletInfo>> items,
     bool searching,
-  ) builder;
+  )
+  builder;
   final bool listen;
 
   @override

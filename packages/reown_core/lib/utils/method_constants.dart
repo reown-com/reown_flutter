@@ -19,16 +19,8 @@ class MethodConstants {
 
   static const Map<String, Map<String, RpcOptions>> RPC_OPTS = {
     WC_PAIRING_PING: {
-      'req': RpcOptions(
-        ttl: ReownConstants.ONE_DAY,
-        prompt: false,
-        tag: 1000,
-      ),
-      'res': RpcOptions(
-        ttl: ReownConstants.ONE_DAY,
-        prompt: false,
-        tag: 1001,
-      ),
+      'req': RpcOptions(ttl: ReownConstants.ONE_DAY, prompt: false, tag: 1000),
+      'res': RpcOptions(ttl: ReownConstants.ONE_DAY, prompt: false, tag: 1001),
     },
     WC_PAIRING_DELETE: {
       'req': RpcOptions(
@@ -43,16 +35,8 @@ class MethodConstants {
       ),
     },
     UNREGISTERED_METHOD: {
-      'req': RpcOptions(
-        ttl: ReownConstants.ONE_DAY,
-        prompt: false,
-        tag: 0,
-      ),
-      'res': RpcOptions(
-        ttl: ReownConstants.ONE_DAY,
-        prompt: false,
-        tag: 0,
-      ),
+      'req': RpcOptions(ttl: ReownConstants.ONE_DAY, prompt: false, tag: 0),
+      'res': RpcOptions(ttl: ReownConstants.ONE_DAY, prompt: false, tag: 0),
     },
     WC_SESSION_PROPOSE: {
       'req': RpcOptions(
@@ -89,28 +73,12 @@ class MethodConstants {
       ),
     },
     WC_SESSION_UPDATE: {
-      'req': RpcOptions(
-        ttl: ReownConstants.ONE_DAY,
-        prompt: false,
-        tag: 1104,
-      ),
-      'res': RpcOptions(
-        ttl: ReownConstants.ONE_DAY,
-        prompt: false,
-        tag: 1105,
-      ),
+      'req': RpcOptions(ttl: ReownConstants.ONE_DAY, prompt: false, tag: 1104),
+      'res': RpcOptions(ttl: ReownConstants.ONE_DAY, prompt: false, tag: 1105),
     },
     WC_SESSION_EXTEND: {
-      'req': RpcOptions(
-        ttl: ReownConstants.ONE_DAY,
-        prompt: false,
-        tag: 1106,
-      ),
-      'res': RpcOptions(
-        ttl: ReownConstants.ONE_DAY,
-        prompt: false,
-        tag: 1107,
-      ),
+      'req': RpcOptions(ttl: ReownConstants.ONE_DAY, prompt: false, tag: 1106),
+      'res': RpcOptions(ttl: ReownConstants.ONE_DAY, prompt: false, tag: 1107),
     },
     WC_SESSION_REQUEST: {
       'req': RpcOptions(
@@ -137,16 +105,8 @@ class MethodConstants {
       ),
     },
     WC_SESSION_DELETE: {
-      'req': RpcOptions(
-        ttl: ReownConstants.ONE_DAY,
-        prompt: false,
-        tag: 1112,
-      ),
-      'res': RpcOptions(
-        ttl: ReownConstants.ONE_DAY,
-        prompt: false,
-        tag: 1113,
-      ),
+      'req': RpcOptions(ttl: ReownConstants.ONE_DAY, prompt: false, tag: 1112),
+      'res': RpcOptions(ttl: ReownConstants.ONE_DAY, prompt: false, tag: 1113),
     },
     WC_SESSION_PING: {
       'req': RpcOptions(
@@ -161,16 +121,8 @@ class MethodConstants {
       ),
     },
     WC_SESSION_AUTHENTICATE: {
-      'req': RpcOptions(
-        ttl: ReownConstants.ONE_HOUR,
-        prompt: false,
-        tag: 1116,
-      ),
-      'res': RpcOptions(
-        ttl: ReownConstants.ONE_HOUR,
-        prompt: false,
-        tag: 1117,
-      ),
+      'req': RpcOptions(ttl: ReownConstants.ONE_HOUR, prompt: false, tag: 1116),
+      'res': RpcOptions(ttl: ReownConstants.ONE_HOUR, prompt: false, tag: 1117),
       'reject': RpcOptions(
         ttl: ReownConstants.FIVE_MINUTES,
         prompt: false,
@@ -191,23 +143,13 @@ class MethodConstants {
 
   static const Map<String, Map<String, LinkModeOptions>> LM_OPTS = {
     WC_SESSION_AUTHENTICATE_LINK_MODE: {
-      'req': LinkModeOptions(
-        tag: 1122,
-      ),
-      'res': LinkModeOptions(
-        tag: 1123,
-      ),
-      'reject': LinkModeOptions(
-        tag: 1124,
-      ),
+      'req': LinkModeOptions(tag: 1122),
+      'res': LinkModeOptions(tag: 1123),
+      'reject': LinkModeOptions(tag: 1124),
     },
     WC_SESSION_REQUEST_LINK_MODE: {
-      'req': LinkModeOptions(
-        tag: 1125,
-      ),
-      'res': LinkModeOptions(
-        tag: 1126,
-      ),
-    }
+      'req': LinkModeOptions(tag: 1125),
+      'res': LinkModeOptions(tag: 1126),
+    },
   };
 }

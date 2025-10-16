@@ -12,16 +12,10 @@ import '../models/supply.dart';
 /// A codec for `getSupply` JSON RPC methods.
 class GetSupply extends JsonRpcContextMethod<Map<String, dynamic>, Supply> {
   /// Creates a codec for `getSupply` JSON RPC methods.
-  GetSupply({
-    final GetSupplyConfig? config,
-  }) : super(
-          'getSupply',
-          config: config ?? const GetSupplyConfig(),
-        );
+  GetSupply({final GetSupplyConfig? config})
+    : super('getSupply', config: config ?? const GetSupplyConfig());
 
   @override
-  Supply valueDecoder(
-    final Map<String, dynamic> value,
-  ) =>
+  Supply valueDecoder(final Map<String, dynamic> value) =>
       Supply.fromJson(value);
 }

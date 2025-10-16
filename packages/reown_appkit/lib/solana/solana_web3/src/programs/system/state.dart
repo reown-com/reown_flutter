@@ -60,10 +60,7 @@ class TransferParams {
 
 class AssignParams {
   /// Assign system transaction params.
-  const AssignParams({
-    required this.accountPubkey,
-    required this.programId,
-  });
+  const AssignParams({required this.accountPubkey, required this.programId});
 
   /// The public key of the account which will be assigned a new owner.
   final Pubkey accountPubkey;
@@ -254,10 +251,7 @@ class AuthorizeNonceParams {
 
 class AllocateParams {
   /// Allocate account system transaction params.
-  const AllocateParams({
-    required this.accountPubkey,
-    required this.space,
-  });
+  const AllocateParams({required this.accountPubkey, required this.space});
 
   /// The account to allocate.
   final Pubkey accountPubkey;

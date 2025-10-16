@@ -9,8 +9,5 @@ import 'get_account_info_config.dart';
 
 /// JSON RPC configurations for `getNonceAccount` methods.
 class GetNonceAccountConfig extends GetAccountInfoConfig {
-  GetNonceAccountConfig({
-    super.commitment,
-    super.minContextSlot,
-  });
+  GetNonceAccountConfig({super.commitment, super.minContextSlot});
 }

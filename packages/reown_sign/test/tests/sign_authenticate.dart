@@ -19,20 +19,24 @@ void signAuthenticate({
     List<IReownSignCommon> clients = [];
 
     setUp(() async {
-      clientA = await clientACreator(PROPOSER.copyWith(
-        redirect: Redirect(
-          native: 'clientA://',
-          universal: 'https://lab.web3modal.com/dapp',
-          linkMode: true,
+      clientA = await clientACreator(
+        PROPOSER.copyWith(
+          redirect: Redirect(
+            native: 'clientA://',
+            universal: 'https://lab.web3modal.com/dapp',
+            linkMode: true,
+          ),
         ),
-      ));
-      clientB = await clientBCreator(RESPONDER.copyWith(
-        redirect: Redirect(
-          native: 'clientB://',
-          universal: 'https://lab.web3modal.com/wallet',
-          linkMode: true,
+      );
+      clientB = await clientBCreator(
+        RESPONDER.copyWith(
+          redirect: Redirect(
+            native: 'clientB://',
+            universal: 'https://lab.web3modal.com/wallet',
+            linkMode: true,
+          ),
         ),
-      ));
+      );
       clients.add(clientA);
       clients.add(clientB);
     });
@@ -84,10 +88,7 @@ void signAuthenticate({
       expect(topic, response.pairingTopic);
 
       // Decode the message
-      String? payloadString = await clientA.core.crypto.decode(
-        topic,
-        message,
-      );
+      String? payloadString = await clientA.core.crypto.decode(topic, message);
       expect(payloadString, isNotNull);
 
       Map<String, dynamic> data = jsonDecode(payloadString!);

@@ -59,19 +59,25 @@ class Meta extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory Meta.fromJson(final Map<String, dynamic> json) => Meta(
-        err: json['err'],
-        fee: json['fee'],
-        preBalances: json['preBalances'].cast<u64>(),
-        postBalances: json['postBalances'].cast<u64>(),
-        innerInstructions: IterableSerializable.tryFromJson(
-            json['innerInstructions'], InnerInstruction.fromJson),
-        preTokenBalances: IterableSerializable.tryFromJson(
-            json['preTokenBalances'], TokenBalance.fromJson),
-        postTokenBalances: IterableSerializable.tryFromJson(
-            json['postTokenBalances'], TokenBalance.fromJson),
-        logMessages: json['logMessages']?.cast<String>(),
-        loadedAddresses: LoadedAddress.tryFromJson(json['loadedAddresses']),
-      );
+    err: json['err'],
+    fee: json['fee'],
+    preBalances: json['preBalances'].cast<u64>(),
+    postBalances: json['postBalances'].cast<u64>(),
+    innerInstructions: IterableSerializable.tryFromJson(
+      json['innerInstructions'],
+      InnerInstruction.fromJson,
+    ),
+    preTokenBalances: IterableSerializable.tryFromJson(
+      json['preTokenBalances'],
+      TokenBalance.fromJson,
+    ),
+    postTokenBalances: IterableSerializable.tryFromJson(
+      json['postTokenBalances'],
+      TokenBalance.fromJson,
+    ),
+    logMessages: json['logMessages']?.cast<String>(),
+    loadedAddresses: LoadedAddress.tryFromJson(json['loadedAddresses']),
+  );
 
   /// Creates an instance of `this` class from the constructor parameters defined in the [json]
   /// object.
@@ -86,14 +92,14 @@ class Meta extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'err': err,
-        'fee': fee,
-        'preBalances': preBalances,
-        'postBalances': postBalances,
-        'innerInstructions': innerInstructions?.toJson(),
-        'preTokenBalances': preTokenBalances?.toJson(),
-        'postTokenBalances': postTokenBalances?.toJson(),
-        'logMessages': logMessages,
-        'loadedAddresses': loadedAddresses?.toJson(),
-      };
+    'err': err,
+    'fee': fee,
+    'preBalances': preBalances,
+    'postBalances': postBalances,
+    'innerInstructions': innerInstructions?.toJson(),
+    'preTokenBalances': preTokenBalances?.toJson(),
+    'postTokenBalances': postTokenBalances?.toJson(),
+    'logMessages': logMessages,
+    'loadedAddresses': loadedAddresses?.toJson(),
+  };
 }

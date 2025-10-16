@@ -45,8 +45,10 @@ class AccountInfo<T> extends BorshObject with DataSerializableMixin {
 
   @override
   BorshSchema get borshSchema {
-    assert(isBinary,
-        'Borsh serialization can only be applied to binary account info [data].');
+    assert(
+      isBinary,
+      'Borsh serialization can only be applied to binary account info [data].',
+    );
     return binaryCodec.schema;
   }
 
@@ -80,12 +82,12 @@ class AccountInfo<T> extends BorshObject with DataSerializableMixin {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory AccountInfo.fromJson(final Map<String, dynamic> json) => AccountInfo(
-        lamports: json['lamports'],
-        owner: json['owner'],
-        data: DataSerializableMixin.decode(json['data']),
-        executable: json['executable'],
-        rentEpoch: json['rentEpoch'],
-      );
+    lamports: json['lamports'],
+    owner: json['owner'],
+    data: DataSerializableMixin.decode(json['data']),
+    executable: json['executable'],
+    rentEpoch: json['rentEpoch'],
+  );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static AccountInfo? tryFromJson(final Map<String, dynamic>? json) =>
@@ -93,10 +95,10 @@ class AccountInfo<T> extends BorshObject with DataSerializableMixin {
 
   @override
   Map<String, dynamic> toJson() => {
-        'lamports': lamports,
-        'owner': owner,
-        'data': data,
-        'executable': executable,
-        'rentEpoch': rentEpoch,
-      };
+    'lamports': lamports,
+    'owner': owner,
+    'data': data,
+    'executable': executable,
+    'rentEpoch': rentEpoch,
+  };
 }

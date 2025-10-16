@@ -37,8 +37,8 @@ class Crypto implements ICrypto {
     required this.keyChain,
     CryptoUtils? utils,
     RelayAuth? relayAuth,
-  })  : utils = utils ?? CryptoUtils(),
-        relayAuth = relayAuth ?? RelayAuth();
+  }) : utils = utils ?? CryptoUtils(),
+       relayAuth = relayAuth ?? RelayAuth();
 
   @override
   Future<void> init() async {
@@ -89,10 +89,7 @@ class Crypto implements ICrypto {
   }
 
   @override
-  Future<String> setSymKey(
-    String symKey, {
-    String? overrideTopic,
-  }) async {
+  Future<String> setSymKey(String symKey, {String? overrideTopic}) async {
     _checkInitialized();
 
     final String topic = overrideTopic ?? utils.hashKey(symKey);

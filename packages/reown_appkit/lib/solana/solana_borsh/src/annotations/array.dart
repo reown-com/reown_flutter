@@ -16,8 +16,5 @@ import 'array_typed.dart';
 /// ```
 class BorshArray<T> extends BorshArrayTyped<T, BorshAnnotation<T>> {
   /// Creates an annotation for a fixed-length array.
-  const BorshArray(
-    super.subtype,
-    super.length,
-  );
+  const BorshArray(super.subtype, super.length);
 }

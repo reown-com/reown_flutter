@@ -55,9 +55,8 @@ class RoundedIcon extends StatelessWidget {
                 fadeInDuration: const Duration(milliseconds: 500),
                 fadeOutDuration: const Duration(milliseconds: 500),
                 httpHeaders: CoreUtils.getAPIHeaders(projectId),
-                errorWidget: (context, url, error) => ColoredBox(
-                  color: themeColors.grayGlass005,
-                ),
+                errorWidget: (context, url, error) =>
+                    ColoredBox(color: themeColors.grayGlass005),
               ),
             )
           : Padding(

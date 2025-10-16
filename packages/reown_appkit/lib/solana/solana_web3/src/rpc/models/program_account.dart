@@ -10,10 +10,7 @@ import 'account_info.dart';
 
 class ProgramAccount extends Serializable {
   /// The ProgramAccount public key for a node.
-  const ProgramAccount({
-    required this.pubkey,
-    required this.account,
-  });
+  const ProgramAccount({required this.pubkey, required this.account});
 
   /// the account Pubkey as a base-58 encoded string.
   final String pubkey;
@@ -35,7 +32,7 @@ class ProgramAccount extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'pubkey': pubkey,
-        'account': account.toJson(),
-      };
+    'pubkey': pubkey,
+    'account': account.toJson(),
+  };
 }

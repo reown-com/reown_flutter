@@ -13,9 +13,7 @@ import '../converters/codec.dart';
 /// A codec for dynamically sized arrays.
 class BorshListCodec<T> extends BorshCodec<List<T>> {
   /// Creates a codec for dynamically sized arrays.
-  const BorshListCodec(
-    this.subtype,
-  );
+  const BorshListCodec(this.subtype);
 
   /// The subtype's codec.
   final BorshCodec<T> subtype;
@@ -29,7 +27,9 @@ class BorshListCodec<T> extends BorshCodec<List<T>> {
   @override
   int size(final List<T> input) {
     return input.fold(
-        ByteLength.u32, (total, item) => total + subtype.size(item));
+      ByteLength.u32,
+      (total, item) => total + subtype.size(item),
+    );
   }
 }
 
@@ -39,9 +39,7 @@ class BorshListCodec<T> extends BorshCodec<List<T>> {
 /// An encoder for dynamically sized arrays.
 class BorshListEncoder<T> extends BorshEncoder<List<T>> {
   /// Creates an encoder for  dynamically sized arrays.
-  const BorshListEncoder(
-    this.subtype,
-  );
+  const BorshListEncoder(this.subtype);
 
   /// The subtype's codec.
   final BorshCodec<T> subtype;
@@ -62,9 +60,7 @@ class BorshListEncoder<T> extends BorshEncoder<List<T>> {
 /// A decoder for dynamically sized arrays.
 class BorshListDecoder<T> extends BorshDecoder<List<T>> {
   /// Creates a decoder for  dynamically sized arrays.
-  const BorshListDecoder(
-    this.subtype,
-  );
+  const BorshListDecoder(this.subtype);
 
   /// The subtype's codec.
   final BorshCodec<T> subtype;

@@ -30,9 +30,9 @@ class JsonRpcRequest extends Serializable {
     required this.method,
     this.params,
     this.id,
-  })  : assert(params == null || params is List || params is Map),
-        assert(id == null || id >= 0),
-        assert(jsonrpc == version);
+  }) : assert(params == null || params is List || params is Map),
+       assert(id == null || id >= 0),
+       assert(jsonrpc == version);
 
   /// The JSON RPC protocol version.
   @JsonKey(defaultValue: version)

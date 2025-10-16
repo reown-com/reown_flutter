@@ -35,7 +35,7 @@ class PolkadotService {
   PolkadotService({required this.chainSupported}) {
     _walletKit = GetIt.I<IWalletKitService>().walletKit;
     _keyring = Keyring();
-    _provider = polkadart.Provider.fromUri(Uri.parse(chainSupported.rpc.first));
+    _provider = polkadart.Provider.fromUri(_formatRpcUrl(chainSupported));
 
     for (var handler in polkadotRequestHandlers.entries) {
       _walletKit.registerRequestHandler(
@@ -46,6 +46,20 @@ class PolkadotService {
     }
 
     _walletKit.onSessionRequest.subscribe(_onSessionRequest);
+  }
+
+  Uri _formatRpcUrl(ChainMetadata chainSupported) {
+    if (chainSupported.rpc.isEmpty) {
+      return Uri.parse('');
+    }
+
+    String rpcUrl = chainSupported.rpc.first;
+    if (Uri.parse(rpcUrl).host == 'rpc.walletconnect.org') {
+      rpcUrl += '?chainId=${chainSupported.chainId}';
+      rpcUrl += '&projectId=${_walletKit.core.projectId}';
+    }
+    debugPrint('[SampleWallet] rpcUrl: $rpcUrl');
+    return Uri.parse(rpcUrl);
   }
 
   Future<void> polkadotSignMessage(String topic, dynamic parameters) async {

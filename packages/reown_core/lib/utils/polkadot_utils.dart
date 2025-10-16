@@ -50,10 +50,7 @@ class PolkadotChainUtils {
 
     // Nonce
     final nonceValue = _parseHex(payload['nonce']);
-    final nonceBytes = [
-      nonceValue & 0xFF,
-      (nonceValue >> 8) & 0xFF,
-    ];
+    final nonceBytes = [nonceValue & 0xFF, (nonceValue >> 8) & 0xFF];
 
     final tipValue = BigInt.parse(_normalizeHex(payload['tip']), radix: 16);
     final tipBytes = _compactEncodeBigInt(tipValue);
@@ -145,10 +142,7 @@ class PolkadotChainUtils {
         throw ArgumentError('Compact encoding supports max 2^536-1');
       }
 
-      return [
-        ((len - 4) << 2) | 0x03,
-        ...bytes,
-      ];
+      return [((len - 4) << 2) | 0x03, ...bytes];
     }
   }
 
@@ -160,10 +154,7 @@ class PolkadotChainUtils {
     } else if (value < BigInt.from(1 << 14)) {
       // two-byte mode
       int val = value.toInt() << 2 | 0x01;
-      return Uint8List.fromList([
-        val & 0xFF,
-        (val >> 8) & 0xFF,
-      ]);
+      return Uint8List.fromList([val & 0xFF, (val >> 8) & 0xFF]);
     } else if (value < BigInt.from(1 << 30)) {
       // four-byte mode
       int val = value.toInt() << 2 | 0x02;
@@ -181,10 +172,7 @@ class PolkadotChainUtils {
         throw ArgumentError('Compact encoding supports max 2^536-1');
       }
 
-      return Uint8List.fromList([
-        ((len - 4) << 2) | 0x03,
-        ...bytes,
-      ]);
+      return Uint8List.fromList([((len - 4) << 2) | 0x03, ...bytes]);
     }
   }
 

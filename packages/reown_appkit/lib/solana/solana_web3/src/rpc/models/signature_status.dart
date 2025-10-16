@@ -48,9 +48,9 @@ class SignatureStatus extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'slot': slot,
-        'confirmations': confirmations,
-        'err': err,
-        'confirmationStatus': confirmationStatus?.name,
-      };
+    'slot': slot,
+    'confirmations': confirmations,
+    'err': err,
+    'confirmationStatus': confirmationStatus?.name,
+  };
 }

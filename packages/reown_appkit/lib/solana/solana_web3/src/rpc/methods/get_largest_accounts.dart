@@ -13,16 +13,13 @@ import '../models/large_account.dart';
 class GetLargestAccounts
     extends JsonRpcListContextMethod<Map<String, dynamic>, LargeAccount> {
   /// Creates a codec for `getLargestAccounts` JSON RPC methods.
-  GetLargestAccounts({
-    final GetLargestAccountsConfig? config,
-  }) : super(
-          'getLargestAccounts',
-          config: config ?? const GetLargestAccountsConfig(),
-        );
+  GetLargestAccounts({final GetLargestAccountsConfig? config})
+    : super(
+        'getLargestAccounts',
+        config: config ?? const GetLargestAccountsConfig(),
+      );
 
   @override
-  LargeAccount itemDecoder(
-    final Map<String, dynamic> item,
-  ) =>
+  LargeAccount itemDecoder(final Map<String, dynamic> item) =>
       LargeAccount.fromJson(item);
 }

@@ -34,7 +34,6 @@ class BorshVecSizedCodec<T>
 /// An encoder for dynamically sized arrays with sized data types.
 class BorshVecSizedEncoder<T>
     extends BorshVecTypedEncoder<T, BorshCodecFixedSized<T>>
-
 /// Not using [BorshEncoderFixedSized] as the encoded list is variable in length.
 {
   /// Creates an encoder for dynamically sized arrays with sized data types.

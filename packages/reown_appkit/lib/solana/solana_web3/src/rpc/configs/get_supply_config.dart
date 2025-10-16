@@ -20,7 +20,7 @@ class GetSupplyConfig extends CommitmentConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        'commitment': commitment?.name,
-        'excludeNonCirculatingAccountsList': excludeNonCirculatingAccountsList,
-      };
+    'commitment': commitment?.name,
+    'excludeNonCirculatingAccountsList': excludeNonCirculatingAccountsList,
+  };
 }

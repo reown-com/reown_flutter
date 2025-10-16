@@ -66,9 +66,6 @@ class TransactionInfo<T extends Object> extends TransactionData<T> {
   }
 
   @override
-  Map<String, dynamic> toJson() => super.toJson()
-    ..addAll({
-      'slot': slot,
-      'blockTime': blockTime,
-    });
+  Map<String, dynamic> toJson() =>
+      super.toJson()..addAll({'slot': slot, 'blockTime': blockTime});
 }

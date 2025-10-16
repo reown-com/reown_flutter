@@ -1,6 +1,5 @@
 // ignore: library_annotations
 @Timeout(Duration(seconds: 45))
-
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -22,9 +21,7 @@ void main() {
       version: '2',
       topic: 'abc',
       symKey: 'xyz',
-      relay: Relay(
-        ReownConstants.RELAYER_DEFAULT_PROTOCOL,
-      ),
+      relay: Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
       methods: [
         [MethodConstants.WC_SESSION_PROPOSE],
         ['wc_authBatchRequest'],
@@ -51,9 +48,7 @@ void main() {
       version: '2',
       topic: 'abc',
       symKey: 'xyz',
-      relay: Relay(
-        ReownConstants.RELAYER_DEFAULT_PROTOCOL,
-      ),
+      relay: Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
       methods: null,
     );
     expect(
@@ -79,14 +74,19 @@ void main() {
     expect(parsed.v2Data!.methods.length, 0);
 
     // V1 testing
-    parsed = ReownCoreUtils.parseUri(Uri.parse(
-        'wc:00e46b69-d0cc-4b3e-b6a2-cee442f97188@1?bridge=https%3A%2F%2Fbridge.reown.org&key=91303dedf64285cbbaf9120f6e9d160a5c8aa3deb67017a3874cd272323f48ae'));
+    parsed = ReownCoreUtils.parseUri(
+      Uri.parse(
+        'wc:00e46b69-d0cc-4b3e-b6a2-cee442f97188@1?bridge=https%3A%2F%2Fbridge.reown.org&key=91303dedf64285cbbaf9120f6e9d160a5c8aa3deb67017a3874cd272323f48ae',
+      ),
+    );
     expect(parsed.protocol, 'wc');
     expect(parsed.version, URIVersion.v1);
     expect(parsed.topic, '00e46b69-d0cc-4b3e-b6a2-cee442f97188');
     expect(parsed.v2Data, null);
-    expect(parsed.v1Data!.key,
-        '91303dedf64285cbbaf9120f6e9d160a5c8aa3deb67017a3874cd272323f48ae');
+    expect(
+      parsed.v1Data!.key,
+      '91303dedf64285cbbaf9120f6e9d160a5c8aa3deb67017a3874cd272323f48ae',
+    );
     expect(parsed.v1Data!.bridge, 'https://bridge.reown.org');
   });
 
@@ -141,8 +141,8 @@ void main() {
         // print('${coreA.protocol}:${response.topic}@${coreA.version}');
         expect(
           response.uri.toString().startsWith(
-                '${coreA.protocol}:${response.topic}@${coreA.version}',
-              ),
+            '${coreA.protocol}:${response.topic}@${coreA.version}',
+          ),
           true,
         );
         expect(counter, 1);
@@ -220,8 +220,10 @@ void main() {
       final CreateResponse response = await coreA.pairing.create();
       const int mockExpiry = 1111111;
 
-      await coreA.pairing
-          .updateExpiry(topic: response.topic, expiry: mockExpiry);
+      await coreA.pairing.updateExpiry(
+        topic: response.topic,
+        expiry: mockExpiry,
+      );
       expect(coreA.pairing.getStore().get(response.topic)!.expiry, mockExpiry);
       expect(coreA.expirer.get(response.topic), mockExpiry);
     });
@@ -363,8 +365,7 @@ void main() {
           );
         });
 
-        test("throws when required methods aren't contained in registered",
-            () async {
+        test("throws when required methods aren't contained in registered", () async {
           const String uriWithMethods =
               '$TEST_URI&methods=[wc_sessionPropose],[wc_authBatchRequest]';
           expect(
@@ -415,47 +416,47 @@ void main() {
           // );
         });
 
-        test('succeeds when required methods are contained in registered',
-            () async {
-          List<RegisteredFunction> registeredFunctions = [
-            RegisteredFunction(
-              method: MethodConstants.WC_SESSION_PROPOSE,
+        test(
+          'succeeds when required methods are contained in registered',
+          () async {
+            List<RegisteredFunction> registeredFunctions = [
+              RegisteredFunction(
+                method: MethodConstants.WC_SESSION_PROPOSE,
                 function: (s, r, [a, t = TransportType.relay]) => {},
-              type: ProtocolType.sign,
-            ),
-            // RegisteredFunction(
-            //   method: 'wc_authRequest',
-            //   function: (s, r, [t = TransportType.relay]) => {},
-            //   type: ProtocolType.sign,
-            // ),
-            RegisteredFunction(
-              method: 'wc_authBatchRequest',
+                type: ProtocolType.sign,
+              ),
+              // RegisteredFunction(
+              //   method: 'wc_authRequest',
+              //   function: (s, r, [t = TransportType.relay]) => {},
+              //   type: ProtocolType.sign,
+              // ),
+              RegisteredFunction(
+                method: 'wc_authBatchRequest',
                 function: (s, r, [a, t = TransportType.relay]) => {},
-              type: ProtocolType.sign,
-            )
-          ];
-          expect(
-            JsonRpcUtils.validateMethods(
-              ['wc_sessionPropose'],
-              registeredFunctions,
-            ),
-            true,
-          );
-          expect(
-            JsonRpcUtils.validateMethods(
-              ['wc_sessionPropose'],
-              registeredFunctions,
-            ),
-            true,
-          );
-          expect(
-            JsonRpcUtils.validateMethods(
-              ['wc_sessionPropose', 'wc_authBatchRequest'],
-              registeredFunctions,
-            ),
-            true,
-          );
-        });
+                type: ProtocolType.sign,
+              ),
+            ];
+            expect(
+              JsonRpcUtils.validateMethods([
+                'wc_sessionPropose',
+              ], registeredFunctions),
+              true,
+            );
+            expect(
+              JsonRpcUtils.validateMethods([
+                'wc_sessionPropose',
+              ], registeredFunctions),
+              true,
+            );
+            expect(
+              JsonRpcUtils.validateMethods([
+                'wc_sessionPropose',
+                'wc_authBatchRequest',
+              ], registeredFunctions),
+              true,
+            );
+          },
+        );
       });
 
       group('Ping', () {
@@ -463,10 +464,12 @@ void main() {
           expect(
             () async => await coreA.pairing.ping(topic: 'abc'),
             throwsA(
-              predicate((e) =>
-                  e is ReownCoreError &&
-                  e.message ==
-                      "No matching key. pairing topic doesn't exist: abc"),
+              predicate(
+                (e) =>
+                    e is ReownCoreError &&
+                    e.message ==
+                        "No matching key. pairing topic doesn't exist: abc",
+              ),
             ),
           );
         });
@@ -477,10 +480,12 @@ void main() {
           expect(
             () async => await coreA.pairing.disconnect(topic: 'abc'),
             throwsA(
-              predicate((e) =>
-                  e is ReownCoreError &&
-                  e.message ==
-                      "No matching key. pairing topic doesn't exist: abc"),
+              predicate(
+                (e) =>
+                    e is ReownCoreError &&
+                    e.message ==
+                        "No matching key. pairing topic doesn't exist: abc",
+              ),
             ),
           );
         });

@@ -56,10 +56,7 @@ class CryptoUtils extends ICryptoUtils {
     Uint8List out = Uint8List(KEY_LENGTH);
 
     final HKDFKeyDerivator hkdf = HKDFKeyDerivator(SHA256Digest());
-    final HkdfParameters params = HkdfParameters(
-      sharedKey1,
-      KEY_LENGTH,
-    );
+    final HkdfParameters params = HkdfParameters(sharedKey1, KEY_LENGTH);
     hkdf.init(params);
     // final pc.KeyParameter keyParam = hkdf.extract(null, sharedKey1);
     hkdf.deriveKey(null, 0, out, 0);
@@ -69,11 +66,7 @@ class CryptoUtils extends ICryptoUtils {
   @override
   String hashKey(String key) {
     return hex.encode(
-      SHA256Digest().process(
-        Uint8List.fromList(
-          hex.decode(key),
-        ),
-      ),
+      SHA256Digest().process(Uint8List.fromList(hex.decode(key))),
     );
     // return hex.encode(Hash.sha256(hex.decode(key)));
   }
@@ -81,11 +74,7 @@ class CryptoUtils extends ICryptoUtils {
   @override
   String hashMessage(String message) {
     return hex.encode(
-      SHA256Digest().process(
-        Uint8List.fromList(
-          utf8.encode(message),
-        ),
-      ),
+      SHA256Digest().process(Uint8List.fromList(utf8.encode(message))),
     );
   }
 
@@ -116,9 +105,7 @@ class CryptoUtils extends ICryptoUtils {
     final chacha = dc.Chacha20.poly1305Aead();
     dc.SecretBox b = await chacha.encrypt(
       utf8.encode(message),
-      secretKey: dc.SecretKey(
-        hex.decode(symKey),
-      ),
+      secretKey: dc.SecretKey(hex.decode(symKey)),
       nonce: usedIV,
     );
 
@@ -135,9 +122,7 @@ class CryptoUtils extends ICryptoUtils {
   @override
   Future<String> decrypt(String symKey, String encoded) async {
     final chacha = dc.Chacha20.poly1305Aead();
-    final dc.SecretKey secretKey = dc.SecretKey(
-      hex.decode(symKey),
-    );
+    final dc.SecretKey secretKey = dc.SecretKey(hex.decode(symKey));
     final EncodingParams encodedData = deserialize(encoded);
     final dc.SecretBox b = dc.SecretBox.fromConcatenation(
       encodedData.ivSealed,
@@ -195,17 +180,11 @@ class CryptoUtils extends ICryptoUtils {
     int index = TYPE_LENGTH;
     Uint8List? senderPublicKey;
     if (type == EncodeOptions.TYPE_1) {
-      senderPublicKey = bytes.sublist(
-        index,
-        index + KEY_LENGTH,
-      );
+      senderPublicKey = bytes.sublist(index, index + KEY_LENGTH);
       index += KEY_LENGTH;
     }
     if (type == EncodeOptions.TYPE_2) {
-      senderPublicKey = bytes.sublist(
-        index,
-        index + KEY_LENGTH,
-      );
+      senderPublicKey = bytes.sublist(index, index + KEY_LENGTH);
       // index += KEY_LENGTH;
 
       Uint8List sealed = bytes.sublist(index);
@@ -263,11 +242,15 @@ class CryptoUtils extends ICryptoUtils {
     if (t == EncodeOptions.TYPE_1) {
       if (senderPublicKey == null) {
         throw const ReownCoreError(
-            code: -1, message: 'Missing sender public key');
+          code: -1,
+          message: 'Missing sender public key',
+        );
       }
       if (receiverPublicKey == null) {
         throw const ReownCoreError(
-            code: -1, message: 'Missing receiver public key');
+          code: -1,
+          message: 'Missing receiver public key',
+        );
       }
     }
     return EncodingValidation(
@@ -278,9 +261,7 @@ class CryptoUtils extends ICryptoUtils {
   }
 
   @override
-  bool isTypeOneEnvelope(
-    EncodingValidation result,
-  ) {
+  bool isTypeOneEnvelope(EncodingValidation result) {
     return result.type == EncodeOptions.TYPE_1 &&
         result.senderPublicKey != null &&
         result.receiverPublicKey != null;

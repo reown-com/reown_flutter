@@ -93,7 +93,8 @@ class EventsTracker extends GenericStore<List<String>>
     checkInitialized();
     try {
       debugPrint(
-          '[$runtimeType] [Events] tracker: ${_storedValue?.length} stored events');
+        '[$runtimeType] [Events] tracker: ${_storedValue?.length} stored events',
+      );
       return _storedValue ?? [];
     } catch (_) {
       return [];

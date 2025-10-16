@@ -15,9 +15,7 @@ void main() {
     late IStore<Map<String, dynamic>> store;
 
     setUp(() async {
-      store = SharedPrefsStores(
-        memoryStore: true,
-      );
+      store = SharedPrefsStores(memoryStore: true);
       await store.init();
     });
 
@@ -60,23 +58,14 @@ void main() {
           syncComplete.complete();
         });
 
-        expect(
-          specialStore.get('1')!.expiry,
-          -1,
-        );
+        expect(specialStore.get('1')!.expiry, -1);
 
-        await specialStore.update(
-          '1',
-          expiry: 2,
-        );
+        await specialStore.update('1', expiry: 2);
 
         await updateComplete.future;
         await syncComplete.future;
 
-        expect(
-          specialStore.get('1')!.expiry,
-          2,
-        );
+        expect(specialStore.get('1')!.expiry, 2);
       });
     });
   });

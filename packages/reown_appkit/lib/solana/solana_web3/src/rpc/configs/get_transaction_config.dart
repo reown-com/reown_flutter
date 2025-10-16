@@ -15,10 +15,14 @@ class GetTransactionConfig extends CommitmentConfig {
     this.encoding = TransactionEncoding.base64,
     super.commitment,
     this.maxSupportedTransactionVersion,
-  })  : assert(maxSupportedTransactionVersion == null ||
-            maxSupportedTransactionVersion >= 0),
-        assert(commitment != Commitment.processed,
-            'The commitment "processed" is not supported.');
+  }) : assert(
+         maxSupportedTransactionVersion == null ||
+             maxSupportedTransactionVersion >= 0,
+       ),
+       assert(
+         commitment != Commitment.processed,
+         'The commitment "processed" is not supported.',
+       );
 
   /// The transaction data's encoding (default: [TransactionEncoding.json]).
   final TransactionEncoding? encoding;
@@ -30,8 +34,8 @@ class GetTransactionConfig extends CommitmentConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        'encoding': encoding?.name,
-        'commitment': commitment?.name,
-        'maxSupportedTransactionVersion': maxSupportedTransactionVersion,
-      };
+    'encoding': encoding?.name,
+    'commitment': commitment?.name,
+    'maxSupportedTransactionVersion': maxSupportedTransactionVersion,
+  };
 }

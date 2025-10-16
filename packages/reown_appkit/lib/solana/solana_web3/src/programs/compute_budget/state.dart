@@ -4,10 +4,7 @@ library;
 
 class RequestUnitsParams {
   /// Request units instruction params.
-  const RequestUnitsParams({
-    required this.units,
-    required this.additionalFee,
-  });
+  const RequestUnitsParams({required this.units, required this.additionalFee});
 
   /// Units to request for transaction-wide compute.
   final int units;
