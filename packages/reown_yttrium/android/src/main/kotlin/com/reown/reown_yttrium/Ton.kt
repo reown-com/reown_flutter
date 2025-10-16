@@ -27,7 +27,7 @@ class Ton(private val projectId: String, private val networkId: String, private 
         pulseMetadata = pulseMetadata
     )
 
-    // region ==== INSTANCE METHODS ====
+    // ==== INSTANCE METHODS ====
 
     fun generateKeypair(result: MethodChannel.Result) {
         val keyPair = tonClient.generateKeypair()

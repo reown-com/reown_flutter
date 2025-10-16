@@ -11,6 +11,8 @@ import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.d
 import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/polkadot_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/stacks/stacks_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/sui/sui_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/ton/ton_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/tron_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/deep_link_handler.dart';
@@ -157,6 +159,30 @@ class WalletKitService extends IWalletKitService {
           final tonService = TonService(chainSupported: chainData);
           await tonService.init();
           return tonService;
+        },
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Stacks Chains
+    for (final chainData in ChainsDataList.stacksChains) {
+      GetIt.I.registerSingletonAsync<StacksService>(
+        () async {
+          final stacksService = StacksService(chainSupported: chainData);
+          await stacksService.init();
+          return stacksService;
+        },
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Sui Chains
+    for (final chainData in ChainsDataList.suiChains) {
+      GetIt.I.registerSingletonAsync<SUIService>(
+        () async {
+          final suiService = SUIService(chainSupported: chainData);
+          await suiService.init();
+          return suiService;
         },
         instanceName: chainData.chainId,
       );

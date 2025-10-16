@@ -17,7 +17,6 @@ import 'package:reown_yttrium/models/ton.dart';
 class TonService {
   late final ReownWalletKit _walletKit;
   late final TonClient _tonClient;
-
   final ChainMetadata chainSupported;
 
   Map<String, dynamic Function(String, dynamic)> get tonRequestHandlers => {
@@ -137,8 +136,7 @@ class TonService {
     );
 
     try {
-      final params = parameters as List;
-      final paramsMap = params.first as Map<String, dynamic>;
+      final paramsMap = parameters as Map<String, dynamic>;
       final validUntil = paramsMap['valid_until'] as int;
       final address = paramsMap['from'] as String;
       final messages = (paramsMap['messages'] as List)
