@@ -498,8 +498,7 @@ class _MyHomePageState extends State<MyHomePage> {
               'https://pbs.twimg.com/profile_images/1910273399282159616/OLSiIjEx_400x400.png',
           currency: 'ATOM',
           rpcUrl: 'https://rpc.cosmos.network',
-          explorerUrl:
-              'https://www.mintscan.io/cosmos/',
+          explorerUrl: 'https://www.mintscan.io/cosmos/',
         ),
       ]);
     }
@@ -948,7 +947,7 @@ class _MyHomePageState extends State<MyHomePage> {
 //   Future<void> _initializeService() async {
 //     _appKitModal = ReownAppKitModal(
 //       context: context,
-//       projectId: '876c626bd43841c04f50fc96ea1e31a2',
+//       projectId: '876c......',
 //       logLevel: LogLevel.all,
 //       metadata: PairingMetadata(
 //         name: 'DwE Demo',

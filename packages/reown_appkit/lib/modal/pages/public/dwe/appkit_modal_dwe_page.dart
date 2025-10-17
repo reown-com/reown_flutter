@@ -75,6 +75,13 @@ class _ReownAppKitModalDepositScreenState
       final supportedAssets = appKitModal.appKit!.getPaymentAssetsForNetwork(
         chainId: chainId,
       );
+      if (supportedAssets.isEmpty) {
+        GetIt.I<IToastService>().show(
+          ToastMessage(type: ToastType.error, text: 'No assets supported'),
+        );
+        setState(() {});
+        return;
+      }
       if (_dweService.selectedAsset.value?.network != chainId) {
         _dweService.selectedAsset.value =
             supportedAssets.firstWhereOrNull(
@@ -111,22 +118,25 @@ class _ReownAppKitModalDepositScreenState
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: Row(
-                  children: [
-                    Text(
-                      'Asset',
-                      style: themeData.textStyles.large400.copyWith(
-                        color: themeColors.foreground300,
+              Visibility(
+                visible: _dweService.supportedAssets.isNotEmpty,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Row(
+                    children: [
+                      Text(
+                        'Asset',
+                        style: themeData.textStyles.large400.copyWith(
+                          color: themeColors.foreground300,
+                        ),
                       ),
-                    ),
-                    Spacer(),
-                    AbsorbPointer(
-                      absorbing: widget.preselectedAsset != null,
-                      child: AssetsButton(),
-                    ),
-                  ],
+                      Spacer(),
+                      AbsorbPointer(
+                        absorbing: widget.preselectedAsset != null,
+                        child: AssetsButton(),
+                      ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox.square(dimension: kPadding12),
@@ -157,7 +167,19 @@ class _ReownAppKitModalDepositScreenState
                     )
                   : AmountSelector(),
               const SizedBox.square(dimension: kPadding16),
-              Divider(color: themeColors.grayGlass005, height: 0.0),
+              Visibility(
+                visible: _dweService.supportedAssets.isNotEmpty,
+                child: Divider(color: themeColors.grayGlass005, height: 0.0),
+              ),
+              Visibility(
+                visible: _dweService.supportedAssets.isEmpty,
+                child: Text(
+                  'No assets supported for the selected network',
+                  style: themeData.textStyles.paragraph400.copyWith(
+                    color: themeColors.foreground100,
+                  ),
+                ),
+              ),
               const SizedBox.square(dimension: kPadding12),
               ExchangesListWidget(
                 recipient: widget.preselectedRecipient,
