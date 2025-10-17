@@ -50,7 +50,7 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
           if (cachedTokens.isNotEmpty) {
             _tokens = List<TokenBalance>.from(cachedTokens);
           } else {
-            _tokens = await _blockchainService.getBalance(
+            _tokens = await _blockchainService.getTokenBalance(
               address: address,
               caip2Chain: chainId,
             );

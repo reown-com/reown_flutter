@@ -1731,7 +1731,7 @@ class ReownAppKitModal
     final namespace = NamespaceUtils.getNamespaceFromChain(_selectedChainID!);
 
     try {
-      _chainBalance = await _blockchainService.getTokenBalance(
+      _chainBalance = await _blockchainService.getNativeBalance(
         address: _currentSession!.getAddress(namespace)!,
         namespace: namespace,
         chainId: _selectedChainID!,

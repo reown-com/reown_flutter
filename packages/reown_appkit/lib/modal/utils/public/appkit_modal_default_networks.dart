@@ -478,7 +478,5 @@ class ReownAppKitModalNetworks {
     // Solana
     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp':
         'a1b58899-f671-4276-6a5e-56ca5bd59700',
-    // Near
-    'near:mainnet': 'ab3d4dee-e416-4d8d-226c-4c131b8b7600',
   };
 }

@@ -153,7 +153,7 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
-        _tokens = await _blockchainService.getBalance(
+        _tokens = await _blockchainService.getTokenBalance(
           address: address,
           caip2Chain: chainId,
         );

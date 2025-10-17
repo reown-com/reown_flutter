@@ -88,7 +88,7 @@ class ExchangeService implements IExchangeService {
       projectId: core.projectId,
       source: 'fund-wallet',
       st: CoreConstants.X_SDK_TYPE,
-      sv: CoreConstants.X_SDK_VERSION,
+      sv: ReownCoreUtils.coreSdkVersion(packageVersion),
     ).toJson();
     final jsonRequest = rpcRequest.toJson();
     final url = Uri.parse(_baseUrl).replace(queryParameters: qParams);

@@ -127,7 +127,12 @@ class ExplorerService implements IExplorerService {
 
     // TODO ideally we should call this at every opening to be able to detect newly installed wallets.
     if (!kIsWeb) {
-      final nativeData = await _fetchNativeAppData();
+      List<NativeAppData> nativeData = await _fetchNativeAppData();
+      if ((includedWalletIds ?? {}).isNotEmpty) {
+        nativeData = List<NativeAppData>.from(
+          nativeData.where((e) => includedWalletIds!.contains(e.id)),
+        );
+      }
       final installed = (await nativeData.getInstalledApps())
           .where((e) => !(excludedWalletIds ?? {}).contains(e.id))
           .toList();

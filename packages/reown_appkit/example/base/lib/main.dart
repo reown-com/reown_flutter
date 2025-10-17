@@ -249,7 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Set<String>? _featuredWalletIds() {
+  Set<String>? _specificsWalletIds() {
     return {
       // '2c81da3add65899baeac53758a07e652eea46dbb5195b8074772c62a77bbf568', // Ambire Wallet
       'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393', // Phantom
@@ -306,9 +306,9 @@ class _MyHomePageState extends State<MyHomePage> {
       siweConfig: _siweConfig(linkModeEnabled),
       featuresConfig: socialsEnabled ? _featuresConfig() : null,
       optionalNamespaces: _namespacesBasedOnChains(),
-      featuredWalletIds: _featuredWalletIds(),
+      featuredWalletIds: _specificsWalletIds(),
       // excludedWalletIds: {},
-      // includedWalletIds: {},
+      // includedWalletIds: _specificsWalletIds(),
       // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
       getBalanceFallback: () async {
         // This method will be triggered if getting the balance from our blockchain API fails
@@ -446,7 +446,7 @@ class _MyHomePageState extends State<MyHomePage> {
           name: 'Tron',
           chainId: '0x2b6653dc',
           chainIcon:
-              'https://pbs.twimg.com/profile_images/1761904730668675072/v98T7vRL_400x400.jpg',
+              'https://pbs.twimg.com/profile_images/1970541264568520704/J6wYDxYk_400x400.jpg',
           currency: 'TRX',
           rpcUrl: 'https://api.trongrid.io',
           explorerUrl: 'https://tronscan.org',
@@ -468,7 +468,7 @@ class _MyHomePageState extends State<MyHomePage> {
           rpcUrl: 'https://api.multiversx.com',
           explorerUrl: 'https://explorer.multiversx.com',
           chainIcon:
-              'https://pbs.twimg.com/profile_images/1930193204848017408/y4SIVeu8_400x400.jpg',
+              'https://pbs.twimg.com/profile_images/1953134940301774848/UbIBbfXn_400x400.jpg',
         ),
       ]);
       ReownAppKitModalNetworks.addSupportedNetworks('near', [
@@ -479,7 +479,7 @@ class _MyHomePageState extends State<MyHomePage> {
           rpcUrl: 'https://rpc.mainnet.near.org',
           explorerUrl: 'https://nearblocks.io',
           chainIcon:
-              'https://pbs.twimg.com/profile_images/1933192512342233088/3ccXhgUx_400x400.jpg',
+              'https://pbs.twimg.com/profile_images/1970880320103985152/SAMA6Vh0_400x400.jpg',
         ),
         ReownAppKitModalNetworkInfo(
           name: 'Near Testnet',
@@ -494,12 +494,12 @@ class _MyHomePageState extends State<MyHomePage> {
         ReownAppKitModalNetworkInfo(
           name: 'Cosmos hub',
           chainId: 'cosmoshub-4',
+          chainIcon:
+              'https://pbs.twimg.com/profile_images/1910273399282159616/OLSiIjEx_400x400.png',
           currency: 'ATOM',
           rpcUrl: 'https://rpc.cosmos.network',
           explorerUrl:
-              'https://www.mintscan.io/cosmos/', // 'https://www.mintscan.io',
-          chainIcon:
-              'https://pbs.twimg.com/profile_images/1910273399282159616/OLSiIjEx_400x400.png',
+              'https://www.mintscan.io/cosmos/',
         ),
       ]);
     }
