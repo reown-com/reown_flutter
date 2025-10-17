@@ -200,6 +200,9 @@ class _VerifyOtpViewState extends State<VerifyOtpView>
                       overlayColor: WidgetStateProperty.all<Color>(
                         themeColors.accenGlass010,
                       ),
+                      shadowColor: WidgetStateProperty.all<Color>(
+                        themeColors.accenGlass010,
+                      ),
                       padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
                         const EdgeInsets.symmetric(horizontal: 8.0),
                       ),

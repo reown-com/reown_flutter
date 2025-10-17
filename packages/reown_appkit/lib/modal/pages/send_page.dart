@@ -15,8 +15,6 @@ import 'package:reown_appkit/modal/services/blockchain_service/models/token_bala
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/buttons/network_button.dart';
-import 'package:reown_appkit/modal/widgets/buttons/primary_button.dart';
-import 'package:reown_appkit/modal/widgets/buttons/secondary_button.dart';
 import 'package:reown_appkit/modal/widgets/buttons/simple_icon_button.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/searchbar.dart';
@@ -209,6 +207,7 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
                     children: [
                       Stack(
                         children: [
+                          // TODO rename as TokenButton
                           NetworkButton(
                             serviceStatus: appKitModal.status,
                             chainInfo: appKitModal.selectedChain,

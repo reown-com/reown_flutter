@@ -9,7 +9,6 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/activity_page.dart';
 import 'package:reown_appkit/modal/pages/upgrade_wallet_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
@@ -143,6 +142,7 @@ class _DefaultAccountView extends StatelessWidget {
         //   child: _ConnectedWalletButton(),
         // ),
         _SelectNetworkButton(),
+        _FundWalletButton(),
         Visibility(
           visible: !isMagicService && !smartAccounts,
           child: _ActivityButton(),
@@ -360,6 +360,52 @@ class _SelectNetworkButton extends StatelessWidget {
           onTap: () => _widgetStack.push(
             ReownAppKitModalSelectNetworkPage(),
             event: ClickNetworksEvent(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _FundWalletButton extends StatelessWidget {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
+  @override
+  Widget build(BuildContext context) {
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    return Column(
+      children: [
+        const SizedBox.square(dimension: kPadding8),
+        AccountListItem(
+          iconWidget: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(17.0)),
+                border: Border.fromBorderSide(
+                  BorderSide(
+                    color: themeColors.grayGlass002,
+                    width: 2.0,
+                    strokeAlign: BorderSide.strokeAlignOutside,
+                  ),
+                ),
+              ),
+              child: CircleAvatar(
+                radius: 17.0,
+                child: Icon(
+                  Icons.attach_money_outlined,
+                  color: themeColors.accent100,
+                  size: 26.0,
+                ),
+                backgroundColor: themeColors.accenGlass015,
+                foregroundColor: themeColors.accent100,
+              ),
+            ),
+          ),
+          title: 'Fund wallet',
+          onTap: () => _widgetStack.push(
+            ReownAppKitModalDepositScreen(),
+            // event: ClickNetworksEvent(),
           ),
         ),
       ],

@@ -17,12 +17,14 @@ class AppKitModalNetworkSelectButton extends StatefulWidget {
     this.size = BaseButtonSize.regular,
     this.context,
     this.custom,
+    this.closeAfterPick = false,
   });
 
   final IReownAppKitModal appKit;
   final BaseButtonSize size;
   final BuildContext? context;
   final Widget? custom;
+  final bool closeAfterPick;
 
   @override
   State<AppKitModalNetworkSelectButton> createState() =>
@@ -64,7 +66,11 @@ class _AppKitModalNetworkSelectButtonState
       ReownAppKitModalSelectNetworkPage(
         onTapNetwork: (info) {
           widget.appKit.selectChain(info);
-          _widgetStack.addDefault();
+          if (widget.closeAfterPick) {
+            widget.appKit.closeModal();
+          } else {
+            _widgetStack.addDefault();
+          }
         },
       ),
     );

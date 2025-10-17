@@ -74,6 +74,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   bool _isDarkMode = false;
+  bool _isCustomTheme = false;
 
   @override
   void initState() {
@@ -110,6 +111,39 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return ReownAppKitModalTheme(
       isDarkMode: _isDarkMode,
+      themeData: _isCustomTheme
+          ? ReownAppKitModalThemeData(
+              darkColors: ReownAppKitModalColors.darkMode.copyWith(
+                accent100: const Color.fromARGB(255, 55, 186, 149),
+                accent090: const Color.fromARGB(255, 55, 186, 149),
+                accent080: const Color.fromARGB(255, 55, 186, 149),
+                grayGlass100: const Color.fromARGB(255, 55, 186, 149),
+                // Main Modal's background color
+                background125: const Color.fromARGB(255, 0, 0, 0),
+                // Main Modal's text
+                foreground100: const Color.fromARGB(255, 55, 186, 149),
+                // Secondary Modal's text
+                foreground125: const Color.fromARGB(255, 255, 255, 255),
+                foreground200: const Color.fromARGB(255, 255, 255, 255),
+                foreground300: const Color.fromARGB(255, 255, 255, 255),
+              ),
+              lightColors: ReownAppKitModalColors.darkMode.copyWith(
+                accent100: const Color.fromARGB(255, 55, 186, 149),
+                accent090: const Color.fromARGB(255, 55, 186, 149),
+                accent080: const Color.fromARGB(255, 55, 186, 149),
+                grayGlass100: const Color.fromARGB(255, 55, 186, 149),
+                // Main Modal's background color
+                background125: const Color.fromARGB(255, 255, 255, 255),
+                // Main Modal's text
+                foreground100: const Color.fromARGB(255, 55, 186, 149),
+                // Secondary Modal's text
+                foreground125: const Color.fromARGB(255, 0, 0, 0),
+                foreground200: const Color.fromARGB(255, 0, 0, 0),
+                foreground300: const Color.fromARGB(255, 0, 0, 0),
+              ),
+              radiuses: ReownAppKitModalRadiuses.square,
+            )
+          : null,
       child: MaterialApp(
         navigatorObservers: [
           SentryNavigatorObserver(),
@@ -124,14 +158,26 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   primary: ReownAppKitModalThemeData().lightColors.accent100,
                 ),
         ),
-        home: const MyHomePage(),
+        home: MyHomePage(
+            isCustomTheme: _isCustomTheme,
+            toggleTheme: () {
+              setState(() {
+                _isCustomTheme = !_isCustomTheme;
+              });
+            }),
       ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+  const MyHomePage({
+    super.key,
+    required this.isCustomTheme,
+    required this.toggleTheme,
+  });
+  final VoidCallback toggleTheme;
+  final bool isCustomTheme;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -203,7 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Set<String>? _featuredWalletIds() {
+  Set<String>? _specificsWalletIds() {
     return {
       // '2c81da3add65899baeac53758a07e652eea46dbb5195b8074772c62a77bbf568', // Ambire Wallet
       'a797aa35c0fadbfc1a53e7f675162ed5226968b44a19ee3d24385c64d1d3c393', // Phantom
@@ -260,9 +306,9 @@ class _MyHomePageState extends State<MyHomePage> {
       siweConfig: _siweConfig(linkModeEnabled),
       featuresConfig: socialsEnabled ? _featuresConfig() : null,
       optionalNamespaces: _namespacesBasedOnChains(),
-      featuredWalletIds: _featuredWalletIds(),
+      featuredWalletIds: _specificsWalletIds(),
       // excludedWalletIds: {},
-      // includedWalletIds: {},
+      // includedWalletIds: _specificsWalletIds(),
       // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
       getBalanceFallback: () async {
         // This method will be triggered if getting the balance from our blockchain API fails
@@ -400,7 +446,7 @@ class _MyHomePageState extends State<MyHomePage> {
           name: 'Tron',
           chainId: '0x2b6653dc',
           chainIcon:
-              'https://pbs.twimg.com/profile_images/1761904730668675072/v98T7vRL_400x400.jpg',
+              'https://pbs.twimg.com/profile_images/1970541264568520704/J6wYDxYk_400x400.jpg',
           currency: 'TRX',
           rpcUrl: 'https://api.trongrid.io',
           explorerUrl: 'https://tronscan.org',
@@ -422,7 +468,7 @@ class _MyHomePageState extends State<MyHomePage> {
           rpcUrl: 'https://api.multiversx.com',
           explorerUrl: 'https://explorer.multiversx.com',
           chainIcon:
-              'https://pbs.twimg.com/profile_images/1930193204848017408/y4SIVeu8_400x400.jpg',
+              'https://pbs.twimg.com/profile_images/1953134940301774848/UbIBbfXn_400x400.jpg',
         ),
       ]);
       ReownAppKitModalNetworks.addSupportedNetworks('near', [
@@ -433,7 +479,7 @@ class _MyHomePageState extends State<MyHomePage> {
           rpcUrl: 'https://rpc.mainnet.near.org',
           explorerUrl: 'https://nearblocks.io',
           chainIcon:
-              'https://pbs.twimg.com/profile_images/1933192512342233088/3ccXhgUx_400x400.jpg',
+              'https://pbs.twimg.com/profile_images/1970880320103985152/SAMA6Vh0_400x400.jpg',
         ),
         ReownAppKitModalNetworkInfo(
           name: 'Near Testnet',
@@ -448,12 +494,11 @@ class _MyHomePageState extends State<MyHomePage> {
         ReownAppKitModalNetworkInfo(
           name: 'Cosmos hub',
           chainId: 'cosmoshub-4',
-          currency: 'ATOM',
-          rpcUrl: 'https://rpc.cosmos.network',
-          explorerUrl:
-              'https://www.mintscan.io/cosmos/', // 'https://www.mintscan.io',
           chainIcon:
               'https://pbs.twimg.com/profile_images/1910273399282159616/OLSiIjEx_400x400.png',
+          currency: 'ATOM',
+          rpcUrl: 'https://rpc.cosmos.network',
+          explorerUrl: 'https://www.mintscan.io/cosmos/',
         ),
       ]);
     }
@@ -555,6 +600,16 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(_pageDatas[_selectedIndex].title),
         actions: [
+          const Text('Themed '),
+          Transform.scale(
+            scale: 0.7,
+            alignment: Alignment.centerLeft,
+            child: Switch(
+                value: widget.isCustomTheme,
+                onChanged: (_) {
+                  widget.toggleTheme.call();
+                }),
+          ),
           const Text('Relay '),
           CircleAvatar(
             radius: 6.0,
@@ -768,3 +823,266 @@ class _MyHomePageState extends State<MyHomePage> {
     ));
   }
 }
+
+// ****************
+
+// Future<void> main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+
+//   runApp(MyApp());
+// }
+
+// class MyApp extends StatefulWidget {
+//   const MyApp({super.key});
+
+//   @override
+//   State<MyApp> createState() => _MyAppState();
+// }
+
+// class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+//   bool _isDarkMode = false;
+//   bool _isCustomTheme = true;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     WidgetsBinding.instance.addObserver(this);
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       setState(() {
+//         final platformDispatcher = View.of(context).platformDispatcher;
+//         final platformBrightness = platformDispatcher.platformBrightness;
+//         _isDarkMode = platformBrightness == Brightness.dark;
+//       });
+//     });
+//   }
+
+//   @override
+//   void dispose() {
+//     WidgetsBinding.instance.removeObserver(this);
+//     super.dispose();
+//   }
+
+//   @override
+//   void didChangePlatformBrightness() {
+//     if (mounted) {
+//       setState(() {
+//         final platformDispatcher = View.of(context).platformDispatcher;
+//         final platformBrightness = platformDispatcher.platformBrightness;
+//         _isDarkMode = platformBrightness == Brightness.dark;
+//       });
+//     }
+//     super.didChangePlatformBrightness();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return ReownAppKitModalTheme(
+//       isDarkMode: true,
+//       themeData: _isCustomTheme
+//           ? ReownAppKitModalThemeData(
+//               darkColors: ReownAppKitModalColors.darkMode.copyWith(
+//                 accent100: const Color.fromARGB(255, 55, 186, 149),
+//                 accent090: const Color.fromARGB(255, 55, 186, 149),
+//                 accent080: const Color.fromARGB(255, 55, 186, 149),
+//                 grayGlass100: const Color.fromARGB(255, 55, 186, 149),
+//                 // Main Modal's background color
+//                 background125: const Color.fromARGB(255, 0, 0, 0),
+//                 // Main Modal's text
+//                 foreground100: const Color.fromARGB(255, 55, 186, 149),
+//                 // Secondary Modal's text
+//                 foreground125: const Color.fromARGB(255, 255, 255, 255),
+//                 foreground200: const Color.fromARGB(255, 255, 255, 255),
+//                 foreground300: const Color.fromARGB(255, 255, 255, 255),
+//               ),
+//               lightColors: ReownAppKitModalColors.darkMode.copyWith(
+//                 accent100: const Color.fromARGB(255, 55, 186, 149),
+//                 accent090: const Color.fromARGB(255, 55, 186, 149),
+//                 accent080: const Color.fromARGB(255, 55, 186, 149),
+//                 grayGlass100: const Color.fromARGB(255, 55, 186, 149),
+//                 // Main Modal's background color
+//                 background125: const Color.fromARGB(255, 255, 255, 255),
+//                 // Main Modal's text
+//                 foreground100: const Color.fromARGB(255, 55, 186, 149),
+//                 // Secondary Modal's text
+//                 foreground125: const Color.fromARGB(255, 0, 0, 0),
+//                 foreground200: const Color.fromARGB(255, 0, 0, 0),
+//                 foreground300: const Color.fromARGB(255, 0, 0, 0),
+//               ),
+//               radiuses: ReownAppKitModalRadiuses.circular,
+//             )
+//           : null,
+//       child: MaterialApp(
+//         title: 'DwE Demo',
+//         theme: ThemeData(
+//           colorScheme: _isDarkMode
+//               ? ColorScheme.dark(
+//                   primary: ReownAppKitModalThemeData().darkColors.accent100,
+//                 )
+//               : ColorScheme.light(
+//                   primary: ReownAppKitModalThemeData().lightColors.accent100,
+//                 ),
+//         ),
+//         home: const DWEHomePage(),
+//       ),
+//     );
+//   }
+// }
+
+// class DWEHomePage extends StatefulWidget {
+//   const DWEHomePage({super.key});
+
+//   @override
+//   State<DWEHomePage> createState() => _DWEHomePageState();
+// }
+
+// class _DWEHomePageState extends State<DWEHomePage> {
+//   ReownAppKitModal? _appKitModal;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _initializeService();
+//   }
+
+//   Future<void> _initializeService() async {
+//     _appKitModal = ReownAppKitModal(
+//       context: context,
+//       projectId: '876c......',
+//       logLevel: LogLevel.all,
+//       metadata: PairingMetadata(
+//         name: 'DwE Demo',
+//         description: 'Deposit With Exchange Demo',
+//         // url: _universalLink(),
+//         icons: ['https://avatars.githubusercontent.com/u/37784886?s=200&v=4'],
+//         // redirect: _constructRedirect(linkModeEnabled),
+//       ),
+//     );
+//     _appKitModal!.onModalConnect.subscribe(_eventHandler);
+//     _appKitModal!.onModalDisconnect.subscribe(_eventHandler);
+//     await _appKitModal!.init();
+//     setState(() {});
+//   }
+
+//   void _eventHandler(dynamic event) {
+//     setState(() {});
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('DwE Demo', style: TextStyle(color: Colors.white)),
+//         backgroundColor: const Color.fromARGB(255, 34, 34, 34),
+//       ),
+//       backgroundColor: const Color.fromARGB(255, 34, 34, 34),
+//       body: _appKitModal?.status.isInitialized == true
+//           ? Column(
+//               mainAxisAlignment: MainAxisAlignment.start,
+//               crossAxisAlignment: CrossAxisAlignment.center,
+//               children: [
+//                 const SizedBox(width: double.infinity),
+//                 AppKitModalConnectButton(
+//                   appKit: _appKitModal!,
+//                   context: context,
+//                 ),
+//                 Visibility(
+//                   visible: _appKitModal!.isConnected,
+//                   child: Column(
+//                     children: [
+//                       AppKitModalNetworkSelectButton(
+//                         appKit: _appKitModal!,
+//                         context: context,
+//                         closeAfterPick: true,
+//                       ),
+//                       AppKitModalAccountButton(
+//                         appKitModal: _appKitModal!,
+//                         context: context,
+//                         custom: SecondaryButton(
+//                           title: 'Deposit with Exchange',
+//                           size: BaseButtonSize.regular,
+//                           onTap: () {
+//                             _appKitModal!.openModalView(
+//                               ReownAppKitModalDepositScreen(),
+//                             );
+//                           },
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ],
+//             )
+//           : Center(child: CircularProgressIndicator()),
+//     );
+//   }
+// }
+
+// // headless implementation example
+// final appKit = ReownAppKit(
+//   core: ReownCore(
+//     // Project ID retrieved from Reown Dashboard
+//     projectId: '876c62..........',
+//   ),
+//   metadata: PairingMetadata(
+//     name: 'Example',
+//     description: 'Deposit With Exchange Example',
+//     url: 'https://example.com/',
+//     icons: ['https://example.com/icon.png'],
+//     redirect: Redirect(native: 'exampleapp://'),
+//   ),
+// );
+// await appKit.init();
+
+// // 1 GET ASSETS
+// final List<ExchangeAsset> assets = appKit.getPaymentAssetsForNetwork(
+//   chainId: 'eip155:1',
+// );
+
+// // GET EXCHANGES
+// final getExchangesParams = GetExchangesParams(page: 1, asset: assets.first);
+// final GetExchangesResult exchangesResult = await appKit.getExchanges(
+//   params: getExchangesParams,
+// );
+// // exchangesResult.exchanges;
+// // exchangesResult.total;
+
+// // 2 GET PAYMENT URL
+// final getExchangeUrlParams = GetExchangeUrlParams(
+//   exchangeId: exchangesResult.exchanges.first.id,
+//   asset: assets.first,
+//   amount: '1.0',
+//   recipient: '${assets.first.network}:0x1234567890ABCDEF',
+// );
+// final GetExchangeUrlResult urlResult = await appKit.getExchangeUrl(
+//   params: getExchangeUrlParams,
+// );
+// // urlResult.url (to be launched in the user's device);
+// // urlResult.sessionId
+
+// // 3 GET PAYMENT STATUS
+// // loop every 5 seconds
+// int maxAttempts = 30;
+// int currentAttempt = 0;
+// while (currentAttempt < maxAttempts) {
+//   try {
+//     final params = GetExchangeDepositStatusParams(
+//       exchangeId: exchangesResult.exchanges.first.id,
+//       sessionId: urlResult.sessionId,
+//     );
+//     final GetExchangeDepositStatusResult status = await appKit
+//         .getExchangeDepositStatus(params: params);
+//     if (status.status == 'CONFIRMED' || status.status == 'FAILED') {
+//       debugPrint(status.txHash);
+//       break;
+//     }
+//     currentAttempt++;
+//     if (currentAttempt < maxAttempts) {
+//       await Future.delayed(Duration(seconds: 5));
+//     } else {
+//       // Max attempts reached, complete with timeout status
+//       break;
+//     }
+//   } catch (e) {
+//     break;
+//   }
+// }

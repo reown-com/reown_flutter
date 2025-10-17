@@ -54,6 +54,8 @@ class ReownAppKit implements IReownAppKit {
   @override
   final PairingMetadata metadata;
 
+  late final IExchangeService _exchangeService;
+
   ///
   ReownAppKit({required this.core, required this.metadata}) {
     reOwnSign = ReownSign(
@@ -108,6 +110,8 @@ class ReownAppKit implements IReownAppKit {
         },
       ),
     );
+
+    _exchangeService = ExchangeService(core: core);
   }
 
   @override
@@ -349,4 +353,59 @@ class ReownAppKit implements IReownAppKit {
 
   @override
   IGenericStore<String> get pairingTopics => reOwnSign.pairingTopics;
+
+  // Exchange Service
+
+  @override
+  List<ExchangeAsset> getPaymentAssetsForNetwork({String? chainId}) {
+    if (chainId == null) {
+      return allExchangeAssets;
+    }
+
+    if (!NamespaceUtils.isValidChainId(chainId)) {
+      throw Errors.getSdkError(
+        Errors.UNSUPPORTED_CHAINS,
+        context: 'chainId should conform to "CAIP-2" format',
+      ).toSignError();
+    }
+    return allExchangeAssets.where((a) => a.network == chainId).toList();
+  }
+
+  @override
+  Future<GetExchangesResult> getExchanges({
+    required GetExchangesParams params,
+  }) async {
+    try {
+      final result = await _exchangeService.getExchanges(params: params);
+      return GetExchangesResult.fromJson(result.result);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<GetExchangeUrlResult> getExchangeUrl({
+    required GetExchangeUrlParams params,
+  }) async {
+    try {
+      final result = await _exchangeService.getExchangeUrl(params: params);
+      return GetExchangeUrlResult.fromJson(result.result);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<GetExchangeDepositStatusResult> getExchangeDepositStatus({
+    required GetExchangeDepositStatusParams params,
+  }) async {
+    try {
+      final result = await _exchangeService.getExchangeDepositStatus(
+        params: params,
+      );
+      return GetExchangeDepositStatusResult.fromJson(result.result);
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

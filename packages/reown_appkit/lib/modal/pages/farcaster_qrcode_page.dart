@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/pages/social_login_page.dart';
-import 'package:reown_appkit/modal/widgets/buttons/primary_button.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 

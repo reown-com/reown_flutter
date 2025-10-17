@@ -88,7 +88,7 @@ class ChainsDataList {
       chainId: 'eip155:11155111',
       name: 'Eth Sepolia',
       logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
-      color: Colors.blue.shade300,
+      color: const Color.fromARGB(255, 0, 0, 0),
       isTestnet: true,
       rpc: [
         'https://rpc.walletconnect.org/v1',
@@ -99,7 +99,7 @@ class ChainsDataList {
       chainId: 'eip155:84531',
       name: 'Base Sepolia',
       logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
-      color: Colors.blue.shade300,
+      color: const Color.fromARGB(255, 0, 0, 0),
       isTestnet: true,
       rpc: ['https://sepolia.base.org'],
     ),
@@ -108,7 +108,7 @@ class ChainsDataList {
       chainId: 'eip155:80001',
       name: 'Polygon Mumbai',
       logo: 'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
-      color: Colors.purple.shade300,
+      color: const Color.fromARGB(255, 0, 0, 0),
       isTestnet: true,
       rpc: ['https://matic-mumbai.chainstacklabs.com'],
     ),
@@ -120,7 +120,7 @@ class ChainsDataList {
       chainId: 'eip155:42161',
       name: 'Arbitrum',
       logo:
-          'https://pbs.twimg.com/profile_images/1882673922400776192/niCbzDud_400x400.jpg',
+          'https://pbs.twimg.com/profile_images/1952411676621295616/KUOmiy3l_400x400.jpg',
       color: Colors.blue,
       rpc: [
         'https://rpc.walletconnect.org/v1',

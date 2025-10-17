@@ -64,6 +64,7 @@ class ThemedButton extends StatelessWidget {
         iconSize: WidgetStateProperty.all<double?>(0.0),
         elevation: WidgetStateProperty.all<double?>(0.0),
         overlayColor: WidgetStateProperty.all<Color>(themeColors.accenGlass010),
+        shadowColor: WidgetStateProperty.all<Color>(themeColors.accenGlass010),
         padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
           const EdgeInsets.all(0.0),
         ),

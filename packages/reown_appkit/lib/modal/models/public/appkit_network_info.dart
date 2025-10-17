@@ -44,4 +44,13 @@ extension ReownAppKitModalNetworkInfoExtension on ReownAppKitModalNetworkInfo {
       'blockExplorerUrls': [explorerUrl],
     };
   }
+
+  String formattedRpcUrl(String projectId) {
+    String formattedRpc = rpcUrl;
+    if (Uri.parse(formattedRpc).host == 'rpc.walletconnect.org') {
+      formattedRpc += '?chainId=$chainId';
+      formattedRpc += '&projectId=$projectId';
+    }
+    return formattedRpc;
+  }
 }

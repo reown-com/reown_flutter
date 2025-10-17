@@ -29,6 +29,17 @@ class RoundedIcon extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final projectId = GetIt.I<IExplorerService>().projectId;
     final radius = borderRadius ?? size;
+
+    final isSvg = _isSvg(imageUrl);
+
+    Uri? imageUri;
+    if (imageUrl != null && imageUrl!.isNotEmpty) {
+      imageUri = Uri.parse(imageUrl!);
+      if (imageUri.host == 'api.web3modal.com') {
+        final queryParams = CoreUtils.getImageQueryParams(projectId);
+        imageUri = imageUri.replace(queryParameters: queryParams);
+      }
+    }
     return Container(
       width: size,
       height: size,
@@ -47,17 +58,23 @@ class RoundedIcon extends StatelessWidget {
       child: (imageUrl ?? '').isNotEmpty
           ? ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(radius)),
-              child: CachedNetworkImage(
-                imageUrl: imageUrl!,
-                width: size,
-                height: size,
-                fit: BoxFit.fill,
-                fadeInDuration: const Duration(milliseconds: 500),
-                fadeOutDuration: const Duration(milliseconds: 500),
-                httpHeaders: CoreUtils.getAPIHeaders(projectId),
-                errorWidget: (context, url, error) =>
-                    ColoredBox(color: themeColors.grayGlass005),
-              ),
+              child: isSvg
+                  ? SvgPicture.network(
+                      imageUri.toString(),
+                      width: size,
+                      height: size,
+                      fit: BoxFit.fill,
+                    )
+                  : CachedNetworkImage(
+                      imageUrl: imageUri.toString(),
+                      width: size,
+                      height: size,
+                      fit: BoxFit.fill,
+                      fadeInDuration: const Duration(milliseconds: 500),
+                      fadeOutDuration: const Duration(milliseconds: 500),
+                      errorWidget: (context, url, error) =>
+                          ColoredBox(color: themeColors.grayGlass005),
+                    ),
             )
           : Padding(
               padding: EdgeInsets.all(padding),
@@ -73,5 +90,16 @@ class RoundedIcon extends StatelessWidget {
               ),
             ),
     );
+  }
+
+  bool _isSvg(String? imageUrl) {
+    if (imageUrl == null || imageUrl.isEmpty) return false;
+    try {
+      final uri = Uri.parse(imageUrl);
+      final path = uri.path.toLowerCase();
+      return path.endsWith('.svg');
+    } catch (e) {
+      return false;
+    }
   }
 }

@@ -50,7 +50,7 @@ class MagicService implements IMagicService {
   late final WebViewController _webViewController;
   late final WebViewWidget _webview;
 
-  final _cookieManager = WebViewCookieManager();
+  final _cookieManager = (kIsWeb) ? null : WebViewCookieManager();
 
   @override
   Map<String, List<String>> get supportedMethods => {
@@ -184,6 +184,9 @@ class MagicService implements IMagicService {
           // Like as if secure-mobile.walletconnect.com is loaded twice
           // If bundleId/packageName is NOT whitelisted in cloud then it enter just once.
           // This is happening only on Android devices, on iOS only once execution is done no matter what.
+          if (kIsWeb) {
+            return;
+          }
           if (_onLoadCount < 2 && Platform.isAndroid) return;
           await _runJavascript();
           await _fitToScreen();
@@ -195,7 +198,7 @@ class MagicService implements IMagicService {
       ),
     );
     await _setDebugMode();
-    // await _clearCookies();
+    await _clearCookies();
     await _clearStorage();
     await _loadRequest();
     return await _initializedCompleter.future;
@@ -416,7 +419,7 @@ class MagicService implements IMagicService {
   }
 
   void _onFrameMessage(JavaScriptMessage jsMessage) async {
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       _core.logger.d('[$runtimeType] JS Console: ${jsMessage.message}');
     }
     try {
@@ -710,17 +713,17 @@ class MagicService implements IMagicService {
     }
   }
 
-  // ignore: unused_element
   Future<void> _clearCookies() async {
     // if (!kDebugMode) return;
+    if (kIsWeb) return;
     try {
       if (WebViewPlatform.instance is WebKitWebViewPlatform) {
         final webKitManager =
-            _cookieManager.platform as WebKitWebViewCookieManager;
+            _cookieManager?.platform as WebKitWebViewCookieManager;
         webKitManager.clearCookies();
       } else if (WebViewPlatform.instance is AndroidWebViewPlatform) {
         final androidManager =
-            _cookieManager.platform as AndroidWebViewCookieManager;
+            _cookieManager?.platform as AndroidWebViewCookieManager;
         androidManager.clearCookies();
         androidManager.setAcceptThirdPartyCookies(
           _webViewController.platform as AndroidWebViewController,
@@ -738,6 +741,7 @@ class MagicService implements IMagicService {
   }
 
   Future<void> _setDebugMode() async {
+    if (kIsWeb) return;
     if (kDebugMode) {
       try {
         if (Platform.isIOS) {
@@ -754,7 +758,7 @@ class MagicService implements IMagicService {
             platform.setMediaPlaybackRequiresUserGesture(false);
 
             final cookieManager =
-                _cookieManager.platform as AndroidWebViewCookieManager;
+                _cookieManager?.platform as AndroidWebViewCookieManager;
             cookieManager.setAcceptThirdPartyCookies(
               _webViewController.platform as AndroidWebViewController,
               true,

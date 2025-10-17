@@ -140,4 +140,12 @@ class CoreUtils {
       if (origin != null) 'origin': origin,
     };
   }
+
+  static Map<String, String> getImageQueryParams(String projectId) {
+    return {
+      'st': CoreConstants.X_SDK_TYPE,
+      'sv': CoreConstants.X_SDK_VERSION,
+      'projectId': projectId,
+    };
+  }
 }

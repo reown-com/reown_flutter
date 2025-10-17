@@ -17,7 +17,9 @@ import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class SelectTokenPage extends StatefulWidget {
-  const SelectTokenPage() : super(key: KeyConstants.selectTokenPage);
+  const SelectTokenPage({this.overrideTokens = const []})
+    : super(key: KeyConstants.selectTokenPage);
+  final List<TokenBalance> overrideTokens;
 
   @override
   State<SelectTokenPage> createState() => _SelectTokenPageState();
@@ -32,26 +34,31 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      try {
-        final appKitModal = ModalProvider.of(context).instance;
-        final chainId = appKitModal.selectedChain!.chainId;
-        final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-        final address = appKitModal.session!.getAddress(namespace)!;
+    if (widget.overrideTokens.isNotEmpty) {
+      _tokens.addAll(widget.overrideTokens);
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        try {
+          final appKitModal = ModalProvider.of(context).instance;
+          final chainId = appKitModal.selectedChain!.chainId;
+          final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+          final address = appKitModal.session!.getAddress(namespace)!;
 
-        // cached items
-        final cachedTokens = _blockchainService.tokensList ?? <TokenBalance>[];
-        if (cachedTokens.isNotEmpty) {
-          _tokens = List<TokenBalance>.from(cachedTokens);
-        } else {
-          _tokens = await _blockchainService.getBalance(
-            address: address,
-            caip2Chain: '$namespace:$chainId',
-          );
-        }
-        setState(() {});
-      } catch (_) {}
-    });
+          // cached items
+          final cachedTokens =
+              _blockchainService.tokensList ?? <TokenBalance>[];
+          if (cachedTokens.isNotEmpty) {
+            _tokens = List<TokenBalance>.from(cachedTokens);
+          } else {
+            _tokens = await _blockchainService.getTokenBalance(
+              address: address,
+              caip2Chain: chainId,
+            );
+          }
+          setState(() {});
+        } catch (_) {}
+      });
+    }
   }
 
   @override

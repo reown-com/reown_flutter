@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reown_appkit/reown_appkit.dart';
@@ -48,6 +49,9 @@ class GetWalletPage extends StatelessWidget {
             return WalletsList(
               itemList: itemsToShow,
               onTapWallet: (data) {
+                if (kIsWeb) {
+                  return;
+                }
                 final url = Platform.isIOS
                     ? data.listing.appStore
                     : data.listing.playStore;

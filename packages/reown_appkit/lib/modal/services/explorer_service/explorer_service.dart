@@ -126,11 +126,18 @@ class ExplorerService implements IExplorerService {
     ).map((chainId) => NamespaceUtils.getNamespaceFromChain(chainId)).toSet();
 
     // TODO ideally we should call this at every opening to be able to detect newly installed wallets.
-    final nativeData = await _fetchNativeAppData();
-    final installed = (await nativeData.getInstalledApps())
-        .where((e) => !(excludedWalletIds ?? {}).contains(e.id))
-        .toList();
-    _installedWalletIds = Set<String>.from(installed.map((e) => e.id));
+    if (!kIsWeb) {
+      List<NativeAppData> nativeData = await _fetchNativeAppData();
+      if ((includedWalletIds ?? {}).isNotEmpty) {
+        nativeData = List<NativeAppData>.from(
+          nativeData.where((e) => includedWalletIds!.contains(e.id)),
+        );
+      }
+      final installed = (await nativeData.getInstalledApps())
+          .where((e) => !(excludedWalletIds ?? {}).contains(e.id))
+          .toList();
+      _installedWalletIds = Set<String>.from(installed.map((e) => e.id));
+    }
 
     await _fetchInitialWallets();
 
@@ -458,6 +465,9 @@ class ExplorerService implements IExplorerService {
 
   @override
   Future<ReownAppKitModalWalletInfo?> getCoinbaseWalletObject() async {
+    if (kIsWeb) {
+      return null;
+    }
     final results = await _fetchListings(
       params: RequestParams(
         page: 1,
@@ -490,6 +500,9 @@ class ExplorerService implements IExplorerService {
 
   @override
   Future<ReownAppKitModalWalletInfo?> getPhantomWalletObject() async {
+    if (kIsWeb) {
+      return null;
+    }
     final results = await _fetchListings(
       params: RequestParams(
         page: 1,
@@ -522,6 +535,9 @@ class ExplorerService implements IExplorerService {
 
   @override
   Future<ReownAppKitModalWalletInfo?> getSolflareWalletObject() async {
+    if (kIsWeb) {
+      return null;
+    }
     final results = await _fetchListings(
       params: RequestParams(
         page: 1,

@@ -18,7 +18,7 @@ abstract class IBlockChainService {
     String? cursor,
   });
 
-  Future<List<TokenBalance>> getBalance({
+  Future<List<TokenBalance>> getTokenBalance({
     required String address,
     String? caip2Chain,
   });
@@ -27,7 +27,7 @@ abstract class IBlockChainService {
 
   Future<GasPrice> gasPrice({required String caip2Chain});
 
-  Future<double> getTokenBalance({
+  Future<double> getNativeBalance({
     required String address,
     required String namespace,
     required String chainId,

@@ -44,10 +44,13 @@ class SessionWidgetState extends State<SessionWidget> {
                 CircleAvatar(
                   radius: 18.0,
                   backgroundImage: NetworkImage(
-                    iconImage,
-                    headers: CoreUtils.getAPIHeaders(
-                      widget.appKit.appKit!.core.projectId,
-                    ),
+                    Uri.parse(iconImage)
+                        .replace(
+                          queryParameters: CoreUtils.getImageQueryParams(
+                            widget.appKit.appKit!.core.projectId,
+                          ),
+                        )
+                        .toString(),
                   ),
                 ),
                 const SizedBox(width: 8.0),
