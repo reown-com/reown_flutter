@@ -2746,7 +2746,7 @@ class ReownSign implements IReownSign {
             'signature',
           );
           if (signature != null) {
-            return <String>[...signature];
+            return <String>[signature];
           }
           // if contain transactions it's solana_signAllTransactions
           final transactions = ReownCoreUtils.recursiveSearchForMapKey(
@@ -2886,6 +2886,10 @@ class ReownSign implements IReownSign {
               params,
               'transactionPayload',
             );
+            if (payload == null) {
+              // is not polkadot_signTransaction method
+              return null;
+            }
             final ss58Address = ReownCoreUtils.recursiveSearchForMapKey(
               params,
               'address',
@@ -2936,7 +2940,17 @@ class ReownSign implements IReownSign {
           core.logger.e('[$runtimeType] collectHashes: cosmos, $e');
         }
         return null;
-      default:
+      case 'ton':
+        //
+        try {
+          if (response.result is String) {
+            return <String>[response.result];
+          }
+        } catch (e) {
+          core.logger.e('[$runtimeType] _collectHashes: ton, $e');
+        }
+        return null;
+      case 'eip155':
         // default to EVM
         try {
           if (response.result is Map) {
@@ -2962,6 +2976,11 @@ class ReownSign implements IReownSign {
         } catch (e) {
           core.logger.e('[$runtimeType] _collectHashes: evm, $e');
         }
+        return null;
+      default:
+        core.logger.d(
+          '[$runtimeType] _collectHashes: Unimplemented for $namespace',
+        );
         return null;
     }
   }
