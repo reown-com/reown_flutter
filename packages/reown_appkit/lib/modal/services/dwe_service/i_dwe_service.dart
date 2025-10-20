@@ -8,7 +8,32 @@ abstract class IDWEService {
   abstract final ValueNotifier<double> selectedAmount;
 
   Future<void> init();
+
   void setSupportedAssets(List<ExchangeAsset> assets);
+
+  List<ExchangeAsset> getPaymentAssetsForNetwork({String? chainId});
+
+  Future<GetExchangesResult> getExchanges({required GetExchangesParams params});
+
+  Future<GetExchangeUrlResult> getExchangeUrl({
+    required GetExchangeUrlParams params,
+  });
+
+  // Future<GetExchangeDepositStatusResult> getExchangeDepositStatus({
+  //   required GetExchangeDepositStatusParams params,
+  // });
+
+  bool get isCheckingStatus;
+
+  void loopOnStatusCheck(
+    String exchangeId,
+    String sessionId,
+    Function(GetExchangeDepositStatusResult?) completer,
+  );
+
+  void stopCheckingStatus();
+
   Future<TokenBalance?> getFungiblePrice({required ExchangeAsset asset});
+
   void clearState();
 }

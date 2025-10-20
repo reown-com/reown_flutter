@@ -44,6 +44,7 @@ class AllWalletsHeader extends StatelessWidget {
                 event: SelectWalletEvent(
                   name: 'WalletConnect',
                   platform: AnalyticsPlatform.qrcode,
+                  view: 'AllWallets',
                 ),
               );
             },

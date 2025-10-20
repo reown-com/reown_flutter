@@ -28,7 +28,6 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
-    final appKitModal = ModalProvider.of(context).instance;
     return ValueListenableBuilder(
       valueListenable: _dweService.selectedAsset,
       builder: (context, selectedAsset, _) {
@@ -36,7 +35,7 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
           return const SizedBox.shrink();
         }
         return FutureBuilder(
-          future: appKitModal.appKit!.getExchanges(
+          future: _dweService.getExchanges(
             params: GetExchangesParams(page: 1, asset: selectedAsset),
           ),
           builder: (context, snapshot) {
@@ -146,9 +145,9 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
         amount: '${amount.toDouble()}',
         recipient: '$chainId:$address',
       );
-      final GetExchangeUrlResult result = await appKitModal.appKit!
-          .getExchangeUrl(params: getExchangeUrlParams);
-
+      final GetExchangeUrlResult result = await _dweService.getExchangeUrl(
+        params: getExchangeUrlParams,
+      );
       setState(() => _selectedExchange = null);
       widget.onSelect.call(exchange, result);
       ReownCoreUtils.openURL(result.url);

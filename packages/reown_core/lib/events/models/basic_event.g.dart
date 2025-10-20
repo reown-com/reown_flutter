@@ -12,8 +12,13 @@ _CoreEventProperties _$CoreEventPropertiesFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String?,
       method: json['method'] as String?,
       connected: json['connected'] as bool?,
+      namespace: json['namespace'] as String?,
       network: json['network'] as String?,
-      explorer_id: json['explorer_id'] as String?,
+      caipNetworkId: json['caipNetworkId'] as String?,
+      explorerId: json['explorerId'] as String?,
+      walletRank: (json['walletRank'] as num?)?.toInt(),
+      displayIndex: (json['displayIndex'] as num?)?.toInt(),
+      view: json['view'] as String?,
       provider: json['provider'] as String?,
       platform: json['platform'] as String?,
       trace: (json['trace'] as List<dynamic>?)
@@ -29,6 +34,31 @@ _CoreEventProperties _$CoreEventPropertiesFromJson(Map<String, dynamic> json) =>
       address: json['address'] as String?,
       project_id: json['project_id'] as String?,
       cursor: json['cursor'] as String?,
+      exchange: (json['exchange'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ),
+      configuration: (json['configuration'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ),
+      currentPayment: (json['currentPayment'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ),
+      source: json['source'] as String?,
+      headless: json['headless'] as bool?,
+      reconnect: json['reconnect'] as bool?,
+      link: json['link'] as String?,
+      linkType: json['linkType'] as String?,
+      showWallets: json['showWallets'] as bool?,
+      siweConfig: json['siweConfig'] as Map<String, dynamic>?,
+      themeMode: json['themeMode'] as String?,
+      networks: (json['networks'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      defaultNetwork: json['defaultNetwork'] as String?,
+      chainImages: (json['chainImages'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      metadata: json['metadata'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$CoreEventPropertiesToJson(
@@ -38,8 +68,13 @@ Map<String, dynamic> _$CoreEventPropertiesToJson(
   'name': ?instance.name,
   'method': ?instance.method,
   'connected': ?instance.connected,
+  'namespace': ?instance.namespace,
   'network': ?instance.network,
-  'explorer_id': ?instance.explorer_id,
+  'caipNetworkId': ?instance.caipNetworkId,
+  'explorerId': ?instance.explorerId,
+  'walletRank': ?instance.walletRank,
+  'displayIndex': ?instance.displayIndex,
+  'view': ?instance.view,
   'provider': ?instance.provider,
   'platform': ?instance.platform,
   'trace': ?instance.trace,
@@ -53,4 +88,19 @@ Map<String, dynamic> _$CoreEventPropertiesToJson(
   'address': ?instance.address,
   'project_id': ?instance.project_id,
   'cursor': ?instance.cursor,
+  'exchange': ?instance.exchange,
+  'configuration': ?instance.configuration,
+  'currentPayment': ?instance.currentPayment,
+  'source': ?instance.source,
+  'headless': ?instance.headless,
+  'reconnect': ?instance.reconnect,
+  'link': ?instance.link,
+  'linkType': ?instance.linkType,
+  'showWallets': ?instance.showWallets,
+  'siweConfig': ?instance.siweConfig,
+  'themeMode': ?instance.themeMode,
+  'networks': ?instance.networks,
+  'defaultNetwork': ?instance.defaultNetwork,
+  'chainImages': ?instance.chainImages,
+  'metadata': ?instance.metadata,
 };

@@ -30,8 +30,8 @@ class ReownAppKitModalDepositScreen extends StatefulWidget {
 class _ReownAppKitModalDepositScreenState
     extends State<ReownAppKitModalDepositScreen> {
   IDWEService get _dweService => GetIt.I<IDWEService>();
-  bool _isLooping = false;
-  bool _shouldStopLooping = false;
+  // bool _isLooping = false;
+  // bool _shouldStopLooping = false;
 
   @override
   void initState() {
@@ -72,7 +72,7 @@ class _ReownAppKitModalDepositScreenState
       }
       final chainId = appKitModal.selectedChain?.chainId;
       debugPrint('[$runtimeType] selected chain id: $chainId');
-      final supportedAssets = appKitModal.appKit!.getPaymentAssetsForNetwork(
+      final supportedAssets = _dweService.getPaymentAssetsForNetwork(
         chainId: chainId,
       );
       if (supportedAssets.isEmpty) {
@@ -140,7 +140,7 @@ class _ReownAppKitModalDepositScreenState
                 ),
               ),
               const SizedBox.square(dimension: kPadding12),
-              _isLooping
+              _dweService.isCheckingStatus
                   ? Column(
                       children: [
                         CircularProgressIndicator(
@@ -157,10 +157,8 @@ class _ReownAppKitModalDepositScreenState
                         SecondaryButton(
                           title: 'Stop checking',
                           onTap: () {
-                            setState(() {
-                              _isLooping = false;
-                              _shouldStopLooping = true;
-                            });
+                            _dweService.stopCheckingStatus();
+                            setState(() {});
                           },
                         ),
                       ],
@@ -184,19 +182,21 @@ class _ReownAppKitModalDepositScreenState
               ExchangesListWidget(
                 recipient: widget.preselectedRecipient,
                 onSelect: (exchange, urlResult) {
-                  _loopOnStatusCheck(exchange.id, urlResult.sessionId, (
-                    result,
-                  ) {
-                    GetIt.I<IToastService>().show(
-                      ToastMessage(
-                        type: result!.status == 'SUCCESS'
-                            ? ToastType.success
-                            : ToastType.error,
-                        text: result.status,
-                      ),
-                    );
-                    setState(() {});
-                  });
+                  _dweService.loopOnStatusCheck(
+                    exchange.id,
+                    urlResult.sessionId,
+                    (result) {
+                      GetIt.I<IToastService>().show(
+                        ToastMessage(
+                          type: result!.status == 'SUCCESS'
+                              ? ToastType.success
+                              : ToastType.error,
+                          text: result.status,
+                        ),
+                      );
+                      setState(() {});
+                    },
+                  );
                 },
               ),
             ],
@@ -204,56 +204,5 @@ class _ReownAppKitModalDepositScreenState
         ),
       ),
     );
-  }
-
-  void _loopOnStatusCheck(
-    String exchangeId,
-    String sessionId,
-    Function(GetExchangeDepositStatusResult?) completer,
-  ) async {
-    if (_isLooping) return;
-    _isLooping = true;
-    _shouldStopLooping = false;
-    int maxAttempts = 30;
-    int currentAttempt = 0;
-
-    final appKit = ModalProvider.of(context).instance.appKit!;
-    while (currentAttempt < maxAttempts && !_shouldStopLooping) {
-      try {
-        // 4. [DWE Check the status of the deposit/transaction Better to call this in a loop]
-        final params = GetExchangeDepositStatusParams(
-          exchangeId: exchangeId,
-          sessionId: sessionId,
-        );
-        final response = await appKit.getExchangeDepositStatus(params: params);
-        //
-        if (response.status == 'UNKNOWN' || response.status == 'IN_PROGRESS') {
-          currentAttempt++;
-          if (currentAttempt < maxAttempts && !_shouldStopLooping) {
-            // Keep trying
-            await Future.delayed(Duration(seconds: 5));
-          } else {
-            // Max attempts reached or stopped by user, complete with appropriate status
-            _isLooping = false;
-            completer.call(
-              _shouldStopLooping
-                  ? GetExchangeDepositStatusResult(status: 'CANCELLED')
-                  : GetExchangeDepositStatusResult(status: 'TIMEOUT'),
-            );
-            break;
-          }
-        } else {
-          // Either SUCCESS or FAILED received
-          _isLooping = false;
-          completer.call(response);
-          break;
-        }
-      } catch (e) {
-        debugPrint(e.toString());
-        _isLooping = false;
-        completer.call(null);
-        break;
-      }
-    }
   }
 }
