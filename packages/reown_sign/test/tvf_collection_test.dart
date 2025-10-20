@@ -583,6 +583,108 @@ void main() {
         // Assert - check if pending TVF request was removed
         expect(signEngine.pendingTVFRequests.containsKey(id), isFalse);
       });
+
+      test(
+        'should collect TON transaction hash correctly through public methods',
+        () async {
+          // Arrange
+          final id = 131;
+          final request = SessionRequestParams(
+            method: 'ton_sendTransaction',
+            params: [
+              {
+                'to': 'EQD0vdSA_NedR9uv6d8Q8N8ukdWVtJ3Fylj80P4g5zg-Lh0',
+                'value': '1000000000',
+                'data': 'te6ccgEBAQEADAAMABQAAAAASGVsbG8hCaTc/g==',
+              },
+            ],
+          );
+
+          // Create a mock session
+          final session = SessionData(
+            topic: 'test_topic_9',
+            pairingTopic: 'test_pairing_topic_9',
+            relay: Relay(ReownConstants.RELAYER_DEFAULT_PROTOCOL),
+            expiry: ReownCoreUtils.calculateExpiry(ReownConstants.SEVEN_DAYS),
+            acknowledged: true,
+            controller: 'test_controller_9',
+            namespaces: {
+              'ton': Namespace(
+                accounts: [
+                  'ton:mainnet:EQD0vdSA_NedR9uv6d8Q8N8ukdWVtJ3Fylj80P4g5zg-Lh0',
+                ],
+                methods: ['ton_sendTransaction'],
+                events: ['chainChanged'],
+              ),
+            },
+            self: ConnectionMetadata(
+              publicKey: 'test_self_key_9',
+              metadata: RESPONDER,
+            ),
+            peer: ConnectionMetadata(
+              publicKey: 'test_peer_key_9',
+              metadata: PROPOSER,
+            ),
+          );
+
+          await signEngine.sessions.set('test_topic_9', session);
+
+          // First collect the request TVF
+          try {
+            await signEngine.request(
+              requestId: id,
+              topic: 'test_topic_9',
+              chainId: 'ton:mainnet',
+              request: request,
+            );
+          } catch (e) {
+            // Expected to fail due to relay connection
+          }
+
+          // Verify request TVF was collected
+          expect(signEngine.pendingTVFRequests.containsKey(id), isTrue);
+
+          // Create a pending request in the store (required for validation)
+          final sessionRequest = SessionRequest(
+            id: id,
+            topic: 'test_topic_9',
+            method: 'ton_sendTransaction',
+            chainId: 'ton:mainnet',
+            params: request.params,
+            verifyContext: VerifyContext(
+              origin: 'test_origin',
+              verifyUrl: 'test_verify_url',
+              validation: Validation.VALID,
+            ),
+          );
+          await signEngine.pendingRequests.set(id.toString(), sessionRequest);
+
+          // Create response with TON transaction hash
+          final response = JsonRpcResponse(
+            id: id,
+            result:
+                '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+          );
+
+          // Act
+          try {
+            await signEngine.respondSessionRequest(
+              topic: 'test_topic_9',
+              response: response,
+            );
+          } catch (e) {
+            // Expected to fail due to relay connection, but TVF should be processed
+          }
+
+          // Assert - check if pending TVF request was removed
+          expect(signEngine.pendingTVFRequests.containsKey(id), isFalse);
+          final hashes = signEngine.collectHashes('ton', response);
+          expect(hashes?.length, 1);
+          expect(hashes, [
+            '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+          ]);
+        },
+      );
     });
 
     group('Direct Method Testing - collectRequestTVF', () {
@@ -697,6 +799,34 @@ void main() {
         expect(tvfData.contractAddresses, isNull);
         expect(tvfData.requestParams, equals(request.request.params));
       });
+
+      test('should handle TON chains', () {
+        // Arrange
+        final id = 204;
+        final request = WcSessionRequestRequest(
+          chainId: 'ton:mainnet',
+          request: SessionRequestParams(
+            method: 'ton_sendTransaction',
+            params: [
+              {
+                'to': 'EQD0vdSA_NedR9uv6d8Q8N8ukdWVtJ3Fylj80P4g5zg-Lh0',
+                'value': '1000000000',
+                'data': 'te6ccgEBAQEADAAMABQAAAAASGVsbG8hCaTc/g==',
+              },
+            ],
+          ),
+        );
+
+        // Act
+        final tvfData = signEngine.collectRequestTVF(id, request);
+
+        // Assert
+        expect(tvfData, isNotNull);
+        expect(tvfData!.rpcMethods, equals(['ton_sendTransaction']));
+        expect(tvfData.chainId, equals('ton:mainnet'));
+        expect(tvfData.contractAddresses, isNull);
+        expect(tvfData.requestParams, equals(request.request.params));
+      });
     });
 
     group('Direct Method Testing - collectResponseTVF', () {
@@ -736,6 +866,56 @@ void main() {
         expect(tvfData.txHashes, isNotNull);
         expect(tvfData.txHashes!.length, equals(1));
         expect(tvfData.txHashes!.first, equals('0x1234567890abcdef'));
+
+        // Check if removed from pending
+        expect(signEngine.pendingTVFRequests.containsKey(id), isFalse);
+      });
+
+      test('should collect TON response TVF data correctly', () {
+        // Arrange
+        final id = 302;
+        final request = WcSessionRequestRequest(
+          chainId: 'ton:mainnet',
+          request: SessionRequestParams(
+            method: 'ton_sendTransaction',
+            params: [
+              {
+                'to': 'EQD0vdSA_NedR9uv6d8Q8N8ukdWVtJ3Fylj80P4g5zg-Lh0',
+                'value': '1000000000',
+                'data': 'te6ccgEBAQEADAAMABQAAAAASGVsbG8hCaTc/g==',
+              },
+            ],
+          ),
+        );
+
+        // First collect request TVF
+        signEngine.collectRequestTVF(id, request);
+        expect(signEngine.pendingTVFRequests.containsKey(id), isTrue);
+
+        // Create response
+        final response = JsonRpcResponse(
+          id: id,
+          result:
+              '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+        );
+
+        // Act
+        final tvfData = signEngine.collectResponseTVF(response);
+
+        // Assert
+        expect(tvfData, isNotNull);
+        expect(tvfData!.rpcMethods, equals(['ton_sendTransaction']));
+        expect(tvfData.chainId, equals('ton:mainnet'));
+        expect(tvfData.contractAddresses, isNull);
+        expect(tvfData.requestParams, equals(request.request.params));
+        expect(tvfData.txHashes, isNotNull);
+        expect(tvfData.txHashes!.length, equals(1));
+        expect(
+          tvfData.txHashes!.first,
+          equals(
+            '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+          ),
+        );
 
         // Check if removed from pending
         expect(signEngine.pendingTVFRequests.containsKey(id), isFalse);
@@ -857,6 +1037,67 @@ void main() {
 
         // Act
         final hashes = signEngine.collectHashes('eip155', response);
+
+        // Assert
+        expect(hashes, isNull);
+      });
+
+      test('should collect TON transaction hash correctly', () {
+        // Arrange
+        final response = JsonRpcResponse(
+          id: 404,
+          result:
+              '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+        );
+
+        // Act
+        final hashes = signEngine.collectHashes('ton', response);
+
+        // Assert
+        expect(hashes, isNotNull);
+        expect(hashes!.length, equals(1));
+        expect(
+          hashes[0],
+          equals(
+            '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
+          ),
+        );
+      });
+
+      test('should return null for TON response with error', () {
+        // Arrange
+        final response = JsonRpcResponse(
+          id: 405,
+          error: JsonRpcError(code: -32603, message: 'Internal error'),
+        );
+
+        // Act
+        final hashes = signEngine.collectHashes('ton', response);
+
+        // Assert
+        expect(hashes, isNull);
+      });
+
+      test('should return null for TON response with null result', () {
+        // Arrange
+        final response = JsonRpcResponse(id: 406, result: null);
+
+        // Act
+        final hashes = signEngine.collectHashes('ton', response);
+
+        // Assert
+        expect(hashes, isNull);
+      });
+
+      test('should return null for TON response with non-string result', () {
+        // Arrange
+        final response = JsonRpcResponse(
+          id: 407,
+          result: {'hash': '0x1234567890abcdef'},
+        );
+
+        // Act
+        final hashes = signEngine.collectHashes('ton', response);
 
         // Assert
         expect(hashes, isNull);
