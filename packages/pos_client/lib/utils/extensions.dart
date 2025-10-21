@@ -95,11 +95,10 @@ extension ListTokenExtension on List<PosToken> {
   }
 
   List<PosToken> removeUnsupported(Iterable<String> supportedNamespaces) {
-    return this
-      ..removeWhere((e) {
-        final ns = NamespaceUtils.getNamespaceFromChain(e.network.chainId);
-        return supportedNamespaces.contains(ns) == false;
-      });
+    return this..removeWhere((e) {
+      final ns = NamespaceUtils.getNamespaceFromChain(e.network.chainId);
+      return supportedNamespaces.contains(ns) == false;
+    });
   }
 
   List<String> getNamespaces() {

@@ -45,8 +45,8 @@ class MultiWalletAddresses {
 
 final multiWalletAddressProvider =
     StateNotifierProvider<MultiWalletAddressNotifier, MultiWalletAddresses>(
-  (ref) => MultiWalletAddressNotifier(),
-);
+      (ref) => MultiWalletAddressNotifier(),
+    );
 
 class MultiWalletAddressNotifier extends StateNotifier<MultiWalletAddresses> {
   MultiWalletAddressNotifier() : super(const MultiWalletAddresses()) {
@@ -57,7 +57,8 @@ class MultiWalletAddressNotifier extends StateNotifier<MultiWalletAddresses> {
     final prefs = await SharedPreferences.getInstance();
     final evmWallet =
         prefs.getString('evm_wallet_address') ?? DartDefines.evmWalletAddress;
-    final solanaWallet = prefs.getString('solana_wallet_address') ??
+    final solanaWallet =
+        prefs.getString('solana_wallet_address') ??
         DartDefines.solanaWalletAddress;
     final tronWallet =
         prefs.getString('tron_wallet_address') ?? DartDefines.tronWalletAddress;
