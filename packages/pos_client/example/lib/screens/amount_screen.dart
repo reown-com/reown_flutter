@@ -100,10 +100,10 @@ class _AmountScreenState extends ConsumerState<AmountScreen> {
                                               fontSize: 48,
                                               fontWeight: FontWeight.bold,
                                             ),
-                                            keyboardType:
-                                                const TextInputType.numberWithOptions(
-                                                  decimal: true,
-                                                ),
+                                            keyboardType: const TextInputType
+                                                .numberWithOptions(
+                                              decimal: true,
+                                            ),
                                             textAlign: TextAlign.center,
                                             decoration: const InputDecoration(
                                               border: InputBorder.none,
@@ -151,8 +151,8 @@ class _AmountScreenState extends ConsumerState<AmountScreen> {
                         child: ElevatedButton(
                           onPressed:
                               ref.read(paymentInfoProvider).amount.isNotEmpty
-                              ? _navigateToTokenScreen
-                              : null,
+                                  ? _navigateToTokenScreen
+                                  : null,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF4CAF50),
                             foregroundColor: Colors.white,

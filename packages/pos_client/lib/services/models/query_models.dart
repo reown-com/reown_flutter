@@ -33,13 +33,14 @@ sealed class PaymentIntentParams with _$PaymentIntentParams {
   factory PaymentIntentParams.fromPaymentIntent(
     PaymentIntent intent,
     String sender,
-  ) => PaymentIntentParams(
-    /// CAIP-19 Asset ID (e.g. `eip155:1/erc20:0xabc...`)
-    asset: intent.caip19Token,
-    amount: intent.amount,
-    sender: sender, // should already be CAIP-10
-    recipient: intent.caip10Recipient,
-  );
+  ) =>
+      PaymentIntentParams(
+        /// CAIP-19 Asset ID (e.g. `eip155:1/erc20:0xabc...`)
+        asset: intent.caip19Token,
+        amount: intent.amount,
+        sender: sender, // should already be CAIP-10
+        recipient: intent.caip10Recipient,
+      );
 }
 
 @freezed
