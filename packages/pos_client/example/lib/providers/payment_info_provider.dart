@@ -5,8 +5,8 @@ import 'package:example/providers/multi_wallet_address_provider.dart';
 /// PaymentIntent state provider
 final paymentInfoProvider =
     StateNotifierProvider<PaymentInfoNotifier, PaymentIntent>(
-      (ref) => PaymentInfoNotifier(ref),
-    );
+  (ref) => PaymentInfoNotifier(ref),
+);
 
 class PaymentInfoNotifier extends StateNotifier<PaymentIntent> {
   final Ref _ref;

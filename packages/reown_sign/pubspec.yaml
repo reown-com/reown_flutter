@@ -16,8 +16,7 @@ dependencies:
   freezed_annotation: ^3.1.0
   http: ^1.2.2
   pointycastle: ^3.9.1
-  reown_core:
-    path: ../reown_core/
+  reown_core: ^1.3.3
   web3dart: ^2.7.3
 
 dev_dependencies:

@@ -162,8 +162,7 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
                                   iconColor: Colors.black,
                                   title: network.name,
                                   // subtitle: 'Fee ${network.fee}',
-                                  trailing:
-                                      network.chainId ==
+                                  trailing: network.chainId ==
                                           paymentInfo.token.network.chainId
                                       ? Icon(Icons.check)
                                       : null,
