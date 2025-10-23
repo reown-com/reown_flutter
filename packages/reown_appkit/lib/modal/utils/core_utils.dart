@@ -141,7 +141,7 @@ class CoreUtils {
     };
   }
 
-  static Map<String, String> getImageQueryParams(String projectId) {
+  static Map<String, String> getApiQueryParams(String projectId) {
     return {
       'st': CoreConstants.X_SDK_TYPE,
       'sv': CoreConstants.X_SDK_VERSION,

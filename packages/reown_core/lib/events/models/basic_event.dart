@@ -40,8 +40,9 @@ sealed class CoreEventProperties with _$CoreEventProperties {
     String? client_id,
     String? direction,
     String? userAgent,
-    String? sendToken,
-    String? sendAmount,
+    String? token,
+    String? amount,
+    String? hash,
     String? address,
     String? project_id,
     String? cursor,
@@ -64,6 +65,10 @@ sealed class CoreEventProperties with _$CoreEventProperties {
     //   connectorImages?: Record<string, string>
     //   coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
     Map<String, dynamic>? metadata,
+    String? accountType,
+    String? query,
+    bool? certified,
+    bool? installed,
   }) = _CoreEventProperties;
 
   factory CoreEventProperties.fromJson(Map<String, dynamic> json) =>
@@ -136,9 +141,9 @@ class _ModalTrackOptions {
   final CLICK_NETWORK_HELP = 'CLICK_NETWORK_HELP';
   final CLICK_GET_WALLET_HELP = 'CLICK_GET_WALLET_HELP';
   final GET_WALLET = 'GET_WALLET';
-  final WALLET_IMPRESSION = 'WALLET_IMPRESSION'; // TODO analytics
-  final INITIALIZE = 'INITIALIZE'; // TODO analytics
-  final USER_REJECTED = 'USER_REJECTED'; // TODO analytics
+  final WALLET_IMPRESSION = 'WALLET_IMPRESSION';
+  final INITIALIZE = 'INITIALIZE';
+  final USER_REJECTED = 'USER_REJECTED';
 
   // email login
   final EMAIL_LOGIN_SELECTED = 'EMAIL_LOGIN_SELECTED';
@@ -158,8 +163,7 @@ class _ModalTrackOptions {
   final SIWE_AUTH_ERROR = 'SIWE_AUTH_ERROR';
 
   // smart accounts
-  final SET_PREFERRED_ACCOUNT_TYPE =
-      'SET_PREFERRED_ACCOUNT_TYPE'; // TODO analytics
+  final SET_PREFERRED_ACCOUNT_TYPE = 'SET_PREFERRED_ACCOUNT_TYPE';
 
   // social
   final SOCIAL_LOGIN_STARTED = 'SOCIAL_LOGIN_STARTED';
@@ -177,9 +181,9 @@ class _ModalTrackOptions {
   // final SIGN_TRANSACTION = 'SIGN_TRANSACTION';
 
   // Transactions History
-  final CLICK_TRANSACTIONS = 'CLICK_TRANSACTIONS'; // TODO analytics
-  final ERROR_FETCH_TRANSACTIONS = 'ERROR_FETCH_TRANSACTIONS'; // TODO analytics
-  final LOAD_MORE_TRANSACTIONS = 'LOAD_MORE_TRANSACTIONS'; // TODO analytics
+  final CLICK_TRANSACTIONS = 'CLICK_TRANSACTIONS';
+  final ERROR_FETCH_TRANSACTIONS = 'ERROR_FETCH_TRANSACTIONS';
+  final LOAD_MORE_TRANSACTIONS = 'LOAD_MORE_TRANSACTIONS';
 
   // fund from exchange
   final PAY_EXCHANGE_SELECTED = 'PAY_EXCHANGE_SELECTED';

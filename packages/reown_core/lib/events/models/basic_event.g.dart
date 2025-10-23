@@ -29,8 +29,9 @@ _CoreEventProperties _$CoreEventPropertiesFromJson(Map<String, dynamic> json) =>
       client_id: json['client_id'] as String?,
       direction: json['direction'] as String?,
       userAgent: json['userAgent'] as String?,
-      sendToken: json['sendToken'] as String?,
-      sendAmount: json['sendAmount'] as String?,
+      token: json['token'] as String?,
+      amount: json['amount'] as String?,
+      hash: json['hash'] as String?,
       address: json['address'] as String?,
       project_id: json['project_id'] as String?,
       cursor: json['cursor'] as String?,
@@ -59,6 +60,10 @@ _CoreEventProperties _$CoreEventPropertiesFromJson(Map<String, dynamic> json) =>
           ?.map((e) => e as String)
           .toList(),
       metadata: json['metadata'] as Map<String, dynamic>?,
+      accountType: json['accountType'] as String?,
+      query: json['query'] as String?,
+      certified: json['certified'] as bool?,
+      installed: json['installed'] as bool?,
     );
 
 Map<String, dynamic> _$CoreEventPropertiesToJson(
@@ -83,8 +88,9 @@ Map<String, dynamic> _$CoreEventPropertiesToJson(
   'client_id': ?instance.client_id,
   'direction': ?instance.direction,
   'userAgent': ?instance.userAgent,
-  'sendToken': ?instance.sendToken,
-  'sendAmount': ?instance.sendAmount,
+  'token': ?instance.token,
+  'amount': ?instance.amount,
+  'hash': ?instance.hash,
   'address': ?instance.address,
   'project_id': ?instance.project_id,
   'cursor': ?instance.cursor,
@@ -103,4 +109,8 @@ Map<String, dynamic> _$CoreEventPropertiesToJson(
   'defaultNetwork': ?instance.defaultNetwork,
   'chainImages': ?instance.chainImages,
   'metadata': ?instance.metadata,
+  'accountType': ?instance.accountType,
+  'query': ?instance.query,
+  'certified': ?instance.certified,
+  'installed': ?instance.installed,
 };

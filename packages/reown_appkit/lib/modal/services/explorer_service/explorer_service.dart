@@ -171,6 +171,11 @@ class ExplorerService implements IExplorerService {
   Future<List<ReownAppKitModalWalletInfo>> _loadCustomWallets() async {
     List<ReownAppKitModalWalletInfo> customWallets = [];
     for (var customWallet in _customWallets) {
+      final listing = customWallet.listing.copyWith(
+        isTopWallet: null,
+        badgeType: null,
+      );
+      customWallet = customWallet.copyWith(listing: listing);
       final installed = await _uriService.isInstalled(
         customWallet.listing.mobileLink,
       );
@@ -329,7 +334,9 @@ class ExplorerService implements IExplorerService {
       if (response.statusCode == 200 || response.statusCode == 202) {
         final apiResponse = ApiResponse<AppKitModalWalletListing>.fromJson(
           jsonDecode(response.body),
-          (json) => AppKitModalWalletListing.fromJson(json),
+          (json) => AppKitModalWalletListing.fromJson(
+            json as Map<String, dynamic>? ?? {},
+          ),
         );
         if (updateCount) {
           totalListings.value += apiResponse.count;

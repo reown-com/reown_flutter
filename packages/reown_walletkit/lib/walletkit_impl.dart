@@ -110,6 +110,12 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     }
 
     await core.start();
+    core.events.setQueryParams({
+      'projectId': core.projectId,
+      'st': 'events_sdk',
+      'sv': ReownCoreUtils.coreSdkVersion(packageVersion),
+    });
+    await core.events.sendStoredEvents();
     await reOwnSign.init();
 
     WidgetsBinding.instance.addObserver(this);

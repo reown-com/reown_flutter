@@ -12,6 +12,8 @@ class SettingsPage extends StatefulWidget {
     this.linkMode = false,
     this.analytics = false,
     this.socials = false,
+    required this.toggleLogs,
+    required this.toggleTheme,
   });
 
   final ReownAppKitModal appKitModal;
@@ -19,6 +21,8 @@ class SettingsPage extends StatefulWidget {
   final bool linkMode;
   final bool analytics;
   final bool socials;
+  final VoidCallback toggleLogs;
+  final VoidCallback toggleTheme;
 
   @override
   SettingsPageState createState() => SettingsPageState();
@@ -45,222 +49,183 @@ class SettingsPageState extends State<SettingsPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: Visibility(
-                visible: !widget.appKitModal.isConnected,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Relay Mode\n(Multichain)',
-                              textAlign: TextAlign.end,
-                              style: TextStyle(
-                                color: ReownAppKitModalTheme.colorsOf(context)
-                                    .foreground100,
-                                fontWeight: !widget.linkMode
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                              ),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Relay Mode\n(Multichain)',
+                            textAlign: TextAlign.end,
+                            style: TextStyle(
+                              color: ReownAppKitModalTheme.colorsOf(context)
+                                  .foreground100,
+                              fontWeight: !widget.linkMode
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                             ),
                           ),
-                          Semantics(
-                            label: 'appkit_sample_linkmode_${widget.linkMode}',
-                            identifier:
-                                'appkit_sample_linkmode_${widget.linkMode}',
-                            child: Switch(
-                              value: widget.linkMode,
-                              onChanged: (value) {
-                                widget.reinitialize(
-                                  'appkit_sample_linkmode',
-                                  value,
-                                );
-                              },
+                        ),
+                        Semantics(
+                          label: 'appkit_sample_linkmode_${widget.linkMode}',
+                          identifier:
+                              'appkit_sample_linkmode_${widget.linkMode}',
+                          child: Switch(
+                            value: widget.linkMode,
+                            onChanged: widget.appKitModal.isConnected
+                                ? null
+                                : (value) {
+                                    widget.reinitialize(
+                                      'appkit_sample_linkmode',
+                                      value,
+                                    );
+                                  },
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            'Link Mode\n(1CA, only EVM)',
+                            style: TextStyle(
+                              color: ReownAppKitModalTheme.colorsOf(context)
+                                  .foreground100,
+                              fontWeight: widget.linkMode
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                             ),
                           ),
-                          Expanded(
-                            child: Text(
-                              'Link Mode\n(1CA, only EVM)',
-                              style: TextStyle(
-                                color: ReownAppKitModalTheme.colorsOf(context)
-                                    .foreground100,
-                                fontWeight: widget.linkMode
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                              ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Socials Off',
+                            textAlign: TextAlign.end,
+                            style: TextStyle(
+                              color: ReownAppKitModalTheme.colorsOf(context)
+                                  .foreground100,
+                              fontWeight: !widget.socials
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
                             ),
                           ),
-                        ],
+                        ),
+                        Semantics(
+                          label: 'With Socials Switch ${widget.socials}',
+                          // toggled: widget.socials,
+                          checked: widget.socials,
+                          child: Switch(
+                            value: widget.socials,
+                            onChanged: widget.appKitModal.isConnected
+                                ? null
+                                : (value) {
+                                    widget.reinitialize(
+                                      'appkit_sample_socials',
+                                      value,
+                                    );
+                                  },
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            'Socials On',
+                            style: TextStyle(
+                              color: ReownAppKitModalTheme.colorsOf(context)
+                                  .foreground100,
+                              fontWeight: widget.socials
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            'Analytics Off',
+                            textAlign: TextAlign.end,
+                            style: TextStyle(
+                              color: ReownAppKitModalTheme.colorsOf(context)
+                                  .foreground100,
+                              fontWeight: !widget.analytics
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                        Semantics(
+                          label: 'appkit_sample_analytics_${widget.analytics}',
+                          identifier:
+                              'appkit_sample_analytics_${widget.analytics}',
+                          child: Switch(
+                            value: widget.analytics,
+                            onChanged: widget.appKitModal.isConnected
+                                ? null
+                                : (value) {
+                                    widget.reinitialize(
+                                      'appkit_sample_analytics',
+                                      value,
+                                    );
+                                  },
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            'Analytics On',
+                            style: TextStyle(
+                              color: ReownAppKitModalTheme.colorsOf(context)
+                                  .foreground100,
+                              fontWeight: widget.analytics
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    PrimaryButton(
+                      title: 'Show logs',
+                      buttonSize: BaseButtonSize.small,
+                      onTap: () {
+                        widget.toggleLogs();
+                      },
+                    ),
+                    PrimaryButton(
+                      title: 'Custom theme',
+                      buttonSize: BaseButtonSize.small,
+                      onTap: () {
+                        widget.toggleTheme();
+                      },
+                    ),
+                    Visibility(
+                      visible: !widget.appKitModal.isConnected,
+                      child: SecondaryButton(
+                        title: 'Clear storage',
+                        size: BaseButtonSize.small,
+                        onTap: () async {
+                          await widget.appKitModal.appKit!.core.storage
+                              .deleteAll();
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text('Storage cleared'),
+                            duration: Duration(seconds: 1),
+                          ));
+                        },
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Socials Off',
-                              textAlign: TextAlign.end,
-                              style: TextStyle(
-                                color: ReownAppKitModalTheme.colorsOf(context)
-                                    .foreground100,
-                                fontWeight: !widget.socials
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                              ),
-                            ),
-                          ),
-                          Semantics(
-                            label: 'With Socials Switch ${widget.socials}',
-                            // toggled: widget.socials,
-                            checked: widget.socials,
-                            child: Switch(
-                              value: widget.socials,
-                              onChanged: (value) {
-                                widget.reinitialize(
-                                  'appkit_sample_socials',
-                                  value,
-                                );
-                              },
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              'Socials On',
-                              style: TextStyle(
-                                color: ReownAppKitModalTheme.colorsOf(context)
-                                    .foreground100,
-                                fontWeight: widget.socials
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Analytics Off',
-                              textAlign: TextAlign.end,
-                              style: TextStyle(
-                                color: ReownAppKitModalTheme.colorsOf(context)
-                                    .foreground100,
-                                fontWeight: !widget.analytics
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                              ),
-                            ),
-                          ),
-                          Semantics(
-                            label:
-                                'appkit_sample_analytics_${widget.analytics}',
-                            identifier:
-                                'appkit_sample_analytics_${widget.analytics}',
-                            child: Switch(
-                              value: widget.analytics,
-                              onChanged: (value) {
-                                widget.reinitialize(
-                                  'appkit_sample_analytics',
-                                  value,
-                                );
-                              },
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              'Analytics On',
-                              style: TextStyle(
-                                color: ReownAppKitModalTheme.colorsOf(context)
-                                    .foreground100,
-                                fontWeight: widget.analytics
-                                    ? FontWeight.bold
-                                    : FontWeight.normal,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      // Wrap(
-                      //   runAlignment: WrapAlignment.end,
-                      //   crossAxisAlignment: WrapCrossAlignment.end,
-                      //   alignment: WrapAlignment.end,
-                      //   children: [
-                      //     ...ReownAppKitModalNetworks.getAllSupportedNetworks()
-                      //         .map((network) {
-                      //       return Row(
-                      //         mainAxisAlignment: MainAxisAlignment.center,
-                      //         mainAxisSize: MainAxisSize.min,
-                      //         children: [
-                      //           Expanded(
-                      //             child: Text(
-                      //               '${network.name} (${NamespaceUtils.getNamespaceFromChain(network.chainId)}${network.isTestNetwork ? ', test' : ''})',
-                      //               textAlign: TextAlign.end,
-                      //               style: TextStyle(
-                      //                 color: ReownAppKitModalTheme.colorsOf(
-                      //                         context)
-                      //                     .foreground100,
-                      //                 fontWeight: !widget.linkMode
-                      //                     ? FontWeight.bold
-                      //                     : FontWeight.normal,
-                      //               ),
-                      //             ),
-                      //           ),
-                      //           Switch(
-                      //             value: true,
-                      //             onChanged: (value) {
-                      //               //
-                      //             },
-                      //           ),
-                      //           Expanded(child: SizedBox()),
-                      //         ],
-                      //       );
-                      //     }),
-                      //   ],
-                      // ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(height: StyleConstants.linear16),
-            // const Divider(height: 1.0, color: Colors.black12),
-            // const SizedBox(height: StyleConstants.linear8),
-            Visibility(
-              visible: !widget.appKitModal.isConnected,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(
-                    height: 30.0,
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                        elevation: WidgetStateProperty.all(0.0),
-                        backgroundColor: WidgetStateProperty.all<Color>(
-                          ReownAppKitModalTheme.colorsOf(context).accenGlass010,
-                        ),
-                        foregroundColor: WidgetStateProperty.all<Color>(
-                          ReownAppKitModalTheme.colorsOf(context).foreground100,
-                        ),
-                      ),
-                      onPressed: () async {
-                        await widget.appKitModal.appKit!.core.storage
-                            .deleteAll();
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('Storage cleared'),
-                          duration: Duration(seconds: 1),
-                        ));
-                      },
-                      child: Text(
-                        'CLEAR STORAGE',
-                        style: TextStyle(fontSize: 10.0),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            Divider(
+              height: 1.0,
+              color: ReownAppKitModalTheme.colorsOf(context).foreground300,
             ),
             const SizedBox(height: StyleConstants.linear8),
             Text('Redirect metadata:', style: textStyle),
@@ -346,6 +311,17 @@ class SettingsPageState extends State<SettingsPage> {
                   ],
                 );
               },
+            ),
+            Row(
+              children: [
+                Text('Project ID: ', style: textStyle),
+                Expanded(
+                  child: Text(
+                    widget.appKitModal.appKit!.core.projectId,
+                    style: textStyleBold,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: StyleConstants.linear8),
           ],

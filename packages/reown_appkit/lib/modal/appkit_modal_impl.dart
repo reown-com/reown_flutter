@@ -164,6 +164,7 @@ class ReownAppKitModal
   Completer<bool> _awaitRelayOnce = Completer<bool>();
 
   bool _disconnectOnDispose = true;
+  AppKitSocialOption? _pendingSocialLogin;
 
   late final List<ReownAppKitModalWalletInfo> _customWallets;
 
@@ -915,14 +916,18 @@ class ReownAppKitModal
     try {
       final walletName = _selectedWallet!.listing.name;
       final walletId = _selectedWallet!.listing.id;
-      final event = SelectWalletEvent(
-        name: walletName,
-        explorerId: walletId,
-        platform: inBrowser ? AnalyticsPlatform.web : AnalyticsPlatform.mobile,
-        walletRank: _selectedWallet!.listing.order,
-        view: 'AllWallets',
-      );
-      _analyticsService.sendEvent(event);
+      if (walletId != '0000000000000001') {
+        final event = SelectWalletEvent(
+          name: walletName,
+          explorerId: walletId,
+          platform: inBrowser
+              ? AnalyticsPlatform.web
+              : AnalyticsPlatform.mobile,
+          walletRank: _selectedWallet!.listing.order,
+          view: 'AllWallets',
+        );
+        _analyticsService.sendEvent(event);
+      }
     } catch (_) {}
   }
 
@@ -1029,6 +1034,7 @@ class ReownAppKitModal
     //   await ReownCoreUtils.openURL('$url&provider=$social');
     // }
     else {
+      _pendingSocialLogin = socialOption;
       await _uriService.openRedirect(
         redirect,
         wcURI: _wcUri,
@@ -1125,9 +1131,12 @@ class ReownAppKitModal
   Future<void> _connectionErrorHandler(dynamic e) async {
     if (_isUserRejectedError(e)) {
       onModalError.broadcast(UserRejectedConnection());
-      _analyticsService.sendEvent(
-        ConnectErrorEvent(message: 'User declined connection'),
-      );
+      _analyticsService.sendEvent(UserRejectedEvent());
+      if (_pendingSocialLogin != null) {
+        final provider = _pendingSocialLogin!.name.toLowerCase();
+        _analyticsService.sendEvent(SocialLoginCanceled(provider: provider));
+        _pendingSocialLogin = null;
+      }
     } else {
       if (e is JsonRpcError) {
         final message = e.message ?? '';
@@ -1143,6 +1152,11 @@ class ReownAppKitModal
       if (e is ReownSignError || e is ReownCoreError) {
         onModalError.broadcast(ModalError(e.message));
         _analyticsService.sendEvent(ConnectErrorEvent(message: e.message));
+      }
+      if (_pendingSocialLogin != null) {
+        final provider = _pendingSocialLogin!.name.toLowerCase();
+        _analyticsService.sendEvent(SocialLoginError(provider: provider));
+        _pendingSocialLogin = null;
       }
     }
     return await expirePreviousInactivePairings();
@@ -1371,6 +1385,7 @@ class ReownAppKitModal
       await disconnect();
       selectWallet(null);
     }
+    _pendingSocialLogin = null;
     _toastService.clear();
     _blockchainService.selectSendToken(null);
     _dweService.stopCheckingStatus();
@@ -2414,6 +2429,11 @@ extension _AppKitModalExtension on ReownAppKitModal {
     final session = await _settleSession(args.session);
     onModalConnect.broadcast(ModalConnect(session));
     //
+    if (_pendingSocialLogin != null) {
+      final provider = _pendingSocialLogin!.name.toLowerCase();
+      _analyticsService.sendEvent(SocialLoginSuccess(provider: provider));
+      _pendingSocialLogin = null;
+    }
     if (_siweService.enabled) {
       _disconnectOnClose = true;
       _widgetStack.push(ApproveSIWEPage(onSiweFinish: _oneSIWEFinish));

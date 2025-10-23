@@ -142,8 +142,56 @@ class SelectWalletEvent extends _AnalyticsEvent {
     platform: _platform,
     explorerId: _explorerId,
     walletRank: _walletRank,
-    displayIndex: _displayIndex, // TODO analytics
+    displayIndex: _displayIndex, // TODO analytics what is this?
     view: _view,
+  );
+}
+
+class WalletImpressionEvent extends _AnalyticsEvent {
+  final String _name;
+  final String _explorerId;
+  final String _view;
+  final int _walletRank;
+  final String? _platform;
+  final int? _displayIndex;
+  final String? _query;
+  final bool? _certified;
+  final bool? _installed;
+
+  WalletImpressionEvent({
+    required String name,
+    required String explorerId,
+    required String view,
+    required int walletRank,
+    AnalyticsPlatform? platform,
+    int? displayIndex,
+    String? query,
+    bool? certified,
+    bool? installed,
+  }) : _name = name,
+       _explorerId = explorerId,
+       _view = view,
+       _walletRank = walletRank,
+       _platform = platform?.name,
+       _displayIndex = displayIndex,
+       _query = query,
+       _certified = certified,
+       _installed = installed;
+
+  @override
+  String get event => CoreEventEvent.ModalTrack.WALLET_IMPRESSION;
+
+  @override
+  CoreEventProperties? get properties => CoreEventProperties(
+    name: _name,
+    explorerId: _explorerId,
+    view: _view,
+    walletRank: _walletRank,
+    platform: _platform,
+    displayIndex: _displayIndex, // TODO analytics what is this?
+    query: _query,
+    certified: _certified,
+    installed: _installed,
   );
 }
 
@@ -188,6 +236,15 @@ class ConnectErrorEvent extends _AnalyticsEvent {
 
   @override
   CoreEventProperties? get properties => CoreEventProperties(message: _message);
+}
+
+class UserRejectedEvent extends _AnalyticsEvent {
+  @override
+  String get event => CoreEventEvent.ModalTrack.USER_REJECTED;
+
+  @override
+  CoreEventProperties? get properties =>
+      CoreEventProperties(message: 'User declined connection');
 }
 
 class DisconnectSuccessEvent extends _AnalyticsEvent {
@@ -433,8 +490,8 @@ class WalletFeatureSendInitiated extends _AnalyticsEvent {
   @override
   CoreEventProperties? get properties => CoreEventProperties(
     network: _network,
-    sendToken: _sendToken,
-    sendAmount: _sendAmount,
+    token: _sendToken,
+    amount: _sendAmount,
   );
 }
 
@@ -442,14 +499,17 @@ class WalletFeatureSendSuccess extends _AnalyticsEvent {
   final String _network;
   final String _sendToken;
   final String _sendAmount;
+  final String _hash;
 
   WalletFeatureSendSuccess({
     required String network,
     required String sendToken,
     required String sendAmount,
+    required String hash,
   }) : _network = network,
        _sendToken = sendToken,
-       _sendAmount = sendAmount;
+       _sendAmount = sendAmount,
+       _hash = hash;
 
   @override
   String get event => CoreEventEvent.ModalTrack.SEND_SUCCESS;
@@ -457,8 +517,9 @@ class WalletFeatureSendSuccess extends _AnalyticsEvent {
   @override
   CoreEventProperties? get properties => CoreEventProperties(
     network: _network,
-    sendToken: _sendToken,
-    sendAmount: _sendAmount,
+    token: _sendToken,
+    amount: _sendAmount,
+    hash: _hash,
   );
 }
 
@@ -481,8 +542,8 @@ class WalletFeatureSendError extends _AnalyticsEvent {
   @override
   CoreEventProperties? get properties => CoreEventProperties(
     network: _network,
-    sendToken: _sendToken,
-    sendAmount: _sendAmount,
+    token: _sendToken,
+    amount: _sendAmount,
   );
 }
 
@@ -551,7 +612,7 @@ class ErrorFetchTransactionsEvent extends _AnalyticsEvent {
        _cursor = cursor;
 
   @override
-  String get event => CoreEventEvent.ModalTrack.LOAD_MORE_TRANSACTIONS;
+  String get event => CoreEventEvent.ModalTrack.ERROR_FETCH_TRANSACTIONS;
 
   @override
   CoreEventProperties? get properties => CoreEventProperties(
@@ -559,6 +620,23 @@ class ErrorFetchTransactionsEvent extends _AnalyticsEvent {
     project_id: _projectId,
     cursor: _cursor,
   );
+}
+
+class SetPreferredAccountTypeEvent extends _AnalyticsEvent {
+  final String _network;
+  final String _accountType;
+  SetPreferredAccountTypeEvent({
+    required String network,
+    required String accountType,
+  }) : _network = network,
+       _accountType = accountType;
+
+  @override
+  String get event => CoreEventEvent.ModalTrack.SET_PREFERRED_ACCOUNT_TYPE;
+
+  @override
+  CoreEventProperties? get properties =>
+      CoreEventProperties(network: _network, accountType: _accountType);
 }
 
 class PayExchangeSelectedEvent extends _AnalyticsEvent {

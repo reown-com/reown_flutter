@@ -1,3 +1,7 @@
+## 1.7.1
+
+- Analytics enhancements
+
 ## 1.7.0
 
 - NEW FEATURE: Deposit From Exchange

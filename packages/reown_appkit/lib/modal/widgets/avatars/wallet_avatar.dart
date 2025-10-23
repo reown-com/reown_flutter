@@ -32,7 +32,7 @@ class ListAvatar extends StatelessWidget {
     Uri? imageUri = validImage ? Uri.parse(imageUrl!) : null;
     if (imageUri != null && imageUri.authority == 'api.web3modal.com') {
       imageUri
-          .replace(queryParameters: CoreUtils.getImageQueryParams(projectId))
+          .replace(queryParameters: CoreUtils.getApiQueryParams(projectId))
           .toString();
     }
     return Stack(
@@ -96,7 +96,7 @@ class ListAvatar extends StatelessWidget {
                         child: CachedNetworkImage(
                           imageUrl: Uri.parse(imageUrl!)
                               .replace(
-                                queryParameters: CoreUtils.getImageQueryParams(
+                                queryParameters: CoreUtils.getApiQueryParams(
                                   projectId,
                                 ),
                               )

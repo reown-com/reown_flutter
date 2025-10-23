@@ -36,7 +36,7 @@ class RoundedIcon extends StatelessWidget {
     if (imageUrl != null && imageUrl!.isNotEmpty) {
       imageUri = Uri.parse(imageUrl!);
       if (imageUri.host == 'api.web3modal.com') {
-        final queryParams = CoreUtils.getImageQueryParams(projectId);
+        final queryParams = CoreUtils.getApiQueryParams(projectId);
         imageUri = imageUri.replace(queryParameters: queryParams);
       }
     }

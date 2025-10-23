@@ -54,7 +54,7 @@ class _AccountAvatarState extends State<AccountAvatar> {
               ? CachedNetworkImage(
                   imageUrl: Uri.parse(_avatarUrl!)
                       .replace(
-                        queryParameters: CoreUtils.getImageQueryParams(
+                        queryParameters: CoreUtils.getApiQueryParams(
                           widget.appKit.appKit!.core.projectId,
                         ),
                       )

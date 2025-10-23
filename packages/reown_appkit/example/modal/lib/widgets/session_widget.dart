@@ -46,7 +46,7 @@ class SessionWidgetState extends State<SessionWidget> {
                   backgroundImage: NetworkImage(
                     Uri.parse(iconImage)
                         .replace(
-                          queryParameters: CoreUtils.getImageQueryParams(
+                          queryParameters: CoreUtils.getApiQueryParams(
                             widget.appKit.appKit!.core.projectId,
                           ),
                         )

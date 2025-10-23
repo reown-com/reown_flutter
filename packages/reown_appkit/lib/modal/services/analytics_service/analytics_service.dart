@@ -28,6 +28,9 @@ class AnalyticsService implements IAnalyticsService {
     } else {
       _enableAnalytics = _enableAnalytics ?? false;
     }
+    final queryParams = CoreUtils.getApiQueryParams(_core.projectId);
+    _core.events.setQueryParams(queryParams);
+    _core.events.sendStoredEvents();
     _core.logger.i('[$runtimeType] enabled: $_enableAnalytics');
   }
 

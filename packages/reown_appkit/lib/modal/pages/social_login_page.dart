@@ -69,9 +69,12 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
   Future<void> _initSocialLogin(AppKitSocialOption option) async {
     try {
       setState(() => errorEvent = null);
-      _analyticsService.sendEvent(
-        SocialLoginStarted(provider: widget.socialOption.name.toLowerCase()),
-      );
+      if (option == AppKitSocialOption.Email) {
+        _analyticsService.sendEvent(EmailLoginSelected());
+      } else {
+        final provider = widget.socialOption.name.toLowerCase();
+        _analyticsService.sendEvent(SocialLoginStarted(provider: provider));
+      }
       if (option == AppKitSocialOption.Farcaster) {
         final farcasterUri = await _magicService.getFarcasterUri(
           chainId: _service?.selectedChain?.chainId,
@@ -125,7 +128,6 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
         : ResponsiveData.maxHeightOf(context) -
               kNavbarHeight -
               (kPadding16 * 2);
-    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     return ModalNavbar(
       title: widget.socialOption.name,
       noBack: true,
@@ -141,77 +143,10 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox.square(dimension: 20.0),
-                  errorEvent == null
-                      ? LoadingBorder(
-                          animate: errorEvent == null,
-                          borderRadius: kSelectedWalletIconHeight,
-                          child: ClipRRect(
-                            borderRadius: radiuses.isSquare()
-                                ? BorderRadius.zero
-                                : BorderRadius.circular(maxWidth),
-                            child:
-                                (widget.socialOption ==
-                                    AppKitSocialOption.Email)
-                                ? RoundedIcon(
-                                    padding: 20.0,
-                                    assetPath:
-                                        'lib/modal/assets/icons/mail.svg',
-                                    assetColor: themeColors.foreground100,
-                                    circleColor: Colors.transparent,
-                                    borderColor: Colors.transparent,
-                                  )
-                                : SvgPicture.asset(
-                                    AssetUtils.getThemedAsset(
-                                      context,
-                                      '${widget.socialOption.name.toLowerCase()}_logo.svg',
-                                    ),
-                                    package: 'reown_appkit',
-                                  ),
-                          ),
-                        )
-                      : Stack(
-                          children: [
-                            SizedBox.square(
-                              dimension: kSelectedWalletIconHeight,
-                              child: ClipRRect(
-                                borderRadius: radiuses.isSquare()
-                                    ? BorderRadius.zero
-                                    : BorderRadius.circular(maxWidth),
-                                child: SvgPicture.asset(
-                                  AssetUtils.getThemedAsset(
-                                    context,
-                                    '${widget.socialOption.name.toLowerCase()}_logo.svg',
-                                  ),
-                                  package: 'reown_appkit',
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: themeColors.background125,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(30.0),
-                                  ),
-                                ),
-                                padding: const EdgeInsets.all(1.0),
-                                clipBehavior: Clip.antiAlias,
-                                child: RoundedIcon(
-                                  assetPath: 'lib/modal/assets/icons/close.svg',
-                                  assetColor: themeColors.error100,
-                                  circleColor: themeColors.error100.withValues(
-                                    alpha: 0.2,
-                                  ),
-                                  borderColor: themeColors.background125,
-                                  padding: 4.0,
-                                  size: 24.0,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                  _LoadingIcon(
+                    errorEvent: errorEvent,
+                    socialOption: widget.socialOption,
+                  ),
                   const SizedBox.square(dimension: 20.0),
                   Text(
                     'Log in with ${widget.socialOption.name}',
@@ -249,6 +184,101 @@ class _SocialLoginPageState extends State<SocialLoginPage> {
         ),
       ),
     );
+  }
+}
+
+class _LoadingIcon extends StatefulWidget {
+  const _LoadingIcon({required this.errorEvent, required this.socialOption});
+  final ModalError? errorEvent;
+  final AppKitSocialOption socialOption;
+
+  @override
+  State<_LoadingIcon> createState() => __LoadingIconState();
+}
+
+class __LoadingIconState extends State<_LoadingIcon> {
+  @override
+  Widget build(BuildContext context) {
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final isPortrait = ResponsiveData.isPortrait(context);
+    final maxWidth = isPortrait
+        ? ResponsiveData.maxWidthOf(context)
+        : ResponsiveData.maxHeightOf(context) -
+              kNavbarHeight -
+              (kPadding16 * 2);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    return widget.errorEvent == null
+        ? LoadingBorder(
+            animate: widget.errorEvent == null,
+            borderRadius: kSelectedWalletIconHeight,
+            child: ClipRRect(
+              borderRadius: radiuses.isSquare()
+                  ? BorderRadius.zero
+                  : BorderRadius.circular(maxWidth),
+              child: (widget.socialOption == AppKitSocialOption.Email)
+                  ? RoundedIcon(
+                      padding: 20.0,
+                      assetPath: 'lib/modal/assets/icons/mail.svg',
+                      assetColor: themeColors.foreground100,
+                      circleColor: Colors.transparent,
+                      borderColor: Colors.transparent,
+                    )
+                  : SvgPicture.asset(
+                      AssetUtils.getThemedAsset(
+                        context,
+                        '${widget.socialOption.name.toLowerCase()}_logo.svg',
+                      ),
+                      package: 'reown_appkit',
+                    ),
+            ),
+          )
+        : Stack(
+            children: [
+              SizedBox.square(
+                dimension: kSelectedWalletIconHeight,
+                child: ClipRRect(
+                  borderRadius: radiuses.isSquare()
+                      ? BorderRadius.zero
+                      : BorderRadius.circular(maxWidth),
+                  child: (widget.socialOption == AppKitSocialOption.Email)
+                      ? RoundedIcon(
+                          padding: 20.0,
+                          assetPath: 'lib/modal/assets/icons/mail.svg',
+                          assetColor: themeColors.foreground100,
+                          circleColor: Colors.transparent,
+                          borderColor: Colors.transparent,
+                        )
+                      : SvgPicture.asset(
+                          AssetUtils.getThemedAsset(
+                            context,
+                            '${widget.socialOption.name.toLowerCase()}_logo.svg',
+                          ),
+                          package: 'reown_appkit',
+                        ),
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                right: 0,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: themeColors.background125,
+                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                  ),
+                  padding: const EdgeInsets.all(1.0),
+                  clipBehavior: Clip.antiAlias,
+                  child: RoundedIcon(
+                    assetPath: 'lib/modal/assets/icons/close.svg',
+                    assetColor: themeColors.error100,
+                    circleColor: themeColors.error100.withValues(alpha: 0.2),
+                    borderColor: themeColors.background125,
+                    padding: 4.0,
+                    size: 24.0,
+                  ),
+                ),
+              ),
+            ],
+          );
   }
 }
 

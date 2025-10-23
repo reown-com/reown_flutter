@@ -66,7 +66,7 @@ class WalletGridItem extends StatelessWidget {
                           ),
                           borderColor: themeColors.background150,
                           padding: 2.0,
-                          size: 18.0,
+                          size: 16.0,
                         ),
                       ),
                     ),

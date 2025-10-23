@@ -255,7 +255,7 @@ class _PreviewSendSolanaState extends State<PreviewSendSolana> {
     try {
       final appKitModal = ModalProvider.of(context).instance;
 
-      await appKitModal.request(
+      final response = await appKitModal.request(
         topic: appKitModal.session!.topic,
         chainId: _sendTokenData.chainId!,
         request: SessionRequestParams(
@@ -273,6 +273,7 @@ class _PreviewSendSolanaState extends State<PreviewSendSolana> {
           network: _sendTokenData.chainId!,
           sendToken: _sendTokenData.symbol!,
           sendAmount: valueToSend,
+          hash: response.toString(),
         ),
       );
     } on ArgumentError catch (e) {
