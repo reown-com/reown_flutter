@@ -148,4 +148,16 @@ class CoreUtils {
       'projectId': projectId,
     };
   }
+
+  static String formatImageUri(String imageUrl, String projectId) {
+    if (imageUrl.isNotEmpty) {
+      Uri imageUri = Uri.parse(imageUrl);
+      if (imageUri.host == 'api.web3modal.com') {
+        final queryParams = CoreUtils.getApiQueryParams(projectId);
+        imageUri = imageUri.replace(queryParameters: queryParams);
+      }
+      return imageUri.toString();
+    }
+    return imageUrl;
+  }
 }

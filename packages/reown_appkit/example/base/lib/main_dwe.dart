@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/dart_defines.dart';
+import 'receive_money_modal.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +20,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   bool _isDarkMode = false;
-  bool _isCustomTheme = false;
+  bool _isCustomTheme = true;
 
   @override
   void initState() {
@@ -60,32 +60,33 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       themeData: _isCustomTheme
           ? ReownAppKitModalThemeData(
               darkColors: ReownAppKitModalColors.darkMode.copyWith(
-                accent100: const Color.fromARGB(255, 55, 186, 149),
-                accent090: const Color.fromARGB(255, 55, 186, 149),
-                accent080: const Color.fromARGB(255, 55, 186, 149),
-                grayGlass100: const Color.fromARGB(255, 55, 186, 149),
-                // Main Modal's background color
-                background125: const Color.fromARGB(255, 0, 0, 0),
+                // accent100: const Color.fromARGB(255, 55, 186, 149),
+                // accent090: const Color.fromARGB(255, 55, 186, 149),
+                // accent080: const Color.fromARGB(255, 55, 186, 149),
+                // grayGlass100: const Color.fromARGB(255, 55, 186, 149),
+                // // Main Modal's background color
+                background100: const Color.fromARGB(255, 12, 15, 14),
+                background125: const Color.fromARGB(255, 12, 15, 14),
                 // Main Modal's text
-                foreground100: const Color.fromARGB(255, 55, 186, 149),
-                // Secondary Modal's text
-                foreground125: const Color.fromARGB(255, 255, 255, 255),
-                foreground200: const Color.fromARGB(255, 255, 255, 255),
-                foreground300: const Color.fromARGB(255, 255, 255, 255),
+                // foreground100: const Color.fromARGB(255, 12, 15, 14),
+                // // Secondary Modal's text
+                // foreground125: const Color.fromARGB(255, 255, 255, 255),
+                // foreground200: const Color.fromARGB(255, 255, 255, 255),
+                // foreground300: const Color.fromARGB(255, 255, 255, 255),
               ),
-              lightColors: ReownAppKitModalColors.darkMode.copyWith(
-                accent100: const Color.fromARGB(255, 55, 186, 149),
-                accent090: const Color.fromARGB(255, 55, 186, 149),
-                accent080: const Color.fromARGB(255, 55, 186, 149),
-                grayGlass100: const Color.fromARGB(255, 55, 186, 149),
-                // Main Modal's background color
-                background125: const Color.fromARGB(255, 255, 255, 255),
+              lightColors: ReownAppKitModalColors.lightMode.copyWith(
+                  // accent100: const Color.fromARGB(255, 55, 186, 149),
+                  // accent090: const Color.fromARGB(255, 55, 186, 149),
+                  // accent080: const Color.fromARGB(255, 55, 186, 149),
+                  // grayGlass100: const Color.fromARGB(255, 55, 186, 149),
+                  // // Main Modal's background color
+                  // background125: const Color.fromARGB(255, 255, 255, 255),
                 // Main Modal's text
-                foreground100: const Color.fromARGB(255, 55, 186, 149),
-                // Secondary Modal's text
-                foreground125: const Color.fromARGB(255, 0, 0, 0),
-                foreground200: const Color.fromARGB(255, 0, 0, 0),
-                foreground300: const Color.fromARGB(255, 0, 0, 0),
+                  // foreground100: const Color.fromARGB(255, 55, 186, 149),
+                  // // Secondary Modal's text
+                  // foreground125: const Color.fromARGB(255, 0, 0, 0),
+                  // foreground200: const Color.fromARGB(255, 0, 0, 0),
+                  // foreground300: const Color.fromARGB(255, 0, 0, 0),
               ),
               radiuses: ReownAppKitModalRadiuses.circular,
             )
@@ -119,20 +120,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   late final IReownAppKitModal _appKitModal;
   bool _initialized = false;
-
-  final Map<ExchangeAsset, String> _params = {
-    ethereumUSDC: '0xD6d14.....',
-    ethereumUSDT: '0xD6d14.....',
-    solanaUSDC: '3ZFT4Cwvy17q....',
-    arbitrumUSDT: '0xD6d14.....',
-    solanaUSDT: '3ZFT4Cwvy17q....',
-    arbitrumUSDC: '0xD6d14.....',
-    optimismUSDT: '0xD6d14.....',
-    polygonUSDC: '0xD6d14.....',
-    solanaSOL: '3ZFT4Cwvy17q....',
-  };
-
-  ExchangeAsset? _lastPicked;
 
   @override
   void initState() {
@@ -170,24 +157,22 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: _initialized
-            ? PrimaryButton(
-                onTap: () async {
-                  try {
-                    final randomEntry = _params.entries
-                        .where((e) => e.key != _lastPicked)
-                        .elementAt(
-                          Random().nextInt(_params.length),
-                        );
-                    _lastPicked = randomEntry.key;
-                    await _appKitModal.openModalView(
-                      ReownAppKitModalDepositScreen(
-                        preselectedRecipient: randomEntry.value,
-                        preselectedAsset: randomEntry.key,
-                      ),
-                    );
-                  } catch (_) {}
-                },
-                title: 'Deposit from Exchange',
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  PrimaryButton(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) => ReceiveMoneySheet(
+                          appKitModal: _appKitModal,
+                        ),
+                      );
+                    },
+                    title: 'Receive Money',
+                  ),
+                ],
               )
             : CircularProgressIndicator(),
       ),

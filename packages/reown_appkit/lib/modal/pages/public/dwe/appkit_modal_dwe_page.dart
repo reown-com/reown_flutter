@@ -15,9 +15,11 @@ import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 
 class ReownAppKitModalDepositScreen extends StatefulWidget {
+  final String? titleOverride;
   final String? preselectedRecipient;
   final ExchangeAsset? preselectedAsset;
   const ReownAppKitModalDepositScreen({
+    this.titleOverride,
     this.preselectedRecipient,
     this.preselectedAsset,
   }) : super(key: KeyConstants.depositPageKey);
@@ -106,7 +108,7 @@ class _ReownAppKitModalDepositScreenState
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     return ModalNavbar(
-      title: 'Deposit from Exchange',
+      title: widget.titleOverride ?? 'Deposit from Exchange',
       divider: false,
       body: Container(
         padding: const EdgeInsets.only(
