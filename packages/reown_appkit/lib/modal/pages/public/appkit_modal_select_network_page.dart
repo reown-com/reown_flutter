@@ -27,8 +27,7 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
   const ReownAppKitModalSelectNetworkPage({
     this.titleOverride,
     this.onTapNetwork,
-  })
-    : super(key: KeyConstants.selectNetworkPage);
+  }) : super(key: KeyConstants.selectNetworkPage);
 
   void _onSelectNetwork(
     BuildContext context,

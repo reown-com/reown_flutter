@@ -106,7 +106,7 @@ class DWEService implements IDWEService {
 
     if (supportedAssets != null) {
       _supportedAssets
-      ..clear()
+        ..clear()
         ..addAll(supportedAssets);
     }
     _preselectedAsset = preselectedAsset ?? _preselectedAsset;

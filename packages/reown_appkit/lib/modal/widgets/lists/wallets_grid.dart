@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/reown_appkit.dart';
@@ -39,6 +38,7 @@ class WalletsGrid extends StatelessWidget {
               imageUrl: info.image,
               title: info.title,
               showCheckmark: info.data.installed,
+              certified: info.data.listing.badgeType == 'certified',
             ),
           ),
         )
@@ -76,10 +76,10 @@ class WalletsGrid extends StatelessWidget {
         mainAxisExtent: itemSize.height,
       ),
       itemBuilder: (_, index) {
-        final wallet = itemList[index];
         return VisibilityListener(
           onVisible: () {
             try {
+              final wallet = itemList[index];
               final event = WalletImpressionEvent(
                 name: wallet.data.listing.name,
                 explorerId: wallet.data.listing.id,
@@ -101,19 +101,6 @@ class WalletsGrid extends StatelessWidget {
                     width: itemSize.width,
                     height: itemSize.height,
                     child: children[index],
-                  ),
-                  Visibility(
-                    visible: wallet.data.listing.badgeType == 'certified',
-                    child: Positioned(
-                      bottom: 8,
-                      right: 0,
-                      child: SvgPicture.asset(
-                        'lib/modal/assets/icons/certified.svg',
-                        package: 'reown_appkit',
-                        width: 16.0,
-                        height: 16.0,
-                      ),
-                    ),
                   ),
                 ],
               ),

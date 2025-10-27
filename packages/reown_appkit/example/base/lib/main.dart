@@ -308,7 +308,7 @@ class _MyHomePageState extends State<MyHomePage> {
       siweConfig: _siweConfig(linkModeEnabled),
       featuresConfig: socialsEnabled ? _featuresConfig() : null,
       optionalNamespaces: _namespacesBasedOnChains(),
-      // featuredWalletIds: _specificsWalletIds(),
+      featuredWalletIds: _specificsWalletIds(),
       // excludedWalletIds: {},
       // includedWalletIds: _specificsWalletIds(),
       // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1

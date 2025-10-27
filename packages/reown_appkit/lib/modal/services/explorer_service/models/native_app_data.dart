@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 class NativeAppData {
   final String id;
@@ -18,9 +19,12 @@ class NativeAppData {
     final j = json as Map<String, dynamic>? ?? {};
     return NativeAppData(
       id: j['id'],
-      schema: (j['ios_schema'] ?? j['android_app_id'])?.toString().trim() ?? '',
+      schema: j[_jsonKey]?.toString().trim() ?? '',
     );
   }
 
-  Map<String, dynamic> toJson() => {'id': id, 'schema': schema};
+  Map<String, dynamic> toJson() => {'id': id, _jsonKey: schema};
+
+  static String get _jsonKey =>
+      Platform.isIOS ? 'ios_schema' : 'android_app_id';
 }

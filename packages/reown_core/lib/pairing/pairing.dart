@@ -634,6 +634,7 @@ class Pairing implements IPairing {
     required Map<String, dynamic> sessionProposalResponse,
     required Map<String, dynamic> sessionSettlementRequest,
     EncodeOptions? encodeOptions,
+    List<String>? approvedChains,
   }) async {
     final pairingPayload = JsonRpcUtils.formatJsonRpcResponse<dynamic>(
       responseId,
@@ -671,6 +672,7 @@ class Pairing implements IPairing {
       'pairingTopic': pairingTopic,
       'sessionProposalResponse': pairingResponseMessage,
       'sessionSettlementRequest': sessionSettlementRequestMessage,
+      if (approvedChains != null) 'approvedChains': approvedChains,
     };
 
     // ttl and tag are not required on Sign 2.5 methods, it's assigned relay-side

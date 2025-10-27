@@ -341,6 +341,11 @@ class ReownSign implements IReownSign {
       expiry: expiry,
       controller: ConnectionMetadata(publicKey: selfPubKey, metadata: metadata),
     );
+
+    final approvedChains = NamespaceUtils.getChainIdsFromNamespaces(
+      namespaces: sessionSettleRequest.namespaces,
+    );
+
     bool acknowledged = await core.pairing
         .sendApproveSessionRequest(
           sessionTopic,
@@ -348,6 +353,7 @@ class ReownSign implements IReownSign {
           responseId: proposal.id,
           sessionProposalResponse: sessionProposalResponse.toJson(),
           sessionSettlementRequest: sessionSettleRequest.toJson(),
+          approvedChains: approvedChains,
         )
         .timeout(const Duration(seconds: 60))
         .catchError((_) => false)
