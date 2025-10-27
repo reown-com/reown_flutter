@@ -7,6 +7,7 @@ import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/account_list_item.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.dart';
+import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
@@ -20,6 +21,9 @@ class AssetSelectorPage extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    final appKitModal = ModalProvider.of(context).instance;
+    final chainId = appKitModal.selectedChain?.chainId;
+    final supportedAssets = _dweService.getAvailableAssets(chainId: chainId);
     return ModalNavbar(
       title: 'Select asset',
       safeAreaLeft: true,
@@ -37,7 +41,17 @@ class AssetSelectorPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ..._dweService.supportedAssets.mapIndexed((_, asset) {
+              Visibility(
+                visible: supportedAssets.isEmpty,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 20.0),
+                  child: Center(
+                    child: Text('No assets supported for this network'),
+                  ),
+                ),
+              ),
+              ...supportedAssets.mapIndexed((_, asset) {
                 final imageId = ReownAppKitModalNetworks.getNetworkIconId(
                   asset.network,
                 );
@@ -48,7 +62,8 @@ class AssetSelectorPage extends StatelessWidget {
                   asset.network,
                   asset.network,
                 );
-                final subtitle = networkInfo?.name != null
+                final subtitle =
+                    networkInfo?.name != null && _dweService.showNetworkIcon
                     ? ' - ${networkInfo!.name}'
                     : '';
                 return FutureBuilder(
@@ -68,26 +83,29 @@ class AssetSelectorPage extends StatelessWidget {
                           children: [
                             RoundedIcon(
                               assetPath: 'lib/modal/assets/icons/coin.svg',
-                              imageUrl: snapshot.data?.iconUrl ?? chainIcon,
+                              imageUrl: snapshot.data?.iconUrl,
                               assetColor: themeColors.inverse100,
                               borderRadius: radiuses.isSquare() ? 0.0 : null,
                             ),
                             Positioned(
                               bottom: 0,
                               right: 0,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: themeColors.background150,
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(30.0),
+                              child: Visibility(
+                                visible: _dweService.showNetworkIcon,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: themeColors.background150,
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(30.0),
+                                    ),
                                   ),
-                                ),
-                                padding: const EdgeInsets.all(1.0),
-                                clipBehavior: Clip.antiAlias,
-                                child: RoundedIcon(
-                                  imageUrl: chainIcon,
-                                  padding: 2.0,
-                                  size: 16.0,
+                                  padding: const EdgeInsets.all(1.0),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: RoundedIcon(
+                                    imageUrl: chainIcon,
+                                    padding: 2.0,
+                                    size: 16.0,
+                                  ),
                                 ),
                               ),
                             ),
@@ -103,8 +121,13 @@ class AssetSelectorPage extends StatelessWidget {
                         color: themeColors.foreground200,
                       ),
                       onTap: () {
+                        _dweService.configDeposit(preselectedAsset: asset);
                         _dweService.selectedAsset.value = asset;
+                        // if (_dweService.enableNetworkSelection) {
+                        //   _widgetStack.popUntil(KeyConstants.depositPageKey);
+                        // } else {
                         _widgetStack.pop();
+                        // }
                       },
                     );
                   },

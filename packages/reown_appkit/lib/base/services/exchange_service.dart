@@ -24,7 +24,7 @@ class ExchangeService implements IExchangeService {
       params: params.toParams(),
     );
     core.logger.d(
-      '[$runtimeType] getExchanges ${jsonEncode(rpcRequest.toJson())}',
+      '[$runtimeType] reown_getExchanges request: ${jsonEncode(rpcRequest.toJson())}',
     );
 
     // await Future.delayed(Duration(seconds: 1));
@@ -47,7 +47,7 @@ class ExchangeService implements IExchangeService {
       params: params.toParams(),
     );
     core.logger.d(
-      '[$runtimeType] getExchangePayUrl ${jsonEncode(rpcRequest.toJson())}',
+      '[$runtimeType] reown_getExchangePayUrl request: ${jsonEncode(rpcRequest.toJson())}',
     );
 
     // await Future.delayed(Duration(seconds: 1));
@@ -70,7 +70,7 @@ class ExchangeService implements IExchangeService {
       params: params.toJson(),
     );
     core.logger.d(
-      '[$runtimeType] getExchangeDepositStatus ${jsonEncode(rpcRequest.toJson())}',
+      '[$runtimeType] reown_getExchangeBuyStatus request: ${jsonEncode(rpcRequest.toJson())}',
     );
 
     // await Future.delayed(Duration(seconds: 1));

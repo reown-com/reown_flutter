@@ -27,10 +27,6 @@ class DWEService implements IDWEService {
     'origin': _bundleId ?? 'flutter-appkit',
   };
 
-  final List<ExchangeAsset> _supportedAssets = [];
-  @override
-  List<ExchangeAsset> get supportedAssets => _supportedAssets;
-
   @override
   final selectedAsset = ValueNotifier<ExchangeAsset?>(null);
 
@@ -46,19 +42,91 @@ class DWEService implements IDWEService {
   void clearState() {
     selectedAmount.value = 0.0;
     selectedAsset.value = null;
-    _supportedAssets.clear();
+    // _supportedAssets.clear();
   }
 
+  final List<ExchangeAsset> _supportedAssets = [];
   @override
-  void setSupportedAssets(List<ExchangeAsset> assets) {
-    _supportedAssets
+  List<ExchangeAsset> get supportedAssets => _supportedAssets;
+
+  ExchangeAsset? _preselectedAsset;
+  @override
+  ExchangeAsset? get preselectedAsset => _preselectedAsset;
+
+  bool _showNetworkIcon = true;
+  @override
+  bool get showNetworkIcon => _showNetworkIcon;
+
+  // bool _enableNetworkSelection = false;
+  // @override
+  // bool get enableNetworkSelection => _enableNetworkSelection;
+
+  // String? _preselectedNamespace;
+  // @override
+  // String? get preselectedNamespace => _preselectedNamespace;
+
+  String? _preselectedRecipient;
+  @override
+  String? get preselectedRecipient => _preselectedRecipient;
+
+  @override
+  void configDeposit({
+    List<ExchangeAsset>? supportedAssets,
+    ExchangeAsset? preselectedAsset,
+    bool? showNetworkIcon,
+    String? preselectedRecipient,
+    // bool? enableNetworkSelection,
+    // String? preselectedNamespace,
+  }) {
+    // if (preselectedRecipient != null) {
+    //   if (preselectedNamespace == null && preselectedAsset == null) {
+    //     'Either `preselectedNamespace` or `preselectedAsset` has to be set when `preselectedRecipient` is used';
+    //   }
+    // }
+
+    if (preselectedAsset != null) {
+      final chainId = preselectedAsset.network;
+      if (!NamespaceUtils.isValidChainId(chainId)) {
+        throw Exception('Invalid chain id on asset');
+      }
+
+      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+      final networkInfo = ReownAppKitModalNetworks.getNetworkInfo(
+        namespace,
+        chainId,
+      );
+      if (networkInfo == null) {
+        final errorMessage =
+            '$chainId has not been added to `ReownAppKitModalNetworks`. '
+            'Please call `ReownAppKitModalNetworks.addSupportedNetworks()`, '
+            'See docs: https://docs.reown.com/appkit/flutter/core/custom-chains#custom-networks-addition-and-selection';
+        throw Exception(errorMessage);
+      }
+    }
+
+    if (supportedAssets != null) {
+      _supportedAssets
       ..clear()
-      ..addAll(assets);
+        ..addAll(supportedAssets);
+    }
+    _preselectedAsset = preselectedAsset ?? _preselectedAsset;
+    _showNetworkIcon = showNetworkIcon ?? _showNetworkIcon;
+    _preselectedRecipient = preselectedRecipient ?? _preselectedRecipient;
+    // _enableNetworkSelection = enableNetworkSelection ?? false;
+    // _preselectedNamespace = preselectedNamespace;
   }
 
   @override
-  List<ExchangeAsset> getPaymentAssetsForNetwork({String? chainId}) {
-    return _appKit.getPaymentAssetsForNetwork(chainId: chainId);
+  List<ExchangeAsset> getAvailableAssets({String? chainId}) {
+    if (_supportedAssets.isEmpty) {
+      return _appKit.getPaymentAssetsForNetwork(chainId: chainId);
+    }
+
+    if (chainId == null) {
+      return _supportedAssets;
+    }
+
+    return _supportedAssets.where((e) => e.network == chainId).toList();
   }
 
   @override

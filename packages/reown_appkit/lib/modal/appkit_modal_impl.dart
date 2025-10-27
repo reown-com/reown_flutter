@@ -529,6 +529,36 @@ class ReownAppKitModal
     return false;
   }
 
+  @override
+  List<ExchangeAsset> getPaymentAssetsForNetwork({
+    String? chainId,
+    bool includeNative = true,
+  }) {
+    return _appKit.getPaymentAssetsForNetwork(
+      chainId: chainId,
+      includeNative: includeNative,
+    );
+  }
+
+  @override
+  void configDeposit({
+    List<ExchangeAsset>? supportedAssets,
+    ExchangeAsset? preselectedAsset,
+    bool? showNetworkIcon,
+    String? preselectedRecipient,
+    // bool? enableNetworkSelection,
+    // String? preselectedNamespace,
+  }) {
+    _dweService.configDeposit(
+      supportedAssets: supportedAssets,
+      preselectedAsset: preselectedAsset,
+      showNetworkIcon: showNetworkIcon,
+      preselectedRecipient: preselectedRecipient,
+      // enableNetworkSelection: enableNetworkSelection,
+      // preselectedNamespace: preselectedNamespace,
+    );
+  }
+
   Future<void> _checkSIWEStatus() async {
     // check if SIWE is enabled and should still sign the message
     if (_siweService.enabled) {
@@ -755,6 +785,11 @@ class ReownAppKitModal
         },
       ),
     );
+  }
+
+  @override
+  Future<void> openDepositView() {
+    return _showModalView(startWidget: ReownAppKitModalDepositScreen());
   }
 
   @override

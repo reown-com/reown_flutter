@@ -21,19 +21,32 @@ class ExchangesListWidget extends StatefulWidget {
 
 class _ExchangesListWidgetState extends State<ExchangesListWidget> {
   IDWEService get _dweService => GetIt.I<IDWEService>();
-  Exchange? _selectedExchange;
+  ExchangeAsset? _selectedAsset;
+  final List<Exchange> _exchanges = [];
 
   @override
   Widget build(BuildContext context) {
-    final themeData = ReownAppKitModalTheme.getDataOf(context);
-    final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    final chainInfo = ModalProvider.of(context).instance.selectedChain;
+    if (chainInfo == null) {
+      return SizedBox.shrink();
+    }
+
     return ValueListenableBuilder(
       valueListenable: _dweService.selectedAsset,
       builder: (context, selectedAsset, _) {
         if (selectedAsset == null) {
           return const SizedBox.shrink();
         }
+        if (selectedAsset.toCaip19() == _selectedAsset?.toCaip19() &&
+            _exchanges.isNotEmpty) {
+          // no re-request
+          return _ExchangesList(
+            exchanges: _exchanges,
+            recipient: widget.recipient,
+            onSelect: widget.onSelect,
+          );
+        }
+
         return FutureBuilder(
           future: _dweService.getExchanges(
             params: GetExchangesParams(page: 1, asset: selectedAsset),
@@ -50,76 +63,103 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
                 ),
               );
             }
-            final exchanges = snapshot.data?.exchanges ?? [];
-            return exchanges.isEmpty
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'No exchanges available at the moment',
-                      style: themeData.textStyles.paragraph400.copyWith(
-                        color: themeColors.foreground100,
-                      ),
-                    ),
-                  )
-                : Column(
-                    children: exchanges
-                        .map(
-                          (exchange) => Padding(
-                            padding: const EdgeInsets.only(top: kPadding8),
-                            child: ValueListenableBuilder(
-                              valueListenable: _dweService.selectedAmount,
-                              builder: (context, amount, _) {
-                                return AccountListItem(
-                                  iconWidget: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 4.0,
-                                    ),
-                                    child: RoundedIcon(
-                                      borderRadius: radiuses.isSquare()
-                                          ? 0.0
-                                          : null,
-                                      imageUrl: exchange.imageUrl,
-                                      assetColor: themeColors.background100,
-                                    ),
-                                  ),
-                                  title: exchange.name,
-                                  titleStyle: themeData.textStyles.paragraph500
-                                      .copyWith(
-                                        color: themeColors.foreground100,
-                                      ),
-                                  onTap: amount > 0.0
-                                      ? () => _selectExchange(exchange)
-                                      : null,
-                                  trailing: _selectedExchange?.id == exchange.id
-                                      ? Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            SizedBox.square(
-                                              dimension: 15.0,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 1.8,
-                                                color:
-                                                    themeColors.foreground200,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 10.0),
-                                          ],
-                                        )
-                                      : null,
-                                );
-                              },
-                            ),
-                          ),
-                        )
-                        .toList(),
-                  );
+            _exchanges
+              ..clear()
+              ..addAll(snapshot.data?.exchanges ?? []);
+            return _ExchangesList(
+              exchanges: _exchanges,
+              recipient: widget.recipient,
+              onSelect: widget.onSelect,
+            );
           },
         );
       },
     );
+  }
+}
+
+class _ExchangesList extends StatefulWidget {
+  const _ExchangesList({
+    required this.exchanges,
+    required this.recipient,
+    required this.onSelect,
+  });
+  final List<Exchange> exchanges;
+  final String? recipient;
+  final Function(Exchange exchange, GetExchangeUrlResult result) onSelect;
+
+  @override
+  State<_ExchangesList> createState() => __ExchangesListState();
+}
+
+class __ExchangesListState extends State<_ExchangesList> {
+  IDWEService get _dweService => GetIt.I<IDWEService>();
+  Exchange? _selectedExchange;
+
+  @override
+  Widget build(BuildContext context) {
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    final exchanges = widget.exchanges;
+    return exchanges.isEmpty
+        ? Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'No exchanges available at the moment',
+              style: themeData.textStyles.paragraph400.copyWith(
+                color: themeColors.foreground100,
+              ),
+            ),
+          )
+        : Column(
+            children: exchanges
+                .map(
+                  (exchange) => Padding(
+                    padding: const EdgeInsets.only(top: kPadding8),
+                    child: ValueListenableBuilder(
+                      valueListenable: _dweService.selectedAmount,
+                      builder: (context, amount, _) {
+                        return AccountListItem(
+                          iconWidget: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4.0,
+                            ),
+                            child: RoundedIcon(
+                              borderRadius: radiuses.isSquare() ? 0.0 : null,
+                              imageUrl: exchange.imageUrl,
+                              assetColor: themeColors.background100,
+                            ),
+                          ),
+                          title: exchange.name,
+                          titleStyle: themeData.textStyles.paragraph500
+                              .copyWith(color: themeColors.foreground100),
+                          onTap: amount > 0.0
+                              ? () => _selectExchange(exchange)
+                              : null,
+                          trailing: _selectedExchange?.id == exchange.id
+                              ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox.square(
+                                      dimension: 15.0,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 1.8,
+                                        color: themeColors.foreground200,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 10.0),
+                                  ],
+                                )
+                              : null,
+                        );
+                      },
+                    ),
+                  ),
+                )
+                .toList(),
+          );
   }
 
   Future<void> _selectExchange(Exchange exchange) async {
@@ -149,8 +189,8 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
         params: getExchangeUrlParams,
       );
       setState(() => _selectedExchange = null);
+      await ReownCoreUtils.openURL(result.url);
       widget.onSelect.call(exchange, result);
-      ReownCoreUtils.openURL(result.url);
     } on JsonRpcError catch (e) {
       appKitModal.onModalError.broadcast(ModalError(e.message!));
       setState(() => _selectedExchange = null);

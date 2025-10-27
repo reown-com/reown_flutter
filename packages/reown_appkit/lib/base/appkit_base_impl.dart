@@ -357,9 +357,15 @@ class ReownAppKit implements IReownAppKit {
   // Exchange Service
 
   @override
-  List<ExchangeAsset> getPaymentAssetsForNetwork({String? chainId}) {
+  List<ExchangeAsset> getPaymentAssetsForNetwork({
+    String? chainId,
+    bool includeNative = true,
+  }) {
     if (chainId == null) {
-      return allExchangeAssets;
+      if (includeNative) {
+        return allExchangeAssets;
+      }
+      return allExchangeAssets.where((e) => !e.isNative()).toList();
     }
 
     if (!NamespaceUtils.isValidChainId(chainId)) {
@@ -368,7 +374,12 @@ class ReownAppKit implements IReownAppKit {
         context: 'chainId should conform to "CAIP-2" format',
       ).toSignError();
     }
-    return allExchangeAssets.where((a) => a.network == chainId).toList();
+    if (includeNative) {
+      return allExchangeAssets.where((a) => a.network == chainId).toList();
+    }
+    return allExchangeAssets
+        .where((a) => a.network == chainId && !a.isNative())
+        .toList();
   }
 
   @override
