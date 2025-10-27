@@ -29,12 +29,6 @@ class ListAvatar extends StatelessWidget {
     final radius = borderRadius ?? radiuses.radiusM;
     final projectId = appKitModal.appKit!.core.projectId;
     final validImage = (imageUrl ?? '').isNotEmpty && !disabled;
-    Uri? imageUri = validImage ? Uri.parse(imageUrl!) : null;
-    if (imageUri != null && imageUri.authority == 'api.web3modal.com') {
-      imageUri
-          .replace(queryParameters: CoreUtils.getImageQueryParams(projectId))
-          .toString();
-    }
     return Stack(
       children: [
         AspectRatio(
@@ -56,7 +50,10 @@ class ListAvatar extends StatelessWidget {
                       clipBehavior: Clip.antiAlias,
                       child: validImage
                           ? CachedNetworkImage(
-                              imageUrl: imageUri.toString(),
+                              imageUrl: CoreUtils.formatImageUri(
+                                imageUrl!,
+                                projectId,
+                              ),
                               fit: BoxFit.cover,
                               fadeInDuration: const Duration(milliseconds: 500),
                               fadeOutDuration: const Duration(
@@ -94,13 +91,10 @@ class ListAvatar extends StatelessWidget {
                           BlendMode.saturation,
                         ),
                         child: CachedNetworkImage(
-                          imageUrl: Uri.parse(imageUrl!)
-                              .replace(
-                                queryParameters: CoreUtils.getImageQueryParams(
-                                  projectId,
-                                ),
-                              )
-                              .toString(),
+                          imageUrl: CoreUtils.formatImageUri(
+                            imageUrl!,
+                            projectId,
+                          ),
                           fadeInDuration: const Duration(milliseconds: 500),
                           fadeOutDuration: const Duration(milliseconds: 500),
                           errorWidget: (context, url, error) =>

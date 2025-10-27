@@ -118,6 +118,7 @@ class ConnectPageState extends State<ConnectPage> {
                   AppKitModalNetworkSelectButton(
                     appKit: widget.appKitModal,
                     size: BaseButtonSize.small,
+                    closeAfterPick: true,
                   ),
                   const SizedBox.square(dimension: 8.0),
                   AppKitModalConnectButton(
@@ -131,9 +132,7 @@ class ConnectPageState extends State<ConnectPage> {
                 children: [
                   PrimaryButton(
                     buttonSize: BaseButtonSize.regular,
-                    onTap: widget.appKitModal.isConnected
-                        ? _openDepositScreen
-                        : null,
+                    onTap: _openDepositScreen,
                     title: 'Deposit with Exchange',
                   ),
                 ],

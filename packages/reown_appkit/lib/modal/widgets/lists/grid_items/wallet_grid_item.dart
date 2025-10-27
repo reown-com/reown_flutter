@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
@@ -16,13 +17,14 @@ class WalletGridItem extends StatelessWidget {
     this.isSelected = false,
     this.isNetwork = false,
     this.showCheckmark = false,
+    this.certified = false,
   });
 
   final String title;
   final String? imageUrl;
   final Widget? bottom;
   final VoidCallback? onTap;
-  final bool isSelected, isNetwork, showCheckmark;
+  final bool isSelected, isNetwork, showCheckmark, certified;
 
   @override
   Widget build(BuildContext context) {
@@ -35,44 +37,64 @@ class WalletGridItem extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Expanded(
-            child: Align(
-              alignment: Alignment.topCenter,
-              child: Stack(
-                children: [
-                  ListAvatar(
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: ListAvatar(
                     borderRadius: radiuses.radiusXS,
                     imageUrl: imageUrl,
                     isNetwork: isNetwork,
                     color: isSelected ? themeColors.accent100 : null,
                     disabled: isNetwork && onTap == null,
                   ),
-                  Visibility(
-                    visible: showCheckmark,
-                    child: Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: themeColors.background150,
-                          borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                ),
+                Visibility(
+                  visible: showCheckmark,
+                  child: Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: themeColors.background150,
+                        borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                      ),
+                      padding: const EdgeInsets.all(1.0),
+                      clipBehavior: Clip.antiAlias,
+                      child: RoundedIcon(
+                        assetPath: 'lib/modal/assets/icons/checkmark.svg',
+                        assetColor: themeColors.success100,
+                        circleColor: themeColors.success100.withValues(
+                          alpha: 0.3,
                         ),
-                        padding: const EdgeInsets.all(1.0),
-                        clipBehavior: Clip.antiAlias,
-                        child: RoundedIcon(
-                          assetPath: 'lib/modal/assets/icons/checkmark.svg',
-                          assetColor: themeColors.success100,
-                          circleColor: themeColors.success100.withValues(
-                            alpha: 0.3,
-                          ),
-                          borderColor: themeColors.background150,
-                          padding: 2.0,
-                          size: 18.0,
-                        ),
+                        borderColor: themeColors.background150,
+                        padding: 3.0,
+                        size: 17.0,
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+                Visibility(
+                  visible: certified,
+                  child: Positioned(
+                    top: 0,
+                    right: 0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: themeColors.background150,
+                        borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                      ),
+                      clipBehavior: Clip.antiAlias,
+                      child: SvgPicture.asset(
+                        'lib/modal/assets/icons/certified.svg',
+                        package: 'reown_appkit',
+                        width: 20.0,
+                        height: 20.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 2.0),

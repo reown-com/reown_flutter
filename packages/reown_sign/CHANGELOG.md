@@ -1,3 +1,8 @@
+## 1.3.6
+## 1.3.5
+
+- Analytics enhancements
+
 ## 1.3.4
 ## 1.3.3
 

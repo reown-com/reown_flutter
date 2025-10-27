@@ -8,6 +8,7 @@ import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/activity_page.dart';
 import 'package:reown_appkit/modal/pages/upgrade_wallet_page.dart';
+import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
@@ -428,10 +429,7 @@ class _ActivityButton extends StatelessWidget {
           iconBGColor: themeColors.accenGlass015,
           iconBorderColor: themeColors.accenGlass005,
           title: 'Activity',
-          onTap: () => _widgetStack.push(
-            ActivityPage(),
-            event: ClickTransactionsEvent(),
-          ),
+          onTap: () => _widgetStack.push(ActivityPage()),
         ),
       ],
     );
@@ -492,9 +490,23 @@ class _SwitchSmartAccountButtonState extends State<_SwitchSmartAccountButton> {
             setState(() => _loading = !_loading);
             await service.switchSmartAccounts();
             setState(() => _loading = !_loading);
+            _sendEvent();
           },
         ),
       ],
+    );
+  }
+
+  void _sendEvent() {
+    final modalInstance = ModalProvider.of(context).instance;
+    final chainId = modalInstance.selectedChain!.chainId;
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    final network = ReownAppKitModalNetworks.getNetworkInfo(namespace, chainId);
+    GetIt.I<IAnalyticsService>().sendEvent(
+      SetPreferredAccountTypeEvent(
+        network: network!.name,
+        accountType: _isSmartAccountSelected ? 'Smart Accounts' : 'EOA',
+      ),
     );
   }
 }

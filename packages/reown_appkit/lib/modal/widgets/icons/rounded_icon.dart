@@ -29,17 +29,7 @@ class RoundedIcon extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final projectId = GetIt.I<IExplorerService>().projectId;
     final radius = borderRadius ?? size;
-
     final isSvg = _isSvg(imageUrl);
-
-    Uri? imageUri;
-    if (imageUrl != null && imageUrl!.isNotEmpty) {
-      imageUri = Uri.parse(imageUrl!);
-      if (imageUri.host == 'api.web3modal.com') {
-        final queryParams = CoreUtils.getImageQueryParams(projectId);
-        imageUri = imageUri.replace(queryParameters: queryParams);
-      }
-    }
     return Container(
       width: size,
       height: size,
@@ -60,13 +50,13 @@ class RoundedIcon extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(radius)),
               child: isSvg
                   ? SvgPicture.network(
-                      imageUri.toString(),
+                      CoreUtils.formatImageUri(imageUrl!, projectId),
                       width: size,
                       height: size,
                       fit: BoxFit.fill,
                     )
                   : CachedNetworkImage(
-                      imageUrl: imageUri.toString(),
+                      imageUrl: CoreUtils.formatImageUri(imageUrl!, projectId),
                       width: size,
                       height: size,
                       fit: BoxFit.fill,

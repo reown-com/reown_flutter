@@ -67,6 +67,7 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
   @override
   void initState() {
     super.initState();
+    GetIt.I<IAnalyticsService>().sendEvent(ClickTransactionsEvent());
     _currentChain = widget.appKitModal.selectedChain!.chainId;
     final namespace = NamespaceUtils.getNamespaceFromChain(_currentChain);
     _currentAddress = widget.appKitModal.session!.getAddress(namespace)!;

@@ -19,6 +19,7 @@ import 'package:reown_appkit_dapp/utils/dart_defines.dart';
 import 'package:reown_appkit_dapp/utils/deep_link_handler.dart';
 import 'package:reown_appkit_dapp/utils/string_constants.dart';
 import 'package:reown_appkit_dapp/widgets/event_widget.dart';
+import 'package:reown_appkit_dapp/widgets/log_overlay.dart';
 
 Future<void> main() async {
   await runZonedGuarded<Future<void>>(() async {
@@ -189,6 +190,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<PageData> _pageDatas = [];
   int _selectedIndex = 0;
+  bool _showLogOverlay = false;
+  final LogManager _logManager = LogManager();
 
   @override
   void initState() {
@@ -249,6 +252,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  // ignore: unused_element
   Set<String>? _specificsWalletIds() {
     return {
       // '2c81da3add65899baeac53758a07e652eea46dbb5195b8074772c62a77bbf568', // Ambire Wallet
@@ -262,9 +266,7 @@ class _MyHomePageState extends State<MyHomePage> {
     };
   }
 
-  void _logListener(String event) {
-    debugPrint('[AppKit] $event');
-  }
+  void _logListener(String event) => _logManager.addLog(event);
 
   Future<void> _initializeService() async {
     final prefs = await SharedPreferences.getInstance();
@@ -299,9 +301,9 @@ class _MyHomePageState extends State<MyHomePage> {
     _addOrRemoveNetworks(linkModeEnabled);
 
     _appKitModal = ReownAppKitModal(
-      logLevel: LogLevel.all,
       context: context,
       appKit: _appKit,
+      logLevel: LogLevel.all,
       enableAnalytics: analyticsEnabled,
       siweConfig: _siweConfig(linkModeEnabled),
       featuresConfig: socialsEnabled ? _featuresConfig() : null,
@@ -358,6 +360,8 @@ class _MyHomePageState extends State<MyHomePage> {
           analytics: analyticsEnabled,
           linkMode: linkModeEnabled,
           socials: socialsEnabled,
+          toggleLogs: () => setState(() => _showLogOverlay = !_showLogOverlay),
+          toggleTheme: () => widget.toggleTheme.call(),
           reinitialize: (String storageKey, bool value) async {
             final result = await showDialog<bool>(
               context: context,
@@ -578,6 +582,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKitModal!.onSessionEventEvent.unsubscribe(_onSessionEvent);
     _appKitModal!.onSessionUpdateEvent.unsubscribe(_onSessionUpdate);
     //
+    _logManager.dispose();
     super.dispose();
   }
 
@@ -600,16 +605,6 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(_pageDatas[_selectedIndex].title),
         actions: [
-          const Text('Themed '),
-          Transform.scale(
-            scale: 0.7,
-            alignment: Alignment.centerLeft,
-            child: Switch(
-                value: widget.isCustomTheme,
-                onChanged: (_) {
-                  widget.toggleTheme.call();
-                }),
-          ),
           const Text('Relay '),
           CircleAvatar(
             radius: 6.0,
@@ -620,15 +615,31 @@ class _MyHomePageState extends State<MyHomePage> {
           const SizedBox(width: 16.0),
         ],
       ),
-      body: Center(
-        child: Container(
-          constraints: BoxConstraints(
-            maxWidth: Constants.smallScreen.toDouble(),
+      body: Stack(
+        children: [
+          Center(
+            child: Container(
+              constraints: BoxConstraints(
+                maxWidth: Constants.smallScreen.toDouble(),
+              ),
+              child: Row(
+                children: navRail,
+              ),
+            ),
           ),
-          child: Row(
-            children: navRail,
-          ),
-        ),
+          if (_showLogOverlay)
+            StreamBuilder<List<String>>(
+              stream: _logManager.logsStream,
+              initialData: _logManager.logs,
+              builder: (context, snapshot) {
+                return LogOverlay(
+                  logs: snapshot.data ?? [],
+                  onClear: () => _logManager.clearLogs(),
+                  onToggle: () => setState(() => _showLogOverlay = false),
+                );
+              },
+            ),
+        ],
       ),
       bottomNavigationBar:
           MediaQuery.of(context).size.width < Constants.smallScreen
@@ -823,266 +834,3 @@ class _MyHomePageState extends State<MyHomePage> {
     ));
   }
 }
-
-// ****************
-
-// Future<void> main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-
-//   runApp(MyApp());
-// }
-
-// class MyApp extends StatefulWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   State<MyApp> createState() => _MyAppState();
-// }
-
-// class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
-//   bool _isDarkMode = false;
-//   bool _isCustomTheme = true;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     WidgetsBinding.instance.addObserver(this);
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       setState(() {
-//         final platformDispatcher = View.of(context).platformDispatcher;
-//         final platformBrightness = platformDispatcher.platformBrightness;
-//         _isDarkMode = platformBrightness == Brightness.dark;
-//       });
-//     });
-//   }
-
-//   @override
-//   void dispose() {
-//     WidgetsBinding.instance.removeObserver(this);
-//     super.dispose();
-//   }
-
-//   @override
-//   void didChangePlatformBrightness() {
-//     if (mounted) {
-//       setState(() {
-//         final platformDispatcher = View.of(context).platformDispatcher;
-//         final platformBrightness = platformDispatcher.platformBrightness;
-//         _isDarkMode = platformBrightness == Brightness.dark;
-//       });
-//     }
-//     super.didChangePlatformBrightness();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ReownAppKitModalTheme(
-//       isDarkMode: true,
-//       themeData: _isCustomTheme
-//           ? ReownAppKitModalThemeData(
-//               darkColors: ReownAppKitModalColors.darkMode.copyWith(
-//                 accent100: const Color.fromARGB(255, 55, 186, 149),
-//                 accent090: const Color.fromARGB(255, 55, 186, 149),
-//                 accent080: const Color.fromARGB(255, 55, 186, 149),
-//                 grayGlass100: const Color.fromARGB(255, 55, 186, 149),
-//                 // Main Modal's background color
-//                 background125: const Color.fromARGB(255, 0, 0, 0),
-//                 // Main Modal's text
-//                 foreground100: const Color.fromARGB(255, 55, 186, 149),
-//                 // Secondary Modal's text
-//                 foreground125: const Color.fromARGB(255, 255, 255, 255),
-//                 foreground200: const Color.fromARGB(255, 255, 255, 255),
-//                 foreground300: const Color.fromARGB(255, 255, 255, 255),
-//               ),
-//               lightColors: ReownAppKitModalColors.darkMode.copyWith(
-//                 accent100: const Color.fromARGB(255, 55, 186, 149),
-//                 accent090: const Color.fromARGB(255, 55, 186, 149),
-//                 accent080: const Color.fromARGB(255, 55, 186, 149),
-//                 grayGlass100: const Color.fromARGB(255, 55, 186, 149),
-//                 // Main Modal's background color
-//                 background125: const Color.fromARGB(255, 255, 255, 255),
-//                 // Main Modal's text
-//                 foreground100: const Color.fromARGB(255, 55, 186, 149),
-//                 // Secondary Modal's text
-//                 foreground125: const Color.fromARGB(255, 0, 0, 0),
-//                 foreground200: const Color.fromARGB(255, 0, 0, 0),
-//                 foreground300: const Color.fromARGB(255, 0, 0, 0),
-//               ),
-//               radiuses: ReownAppKitModalRadiuses.circular,
-//             )
-//           : null,
-//       child: MaterialApp(
-//         title: 'DwE Demo',
-//         theme: ThemeData(
-//           colorScheme: _isDarkMode
-//               ? ColorScheme.dark(
-//                   primary: ReownAppKitModalThemeData().darkColors.accent100,
-//                 )
-//               : ColorScheme.light(
-//                   primary: ReownAppKitModalThemeData().lightColors.accent100,
-//                 ),
-//         ),
-//         home: const DWEHomePage(),
-//       ),
-//     );
-//   }
-// }
-
-// class DWEHomePage extends StatefulWidget {
-//   const DWEHomePage({super.key});
-
-//   @override
-//   State<DWEHomePage> createState() => _DWEHomePageState();
-// }
-
-// class _DWEHomePageState extends State<DWEHomePage> {
-//   ReownAppKitModal? _appKitModal;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _initializeService();
-//   }
-
-//   Future<void> _initializeService() async {
-//     _appKitModal = ReownAppKitModal(
-//       context: context,
-//       projectId: '876c......',
-//       logLevel: LogLevel.all,
-//       metadata: PairingMetadata(
-//         name: 'DwE Demo',
-//         description: 'Deposit With Exchange Demo',
-//         // url: _universalLink(),
-//         icons: ['https://avatars.githubusercontent.com/u/37784886?s=200&v=4'],
-//         // redirect: _constructRedirect(linkModeEnabled),
-//       ),
-//     );
-//     _appKitModal!.onModalConnect.subscribe(_eventHandler);
-//     _appKitModal!.onModalDisconnect.subscribe(_eventHandler);
-//     await _appKitModal!.init();
-//     setState(() {});
-//   }
-
-//   void _eventHandler(dynamic event) {
-//     setState(() {});
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('DwE Demo', style: TextStyle(color: Colors.white)),
-//         backgroundColor: const Color.fromARGB(255, 34, 34, 34),
-//       ),
-//       backgroundColor: const Color.fromARGB(255, 34, 34, 34),
-//       body: _appKitModal?.status.isInitialized == true
-//           ? Column(
-//               mainAxisAlignment: MainAxisAlignment.start,
-//               crossAxisAlignment: CrossAxisAlignment.center,
-//               children: [
-//                 const SizedBox(width: double.infinity),
-//                 AppKitModalConnectButton(
-//                   appKit: _appKitModal!,
-//                   context: context,
-//                 ),
-//                 Visibility(
-//                   visible: _appKitModal!.isConnected,
-//                   child: Column(
-//                     children: [
-//                       AppKitModalNetworkSelectButton(
-//                         appKit: _appKitModal!,
-//                         context: context,
-//                         closeAfterPick: true,
-//                       ),
-//                       AppKitModalAccountButton(
-//                         appKitModal: _appKitModal!,
-//                         context: context,
-//                         custom: SecondaryButton(
-//                           title: 'Deposit with Exchange',
-//                           size: BaseButtonSize.regular,
-//                           onTap: () {
-//                             _appKitModal!.openModalView(
-//                               ReownAppKitModalDepositScreen(),
-//                             );
-//                           },
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//               ],
-//             )
-//           : Center(child: CircularProgressIndicator()),
-//     );
-//   }
-// }
-
-// // headless implementation example
-// final appKit = ReownAppKit(
-//   core: ReownCore(
-//     // Project ID retrieved from Reown Dashboard
-//     projectId: '876c62..........',
-//   ),
-//   metadata: PairingMetadata(
-//     name: 'Example',
-//     description: 'Deposit With Exchange Example',
-//     url: 'https://example.com/',
-//     icons: ['https://example.com/icon.png'],
-//     redirect: Redirect(native: 'exampleapp://'),
-//   ),
-// );
-// await appKit.init();
-
-// // 1 GET ASSETS
-// final List<ExchangeAsset> assets = appKit.getPaymentAssetsForNetwork(
-//   chainId: 'eip155:1',
-// );
-
-// // GET EXCHANGES
-// final getExchangesParams = GetExchangesParams(page: 1, asset: assets.first);
-// final GetExchangesResult exchangesResult = await appKit.getExchanges(
-//   params: getExchangesParams,
-// );
-// // exchangesResult.exchanges;
-// // exchangesResult.total;
-
-// // 2 GET PAYMENT URL
-// final getExchangeUrlParams = GetExchangeUrlParams(
-//   exchangeId: exchangesResult.exchanges.first.id,
-//   asset: assets.first,
-//   amount: '1.0',
-//   recipient: '${assets.first.network}:0x1234567890ABCDEF',
-// );
-// final GetExchangeUrlResult urlResult = await appKit.getExchangeUrl(
-//   params: getExchangeUrlParams,
-// );
-// // urlResult.url (to be launched in the user's device);
-// // urlResult.sessionId
-
-// // 3 GET PAYMENT STATUS
-// // loop every 5 seconds
-// int maxAttempts = 30;
-// int currentAttempt = 0;
-// while (currentAttempt < maxAttempts) {
-//   try {
-//     final params = GetExchangeDepositStatusParams(
-//       exchangeId: exchangesResult.exchanges.first.id,
-//       sessionId: urlResult.sessionId,
-//     );
-//     final GetExchangeDepositStatusResult status = await appKit
-//         .getExchangeDepositStatus(params: params);
-//     if (status.status == 'CONFIRMED' || status.status == 'FAILED') {
-//       debugPrint(status.txHash);
-//       break;
-//     }
-//     currentAttempt++;
-//     if (currentAttempt < maxAttempts) {
-//       await Future.delayed(Duration(seconds: 5));
-//     } else {
-//       // Max attempts reached, complete with timeout status
-//       break;
-//     }
-//   } catch (e) {
-//     break;
-//   }
-// }

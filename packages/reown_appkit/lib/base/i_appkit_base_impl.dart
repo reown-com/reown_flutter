@@ -21,7 +21,10 @@ abstract class IReownAppKit implements IReownSignDapp {
   /// ℹ️ Get supported assets on the given chainId (CAIP-2)
   /// Null value will return all supported assets in all networks
   ///
-  List<ExchangeAsset> getPaymentAssetsForNetwork({String? chainId});
+  List<ExchangeAsset> getPaymentAssetsForNetwork({
+    String? chainId,
+    bool includeNative = true,
+  });
 
   ///
   /// ℹ️ Get a list of Exchanges supporting the given configuration

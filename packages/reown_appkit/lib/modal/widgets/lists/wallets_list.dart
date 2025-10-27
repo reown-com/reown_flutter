@@ -55,6 +55,7 @@ class WalletsList extends StatelessWidget {
                 showCheckmark: listItem.data.installed,
                 imageUrl: listItem.image,
                 title: listItem.title,
+                certified: listItem.data.listing.badgeType == 'certified',
                 trailing: listItem.data.recent
                     ? const WalletItemChip(value: ' RECENT ')
                     : null,

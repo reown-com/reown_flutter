@@ -1,3 +1,8 @@
+## 1.3.5
+## 1.3.4
+
+- Analytics enhancements
+
 ## 1.3.3
 
 - Security Improvements

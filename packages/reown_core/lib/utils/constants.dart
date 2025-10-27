@@ -18,6 +18,7 @@ class ReownConstants {
   static const THIRTY_SECONDS = 30;
   static const ONE_MINUTE = 60;
   static const FIVE_MINUTES = ONE_MINUTE * 5;
+  static const THIRTY_MINUTES = ONE_MINUTE * 30;
   static const ONE_HOUR = ONE_MINUTE * 60;
   static const ONE_DAY = ONE_MINUTE * 24 * 60;
   static const SEVEN_DAYS = ONE_DAY * 7;

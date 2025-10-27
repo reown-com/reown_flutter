@@ -67,8 +67,24 @@ abstract class IReownAppKitModal with ChangeNotifier {
   /// Sets up the explorer and appKit if they already been initialized.
   Future<void> init();
 
+  List<ExchangeAsset> getPaymentAssetsForNetwork({
+    String? chainId,
+    bool includeNative = true,
+  });
+
+  void configDeposit({
+    List<ExchangeAsset>? supportedAssets,
+    ExchangeAsset? preselectedAsset,
+    bool? showNetworkIcon,
+    String? preselectedRecipient,
+    // bool? enableNetworkSelection,
+    // String? preselectedNamespace,
+  });
+
   /// Opens modal on Network Selection Screen
   Future<void> openNetworksView();
+
+  Future<void> openDepositView();
 
   /// Opens the modal with the provided [startWidget] (if any).
   /// If none is provided, the default state will be used based on platform.

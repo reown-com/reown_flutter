@@ -15,12 +15,9 @@ import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 
 class ReownAppKitModalDepositScreen extends StatefulWidget {
-  final String? preselectedRecipient;
-  final ExchangeAsset? preselectedAsset;
-  const ReownAppKitModalDepositScreen({
-    this.preselectedRecipient,
-    this.preselectedAsset,
-  }) : super(key: KeyConstants.depositPageKey);
+  final String? titleOverride;
+  const ReownAppKitModalDepositScreen({this.titleOverride})
+    : super(key: KeyConstants.depositPageKey);
 
   @override
   State<ReownAppKitModalDepositScreen> createState() =>
@@ -30,8 +27,6 @@ class ReownAppKitModalDepositScreen extends StatefulWidget {
 class _ReownAppKitModalDepositScreenState
     extends State<ReownAppKitModalDepositScreen> {
   IDWEService get _dweService => GetIt.I<IDWEService>();
-  bool _isLooping = false;
-  bool _shouldStopLooping = false;
 
   @override
   void initState() {
@@ -39,42 +34,45 @@ class _ReownAppKitModalDepositScreenState
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final appKitModal = ModalProvider.of(context).instance;
       // IF PRESELECTED ASSET
-      if (widget.preselectedAsset != null) {
-        final assetChainId = widget.preselectedAsset!.network;
-        if (NamespaceUtils.isValidChainId(assetChainId)) {
-          final namespace = assetChainId.split(':').first;
-          final id = assetChainId.split(':').last;
-          final networkInfo = ReownAppKitModalNetworks.getNetworkInfo(
-            namespace,
-            id,
-          );
-          if (networkInfo == null) {
-            final errorMessage =
-                '$assetChainId has not been added to `ReownAppKitModalNetworks`. '
-                'Please call `ReownAppKitModalNetworks.addSupportedNetworks()`, '
-                'See docs: https://docs.reown.com/appkit/flutter/core/custom-chains#custom-networks-addition-and-selection';
-            appKitModal.appKit!.core.logger.e(errorMessage);
-            throw errorMessage;
-          }
-          await appKitModal.selectChain(networkInfo);
-          _dweService.selectedAsset.value = widget.preselectedAsset;
-          _dweService.setSupportedAssets([widget.preselectedAsset!]);
-        } else {
-          appKitModal.appKit!.core.logger.e(
-            'Asset\'s network should conform to "CAIP-2" format',
+      if (_dweService.preselectedAsset != null) {
+        final chainId = _dweService.preselectedAsset!.network;
+        final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+        final networkInfo = ReownAppKitModalNetworks.getNetworkInfo(
+          namespace,
+          chainId,
+        );
+        await appKitModal.selectChain(networkInfo);
+        _dweService.selectedAsset.value = _dweService.preselectedAsset;
+        // _dweService.setSupportedAssets([widget.preselectedAsset!]);
+      }
+
+      // IF NO SELECTED CHAIN
+      if (appKitModal.selectedChain == null) {
+        try {
+          final assetChain = _dweService.supportedAssets.first.network;
+          final namespace = NamespaceUtils.getNamespaceFromChain(assetChain);
+          final networks = ReownAppKitModalNetworks.getAllSupportedNetworks(
+            namespace: namespace,
+          ).where((e) => !e.isTestNetwork);
+          await appKitModal.selectChain(networks.first);
+        } catch (e) {
+          appKitModal.appKit!.core.logger.e('[$runtimeType] init error: $e');
+        }
+        try {
+          final networks = ReownAppKitModalNetworks.getAllSupportedNetworks()
+              .where((e) => !e.isTestNetwork);
+          await appKitModal.selectChain(networks.first);
+        } catch (e) {
+          appKitModal.appKit!.core.logger.e('[$runtimeType] init error: $e');
+          GetIt.I<IToastService>().show(
+            ToastMessage(type: ToastType.error, text: 'So supported networks'),
           );
         }
       }
-      // IF NO SELECTED CHAIN
-      if (appKitModal.selectedChain == null) {
-        final networks = ReownAppKitModalNetworks.getAllSupportedNetworks();
-        await appKitModal.selectChain(networks.first);
-      }
+
       final chainId = appKitModal.selectedChain?.chainId;
       debugPrint('[$runtimeType] selected chain id: $chainId');
-      final supportedAssets = appKitModal.appKit!.getPaymentAssetsForNetwork(
-        chainId: chainId,
-      );
+      final supportedAssets = _dweService.getAvailableAssets(chainId: chainId);
       if (supportedAssets.isEmpty) {
         GetIt.I<IToastService>().show(
           ToastMessage(type: ToastType.error, text: 'No assets supported'),
@@ -96,7 +94,7 @@ class _ReownAppKitModalDepositScreenState
             ) ??
             supportedAssets.first;
       }
-      _dweService.setSupportedAssets(supportedAssets);
+      // _dweService.setSupportedAssets(supportedAssets);
       setState(() {});
     });
   }
@@ -105,8 +103,11 @@ class _ReownAppKitModalDepositScreenState
   Widget build(BuildContext context) {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final appKitModal = ModalProvider.of(context).instance;
+    final chainId = appKitModal.selectedChain?.chainId;
+    final supportedAssets = _dweService.getAvailableAssets(chainId: chainId);
     return ModalNavbar(
-      title: 'Deposit from Exchange',
+      title: widget.titleOverride ?? 'Deposit from Exchange',
       divider: false,
       body: Container(
         padding: const EdgeInsets.only(
@@ -119,7 +120,7 @@ class _ReownAppKitModalDepositScreenState
             mainAxisSize: MainAxisSize.min,
             children: [
               Visibility(
-                visible: _dweService.supportedAssets.isNotEmpty,
+                visible: supportedAssets.isNotEmpty,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: Row(
@@ -131,16 +132,17 @@ class _ReownAppKitModalDepositScreenState
                         ),
                       ),
                       Spacer(),
-                      AbsorbPointer(
-                        absorbing: widget.preselectedAsset != null,
-                        child: AssetsButton(),
+                      AssetsButton(
+                        disabled:
+                            _dweService.preselectedAsset != null &&
+                            _dweService.supportedAssets.isEmpty,
                       ),
                     ],
                   ),
                 ),
               ),
               const SizedBox.square(dimension: kPadding12),
-              _isLooping
+              _dweService.isCheckingStatus
                   ? Column(
                       children: [
                         CircularProgressIndicator(
@@ -157,10 +159,8 @@ class _ReownAppKitModalDepositScreenState
                         SecondaryButton(
                           title: 'Stop checking',
                           onTap: () {
-                            setState(() {
-                              _isLooping = false;
-                              _shouldStopLooping = true;
-                            });
+                            _dweService.stopCheckingStatus();
+                            setState(() {});
                           },
                         ),
                       ],
@@ -168,11 +168,11 @@ class _ReownAppKitModalDepositScreenState
                   : AmountSelector(),
               const SizedBox.square(dimension: kPadding16),
               Visibility(
-                visible: _dweService.supportedAssets.isNotEmpty,
+                visible: supportedAssets.isNotEmpty,
                 child: Divider(color: themeColors.grayGlass005, height: 0.0),
               ),
               Visibility(
-                visible: _dweService.supportedAssets.isEmpty,
+                visible: supportedAssets.isEmpty,
                 child: Text(
                   'No assets supported for the selected network',
                   style: themeData.textStyles.paragraph400.copyWith(
@@ -182,21 +182,23 @@ class _ReownAppKitModalDepositScreenState
               ),
               const SizedBox.square(dimension: kPadding12),
               ExchangesListWidget(
-                recipient: widget.preselectedRecipient,
+                recipient: _dweService.preselectedRecipient,
                 onSelect: (exchange, urlResult) {
-                  _loopOnStatusCheck(exchange.id, urlResult.sessionId, (
-                    result,
-                  ) {
-                    GetIt.I<IToastService>().show(
-                      ToastMessage(
-                        type: result!.status == 'SUCCESS'
-                            ? ToastType.success
-                            : ToastType.error,
-                        text: result.status,
-                      ),
-                    );
-                    setState(() {});
-                  });
+                  _dweService.loopOnStatusCheck(
+                    exchange.id,
+                    urlResult.sessionId,
+                    (result) {
+                      GetIt.I<IToastService>().show(
+                        ToastMessage(
+                          type: result!.status == 'SUCCESS'
+                              ? ToastType.success
+                              : ToastType.error,
+                          text: result.status,
+                        ),
+                      );
+                      setState(() {});
+                    },
+                  );
                 },
               ),
             ],
@@ -204,56 +206,5 @@ class _ReownAppKitModalDepositScreenState
         ),
       ),
     );
-  }
-
-  void _loopOnStatusCheck(
-    String exchangeId,
-    String sessionId,
-    Function(GetExchangeDepositStatusResult?) completer,
-  ) async {
-    if (_isLooping) return;
-    _isLooping = true;
-    _shouldStopLooping = false;
-    int maxAttempts = 30;
-    int currentAttempt = 0;
-
-    final appKit = ModalProvider.of(context).instance.appKit!;
-    while (currentAttempt < maxAttempts && !_shouldStopLooping) {
-      try {
-        // 4. [DWE Check the status of the deposit/transaction Better to call this in a loop]
-        final params = GetExchangeDepositStatusParams(
-          exchangeId: exchangeId,
-          sessionId: sessionId,
-        );
-        final response = await appKit.getExchangeDepositStatus(params: params);
-        //
-        if (response.status == 'UNKNOWN' || response.status == 'IN_PROGRESS') {
-          currentAttempt++;
-          if (currentAttempt < maxAttempts && !_shouldStopLooping) {
-            // Keep trying
-            await Future.delayed(Duration(seconds: 5));
-          } else {
-            // Max attempts reached or stopped by user, complete with appropriate status
-            _isLooping = false;
-            completer.call(
-              _shouldStopLooping
-                  ? GetExchangeDepositStatusResult(status: 'CANCELLED')
-                  : GetExchangeDepositStatusResult(status: 'TIMEOUT'),
-            );
-            break;
-          }
-        } else {
-          // Either SUCCESS or FAILED received
-          _isLooping = false;
-          completer.call(response);
-          break;
-        }
-      } catch (e) {
-        debugPrint(e.toString());
-        _isLooping = false;
-        completer.call(null);
-        break;
-      }
-    }
   }
 }
