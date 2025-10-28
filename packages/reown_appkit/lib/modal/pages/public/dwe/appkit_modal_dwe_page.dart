@@ -55,9 +55,8 @@ class _ReownAppKitModalDepositScreenState
             namespace: namespace,
           ).where((e) => !e.isTestNetwork);
           await appKitModal.selectChain(networks.first);
-        } catch (e) {
-          appKitModal.appKit!.core.logger.e('[$runtimeType] init error: $e');
-        }
+        } catch (_) {}
+
         try {
           final networks = ReownAppKitModalNetworks.getAllSupportedNetworks()
               .where((e) => !e.isTestNetwork);
@@ -71,7 +70,6 @@ class _ReownAppKitModalDepositScreenState
       }
 
       final chainId = appKitModal.selectedChain?.chainId;
-      debugPrint('[$runtimeType] selected chain id: $chainId');
       final supportedAssets = _dweService.getAvailableAssets(chainId: chainId);
       if (supportedAssets.isEmpty) {
         GetIt.I<IToastService>().show(
@@ -94,7 +92,6 @@ class _ReownAppKitModalDepositScreenState
             ) ??
             supportedAssets.first;
       }
-      // _dweService.setSupportedAssets(supportedAssets);
       setState(() {});
     });
   }

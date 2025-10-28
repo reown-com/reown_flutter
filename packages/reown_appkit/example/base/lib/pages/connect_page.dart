@@ -190,7 +190,10 @@ class ConnectPageState extends State<ConnectPage> {
     );
   }
 
-  void _openDepositScreen() {
+  void _openDepositScreen() async {
+    if (!widget.appKitModal.status.isInitialized) {
+      await widget.appKitModal.init();
+    }
     widget.appKitModal.openModalView(ReownAppKitModalDepositScreen());
   }
 

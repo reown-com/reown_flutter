@@ -161,7 +161,7 @@ class ReownAppKitModal
 
   ///
   late final Future<double> Function()? _getBalance;
-  Completer<bool> _awaitRelayOnce = Completer<bool>();
+  Completer<bool>? _awaitRelayOnce;
 
   bool _disconnectOnDispose = true;
   AppKitSocialOption? _pendingSocialLogin;
@@ -360,6 +360,8 @@ class ReownAppKitModal
 
   @override
   Future<void> init() async {
+    final startTime = DateTime.now();
+
     _relayConnected = false;
     _awaitRelayOnce = Completer<bool>();
 
@@ -380,22 +382,24 @@ class ReownAppKitModal
     _registerListeners();
 
     await _appKit.init();
-    await _networkService.init();
-    await _explorerService.init();
-    await _coinbaseService.init();
-    await _phantomService.init();
-    await _solflareService.init();
-    await _blockchainService.init();
-    await _analyticsService.init();
+    // await _networkService.init();
+    // await _explorerService.init();
+    // await _coinbaseService.init();
+    // await _phantomService.init();
+    // await _solflareService.init();
+    // await _blockchainService.init();
+    // await _analyticsService.init();
+    await _initServices();
 
     _analyticsService.sendEvent(ModalLoadedEvent());
 
     _currentSession = await _getStoredSession();
     _selectedChainID = _getStoredChainId();
-    final isMagic = _currentSession?.sessionService.isMagic == true;
-    final isCoinbase = _currentSession?.sessionService.isCoinbase == true;
-    final isPhantom = _currentSession?.sessionService.isPhantom == true;
-    final isSolflare = _currentSession?.sessionService.isSolflare == true;
+
+    final isMagic = _currentSession?.isMagic == true;
+    final isCoinbase = _currentSession?.isCoinbase == true;
+    final isPhantom = _currentSession?.isPhantom == true;
+    final isSolflare = _currentSession?.isSolflare == true;
     if (isMagic || isCoinbase || isPhantom || isSolflare) {
       _selectedChainID ??= _currentSession!.chainId;
       await _setSesionAndChainData(_currentSession!);
@@ -467,10 +471,10 @@ class ReownAppKitModal
 
     _relayConnected = _appKit.core.relayClient.isConnected;
     if (!_relayConnected && _isOnline) {
-      _relayConnected = await _awaitRelayOnce.future;
+      _relayConnected = await _awaitRelayOnce!.future;
     } else {
-      if (!_awaitRelayOnce.isCompleted) {
-        _awaitRelayOnce.complete(_relayConnected);
+      if (!_awaitRelayOnce!.isCompleted) {
+        _awaitRelayOnce!.complete(_relayConnected);
       }
     }
     _status = _relayConnected
@@ -490,6 +494,33 @@ class ReownAppKitModal
     }
 
     _sendInitializedEvent();
+
+    final diff = DateTime.now().difference(startTime);
+    debugPrint('Startup time until runApp: ${diff.inMilliseconds}ms');
+  }
+
+  Future<void> _initServices() async {
+    await _analyticsService.init();
+    await _networkService.init();
+    await _explorerService.init();
+    await _coinbaseService.init();
+    await _phantomService.init();
+    await _solflareService.init();
+    await _blockchainService.init();
+
+    // // Loop through all the chain data
+    // final allNetworks = ReownAppKitModalNetworks.getAllSupportedNetworks();
+    // for (final chain in allNetworks) {
+    //   final namespace = NamespaceUtils.getNamespaceFromChain(chain.chainId);
+    //   final events = _sessionNamespaces[namespace]?.events ?? [];
+    //   for (final event in events) {
+    //     _appKit.registerEventHandler(chainId: chain.chainId, event: event);
+    //   }
+    //   _appKit.registerEventHandler(
+    //     chainId: chain.chainId,
+    //     event: 'reown_updateEmail',
+    //   );
+    // }
   }
 
   @override
@@ -1638,6 +1669,7 @@ class ReownAppKitModal
   }
 
   @override
+  // ignore: must_call_super
   Future<void> dispose() async {
     if (_status == ReownAppKitModalStatus.initialized) {
       _unregisterListeners();
@@ -1646,10 +1678,11 @@ class ReownAppKitModal
           await expirePreviousInactivePairings();
           await disconnect();
           await _appKit.core.relayClient.disconnect();
+          _awaitRelayOnce = null;
           _relayConnected = false;
           _isConnected = false;
           _selectedChainID = null;
-          _sessionNamespaces = {};
+          // _sessionNamespaces = {};
           _lastChainEmitted = null;
           _supportsOneClickAuth = false;
           _status = ReownAppKitModalStatus.idle;
@@ -1657,24 +1690,25 @@ class ReownAppKitModal
           _appKit.core.logger.e('[$runtimeType] disconnectOnDispose $e');
         }
       }
-      GetIt.I.unregister<IUriService>();
-      GetIt.I.unregister<IAnalyticsService>();
-      GetIt.I.unregister<IExplorerService>();
-      GetIt.I.unregister<INetworkService>();
-      GetIt.I.unregister<IToastService>();
-      GetIt.I.unregister<IBlockChainService>();
-      GetIt.I.unregister<IMagicService>();
-      GetIt.I.unregister<ICoinbaseService>();
-      GetIt.I.unregister<IPhantomService>();
-      GetIt.I.unregister<ISolflareService>();
-      GetIt.I.unregister<ISiweService>();
-      GetIt.I.unregister<IWidgetStack>();
-      await Future.delayed(Duration(milliseconds: 500));
+      onModalNetworkChange.unsubscribe(_onNetworkChainRequireSIWE);
+      // await Future.delayed(Duration(milliseconds: 300));
+      // GetIt.I.unregister<IUriService>();
+      // GetIt.I.unregister<IAnalyticsService>();
+      // GetIt.I.unregister<IExplorerService>();
+      // GetIt.I.unregister<INetworkService>();
+      // GetIt.I.unregister<IToastService>();
+      // GetIt.I.unregister<IBlockChainService>();
+      // GetIt.I.unregister<IMagicService>();
+      // GetIt.I.unregister<ICoinbaseService>();
+      // GetIt.I.unregister<IPhantomService>();
+      // GetIt.I.unregister<ISolflareService>();
+      // GetIt.I.unregister<ISiweService>();
+      // GetIt.I.unregister<IWidgetStack>();
       _notify();
     }
     _isDisposed = true;
     _isOpen = false;
-    super.dispose();
+    // super.dispose();
   }
 
   @override
@@ -2605,8 +2639,8 @@ extension _AppKitModalExtension on ReownAppKitModal {
       _status = ReownAppKitModalStatus.initialized;
       _notify();
     }
-    if (!_awaitRelayOnce.isCompleted) {
-      _awaitRelayOnce.complete(true);
+    if (!_awaitRelayOnce!.isCompleted) {
+      _awaitRelayOnce!.complete(true);
     }
   }
 

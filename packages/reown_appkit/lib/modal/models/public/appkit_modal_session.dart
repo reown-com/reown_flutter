@@ -599,4 +599,10 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
       'isSmartAccount': _isSmartAccount,
     };
   }
+
+  bool get isWC => sessionService.isWC == true;
+  bool get isMagic => sessionService.isMagic == true;
+  bool get isCoinbase => sessionService.isCoinbase == true;
+  bool get isPhantom => sessionService.isPhantom == true;
+  bool get isSolflare => sessionService.isSolflare == true;
 }

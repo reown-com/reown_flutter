@@ -19,7 +19,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   bool _isDarkMode = false;
-  bool _isCustomTheme = true;
 
   @override
   void initState() {
@@ -56,42 +55,15 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return ReownAppKitModalTheme(
       isDarkMode: _isDarkMode,
-      themeData: _isCustomTheme
-          ? ReownAppKitModalThemeData(
-              darkColors: ReownAppKitModalColors.darkMode.copyWith(
-                // accent100: const Color.fromARGB(255, 55, 186, 149),
-                // accent090: const Color.fromARGB(255, 55, 186, 149),
-                // accent080: const Color.fromARGB(255, 55, 186, 149),
-                // grayGlass100: const Color.fromARGB(255, 55, 186, 149),
-                // // Main Modal's background color
-                background100: const Color.fromARGB(255, 12, 15, 14),
-                background125: const Color.fromARGB(255, 12, 15, 14),
-                // Main Modal's text
-                // foreground100: const Color.fromARGB(255, 12, 15, 14),
-                // // Secondary Modal's text
-                // foreground125: const Color.fromARGB(255, 255, 255, 255),
-                // foreground200: const Color.fromARGB(255, 255, 255, 255),
-                // foreground300: const Color.fromARGB(255, 255, 255, 255),
-              ),
-              lightColors: ReownAppKitModalColors.lightMode.copyWith(
-                  // accent100: const Color.fromARGB(255, 55, 186, 149),
-                  // accent090: const Color.fromARGB(255, 55, 186, 149),
-                  // accent080: const Color.fromARGB(255, 55, 186, 149),
-                  // grayGlass100: const Color.fromARGB(255, 55, 186, 149),
-                  // // Main Modal's background color
-                  // background125: const Color.fromARGB(255, 255, 255, 255),
-                  // Main Modal's text
-                  // foreground100: const Color.fromARGB(255, 55, 186, 149),
-                  // // Secondary Modal's text
-                  // foreground125: const Color.fromARGB(255, 0, 0, 0),
-                  // foreground200: const Color.fromARGB(255, 0, 0, 0),
-                  // foreground300: const Color.fromARGB(255, 0, 0, 0),
-                  ),
-              radiuses: ReownAppKitModalRadiuses.circular,
-            )
-          : null,
+      themeData: ReownAppKitModalThemeData(
+        darkColors: ReownAppKitModalColors.darkMode.copyWith(
+          background100: const Color.fromARGB(255, 12, 15, 14),
+          background125: const Color.fromARGB(255, 12, 15, 14),
+        ),
+        radiuses: ReownAppKitModalRadiuses.circular,
+      ),
       child: MaterialApp(
-        title: 'DwE Demo',
+        title: 'Kast DwE Demo',
         theme: ThemeData(
           colorScheme: _isDarkMode
               ? ColorScheme.dark(
@@ -101,7 +73,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                   primary: ReownAppKitModalThemeData().lightColors.accent100,
                 ),
         ),
-        home: const MyHomePage(title: 'DwE Demo'),
+        home: const MyHomePage(title: 'Kast DwE Demo'),
       ),
     );
   }
@@ -127,21 +99,19 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _initSDK() async {
-    final appKit = ReownAppKit(
-      core: ReownCore(
-        projectId: DartDefines.projectId,
-        logLevel: LogLevel.all,
-      ),
+    _appKitModal = ReownAppKitModal(
+      projectId: DartDefines.projectId,
+      logLevel: LogLevel.all,
+      context: context,
       metadata: PairingMetadata(
-        name: 'Example',
-        description: 'Deposit With Exchange Example',
-        url: 'https://example.com/',
-        icons: ['https://example.com/icon.png'],
-        redirect: Redirect(native: 'exampleapp://'),
+        name: 'Kast',
+        description: 'Banking without the bank',
+        url: 'https://www.kast.xyz',
       ),
     );
-    _appKitModal = ReownAppKitModal(context: context, appKit: appKit);
+
     await _appKitModal.init();
+
     setState(() => _initialized = true);
   }
 
@@ -189,7 +159,7 @@ class ReceiveMoneySheet extends StatefulWidget {
 
 class _ReceiveMoneySheetState extends State<ReceiveMoneySheet> {
   // IT CAN FAIRLY BE ADDRESS FOR CHAINID INSTEAD OF NAMESPACE
-  final Map<String, String> _depositAddressForNamespace = {
+  final Map<String, String> _kastDepositAddressForChain = {
     'eip155': '0xD6d146ec0FA9...',
     'solana': '3ZFT4Cwvy17qzE...',
   };
@@ -208,46 +178,70 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet> {
         onTap: () async {
           try {
             // CONFIGURE NETWORK YOU WANT TO RECEIVE FUNDS ON
-            // Has to be included in ReownAppKitModalNetworks if not already, for most EVM and Solana mainnet this is true already.
-            final solanaNetwork = ReownAppKitModalNetworkInfo(
-              name: 'Solana',
-              chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-              currency: 'SOL',
-              rpcUrl: 'https://rpc.walletconnect.org/v1',
-              explorerUrl: 'https://solscan.io',
+            // Since AppKit defines some EVM and Solana Mainnet by default, you can do this as well
+            final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
+              'solana',
+              '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', // Solana Mainnet
             );
-            // Only call this if the chain you configured to receive funds on is not included by default in the supported chains list
+            // Other examples...
+            // final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
+            //   'eip155',
+            //   '10', // Optimism
+            // );
+            // final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
+            //   'eip155',
+            //   '42161', // Arbitrum
+            // );
+            // final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
+            //   'eip155',
+            //   '137', // Polygon
+            // );
+
+            // If you wan't to use some custom chain that is not included in `ReownAppKitModalNetworks` you will have to configure it as follows...
+            // final solanaNetwork = ReownAppKitModalNetworkInfo(
+            //   name: 'Solana',
+            //   chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+            //   currency: 'SOL',
+            //   rpcUrl: 'https://rpc.walletconnect.org/v1',
+            //   explorerUrl: 'https://solscan.io',
+            // );
+            // and then include it in supported networks. See docs https://docs.reown.com/appkit/flutter/core/custom-chains
             // ReownAppKitModalNetworks.addSupportedNetworks('solana', [
             //   solanaNetwork,
             // ]);
 
+            // Just a util to get the namespace out of the chainId
             final namespace = NamespaceUtils.getNamespaceFromChain(
-              solanaNetwork.chainId,
+              workingChain!.chainId,
             );
-            // Get the proper address for the chain
-            final depositAddress = _depositAddressForNamespace[namespace]!;
+            // Get the proper address for the chain/namespace
+            final depositAddress = _kastDepositAddressForChain[namespace]!;
 
-            // PRESELECT THE CONFIGURED NETWORK
-            await widget.appKitModal.selectChain(
-              solanaNetwork,
-            );
+            // PRESELECT THE CONFIGURED NETWORK SO THE USER DOESN'T HAVE TO
+            await widget.appKitModal.selectChain(workingChain);
 
             // INCLUDE ALL ASSETS BUT NATIVES
+            // this call is only necessary if you want to exclude native tokens such as SOL, ETH
             final assets = widget.appKitModal.getPaymentAssetsForNetwork(
-              chainId: solanaNetwork.chainId,
+              chainId: workingChain.chainId,
               includeNative: false,
             );
 
+            // CONFIGURE THE FEATURE BEFORE USING IT
             widget.appKitModal.configDeposit(
               supportedAssets: assets,
-              // preselectedAsset: assets.first,
               preselectedRecipient: depositAddress,
               showNetworkIcon: false,
             );
 
             // OPEN MODAL
-            await widget.appKitModal.openDepositView();
-            await widget.appKitModal.selectChain(null);
+            // widget.appKitModal.openDepositView();
+            widget.appKitModal.openModalView(
+              ReownAppKitModalDepositScreen(
+                titleOverride: 'Kast Deposit',
+              ),
+            );
+            // await widget.appKitModal.selectChain(null);
           } catch (e) {
             debugPrint(e.toString());
           }
