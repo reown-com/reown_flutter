@@ -346,21 +346,23 @@ class ReownSign implements IReownSign {
       namespaces: sessionSettleRequest.namespaces,
     );
 
-    List<String> approvedEvents = [];
-    List<String> approvedMethods = [];
+    final approvedEvents = <String>{};
+    final approvedMethods = <String>{};
 
     for (var chainId in approvedChains) {
-      final eventsForChain = NamespaceUtils.getNamespacesEventsForChain(
-        chainId: chainId,
-        namespaces: sessionSettleRequest.namespaces,
+      approvedEvents.addAll(
+        NamespaceUtils.getNamespacesEventsForChain(
+          chainId: chainId,
+          namespaces: sessionSettleRequest.namespaces,
+        ),
       );
-      approvedEvents.addAll(eventsForChain);
 
-      final methodsForChain = NamespaceUtils.getNamespacesMethodsForChainId(
-        chainId: chainId,
-        namespaces: sessionSettleRequest.namespaces,
+      approvedMethods.addAll(
+        NamespaceUtils.getNamespacesMethodsForChainId(
+          chainId: chainId,
+          namespaces: sessionSettleRequest.namespaces,
+        ),
       );
-      approvedMethods.addAll(methodsForChain);
     }
 
     bool acknowledged = await core.pairing
@@ -370,9 +372,9 @@ class ReownSign implements IReownSign {
           responseId: proposal.id,
           sessionProposalResponse: sessionProposalResponse.toJson(),
           sessionSettlementRequest: sessionSettleRequest.toJson(),
-          approvedChains: approvedChains.toSet().toList(),
-          approvedMethods: approvedMethods.toSet().toList(),
-          approvedEvents: approvedEvents.toSet().toList(),
+          approvedChains: approvedChains,
+          approvedMethods: approvedMethods.toList(),
+          approvedEvents: approvedEvents.toList(),
           sessionProperties: sessionSettleRequest.sessionProperties,
         )
         .timeout(const Duration(seconds: 60))

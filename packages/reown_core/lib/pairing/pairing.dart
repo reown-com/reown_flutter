@@ -689,11 +689,9 @@ class Pairing implements IPairing {
 
     await core.relayClient.publishPayload(payload: payload, options: options);
 
-    final debugPayload = jsonEncode(payload);
-    final debugOptions = jsonEncode(options.toJson());
     core.logger.d(
       '[$runtimeType] sendApproveSessionRequest relayClient, '
-      'payload: $debugPayload, options: $debugOptions',
+      'payload: ${jsonEncode(payload)}, options: ${jsonEncode(options.toJson())}',
     );
   }
 
