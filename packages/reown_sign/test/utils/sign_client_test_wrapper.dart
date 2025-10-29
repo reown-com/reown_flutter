@@ -93,7 +93,7 @@ class SignClientTestWrapper implements IReownSign {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<Relay>? relays,
-    List<List<String>>? methods = ReownSign.DEFAULT_METHODS,
+    List<List<String>>? methods = ReownSign.CONNECT_METHODS,
   }) async {
     try {
       return await client.connect(

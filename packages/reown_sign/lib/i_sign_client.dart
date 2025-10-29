@@ -48,6 +48,7 @@ abstract class IReownSignClient {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<Relay>? relays,
+    SessionAuthRequestParams? authentication,
     List<List<String>>? methods,
   });
   Future<PairingInfo> pair({required Uri uri});

@@ -30,14 +30,14 @@ class SessionAuthRequestResponse {
 sealed class SessionAuthRequestParams with _$SessionAuthRequestParams {
   @JsonSerializable(includeIfNull: false)
   const factory SessionAuthRequestParams({
-    required List<String> chains,
     required String domain,
+    required List<String> chains,
     required String nonce,
     required String uri,
     //
     CacaoHeader? type,
-    String? nbf,
     String? exp,
+    String? nbf,
     String? statement,
     String? requestId,
     List<String>? resources,
@@ -50,11 +50,36 @@ sealed class SessionAuthRequestParams with _$SessionAuthRequestParams {
 }
 
 @freezed
+sealed class AuthenticateRequestParams with _$AuthenticateRequestParams {
+  @JsonSerializable(includeIfNull: false)
+  const factory AuthenticateRequestParams({
+    required String domain,
+    required List<String> chains,
+    required String nonce,
+    required String uri,
+    required int ttl,
+    //
+    CacaoHeader? type,
+    String? exp,
+    String? nbf,
+    String? statement,
+    String? requestId,
+    List<String>? resources,
+    // int? expiry,
+    Map<String, List<String>>? signatureTypes,
+    @Default(<String>[]) List<String>? methods,
+  }) = _AuthenticateRequestParams;
+  //
+  factory AuthenticateRequestParams.fromJson(Map<String, dynamic> json) =>
+      _$AuthenticateRequestParamsFromJson(json);
+}
+
+@freezed
 sealed class SessionAuthPayload with _$SessionAuthPayload {
   @JsonSerializable(includeIfNull: false)
   const factory SessionAuthPayload({
-    required List<String> chains,
     required String domain,
+    required List<String> chains,
     required String nonce,
     required String aud,
     required String type,

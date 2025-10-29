@@ -151,7 +151,8 @@ class ReownSignClient implements IReownSignClient {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<Relay>? relays,
-    List<List<String>>? methods = ReownSign.DEFAULT_METHODS,
+    SessionAuthRequestParams? authentication,
+    List<List<String>>? methods = ReownSign.CONNECT_METHODS,
   }) async {
     try {
       return await engine.connect(
@@ -160,6 +161,7 @@ class ReownSignClient implements IReownSignClient {
         sessionProperties: sessionProperties,
         pairingTopic: pairingTopic,
         relays: relays,
+        authentication: authentication,
         methods: methods,
       );
     } catch (e) {

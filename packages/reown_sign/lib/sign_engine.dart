@@ -20,8 +20,12 @@ import 'package:reown_sign/utils/recaps_utils.dart';
 import 'package:reown_sign/utils/constants.dart';
 
 class ReownSign implements IReownSign {
-  static const List<List<String>> DEFAULT_METHODS = [
+  static const List<List<String>> CONNECT_METHODS = [
     [MethodConstants.WC_SESSION_PROPOSE, MethodConstants.WC_SESSION_REQUEST],
+  ];
+
+  static const List<List<String>> AUTH_METHODS = [
+    [MethodConstants.WC_SESSION_AUTHENTICATE],
   ];
 
   bool _initialized = false;
@@ -138,9 +142,8 @@ class ReownSign implements IReownSign {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<Relay>? relays,
-    // experimental
-    dynamic authentication,
-    List<List<String>>? methods = DEFAULT_METHODS,
+    SessionAuthRequestParams? authentication,
+    List<List<String>>? methods = CONNECT_METHODS,
   }) async {
     _checkInitialized();
     _confirmOnlineStateOrThrow();
@@ -1900,14 +1903,15 @@ class ReownSign implements IReownSign {
     return isLinkMode;
   }
 
+  @Deprecated(
+    '`authenticate` will be deprecated soon. Please use `connect` with authenticate params',
+  )
   @override
   Future<SessionAuthRequestResponse> authenticate({
     required SessionAuthRequestParams params,
     String? walletUniversalLink,
     String? pairingTopic,
-    List<List<String>>? methods = const [
-      [MethodConstants.WC_SESSION_AUTHENTICATE],
-    ],
+    List<List<String>>? methods = AUTH_METHODS,
   }) async {
     _checkInitialized();
     AuthApiValidators.isValidAuthenticate(params);

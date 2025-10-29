@@ -9,15 +9,15 @@ part of 'session_auth_models.dart';
 _SessionAuthRequestParams _$SessionAuthRequestParamsFromJson(
   Map<String, dynamic> json,
 ) => _SessionAuthRequestParams(
-  chains: (json['chains'] as List<dynamic>).map((e) => e as String).toList(),
   domain: json['domain'] as String,
+  chains: (json['chains'] as List<dynamic>).map((e) => e as String).toList(),
   nonce: json['nonce'] as String,
   uri: json['uri'] as String,
   type: json['type'] == null
       ? null
       : CacaoHeader.fromJson(json['type'] as Map<String, dynamic>),
-  nbf: json['nbf'] as String?,
   exp: json['exp'] as String?,
+  nbf: json['nbf'] as String?,
   statement: json['statement'] as String?,
   requestId: json['requestId'] as String?,
   resources: (json['resources'] as List<dynamic>?)
@@ -32,13 +32,13 @@ _SessionAuthRequestParams _$SessionAuthRequestParamsFromJson(
 Map<String, dynamic> _$SessionAuthRequestParamsToJson(
   _SessionAuthRequestParams instance,
 ) => <String, dynamic>{
-  'chains': instance.chains,
   'domain': instance.domain,
+  'chains': instance.chains,
   'nonce': instance.nonce,
   'uri': instance.uri,
   'type': ?instance.type?.toJson(),
-  'nbf': ?instance.nbf,
   'exp': ?instance.exp,
+  'nbf': ?instance.nbf,
   'statement': ?instance.statement,
   'requestId': ?instance.requestId,
   'resources': ?instance.resources,
@@ -46,12 +46,57 @@ Map<String, dynamic> _$SessionAuthRequestParamsToJson(
   'methods': ?instance.methods,
 };
 
+_AuthenticateRequestParams _$AuthenticateRequestParamsFromJson(
+  Map<String, dynamic> json,
+) => _AuthenticateRequestParams(
+  domain: json['domain'] as String,
+  chains: (json['chains'] as List<dynamic>).map((e) => e as String).toList(),
+  nonce: json['nonce'] as String,
+  uri: json['uri'] as String,
+  ttl: (json['ttl'] as num).toInt(),
+  type: json['type'] == null
+      ? null
+      : CacaoHeader.fromJson(json['type'] as Map<String, dynamic>),
+  exp: json['exp'] as String?,
+  nbf: json['nbf'] as String?,
+  statement: json['statement'] as String?,
+  requestId: json['requestId'] as String?,
+  resources: (json['resources'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
+  signatureTypes: (json['signatureTypes'] as Map<String, dynamic>?)?.map(
+    (k, e) =>
+        MapEntry(k, (e as List<dynamic>).map((e) => e as String).toList()),
+  ),
+  methods:
+      (json['methods'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const <String>[],
+);
+
+Map<String, dynamic> _$AuthenticateRequestParamsToJson(
+  _AuthenticateRequestParams instance,
+) => <String, dynamic>{
+  'domain': instance.domain,
+  'chains': instance.chains,
+  'nonce': instance.nonce,
+  'uri': instance.uri,
+  'ttl': instance.ttl,
+  'type': ?instance.type?.toJson(),
+  'exp': ?instance.exp,
+  'nbf': ?instance.nbf,
+  'statement': ?instance.statement,
+  'requestId': ?instance.requestId,
+  'resources': ?instance.resources,
+  'signatureTypes': ?instance.signatureTypes,
+  'methods': ?instance.methods,
+};
+
 _SessionAuthPayload _$SessionAuthPayloadFromJson(Map<String, dynamic> json) =>
     _SessionAuthPayload(
+      domain: json['domain'] as String,
       chains: (json['chains'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
-      domain: json['domain'] as String,
       nonce: json['nonce'] as String,
       aud: json['aud'] as String,
       type: json['type'] as String,
@@ -68,8 +113,8 @@ _SessionAuthPayload _$SessionAuthPayloadFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$SessionAuthPayloadToJson(_SessionAuthPayload instance) =>
     <String, dynamic>{
-      'chains': instance.chains,
       'domain': instance.domain,
+      'chains': instance.chains,
       'nonce': instance.nonce,
       'aud': instance.aud,
       'type': instance.type,
