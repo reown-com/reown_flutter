@@ -352,6 +352,25 @@ class ReownSign implements IReownSign {
       namespaces: sessionSettleRequest.namespaces,
     );
 
+    final approvedEvents = <String>{};
+    final approvedMethods = <String>{};
+
+    for (var chainId in approvedChains) {
+      approvedEvents.addAll(
+        NamespaceUtils.getNamespacesEventsForChain(
+          chainId: chainId,
+          namespaces: sessionSettleRequest.namespaces,
+        ),
+      );
+
+      approvedMethods.addAll(
+        NamespaceUtils.getNamespacesMethodsForChainId(
+          chainId: chainId,
+          namespaces: sessionSettleRequest.namespaces,
+        ),
+      );
+    }
+
     bool acknowledged = await core.pairing
         .sendApproveSessionRequest(
           sessionTopic,
@@ -360,6 +379,9 @@ class ReownSign implements IReownSign {
           sessionProposalResponse: sessionProposalResponse.toJson(),
           sessionSettlementRequest: sessionSettleRequest.toJson(),
           approvedChains: approvedChains,
+          approvedMethods: approvedMethods.toList(),
+          approvedEvents: approvedEvents.toList(),
+          sessionProperties: sessionSettleRequest.sessionProperties,
         )
         .timeout(const Duration(seconds: 60))
         .catchError((_) => false)
