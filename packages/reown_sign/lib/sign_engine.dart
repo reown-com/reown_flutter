@@ -138,6 +138,8 @@ class ReownSign implements IReownSign {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<Relay>? relays,
+    // experimental
+    dynamic authentication,
     List<List<String>>? methods = DEFAULT_METHODS,
   }) async {
     _checkInitialized();
@@ -152,6 +154,7 @@ class ReownSign implements IReownSign {
     );
     String? pTopic = pairingTopic;
     Uri? uri;
+    // const expiryFromAuthentication = authentication?.[0]?.ttl;
 
     if (pTopic == null) {
       final CreateResponse newTopicAndUri = await core.pairing.create(
