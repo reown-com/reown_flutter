@@ -80,7 +80,7 @@ class SiweService implements ISiweService {
   }
 
   @override
-  Future<String> signMessageRequest(
+  Future<dynamic> signMessageRequest(
     String message, {
     required IReownAppKitModal modalService,
   }) async {
