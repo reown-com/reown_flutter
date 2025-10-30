@@ -4,6 +4,7 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
+import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/account_list_item.dart';
@@ -192,7 +193,7 @@ class __ExchangesListState extends State<_ExchangesList> {
       await ReownCoreUtils.openURL(result.url);
       widget.onSelect.call(exchange, result);
     } on JsonRpcError catch (e) {
-      appKitModal.onModalError.broadcast(ModalError(e.message!));
+      appKitModal.onModalError.broadcast(ModalError(e.cleanMessage));
       setState(() => _selectedExchange = null);
     } catch (e) {
       appKitModal.onModalError.broadcast(

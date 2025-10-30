@@ -1928,18 +1928,15 @@ class ReownAppKitModal
   }
 
   bool _isUserRejectedError(dynamic e) {
+    if (e is JsonRpcError) {
+      return e.isUserRejected;
+    }
+
     final regexp = RegExp(
       r'\b(rejected|cancelled|disapproved|denied)\b',
       caseSensitive: false,
     );
-
-    if (e is JsonRpcError) {
-      final code = (e.code ?? 0);
-      final match = RegExp(r'\b500[0-3]\b').hasMatch(code.toString());
-      if (match || code == Errors.getSdkError(Errors.USER_REJECTED_SIGN).code) {
-        return true;
-      }
-    }
+    
     if (e is CoinbaseServiceException) {
       if (regexp.hasMatch(e.error.toString()) ||
           regexp.hasMatch(e.message.toString())) {

@@ -184,6 +184,7 @@ class _ReownAppKitModalDepositScreenState
               ExchangesListWidget(
                 recipient: _dweService.preselectedRecipient,
                 onSelect: (exchange, urlResult) {
+                  setState(() {});
                   _dweService.loopOnStatusCheck(
                     exchange.id,
                     urlResult.sessionId,
