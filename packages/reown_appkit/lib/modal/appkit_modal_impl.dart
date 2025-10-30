@@ -1936,7 +1936,7 @@ class ReownAppKitModal
       r'\b(rejected|cancelled|disapproved|denied)\b',
       caseSensitive: false,
     );
-    
+
     if (e is CoinbaseServiceException) {
       if (regexp.hasMatch(e.error.toString()) ||
           regexp.hasMatch(e.message.toString())) {

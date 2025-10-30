@@ -1,3 +1,7 @@
+## 1.7.2
+
+- Performance improvements
+
 ## 1.7.1
 
 - Analytics enhancements
