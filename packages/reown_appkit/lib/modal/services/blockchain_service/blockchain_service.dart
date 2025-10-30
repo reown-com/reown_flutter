@@ -8,6 +8,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/blockchain_identity.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
+import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 
 // TODO move to Core SDK
 class BlockChainService implements IBlockChainService {
@@ -370,15 +371,19 @@ class BlockChainService implements IBlockChainService {
   }
 
   @override
-  Future<String> rawCall({required String chainId, required Map params}) async {
+  Future<JsonRpcResponse> rawCall({
+    required String chainId,
+    required String method,
+    required List<dynamic> params,
+  }) async {
     final uri = Uri.parse(_baseUrl);
     final queryParams = {..._requiredParams, 'chainId': chainId};
     final url = uri.replace(queryParameters: queryParams);
     final body = jsonEncode({
       'jsonrpc': '2.0',
-      'id': 1,
-      'method': 'eth_call',
-      'params': [params, 'latest'],
+      'id': JsonRpcUtils.payloadId(),
+      'method': method,
+      'params': params,
     });
     final response = await http.post(
       url,
@@ -386,18 +391,14 @@ class BlockChainService implements IBlockChainService {
       body: body,
     );
     _core.logger.i('[$runtimeType] rawCall $url, $body => ${response.body}');
-    if (response.statusCode == 200 && response.body.isNotEmpty) {
-      try {
-        return jsonDecode(response.body)['result'] as String;
-      } on JsonRpcError catch (e) {
-        _core.logger.e('[$runtimeType] rawCall, parse error => $e');
-        rethrow;
-      } catch (e) {
-        _core.logger.e('[$runtimeType] rawCall, parse error => $e');
-        throw Exception('Requested failed');
-      }
-    } else {
-      throw Exception('Requested failed');
+    try {
+      final bodyResponse = response.body;
+      final parsedResponse = jsonDecode(bodyResponse) as Map<String, dynamic>;
+      final jsonRpcResponse = JsonRpcResponse.fromJson(parsedResponse);
+
+      return jsonRpcResponse;
+    } catch (e) {
+      rethrow;
     }
   }
 }

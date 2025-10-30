@@ -22,21 +22,21 @@ import 'package:reown_appkit_dapp/widgets/event_widget.dart';
 import 'package:reown_appkit_dapp/widgets/log_overlay.dart';
 
 Future<void> main() async {
-  await runZonedGuarded<Future<void>>(() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    DeepLinkHandler.initListener();
+  await runZonedGuarded<Future<void>>(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      DeepLinkHandler.initListener();
 
-    if (kDebugMode) {
-      runApp(MyApp());
-    } else {
-      // Catch Flutter framework errors
-      FlutterError.onError = (FlutterErrorDetails details) {
-        FlutterError.presentError(details);
-        Sentry.captureException(details.exception, stackTrace: details.stack);
-      };
+      if (kDebugMode) {
+        runApp(MyApp());
+      } else {
+        // Catch Flutter framework errors
+        FlutterError.onError = (FlutterErrorDetails details) {
+          FlutterError.presentError(details);
+          Sentry.captureException(details.exception, stackTrace: details.stack);
+        };
 
-      await SentryFlutter.init(
-        (options) {
+        await SentryFlutter.init((options) {
           options.dsn = DartDefines.sentryDSN;
           options.environment = kDebugMode ? 'debug_app' : 'deployed_app';
           options.attachScreenshot = true;
@@ -49,21 +49,17 @@ Future<void> main() async {
           // The sampling rate for profiling is relative to tracesSampleRate
           // Setting to 1.0 will profile 100% of sampled transactions:
           options.profilesSampleRate = 1.0;
-        },
-        appRunner: () => runApp(
-          SentryWidget(
-            child: const MyApp(),
-          ),
-        ),
-      );
-    }
-  }, (error, stackTrace) async {
-    if (!kDebugMode) {
-      await Sentry.captureException(error, stackTrace: stackTrace);
-    }
-    debugPrint('Uncaught error: $error');
-    debugPrint('Stack trace: $stackTrace');
-  });
+        }, appRunner: () => runApp(SentryWidget(child: const MyApp())));
+      }
+    },
+    (error, stackTrace) async {
+      if (!kDebugMode) {
+        await Sentry.captureException(error, stackTrace: stackTrace);
+      }
+      debugPrint('Uncaught error: $error');
+      debugPrint('Stack trace: $stackTrace');
+    },
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -146,9 +142,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             )
           : null,
       child: MaterialApp(
-        navigatorObservers: [
-          SentryNavigatorObserver(),
-        ],
+        navigatorObservers: [SentryNavigatorObserver()],
         title: StringConstants.appTitle,
         theme: ThemeData(
           colorScheme: _isDarkMode
@@ -160,12 +154,13 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
                 ),
         ),
         home: MyHomePage(
-            isCustomTheme: _isCustomTheme,
-            toggleTheme: () {
-              setState(() {
-                _isCustomTheme = !_isCustomTheme;
-              });
-            }),
+          isCustomTheme: _isCustomTheme,
+          toggleTheme: () {
+            setState(() {
+              _isCustomTheme = !_isCustomTheme;
+            });
+          },
+        ),
       ),
     );
   }
@@ -275,22 +270,15 @@ class _MyHomePageState extends State<MyHomePage> {
     final socialsEnabled = prefs.getBool('appkit_sample_socials') ?? true;
 
     _appKit = ReownAppKit(
-      core: ReownCore(
-        projectId: DartDefines.projectId,
-        logLevel: LogLevel.all,
-      ),
+      core: ReownCore(projectId: DartDefines.projectId, logLevel: LogLevel.all),
       metadata: _pairingMetadata(linkModeEnabled),
     );
 
     // Register event handlers
-    _appKit!.core.relayClient.onRelayClientError.subscribe(
-      _relayClientError,
-    );
+    _appKit!.core.relayClient.onRelayClientError.subscribe(_relayClientError);
     _appKit!.core.relayClient.onRelayClientConnect.subscribe(_setState);
     _appKit!.core.relayClient.onRelayClientDisconnect.subscribe(_setState);
-    _appKit!.core.relayClient.onRelayClientMessage.subscribe(
-      _onRelayMessage,
-    );
+    _appKit!.core.relayClient.onRelayClientMessage.subscribe(_onRelayMessage);
 
     // See https://docs.reown.com/appkit/flutter/core/custom-chains
     // final extraChains = ReownAppKitModalNetworks.extra['eip155']!;
@@ -409,10 +397,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // Loop through the events for that chain
       final namespace = NamespaceUtils.getNamespaceFromChain(chain.chainId);
       for (final event in getChainEvents(namespace)) {
-        _appKit!.registerEventHandler(
-          chainId: chain.chainId,
-          event: event,
-        );
+        _appKit!.registerEventHandler(chainId: chain.chainId, event: event);
       }
     }
   }
@@ -541,14 +526,9 @@ class _MyHomePageState extends State<MyHomePage> {
     final allChains = ReownAppKitModalNetworks.getAllSupportedNetworks();
     for (final chain in allChains) {
       // Loop through the events for that chain
-      final namespace = NamespaceUtils.getNamespaceFromChain(
-        chain.chainId,
-      );
+      final namespace = NamespaceUtils.getNamespaceFromChain(chain.chainId);
       for (final event in getChainEvents(namespace)) {
-        _appKit!.registerEventHandler(
-          chainId: chain.chainId,
-          event: event,
-        );
+        _appKit!.registerEventHandler(chainId: chain.chainId, event: event);
       }
     }
   }
@@ -565,14 +545,10 @@ class _MyHomePageState extends State<MyHomePage> {
     // Unregister event handlers
     _appKitModal!.appKit!.core.removeLogListener(_logListener);
 
-    _appKit!.core.relayClient.onRelayClientError.unsubscribe(
-      _relayClientError,
-    );
+    _appKit!.core.relayClient.onRelayClientError.unsubscribe(_relayClientError);
     _appKit!.core.relayClient.onRelayClientConnect.unsubscribe(_setState);
     _appKit!.core.relayClient.onRelayClientDisconnect.unsubscribe(_setState);
-    _appKit!.core.relayClient.onRelayClientMessage.unsubscribe(
-      _onRelayMessage,
-    );
+    _appKit!.core.relayClient.onRelayClientMessage.unsubscribe(_onRelayMessage);
     //
     _appKitModal!.onModalConnect.unsubscribe(_onModalConnect);
     _appKitModal!.onModalUpdate.unsubscribe(_onModalUpdate);
@@ -595,11 +571,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (MediaQuery.of(context).size.width >= Constants.smallScreen) {
       navRail.add(_buildNavigationRail());
     }
-    navRail.add(
-      Expanded(
-        child: _pageDatas[_selectedIndex].page,
-      ),
-    );
+    navRail.add(Expanded(child: _pageDatas[_selectedIndex].page));
 
     return Scaffold(
       appBar: AppBar(
@@ -622,9 +594,7 @@ class _MyHomePageState extends State<MyHomePage> {
               constraints: BoxConstraints(
                 maxWidth: Constants.smallScreen.toDouble(),
               ),
-              child: Row(
-                children: navRail,
-              ),
+              child: Row(children: navRail),
             ),
           ),
           if (_showLogOverlay)
@@ -658,20 +628,15 @@ class _MyHomePageState extends State<MyHomePage> {
       // called when one tab is selected
       onTap: (index) => setState(() => _selectedIndex = index),
       // bottom tab items
-      items: _pageDatas.map(
-        (e) {
-          return BottomNavigationBarItem(
-            icon: Semantics(
-              label: '${e.title} page button',
-              child: Icon(
-                e.icon,
-                semanticLabel: '${e.title} page icon',
-              ),
-            ),
-            label: e.title,
-          );
-        },
-      ).toList(),
+      items: _pageDatas.map((e) {
+        return BottomNavigationBarItem(
+          icon: Semantics(
+            label: '${e.title} page button',
+            child: Icon(e.icon, semanticLabel: '${e.title} page icon'),
+          ),
+          label: e.title,
+        );
+      }).toList(),
     );
   }
 
@@ -754,10 +719,7 @@ class _MyHomePageState extends State<MyHomePage> {
           final address = SIWEUtils.getAddressFromMessage(args.message);
           final cacaoSignature = args.cacao != null
               ? args.cacao!.s
-              : CacaoSignature(
-                  t: CacaoSignature.EIP191,
-                  s: args.signature,
-                );
+              : CacaoSignature(t: CacaoSignature.EIP191, s: args.signature);
           return await SIWEUtils.verifySignature(
             address,
             args.message,
@@ -796,10 +758,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void _onModalConnect(ModalConnect? event) async {
     debugPrint('[ExampleApp] _onModalConnect ${event?.session.toJson()}');
     setState(() {});
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('AppKit is connected'),
-      duration: Duration(seconds: 2),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('AppKit is connected'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   void _onModalUpdate(ModalConnect? event) {
@@ -826,11 +790,13 @@ class _MyHomePageState extends State<MyHomePage> {
       _appKitModal!.disconnect();
     }
     setState(() {});
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(
-        event?.message ?? event?.description ?? 'An error occurred',
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          event?.message ?? event?.description ?? 'An error occurred',
+        ),
+        duration: Duration(seconds: 2),
       ),
-      duration: Duration(seconds: 2),
-    ));
+    );
   }
 }

@@ -169,9 +169,9 @@ class __ExchangesListState extends State<_ExchangesList> {
     final chainId = selectedAsset.network;
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final appKitModal = ModalProvider.of(context).instance;
-    String? address = appKitModal.session?.getAddress(namespace);
-    address = address ?? widget.recipient;
-    if (address == null) {
+    final recipient =
+        widget.recipient ?? appKitModal.session?.getAddress(namespace);
+    if (recipient == null) {
       appKitModal.onModalError.broadcast(ModalError('No recipient found'));
       setState(() => _selectedExchange = null);
       return;
@@ -183,7 +183,7 @@ class __ExchangesListState extends State<_ExchangesList> {
         exchangeId: exchange.id,
         asset: selectedAsset,
         amount: '${amount.toDouble()}',
-        recipient: '$chainId:$address',
+        recipient: '$chainId:$recipient',
       );
       final GetExchangeUrlResult result = await _dweService.getExchangeUrl(
         params: getExchangeUrlParams,

@@ -499,7 +499,7 @@ class ReownSign implements IReownSign {
     final tvf = collectRequestTVF(id, sessionRequest);
     core.logger.d('[$runtimeType] _collect Request TVF, id: $id, $tvf');
 
-    return await core.pairing.sendRequest(
+    final result = await core.pairing.sendRequest(
       id: id,
       topic,
       MethodConstants.WC_SESSION_REQUEST,
@@ -507,6 +507,8 @@ class ReownSign implements IReownSign {
       appLink: _getAppLinkIfEnabled(session?.peer.metadata),
       tvf: tvf,
     );
+    print('CACA $result');
+    return result;
   }
 
   bool _isLinkModeRequest(SessionData? session) {

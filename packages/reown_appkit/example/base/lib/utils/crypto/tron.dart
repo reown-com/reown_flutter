@@ -7,19 +7,14 @@ import 'package:http/http.dart' as http;
 // ignore: depend_on_referenced_packages
 import 'package:convert/convert.dart';
 
-enum TronMethods {
-  tronSignTransaction,
-  tronSignMessage,
-}
+enum TronMethods { tronSignTransaction, tronSignMessage }
 
-enum TronEvents {
-  none,
-}
+enum TronEvents { none }
 
 class Tron {
   static final Map<TronMethods, String> methods = {
     TronMethods.tronSignTransaction: 'tron_signTransaction',
-    TronMethods.tronSignMessage: 'tron_signMessage'
+    TronMethods.tronSignMessage: 'tron_signMessage',
   };
 
   static final List<String> events = [];
@@ -48,14 +43,12 @@ class Tron {
       'parameter': params,
       'fee_limit': 200000000,
       'call_value': 0,
-      'visible': true
+      'visible': true,
     };
     final response = await http.post(
       Uri.parse(url),
       body: jsonEncode(paradic),
-      headers: {
-        'accept': 'application/json',
-      },
+      headers: {'accept': 'application/json'},
     );
     try {
       return jsonDecode(response.body) as Map<String, dynamic>;
@@ -80,9 +73,7 @@ class Tron {
     final response = await http.post(
       Uri.parse(url),
       body: jsonEncode(txPayload),
-      headers: {
-        'accept': 'application/json',
-      },
+      headers: {'accept': 'application/json'},
     );
     try {
       return jsonDecode(response.body) as Map<String, dynamic>;

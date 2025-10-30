@@ -1486,11 +1486,12 @@ class ReownAppKitModal
 
       final rawCallResponse = await _blockchainService.rawCall(
         chainId: chainId,
-        params: params,
+        method: 'eth_call',
+        params: [params, 'latest'],
       );
-      return deployedContract
-          .function(functionName)
-          .decodeReturnValues(rawCallResponse);
+      final result = rawCallResponse.result as String;
+
+      return deployedContract.function(functionName).decodeReturnValues(result);
     } catch (e, s) {
       _appKit.core.logger.e(
         '[$runtimeType] requestReadContract, error: $e, $s',
@@ -1564,6 +1565,19 @@ class ReownAppKitModal
   }
 
   @override
+  Future<JsonRpcResponse> rpcRequest({
+    required String chainId,
+    required String method,
+    required List<dynamic> params,
+  }) async {
+    return await _blockchainService.rawCall(
+      chainId: chainId,
+      method: method,
+      params: params,
+    );
+  }
+
+  @override
   Future<dynamic> request({
     required String? topic,
     required String chainId,
@@ -1621,19 +1635,14 @@ class ReownAppKitModal
     } catch (e) {
       if (_isUserRejectedError(e)) {
         onModalError.broadcast(UserRejectedRequest());
-        if (request.method == MethodsConstants.walletSwitchEthChain ||
-            request.method == MethodsConstants.walletAddEthChain) {
-          rethrow;
-        }
-        return Errors.getSdkError(Errors.USER_REJECTED).toJson();
       } else {
         if (e is CoinbaseServiceException) {
           // If the error is due to no session on Coinbase Wallet we disconnnect the session on Modal.
           // This is the only way to detect a missing session since Coinbase Wallet is not sending any event.
           throw ReownAppKitModalException('Coinbase Wallet Error');
         }
-        rethrow;
       }
+      rethrow;
     }
   }
 

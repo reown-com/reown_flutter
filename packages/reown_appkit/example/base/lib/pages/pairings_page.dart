@@ -6,10 +6,7 @@ import 'package:reown_appkit_dapp/utils/string_constants.dart';
 import 'package:reown_appkit_dapp/widgets/pairing_item.dart';
 
 class PairingsPage extends StatefulWidget {
-  const PairingsPage({
-    super.key,
-    required this.appKitModal,
-  });
+  const PairingsPage({super.key, required this.appKitModal});
 
   final ReownAppKitModal appKitModal;
 
@@ -40,9 +37,7 @@ class PairingsPageState extends State<PairingsPage> {
   @override
   Widget build(BuildContext context) {
     if (_pairings.isEmpty) {
-      return Center(
-        child: Text('No relay pairings'),
-      );
+      return Center(child: Text('No relay pairings'));
     }
     final List<PairingItem> pairingItems = _pairings
         .map(
@@ -58,22 +53,16 @@ class PairingsPageState extends State<PairingsPage> {
                       StringConstants.deletePairing,
                       style: StyleConstants.titleText,
                     ),
-                    content: Text(
-                      pairing.topic,
-                    ),
+                    content: Text(pairing.topic),
                     actions: [
                       TextButton(
-                        child: const Text(
-                          StringConstants.cancel,
-                        ),
+                        child: const Text(StringConstants.cancel),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
                       ),
                       TextButton(
-                        child: const Text(
-                          StringConstants.delete,
-                        ),
+                        child: const Text(StringConstants.delete),
                         onPressed: () async {
                           try {
                             _appKit.core.pairing.disconnect(
@@ -96,9 +85,7 @@ class PairingsPageState extends State<PairingsPage> {
 
     return Center(
       child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: StyleConstants.maxWidth,
-        ),
+        constraints: const BoxConstraints(maxWidth: StyleConstants.maxWidth),
         child: ListView(
           padding: const EdgeInsets.all(0.0),
           children: pairingItems,

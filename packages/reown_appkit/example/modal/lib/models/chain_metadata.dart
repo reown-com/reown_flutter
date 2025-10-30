@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
-enum ChainType {
-  eip155,
-  solana,
-  kadena,
-}
+enum ChainType { eip155, solana, kadena }
 
 class ChainMetadata {
   final Color color;

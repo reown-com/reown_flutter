@@ -12,9 +12,7 @@ class SIWESampleWebService {
 
   SIWESampleWebService() {
     _headers = {
-      ...CoreUtils.getAPIHeaders(
-        DartDefines.appKitProjectId,
-      ),
+      ...CoreUtils.getAPIHeaders(DartDefines.appKitProjectId),
       'Content-Type': 'application/json',
     };
   }
@@ -117,9 +115,7 @@ class SIWESampleWebService {
       debugPrint('[SIWESERVICE] signOut() => ${response.body}');
       final result = jsonDecode(response.body) as Map<String, dynamic>;
       _headers = {
-        ...CoreUtils.getAPIHeaders(
-          DartDefines.appKitProjectId,
-        ),
+        ...CoreUtils.getAPIHeaders(DartDefines.appKitProjectId),
         'Content-Type': 'application/json',
       };
       await _persistHeaders();

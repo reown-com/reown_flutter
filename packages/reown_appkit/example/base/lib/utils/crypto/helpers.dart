@@ -82,10 +82,7 @@ Future<SessionRequestParams?> getParams(
     case 'eth_signTypedData_v4':
       return SessionRequestParams(
         method: method,
-        params: [
-          address,
-          EIP155.typeDataV4(int.parse(chainData.chainId)),
-        ],
+        params: [address, EIP155.typeDataV4(int.parse(chainData.chainId))],
       );
     case 'eth_signTransaction':
     case 'eth_sendTransaction':
@@ -105,10 +102,7 @@ Future<SessionRequestParams?> getParams(
       final message = Solana.personalSignMessage();
       return SessionRequestParams(
         method: method,
-        params: {
-          'pubkey': address,
-          'message': message,
-        },
+        params: {'pubkey': address, 'message': message},
       );
     case 'solana_signTransaction':
     case 'solana_signAndSendTransaction':
@@ -142,10 +136,7 @@ Future<SessionRequestParams?> getParams(
       return SessionRequestParams(
         method: method,
         params: {
-          'transactions': [
-            encodedV0Trx_1,
-            encodedV0Trx_2,
-          ],
+          'transactions': [encodedV0Trx_1, encodedV0Trx_2],
         },
       );
     case 'tron_signMessage':
@@ -163,10 +154,7 @@ Future<SessionRequestParams?> getParams(
       );
       return SessionRequestParams(
         method: method,
-        params: {
-          'address': address,
-          'transaction': transaction,
-        },
+        params: {'address': address, 'transaction': transaction},
       );
     case 'polkadot_signMessage':
       return SessionRequestParams(
@@ -200,9 +188,7 @@ Future<SessionRequestParams?> getParams(
       final base64Transaction = base64Encode(utf8.encode(jsonTransaction));
       return SessionRequestParams(
         method: method,
-        params: {
-          'transaction': base64Transaction,
-        },
+        params: {'transaction': base64Transaction},
       );
     case 'near_signTransactions':
       final jsonTransaction = jsonEncode(Near.demoFromReactDapp(address));
@@ -210,9 +196,7 @@ Future<SessionRequestParams?> getParams(
       return SessionRequestParams(
         method: method,
         params: {
-          'transactions': [
-            base64Transaction,
-          ],
+          'transactions': [base64Transaction],
         },
       );
     case 'cosmos_getAccounts':
@@ -231,10 +215,7 @@ Future<SessionRequestParams?> getParams(
         params: Cosmos.signAmino(address, chainData.chainId),
       );
     default:
-      return SessionRequestParams(
-        method: method,
-        params: null,
-      );
+      return SessionRequestParams(method: method, params: null);
   }
 }
 
@@ -353,9 +334,7 @@ dynamic Function() _transferSmallValue(
       chainId: appKitModal.selectedChain!.chainId,
       deployedContract: deployedContract,
       functionName: 'transfer',
-      transaction: Transaction(
-        from: EthereumAddress.fromHex(senderAddress),
-      ),
+      transaction: Transaction(from: EthereumAddress.fromHex(senderAddress)),
       parameters: [
         // should be the recipient address
         EthereumAddress.fromHex(senderAddress),
@@ -403,9 +382,7 @@ dynamic Function() _approveSend(
       chainId: appKitModal.selectedChain!.chainId,
       deployedContract: deployedContract,
       functionName: 'approve',
-      transaction: Transaction(
-        from: EthereumAddress.fromHex(senderAddress),
-      ),
+      transaction: Transaction(from: EthereumAddress.fromHex(senderAddress)),
       parameters: [
         // spender
         EthereumAddress.fromHex(senderAddress),
