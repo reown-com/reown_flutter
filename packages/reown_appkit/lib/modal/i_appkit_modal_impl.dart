@@ -171,6 +171,12 @@ abstract class IReownAppKitModal with ChangeNotifier {
     required SessionRequestParams request,
   });
 
+  Future<JsonRpcResponse> rpcRequest({
+    required String chainId,
+    required String method,
+    required List<dynamic> params,
+  });
+
   Future<void> requestSwitchToChain(ReownAppKitModalNetworkInfo newChain);
   Future<void> requestAddChain(ReownAppKitModalNetworkInfo newChain);
 

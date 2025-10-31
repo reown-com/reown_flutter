@@ -3,16 +3,9 @@ import 'dart:math';
 import 'dart:typed_data';
 // import 'package:bs58/bs58.dart';
 
-enum NearMethods {
-  nearSignMessage,
-  nearSignTransaction,
-  nearSignTransactions,
-}
+enum NearMethods { nearSignMessage, nearSignTransaction, nearSignTransactions }
 
-enum NearEvents {
-  chainChanged,
-  accountsChanged,
-}
+enum NearEvents { chainChanged, accountsChanged }
 
 class Near {
   static final Map<NearMethods, String> methods = {
@@ -53,16 +46,13 @@ class Near {
             'type': 'Transfer',
             'params': {
               'deposit':
-                  '1000000000000000000000000' // 1 NEAR in yoctoNEAR (1e24)
-            }
-          }
-        ]
+                  '1000000000000000000000000', // 1 NEAR in yoctoNEAR (1e24)
+            },
+          },
+        ],
       };
 
-  static Map<String, dynamic> demoUSDCTransfer(
-    String address,
-    String pubKey,
-  ) =>
+  static Map<String, dynamic> demoUSDCTransfer(String address, String pubKey) =>
       {
         'signerId': address,
         'publicKey': pubKey,
@@ -77,13 +67,13 @@ class Near {
               'args': {
                 'receiver_id': address,
                 'amount':
-                    '1000000' // Amount in yocto (depending on token decimals)
+                    '1000000', // Amount in yocto (depending on token decimals)
               },
               'gas': '30000000000000', // 30 Tgas
-              'deposit': '1' // 1 yoctoNEAR required for ft_transfer
-            }
-          }
-        ]
+              'deposit': '1', // 1 yoctoNEAR required for ft_transfer
+            },
+          },
+        ],
       };
 
   static Map<String, dynamic> demoFromReactDapp(String address) => {

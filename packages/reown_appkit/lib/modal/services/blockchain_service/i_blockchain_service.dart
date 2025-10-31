@@ -2,6 +2,7 @@ import 'package:reown_appkit/modal/services/blockchain_service/models/blockchain
 import 'package:reown_appkit/modal/services/blockchain_service/models/gas_price.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/token_balance.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/wallet_activity.dart';
+import 'package:reown_core/models/json_rpc_models.dart';
 
 abstract class IBlockChainService {
   List<TokenBalance>? get tokensList;
@@ -45,7 +46,11 @@ abstract class IBlockChainService {
     required String caip2Chain,
   });
 
-  Future<String> rawCall({required String chainId, required Map params});
+  Future<JsonRpcResponse> rawCall({
+    required String chainId,
+    required String method,
+    required List<dynamic> params,
+  });
 
   void dispose();
 }

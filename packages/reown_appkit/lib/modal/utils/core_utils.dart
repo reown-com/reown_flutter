@@ -161,3 +161,27 @@ class CoreUtils {
     return imageUrl;
   }
 }
+
+extension JsonRpcErrorExtensions on JsonRpcError {
+  bool get isUserRejected {
+    final regexp = RegExp(
+      r'\b(rejected|cancelled|disapproved|denied)\b',
+      caseSensitive: false,
+    );
+    final code = (this.code ?? 0);
+    final match = RegExp(r'\b500[0-3]\b').hasMatch(code.toString());
+    if (match || code == Errors.getSdkError(Errors.USER_REJECTED_SIGN).code) {
+      return true;
+    }
+    return regexp.hasMatch(toString());
+  }
+
+  String get cleanMessage {
+    return (message ?? '')
+        .replaceAll('reown_getExchangePayUrl:', '')
+        .replaceAll('Internal error:', '')
+        .replaceAll('Validation error:', '')
+        .replaceAll('Execution error:', '')
+        .trim();
+  }
+}
