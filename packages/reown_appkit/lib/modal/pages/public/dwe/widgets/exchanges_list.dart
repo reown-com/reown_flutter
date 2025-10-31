@@ -4,6 +4,7 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
+import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/account_list_item.dart';
@@ -169,9 +170,9 @@ class __ExchangesListState extends State<_ExchangesList> {
     final chainId = selectedAsset.network;
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final appKitModal = ModalProvider.of(context).instance;
-    String? address = appKitModal.session?.getAddress(namespace);
-    address = address ?? widget.recipient;
-    if (address == null) {
+    final recipient =
+        widget.recipient ?? appKitModal.session?.getAddress(namespace);
+    if (recipient == null) {
       appKitModal.onModalError.broadcast(ModalError('No recipient found'));
       setState(() => _selectedExchange = null);
       return;
@@ -183,7 +184,7 @@ class __ExchangesListState extends State<_ExchangesList> {
         exchangeId: exchange.id,
         asset: selectedAsset,
         amount: '${amount.toDouble()}',
-        recipient: '$chainId:$address',
+        recipient: '$chainId:$recipient',
       );
       final GetExchangeUrlResult result = await _dweService.getExchangeUrl(
         params: getExchangeUrlParams,
@@ -192,7 +193,7 @@ class __ExchangesListState extends State<_ExchangesList> {
       await ReownCoreUtils.openURL(result.url);
       widget.onSelect.call(exchange, result);
     } on JsonRpcError catch (e) {
-      appKitModal.onModalError.broadcast(ModalError(e.message!));
+      appKitModal.onModalError.broadcast(ModalError(e.cleanMessage));
       setState(() => _selectedExchange = null);
     } catch (e) {
       appKitModal.onModalError.broadcast(

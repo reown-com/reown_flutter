@@ -17,7 +17,7 @@ abstract class ISiweService {
     required String address,
   });
 
-  Future<String> signMessageRequest(
+  Future<dynamic> signMessageRequest(
     String message, {
     required IReownAppKitModal modalService,
   });

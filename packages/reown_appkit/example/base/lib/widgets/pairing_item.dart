@@ -28,9 +28,9 @@ class PairingItem extends StatelessWidget {
         padding: const EdgeInsets.all(12.0),
         color: pairing.active
             ? ReownAppKitModalTheme.colorsOf(context).accenGlass020
-            : ReownAppKitModalTheme.colorsOf(context)
-                .error100
-                .withValues(alpha: 0.2),
+            : ReownAppKitModalTheme.colorsOf(
+                context,
+              ).error100.withValues(alpha: 0.2),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

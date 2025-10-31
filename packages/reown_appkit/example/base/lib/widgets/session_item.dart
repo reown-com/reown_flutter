@@ -5,10 +5,8 @@ import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 
 class SessionItem extends StatelessWidget {
-  const SessionItem({
-    required Key key,
-    required this.session,
-  }) : super(key: key);
+  const SessionItem({required Key key, required this.session})
+      : super(key: key);
 
   final SessionData session;
 
@@ -25,10 +23,7 @@ class SessionItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            session.peer.metadata.name,
-            style: StyleConstants.paragraph,
-          ),
+          Text(session.peer.metadata.name, style: StyleConstants.paragraph),
           Text('Expiry: $expiryDate ($inDays days)'),
         ],
       ),

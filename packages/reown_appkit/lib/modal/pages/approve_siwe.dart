@@ -85,7 +85,7 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
       final clientId = await _appKitModal!.appKit!.core.crypto.getClientId();
       await _siweService.verifyMessage(
         message: message,
-        signature: signature,
+        signature: signature.toString(),
         clientId: clientId,
       );
       //

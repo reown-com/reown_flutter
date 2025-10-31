@@ -1,37 +1,31 @@
 import 'package:reown_appkit/modal/models/public/appkit_wallet_info.dart';
 import 'package:reown_appkit/modal/services/explorer_service/models/native_app_data.dart';
 
-class ApiResponse<T> {
-  final int count;
-  final List<T> data;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  ApiResponse({required this.count, required this.data});
+part 'api_response.freezed.dart';
+part 'api_response.g.dart';
 
-  ApiResponse<T> copyWith({int? count, List<T>? data}) =>
-      ApiResponse<T>(count: count ?? this.count, data: data ?? this.data);
+@freezed
+sealed class GetWalletsResponse with _$GetWalletsResponse {
+  const factory GetWalletsResponse({
+    required int count,
+    required int? nextPage,
+    required int? previousPage,
+    required List<AppKitModalWalletListing> data,
+  }) = _GetWalletsResponse;
 
-  factory ApiResponse.fromJson(
-    final Map<String, dynamic> json,
-    T Function(Object? json) fromJsonT,
-  ) {
-    return ApiResponse<T>(
-      count: json['count'],
-      data: (json['data'] as List<dynamic>).map(fromJsonT).toList(),
-    );
-  }
+  factory GetWalletsResponse.fromJson(Map<String, dynamic> json) =>
+      _$GetWalletsResponseFromJson(json);
+}
 
-  Map<String, dynamic> toJson() => {
-    'count': count,
-    'data': List<T>.from(
-      data.map((x) {
-        if (T is AppKitModalWalletListing) {
-          return (x as AppKitModalWalletListing).toJson();
-        } else if (T is NativeAppData) {
-          return (x as NativeAppData).toJson();
-        } else {
-          throw Exception('Invalid Type');
-        }
-      }),
-    ),
-  };
+@freezed
+sealed class NativeDataResponse with _$NativeDataResponse {
+  const factory NativeDataResponse({
+    required int count,
+    required List<NativeAppData> data,
+  }) = _NativeDataResponse;
+
+  factory NativeDataResponse.fromJson(Map<String, dynamic> json) =>
+      _$NativeDataResponseFromJson(json);
 }

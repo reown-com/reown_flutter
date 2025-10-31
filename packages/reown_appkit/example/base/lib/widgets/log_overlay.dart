@@ -145,10 +145,7 @@ class _LogOverlayState extends State<LogOverlay> {
           padding: const EdgeInsets.only(bottom: 8),
           child: Text(
             'Logs: ${widget.logs.length}',
-            style: const TextStyle(
-              color: Colors.grey,
-              fontSize: 12,
-            ),
+            style: const TextStyle(color: Colors.grey, fontSize: 12),
           ),
         ),
         // Logs list
@@ -157,10 +154,7 @@ class _LogOverlayState extends State<LogOverlay> {
               ? const Center(
                   child: Text(
                     'No logs yet',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 12,
-                    ),
+                    style: TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                 )
               : ListView.builder(
@@ -202,10 +196,7 @@ class _LogOverlayState extends State<LogOverlay> {
         widget.logs.isEmpty
             ? 'No logs'
             : 'Latest: ${widget.logs.isNotEmpty ? widget.logs.last : ''}',
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-        ),
+        style: const TextStyle(color: Colors.white, fontSize: 12),
         maxLines: 2,
         overflow: TextOverflow.ellipsis,
         textAlign: TextAlign.center,

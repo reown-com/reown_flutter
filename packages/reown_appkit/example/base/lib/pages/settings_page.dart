@@ -35,15 +35,11 @@ class SettingsPageState extends State<SettingsPage> {
       fontSize: 12.0,
       color: ReownAppKitModalTheme.colorsOf(context).foreground100,
     );
-    final textStyleBold = textStyle.copyWith(
-      fontWeight: FontWeight.bold,
-    );
+    final textStyleBold = textStyle.copyWith(fontWeight: FontWeight.bold);
     final redirect = widget.appKitModal.appKit!.metadata.redirect;
     return Center(
       child: Container(
-        constraints: const BoxConstraints(
-          maxWidth: StyleConstants.maxWidth,
-        ),
+        constraints: const BoxConstraints(maxWidth: StyleConstants.maxWidth),
         padding: const EdgeInsets.only(left: 12.0, right: 12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,8 +56,9 @@ class SettingsPageState extends State<SettingsPage> {
                             'Relay Mode\n(Multichain)',
                             textAlign: TextAlign.end,
                             style: TextStyle(
-                              color: ReownAppKitModalTheme.colorsOf(context)
-                                  .foreground100,
+                              color: ReownAppKitModalTheme.colorsOf(
+                                context,
+                              ).foreground100,
                               fontWeight: !widget.linkMode
                                   ? FontWeight.bold
                                   : FontWeight.normal,
@@ -88,8 +85,9 @@ class SettingsPageState extends State<SettingsPage> {
                           child: Text(
                             'Link Mode\n(1CA, only EVM)',
                             style: TextStyle(
-                              color: ReownAppKitModalTheme.colorsOf(context)
-                                  .foreground100,
+                              color: ReownAppKitModalTheme.colorsOf(
+                                context,
+                              ).foreground100,
                               fontWeight: widget.linkMode
                                   ? FontWeight.bold
                                   : FontWeight.normal,
@@ -106,8 +104,9 @@ class SettingsPageState extends State<SettingsPage> {
                             'Socials Off',
                             textAlign: TextAlign.end,
                             style: TextStyle(
-                              color: ReownAppKitModalTheme.colorsOf(context)
-                                  .foreground100,
+                              color: ReownAppKitModalTheme.colorsOf(
+                                context,
+                              ).foreground100,
                               fontWeight: !widget.socials
                                   ? FontWeight.bold
                                   : FontWeight.normal,
@@ -134,8 +133,9 @@ class SettingsPageState extends State<SettingsPage> {
                           child: Text(
                             'Socials On',
                             style: TextStyle(
-                              color: ReownAppKitModalTheme.colorsOf(context)
-                                  .foreground100,
+                              color: ReownAppKitModalTheme.colorsOf(
+                                context,
+                              ).foreground100,
                               fontWeight: widget.socials
                                   ? FontWeight.bold
                                   : FontWeight.normal,
@@ -152,8 +152,9 @@ class SettingsPageState extends State<SettingsPage> {
                             'Analytics Off',
                             textAlign: TextAlign.end,
                             style: TextStyle(
-                              color: ReownAppKitModalTheme.colorsOf(context)
-                                  .foreground100,
+                              color: ReownAppKitModalTheme.colorsOf(
+                                context,
+                              ).foreground100,
                               fontWeight: !widget.analytics
                                   ? FontWeight.bold
                                   : FontWeight.normal,
@@ -180,8 +181,9 @@ class SettingsPageState extends State<SettingsPage> {
                           child: Text(
                             'Analytics On',
                             style: TextStyle(
-                              color: ReownAppKitModalTheme.colorsOf(context)
-                                  .foreground100,
+                              color: ReownAppKitModalTheme.colorsOf(
+                                context,
+                              ).foreground100,
                               fontWeight: widget.analytics
                                   ? FontWeight.bold
                                   : FontWeight.normal,
@@ -212,10 +214,12 @@ class SettingsPageState extends State<SettingsPage> {
                         onTap: () async {
                           await widget.appKitModal.appKit!.core.storage
                               .deleteAll();
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text('Storage cleared'),
-                            duration: Duration(seconds: 1),
-                          ));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('Storage cleared'),
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
                         },
                       ),
                     ),
@@ -286,10 +290,7 @@ class SettingsPageState extends State<SettingsPage> {
                   children: [
                     Text('Bundle ID: ', style: textStyle),
                     Expanded(
-                      child: Text(
-                        snapshot.data ?? '',
-                        style: textStyleBold,
-                      ),
+                      child: Text(snapshot.data ?? '', style: textStyleBold),
                     ),
                   ],
                 );
@@ -303,10 +304,7 @@ class SettingsPageState extends State<SettingsPage> {
                   children: [
                     Text('Client ID: ', style: textStyle),
                     Expanded(
-                      child: Text(
-                        snapshot.data ?? '',
-                        style: textStyleBold,
-                      ),
+                      child: Text(snapshot.data ?? '', style: textStyleBold),
                     ),
                   ],
                 );
