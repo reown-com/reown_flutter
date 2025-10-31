@@ -1083,6 +1083,7 @@ class ReownAppKitModal
   Future<void> buildConnectionUri() async {
     if (!_isConnected) {
       try {
+        await reconnectRelay();
         if (_siweService.enabled) {
           final walletRedirect = _explorerService.getWalletRedirect(
             _selectedWallet,

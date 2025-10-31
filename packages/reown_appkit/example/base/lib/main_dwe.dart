@@ -139,8 +139,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
-                    builder: (context) =>
-                        ReceiveMoneySheet(appKitModal: _appKitModal),
+                    builder: (context) => KastMockedModal(
+                      appKitModal: _appKitModal,
+                    ),
                   );
                 },
                 title: 'Open Kast Mocked Modal',
@@ -151,15 +152,15 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class ReceiveMoneySheet extends StatefulWidget {
-  const ReceiveMoneySheet({super.key, required this.appKitModal});
+class KastMockedModal extends StatefulWidget {
+  const KastMockedModal({super.key, required this.appKitModal});
   final IReownAppKitModal appKitModal;
 
   @override
-  State<ReceiveMoneySheet> createState() => _ReceiveMoneySheetState();
+  State<KastMockedModal> createState() => _KastMockedModalState();
 }
 
-class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
+class _KastMockedModalState extends State<KastMockedModal>
     with StatusCheckUtils {
   // IT CAN FAIRLY BE ADDRESS FOR CHAINID INSTEAD OF NAMESPACE
   final Map<String, String> _kastDepositAddressForChain = {
@@ -167,12 +168,12 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
     'solana': '3ZFT4Cwvy17qzE...', // KAST deposit address on SOLANA
   };
 
-  bool _loading1 = false;
-  bool _loading2 = false;
+  bool _loading = false;
+  // bool _loading2 = false;
 
   Future<void> topUpNativeFromWallet(int finney) async {
     try {
-      setState(() => _loading1 = true);
+      setState(() => _loading = true);
       final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
         'eip155',
         '11155111', // Sepolia
@@ -199,7 +200,7 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
       );
       final chainId = widget.appKitModal.selectedChain!.chainId;
       checkTxStatus(widget.appKitModal, chainId, response, 30, (status) {
-        setState(() => _loading1 = _loading2 = false);
+        setState(() => _loading = false);
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -209,10 +210,16 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
               actions: [
                 TextButton(
                   onPressed: () {
-                    // widget.appKitModal.disconnect();
+                    widget.appKitModal.disconnect();
                     Navigator.of(context).pop();
                   },
-                  child: Text('Ok'),
+                  child: Text('Disconnect wallet'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Close'),
                 ),
               ],
             );
@@ -220,7 +227,7 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
         );
       });
     } on JsonRpcError catch (e) {
-      setState(() => _loading1 = false);
+      setState(() => _loading = false);
       // errors such as user rejected, insufficient funds and more
       showDialog(
         context: context,
@@ -232,14 +239,14 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
         },
       );
     } catch (e) {
-      setState(() => _loading1 = false);
+      setState(() => _loading = false);
       debugPrint('❌ Internal Error: $e');
     }
   }
 
   Future<void> topUpStablecoinFromWallet(BigInt amount) async {
     try {
-      setState(() => _loading2 = true);
+      setState(() => _loading = true);
       final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
         'eip155',
         '42161', // Arbitrum
@@ -274,7 +281,7 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
       );
       final chainId = widget.appKitModal.selectedChain!.chainId;
       checkTxStatus(widget.appKitModal, chainId, response, 30, (status) {
-        setState(() => _loading1 = _loading2 = false);
+        setState(() => _loading = false);
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -284,10 +291,18 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
               actions: [
                 TextButton(
                   onPressed: () {
-                    // widget.appKitModal.disconnect();
+                    widget.appKitModal.disconnect();
                     Navigator.of(context).pop();
                   },
-                  child: Text('Ok'),
+                  child: Text(
+                    'Disconnect ${widget.appKitModal.session?.connectedWalletName}',
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Close'),
                 ),
               ],
             );
@@ -295,7 +310,7 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
         );
       });
     } on JsonRpcError catch (e) {
-      setState(() => _loading2 = false);
+      setState(() => _loading = false);
       // errors such as user rejected, insufficient funds and more
       showDialog(
         context: context,
@@ -307,7 +322,7 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
         },
       );
     } catch (e) {
-      setState(() => _loading2 = false);
+      setState(() => _loading = false);
       debugPrint('❌ Internal Error: $e');
     }
   }
@@ -372,10 +387,10 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
       );
 
       // OPEN MODAL
-      widget.appKitModal.openDepositView();
-      // widget.appKitModal.openModalView(
-      //   ReownAppKitModalDepositScreen(titleOverride: 'Kast Deposit'),
-      // );
+      // widget.appKitModal.openDepositView();
+      widget.appKitModal.openModalView(
+        ReownAppKitModalDepositScreen(titleOverride: 'Deposit on Kast'),
+      );
       // await widget.appKitModal.selectChain(null);
     } catch (e) {
       debugPrint('❌ Internal Error: $e');
@@ -385,22 +400,53 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
   @override
   void initState() {
     super.initState();
-
-    widget.appKitModal.onModalConnect.subscribe(_eventListener);
-    widget.appKitModal.onModalDisconnect.subscribe(_eventListener);
+    // widget.appKitModal.onModalConnect.subscribe(_eventListener);
+    // widget.appKitModal.onModalDisconnect.subscribe(_eventListener);
+    widget.appKitModal.onModalConnect.subscribe(_onConnectHandler);
+    widget.appKitModal.onModalDisconnect.subscribe(_onDisconnectHandler);
+    widget.appKitModal.onModalError.subscribe(_onErrorHandler);
+    widget.appKitModal.onModalUpdate.subscribe(_onUpdateHandler);
   }
 
-  void _eventListener(EventArgs event) {
+  void _onConnectHandler(ModalConnect event) {
     if (!mounted) return;
     setState(() {});
+    debugPrint('onModalConnect: ${jsonEncode(event.session.toJson())}');
+  }
+
+  void _onConnectAndTopUpHandler(ModalConnect event) {
+    if (!mounted) return;
+    topUpNativeFromWallet(10);
+    widget.appKitModal.onModalConnect.unsubscribe(
+      _onConnectAndTopUpHandler,
+    );
+  }
+
+  void _onDisconnectHandler(ModalDisconnect event) {
+    if (!mounted) return;
+    setState(() {});
+    debugPrint('onModalDisconnect: ${event.toString()}');
+  }
+
+  void _onErrorHandler(ModalError event) {
+    if (!mounted) return;
+    setState(() {});
+    debugPrint('onModalError: ${event.toString()}');
+  }
+
+  void _onUpdateHandler(ModalConnect event) {
+    if (!mounted) return;
+    setState(() {});
+    debugPrint('onModalUpdate: ${jsonEncode(event.session.toJson())}');
   }
 
   @override
   void dispose() {
     super.dispose();
-
-    widget.appKitModal.onModalConnect.unsubscribe(_eventListener);
-    widget.appKitModal.onModalDisconnect.unsubscribe(_eventListener);
+    widget.appKitModal.onModalConnect.unsubscribe(_onConnectHandler);
+    widget.appKitModal.onModalDisconnect.unsubscribe(_onDisconnectHandler);
+    widget.appKitModal.onModalError.unsubscribe(_onErrorHandler);
+    widget.appKitModal.onModalUpdate.unsubscribe(_onUpdateHandler);
   }
 
   @override
@@ -415,6 +461,18 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
             widget.appKitModal.openModalView();
           },
         ),
+      if (!widget.appKitModal.isConnected)
+        _ReceiveItem(
+          icon: Icons.wallet,
+          title: 'Connect and Top up 0.01 ETH',
+          onTap: () {
+            widget.appKitModal.openModalView();
+            widget.appKitModal.onModalConnect.subscribe(
+              _onConnectAndTopUpHandler,
+            );
+          },
+          // loading: _loading2,
+        ),
       if (widget.appKitModal.isConnected)
         _ReceiveItem(
           icon: Icons.wallet,
@@ -423,7 +481,7 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
           onTap: () {
             topUpNativeFromWallet(10);
           },
-          loading: _loading1,
+          // loading: _loading1,
         ),
       if (widget.appKitModal.isConnected)
         _ReceiveItem(
@@ -433,7 +491,7 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
           onTap: () {
             topUpNativeFromWallet(1000);
           },
-          loading: _loading1,
+          // loading: _loading1,
         ),
       if (widget.appKitModal.isConnected)
         _ReceiveItem(
@@ -443,7 +501,7 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
           onTap: () {
             topUpStablecoinFromWallet(BigInt.from(1000000));
           },
-          loading: _loading2,
+          // loading: _loading2,
         ),
       if (widget.appKitModal.isConnected)
         _ReceiveItem(
@@ -453,7 +511,7 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
           onTap: () {
             topUpStablecoinFromWallet(BigInt.from(100000000));
           },
-          loading: _loading2,
+          // loading: _loading2,
         ),
       _ReceiveItem(
         icon: Icons.swap_vert_circle_outlined,
@@ -497,57 +555,83 @@ class _ReceiveMoneySheetState extends State<ReceiveMoneySheet>
       ),
       child: SafeArea(
         top: false,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // ===== GRAB HANDLE =====
-              Container(
-                width: 40,
-                height: 4,
-                margin: const EdgeInsets.only(top: 6, bottom: 12),
-                decoration: BoxDecoration(
-                  color: themeColors.foreground300,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              // Header
-              Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Stack(
+          alignment: AlignmentGeometry.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const SizedBox.square(dimension: 8.0),
-                  Text(
-                    'Receive money',
-                    style: TextStyle(
-                      color: themeColors.foreground100,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
+                  // ===== GRAB HANDLE =====
+                  Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(top: 6, bottom: 12),
+                    decoration: BoxDecoration(
+                      color: themeColors.foreground300,
+                      borderRadius: BorderRadius.circular(2),
                     ),
                   ),
-                  Spacer(),
-                  IconButton(
-                    icon: Icon(
-                      Icons.close_rounded,
-                      color: themeColors.foreground100,
-                      size: 28.0,
+                  // Header
+                  Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox.square(dimension: 8.0),
+                      Text(
+                        'Receive money',
+                        style: TextStyle(
+                          color: themeColors.foreground100,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      Spacer(),
+                      IconButton(
+                        icon: Icon(
+                          Icons.close_rounded,
+                          color: themeColors.foreground100,
+                          size: 28.0,
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  // Items
+                  ...items.map(
+                    (e) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: e,
                     ),
-                    onPressed: () => Navigator.pop(context),
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-              // Items
-              ...items.map(
-                (e) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: e,
+            ),
+            Visibility(
+              visible: _loading,
+              child: Container(
+                padding: const EdgeInsets.all(12.0),
+                decoration: BoxDecoration(
+                  color: themeColors.background150,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.2),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: CircularProgressIndicator(
+                  color: themeColors.foreground100,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -558,13 +642,13 @@ class _ReceiveItem extends StatelessWidget {
   final IconData icon;
   final String title;
   final VoidCallback onTap;
-  final bool loading;
+  // final bool loading;
 
   const _ReceiveItem({
     required this.icon,
     required this.title,
     required this.onTap,
-    this.loading = false,
+    // this.loading = false,
   });
 
   @override
@@ -595,9 +679,7 @@ class _ReceiveItem extends StatelessWidget {
                 ),
               ),
             ),
-            loading
-                ? CircularProgressIndicator.adaptive()
-                : Icon(Icons.chevron_right, color: themeColors.foreground100),
+            Icon(Icons.chevron_right, color: themeColors.foreground100),
             const SizedBox.square(dimension: 10.0),
           ],
         ),
