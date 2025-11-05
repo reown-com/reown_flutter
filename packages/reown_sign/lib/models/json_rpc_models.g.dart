@@ -46,6 +46,9 @@ _WcSessionProposeRequest _$WcSessionProposeRequestFromJson(
   proposer: ConnectionMetadata.fromJson(
     json['proposer'] as Map<String, dynamic>,
   ),
+  requests: json['requests'] == null
+      ? null
+      : ProposalRequests.fromJson(json['requests'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$WcSessionProposeRequestToJson(
@@ -60,20 +63,7 @@ Map<String, dynamic> _$WcSessionProposeRequestToJson(
   ),
   'sessionProperties': ?instance.sessionProperties,
   'proposer': instance.proposer.toJson(),
-};
-
-_WcSessionProposeResponse _$WcSessionProposeResponseFromJson(
-  Map<String, dynamic> json,
-) => _WcSessionProposeResponse(
-  relay: Relay.fromJson(json['relay'] as Map<String, dynamic>),
-  responderPublicKey: json['responderPublicKey'] as String,
-);
-
-Map<String, dynamic> _$WcSessionProposeResponseToJson(
-  _WcSessionProposeResponse instance,
-) => <String, dynamic>{
-  'relay': instance.relay.toJson(),
-  'responderPublicKey': instance.responderPublicKey,
+  'requests': ?instance.requests?.toJson(),
 };
 
 _WcSessionSettleRequest _$WcSessionSettleRequestFromJson(
@@ -82,6 +72,10 @@ _WcSessionSettleRequest _$WcSessionSettleRequestFromJson(
   relay: Relay.fromJson(json['relay'] as Map<String, dynamic>),
   namespaces: (json['namespaces'] as Map<String, dynamic>).map(
     (k, e) => MapEntry(k, Namespace.fromJson(e as Map<String, dynamic>)),
+  ),
+  expiry: (json['expiry'] as num).toInt(),
+  controller: ConnectionMetadata.fromJson(
+    json['controller'] as Map<String, dynamic>,
   ),
   requiredNamespaces: (json['requiredNamespaces'] as Map<String, dynamic>?)
       ?.map(
@@ -96,10 +90,11 @@ _WcSessionSettleRequest _$WcSessionSettleRequestFromJson(
   sessionProperties: (json['sessionProperties'] as Map<String, dynamic>?)?.map(
     (k, e) => MapEntry(k, e as String),
   ),
-  expiry: (json['expiry'] as num).toInt(),
-  controller: ConnectionMetadata.fromJson(
-    json['controller'] as Map<String, dynamic>,
-  ),
+  proposalRequestsResponses: json['proposalRequestsResponses'] == null
+      ? null
+      : ProposalRequestsResponses.fromJson(
+          json['proposalRequestsResponses'] as Map<String, dynamic>,
+        ),
 );
 
 Map<String, dynamic> _$WcSessionSettleRequestToJson(
@@ -107,6 +102,8 @@ Map<String, dynamic> _$WcSessionSettleRequestToJson(
 ) => <String, dynamic>{
   'relay': instance.relay.toJson(),
   'namespaces': instance.namespaces.map((k, e) => MapEntry(k, e.toJson())),
+  'expiry': instance.expiry,
+  'controller': instance.controller.toJson(),
   'requiredNamespaces': ?instance.requiredNamespaces?.map(
     (k, e) => MapEntry(k, e.toJson()),
   ),
@@ -114,8 +111,21 @@ Map<String, dynamic> _$WcSessionSettleRequestToJson(
     (k, e) => MapEntry(k, e.toJson()),
   ),
   'sessionProperties': ?instance.sessionProperties,
-  'expiry': instance.expiry,
-  'controller': instance.controller.toJson(),
+  'proposalRequestsResponses': ?instance.proposalRequestsResponses?.toJson(),
+};
+
+_WcSessionProposeResponse _$WcSessionProposeResponseFromJson(
+  Map<String, dynamic> json,
+) => _WcSessionProposeResponse(
+  relay: Relay.fromJson(json['relay'] as Map<String, dynamic>),
+  responderPublicKey: json['responderPublicKey'] as String,
+);
+
+Map<String, dynamic> _$WcSessionProposeResponseToJson(
+  _WcSessionProposeResponse instance,
+) => <String, dynamic>{
+  'relay': instance.relay.toJson(),
+  'responderPublicKey': instance.responderPublicKey,
 };
 
 _WcSessionUpdateRequest _$WcSessionUpdateRequestFromJson(

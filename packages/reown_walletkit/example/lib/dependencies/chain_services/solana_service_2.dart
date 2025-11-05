@@ -59,14 +59,11 @@ class SolanaService2 {
         address: keyPair.pubkey.toBase58(),
         transportType: pRequest.transportType.name,
       )) {
-        final signature = await nacl.sign.detached(
-          base58Decoded,
-          keyPair.seckey,
-        );
+        final signature = await signMessage(message);
 
         response = response.copyWith(
           result: {
-            'signature': signature.toBase58(),
+            'signature': signature,
           },
         );
       } else {
@@ -96,6 +93,16 @@ class SolanaService2 {
     );
 
     _handleResponseForTopic(topic, response);
+  }
+
+  Future<String> signMessage(String message) async {
+    final keyPair = await _getKeyPair();
+    final base58Decoded = base58.decode(message);
+    final signature = await nacl.sign.detached(
+      base58Decoded,
+      keyPair.seckey,
+    );
+    return signature.toBase58();
   }
 
   Future<void> solanaSignTransaction(String topic, dynamic parameters) async {

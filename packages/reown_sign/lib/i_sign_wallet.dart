@@ -27,6 +27,7 @@ abstract class IReownSignWallet extends IReownSignCommon {
     required Map<String, Namespace> namespaces,
     Map<String, String>? sessionProperties,
     String? relayProtocol,
+    ProposalRequestsResponses? proposalRequestsResponses,
   });
   Future<void> rejectSession({required int id, required ReownSignError reason});
   Future<void> updateSession({

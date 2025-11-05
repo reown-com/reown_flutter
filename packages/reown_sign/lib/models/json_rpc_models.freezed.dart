@@ -538,7 +538,7 @@ as Map<String, dynamic>,
 /// @nodoc
 mixin _$WcSessionProposeRequest {
 
- List<Relay> get relays; Map<String, RequiredNamespace> get requiredNamespaces; Map<String, RequiredNamespace>? get optionalNamespaces; Map<String, String>? get sessionProperties; ConnectionMetadata get proposer;
+ List<Relay> get relays; Map<String, RequiredNamespace> get requiredNamespaces; Map<String, RequiredNamespace>? get optionalNamespaces; Map<String, String>? get sessionProperties; ConnectionMetadata get proposer; ProposalRequests? get requests;
 /// Create a copy of WcSessionProposeRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -551,16 +551,16 @@ $WcSessionProposeRequestCopyWith<WcSessionProposeRequest> get copyWith => _$WcSe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionProposeRequest&&const DeepCollectionEquality().equals(other.relays, relays)&&const DeepCollectionEquality().equals(other.requiredNamespaces, requiredNamespaces)&&const DeepCollectionEquality().equals(other.optionalNamespaces, optionalNamespaces)&&const DeepCollectionEquality().equals(other.sessionProperties, sessionProperties)&&(identical(other.proposer, proposer) || other.proposer == proposer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionProposeRequest&&const DeepCollectionEquality().equals(other.relays, relays)&&const DeepCollectionEquality().equals(other.requiredNamespaces, requiredNamespaces)&&const DeepCollectionEquality().equals(other.optionalNamespaces, optionalNamespaces)&&const DeepCollectionEquality().equals(other.sessionProperties, sessionProperties)&&(identical(other.proposer, proposer) || other.proposer == proposer)&&(identical(other.requests, requests) || other.requests == requests));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(relays),const DeepCollectionEquality().hash(requiredNamespaces),const DeepCollectionEquality().hash(optionalNamespaces),const DeepCollectionEquality().hash(sessionProperties),proposer);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(relays),const DeepCollectionEquality().hash(requiredNamespaces),const DeepCollectionEquality().hash(optionalNamespaces),const DeepCollectionEquality().hash(sessionProperties),proposer,requests);
 
 @override
 String toString() {
-  return 'WcSessionProposeRequest(relays: $relays, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, proposer: $proposer)';
+  return 'WcSessionProposeRequest(relays: $relays, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, proposer: $proposer, requests: $requests)';
 }
 
 
@@ -571,11 +571,11 @@ abstract mixin class $WcSessionProposeRequestCopyWith<$Res>  {
   factory $WcSessionProposeRequestCopyWith(WcSessionProposeRequest value, $Res Function(WcSessionProposeRequest) _then) = _$WcSessionProposeRequestCopyWithImpl;
 @useResult
 $Res call({
- List<Relay> relays, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, ConnectionMetadata proposer
+ List<Relay> relays, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, ConnectionMetadata proposer, ProposalRequests? requests
 });
 
 
-$ConnectionMetadataCopyWith<$Res> get proposer;
+$ConnectionMetadataCopyWith<$Res> get proposer;$ProposalRequestsCopyWith<$Res>? get requests;
 
 }
 /// @nodoc
@@ -588,14 +588,15 @@ class _$WcSessionProposeRequestCopyWithImpl<$Res>
 
 /// Create a copy of WcSessionProposeRequest
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? relays = null,Object? requiredNamespaces = null,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? proposer = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? relays = null,Object? requiredNamespaces = null,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? proposer = null,Object? requests = freezed,}) {
   return _then(_self.copyWith(
 relays: null == relays ? _self.relays : relays // ignore: cast_nullable_to_non_nullable
 as List<Relay>,requiredNamespaces: null == requiredNamespaces ? _self.requiredNamespaces : requiredNamespaces // ignore: cast_nullable_to_non_nullable
 as Map<String, RequiredNamespace>,optionalNamespaces: freezed == optionalNamespaces ? _self.optionalNamespaces : optionalNamespaces // ignore: cast_nullable_to_non_nullable
 as Map<String, RequiredNamespace>?,sessionProperties: freezed == sessionProperties ? _self.sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
 as Map<String, String>?,proposer: null == proposer ? _self.proposer : proposer // ignore: cast_nullable_to_non_nullable
-as ConnectionMetadata,
+as ConnectionMetadata,requests: freezed == requests ? _self.requests : requests // ignore: cast_nullable_to_non_nullable
+as ProposalRequests?,
   ));
 }
 /// Create a copy of WcSessionProposeRequest
@@ -606,6 +607,18 @@ $ConnectionMetadataCopyWith<$Res> get proposer {
   
   return $ConnectionMetadataCopyWith<$Res>(_self.proposer, (value) {
     return _then(_self.copyWith(proposer: value));
+  });
+}/// Create a copy of WcSessionProposeRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ProposalRequestsCopyWith<$Res>? get requests {
+    if (_self.requests == null) {
+    return null;
+  }
+
+  return $ProposalRequestsCopyWith<$Res>(_self.requests!, (value) {
+    return _then(_self.copyWith(requests: value));
   });
 }
 }
@@ -686,10 +699,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer,  ProposalRequests? requests)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WcSessionProposeRequest() when $default != null:
-return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer);case _:
+return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer,_that.requests);case _:
   return orElse();
 
 }
@@ -707,10 +720,10 @@ return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer,  ProposalRequests? requests)  $default,) {final _that = this;
 switch (_that) {
 case _WcSessionProposeRequest():
-return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer);}
+return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer,_that.requests);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -724,10 +737,10 @@ return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer,  ProposalRequests? requests)?  $default,) {final _that = this;
 switch (_that) {
 case _WcSessionProposeRequest() when $default != null:
-return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer);case _:
+return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer,_that.requests);case _:
   return null;
 
 }
@@ -739,7 +752,7 @@ return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_
 
 @JsonSerializable(includeIfNull: false)
 class _WcSessionProposeRequest implements WcSessionProposeRequest {
-  const _WcSessionProposeRequest({required final  List<Relay> relays, required final  Map<String, RequiredNamespace> requiredNamespaces, final  Map<String, RequiredNamespace>? optionalNamespaces, final  Map<String, String>? sessionProperties, required this.proposer}): _relays = relays,_requiredNamespaces = requiredNamespaces,_optionalNamespaces = optionalNamespaces,_sessionProperties = sessionProperties;
+  const _WcSessionProposeRequest({required final  List<Relay> relays, required final  Map<String, RequiredNamespace> requiredNamespaces, final  Map<String, RequiredNamespace>? optionalNamespaces, final  Map<String, String>? sessionProperties, required this.proposer, this.requests}): _relays = relays,_requiredNamespaces = requiredNamespaces,_optionalNamespaces = optionalNamespaces,_sessionProperties = sessionProperties;
   factory _WcSessionProposeRequest.fromJson(Map<String, dynamic> json) => _$WcSessionProposeRequestFromJson(json);
 
  final  List<Relay> _relays;
@@ -775,6 +788,7 @@ class _WcSessionProposeRequest implements WcSessionProposeRequest {
 }
 
 @override final  ConnectionMetadata proposer;
+@override final  ProposalRequests? requests;
 
 /// Create a copy of WcSessionProposeRequest
 /// with the given fields replaced by the non-null parameter values.
@@ -789,16 +803,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionProposeRequest&&const DeepCollectionEquality().equals(other._relays, _relays)&&const DeepCollectionEquality().equals(other._requiredNamespaces, _requiredNamespaces)&&const DeepCollectionEquality().equals(other._optionalNamespaces, _optionalNamespaces)&&const DeepCollectionEquality().equals(other._sessionProperties, _sessionProperties)&&(identical(other.proposer, proposer) || other.proposer == proposer));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionProposeRequest&&const DeepCollectionEquality().equals(other._relays, _relays)&&const DeepCollectionEquality().equals(other._requiredNamespaces, _requiredNamespaces)&&const DeepCollectionEquality().equals(other._optionalNamespaces, _optionalNamespaces)&&const DeepCollectionEquality().equals(other._sessionProperties, _sessionProperties)&&(identical(other.proposer, proposer) || other.proposer == proposer)&&(identical(other.requests, requests) || other.requests == requests));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_relays),const DeepCollectionEquality().hash(_requiredNamespaces),const DeepCollectionEquality().hash(_optionalNamespaces),const DeepCollectionEquality().hash(_sessionProperties),proposer);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_relays),const DeepCollectionEquality().hash(_requiredNamespaces),const DeepCollectionEquality().hash(_optionalNamespaces),const DeepCollectionEquality().hash(_sessionProperties),proposer,requests);
 
 @override
 String toString() {
-  return 'WcSessionProposeRequest(relays: $relays, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, proposer: $proposer)';
+  return 'WcSessionProposeRequest(relays: $relays, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, proposer: $proposer, requests: $requests)';
 }
 
 
@@ -809,11 +823,11 @@ abstract mixin class _$WcSessionProposeRequestCopyWith<$Res> implements $WcSessi
   factory _$WcSessionProposeRequestCopyWith(_WcSessionProposeRequest value, $Res Function(_WcSessionProposeRequest) _then) = __$WcSessionProposeRequestCopyWithImpl;
 @override @useResult
 $Res call({
- List<Relay> relays, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, ConnectionMetadata proposer
+ List<Relay> relays, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, ConnectionMetadata proposer, ProposalRequests? requests
 });
 
 
-@override $ConnectionMetadataCopyWith<$Res> get proposer;
+@override $ConnectionMetadataCopyWith<$Res> get proposer;@override $ProposalRequestsCopyWith<$Res>? get requests;
 
 }
 /// @nodoc
@@ -826,14 +840,15 @@ class __$WcSessionProposeRequestCopyWithImpl<$Res>
 
 /// Create a copy of WcSessionProposeRequest
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? relays = null,Object? requiredNamespaces = null,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? proposer = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? relays = null,Object? requiredNamespaces = null,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? proposer = null,Object? requests = freezed,}) {
   return _then(_WcSessionProposeRequest(
 relays: null == relays ? _self._relays : relays // ignore: cast_nullable_to_non_nullable
 as List<Relay>,requiredNamespaces: null == requiredNamespaces ? _self._requiredNamespaces : requiredNamespaces // ignore: cast_nullable_to_non_nullable
 as Map<String, RequiredNamespace>,optionalNamespaces: freezed == optionalNamespaces ? _self._optionalNamespaces : optionalNamespaces // ignore: cast_nullable_to_non_nullable
 as Map<String, RequiredNamespace>?,sessionProperties: freezed == sessionProperties ? _self._sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
 as Map<String, String>?,proposer: null == proposer ? _self.proposer : proposer // ignore: cast_nullable_to_non_nullable
-as ConnectionMetadata,
+as ConnectionMetadata,requests: freezed == requests ? _self.requests : requests // ignore: cast_nullable_to_non_nullable
+as ProposalRequests?,
   ));
 }
 
@@ -845,6 +860,368 @@ $ConnectionMetadataCopyWith<$Res> get proposer {
   
   return $ConnectionMetadataCopyWith<$Res>(_self.proposer, (value) {
     return _then(_self.copyWith(proposer: value));
+  });
+}/// Create a copy of WcSessionProposeRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ProposalRequestsCopyWith<$Res>? get requests {
+    if (_self.requests == null) {
+    return null;
+  }
+
+  return $ProposalRequestsCopyWith<$Res>(_self.requests!, (value) {
+    return _then(_self.copyWith(requests: value));
+  });
+}
+}
+
+
+/// @nodoc
+mixin _$WcSessionSettleRequest {
+
+ Relay get relay; Map<String, Namespace> get namespaces; int get expiry; ConnectionMetadata get controller; Map<String, RequiredNamespace>? get requiredNamespaces; Map<String, RequiredNamespace>? get optionalNamespaces; Map<String, String>? get sessionProperties; ProposalRequestsResponses? get proposalRequestsResponses;
+/// Create a copy of WcSessionSettleRequest
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WcSessionSettleRequestCopyWith<WcSessionSettleRequest> get copyWith => _$WcSessionSettleRequestCopyWithImpl<WcSessionSettleRequest>(this as WcSessionSettleRequest, _$identity);
+
+  /// Serializes this WcSessionSettleRequest to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionSettleRequest&&(identical(other.relay, relay) || other.relay == relay)&&const DeepCollectionEquality().equals(other.namespaces, namespaces)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.controller, controller) || other.controller == controller)&&const DeepCollectionEquality().equals(other.requiredNamespaces, requiredNamespaces)&&const DeepCollectionEquality().equals(other.optionalNamespaces, optionalNamespaces)&&const DeepCollectionEquality().equals(other.sessionProperties, sessionProperties)&&(identical(other.proposalRequestsResponses, proposalRequestsResponses) || other.proposalRequestsResponses == proposalRequestsResponses));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,relay,const DeepCollectionEquality().hash(namespaces),expiry,controller,const DeepCollectionEquality().hash(requiredNamespaces),const DeepCollectionEquality().hash(optionalNamespaces),const DeepCollectionEquality().hash(sessionProperties),proposalRequestsResponses);
+
+@override
+String toString() {
+  return 'WcSessionSettleRequest(relay: $relay, namespaces: $namespaces, expiry: $expiry, controller: $controller, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, proposalRequestsResponses: $proposalRequestsResponses)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $WcSessionSettleRequestCopyWith<$Res>  {
+  factory $WcSessionSettleRequestCopyWith(WcSessionSettleRequest value, $Res Function(WcSessionSettleRequest) _then) = _$WcSessionSettleRequestCopyWithImpl;
+@useResult
+$Res call({
+ Relay relay, Map<String, Namespace> namespaces, int expiry, ConnectionMetadata controller, Map<String, RequiredNamespace>? requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, ProposalRequestsResponses? proposalRequestsResponses
+});
+
+
+$ConnectionMetadataCopyWith<$Res> get controller;$ProposalRequestsResponsesCopyWith<$Res>? get proposalRequestsResponses;
+
+}
+/// @nodoc
+class _$WcSessionSettleRequestCopyWithImpl<$Res>
+    implements $WcSessionSettleRequestCopyWith<$Res> {
+  _$WcSessionSettleRequestCopyWithImpl(this._self, this._then);
+
+  final WcSessionSettleRequest _self;
+  final $Res Function(WcSessionSettleRequest) _then;
+
+/// Create a copy of WcSessionSettleRequest
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? relay = null,Object? namespaces = null,Object? expiry = null,Object? controller = null,Object? requiredNamespaces = freezed,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? proposalRequestsResponses = freezed,}) {
+  return _then(_self.copyWith(
+relay: null == relay ? _self.relay : relay // ignore: cast_nullable_to_non_nullable
+as Relay,namespaces: null == namespaces ? _self.namespaces : namespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, Namespace>,expiry: null == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
+as int,controller: null == controller ? _self.controller : controller // ignore: cast_nullable_to_non_nullable
+as ConnectionMetadata,requiredNamespaces: freezed == requiredNamespaces ? _self.requiredNamespaces : requiredNamespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, RequiredNamespace>?,optionalNamespaces: freezed == optionalNamespaces ? _self.optionalNamespaces : optionalNamespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, RequiredNamespace>?,sessionProperties: freezed == sessionProperties ? _self.sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
+as Map<String, String>?,proposalRequestsResponses: freezed == proposalRequestsResponses ? _self.proposalRequestsResponses : proposalRequestsResponses // ignore: cast_nullable_to_non_nullable
+as ProposalRequestsResponses?,
+  ));
+}
+/// Create a copy of WcSessionSettleRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConnectionMetadataCopyWith<$Res> get controller {
+  
+  return $ConnectionMetadataCopyWith<$Res>(_self.controller, (value) {
+    return _then(_self.copyWith(controller: value));
+  });
+}/// Create a copy of WcSessionSettleRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ProposalRequestsResponsesCopyWith<$Res>? get proposalRequestsResponses {
+    if (_self.proposalRequestsResponses == null) {
+    return null;
+  }
+
+  return $ProposalRequestsResponsesCopyWith<$Res>(_self.proposalRequestsResponses!, (value) {
+    return _then(_self.copyWith(proposalRequestsResponses: value));
+  });
+}
+}
+
+
+/// Adds pattern-matching-related methods to [WcSessionSettleRequest].
+extension WcSessionSettleRequestPatterns on WcSessionSettleRequest {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WcSessionSettleRequest value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WcSessionSettleRequest() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WcSessionSettleRequest value)  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionSettleRequest():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WcSessionSettleRequest value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WcSessionSettleRequest() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Relay relay,  Map<String, Namespace> namespaces,  int expiry,  ConnectionMetadata controller,  Map<String, RequiredNamespace>? requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ProposalRequestsResponses? proposalRequestsResponses)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WcSessionSettleRequest() when $default != null:
+return $default(_that.relay,_that.namespaces,_that.expiry,_that.controller,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposalRequestsResponses);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Relay relay,  Map<String, Namespace> namespaces,  int expiry,  ConnectionMetadata controller,  Map<String, RequiredNamespace>? requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ProposalRequestsResponses? proposalRequestsResponses)  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionSettleRequest():
+return $default(_that.relay,_that.namespaces,_that.expiry,_that.controller,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposalRequestsResponses);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Relay relay,  Map<String, Namespace> namespaces,  int expiry,  ConnectionMetadata controller,  Map<String, RequiredNamespace>? requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ProposalRequestsResponses? proposalRequestsResponses)?  $default,) {final _that = this;
+switch (_that) {
+case _WcSessionSettleRequest() when $default != null:
+return $default(_that.relay,_that.namespaces,_that.expiry,_that.controller,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposalRequestsResponses);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+@JsonSerializable(includeIfNull: false)
+class _WcSessionSettleRequest implements WcSessionSettleRequest {
+  const _WcSessionSettleRequest({required this.relay, required final  Map<String, Namespace> namespaces, required this.expiry, required this.controller, final  Map<String, RequiredNamespace>? requiredNamespaces, final  Map<String, RequiredNamespace>? optionalNamespaces, final  Map<String, String>? sessionProperties, this.proposalRequestsResponses}): _namespaces = namespaces,_requiredNamespaces = requiredNamespaces,_optionalNamespaces = optionalNamespaces,_sessionProperties = sessionProperties;
+  factory _WcSessionSettleRequest.fromJson(Map<String, dynamic> json) => _$WcSessionSettleRequestFromJson(json);
+
+@override final  Relay relay;
+ final  Map<String, Namespace> _namespaces;
+@override Map<String, Namespace> get namespaces {
+  if (_namespaces is EqualUnmodifiableMapView) return _namespaces;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_namespaces);
+}
+
+@override final  int expiry;
+@override final  ConnectionMetadata controller;
+ final  Map<String, RequiredNamespace>? _requiredNamespaces;
+@override Map<String, RequiredNamespace>? get requiredNamespaces {
+  final value = _requiredNamespaces;
+  if (value == null) return null;
+  if (_requiredNamespaces is EqualUnmodifiableMapView) return _requiredNamespaces;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
+}
+
+ final  Map<String, RequiredNamespace>? _optionalNamespaces;
+@override Map<String, RequiredNamespace>? get optionalNamespaces {
+  final value = _optionalNamespaces;
+  if (value == null) return null;
+  if (_optionalNamespaces is EqualUnmodifiableMapView) return _optionalNamespaces;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
+}
+
+ final  Map<String, String>? _sessionProperties;
+@override Map<String, String>? get sessionProperties {
+  final value = _sessionProperties;
+  if (value == null) return null;
+  if (_sessionProperties is EqualUnmodifiableMapView) return _sessionProperties;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(value);
+}
+
+@override final  ProposalRequestsResponses? proposalRequestsResponses;
+
+/// Create a copy of WcSessionSettleRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WcSessionSettleRequestCopyWith<_WcSessionSettleRequest> get copyWith => __$WcSessionSettleRequestCopyWithImpl<_WcSessionSettleRequest>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$WcSessionSettleRequestToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionSettleRequest&&(identical(other.relay, relay) || other.relay == relay)&&const DeepCollectionEquality().equals(other._namespaces, _namespaces)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.controller, controller) || other.controller == controller)&&const DeepCollectionEquality().equals(other._requiredNamespaces, _requiredNamespaces)&&const DeepCollectionEquality().equals(other._optionalNamespaces, _optionalNamespaces)&&const DeepCollectionEquality().equals(other._sessionProperties, _sessionProperties)&&(identical(other.proposalRequestsResponses, proposalRequestsResponses) || other.proposalRequestsResponses == proposalRequestsResponses));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,relay,const DeepCollectionEquality().hash(_namespaces),expiry,controller,const DeepCollectionEquality().hash(_requiredNamespaces),const DeepCollectionEquality().hash(_optionalNamespaces),const DeepCollectionEquality().hash(_sessionProperties),proposalRequestsResponses);
+
+@override
+String toString() {
+  return 'WcSessionSettleRequest(relay: $relay, namespaces: $namespaces, expiry: $expiry, controller: $controller, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, proposalRequestsResponses: $proposalRequestsResponses)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WcSessionSettleRequestCopyWith<$Res> implements $WcSessionSettleRequestCopyWith<$Res> {
+  factory _$WcSessionSettleRequestCopyWith(_WcSessionSettleRequest value, $Res Function(_WcSessionSettleRequest) _then) = __$WcSessionSettleRequestCopyWithImpl;
+@override @useResult
+$Res call({
+ Relay relay, Map<String, Namespace> namespaces, int expiry, ConnectionMetadata controller, Map<String, RequiredNamespace>? requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, ProposalRequestsResponses? proposalRequestsResponses
+});
+
+
+@override $ConnectionMetadataCopyWith<$Res> get controller;@override $ProposalRequestsResponsesCopyWith<$Res>? get proposalRequestsResponses;
+
+}
+/// @nodoc
+class __$WcSessionSettleRequestCopyWithImpl<$Res>
+    implements _$WcSessionSettleRequestCopyWith<$Res> {
+  __$WcSessionSettleRequestCopyWithImpl(this._self, this._then);
+
+  final _WcSessionSettleRequest _self;
+  final $Res Function(_WcSessionSettleRequest) _then;
+
+/// Create a copy of WcSessionSettleRequest
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? relay = null,Object? namespaces = null,Object? expiry = null,Object? controller = null,Object? requiredNamespaces = freezed,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? proposalRequestsResponses = freezed,}) {
+  return _then(_WcSessionSettleRequest(
+relay: null == relay ? _self.relay : relay // ignore: cast_nullable_to_non_nullable
+as Relay,namespaces: null == namespaces ? _self._namespaces : namespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, Namespace>,expiry: null == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
+as int,controller: null == controller ? _self.controller : controller // ignore: cast_nullable_to_non_nullable
+as ConnectionMetadata,requiredNamespaces: freezed == requiredNamespaces ? _self._requiredNamespaces : requiredNamespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, RequiredNamespace>?,optionalNamespaces: freezed == optionalNamespaces ? _self._optionalNamespaces : optionalNamespaces // ignore: cast_nullable_to_non_nullable
+as Map<String, RequiredNamespace>?,sessionProperties: freezed == sessionProperties ? _self._sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
+as Map<String, String>?,proposalRequestsResponses: freezed == proposalRequestsResponses ? _self.proposalRequestsResponses : proposalRequestsResponses // ignore: cast_nullable_to_non_nullable
+as ProposalRequestsResponses?,
+  ));
+}
+
+/// Create a copy of WcSessionSettleRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ConnectionMetadataCopyWith<$Res> get controller {
+  
+  return $ConnectionMetadataCopyWith<$Res>(_self.controller, (value) {
+    return _then(_self.copyWith(controller: value));
+  });
+}/// Create a copy of WcSessionSettleRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ProposalRequestsResponsesCopyWith<$Res>? get proposalRequestsResponses {
+    if (_self.proposalRequestsResponses == null) {
+    return null;
+  }
+
+  return $ProposalRequestsResponsesCopyWith<$Res>(_self.proposalRequestsResponses!, (value) {
+    return _then(_self.copyWith(proposalRequestsResponses: value));
   });
 }
 }
@@ -1107,329 +1484,6 @@ as String,
 }
 
 
-}
-
-
-/// @nodoc
-mixin _$WcSessionSettleRequest {
-
- Relay get relay; Map<String, Namespace> get namespaces; Map<String, RequiredNamespace>? get requiredNamespaces; Map<String, RequiredNamespace>? get optionalNamespaces; Map<String, String>? get sessionProperties; int get expiry; ConnectionMetadata get controller;
-/// Create a copy of WcSessionSettleRequest
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$WcSessionSettleRequestCopyWith<WcSessionSettleRequest> get copyWith => _$WcSessionSettleRequestCopyWithImpl<WcSessionSettleRequest>(this as WcSessionSettleRequest, _$identity);
-
-  /// Serializes this WcSessionSettleRequest to a JSON map.
-  Map<String, dynamic> toJson();
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionSettleRequest&&(identical(other.relay, relay) || other.relay == relay)&&const DeepCollectionEquality().equals(other.namespaces, namespaces)&&const DeepCollectionEquality().equals(other.requiredNamespaces, requiredNamespaces)&&const DeepCollectionEquality().equals(other.optionalNamespaces, optionalNamespaces)&&const DeepCollectionEquality().equals(other.sessionProperties, sessionProperties)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.controller, controller) || other.controller == controller));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,relay,const DeepCollectionEquality().hash(namespaces),const DeepCollectionEquality().hash(requiredNamespaces),const DeepCollectionEquality().hash(optionalNamespaces),const DeepCollectionEquality().hash(sessionProperties),expiry,controller);
-
-@override
-String toString() {
-  return 'WcSessionSettleRequest(relay: $relay, namespaces: $namespaces, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, expiry: $expiry, controller: $controller)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $WcSessionSettleRequestCopyWith<$Res>  {
-  factory $WcSessionSettleRequestCopyWith(WcSessionSettleRequest value, $Res Function(WcSessionSettleRequest) _then) = _$WcSessionSettleRequestCopyWithImpl;
-@useResult
-$Res call({
- Relay relay, Map<String, Namespace> namespaces, Map<String, RequiredNamespace>? requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, int expiry, ConnectionMetadata controller
-});
-
-
-$ConnectionMetadataCopyWith<$Res> get controller;
-
-}
-/// @nodoc
-class _$WcSessionSettleRequestCopyWithImpl<$Res>
-    implements $WcSessionSettleRequestCopyWith<$Res> {
-  _$WcSessionSettleRequestCopyWithImpl(this._self, this._then);
-
-  final WcSessionSettleRequest _self;
-  final $Res Function(WcSessionSettleRequest) _then;
-
-/// Create a copy of WcSessionSettleRequest
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? relay = null,Object? namespaces = null,Object? requiredNamespaces = freezed,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? expiry = null,Object? controller = null,}) {
-  return _then(_self.copyWith(
-relay: null == relay ? _self.relay : relay // ignore: cast_nullable_to_non_nullable
-as Relay,namespaces: null == namespaces ? _self.namespaces : namespaces // ignore: cast_nullable_to_non_nullable
-as Map<String, Namespace>,requiredNamespaces: freezed == requiredNamespaces ? _self.requiredNamespaces : requiredNamespaces // ignore: cast_nullable_to_non_nullable
-as Map<String, RequiredNamespace>?,optionalNamespaces: freezed == optionalNamespaces ? _self.optionalNamespaces : optionalNamespaces // ignore: cast_nullable_to_non_nullable
-as Map<String, RequiredNamespace>?,sessionProperties: freezed == sessionProperties ? _self.sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
-as Map<String, String>?,expiry: null == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
-as int,controller: null == controller ? _self.controller : controller // ignore: cast_nullable_to_non_nullable
-as ConnectionMetadata,
-  ));
-}
-/// Create a copy of WcSessionSettleRequest
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ConnectionMetadataCopyWith<$Res> get controller {
-  
-  return $ConnectionMetadataCopyWith<$Res>(_self.controller, (value) {
-    return _then(_self.copyWith(controller: value));
-  });
-}
-}
-
-
-/// Adds pattern-matching-related methods to [WcSessionSettleRequest].
-extension WcSessionSettleRequestPatterns on WcSessionSettleRequest {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WcSessionSettleRequest value)?  $default,{required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case _WcSessionSettleRequest() when $default != null:
-return $default(_that);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WcSessionSettleRequest value)  $default,){
-final _that = this;
-switch (_that) {
-case _WcSessionSettleRequest():
-return $default(_that);}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WcSessionSettleRequest value)?  $default,){
-final _that = this;
-switch (_that) {
-case _WcSessionSettleRequest() when $default != null:
-return $default(_that);case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Relay relay,  Map<String, Namespace> namespaces,  Map<String, RequiredNamespace>? requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  int expiry,  ConnectionMetadata controller)?  $default,{required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case _WcSessionSettleRequest() when $default != null:
-return $default(_that.relay,_that.namespaces,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.expiry,_that.controller);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Relay relay,  Map<String, Namespace> namespaces,  Map<String, RequiredNamespace>? requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  int expiry,  ConnectionMetadata controller)  $default,) {final _that = this;
-switch (_that) {
-case _WcSessionSettleRequest():
-return $default(_that.relay,_that.namespaces,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.expiry,_that.controller);}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Relay relay,  Map<String, Namespace> namespaces,  Map<String, RequiredNamespace>? requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  int expiry,  ConnectionMetadata controller)?  $default,) {final _that = this;
-switch (_that) {
-case _WcSessionSettleRequest() when $default != null:
-return $default(_that.relay,_that.namespaces,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.expiry,_that.controller);case _:
-  return null;
-
-}
-}
-
-}
-
-/// @nodoc
-
-@JsonSerializable(includeIfNull: false)
-class _WcSessionSettleRequest implements WcSessionSettleRequest {
-  const _WcSessionSettleRequest({required this.relay, required final  Map<String, Namespace> namespaces, final  Map<String, RequiredNamespace>? requiredNamespaces, final  Map<String, RequiredNamespace>? optionalNamespaces, final  Map<String, String>? sessionProperties, required this.expiry, required this.controller}): _namespaces = namespaces,_requiredNamespaces = requiredNamespaces,_optionalNamespaces = optionalNamespaces,_sessionProperties = sessionProperties;
-  factory _WcSessionSettleRequest.fromJson(Map<String, dynamic> json) => _$WcSessionSettleRequestFromJson(json);
-
-@override final  Relay relay;
- final  Map<String, Namespace> _namespaces;
-@override Map<String, Namespace> get namespaces {
-  if (_namespaces is EqualUnmodifiableMapView) return _namespaces;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(_namespaces);
-}
-
- final  Map<String, RequiredNamespace>? _requiredNamespaces;
-@override Map<String, RequiredNamespace>? get requiredNamespaces {
-  final value = _requiredNamespaces;
-  if (value == null) return null;
-  if (_requiredNamespaces is EqualUnmodifiableMapView) return _requiredNamespaces;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(value);
-}
-
- final  Map<String, RequiredNamespace>? _optionalNamespaces;
-@override Map<String, RequiredNamespace>? get optionalNamespaces {
-  final value = _optionalNamespaces;
-  if (value == null) return null;
-  if (_optionalNamespaces is EqualUnmodifiableMapView) return _optionalNamespaces;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(value);
-}
-
- final  Map<String, String>? _sessionProperties;
-@override Map<String, String>? get sessionProperties {
-  final value = _sessionProperties;
-  if (value == null) return null;
-  if (_sessionProperties is EqualUnmodifiableMapView) return _sessionProperties;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableMapView(value);
-}
-
-@override final  int expiry;
-@override final  ConnectionMetadata controller;
-
-/// Create a copy of WcSessionSettleRequest
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$WcSessionSettleRequestCopyWith<_WcSessionSettleRequest> get copyWith => __$WcSessionSettleRequestCopyWithImpl<_WcSessionSettleRequest>(this, _$identity);
-
-@override
-Map<String, dynamic> toJson() {
-  return _$WcSessionSettleRequestToJson(this, );
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionSettleRequest&&(identical(other.relay, relay) || other.relay == relay)&&const DeepCollectionEquality().equals(other._namespaces, _namespaces)&&const DeepCollectionEquality().equals(other._requiredNamespaces, _requiredNamespaces)&&const DeepCollectionEquality().equals(other._optionalNamespaces, _optionalNamespaces)&&const DeepCollectionEquality().equals(other._sessionProperties, _sessionProperties)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.controller, controller) || other.controller == controller));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,relay,const DeepCollectionEquality().hash(_namespaces),const DeepCollectionEquality().hash(_requiredNamespaces),const DeepCollectionEquality().hash(_optionalNamespaces),const DeepCollectionEquality().hash(_sessionProperties),expiry,controller);
-
-@override
-String toString() {
-  return 'WcSessionSettleRequest(relay: $relay, namespaces: $namespaces, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, expiry: $expiry, controller: $controller)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$WcSessionSettleRequestCopyWith<$Res> implements $WcSessionSettleRequestCopyWith<$Res> {
-  factory _$WcSessionSettleRequestCopyWith(_WcSessionSettleRequest value, $Res Function(_WcSessionSettleRequest) _then) = __$WcSessionSettleRequestCopyWithImpl;
-@override @useResult
-$Res call({
- Relay relay, Map<String, Namespace> namespaces, Map<String, RequiredNamespace>? requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, int expiry, ConnectionMetadata controller
-});
-
-
-@override $ConnectionMetadataCopyWith<$Res> get controller;
-
-}
-/// @nodoc
-class __$WcSessionSettleRequestCopyWithImpl<$Res>
-    implements _$WcSessionSettleRequestCopyWith<$Res> {
-  __$WcSessionSettleRequestCopyWithImpl(this._self, this._then);
-
-  final _WcSessionSettleRequest _self;
-  final $Res Function(_WcSessionSettleRequest) _then;
-
-/// Create a copy of WcSessionSettleRequest
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? relay = null,Object? namespaces = null,Object? requiredNamespaces = freezed,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? expiry = null,Object? controller = null,}) {
-  return _then(_WcSessionSettleRequest(
-relay: null == relay ? _self.relay : relay // ignore: cast_nullable_to_non_nullable
-as Relay,namespaces: null == namespaces ? _self._namespaces : namespaces // ignore: cast_nullable_to_non_nullable
-as Map<String, Namespace>,requiredNamespaces: freezed == requiredNamespaces ? _self._requiredNamespaces : requiredNamespaces // ignore: cast_nullable_to_non_nullable
-as Map<String, RequiredNamespace>?,optionalNamespaces: freezed == optionalNamespaces ? _self._optionalNamespaces : optionalNamespaces // ignore: cast_nullable_to_non_nullable
-as Map<String, RequiredNamespace>?,sessionProperties: freezed == sessionProperties ? _self._sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
-as Map<String, String>?,expiry: null == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
-as int,controller: null == controller ? _self.controller : controller // ignore: cast_nullable_to_non_nullable
-as ConnectionMetadata,
-  ));
-}
-
-/// Create a copy of WcSessionSettleRequest
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$ConnectionMetadataCopyWith<$Res> get controller {
-  
-  return $ConnectionMetadataCopyWith<$Res>(_self.controller, (value) {
-    return _then(_self.copyWith(controller: value));
-  });
-}
 }
 
 

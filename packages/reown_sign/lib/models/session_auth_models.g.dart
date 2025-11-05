@@ -24,9 +24,13 @@ _SessionAuthRequestParams _$SessionAuthRequestParamsFromJson(
       ?.map((e) => e as String)
       .toList(),
   expiry: (json['expiry'] as num?)?.toInt(),
-  methods:
-      (json['methods'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const <String>[],
+  signatureTypes: (json['signatureTypes'] as Map<String, dynamic>?)?.map(
+    (k, e) =>
+        MapEntry(k, (e as List<dynamic>).map((e) => e as String).toList()),
+  ),
+  methods: (json['methods'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
 );
 
 Map<String, dynamic> _$SessionAuthRequestParamsToJson(
@@ -43,50 +47,6 @@ Map<String, dynamic> _$SessionAuthRequestParamsToJson(
   'requestId': ?instance.requestId,
   'resources': ?instance.resources,
   'expiry': ?instance.expiry,
-  'methods': ?instance.methods,
-};
-
-_AuthenticateRequestParams _$AuthenticateRequestParamsFromJson(
-  Map<String, dynamic> json,
-) => _AuthenticateRequestParams(
-  domain: json['domain'] as String,
-  chains: (json['chains'] as List<dynamic>).map((e) => e as String).toList(),
-  nonce: json['nonce'] as String,
-  uri: json['uri'] as String,
-  ttl: (json['ttl'] as num).toInt(),
-  type: json['type'] == null
-      ? null
-      : CacaoHeader.fromJson(json['type'] as Map<String, dynamic>),
-  exp: json['exp'] as String?,
-  nbf: json['nbf'] as String?,
-  statement: json['statement'] as String?,
-  requestId: json['requestId'] as String?,
-  resources: (json['resources'] as List<dynamic>?)
-      ?.map((e) => e as String)
-      .toList(),
-  signatureTypes: (json['signatureTypes'] as Map<String, dynamic>?)?.map(
-    (k, e) =>
-        MapEntry(k, (e as List<dynamic>).map((e) => e as String).toList()),
-  ),
-  methods:
-      (json['methods'] as List<dynamic>?)?.map((e) => e as String).toList() ??
-      const <String>[],
-);
-
-Map<String, dynamic> _$AuthenticateRequestParamsToJson(
-  _AuthenticateRequestParams instance,
-) => <String, dynamic>{
-  'domain': instance.domain,
-  'chains': instance.chains,
-  'nonce': instance.nonce,
-  'uri': instance.uri,
-  'ttl': instance.ttl,
-  'type': ?instance.type?.toJson(),
-  'exp': ?instance.exp,
-  'nbf': ?instance.nbf,
-  'statement': ?instance.statement,
-  'requestId': ?instance.requestId,
-  'resources': ?instance.resources,
   'signatureTypes': ?instance.signatureTypes,
   'methods': ?instance.methods,
 };

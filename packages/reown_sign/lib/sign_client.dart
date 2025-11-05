@@ -151,7 +151,7 @@ class ReownSignClient implements IReownSignClient {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<Relay>? relays,
-    SessionAuthRequestParams? authentication,
+    List<SessionAuthRequestParams>? authentication,
     List<List<String>>? methods = ReownSign.CONNECT_METHODS,
   }) async {
     try {
@@ -185,6 +185,7 @@ class ReownSignClient implements IReownSignClient {
     required Map<String, Namespace> namespaces,
     Map<String, String>? sessionProperties,
     String? relayProtocol,
+    ProposalRequestsResponses? proposalRequestsResponses,
   }) async {
     try {
       return await engine.approveSession(
@@ -192,6 +193,7 @@ class ReownSignClient implements IReownSignClient {
         namespaces: namespaces,
         sessionProperties: sessionProperties,
         relayProtocol: relayProtocol,
+        proposalRequestsResponses: proposalRequestsResponses,
       );
     } catch (e) {
       rethrow;

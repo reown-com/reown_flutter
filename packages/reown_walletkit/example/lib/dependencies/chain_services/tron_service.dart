@@ -58,14 +58,8 @@ class TronService {
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
       )) {
-        // code
-        final keys = GetIt.I<IKeyService>().getKeysForChain(
-          chainSupported.chainId,
-        );
-        final tronPrivateKey = keys[0].privateKey; // 0x.....
-
         // Convert signature to hex string (r, s, v) → 65 bytes
-        final signatureHex = await _signMessage(message, tronPrivateKey);
+        final signatureHex = await signMessage(message);
 
         response = response.copyWith(
           result: {
@@ -95,7 +89,13 @@ class TronService {
     _handleResponseForTopic(topic, response);
   }
 
-  Future<String> _signMessage(String message, String privateKey) async {
+  Future<String> signMessage(String message) async {
+    // code
+    final keys = GetIt.I<IKeyService>().getKeysForChain(
+      chainSupported.chainId,
+    );
+    final privateKey = keys[0].privateKey; // 0x.....
+
     // Step 1: Convert private key (remove '0x' if present)
     final privateKeyBytes = Uint8List.fromList(hex.decode(
         privateKey.startsWith('0x') ? privateKey.substring(2) : privateKey));

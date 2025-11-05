@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:convert/convert.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
@@ -87,18 +88,7 @@ class TonService {
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
       )) {
-        final keyPair = GetIt.I<IKeyService>()
-            .getKeysForChain(chainSupported.chainId)
-            .first;
-
-        final signature = await _tonClient.signData(
-          text: text,
-          keyPair: TonKeyPair(
-            sk: keyPair.privateKey,
-            pk: keyPair.publicKey,
-          ),
-        );
-
+        final signature = await signMessage(text);
         response = response.copyWith(
           result: signature,
         );
@@ -124,6 +114,29 @@ class TonService {
     }
 
     _handleResponseForTopic(topic, response);
+  }
+
+  String getBase64PublicKey() {
+    final chainId = chainSupported.chainId;
+    final keys = GetIt.I<IKeyService>().getKeysForChain(chainId);
+    final hexPK = keys[0].publicKey;
+    return base64.encode(hex.decode(hexPK));
+  }
+
+  Future<String> signMessage(String message) async {
+    final chainId = chainSupported.chainId;
+    final keys = GetIt.I<IKeyService>().getKeysForChain(chainId);
+    final privateKey = keys[0].privateKey;
+    final publicKey = keys[0].publicKey;
+
+    final signature = await _tonClient.signData(
+      text: message,
+      keyPair: TonKeyPair(
+        sk: privateKey,
+        pk: publicKey,
+      ),
+    );
+    return signature;
   }
 
   Future<void> tonSendMessage(String topic, dynamic parameters) async {

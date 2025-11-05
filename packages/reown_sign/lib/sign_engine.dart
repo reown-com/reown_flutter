@@ -142,7 +142,8 @@ class ReownSign implements IReownSign {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<Relay>? relays,
-    SessionAuthRequestParams? authentication,
+    List<SessionAuthRequestParams>? authentication,
+    // WalletPayParams? walletPay;
     List<List<String>>? methods = CONNECT_METHODS,
   }) async {
     _checkInitialized();
@@ -157,7 +158,15 @@ class ReownSign implements IReownSign {
     );
     String? pTopic = pairingTopic;
     Uri? uri;
-    // const expiryFromAuthentication = authentication?.[0]?.ttl;
+
+    final expiryFromAuthentication = authentication?.firstOrNull?.expiry;
+    final method = MethodConstants.WC_SESSION_PROPOSE;
+    final ttl = MethodConstants.RPC_OPTS[method]?['req']?.ttl;
+    final expiry =
+        expiryFromAuthentication ??
+        ttl ??
+        ReownCoreUtils.calculateExpiry(ReownConstants.FIVE_MINUTES);
+    // TODO this.validateRequestExpiry(expiry);
 
     if (pTopic == null) {
       final CreateResponse newTopicAndUri = await core.pairing.create(
@@ -185,9 +194,18 @@ class ReownSign implements IReownSign {
       optionalNamespaces: mergedNamespaces,
       proposer: ConnectionMetadata(publicKey: publicKey, metadata: metadata),
       sessionProperties: sessionProperties,
+      requests: ProposalRequests(
+        authentication: authentication
+            ?.map(
+              (params) => SessionAuthPayload.fromRequestParams(params).copyWith(
+                type: params.type?.t ?? CacaoHeader.CAIP122,
+                requestId: id.toString(),
+              ),
+            )
+            .toList(),
+      ),
     );
 
-    final expiry = ReownCoreUtils.calculateExpiry(ReownConstants.FIVE_MINUTES);
     final ProposalData proposal = ProposalData(
       id: id,
       expiry: expiry,
@@ -197,6 +215,7 @@ class ReownSign implements IReownSign {
       optionalNamespaces: request.optionalNamespaces ?? {},
       sessionProperties: request.sessionProperties,
       pairingTopic: pTopic,
+      requests: request.requests,
     );
     await _setProposal(id, proposal);
 
@@ -206,10 +225,10 @@ class ReownSign implements IReownSign {
       SessionProposalCompleter(
         id: id,
         selfPublicKey: publicKey,
-        pairingTopic: pTopic,
         requiredNamespaces: request.requiredNamespaces,
         optionalNamespaces: request.optionalNamespaces ?? {},
         sessionProperties: request.sessionProperties,
+        pairingTopic: pTopic,
         completer: completer,
       ),
     );
@@ -230,8 +249,11 @@ class ReownSign implements IReownSign {
     int requestId,
   ) async {
     try {
-      final Map<String, dynamic> response = await core.pairing
-          .sendProposeSessionRequest(topic, request.toJson(), id: requestId);
+      final response = await core.pairing.sendProposeSessionRequest(
+        topic,
+        request.toJson(),
+        id: requestId,
+      );
       final String peerPublicKey = response['responderPublicKey'];
 
       final ProposalData proposal = proposals.get(requestId.toString())!;
@@ -274,7 +296,10 @@ class ReownSign implements IReownSign {
     required int id,
     required Map<String, Namespace> namespaces,
     Map<String, String>? sessionProperties,
+    // Map<String, dynamic>? scopedProperties,
+    // Map<String, dynamic>? sessionConfig,
     String? relayProtocol,
+    ProposalRequestsResponses? proposalRequestsResponses,
   }) async {
     // print('sign approveSession');
     _checkInitialized();
@@ -332,6 +357,8 @@ class ReownSign implements IReownSign {
       peer: proposal.proposer,
       sessionProperties: proposal.sessionProperties,
       transportType: TransportType.relay,
+      authentication: proposalRequestsResponses?.authentication,
+      // walletPayResult: proposalRequestsResponses?.walletPayResult,
     );
 
     onSessionConnect.broadcast(SessionConnect(session));
@@ -343,9 +370,10 @@ class ReownSign implements IReownSign {
     final sessionSettleRequest = WcSessionSettleRequest(
       relay: relay,
       namespaces: namespaces,
-      sessionProperties: sessionProperties,
       expiry: expiry,
       controller: ConnectionMetadata(publicKey: selfPubKey, metadata: metadata),
+      sessionProperties: sessionProperties,
+      proposalRequestsResponses: proposalRequestsResponses,
     );
 
     final approvedChains = NamespaceUtils.getChainIdsFromNamespaces(
@@ -1028,6 +1056,7 @@ class ReownSign implements IReownSign {
         sessionProperties: proposeRequest.sessionProperties,
         pairingTopic: topic,
         generatedNamespaces: namespaces,
+        requests: proposeRequest.requests,
       );
 
       await _setProposal(payload.id, proposal);
@@ -1071,7 +1100,7 @@ class ReownSign implements IReownSign {
       // print(sProposalCompleter);
 
       // Create the session
-      final SessionData session = SessionData(
+      final session = SessionData(
         topic: topic,
         pairingTopic: sProposalCompleter.pairingTopic,
         relay: request.relay,
@@ -1086,6 +1115,8 @@ class ReownSign implements IReownSign {
         ),
         peer: request.controller,
         transportType: TransportType.relay,
+        authentication: request.proposalRequestsResponses?.authentication,
+        // walletPayResult: request.proposalRequestsResponses?.walletPay,
       );
 
       // Update all the things: session, expiry, metadata, pairing
@@ -1814,23 +1845,27 @@ class ReownSign implements IReownSign {
     final CacaoSignature signature = cacao.s;
     final CacaoPayload payload = cacao.p;
 
-    final reconstructed = formatAuthMessage(
-      iss: payload.iss,
-      cacaoPayload: CacaoRequestPayload.fromCacaoPayload(payload),
-    );
+    try {
+      final reconstructed = formatAuthMessage(
+        iss: payload.iss,
+        cacaoPayload: CacaoRequestPayload.fromCacaoPayload(payload),
+      );
 
-    final walletAddress = AddressUtils.getDidAddress(payload.iss);
-    final chainId = AddressUtils.getDidChainId(payload.iss);
+      final walletAddress = AddressUtils.getDidAddressAddress(payload.iss)!;
+      final chainId = AddressUtils.getDidAddressChainId(payload.iss)!;
 
-    final isValid = await AuthSignature.verifySignature(
-      walletAddress.toEIP55(),
-      reconstructed,
-      signature,
-      chainId,
-      projectId,
-    );
+      final isValid = await AuthSignature.verifySignature(
+        walletAddress.toEIP55(),
+        reconstructed,
+        signature,
+        chainId,
+        projectId,
+      );
 
-    return isValid;
+      return isValid;
+    } catch (e) {
+      return false;
+    }
   }
 
   // FORMER AUTH ENGINE PROPERTY
@@ -1839,18 +1874,26 @@ class ReownSign implements IReownSign {
     required String iss,
     required CacaoRequestPayload cacaoPayload,
   }) {
+    final didNamespace = AddressUtils.getDidAddressNamespace(iss);
+    if (didNamespace == null) {
+      throw ReownSignError(code: -1, message: 'Invalid issuer: $iss');
+    }
+
+    final namespaceName = AddressUtils.getNamespaceNameFromNamespace(
+      didNamespace,
+    );
     final header =
-        '${cacaoPayload.domain} wants you to sign in with your Ethereum account:';
-    final walletAddress = AddressUtils.getDidAddress(iss);
+        '${cacaoPayload.domain} wants you to sign in with your $namespaceName account:';
+    final walletAddress = AddressUtils.getDidAddressAddress(iss)!;
 
     if (cacaoPayload.aud.isEmpty) {
       throw ReownSignError(code: -1, message: 'aud is required');
     }
 
-    String statement = cacaoPayload.statement ?? '';
+    String? statement = cacaoPayload.statement;
     final uri = 'URI: ${cacaoPayload.aud}';
     final version = 'Version: ${cacaoPayload.version}';
-    final chainId = 'Chain ID: ${AddressUtils.getDidChainId(iss)}';
+    final chainId = 'Chain ID: ${AddressUtils.getDidAddressChainId(iss)!}';
     final nonce = 'Nonce: ${cacaoPayload.nonce}';
     final issuedAt = 'Issued At: ${cacaoPayload.iat}';
     final expirationTime = (cacaoPayload.exp != null)
@@ -1872,7 +1915,7 @@ class ReownSign implements IReownSign {
     if (recap != null) {
       final decoded = ReCapsUtils.decodeRecap(recap);
       statement = ReCapsUtils.formatStatementFromRecap(
-        statement: statement,
+        statement: statement ?? '',
         recap: decoded,
       );
     }
@@ -1926,7 +1969,7 @@ class ReownSign implements IReownSign {
   }
 
   @Deprecated(
-    '`authenticate` will be deprecated soon. Please use `connect` with authenticate params',
+    '`authenticate` will be deprecated soon. Please use `connect` with `authentication` param',
   )
   @override
   Future<SessionAuthRequestResponse> authenticate({
@@ -2186,7 +2229,7 @@ class ReownSign implements IReownSign {
         // );
 
         final CacaoPayload payload = cacao.p;
-        final chainId = AddressUtils.getDidChainId(payload.iss);
+        final chainId = AddressUtils.getDidAddressChainId(payload.iss)!;
         final approvedChains = ['eip155:$chainId'];
 
         final recap = ReCapsUtils.getRecapFromResources(
@@ -2199,7 +2242,7 @@ class ReownSign implements IReownSign {
           approvedChains.addAll(chainsFromRecap);
         }
 
-        final parsedAddress = AddressUtils.getDidAddress(payload.iss);
+        final parsedAddress = AddressUtils.getDidAddressAddress(payload.iss)!;
         for (var chain in approvedChains.toSet()) {
           approvedAccounts.add('$chain:${parsedAddress.toEIP55()}');
         }
@@ -2368,7 +2411,7 @@ class ReownSign implements IReownSign {
       }
 
       final CacaoPayload payload = cacao.p;
-      final chainId = AddressUtils.getDidChainId(payload.iss);
+      final chainId = AddressUtils.getDidAddressChainId(payload.iss)!;
       final approvedChains = ['eip155:$chainId'];
 
       final recap = ReCapsUtils.getRecapFromResources(
@@ -2381,7 +2424,7 @@ class ReownSign implements IReownSign {
         approvedChains.addAll(chainsFromRecap);
       }
 
-      final parsedAddress = AddressUtils.getDidAddress(payload.iss);
+      final parsedAddress = AddressUtils.getDidAddressAddress(payload.iss)!;
       for (var chain in approvedChains.toSet()) {
         approvedAccounts.add('$chain:${parsedAddress.toEIP55()}');
       }

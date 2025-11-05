@@ -868,6 +868,7 @@ class MockReownSign extends _i1.Mock implements _i15.ReownSign {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<_i15.Relay>? relays,
+    List<_i15.SessionAuthRequestParams>? authentication,
     List<List<String>>? methods = const [
       ['wc_sessionPropose', 'wc_sessionRequest'],
     ],
@@ -879,6 +880,7 @@ class MockReownSign extends _i1.Mock implements _i15.ReownSign {
               #sessionProperties: sessionProperties,
               #pairingTopic: pairingTopic,
               #relays: relays,
+              #authentication: authentication,
               #methods: methods,
             }),
             returnValue: _i18.Future<_i15.ConnectResponse>.value(
@@ -890,6 +892,7 @@ class MockReownSign extends _i1.Mock implements _i15.ReownSign {
                   #sessionProperties: sessionProperties,
                   #pairingTopic: pairingTopic,
                   #relays: relays,
+                  #authentication: authentication,
                   #methods: methods,
                 }),
               ),
@@ -916,6 +919,7 @@ class MockReownSign extends _i1.Mock implements _i15.ReownSign {
     required Map<String, _i15.Namespace>? namespaces,
     Map<String, String>? sessionProperties,
     String? relayProtocol,
+    _i15.ProposalRequestsResponses? proposalRequestsResponses,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#approveSession, [], {
@@ -923,6 +927,7 @@ class MockReownSign extends _i1.Mock implements _i15.ReownSign {
               #namespaces: namespaces,
               #sessionProperties: sessionProperties,
               #relayProtocol: relayProtocol,
+              #proposalRequestsResponses: proposalRequestsResponses,
             }),
             returnValue: _i18.Future<_i15.ApproveResponse>.value(
               _FakeApproveResponse_18(
@@ -932,6 +937,7 @@ class MockReownSign extends _i1.Mock implements _i15.ReownSign {
                   #namespaces: namespaces,
                   #sessionProperties: sessionProperties,
                   #relayProtocol: relayProtocol,
+                  #proposalRequestsResponses: proposalRequestsResponses,
                 }),
               ),
             ),

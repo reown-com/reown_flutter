@@ -40,10 +40,29 @@ sealed class WcSessionProposeRequest with _$WcSessionProposeRequest {
     Map<String, RequiredNamespace>? optionalNamespaces,
     Map<String, String>? sessionProperties,
     required ConnectionMetadata proposer,
+    ProposalRequests? requests,
   }) = _WcSessionProposeRequest;
 
   factory WcSessionProposeRequest.fromJson(Map<String, dynamic> json) =>
       _$WcSessionProposeRequestFromJson(json);
+}
+
+@freezed
+sealed class WcSessionSettleRequest with _$WcSessionSettleRequest {
+  @JsonSerializable(includeIfNull: false)
+  const factory WcSessionSettleRequest({
+    required Relay relay,
+    required Map<String, Namespace> namespaces,
+    required int expiry,
+    required ConnectionMetadata controller,
+    Map<String, RequiredNamespace>? requiredNamespaces,
+    Map<String, RequiredNamespace>? optionalNamespaces,
+    Map<String, String>? sessionProperties,
+    ProposalRequestsResponses? proposalRequestsResponses,
+  }) = _WcSessionSettleRequest;
+
+  factory WcSessionSettleRequest.fromJson(Map<String, dynamic> json) =>
+      _$WcSessionSettleRequestFromJson(json);
 }
 
 @freezed
@@ -56,23 +75,6 @@ sealed class WcSessionProposeResponse with _$WcSessionProposeResponse {
 
   factory WcSessionProposeResponse.fromJson(Map<String, dynamic> json) =>
       _$WcSessionProposeResponseFromJson(json);
-}
-
-@freezed
-sealed class WcSessionSettleRequest with _$WcSessionSettleRequest {
-  @JsonSerializable(includeIfNull: false)
-  const factory WcSessionSettleRequest({
-    required Relay relay,
-    required Map<String, Namespace> namespaces,
-    Map<String, RequiredNamespace>? requiredNamespaces,
-    Map<String, RequiredNamespace>? optionalNamespaces,
-    Map<String, String>? sessionProperties,
-    required int expiry,
-    required ConnectionMetadata controller,
-  }) = _WcSessionSettleRequest;
-
-  factory WcSessionSettleRequest.fromJson(Map<String, dynamic> json) =>
-      _$WcSessionSettleRequestFromJson(json);
 }
 
 @freezed
@@ -131,6 +133,7 @@ sealed class WcSessionRequestRequest with _$WcSessionRequestRequest {
       _$WcSessionRequestRequestFromJson(json);
 }
 
+// TODO move out from here
 @freezed
 sealed class SessionRequestParams with _$SessionRequestParams {
   @JsonSerializable()
@@ -155,6 +158,7 @@ sealed class WcSessionEventRequest with _$WcSessionEventRequest {
       _$WcSessionEventRequestFromJson(json);
 }
 
+// TODO move out from here
 @freezed
 sealed class SessionEventParams with _$SessionEventParams {
   @JsonSerializable()

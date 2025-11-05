@@ -42,36 +42,15 @@ sealed class SessionAuthRequestParams with _$SessionAuthRequestParams {
     String? requestId,
     List<String>? resources,
     int? expiry,
-    @Default(<String>[]) List<String>? methods,
+    Map<String, List<String>>? signatureTypes,
+    @Deprecated(
+      '`methods` will be deprecated soon. Please use `connect` with `authentication` param',
+    )
+    List<String>? methods,
   }) = _SessionAuthRequestParams;
   //
   factory SessionAuthRequestParams.fromJson(Map<String, dynamic> json) =>
       _$SessionAuthRequestParamsFromJson(json);
-}
-
-@freezed
-sealed class AuthenticateRequestParams with _$AuthenticateRequestParams {
-  @JsonSerializable(includeIfNull: false)
-  const factory AuthenticateRequestParams({
-    required String domain,
-    required List<String> chains,
-    required String nonce,
-    required String uri,
-    required int ttl,
-    //
-    CacaoHeader? type,
-    String? exp,
-    String? nbf,
-    String? statement,
-    String? requestId,
-    List<String>? resources,
-    // int? expiry,
-    Map<String, List<String>>? signatureTypes,
-    @Default(<String>[]) List<String>? methods,
-  }) = _AuthenticateRequestParams;
-  //
-  factory AuthenticateRequestParams.fromJson(Map<String, dynamic> json) =>
-      _$AuthenticateRequestParamsFromJson(json);
 }
 
 @freezed

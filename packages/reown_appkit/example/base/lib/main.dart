@@ -265,7 +265,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _initializeService() async {
     final prefs = await SharedPreferences.getInstance();
-    final linkModeEnabled = prefs.getBool('appkit_sample_linkmode') ?? true;
+    final linkModeEnabled = prefs.getBool('appkit_sample_linkmode') ?? false;
     final analyticsEnabled = prefs.getBool('appkit_sample_analytics') ?? true;
     final socialsEnabled = prefs.getBool('appkit_sample_socials') ?? true;
 
@@ -408,7 +408,13 @@ class _MyHomePageState extends State<MyHomePage> {
       // When linkMode is true, the application operates in "Link Mode",
       // which is designed to support only EVM-compatible networks.
       // As a result, non-EVM networks like Solana should be removed
-      ReownAppKitModalNetworks.removeSupportedNetworks('solana');
+      final namespaces =
+          ReownAppKitModalNetworks.getAllSupportedNamespaces().where(
+        (ns) => ns != 'eip155',
+      );
+      for (var ns in namespaces) {
+        ReownAppKitModalNetworks.removeSupportedNetworks(ns);
+      }
     } else {
       // When linkMode is false, the application supports a broader range of networks
       ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [

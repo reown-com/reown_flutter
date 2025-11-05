@@ -18,7 +18,7 @@ abstract class IReownSignDapp extends IReownSignCommon {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<Relay>? relays,
-    SessionAuthRequestParams? authentication,
+    List<SessionAuthRequestParams>? authentication,
     List<List<String>>? methods,
   });
   Future<dynamic> request({

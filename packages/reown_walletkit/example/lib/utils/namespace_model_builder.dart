@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
+import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_model.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_widget.dart';
@@ -7,11 +9,22 @@ import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connectio
 class ConnectionWidgetBuilder {
   static List<WCConnectionWidget> buildFromRequiredNamespaces(
     Map<String, Namespace> generatedNamespaces,
+    List<SessionAuthPayload>? authenticationRequests,
   ) {
+    final walletKitService = GetIt.I<IWalletKitService>();
     final List<WCConnectionWidget> views = [];
+
+    final formattedMessages = walletKitService.prepareAuthenticationMessages(
+      authenticationRequests,
+      generatedNamespaces,
+    );
+
     for (final key in generatedNamespaces.keys) {
       final namespaces = generatedNamespaces[key]!;
       final chains = NamespaceUtils.getChainsFromAccounts(namespaces.accounts);
+      final namespaceMessages =
+          formattedMessages.where((e) => e.$1.contains(key));
+
       final List<WCConnectionModel> models = [];
       // If the chains property is present, add the chain data to the models
       models.add(
@@ -40,6 +53,14 @@ class ConnectionWidgetBuilder {
           WCConnectionModel(
             title: StringConstants.events,
             elements: namespaces.events,
+          ),
+        );
+      }
+      if (namespaceMessages.isNotEmpty) {
+        models.add(
+          WCConnectionModel(
+            title: 'Messages to Sign',
+            elements: namespaceMessages.map((e) => e.$2).toList(),
           ),
         );
       }
