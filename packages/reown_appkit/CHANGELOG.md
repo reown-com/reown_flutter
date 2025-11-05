@@ -1,3 +1,7 @@
+## 1.7.3
+
+- New onDepositSuccess event for `Deposit with Exchange` feature
+
 ## 1.7.2
 
 - Performance improvements

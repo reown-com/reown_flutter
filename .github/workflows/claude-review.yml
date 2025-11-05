@@ -2,7 +2,7 @@ name: Claude Auto Review
 
 on:
   pull_request:
-    types: [opened]
+    types: [ready_for_review]
     branches: [main, develop]
   issue_comment:
     types: [created]
