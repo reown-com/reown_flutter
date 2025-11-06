@@ -117,6 +117,7 @@ class TonService {
   }
 
   String getBase64PublicKey() {
+    // We generate PK in hex from Yttrium but React App requires it in base64
     final chainId = chainSupported.chainId;
     final keys = GetIt.I<IKeyService>().getKeysForChain(chainId);
     final hexPK = keys[0].publicKey;

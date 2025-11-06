@@ -18,6 +18,7 @@ class ChainMetadata {
   final String chainId;
   final String name;
   final String logo;
+  final String currency;
   final bool isTestnet;
   final Color color;
   final ChainType type;
@@ -27,6 +28,7 @@ class ChainMetadata {
     required this.chainId,
     required this.name,
     required this.logo,
+    required this.currency,
     this.isTestnet = false,
     required this.color,
     required this.type,
@@ -41,6 +43,7 @@ class ChainMetadata {
         other.chainId == chainId &&
         other.name == name &&
         other.logo == logo &&
+        other.currency == currency &&
         other.isTestnet == isTestnet &&
         listEquals(other.rpc, rpc);
   }
@@ -50,6 +53,7 @@ class ChainMetadata {
     return chainId.hashCode ^
         name.hashCode ^
         logo.hashCode ^
+        currency.hashCode ^
         rpc.hashCode ^
         isTestnet.hashCode;
   }

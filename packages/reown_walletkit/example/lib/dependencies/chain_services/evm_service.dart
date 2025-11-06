@@ -536,6 +536,7 @@ class EVMService {
           type: ChainType.eip155,
           chainId: chainId,
           name: params['chainName'],
+          currency: 'ETH',
           logo: '/chain-logos/eip155-$decimalChainId.png',
           color: Colors.blue.shade300,
           rpc: (params['rpcUrls'] as List).map((e) => e.toString()).toList(),
