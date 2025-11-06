@@ -1322,8 +1322,9 @@ class ReownAppKitModal
     } catch (_) {}
 
     if (!_appKit.core.relayClient.isConnected) {
-      onModalError.broadcast(ModalError('Websocket is not connected'));
-      return;
+      // onModalError.broadcast(ModalError('Websocket is not connected'));
+      // return;
+      await reconnectRelay();
     }
 
     _status = ReownAppKitModalStatus.initializing;
@@ -1442,6 +1443,7 @@ class ReownAppKitModal
     _blockchainService.selectSendToken(null);
     _dweService.stopCheckingStatus();
     _dweService.clearState();
+    _analyticsService.sendStoredEvents();
     _analyticsService.sendEvent(ModalCloseEvent(connected: _isConnected));
   }
 
@@ -1726,6 +1728,9 @@ class ReownAppKitModal
 
   @override
   final Event<SessionEvent> onSessionEventEvent = Event();
+
+  @override
+  final Event<DepositSuccessEvent> onDepositSuccess = Event();
 
   ////////* PRIVATE METHODS */////////
 

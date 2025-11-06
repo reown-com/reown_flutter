@@ -6,6 +6,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 
 import 'package:reown_appkit_dapp/utils/dart_defines.dart';
 
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 
 Future<void> main() async {
@@ -164,8 +165,10 @@ class _KastMockedModalState extends State<KastMockedModal>
     with StatusCheckUtils {
   // IT CAN FAIRLY BE ADDRESS FOR CHAINID INSTEAD OF NAMESPACE
   final Map<String, String> _kastDepositAddressForChain = {
-    'eip155': '0xD6d146ec0FA9...', // KAST deposit address on EVM
-    'solana': '3ZFT4Cwvy17qzE...', // KAST deposit address on SOLANA
+    'eip155':
+        '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340', // KAST deposit address on EVM
+    'solana':
+        '3ZFT4Cwvy17qzEvjvjyVhgQDYrkzfaXHe8wrpFX8Z5tL', // KAST deposit address on SOLANA
   };
 
   bool _loading = false;
@@ -332,8 +335,8 @@ class _KastMockedModalState extends State<KastMockedModal>
       // CONFIGURE NETWORK YOU WANT TO RECEIVE FUNDS ON
       // Since AppKit defines some EVM and Solana Mainnet by default, you can do this as well
       final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
-        'solana',
-        '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', // Solana Mainnet
+        'eip155',
+        '11155111', // Sepolia
       );
       // Other examples...
       // final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
@@ -406,6 +409,7 @@ class _KastMockedModalState extends State<KastMockedModal>
     widget.appKitModal.onModalDisconnect.subscribe(_onDisconnectHandler);
     widget.appKitModal.onModalError.subscribe(_onErrorHandler);
     widget.appKitModal.onModalUpdate.subscribe(_onUpdateHandler);
+    widget.appKitModal.onDepositSuccess.subscribe(_onDepositSuccess);
   }
 
   void _onConnectHandler(ModalConnect event) {
@@ -440,6 +444,12 @@ class _KastMockedModalState extends State<KastMockedModal>
     debugPrint('onModalUpdate: ${jsonEncode(event.session.toJson())}');
   }
 
+  void _onDepositSuccess(DepositSuccessEvent event) {
+    if (!mounted) return;
+    debugPrint('onDepositSuccess: ${jsonEncode(event.exchange.toJson())}');
+    // {"id":"reown_test","imageUrl":"https://pay-assets.reown.com/reown_test_128_128.webp","name":"Reown Test Exchange"}
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -447,6 +457,7 @@ class _KastMockedModalState extends State<KastMockedModal>
     widget.appKitModal.onModalDisconnect.unsubscribe(_onDisconnectHandler);
     widget.appKitModal.onModalError.unsubscribe(_onErrorHandler);
     widget.appKitModal.onModalUpdate.unsubscribe(_onUpdateHandler);
+    widget.appKitModal.onDepositSuccess.unsubscribe(_onDepositSuccess);
   }
 
   @override
