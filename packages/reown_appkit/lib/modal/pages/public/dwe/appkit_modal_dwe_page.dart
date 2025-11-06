@@ -65,7 +65,7 @@ class _ReownAppKitModalDepositScreenState
         } catch (e) {
           appKitModal.appKit!.core.logger.e('[$runtimeType] init error: $e');
           GetIt.I<IToastService>().show(
-            ToastMessage(type: ToastType.error, text: 'So supported networks'),
+            ToastMessage(type: ToastType.error, text: 'No supported networks'),
           );
         }
       }

@@ -39,11 +39,14 @@ class _VisibilityCheckerState extends State<VisibilityChecker> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Attach to the nearest Scrollable's position
-    final newPosition = Scrollable.of(context).position;
-    if (_position != newPosition) {
-      _position?.removeListener(_onScroll);
-      _position = newPosition;
-      _position?.addListener(_onScroll);
+    final scrollable = Scrollable.maybeOf(context);
+    if (scrollable != null) {
+      final newPosition = scrollable.position;
+      if (_position != newPosition) {
+        _position?.removeListener(_onScroll);
+        _position = newPosition;
+        _position?.addListener(_onScroll);
+      }
     }
   }
 
