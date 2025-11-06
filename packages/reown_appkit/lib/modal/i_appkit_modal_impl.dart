@@ -199,4 +199,6 @@ abstract class IReownAppKitModal with ChangeNotifier {
   abstract final Event<SessionExpire> onSessionExpireEvent;
   abstract final Event<SessionUpdate> onSessionUpdateEvent;
   abstract final Event<SessionEvent> onSessionEventEvent;
+
+  abstract final Event<DepositSuccessEvent> onDepositSuccess;
 }

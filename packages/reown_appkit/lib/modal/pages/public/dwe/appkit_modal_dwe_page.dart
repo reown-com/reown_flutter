@@ -65,7 +65,7 @@ class _ReownAppKitModalDepositScreenState
         } catch (e) {
           appKitModal.appKit!.core.logger.e('[$runtimeType] init error: $e');
           GetIt.I<IToastService>().show(
-            ToastMessage(type: ToastType.error, text: 'So supported networks'),
+            ToastMessage(type: ToastType.error, text: 'No supported networks'),
           );
         }
       }
@@ -183,12 +183,15 @@ class _ReownAppKitModalDepositScreenState
               const SizedBox.square(dimension: kPadding12),
               ExchangesListWidget(
                 recipient: _dweService.preselectedRecipient,
-                onSelect: (exchange, urlResult) {
+                onSelect: (Exchange exchange, GetExchangeUrlResult urlResult) {
                   setState(() {});
                   _dweService.loopOnStatusCheck(
                     exchange.id,
                     urlResult.sessionId,
                     (result) {
+                      appKitModal.onDepositSuccess.broadcast(
+                        DepositSuccessEvent(exchange),
+                      );
                       GetIt.I<IToastService>().show(
                         ToastMessage(
                           type: result!.status == 'SUCCESS'

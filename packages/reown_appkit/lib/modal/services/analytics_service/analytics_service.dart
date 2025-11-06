@@ -17,6 +17,9 @@ class AnalyticsService implements IAnalyticsService {
   }
 
   @override
+  bool get isEnabled => _enableAnalytics ?? false;
+
+  @override
   Future<void> init({String? eventsUrl}) async {
     if (_enableAnalytics == null) {
       try {
@@ -28,10 +31,17 @@ class AnalyticsService implements IAnalyticsService {
     } else {
       _enableAnalytics = _enableAnalytics ?? false;
     }
+    await sendStoredEvents();
+    _core.logger.i('[$runtimeType] enabled: $_enableAnalytics');
+  }
+
+  @override
+  Future<void> sendStoredEvents() async {
+    if (_enableAnalytics == false) return;
+
     final queryParams = CoreUtils.getApiQueryParams(_core.projectId);
     _core.events.setQueryParams(queryParams);
-    _core.events.sendStoredEvents();
-    _core.logger.i('[$runtimeType] enabled: $_enableAnalytics');
+    await _core.events.sendStoredEvents();
   }
 
   @override
@@ -40,6 +50,14 @@ class AnalyticsService implements IAnalyticsService {
     // core such as LinkMode-related events are still send by Core SDK
     if (_enableAnalytics == false) return;
     return _core.events.sendEvent(event);
+  }
+
+  @override
+  Future<void> storeEvent(BasicCoreEvent event) async {
+    // we don't send analytics events if user opts-out
+    // core such as LinkMode-related events are still send by Core SDK
+    if (_enableAnalytics == false) return;
+    return _core.events.recordEvent(event);
   }
 
   Future<bool> _fetchAnalyticsConfig() async {
