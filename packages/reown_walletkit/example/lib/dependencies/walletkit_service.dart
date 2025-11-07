@@ -538,7 +538,7 @@ class WalletKitService extends IWalletKitService {
         final request = messageToSign.$3;
         final namespace = AddressUtils.getDidAddressNamespace(iss);
         final chainId = AddressUtils.getDidAddressChainId(iss);
-        final result = await signMessage(
+        final (String, String, String?) result = await signMessage(
           namespace!,
           chainId!,
           message,
@@ -640,8 +640,10 @@ class WalletKitService extends IWalletKitService {
     switch (namespace) {
       case 'eip155':
         return CacaoSignature.EIP191;
+      case 'bip122':
+        return CacaoSignature.ECDSA;
       case 'solana':
-        return 'ed25519';
+        return CacaoSignature.ED25519;
       default:
         return namespace;
     }
