@@ -138,9 +138,9 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final appKitModal = ModalProvider.of(context).instance;
-    final chainId = appKitModal.selectedChain!.chainId;
-    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-    final chainIcon = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
+    final chainIcon = GetIt.I<IExplorerService>().getChainIcon(
+      appKitModal.selectedChain,
+    );
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final tokenPrice = (_selectedToken.price ?? 0.0).toStringAsFixed(2);

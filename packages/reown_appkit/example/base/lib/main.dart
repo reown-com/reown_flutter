@@ -286,7 +286,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // ReownAppKitModalNetworks.removeSupportedNetworks('solana');
     // ReownAppKitModalNetworks.removeTestNetworks();
 
-    _addOrRemoveNetworks(linkModeEnabled);
+    _removeChainsIfNecessary(linkModeEnabled);
 
     _appKitModal = ReownAppKitModal(
       context: context,
@@ -403,7 +403,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   // Adds or remove supported networks based on linkMode
-  void _addOrRemoveNetworks(bool linkMode) {
+  void _removeChainsIfNecessary(bool linkMode) {
     if (linkMode) {
       // When linkMode is true, the application operates in "Link Mode",
       // which is designed to support only EVM-compatible networks.
@@ -415,87 +415,6 @@ class _MyHomePageState extends State<MyHomePage> {
       for (var ns in namespaces) {
         ReownAppKitModalNetworks.removeSupportedNetworks(ns);
       }
-    } else {
-      // When linkMode is false, the application supports a broader range of networks
-      ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
-        ReownAppKitModalNetworkInfo(
-          name: 'Polkadot',
-          chainId: '91b171bb158e2d3848fa23a9f1c25182',
-          chainIcon:
-              'https://pbs.twimg.com/profile_images/1944665239502323712/0FMaAZ31_400x400.jpg',
-          currency: 'DOT',
-          rpcUrl: 'wss://rpc.polkadot.io',
-          explorerUrl: 'https://polkadot.subscan.io',
-        ),
-        ReownAppKitModalNetworkInfo(
-          name: 'Westend',
-          chainId: 'e143f23803ac50e8f6f8e62695d1ce9e',
-          currency: 'WND',
-          rpcUrl: 'wss://westend-asset-hub-rpc.polkadot.io',
-          explorerUrl: 'https://westend.subscan.io',
-          isTestNetwork: true,
-        ),
-      ]);
-      ReownAppKitModalNetworks.addSupportedNetworks('tron', [
-        ReownAppKitModalNetworkInfo(
-          name: 'Tron',
-          chainId: '0x2b6653dc',
-          chainIcon:
-              'https://pbs.twimg.com/profile_images/1970541264568520704/J6wYDxYk_400x400.jpg',
-          currency: 'TRX',
-          rpcUrl: 'https://api.trongrid.io',
-          explorerUrl: 'https://tronscan.org',
-        ),
-        ReownAppKitModalNetworkInfo(
-          name: 'Tron testnet',
-          chainId: '0xcd8690dc',
-          currency: 'TRX',
-          rpcUrl: 'https://nile.trongrid.io',
-          explorerUrl: 'https://test.tronscan.org',
-          isTestNetwork: true,
-        ),
-      ]);
-      ReownAppKitModalNetworks.addSupportedNetworks('mvx', [
-        ReownAppKitModalNetworkInfo(
-          name: 'MultiversX',
-          chainId: '1',
-          currency: 'EGLD',
-          rpcUrl: 'https://api.multiversx.com',
-          explorerUrl: 'https://explorer.multiversx.com',
-          chainIcon:
-              'https://pbs.twimg.com/profile_images/1953134940301774848/UbIBbfXn_400x400.jpg',
-        ),
-      ]);
-      ReownAppKitModalNetworks.addSupportedNetworks('near', [
-        ReownAppKitModalNetworkInfo(
-          name: 'Near Mainnet',
-          chainId: 'mainnet',
-          currency: 'NEAR',
-          rpcUrl: 'https://rpc.mainnet.near.org',
-          explorerUrl: 'https://nearblocks.io',
-          chainIcon:
-              'https://pbs.twimg.com/profile_images/1970880320103985152/SAMA6Vh0_400x400.jpg',
-        ),
-        ReownAppKitModalNetworkInfo(
-          name: 'Near Testnet',
-          chainId: 'testnet',
-          currency: 'NEAR',
-          rpcUrl: 'https://rpc.testnet.near.org',
-          explorerUrl: 'https://testnet.nearblocks.io',
-          isTestNetwork: true,
-        ),
-      ]);
-      ReownAppKitModalNetworks.addSupportedNetworks('cosmos', [
-        ReownAppKitModalNetworkInfo(
-          name: 'Cosmos hub',
-          chainId: 'cosmoshub-4',
-          chainIcon:
-              'https://pbs.twimg.com/profile_images/1910273399282159616/OLSiIjEx_400x400.png',
-          currency: 'ATOM',
-          rpcUrl: 'https://rpc.cosmos.network',
-          explorerUrl: 'https://www.mintscan.io/cosmos/',
-        ),
-      ]);
     }
   }
 

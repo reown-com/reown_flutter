@@ -179,9 +179,9 @@ class _BalanceButton extends StatelessWidget {
     final textStyle = buttonSize == BaseButtonSize.small
         ? themeData.textStyles.small500
         : themeData.textStyles.paragraph500;
-    final chainId = appKit.selectedChain?.chainId ?? '';
-    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-    String tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
+    String tokenImage = GetIt.I<IExplorerService>().getChainIcon(
+      appKit.selectedChain,
+    );
     final balance = appKit.balanceNotifier.value;
     if (balance.contains(AppKitModalBalanceButton.balanceDefault)) {
       tokenImage = '';

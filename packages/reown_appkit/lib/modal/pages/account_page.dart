@@ -326,23 +326,22 @@ class _ConnectedWalletButton extends StatelessWidget {
 
 class _SelectNetworkButton extends StatelessWidget {
   IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+  IExplorerService get _explorerService => GetIt.I<IExplorerService>();
 
   @override
   Widget build(BuildContext context) {
     final service = ModalProvider.of(context).instance;
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final chainId = service.selectedChain?.chainId ?? '';
-    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-    final tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    final chainIcon = _explorerService.getChainIcon(service.selectedChain);
     return Column(
       children: [
         const SizedBox.square(dimension: kPadding8),
         AccountListItem(
           iconWidget: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: imageId.isEmpty
+            child: chainIcon.isEmpty
                 ? RoundedIcon(
                     assetPath: 'lib/modal/assets/icons/network.svg',
                     assetColor: themeColors.inverse100,
@@ -350,7 +349,7 @@ class _SelectNetworkButton extends StatelessWidget {
                   )
                 : RoundedIcon(
                     borderRadius: radiuses.isSquare() ? 0.0 : null,
-                    imageUrl: tokenImage,
+                    imageUrl: chainIcon,
                     assetColor: themeColors.background100,
                   ),
           ),

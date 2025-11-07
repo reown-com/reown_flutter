@@ -52,15 +52,12 @@ class AssetSelectorPage extends StatelessWidget {
                 ),
               ),
               ...supportedAssets.mapIndexed((_, asset) {
-                final imageId = ReownAppKitModalNetworks.getNetworkIconId(
-                  asset.network,
-                );
-                final chainIcon = GetIt.I<IExplorerService>().getAssetImageUrl(
-                  imageId,
-                );
                 final networkInfo = ReownAppKitModalNetworks.getNetworkInfo(
                   asset.network,
                   asset.network,
+                );
+                final chainIcon = GetIt.I<IExplorerService>().getChainIcon(
+                  networkInfo,
                 );
                 final subtitle =
                     networkInfo?.name != null && _dweService.showNetworkIcon

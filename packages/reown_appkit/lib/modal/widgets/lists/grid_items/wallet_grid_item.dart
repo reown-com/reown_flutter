@@ -101,8 +101,8 @@ class WalletGridItem extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(
               top: kPadding6,
-              left: kPadding8,
-              right: kPadding8,
+              left: 2.0,
+              right: 2.0,
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

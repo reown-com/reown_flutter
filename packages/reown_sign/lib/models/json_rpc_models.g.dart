@@ -190,17 +190,6 @@ Map<String, dynamic> _$WcSessionRequestRequestToJson(
   'request': instance.request.toJson(),
 };
 
-_SessionRequestParams _$SessionRequestParamsFromJson(
-  Map<String, dynamic> json,
-) => _SessionRequestParams(
-  method: json['method'] as String,
-  params: json['params'],
-);
-
-Map<String, dynamic> _$SessionRequestParamsToJson(
-  _SessionRequestParams instance,
-) => <String, dynamic>{'method': instance.method, 'params': instance.params};
-
 _WcSessionEventRequest _$WcSessionEventRequestFromJson(
   Map<String, dynamic> json,
 ) => _WcSessionEventRequest(
@@ -214,12 +203,6 @@ Map<String, dynamic> _$WcSessionEventRequestToJson(
   'chainId': instance.chainId,
   'event': instance.event.toJson(),
 };
-
-_SessionEventParams _$SessionEventParamsFromJson(Map<String, dynamic> json) =>
-    _SessionEventParams(name: json['name'] as String, data: json['data']);
-
-Map<String, dynamic> _$SessionEventParamsToJson(_SessionEventParams instance) =>
-    <String, dynamic>{'name': instance.name, 'data': instance.data};
 
 _WcSessionAuthRequestParams _$WcSessionAuthRequestParamsFromJson(
   Map<String, dynamic> json,

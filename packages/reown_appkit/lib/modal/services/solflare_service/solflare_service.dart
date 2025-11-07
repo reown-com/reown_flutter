@@ -70,8 +70,7 @@ class SolflareService implements ISolflareService {
           recent: false,
         );
 
-    final imageId = _solflareWalletData?.listing.imageId ?? '';
-    _iconImage = _explorerService.getWalletImageUrl(imageId);
+    _iconImage = _explorerService.getWalletIcon(_solflareWalletData);
 
     final dappRedirect = (_metadata.redirect?.linkMode == true)
         ? _metadata.redirect?.universal

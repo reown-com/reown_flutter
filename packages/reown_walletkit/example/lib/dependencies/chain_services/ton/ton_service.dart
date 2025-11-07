@@ -67,7 +67,6 @@ class TonService {
 
   Future<void> tonSignData(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] tonSignData: $parameters');
-    //  [{type: text, text: Hello from WalletConnect TON, from: EQB_Kdx9GXsDatq7-wTciIY4xOe5vITtH1RWMN4aiv2rGL8X}]
     final pRequest = _walletKit.pendingRequests.getAll().last;
     var response = JsonRpcResponse(
       id: pRequest.id,
@@ -77,6 +76,7 @@ class TonService {
     try {
       final params = parameters as List;
       final paramsMap = params.first as Map<String, dynamic>;
+      final type = paramsMap['type'] as String;
       final text = paramsMap['text'] as String;
       final address = paramsMap['from'] as String;
 
@@ -88,10 +88,26 @@ class TonService {
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
       )) {
-        final signature = await signMessage(text);
-        response = response.copyWith(
-          result: signature,
-        );
+        if (type == 'text') {
+          final signature = await signMessage(text);
+          response = response.copyWith(
+            result: {
+              'signature': signature,
+              'address': address,
+              'publicKey': getBase64PublicKey(),
+              'timestamp': DateTime.now().millisecondsSinceEpoch,
+              'payload': paramsMap,
+            },
+          );
+        } else {
+          final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
+          response = response.copyWith(
+            error: JsonRpcError(
+              code: error.code,
+              message: 'Unsupported type $type',
+            ),
+          );
+        }
         //
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED);

@@ -679,7 +679,8 @@ class ExplorerService with ExplorerStorage implements IExplorerService {
   }
 
   @override
-  String getWalletImageUrl(String imageId) {
+  String getWalletIcon(ReownAppKitModalWalletInfo? walletInfo) {
+    final imageId = walletInfo?.listing.imageId ?? '';
     if (imageId.isEmpty) {
       return '';
     }
@@ -689,8 +690,7 @@ class ExplorerService with ExplorerStorage implements IExplorerService {
     return '${UrlConstants.apiService}/getWalletImage/$imageId';
   }
 
-  @override
-  String getAssetImageUrl(String imageId) {
+  String _getAssetImageUrl(String imageId) {
     if (imageId.isEmpty) {
       return '';
     }
@@ -698,6 +698,24 @@ class ExplorerService with ExplorerStorage implements IExplorerService {
       return imageId;
     }
     return '${UrlConstants.apiService}/public/getAssetImage/$imageId';
+  }
+
+  @override
+  String getChainIcon(ReownAppKitModalNetworkInfo? chainInfo) {
+    if (chainInfo == null) {
+      return '';
+    }
+    if (chainInfo.isTestNetwork) {
+      return '';
+    }
+    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainInfo);
+    if (imageId.isNotEmpty) {
+      return _getAssetImageUrl(imageId);
+    }
+    if ((chainInfo.chainIcon ?? '').startsWith('http')) {
+      return chainInfo.chainIcon!;
+    }
+    return '';
   }
 
   @override

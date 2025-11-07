@@ -99,7 +99,6 @@ class StacksService {
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
       )) {
-        
         final signature = await signMessage(message);
         response = response.copyWith(
           result: {

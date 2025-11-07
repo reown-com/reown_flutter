@@ -1112,24 +1112,9 @@ class ReownAppKitModal
           _notify();
           _awaitOCAuthCallback(authResponse);
         } else {
-          // Regular Session Proposal with Authentication
-          // final nonce = SIWEUtils.generateNonce();
-          // final p1 = await _siweService.config!.getMessageParams();
-          // final chains = ReownAppKitModalNetworks.getAllSupportedNetworks()
-          //     .map((chain) => chain.chainId)
-          //     .toList();
-          // final authParams = SessionAuthRequestParams.fromJson({
-          //   ...p1.toJson(),
-          //   ...{'nonce': nonce, 'chains': chains},
-          // }).copyWith(type: CacaoHeader(t: CacaoHeader.CAIP122));
-
-          // final debugAuthenticate = jsonEncode(authParams.toJson());
-          // _appKit.core.logger.d(
-          //   '[$runtimeType] authenticate $debugAuthenticate',
-          // );
-
           final connectResponse = await _appKit.connect(
             optionalNamespaces: _sessionNamespaces,
+            // TODO implement `authentication` param to support 1CA for non-EVM
             // authentication: [authParams],
           );
           _wcUri = connectResponse.uri?.toString() ?? '';

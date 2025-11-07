@@ -180,9 +180,9 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
-    final chainId = widget.appKitModal.selectedChain!.chainId;
-    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-    final chainIcon = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
+    final chainIcon = GetIt.I<IExplorerService>().getChainIcon(
+      widget.appKitModal.selectedChain,
+    );
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: ResponsiveData.maxHeightOf(context),

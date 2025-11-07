@@ -152,7 +152,7 @@ class ReownSignClient implements IReownSignClient {
     String? pairingTopic,
     List<Relay>? relays,
     List<SessionAuthRequestParams>? authentication,
-    List<List<String>>? methods = ReownSign.CONNECT_METHODS,
+    List<List<String>>? methods = ReownSign.DEFAULT_METHODS,
   }) async {
     try {
       return await engine.connect(

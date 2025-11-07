@@ -68,9 +68,7 @@ extension on List<ReownAppKitModalWalletInfo> {
         GridItem<ReownAppKitModalWalletInfo>(
           title: item.listing.name,
           id: item.listing.id,
-          image: GetIt.I<IExplorerService>().getWalletImageUrl(
-            item.listing.imageId,
-          ),
+          image: GetIt.I<IExplorerService>().getWalletIcon(item),
           data: item,
         ),
       );

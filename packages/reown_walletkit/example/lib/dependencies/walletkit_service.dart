@@ -507,15 +507,17 @@ class WalletKitService extends IWalletKitService {
           final namespace = NamespaceUtils.getNamespaceFromChain(chain);
           final namespaces = generatedNamespaces[namespace];
           final account = namespaces?.accounts.first;
-          final address = NamespaceUtils.getAccount(account!);
-          final iss = 'did:pkh:$chain:$address';
-          final message = _walletKit!.formatAuthMessage(
-            iss: iss,
-            cacaoPayload: CacaoRequestPayload.fromSessionAuthPayload(
-              request,
-            ),
-          );
-          formattedMessages.add((iss, message, request));
+          if (account != null) {
+            final address = NamespaceUtils.getAccount(account);
+            final iss = 'did:pkh:$chain:$address';
+            final message = _walletKit!.formatAuthMessage(
+              iss: iss,
+              cacaoPayload: CacaoRequestPayload.fromSessionAuthPayload(
+                request,
+              ),
+            );
+            formattedMessages.add((iss, message, request));
+          }
         } catch (e, s) {
           debugPrint('❌ prepareAuthenticationMessages error: $e, $s');
         }

@@ -133,19 +133,6 @@ sealed class WcSessionRequestRequest with _$WcSessionRequestRequest {
       _$WcSessionRequestRequestFromJson(json);
 }
 
-// TODO move out from here
-@freezed
-sealed class SessionRequestParams with _$SessionRequestParams {
-  @JsonSerializable()
-  const factory SessionRequestParams({
-    required String method,
-    required dynamic params,
-  }) = _SessionRequestParams;
-
-  factory SessionRequestParams.fromJson(Map<String, dynamic> json) =>
-      _$SessionRequestParamsFromJson(json);
-}
-
 @freezed
 sealed class WcSessionEventRequest with _$WcSessionEventRequest {
   @JsonSerializable()
@@ -156,19 +143,6 @@ sealed class WcSessionEventRequest with _$WcSessionEventRequest {
 
   factory WcSessionEventRequest.fromJson(Map<String, dynamic> json) =>
       _$WcSessionEventRequestFromJson(json);
-}
-
-// TODO move out from here
-@freezed
-sealed class SessionEventParams with _$SessionEventParams {
-  @JsonSerializable()
-  const factory SessionEventParams({
-    required String name,
-    required dynamic data,
-  }) = _SessionEventParams;
-
-  factory SessionEventParams.fromJson(Map<String, dynamic> json) =>
-      _$SessionEventParamsFromJson(json);
 }
 
 @freezed

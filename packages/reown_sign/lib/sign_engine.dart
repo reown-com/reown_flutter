@@ -20,7 +20,7 @@ import 'package:reown_sign/utils/recaps_utils.dart';
 import 'package:reown_sign/utils/constants.dart';
 
 class ReownSign implements IReownSign {
-  static const List<List<String>> CONNECT_METHODS = [
+  static const List<List<String>> DEFAULT_METHODS = [
     [MethodConstants.WC_SESSION_PROPOSE, MethodConstants.WC_SESSION_REQUEST],
   ];
 
@@ -144,7 +144,7 @@ class ReownSign implements IReownSign {
     List<Relay>? relays,
     List<SessionAuthRequestParams>? authentication,
     // WalletPayParams? walletPay;
-    List<List<String>>? methods = CONNECT_METHODS,
+    List<List<String>>? methods = DEFAULT_METHODS,
   }) async {
     _checkInitialized();
     _confirmOnlineStateOrThrow();
@@ -166,7 +166,8 @@ class ReownSign implements IReownSign {
         expiryFromAuthentication ??
         ttl ??
         ReownCoreUtils.calculateExpiry(ReownConstants.FIVE_MINUTES);
-    // TODO this.validateRequestExpiry(expiry);
+
+    _validateRequestExpiry(expiry);
 
     if (pTopic == null) {
       final CreateResponse newTopicAndUri = await core.pairing.create(
@@ -1755,6 +1756,35 @@ class ReownSign implements IReownSign {
     await _isValidSessionOrPairingTopic(topic);
 
     return true;
+  }
+
+  bool _isValidNumber(dynamic input, bool optional) {
+    if (optional && input == null) return true;
+
+    if (input is num) {
+      if (input is double && input.isNaN) return false;
+      return true;
+    }
+
+    return false;
+  }
+
+  bool _isValidRequestExpiry(num expiry, (int, int) boundaries) {
+    return _isValidNumber(expiry, false) &&
+        expiry <= boundaries.$2 &&
+        expiry >= boundaries.$1;
+  }
+
+  void _validateRequestExpiry(int expiry) {
+    if (!_isValidRequestExpiry(
+      expiry,
+      ReownConstants.SESSION_REQUEST_EXPIRY_BOUNDARIES,
+    )) {
+      throw Errors.getInternalError(
+        Errors.MISSING_OR_INVALID,
+        context: e.toString(),
+      );
+    }
   }
 
   Future<VerifyContext> _getVerifyContext(

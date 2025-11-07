@@ -134,11 +134,6 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
         : ResponsiveData.maxHeightOf(context) -
               kNavbarHeight -
               (kPadding16 * 2);
-    //
-    final chainId = widget.chainInfo.chainId;
-    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-    final imageUrl = _explorerService.getAssetImageUrl(imageId);
-    //
     return ModalNavbar(
       title: widget.chainInfo.name,
       noClose: true,
@@ -162,7 +157,7 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
                         : themeData.radiuses.radiusM + 4.0,
                     // themeData.radiuses.radiusM + 4.0
                     child: _WalletAvatar(
-                      imageUrl: imageUrl,
+                      imageUrl: _explorerService.getChainIcon(widget.chainInfo),
                       errorConnection: errorEvent is UserRejectedConnection,
                       themeColors: themeColors,
                     ),
