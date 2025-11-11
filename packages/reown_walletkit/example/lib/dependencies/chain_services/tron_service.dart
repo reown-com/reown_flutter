@@ -1,17 +1,14 @@
 import 'dart:convert';
-import 'package:convert/convert.dart';
-
+import 'package:blockchain_utils/blockchain_utils.dart' as b_utils;
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
+import 'package:on_chain/on_chain.dart' as on_chain;
 import 'package:reown_walletkit/reown_walletkit.dart';
 
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
-
-import 'package:reown_walletkit_wallet/dependencies/bip32/utils/ecurve.dart'
-    as bip32;
 
 class TronService {
   late final ReownWalletKit _walletKit;
@@ -91,28 +88,22 @@ class TronService {
 
   Future<String> signMessage(String message) async {
     // code
-    final keys = GetIt.I<IKeyService>().getKeysForChain(
-      chainSupported.chainId,
-    );
-    final privateKey = keys[0].privateKey; // 0x.....
+    try {
+      final keys = GetIt.I<IKeyService>().getKeysForChain(
+        chainSupported.chainId,
+      );
 
-    // Step 1: Convert private key (remove '0x' if present)
-    final privateKeyBytes = Uint8List.fromList(hex.decode(
-        privateKey.startsWith('0x') ? privateKey.substring(2) : privateKey));
+      final privateKeyHex = keys[0].privateKey;
+      final signer = on_chain.TronPrivateKey(privateKeyHex);
 
-    // Step 2: Hash message with SHA256
-    final msgBytes = Uint8List.fromList(message.codeUnits);
-    final hashed = SHA256Digest().process(msgBytes);
-
-    // Step 3: Sign using your custom secp256k1 sign() function
-    // this returns 64 bytes (r||s)
-    final signatureBytes = bip32.sign(hashed, privateKeyBytes);
-
-    // Optional: Add v = 0 manually if needed
-    final fullSignature = Uint8List.fromList([...signatureBytes, 0]);
-
-    // Step 4: Return 0x-prefixed hex string
-    return '0x${hex.encode(fullSignature)}';
+      final msgBytes = Uint8List.fromList(message.codeUnits);
+      final signature = signer.signPersonalMessage(msgBytes);
+      return signature;
+    } catch (e, s) {
+      print(e);
+      print(s);
+      rethrow;
+    }
   }
 
   Future<void> tronSignTransaction(String topic, dynamic parameters) async {
@@ -125,11 +116,12 @@ class TronService {
 
     final params = parameters as Map<String, dynamic>;
     final address = params['address'] as String;
-    final payload = parameters['transaction'] as Map<String, dynamic>;
-    final transaction = payload['transaction'] as Map<String, dynamic>;
+    final transactionJson =
+        (parameters['transaction'] as Map<String, dynamic>?)?['transaction'] ??
+            parameters['transaction'];
 
     const encoder = JsonEncoder.withIndent('  ');
-    final message = encoder.convert(transaction);
+    final message = encoder.convert(transactionJson);
     if (await MethodsUtils.requestApproval(
       message,
       method: pRequest.method,
@@ -139,31 +131,26 @@ class TronService {
       verifyContext: pRequest.verifyContext,
     )) {
       try {
-        final rawData = transaction['raw_data'];
-        final rawJson = json.encode(rawData); // must be canonical
-
-        // Step 1: SHA256 hash of raw_data
-        final hash = SHA256Digest().process(utf8.encode(rawJson));
-
-        // Step 2: Load private key
         final keys = GetIt.I<IKeyService>().getKeysForChain(
           chainSupported.chainId,
         );
-        final tronPrivateKey = keys[0].privateKey.startsWith('0x')
-            ? keys[0].privateKey.substring(2)
-            : keys[0].privateKey; // 0x.....
-        final privateKeyBytes = Uint8List.fromList(hex.decode(tronPrivateKey));
+        final privateKeyHex = keys[0].privateKey;
+        final privateKey = on_chain.TronPrivateKey(privateKeyHex);
 
-        // Step 3: Sign
-        final sigBytes = bip32.sign(hash, privateKeyBytes);
-        final signatureHex = hex.encode(sigBytes); // no 0x prefix
+        final tronTx = on_chain.Transaction.fromJson(transactionJson);
+        final txBytes = tronTx.rawData.toBuffer();
 
-        // Step 4: Append signature
-        transaction['signature'] = ['0x$signatureHex'];
+        final signature = privateKey.sign(txBytes);
+        final hexSignature = b_utils.BytesUtils.toHexString(
+          signature,
+          prefix: '0x',
+        );
+
+        transactionJson['signature'] = [hexSignature];
 
         // Return signed tx
         response = response.copyWith(
-          result: transaction,
+          result: transactionJson,
         );
       } catch (e) {
         debugPrint('[SampleWallet] tronSignTransaction error $e');

@@ -26,7 +26,7 @@ List<String> getChainMethods(String namespace) {
     case 'polkadot':
       return Polkadot.methods.values.toList();
     case 'tron':
-      return Tron.methods.values.toList();
+      return Tron.methods;
     case 'mvx':
       return MVX.methods;
     case 'near':
@@ -79,7 +79,7 @@ Future<SessionRequestParams?> getParams(
   String method,
   String address,
   ReownAppKitModalNetworkInfo chainData, {
-  String? callback,
+  ReownAppKitModalSession? session,
 }) async {
   switch (method) {
     case 'personal_sign':
@@ -162,19 +162,20 @@ Future<SessionRequestParams?> getParams(
     case 'tron_signMessage':
       return SessionRequestParams(
         method: method,
-        params: {
-          'address': address,
-          'message': 'Welcome to Flutter AppKit on Tron',
-        },
+        params: Tron.tronSignMessage(
+          chainId: chainData.chainId,
+          walletAdress: address,
+        ),
       );
     case 'tron_signTransaction':
-      final transaction = await Tron.triggerSmartContract(
+      final parameters = await Tron.tronSignTransaction(
         chainData: chainData,
         walletAdress: address,
+        isV1: session?.sessionProperties['tron_method_version'] == 'v1',
       );
       return SessionRequestParams(
         method: method,
-        params: {'address': address, 'transaction': transaction},
+        params: parameters,
       );
     case 'polkadot_signMessage':
       return SessionRequestParams(
