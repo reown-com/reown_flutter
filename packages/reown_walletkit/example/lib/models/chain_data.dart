@@ -235,7 +235,7 @@ class ChainsDataList {
       name: 'Cosmos Mainnet',
       currency: 'ATOM',
       logo:
-          'https://pbs.twimg.com/profile_images/1910273399282159616/OLSiIjEx_400x400.png',
+          'https://pbs.twimg.com/profile_images/1983807442874929152/gO8dvfPE_400x400.png',
       color: Colors.purple,
       rpc: [
         'https://cosmos-rpc.polkachu.com:443',

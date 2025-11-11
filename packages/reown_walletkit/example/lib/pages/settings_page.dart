@@ -11,6 +11,7 @@ import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/tron_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
@@ -644,8 +645,7 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
 
   @override
   Widget build(BuildContext context) {
-    final keysService = GetIt.I<IKeyService>();
-    final chainKeys = keysService.getKeysForChain('solana');
+    final chainKeys = _keysService.getKeysForChain('solana');
     if (chainKeys.isEmpty) return const SizedBox.shrink();
     final chainData = ChainsDataList.allChains.firstWhere(
       (e) => e.chainId == chainKeys.first.chains.first,
@@ -768,14 +768,61 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
   }
 }
 
-class _ChainKeyView extends StatelessWidget {
+class _ChainKeyView extends StatefulWidget {
   const _ChainKeyView({required this.chain});
   final String chain;
 
   @override
+  State<_ChainKeyView> createState() => _ChainKeyViewState();
+}
+
+class _ChainKeyViewState extends State<_ChainKeyView> {
+  final _keysService = GetIt.I<IKeyService>();
+  ChainMetadata? _selectedChain;
+  double _balance = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.chain.contains('tron')) {
+      try {
+        _selectedChain = ChainsDataList.tronChains.first;
+        _updateTronBalance();
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    }
+  }
+
+  Future<void> _updateTronBalance() async {
+    if (!mounted) return;
+    if (!widget.chain.contains('tron')) return;
+    if (!_selectedChain!.chainId.contains('tron')) return;
+
+    final chainKeys = _keysService.getKeysForChain('tron');
+    final tronService =
+        GetIt.I<IWalletKitService>().getChainService<TronService>(
+      chainId: _selectedChain!.chainId,
+    );
+    final address = chainKeys.first.address;
+    tronService.getBalance(address: address).then((value) {
+      if (!mounted) return;
+      setState(() => _balance = value);
+      debugPrint('_updateTronBalance $value');
+    }).catchError((error) {
+      debugPrint('_updateTronBalance error $error');
+    });
+    tronService.getTokens(address: address).then((tokens) {
+      for (var token in tokens) {
+        final balance = tronService.parsedBalance(token.values.first);
+        debugPrint('${token.keys.first} $balance');
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final keysService = GetIt.I<IKeyService>();
-    final chainKeys = keysService.getKeysForChain(chain);
+    final chainKeys = _keysService.getKeysForChain(widget.chain);
     if (chainKeys.isEmpty) return const SizedBox.shrink();
     final chainData = ChainsDataList.allChains.firstWhere(
       (e) => e.chainId == chainKeys.first.chains.first,
@@ -792,12 +839,17 @@ class _ChainKeyView extends StatelessWidget {
                 imageUrl: chainData.logo,
                 width: 20.0,
                 height: 20.0,
-                errorWidget: (context, url, error) => const SizedBox.shrink(),
+                errorWidget: (context, url, error) {
+                  return CachedNetworkImage(
+                    imageUrl:
+                        'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
+                  );
+                },
               ),
               SizedBox.square(dimension: 8.0),
               Expanded(
                 child: Text(
-                  '$chain account',
+                  '${widget.chain} account',
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.w500,
@@ -807,13 +859,83 @@ class _ChainKeyView extends StatelessWidget {
             ],
           ),
         ),
+        Visibility(
+          visible: chainData.chainId.contains('tron'),
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: 12.0,
+              right: 12.0,
+              top: 10.0,
+              bottom: 8.0,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Text(
+                    '${_balance.toStringAsFixed(4)} ${chainData.currency}',
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 200.0,
+                  child: DropdownButton(
+                    key: Key('tron_chains'),
+                    isExpanded: true,
+                    value: _selectedChain,
+                    items: ChainsDataList.tronChains.map((chainData) {
+                      return DropdownMenuItem<ChainMetadata>(
+                        value: chainData,
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              WidgetSpan(
+                                child: CachedNetworkImage(
+                                  imageUrl: chainData.logo,
+                                  width: 20.0,
+                                  height: 20.0,
+                                  errorWidget: (context, url, error) =>
+                                      const SizedBox.shrink(),
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' ${chainData.name}',
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (ChainMetadata? chain) {
+                      setState(() => _selectedChain = chain!);
+                      _updateTronBalance();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox.square(dimension: 8.0),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Column(
             children: [
               _DataContainer(
-                title: 'Address',
-                data: chainKeys.first.address,
+                title: 'CAIP-10',
+                data: '${chainData.chainId}:${chainKeys.first.address}',
               ),
               const SizedBox(height: 12.0),
               _DataContainer(

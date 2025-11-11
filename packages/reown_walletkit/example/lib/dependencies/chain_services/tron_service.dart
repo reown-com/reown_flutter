@@ -10,6 +10,8 @@ import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.da
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
 
+import 'package:http/http.dart' as http;
+
 class TronService {
   late final ReownWalletKit _walletKit;
 
@@ -173,6 +175,94 @@ class TronService {
     }
 
     _handleResponseForTopic(topic, response);
+  }
+
+  Future<Map<String, dynamic>> getAccount({required String address}) async {
+    final apiEndpoint = chainSupported.isTestnet
+        ? 'https://nile.trongrid.io'
+        : 'https://api.trongrid.io';
+
+    final url = '$apiEndpoint/wallet/getaccount';
+    final response = await http.post(
+      Uri.parse(url),
+      body: jsonEncode({
+        'address': address,
+        'visible': true,
+      }),
+      headers: {'accept': 'application/json'},
+    );
+    try {
+      debugPrint('[$runtimeType] getAccount ${response.body}');
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<List<Map<String, int>>> getTokens({required String address}) async {
+    final apiEndpoint = chainSupported.isTestnet
+        ? 'https://nile.trongrid.io'
+        : 'https://api.trongrid.io';
+
+    final url = '$apiEndpoint/v1/accounts/$address';
+    final response = await http.get(Uri.parse(url));
+    try {
+      final parsedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      final data = parsedResponse['data'] as List;
+      if (data.isEmpty) {
+        return [];
+      }
+      final firstData = data.first as Map<String, dynamic>;
+      debugPrint('[$runtimeType] getTokens $firstData');
+      return (firstData['trc20'] as List<dynamic>).map((e) {
+        final token = Map<String, String>.from(e);
+        return {token.keys.first: int.parse(token.values.first)};
+      }).toList();
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  Future<double> getBalance({required String address}) async {
+    final apiEndpoint = chainSupported.isTestnet
+        ? 'https://nile.trongrid.io'
+        : 'https://api.trongrid.io';
+
+    final blockResponse = await http.get(
+      Uri.parse('$apiEndpoint/walletsolidity/getnowblock'),
+    );
+    final blockID = jsonDecode(blockResponse.body)['blockID'] as String;
+    final blockNumber = jsonDecode(blockResponse.body)['block_header']
+        ['raw_data']['number'] as num;
+    //
+
+    final url = '$apiEndpoint/wallet/getaccountbalance';
+    final response = await http.post(
+      Uri.parse(url),
+      body: jsonEncode({
+        'account_identifier': {'address': address},
+        'block_identifier': {'hash': blockID, 'number': blockNumber},
+        'visible': true
+      }),
+      headers: {'accept': 'application/json'},
+    );
+
+    try {
+      final parsedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      final intBalance = (parsedResponse['balance'] as int);
+      debugPrint('[$runtimeType] getBalance $intBalance');
+      // return (intBalance / 1000000.0);
+      return parsedBalance(intBalance);
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  double parsedBalance(int rawBalance) {
+    return (rawBalance / 1000000.0);
   }
 
   void _handleResponseForTopic(String topic, JsonRpcResponse response) async {

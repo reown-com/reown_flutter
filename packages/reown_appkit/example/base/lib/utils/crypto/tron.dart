@@ -35,18 +35,13 @@ class Tron {
       walletAdress: walletAdress,
     );
 
-    if (isV1) {
-      return {
-        'address': walletAdress,
-        'transaction': transaction['transaction'],
-      };
-    }
-
     return {
       'address': walletAdress,
-      'transaction': {
-        'transaction': transaction['transaction'],
-      },
+      'transaction': isV1
+          ? transaction
+          : {
+              'transaction': transaction,
+            },
     };
   }
 
@@ -86,7 +81,8 @@ class Tron {
       headers: {'accept': 'application/json'},
     );
     try {
-      return jsonDecode(response.body) as Map<String, dynamic>;
+      final parsedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      return parsedResponse['transaction'] as Map<String, dynamic>;
     } catch (e) {
       debugPrint(e.toString());
       rethrow;
