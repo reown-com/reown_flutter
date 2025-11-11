@@ -587,12 +587,10 @@ class ReownAppKitModalNetworks {
     'sui:mainnet': '5d299d62-d4da-4155-db4e-3d7d8595c800',
     // TRON
     'tron:0x2b6653dc':
-        'https://pbs.twimg.com/profile_images/1970541264568520704/J6wYDxYk_400x400.jpg',
+        'https://avatars.githubusercontent.com/u/34857411?s=200&v=4',
     // NEAR
-    'near:mainnet':
-        'https://pbs.twimg.com/profile_images/1970880320103985152/SAMA6Vh0_400x400.jpg',
+    'near:mainnet': 'https://avatars.githubusercontent.com/u/7613128?s=200&v=4',
     // STACKS
-    'stacks:1':
-        'https://pbs.twimg.com/profile_images/1764968185399267328/lrmnHOuN_400x400.jpg',
+    'stacks:1': 'https://avatars.githubusercontent.com/u/8165984?s=200&v=4',
   };
 }
