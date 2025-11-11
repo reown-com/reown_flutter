@@ -491,7 +491,7 @@ class KeyService extends IKeyService {
       final seed = b_utils.Bip39SeedGenerator(words).generate();
       final wallet = b_utils.Bip44.fromSeed(seed, b_utils.Bip44Coins.tron);
       final defaultPath = wallet.deriveDefaultPath;
-      
+
       final address = on_chain.TronAddress(defaultPath.publicKey.toAddress);
       final privateKey = on_chain.TronPrivateKey.fromBytes(
         defaultPath.privateKey.raw,
