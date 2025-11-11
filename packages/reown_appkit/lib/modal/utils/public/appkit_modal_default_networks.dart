@@ -165,29 +165,27 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Bitcoin Mainnet',
         chainId: '000000000019d6689c085ae165831e93',
+        chainIcon: _networkIcons['bitcoin:000000000019d6689c085ae165831e93'],
         currency: 'BTC',
         rpcUrl: 'https://rpc.walletconnect.org/v1',
         explorerUrl: 'https://btcscan.org',
-        chainIcon: '0b4838db-0161-4ffe-022d-532bf03dba00',
       ),
     ],
     'near': [
       ReownAppKitModalNetworkInfo(
         name: 'Near Mainnet',
         chainId: 'mainnet',
+        chainIcon: _networkIcons['near:mainnet'],
         currency: 'NEAR',
         rpcUrl: 'https://rpc.mainnet.near.org',
         explorerUrl: 'https://nearblocks.io',
-        chainIcon:
-            'https://pbs.twimg.com/profile_images/1970880320103985152/SAMA6Vh0_400x400.jpg',
       ),
     ],
     'tron': [
       ReownAppKitModalNetworkInfo(
         name: 'Tron',
         chainId: '0x2b6653dc',
-        chainIcon:
-            'https://pbs.twimg.com/profile_images/1970541264568520704/J6wYDxYk_400x400.jpg',
+        chainIcon: _networkIcons['tron:0x2b6653dc'],
         currency: 'TRX',
         rpcUrl: 'https://api.trongrid.io',
         explorerUrl: 'https://tronscan.org',
@@ -197,7 +195,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Ton',
         chainId: '-239',
-        chainIcon: '20f673c0-095e-49b2-07cf-eb5049dcf600',
+        chainIcon: _networkIcons['ton:-239'],
         currency: 'TON',
         rpcUrl: 'https://rpc.walletconnect.org/v1',
         explorerUrl: 'https://tonscan.org',
@@ -207,8 +205,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Sui',
         chainId: 'mainnet',
-        chainIcon:
-            'https://pbs.twimg.com/profile_images/1966183924880572416/__KrQPZP_400x400.jpg',
+        chainIcon: _networkIcons['sui:mainnet'],
         currency: 'SUI',
         rpcUrl: 'https://rpc.walletconnect.org/v1',
         explorerUrl: 'https://suiscan.xyz/mainnet/home',
@@ -218,8 +215,7 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Stacks',
         chainId: '1',
-        chainIcon:
-            'https://pbs.twimg.com/profile_images/1764968185399267328/lrmnHOuN_400x400.jpg',
+        chainIcon: _networkIcons['stacks:1'],
         currency: 'STX',
         rpcUrl: 'https://rpc.walletconnect.org/v1',
         explorerUrl: 'https://explorer.hiro.so',
@@ -587,5 +583,16 @@ class ReownAppKitModalNetworks {
         '0b4838db-0161-4ffe-022d-532bf03dba00',
     // TON
     'ton:-239': '20f673c0-095e-49b2-07cf-eb5049dcf600',
+    // SUI
+    'sui:mainnet': '5d299d62-d4da-4155-db4e-3d7d8595c800',
+    // TRON
+    'tron:0x2b6653dc':
+        'https://pbs.twimg.com/profile_images/1970541264568520704/J6wYDxYk_400x400.jpg',
+    // NEAR
+    'near:mainnet':
+        'https://pbs.twimg.com/profile_images/1970880320103985152/SAMA6Vh0_400x400.jpg',
+    // STACKS
+    'stacks:1':
+        'https://pbs.twimg.com/profile_images/1764968185399267328/lrmnHOuN_400x400.jpg',
   };
 }
