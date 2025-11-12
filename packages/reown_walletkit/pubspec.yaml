@@ -26,7 +26,7 @@ dev_dependencies:
   logger: ^2.5.0
   mockito: ^5.4.4
   package_info_plus: ^8.1.2
-  reown_appkit: ^1.7.3
+  reown_appkit: ^1.7.4
 
 platforms:
   android:
