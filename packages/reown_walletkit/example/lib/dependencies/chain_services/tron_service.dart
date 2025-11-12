@@ -101,9 +101,7 @@ class TronService {
       final msgBytes = Uint8List.fromList(message.codeUnits);
       final signature = signer.signPersonalMessage(msgBytes);
       return signature;
-    } catch (e, s) {
-      print(e);
-      print(s);
+    } catch (e) {
       rethrow;
     }
   }
