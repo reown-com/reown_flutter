@@ -67,9 +67,6 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final appKitModal = ModalProvider.of(context).instance;
-    final chainId = appKitModal.selectedChain!.chainId;
-    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-    final chainIcon = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
     return ModalNavbar(
       title: 'Select token',
       safeAreaLeft: true,
@@ -139,7 +136,9 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
                           padding: const EdgeInsets.all(1.0),
                           clipBehavior: Clip.antiAlias,
                           child: RoundedIcon(
-                            imageUrl: chainIcon,
+                            imageUrl: GetIt.I<IExplorerService>().getChainIcon(
+                              appKitModal.selectedChain,
+                            ),
                             padding: 2.0,
                             size: 15.0,
                           ),

@@ -38,10 +38,7 @@ class _AssetsButtonState extends State<AssetsButton> {
       return SizedBox.shrink();
     }
 
-    final imageId = ReownAppKitModalNetworks.getNetworkIconId(
-      chainInfo.chainId,
-    );
-    final chainIcon = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
+    final chainIcon = GetIt.I<IExplorerService>().getChainIcon(chainInfo);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final borderRadius = radiuses.isSquare() ? 0.0 : widget.size.height / 2;

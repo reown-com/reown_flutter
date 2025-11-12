@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:reown_core/relay_client/relay_client_models.dart';
 import 'package:reown_sign/models/basic_models.dart';
+import 'package:reown_sign/models/cacao_models.dart';
+import 'package:reown_sign/models/session_auth_models.dart';
 import 'package:reown_sign/models/session_models.dart';
 
 part 'proposal_models.g.dart';
@@ -44,8 +46,33 @@ sealed class ProposalData with _$ProposalData {
     required String pairingTopic,
     Map<String, String>? sessionProperties,
     Map<String, Namespace>? generatedNamespaces,
+    ProposalRequests? requests,
   }) = _ProposalData;
 
   factory ProposalData.fromJson(Map<String, dynamic> json) =>
       _$ProposalDataFromJson(json);
+}
+
+@freezed
+sealed class ProposalRequests with _$ProposalRequests {
+  @JsonSerializable(includeIfNull: false)
+  const factory ProposalRequests({
+    List<SessionAuthPayload>? authentication,
+    // WalletPayParams? walletPay,
+  }) = _ProposalRequests;
+
+  factory ProposalRequests.fromJson(Map<String, dynamic> json) =>
+      _$ProposalRequestsFromJson(json);
+}
+
+@freezed
+sealed class ProposalRequestsResponses with _$ProposalRequestsResponses {
+  @JsonSerializable(includeIfNull: false)
+  const factory ProposalRequestsResponses({
+    List<Cacao>? authentication,
+    // WalletPayParams? walletPay,
+  }) = _ProposalRequestsResponses;
+
+  factory ProposalRequestsResponses.fromJson(Map<String, dynamic> json) =>
+      _$ProposalRequestsResponsesFromJson(json);
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
+// ignore: depend_on_referenced_packages
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -212,6 +214,13 @@ class SettingsPageState extends State<SettingsPage> {
                         title: 'Clear storage',
                         size: BaseButtonSize.small,
                         onTap: () async {
+                          final prefs = await SharedPreferences.getInstance();
+                          final keys = prefs.getKeys();
+                          for (var key in keys) {
+                            if (key.startsWith('appkit_sample_')) {
+                              await prefs.remove(key);
+                            }
+                          }
                           await widget.appKitModal.appKit!.core.storage
                               .deleteAll();
                           ScaffoldMessenger.of(context).showSnackBar(

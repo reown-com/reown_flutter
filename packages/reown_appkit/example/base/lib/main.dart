@@ -263,9 +263,31 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _logListener(String event) => _logManager.addLog(event);
 
+  Future<double> _getBalanceFallback() async {
+    try {
+      final chainId = _appKitModal!.selectedChain!.chainId;
+      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+      final address = _appKitModal!.session!.getAddress(namespace)!;
+
+      final JsonRpcResponse response = await _appKitModal!.rpcRequest(
+        chainId: chainId,
+        method: 'eth_getBalance',
+        params: [address, 'latest'],
+      );
+      debugPrint('[$runtimeType] _getBalance ${response.result}');
+      // parse hex balance
+      final parsedBalance = hexToInt(response.result);
+      final balance = EtherAmount.fromBigInt(EtherUnit.wei, parsedBalance);
+      return balance.getValueInUnit(EtherUnit.ether);
+    } catch (e) {
+      debugPrint('[$runtimeType] _getBalance error: $e');
+    }
+    return 0.0;
+  }
+
   Future<void> _initializeService() async {
     final prefs = await SharedPreferences.getInstance();
-    final linkModeEnabled = prefs.getBool('appkit_sample_linkmode') ?? true;
+    final linkModeEnabled = prefs.getBool('appkit_sample_linkmode') ?? false;
     final analyticsEnabled = prefs.getBool('appkit_sample_analytics') ?? true;
     final socialsEnabled = prefs.getBool('appkit_sample_socials') ?? true;
 
@@ -286,7 +308,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // ReownAppKitModalNetworks.removeSupportedNetworks('solana');
     // ReownAppKitModalNetworks.removeTestNetworks();
 
-    _addOrRemoveNetworks(linkModeEnabled);
+    _removeChainsIfNecessary(linkModeEnabled);
 
     _appKitModal = ReownAppKitModal(
       context: context,
@@ -300,11 +322,8 @@ class _MyHomePageState extends State<MyHomePage> {
       // excludedWalletIds: _specificsWalletIds(),
       // includedWalletIds: _specificsWalletIds(),
       // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
-      getBalanceFallback: () async {
-        // This method will be triggered if getting the balance from our blockchain API fails
-        // You could place here your own getBalance method
-        return 0.0;
-      },
+      getBalanceFallback: _getBalanceFallback,
+      // `getBalanceFallback` will be triggered if getting the balance from our blockchain API fails. You could place here your own getBalance method
       disconnectOnDispose: true,
       customWallets: [
         ReownAppKitModalWalletInfo(
@@ -403,93 +422,18 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   // Adds or remove supported networks based on linkMode
-  void _addOrRemoveNetworks(bool linkMode) {
+  void _removeChainsIfNecessary(bool linkMode) {
     if (linkMode) {
       // When linkMode is true, the application operates in "Link Mode",
       // which is designed to support only EVM-compatible networks.
       // As a result, non-EVM networks like Solana should be removed
-      ReownAppKitModalNetworks.removeSupportedNetworks('solana');
-    } else {
-      // When linkMode is false, the application supports a broader range of networks
-      ReownAppKitModalNetworks.addSupportedNetworks('polkadot', [
-        ReownAppKitModalNetworkInfo(
-          name: 'Polkadot',
-          chainId: '91b171bb158e2d3848fa23a9f1c25182',
-          chainIcon:
-              'https://pbs.twimg.com/profile_images/1944665239502323712/0FMaAZ31_400x400.jpg',
-          currency: 'DOT',
-          rpcUrl: 'wss://rpc.polkadot.io',
-          explorerUrl: 'https://polkadot.subscan.io',
-        ),
-        ReownAppKitModalNetworkInfo(
-          name: 'Westend',
-          chainId: 'e143f23803ac50e8f6f8e62695d1ce9e',
-          currency: 'WND',
-          rpcUrl: 'wss://westend-asset-hub-rpc.polkadot.io',
-          explorerUrl: 'https://westend.subscan.io',
-          isTestNetwork: true,
-        ),
-      ]);
-      ReownAppKitModalNetworks.addSupportedNetworks('tron', [
-        ReownAppKitModalNetworkInfo(
-          name: 'Tron',
-          chainId: '0x2b6653dc',
-          chainIcon:
-              'https://pbs.twimg.com/profile_images/1970541264568520704/J6wYDxYk_400x400.jpg',
-          currency: 'TRX',
-          rpcUrl: 'https://api.trongrid.io',
-          explorerUrl: 'https://tronscan.org',
-        ),
-        ReownAppKitModalNetworkInfo(
-          name: 'Tron testnet',
-          chainId: '0xcd8690dc',
-          currency: 'TRX',
-          rpcUrl: 'https://nile.trongrid.io',
-          explorerUrl: 'https://test.tronscan.org',
-          isTestNetwork: true,
-        ),
-      ]);
-      ReownAppKitModalNetworks.addSupportedNetworks('mvx', [
-        ReownAppKitModalNetworkInfo(
-          name: 'MultiversX',
-          chainId: '1',
-          currency: 'EGLD',
-          rpcUrl: 'https://api.multiversx.com',
-          explorerUrl: 'https://explorer.multiversx.com',
-          chainIcon:
-              'https://pbs.twimg.com/profile_images/1953134940301774848/UbIBbfXn_400x400.jpg',
-        ),
-      ]);
-      ReownAppKitModalNetworks.addSupportedNetworks('near', [
-        ReownAppKitModalNetworkInfo(
-          name: 'Near Mainnet',
-          chainId: 'mainnet',
-          currency: 'NEAR',
-          rpcUrl: 'https://rpc.mainnet.near.org',
-          explorerUrl: 'https://nearblocks.io',
-          chainIcon:
-              'https://pbs.twimg.com/profile_images/1970880320103985152/SAMA6Vh0_400x400.jpg',
-        ),
-        ReownAppKitModalNetworkInfo(
-          name: 'Near Testnet',
-          chainId: 'testnet',
-          currency: 'NEAR',
-          rpcUrl: 'https://rpc.testnet.near.org',
-          explorerUrl: 'https://testnet.nearblocks.io',
-          isTestNetwork: true,
-        ),
-      ]);
-      ReownAppKitModalNetworks.addSupportedNetworks('cosmos', [
-        ReownAppKitModalNetworkInfo(
-          name: 'Cosmos hub',
-          chainId: 'cosmoshub-4',
-          chainIcon:
-              'https://pbs.twimg.com/profile_images/1910273399282159616/OLSiIjEx_400x400.png',
-          currency: 'ATOM',
-          rpcUrl: 'https://rpc.cosmos.network',
-          explorerUrl: 'https://www.mintscan.io/cosmos/',
-        ),
-      ]);
+      final namespaces =
+          ReownAppKitModalNetworks.getAllSupportedNamespaces().where(
+        (ns) => ns != 'eip155',
+      );
+      for (var ns in namespaces) {
+        ReownAppKitModalNetworks.removeSupportedNetworks(ns);
+      }
     }
   }
 

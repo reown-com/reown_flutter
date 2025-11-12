@@ -46,10 +46,12 @@ abstract class IExplorerService {
   WalletRedirect? getWalletRedirect(ReownAppKitModalWalletInfo? walletInfo);
 
   /// Given an imageId it return the wallet app icon from our services
-  String getWalletImageUrl(String imageId);
+  String getWalletIcon(ReownAppKitModalWalletInfo? walletInfo);
 
-  /// Given an imageId it return the chain icon from our services
-  String getAssetImageUrl(String imageId);
+  // /// Given an imageId it return the chain icon from our services
+  // String getAssetImageUrl(String imageId);
+
+  String getChainIcon(ReownAppKitModalNetworkInfo? chainInfo);
 
   Future<ReownAppKitModalWalletInfo?> getCoinbaseWalletObject();
 

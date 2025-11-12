@@ -70,8 +70,7 @@ class PhantomService implements IPhantomService {
           recent: false,
         );
 
-    final imageId = _phantomWalletData?.listing.imageId ?? '';
-    _iconImage = _explorerService.getWalletImageUrl(imageId);
+    _iconImage = _explorerService.getWalletIcon(_phantomWalletData);
 
     final dappRedirect = (_metadata.redirect?.linkMode == true)
         ? _metadata.redirect?.universal

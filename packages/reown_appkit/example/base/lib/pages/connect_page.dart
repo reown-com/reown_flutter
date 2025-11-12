@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit_dapp/utils/constants.dart';
 import 'package:reown_appkit_dapp/utils/crypto/helpers.dart';
+import 'package:reown_appkit_dapp/utils/crypto/tron.dart';
 import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
 import 'package:toastification/toastification.dart';
 
@@ -294,15 +295,30 @@ class __RequestButtonsState extends State<_RequestButtons> {
                 //     future,
                 //   );
                 // } else {
-                final params = await getParams(method, address, chainInfo!);
+                final params = await getParams(
+                  method,
+                  address,
+                  chainInfo!,
+                  session: widget.appKitModal.session,
+                );
                 if (params?.params != null) {
                   final future = widget.appKitModal.request(
                     topic: topic,
                     chainId: chainId,
                     request: params!,
                   );
-                  await MethodDialog.show(context, method, future);
-                  // debugPrint(result);
+                  final result = await MethodDialog.show(
+                    context,
+                    method,
+                    future,
+                  );
+                  if (params.method == 'tron_signTransaction') {
+                    final broadcast = Tron.broadcastTransaction(
+                      chainData: chainInfo,
+                      signedTransaction: result,
+                    );
+                    await MethodDialog.show(context, 'Broadcast', broadcast);
+                  }
                 } else {
                   toastification.show(
                     type: ToastificationType.error,

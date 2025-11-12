@@ -4,7 +4,6 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
-import 'package:reown_appkit/modal/utils/public/appkit_modal_default_networks.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
@@ -44,10 +43,9 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
 
   void _modalNotifyListener() {
     setState(() {
-      final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
-      if (chainId.isNotEmpty) {
-        final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-        _tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
+      final chainInfo = widget.appKitModal.selectedChain;
+      if (chainInfo != null) {
+        _tokenImage = GetIt.I<IExplorerService>().getChainIcon(chainInfo);
       }
       final balance = widget.appKitModal.balanceNotifier.value;
       if (balance.contains(AppKitModalBalanceButton.balanceDefault)) {

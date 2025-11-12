@@ -3,7 +3,6 @@ import 'package:reown_core/reown_core.dart';
 import 'package:reown_sign/i_sign_common.dart';
 import 'package:reown_sign/models/cacao_models.dart';
 import 'package:reown_sign/models/basic_models.dart';
-import 'package:reown_sign/models/json_rpc_models.dart';
 import 'package:reown_sign/models/proposal_models.dart';
 import 'package:reown_sign/models/session_models.dart';
 import 'package:reown_sign/models/sign_client_events.dart';
@@ -27,6 +26,7 @@ abstract class IReownSignWallet extends IReownSignCommon {
     required Map<String, Namespace> namespaces,
     Map<String, String>? sessionProperties,
     String? relayProtocol,
+    ProposalRequestsResponses? proposalRequestsResponses,
   });
   Future<void> rejectSession({required int id, required ReownSignError reason});
   Future<void> updateSession({

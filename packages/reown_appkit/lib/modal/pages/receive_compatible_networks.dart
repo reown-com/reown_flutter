@@ -91,18 +91,14 @@ class ReceiveCompatibleNetworks extends StatelessWidget {
     ];
 
     for (var chainInfo in orderedList) {
-      final imageId = ReownAppKitModalNetworks.getNetworkIconId(
-        chainInfo!.chainId,
-      );
-      final imageUrl = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
       buttons.add(
         AccountListItem(
           iconWidget: ListAvatar(
             borderRadius: radiuses.radiusXS,
-            imageUrl: imageUrl,
+            imageUrl: GetIt.I<IExplorerService>().getChainIcon(chainInfo),
             isNetwork: true,
           ),
-          title: chainInfo.name,
+          title: chainInfo!.name,
           titleStyle: themeData.textStyles.paragraph500.copyWith(
             color: themeColors.foreground100,
           ),

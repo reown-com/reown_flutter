@@ -97,16 +97,11 @@ class PolkadotService {
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
       )) {
-        final encodedMessage = utf8.encode(message);
-        final signature = dotkeyPair.sign(encodedMessage);
+        final hexSignature = await signMessage(message);
 
-        final isVerified = dotkeyPair.verify(encodedMessage, signature);
-        debugPrint('[$runtimeType] isVerified $isVerified');
-
-        final hexSignature = hex.encode(signature);
         response = response.copyWith(
           result: {
-            'signature': '0x$hexSignature',
+            'signature': hexSignature,
           },
         );
       } else {
@@ -131,6 +126,31 @@ class PolkadotService {
     }
 
     _handleResponseForTopic(topic, response);
+  }
+
+  Future<String> signMessage(String message) async {
+    // code
+    final keys = GetIt.I<IKeyService>().getKeysForChain(
+      chainSupported.chainId,
+    );
+    final dotkeyPair = await _keyring.fromMnemonic(
+      keys[0].privateKey,
+      keyPairType: KeyPairType.sr25519,
+    );
+    // adjust the default ss58Format for Polkadot https://github.com/paritytech/ss58-registry/blob/main/ss58-registry.json
+    // if westend (testnet) we don't need ss58 format
+    if (!chainSupported.isTestnet) {
+      dotkeyPair.ss58Format = 0;
+    }
+
+    final encodedMessage = utf8.encode(message);
+    final signature = dotkeyPair.sign(encodedMessage);
+
+    final isVerified = dotkeyPair.verify(encodedMessage, signature);
+    debugPrint('[$runtimeType] isVerified $isVerified');
+
+    final hexSignature = hex.encode(signature);
+    return '0x$hexSignature';
   }
 
   Future<void> polkadotSignTransaction(String topic, dynamic parameters) async {

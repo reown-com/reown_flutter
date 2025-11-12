@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:convert/convert.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
@@ -66,7 +67,6 @@ class TonService {
 
   Future<void> tonSignData(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] tonSignData: $parameters');
-    //  [{type: text, text: Hello from WalletConnect TON, from: EQB_Kdx9GXsDatq7-wTciIY4xOe5vITtH1RWMN4aiv2rGL8X}]
     final pRequest = _walletKit.pendingRequests.getAll().last;
     var response = JsonRpcResponse(
       id: pRequest.id,
@@ -76,6 +76,7 @@ class TonService {
     try {
       final params = parameters as List;
       final paramsMap = params.first as Map<String, dynamic>;
+      final type = paramsMap['type'] as String;
       final text = paramsMap['text'] as String;
       final address = paramsMap['from'] as String;
 
@@ -87,21 +88,26 @@ class TonService {
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
       )) {
-        final keyPair = GetIt.I<IKeyService>()
-            .getKeysForChain(chainSupported.chainId)
-            .first;
-
-        final signature = await _tonClient.signData(
-          text: text,
-          keyPair: TonKeyPair(
-            sk: keyPair.privateKey,
-            pk: keyPair.publicKey,
-          ),
-        );
-
-        response = response.copyWith(
-          result: signature,
-        );
+        if (type == 'text') {
+          final signature = await signMessage(text);
+          response = response.copyWith(
+            result: {
+              'signature': signature,
+              'address': address,
+              'publicKey': getBase64PublicKey(),
+              'timestamp': DateTime.now().millisecondsSinceEpoch,
+              'payload': paramsMap,
+            },
+          );
+        } else {
+          final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
+          response = response.copyWith(
+            error: JsonRpcError(
+              code: error.code,
+              message: 'Unsupported type $type',
+            ),
+          );
+        }
         //
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED);
@@ -126,9 +132,32 @@ class TonService {
     _handleResponseForTopic(topic, response);
   }
 
+  String getBase64PublicKey() {
+    // We generate PK in hex from Yttrium but React App requires it in base64
+    final chainId = chainSupported.chainId;
+    final keys = GetIt.I<IKeyService>().getKeysForChain(chainId);
+    final hexPK = keys[0].publicKey;
+    return base64.encode(hex.decode(hexPK));
+  }
+
+  Future<String> signMessage(String message) async {
+    final chainId = chainSupported.chainId;
+    final keys = GetIt.I<IKeyService>().getKeysForChain(chainId);
+    final privateKey = keys[0].privateKey;
+    final publicKey = keys[0].publicKey;
+
+    final signature = await _tonClient.signData(
+      text: message,
+      keyPair: TonKeyPair(
+        sk: privateKey,
+        pk: publicKey,
+      ),
+    );
+    return signature;
+  }
+
   Future<void> tonSendMessage(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] tonSendMessage: ${jsonEncode(parameters)}');
-    // [{"valid_until":1760369763,"from":"EQB_Kdx9GXsDatq7-wTciIY4xOe5vITtH1RWMN4aiv2rGL8X","messages":[{"address":"EQB_Kdx9GXsDatq7-wTciIY4xOe5vITtH1RWMN4aiv2rGL8X","amount":"1000"}]}]
     final pRequest = _walletKit.pendingRequests.getAll().last;
     var response = JsonRpcResponse(
       id: pRequest.id,

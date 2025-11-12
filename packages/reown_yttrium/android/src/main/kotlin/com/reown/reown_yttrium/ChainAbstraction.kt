@@ -5,14 +5,14 @@ import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import uniffi.uniffi_yttrium.ChainAbstractionClient
-import uniffi.uniffi_yttrium.Eip1559Estimation
-import uniffi.yttrium.Call
-import uniffi.yttrium.Currency
-import uniffi.yttrium.PrepareDetailedResponse
-import uniffi.yttrium.PrepareDetailedResponseSuccess
-import uniffi.yttrium.PulseMetadata
-import uniffi.yttrium.UiFields
+import uniffi.uniffi_yttrium_utils.ChainAbstractionClient
+import uniffi.uniffi_yttrium_utils.Eip1559Estimation
+import uniffi.yttrium_utils.Call
+import uniffi.yttrium_utils.Currency
+import uniffi.yttrium_utils.PrepareDetailedResponse
+import uniffi.yttrium_utils.PrepareDetailedResponseSuccess
+import uniffi.yttrium_utils.PulseMetadata
+import uniffi.yttrium_utils.UiFields
 import kotlin.collections.set
 
 class ChainAbstraction {
@@ -140,7 +140,7 @@ class ChainAbstraction {
             val dict = params as? Map<*, *> ?: return result.error("execute", "Invalid parameters: not a map", null)
 
             val orchestrationId = dict["orchestrationId"] as? String ?: return errorMissing("orchestrationId", params, result)
-            val routeTxnSigs = (dict["routeTxnSigs"] as? List<*>)?.filterIsInstance<uniffi.yttrium.RouteSig>()
+            val routeTxnSigs = (dict["routeTxnSigs"] as? List<*>)?.filterIsInstance<uniffi.yttrium_utils.RouteSig>()
                 ?: return errorMissing("routeTxnSigs", params, result)
             val initialTxnSig = dict["initialTxnSig"] as? String ?: return errorMissing("initialTxnSig", params, result)
 

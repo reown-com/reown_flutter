@@ -19,19 +19,6 @@ class NetworkService implements INetworkService {
   ValueNotifier<List<GridItem<ReownAppKitModalNetworkInfo>>> itemList =
       ValueNotifier<List<GridItem<ReownAppKitModalNetworkInfo>>>([]);
 
-  String _getImageUrl(ReownAppKitModalNetworkInfo chainInfo) {
-    if (chainInfo.isTestNetwork) {
-      return '';
-    }
-    if (chainInfo.chainIcon != null && chainInfo.chainIcon!.contains('http')) {
-      return chainInfo.chainIcon!;
-    }
-    final imageId = ReownAppKitModalNetworks.getNetworkIconId(
-      chainInfo.chainId,
-    );
-    return _explorerService.getAssetImageUrl(imageId);
-  }
-
   @override
   Future<void> init() async {
     if (initialized.value) {
@@ -40,10 +27,9 @@ class NetworkService implements INetworkService {
 
     final networks = ReownAppKitModalNetworks.getAllSupportedNetworks();
     for (var network in networks) {
-      final imageUrl = _getImageUrl(network);
       itemListComplete.add(
         GridItem<ReownAppKitModalNetworkInfo>(
-          image: imageUrl,
+          image: _explorerService.getChainIcon(network),
           id: network.chainId,
           title: RenderUtils.shorten(network.name),
           data: network,

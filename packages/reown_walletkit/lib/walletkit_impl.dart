@@ -179,6 +179,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     required Map<String, Namespace> namespaces,
     Map<String, String>? sessionProperties,
     String? relayProtocol,
+    ProposalRequestsResponses? proposalRequestsResponses,
   }) async {
     try {
       return await reOwnSign.approveSession(
@@ -186,6 +187,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
         namespaces: namespaces,
         sessionProperties: sessionProperties,
         relayProtocol: relayProtocol,
+        proposalRequestsResponses: proposalRequestsResponses,
       );
     } catch (e) {
       rethrow;

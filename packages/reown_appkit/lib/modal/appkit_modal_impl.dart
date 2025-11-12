@@ -1112,9 +1112,10 @@ class ReownAppKitModal
           _notify();
           _awaitOCAuthCallback(authResponse);
         } else {
-          // Regular Session Proposal
           final connectResponse = await _appKit.connect(
             optionalNamespaces: _sessionNamespaces,
+            // TODO implement `authentication` param to support 1CA for non-EVM
+            // authentication: [authParams],
           );
           _wcUri = connectResponse.uri?.toString() ?? '';
           _notify();
@@ -2466,15 +2467,15 @@ extension _AppKitModalExtension on ReownAppKitModal {
 
   void _onSessionConnect(SessionConnect? args) async {
     if (args == null || (_supportsOneClickAuth && _siweService.enabled)) {
+      // Will be handled by _onSessionAuthResponse
       return;
     }
 
-    // IF SIWE CALLBACK (1-CA NOT SUPPORTED) SIWECONGIF METHODS ARE CALLED ON ApproveSIWEPage
-    _appKit.core.logger.d(
-      '[$runtimeType] _onSessionConnect: ${jsonEncode(args.session.toJson())}',
-    );
     final session = await _settleSession(args.session);
     onModalConnect.broadcast(ModalConnect(session));
+    _appKit.core.logger.d(
+      '[$runtimeType] _onSessionConnect: ${jsonEncode(session.toJson())}',
+    );
     //
     if (_pendingSocialLogin != null) {
       final provider = _pendingSocialLogin!.name.toLowerCase();

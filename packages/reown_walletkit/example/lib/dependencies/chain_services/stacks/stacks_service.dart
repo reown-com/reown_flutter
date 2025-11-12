@@ -99,20 +99,7 @@ class StacksService {
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
       )) {
-        final keys = GetIt.I<IKeyService>().getKeysForChain(
-          chainSupported.chainId,
-        );
-        if (address != keys[0].address) {
-          throw Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
-        }
-
-        final privateKey = keys[0].privateKey;
-        final signature = await _stacksClient.signMessage(
-          wallet: privateKey,
-          message: message,
-          networkId: chainSupported.chainId,
-        );
-
+        final signature = await signMessage(message);
         response = response.copyWith(
           result: {
             'signature': signature,
@@ -139,6 +126,20 @@ class StacksService {
     }
 
     _handleResponseForTopic(topic, response);
+  }
+
+  Future<String> signMessage(String message) async {
+    final keys = GetIt.I<IKeyService>().getKeysForChain(
+      chainSupported.chainId,
+    );
+
+    final privateKey = keys[0].privateKey;
+    final signature = await _stacksClient.signMessage(
+      wallet: privateKey,
+      message: message,
+      networkId: chainSupported.chainId,
+    );
+    return signature;
   }
 
   Future<void> stxTransferStx(String topic, dynamic parameters) async {

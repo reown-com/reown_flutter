@@ -48,6 +48,7 @@ abstract class IReownSignClient {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<Relay>? relays,
+    List<SessionAuthRequestParams>? authentication,
     List<List<String>>? methods,
   });
   Future<PairingInfo> pair({required Uri uri});
@@ -56,6 +57,7 @@ abstract class IReownSignClient {
     required Map<String, Namespace> namespaces,
     Map<String, String>? sessionProperties,
     String? relayProtocol,
+    ProposalRequestsResponses? proposalRequestsResponses,
   });
   Future<void> reject({required int id, required ReownSignError reason});
   Future<void> update({

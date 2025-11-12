@@ -3,11 +3,16 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_appkit_dapp/utils/crypto/bip122.dart';
 import 'package:reown_appkit_dapp/utils/crypto/cosmos.dart';
+import 'package:reown_appkit_dapp/utils/crypto/mvx.dart';
 import 'package:reown_appkit_dapp/utils/crypto/near.dart';
 import 'package:reown_appkit_dapp/utils/crypto/eip155.dart';
 import 'package:reown_appkit_dapp/utils/crypto/polkadot.dart';
 import 'package:reown_appkit_dapp/utils/crypto/solana.dart';
+import 'package:reown_appkit_dapp/utils/crypto/stacks.dart';
+import 'package:reown_appkit_dapp/utils/crypto/sui.dart';
+import 'package:reown_appkit_dapp/utils/crypto/ton.dart';
 import 'package:reown_appkit_dapp/utils/crypto/tron.dart';
 import 'package:reown_appkit_dapp/utils/smart_contracts.dart';
 import 'package:reown_appkit_dapp/widgets/method_dialog.dart';
@@ -21,14 +26,21 @@ List<String> getChainMethods(String namespace) {
     case 'polkadot':
       return Polkadot.methods.values.toList();
     case 'tron':
-      return Tron.methods.values.toList();
+      return Tron.methods;
     case 'mvx':
-      // TODO move to mvx.dart
-      return ['mvx_signMessage', 'mvx_signTransaction'];
+      return MVX.methods;
     case 'near':
       return Near.methods.values.toList();
     case 'cosmos':
       return Cosmos.methods.values.toList();
+    case 'ton':
+      return Ton.methods;
+    case 'sui':
+      return Sui.methods;
+    case 'stacks':
+      return Stacks.methods;
+    case 'bip122':
+      return BIP122.methods;
     default:
       return [];
   }
@@ -45,11 +57,19 @@ List<String> getChainEvents(String namespace) {
     case 'tron':
       return Tron.events;
     case 'mvx':
-      return [];
+      return MVX.events;
     case 'near':
       return Near.events;
     case 'cosmos':
       return Cosmos.events.values.toList();
+    case 'ton':
+      return Ton.events;
+    case 'sui':
+      return Sui.events;
+    case 'stacks':
+      return Stacks.events;
+    case 'bip122':
+      return BIP122.events;
     default:
       return [];
   }
@@ -59,7 +79,7 @@ Future<SessionRequestParams?> getParams(
   String method,
   String address,
   ReownAppKitModalNetworkInfo chainData, {
-  String? callback,
+  ReownAppKitModalSession? session,
 }) async {
   switch (method) {
     case 'personal_sign':
@@ -142,19 +162,20 @@ Future<SessionRequestParams?> getParams(
     case 'tron_signMessage':
       return SessionRequestParams(
         method: method,
-        params: {
-          'address': address,
-          'message': 'Welcome to Flutter AppKit on Tron',
-        },
+        params: Tron.tronSignMessage(
+          chainId: chainData.chainId,
+          walletAdress: address,
+        ),
       );
     case 'tron_signTransaction':
-      final transaction = await Tron.triggerSmartContract(
+      final parameters = await Tron.tronSignTransaction(
         chainData: chainData,
         walletAdress: address,
+        isV1: session?.sessionProperties['tron_method_version'] == 'v1',
       );
       return SessionRequestParams(
         method: method,
-        params: {'address': address, 'transaction': transaction},
+        params: parameters,
       );
     case 'polkadot_signMessage':
       return SessionRequestParams(
@@ -213,6 +234,38 @@ Future<SessionRequestParams?> getParams(
       return SessionRequestParams(
         method: method,
         params: Cosmos.signAmino(address, chainData.chainId),
+      );
+    case 'ton_signData':
+      return SessionRequestParams(
+        method: method,
+        params: Ton.tonSignData(
+          chainId: chainData.chainId,
+          walletAdress: address,
+        ),
+      );
+    case 'stx_signMessage':
+      return SessionRequestParams(
+        method: method,
+        params: Stacks.stxSignMessage(
+          chainId: chainData.chainId,
+          walletAdress: address,
+        ),
+      );
+    case 'sui_signPersonalMessage':
+      return SessionRequestParams(
+        method: method,
+        params: Sui.suiSignPersonalMessage(
+          chainId: chainData.chainId,
+          walletAdress: address,
+        ),
+      );
+    case 'signMessage':
+      return SessionRequestParams(
+        method: method,
+        params: BIP122.signMessage(
+          chainId: chainData.chainId,
+          walletAdress: address,
+        ),
       );
     default:
       return SessionRequestParams(method: method, params: null);
