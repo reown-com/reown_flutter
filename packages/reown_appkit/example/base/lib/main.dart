@@ -263,6 +263,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _logListener(String event) => _logManager.addLog(event);
 
+  Future<double> _getBalanceFallback() async {
+    try {
+      final chainId = _appKitModal!.selectedChain!.chainId;
+      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+      final address = _appKitModal!.session!.getAddress(namespace)!;
+
+      final JsonRpcResponse response = await _appKitModal!.rpcRequest(
+        chainId: chainId,
+        method: 'eth_getBalance',
+        params: [address, 'latest'],
+      );
+      debugPrint('[$runtimeType] _getBalance ${response.result}');
+      // parse hex balance
+      final parsedBalance = hexToInt(response.result);
+      final balance = EtherAmount.fromBigInt(EtherUnit.wei, parsedBalance);
+      return balance.getValueInUnit(EtherUnit.ether);
+    } catch (e) {
+      debugPrint('[$runtimeType] _getBalance error: $e');
+    }
+    return 0.0;
+  }
+
   Future<void> _initializeService() async {
     final prefs = await SharedPreferences.getInstance();
     final linkModeEnabled = prefs.getBool('appkit_sample_linkmode') ?? false;
@@ -300,11 +322,8 @@ class _MyHomePageState extends State<MyHomePage> {
       // excludedWalletIds: _specificsWalletIds(),
       // includedWalletIds: _specificsWalletIds(),
       // MORE WALLETS https://explorer.walletconnect.com/?type=wallet&chains=eip155%3A1
-      getBalanceFallback: () async {
-        // This method will be triggered if getting the balance from our blockchain API fails
-        // You could place here your own getBalance method
-        return 0.0;
-      },
+      getBalanceFallback: _getBalanceFallback,
+      // `getBalanceFallback` will be triggered if getting the balance from our blockchain API fails. You could place here your own getBalance method
       disconnectOnDispose: true,
       customWallets: [
         ReownAppKitModalWalletInfo(
