@@ -8,12 +8,12 @@ import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import uniffi.yttrium.PulseMetadata
-import uniffi.yttrium.SuiClient
-import uniffi.yttrium.suiGenerateKeypair
-import uniffi.yttrium.suiGetAddress
-import uniffi.yttrium.suiGetPublicKey
-import uniffi.yttrium.suiPersonalSign
+import uniffi.yttrium_utils.PulseMetadata
+import uniffi.yttrium_utils.SuiClient
+import uniffi.yttrium_utils.suiGenerateKeypair
+import uniffi.yttrium_utils.suiGetAddress
+import uniffi.yttrium_utils.suiGetPublicKey
+import uniffi.yttrium_utils.suiPersonalSign
 
 /**
  * Sui.kt

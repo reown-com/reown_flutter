@@ -99,8 +99,7 @@ class TronService {
       final signer = on_chain.TronPrivateKey(privateKeyHex);
 
       final msgBytes = Uint8List.fromList(message.codeUnits);
-      final signature = signer.signPersonalMessage(msgBytes);
-      return signature;
+      return signer.signPersonalMessage(msgBytes);
     } catch (e) {
       rethrow;
     }

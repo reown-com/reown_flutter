@@ -7,12 +7,12 @@ import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import uniffi.yttrium.PulseMetadata
-import uniffi.yttrium.StacksClient
-import uniffi.yttrium.TransferStxRequest
-import uniffi.yttrium.stacksGenerateWallet
-import uniffi.yttrium.stacksGetAddress
-import uniffi.yttrium.stacksSignMessage
+import uniffi.yttrium_utils.PulseMetadata
+import uniffi.yttrium_utils.StacksClient
+import uniffi.yttrium_utils.TransferStxRequest
+import uniffi.yttrium_utils.stacksGenerateWallet
+import uniffi.yttrium_utils.stacksGetAddress
+import uniffi.yttrium_utils.stacksSignMessage
 import kotlin.collections.get
 
 /**

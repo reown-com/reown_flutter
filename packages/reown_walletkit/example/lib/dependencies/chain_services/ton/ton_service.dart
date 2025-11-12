@@ -158,7 +158,6 @@ class TonService {
 
   Future<void> tonSendMessage(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] tonSendMessage: ${jsonEncode(parameters)}');
-    // [{"valid_until":1760369763,"from":"EQB_Kdx9GXsDatq7-wTciIY4xOe5vITtH1RWMN4aiv2rGL8X","messages":[{"address":"EQB_Kdx9GXsDatq7-wTciIY4xOe5vITtH1RWMN4aiv2rGL8X","amount":"1000"}]}]
     final pRequest = _walletKit.pendingRequests.getAll().last;
     var response = JsonRpcResponse(
       id: pRequest.id,

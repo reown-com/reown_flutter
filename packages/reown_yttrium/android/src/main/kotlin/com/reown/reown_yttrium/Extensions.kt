@@ -1,24 +1,24 @@
 package com.reown.reown_yttrium
 
-import uniffi.uniffi_yttrium.Eip1559Estimation
-import uniffi.yttrium.Amount
-import uniffi.yttrium.BridgingError
-import uniffi.yttrium.ExecuteDetails
-import uniffi.yttrium.FeeEstimatedTransaction
-import uniffi.yttrium.FundingMetadata
-import uniffi.yttrium.InitialTransactionMetadata
-import uniffi.yttrium.PrepareResponseAvailable
-import uniffi.yttrium.PrepareResponseError
-import uniffi.yttrium.PrepareResponseMetadata
-import uniffi.yttrium.PrepareResponseNotRequired
-import uniffi.yttrium.Transaction
-import uniffi.yttrium.TransactionFee
-import uniffi.yttrium.TxnDetails
-import uniffi.yttrium.SolanaTxnDetails
-import uniffi.yttrium.UiFields
-import uniffi.yttrium.Route
-import uniffi.yttrium.SolanaTransaction
-import uniffi.yttrium.Transactions
+import uniffi.uniffi_yttrium_utils.Eip1559Estimation
+import uniffi.yttrium_utils.Amount
+import uniffi.yttrium_utils.BridgingError
+import uniffi.yttrium_utils.ExecuteDetails
+import uniffi.yttrium_utils.FeeEstimatedTransaction
+import uniffi.yttrium_utils.FundingMetadata
+import uniffi.yttrium_utils.InitialTransactionMetadata
+import uniffi.yttrium_utils.PrepareResponseAvailable
+import uniffi.yttrium_utils.PrepareResponseError
+import uniffi.yttrium_utils.PrepareResponseMetadata
+import uniffi.yttrium_utils.PrepareResponseNotRequired
+import uniffi.yttrium_utils.Transaction
+import uniffi.yttrium_utils.TransactionFee
+import uniffi.yttrium_utils.TxnDetails
+import uniffi.yttrium_utils.SolanaTxnDetails
+import uniffi.yttrium_utils.UiFields
+import uniffi.yttrium_utils.Route
+import uniffi.yttrium_utils.SolanaTransaction
+import uniffi.yttrium_utils.Transactions
 
 fun Eip1559Estimation.toMap(): Map<String, Any> {
     return mapOf(
@@ -185,7 +185,7 @@ fun ExecuteDetails.toMap(): Map<String, Any> {
     )
 }
 
-fun Map<*, *>.toSendTxMessage(): uniffi.yttrium.SendTxMessage {
+fun Map<*, *>.toSendTxMessage(): uniffi.yttrium_utils.SendTxMessage {
     val address = this["address"] as? String
         ?: error("Missing or invalid 'address' in SendTxMessage map")
 
@@ -195,7 +195,7 @@ fun Map<*, *>.toSendTxMessage(): uniffi.yttrium.SendTxMessage {
     val stateInit = this["stateInit"] as? String
     val payload = this["payload"] as? String
 
-    return uniffi.yttrium.SendTxMessage(
+    return uniffi.yttrium_utils.SendTxMessage(
         address = address,
         amount = amount,
         stateInit = stateInit,
@@ -203,7 +203,7 @@ fun Map<*, *>.toSendTxMessage(): uniffi.yttrium.SendTxMessage {
     )
 }
 
-fun List<*>.toSendTxMessageList(): List<uniffi.yttrium.SendTxMessage> {
+fun List<*>.toSendTxMessageList(): List<uniffi.yttrium_utils.SendTxMessage> {
     return this.mapNotNull { item ->
         (item as? Map<*, *>)?.toSendTxMessage()
     }

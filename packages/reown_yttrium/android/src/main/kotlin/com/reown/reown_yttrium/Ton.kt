@@ -8,10 +8,10 @@ import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import uniffi.yttrium.Keypair
-import uniffi.yttrium.PulseMetadata
-import uniffi.yttrium.TonClient
-import uniffi.yttrium.TonClientConfig
+import uniffi.yttrium_utils.Keypair
+import uniffi.yttrium_utils.PulseMetadata
+import uniffi.yttrium_utils.TonClient
+import uniffi.yttrium_utils.TonClientConfig
 import kotlin.collections.get
 
 /**

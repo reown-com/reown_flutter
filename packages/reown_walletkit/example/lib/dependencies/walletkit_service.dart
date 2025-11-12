@@ -538,7 +538,7 @@ class WalletKitService extends IWalletKitService {
         final request = messageToSign.$3;
         final namespace = AddressUtils.getDidAddressNamespace(iss);
         final chainId = AddressUtils.getDidAddressChainId(iss);
-        final (String, String, String?) result = await signMessage(
+        final (String, String, String?) result = await signAuthMessage(
           namespace!,
           chainId!,
           message,
@@ -566,14 +566,14 @@ class WalletKitService extends IWalletKitService {
     return signedAuths;
   }
 
-  Future<(String, String, String?)> signMessage(
+  Future<(String, String, String?)> signAuthMessage(
     String namespace,
     String chainId,
     String message,
   ) async {
     try {
-      debugPrint('[$runtimeType] signMessage: $namespace, $chainId, $message');
       final caip2chain = '$namespace:$chainId';
+      debugPrint('[$runtimeType] signAuthMessage: $caip2chain, $message');
       switch (namespace) {
         case 'eip155':
           final service = getChainService<EVMService>(chainId: caip2chain);
