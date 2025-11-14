@@ -39,7 +39,7 @@
 
 # Keep all plugin-related classes
 -keep class com.reown.reown_yttrium.** { *; }
--keep class io.flutter.plugins.GeneratedPluginRegistrant { *; }
+#-keep class io.flutter.plugins.GeneratedPluginRegistrant { *; }
 -keep class io.flutter.embedding.engine.plugins.** { *; }
 
 # Ensure FlutterPlugin classes are not stripped

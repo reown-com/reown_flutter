@@ -29,6 +29,14 @@ sh generate_files.sh
 cd ..
 cd ..
 
+echo "******* GENERATING YTTRIUM UTILS *******"
+
+cd packages/reown_yttrium_utils/
+sh generate_files.sh
+
+cd ..
+cd ..
+
 echo "******* GENERATING WALLETKIT *******"
 
 cd packages/reown_walletkit/

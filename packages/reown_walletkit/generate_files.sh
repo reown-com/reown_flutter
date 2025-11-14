@@ -1,5 +1,11 @@
 #!/bin/bash
 
+rm -Rf pubspec.lock
+rm -Rf .dart_tool
+rm -Rf example/.dart_tool
+rm -Rf example/build
+rm -Rf example/ios/.symlinks
+
 flutter clean
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs
@@ -19,10 +25,10 @@ dart format .
 # dart run dependency_validator
 
 cd ios
-# rm Podfile.lock
-# pod deintegrate
-# pod cache clean --all
-# pod repo update
+rm Podfile.lock
+pod deintegrate
+pod cache clean --all
+pod repo update
 pod install
 cd ..
 

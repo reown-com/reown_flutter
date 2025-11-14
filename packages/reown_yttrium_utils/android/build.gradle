@@ -1,0 +1,87 @@
+group = "com.reown.reown_yttrium_utils"
+version = "1.0-SNAPSHOT"
+
+buildscript {
+    ext.kotlin_version = "1.8.22"
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("com.android.tools.build:gradle:8.1.0")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
+
+android {
+    if (project.android.hasProperty("namespace")) {
+        namespace = "com.reown.reown_yttrium_utils"
+    }
+
+    compileSdk = 34
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    sourceSets {
+        main.java.srcDirs += "src/main/kotlin"
+        test.java.srcDirs += "src/test/kotlin"
+    }
+
+    defaultConfig {
+        minSdk = 21
+    }
+
+    buildTypes {
+        release {
+//            minifyEnabled = true
+            consumerProguardFiles 'consumer-rules.pro'
+        }
+    }
+
+    packaging {
+        jniLibs.pickFirsts.add("lib/arm64-v8a/libuniffi_yttrium_utils.so")
+        jniLibs.pickFirsts.add("lib/armeabi-v7a/libuniffi_yttrium_utils.so")	        
+        jniLibs.pickFirsts.add("lib/x86_64/libuniffi_yttrium_utils.so")
+        jniLibs.pickFirsts.add("lib/**/libjnidispatch.so")
+    }
+
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+
+            testLogging {
+               events "passed", "skipped", "failed", "standardOut", "standardError"
+               outputs.upToDateWhen {false}
+               showStandardStreams = true
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation("com.github.reown-com:yttrium:kotlin-utils-0.9.113") {
+        exclude(group: 'net.java.dev.jna', module: 'jna')
+    }
+    implementation("net.java.dev.jna:jna:5.17.0@aar")
+
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
+    testImplementation("org.mockito:mockito-core:5.0.0")
+}

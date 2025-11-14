@@ -5,9 +5,9 @@ import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
-import 'package:reown_walletkit_wallet/dependencies/chain_services/cosmos_service.dart';
+// import 'package:reown_walletkit_wallet/dependencies/chain_services/cosmos_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
-import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
+// import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/polkadot_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/stacks/stacks_service.dart';
@@ -111,12 +111,12 @@ class WalletKitService extends IWalletKitService {
     }
 
     // Support Kadena Chains
-    for (final chainData in ChainsDataList.kadenaChains) {
-      GetIt.I.registerSingleton<KadenaService>(
-        KadenaService(chainSupported: chainData),
-        instanceName: chainData.chainId,
-      );
-    }
+    // for (final chainData in ChainsDataList.kadenaChains) {
+    //   GetIt.I.registerSingleton<KadenaService>(
+    //     KadenaService(chainSupported: chainData),
+    //     instanceName: chainData.chainId,
+    //   );
+    // }
 
     // Support Polkadot Chains
     for (final chainData in ChainsDataList.polkadotChains) {
@@ -136,12 +136,12 @@ class WalletKitService extends IWalletKitService {
     }
 
     // Support Cosmos Chains
-    for (final chainData in ChainsDataList.cosmosChains) {
-      GetIt.I.registerSingleton<CosmosService>(
-        CosmosService(chainSupported: chainData),
-        instanceName: chainData.chainId,
-      );
-    }
+    // for (final chainData in ChainsDataList.cosmosChains) {
+    //   GetIt.I.registerSingleton<CosmosService>(
+    //     CosmosService(chainSupported: chainData),
+    //     instanceName: chainData.chainId,
+    //   );
+    // }
 
     // Support Tron Chains
     for (final chainData in ChainsDataList.tronChains) {
@@ -333,7 +333,7 @@ class WalletKitService extends IWalletKitService {
         try {
           final cacaos = await signAuthenticationMessages(formattedMessages);
 
-          _walletKit!.approveSession(
+          await _walletKit!.approveSession(
             id: args.id,
             namespaces: args.params.generatedNamespaces!,
             sessionProperties: args.params.sessionProperties,
@@ -591,25 +591,23 @@ class WalletKitService extends IWalletKitService {
           final signature = await service.signMessage(message);
           final type = getSignatureType(namespace);
           return (signature, type, null);
-        case 'cosmos':
-          // TODO: cosmos requires extra params
-          // final service = getChainService<CosmosService>(chainId: caip2chain);
-          // final signature = await service.signMessage(message);
-          // final type = getSignatureType(namespace);
-          // return (signature, type, null);
-          throw StateError('Unsupported signature for chain $chainId');
+        // case 'cosmos':
+        // TODO: cosmos requires extra params
+        // final service = getChainService<CosmosService>(chainId: caip2chain);
+        // final signature = await service.signMessage(message);
+        // final type = getSignatureType(namespace);
+        // return (signature, type, null);
         case 'tron':
           final service = getChainService<TronService>(chainId: caip2chain);
           final signature = await service.signMessage(message);
           final type = getSignatureType(namespace);
           return (signature, type, null);
-        case 'kadena':
-          // TODO: kadena requires extra params
-          // final service = getChainService<KadenaService>(chainId: caip2chain);
-          // final signature = await service.signMessage(message);
-          // final type = getSignatureType(namespace);
-          // return (signature, type, null);
-          throw StateError('Unsupported signature for chain $chainId');
+        // case 'kadena':
+        // TODO: kadena requires extra params
+        // final service = getChainService<KadenaService>(chainId: caip2chain);
+        // final signature = await service.signMessage(message);
+        // final type = getSignatureType(namespace);
+        // return (signature, type, null);
         case 'ton':
           final service = getChainService<TonService>(chainId: caip2chain);
           final signature = await service.signMessage(message);

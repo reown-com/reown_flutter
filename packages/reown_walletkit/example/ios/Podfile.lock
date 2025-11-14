@@ -10,12 +10,10 @@ PODS:
   - qr_code_scanner (0.2.0):
     - Flutter
     - MTBBarcodeScanner
-  - reown_yttrium (0.0.1):
+  - reown_yttrium_utils (0.0.1):
     - Flutter
-    - YttriumUtilsWrapper (= 0.9.80)
-    - YttriumWrapper (= 0.9.77)
-  - YttriumUtilsWrapper (0.9.80)
-  - YttriumWrapper (0.9.77)
+    - YttriumUtilsWrapper (= 0.9.110)
+  - YttriumUtilsWrapper (0.9.110)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
@@ -23,13 +21,12 @@ DEPENDENCIES:
   - objective_c (from `.symlinks/plugins/objective_c/ios`)
   - qr_bar_code_scanner_dialog (from `.symlinks/plugins/qr_bar_code_scanner_dialog/ios`)
   - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
-  - reown_yttrium (from `.symlinks/plugins/reown_yttrium/ios`)
+  - reown_yttrium_utils (from `.symlinks/plugins/reown_yttrium_utils/ios`)
 
 SPEC REPOS:
   trunk:
     - MTBBarcodeScanner
     - YttriumUtilsWrapper
-    - YttriumWrapper
 
 EXTERNAL SOURCES:
   Flutter:
@@ -42,8 +39,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/qr_bar_code_scanner_dialog/ios"
   qr_code_scanner:
     :path: ".symlinks/plugins/qr_code_scanner/ios"
-  reown_yttrium:
-    :path: ".symlinks/plugins/reown_yttrium/ios"
+  reown_yttrium_utils:
+    :path: ".symlinks/plugins/reown_yttrium_utils/ios"
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
@@ -52,9 +49,8 @@ SPEC CHECKSUMS:
   objective_c: 89e720c30d716b036faf9c9684022048eee1eee2
   qr_bar_code_scanner_dialog: a4cb7ad7201cbf8b888f3e6e58972b611ac43b28
   qr_code_scanner: d77f94ecc9abf96d9b9b8fc04ef13f611e5a147a
-  reown_yttrium: b826055bb44d027d7aec9dd870be32e9963e20eb
-  YttriumUtilsWrapper: cb5e8726b9a862dfc62048c952674344e336b594
-  YttriumWrapper: e68163709dab1b30460a560854a83567a7b7a3bd
+  reown_yttrium_utils: b72dcd07e1b012cbe7ca4e8f23ed554108b28c91
+  YttriumUtilsWrapper: d5704a305f87956ec06040d1687eef3943459438
 
 PODFILE CHECKSUM: 0772a2bd8cd4c7aaeb2576ddfaf6b03be722593b
 

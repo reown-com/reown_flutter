@@ -23,7 +23,7 @@ import 'package:reown_walletkit_wallet/dependencies/bip39/bip39_base.dart'
     as bip39;
 import 'package:reown_walletkit_wallet/dependencies/bip32/bip32_base.dart'
     as bip32;
-import 'package:reown_yttrium/reown_yttrium.dart';
+import 'package:reown_yttrium_utils/reown_yttrium_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solana/solana.dart' as solana;
 import 'package:bitcoin_base/bitcoin_base.dart' as bitcoin;
@@ -206,9 +206,9 @@ class KeyService extends IKeyService {
     final solanaChainKey = await _solanaChainKey(mnemonic);
     final polkadotChainKey = await _polkadotChainKey(mnemonic);
     final polkadotTestChainKey = await _polkadotTestChainKey(mnemonic);
-    final kadenaChainKey = _kadenaChainKey(mnemonic);
+    // final kadenaChainKey = _kadenaChainKey(mnemonic);
     final tronChainKey = _tronChainKey(mnemonic);
-    final cosmosChainKey = _cosmosChainKey(mnemonic);
+    // final cosmosChainKey = _cosmosChainKey(mnemonic);
     final tonChainKey = await _tonChainKey(mnemonic);
     // final tonTestChainKey = await _tonTestChainKey(mnemonic);
     final stacksChainKey = await _stacksChainKey(mnemonic);
@@ -221,9 +221,9 @@ class KeyService extends IKeyService {
       if (solanaChainKey != null) solanaChainKey,
       if (polkadotChainKey != null) polkadotChainKey,
       if (polkadotTestChainKey != null) polkadotTestChainKey,
-      if (kadenaChainKey != null) kadenaChainKey,
+      // if (kadenaChainKey != null) kadenaChainKey,
       if (tronChainKey != null) tronChainKey,
-      if (cosmosChainKey != null) cosmosChainKey,
+      // if (cosmosChainKey != null) cosmosChainKey,
       if (tonChainKey != null) tonChainKey,
       if (stacksChainKey != null) stacksChainKey,
       if (stacksTestChainKey != null) stacksTestChainKey,
@@ -361,6 +361,7 @@ class KeyService extends IKeyService {
     }
   }
 
+  // ignore: unused_element
   ChainKey? _kadenaChainKey(String mnemonic) {
     try {
       final seed = bip39.mnemonicToSeed(mnemonic);
@@ -390,6 +391,7 @@ class KeyService extends IKeyService {
     }
   }
 
+  // ignore: unused_element
   ChainKey? _cosmosChainKey(String mnemonic) {
     try {
       final seed = bip39.mnemonicToSeed(mnemonic);
