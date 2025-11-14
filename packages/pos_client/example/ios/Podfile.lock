@@ -2,20 +2,33 @@ PODS:
   - Flutter (1.0.0)
   - flutter_secure_storage (6.0.0):
     - Flutter
+  - reown_yttrium (0.0.1):
+    - Flutter
+    - YttriumWrapper (= 0.9.111)
+  - YttriumWrapper (0.9.111)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
+  - reown_yttrium (from `.symlinks/plugins/reown_yttrium/ios`)
+
+SPEC REPOS:
+  trunk:
+    - YttriumWrapper
 
 EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
+  reown_yttrium:
+    :path: ".symlinks/plugins/reown_yttrium/ios"
 
 SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
+  reown_yttrium: a5d78581491cb5e5ea1b038026b4f4c5e75085e9
+  YttriumWrapper: 301cfb382b568f08da8a641bace06c94aea99f7c
 
 PODFILE CHECKSUM: 3c63482e143d1b91d2d2560aee9fb04ecc74ac7e
 

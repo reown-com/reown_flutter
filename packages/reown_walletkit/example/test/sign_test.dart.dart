@@ -5,9 +5,9 @@ import 'package:package_info_plus/package_info_plus.dart';
 // import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
-// import 'package:reown_walletkit_wallet/dependencies/chain_services/cosmos_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/cosmos_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
-// import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/polkadot_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
@@ -84,12 +84,12 @@ void main() {
     }
 
     // Support Kadena Chains
-    // for (final chainData in ChainsDataList.kadenaChains) {
-    //   GetIt.I.registerSingleton<KadenaService>(
-    //     KadenaService(chainSupported: chainData),
-    //     instanceName: chainData.chainId,
-    //   );
-    // }
+    for (final chainData in ChainsDataList.kadenaChains) {
+      GetIt.I.registerSingleton<KadenaService>(
+        KadenaService(chainSupported: chainData),
+        instanceName: chainData.chainId,
+      );
+    }
 
     // Support Polkadot Chains
     for (final chainData in ChainsDataList.polkadotChains) {
@@ -109,12 +109,12 @@ void main() {
     }
 
     // Support Cosmos Chains
-    // for (final chainData in ChainsDataList.cosmosChains) {
-    //   GetIt.I.registerSingleton<CosmosService>(
-    //     CosmosService(chainSupported: chainData),
-    //     instanceName: chainData.chainId,
-    //   );
-    // }
+    for (final chainData in ChainsDataList.cosmosChains) {
+      GetIt.I.registerSingleton<CosmosService>(
+        CosmosService(chainSupported: chainData),
+        instanceName: chainData.chainId,
+      );
+    }
 
     await walletKitService.init();
 

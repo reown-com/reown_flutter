@@ -25,10 +25,10 @@ dart format .
 # dart run dependency_validator
 
 cd ios
-rm Podfile.lock
-pod deintegrate
-pod cache clean --all
-pod repo update
+# rm Podfile.lock
+# pod deintegrate
+# pod cache clean --all
+# pod repo update
 pod install
 cd ..
 
