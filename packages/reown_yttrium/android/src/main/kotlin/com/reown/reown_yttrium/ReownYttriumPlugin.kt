@@ -22,7 +22,9 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
 
   override fun onMethodCall(call: MethodCall, result: Result) {
     when (call.method) {
-      // TODO implement 6492 methods
+      "erc6492_init" -> EIP6492Verifier.init(call.arguments, result)
+      "erc6492_verify" -> EIP6492Verifier.verifySignature(call.arguments, result)
+      "erc6492_dispose" -> EIP6492Verifier.dispose(call.arguments, result)
       else -> result.notImplemented()
     }
   }

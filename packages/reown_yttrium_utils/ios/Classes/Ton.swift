@@ -33,7 +33,7 @@ class Ton {
         ])
     }
     
-    func generateKeypairFromTonMnemonic(params: [String: Any], result: FlutterResult) {
+    private func generateKeypairFromTonMnemonic(params: [String: Any], result: FlutterResult) {
         guard let mnemonic = params["mnemonic"] as? String else {
             return result(FlutterError(code: "Ton.generateKeypairFromTonMnemonic", message: "Missing mnemonic", details: nil))
         }
@@ -47,7 +47,7 @@ class Ton {
         
     }
     
-    func generateKeypairFromBip39Mnemonic(params: [String: Any], result: FlutterResult) {
+    private func generateKeypairFromBip39Mnemonic(params: [String: Any], result: FlutterResult) {
         guard let mnemonic = params["mnemonic"] as? String else {
             return result(FlutterError(code: "Ton.generateKeypairFromBip39Mnemonic", message: "Missing mnemonic", details: nil))
         }

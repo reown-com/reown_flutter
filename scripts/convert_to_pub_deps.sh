@@ -18,14 +18,24 @@ echo ""
 get_latest_version() {
   local package_name=$1
   local api_url="https://pub.dev/api/packages/${package_name}"
+  local version=""
   
-  # Query pub.dev API and extract latest version
-  # The API returns JSON with a "latest" object containing "version"
-  local version=$(curl -s "$api_url" 2>/dev/null | grep -o '"latest":{[^}]*"version":"[^"]*"' | grep -o '"version":"[^"]*"' | cut -d'"' -f4)
+  # Try using jq if available (most reliable)
+  if command -v jq &> /dev/null; then
+    version=$(curl -s "$api_url" 2>/dev/null | jq -r '.latest.version' 2>/dev/null)
+  fi
   
-  if [ -z "$version" ]; then
-    # Fallback: try parsing the JSON more directly
-    version=$(curl -s "$api_url" 2>/dev/null | grep -oE '"version":\s*"[0-9]+\.[0-9]+\.[0-9]+[^"]*"' | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+[^"]*' | head -1)
+  # Fallback to grep-based parsing if jq not available or failed
+  if [ -z "$version" ] || [ "$version" = "null" ]; then
+    # The API returns JSON with structure: {"latest": {"version": "x.y.z", ...}, ...}
+    # Try to extract version from the latest object
+    local json_response=$(curl -s "$api_url" 2>/dev/null)
+    version=$(echo "$json_response" | grep -oE '"latest":\s*\{[^}]*"version":\s*"[^"]*"' | grep -oE '"version":\s*"[^"]*"' | cut -d'"' -f4)
+    
+    # Another fallback: look for version pattern near "latest"
+    if [ -z "$version" ]; then
+      version=$(echo "$json_response" | grep -A 5 '"latest"' | grep -oE '"version":\s*"[0-9]+\.[0-9]+\.[0-9]+[^"]*"' | head -1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+[^"]*' | head -1)
+    fi
   fi
   
   echo "$version"
@@ -36,6 +46,7 @@ find . -name "pubspec.yaml" -type f \
   -not -path "*/packages/qr-bar-code-scanner-dialog/*" \
   -not -path "*/build/*" \
   -not -path "*/.dart_tool/*" \
+  -not -path "*/example/*" \
   | while read -r pubspec_file; do
   
   # Skip if file doesn't exist
@@ -45,8 +56,11 @@ find . -name "pubspec.yaml" -type f \
   if grep -qE "^[[:space:]]*reown_[a-zA-Z0-9_]+:[[:space:]]*$" "$pubspec_file" 2>/dev/null; then
     echo -e "${GREEN}Processing: $pubspec_file${NC}"
     
-    # Read file into array to allow look-ahead
-    mapfile -t lines < "$pubspec_file"
+    # Read file into array to allow look-ahead (portable method)
+    lines=()
+    while IFS= read -r line || [ -n "$line" ]; do
+      lines+=("$line")
+    done < "$pubspec_file"
     
     # Create a temporary file
     temp_file=$(mktemp)
