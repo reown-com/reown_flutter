@@ -140,9 +140,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
-                    builder: (context) => KastMockedModal(
-                      appKitModal: _appKitModal,
-                    ),
+                    builder: (context) =>
+                        KastMockedModal(appKitModal: _appKitModal),
                   );
                 },
                 title: 'Open Kast Mocked Modal',
@@ -182,9 +181,7 @@ class _KastMockedModalState extends State<KastMockedModal>
         '11155111', // Sepolia
       );
       await widget.appKitModal.selectChain(workingChain);
-      final walletAddress = widget.appKitModal.session!.getAddress(
-        'eip155',
-      )!;
+      final walletAddress = widget.appKitModal.session!.getAddress('eip155')!;
       final response = await widget.appKitModal.request(
         topic: widget.appKitModal.session!.topic!,
         chainId: widget.appKitModal.selectedChain!.chainId,
@@ -255,16 +252,11 @@ class _KastMockedModalState extends State<KastMockedModal>
         '42161', // Arbitrum
       );
       await widget.appKitModal.selectChain(workingChain);
-      final walletAddress = widget.appKitModal.session!.getAddress(
-        'eip155',
-      )!;
+      final walletAddress = widget.appKitModal.session!.getAddress('eip155')!;
 
       final contract = ARBUSDCContract();
       final deployedContract = DeployedContract(
-        ContractAbi.fromJson(
-          jsonEncode(contract.contractABI),
-          contract.name,
-        ),
+        ContractAbi.fromJson(jsonEncode(contract.contractABI), contract.name),
         EthereumAddress.fromHex(contract.contractAddress),
       );
 
@@ -273,9 +265,7 @@ class _KastMockedModalState extends State<KastMockedModal>
         chainId: widget.appKitModal.selectedChain!.chainId,
         deployedContract: deployedContract,
         functionName: 'transfer',
-        transaction: Transaction(
-          from: EthereumAddress.fromHex(walletAddress),
-        ),
+        transaction: Transaction(from: EthereumAddress.fromHex(walletAddress)),
         parameters: [
           // should be the Kast recipient address instead
           EthereumAddress.fromHex(walletAddress),
@@ -421,9 +411,7 @@ class _KastMockedModalState extends State<KastMockedModal>
   void _onConnectAndTopUpHandler(ModalConnect event) {
     if (!mounted) return;
     topUpNativeFromWallet(10);
-    widget.appKitModal.onModalConnect.unsubscribe(
-      _onConnectAndTopUpHandler,
-    );
+    widget.appKitModal.onModalConnect.unsubscribe(_onConnectAndTopUpHandler);
   }
 
   void _onDisconnectHandler(ModalDisconnect event) {
@@ -711,24 +699,13 @@ mixin StatusCheckUtils {
     String status = 'PENDING';
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     if (namespace == 'eip155') {
-      status = await _getEvmTxStatus(
-        appKitModal,
-        chainId,
-        txHash,
-      );
+      status = await _getEvmTxStatus(appKitModal, chainId, txHash);
     }
     if (namespace == 'solana') {
-      status = await _getSolanaTxStatus(
-        appKitModal,
-        chainId,
-        txHash,
-      );
+      status = await _getSolanaTxStatus(appKitModal, chainId, txHash);
     }
     if (namespace == 'tron') {
-      status = await _getTronTxStatus(
-        chainId,
-        txHash,
-      );
+      status = await _getTronTxStatus(chainId, txHash);
     }
 
     if (status == 'PENDING') {
@@ -784,10 +761,7 @@ mixin StatusCheckUtils {
         method: 'getTransaction',
         params: [
           txHash,
-          {
-            'encoding': 'json',
-            'maxSupportedTransactionVersion': 0,
-          },
+          {'encoding': 'json', 'maxSupportedTransactionVersion': 0},
         ],
       );
 
@@ -807,10 +781,7 @@ mixin StatusCheckUtils {
     }
   }
 
-  Future<String> _getTronTxStatus(
-    String chainId,
-    String txHash,
-  ) async {
+  Future<String> _getTronTxStatus(String chainId, String txHash) async {
     try {
       final tronApi = 'https://api.trongrid.io';
       final url = Uri.parse('$tronApi/wallet/gettransactioninfobyid');

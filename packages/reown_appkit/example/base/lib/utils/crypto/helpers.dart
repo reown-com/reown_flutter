@@ -173,10 +173,7 @@ Future<SessionRequestParams?> getParams(
         walletAdress: address,
         isV1: session?.sessionProperties['tron_method_version'] == 'v1',
       );
-      return SessionRequestParams(
-        method: method,
-        params: parameters,
-      );
+      return SessionRequestParams(method: method, params: parameters);
     case 'polkadot_signMessage':
       return SessionRequestParams(
         method: method,

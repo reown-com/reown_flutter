@@ -10,7 +10,6 @@ import 'package:reown_core/relay_client/i_relay_client.dart';
 import 'package:reown_core/store/i_store.dart';
 import 'package:reown_core/store/link_mode_store.dart';
 import 'package:reown_core/verify/i_verify.dart';
-import 'package:reown_yttrium/reown_yttrium.dart';
 
 abstract class IReownCore {
   final String protocol = 'wc';

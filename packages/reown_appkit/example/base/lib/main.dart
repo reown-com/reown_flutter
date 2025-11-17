@@ -427,10 +427,8 @@ class _MyHomePageState extends State<MyHomePage> {
       // When linkMode is true, the application operates in "Link Mode",
       // which is designed to support only EVM-compatible networks.
       // As a result, non-EVM networks like Solana should be removed
-      final namespaces =
-          ReownAppKitModalNetworks.getAllSupportedNamespaces().where(
-        (ns) => ns != 'eip155',
-      );
+      final namespaces = ReownAppKitModalNetworks.getAllSupportedNamespaces()
+          .where((ns) => ns != 'eip155');
       for (var ns in namespaces) {
         ReownAppKitModalNetworks.removeSupportedNetworks(ns);
       }
