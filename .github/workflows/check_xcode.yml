@@ -17,6 +17,5 @@ jobs:
 
           echo "Looking for installed Xcode bundles in /Applications..."
           INSTALLED=$(ls -1 /Applications | grep -i Xcode || true)
-          echo "Installed:"
-          echo $INSTALLED
+          echo "Installed: $INSTALLED"
         shell: bash
