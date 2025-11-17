@@ -1,0 +1,38 @@
+name: Check Xcode
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-26
+
+    steps:
+      - name: Show Xcode/Swift and try to select Xcode 26
+        run: |
+          echo "Current active Xcode:"
+          xcodebuild -version || true
+          echo "Current xcode-select path:"
+          xcode-select -p || true
+
+          echo "Looking for installed Xcode bundles in /Applications..."
+          INSTALLED=$(ls -1 /Applications | grep -i Xcode || true)
+          echo "Installed: $INSTALLED"
+
+          # try to find Xcode_26* (adjust pattern if your bundle is named differently)
+          TARGET=$(ls -1 /Applications | grep -i 'Xcode_26' | head -n1 || true)
+          if [ -n "$TARGET" ]; then
+            sudo xcode-select -s "/Applications/${TARGET}/Contents/Developer"
+            echo "Switched to /Applications/${TARGET}"
+            xcodebuild -version
+            swift --version || true
+          else
+            echo "✖ No Xcode_26.* bundle found in /Applications. Available bundles:"
+            ls -1 /Applications | grep -i Xcode || true
+            echo "If you need Xcode 26, either:"
+            echo "  • use a runner image that includes it, or"
+            echo "  • pre-install Xcode 26 on the runner, or"
+            echo "  • change your local Xcode to match CI."
+            exit 1
+          fi
+        shell: bash
