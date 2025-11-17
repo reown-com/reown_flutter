@@ -4,8 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
-import 'package:reown_appkit_dapp/utils/dart_defines.dart';
-
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
 
@@ -110,7 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _initSDK() async {
     _appKitModal = ReownAppKitModal(
-      projectId: DartDefines.projectId,
+      projectId: '876c626bd43841c04f50fc96ea1e31a2',
       logLevel: LogLevel.all,
       context: context,
       metadata: PairingMetadata(
@@ -164,10 +162,8 @@ class _KastMockedModalState extends State<KastMockedModal>
     with StatusCheckUtils {
   // IT CAN FAIRLY BE ADDRESS FOR CHAINID INSTEAD OF NAMESPACE
   final Map<String, String> _kastDepositAddressForChain = {
-    'eip155':
-        '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340', // KAST deposit address on EVM
-    'solana':
-        '3ZFT4Cwvy17qzEvjvjyVhgQDYrkzfaXHe8wrpFX8Z5tL', // KAST deposit address on SOLANA
+    'eip155': '0xD6d146ec0F...', // KAST deposit address on EVM
+    'solana': '3ZFT4Cwvy17q...', // KAST deposit address on SOLANA
   };
 
   bool _loading = false;
@@ -324,10 +320,10 @@ class _KastMockedModalState extends State<KastMockedModal>
     try {
       // CONFIGURE NETWORK YOU WANT TO RECEIVE FUNDS ON
       // Since AppKit defines some EVM and Solana Mainnet by default, you can do this as well
-      final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
-        'eip155',
-        '11155111', // Sepolia
-      );
+      // final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
+      //   'solana',
+      //   '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', // Solana Mainnet
+      // );
       // Other examples...
       // final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
       //   'eip155',
@@ -337,10 +333,10 @@ class _KastMockedModalState extends State<KastMockedModal>
       //   'eip155',
       //   '42161', // Arbitrum
       // );
-      // final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
-      //   'eip155',
-      //   '137', // Polygon
-      // );
+      final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
+        'eip155',
+        '137', // Polygon
+      );
 
       // If you wan't to use some custom chain that is not included in `ReownAppKitModalNetworks` you will have to configure it as follows...
       // final solanaNetwork = ReownAppKitModalNetworkInfo(

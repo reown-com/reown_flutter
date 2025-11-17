@@ -11,10 +11,10 @@ class MethodChannelErc6492 {
     required String networkId,
   }) async {
     try {
-      final bool? result = await methodChannel.invokeMethod<bool>('erc6492_init', {
-        'projectId': projectId,
-        'networkId': networkId,
-      });
+      final bool? result = await methodChannel.invokeMethod<bool>(
+        'erc6492_init',
+        {'projectId': projectId, 'networkId': networkId},
+      );
       return result!;
     } on PlatformException catch (e) {
       debugPrint('[$runtimeType] erc6492_init $e');
@@ -30,13 +30,14 @@ class MethodChannelErc6492 {
     required String hexStringPrefixedMessageHash,
   }) async {
     try {
-      final bool? result = await methodChannel.invokeMethod<bool>('erc6492_verify', {
-        'projectId': projectId,
-        'networkId': networkId,
-        'signature': signature,
-        'address': address,
-        'hexStringPrefixedMessageHash': hexStringPrefixedMessageHash,
-      });
+      final bool? result = await methodChannel
+          .invokeMethod<bool>('erc6492_verify', {
+            'projectId': projectId,
+            'networkId': networkId,
+            'signature': signature,
+            'address': address,
+            'hexStringPrefixedMessageHash': hexStringPrefixedMessageHash,
+          });
       return result!;
     } on PlatformException catch (e) {
       debugPrint('[$runtimeType] erc6492_verify $e');

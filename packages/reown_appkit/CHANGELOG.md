@@ -1,3 +1,7 @@
+## 1.7.5
+
+- Bug fix on Deposit With Exchange
+
 ## 1.7.4
 
 - One Click Auth for non-EVM chains
