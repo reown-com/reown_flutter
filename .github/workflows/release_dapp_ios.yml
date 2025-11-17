@@ -14,7 +14,7 @@ on:
 jobs:
   build:
     # if: (github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'master') || github.event_name == 'workflow_dispatch'
-    runs-on: macos-14
+    runs-on: macos-26
 
     steps:
       # Checkout the repo
@@ -81,5 +81,5 @@ jobs:
           fastlane release_testflight username:$APPLE_ID token:$GH_BASIC_AUTH project_id:$PROJECT_ID app_id:$APPLE_DAPP_ID app_store_key_id:$APP_STORE_KEY_ID apple_issuer_id:$APPLE_ISSUER_ID match_git_url:$MATCH_GIT_URL app_version:$VERSION_NUMBER flavor:production
 
 # Launch locally
-# act -j build --container-architecture linux/amd64 -P macos-14=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_dapp_ios.yml
-# act --container-architecture linux/amd64 -P macos-14=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_dapp_ios.yml workflow_dispatch
+# act -j build --container-architecture linux/amd64 -P macos-26=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_dapp_ios.yml
+# act --container-architecture linux/amd64 -P macos-26=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_dapp_ios.yml workflow_dispatch
