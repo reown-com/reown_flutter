@@ -13,7 +13,7 @@ import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_model.dart';
 
-import 'package:reown_yttrium/models/ton.dart';
+import 'package:reown_yttrium_utils/models/ton.dart';
 
 class TonService {
   late final ReownWalletKit _walletKit;
@@ -146,14 +146,13 @@ class TonService {
     final privateKey = keys[0].privateKey;
     final publicKey = keys[0].publicKey;
 
-    final signature = await _tonClient.signData(
+    return await _tonClient.signData(
       text: message,
       keyPair: TonKeyPair(
         sk: privateKey,
         pk: publicKey,
       ),
     );
-    return signature;
   }
 
   Future<void> tonSendMessage(String topic, dynamic parameters) async {

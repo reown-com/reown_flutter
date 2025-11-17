@@ -39,7 +39,7 @@
 
 # Keep all plugin-related classes
 -keep class com.reown.reown_yttrium.** { *; }
--keep class io.flutter.plugins.GeneratedPluginRegistrant { *; }
+#-keep class io.flutter.plugins.GeneratedPluginRegistrant { *; }
 -keep class io.flutter.embedding.engine.plugins.** { *; }
 
 # Ensure FlutterPlugin classes are not stripped
@@ -55,7 +55,9 @@
 -keepattributes *Annotation*
 
 # Preserve the uniffi generated classes
--keep class uniffi.** { *; }
+-keep class uniffi.yttrium.** { *; }
+-keep class com.reown.reown_yttrium.** { *; }
+-dontwarn uniffi.yttrium.**
 
 # Preserve all public and protected fields and methods
 -keepclassmembers class ** {

@@ -23,7 +23,7 @@ import 'package:reown_walletkit_wallet/dependencies/bip39/bip39_base.dart'
     as bip39;
 import 'package:reown_walletkit_wallet/dependencies/bip32/bip32_base.dart'
     as bip32;
-import 'package:reown_yttrium/reown_yttrium.dart';
+import 'package:reown_yttrium_utils/reown_yttrium_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solana/solana.dart' as solana;
 import 'package:bitcoin_base/bitcoin_base.dart' as bitcoin;

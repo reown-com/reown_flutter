@@ -118,7 +118,7 @@ class AssetSelectorPage extends StatelessWidget {
                         color: themeColors.foreground200,
                       ),
                       onTap: () {
-                        _dweService.configDeposit(preselectedAsset: asset);
+                        // _dweService.configDeposit(preselectedAsset: asset);
                         _dweService.selectedAsset.value = asset;
                         // if (_dweService.enableNetworkSelection) {
                         //   _widgetStack.popUntil(KeyConstants.depositPageKey);

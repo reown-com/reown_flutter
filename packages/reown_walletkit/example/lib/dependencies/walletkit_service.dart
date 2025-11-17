@@ -333,7 +333,7 @@ class WalletKitService extends IWalletKitService {
         try {
           final cacaos = await signAuthenticationMessages(formattedMessages);
 
-          _walletKit!.approveSession(
+          await _walletKit!.approveSession(
             id: args.id,
             namespaces: args.params.generatedNamespaces!,
             sessionProperties: args.params.sessionProperties,
@@ -591,25 +591,11 @@ class WalletKitService extends IWalletKitService {
           final signature = await service.signMessage(message);
           final type = getSignatureType(namespace);
           return (signature, type, null);
-        case 'cosmos':
-          // TODO: cosmos requires extra params
-          // final service = getChainService<CosmosService>(chainId: caip2chain);
-          // final signature = await service.signMessage(message);
-          // final type = getSignatureType(namespace);
-          // return (signature, type, null);
-          throw StateError('Unsupported signature for chain $chainId');
         case 'tron':
           final service = getChainService<TronService>(chainId: caip2chain);
           final signature = await service.signMessage(message);
           final type = getSignatureType(namespace);
           return (signature, type, null);
-        case 'kadena':
-          // TODO: kadena requires extra params
-          // final service = getChainService<KadenaService>(chainId: caip2chain);
-          // final signature = await service.signMessage(message);
-          // final type = getSignatureType(namespace);
-          // return (signature, type, null);
-          throw StateError('Unsupported signature for chain $chainId');
         case 'ton':
           final service = getChainService<TonService>(chainId: caip2chain);
           final signature = await service.signMessage(message);

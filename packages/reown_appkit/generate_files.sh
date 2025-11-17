@@ -43,8 +43,9 @@ dart format .
 
 cd ios
 rm Podfile.lock
-# pod deintegrate
-# pod cache clean --all
+pod deintegrate
+pod cache clean --all
+pod repo update
 pod install
 cd ..
 

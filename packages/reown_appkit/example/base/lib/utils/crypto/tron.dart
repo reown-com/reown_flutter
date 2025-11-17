@@ -10,7 +10,7 @@ import 'package:convert/convert.dart';
 class Tron {
   static final List<String> methods = [
     'tron_signTransaction',
-    'tron_signMessage'
+    'tron_signMessage',
   ];
 
   static final List<String> events = [];
@@ -37,11 +37,7 @@ class Tron {
 
     return {
       'address': walletAdress,
-      'transaction': isV1
-          ? transaction
-          : {
-              'transaction': transaction,
-            },
+      'transaction': isV1 ? transaction : {'transaction': transaction},
     };
   }
 

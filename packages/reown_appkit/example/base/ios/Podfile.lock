@@ -10,16 +10,22 @@ PODS:
     - Flutter
   - objective_c (0.0.1):
     - Flutter
+  - reown_yttrium (0.0.1):
+    - Flutter
+    - YttriumWrapper (= 0.9.111)
+  - YttriumWrapper (0.9.111)
 
 DEPENDENCIES:
   - coinbase_wallet_sdk (from `.symlinks/plugins/coinbase_wallet_sdk/ios`)
   - Flutter (from `Flutter`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
   - objective_c (from `.symlinks/plugins/objective_c/ios`)
+  - reown_yttrium (from `.symlinks/plugins/reown_yttrium/ios`)
 
 SPEC REPOS:
   trunk:
     - CoinbaseWalletSDK
+    - YttriumWrapper
 
 EXTERNAL SOURCES:
   coinbase_wallet_sdk:
@@ -30,6 +36,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
   objective_c:
     :path: ".symlinks/plugins/objective_c/ios"
+  reown_yttrium:
+    :path: ".symlinks/plugins/reown_yttrium/ios"
 
 SPEC CHECKSUMS:
   coinbase_wallet_sdk: c893738400ef78bd20e7f4195cbb38266f7d15e8
@@ -37,6 +45,8 @@ SPEC CHECKSUMS:
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
   objective_c: 89e720c30d716b036faf9c9684022048eee1eee2
+  reown_yttrium: a5d78581491cb5e5ea1b038026b4f4c5e75085e9
+  YttriumWrapper: 301cfb382b568f08da8a641bace06c94aea99f7c
 
 PODFILE CHECKSUM: 0772a2bd8cd4c7aaeb2576ddfaf6b03be722593b
 
