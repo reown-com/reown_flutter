@@ -25,8 +25,8 @@ dependencies:
   msgpack_dart: ^1.0.1
   package_info_plus: ^8.1.2
   pointycastle: ^3.9.1
-  reown_yttrium:
-    path: ../reown_yttrium/
+  # reown_yttrium:
+  #   path: ../reown_yttrium/
   shared_preferences: ^2.3.4
   stack_trace: ^1.11.1
   stream_channel: ^2.1.2
