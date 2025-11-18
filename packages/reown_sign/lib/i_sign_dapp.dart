@@ -19,6 +19,7 @@ abstract class IReownSignDapp extends IReownSignCommon {
     String? pairingTopic,
     List<Relay>? relays,
     List<SessionAuthRequestParams>? authentication,
+    WalletPayRequestParams? walletPayRequest,
     List<List<String>>? methods,
   });
   Future<dynamic> request({

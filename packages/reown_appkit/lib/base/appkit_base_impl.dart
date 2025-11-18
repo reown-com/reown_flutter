@@ -177,6 +177,7 @@ class ReownAppKit implements IReownAppKit {
     String? pairingTopic,
     List<Relay>? relays,
     List<SessionAuthRequestParams>? authentication,
+    WalletPayRequestParams? walletPayRequest,
     List<List<String>>? methods = DEFAULT_METHODS,
   }) async {
     try {

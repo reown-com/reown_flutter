@@ -5,6 +5,7 @@ import 'package:reown_sign/models/cacao_models.dart';
 import 'package:reown_sign/models/session_auth_models.dart';
 import 'package:reown_sign/models/proposal_models.dart';
 import 'package:reown_sign/models/session_models.dart';
+import 'package:reown_sign/models/sign_client_models.dart';
 
 part 'json_rpc_models.g.dart';
 part 'json_rpc_models.freezed.dart';

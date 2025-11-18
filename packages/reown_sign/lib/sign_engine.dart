@@ -143,7 +143,7 @@ class ReownSign implements IReownSign {
     String? pairingTopic,
     List<Relay>? relays,
     List<SessionAuthRequestParams>? authentication,
-    // WalletPayParams? walletPay;
+    WalletPayRequestParams? walletPayRequest,
     List<List<String>>? methods = DEFAULT_METHODS,
   }) async {
     _checkInitialized();
@@ -204,6 +204,7 @@ class ReownSign implements IReownSign {
               ),
             )
             .toList(),
+        walletPayRequest: walletPayRequest,
       ),
     );
 
@@ -359,7 +360,7 @@ class ReownSign implements IReownSign {
       sessionProperties: proposal.sessionProperties,
       transportType: TransportType.relay,
       authentication: proposalRequestsResponses?.authentication,
-      // walletPayResult: proposalRequestsResponses?.walletPayResult,
+      walletPayResult: proposalRequestsResponses?.walletPayResult,
     );
 
     onSessionConnect.broadcast(SessionConnect(session));
@@ -1117,7 +1118,7 @@ class ReownSign implements IReownSign {
         peer: request.controller,
         transportType: TransportType.relay,
         authentication: request.proposalRequestsResponses?.authentication,
-        // walletPayResult: request.proposalRequestsResponses?.walletPay,
+        walletPayResult: request.proposalRequestsResponses?.walletPayResult,
       );
 
       // Update all the things: session, expiry, metadata, pairing

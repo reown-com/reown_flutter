@@ -87,24 +87,50 @@ _ProposalRequests _$ProposalRequestsFromJson(Map<String, dynamic> json) =>
       authentication: (json['authentication'] as List<dynamic>?)
           ?.map((e) => SessionAuthPayload.fromJson(e as Map<String, dynamic>))
           .toList(),
+      walletPayRequest: json['walletPayRequest'] == null
+          ? null
+          : WalletPayRequestParams.fromJson(
+              json['walletPayRequest'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$ProposalRequestsToJson(
   _ProposalRequests instance,
 ) => <String, dynamic>{
   'authentication': ?instance.authentication?.map((e) => e.toJson()).toList(),
+  'walletPayRequest': ?instance.walletPayRequest?.toJson(),
 };
 
-_ProposalRequestsResponses _$ProposalRequestsResponsesFromJson(
+_WalletPayRequestParams _$WalletPayRequestParamsFromJson(
   Map<String, dynamic> json,
-) => _ProposalRequestsResponses(
-  authentication: (json['authentication'] as List<dynamic>?)
-      ?.map((e) => Cacao.fromJson(e as Map<String, dynamic>))
+) => _WalletPayRequestParams(
+  version: json['version'] as String,
+  acceptedPayments: (json['acceptedPayments'] as List<dynamic>)
+      .map((e) => PaymentOption.fromJson(e as Map<String, dynamic>))
       .toList(),
+  expiry: (json['expiry'] as num).toInt(),
+  orderId: json['orderId'] as String?,
 );
 
-Map<String, dynamic> _$ProposalRequestsResponsesToJson(
-  _ProposalRequestsResponses instance,
+Map<String, dynamic> _$WalletPayRequestParamsToJson(
+  _WalletPayRequestParams instance,
 ) => <String, dynamic>{
-  'authentication': ?instance.authentication?.map((e) => e.toJson()).toList(),
+  'version': instance.version,
+  'acceptedPayments': instance.acceptedPayments.map((e) => e.toJson()).toList(),
+  'expiry': instance.expiry,
+  'orderId': instance.orderId,
 };
+
+_PaymentOption _$PaymentOptionFromJson(Map<String, dynamic> json) =>
+    _PaymentOption(
+      recipient: json['recipient'] as String,
+      asset: json['asset'] as String,
+      amount: json['amount'] as String,
+    );
+
+Map<String, dynamic> _$PaymentOptionToJson(_PaymentOption instance) =>
+    <String, dynamic>{
+      'recipient': instance.recipient,
+      'asset': instance.asset,
+      'amount': instance.amount,
+    };

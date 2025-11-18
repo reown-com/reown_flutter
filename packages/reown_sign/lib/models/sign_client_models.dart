@@ -1,6 +1,11 @@
 import 'dart:async';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:reown_sign/models/cacao_models.dart';
 
 import 'package:reown_sign/models/session_models.dart';
+
+part 'sign_client_models.g.dart';
+part 'sign_client_models.freezed.dart';
 
 class ConnectResponse {
   final String pairingTopic;
@@ -29,4 +34,16 @@ class ApproveResponse {
   String toString() {
     return 'ApproveResponse(topic: $topic, session: $session)';
   }
+}
+
+@freezed
+sealed class ProposalRequestsResponses with _$ProposalRequestsResponses {
+  @JsonSerializable(includeIfNull: false)
+  const factory ProposalRequestsResponses({
+    List<Cacao>? authentication,
+    WalletPayResult? walletPayResult,
+  }) = _ProposalRequestsResponses;
+
+  factory ProposalRequestsResponses.fromJson(Map<String, dynamic> json) =>
+      _$ProposalRequestsResponsesFromJson(json);
 }

@@ -66,6 +66,7 @@ sealed class SessionData with _$SessionData {
     Map<String, RequiredNamespace>? optionalNamespaces,
     Map<String, String>? sessionProperties,
     List<Cacao>? authentication,
+    WalletPayResult? walletPayResult,
     @Default(TransportType.relay) TransportType transportType,
   }) = _SessionData;
 
@@ -112,4 +113,19 @@ sealed class SessionEventParams with _$SessionEventParams {
 
   factory SessionEventParams.fromJson(Map<String, dynamic> json) =>
       _$SessionEventParamsFromJson(json);
+}
+
+@freezed
+sealed class WalletPayResult with _$WalletPayResult {
+  const factory WalletPayResult({
+    required String version,
+    required String txid,
+    required String recipient,
+    required String asset,
+    required String amount, // Hex string
+    String? orderId,
+  }) = _WalletPayResult;
+
+  factory WalletPayResult.fromJson(Map<String, dynamic> json) =>
+      _$WalletPayResultFromJson(json);
 }

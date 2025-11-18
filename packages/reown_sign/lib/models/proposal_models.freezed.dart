@@ -936,7 +936,7 @@ $ProposalRequestsCopyWith<$Res>? get requests {
 /// @nodoc
 mixin _$ProposalRequests {
 
- List<SessionAuthPayload>? get authentication;
+ List<SessionAuthPayload>? get authentication; WalletPayRequestParams? get walletPayRequest;
 /// Create a copy of ProposalRequests
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -949,16 +949,16 @@ $ProposalRequestsCopyWith<ProposalRequests> get copyWith => _$ProposalRequestsCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProposalRequests&&const DeepCollectionEquality().equals(other.authentication, authentication));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProposalRequests&&const DeepCollectionEquality().equals(other.authentication, authentication)&&(identical(other.walletPayRequest, walletPayRequest) || other.walletPayRequest == walletPayRequest));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(authentication));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(authentication),walletPayRequest);
 
 @override
 String toString() {
-  return 'ProposalRequests(authentication: $authentication)';
+  return 'ProposalRequests(authentication: $authentication, walletPayRequest: $walletPayRequest)';
 }
 
 
@@ -969,11 +969,11 @@ abstract mixin class $ProposalRequestsCopyWith<$Res>  {
   factory $ProposalRequestsCopyWith(ProposalRequests value, $Res Function(ProposalRequests) _then) = _$ProposalRequestsCopyWithImpl;
 @useResult
 $Res call({
- List<SessionAuthPayload>? authentication
+ List<SessionAuthPayload>? authentication, WalletPayRequestParams? walletPayRequest
 });
 
 
-
+$WalletPayRequestParamsCopyWith<$Res>? get walletPayRequest;
 
 }
 /// @nodoc
@@ -986,13 +986,26 @@ class _$ProposalRequestsCopyWithImpl<$Res>
 
 /// Create a copy of ProposalRequests
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? authentication = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? authentication = freezed,Object? walletPayRequest = freezed,}) {
   return _then(_self.copyWith(
 authentication: freezed == authentication ? _self.authentication : authentication // ignore: cast_nullable_to_non_nullable
-as List<SessionAuthPayload>?,
+as List<SessionAuthPayload>?,walletPayRequest: freezed == walletPayRequest ? _self.walletPayRequest : walletPayRequest // ignore: cast_nullable_to_non_nullable
+as WalletPayRequestParams?,
   ));
 }
+/// Create a copy of ProposalRequests
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WalletPayRequestParamsCopyWith<$Res>? get walletPayRequest {
+    if (_self.walletPayRequest == null) {
+    return null;
+  }
 
+  return $WalletPayRequestParamsCopyWith<$Res>(_self.walletPayRequest!, (value) {
+    return _then(_self.copyWith(walletPayRequest: value));
+  });
+}
 }
 
 
@@ -1071,10 +1084,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<SessionAuthPayload>? authentication)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<SessionAuthPayload>? authentication,  WalletPayRequestParams? walletPayRequest)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProposalRequests() when $default != null:
-return $default(_that.authentication);case _:
+return $default(_that.authentication,_that.walletPayRequest);case _:
   return orElse();
 
 }
@@ -1092,10 +1105,10 @@ return $default(_that.authentication);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<SessionAuthPayload>? authentication)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<SessionAuthPayload>? authentication,  WalletPayRequestParams? walletPayRequest)  $default,) {final _that = this;
 switch (_that) {
 case _ProposalRequests():
-return $default(_that.authentication);}
+return $default(_that.authentication,_that.walletPayRequest);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1109,10 +1122,10 @@ return $default(_that.authentication);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<SessionAuthPayload>? authentication)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<SessionAuthPayload>? authentication,  WalletPayRequestParams? walletPayRequest)?  $default,) {final _that = this;
 switch (_that) {
 case _ProposalRequests() when $default != null:
-return $default(_that.authentication);case _:
+return $default(_that.authentication,_that.walletPayRequest);case _:
   return null;
 
 }
@@ -1124,7 +1137,7 @@ return $default(_that.authentication);case _:
 
 @JsonSerializable(includeIfNull: false)
 class _ProposalRequests implements ProposalRequests {
-  const _ProposalRequests({final  List<SessionAuthPayload>? authentication}): _authentication = authentication;
+  const _ProposalRequests({final  List<SessionAuthPayload>? authentication, this.walletPayRequest}): _authentication = authentication;
   factory _ProposalRequests.fromJson(Map<String, dynamic> json) => _$ProposalRequestsFromJson(json);
 
  final  List<SessionAuthPayload>? _authentication;
@@ -1136,6 +1149,7 @@ class _ProposalRequests implements ProposalRequests {
   return EqualUnmodifiableListView(value);
 }
 
+@override final  WalletPayRequestParams? walletPayRequest;
 
 /// Create a copy of ProposalRequests
 /// with the given fields replaced by the non-null parameter values.
@@ -1150,16 +1164,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProposalRequests&&const DeepCollectionEquality().equals(other._authentication, _authentication));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProposalRequests&&const DeepCollectionEquality().equals(other._authentication, _authentication)&&(identical(other.walletPayRequest, walletPayRequest) || other.walletPayRequest == walletPayRequest));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_authentication));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_authentication),walletPayRequest);
 
 @override
 String toString() {
-  return 'ProposalRequests(authentication: $authentication)';
+  return 'ProposalRequests(authentication: $authentication, walletPayRequest: $walletPayRequest)';
 }
 
 
@@ -1170,11 +1184,11 @@ abstract mixin class _$ProposalRequestsCopyWith<$Res> implements $ProposalReques
   factory _$ProposalRequestsCopyWith(_ProposalRequests value, $Res Function(_ProposalRequests) _then) = __$ProposalRequestsCopyWithImpl;
 @override @useResult
 $Res call({
- List<SessionAuthPayload>? authentication
+ List<SessionAuthPayload>? authentication, WalletPayRequestParams? walletPayRequest
 });
 
 
-
+@override $WalletPayRequestParamsCopyWith<$Res>? get walletPayRequest;
 
 }
 /// @nodoc
@@ -1187,54 +1201,67 @@ class __$ProposalRequestsCopyWithImpl<$Res>
 
 /// Create a copy of ProposalRequests
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? authentication = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? authentication = freezed,Object? walletPayRequest = freezed,}) {
   return _then(_ProposalRequests(
 authentication: freezed == authentication ? _self._authentication : authentication // ignore: cast_nullable_to_non_nullable
-as List<SessionAuthPayload>?,
+as List<SessionAuthPayload>?,walletPayRequest: freezed == walletPayRequest ? _self.walletPayRequest : walletPayRequest // ignore: cast_nullable_to_non_nullable
+as WalletPayRequestParams?,
   ));
 }
 
+/// Create a copy of ProposalRequests
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WalletPayRequestParamsCopyWith<$Res>? get walletPayRequest {
+    if (_self.walletPayRequest == null) {
+    return null;
+  }
 
+  return $WalletPayRequestParamsCopyWith<$Res>(_self.walletPayRequest!, (value) {
+    return _then(_self.copyWith(walletPayRequest: value));
+  });
+}
 }
 
 
 /// @nodoc
-mixin _$ProposalRequestsResponses {
+mixin _$WalletPayRequestParams {
 
- List<Cacao>? get authentication;
-/// Create a copy of ProposalRequestsResponses
+ String get version; List<PaymentOption> get acceptedPayments; int get expiry; String? get orderId;
+/// Create a copy of WalletPayRequestParams
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$ProposalRequestsResponsesCopyWith<ProposalRequestsResponses> get copyWith => _$ProposalRequestsResponsesCopyWithImpl<ProposalRequestsResponses>(this as ProposalRequestsResponses, _$identity);
+$WalletPayRequestParamsCopyWith<WalletPayRequestParams> get copyWith => _$WalletPayRequestParamsCopyWithImpl<WalletPayRequestParams>(this as WalletPayRequestParams, _$identity);
 
-  /// Serializes this ProposalRequestsResponses to a JSON map.
+  /// Serializes this WalletPayRequestParams to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProposalRequestsResponses&&const DeepCollectionEquality().equals(other.authentication, authentication));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WalletPayRequestParams&&(identical(other.version, version) || other.version == version)&&const DeepCollectionEquality().equals(other.acceptedPayments, acceptedPayments)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.orderId, orderId) || other.orderId == orderId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(authentication));
+int get hashCode => Object.hash(runtimeType,version,const DeepCollectionEquality().hash(acceptedPayments),expiry,orderId);
 
 @override
 String toString() {
-  return 'ProposalRequestsResponses(authentication: $authentication)';
+  return 'WalletPayRequestParams(version: $version, acceptedPayments: $acceptedPayments, expiry: $expiry, orderId: $orderId)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $ProposalRequestsResponsesCopyWith<$Res>  {
-  factory $ProposalRequestsResponsesCopyWith(ProposalRequestsResponses value, $Res Function(ProposalRequestsResponses) _then) = _$ProposalRequestsResponsesCopyWithImpl;
+abstract mixin class $WalletPayRequestParamsCopyWith<$Res>  {
+  factory $WalletPayRequestParamsCopyWith(WalletPayRequestParams value, $Res Function(WalletPayRequestParams) _then) = _$WalletPayRequestParamsCopyWithImpl;
 @useResult
 $Res call({
- List<Cacao>? authentication
+ String version, List<PaymentOption> acceptedPayments, int expiry, String? orderId
 });
 
 
@@ -1242,27 +1269,30 @@ $Res call({
 
 }
 /// @nodoc
-class _$ProposalRequestsResponsesCopyWithImpl<$Res>
-    implements $ProposalRequestsResponsesCopyWith<$Res> {
-  _$ProposalRequestsResponsesCopyWithImpl(this._self, this._then);
+class _$WalletPayRequestParamsCopyWithImpl<$Res>
+    implements $WalletPayRequestParamsCopyWith<$Res> {
+  _$WalletPayRequestParamsCopyWithImpl(this._self, this._then);
 
-  final ProposalRequestsResponses _self;
-  final $Res Function(ProposalRequestsResponses) _then;
+  final WalletPayRequestParams _self;
+  final $Res Function(WalletPayRequestParams) _then;
 
-/// Create a copy of ProposalRequestsResponses
+/// Create a copy of WalletPayRequestParams
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? authentication = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? version = null,Object? acceptedPayments = null,Object? expiry = null,Object? orderId = freezed,}) {
   return _then(_self.copyWith(
-authentication: freezed == authentication ? _self.authentication : authentication // ignore: cast_nullable_to_non_nullable
-as List<Cacao>?,
+version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as String,acceptedPayments: null == acceptedPayments ? _self.acceptedPayments : acceptedPayments // ignore: cast_nullable_to_non_nullable
+as List<PaymentOption>,expiry: null == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
+as int,orderId: freezed == orderId ? _self.orderId : orderId // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
 }
 
 
-/// Adds pattern-matching-related methods to [ProposalRequestsResponses].
-extension ProposalRequestsResponsesPatterns on ProposalRequestsResponses {
+/// Adds pattern-matching-related methods to [WalletPayRequestParams].
+extension WalletPayRequestParamsPatterns on WalletPayRequestParams {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -1275,10 +1305,10 @@ extension ProposalRequestsResponsesPatterns on ProposalRequestsResponses {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ProposalRequestsResponses value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WalletPayRequestParams value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _ProposalRequestsResponses() when $default != null:
+case _WalletPayRequestParams() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -1297,10 +1327,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ProposalRequestsResponses value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WalletPayRequestParams value)  $default,){
 final _that = this;
 switch (_that) {
-case _ProposalRequestsResponses():
+case _WalletPayRequestParams():
 return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -1315,10 +1345,10 @@ return $default(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ProposalRequestsResponses value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WalletPayRequestParams value)?  $default,){
 final _that = this;
 switch (_that) {
-case _ProposalRequestsResponses() when $default != null:
+case _WalletPayRequestParams() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -1336,10 +1366,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Cacao>? authentication)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String version,  List<PaymentOption> acceptedPayments,  int expiry,  String? orderId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _ProposalRequestsResponses() when $default != null:
-return $default(_that.authentication);case _:
+case _WalletPayRequestParams() when $default != null:
+return $default(_that.version,_that.acceptedPayments,_that.expiry,_that.orderId);case _:
   return orElse();
 
 }
@@ -1357,10 +1387,10 @@ return $default(_that.authentication);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Cacao>? authentication)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String version,  List<PaymentOption> acceptedPayments,  int expiry,  String? orderId)  $default,) {final _that = this;
 switch (_that) {
-case _ProposalRequestsResponses():
-return $default(_that.authentication);}
+case _WalletPayRequestParams():
+return $default(_that.version,_that.acceptedPayments,_that.expiry,_that.orderId);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1374,10 +1404,10 @@ return $default(_that.authentication);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Cacao>? authentication)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String version,  List<PaymentOption> acceptedPayments,  int expiry,  String? orderId)?  $default,) {final _that = this;
 switch (_that) {
-case _ProposalRequestsResponses() when $default != null:
-return $default(_that.authentication);case _:
+case _WalletPayRequestParams() when $default != null:
+return $default(_that.version,_that.acceptedPayments,_that.expiry,_that.orderId);case _:
   return null;
 
 }
@@ -1386,56 +1416,57 @@ return $default(_that.authentication);case _:
 }
 
 /// @nodoc
+@JsonSerializable()
 
-@JsonSerializable(includeIfNull: false)
-class _ProposalRequestsResponses implements ProposalRequestsResponses {
-  const _ProposalRequestsResponses({final  List<Cacao>? authentication}): _authentication = authentication;
-  factory _ProposalRequestsResponses.fromJson(Map<String, dynamic> json) => _$ProposalRequestsResponsesFromJson(json);
+class _WalletPayRequestParams implements WalletPayRequestParams {
+  const _WalletPayRequestParams({required this.version, required final  List<PaymentOption> acceptedPayments, required this.expiry, this.orderId}): _acceptedPayments = acceptedPayments;
+  factory _WalletPayRequestParams.fromJson(Map<String, dynamic> json) => _$WalletPayRequestParamsFromJson(json);
 
- final  List<Cacao>? _authentication;
-@override List<Cacao>? get authentication {
-  final value = _authentication;
-  if (value == null) return null;
-  if (_authentication is EqualUnmodifiableListView) return _authentication;
+@override final  String version;
+ final  List<PaymentOption> _acceptedPayments;
+@override List<PaymentOption> get acceptedPayments {
+  if (_acceptedPayments is EqualUnmodifiableListView) return _acceptedPayments;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(value);
+  return EqualUnmodifiableListView(_acceptedPayments);
 }
 
+@override final  int expiry;
+@override final  String? orderId;
 
-/// Create a copy of ProposalRequestsResponses
+/// Create a copy of WalletPayRequestParams
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$ProposalRequestsResponsesCopyWith<_ProposalRequestsResponses> get copyWith => __$ProposalRequestsResponsesCopyWithImpl<_ProposalRequestsResponses>(this, _$identity);
+_$WalletPayRequestParamsCopyWith<_WalletPayRequestParams> get copyWith => __$WalletPayRequestParamsCopyWithImpl<_WalletPayRequestParams>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$ProposalRequestsResponsesToJson(this, );
+  return _$WalletPayRequestParamsToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProposalRequestsResponses&&const DeepCollectionEquality().equals(other._authentication, _authentication));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WalletPayRequestParams&&(identical(other.version, version) || other.version == version)&&const DeepCollectionEquality().equals(other._acceptedPayments, _acceptedPayments)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.orderId, orderId) || other.orderId == orderId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_authentication));
+int get hashCode => Object.hash(runtimeType,version,const DeepCollectionEquality().hash(_acceptedPayments),expiry,orderId);
 
 @override
 String toString() {
-  return 'ProposalRequestsResponses(authentication: $authentication)';
+  return 'WalletPayRequestParams(version: $version, acceptedPayments: $acceptedPayments, expiry: $expiry, orderId: $orderId)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$ProposalRequestsResponsesCopyWith<$Res> implements $ProposalRequestsResponsesCopyWith<$Res> {
-  factory _$ProposalRequestsResponsesCopyWith(_ProposalRequestsResponses value, $Res Function(_ProposalRequestsResponses) _then) = __$ProposalRequestsResponsesCopyWithImpl;
+abstract mixin class _$WalletPayRequestParamsCopyWith<$Res> implements $WalletPayRequestParamsCopyWith<$Res> {
+  factory _$WalletPayRequestParamsCopyWith(_WalletPayRequestParams value, $Res Function(_WalletPayRequestParams) _then) = __$WalletPayRequestParamsCopyWithImpl;
 @override @useResult
 $Res call({
- List<Cacao>? authentication
+ String version, List<PaymentOption> acceptedPayments, int expiry, String? orderId
 });
 
 
@@ -1443,19 +1474,285 @@ $Res call({
 
 }
 /// @nodoc
-class __$ProposalRequestsResponsesCopyWithImpl<$Res>
-    implements _$ProposalRequestsResponsesCopyWith<$Res> {
-  __$ProposalRequestsResponsesCopyWithImpl(this._self, this._then);
+class __$WalletPayRequestParamsCopyWithImpl<$Res>
+    implements _$WalletPayRequestParamsCopyWith<$Res> {
+  __$WalletPayRequestParamsCopyWithImpl(this._self, this._then);
 
-  final _ProposalRequestsResponses _self;
-  final $Res Function(_ProposalRequestsResponses) _then;
+  final _WalletPayRequestParams _self;
+  final $Res Function(_WalletPayRequestParams) _then;
 
-/// Create a copy of ProposalRequestsResponses
+/// Create a copy of WalletPayRequestParams
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? authentication = freezed,}) {
-  return _then(_ProposalRequestsResponses(
-authentication: freezed == authentication ? _self._authentication : authentication // ignore: cast_nullable_to_non_nullable
-as List<Cacao>?,
+@override @pragma('vm:prefer-inline') $Res call({Object? version = null,Object? acceptedPayments = null,Object? expiry = null,Object? orderId = freezed,}) {
+  return _then(_WalletPayRequestParams(
+version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as String,acceptedPayments: null == acceptedPayments ? _self._acceptedPayments : acceptedPayments // ignore: cast_nullable_to_non_nullable
+as List<PaymentOption>,expiry: null == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
+as int,orderId: freezed == orderId ? _self.orderId : orderId // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$PaymentOption {
+
+ String get recipient; String get asset; String get amount;
+/// Create a copy of PaymentOption
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$PaymentOptionCopyWith<PaymentOption> get copyWith => _$PaymentOptionCopyWithImpl<PaymentOption>(this as PaymentOption, _$identity);
+
+  /// Serializes this PaymentOption to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentOption&&(identical(other.recipient, recipient) || other.recipient == recipient)&&(identical(other.asset, asset) || other.asset == asset)&&(identical(other.amount, amount) || other.amount == amount));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,recipient,asset,amount);
+
+@override
+String toString() {
+  return 'PaymentOption(recipient: $recipient, asset: $asset, amount: $amount)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $PaymentOptionCopyWith<$Res>  {
+  factory $PaymentOptionCopyWith(PaymentOption value, $Res Function(PaymentOption) _then) = _$PaymentOptionCopyWithImpl;
+@useResult
+$Res call({
+ String recipient, String asset, String amount
+});
+
+
+
+
+}
+/// @nodoc
+class _$PaymentOptionCopyWithImpl<$Res>
+    implements $PaymentOptionCopyWith<$Res> {
+  _$PaymentOptionCopyWithImpl(this._self, this._then);
+
+  final PaymentOption _self;
+  final $Res Function(PaymentOption) _then;
+
+/// Create a copy of PaymentOption
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? recipient = null,Object? asset = null,Object? amount = null,}) {
+  return _then(_self.copyWith(
+recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
+as String,asset: null == asset ? _self.asset : asset // ignore: cast_nullable_to_non_nullable
+as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [PaymentOption].
+extension PaymentOptionPatterns on PaymentOption {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _PaymentOption value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _PaymentOption() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _PaymentOption value)  $default,){
+final _that = this;
+switch (_that) {
+case _PaymentOption():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _PaymentOption value)?  $default,){
+final _that = this;
+switch (_that) {
+case _PaymentOption() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String recipient,  String asset,  String amount)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _PaymentOption() when $default != null:
+return $default(_that.recipient,_that.asset,_that.amount);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String recipient,  String asset,  String amount)  $default,) {final _that = this;
+switch (_that) {
+case _PaymentOption():
+return $default(_that.recipient,_that.asset,_that.amount);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String recipient,  String asset,  String amount)?  $default,) {final _that = this;
+switch (_that) {
+case _PaymentOption() when $default != null:
+return $default(_that.recipient,_that.asset,_that.amount);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _PaymentOption implements PaymentOption {
+  const _PaymentOption({required this.recipient, required this.asset, required this.amount});
+  factory _PaymentOption.fromJson(Map<String, dynamic> json) => _$PaymentOptionFromJson(json);
+
+@override final  String recipient;
+@override final  String asset;
+@override final  String amount;
+
+/// Create a copy of PaymentOption
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$PaymentOptionCopyWith<_PaymentOption> get copyWith => __$PaymentOptionCopyWithImpl<_PaymentOption>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$PaymentOptionToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaymentOption&&(identical(other.recipient, recipient) || other.recipient == recipient)&&(identical(other.asset, asset) || other.asset == asset)&&(identical(other.amount, amount) || other.amount == amount));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,recipient,asset,amount);
+
+@override
+String toString() {
+  return 'PaymentOption(recipient: $recipient, asset: $asset, amount: $amount)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$PaymentOptionCopyWith<$Res> implements $PaymentOptionCopyWith<$Res> {
+  factory _$PaymentOptionCopyWith(_PaymentOption value, $Res Function(_PaymentOption) _then) = __$PaymentOptionCopyWithImpl;
+@override @useResult
+$Res call({
+ String recipient, String asset, String amount
+});
+
+
+
+
+}
+/// @nodoc
+class __$PaymentOptionCopyWithImpl<$Res>
+    implements _$PaymentOptionCopyWith<$Res> {
+  __$PaymentOptionCopyWithImpl(this._self, this._then);
+
+  final _PaymentOption _self;
+  final $Res Function(_PaymentOption) _then;
+
+/// Create a copy of PaymentOption
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? recipient = null,Object? asset = null,Object? amount = null,}) {
+  return _then(_PaymentOption(
+recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
+as String,asset: null == asset ? _self.asset : asset // ignore: cast_nullable_to_non_nullable
+as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
+as String,
   ));
 }
 

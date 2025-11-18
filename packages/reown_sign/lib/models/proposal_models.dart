@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:reown_core/relay_client/relay_client_models.dart';
 import 'package:reown_sign/models/basic_models.dart';
-import 'package:reown_sign/models/cacao_models.dart';
 import 'package:reown_sign/models/session_auth_models.dart';
 import 'package:reown_sign/models/session_models.dart';
 
@@ -58,7 +57,7 @@ sealed class ProposalRequests with _$ProposalRequests {
   @JsonSerializable(includeIfNull: false)
   const factory ProposalRequests({
     List<SessionAuthPayload>? authentication,
-    // WalletPayParams? walletPay,
+    WalletPayRequestParams? walletPayRequest,
   }) = _ProposalRequests;
 
   factory ProposalRequests.fromJson(Map<String, dynamic> json) =>
@@ -66,13 +65,27 @@ sealed class ProposalRequests with _$ProposalRequests {
 }
 
 @freezed
-sealed class ProposalRequestsResponses with _$ProposalRequestsResponses {
-  @JsonSerializable(includeIfNull: false)
-  const factory ProposalRequestsResponses({
-    List<Cacao>? authentication,
-    // WalletPayParams? walletPay,
-  }) = _ProposalRequestsResponses;
+sealed class WalletPayRequestParams with _$WalletPayRequestParams {
+  const factory WalletPayRequestParams({
+    required String version,
+    required List<PaymentOption> acceptedPayments,
+    required int expiry,
+    String? orderId,
+  }) = _WalletPayRequestParams;
 
-  factory ProposalRequestsResponses.fromJson(Map<String, dynamic> json) =>
-      _$ProposalRequestsResponsesFromJson(json);
+  factory WalletPayRequestParams.fromJson(Map<String, dynamic> json) =>
+      _$WalletPayRequestParamsFromJson(json);
+}
+
+@freezed
+sealed class PaymentOption with _$PaymentOption {
+  const factory PaymentOption({
+    required String recipient,
+    required String asset,
+    required String amount, // Hex string
+    // types
+  }) = _PaymentOption;
+
+  factory PaymentOption.fromJson(Map<String, dynamic> json) =>
+      _$PaymentOptionFromJson(json);
 }

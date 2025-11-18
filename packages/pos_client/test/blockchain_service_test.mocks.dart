@@ -869,6 +869,7 @@ class MockReownSign extends _i1.Mock implements _i15.ReownSign {
     String? pairingTopic,
     List<_i15.Relay>? relays,
     List<_i15.SessionAuthRequestParams>? authentication,
+    _i15.WalletPayRequestParams? walletPayRequest,
     List<List<String>>? methods = const [
       ['wc_sessionPropose', 'wc_sessionRequest'],
     ],
@@ -881,6 +882,7 @@ class MockReownSign extends _i1.Mock implements _i15.ReownSign {
               #pairingTopic: pairingTopic,
               #relays: relays,
               #authentication: authentication,
+              #walletPayRequest: walletPayRequest,
               #methods: methods,
             }),
             returnValue: _i18.Future<_i15.ConnectResponse>.value(
@@ -893,6 +895,7 @@ class MockReownSign extends _i1.Mock implements _i15.ReownSign {
                   #pairingTopic: pairingTopic,
                   #relays: relays,
                   #authentication: authentication,
+                  #walletPayRequest: walletPayRequest,
                   #methods: methods,
                 }),
               ),

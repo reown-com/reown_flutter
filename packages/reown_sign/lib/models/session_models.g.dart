@@ -51,6 +51,11 @@ _SessionData _$SessionDataFromJson(Map<String, dynamic> json) => _SessionData(
   authentication: (json['authentication'] as List<dynamic>?)
       ?.map((e) => Cacao.fromJson(e as Map<String, dynamic>))
       .toList(),
+  walletPayResult: json['walletPayResult'] == null
+      ? null
+      : WalletPayResult.fromJson(
+          json['walletPayResult'] as Map<String, dynamic>,
+        ),
   transportType:
       $enumDecodeNullable(_$TransportTypeEnumMap, json['transportType']) ??
       TransportType.relay,
@@ -76,6 +81,7 @@ Map<String, dynamic> _$SessionDataToJson(
   ),
   'sessionProperties': ?instance.sessionProperties,
   'authentication': ?instance.authentication?.map((e) => e.toJson()).toList(),
+  'walletPayResult': ?instance.walletPayResult?.toJson(),
   'transportType': _$TransportTypeEnumMap[instance.transportType]!,
 };
 
@@ -126,3 +132,23 @@ _SessionEventParams _$SessionEventParamsFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$SessionEventParamsToJson(_SessionEventParams instance) =>
     <String, dynamic>{'name': instance.name, 'data': instance.data};
+
+_WalletPayResult _$WalletPayResultFromJson(Map<String, dynamic> json) =>
+    _WalletPayResult(
+      version: json['version'] as String,
+      txid: json['txid'] as String,
+      recipient: json['recipient'] as String,
+      asset: json['asset'] as String,
+      amount: json['amount'] as String,
+      orderId: json['orderId'] as String?,
+    );
+
+Map<String, dynamic> _$WalletPayResultToJson(_WalletPayResult instance) =>
+    <String, dynamic>{
+      'version': instance.version,
+      'txid': instance.txid,
+      'recipient': instance.recipient,
+      'asset': instance.asset,
+      'amount': instance.amount,
+      'orderId': instance.orderId,
+    };

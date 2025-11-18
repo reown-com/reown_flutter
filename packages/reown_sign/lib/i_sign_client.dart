@@ -49,6 +49,7 @@ abstract class IReownSignClient {
     String? pairingTopic,
     List<Relay>? relays,
     List<SessionAuthRequestParams>? authentication,
+    WalletPayRequestParams? walletPayRequest,
     List<List<String>>? methods,
   });
   Future<PairingInfo> pair({required Uri uri});

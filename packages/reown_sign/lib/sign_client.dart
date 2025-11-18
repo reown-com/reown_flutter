@@ -152,6 +152,7 @@ class ReownSignClient implements IReownSignClient {
     String? pairingTopic,
     List<Relay>? relays,
     List<SessionAuthRequestParams>? authentication,
+    WalletPayRequestParams? walletPayRequest,
     List<List<String>>? methods = ReownSign.DEFAULT_METHODS,
   }) async {
     try {
@@ -162,6 +163,7 @@ class ReownSignClient implements IReownSignClient {
         pairingTopic: pairingTopic,
         relays: relays,
         authentication: authentication,
+        walletPayRequest: walletPayRequest,
         methods: methods,
       );
     } catch (e) {
