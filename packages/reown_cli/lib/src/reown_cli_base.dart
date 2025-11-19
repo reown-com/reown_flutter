@@ -1,15 +1,16 @@
 // ignore_for_file: avoid_print
 
-import 'dart:io';
-import 'package:args/args.dart';
-import 'package:path/path.dart' as path;
-import 'package:process_run/process_run.dart';
-import 'package:pub_semver/pub_semver.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:reown_cli/src/templates/reown_cli_main_custom_template.dart';
-import 'package:reown_cli/src/templates/reown_cli_main_default_template.dart';
+import 'package:args/args.dart';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart' as path;
+import 'package:process_run/process_run.dart' show Shell;
+import 'package:pub_semver/pub_semver.dart';
+
+import 'templates/reown_cli_main_custom_template.dart';
+import 'templates/reown_cli_main_default_template.dart';
 
 class ReownCli {
   final ArgParser _parser;
