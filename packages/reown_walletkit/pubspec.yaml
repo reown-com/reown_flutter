@@ -27,11 +27,3 @@ dev_dependencies:
   mockito: ^5.4.4
   package_info_plus: ^8.1.2
   reown_appkit: ^1.7.4
-
-platforms:
-  android:
-  ios:
-  web:
-  macos:
-  linux:
-  windows:
