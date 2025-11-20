@@ -576,7 +576,8 @@ $ProposalDataCopyWith<$Res> get params {
 /// @nodoc
 mixin _$ProposalData {
 
- int get id; int get expiry; List<Relay> get relays; ConnectionMetadata get proposer; Map<String, RequiredNamespace> get requiredNamespaces; Map<String, RequiredNamespace> get optionalNamespaces; String get pairingTopic; Map<String, String>? get sessionProperties; Map<String, Namespace>? get generatedNamespaces; ProposalRequests? get requests;
+ int get id; int get expiry; List<Relay> get relays; ConnectionMetadata get proposer; Map<String, RequiredNamespace> get requiredNamespaces; Map<String, RequiredNamespace> get optionalNamespaces; String get pairingTopic; Map<String, String>? get sessionProperties; Map<String, Namespace>? get generatedNamespaces;// ProposalRequests? requests,
+ List<SessionAuthPayload>? get authentication; WalletPayRequestParams? get walletPay;
 /// Create a copy of ProposalData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -589,16 +590,16 @@ $ProposalDataCopyWith<ProposalData> get copyWith => _$ProposalDataCopyWithImpl<P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProposalData&&(identical(other.id, id) || other.id == id)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&const DeepCollectionEquality().equals(other.relays, relays)&&(identical(other.proposer, proposer) || other.proposer == proposer)&&const DeepCollectionEquality().equals(other.requiredNamespaces, requiredNamespaces)&&const DeepCollectionEquality().equals(other.optionalNamespaces, optionalNamespaces)&&(identical(other.pairingTopic, pairingTopic) || other.pairingTopic == pairingTopic)&&const DeepCollectionEquality().equals(other.sessionProperties, sessionProperties)&&const DeepCollectionEquality().equals(other.generatedNamespaces, generatedNamespaces)&&(identical(other.requests, requests) || other.requests == requests));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProposalData&&(identical(other.id, id) || other.id == id)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&const DeepCollectionEquality().equals(other.relays, relays)&&(identical(other.proposer, proposer) || other.proposer == proposer)&&const DeepCollectionEquality().equals(other.requiredNamespaces, requiredNamespaces)&&const DeepCollectionEquality().equals(other.optionalNamespaces, optionalNamespaces)&&(identical(other.pairingTopic, pairingTopic) || other.pairingTopic == pairingTopic)&&const DeepCollectionEquality().equals(other.sessionProperties, sessionProperties)&&const DeepCollectionEquality().equals(other.generatedNamespaces, generatedNamespaces)&&const DeepCollectionEquality().equals(other.authentication, authentication)&&(identical(other.walletPay, walletPay) || other.walletPay == walletPay));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,expiry,const DeepCollectionEquality().hash(relays),proposer,const DeepCollectionEquality().hash(requiredNamespaces),const DeepCollectionEquality().hash(optionalNamespaces),pairingTopic,const DeepCollectionEquality().hash(sessionProperties),const DeepCollectionEquality().hash(generatedNamespaces),requests);
+int get hashCode => Object.hash(runtimeType,id,expiry,const DeepCollectionEquality().hash(relays),proposer,const DeepCollectionEquality().hash(requiredNamespaces),const DeepCollectionEquality().hash(optionalNamespaces),pairingTopic,const DeepCollectionEquality().hash(sessionProperties),const DeepCollectionEquality().hash(generatedNamespaces),const DeepCollectionEquality().hash(authentication),walletPay);
 
 @override
 String toString() {
-  return 'ProposalData(id: $id, expiry: $expiry, relays: $relays, proposer: $proposer, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, pairingTopic: $pairingTopic, sessionProperties: $sessionProperties, generatedNamespaces: $generatedNamespaces, requests: $requests)';
+  return 'ProposalData(id: $id, expiry: $expiry, relays: $relays, proposer: $proposer, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, pairingTopic: $pairingTopic, sessionProperties: $sessionProperties, generatedNamespaces: $generatedNamespaces, authentication: $authentication, walletPay: $walletPay)';
 }
 
 
@@ -609,11 +610,11 @@ abstract mixin class $ProposalDataCopyWith<$Res>  {
   factory $ProposalDataCopyWith(ProposalData value, $Res Function(ProposalData) _then) = _$ProposalDataCopyWithImpl;
 @useResult
 $Res call({
- int id, int expiry, List<Relay> relays, ConnectionMetadata proposer, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace> optionalNamespaces, String pairingTopic, Map<String, String>? sessionProperties, Map<String, Namespace>? generatedNamespaces, ProposalRequests? requests
+ int id, int expiry, List<Relay> relays, ConnectionMetadata proposer, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace> optionalNamespaces, String pairingTopic, Map<String, String>? sessionProperties, Map<String, Namespace>? generatedNamespaces, List<SessionAuthPayload>? authentication, WalletPayRequestParams? walletPay
 });
 
 
-$ConnectionMetadataCopyWith<$Res> get proposer;$ProposalRequestsCopyWith<$Res>? get requests;
+$ConnectionMetadataCopyWith<$Res> get proposer;$WalletPayRequestParamsCopyWith<$Res>? get walletPay;
 
 }
 /// @nodoc
@@ -626,7 +627,7 @@ class _$ProposalDataCopyWithImpl<$Res>
 
 /// Create a copy of ProposalData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? expiry = null,Object? relays = null,Object? proposer = null,Object? requiredNamespaces = null,Object? optionalNamespaces = null,Object? pairingTopic = null,Object? sessionProperties = freezed,Object? generatedNamespaces = freezed,Object? requests = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? expiry = null,Object? relays = null,Object? proposer = null,Object? requiredNamespaces = null,Object? optionalNamespaces = null,Object? pairingTopic = null,Object? sessionProperties = freezed,Object? generatedNamespaces = freezed,Object? authentication = freezed,Object? walletPay = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,expiry: null == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
@@ -637,8 +638,9 @@ as Map<String, RequiredNamespace>,optionalNamespaces: null == optionalNamespaces
 as Map<String, RequiredNamespace>,pairingTopic: null == pairingTopic ? _self.pairingTopic : pairingTopic // ignore: cast_nullable_to_non_nullable
 as String,sessionProperties: freezed == sessionProperties ? _self.sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
 as Map<String, String>?,generatedNamespaces: freezed == generatedNamespaces ? _self.generatedNamespaces : generatedNamespaces // ignore: cast_nullable_to_non_nullable
-as Map<String, Namespace>?,requests: freezed == requests ? _self.requests : requests // ignore: cast_nullable_to_non_nullable
-as ProposalRequests?,
+as Map<String, Namespace>?,authentication: freezed == authentication ? _self.authentication : authentication // ignore: cast_nullable_to_non_nullable
+as List<SessionAuthPayload>?,walletPay: freezed == walletPay ? _self.walletPay : walletPay // ignore: cast_nullable_to_non_nullable
+as WalletPayRequestParams?,
   ));
 }
 /// Create a copy of ProposalData
@@ -654,13 +656,13 @@ $ConnectionMetadataCopyWith<$Res> get proposer {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$ProposalRequestsCopyWith<$Res>? get requests {
-    if (_self.requests == null) {
+$WalletPayRequestParamsCopyWith<$Res>? get walletPay {
+    if (_self.walletPay == null) {
     return null;
   }
 
-  return $ProposalRequestsCopyWith<$Res>(_self.requests!, (value) {
-    return _then(_self.copyWith(requests: value));
+  return $WalletPayRequestParamsCopyWith<$Res>(_self.walletPay!, (value) {
+    return _then(_self.copyWith(walletPay: value));
   });
 }
 }
@@ -741,10 +743,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int expiry,  List<Relay> relays,  ConnectionMetadata proposer,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace> optionalNamespaces,  String pairingTopic,  Map<String, String>? sessionProperties,  Map<String, Namespace>? generatedNamespaces,  ProposalRequests? requests)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int expiry,  List<Relay> relays,  ConnectionMetadata proposer,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace> optionalNamespaces,  String pairingTopic,  Map<String, String>? sessionProperties,  Map<String, Namespace>? generatedNamespaces,  List<SessionAuthPayload>? authentication,  WalletPayRequestParams? walletPay)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProposalData() when $default != null:
-return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.requiredNamespaces,_that.optionalNamespaces,_that.pairingTopic,_that.sessionProperties,_that.generatedNamespaces,_that.requests);case _:
+return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.requiredNamespaces,_that.optionalNamespaces,_that.pairingTopic,_that.sessionProperties,_that.generatedNamespaces,_that.authentication,_that.walletPay);case _:
   return orElse();
 
 }
@@ -762,10 +764,10 @@ return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.required
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int expiry,  List<Relay> relays,  ConnectionMetadata proposer,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace> optionalNamespaces,  String pairingTopic,  Map<String, String>? sessionProperties,  Map<String, Namespace>? generatedNamespaces,  ProposalRequests? requests)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int expiry,  List<Relay> relays,  ConnectionMetadata proposer,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace> optionalNamespaces,  String pairingTopic,  Map<String, String>? sessionProperties,  Map<String, Namespace>? generatedNamespaces,  List<SessionAuthPayload>? authentication,  WalletPayRequestParams? walletPay)  $default,) {final _that = this;
 switch (_that) {
 case _ProposalData():
-return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.requiredNamespaces,_that.optionalNamespaces,_that.pairingTopic,_that.sessionProperties,_that.generatedNamespaces,_that.requests);}
+return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.requiredNamespaces,_that.optionalNamespaces,_that.pairingTopic,_that.sessionProperties,_that.generatedNamespaces,_that.authentication,_that.walletPay);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -779,10 +781,10 @@ return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.required
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int expiry,  List<Relay> relays,  ConnectionMetadata proposer,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace> optionalNamespaces,  String pairingTopic,  Map<String, String>? sessionProperties,  Map<String, Namespace>? generatedNamespaces,  ProposalRequests? requests)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int expiry,  List<Relay> relays,  ConnectionMetadata proposer,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace> optionalNamespaces,  String pairingTopic,  Map<String, String>? sessionProperties,  Map<String, Namespace>? generatedNamespaces,  List<SessionAuthPayload>? authentication,  WalletPayRequestParams? walletPay)?  $default,) {final _that = this;
 switch (_that) {
 case _ProposalData() when $default != null:
-return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.requiredNamespaces,_that.optionalNamespaces,_that.pairingTopic,_that.sessionProperties,_that.generatedNamespaces,_that.requests);case _:
+return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.requiredNamespaces,_that.optionalNamespaces,_that.pairingTopic,_that.sessionProperties,_that.generatedNamespaces,_that.authentication,_that.walletPay);case _:
   return null;
 
 }
@@ -794,7 +796,7 @@ return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.required
 
 @JsonSerializable(includeIfNull: false)
 class _ProposalData implements ProposalData {
-  const _ProposalData({required this.id, required this.expiry, required final  List<Relay> relays, required this.proposer, required final  Map<String, RequiredNamespace> requiredNamespaces, required final  Map<String, RequiredNamespace> optionalNamespaces, required this.pairingTopic, final  Map<String, String>? sessionProperties, final  Map<String, Namespace>? generatedNamespaces, this.requests}): _relays = relays,_requiredNamespaces = requiredNamespaces,_optionalNamespaces = optionalNamespaces,_sessionProperties = sessionProperties,_generatedNamespaces = generatedNamespaces;
+  const _ProposalData({required this.id, required this.expiry, required final  List<Relay> relays, required this.proposer, required final  Map<String, RequiredNamespace> requiredNamespaces, required final  Map<String, RequiredNamespace> optionalNamespaces, required this.pairingTopic, final  Map<String, String>? sessionProperties, final  Map<String, Namespace>? generatedNamespaces, final  List<SessionAuthPayload>? authentication, this.walletPay}): _relays = relays,_requiredNamespaces = requiredNamespaces,_optionalNamespaces = optionalNamespaces,_sessionProperties = sessionProperties,_generatedNamespaces = generatedNamespaces,_authentication = authentication;
   factory _ProposalData.fromJson(Map<String, dynamic> json) => _$ProposalDataFromJson(json);
 
 @override final  int id;
@@ -840,7 +842,18 @@ class _ProposalData implements ProposalData {
   return EqualUnmodifiableMapView(value);
 }
 
-@override final  ProposalRequests? requests;
+// ProposalRequests? requests,
+ final  List<SessionAuthPayload>? _authentication;
+// ProposalRequests? requests,
+@override List<SessionAuthPayload>? get authentication {
+  final value = _authentication;
+  if (value == null) return null;
+  if (_authentication is EqualUnmodifiableListView) return _authentication;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
+@override final  WalletPayRequestParams? walletPay;
 
 /// Create a copy of ProposalData
 /// with the given fields replaced by the non-null parameter values.
@@ -855,16 +868,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProposalData&&(identical(other.id, id) || other.id == id)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&const DeepCollectionEquality().equals(other._relays, _relays)&&(identical(other.proposer, proposer) || other.proposer == proposer)&&const DeepCollectionEquality().equals(other._requiredNamespaces, _requiredNamespaces)&&const DeepCollectionEquality().equals(other._optionalNamespaces, _optionalNamespaces)&&(identical(other.pairingTopic, pairingTopic) || other.pairingTopic == pairingTopic)&&const DeepCollectionEquality().equals(other._sessionProperties, _sessionProperties)&&const DeepCollectionEquality().equals(other._generatedNamespaces, _generatedNamespaces)&&(identical(other.requests, requests) || other.requests == requests));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProposalData&&(identical(other.id, id) || other.id == id)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&const DeepCollectionEquality().equals(other._relays, _relays)&&(identical(other.proposer, proposer) || other.proposer == proposer)&&const DeepCollectionEquality().equals(other._requiredNamespaces, _requiredNamespaces)&&const DeepCollectionEquality().equals(other._optionalNamespaces, _optionalNamespaces)&&(identical(other.pairingTopic, pairingTopic) || other.pairingTopic == pairingTopic)&&const DeepCollectionEquality().equals(other._sessionProperties, _sessionProperties)&&const DeepCollectionEquality().equals(other._generatedNamespaces, _generatedNamespaces)&&const DeepCollectionEquality().equals(other._authentication, _authentication)&&(identical(other.walletPay, walletPay) || other.walletPay == walletPay));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,expiry,const DeepCollectionEquality().hash(_relays),proposer,const DeepCollectionEquality().hash(_requiredNamespaces),const DeepCollectionEquality().hash(_optionalNamespaces),pairingTopic,const DeepCollectionEquality().hash(_sessionProperties),const DeepCollectionEquality().hash(_generatedNamespaces),requests);
+int get hashCode => Object.hash(runtimeType,id,expiry,const DeepCollectionEquality().hash(_relays),proposer,const DeepCollectionEquality().hash(_requiredNamespaces),const DeepCollectionEquality().hash(_optionalNamespaces),pairingTopic,const DeepCollectionEquality().hash(_sessionProperties),const DeepCollectionEquality().hash(_generatedNamespaces),const DeepCollectionEquality().hash(_authentication),walletPay);
 
 @override
 String toString() {
-  return 'ProposalData(id: $id, expiry: $expiry, relays: $relays, proposer: $proposer, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, pairingTopic: $pairingTopic, sessionProperties: $sessionProperties, generatedNamespaces: $generatedNamespaces, requests: $requests)';
+  return 'ProposalData(id: $id, expiry: $expiry, relays: $relays, proposer: $proposer, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, pairingTopic: $pairingTopic, sessionProperties: $sessionProperties, generatedNamespaces: $generatedNamespaces, authentication: $authentication, walletPay: $walletPay)';
 }
 
 
@@ -875,11 +888,11 @@ abstract mixin class _$ProposalDataCopyWith<$Res> implements $ProposalDataCopyWi
   factory _$ProposalDataCopyWith(_ProposalData value, $Res Function(_ProposalData) _then) = __$ProposalDataCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int expiry, List<Relay> relays, ConnectionMetadata proposer, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace> optionalNamespaces, String pairingTopic, Map<String, String>? sessionProperties, Map<String, Namespace>? generatedNamespaces, ProposalRequests? requests
+ int id, int expiry, List<Relay> relays, ConnectionMetadata proposer, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace> optionalNamespaces, String pairingTopic, Map<String, String>? sessionProperties, Map<String, Namespace>? generatedNamespaces, List<SessionAuthPayload>? authentication, WalletPayRequestParams? walletPay
 });
 
 
-@override $ConnectionMetadataCopyWith<$Res> get proposer;@override $ProposalRequestsCopyWith<$Res>? get requests;
+@override $ConnectionMetadataCopyWith<$Res> get proposer;@override $WalletPayRequestParamsCopyWith<$Res>? get walletPay;
 
 }
 /// @nodoc
@@ -892,7 +905,7 @@ class __$ProposalDataCopyWithImpl<$Res>
 
 /// Create a copy of ProposalData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? expiry = null,Object? relays = null,Object? proposer = null,Object? requiredNamespaces = null,Object? optionalNamespaces = null,Object? pairingTopic = null,Object? sessionProperties = freezed,Object? generatedNamespaces = freezed,Object? requests = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? expiry = null,Object? relays = null,Object? proposer = null,Object? requiredNamespaces = null,Object? optionalNamespaces = null,Object? pairingTopic = null,Object? sessionProperties = freezed,Object? generatedNamespaces = freezed,Object? authentication = freezed,Object? walletPay = freezed,}) {
   return _then(_ProposalData(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,expiry: null == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
@@ -903,8 +916,9 @@ as Map<String, RequiredNamespace>,optionalNamespaces: null == optionalNamespaces
 as Map<String, RequiredNamespace>,pairingTopic: null == pairingTopic ? _self.pairingTopic : pairingTopic // ignore: cast_nullable_to_non_nullable
 as String,sessionProperties: freezed == sessionProperties ? _self._sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
 as Map<String, String>?,generatedNamespaces: freezed == generatedNamespaces ? _self._generatedNamespaces : generatedNamespaces // ignore: cast_nullable_to_non_nullable
-as Map<String, Namespace>?,requests: freezed == requests ? _self.requests : requests // ignore: cast_nullable_to_non_nullable
-as ProposalRequests?,
+as Map<String, Namespace>?,authentication: freezed == authentication ? _self._authentication : authentication // ignore: cast_nullable_to_non_nullable
+as List<SessionAuthPayload>?,walletPay: freezed == walletPay ? _self.walletPay : walletPay // ignore: cast_nullable_to_non_nullable
+as WalletPayRequestParams?,
   ));
 }
 
@@ -921,13 +935,13 @@ $ConnectionMetadataCopyWith<$Res> get proposer {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$ProposalRequestsCopyWith<$Res>? get requests {
-    if (_self.requests == null) {
+$WalletPayRequestParamsCopyWith<$Res>? get walletPay {
+    if (_self.walletPay == null) {
     return null;
   }
 
-  return $ProposalRequestsCopyWith<$Res>(_self.requests!, (value) {
-    return _then(_self.copyWith(requests: value));
+  return $WalletPayRequestParamsCopyWith<$Res>(_self.walletPay!, (value) {
+    return _then(_self.copyWith(walletPay: value));
   });
 }
 }
@@ -936,7 +950,8 @@ $ProposalRequestsCopyWith<$Res>? get requests {
 /// @nodoc
 mixin _$ProposalRequests {
 
- List<SessionAuthPayload>? get authentication; WalletPayRequestParams? get walletPayRequest;
+// List<SessionAuthPayload>? authentication,
+ List<SessionAuthRequestParams>? get authentication; WalletPayRequestParams? get walletPay;
 /// Create a copy of ProposalRequests
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -949,16 +964,16 @@ $ProposalRequestsCopyWith<ProposalRequests> get copyWith => _$ProposalRequestsCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProposalRequests&&const DeepCollectionEquality().equals(other.authentication, authentication)&&(identical(other.walletPayRequest, walletPayRequest) || other.walletPayRequest == walletPayRequest));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProposalRequests&&const DeepCollectionEquality().equals(other.authentication, authentication)&&(identical(other.walletPay, walletPay) || other.walletPay == walletPay));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(authentication),walletPayRequest);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(authentication),walletPay);
 
 @override
 String toString() {
-  return 'ProposalRequests(authentication: $authentication, walletPayRequest: $walletPayRequest)';
+  return 'ProposalRequests(authentication: $authentication, walletPay: $walletPay)';
 }
 
 
@@ -969,11 +984,11 @@ abstract mixin class $ProposalRequestsCopyWith<$Res>  {
   factory $ProposalRequestsCopyWith(ProposalRequests value, $Res Function(ProposalRequests) _then) = _$ProposalRequestsCopyWithImpl;
 @useResult
 $Res call({
- List<SessionAuthPayload>? authentication, WalletPayRequestParams? walletPayRequest
+ List<SessionAuthRequestParams>? authentication, WalletPayRequestParams? walletPay
 });
 
 
-$WalletPayRequestParamsCopyWith<$Res>? get walletPayRequest;
+$WalletPayRequestParamsCopyWith<$Res>? get walletPay;
 
 }
 /// @nodoc
@@ -986,10 +1001,10 @@ class _$ProposalRequestsCopyWithImpl<$Res>
 
 /// Create a copy of ProposalRequests
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? authentication = freezed,Object? walletPayRequest = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? authentication = freezed,Object? walletPay = freezed,}) {
   return _then(_self.copyWith(
 authentication: freezed == authentication ? _self.authentication : authentication // ignore: cast_nullable_to_non_nullable
-as List<SessionAuthPayload>?,walletPayRequest: freezed == walletPayRequest ? _self.walletPayRequest : walletPayRequest // ignore: cast_nullable_to_non_nullable
+as List<SessionAuthRequestParams>?,walletPay: freezed == walletPay ? _self.walletPay : walletPay // ignore: cast_nullable_to_non_nullable
 as WalletPayRequestParams?,
   ));
 }
@@ -997,13 +1012,13 @@ as WalletPayRequestParams?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$WalletPayRequestParamsCopyWith<$Res>? get walletPayRequest {
-    if (_self.walletPayRequest == null) {
+$WalletPayRequestParamsCopyWith<$Res>? get walletPay {
+    if (_self.walletPay == null) {
     return null;
   }
 
-  return $WalletPayRequestParamsCopyWith<$Res>(_self.walletPayRequest!, (value) {
-    return _then(_self.copyWith(walletPayRequest: value));
+  return $WalletPayRequestParamsCopyWith<$Res>(_self.walletPay!, (value) {
+    return _then(_self.copyWith(walletPay: value));
   });
 }
 }
@@ -1084,10 +1099,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<SessionAuthPayload>? authentication,  WalletPayRequestParams? walletPayRequest)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<SessionAuthRequestParams>? authentication,  WalletPayRequestParams? walletPay)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProposalRequests() when $default != null:
-return $default(_that.authentication,_that.walletPayRequest);case _:
+return $default(_that.authentication,_that.walletPay);case _:
   return orElse();
 
 }
@@ -1105,10 +1120,10 @@ return $default(_that.authentication,_that.walletPayRequest);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<SessionAuthPayload>? authentication,  WalletPayRequestParams? walletPayRequest)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<SessionAuthRequestParams>? authentication,  WalletPayRequestParams? walletPay)  $default,) {final _that = this;
 switch (_that) {
 case _ProposalRequests():
-return $default(_that.authentication,_that.walletPayRequest);}
+return $default(_that.authentication,_that.walletPay);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1122,10 +1137,10 @@ return $default(_that.authentication,_that.walletPayRequest);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<SessionAuthPayload>? authentication,  WalletPayRequestParams? walletPayRequest)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<SessionAuthRequestParams>? authentication,  WalletPayRequestParams? walletPay)?  $default,) {final _that = this;
 switch (_that) {
 case _ProposalRequests() when $default != null:
-return $default(_that.authentication,_that.walletPayRequest);case _:
+return $default(_that.authentication,_that.walletPay);case _:
   return null;
 
 }
@@ -1137,11 +1152,13 @@ return $default(_that.authentication,_that.walletPayRequest);case _:
 
 @JsonSerializable(includeIfNull: false)
 class _ProposalRequests implements ProposalRequests {
-  const _ProposalRequests({final  List<SessionAuthPayload>? authentication, this.walletPayRequest}): _authentication = authentication;
+  const _ProposalRequests({final  List<SessionAuthRequestParams>? authentication, this.walletPay}): _authentication = authentication;
   factory _ProposalRequests.fromJson(Map<String, dynamic> json) => _$ProposalRequestsFromJson(json);
 
- final  List<SessionAuthPayload>? _authentication;
-@override List<SessionAuthPayload>? get authentication {
+// List<SessionAuthPayload>? authentication,
+ final  List<SessionAuthRequestParams>? _authentication;
+// List<SessionAuthPayload>? authentication,
+@override List<SessionAuthRequestParams>? get authentication {
   final value = _authentication;
   if (value == null) return null;
   if (_authentication is EqualUnmodifiableListView) return _authentication;
@@ -1149,7 +1166,7 @@ class _ProposalRequests implements ProposalRequests {
   return EqualUnmodifiableListView(value);
 }
 
-@override final  WalletPayRequestParams? walletPayRequest;
+@override final  WalletPayRequestParams? walletPay;
 
 /// Create a copy of ProposalRequests
 /// with the given fields replaced by the non-null parameter values.
@@ -1164,16 +1181,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProposalRequests&&const DeepCollectionEquality().equals(other._authentication, _authentication)&&(identical(other.walletPayRequest, walletPayRequest) || other.walletPayRequest == walletPayRequest));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProposalRequests&&const DeepCollectionEquality().equals(other._authentication, _authentication)&&(identical(other.walletPay, walletPay) || other.walletPay == walletPay));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_authentication),walletPayRequest);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_authentication),walletPay);
 
 @override
 String toString() {
-  return 'ProposalRequests(authentication: $authentication, walletPayRequest: $walletPayRequest)';
+  return 'ProposalRequests(authentication: $authentication, walletPay: $walletPay)';
 }
 
 
@@ -1184,11 +1201,11 @@ abstract mixin class _$ProposalRequestsCopyWith<$Res> implements $ProposalReques
   factory _$ProposalRequestsCopyWith(_ProposalRequests value, $Res Function(_ProposalRequests) _then) = __$ProposalRequestsCopyWithImpl;
 @override @useResult
 $Res call({
- List<SessionAuthPayload>? authentication, WalletPayRequestParams? walletPayRequest
+ List<SessionAuthRequestParams>? authentication, WalletPayRequestParams? walletPay
 });
 
 
-@override $WalletPayRequestParamsCopyWith<$Res>? get walletPayRequest;
+@override $WalletPayRequestParamsCopyWith<$Res>? get walletPay;
 
 }
 /// @nodoc
@@ -1201,10 +1218,10 @@ class __$ProposalRequestsCopyWithImpl<$Res>
 
 /// Create a copy of ProposalRequests
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? authentication = freezed,Object? walletPayRequest = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? authentication = freezed,Object? walletPay = freezed,}) {
   return _then(_ProposalRequests(
 authentication: freezed == authentication ? _self._authentication : authentication // ignore: cast_nullable_to_non_nullable
-as List<SessionAuthPayload>?,walletPayRequest: freezed == walletPayRequest ? _self.walletPayRequest : walletPayRequest // ignore: cast_nullable_to_non_nullable
+as List<SessionAuthRequestParams>?,walletPay: freezed == walletPay ? _self.walletPay : walletPay // ignore: cast_nullable_to_non_nullable
 as WalletPayRequestParams?,
   ));
 }
@@ -1213,13 +1230,13 @@ as WalletPayRequestParams?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$WalletPayRequestParamsCopyWith<$Res>? get walletPayRequest {
-    if (_self.walletPayRequest == null) {
+$WalletPayRequestParamsCopyWith<$Res>? get walletPay {
+    if (_self.walletPay == null) {
     return null;
   }
 
-  return $WalletPayRequestParamsCopyWith<$Res>(_self.walletPayRequest!, (value) {
-    return _then(_self.copyWith(walletPayRequest: value));
+  return $WalletPayRequestParamsCopyWith<$Res>(_self.walletPay!, (value) {
+    return _then(_self.copyWith(walletPay: value));
   });
 }
 }
@@ -1500,7 +1517,10 @@ as String?,
 /// @nodoc
 mixin _$PaymentOption {
 
- String get recipient; String get asset; String get amount;
+ String get recipient;// chain-specific addr
+ String get asset;// CAIP-19
+ String get amount;// Hex string
+ List<String> get types;
 /// Create a copy of PaymentOption
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1513,16 +1533,16 @@ $PaymentOptionCopyWith<PaymentOption> get copyWith => _$PaymentOptionCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentOption&&(identical(other.recipient, recipient) || other.recipient == recipient)&&(identical(other.asset, asset) || other.asset == asset)&&(identical(other.amount, amount) || other.amount == amount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentOption&&(identical(other.recipient, recipient) || other.recipient == recipient)&&(identical(other.asset, asset) || other.asset == asset)&&(identical(other.amount, amount) || other.amount == amount)&&const DeepCollectionEquality().equals(other.types, types));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,recipient,asset,amount);
+int get hashCode => Object.hash(runtimeType,recipient,asset,amount,const DeepCollectionEquality().hash(types));
 
 @override
 String toString() {
-  return 'PaymentOption(recipient: $recipient, asset: $asset, amount: $amount)';
+  return 'PaymentOption(recipient: $recipient, asset: $asset, amount: $amount, types: $types)';
 }
 
 
@@ -1533,7 +1553,7 @@ abstract mixin class $PaymentOptionCopyWith<$Res>  {
   factory $PaymentOptionCopyWith(PaymentOption value, $Res Function(PaymentOption) _then) = _$PaymentOptionCopyWithImpl;
 @useResult
 $Res call({
- String recipient, String asset, String amount
+ String recipient, String asset, String amount, List<String> types
 });
 
 
@@ -1550,12 +1570,13 @@ class _$PaymentOptionCopyWithImpl<$Res>
 
 /// Create a copy of PaymentOption
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? recipient = null,Object? asset = null,Object? amount = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? recipient = null,Object? asset = null,Object? amount = null,Object? types = null,}) {
   return _then(_self.copyWith(
 recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
 as String,asset: null == asset ? _self.asset : asset // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
-as String,
+as String,types: null == types ? _self.types : types // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
@@ -1637,10 +1658,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String recipient,  String asset,  String amount)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String recipient,  String asset,  String amount,  List<String> types)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PaymentOption() when $default != null:
-return $default(_that.recipient,_that.asset,_that.amount);case _:
+return $default(_that.recipient,_that.asset,_that.amount,_that.types);case _:
   return orElse();
 
 }
@@ -1658,10 +1679,10 @@ return $default(_that.recipient,_that.asset,_that.amount);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String recipient,  String asset,  String amount)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String recipient,  String asset,  String amount,  List<String> types)  $default,) {final _that = this;
 switch (_that) {
 case _PaymentOption():
-return $default(_that.recipient,_that.asset,_that.amount);}
+return $default(_that.recipient,_that.asset,_that.amount,_that.types);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1675,10 +1696,10 @@ return $default(_that.recipient,_that.asset,_that.amount);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String recipient,  String asset,  String amount)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String recipient,  String asset,  String amount,  List<String> types)?  $default,) {final _that = this;
 switch (_that) {
 case _PaymentOption() when $default != null:
-return $default(_that.recipient,_that.asset,_that.amount);case _:
+return $default(_that.recipient,_that.asset,_that.amount,_that.types);case _:
   return null;
 
 }
@@ -1690,12 +1711,23 @@ return $default(_that.recipient,_that.asset,_that.amount);case _:
 @JsonSerializable()
 
 class _PaymentOption implements PaymentOption {
-  const _PaymentOption({required this.recipient, required this.asset, required this.amount});
+  const _PaymentOption({required this.recipient, required this.asset, required this.amount, required final  List<String> types}): _types = types;
   factory _PaymentOption.fromJson(Map<String, dynamic> json) => _$PaymentOptionFromJson(json);
 
 @override final  String recipient;
+// chain-specific addr
 @override final  String asset;
+// CAIP-19
 @override final  String amount;
+// Hex string
+ final  List<String> _types;
+// Hex string
+@override List<String> get types {
+  if (_types is EqualUnmodifiableListView) return _types;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_types);
+}
+
 
 /// Create a copy of PaymentOption
 /// with the given fields replaced by the non-null parameter values.
@@ -1710,16 +1742,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaymentOption&&(identical(other.recipient, recipient) || other.recipient == recipient)&&(identical(other.asset, asset) || other.asset == asset)&&(identical(other.amount, amount) || other.amount == amount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaymentOption&&(identical(other.recipient, recipient) || other.recipient == recipient)&&(identical(other.asset, asset) || other.asset == asset)&&(identical(other.amount, amount) || other.amount == amount)&&const DeepCollectionEquality().equals(other._types, _types));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,recipient,asset,amount);
+int get hashCode => Object.hash(runtimeType,recipient,asset,amount,const DeepCollectionEquality().hash(_types));
 
 @override
 String toString() {
-  return 'PaymentOption(recipient: $recipient, asset: $asset, amount: $amount)';
+  return 'PaymentOption(recipient: $recipient, asset: $asset, amount: $amount, types: $types)';
 }
 
 
@@ -1730,7 +1762,7 @@ abstract mixin class _$PaymentOptionCopyWith<$Res> implements $PaymentOptionCopy
   factory _$PaymentOptionCopyWith(_PaymentOption value, $Res Function(_PaymentOption) _then) = __$PaymentOptionCopyWithImpl;
 @override @useResult
 $Res call({
- String recipient, String asset, String amount
+ String recipient, String asset, String amount, List<String> types
 });
 
 
@@ -1747,12 +1779,13 @@ class __$PaymentOptionCopyWithImpl<$Res>
 
 /// Create a copy of PaymentOption
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? recipient = null,Object? asset = null,Object? amount = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? recipient = null,Object? asset = null,Object? amount = null,Object? types = null,}) {
   return _then(_PaymentOption(
 recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
 as String,asset: null == asset ? _self.asset : asset // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
-as String,
+as String,types: null == types ? _self._types : types // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 

@@ -42,6 +42,8 @@ sealed class WcSessionProposeRequest with _$WcSessionProposeRequest {
     Map<String, String>? sessionProperties,
     required ConnectionMetadata proposer,
     ProposalRequests? requests,
+    List<SessionAuthPayload>? authentication,
+    WalletPayRequestParams? walletPay,
   }) = _WcSessionProposeRequest;
 
   factory WcSessionProposeRequest.fromJson(Map<String, dynamic> json) =>

@@ -45,19 +45,28 @@ sealed class ProposalData with _$ProposalData {
     required String pairingTopic,
     Map<String, String>? sessionProperties,
     Map<String, Namespace>? generatedNamespaces,
-    ProposalRequests? requests,
+    // ProposalRequests? requests,
+    List<SessionAuthPayload>? authentication,
+    WalletPayRequestParams? walletPay,
   }) = _ProposalData;
 
   factory ProposalData.fromJson(Map<String, dynamic> json) =>
       _$ProposalDataFromJson(json);
 }
 
+extension ProposalDataExtension on ProposalData {
+  bool hasPayment() {
+    return walletPay != null;
+  }
+}
+
 @freezed
 sealed class ProposalRequests with _$ProposalRequests {
   @JsonSerializable(includeIfNull: false)
   const factory ProposalRequests({
-    List<SessionAuthPayload>? authentication,
-    WalletPayRequestParams? walletPayRequest,
+    // List<SessionAuthPayload>? authentication,
+    List<SessionAuthRequestParams>? authentication,
+    WalletPayRequestParams? walletPay,
   }) = _ProposalRequests;
 
   factory ProposalRequests.fromJson(Map<String, dynamic> json) =>
@@ -80,10 +89,10 @@ sealed class WalletPayRequestParams with _$WalletPayRequestParams {
 @freezed
 sealed class PaymentOption with _$PaymentOption {
   const factory PaymentOption({
-    required String recipient,
-    required String asset,
+    required String recipient, // chain-specific addr
+    required String asset, // CAIP-19
     required String amount, // Hex string
-    // types
+    required List<String> types, // "erc20-transfer", "erc3009-authorization"
   }) = _PaymentOption;
 
   factory PaymentOption.fromJson(Map<String, dynamic> json) =>

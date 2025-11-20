@@ -19,7 +19,6 @@ let package = Package(
         .package(name: "url_launcher_ios", path: "../.packages/url_launcher_ios"),
         .package(name: "shared_preferences_foundation", path: "../.packages/shared_preferences_foundation"),
         .package(name: "package_info_plus", path: "../.packages/package_info_plus"),
-        .package(name: "path_provider_foundation", path: "../.packages/path_provider_foundation"),
         .package(name: "connectivity_plus", path: "../.packages/connectivity_plus"),
         .package(name: "sqflite_darwin", path: "../.packages/sqflite_darwin"),
         .package(name: "appcheck", path: "../.packages/appcheck")
@@ -32,7 +31,6 @@ let package = Package(
                 .product(name: "url-launcher-ios", package: "url_launcher_ios"),
                 .product(name: "shared-preferences-foundation", package: "shared_preferences_foundation"),
                 .product(name: "package-info-plus", package: "package_info_plus"),
-                .product(name: "path-provider-foundation", package: "path_provider_foundation"),
                 .product(name: "connectivity-plus", package: "connectivity_plus"),
                 .product(name: "sqflite-darwin", package: "sqflite_darwin"),
                 .product(name: "appcheck", package: "appcheck")

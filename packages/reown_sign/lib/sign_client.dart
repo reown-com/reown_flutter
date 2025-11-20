@@ -151,8 +151,9 @@ class ReownSignClient implements IReownSignClient {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<Relay>? relays,
-    List<SessionAuthRequestParams>? authentication,
-    WalletPayRequestParams? walletPayRequest,
+    // List<SessionAuthRequestParams>? authentication,
+    // WalletPayRequestParams? walletPay,
+    ProposalRequests? proposalRequests,
     List<List<String>>? methods = ReownSign.DEFAULT_METHODS,
   }) async {
     try {
@@ -162,8 +163,9 @@ class ReownSignClient implements IReownSignClient {
         sessionProperties: sessionProperties,
         pairingTopic: pairingTopic,
         relays: relays,
-        authentication: authentication,
-        walletPayRequest: walletPayRequest,
+        // authentication: authentication,
+        // walletPay: walletPay,
+        proposalRequests: proposalRequests,
         methods: methods,
       );
     } catch (e) {
@@ -507,8 +509,19 @@ class ReownSignClient implements IReownSignClient {
   }
 
   @override
-  Future<void> dispatchEnvelope(String url) async {
+  Future<void> dispatchEnvelope(String url) {
     return engine.dispatchEnvelope(url);
+  }
+
+  @override
+  Future<WalletPayRequest> createWalletPayRequest({
+    required Map<String, dynamic> rawData,
+  }) async {
+    try {
+      return await engine.createWalletPayRequest(rawData: rawData);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override

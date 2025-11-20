@@ -95,7 +95,7 @@ class WCConnectionRequestWidget extends StatelessWidget {
     // Create the connection models using the required and optional namespaces provided by the proposal data
     // The key is the title and the list of values is the data
     final generatedNamespaces = proposalData!.generatedNamespaces!;
-    final authRequests = proposalData!.requests?.authentication;
+    final authRequests = proposalData!.authentication;
     final views = ConnectionWidgetBuilder.buildFromRequiredNamespaces(
       generatedNamespaces,
       authRequests,

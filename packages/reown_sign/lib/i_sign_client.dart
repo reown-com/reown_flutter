@@ -48,8 +48,9 @@ abstract class IReownSignClient {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<Relay>? relays,
-    List<SessionAuthRequestParams>? authentication,
-    WalletPayRequestParams? walletPayRequest,
+    // List<SessionAuthRequestParams>? authentication,
+    // WalletPayRequestParams? walletPay,
+    ProposalRequests? proposalRequests,
     List<List<String>>? methods,
   });
   Future<PairingInfo> pair({required Uri uri});
@@ -151,6 +152,10 @@ abstract class IReownSignClient {
   });
 
   Future<void> dispatchEnvelope(String url);
+
+  Future<WalletPayRequest> createWalletPayRequest({
+    required Map<String, dynamic> rawData,
+  });
 
   Future<bool> redirectToDapp({
     required String topic,

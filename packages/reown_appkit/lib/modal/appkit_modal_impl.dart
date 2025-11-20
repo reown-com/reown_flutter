@@ -1116,6 +1116,7 @@ class ReownAppKitModal
             optionalNamespaces: _sessionNamespaces,
             // TODO implement `authentication` param to support 1CA for non-EVM
             // authentication: [authParams],
+            proposalRequests: ProposalRequests(walletPay: _walletPay),
           );
           _wcUri = connectResponse.uri?.toString() ?? '';
           _notify();
@@ -1127,6 +1128,27 @@ class ReownAppKitModal
       }
     }
   }
+
+  WalletPayRequestParams get _walletPay => WalletPayRequestParams(
+    version: '1.0',
+    acceptedPayments: [
+      // USDC
+      PaymentOption(
+        recipient: 'eip155:1:0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
+        asset: 'eip155:1/erc20:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        amount: '0x5F5E100',
+        types: [],
+      ),
+      // USDT
+      PaymentOption(
+        recipient: 'eip155:1:0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
+        asset: 'eip155:1/erc20:0xdAC17F958D2ee523a2206206994597C13D831ec7',
+        amount: '0x5F5E100',
+        types: [],
+      ),
+    ],
+    expiry: DateTime.now().millisecondsSinceEpoch + 300000,
+  );
 
   void _awaitConnectionCallback(ConnectResponse connectResponse) async {
     try {

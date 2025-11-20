@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Base64
 import android.util.Log
+import com.yttrium.utils.YttriumUtilsKt
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -134,6 +135,7 @@ class Sui(private val projectId: String, private val networkId: String, private 
         private val clients = mutableMapOf<String, Sui>()
 
         fun init(applicationContext: Context, params: Any?, result: MethodChannel.Result) {
+            YttriumUtilsKt.initializeTls(applicationContext)
             val dict = params as? Map<*, *> ?: return result.error("sui_init", "Invalid parameters", null)
             Log.d("🤖 Sui.init", "params: $dict")
 

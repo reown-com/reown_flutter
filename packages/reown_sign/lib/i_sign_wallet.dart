@@ -81,4 +81,8 @@ abstract class IReownSignWallet extends IReownSignCommon {
     required String topic,
     required Redirect? redirect,
   });
+
+  Future<WalletPayRequest> createWalletPayRequest({
+    required Map<String, dynamic> rawData,
+  });
 }

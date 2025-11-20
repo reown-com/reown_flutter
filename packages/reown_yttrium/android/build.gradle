@@ -77,10 +77,10 @@ android {
 }
 
 dependencies {
-    compileOnly("com.github.reown-com:yttrium:0.9.109") {
+    implementation("com.github.reown-com:yttrium:unspecified") {
         exclude(group: 'net.java.dev.jna', module: 'jna')
     }
-//    implementation("net.java.dev.jna:jna:5.17.0@aar")
+    implementation("net.java.dev.jna:jna:5.17.0@aar")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.mockito:mockito-core:5.0.0")

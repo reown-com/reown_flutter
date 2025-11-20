@@ -306,67 +306,103 @@ class WalletKitService extends IWalletKitService {
     final debugString = jsonEncode(args?.params);
     debugPrint('[SampleWallet] _onSessionProposal $debugString');
     if (args != null) {
-      final proposer = args.params.proposer;
-      // Auth requests
-      final generatedNamespaces = args.params.generatedNamespaces;
-      final authenticationRequests = args.params.requests?.authentication;
-      final formattedMessages = prepareAuthenticationMessages(
-        authenticationRequests,
-        generatedNamespaces,
-      );
-
-      final result = (await _bottomSheetHandler.queueBottomSheet(
-            widget: WCRequestWidget(
-              verifyContext: args.verifyContext,
-              child: WCConnectionRequestWidget(
-                proposalData: args.params,
-                verifyContext: args.verifyContext,
-                requester: proposer,
-              ),
-            ),
-          )) ??
-          WCBottomSheetResult.reject;
-
-      if (result != WCBottomSheetResult.reject) {
-        // generatedNamespaces is constructed based on registered methods handlers
-        // so if you want to handle requests using onSessionRequest event then you would need to manually add that method in the approved namespaces
-        try {
-          final cacaos = await signAuthenticationMessages(formattedMessages);
-
-          await _walletKit!.approveSession(
-            id: args.id,
-            namespaces: args.params.generatedNamespaces!,
-            sessionProperties: args.params.sessionProperties,
-            proposalRequestsResponses: ProposalRequestsResponses(
-              authentication: cacaos,
-            ),
+      try {
+        final ProposalData proposalData = args.params;
+        if (proposalData.hasPayment()) {
+          final walletPayRequest = await _walletKit!.createWalletPayRequest(
+            rawData: proposalData.toJson(),
           );
-          // MethodsUtils.handleRedirect(
-          //   session.topic,
-          //   session.session!.peer.metadata.redirect,
-          //   '',
-          //   true,
-          // );
-        } on ReownSignError catch (error) {
-          MethodsUtils.handleRedirect(
-            '',
-            proposer.metadata.redirect,
-            error.message,
-          );
+          debugPrint('[SampleWallet] createWalletPayRequest $walletPayRequest');
+          await _processWalletPayRequest(walletPayRequest);
+        } else {
+          //
+          await _processSessionProposal(proposalData, args.verifyContext);
         }
-      } else {
-        final error = Errors.getSdkError(Errors.USER_REJECTED).toSignError();
-        await _walletKit!.rejectSession(id: args.id, reason: error);
-        await _walletKit!.core.pairing.disconnect(
-          topic: args.params.pairingTopic,
+      } catch (e, s) {
+        debugPrint('❌ [SampleWallet] _onSessionProposal error: $e\n$s');
+        DeepLinkHandler.waiting.value = false;
+      }
+    }
+  }
+
+  Future<void> _processSessionProposal(
+    ProposalData proposalData,
+    VerifyContext? verifyContext,
+  ) async {
+    final proposer = proposalData.proposer;
+    // Auth requests
+    final generatedNamespaces = proposalData.generatedNamespaces;
+    final authenticationRequests = proposalData.authentication;
+    final formattedMessages = prepareAuthenticationMessages(
+      authenticationRequests,
+      generatedNamespaces,
+    );
+
+    final result = (await _bottomSheetHandler.queueBottomSheet(
+          widget: WCRequestWidget(
+            verifyContext: verifyContext,
+            child: WCConnectionRequestWidget(
+              proposalData: proposalData,
+              verifyContext: verifyContext,
+              requester: proposer,
+            ),
+          ),
+        )) ??
+        WCBottomSheetResult.reject;
+
+    if (result != WCBottomSheetResult.reject) {
+      // generatedNamespaces is constructed based on registered methods handlers
+      // so if you want to handle requests using onSessionRequest event then you would need to manually add that method in the approved namespaces
+      try {
+        final cacaos = await signAuthenticationMessages(formattedMessages);
+
+        await _walletKit!.approveSession(
+          id: proposalData.id,
+          namespaces: proposalData.generatedNamespaces!,
+          sessionProperties: proposalData.sessionProperties,
+          proposalRequestsResponses: ProposalRequestsResponses(
+            authentication: cacaos,
+          ),
         );
+      } on ReownSignError catch (error) {
         MethodsUtils.handleRedirect(
           '',
           proposer.metadata.redirect,
           error.message,
         );
       }
+    } else {
+      final error = Errors.getSdkError(Errors.USER_REJECTED).toSignError();
+      await _walletKit!.rejectSession(id: proposalData.id, reason: error);
+      await _walletKit!.core.pairing.disconnect(
+        topic: proposalData.pairingTopic,
+      );
+      MethodsUtils.handleRedirect(
+        '',
+        proposer.metadata.redirect,
+        error.message,
+      );
     }
+  }
+
+  Future<void> _processWalletPayRequest(
+    WalletPayRequest walletPayRequest,
+  ) async {
+    //
+    final displayData = await walletPayRequest.getDisplayData();
+    debugPrint('[SampleWallet] displayData ${jsonEncode(displayData)}');
+    final paymentAction = await walletPayRequest.getPaymentAction(
+      optionIndex: 1,
+    );
+    debugPrint('[SampleWallet] paymentAction ${jsonEncode(paymentAction)}');
+    // await walletPayRequest.getActionFromPaymentOption(paymentOption: paymentOption)
+    // TODO Sign hash from paymentAction
+    final result = await walletPayRequest.finalize(
+      optionIndex: 1,
+      signature: 'signature',
+    );
+    debugPrint('[SampleWallet] result ${jsonEncode(result)}');
+    DeepLinkHandler.waiting.value = false;
   }
 
   void _onSessionProposalError(SessionProposalErrorEvent? args) async {

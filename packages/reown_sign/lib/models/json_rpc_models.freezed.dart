@@ -538,7 +538,7 @@ as Map<String, dynamic>,
 /// @nodoc
 mixin _$WcSessionProposeRequest {
 
- List<Relay> get relays; Map<String, RequiredNamespace> get requiredNamespaces; Map<String, RequiredNamespace>? get optionalNamespaces; Map<String, String>? get sessionProperties; ConnectionMetadata get proposer; ProposalRequests? get requests;
+ List<Relay> get relays; Map<String, RequiredNamespace> get requiredNamespaces; Map<String, RequiredNamespace>? get optionalNamespaces; Map<String, String>? get sessionProperties; ConnectionMetadata get proposer; ProposalRequests? get requests; List<SessionAuthPayload>? get authentication; WalletPayRequestParams? get walletPay;
 /// Create a copy of WcSessionProposeRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -551,16 +551,16 @@ $WcSessionProposeRequestCopyWith<WcSessionProposeRequest> get copyWith => _$WcSe
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionProposeRequest&&const DeepCollectionEquality().equals(other.relays, relays)&&const DeepCollectionEquality().equals(other.requiredNamespaces, requiredNamespaces)&&const DeepCollectionEquality().equals(other.optionalNamespaces, optionalNamespaces)&&const DeepCollectionEquality().equals(other.sessionProperties, sessionProperties)&&(identical(other.proposer, proposer) || other.proposer == proposer)&&(identical(other.requests, requests) || other.requests == requests));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WcSessionProposeRequest&&const DeepCollectionEquality().equals(other.relays, relays)&&const DeepCollectionEquality().equals(other.requiredNamespaces, requiredNamespaces)&&const DeepCollectionEquality().equals(other.optionalNamespaces, optionalNamespaces)&&const DeepCollectionEquality().equals(other.sessionProperties, sessionProperties)&&(identical(other.proposer, proposer) || other.proposer == proposer)&&(identical(other.requests, requests) || other.requests == requests)&&const DeepCollectionEquality().equals(other.authentication, authentication)&&(identical(other.walletPay, walletPay) || other.walletPay == walletPay));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(relays),const DeepCollectionEquality().hash(requiredNamespaces),const DeepCollectionEquality().hash(optionalNamespaces),const DeepCollectionEquality().hash(sessionProperties),proposer,requests);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(relays),const DeepCollectionEquality().hash(requiredNamespaces),const DeepCollectionEquality().hash(optionalNamespaces),const DeepCollectionEquality().hash(sessionProperties),proposer,requests,const DeepCollectionEquality().hash(authentication),walletPay);
 
 @override
 String toString() {
-  return 'WcSessionProposeRequest(relays: $relays, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, proposer: $proposer, requests: $requests)';
+  return 'WcSessionProposeRequest(relays: $relays, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, proposer: $proposer, requests: $requests, authentication: $authentication, walletPay: $walletPay)';
 }
 
 
@@ -571,11 +571,11 @@ abstract mixin class $WcSessionProposeRequestCopyWith<$Res>  {
   factory $WcSessionProposeRequestCopyWith(WcSessionProposeRequest value, $Res Function(WcSessionProposeRequest) _then) = _$WcSessionProposeRequestCopyWithImpl;
 @useResult
 $Res call({
- List<Relay> relays, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, ConnectionMetadata proposer, ProposalRequests? requests
+ List<Relay> relays, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, ConnectionMetadata proposer, ProposalRequests? requests, List<SessionAuthPayload>? authentication, WalletPayRequestParams? walletPay
 });
 
 
-$ConnectionMetadataCopyWith<$Res> get proposer;$ProposalRequestsCopyWith<$Res>? get requests;
+$ConnectionMetadataCopyWith<$Res> get proposer;$ProposalRequestsCopyWith<$Res>? get requests;$WalletPayRequestParamsCopyWith<$Res>? get walletPay;
 
 }
 /// @nodoc
@@ -588,7 +588,7 @@ class _$WcSessionProposeRequestCopyWithImpl<$Res>
 
 /// Create a copy of WcSessionProposeRequest
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? relays = null,Object? requiredNamespaces = null,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? proposer = null,Object? requests = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? relays = null,Object? requiredNamespaces = null,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? proposer = null,Object? requests = freezed,Object? authentication = freezed,Object? walletPay = freezed,}) {
   return _then(_self.copyWith(
 relays: null == relays ? _self.relays : relays // ignore: cast_nullable_to_non_nullable
 as List<Relay>,requiredNamespaces: null == requiredNamespaces ? _self.requiredNamespaces : requiredNamespaces // ignore: cast_nullable_to_non_nullable
@@ -596,7 +596,9 @@ as Map<String, RequiredNamespace>,optionalNamespaces: freezed == optionalNamespa
 as Map<String, RequiredNamespace>?,sessionProperties: freezed == sessionProperties ? _self.sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
 as Map<String, String>?,proposer: null == proposer ? _self.proposer : proposer // ignore: cast_nullable_to_non_nullable
 as ConnectionMetadata,requests: freezed == requests ? _self.requests : requests // ignore: cast_nullable_to_non_nullable
-as ProposalRequests?,
+as ProposalRequests?,authentication: freezed == authentication ? _self.authentication : authentication // ignore: cast_nullable_to_non_nullable
+as List<SessionAuthPayload>?,walletPay: freezed == walletPay ? _self.walletPay : walletPay // ignore: cast_nullable_to_non_nullable
+as WalletPayRequestParams?,
   ));
 }
 /// Create a copy of WcSessionProposeRequest
@@ -619,6 +621,18 @@ $ProposalRequestsCopyWith<$Res>? get requests {
 
   return $ProposalRequestsCopyWith<$Res>(_self.requests!, (value) {
     return _then(_self.copyWith(requests: value));
+  });
+}/// Create a copy of WcSessionProposeRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WalletPayRequestParamsCopyWith<$Res>? get walletPay {
+    if (_self.walletPay == null) {
+    return null;
+  }
+
+  return $WalletPayRequestParamsCopyWith<$Res>(_self.walletPay!, (value) {
+    return _then(_self.copyWith(walletPay: value));
   });
 }
 }
@@ -699,10 +713,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer,  ProposalRequests? requests)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer,  ProposalRequests? requests,  List<SessionAuthPayload>? authentication,  WalletPayRequestParams? walletPay)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WcSessionProposeRequest() when $default != null:
-return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer,_that.requests);case _:
+return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer,_that.requests,_that.authentication,_that.walletPay);case _:
   return orElse();
 
 }
@@ -720,10 +734,10 @@ return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer,  ProposalRequests? requests)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer,  ProposalRequests? requests,  List<SessionAuthPayload>? authentication,  WalletPayRequestParams? walletPay)  $default,) {final _that = this;
 switch (_that) {
 case _WcSessionProposeRequest():
-return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer,_that.requests);}
+return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer,_that.requests,_that.authentication,_that.walletPay);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -737,10 +751,10 @@ return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer,  ProposalRequests? requests)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer,  ProposalRequests? requests,  List<SessionAuthPayload>? authentication,  WalletPayRequestParams? walletPay)?  $default,) {final _that = this;
 switch (_that) {
 case _WcSessionProposeRequest() when $default != null:
-return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer,_that.requests);case _:
+return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer,_that.requests,_that.authentication,_that.walletPay);case _:
   return null;
 
 }
@@ -752,7 +766,7 @@ return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_
 
 @JsonSerializable(includeIfNull: false)
 class _WcSessionProposeRequest implements WcSessionProposeRequest {
-  const _WcSessionProposeRequest({required final  List<Relay> relays, required final  Map<String, RequiredNamespace> requiredNamespaces, final  Map<String, RequiredNamespace>? optionalNamespaces, final  Map<String, String>? sessionProperties, required this.proposer, this.requests}): _relays = relays,_requiredNamespaces = requiredNamespaces,_optionalNamespaces = optionalNamespaces,_sessionProperties = sessionProperties;
+  const _WcSessionProposeRequest({required final  List<Relay> relays, required final  Map<String, RequiredNamespace> requiredNamespaces, final  Map<String, RequiredNamespace>? optionalNamespaces, final  Map<String, String>? sessionProperties, required this.proposer, this.requests, final  List<SessionAuthPayload>? authentication, this.walletPay}): _relays = relays,_requiredNamespaces = requiredNamespaces,_optionalNamespaces = optionalNamespaces,_sessionProperties = sessionProperties,_authentication = authentication;
   factory _WcSessionProposeRequest.fromJson(Map<String, dynamic> json) => _$WcSessionProposeRequestFromJson(json);
 
  final  List<Relay> _relays;
@@ -789,6 +803,16 @@ class _WcSessionProposeRequest implements WcSessionProposeRequest {
 
 @override final  ConnectionMetadata proposer;
 @override final  ProposalRequests? requests;
+ final  List<SessionAuthPayload>? _authentication;
+@override List<SessionAuthPayload>? get authentication {
+  final value = _authentication;
+  if (value == null) return null;
+  if (_authentication is EqualUnmodifiableListView) return _authentication;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
+@override final  WalletPayRequestParams? walletPay;
 
 /// Create a copy of WcSessionProposeRequest
 /// with the given fields replaced by the non-null parameter values.
@@ -803,16 +827,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionProposeRequest&&const DeepCollectionEquality().equals(other._relays, _relays)&&const DeepCollectionEquality().equals(other._requiredNamespaces, _requiredNamespaces)&&const DeepCollectionEquality().equals(other._optionalNamespaces, _optionalNamespaces)&&const DeepCollectionEquality().equals(other._sessionProperties, _sessionProperties)&&(identical(other.proposer, proposer) || other.proposer == proposer)&&(identical(other.requests, requests) || other.requests == requests));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WcSessionProposeRequest&&const DeepCollectionEquality().equals(other._relays, _relays)&&const DeepCollectionEquality().equals(other._requiredNamespaces, _requiredNamespaces)&&const DeepCollectionEquality().equals(other._optionalNamespaces, _optionalNamespaces)&&const DeepCollectionEquality().equals(other._sessionProperties, _sessionProperties)&&(identical(other.proposer, proposer) || other.proposer == proposer)&&(identical(other.requests, requests) || other.requests == requests)&&const DeepCollectionEquality().equals(other._authentication, _authentication)&&(identical(other.walletPay, walletPay) || other.walletPay == walletPay));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_relays),const DeepCollectionEquality().hash(_requiredNamespaces),const DeepCollectionEquality().hash(_optionalNamespaces),const DeepCollectionEquality().hash(_sessionProperties),proposer,requests);
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_relays),const DeepCollectionEquality().hash(_requiredNamespaces),const DeepCollectionEquality().hash(_optionalNamespaces),const DeepCollectionEquality().hash(_sessionProperties),proposer,requests,const DeepCollectionEquality().hash(_authentication),walletPay);
 
 @override
 String toString() {
-  return 'WcSessionProposeRequest(relays: $relays, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, proposer: $proposer, requests: $requests)';
+  return 'WcSessionProposeRequest(relays: $relays, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, proposer: $proposer, requests: $requests, authentication: $authentication, walletPay: $walletPay)';
 }
 
 
@@ -823,11 +847,11 @@ abstract mixin class _$WcSessionProposeRequestCopyWith<$Res> implements $WcSessi
   factory _$WcSessionProposeRequestCopyWith(_WcSessionProposeRequest value, $Res Function(_WcSessionProposeRequest) _then) = __$WcSessionProposeRequestCopyWithImpl;
 @override @useResult
 $Res call({
- List<Relay> relays, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, ConnectionMetadata proposer, ProposalRequests? requests
+ List<Relay> relays, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, ConnectionMetadata proposer, ProposalRequests? requests, List<SessionAuthPayload>? authentication, WalletPayRequestParams? walletPay
 });
 
 
-@override $ConnectionMetadataCopyWith<$Res> get proposer;@override $ProposalRequestsCopyWith<$Res>? get requests;
+@override $ConnectionMetadataCopyWith<$Res> get proposer;@override $ProposalRequestsCopyWith<$Res>? get requests;@override $WalletPayRequestParamsCopyWith<$Res>? get walletPay;
 
 }
 /// @nodoc
@@ -840,7 +864,7 @@ class __$WcSessionProposeRequestCopyWithImpl<$Res>
 
 /// Create a copy of WcSessionProposeRequest
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? relays = null,Object? requiredNamespaces = null,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? proposer = null,Object? requests = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? relays = null,Object? requiredNamespaces = null,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? proposer = null,Object? requests = freezed,Object? authentication = freezed,Object? walletPay = freezed,}) {
   return _then(_WcSessionProposeRequest(
 relays: null == relays ? _self._relays : relays // ignore: cast_nullable_to_non_nullable
 as List<Relay>,requiredNamespaces: null == requiredNamespaces ? _self._requiredNamespaces : requiredNamespaces // ignore: cast_nullable_to_non_nullable
@@ -848,7 +872,9 @@ as Map<String, RequiredNamespace>,optionalNamespaces: freezed == optionalNamespa
 as Map<String, RequiredNamespace>?,sessionProperties: freezed == sessionProperties ? _self._sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
 as Map<String, String>?,proposer: null == proposer ? _self.proposer : proposer // ignore: cast_nullable_to_non_nullable
 as ConnectionMetadata,requests: freezed == requests ? _self.requests : requests // ignore: cast_nullable_to_non_nullable
-as ProposalRequests?,
+as ProposalRequests?,authentication: freezed == authentication ? _self._authentication : authentication // ignore: cast_nullable_to_non_nullable
+as List<SessionAuthPayload>?,walletPay: freezed == walletPay ? _self.walletPay : walletPay // ignore: cast_nullable_to_non_nullable
+as WalletPayRequestParams?,
   ));
 }
 
@@ -872,6 +898,18 @@ $ProposalRequestsCopyWith<$Res>? get requests {
 
   return $ProposalRequestsCopyWith<$Res>(_self.requests!, (value) {
     return _then(_self.copyWith(requests: value));
+  });
+}/// Create a copy of WcSessionProposeRequest
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WalletPayRequestParamsCopyWith<$Res>? get walletPay {
+    if (_self.walletPay == null) {
+    return null;
+  }
+
+  return $WalletPayRequestParamsCopyWith<$Res>(_self.walletPay!, (value) {
+    return _then(_self.copyWith(walletPay: value));
   });
 }
 }
