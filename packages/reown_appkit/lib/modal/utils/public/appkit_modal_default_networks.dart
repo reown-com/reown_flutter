@@ -144,6 +144,16 @@ class ReownAppKitModalNetworks {
         explorerUrl: 'https://solscan.io',
       ),
     ],
+    NetworkUtils.ton: [
+      ReownAppKitModalNetworkInfo(
+        name: 'TON',
+        chainId: '-239',
+        chainIcon: _networkIcons['ton::-239'],
+        currency: 'TON',
+        rpcUrl: 'https://toncenter.com/api/v2/jsonRPC',
+        explorerUrl: 'https://tonviewer.com',
+      ),
+    ],
   };
 
   static final Map<String, List<ReownAppKitModalNetworkInfo>> _testnets = {
@@ -225,6 +235,16 @@ class ReownAppKitModalNetworks {
         currency: 'SOL',
         rpcUrl: 'https://api.devnet.solana.com',
         explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
+        isTestNetwork: true,
+      ),
+    ],
+    NetworkUtils.ton: [
+      ReownAppKitModalNetworkInfo(
+        name: 'TON Testnet',
+        chainId: '-3',
+        currency: 'TON',
+        rpcUrl: 'https://testnet.toncenter.com/api/v2/jsonRPC',
+        explorerUrl: 'https://testnet.tonviewer.com',
         isTestNetwork: true,
       ),
     ],
@@ -461,5 +481,8 @@ class ReownAppKitModalNetworks {
         'a1b58899-f671-4276-6a5e-56ca5bd59700',
     // Near
     'near:mainnet': 'ab3d4dee-e416-4d8d-226c-4c131b8b7600',
+    // TON
+    'ton::-239': 'ton-mainnet-icon-placeholder',
+    'ton::-3': 'ton-testnet-icon-placeholder',
   };
 }

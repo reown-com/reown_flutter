@@ -6,6 +6,7 @@ export 'appkit_modal_siwe_utils.dart';
 class NetworkUtils {
   static const eip155 = 'eip155';
   static const solana = 'solana';
+  static const ton = 'ton';
 
   static Map<String, List<String>> defaultNetworkMethods = {
     eip155: MethodsConstants.allMethods.toSet().toList(),
@@ -16,10 +17,16 @@ class NetworkUtils {
       'solana_signAllTransactions',
       'solana_signAndSendTransaction',
     ],
+    ton: [
+      'ton_signData',
+      'ton_sendMessage',
+      'ton_getAccounts',
+    ],
   };
 
   static Map<String, List<String>> defaultNetworkEvents = {
     eip155: EventsConstants.allEvents.toSet().toList(),
     solana: [],
+    ton: [],
   };
 }
