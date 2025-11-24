@@ -6,6 +6,7 @@ import 'package:reown_sign/models/session_auth_models.dart';
 import 'package:reown_sign/models/proposal_models.dart';
 import 'package:reown_sign/models/session_models.dart';
 import 'package:reown_sign/models/sign_client_models.dart';
+import 'package:reown_sign/models/wallet_pay_models.dart';
 
 part 'json_rpc_models.g.dart';
 part 'json_rpc_models.freezed.dart';
@@ -43,7 +44,7 @@ sealed class WcSessionProposeRequest with _$WcSessionProposeRequest {
     required ConnectionMetadata proposer,
     ProposalRequests? requests,
     List<SessionAuthPayload>? authentication,
-    WalletPayRequestParams? walletPay,
+    @JsonKey(name: 'wallet_pay') WalletPayRequestParams? walletPay,
   }) = _WcSessionProposeRequest;
 
   factory WcSessionProposeRequest.fromJson(Map<String, dynamic> json) =>

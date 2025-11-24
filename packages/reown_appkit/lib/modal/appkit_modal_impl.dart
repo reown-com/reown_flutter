@@ -58,6 +58,7 @@ import 'package:reown_appkit/modal/services/siwe_service/siwe_service.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/blockchain_service.dart';
 import 'package:reown_appkit/modal/widgets/modal_container.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
+import 'package:reown_sign/models/wallet_pay_models.dart';
 // import 'package:webview_flutter/webview_flutter.dart';
 // import 'package:webview_flutter_web/webview_flutter_web.dart';
 

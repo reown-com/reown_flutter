@@ -29,3 +29,4 @@ export 'package:pointycastle/digests/sha256.dart';
 
 export 'package:reown_yttrium/wallet_pay/i_walletpay_request.dart';
 export 'package:reown_yttrium/wallet_pay/walletpay_request.dart';
+export 'package:reown_yttrium/models/walletpay_models.dart';

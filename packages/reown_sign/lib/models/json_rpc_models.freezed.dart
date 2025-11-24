@@ -538,7 +538,7 @@ as Map<String, dynamic>,
 /// @nodoc
 mixin _$WcSessionProposeRequest {
 
- List<Relay> get relays; Map<String, RequiredNamespace> get requiredNamespaces; Map<String, RequiredNamespace>? get optionalNamespaces; Map<String, String>? get sessionProperties; ConnectionMetadata get proposer; ProposalRequests? get requests; List<SessionAuthPayload>? get authentication; WalletPayRequestParams? get walletPay;
+ List<Relay> get relays; Map<String, RequiredNamespace> get requiredNamespaces; Map<String, RequiredNamespace>? get optionalNamespaces; Map<String, String>? get sessionProperties; ConnectionMetadata get proposer; ProposalRequests? get requests; List<SessionAuthPayload>? get authentication;@JsonKey(name: 'wallet_pay') WalletPayRequestParams? get walletPay;
 /// Create a copy of WcSessionProposeRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -571,7 +571,7 @@ abstract mixin class $WcSessionProposeRequestCopyWith<$Res>  {
   factory $WcSessionProposeRequestCopyWith(WcSessionProposeRequest value, $Res Function(WcSessionProposeRequest) _then) = _$WcSessionProposeRequestCopyWithImpl;
 @useResult
 $Res call({
- List<Relay> relays, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, ConnectionMetadata proposer, ProposalRequests? requests, List<SessionAuthPayload>? authentication, WalletPayRequestParams? walletPay
+ List<Relay> relays, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, ConnectionMetadata proposer, ProposalRequests? requests, List<SessionAuthPayload>? authentication,@JsonKey(name: 'wallet_pay') WalletPayRequestParams? walletPay
 });
 
 
@@ -713,7 +713,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer,  ProposalRequests? requests,  List<SessionAuthPayload>? authentication,  WalletPayRequestParams? walletPay)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer,  ProposalRequests? requests,  List<SessionAuthPayload>? authentication, @JsonKey(name: 'wallet_pay')  WalletPayRequestParams? walletPay)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WcSessionProposeRequest() when $default != null:
 return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer,_that.requests,_that.authentication,_that.walletPay);case _:
@@ -734,7 +734,7 @@ return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer,  ProposalRequests? requests,  List<SessionAuthPayload>? authentication,  WalletPayRequestParams? walletPay)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer,  ProposalRequests? requests,  List<SessionAuthPayload>? authentication, @JsonKey(name: 'wallet_pay')  WalletPayRequestParams? walletPay)  $default,) {final _that = this;
 switch (_that) {
 case _WcSessionProposeRequest():
 return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer,_that.requests,_that.authentication,_that.walletPay);}
@@ -751,7 +751,7 @@ return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer,  ProposalRequests? requests,  List<SessionAuthPayload>? authentication,  WalletPayRequestParams? walletPay)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Relay> relays,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  ConnectionMetadata proposer,  ProposalRequests? requests,  List<SessionAuthPayload>? authentication, @JsonKey(name: 'wallet_pay')  WalletPayRequestParams? walletPay)?  $default,) {final _that = this;
 switch (_that) {
 case _WcSessionProposeRequest() when $default != null:
 return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.proposer,_that.requests,_that.authentication,_that.walletPay);case _:
@@ -766,7 +766,7 @@ return $default(_that.relays,_that.requiredNamespaces,_that.optionalNamespaces,_
 
 @JsonSerializable(includeIfNull: false)
 class _WcSessionProposeRequest implements WcSessionProposeRequest {
-  const _WcSessionProposeRequest({required final  List<Relay> relays, required final  Map<String, RequiredNamespace> requiredNamespaces, final  Map<String, RequiredNamespace>? optionalNamespaces, final  Map<String, String>? sessionProperties, required this.proposer, this.requests, final  List<SessionAuthPayload>? authentication, this.walletPay}): _relays = relays,_requiredNamespaces = requiredNamespaces,_optionalNamespaces = optionalNamespaces,_sessionProperties = sessionProperties,_authentication = authentication;
+  const _WcSessionProposeRequest({required final  List<Relay> relays, required final  Map<String, RequiredNamespace> requiredNamespaces, final  Map<String, RequiredNamespace>? optionalNamespaces, final  Map<String, String>? sessionProperties, required this.proposer, this.requests, final  List<SessionAuthPayload>? authentication, @JsonKey(name: 'wallet_pay') this.walletPay}): _relays = relays,_requiredNamespaces = requiredNamespaces,_optionalNamespaces = optionalNamespaces,_sessionProperties = sessionProperties,_authentication = authentication;
   factory _WcSessionProposeRequest.fromJson(Map<String, dynamic> json) => _$WcSessionProposeRequestFromJson(json);
 
  final  List<Relay> _relays;
@@ -812,7 +812,7 @@ class _WcSessionProposeRequest implements WcSessionProposeRequest {
   return EqualUnmodifiableListView(value);
 }
 
-@override final  WalletPayRequestParams? walletPay;
+@override@JsonKey(name: 'wallet_pay') final  WalletPayRequestParams? walletPay;
 
 /// Create a copy of WcSessionProposeRequest
 /// with the given fields replaced by the non-null parameter values.
@@ -847,7 +847,7 @@ abstract mixin class _$WcSessionProposeRequestCopyWith<$Res> implements $WcSessi
   factory _$WcSessionProposeRequestCopyWith(_WcSessionProposeRequest value, $Res Function(_WcSessionProposeRequest) _then) = __$WcSessionProposeRequestCopyWithImpl;
 @override @useResult
 $Res call({
- List<Relay> relays, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, ConnectionMetadata proposer, ProposalRequests? requests, List<SessionAuthPayload>? authentication, WalletPayRequestParams? walletPay
+ List<Relay> relays, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, ConnectionMetadata proposer, ProposalRequests? requests, List<SessionAuthPayload>? authentication,@JsonKey(name: 'wallet_pay') WalletPayRequestParams? walletPay
 });
 
 

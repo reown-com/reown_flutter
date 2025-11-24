@@ -7,7 +7,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import uniffi.yttrium.DisplayData
-import uniffi.yttrium.PaymentOption
 import uniffi.yttrium.WalletPayAction
 import uniffi.yttrium.WalletPayRequest
 import uniffi.yttrium.WalletPayResponseResultV1

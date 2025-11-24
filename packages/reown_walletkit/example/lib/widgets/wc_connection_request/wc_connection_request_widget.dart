@@ -13,18 +13,14 @@ import '../wc_connection_widget/wc_connection_model.dart';
 class WCConnectionRequestWidget extends StatelessWidget {
   const WCConnectionRequestWidget({
     super.key,
-    // this.authPayloadParams,
     this.sessionAuthPayload,
     this.proposalData,
     this.requester,
-    this.verifyContext,
   });
 
-  // final AuthPayloadParams? authPayloadParams;
   final SessionAuthPayload? sessionAuthPayload;
   final ProposalData? proposalData;
   final ConnectionMetadata? requester;
-  final VerifyContext? verifyContext;
 
   @override
   Widget build(BuildContext context) {
@@ -205,6 +201,7 @@ class VerifyBanner extends StatelessWidget {
       children: [
         Text(
           origin,
+          textAlign: TextAlign.left,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -225,7 +222,7 @@ class VerifyBanner extends StatelessWidget {
               const SizedBox(height: 4.0),
               Text(
                 text,
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.left,
                 style: TextStyle(
                   color: color,
                   fontWeight: FontWeight.bold,

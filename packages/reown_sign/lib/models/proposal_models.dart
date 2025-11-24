@@ -3,6 +3,7 @@ import 'package:reown_core/relay_client/relay_client_models.dart';
 import 'package:reown_sign/models/basic_models.dart';
 import 'package:reown_sign/models/session_auth_models.dart';
 import 'package:reown_sign/models/session_models.dart';
+import 'package:reown_sign/models/wallet_pay_models.dart';
 
 part 'proposal_models.g.dart';
 part 'proposal_models.freezed.dart';
@@ -47,7 +48,7 @@ sealed class ProposalData with _$ProposalData {
     Map<String, Namespace>? generatedNamespaces,
     // ProposalRequests? requests,
     List<SessionAuthPayload>? authentication,
-    WalletPayRequestParams? walletPay,
+    @JsonKey(name: 'wallet_pay') WalletPayRequestParams? walletPay,
   }) = _ProposalData;
 
   factory ProposalData.fromJson(Map<String, dynamic> json) =>
@@ -66,35 +67,9 @@ sealed class ProposalRequests with _$ProposalRequests {
   const factory ProposalRequests({
     // List<SessionAuthPayload>? authentication,
     List<SessionAuthRequestParams>? authentication,
-    WalletPayRequestParams? walletPay,
+    @JsonKey(name: 'wallet_pay') WalletPayRequestParams? walletPay,
   }) = _ProposalRequests;
 
   factory ProposalRequests.fromJson(Map<String, dynamic> json) =>
       _$ProposalRequestsFromJson(json);
-}
-
-@freezed
-sealed class WalletPayRequestParams with _$WalletPayRequestParams {
-  const factory WalletPayRequestParams({
-    required String version,
-    required List<PaymentOption> acceptedPayments,
-    required int expiry,
-    String? orderId,
-  }) = _WalletPayRequestParams;
-
-  factory WalletPayRequestParams.fromJson(Map<String, dynamic> json) =>
-      _$WalletPayRequestParamsFromJson(json);
-}
-
-@freezed
-sealed class PaymentOption with _$PaymentOption {
-  const factory PaymentOption({
-    required String recipient, // chain-specific addr
-    required String asset, // CAIP-19
-    required String amount, // Hex string
-    required List<String> types, // "erc20-transfer", "erc3009-authorization"
-  }) = _PaymentOption;
-
-  factory PaymentOption.fromJson(Map<String, dynamic> json) =>
-      _$PaymentOptionFromJson(json);
 }

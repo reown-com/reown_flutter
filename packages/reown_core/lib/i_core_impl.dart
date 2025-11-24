@@ -10,7 +10,7 @@ import 'package:reown_core/relay_client/i_relay_client.dart';
 import 'package:reown_core/store/i_store.dart';
 import 'package:reown_core/store/link_mode_store.dart';
 import 'package:reown_core/verify/i_verify.dart';
-// import 'package:reown_yttrium/clients/erc6492_client.dart';
+import 'package:reown_yttrium/clients/erc6492_client.dart';
 import 'package:reown_yttrium/clients/wallet_pay_client.dart';
 
 abstract class IReownCore {
@@ -36,7 +36,7 @@ abstract class IReownCore {
   abstract IVerify verify;
   abstract ILinkModeStore linkModeStore;
 
-  // abstract final Erc6492VerifyClient erc6492verifyClient;
+  abstract final Erc6492VerifyClient erc6492verifyClient;
   abstract final WalletPayClient walletPayClient;
 
   Future<void> start();

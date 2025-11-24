@@ -1,6 +1,7 @@
 package com.reown.reown_yttrium
 
 import uniffi.yttrium.DisplayData
+import uniffi.yttrium.ParsedData
 import uniffi.yttrium.PaymentOption
 import uniffi.yttrium.TransferConfirmation
 import uniffi.yttrium.WalletPayAction
@@ -9,6 +10,14 @@ import uniffi.yttrium.WalletPayResponseResultV1
 
 fun Byte.toHexString(): String = "%02x".format(this)
 
+fun ParsedData.toMap(): Map<String, Any?> {
+    return mapOf(
+        "amount" to amount,
+        "assetName" to assetName,
+        "chain" to chain,
+    )
+}
+
 // For a single display item
 fun WalletPayDisplayItem.toMap(): Map<String, Any?> {
     return mapOf(
@@ -16,6 +25,7 @@ fun WalletPayDisplayItem.toMap(): Map<String, Any?> {
         "amount" to amount,
         "chain" to chain,   // nullable is fine, Flutter sees null
         "symbol" to symbol, // nullable is fine
+        "parsedData" to parsedData.toMap(),
     )
 }
 
@@ -46,8 +56,8 @@ fun Map<*, *>.toPaymentOption(): PaymentOption {
 fun WalletPayAction.toMap(): Map<String, Any?> {
     return mapOf(
         "method" to method,
-        "data" to data,
-        "hash" to hash,
+        "hash" to hash, // hash to sign
+        "data" to data, // json encoded transaction
     )
 }
 
@@ -59,7 +69,7 @@ fun TransferConfirmation.toMap(): Map<String, Any?> {
     return mapOf(
         "type" to type,
         "hash" to hash,
-        "data" to data,
+        "data" to data, // json encoded transaction
     )
 }
 

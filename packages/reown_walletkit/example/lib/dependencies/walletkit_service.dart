@@ -23,6 +23,7 @@ import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 import 'package:reown_walletkit_wallet/utils/eth_utils.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
+import 'package:reown_walletkit_wallet/widgets/wallet_pay_request/wallet_pay_request_widget.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_request/wc_connection_request_widget.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_request_widget.dart/wc_request_widget.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_request_widget.dart/wc_session_auth_request_widget.dart';
@@ -308,15 +309,11 @@ class WalletKitService extends IWalletKitService {
     if (args != null) {
       try {
         final ProposalData proposalData = args.params;
+        final VerifyContext? verifyContext = args.verifyContext;
         if (proposalData.hasPayment()) {
-          final walletPayRequest = await _walletKit!.createWalletPayRequest(
-            rawData: proposalData.toJson(),
-          );
-          debugPrint('[SampleWallet] createWalletPayRequest $walletPayRequest');
-          await _processWalletPayRequest(walletPayRequest);
+          await _processWalletPayRequest(proposalData, verifyContext);
         } else {
-          //
-          await _processSessionProposal(proposalData, args.verifyContext);
+          await _processSessionProposal(proposalData, verifyContext);
         }
       } catch (e, s) {
         debugPrint('❌ [SampleWallet] _onSessionProposal error: $e\n$s');
@@ -330,6 +327,7 @@ class WalletKitService extends IWalletKitService {
     VerifyContext? verifyContext,
   ) async {
     final proposer = proposalData.proposer;
+    final redirect = proposer.metadata.redirect;
     // Auth requests
     final generatedNamespaces = proposalData.generatedNamespaces;
     final authenticationRequests = proposalData.authentication;
@@ -343,7 +341,6 @@ class WalletKitService extends IWalletKitService {
             verifyContext: verifyContext,
             child: WCConnectionRequestWidget(
               proposalData: proposalData,
-              verifyContext: verifyContext,
               requester: proposer,
             ),
           ),
@@ -365,11 +362,7 @@ class WalletKitService extends IWalletKitService {
           ),
         );
       } on ReownSignError catch (error) {
-        MethodsUtils.handleRedirect(
-          '',
-          proposer.metadata.redirect,
-          error.message,
-        );
+        MethodsUtils.handleRedirect('', redirect, error.message);
       }
     } else {
       final error = Errors.getSdkError(Errors.USER_REJECTED).toSignError();
@@ -377,32 +370,74 @@ class WalletKitService extends IWalletKitService {
       await _walletKit!.core.pairing.disconnect(
         topic: proposalData.pairingTopic,
       );
-      MethodsUtils.handleRedirect(
-        '',
-        proposer.metadata.redirect,
-        error.message,
-      );
+      MethodsUtils.handleRedirect('', redirect, error.message);
     }
   }
 
   Future<void> _processWalletPayRequest(
-    WalletPayRequest walletPayRequest,
+    ProposalData proposalData,
+    VerifyContext? verifyContext,
   ) async {
     //
-    final displayData = await walletPayRequest.getDisplayData();
-    debugPrint('[SampleWallet] displayData ${jsonEncode(displayData)}');
-    final paymentAction = await walletPayRequest.getPaymentAction(
-      optionIndex: 1,
+    final walletPayRequest = await _walletKit!.createWalletPayRequest(
+      rawData: proposalData.toJson(),
     );
-    debugPrint('[SampleWallet] paymentAction ${jsonEncode(paymentAction)}');
-    // await walletPayRequest.getActionFromPaymentOption(paymentOption: paymentOption)
-    // TODO Sign hash from paymentAction
-    final result = await walletPayRequest.finalize(
-      optionIndex: 1,
-      signature: 'signature',
-    );
-    debugPrint('[SampleWallet] result ${jsonEncode(result)}');
-    DeepLinkHandler.waiting.value = false;
+
+    // final displayData = await walletPayRequest.getDisplayData();
+    // debugPrint('[SampleWallet] displayData ${jsonEncode(displayData)}');
+    //
+    final modalResult = (await _bottomSheetHandler.queueBottomSheet(
+          widget: WalletPayRequestWidget(
+            // displayData: displayData,
+            walletPayRequest: walletPayRequest,
+            requester: proposalData.proposer,
+            verifyContext: verifyContext,
+          ),
+        )) ??
+        WCBottomSheetResult.reject;
+
+    final redirect = proposalData.proposer.metadata.redirect;
+    if (modalResult != WCBottomSheetResult.reject) {
+      try {
+        final paymentAction = await walletPayRequest.getPaymentAction(
+          optionIndex: 1,
+        );
+        debugPrint('[SampleWallet] paymentAction ${jsonEncode(paymentAction)}');
+        // await walletPayRequest.getActionFromPaymentOption(paymentOption: paymentOption)
+        // TODO Sign hash from paymentAction
+        final payResponse = await walletPayRequest.finalize(
+          optionIndex: 1,
+          signature: 'signature',
+        );
+        // final transfer = payResponse.transferConfirmation;
+        // final transferData = transfer.transferData();
+        debugPrint('[SampleWallet] result ${jsonEncode(payResponse)}');
+        await _walletKit!.approveSession(
+          id: proposalData.id,
+          namespaces: proposalData.generatedNamespaces!,
+          sessionProperties: proposalData.sessionProperties,
+          proposalRequestsResponses: ProposalRequestsResponses(
+              // authentication: cacaos,
+              // walletPayResult: WalletPayResult(
+              //   version: '1.0',
+              //   txid: payResponse.transferConfirmation.hash,
+              //   recipient: transferData.to!,
+              //   asset: payResponse.transferConfirmation.hash,
+              //   amount: transferData.value!,
+              // ),
+              ),
+        );
+      } on ReownSignError catch (error) {
+        MethodsUtils.handleRedirect('', redirect, error.message);
+      }
+    } else {
+      final error = Errors.getSdkError(Errors.USER_REJECTED).toSignError();
+      await _walletKit!.rejectSession(id: proposalData.id, reason: error);
+      await _walletKit!.core.pairing.disconnect(
+        topic: proposalData.pairingTopic,
+      );
+      MethodsUtils.handleRedirect('', redirect, error.message);
+    }
   }
 
   void _onSessionProposalError(SessionProposalErrorEvent? args) async {
@@ -480,7 +515,7 @@ class WalletKitService extends IWalletKitService {
                 widget: WCSessionAuthRequestWidget(
                   child: WCConnectionRequestWidget(
                     sessionAuthPayload: authenticationRequest,
-                    verifyContext: args.verifyContext,
+                    // verifyContext: args.verifyContext,
                     requester: args.requester,
                   ),
                 ),

@@ -3,30 +3,31 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i19;
+import 'dart:async' as _i20;
 
-import 'package:event/event.dart' as _i16;
-import 'package:http/http.dart' as _i15;
+import 'package:event/event.dart' as _i17;
+import 'package:http/http.dart' as _i16;
 import 'package:logger/logger.dart' as _i11;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i18;
+import 'package:mockito/src/dummies.dart' as _i19;
 import 'package:reown_core/connectivity/i_connectivity.dart' as _i6;
 import 'package:reown_core/crypto/i_crypto.dart' as _i3;
 import 'package:reown_core/echo/i_echo.dart' as _i9;
 import 'package:reown_core/events/i_events.dart' as _i10;
 import 'package:reown_core/heartbit/i_heartbeat.dart' as _i2;
-import 'package:reown_core/i_core_impl.dart' as _i17;
+import 'package:reown_core/i_core_impl.dart' as _i18;
 import 'package:reown_core/pairing/i_expirer.dart' as _i7;
 import 'package:reown_core/pairing/i_pairing.dart' as _i8;
 import 'package:reown_core/relay_client/i_relay_client.dart' as _i4;
-import 'package:reown_core/relay_client/websocket/i_http_client.dart' as _i20;
+import 'package:reown_core/relay_client/websocket/i_http_client.dart' as _i21;
 import 'package:reown_core/store/i_store.dart' as _i5;
 import 'package:reown_core/store/link_mode_store.dart' as _i13;
-import 'package:reown_core/store/store_models.dart' as _i22;
+import 'package:reown_core/store/store_models.dart' as _i23;
 import 'package:reown_core/verify/i_verify.dart' as _i12;
-import 'package:reown_core/verify/i_verify_store.dart' as _i21;
-import 'package:reown_core/verify/models/jwk.dart' as _i23;
-import 'package:reown_yttrium/clients/wallet_pay_client.dart' as _i14;
+import 'package:reown_core/verify/i_verify_store.dart' as _i22;
+import 'package:reown_core/verify/models/jwk.dart' as _i24;
+import 'package:reown_yttrium/clients/erc6492_client.dart' as _i14;
+import 'package:reown_yttrium/clients/wallet_pay_client.dart' as _i15;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -104,27 +105,33 @@ class _FakeILinkModeStore_11 extends _i1.SmartFake
     : super(parent, parentInvocation);
 }
 
-class _FakeWalletPayClient_12 extends _i1.SmartFake
-    implements _i14.WalletPayClient {
-  _FakeWalletPayClient_12(Object parent, Invocation parentInvocation)
+class _FakeErc6492VerifyClient_12 extends _i1.SmartFake
+    implements _i14.Erc6492VerifyClient {
+  _FakeErc6492VerifyClient_12(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeResponse_13 extends _i1.SmartFake implements _i15.Response {
-  _FakeResponse_13(Object parent, Invocation parentInvocation)
+class _FakeWalletPayClient_13 extends _i1.SmartFake
+    implements _i15.WalletPayClient {
+  _FakeWalletPayClient_13(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
-class _FakeEvent_14<T extends _i16.EventArgs> extends _i1.SmartFake
-    implements _i16.Event<T> {
-  _FakeEvent_14(Object parent, Invocation parentInvocation)
+class _FakeResponse_14 extends _i1.SmartFake implements _i16.Response {
+  _FakeResponse_14(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeEvent_15<T extends _i17.EventArgs> extends _i1.SmartFake
+    implements _i17.Event<T> {
+  _FakeEvent_15(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
 /// A class which mocks [IReownCore].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIReownCore extends _i1.Mock implements _i17.IReownCore {
+class MockIReownCore extends _i1.Mock implements _i18.IReownCore {
   MockIReownCore() {
     _i1.throwOnMissingStub(this);
   }
@@ -133,7 +140,7 @@ class MockIReownCore extends _i1.Mock implements _i17.IReownCore {
   String get protocol =>
       (super.noSuchMethod(
             Invocation.getter(#protocol),
-            returnValue: _i18.dummyValue<String>(
+            returnValue: _i19.dummyValue<String>(
               this,
               Invocation.getter(#protocol),
             ),
@@ -144,7 +151,7 @@ class MockIReownCore extends _i1.Mock implements _i17.IReownCore {
   String get version =>
       (super.noSuchMethod(
             Invocation.getter(#version),
-            returnValue: _i18.dummyValue<String>(
+            returnValue: _i19.dummyValue<String>(
               this,
               Invocation.getter(#version),
             ),
@@ -155,7 +162,7 @@ class MockIReownCore extends _i1.Mock implements _i17.IReownCore {
   String get relayUrl =>
       (super.noSuchMethod(
             Invocation.getter(#relayUrl),
-            returnValue: _i18.dummyValue<String>(
+            returnValue: _i19.dummyValue<String>(
               this,
               Invocation.getter(#relayUrl),
             ),
@@ -166,7 +173,7 @@ class MockIReownCore extends _i1.Mock implements _i17.IReownCore {
   String get projectId =>
       (super.noSuchMethod(
             Invocation.getter(#projectId),
-            returnValue: _i18.dummyValue<String>(
+            returnValue: _i19.dummyValue<String>(
               this,
               Invocation.getter(#projectId),
             ),
@@ -177,7 +184,7 @@ class MockIReownCore extends _i1.Mock implements _i17.IReownCore {
   String get pushUrl =>
       (super.noSuchMethod(
             Invocation.getter(#pushUrl),
-            returnValue: _i18.dummyValue<String>(
+            returnValue: _i19.dummyValue<String>(
               this,
               Invocation.getter(#pushUrl),
             ),
@@ -304,15 +311,26 @@ class MockIReownCore extends _i1.Mock implements _i17.IReownCore {
           as _i13.ILinkModeStore);
 
   @override
-  _i14.WalletPayClient get walletPayClient =>
+  _i14.Erc6492VerifyClient get erc6492verifyClient =>
+      (super.noSuchMethod(
+            Invocation.getter(#erc6492verifyClient),
+            returnValue: _FakeErc6492VerifyClient_12(
+              this,
+              Invocation.getter(#erc6492verifyClient),
+            ),
+          )
+          as _i14.Erc6492VerifyClient);
+
+  @override
+  _i15.WalletPayClient get walletPayClient =>
       (super.noSuchMethod(
             Invocation.getter(#walletPayClient),
-            returnValue: _FakeWalletPayClient_12(
+            returnValue: _FakeWalletPayClient_13(
               this,
               Invocation.getter(#walletPayClient),
             ),
           )
-          as _i14.WalletPayClient);
+          as _i15.WalletPayClient);
 
   @override
   set relayUrl(String? value) => super.noSuchMethod(
@@ -394,13 +412,13 @@ class MockIReownCore extends _i1.Mock implements _i17.IReownCore {
   );
 
   @override
-  _i19.Future<void> start() =>
+  _i20.Future<void> start() =>
       (super.noSuchMethod(
             Invocation.method(#start, []),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i20.Future<void>.value(),
+            returnValueForMissingStub: _i20.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i20.Future<void>);
 
   @override
   void confirmOnlineStateOrThrow() => super.noSuchMethod(
@@ -409,12 +427,12 @@ class MockIReownCore extends _i1.Mock implements _i17.IReownCore {
   );
 
   @override
-  _i19.Future<bool> addLinkModeSupportedApp(String? universalLink) =>
+  _i20.Future<bool> addLinkModeSupportedApp(String? universalLink) =>
       (super.noSuchMethod(
             Invocation.method(#addLinkModeSupportedApp, [universalLink]),
-            returnValue: _i19.Future<bool>.value(false),
+            returnValue: _i20.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i20.Future<bool>);
 
   @override
   List<String> getLinkModeSupportedApps() =>
@@ -442,34 +460,34 @@ class MockIReownCore extends _i1.Mock implements _i17.IReownCore {
 /// A class which mocks [IHttpClient].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIHttpClient extends _i1.Mock implements _i20.IHttpClient {
+class MockIHttpClient extends _i1.Mock implements _i21.IHttpClient {
   MockIHttpClient() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i19.Future<_i15.Response> get(Uri? url, {Map<String, String>? headers}) =>
+  _i20.Future<_i16.Response> get(Uri? url, {Map<String, String>? headers}) =>
       (super.noSuchMethod(
             Invocation.method(#get, [url], {#headers: headers}),
-            returnValue: _i19.Future<_i15.Response>.value(
-              _FakeResponse_13(
+            returnValue: _i20.Future<_i16.Response>.value(
+              _FakeResponse_14(
                 this,
                 Invocation.method(#get, [url], {#headers: headers}),
               ),
             ),
           )
-          as _i19.Future<_i15.Response>);
+          as _i20.Future<_i16.Response>);
 
   @override
-  _i19.Future<_i15.Response> post(
+  _i20.Future<_i16.Response> post(
     Uri? url, {
     Map<String, String>? headers,
     Object? body,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#post, [url], {#headers: headers, #body: body}),
-            returnValue: _i19.Future<_i15.Response>.value(
-              _FakeResponse_13(
+            returnValue: _i20.Future<_i16.Response>.value(
+              _FakeResponse_14(
                 this,
                 Invocation.method(
                   #post,
@@ -479,26 +497,26 @@ class MockIHttpClient extends _i1.Mock implements _i20.IHttpClient {
               ),
             ),
           )
-          as _i19.Future<_i15.Response>);
+          as _i20.Future<_i16.Response>);
 
   @override
-  _i19.Future<_i15.Response> delete(Uri? url, {Map<String, String>? headers}) =>
+  _i20.Future<_i16.Response> delete(Uri? url, {Map<String, String>? headers}) =>
       (super.noSuchMethod(
             Invocation.method(#delete, [url], {#headers: headers}),
-            returnValue: _i19.Future<_i15.Response>.value(
-              _FakeResponse_13(
+            returnValue: _i20.Future<_i16.Response>.value(
+              _FakeResponse_14(
                 this,
                 Invocation.method(#delete, [url], {#headers: headers}),
               ),
             ),
           )
-          as _i19.Future<_i15.Response>);
+          as _i20.Future<_i16.Response>);
 }
 
 /// A class which mocks [IVerifyStore].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockIVerifyStore extends _i1.Mock implements _i21.IVerifyStore {
+class MockIVerifyStore extends _i1.Mock implements _i22.IVerifyStore {
   MockIVerifyStore() {
     _i1.throwOnMissingStub(this);
   }
@@ -507,7 +525,7 @@ class MockIVerifyStore extends _i1.Mock implements _i21.IVerifyStore {
   String get version =>
       (super.noSuchMethod(
             Invocation.getter(#version),
-            returnValue: _i18.dummyValue<String>(
+            returnValue: _i19.dummyValue<String>(
               this,
               Invocation.getter(#version),
             ),
@@ -518,7 +536,7 @@ class MockIVerifyStore extends _i1.Mock implements _i21.IVerifyStore {
   String get context =>
       (super.noSuchMethod(
             Invocation.getter(#context),
-            returnValue: _i18.dummyValue<String>(
+            returnValue: _i19.dummyValue<String>(
               this,
               Invocation.getter(#context),
             ),
@@ -540,7 +558,7 @@ class MockIVerifyStore extends _i1.Mock implements _i21.IVerifyStore {
   String get storageKey =>
       (super.noSuchMethod(
             Invocation.getter(#storageKey),
-            returnValue: _i18.dummyValue<String>(
+            returnValue: _i19.dummyValue<String>(
               this,
               Invocation.getter(#storageKey),
             ),
@@ -556,90 +574,90 @@ class MockIVerifyStore extends _i1.Mock implements _i21.IVerifyStore {
           as Map<String, dynamic> Function(dynamic));
 
   @override
-  _i16.Event<_i22.StoreCreateEvent<Map<String, dynamic>>> get onCreate =>
+  _i17.Event<_i23.StoreCreateEvent<Map<String, dynamic>>> get onCreate =>
       (super.noSuchMethod(
             Invocation.getter(#onCreate),
             returnValue:
-                _FakeEvent_14<_i22.StoreCreateEvent<Map<String, dynamic>>>(
+                _FakeEvent_15<_i23.StoreCreateEvent<Map<String, dynamic>>>(
                   this,
                   Invocation.getter(#onCreate),
                 ),
           )
-          as _i16.Event<_i22.StoreCreateEvent<Map<String, dynamic>>>);
+          as _i17.Event<_i23.StoreCreateEvent<Map<String, dynamic>>>);
 
   @override
-  _i16.Event<_i22.StoreUpdateEvent<Map<String, dynamic>>> get onUpdate =>
+  _i17.Event<_i23.StoreUpdateEvent<Map<String, dynamic>>> get onUpdate =>
       (super.noSuchMethod(
             Invocation.getter(#onUpdate),
             returnValue:
-                _FakeEvent_14<_i22.StoreUpdateEvent<Map<String, dynamic>>>(
+                _FakeEvent_15<_i23.StoreUpdateEvent<Map<String, dynamic>>>(
                   this,
                   Invocation.getter(#onUpdate),
                 ),
           )
-          as _i16.Event<_i22.StoreUpdateEvent<Map<String, dynamic>>>);
+          as _i17.Event<_i23.StoreUpdateEvent<Map<String, dynamic>>>);
 
   @override
-  _i16.Event<_i22.StoreDeleteEvent<Map<String, dynamic>>> get onDelete =>
+  _i17.Event<_i23.StoreDeleteEvent<Map<String, dynamic>>> get onDelete =>
       (super.noSuchMethod(
             Invocation.getter(#onDelete),
             returnValue:
-                _FakeEvent_14<_i22.StoreDeleteEvent<Map<String, dynamic>>>(
+                _FakeEvent_15<_i23.StoreDeleteEvent<Map<String, dynamic>>>(
                   this,
                   Invocation.getter(#onDelete),
                 ),
           )
-          as _i16.Event<_i22.StoreDeleteEvent<Map<String, dynamic>>>);
+          as _i17.Event<_i23.StoreDeleteEvent<Map<String, dynamic>>>);
 
   @override
-  _i16.Event<_i22.StoreErrorEvent<Map<String, dynamic>>> get onError =>
+  _i17.Event<_i23.StoreErrorEvent<Map<String, dynamic>>> get onError =>
       (super.noSuchMethod(
             Invocation.getter(#onError),
             returnValue:
-                _FakeEvent_14<_i22.StoreErrorEvent<Map<String, dynamic>>>(
+                _FakeEvent_15<_i23.StoreErrorEvent<Map<String, dynamic>>>(
                   this,
                   Invocation.getter(#onError),
                 ),
           )
-          as _i16.Event<_i22.StoreErrorEvent<Map<String, dynamic>>>);
+          as _i17.Event<_i23.StoreErrorEvent<Map<String, dynamic>>>);
 
   @override
-  _i16.Event<_i22.StoreSyncEvent> get onSync =>
+  _i17.Event<_i23.StoreSyncEvent> get onSync =>
       (super.noSuchMethod(
             Invocation.getter(#onSync),
-            returnValue: _FakeEvent_14<_i22.StoreSyncEvent>(
+            returnValue: _FakeEvent_15<_i23.StoreSyncEvent>(
               this,
               Invocation.getter(#onSync),
             ),
           )
-          as _i16.Event<_i22.StoreSyncEvent>);
+          as _i17.Event<_i23.StoreSyncEvent>);
 
   @override
-  _i19.Future<void> removeItem() =>
+  _i20.Future<void> removeItem() =>
       (super.noSuchMethod(
             Invocation.method(#removeItem, []),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i20.Future<void>.value(),
+            returnValueForMissingStub: _i20.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i20.Future<void>);
 
   @override
-  _i19.Future<void> setItem(_i23.JWK? jwk) =>
+  _i20.Future<void> setItem(_i24.JWK? jwk) =>
       (super.noSuchMethod(
             Invocation.method(#setItem, [jwk]),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i20.Future<void>.value(),
+            returnValueForMissingStub: _i20.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i20.Future<void>);
 
   @override
-  _i19.Future<void> init() =>
+  _i20.Future<void> init() =>
       (super.noSuchMethod(
             Invocation.method(#init, []),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i20.Future<void>.value(),
+            returnValueForMissingStub: _i20.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i20.Future<void>);
 
   @override
   bool has(String? key) =>
@@ -647,13 +665,13 @@ class MockIVerifyStore extends _i1.Mock implements _i21.IVerifyStore {
           as bool);
 
   @override
-  _i19.Future<void> set(String? key, Map<String, dynamic>? value) =>
+  _i20.Future<void> set(String? key, Map<String, dynamic>? value) =>
       (super.noSuchMethod(
             Invocation.method(#set, [key, value]),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i20.Future<void>.value(),
+            returnValueForMissingStub: _i20.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i20.Future<void>);
 
   @override
   Map<String, dynamic>? get(String? key) =>
@@ -669,31 +687,31 @@ class MockIVerifyStore extends _i1.Mock implements _i21.IVerifyStore {
           as List<Map<String, dynamic>>);
 
   @override
-  _i19.Future<void> delete(String? key) =>
+  _i20.Future<void> delete(String? key) =>
       (super.noSuchMethod(
             Invocation.method(#delete, [key]),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i20.Future<void>.value(),
+            returnValueForMissingStub: _i20.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i20.Future<void>);
 
   @override
-  _i19.Future<void> restore() =>
+  _i20.Future<void> restore() =>
       (super.noSuchMethod(
             Invocation.method(#restore, []),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i20.Future<void>.value(),
+            returnValueForMissingStub: _i20.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i20.Future<void>);
 
   @override
-  _i19.Future<void> persist() =>
+  _i20.Future<void> persist() =>
       (super.noSuchMethod(
             Invocation.method(#persist, []),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i20.Future<void>.value(),
+            returnValueForMissingStub: _i20.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i20.Future<void>);
 }
 
 /// A class which mocks [Logger].
@@ -705,12 +723,12 @@ class MockLogger extends _i1.Mock implements _i11.Logger {
   }
 
   @override
-  _i19.Future<void> get init =>
+  _i20.Future<void> get init =>
       (super.noSuchMethod(
             Invocation.getter(#init),
-            returnValue: _i19.Future<void>.value(),
+            returnValue: _i20.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i20.Future<void>);
 
   @override
   void v(
@@ -854,11 +872,11 @@ class MockLogger extends _i1.Mock implements _i11.Logger {
           as bool);
 
   @override
-  _i19.Future<void> close() =>
+  _i20.Future<void> close() =>
       (super.noSuchMethod(
             Invocation.method(#close, []),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i20.Future<void>.value(),
+            returnValueForMissingStub: _i20.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i20.Future<void>);
 }

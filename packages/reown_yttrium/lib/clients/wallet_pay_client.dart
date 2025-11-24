@@ -15,14 +15,16 @@ class WalletPayClient {
       final result = await _methodChannel.walletPayChannel.createWalletPay(
         rawData: rawData,
       );
+
       if (!result) {
-        // TODO should this be needed if we have hasPayment() util function?
+        // TODO should this be needed if we have hasPayment() util function in ProposalData?
         throw PlatformException(
           code: 'NoWalletPayRequestFound',
           message:
               'Unable to create WalletPayRequesst with the given rawData: ${jsonEncode(rawData)}',
         );
       }
+
       return WalletPayRequest();
     } on PlatformException catch (e) {
       debugPrint('❌ [$runtimeType] createWalletPay $e');

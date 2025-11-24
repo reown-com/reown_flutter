@@ -41,7 +41,7 @@ import 'package:reown_core/utils/utils.dart';
 import 'package:reown_core/models/basic_models.dart';
 import 'package:reown_core/store/secure_store.dart';
 import 'package:reown_core/verify/verify_store.dart';
-// import 'package:reown_yttrium/clients/erc6492_client.dart';
+import 'package:reown_yttrium/clients/erc6492_client.dart';
 import 'package:reown_yttrium/clients/wallet_pay_client.dart';
 import 'package:reown_yttrium/reown_yttrium.dart';
 
@@ -269,9 +269,9 @@ class ReownCore implements IReownCore {
     }
   }
 
-  // @override
-  // Erc6492VerifyClient get erc6492verifyClient =>
-  //     ReownYttrium.erc6492VerifyClient;
+  @override
+  Erc6492VerifyClient get erc6492verifyClient =>
+      ReownYttrium.erc6492VerifyClient;
 
   @override
   WalletPayClient get walletPayClient => ReownYttrium.walletPayClient;

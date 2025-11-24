@@ -500,7 +500,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _appKitModal!.onSessionEventEvent.unsubscribe(_onSessionEvent);
     _appKitModal!.onSessionUpdateEvent.unsubscribe(_onSessionUpdate);
     //
-    _logManager.dispose();
+    // _logManager.dispose();
     super.dispose();
   }
 
