@@ -22,8 +22,8 @@ class GetStakeActivationConfig extends CommitmentAndMinContextSlotConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        'commitment': commitment?.name,
-        'epoch': epoch,
-        'minContextSlot': minContextSlot,
-      };
+    'commitment': commitment?.name,
+    'epoch': epoch,
+    'minContextSlot': minContextSlot,
+  };
 }

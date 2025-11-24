@@ -11,17 +11,14 @@ import '../models/account_filter.dart';
 
 class GetLargestAccountsConfig extends CommitmentConfig {
   /// JSON RPC configurations for `getLargeAccounts` methods.
-  const GetLargestAccountsConfig({
-    super.commitment,
-    this.filter,
-  });
+  const GetLargestAccountsConfig({super.commitment, this.filter});
 
   /// Filter results by account type.
   final AccountFilter? filter;
 
   @override
   Map<String, dynamic> toJson() => {
-        'commitment': commitment?.name,
-        'filter': filter?.name,
-      };
+    'commitment': commitment?.name,
+    'filter': filter?.name,
+  };
 }

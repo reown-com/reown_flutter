@@ -7,8 +7,6 @@ import 'package:reown_appkit/modal/utils/render_utils.dart';
 import 'package:reown_appkit/modal/widgets/avatars/account_avatar.dart';
 import 'package:reown_appkit/modal/widgets/buttons/address_button.dart';
 import 'package:reown_appkit/modal/widgets/buttons/network_button.dart';
-import 'package:reown_appkit/modal/widgets/buttons/primary_button.dart';
-import 'package:reown_appkit/modal/widgets/buttons/secondary_button.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/account_list_item.dart';
 import 'package:reown_appkit/reown_appkit.dart' hide TransactionExtension;
 import 'package:reown_appkit/modal/constants/style_constants.dart';
@@ -60,10 +58,8 @@ class SendRow extends StatelessWidget {
             serviceStatus: appKitModal.status,
             chainInfo: appKitModal.selectedChain,
             iconUrl: sendTokenData.iconUrl,
-            title: '${CoreUtils.formatStringBalance(
-              originalSendValue,
-              precision: 8,
-            )} ${sendTokenData.symbol} ',
+            title:
+                '${CoreUtils.formatStringBalance(originalSendValue, precision: 8)} ${sendTokenData.symbol} ',
             iconOnRight: true,
             onTap: () {},
           ),
@@ -124,10 +120,7 @@ class ReceiveRow extends StatelessWidget {
 }
 
 class SendButtonRow extends StatelessWidget {
-  const SendButtonRow({
-    required this.onCancel,
-    required this.onSend,
-  });
+  const SendButtonRow({required this.onCancel, required this.onSend});
   final VoidCallback onCancel;
   final VoidCallback? onSend;
 
@@ -137,19 +130,13 @@ class SendButtonRow extends StatelessWidget {
       children: [
         SizedBox(
           height: kListItemHeight,
-          child: SecondaryButton(
-            title: ' Cancel ',
-            onTap: onCancel,
-          ),
+          child: SecondaryButton(title: ' Cancel ', onTap: onCancel),
         ),
         const SizedBox.square(dimension: kPadding8),
         Expanded(
           child: SizedBox(
             height: kListItemHeight,
-            child: PrimaryButton(
-              title: 'Send',
-              onTap: onSend,
-            ),
+            child: PrimaryButton(title: 'Send', onTap: onSend),
           ),
         ),
       ],
@@ -176,10 +163,7 @@ class _DetailsRowState extends State<DetailsRow> {
 
   String _formattedFee(double unformatted) {
     if (_feesInTokens) {
-      return '${CoreUtils.formatChainBalance(
-        widget.requiredGasInTokens,
-        precision: 8,
-      )} ${widget.nativeTokenData.symbol}';
+      return '${CoreUtils.formatChainBalance(widget.requiredGasInTokens, precision: 8)} ${widget.nativeTokenData.symbol}';
     }
     final formatted = unformatted.toStringAsFixed(2);
     if (double.parse(formatted) < 0.01) {
@@ -202,9 +186,7 @@ class _DetailsRowState extends State<DetailsRow> {
       padding: const EdgeInsets.all(kPadding8),
       decoration: BoxDecoration(
         color: themeColors.grayGlass002,
-        borderRadius: BorderRadius.all(Radius.circular(
-          radiuses.radius2XS,
-        )),
+        borderRadius: BorderRadius.all(Radius.circular(radiuses.radius2XS)),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

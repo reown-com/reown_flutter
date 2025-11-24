@@ -45,10 +45,11 @@ void tryFinally(Function() body, Function() whenComplete) {
 
 /// A transformer that silently drops [FormatException]s.
 final ignoreFormatExceptions = StreamTransformer<Object?, Object?>.fromHandlers(
-    handleError: (error, stackTrace, sink) {
-  if (error is FormatException) return;
-  sink.addError(error, stackTrace);
-});
+  handleError: (error, stackTrace, sink) {
+    if (error is FormatException) return;
+    sink.addError(error, stackTrace);
+  },
+);
 
 /// A transformer that sends error responses on [FormatException]s.
 final StreamChannelTransformer<Object?, Object?> respondToFormatExceptions =
@@ -62,7 +63,9 @@ class _RespondToFormatExceptionsTransformer
       return stream.handleError((dynamic error) {
         final formatException = error as FormatException;
         var exception = RpcException(
-            error_code.PARSE_ERROR, 'Invalid JSON: ${formatException.message}');
+          error_code.PARSE_ERROR,
+          'Invalid JSON: ${formatException.message}',
+        );
         channel.sink.add(exception.serialize(formatException.source));
       }, test: (error) => error is FormatException);
     });

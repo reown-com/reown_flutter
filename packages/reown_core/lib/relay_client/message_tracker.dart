@@ -18,11 +18,7 @@ class MessageTracker extends GenericStore<Map<String, String>>
 
   String hashMessage(String message) {
     return hex.encode(
-      SHA256Digest().process(
-        Uint8List.fromList(
-          utf8.encode(message),
-        ),
-      ),
+      SHA256Digest().process(Uint8List.fromList(utf8.encode(message))),
     );
   }
 
@@ -30,12 +26,7 @@ class MessageTracker extends GenericStore<Map<String, String>>
   Future<void> recordMessageEvent(String topic, String message) async {
     final String hash = hashMessage(message);
 
-    onCreate.broadcast(
-      StoreCreateEvent(
-        topic,
-        {hash: message},
-      ),
-    );
+    onCreate.broadcast(StoreCreateEvent(topic, {hash: message}));
 
     if (!data.containsKey(topic)) {
       data[topic] = {};

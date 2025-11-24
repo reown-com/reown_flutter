@@ -18,10 +18,16 @@ class ReownConstants {
   static const THIRTY_SECONDS = 30;
   static const ONE_MINUTE = 60;
   static const FIVE_MINUTES = ONE_MINUTE * 5;
+  static const THIRTY_MINUTES = ONE_MINUTE * 30;
   static const ONE_HOUR = ONE_MINUTE * 60;
   static const ONE_DAY = ONE_MINUTE * 24 * 60;
   static const SEVEN_DAYS = ONE_DAY * 7;
   static const THIRTY_DAYS = ONE_DAY * 30;
+
+  static const SESSION_REQUEST_EXPIRY_BOUNDARIES = (
+    ReownConstants.FIVE_MINUTES,
+    ReownConstants.SEVEN_DAYS,
+  );
 }
 
 class StoreVersions {
@@ -38,6 +44,8 @@ class StoreVersions {
   static const VERSION_MESSAGE_TRACKER = '1.0';
   static const CONTEXT_EVENTS_TRACKER = 'eventsTracker';
   static const VERSION_EVENTS_TRACKER = '1.0';
+  static const CONTEXT_VERIFY = 'eventsTracker';
+  static const VERSION_VERIFY = '2.0';
   static const CONTEXT_TOPIC_MAP = 'topicMap';
   static const VERSION_TOPIC_MAP = '1.0';
   static const CONTEXT_TOPIC_TO_RECEIVER_PUBLIC_KEY =
@@ -69,10 +77,7 @@ class MethodsConstants {
   static const walletSwitchEthChain = 'wallet_switchEthereumChain';
   static const walletAddEthChain = 'wallet_addEthereumChain';
   static const ethSendTransaction = 'eth_sendTransaction';
-  static const requiredMethods = [
-    ethSendTransaction,
-    'personal_sign',
-  ];
+  static const requiredMethods = [ethSendTransaction, 'personal_sign'];
   static const optionalMethods = [
     'eth_accounts',
     'eth_requestAccounts',
@@ -96,14 +101,7 @@ class MethodsConstants {
 class EventsConstants {
   static const chainChanged = 'chainChanged';
   static const accountsChanged = 'accountsChanged';
-  static const requiredEvents = [
-    chainChanged,
-    accountsChanged,
-  ];
-  static const optionalEvents = [
-    'message',
-    'disconnect',
-    'connect',
-  ];
+  static const requiredEvents = [chainChanged, accountsChanged];
+  static const optionalEvents = ['message', 'disconnect', 'connect'];
   static const allEvents = [...requiredEvents, ...optionalEvents];
 }

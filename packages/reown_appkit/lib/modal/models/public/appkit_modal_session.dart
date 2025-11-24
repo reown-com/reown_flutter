@@ -371,6 +371,7 @@ extension ReownAppKitModalSessionExtension on ReownAppKitModalSession {
   bool? get acknowledged => _sessionData?.acknowledged;
   String? get controller => _sessionData?.controller;
   Map<String, Namespace>? get namespaces => _sessionData?.namespaces;
+  List<Cacao>? get authentication => _sessionData?.authentication;
 
   ConnectionMetadata? get self {
     if (sessionService.isCoinbase) {

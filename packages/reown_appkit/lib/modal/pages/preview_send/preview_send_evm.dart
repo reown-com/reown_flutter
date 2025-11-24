@@ -5,9 +5,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'dart:ui' as ui;
 
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/models/send_data.dart';
 import 'package:reown_appkit/modal/pages/preview_send/utils.dart';
 import 'package:reown_appkit/modal/pages/preview_send/widgets.dart';
@@ -132,9 +132,7 @@ class _PreviewSendEvmState extends State<PreviewSendEvm> {
         data: utf8.encode(
           constructCallData(
             _recipientAddress,
-            _valueToBigInt(
-              actualValueToSend,
-            ),
+            _valueToBigInt(actualValueToSend),
           ),
         ),
       );
@@ -147,9 +145,7 @@ class _PreviewSendEvmState extends State<PreviewSendEvm> {
         to: EthereumAddress.fromHex(_recipientAddress),
         value: EtherAmount.fromBigInt(
           EtherUnit.wei,
-          _valueToBigInt(
-            actualValueToSend,
-          ),
+          _valueToBigInt(actualValueToSend),
         ),
         data: utf8.encode('0x'),
       );
@@ -160,32 +156,30 @@ class _PreviewSendEvmState extends State<PreviewSendEvm> {
   Future<void> _estimateNetworkCost() async {
     try {
       final chainId = _sendTokenData.chainId!;
-      final gasPrices = await _blockchainService.gasPrice(
-        caip2Chain: chainId,
-      );
+      final gasPrices = await _blockchainService.gasPrice(caip2Chain: chainId);
       final standardGasPrice = gasPrices.standard ?? BigInt.zero;
       //
       final estimatedGas = await _blockchainService.estimateGas(
         transaction: _isContractCall
             ? _transaction!
-                .copyWith(
-                  data: utf8.encode(
-                    constructCallData(
-                      _recipientAddress,
+                  .copyWith(
+                    data: utf8.encode(
+                      constructCallData(
+                        _recipientAddress,
+                        _valueToBigInt(_originalSendValue.toDouble()),
+                      ),
+                    ),
+                  )
+                  .toJson()
+            : _transaction!
+                  .copyWith(
+                    from: EthereumAddress.fromHex(_senderAddress),
+                    value: EtherAmount.fromBigInt(
+                      EtherUnit.wei,
                       _valueToBigInt(_originalSendValue.toDouble()),
                     ),
-                  ),
-                )
-                .toJson()
-            : _transaction!
-                .copyWith(
-                  from: EthereumAddress.fromHex(_senderAddress),
-                  value: EtherAmount.fromBigInt(
-                    EtherUnit.wei,
-                    _valueToBigInt(_originalSendValue.toDouble()),
-                  ),
-                )
-                .toJson(),
+                  )
+                  .toJson(),
         caip2Chain: chainId,
       );
       //
@@ -207,21 +201,21 @@ class _PreviewSendEvmState extends State<PreviewSendEvm> {
           _reEstimateGas,
         );
       } else {
-        _toastService.show(ToastMessage(
-          type: ToastType.error,
-          text: 'Insufficient funds',
-        ));
+        _toastService.show(
+          ToastMessage(type: ToastType.error, text: 'Insufficient funds'),
+        );
       }
     } on ArgumentError catch (e) {
-      _toastService.show(ToastMessage(
-        type: ToastType.error,
-        text: 'Invald ${e.name ?? 'argument'}',
-      ));
+      _toastService.show(
+        ToastMessage(
+          type: ToastType.error,
+          text: 'Invald ${e.name ?? 'argument'}',
+        ),
+      );
     } on Exception catch (e) {
-      _toastService.show(ToastMessage(
-        type: ToastType.error,
-        text: e.toString(),
-      ));
+      _toastService.show(
+        ToastMessage(type: ToastType.error, text: e.toString()),
+      );
     }
   }
 
@@ -230,48 +224,60 @@ class _PreviewSendEvmState extends State<PreviewSendEvm> {
       _sendData.amount!,
       precision: 3,
     );
-    _analyticsService.sendEvent(WalletFeatureSendInitiated(
-      network: _sendTokenData.chainId!,
-      sendToken: _sendTokenData.symbol!,
-      sendAmount: valueToSend,
-    ));
+    _analyticsService.sendEvent(
+      WalletFeatureSendInitiated(
+        network: _sendTokenData.chainId!,
+        sendToken: _sendTokenData.symbol!,
+        sendAmount: valueToSend,
+      ),
+    );
     try {
       final appKitModal = ModalProvider.of(context).instance;
-      await appKitModal.request(
+      final response = await appKitModal.request(
         topic: appKitModal.session!.topic,
         chainId: _sendTokenData.chainId!,
         request: SessionRequestParams(
           method: MethodsConstants.ethSendTransaction,
-          params: [
-            _transaction!.toJson(),
-          ],
+          params: [_transaction!.toJson()],
         ),
       );
-      _analyticsService.sendEvent(WalletFeatureSendSuccess(
-        network: _sendTokenData.chainId!,
-        sendToken: _sendTokenData.symbol!,
-        sendAmount: valueToSend,
-      ));
+      _analyticsService.sendEvent(
+        WalletFeatureSendSuccess(
+          network: _sendTokenData.chainId!,
+          sendToken: _sendTokenData.symbol!,
+          sendAmount: valueToSend,
+          hash: response.toString(),
+        ),
+      );
+      _toastService.show(
+        ToastMessage(type: ToastType.success, text: 'Send success'),
+      );
+      _widgetStack.popUntil(KeyConstants.walletFeaturesPage);
     } on ArgumentError catch (e) {
-      _toastService.show(ToastMessage(
-        type: ToastType.error,
-        text: 'Invald ${e.name ?? 'argument'}',
-      ));
-      _analyticsService.sendEvent(WalletFeatureSendError(
-        network: _sendTokenData.chainId!,
-        sendToken: _sendTokenData.symbol!,
-        sendAmount: valueToSend,
-      ));
+      _toastService.show(
+        ToastMessage(
+          type: ToastType.error,
+          text: 'Invald ${e.name ?? 'argument'}',
+        ),
+      );
+      _analyticsService.sendEvent(
+        WalletFeatureSendError(
+          network: _sendTokenData.chainId!,
+          sendToken: _sendTokenData.symbol!,
+          sendAmount: valueToSend,
+        ),
+      );
     } on Exception catch (e) {
-      _toastService.show(ToastMessage(
-        type: ToastType.error,
-        text: e.toString(),
-      ));
-      _analyticsService.sendEvent(WalletFeatureSendError(
-        network: _sendTokenData.chainId!,
-        sendToken: _sendTokenData.symbol!,
-        sendAmount: valueToSend,
-      ));
+      _toastService.show(
+        ToastMessage(type: ToastType.error, text: e.toString()),
+      );
+      _analyticsService.sendEvent(
+        WalletFeatureSendError(
+          network: _sendTokenData.chainId!,
+          sendToken: _sendTokenData.symbol!,
+          sendAmount: valueToSend,
+        ),
+      );
     }
   }
 
@@ -318,9 +324,7 @@ class _PreviewSendEvmState extends State<PreviewSendEvm> {
                 height: 14.0,
               ),
             ),
-            ReceiveRow(
-              sendData: _sendData,
-            ),
+            ReceiveRow(sendData: _sendData),
             const SizedBox.square(dimension: kPadding16),
             if (_transaction != null)
               DetailsRow(

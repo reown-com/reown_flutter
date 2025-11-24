@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -17,7 +18,7 @@ class DownloadWalletItem extends StatelessWidget {
   final bool webOnly;
 
   String get _storeUrl {
-    if (webOnly) {
+    if (webOnly || kIsWeb) {
       return walletInfo.listing.homepage;
     }
     if (Platform.isIOS) {

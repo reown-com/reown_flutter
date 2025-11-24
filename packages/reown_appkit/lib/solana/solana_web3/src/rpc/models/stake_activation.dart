@@ -40,8 +40,8 @@ class StakeActivation extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'state': state.name,
-        'active': active,
-        'inactive': inactive,
-      };
+    'state': state.name,
+    'active': active,
+    'inactive': inactive,
+  };
 }

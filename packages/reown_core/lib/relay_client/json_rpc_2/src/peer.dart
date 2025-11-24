@@ -13,8 +13,13 @@ import 'server.dart';
 import 'utils.dart';
 
 /// A callback for logging messages from the JSON-RPC peer.
-typedef JsonRpcLogCallback = void Function(String level, String message,
-    [Object? error, StackTrace? stackTrace]);
+typedef JsonRpcLogCallback =
+    void Function(
+      String level,
+      String message, [
+      Object? error,
+      StackTrace? stackTrace,
+    ]);
 
 /// A JSON-RPC 2.0 client *and* server.
 ///
@@ -109,13 +114,11 @@ class Peer implements Client, Server {
   }) : _logCallback = logCallback {
     _communicationStream = _channel.stream;
     _logDebug(
-        'Peer initialized with ${strictProtocolChecks ? 'strict' : 'lenient'} protocol checks');
+      'Peer initialized with ${strictProtocolChecks ? 'strict' : 'lenient'} protocol checks',
+    );
 
     _server = Server.withoutJson(
-      StreamChannel(
-        _serverIncomingForwarder.stream,
-        _channel.sink,
-      ),
+      StreamChannel(_serverIncomingForwarder.stream, _channel.sink),
       onUnhandledError: onUnhandledError,
       strictProtocolChecks: strictProtocolChecks,
       logCallback: logCallback,
@@ -171,42 +174,49 @@ class Peer implements Client, Server {
     _server.listen();
 
     late final StreamSubscription<dynamic> subscription;
-    subscription = _communicationStream.listen((message) {
-      _logDebug('Processing incoming message');
+    subscription = _communicationStream.listen(
+      (message) {
+        _logDebug('Processing incoming message');
 
-      if (message is Map) {
-        if (message.containsKey('result') || message.containsKey('error')) {
-          _logDebug('Forwarding response to client');
-          _clientIncomingForwarder.add(message);
+        if (message is Map) {
+          if (message.containsKey('result') || message.containsKey('error')) {
+            _logDebug('Forwarding response to client');
+            _clientIncomingForwarder.add(message);
+          } else {
+            _logDebug('Forwarding request to server');
+            _serverIncomingForwarder.add(message);
+          }
+        } else if (message is List &&
+            message.isNotEmpty &&
+            message.first is Map) {
+          if (message.first.containsKey('result') ||
+              message.first.containsKey('error')) {
+            _logDebug('Forwarding batch response to client');
+            _clientIncomingForwarder.add(message);
+          } else {
+            _logDebug('Forwarding batch request to server');
+            _serverIncomingForwarder.add(message);
+          }
         } else {
-          _logDebug('Forwarding request to server');
+          // Non-Map and -List messages are ill-formed, so we pass them to the
+          // server since it knows how to send error responses.
+          _logError(
+            'Ill-formed message received, forwarding to server',
+            message,
+          );
           _serverIncomingForwarder.add(message);
         }
-      } else if (message is List &&
-          message.isNotEmpty &&
-          message.first is Map) {
-        if (message.first.containsKey('result') ||
-            message.first.containsKey('error')) {
-          _logDebug('Forwarding batch response to client');
-          _clientIncomingForwarder.add(message);
-        } else {
-          _logDebug('Forwarding batch request to server');
-          _serverIncomingForwarder.add(message);
-        }
-      } else {
-        // Non-Map and -List messages are ill-formed, so we pass them to the
-        // server since it knows how to send error responses.
-        _logError('Ill-formed message received, forwarding to server', message);
-        _serverIncomingForwarder.add(message);
-      }
-    }, onError: (error, stackTrace) {
-      _logError('Communication stream error', error, stackTrace);
-      _serverIncomingForwarder.addError(error, stackTrace);
-    }, onDone: () {
-      _logDebug('Communication stream completed');
-      _deregisterSubscription(subscription);
-      close();
-    });
+      },
+      onError: (error, stackTrace) {
+        _logError('Communication stream error', error, stackTrace);
+        _serverIncomingForwarder.addError(error, stackTrace);
+      },
+      onDone: () {
+        _logDebug('Communication stream completed');
+        _deregisterSubscription(subscription);
+        close();
+      },
+    );
 
     _subscriptionRegistry.add(subscription);
     _logDebug('Peer communication started successfully');
@@ -216,7 +226,8 @@ class Peer implements Client, Server {
   @override
   Future<dynamic> close() {
     _logDebug(
-        'Closing peer, cleaning up ${_subscriptionRegistry.length} subscriptions');
+      'Closing peer, cleaning up ${_subscriptionRegistry.length} subscriptions',
+    );
     _client.close();
     _server.close();
     _disposeAllSubscriptions();
@@ -227,7 +238,8 @@ class Peer implements Client, Server {
   void _deregisterSubscription(StreamSubscription<dynamic> subscription) {
     _subscriptionRegistry.remove(subscription);
     _logDebug(
-        'Deregistered subscription, ${_subscriptionRegistry.length} remaining');
+      'Deregistered subscription, ${_subscriptionRegistry.length} remaining',
+    );
   }
 
   /// Disposes all registered subscriptions.
@@ -248,7 +260,11 @@ class Peer implements Client, Server {
   /// Logs error information.
   void _logError(String message, [Object? error, StackTrace? stackTrace]) {
     _logCallback?.call(
-        'error', '[$_debugId] ERROR: $message', error, stackTrace);
+      'error',
+      '[$_debugId] ERROR: $message',
+      error,
+      stackTrace,
+    );
   }
 
   /// Generates a unique debug identifier for this peer instance.

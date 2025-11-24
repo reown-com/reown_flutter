@@ -94,8 +94,11 @@ class WCConnectionRequestWidget extends StatelessWidget {
   Widget _buildSessionProposalView() {
     // Create the connection models using the required and optional namespaces provided by the proposal data
     // The key is the title and the list of values is the data
+    final generatedNamespaces = proposalData!.generatedNamespaces!;
+    final authRequests = proposalData!.requests?.authentication;
     final views = ConnectionWidgetBuilder.buildFromRequiredNamespaces(
-      proposalData!.generatedNamespaces!,
+      generatedNamespaces,
+      authRequests,
     );
 
     return Column(
@@ -171,11 +174,13 @@ class VerifyHeader extends StatelessWidget {
           color: iconColor,
         ),
         const SizedBox(width: StyleConstants.linear8),
-        Text(
-          title,
-          style: TextStyle(
-            color: iconColor,
-            fontWeight: FontWeight.bold,
+        Expanded(
+          child: Text(
+            title,
+            style: TextStyle(
+              color: iconColor,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ],

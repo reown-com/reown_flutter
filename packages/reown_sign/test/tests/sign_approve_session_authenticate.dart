@@ -19,20 +19,24 @@ void signApproveSessionAuthenticate({
     List<IReownSignCommon> clients = [];
 
     setUp(() async {
-      clientA = await clientACreator(PROPOSER.copyWith(
-        redirect: Redirect(
-          native: 'clientA://',
-          universal: 'https://lab.web3modal.com/dapp',
-          linkMode: true,
+      clientA = await clientACreator(
+        PROPOSER.copyWith(
+          redirect: Redirect(
+            native: 'clientA://',
+            universal: 'https://lab.web3modal.com/dapp',
+            linkMode: true,
+          ),
         ),
-      ));
-      clientB = await clientBCreator(RESPONDER.copyWith(
-        redirect: Redirect(
-          native: 'clientB://',
-          universal: 'https://lab.web3modal.com/wallet',
-          linkMode: true,
+      );
+      clientB = await clientBCreator(
+        RESPONDER.copyWith(
+          redirect: Redirect(
+            native: 'clientB://',
+            universal: 'https://lab.web3modal.com/wallet',
+            linkMode: true,
+          ),
         ),
-      ));
+      );
       await clientA.core.addLinkModeSupportedApp(
         'https://lab.web3modal.com/wallet',
       );

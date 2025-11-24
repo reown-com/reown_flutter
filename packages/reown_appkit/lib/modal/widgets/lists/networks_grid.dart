@@ -8,11 +8,7 @@ import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/lists/grid_items/wallet_grid_item.dart';
 
 class NetworksGrid extends StatelessWidget {
-  const NetworksGrid({
-    super.key,
-    required this.itemList,
-    this.onTapNetwork,
-  });
+  const NetworksGrid({super.key, required this.itemList, this.onTapNetwork});
   final List<GridItem<ReownAppKitModalNetworkInfo>> itemList;
   final Function(ReownAppKitModalNetworkInfo)? onTapNetwork;
 

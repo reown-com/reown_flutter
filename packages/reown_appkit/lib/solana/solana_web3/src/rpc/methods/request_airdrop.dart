@@ -18,8 +18,8 @@ class RequestAirdrop extends JsonRpcTypeMethod<String> {
     final u64 lamports, {
     final RequestAirdropConfig? config,
   }) : super(
-          'requestAirdrop',
-          values: [pubkey.toBase58(), lamports],
-          config: config ?? const RequestAirdropConfig(),
-        );
+         'requestAirdrop',
+         values: [pubkey.toBase58(), lamports],
+         config: config ?? const RequestAirdropConfig(),
+       );
 }

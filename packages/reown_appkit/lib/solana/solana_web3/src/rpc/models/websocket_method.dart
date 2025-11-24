@@ -3,8 +3,7 @@ enum WebsocketMethod {
   logs,
   program,
   signature,
-  slot,
-  ;
+  slot;
 
   String get subscribe => '${name}Subscribe';
 

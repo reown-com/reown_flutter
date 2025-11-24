@@ -7,10 +7,7 @@ import '../models/serializable.dart';
 class SolanaException extends Serializable implements Exception {
   /// Creates a `Solana` library exception with a short descriptive [message] of the error and an
   /// optional error [code].
-  const SolanaException(
-    this.message, {
-    this.code,
-  });
+  const SolanaException(this.message, {this.code});
 
   /// A short description of the error.
   final String message;
@@ -20,16 +17,10 @@ class SolanaException extends Serializable implements Exception {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory SolanaException.fromJson(final Map<String, dynamic> json) =>
-      SolanaException(
-        json['message'],
-        code: json['code'],
-      );
+      SolanaException(json['message'], code: json['code']);
 
   @override
-  Map<String, dynamic> toJson() => {
-        'message': message,
-        'code': code,
-      };
+  Map<String, dynamic> toJson() => {'message': message, 'code': code};
 
   @override
   String toString() =>

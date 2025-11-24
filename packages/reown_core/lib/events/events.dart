@@ -15,36 +15,36 @@ class Events implements IEvents {
   String? _clientId;
   Map<String, String>? _params;
 
-  Map<String, String> get _requiredParams => {
-        'st': 'events_sdk',
-        'sv': ReownCoreUtils.coreSdkVersion(packageVersion),
-      };
-
   IEventsTracker eventsTracker;
 
   Events({
     required IReownCore core,
     required IHttpClient httpClient,
     required this.eventsTracker,
-  })  : _core = core,
-        _httpClient = httpClient;
+  }) : _core = core,
+       _httpClient = httpClient;
 
   @override
   Future<void> init() async {
     _bundleId = await ReownCoreUtils.getPackageName();
     _clientId = await _core.crypto.getClientId();
-    _params = {'projectId': _core.projectId, ..._requiredParams};
 
     await eventsTracker.init();
 
-    _sendStoredEvents();
+    _core.logger.d('[$runtimeType] init: $_bundleId, $_clientId');
+  }
+
+  @override
+  void setQueryParams(Map<String, String> queryParams) {
+    _core.logger.d('[$runtimeType] setQueryParams $queryParams');
+    _params = queryParams;
   }
 
   @override
   Future<void> sendEvent(BasicCoreEvent event) async {
-    final url = Uri.parse('${ReownConstants.EVENTS_SERVER}/e').replace(
-      queryParameters: _params,
-    );
+    final url = Uri.parse(
+      '${ReownConstants.EVENTS_SERVER}/e',
+    ).replace(queryParameters: _params);
     try {
       final body = _encodeEventToSend(event);
       final response = await _httpClient.post(url, body: body);
@@ -87,11 +87,13 @@ class Events implements IEvents {
     }
   }
 
-  Future<void> _sendStoredEvents() async {
+  @override
+  Future<void> sendStoredEvents() async {
     final storedEvents = eventsTracker.getStoredEvents().take(500).toList();
     if (storedEvents.isNotEmpty) {
-      _core.logger
-          .d('[$runtimeType] ${storedEvents.length} storedEvents found');
+      _core.logger.d(
+        '[$runtimeType] ${storedEvents.length} storedEvents found',
+      );
       try {
         await _sendBatchEvents(storedEvents);
         await eventsTracker.clearEvents(storedEvents);
@@ -104,9 +106,9 @@ class Events implements IEvents {
   }
 
   Future<void> _sendBatchEvents(List<String> events) async {
-    final url = Uri.parse('${ReownConstants.EVENTS_SERVER}/batch').replace(
-      queryParameters: _params,
-    );
+    final url = Uri.parse(
+      '${ReownConstants.EVENTS_SERVER}/batch',
+    ).replace(queryParameters: _params);
     try {
       final body = events.toString();
       final response = await _httpClient.post(url, body: body);
@@ -133,7 +135,7 @@ class Events implements IEvents {
         'timestamp': DateTime.now().toUtc().millisecondsSinceEpoch,
         'props': {
           ...event.toJson(),
-          if (event.properties != null) 'properties': {...properties.toJson()}
+          if (event.properties != null) 'properties': {...properties.toJson()},
         },
       });
     } catch (e) {

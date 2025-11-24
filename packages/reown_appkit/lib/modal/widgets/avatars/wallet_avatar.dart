@@ -50,19 +50,22 @@ class ListAvatar extends StatelessWidget {
                       clipBehavior: Clip.antiAlias,
                       child: validImage
                           ? CachedNetworkImage(
-                              imageUrl: imageUrl!,
-                              httpHeaders: CoreUtils.getAPIHeaders(projectId),
+                              imageUrl: CoreUtils.formatImageUri(
+                                imageUrl!,
+                                projectId,
+                              ),
                               fit: BoxFit.cover,
                               fadeInDuration: const Duration(milliseconds: 500),
-                              fadeOutDuration:
-                                  const Duration(milliseconds: 500),
-                              errorWidget: (context, url, error) => ColoredBox(
-                                color: themeColors.grayGlass005,
+                              fadeOutDuration: const Duration(
+                                milliseconds: 500,
                               ),
+                              errorWidget: (context, url, error) =>
+                                  ColoredBox(color: themeColors.grayGlass005),
                             )
                           : Padding(
-                              padding:
-                                  EdgeInsets.all(constraints.maxHeight / 3),
+                              padding: EdgeInsets.all(
+                                constraints.maxHeight / 3,
+                              ),
                               child: SvgPicture.asset(
                                 'lib/modal/assets/icons/network.svg',
                                 package: 'reown_appkit',
@@ -88,13 +91,14 @@ class ListAvatar extends StatelessWidget {
                           BlendMode.saturation,
                         ),
                         child: CachedNetworkImage(
-                          imageUrl: imageUrl!,
-                          httpHeaders: CoreUtils.getAPIHeaders(projectId),
+                          imageUrl: CoreUtils.formatImageUri(
+                            imageUrl!,
+                            projectId,
+                          ),
                           fadeInDuration: const Duration(milliseconds: 500),
                           fadeOutDuration: const Duration(milliseconds: 500),
-                          errorWidget: (context, url, error) => ColoredBox(
-                            color: themeColors.grayGlass005,
-                          ),
+                          errorWidget: (context, url, error) =>
+                              ColoredBox(color: themeColors.grayGlass005),
                         ),
                       )
                     : ColoredBox(color: themeColors.grayGlass005),

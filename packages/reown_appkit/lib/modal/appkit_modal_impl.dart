@@ -5,6 +5,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/dwe_service/dwe_service.dart';
+import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/modal/services/solflare_service/i_solflare_service.dart';
 import 'package:reown_appkit/modal/services/solflare_service/models/solflare_events.dart';
 import 'package:reown_appkit/modal/services/solflare_service/solflare_service.dart';
@@ -54,9 +56,10 @@ import 'package:reown_appkit/modal/services/magic_service/models/magic_data.dart
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
 import 'package:reown_appkit/modal/services/siwe_service/siwe_service.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/blockchain_service.dart';
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/widgets/modal_container.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
+// import 'package:webview_flutter_web/webview_flutter_web.dart';
 
 /// Either a [projectId] and [metadata] must be provided or an already created [appKit].
 /// optionalNamespaces is mostly not needed, if you use it, the values set here will override every optionalNamespaces set in evey chain
@@ -161,6 +164,7 @@ class ReownAppKitModal
   Completer<bool> _awaitRelayOnce = Completer<bool>();
 
   bool _disconnectOnDispose = true;
+  AppKitSocialOption? _pendingSocialLogin;
 
   late final List<ReownAppKitModalWalletInfo> _customWallets;
 
@@ -199,6 +203,17 @@ class ReownAppKitModal
         );
       }
     }
+
+    // if (kIsWeb) {
+    //   try {
+    //     // Solo si el paquete está incluido
+    //     WebViewPlatform.instance = WebWebViewPlatform();
+    //   } catch (e) {
+    //     debugPrint(
+    //       'WebWebViewPlatform not available. Did you forget to add webview_flutter_web?',
+    //     );
+    //   }
+    // }
 
     this.featuresConfig = featuresConfig ?? FeaturesConfig();
 
@@ -263,6 +278,9 @@ class ReownAppKitModal
     GetIt.I.registerSingletonIfAbsent<IBlockChainService>(
       () => BlockChainService(core: _appKit.core),
     );
+    GetIt.I.registerSingletonIfAbsent<IDWEService>(
+      () => DWEService(appKit: _appKit),
+    );
     GetIt.I.registerSingletonIfAbsent<IMagicService>(
       () => MagicService(
         core: _appKit.core,
@@ -303,6 +321,7 @@ class ReownAppKitModal
   IExplorerService get _explorerService => GetIt.I<IExplorerService>();
   INetworkService get _networkService => GetIt.I<INetworkService>();
   IBlockChainService get _blockchainService => GetIt.I<IBlockChainService>();
+  IDWEService get _dweService => GetIt.I<IDWEService>();
   ISiweService get _siweService => GetIt.I<ISiweService>();
 
   bool _isValidProjectID() {
@@ -469,6 +488,8 @@ class ReownAppKitModal
     if (_currentSession != null) {
       onModalConnect.broadcast(ModalConnect(_currentSession!));
     }
+
+    _sendInitializedEvent();
   }
 
   @override
@@ -506,6 +527,36 @@ class ReownAppKitModal
     }
 
     return false;
+  }
+
+  @override
+  List<ExchangeAsset> getPaymentAssetsForNetwork({
+    String? chainId,
+    bool includeNative = true,
+  }) {
+    return _appKit.getPaymentAssetsForNetwork(
+      chainId: chainId,
+      includeNative: includeNative,
+    );
+  }
+
+  @override
+  void configDeposit({
+    List<ExchangeAsset>? supportedAssets,
+    ExchangeAsset? preselectedAsset,
+    bool? showNetworkIcon,
+    String? preselectedRecipient,
+    // bool? enableNetworkSelection,
+    // String? preselectedNamespace,
+  }) {
+    _dweService.configDeposit(
+      supportedAssets: supportedAssets,
+      preselectedAsset: preselectedAsset,
+      showNetworkIcon: showNetworkIcon,
+      preselectedRecipient: preselectedRecipient,
+      // enableNetworkSelection: enableNetworkSelection,
+      // preselectedNamespace: preselectedNamespace,
+    );
   }
 
   Future<void> _checkSIWEStatus() async {
@@ -737,6 +788,11 @@ class ReownAppKitModal
   }
 
   @override
+  Future<void> openDepositView() {
+    return _showModalView(startWidget: ReownAppKitModalDepositScreen());
+  }
+
+  @override
   Future<void> openModalView([Widget? startWidget]) {
     final keyString = startWidget?.key?.toString() ?? '';
     final smartAccounts = _currentSession?.sessionSmartAccounts;
@@ -775,6 +831,7 @@ class ReownAppKitModal
     KeyConstants.eoAccountPage,
     KeyConstants.walletFeaturesPage,
     KeyConstants.socialLoginPage,
+    KeyConstants.depositPageKey,
   ];
 
   final List<Key> _allowedScreensWhenDisconnected = [
@@ -782,6 +839,7 @@ class ReownAppKitModal
     KeyConstants.walletListLongPageKey,
     KeyConstants.qrCodePageKey,
     KeyConstants.selectNetworkPage,
+    KeyConstants.depositPageKey,
   ];
 
   Future<void> _showModalView({
@@ -893,12 +951,18 @@ class ReownAppKitModal
     try {
       final walletName = _selectedWallet!.listing.name;
       final walletId = _selectedWallet!.listing.id;
-      final event = SelectWalletEvent(
-        name: walletName,
-        explorerId: walletId,
-        platform: inBrowser ? AnalyticsPlatform.web : AnalyticsPlatform.mobile,
-      );
-      _analyticsService.sendEvent(event);
+      if (walletId != '0000000000000001') {
+        final event = SelectWalletEvent(
+          name: walletName,
+          explorerId: walletId,
+          platform: inBrowser
+              ? AnalyticsPlatform.web
+              : AnalyticsPlatform.mobile,
+          walletRank: _selectedWallet!.listing.order,
+          view: 'AllWallets',
+        );
+        _analyticsService.sendEvent(event);
+      }
     } catch (_) {}
   }
 
@@ -1005,6 +1069,7 @@ class ReownAppKitModal
     //   await ReownCoreUtils.openURL('$url&provider=$social');
     // }
     else {
+      _pendingSocialLogin = socialOption;
       await _uriService.openRedirect(
         redirect,
         wcURI: _wcUri,
@@ -1018,6 +1083,7 @@ class ReownAppKitModal
   Future<void> buildConnectionUri() async {
     if (!_isConnected) {
       try {
+        await reconnectRelay();
         if (_siweService.enabled) {
           final walletRedirect = _explorerService.getWalletRedirect(
             _selectedWallet,
@@ -1046,9 +1112,10 @@ class ReownAppKitModal
           _notify();
           _awaitOCAuthCallback(authResponse);
         } else {
-          // Regular Session Proposal
           final connectResponse = await _appKit.connect(
             optionalNamespaces: _sessionNamespaces,
+            // TODO implement `authentication` param to support 1CA for non-EVM
+            // authentication: [authParams],
           );
           _wcUri = connectResponse.uri?.toString() ?? '';
           _notify();
@@ -1101,9 +1168,12 @@ class ReownAppKitModal
   Future<void> _connectionErrorHandler(dynamic e) async {
     if (_isUserRejectedError(e)) {
       onModalError.broadcast(UserRejectedConnection());
-      _analyticsService.sendEvent(
-        ConnectErrorEvent(message: 'User declined connection'),
-      );
+      _analyticsService.sendEvent(UserRejectedEvent());
+      if (_pendingSocialLogin != null) {
+        final provider = _pendingSocialLogin!.name.toLowerCase();
+        _analyticsService.sendEvent(SocialLoginCanceled(provider: provider));
+        _pendingSocialLogin = null;
+      }
     } else {
       if (e is JsonRpcError) {
         final message = e.message ?? '';
@@ -1119,6 +1189,11 @@ class ReownAppKitModal
       if (e is ReownSignError || e is ReownCoreError) {
         onModalError.broadcast(ModalError(e.message));
         _analyticsService.sendEvent(ConnectErrorEvent(message: e.message));
+      }
+      if (_pendingSocialLogin != null) {
+        final provider = _pendingSocialLogin!.name.toLowerCase();
+        _analyticsService.sendEvent(SocialLoginError(provider: provider));
+        _pendingSocialLogin = null;
       }
     }
     return await expirePreviousInactivePairings();
@@ -1226,9 +1301,15 @@ class ReownAppKitModal
   Future<void> disconnect({bool disconnectAllSessions = true}) async {
     _checkInitialized();
 
+    String? namespace;
+    try {
+      namespace = NamespaceUtils.getNamespaceFromChain(_selectedChainID!);
+    } catch (_) {}
+
     if (!_appKit.core.relayClient.isConnected) {
-      onModalError.broadcast(ModalError('Websocket is not connected'));
-      return;
+      // onModalError.broadcast(ModalError('Websocket is not connected'));
+      // return;
+      await reconnectRelay();
     }
 
     _status = ReownAppKitModalStatus.initializing;
@@ -1295,7 +1376,7 @@ class ReownAppKitModal
         }
       } catch (_) {}
 
-      _analyticsService.sendEvent(DisconnectSuccessEvent());
+      _analyticsService.sendEvent(DisconnectSuccessEvent(namespace: namespace));
       if (!(_currentSession?.sessionService.isWC == true)) {
         // if sessionService.isWC then _cleanSession() is being called on sessionDelete event
         return await _cleanSession();
@@ -1342,8 +1423,12 @@ class ReownAppKitModal
       await disconnect();
       selectWallet(null);
     }
+    _pendingSocialLogin = null;
     _toastService.clear();
     _blockchainService.selectSendToken(null);
+    _dweService.stopCheckingStatus();
+    _dweService.clearState();
+    _analyticsService.sendStoredEvents();
     _analyticsService.sendEvent(ModalCloseEvent(connected: _isConnected));
   }
 
@@ -1405,11 +1490,12 @@ class ReownAppKitModal
 
       final rawCallResponse = await _blockchainService.rawCall(
         chainId: chainId,
-        params: params,
+        method: 'eth_call',
+        params: [params, 'latest'],
       );
-      return deployedContract
-          .function(functionName)
-          .decodeReturnValues(rawCallResponse);
+      final result = rawCallResponse.result as String;
+
+      return deployedContract.function(functionName).decodeReturnValues(result);
     } catch (e, s) {
       _appKit.core.logger.e(
         '[$runtimeType] requestReadContract, error: $e, $s',
@@ -1483,6 +1569,19 @@ class ReownAppKitModal
   }
 
   @override
+  Future<JsonRpcResponse> rpcRequest({
+    required String chainId,
+    required String method,
+    required List<dynamic> params,
+  }) async {
+    return await _blockchainService.rawCall(
+      chainId: chainId,
+      method: method,
+      params: params,
+    );
+  }
+
+  @override
   Future<dynamic> request({
     required String? topic,
     required String chainId,
@@ -1540,19 +1639,14 @@ class ReownAppKitModal
     } catch (e) {
       if (_isUserRejectedError(e)) {
         onModalError.broadcast(UserRejectedRequest());
-        if (request.method == MethodsConstants.walletSwitchEthChain ||
-            request.method == MethodsConstants.walletAddEthChain) {
-          rethrow;
-        }
-        return Errors.getSdkError(Errors.USER_REJECTED).toJson();
       } else {
         if (e is CoinbaseServiceException) {
           // If the error is due to no session on Coinbase Wallet we disconnnect the session on Modal.
           // This is the only way to detect a missing session since Coinbase Wallet is not sending any event.
           throw ReownAppKitModalException('Coinbase Wallet Error');
         }
-        rethrow;
       }
+      rethrow;
     }
   }
 
@@ -1619,6 +1713,9 @@ class ReownAppKitModal
 
   @override
   final Event<SessionEvent> onSessionEventEvent = Event();
+
+  @override
+  final Event<DepositSuccessEvent> onDepositSuccess = Event();
 
   ////////* PRIVATE METHODS */////////
 
@@ -1710,7 +1807,7 @@ class ReownAppKitModal
     final namespace = NamespaceUtils.getNamespaceFromChain(_selectedChainID!);
 
     try {
-      _chainBalance = await _blockchainService.getTokenBalance(
+      _chainBalance = await _blockchainService.getNativeBalance(
         address: _currentSession!.getAddress(namespace)!,
         namespace: namespace,
         chainId: _selectedChainID!,
@@ -1838,18 +1935,15 @@ class ReownAppKitModal
   }
 
   bool _isUserRejectedError(dynamic e) {
+    if (e is JsonRpcError) {
+      return e.isUserRejected;
+    }
+
     final regexp = RegExp(
       r'\b(rejected|cancelled|disapproved|denied)\b',
       caseSensitive: false,
     );
 
-    if (e is JsonRpcError) {
-      final code = (e.code ?? 0);
-      final match = RegExp(r'\b500[0-3]\b').hasMatch(code.toString());
-      if (match || code == Errors.getSdkError(Errors.USER_REJECTED_SIGN).code) {
-        return true;
-      }
-    }
     if (e is CoinbaseServiceException) {
       if (regexp.hasMatch(e.error.toString()) ||
           regexp.hasMatch(e.message.toString())) {
@@ -2033,6 +2127,47 @@ class ReownAppKitModal
       return defaultValue;
     }
     return defaultValue;
+  }
+
+  void _sendInitializedEvent() {
+    String themeMode = 'light';
+    try {
+      final theme = ReownAppKitModalTheme.maybeOf(_context!);
+      if (theme?.isDarkMode == true) {
+        themeMode = 'dark';
+      }
+    } catch (_) {}
+
+    final networks = _sessionNamespaces.values
+        .map((e) => (e.chains ?? []))
+        .expand((e) => e)
+        .toSet()
+        .toList();
+    final chainImages = ReownAppKitModalNetworks.getAllSupportedNetworks()
+        .where((e) => networks.contains(e.chainId))
+        .map((n) => (n.chainIcon ?? ''))
+        .where((i) => i.isNotEmpty)
+        .toList();
+    final initializedEvent = InitializeEvent(
+      showWallets: featuresConfig.showMainWallets,
+      siweConfig: {
+        'options': {
+          'enabled': _siweService.config?.enabled,
+          'nonceRefetchIntervalMs': _siweService.config?.nonceRefetchIntervalMs,
+          'sessionRefetchIntervalMs':
+              _siweService.config?.sessionRefetchIntervalMs,
+          'signOutOnDisconnect': _siweService.config?.signOutOnDisconnect,
+          'signOutOnAccountChange': _siweService.config?.signOutOnAccountChange,
+          'signOutOnNetworkChange': _siweService.config?.signOutOnNetworkChange,
+        },
+      },
+      themeMode: themeMode,
+      networks: networks,
+      defaultNetwork: _selectedChainID,
+      chainImages: chainImages,
+      metadata: _appKit.metadata.toJson(),
+    );
+    _analyticsService.sendEvent(initializedEvent);
   }
 }
 
@@ -2332,16 +2467,21 @@ extension _AppKitModalExtension on ReownAppKitModal {
 
   void _onSessionConnect(SessionConnect? args) async {
     if (args == null || (_supportsOneClickAuth && _siweService.enabled)) {
+      // Will be handled by _onSessionAuthResponse
       return;
     }
 
-    // IF SIWE CALLBACK (1-CA NOT SUPPORTED) SIWECONGIF METHODS ARE CALLED ON ApproveSIWEPage
-    _appKit.core.logger.d(
-      '[$runtimeType] _onSessionConnect: ${jsonEncode(args.session.toJson())}',
-    );
     final session = await _settleSession(args.session);
     onModalConnect.broadcast(ModalConnect(session));
+    _appKit.core.logger.d(
+      '[$runtimeType] _onSessionConnect: ${jsonEncode(session.toJson())}',
+    );
     //
+    if (_pendingSocialLogin != null) {
+      final provider = _pendingSocialLogin!.name.toLowerCase();
+      _analyticsService.sendEvent(SocialLoginSuccess(provider: provider));
+      _pendingSocialLogin = null;
+    }
     if (_siweService.enabled) {
       _disconnectOnClose = true;
       _widgetStack.push(ApproveSIWEPage(onSiweFinish: _oneSIWEFinish));
@@ -2365,6 +2505,7 @@ extension _AppKitModalExtension on ReownAppKitModal {
         ConnectSuccessEvent(
           name: 'WalletConnect',
           method: AnalyticsPlatform.qrcode,
+          caipNetworkId: _selectedChainID,
         ),
       );
       await _storage.delete(StorageConstants.connectedWalletData);
@@ -2377,6 +2518,7 @@ extension _AppKitModalExtension on ReownAppKitModal {
           name: walletName,
           explorerId: walletId,
           method: AnalyticsPlatform.mobile,
+          caipNetworkId: _selectedChainID,
         ),
       );
     }

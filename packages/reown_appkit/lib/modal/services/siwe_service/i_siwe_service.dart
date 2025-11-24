@@ -1,4 +1,3 @@
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 abstract class ISiweService {
@@ -18,7 +17,7 @@ abstract class ISiweService {
     required String address,
   });
 
-  Future<String> signMessageRequest(
+  Future<dynamic> signMessageRequest(
     String message, {
     required IReownAppKitModal modalService,
   });

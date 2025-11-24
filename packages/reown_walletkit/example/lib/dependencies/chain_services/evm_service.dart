@@ -70,7 +70,6 @@ class EVMService {
       };
 
   EVMService({required this.chainSupported}) {
-    ethClient = Web3Client(chainSupported.rpc.first, http.Client());
     _walletKitService = GetIt.I<IWalletKitService>();
     _walletKit = _walletKitService.walletKit;
 
@@ -97,6 +96,22 @@ class EVMService {
     }
 
     _walletKit.onSessionRequest.subscribe(_onSessionRequest);
+
+    ethClient = Web3Client('${_formatRpcUrl(chainSupported)}', http.Client());
+  }
+
+  Uri _formatRpcUrl(ChainMetadata chainSupported) {
+    if (chainSupported.rpc.isEmpty) {
+      return Uri.parse('');
+    }
+
+    String rpcUrl = chainSupported.rpc.first;
+    if (Uri.parse(rpcUrl).host == 'rpc.walletconnect.org') {
+      rpcUrl += '?chainId=${chainSupported.chainId}';
+      rpcUrl += '&projectId=${_walletKit.core.projectId}';
+    }
+    debugPrint('[SampleWallet] rpcUrl: $rpcUrl');
+    return Uri.parse(rpcUrl);
   }
 
   EthPrivateKey get _credentials {
@@ -129,13 +144,7 @@ class EVMService {
       verifyContext: pRequest.verifyContext,
     )) {
       try {
-        final signature = _credentials.signPersonalMessageToUint8List(
-          utf8.encode(message),
-        );
-        final signedTx = eth_sig_util_util.bytesToHex(
-          signature,
-          include0x: true,
-        );
+        final signedTx = signMessage(message);
 
         _isValidPersonalSignature(signedTx, message);
 
@@ -162,6 +171,16 @@ class EVMService {
     }
 
     _handleResponseForTopic(topic, response);
+  }
+
+  String signMessage(String message) {
+    final signature = _credentials.signPersonalMessageToUint8List(
+      utf8.encode(message),
+    );
+    return eth_sig_util_util.bytesToHex(
+      signature,
+      include0x: true,
+    );
   }
 
   Future<void> ethSignHandler(String topic, dynamic parameters) async {
@@ -517,6 +536,7 @@ class EVMService {
           type: ChainType.eip155,
           chainId: chainId,
           name: params['chainName'],
+          currency: 'ETH',
           logo: '/chain-logos/eip155-$decimalChainId.png',
           color: Colors.blue.shade300,
           rpc: (params['rpcUrls'] as List).map((e) => e.toString()).toList(),

@@ -9,10 +9,7 @@ import 'package:reown_appkit/solana/solana_common/models.dart';
 
 class LoadedAddress extends Serializable {
   /// Transaction addresses loaded from the address lookup tables.
-  const LoadedAddress({
-    required this.writable,
-    required this.readonly,
-  });
+  const LoadedAddress({required this.writable, required this.readonly});
 
   /// An ordered list of base-58 encoded addresses for writable loaded accounts.
   final List<String> writable;
@@ -33,8 +30,5 @@ class LoadedAddress extends Serializable {
   }
 
   @override
-  Map<String, dynamic> toJson() => {
-        'writable': writable,
-        'readonly': readonly,
-      };
+  Map<String, dynamic> toJson() => {'writable': writable, 'readonly': readonly};
 }

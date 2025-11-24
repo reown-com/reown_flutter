@@ -10,11 +10,7 @@ import 'json_rpc_method.dart';
 /// A JSON RPC handler for methods that return basic data types (e.g. [int], [String]).
 abstract class JsonRpcTypeMethod<T> extends JsonRpcMethod<T, T> {
   /// Creates a JSON RPC handler for methods that return basic data types (e.g. [int], [String]).
-  const JsonRpcTypeMethod(
-    super.method, {
-    super.values,
-    super.config,
-  });
+  const JsonRpcTypeMethod(super.method, {super.values, super.config});
 
   @override
   T decoder(final T value) => value;

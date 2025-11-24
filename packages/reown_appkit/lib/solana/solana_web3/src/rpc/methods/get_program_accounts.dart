@@ -18,14 +18,12 @@ class GetProgramAccounts
     final Pubkey program, {
     final GetProgramAccountsConfig? config,
   }) : super(
-          'getProgramAccounts',
-          values: [program.toBase58()],
-          config: config ?? GetProgramAccountsConfig(),
-        );
+         'getProgramAccounts',
+         values: [program.toBase58()],
+         config: config ?? GetProgramAccountsConfig(),
+       );
 
   @override
-  ProgramAccount itemDecoder(
-    final Map<String, dynamic> item,
-  ) =>
+  ProgramAccount itemDecoder(final Map<String, dynamic> item) =>
       ProgramAccount.fromJson(item);
 }

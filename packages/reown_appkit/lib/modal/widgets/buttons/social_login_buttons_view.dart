@@ -30,9 +30,9 @@ class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
     final emailEnabled = modalInstance.featuresConfig.socials.contains(
       AppKitSocialOption.Email,
     );
-    final socialOptions =
-        List<AppKitSocialOption>.from(modalInstance.featuresConfig.socials)
-          ..remove(AppKitSocialOption.Email);
+    final socialOptions = List<AppKitSocialOption>.from(
+      modalInstance.featuresConfig.socials,
+    )..remove(AppKitSocialOption.Email);
     //
     if (socialOptions.isEmpty) {
       return Visibility(
@@ -90,9 +90,11 @@ class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
         final restItems = isLess
             ? socialOptions
             : fits
-                ? socialOptions.sublist(1, min(socialOptions.length, maxItems))
-                : socialOptions.sublist(
-                    1, min(socialOptions.length, (maxItems - 1)));
+            ? socialOptions.sublist(1, min(socialOptions.length, maxItems))
+            : socialOptions.sublist(
+                1,
+                min(socialOptions.length, (maxItems - 1)),
+              );
         //
         final secondRowList = [
           ...restItems.map(
@@ -171,9 +173,7 @@ class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
             Column(
               children: [
                 const SizedBox.square(dimension: kListViewSeparatorHeight),
-                Row(
-                  children: _buttonsWithDivider(secondRowList),
-                ),
+                Row(children: _buttonsWithDivider(secondRowList)),
               ],
             ),
             const SizedBox.square(dimension: kListViewSeparatorHeight),
@@ -183,9 +183,8 @@ class _SocialLoginButtonsViewState extends State<SocialLoginButtonsView> {
     );
   }
 
-  void _initSocialLogin(AppKitSocialOption option) => _widgetStack.push(
-        SocialLoginPage(socialOption: option),
-      );
+  void _initSocialLogin(AppKitSocialOption option) =>
+      _widgetStack.push(SocialLoginPage(socialOption: option));
 
   List<Widget> _buttonsWithDivider(List<Widget> widgets) {
     List<Widget> spacedWidgets = [];

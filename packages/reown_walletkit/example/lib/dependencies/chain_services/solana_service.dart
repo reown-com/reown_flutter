@@ -42,25 +42,25 @@ class SolanaService {
 
     try {
       final params = parameters as Map<String, dynamic>;
-      final message = params['message'].toString();
+      final message = params['message'].toString(); // base58 encoded message
 
       final keyPair = await _getKeyPair();
 
       // it's being sent encoded from dapp
-      final base58Decoded = base58.decode(message);
-      final decodedMessage = utf8.decode(base58Decoded);
+      // final base58Decoded = base58.decode(message);
+      // final decodedMessage = utf8.decode(base58Decoded);
       if (await MethodsUtils.requestApproval(
-        decodedMessage,
+        message,
         method: pRequest.method,
         chainId: pRequest.chainId,
         address: keyPair.address,
         transportType: pRequest.transportType.name,
       )) {
-        final signature = await keyPair.sign(base58Decoded.toList());
+        final signature = await signMessage(message);
 
         response = response.copyWith(
           result: {
-            'signature': signature.toBase58(),
+            'signature': signature,
           },
         );
       } else {
@@ -90,6 +90,13 @@ class SolanaService {
     );
 
     _handleResponseForTopic(topic, response);
+  }
+
+  Future<String> signMessage(String message) async {
+    final keyPair = await _getKeyPair();
+    final base58Decoded = base58.decode(message);
+    final signature = await keyPair.sign(base58Decoded.toList());
+    return signature.toBase58();
   }
 
   Future<void> solanaSignTransaction(String topic, dynamic parameters) async {
@@ -285,6 +292,7 @@ class SolanaService {
         topic,
         session!.peer.metadata.redirect,
         response.error?.message,
+        response.result != null,
       );
     } on ReownSignError catch (error) {
       MethodsUtils.handleRedirect(

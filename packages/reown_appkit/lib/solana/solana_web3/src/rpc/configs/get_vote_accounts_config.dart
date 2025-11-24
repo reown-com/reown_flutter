@@ -25,8 +25,8 @@ class GetVoteAccountsConfig extends CommitmentConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        'commitment': commitment?.name,
-        'votePubkey': votePubkey?.toBase58(),
-        'keepUnstakedDelinquents': keepUnstakedDelinquents,
-      };
+    'commitment': commitment?.name,
+    'votePubkey': votePubkey?.toBase58(),
+    'keepUnstakedDelinquents': keepUnstakedDelinquents,
+  };
 }

@@ -26,9 +26,7 @@ abstract class BorshVecTypedCodec<T, U extends BorshCodec<T>>
   BorshVecTypedDecoder<T, U> get decoder => BorshVecTypedDecoder(subtype);
 
   @override
-  int size(
-    final List<T> input,
-  ) =>
+  int size(final List<T> input) =>
       input.fold(ByteLength.u32, (total, item) => total + subtype.size(item));
 }
 

@@ -49,9 +49,9 @@ class TransactionStatus extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'err': err,
-        'logs': logs,
-        'accounts': accounts,
-        'unitsConsumed': unitsConsumed,
-      };
+    'err': err,
+    'logs': logs,
+    'accounts': accounts,
+    'unitsConsumed': unitsConsumed,
+  };
 }

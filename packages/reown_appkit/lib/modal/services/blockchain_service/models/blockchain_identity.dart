@@ -5,10 +5,8 @@ part 'blockchain_identity.freezed.dart';
 
 @freezed
 sealed class BlockchainIdentity with _$BlockchainIdentity {
-  const factory BlockchainIdentity({
-    String? name,
-    String? avatar,
-  }) = _BlockchainIdentity;
+  const factory BlockchainIdentity({String? name, String? avatar}) =
+      _BlockchainIdentity;
 
   factory BlockchainIdentity.fromJson(Map<String, dynamic> json) =>
       _$BlockchainIdentityFromJson(json);

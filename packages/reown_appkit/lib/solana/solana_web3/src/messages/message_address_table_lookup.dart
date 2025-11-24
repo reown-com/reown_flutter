@@ -30,9 +30,7 @@ class MessageAddressTableLookup extends Serializable {
   final List<int> readonlyIndexes;
 
   /// {@macro solana_common.Serializable.fromJson}
-  factory MessageAddressTableLookup.fromJson(
-    final Map<String, dynamic> json,
-  ) =>
+  factory MessageAddressTableLookup.fromJson(final Map<String, dynamic> json) =>
       _$MessageAddressTableLookupFromJson(json);
 
   @override

@@ -41,8 +41,9 @@ class JsonRpcHttpClient extends Client<List<int>> {
 
   /// Returns the health status of an RPC node.
   Future<HealthStatus> health() async {
-    final http.Response response =
-        await _client.get(uri.replace(path: 'health'));
+    final http.Response response = await _client.get(
+      uri.replace(path: 'health'),
+    );
     return HealthStatus.fromJson(response.body);
   }
 
@@ -57,10 +58,7 @@ class JsonRpcHttpClient extends Client<List<int>> {
       body: encoded,
       headers: _headers(config?.headers),
     );
-    final http.Response response = await timeout(
-      request,
-      config?.timeLimit,
-    );
+    final http.Response response = await timeout(request, config?.timeLimit);
     return decoder.convert(response.bodyBytes) as T;
   }
 }

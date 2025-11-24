@@ -18,7 +18,7 @@ import 'instruction.dart';
 
 class TokenProgram extends Program {
   TokenProgram._()
-      : super(Pubkey.fromBase58('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'));
+    : super(Pubkey.fromBase58('TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA'));
 
   /// Internal singleton instance.
   static final TokenProgram _instance = TokenProgram._();
@@ -144,9 +144,7 @@ class TokenProgram extends Program {
       for (final Pubkey signer in signers) AccountMeta(signer),
     ];
 
-    final List<Iterable<int>> data = [
-      borsh.u8.encode(numberOfSigners),
-    ];
+    final List<Iterable<int>> data = [borsh.u8.encode(numberOfSigners)];
 
     return _instance.createTransactionIntruction(
       TokenInstruction.initializeMultisig,
@@ -199,9 +197,7 @@ class TokenProgram extends Program {
       for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
-    final List<Iterable<int>> data = [
-      borsh.u64.encode(amount),
-    ];
+    final List<Iterable<int>> data = [borsh.u64.encode(amount)];
 
     return _instance.createTransactionIntruction(
       TokenInstruction.transfer,
@@ -253,9 +249,7 @@ class TokenProgram extends Program {
       for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
-    final List<Iterable<int>> data = [
-      borsh.u64.encode(amount),
-    ];
+    final List<Iterable<int>> data = [borsh.u64.encode(amount)];
 
     return _instance.createTransactionIntruction(
       TokenInstruction.approve,
@@ -393,9 +387,7 @@ class TokenProgram extends Program {
       for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
-    final List<Iterable<u8>> data = [
-      borsh.u64.encode(amount),
-    ];
+    final List<Iterable<u8>> data = [borsh.u64.encode(amount)];
 
     return _instance.createTransactionIntruction(
       TokenInstruction.mintTo,
@@ -447,9 +439,7 @@ class TokenProgram extends Program {
       for (final Pubkey signer in signers) AccountMeta.signer(signer),
     ];
 
-    final List<Iterable<u8>> data = [
-      borsh.u64.encode(amount),
-    ];
+    final List<Iterable<u8>> data = [borsh.u64.encode(amount)];
 
     return _instance.createTransactionIntruction(
       TokenInstruction.burn,
@@ -866,9 +856,7 @@ class TokenProgram extends Program {
       AccountMeta(sysvarRentPubkey),
     ];
 
-    final List<Iterable<u8>> data = [
-      borsh.pubkey.encode(owner.toBase58()),
-    ];
+    final List<Iterable<u8>> data = [borsh.pubkey.encode(owner.toBase58())];
 
     return _instance.createTransactionIntruction(
       TokenInstruction.initializeAccount2,
@@ -884,13 +872,9 @@ class TokenProgram extends Program {
   ///
   /// ### Keys:
   /// - `[w]` [account] - The native token account to sync with its underlying lamports.
-  static TransactionInstruction syncNative({
-    required final Pubkey account,
-  }) {
+  static TransactionInstruction syncNative({required final Pubkey account}) {
     // 0. `[w]` The native token account to sync with its underlying lamports.
-    final List<AccountMeta> keys = [
-      AccountMeta.writable(account),
-    ];
+    final List<AccountMeta> keys = [AccountMeta.writable(account)];
 
     return _instance.createTransactionIntruction(
       TokenInstruction.syncNative,
@@ -920,9 +904,7 @@ class TokenProgram extends Program {
       AccountMeta(mint),
     ];
 
-    final List<Iterable<u8>> data = [
-      borsh.pubkey.encode(owner.toBase58()),
-    ];
+    final List<Iterable<u8>> data = [borsh.pubkey.encode(owner.toBase58())];
 
     return _instance.createTransactionIntruction(
       TokenInstruction.initializeAccount3,
@@ -957,9 +939,7 @@ class TokenProgram extends Program {
       for (final Pubkey signer in signers) AccountMeta(signer),
     ];
 
-    final List<Iterable<int>> data = [
-      borsh.u8.encode(numberOfSigners),
-    ];
+    final List<Iterable<int>> data = [borsh.u8.encode(numberOfSigners)];
 
     return _instance.createTransactionIntruction(
       TokenInstruction.initializeMultisig2,
@@ -986,9 +966,7 @@ class TokenProgram extends Program {
     final Pubkey? freezeAuthority,
   }) {
     // 0. `[w]` The mint to initialize.
-    final List<AccountMeta> keys = [
-      AccountMeta.writable(mint),
-    ];
+    final List<AccountMeta> keys = [AccountMeta.writable(mint)];
 
     final List<Iterable<int>> data = [
       borsh.u8.encode(decimals),
@@ -1027,9 +1005,7 @@ class TokenProgram extends Program {
     required final Pubkey account,
   }) {
     //  0. `[w]` The account to initialize.
-    final List<AccountMeta> keys = [
-      AccountMeta.writable(account),
-    ];
+    final List<AccountMeta> keys = [AccountMeta.writable(account)];
 
     return _instance.createTransactionIntruction(
       TokenInstruction.initializeImmutableOwner,

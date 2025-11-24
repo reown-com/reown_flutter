@@ -21,7 +21,7 @@ import 'state.dart';
 class StakeProgram extends Program {
   /// Stake program.
   StakeProgram._()
-      : super(Pubkey.fromBase58('Stake11111111111111111111111111111111111111'));
+    : super(Pubkey.fromBase58('Stake11111111111111111111111111111111111111'));
 
   /// Internal singleton instance.
   static final StakeProgram _instance = StakeProgram._();
@@ -30,9 +30,8 @@ class StakeProgram extends Program {
   static Pubkey get programId => _instance.pubkey;
 
   /// Configuration account.
-  static Pubkey get configId => Pubkey.fromBase58(
-        'StakeConfig11111111111111111111111111111111',
-      );
+  static Pubkey get configId =>
+      Pubkey.fromBase58('StakeConfig11111111111111111111111111111111');
 
   /// The max space of a Stake account.
   ///
@@ -138,7 +137,7 @@ class StakeProgram extends Program {
       AccountMeta.writable(stakeAccount),
       AccountMeta(sysvarClockPubkey),
       AccountMeta.signer(authority),
-      if (custodian != null) AccountMeta.signer(custodian)
+      if (custodian != null) AccountMeta.signer(custodian),
     ];
 
     final List<Iterable<u8>> data = [
@@ -213,9 +212,7 @@ class StakeProgram extends Program {
       AccountMeta.signer(authority),
     ];
 
-    final List<Iterable<u8>> data = [
-      borsh.u64.encode(lamports),
-    ];
+    final List<Iterable<u8>> data = [borsh.u64.encode(lamports)];
 
     return _instance.createTransactionIntruction(
       StakeInstruction.split,
@@ -258,9 +255,7 @@ class StakeProgram extends Program {
       if (custodian != null) AccountMeta.signer(custodian),
     ];
 
-    final List<Iterable<u8>> data = [
-      borsh.u64.encode(lamports),
-    ];
+    final List<Iterable<u8>> data = [borsh.u64.encode(lamports)];
 
     return _instance.createTransactionIntruction(
       StakeInstruction.withdraw,
@@ -318,9 +313,7 @@ class StakeProgram extends Program {
       AccountMeta.signer(authority),
     ];
 
-    final List<Iterable<u8>> data = [
-      Lockup.codec.encode(lockup.toJson()),
-    ];
+    final List<Iterable<u8>> data = [Lockup.codec.encode(lockup.toJson())];
 
     return _instance.createTransactionIntruction(
       StakeInstruction.setLockup,
@@ -398,7 +391,7 @@ class StakeProgram extends Program {
       AccountMeta.writable(stakeAccount),
       AccountMeta(sysvarClockPubkey),
       AccountMeta.signer(authorityBase),
-      if (custodian != null) AccountMeta.signer(custodian)
+      if (custodian != null) AccountMeta.signer(custodian),
     ];
 
     final List<Iterable<u8>> data = [
@@ -477,7 +470,7 @@ class StakeProgram extends Program {
       AccountMeta(sysvarClockPubkey),
       AccountMeta.signer(authority),
       AccountMeta.signer(newAuthority),
-      if (custodian != null) AccountMeta.signer(custodian)
+      if (custodian != null) AccountMeta.signer(custodian),
     ];
 
     final List<Iterable<u8>> data = [

@@ -92,13 +92,15 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                 ListTile(
                   leading: Icon(
                     Icons.logo_dev_rounded,
-                    color:
-                        ReownAppKitModalTheme.colorsOf(context).foreground100,
+                    color: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).foreground100,
                   ),
                   title: const Text('Analytics view'),
                   titleTextStyle: TextStyle(
-                    color:
-                        ReownAppKitModalTheme.colorsOf(context).foreground100,
+                    color: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).foreground100,
                   ),
                   onTap: () {
                     widget.toggleOverlay();
@@ -108,25 +110,29 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                   leading: isCustom
                       ? Icon(
                           Icons.yard,
-                          color: ReownAppKitModalTheme.colorsOf(context)
-                              .foreground100,
+                          color: ReownAppKitModalTheme.colorsOf(
+                            context,
+                          ).foreground100,
                         )
                       : Icon(
                           Icons.yard_outlined,
-                          color: ReownAppKitModalTheme.colorsOf(context)
-                              .foreground100,
+                          color: ReownAppKitModalTheme.colorsOf(
+                            context,
+                          ).foreground100,
                         ),
                   title: isCustom
                       ? const Text('Custom theme')
                       : const Text('Default theme'),
                   titleTextStyle: TextStyle(
-                    color:
-                        ReownAppKitModalTheme.colorsOf(context).foreground100,
+                    color: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).foreground100,
                   ),
                   trailing: Switch(
                     value: isCustom,
-                    activeThumbColor:
-                        ReownAppKitModalTheme.colorsOf(context).accent100,
+                    activeThumbColor: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).accent100,
                     onChanged: (value) {
                       widget.toggleTheme();
                     },
@@ -137,27 +143,31 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                           false
                       ? Icon(
                           Icons.dark_mode_outlined,
-                          color: ReownAppKitModalTheme.colorsOf(context)
-                              .foreground100,
+                          color: ReownAppKitModalTheme.colorsOf(
+                            context,
+                          ).foreground100,
                         )
                       : Icon(
                           Icons.light_mode_outlined,
-                          color: ReownAppKitModalTheme.colorsOf(context)
-                              .foreground100,
+                          color: ReownAppKitModalTheme.colorsOf(
+                            context,
+                          ).foreground100,
                         ),
                   title: ReownAppKitModalTheme.maybeOf(context)?.isDarkMode ??
                           false
                       ? const Text('Dark theme')
                       : const Text('Light theme'),
                   titleTextStyle: TextStyle(
-                    color:
-                        ReownAppKitModalTheme.colorsOf(context).foreground100,
+                    color: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).foreground100,
                   ),
                   trailing: Switch(
                     value: ReownAppKitModalTheme.maybeOf(context)?.isDarkMode ??
                         false,
-                    activeThumbColor:
-                        ReownAppKitModalTheme.colorsOf(context).accent100,
+                    activeThumbColor: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).accent100,
                     onChanged: (value) {
                       widget.toggleBrightness();
                     },
@@ -170,8 +180,9 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                   child: Text(
                     'Will require app to restart',
                     style: TextStyle(
-                      color:
-                          ReownAppKitModalTheme.colorsOf(context).foreground100,
+                      color: ReownAppKitModalTheme.colorsOf(
+                        context,
+                      ).foreground100,
                     ),
                   ),
                 ),
@@ -179,18 +190,21 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                 ListTile(
                   leading: Icon(
                     Icons.speaker_notes_rounded,
-                    color:
-                        ReownAppKitModalTheme.colorsOf(context).foreground100,
+                    color: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).foreground100,
                   ),
                   title: const Text('Analytics'),
                   titleTextStyle: TextStyle(
-                    color:
-                        ReownAppKitModalTheme.colorsOf(context).foreground100,
+                    color: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).foreground100,
                   ),
                   trailing: Switch(
                     value: _analyticsValue,
-                    activeThumbColor:
-                        ReownAppKitModalTheme.colorsOf(context).accent100,
+                    activeThumbColor: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).accent100,
                     onChanged: (value) {
                       _analyticsValue = value;
                       _updateValue('appkit_analytics', value);
@@ -200,18 +214,21 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                 ListTile(
                   leading: Icon(
                     Icons.email_rounded,
-                    color:
-                        ReownAppKitModalTheme.colorsOf(context).foreground100,
+                    color: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).foreground100,
                   ),
                   title: const Text('Email & Socials'),
                   titleTextStyle: TextStyle(
-                    color:
-                        ReownAppKitModalTheme.colorsOf(context).foreground100,
+                    color: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).foreground100,
                   ),
                   trailing: Switch(
                     value: _emailWalletValue,
-                    activeThumbColor:
-                        ReownAppKitModalTheme.colorsOf(context).accent100,
+                    activeThumbColor: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).accent100,
                     onChanged: (value) {
                       _emailWalletValue = value;
                       _updateValue('appkit_email_wallet', value);
@@ -221,18 +238,21 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                 ListTile(
                   leading: Icon(
                     Icons.account_balance_wallet,
-                    color:
-                        ReownAppKitModalTheme.colorsOf(context).foreground100,
+                    color: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).foreground100,
                   ),
                   title: const Text('1-CA + SIWE'),
                   titleTextStyle: TextStyle(
-                    color:
-                        ReownAppKitModalTheme.colorsOf(context).foreground100,
+                    color: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).foreground100,
                   ),
                   trailing: Switch(
                     value: _siweAuthValue,
-                    activeThumbColor:
-                        ReownAppKitModalTheme.colorsOf(context).accent100,
+                    activeThumbColor: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).accent100,
                     onChanged: (value) {
                       _siweAuthValue = value;
                       _updateValue('appkit_siwe_auth', value);
@@ -251,27 +271,22 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                 const Text(
                   'Redirect:',
                   textAlign: TextAlign.left,
-                  style: TextStyle(
-                    fontSize: 12.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.bold),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Native: ',
-                      style: TextStyle(fontSize: 12.0),
-                    ),
+                    const Text('Native: ', style: TextStyle(fontSize: 12.0)),
                     Expanded(
                       child: Text(
                         '${widget.appKitModal.appKit!.metadata.redirect?.native}',
                         style: TextStyle(
                           fontSize: 12.0,
                           fontWeight: FontWeight.bold,
-                          color: ReownAppKitModalTheme.colorsOf(context)
-                              .foreground100,
+                          color: ReownAppKitModalTheme.colorsOf(
+                            context,
+                          ).foreground100,
                         ),
                       ),
                     ),
@@ -281,18 +296,16 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Universal: ',
-                      style: TextStyle(fontSize: 12.0),
-                    ),
+                    const Text('Universal: ', style: TextStyle(fontSize: 12.0)),
                     Expanded(
                       child: Text(
                         '${widget.appKitModal.appKit!.metadata.redirect?.universal}',
                         style: TextStyle(
                           fontSize: 12.0,
                           fontWeight: FontWeight.bold,
-                          color: ReownAppKitModalTheme.colorsOf(context)
-                              .foreground100,
+                          color: ReownAppKitModalTheme.colorsOf(
+                            context,
+                          ).foreground100,
                         ),
                       ),
                     ),
@@ -300,17 +313,15 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                 ),
                 Row(
                   children: [
-                    const Text(
-                      'Link Mode: ',
-                      style: TextStyle(fontSize: 12.0),
-                    ),
+                    const Text('Link Mode: ', style: TextStyle(fontSize: 12.0)),
                     Text(
                       '${widget.appKitModal.appKit!.metadata.redirect?.linkMode}',
                       style: TextStyle(
                         fontSize: 12.0,
                         fontWeight: FontWeight.bold,
-                        color: ReownAppKitModalTheme.colorsOf(context)
-                            .foreground100,
+                        color: ReownAppKitModalTheme.colorsOf(
+                          context,
+                        ).foreground100,
                       ),
                     ),
                   ],
@@ -325,15 +336,15 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                         'Sign v${sign_v.packageVersion}\n'
                         'Core v${core_v.packageVersion}';
                     return InkWell(
-                      onTap: () => Clipboard.setData(ClipboardData(
-                        text: versionText,
-                      )),
+                      onTap: () =>
+                          Clipboard.setData(ClipboardData(text: versionText)),
                       child: Text(
                         versionText,
                         style: TextStyle(
                           fontSize: 12.0,
-                          color: ReownAppKitModalTheme.colorsOf(context)
-                              .foreground100,
+                          color: ReownAppKitModalTheme.colorsOf(
+                            context,
+                          ).foreground100,
                         ),
                       ),
                     );
@@ -360,7 +371,8 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                   builder: (BuildContext context) {
                     return AlertDialog(
                       content: const Text(
-                          'Application will be closed to make changes'),
+                        'Application will be closed to make changes',
+                      ),
                       actions: [
                         TextButton(
                           onPressed: () {
@@ -373,7 +385,7 @@ class _DebugDrawerState extends State<DebugDrawer> with WidgetsBindingObserver {
                             exit(0);
                           },
                           child: const Text('Ok'),
-                        )
+                        ),
                       ],
                     );
                   },

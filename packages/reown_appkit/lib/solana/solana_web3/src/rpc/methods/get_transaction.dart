@@ -13,18 +13,14 @@ import '../models/transaction_info.dart';
 class GetTransaction
     extends JsonRpcMethod<Map<String, dynamic>?, TransactionInfo?> {
   /// Creates a codec for `getTransaction` JSON RPC methods.
-  GetTransaction(
-    final String signature, {
-    final GetTransactionConfig? config,
-  }) : super(
-          'getTransaction',
-          values: [signature],
-          config: config ?? GetTransactionConfig(),
-        );
+  GetTransaction(final String signature, {final GetTransactionConfig? config})
+    : super(
+        'getTransaction',
+        values: [signature],
+        config: config ?? GetTransactionConfig(),
+      );
 
   @override
-  TransactionInfo? decoder(
-    final Map<String, dynamic>? value,
-  ) =>
+  TransactionInfo? decoder(final Map<String, dynamic>? value) =>
       value != null ? TransactionInfo.fromJson(value) : null;
 }

@@ -10,7 +10,8 @@ class ReownAppKitModalNetworks {
         chainId: '1',
         chainIcon: _networkIcons['eip155:1'],
         currency: 'ETH',
-        rpcUrl: 'https://ethereum-rpc.publicnode.com',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://ethereum-rpc.publicnode.com'],
         explorerUrl: 'https://etherscan.io',
       ),
       ReownAppKitModalNetworkInfo(
@@ -18,7 +19,8 @@ class ReownAppKitModalNetworks {
         chainId: '10',
         chainIcon: _networkIcons['eip155:10'],
         currency: 'ETH',
-        rpcUrl: 'https://mainnet.optimism.io/',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://mainnet.optimism.io/'],
         explorerUrl: 'https://optimistic.etherscan.io',
       ),
       ReownAppKitModalNetworkInfo(
@@ -26,7 +28,8 @@ class ReownAppKitModalNetworks {
         chainId: '56',
         chainIcon: _networkIcons['eip155:56'],
         currency: 'BNB',
-        rpcUrl: 'https://bsc-dataseed.binance.org/',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://bsc-dataseed.binance.org/'],
         explorerUrl: 'https://bscscan.com',
       ),
       ReownAppKitModalNetworkInfo(
@@ -34,7 +37,8 @@ class ReownAppKitModalNetworks {
         chainId: '100',
         chainIcon: _networkIcons['eip155:100'],
         currency: 'xDAI',
-        rpcUrl: 'https://rpc.gnosischain.com',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://rpc.gnosischain.com'],
         explorerUrl: 'https://gnosis.blockscout.com',
       ),
       ReownAppKitModalNetworkInfo(
@@ -42,7 +46,8 @@ class ReownAppKitModalNetworks {
         chainId: '137',
         chainIcon: _networkIcons['eip155:137'],
         currency: 'POL',
-        rpcUrl: 'https://polygon.drpc.org',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://polygon.drpc.org'],
         explorerUrl: 'https://polygonscan.com',
       ),
       ReownAppKitModalNetworkInfo(
@@ -50,7 +55,8 @@ class ReownAppKitModalNetworks {
         chainId: '324',
         chainIcon: _networkIcons['eip155:324'],
         currency: 'ETH',
-        rpcUrl: 'https://mainnet.era.zksync.io',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://mainnet.era.zksync.io'],
         explorerUrl: 'https://explorer.zksync.io',
       ),
       ReownAppKitModalNetworkInfo(
@@ -58,7 +64,8 @@ class ReownAppKitModalNetworks {
         chainId: '1101',
         chainIcon: _networkIcons['eip155:1101'],
         currency: 'ETH',
-        rpcUrl: 'https://rpc-mainnet.matic.network',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://rpc-mainnet.matic.network'],
         explorerUrl: 'https://explorer-evm.polygon.technology',
       ),
       ReownAppKitModalNetworkInfo(
@@ -66,15 +73,17 @@ class ReownAppKitModalNetworks {
         chainId: '5000',
         chainIcon: _networkIcons['eip155:5000'],
         currency: 'BIT',
-        rpcUrl: 'https://rpc.mantlenetwork.io',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://rpc.mantlenetwork.io'],
         explorerUrl: 'https://explorer.mantlenetwork.io',
       ),
       ReownAppKitModalNetworkInfo(
-        name: 'Klaytn Mainnet',
+        name: 'Kaia Mainnet',
         chainId: '8217',
         chainIcon: _networkIcons['eip155:8217'],
         currency: 'KLAY',
-        rpcUrl: 'https://public-node-api.klaytnapi.com/v1/cypress',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://public-node-api.klaytnapi.com/v1/cypress'],
         explorerUrl: 'https://scope.klaytn.com',
       ),
       ReownAppKitModalNetworkInfo(
@@ -82,7 +91,8 @@ class ReownAppKitModalNetworks {
         chainId: '8453',
         chainIcon: _networkIcons['eip155:8453'],
         currency: 'ETH',
-        rpcUrl: 'https://mainnet.base.org',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://mainnet.base.org'],
         explorerUrl: 'https://basescan.org',
       ),
       ReownAppKitModalNetworkInfo(
@@ -90,7 +100,8 @@ class ReownAppKitModalNetworks {
         chainId: '42161',
         chainIcon: _networkIcons['eip155:42161'],
         currency: 'ETH',
-        rpcUrl: 'https://arbitrum.blockpi.network/v1/rpc/public',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://arbitrum.blockpi.network/v1/rpc/public'],
         explorerUrl: 'https://arbiscan.io/',
       ),
       ReownAppKitModalNetworkInfo(
@@ -98,7 +109,8 @@ class ReownAppKitModalNetworks {
         chainId: '42220',
         chainIcon: _networkIcons['eip155:42220'],
         currency: 'CELO',
-        rpcUrl: 'https://forno.celo.org',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://forno.celo.org'],
         explorerUrl: 'https://explorer.celo.org/mainnet',
       ),
       ReownAppKitModalNetworkInfo(
@@ -106,7 +118,8 @@ class ReownAppKitModalNetworks {
         chainId: '43114',
         chainIcon: _networkIcons['eip155:43114'],
         currency: 'AVAX',
-        rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://api.avax.network/ext/bc/C/rpc'],
         explorerUrl: 'https://snowtrace.io',
       ),
       ReownAppKitModalNetworkInfo(
@@ -114,7 +127,8 @@ class ReownAppKitModalNetworks {
         chainId: '59144',
         chainIcon: _networkIcons['eip155:59144'],
         currency: 'ETH',
-        rpcUrl: 'https://rpc.linea.build',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://rpc.linea.build'],
         explorerUrl: 'https://explorer.linea.build',
       ),
       ReownAppKitModalNetworkInfo(
@@ -122,7 +136,8 @@ class ReownAppKitModalNetworks {
         chainId: '7777777',
         chainIcon: _networkIcons['eip155:7777777'],
         currency: 'ETH',
-        rpcUrl: 'https://rpc.zora.energy',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://rpc.zora.energy'],
         explorerUrl: 'https://explorer.zora.energy',
       ),
       ReownAppKitModalNetworkInfo(
@@ -130,7 +145,8 @@ class ReownAppKitModalNetworks {
         chainId: '1313161554',
         chainIcon: _networkIcons['eip155:1313161554'],
         currency: 'ETH',
-        rpcUrl: 'https://mainnet.aurora.dev',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://mainnet.aurora.dev'],
         explorerUrl: 'https://explorer.aurora.dev',
       ),
     ],
@@ -138,20 +154,71 @@ class ReownAppKitModalNetworks {
       ReownAppKitModalNetworkInfo(
         name: 'Solana',
         chainId: '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        chainIcon: _networkIcons['solana::5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
+        chainIcon: _networkIcons['solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp'],
         currency: 'SOL',
-        rpcUrl: 'https://api.mainnet-beta.solana.com',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://api.mainnet-beta.solana.com'],
         explorerUrl: 'https://solscan.io',
       ),
     ],
-    NetworkUtils.ton: [
+    'bip122': [
       ReownAppKitModalNetworkInfo(
-        name: 'TON',
+        name: 'Bitcoin Mainnet',
+        chainId: '000000000019d6689c085ae165831e93',
+        chainIcon: _networkIcons['bitcoin:000000000019d6689c085ae165831e93'],
+        currency: 'BTC',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        explorerUrl: 'https://btcscan.org',
+      ),
+    ],
+    'near': [
+      ReownAppKitModalNetworkInfo(
+        name: 'Near Mainnet',
+        chainId: 'mainnet',
+        chainIcon: _networkIcons['near:mainnet'],
+        currency: 'NEAR',
+        rpcUrl: 'https://rpc.mainnet.near.org',
+        explorerUrl: 'https://nearblocks.io',
+      ),
+    ],
+    'tron': [
+      ReownAppKitModalNetworkInfo(
+        name: 'Tron',
+        chainId: '0x2b6653dc',
+        chainIcon: _networkIcons['tron:0x2b6653dc'],
+        currency: 'TRX',
+        rpcUrl: 'https://api.trongrid.io',
+        explorerUrl: 'https://tronscan.org',
+      ),
+    ],
+    'ton': [
+      ReownAppKitModalNetworkInfo(
+        name: 'Ton',
         chainId: '-239',
-        chainIcon: _networkIcons['ton::-239'],
+        chainIcon: _networkIcons['ton:-239'],
         currency: 'TON',
-        rpcUrl: 'https://toncenter.com/api/v2/jsonRPC',
-        explorerUrl: 'https://tonviewer.com',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        explorerUrl: 'https://tonscan.org',
+      ),
+    ],
+    'sui': [
+      ReownAppKitModalNetworkInfo(
+        name: 'Sui',
+        chainId: 'mainnet',
+        chainIcon: _networkIcons['sui:mainnet'],
+        currency: 'SUI',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        explorerUrl: 'https://suiscan.xyz/mainnet/home',
+      ),
+    ],
+    'stacks': [
+      ReownAppKitModalNetworkInfo(
+        name: 'Stacks',
+        chainId: '1',
+        chainIcon: _networkIcons['stacks:1'],
+        currency: 'STX',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        explorerUrl: 'https://explorer.hiro.so',
       ),
     ],
   };
@@ -159,92 +226,135 @@ class ReownAppKitModalNetworks {
   static final Map<String, List<ReownAppKitModalNetworkInfo>> _testnets = {
     NetworkUtils.eip155: [
       ReownAppKitModalNetworkInfo(
-        name: 'Sepolia',
+        name: 'Eth sepolia',
         chainId: '11155111',
         currency: 'SEP',
-        rpcUrl: 'https://ethereum-sepolia.publicnode.com',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://sepolia.etherscan.io/'],
         explorerUrl: 'https://sepolia.etherscan.io/',
         isTestNetwork: true,
       ),
       ReownAppKitModalNetworkInfo(
-        name: 'Holesky',
+        name: 'Eth holesky',
         chainId: '17000',
         currency: 'ETH',
-        rpcUrl: 'https://rpc.holesky.test',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://rpc.holesky.test'],
         explorerUrl: 'https://explorer.holesky.test',
         isTestNetwork: true,
       ),
       ReownAppKitModalNetworkInfo(
-        name: 'Mumbai',
-        chainId: '80001',
-        currency: 'POL',
-        rpcUrl: 'https://polygon-mumbai-bor-rpc.publicnode.com',
-        extraRpcUrls: [
-          'https://rpc.ankr.com/polygon_mumbai',
-          'https://polygon-testnet.public.blastapi.io',
-          'https://polygon-mumbai.blockpi.network/v1/rpc/public',
-        ],
-        explorerUrl: 'https://mumbai.polygonscan.com',
-        isTestNetwork: true,
-      ),
-      ReownAppKitModalNetworkInfo(
-        name: 'Amoy',
+        name: 'Pol amoy',
         chainId: '80002',
         currency: 'POL',
-        rpcUrl: 'https://rpc-amoy.polygon.technology/',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://rpc-amoy.polygon.technology/'],
         explorerUrl: 'https://amoy.polygonscan.com',
         isTestNetwork: true,
       ),
       ReownAppKitModalNetworkInfo(
-        name: 'BSC Testnet',
+        name: 'BSC testnet',
         chainId: '97',
         currency: 'tBNB',
-        rpcUrl: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
         explorerUrl: 'https://testnet.bscscan.com',
         isTestNetwork: true,
       ),
       ReownAppKitModalNetworkInfo(
-        name: 'Base Sepolia',
-        chainId: '84531',
+        name: 'Base sepolia',
+        chainId: '84532',
         currency: 'SEP',
-        rpcUrl: 'https://sepolia.base.org',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://sepolia.base.org'],
         explorerUrl: 'https://sepolia.basescan.org/',
         isTestNetwork: true,
       ),
       ReownAppKitModalNetworkInfo(
-        name: 'Sonic Blaze Testnet',
+        name: 'Sonic testnet',
         chainId: '57054',
         currency: 'wS',
-        rpcUrl: 'https://rpc.blaze.soniclabs.com/',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://rpc.blaze.soniclabs.com/'],
         explorerUrl: 'https://testnet.sonicscan.org/',
         isTestNetwork: true,
       ),
     ],
     NetworkUtils.solana: [
       ReownAppKitModalNetworkInfo(
-        name: 'Solana Testnet',
+        name: 'Sol testnet',
         chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
         currency: 'SOL',
-        rpcUrl: 'https://api.testnet.solana.com',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://api.testnet.solana.com'],
         explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
         isTestNetwork: true,
       ),
       ReownAppKitModalNetworkInfo(
-        name: 'Solana Devnet',
+        name: 'Sol devnet',
         chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
         currency: 'SOL',
-        rpcUrl: 'https://api.devnet.solana.com',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        extraRpcUrls: ['https://api.devnet.solana.com'],
         explorerUrl: 'https://explorer.solana.com/?cluster=devnet',
         isTestNetwork: true,
       ),
     ],
-    NetworkUtils.ton: [
+    'bip122': [
       ReownAppKitModalNetworkInfo(
-        name: 'TON Testnet',
+        name: 'Btc testnet',
+        chainId: '000000000933ea01ad0ee984209779ba',
+        currency: 'BTC',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        explorerUrl: 'https://btcscan.org/bitcoin-testnet',
+        isTestNetwork: true,
+      ),
+    ],
+    'sui': [
+      ReownAppKitModalNetworkInfo(
+        name: 'Sui',
+        chainId: 'testnet',
+        currency: 'SUI',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        explorerUrl: 'https://suiscan.xyz/testnet/home',
+        isTestNetwork: true,
+      ),
+      ReownAppKitModalNetworkInfo(
+        name: 'Sui',
+        chainId: 'devnet',
+        currency: 'SUI',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        explorerUrl: 'https://suiscan.xyz/devnet/home',
+        isTestNetwork: true,
+      ),
+    ],
+    'tron': [
+      ReownAppKitModalNetworkInfo(
+        name: 'Tron nile',
+        chainId: '0xcd8690dc',
+        currency: 'TRX',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        explorerUrl: 'https://nile.tronscan.org/',
+        isTestNetwork: true,
+      ),
+    ],
+    'ton': [
+      ReownAppKitModalNetworkInfo(
+        name: 'Ton testnet',
         chainId: '-3',
         currency: 'TON',
-        rpcUrl: 'https://testnet.toncenter.com/api/v2/jsonRPC',
-        explorerUrl: 'https://testnet.tonviewer.com',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        explorerUrl: 'https://testnet.tonscan.org',
+        isTestNetwork: true,
+      ),
+    ],
+    'stacks': [
+      ReownAppKitModalNetworkInfo(
+        name: 'Stacks testnet',
+        chainId: '2147483648',
+        currency: 'STX',
+        rpcUrl: 'https://rpc.walletconnect.org/v1',
+        explorerUrl: 'https://explorer.hiro.so/?chain=testnet',
         isTestNetwork: true,
       ),
     ],
@@ -270,13 +380,13 @@ class ReownAppKitModalNetworks {
     }
     if (NamespaceUtils.isValidChainId(chainId)) {
       final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-      return getAllSupportedNetworks(namespace: namespace).firstWhereOrNull(
-        (e) => e.chainId == chainId,
-      );
+      return getAllSupportedNetworks(
+        namespace: namespace,
+      ).firstWhereOrNull((e) => e.chainId == chainId);
     }
-    return getAllSupportedNetworks(namespace: namespace).firstWhereOrNull(
-      (e) => e.chainId == '$namespace:$chainId',
-    );
+    return getAllSupportedNetworks(
+      namespace: namespace,
+    ).firstWhereOrNull((e) => e.chainId == '$namespace:$chainId');
   }
 
   static void removeSupportedNetworks(
@@ -340,10 +450,12 @@ class ReownAppKitModalNetworks {
   }
 
   static List<String> getAllSupportedNamespaces() {
-    final mainNamespaces =
-        _mainnets.keys.where((key) => _mainnets[key]!.isNotEmpty).toList();
-    final testNamespaces =
-        _testnets.keys.where((key) => _testnets[key]!.isNotEmpty).toList();
+    final mainNamespaces = _mainnets.keys
+        .where((key) => _mainnets[key]!.isNotEmpty)
+        .toList();
+    final testNamespaces = _testnets.keys
+        .where((key) => _testnets[key]!.isNotEmpty)
+        .toList();
     return <String>{...mainNamespaces, ...testNamespaces}.toList();
   }
 
@@ -354,11 +466,7 @@ class ReownAppKitModalNetworks {
         .map((e) {
           final ns = e.key;
           final chains = e.value;
-          return chains.map(
-            (c) => c.copyWith(
-              chainId: '$ns:${c.chainId}',
-            ),
-          );
+          return chains.map((c) => c.copyWith(chainId: '$ns:${c.chainId}'));
         })
         .expand((e) => e)
         .where((e) {
@@ -374,11 +482,7 @@ class ReownAppKitModalNetworks {
         .map((e) {
           final ns = e.key;
           final chains = e.value;
-          return chains.map(
-            (c) => c.copyWith(
-              chainId: '$ns:${c.chainId}',
-            ),
-          );
+          return chains.map((c) => c.copyWith(chainId: '$ns:${c.chainId}'));
         })
         .expand((e) => e)
         .where((e) {
@@ -410,15 +514,10 @@ class ReownAppKitModalNetworks {
     return chainId.split(':').last;
   }
 
-  static String getNetworkIconId(String chainId) {
+  static String getNetworkIconId(ReownAppKitModalNetworkInfo network) {
     try {
-      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-      final network = getNetworkInfo(namespace, chainId);
-      if (network?.isTestNetwork == true) return '';
-      if ((network?.chainIcon ?? '').isNotEmpty) {
-        return network!.chainIcon!;
-      }
-      return _networkIcons[chainId]!;
+      if (network.isTestNetwork == true) return '';
+      return _networkIcons[network.chainId] ?? '';
     } catch (e) {
       return '';
     }
@@ -479,10 +578,18 @@ class ReownAppKitModalNetworks {
     // Solana
     'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp':
         'a1b58899-f671-4276-6a5e-56ca5bd59700',
-    // Near
-    'near:mainnet': 'ab3d4dee-e416-4d8d-226c-4c131b8b7600',
+    // Bitcoin
+    'bip122:000000000019d6689c085ae165831e93':
+        '0b4838db-0161-4ffe-022d-532bf03dba00',
     // TON
-    'ton::-239': 'ton-mainnet-icon-placeholder',
-    'ton::-3': 'ton-testnet-icon-placeholder',
+    'ton:-239': '20f673c0-095e-49b2-07cf-eb5049dcf600',
+    // SUI
+    'sui:mainnet': '5d299d62-d4da-4155-db4e-3d7d8595c800',
+    // TRON
+    'tron:0x2b6653dc': 'dd9de794-d4ce-4c94-682f-a367f926d500',
+    // STACKS
+    'stacks:1': 'a694e2a1-03ee-46bd-2dc8-a04563041e00',
+    // NEAR
+    'near:mainnet': '6a5509e3-e58a-488a-19ee-17279677f800',
   };
 }

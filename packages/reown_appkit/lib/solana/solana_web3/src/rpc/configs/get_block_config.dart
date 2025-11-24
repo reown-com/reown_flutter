@@ -19,10 +19,14 @@ class GetBlockConfig extends CommitmentConfig {
     this.transactionDetails,
     this.maxSupportedTransactionVersion,
     this.rewards,
-  })  : assert(maxSupportedTransactionVersion == null ||
-            maxSupportedTransactionVersion >= 0),
-        assert(commitment != Commitment.processed,
-            'The commitment "processed" is not supported.');
+  }) : assert(
+         maxSupportedTransactionVersion == null ||
+             maxSupportedTransactionVersion >= 0,
+       ),
+       assert(
+         commitment != Commitment.processed,
+         'The commitment "processed" is not supported.',
+       );
 
   /// The encoding for each returned transaction (default: [TransactionEncoding.json]).
   final TransactionEncoding? encoding;
@@ -39,10 +43,10 @@ class GetBlockConfig extends CommitmentConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        'encoding': encoding?.name,
-        'transactionDetails': transactionDetails?.name,
-        'rewards': rewards,
-        'commitment': commitment?.name,
-        'maxSupportedTransactionVersion': maxSupportedTransactionVersion,
-      };
+    'encoding': encoding?.name,
+    'transactionDetails': transactionDetails?.name,
+    'rewards': rewards,
+    'commitment': commitment?.name,
+    'maxSupportedTransactionVersion': maxSupportedTransactionVersion,
+  };
 }

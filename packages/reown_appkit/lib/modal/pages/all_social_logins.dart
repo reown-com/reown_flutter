@@ -9,9 +9,8 @@ import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class AllSocialLoginsPage extends StatefulWidget {
-  const AllSocialLoginsPage({
-    required this.onSelect,
-  }) : super(key: KeyConstants.allSocialLoginPageKey);
+  const AllSocialLoginsPage({required this.onSelect})
+    : super(key: KeyConstants.allSocialLoginPageKey);
   final Function(AppKitSocialOption) onSelect;
 
   @override
@@ -23,25 +22,27 @@ class _AppKitModalMainWalletsPageState extends State<AllSocialLoginsPage> {
   @override
   Widget build(BuildContext context) {
     final modalInstance = ModalProvider.of(context).instance;
-    final socialOptions =
-        List<AppKitSocialOption>.from(modalInstance.featuresConfig.socials)
-          ..remove(AppKitSocialOption.Email);
+    final socialOptions = List<AppKitSocialOption>.from(
+      modalInstance.featuresConfig.socials,
+    )..remove(AppKitSocialOption.Email);
     final listItems = socialOptions
-        .map((item) => (item == AppKitSocialOption.Farcaster)
-            ? FarcasterLoginButton(
-                textAlign: TextAlign.left,
-                onTap: () => widget.onSelect(item),
-                title: item.name,
-              )
-            : SocialLoginButton(
-                logoPath: AssetUtils.getThemedAsset(
-                  context,
-                  '${item.name.toLowerCase()}_logo.svg',
+        .map(
+          (item) => (item == AppKitSocialOption.Farcaster)
+              ? FarcasterLoginButton(
+                  textAlign: TextAlign.left,
+                  onTap: () => widget.onSelect(item),
+                  title: item.name,
+                )
+              : SocialLoginButton(
+                  logoPath: AssetUtils.getThemedAsset(
+                    context,
+                    '${item.name.toLowerCase()}_logo.svg',
+                  ),
+                  textAlign: TextAlign.left,
+                  onTap: () => widget.onSelect(item),
+                  title: item.name,
                 ),
-                textAlign: TextAlign.left,
-                onTap: () => widget.onSelect(item),
-                title: item.name,
-              ))
+        )
         .toList();
     return ModalNavbar(
       title: 'All socials',

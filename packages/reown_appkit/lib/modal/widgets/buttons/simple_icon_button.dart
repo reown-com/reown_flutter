@@ -38,45 +38,45 @@ class SimpleIconButton extends StatelessWidget {
     final radius = radiuses.isSquare()
         ? 0.0
         : radiuses.isCircular()
-            ? 100.0
-            : borderRadius ?? (size.height / 2);
+        ? 100.0
+        : borderRadius ?? (size.height / 2);
     return BaseButton(
       semanticsLabel: 'SimpleIconButton',
       onTap: onTap,
       size: size,
       buttonStyle: ButtonStyle(
-        backgroundColor: WidgetStateProperty.resolveWith<Color>(
-          (states) {
-            if (states.contains(WidgetState.disabled)) {
-              return themeColors.grayGlass005;
-            }
-            return backgroundColor ?? themeColors.accent100;
-          },
-        ),
-        foregroundColor: WidgetStateProperty.resolveWith<Color>(
-          (states) {
-            if (states.contains(WidgetState.disabled)) {
-              return themeColors.grayGlass005;
-            }
-            return foregroundColor ?? themeColors.inverse100;
-          },
-        ),
-        overlayColor: overlayColor,
+        backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return themeColors.grayGlass005;
+          }
+          return backgroundColor ?? themeColors.accent100;
+        }),
+        foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return themeColors.grayGlass005;
+          }
+          return foregroundColor ?? themeColors.inverse100;
+        }),
+        overlayColor:
+            overlayColor ??
+            WidgetStateProperty.all<Color>(themeColors.accenGlass010),
+        shadowColor:
+            overlayColor ??
+            WidgetStateProperty.all<Color>(themeColors.accenGlass010),
         shape: withBorder
-            ? WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
-                (states) {
-                  return RoundedRectangleBorder(
-                    side: BorderSide(
-                      color: backgroundColor ?? themeColors.grayGlass010,
-                      width: 1.0,
-                    ),
-                    borderRadius: BorderRadius.circular(radius),
-                  );
-                },
-              )
+            ? WidgetStateProperty.resolveWith<RoundedRectangleBorder>((states) {
+                return RoundedRectangleBorder(
+                  side: BorderSide(
+                    color: backgroundColor ?? themeColors.grayGlass010,
+                    width: 1.0,
+                  ),
+                  borderRadius: BorderRadius.circular(radius),
+                );
+              })
             : null,
-        padding:
-            WidgetStateProperty.all<EdgeInsetsGeometry>(EdgeInsets.all(0.0)),
+        padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+          EdgeInsets.all(0.0),
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

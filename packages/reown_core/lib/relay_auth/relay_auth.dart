@@ -48,23 +48,9 @@ class RelayAuth implements IRelayAuth {
     final JWTHeader header = JWTHeader();
     final String iss = encodeIss(keyPair.publicKeyBytes);
     final int exp = iat + ttl;
-    final JWTPayload payload = JWTPayload(
-      iss,
-      sub,
-      aud,
-      iat,
-      exp,
-    );
-    final Uint8List data = encodeData(
-      JWTData(
-        header,
-        payload,
-      ),
-    );
-    Uint8List signature = ed.sign(
-      ed.PrivateKey(keyPair.privateKeyBytes),
-      data,
-    );
+    final JWTPayload payload = JWTPayload(iss, sub, aud, iat, exp);
+    final Uint8List data = encodeData(JWTData(header, payload));
+    Uint8List signature = ed.sign(ed.PrivateKey(keyPair.privateKeyBytes), data);
     // List<int> signature = keyPair.sign(data);
     return encodeJWT(JWTSigned(signature, payload));
   }
@@ -76,10 +62,7 @@ class RelayAuth implements IRelayAuth {
     // Check the header
     if (decoded.header.alg != JWTHeader.JWT_ALG ||
         decoded.header.typ != JWTHeader.JWT_TYP) {
-      throw VerifyJWTError(
-        jwt,
-        'JWT must use EdDSA algorithm',
-      );
+      throw VerifyJWTError(jwt, 'JWT must use EdDSA algorithm');
     }
 
     final Uint8List publicKey = decodeIss(decoded.payload.iss);
@@ -106,26 +89,12 @@ class RelayAuth implements IRelayAuth {
 
   @override
   String encodeJson(Map<String, dynamic> value) {
-    return stripEquals(
-      base64Url.encode(
-        jsonEncode(
-          value,
-        ).codeUnits,
-      ),
-    );
+    return stripEquals(base64Url.encode(jsonEncode(value).codeUnits));
   }
 
   @override
   Map<String, dynamic> decodeJson(String s) {
-    return jsonDecode(
-      utf8.decode(
-        base64Url.decode(
-          base64Url.normalize(
-            s,
-          ),
-        ),
-      ),
-    );
+    return jsonDecode(utf8.decode(base64Url.decode(base64Url.normalize(s))));
   }
 
   /// Encodes the public key into a multicodec issuer
@@ -134,11 +103,7 @@ class RelayAuth implements IRelayAuth {
     Uint8List header = base58.decode(multicodecEd25519Header);
     final String multicodec =
         '$multicodecEd25519Base${base58.encode(Uint8List.fromList(header + publicKey))}';
-    return <String>[
-      DID_PREFIX,
-      DID_METHOD,
-      multicodec,
-    ].join(DID_DELIMITER);
+    return <String>[DID_PREFIX, DID_METHOD, multicodec].join(DID_DELIMITER);
   }
 
   /// Gets the public key from the issuer

@@ -13,16 +13,13 @@ import '../models/performance_sample.dart';
 class GetRecentPerformanceSamples
     extends JsonRpcListMethod<Map<String, dynamic>, PerformanceSample> {
   /// Creates a codec for `getRecentPerformanceSamples` JSON RPC methods.
-  GetRecentPerformanceSamples({
-    final usize? limit,
-  }) : super(
-          'getRecentPerformanceSamples',
-          values: limit != null ? [limit] : const [],
-        );
+  GetRecentPerformanceSamples({final usize? limit})
+    : super(
+        'getRecentPerformanceSamples',
+        values: limit != null ? [limit] : const [],
+      );
 
   @override
-  PerformanceSample itemDecoder(
-    final Map<String, dynamic> item,
-  ) =>
+  PerformanceSample itemDecoder(final Map<String, dynamic> item) =>
       PerformanceSample.fromJson(item);
 }

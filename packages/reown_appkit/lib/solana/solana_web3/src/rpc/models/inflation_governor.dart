@@ -51,10 +51,10 @@ class InflationGovernor extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'initial': initial,
-        'terminal': terminal,
-        'taper': taper,
-        'foundation': foundation,
-        'foundationTerm': foundationTerm,
-      };
+    'initial': initial,
+    'terminal': terminal,
+    'taper': taper,
+    'foundation': foundation,
+    'foundationTerm': foundationTerm,
+  };
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/widgets/avatars/wallet_avatar.dart';
@@ -13,6 +14,7 @@ class WalletListItem extends StatelessWidget {
     this.trailing,
     this.hideAvatar = false,
     this.showCheckmark = false,
+    this.certified = false,
     this.onTap,
   });
 
@@ -21,6 +23,7 @@ class WalletListItem extends StatelessWidget {
   final Widget? trailing;
   final bool hideAvatar;
   final bool showCheckmark;
+  final bool certified;
   final VoidCallback? onTap;
 
   @override
@@ -86,13 +89,29 @@ class WalletListItem extends StatelessWidget {
                 left: 4.0,
                 right: 8.0,
               ),
-              child: Text(
-                title,
-                style: themeData.textStyles.paragraph500.copyWith(
-                  color: onTap == null
-                      ? themeColors.foreground200
-                      : themeColors.foreground100,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: themeData.textStyles.paragraph500.copyWith(
+                      color: onTap == null
+                          ? themeColors.foreground200
+                          : themeColors.foreground100,
+                    ),
+                  ),
+                  const SizedBox.square(dimension: 4.0),
+                  Visibility(
+                    visible: certified,
+                    child: SvgPicture.asset(
+                      'lib/modal/assets/icons/certified.svg',
+                      package: 'reown_appkit',
+                      width: 16.0,
+                      height: 16.0,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

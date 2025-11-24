@@ -14,19 +14,12 @@ class MethodDialog extends StatefulWidget {
     await showDialog<void>(
       context: context,
       builder: (BuildContext context) {
-        return MethodDialog(
-          method: method,
-          response: response,
-        );
+        return MethodDialog(method: method, response: response);
       },
     );
   }
 
-  const MethodDialog({
-    super.key,
-    required this.method,
-    required this.response,
-  });
+  const MethodDialog({super.key, required this.method, required this.response});
 
   final String method;
   final Future<dynamic> response;
@@ -46,10 +39,7 @@ class MethodDialogState extends State<MethodDialog> {
           if (snapshot.hasData) {
             final String t = jsonEncode(snapshot.data);
             debugPrint('[ExampleApp] result $t');
-            return InkWell(
-              onTap: () => _copyToClipboard(t),
-              child: Text(t),
-            );
+            return InkWell(onTap: () => _copyToClipboard(t), child: Text(t));
           } else if (snapshot.hasError) {
             return InkWell(
               onTap: () => _copyToClipboard(snapshot.data.toString()),
@@ -59,9 +49,7 @@ class MethodDialogState extends State<MethodDialog> {
             return const SizedBox(
               width: StyleConstants.linear48,
               height: StyleConstants.linear48,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
+              child: Center(child: CircularProgressIndicator()),
             );
           }
         },
@@ -71,9 +59,7 @@ class MethodDialogState extends State<MethodDialog> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: const Text(
-            StringConstants.close,
-          ),
+          child: const Text(StringConstants.close),
         ),
       ],
     );

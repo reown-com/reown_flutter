@@ -69,18 +69,19 @@ class _VerifyOtpViewState extends State<VerifyOtpView>
   void _resendEmail() async {
     final diff = DateTime.now().difference(_resendEnabledAt).inSeconds;
     if (diff < 0) {
-      GetIt.I<IToastService>().show(ToastMessage(
-        type: ToastType.error,
-        text: 'Try again after ${diff.abs()} seconds',
-      ));
+      GetIt.I<IToastService>().show(
+        ToastMessage(
+          type: ToastType.error,
+          text: 'Try again after ${diff.abs()} seconds',
+        ),
+      );
     } else {
       final email = widget.currentEmail;
       widget.resendEmail(value: email);
       _resendEnabledAt = DateTime.now().add(Duration(seconds: 30));
-      GetIt.I<IToastService>().show(ToastMessage(
-        type: ToastType.success,
-        text: 'Code email resent',
-      ));
+      GetIt.I<IToastService>().show(
+        ToastMessage(type: ToastType.success, text: 'Code email resent'),
+      );
     }
   }
 
@@ -161,9 +162,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView>
                         textAlign: TextAlign.center,
                         showCursor: false,
                         debounce: false,
-                        inputFormatters: [
-                          LengthLimitingTextInputFormatter(2),
-                        ],
+                        inputFormatters: [LengthLimitingTextInputFormatter(2)],
                         textStyle: textStyles.large400.copyWith(
                           color: themeColors.foreground100,
                         ),
@@ -199,6 +198,9 @@ class _VerifyOtpViewState extends State<VerifyOtpView>
                     ),
                     style: ButtonStyle(
                       overlayColor: WidgetStateProperty.all<Color>(
+                        themeColors.accenGlass010,
+                      ),
+                      shadowColor: WidgetStateProperty.all<Color>(
                         themeColors.accenGlass010,
                       ),
                       padding: WidgetStateProperty.all<EdgeInsetsGeometry>(

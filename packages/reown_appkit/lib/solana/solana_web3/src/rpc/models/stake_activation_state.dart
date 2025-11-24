@@ -6,8 +6,7 @@ enum StakeActivationState {
   active,
   inactive,
   activating,
-  deactivating,
-  ;
+  deactivating;
 
   /// Returns the enum variant where [EnumName.name] is equal to [name].
   ///

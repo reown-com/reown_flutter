@@ -12,17 +12,13 @@ class SessionProposalEvent extends EventArgs {
   ProposalData params;
   VerifyContext? verifyContext;
 
-  SessionProposalEvent(
-    this.id,
-    this.params, [
-    this.verifyContext,
-  ]);
+  SessionProposalEvent(this.id, this.params, [this.verifyContext]);
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'params': params.toJson(),
-        'verifyContext': verifyContext?.toJson(),
-      };
+    'id': id,
+    'params': params.toJson(),
+    'verifyContext': verifyContext?.toJson(),
+  };
 
   @override
   String toString() {
@@ -52,9 +48,7 @@ class SessionProposalErrorEvent extends EventArgs {
 class SessionConnect extends EventArgs {
   SessionData session;
 
-  SessionConnect(
-    this.session,
-  );
+  SessionConnect(this.session);
 
   @override
   String toString() {
@@ -67,11 +61,7 @@ class SessionUpdate extends EventArgs {
   String topic;
   Map<String, Namespace> namespaces;
 
-  SessionUpdate(
-    this.id,
-    this.topic,
-    this.namespaces,
-  );
+  SessionUpdate(this.id, this.topic, this.namespaces);
 
   @override
   String toString() {
@@ -107,10 +97,7 @@ class SessionDelete extends EventArgs {
   String topic;
   int? id;
 
-  SessionDelete(
-    this.topic, {
-    this.id,
-  });
+  SessionDelete(this.topic, {this.id});
 
   @override
   String toString() {
@@ -158,13 +145,13 @@ class SessionRequestEvent extends EventArgs {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'topic': topic,
-        'method': method,
-        'chainId': chainId,
-        'params': params,
-        'transportType': transportType.name,
-      };
+    'id': id,
+    'topic': topic,
+    'method': method,
+    'chainId': chainId,
+    'params': params,
+    'transportType': transportType.name,
+  };
 
   @override
   String toString() {
@@ -179,13 +166,7 @@ class SessionEvent extends EventArgs {
   String chainId;
   dynamic data;
 
-  SessionEvent(
-    this.id,
-    this.topic,
-    this.name,
-    this.chainId,
-    this.data,
-  );
+  SessionEvent(this.id, this.topic, this.name, this.chainId, this.data);
 
   @override
   String toString() {

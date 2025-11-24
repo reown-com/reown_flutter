@@ -13,16 +13,10 @@ const TEST_ARBITRUM_CHAIN = 'eip155:42161';
 const TEST_AVALANCHE_CHAIN = 'eip155:43114';
 const TEST_UNINCLUDED_CHAIN = 'eip155:2';
 
-const TEST_CHAINS = [
-  TEST_ETHEREUM_CHAIN,
-  TEST_ARBITRUM_CHAIN,
-];
+const TEST_CHAINS = [TEST_ETHEREUM_CHAIN, TEST_ARBITRUM_CHAIN];
 const TEST_CHAIN_INVALID_1 = 'swag';
 const TEST_CHAIN_INVALID_2 = 's:w:a';
-const TEST_CHAINS_INVALID = [
-  TEST_CHAIN_INVALID_1,
-  TEST_CHAIN_INVALID_2,
-];
+const TEST_CHAINS_INVALID = [TEST_CHAIN_INVALID_1, TEST_CHAIN_INVALID_2];
 
 const TEST_ETHEREUM_ADDRESS = '0x3c582121909DE92Dc89A36898633C1aE4790382b';
 
@@ -30,10 +24,7 @@ const TEST_ETHEREUM_ACCOUNT = '$TEST_ETHEREUM_CHAIN:$TEST_ETHEREUM_ADDRESS';
 const TEST_ARBITRUM_ACCOUNT = '$TEST_ARBITRUM_CHAIN:$TEST_ETHEREUM_ADDRESS';
 const TEST_AVALANCHE_ACCOUNT = '$TEST_AVALANCHE_CHAIN:$TEST_ETHEREUM_ADDRESS';
 
-const TEST_ACCOUNTS = [
-  TEST_ETHEREUM_ACCOUNT,
-  TEST_ARBITRUM_ACCOUNT,
-];
+const TEST_ACCOUNTS = [TEST_ETHEREUM_ACCOUNT, TEST_ARBITRUM_ACCOUNT];
 const TEST_ACCOUNT_INVALID_1 = 'swag';
 const TEST_ACCOUNT_INVALID_2 = 's:w';
 const TEST_ACCOUNT_INVALID_3 = 's:w:a:g';
@@ -47,26 +38,14 @@ const TEST_METHOD_1 = 'eth_sendTransaction';
 const TEST_METHOD_2 = 'eth_signTransaction';
 const TEST_METHOD_3 = 'personal_sign';
 const TEST_METHOD_4 = 'eth_signTypedData';
-const TEST_METHODS_1 = [
-  TEST_METHOD_1,
-  TEST_METHOD_2,
-];
-const TEST_METHODS_2 = [
-  TEST_METHOD_3,
-  TEST_METHOD_4,
-];
-const TEST_METHODS_FULL = [
-  ...TEST_METHODS_1,
-  ...TEST_METHODS_2,
-];
+const TEST_METHODS_1 = [TEST_METHOD_1, TEST_METHOD_2];
+const TEST_METHODS_2 = [TEST_METHOD_3, TEST_METHOD_4];
+const TEST_METHODS_FULL = [...TEST_METHODS_1, ...TEST_METHODS_2];
 const TEST_METHOD_INVALID_1 = 'eth_invalid';
 
 const TEST_EVENT_1 = 'chainChanged';
 const TEST_EVENT_2 = 'accountsChanged';
-const TEST_EVENTS_FULL = [
-  TEST_EVENT_1,
-  TEST_EVENT_2,
-];
+const TEST_EVENTS_FULL = [TEST_EVENT_1, TEST_EVENT_2];
 const TEST_EVENT_INVALID_1 = 'eth_event_invalid';
 
 const TEST_ETH_ARB_REQUIRED_NAMESPACE = RequiredNamespace(
@@ -126,7 +105,7 @@ const TEST_NAMESPACES_NONCONFORMING_KEY_1 = {
     accounts: TEST_ACCOUNTS,
     methods: TEST_METHODS_FULL,
     events: TEST_EVENTS_FULL,
-  )
+  ),
 };
 const TEST_NAMESPACES_NONCONFORMING_KEY_2 = {
   EVM_NAMESPACE: Namespace(
@@ -172,9 +151,7 @@ final testSessionValid = SessionData(
   acknowledged: true,
   controller: 'test',
   namespaces: TEST_NAMESPACES,
-  requiredNamespaces: {
-    EVM_NAMESPACE: TEST_ETH_ARB_REQUIRED_NAMESPACE,
-  },
+  requiredNamespaces: {EVM_NAMESPACE: TEST_ETH_ARB_REQUIRED_NAMESPACE},
   optionalNamespaces: {},
   self: const ConnectionMetadata(
     publicKey: '',
@@ -215,13 +192,10 @@ const TEST_SIGNATURE =
     '0xc8906b32c9f74d0805226ffff5ecd6897ea55cdf58f54a53a2e5b5d5a21fb67f43ef1d4c2ed790a724a1549b4cc40137403048c4aed9825cfd5ba6c1d15bd0721c';
 
 const TEST_SIGN_METHOD = 'personal_sign';
-const TEST_SIGN_PARAMS = [
-  TEST_MESSAGE,
-  TEST_ETHEREUM_ADDRESS,
-];
+const TEST_SIGN_PARAMS = [TEST_MESSAGE, TEST_ETHEREUM_ADDRESS];
 const TEST_SIGN_REQUEST = {
   'method': TEST_SIGN_METHOD,
-  'params': TEST_SIGN_PARAMS
+  'params': TEST_SIGN_PARAMS,
 };
 
 const TEST_RANDOM_REQUEST = {'method': 'random_method', 'params': []};

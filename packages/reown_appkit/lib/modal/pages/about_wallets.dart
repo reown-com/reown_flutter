@@ -61,7 +61,7 @@ class AboutWallets extends StatelessWidget {
               onTap: () {
                 _widgetStack.push(
                   const GetWalletPage(),
-                  event: ClickGetWalletEvent(),
+                  event: ClickGetWalletHelpEvent(),
                 );
               },
               leftIcon: 'lib/modal/assets/icons/wallet.svg',

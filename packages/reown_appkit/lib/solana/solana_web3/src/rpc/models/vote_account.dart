@@ -52,16 +52,16 @@ class VoteAccount extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory VoteAccount.fromJson(final Map<String, dynamic> json) => VoteAccount(
-        votePubkey: Pubkey.fromBase58(json['votePubkey']),
-        nodePubkey: Pubkey.fromBase58(json['nodePubkey']),
-        activatedStake: json['activatedStake'],
-        epochVoteAccount: json['epochVoteAccount'],
-        commission: json['commission'],
-        lastVote: json['lastVote'],
-        epochCredits: List<List>.from(json['epochCredits'])
-            .map(List<int>.from)
-            .toList(growable: false),
-      );
+    votePubkey: Pubkey.fromBase58(json['votePubkey']),
+    nodePubkey: Pubkey.fromBase58(json['nodePubkey']),
+    activatedStake: json['activatedStake'],
+    epochVoteAccount: json['epochVoteAccount'],
+    commission: json['commission'],
+    lastVote: json['lastVote'],
+    epochCredits: List<List>.from(
+      json['epochCredits'],
+    ).map(List<int>.from).toList(growable: false),
+  );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static VoteAccount? tryFromJson(final Map<String, dynamic>? json) =>
@@ -69,12 +69,12 @@ class VoteAccount extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'votePubkey': votePubkey.toBase58(),
-        'nodePubkey': nodePubkey.toBase58(),
-        'activatedStake': activatedStake,
-        'epochVoteAccount': epochVoteAccount,
-        'commission': commission,
-        'lastVote': lastVote,
-        'epochCredits': epochCredits,
-      };
+    'votePubkey': votePubkey.toBase58(),
+    'nodePubkey': nodePubkey.toBase58(),
+    'activatedStake': activatedStake,
+    'epochVoteAccount': epochVoteAccount,
+    'commission': commission,
+    'lastVote': lastVote,
+    'epochCredits': epochCredits,
+  };
 }

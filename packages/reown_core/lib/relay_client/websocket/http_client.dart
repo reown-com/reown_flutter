@@ -5,10 +5,7 @@ class HttpWrapper extends IHttpClient {
   const HttpWrapper();
 
   @override
-  Future<http.Response> get(
-    Uri url, {
-    Map<String, String>? headers,
-  }) async {
+  Future<http.Response> get(Uri url, {Map<String, String>? headers}) async {
     return await http.get(url, headers: headers);
   }
 

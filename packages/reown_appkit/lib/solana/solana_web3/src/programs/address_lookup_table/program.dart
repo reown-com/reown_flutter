@@ -21,7 +21,7 @@ import 'instruction.dart';
 class AddressLookupTableProgram extends Program {
   /// Address Lookup Table Program.
   AddressLookupTableProgram._()
-      : super(Pubkey.fromBase58('AddressLookupTab1e1111111111111111111111111'));
+    : super(Pubkey.fromBase58('AddressLookupTab1e1111111111111111111111111'));
 
   /// Internal singleton instance.
   static final AddressLookupTableProgram _instance =
@@ -34,19 +34,13 @@ class AddressLookupTableProgram extends Program {
   static ProgramAddress findAddressLookupTable(
     final Pubkey authority,
     final BigInt recentSlot,
-  ) =>
-      Pubkey.findProgramAddress(
-        [
-          authority.toBytes(),
-          recentSlot.toUint64Buffer(),
-        ],
-        programId,
-      );
+  ) => Pubkey.findProgramAddress([
+    authority.toBytes(),
+    recentSlot.toUint64Buffer(),
+  ], programId);
 
   @override
-  Iterable<int> encodeInstruction<T extends Enum>(
-    final T instruction,
-  ) =>
+  Iterable<int> encodeInstruction<T extends Enum>(final T instruction) =>
       Buffer.fromUint32(instruction.index);
 
   ///
@@ -59,7 +53,8 @@ class AddressLookupTableProgram extends Program {
     required final BigInt recentSlot,
   }) {
     assert(
-        findAddressLookupTable(authority, recentSlot).pubkey == address.pubkey);
+      findAddressLookupTable(authority, recentSlot).pubkey == address.pubkey,
+    );
 
     final List<AccountMeta> keys = [
       AccountMeta.writable(address.pubkey),
@@ -117,7 +112,7 @@ class AddressLookupTableProgram extends Program {
     final List<Iterable<int>> data = [
       borsh.u64.encode(BigInt.from(addresses.length)),
       for (final Pubkey address in addresses)
-        pubkeyCodec.encode(address.toBase58())
+        pubkeyCodec.encode(address.toBase58()),
     ];
 
     return _instance.createTransactionIntruction(

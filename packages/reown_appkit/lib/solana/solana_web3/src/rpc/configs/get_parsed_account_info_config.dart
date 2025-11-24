@@ -10,8 +10,6 @@ import 'get_account_info_config.dart';
 
 class GetParsedAccountInfoConfig extends GetAccountInfoConfig {
   /// JSON RPC configurations for `getParsedAccountInfo` methods.
-  GetParsedAccountInfoConfig({
-    super.commitment,
-    super.minContextSlot,
-  }) : super(encoding: AccountEncoding.jsonParsed);
+  GetParsedAccountInfoConfig({super.commitment, super.minContextSlot})
+    : super(encoding: AccountEncoding.jsonParsed);
 }

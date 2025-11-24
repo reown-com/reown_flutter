@@ -20,14 +20,12 @@ class GetTokenAccountsByDelegate
     required final TokenAccountsFilter filter,
     final GetTokenAccountsByDelegateConfig? config,
   }) : super(
-          'getTokenAccountsByDelegate',
-          values: [pubkey.toBase58(), filter.toJson()],
-          config: config ?? GetTokenAccountsByDelegateConfig(),
-        );
+         'getTokenAccountsByDelegate',
+         values: [pubkey.toBase58(), filter.toJson()],
+         config: config ?? GetTokenAccountsByDelegateConfig(),
+       );
 
   @override
-  TokenAccount itemDecoder(
-    final Map<String, dynamic> item,
-  ) =>
+  TokenAccount itemDecoder(final Map<String, dynamic> item) =>
       TokenAccount.fromJson(item);
 }

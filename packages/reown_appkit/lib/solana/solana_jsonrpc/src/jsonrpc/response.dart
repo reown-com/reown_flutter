@@ -15,10 +15,7 @@ import 'success_response.dart';
 /// A JSON RPC response.
 abstract class JsonRpcResponse<T> extends Serializable {
   /// The interface for a JSON RPC response.
-  const JsonRpcResponse({
-    required this.jsonrpc,
-    this.id,
-  });
+  const JsonRpcResponse({required this.jsonrpc, this.id});
 
   /// The JSON RPC version.
   final String jsonrpc;

@@ -4,10 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 
 class ResponsiveContainer extends StatelessWidget {
-  const ResponsiveContainer({
-    super.key,
-    required this.child,
-  });
+  const ResponsiveContainer({super.key, required this.child});
   final Widget child;
 
   @override
@@ -19,8 +16,9 @@ class ResponsiveContainer extends StatelessWidget {
             final screenHeight = constraints.maxHeight;
             final screenWidth = constraints.maxWidth;
             final isPortrait = orientation == Orientation.portrait;
-            final realMaxHeight =
-                isPortrait ? screenHeight * 0.75 : screenHeight;
+            final realMaxHeight = isPortrait
+                ? screenHeight * 0.75
+                : screenHeight;
             final realMinHeight = isPortrait ? 0.0 : realMaxHeight;
 
             final data = MediaQueryData.fromView(View.of(context));

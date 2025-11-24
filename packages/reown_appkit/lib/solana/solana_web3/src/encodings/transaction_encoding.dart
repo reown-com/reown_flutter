@@ -6,8 +6,7 @@ enum TransactionEncoding {
   base58,
   base64,
   json,
-  jsonParsed,
-  ;
+  jsonParsed;
 
   /// Returns the enum variant where [TransactionEncoding.name] is equal to [name].
   ///

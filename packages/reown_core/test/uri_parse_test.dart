@@ -23,13 +23,13 @@ void main() {
     });
 
     test('parsed v1 url properly', () {
-      URIParseResult parsed = ReownCoreUtils.parseUri(
-        Uri.parse(TEST_URI_V1),
-      );
+      URIParseResult parsed = ReownCoreUtils.parseUri(Uri.parse(TEST_URI_V1));
       expect(parsed.protocol, 'wc');
       expect(parsed.version, URIVersion.v1);
-      expect(parsed.topic,
-          '7f6e504bfad60b485450578e05678ed3e8e8c4751d3c6160be17160d63ec90f9');
+      expect(
+        parsed.topic,
+        '7f6e504bfad60b485450578e05678ed3e8e8c4751d3c6160be17160d63ec90f9',
+      );
       expect(parsed.v1Data!.key, 'abc');
       expect(parsed.v1Data!.bridge, 'xyz');
     });

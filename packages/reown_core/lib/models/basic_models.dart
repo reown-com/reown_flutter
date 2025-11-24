@@ -28,6 +28,7 @@ sealed class PublishOptions with _$PublishOptions {
     int? ttl,
     int? tag,
     int? correlationId,
+    String? attestation,
     Map<String, dynamic>? tvf,
     String? publishMethod,
   }) = _PublishOptions;
@@ -41,6 +42,7 @@ extension PublishOptionsExtension on PublishOptions {
     'ttl': ttl,
     'tag': tag,
     'correlationId': correlationId,
+    if (attestation != null) 'attestation': attestation,
     ...?tvf,
   };
 }

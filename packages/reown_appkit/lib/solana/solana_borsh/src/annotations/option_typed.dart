@@ -12,10 +12,7 @@ import 'annotation.dart';
 abstract class BorshOptionTyped<T, U extends BorshAnnotation<T?>>
     extends BorshAnnotation<T?> {
   /// Creates an annotation for an optional value.
-  const BorshOptionTyped(
-    this.subtype, [
-    this.type,
-  ]);
+  const BorshOptionTyped(this.subtype, [this.type]);
 
   /// The data type's annotation.
   final U subtype;

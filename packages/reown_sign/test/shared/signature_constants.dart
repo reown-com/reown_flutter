@@ -56,12 +56,12 @@ const TEST_VALID_EIP191_SIGNATURE = {
       'domain': 'lab.web3modal.com',
       'aud': 'https://lab.web3modal.com/AuthReact',
       'version': '1',
-      'nonce': 'XpJ0thNvq9lNixmwN'
+      'nonce': 'XpJ0thNvq9lNixmwN',
     },
     's': {
       't': 'eip191',
       's':
-          '0x80e709c190c879164a6db449696b6c1ba78b71a19e4f8814630fd16d6ebf61863a10b1a0a84f7aeb39bf449a676a5f2a03f5fad16d20eb121523759d387280c91c'
-    }
-  }
+          '0x80e709c190c879164a6db449696b6c1ba78b71a19e4f8814630fd16d6ebf61863a10b1a0a84f7aeb39bf449a676a5f2a03f5fad16d20eb121523759d387280c91c',
+    },
+  },
 };

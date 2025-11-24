@@ -11,13 +11,13 @@ class AnalyticsService implements IAnalyticsService {
   bool? _enableAnalytics;
   late final IReownCore _core;
 
-  AnalyticsService({
-    required IReownCore core,
-    bool? enableAnalytics,
-  }) {
+  AnalyticsService({required IReownCore core, bool? enableAnalytics}) {
     _core = core;
     _enableAnalytics = enableAnalytics;
   }
+
+  @override
+  bool get isEnabled => _enableAnalytics ?? false;
 
   @override
   Future<void> init({String? eventsUrl}) async {
@@ -31,7 +31,17 @@ class AnalyticsService implements IAnalyticsService {
     } else {
       _enableAnalytics = _enableAnalytics ?? false;
     }
+    await sendStoredEvents();
     _core.logger.i('[$runtimeType] enabled: $_enableAnalytics');
+  }
+
+  @override
+  Future<void> sendStoredEvents() async {
+    if (_enableAnalytics == false) return;
+
+    final queryParams = CoreUtils.getApiQueryParams(_core.projectId);
+    _core.events.setQueryParams(queryParams);
+    await _core.events.sendStoredEvents();
   }
 
   @override
@@ -40,6 +50,14 @@ class AnalyticsService implements IAnalyticsService {
     // core such as LinkMode-related events are still send by Core SDK
     if (_enableAnalytics == false) return;
     return _core.events.sendEvent(event);
+  }
+
+  @override
+  Future<void> storeEvent(BasicCoreEvent event) async {
+    // we don't send analytics events if user opts-out
+    // core such as LinkMode-related events are still send by Core SDK
+    if (_enableAnalytics == false) return;
+    return _core.events.recordEvent(event);
   }
 
   Future<bool> _fetchAnalyticsConfig() async {

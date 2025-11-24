@@ -12,8 +12,7 @@ enum AccountState {
 
   /// Account has been frozen by the mint freeze authority. Neither the account owner nor the
   /// delegate are able to perform operations on this account.
-  frozen,
-  ;
+  frozen;
 
   /// {@macro solana_common.Serializable.toJson}
   String toJson() => name;

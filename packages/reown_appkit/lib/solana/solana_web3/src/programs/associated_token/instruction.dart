@@ -2,8 +2,4 @@
 /// ------------------------------------------------------------------------------------------------
 library;
 
-enum AssociatedTokenInstruction {
-  create,
-  createIdempotent,
-  recoverNested,
-}
+enum AssociatedTokenInstruction { create, createIdempotent, recoverNested }

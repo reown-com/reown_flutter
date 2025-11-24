@@ -90,10 +90,10 @@ class MetadataCreator extends BorshObjectSized {
 
   /// {@macro solana_borsh.BorshObject.borshCodec}
   static BorshStructSizedCodec get codec => borsh.structSized({
-        'address': borsh.pubkey,
-        'verified': borsh.boolean,
-        'share': borsh.u8,
-      });
+    'address': borsh.pubkey,
+    'verified': borsh.boolean,
+    'share': borsh.u8,
+  });
 
   @override
   BorshSchemaSized get borshSchema => codec.schema;
@@ -113,10 +113,7 @@ class MetadataCreator extends BorshObjectSized {
 class MetadataCollection extends BorshObjectSized {
   /// Links to the Mint address of another NFT that acts as a Collection NFT. It contains the
   /// following sub-fields.
-  const MetadataCollection({
-    required this.verified,
-    required this.key,
-  });
+  const MetadataCollection({required this.verified, required this.key});
 
   /// A boolean indicating if the owner of the Collection NFT signed this NFT. It is important to
   /// check this field to ensure the authenticity of the collection.
@@ -126,10 +123,8 @@ class MetadataCollection extends BorshObjectSized {
   final Pubkey key;
 
   /// {@macro solana_borsh.BorshObject.borshCodec}
-  static BorshStructSizedCodec get codec => borsh.structSized({
-        'verified': borsh.boolean,
-        'key': borsh.pubkey,
-      });
+  static BorshStructSizedCodec get codec =>
+      borsh.structSized({'verified': borsh.boolean, 'key': borsh.pubkey});
 
   @override
   BorshSchemaSized get borshSchema => codec.schema;
@@ -146,12 +141,7 @@ class MetadataCollection extends BorshObjectSized {
 /// ------------------------------------------------------------------------------------------------
 
 @JsonEnum(valueField: 'index')
-enum MetadataUseMethod {
-  burn,
-  multiple,
-  single,
-  ;
-}
+enum MetadataUseMethod { burn, multiple, single }
 
 /// Metadata Use
 /// ------------------------------------------------------------------------------------------------
@@ -177,10 +167,10 @@ class MetadataUses extends BorshObjectSized {
 
   /// {@macro solana_borsh.BorshObject.borshCodec}
   static BorshStructSizedCodec get codec => borsh.structSized({
-        'useMethod': borsh.enumeration(MetadataUseMethod.values),
-        'remaining': borsh.u64,
-        'total': borsh.u64,
-      });
+    'useMethod': borsh.enumeration(MetadataUseMethod.values),
+    'remaining': borsh.u64,
+    'total': borsh.u64,
+  });
 
   @override
   BorshSchemaSized get borshSchema => codec.schema;
@@ -198,26 +188,23 @@ class MetadataUses extends BorshObjectSized {
 
 @JsonSerializable()
 class MetadataCollectionDetailsV1 extends BorshObjectSized {
-  const MetadataCollectionDetailsV1({
-    required this.size,
-  });
+  const MetadataCollectionDetailsV1({required this.size});
 
   /// The size of the collection, i.e. the number of NFTs that are directly linked to this
   /// `Collection NFT`.
   final u64 size;
 
   /// {@macro solana_borsh.BorshObject.borshCodec}
-  static BorshStructSizedCodec get codec => borsh.structSized({
-        'size': borsh.u64,
-      });
+  static BorshStructSizedCodec get codec =>
+      borsh.structSized({'size': borsh.u64});
 
   @override
   BorshSchemaSized get borshSchema => codec.schema;
 
   /// {@macro solana_common.Serializable.fromJson}
   factory MetadataCollectionDetailsV1.fromJson(
-          final Map<String, dynamic> json) =>
-      _$MetadataCollectionDetailsV1FromJson(json);
+    final Map<String, dynamic> json,
+  ) => _$MetadataCollectionDetailsV1FromJson(json);
 
   @override
   Map<String, dynamic> toJson() => _$MetadataCollectionDetailsV1ToJson(this);
@@ -230,16 +217,14 @@ class MetadataCollectionDetails extends RustEnum {
   /// Allows us to differentiate Collection NFTs from Regular NFTs whilst adding additional context
   /// such as the amount of NFTs that are linked to the Collection NFT. You can learn more about the
   /// sized collections [here](https://docs.metaplex.com/programs/token-metadata/certified-collections#differentiating-regular-nfts-from-collection-nfts).
-  const MetadataCollectionDetails._(
-    super.index,
-    super.codec,
-  );
+  const MetadataCollectionDetails._(super.index, super.codec);
 
   /// {@macro solana_borsh.BorshObject.borshCodec}
   static BorshRustEnumSizedCodec get codec => borsh.rustEnumerationSized([
-        borsh.tupleSized(
-            [borsh.structSized(MetadataCollectionDetailsV1.codec.schema)]),
-      ]);
+    borsh.tupleSized([
+      borsh.structSized(MetadataCollectionDetailsV1.codec.schema),
+    ]),
+  ]);
 
   /// The [size] of the collection.
   static MetadataCollectionDetails v1(final u64 size) =>

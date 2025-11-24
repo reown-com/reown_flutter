@@ -12,10 +12,6 @@ import '../interfaces/json_rpc_type_method.dart';
 /// A codec for `getSlot` JSON RPC methods.
 class GetSlot extends JsonRpcTypeMethod<u64> {
   /// Creates a codec for `getSlot` JSON RPC methods.
-  GetSlot({
-    final GetSlotConfig? config,
-  }) : super(
-          'getSlot',
-          config: config ?? const GetSlotConfig(),
-        );
+  GetSlot({final GetSlotConfig? config})
+    : super('getSlot', config: config ?? const GetSlotConfig());
 }

@@ -16,14 +16,15 @@ void main() {
     });
 
     test(
-        'should fail to extract the transaction id from an invalid solana transaction',
-        () {
-      final transaction =
-          '+dGmyRGtpelqTKkIg82isAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMGRm/lIRcy/+ytunLDm+e8jOW7xfcSayxDmzpAAAAAtIy17v5fs39LuoitzpBhVrg8ZIQF/3ih1N9dQ+X3shEDAgAFAlgCAAABAgAADAIAAACghgEAAAAAAAIACQMjTgAAAAAAAA==';
-      expect(
-        () async => SolanaChainUtils.extractSolanaSignature(transaction),
-        throwsA(isA<ArgumentError>()),
-      );
-    });
+      'should fail to extract the transaction id from an invalid solana transaction',
+      () {
+        final transaction =
+            '+dGmyRGtpelqTKkIg82isAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMGRm/lIRcy/+ytunLDm+e8jOW7xfcSayxDmzpAAAAAtIy17v5fs39LuoitzpBhVrg8ZIQF/3ih1N9dQ+X3shEDAgAFAlgCAAABAgAADAIAAACghgEAAAAAAAIACQMjTgAAAAAAAA==';
+        expect(
+          () async => SolanaChainUtils.extractSolanaSignature(transaction),
+          throwsA(isA<ArgumentError>()),
+        );
+      },
+    );
   });
 }

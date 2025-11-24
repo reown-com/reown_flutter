@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'appkit_wallet_info.freezed.dart';
@@ -17,6 +15,46 @@ sealed class ReownAppKitModalWalletInfo with _$ReownAppKitModalWalletInfo {
       _$ReownAppKitModalWalletInfoFromJson(json);
 }
 
+@freezed
+sealed class AppKitModalWalletListing with _$AppKitModalWalletListing {
+  const factory AppKitModalWalletListing({
+    required String id,
+    required String name,
+    required String homepage,
+    @JsonKey(name: 'image_id') required String imageId,
+    required int order,
+    @JsonKey(name: 'mobile_link') String? mobileLink,
+    @JsonKey(name: 'desktop_link') String? desktopLink,
+    @JsonKey(name: 'link_mode') String? linkMode,
+    @JsonKey(name: 'webapp_link') String? webappLink,
+    @JsonKey(name: 'app_store') String? appStore,
+    @JsonKey(name: 'play_store') String? playStore,
+    String? rdns,
+    @JsonKey(name: 'chrome_store') String? chromeStore,
+    List<Injected>? injected,
+    List<String>? chains,
+    List<String>? categories,
+    String? description,
+    @JsonKey(name: 'badge_type') String? badgeType,
+    @JsonKey(name: 'supports_wc') bool? supportsWc,
+    @JsonKey(name: 'is_top_wallet') bool? isTopWallet,
+  }) = _AppKitModalWalletListing;
+
+  factory AppKitModalWalletListing.fromJson(Map<String, dynamic> json) =>
+      _$AppKitModalWalletListingFromJson(json);
+}
+
+@freezed
+sealed class Injected with _$Injected {
+  const factory Injected({
+    required String namespace,
+    @JsonKey(name: 'injected_id') required String injectedId,
+  }) = _Injected;
+
+  factory Injected.fromJson(Map<String, dynamic> json) =>
+      _$InjectedFromJson(json);
+}
+
 extension ReownAppKitWalletInfoExtension on ReownAppKitModalWalletInfo {
   bool get isCoinbase =>
       listing.id ==
@@ -27,146 +65,4 @@ extension ReownAppKitWalletInfoExtension on ReownAppKitModalWalletInfo {
   bool get isSolflare =>
       listing.id ==
       '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79';
-}
-
-class AppKitModalWalletListing {
-  final String id;
-  final String name;
-  final String homepage;
-  final String imageId;
-  final int order;
-  final String? mobileLink;
-  final String? desktopLink;
-  final String? webappLink;
-  final String? linkMode;
-  final String? appStore;
-  final String? playStore;
-  final String? rdns;
-  final List<Injected>? injected;
-  final String? description;
-
-  const AppKitModalWalletListing({
-    required this.id,
-    required this.name,
-    required this.homepage,
-    required this.imageId,
-    required this.order,
-    this.mobileLink,
-    this.desktopLink,
-    this.webappLink,
-    this.linkMode,
-    this.appStore,
-    this.playStore,
-    this.rdns,
-    this.injected,
-    this.description,
-  });
-
-  AppKitModalWalletListing copyWith({
-    String? id,
-    String? name,
-    String? homepage,
-    String? imageId,
-    int? order,
-    String? mobileLink,
-    String? desktopLink,
-    String? webappLink,
-    String? linkMode,
-    String? appStore,
-    String? playStore,
-    String? rdns,
-    List<Injected>? injected,
-    String? description,
-  }) =>
-      AppKitModalWalletListing(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        homepage: homepage ?? this.homepage,
-        imageId: imageId ?? this.imageId,
-        order: order ?? this.order,
-        mobileLink: mobileLink ?? this.mobileLink,
-        desktopLink: desktopLink ?? this.desktopLink,
-        webappLink: webappLink ?? this.webappLink,
-        linkMode: linkMode ?? this.linkMode,
-        appStore: appStore ?? this.appStore,
-        playStore: playStore ?? this.playStore,
-        rdns: rdns ?? this.rdns,
-        injected: injected ?? this.injected,
-        description: description ?? this.description,
-      );
-
-  factory AppKitModalWalletListing.fromRawJson(String str) =>
-      AppKitModalWalletListing.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory AppKitModalWalletListing.fromJson(Object? json) {
-    final j = json as Map<String, dynamic>? ?? {};
-    return AppKitModalWalletListing(
-      id: j['id'].toString(),
-      name: j['name'],
-      homepage: j['homepage'],
-      imageId: j['image_id'],
-      order: j['order'],
-      mobileLink: j['mobile_link'],
-      desktopLink: j['desktop_link'],
-      webappLink: j['webapp_link'],
-      linkMode: j['link_mode'],
-      appStore: j['app_store'],
-      playStore: j['play_store'],
-      rdns: j['rdns'],
-      injected: j['injected'] == null
-          ? []
-          : List<Injected>.from(
-              j['injected']!.map((x) => Injected.fromJson(x)),
-            ),
-      description: j['description'],
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'homepage': homepage,
-        'image_id': imageId,
-        'order': order,
-        'mobile_link': mobileLink,
-        'desktop_link': desktopLink,
-        'webapp_link': webappLink,
-        'link_mode': linkMode,
-        'app_store': appStore,
-        'play_store': playStore,
-        'rdns': rdns,
-        'injected': injected == null
-            ? []
-            : List<dynamic>.from(injected!.map((x) => x.toJson())),
-        'description': description,
-      };
-}
-
-class Injected {
-  final String namespace;
-  final String injectedId;
-
-  Injected({required this.namespace, required this.injectedId});
-
-  Injected copyWith({String? namespace, String? injectedId}) => Injected(
-        namespace: namespace ?? this.namespace,
-        injectedId: injectedId ?? this.injectedId,
-      );
-
-  factory Injected.fromRawJson(String str) =>
-      Injected.fromJson(json.decode(str));
-
-  String toRawJson() => json.encode(toJson());
-
-  factory Injected.fromJson(Map<String, dynamic> json) => Injected(
-        namespace: json['namespace'],
-        injectedId: json['injected_id'],
-      );
-
-  Map<String, dynamic> toJson() => {
-        'namespace': namespace,
-        'injected_id': injectedId,
-      };
 }

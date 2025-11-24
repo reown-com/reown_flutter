@@ -7,7 +7,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'dart:ui' as ui;
 
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/models/send_data.dart';
 import 'package:reown_appkit/modal/pages/preview_send/utils.dart';
 import 'package:reown_appkit/modal/pages/preview_send/widgets.dart';
@@ -124,14 +123,15 @@ class _PreviewSendSolanaState extends State<PreviewSendSolana> {
     final chainId = ReownAppKitModalNetworks.getIdFromChain(
       _sendTokenData.chainId!,
     );
-    final chainData = ReownAppKitModalNetworks.getNetworkInfo(
+    final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
       'solana',
       chainId,
     );
     // Create a connection to the devnet cluster.
-    final cluster = solana.Cluster.https(
-      Uri.parse(chainData!.rpcUrl).authority,
-    );
+    final appKitModal = ModalProvider.of(context).instance;
+    final projectId = appKitModal.appKit!.core.projectId;
+    final rpcUrl = chainInfo!.formattedRpcUrl(projectId);
+    final cluster = solana.Cluster.https(Uri.parse(rpcUrl).authority);
     // final cluster = solana.Cluster.devnet;
     final connection = solana.Connection(cluster);
 
@@ -152,9 +152,7 @@ class _PreviewSendSolanaState extends State<PreviewSendSolana> {
     final transactionv0 = solana.Transaction.v0(
       payer: solana.Pubkey.fromBase58(_senderAddress),
       recentBlockhash: blockhash.blockhash,
-      instructions: [
-        transferInstruction,
-      ],
+      instructions: [transferInstruction],
     );
 
     return transactionv0;
@@ -188,15 +186,16 @@ class _PreviewSendSolanaState extends State<PreviewSendSolana> {
       final chainId = ReownAppKitModalNetworks.getIdFromChain(
         _sendTokenData.chainId!,
       );
-      final chainData = ReownAppKitModalNetworks.getNetworkInfo(
+      final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
         'solana',
         chainId,
       );
 
       // Create a connection to the devnet cluster.
-      final cluster = solana.Cluster.https(
-        Uri.parse(chainData!.rpcUrl).authority,
-      );
+      final appKitModal = ModalProvider.of(context).instance;
+      final projectId = appKitModal.appKit!.core.projectId;
+      final rpcUrl = chainInfo!.formattedRpcUrl(projectId);
+      final cluster = solana.Cluster.https(Uri.parse(rpcUrl).authority);
       // final cluster = solana.Cluster.devnet;
       final connection = solana.Connection(cluster);
       final status = await connection.simulateTransaction(_transaction!);
@@ -215,21 +214,21 @@ class _PreviewSendSolanaState extends State<PreviewSendSolana> {
           _reEstimateGas,
         );
       } else {
-        _toastService.show(ToastMessage(
-          type: ToastType.error,
-          text: 'Insufficient funds',
-        ));
+        _toastService.show(
+          ToastMessage(type: ToastType.error, text: 'Insufficient funds'),
+        );
       }
     } on ArgumentError catch (e) {
-      _toastService.show(ToastMessage(
-        type: ToastType.error,
-        text: 'Invald ${e.name ?? 'argument'}',
-      ));
+      _toastService.show(
+        ToastMessage(
+          type: ToastType.error,
+          text: 'Invald ${e.name ?? 'argument'}',
+        ),
+      );
     } on Exception catch (e) {
-      _toastService.show(ToastMessage(
-        type: ToastType.error,
-        text: e.toString(),
-      ));
+      _toastService.show(
+        ToastMessage(type: ToastType.error, text: e.toString()),
+      );
     }
   }
 
@@ -246,15 +245,17 @@ class _PreviewSendSolanaState extends State<PreviewSendSolana> {
       _sendData.amount!,
       precision: 3,
     );
-    _analyticsService.sendEvent(WalletFeatureSendInitiated(
-      network: _sendTokenData.chainId!,
-      sendToken: _sendTokenData.symbol!,
-      sendAmount: valueToSend,
-    ));
+    _analyticsService.sendEvent(
+      WalletFeatureSendInitiated(
+        network: _sendTokenData.chainId!,
+        sendToken: _sendTokenData.symbol!,
+        sendAmount: valueToSend,
+      ),
+    );
     try {
       final appKitModal = ModalProvider.of(context).instance;
 
-      await appKitModal.request(
+      final response = await appKitModal.request(
         topic: appKitModal.session!.topic,
         chainId: _sendTokenData.chainId!,
         request: SessionRequestParams(
@@ -267,31 +268,39 @@ class _PreviewSendSolanaState extends State<PreviewSendSolana> {
           },
         ),
       );
-      _analyticsService.sendEvent(WalletFeatureSendSuccess(
-        network: _sendTokenData.chainId!,
-        sendToken: _sendTokenData.symbol!,
-        sendAmount: valueToSend,
-      ));
+      _analyticsService.sendEvent(
+        WalletFeatureSendSuccess(
+          network: _sendTokenData.chainId!,
+          sendToken: _sendTokenData.symbol!,
+          sendAmount: valueToSend,
+          hash: response.toString(),
+        ),
+      );
     } on ArgumentError catch (e) {
-      _toastService.show(ToastMessage(
-        type: ToastType.error,
-        text: 'Invald ${e.name ?? 'argument'}',
-      ));
-      _analyticsService.sendEvent(WalletFeatureSendError(
-        network: _sendTokenData.chainId!,
-        sendToken: _sendTokenData.symbol!,
-        sendAmount: valueToSend,
-      ));
+      _toastService.show(
+        ToastMessage(
+          type: ToastType.error,
+          text: 'Invald ${e.name ?? 'argument'}',
+        ),
+      );
+      _analyticsService.sendEvent(
+        WalletFeatureSendError(
+          network: _sendTokenData.chainId!,
+          sendToken: _sendTokenData.symbol!,
+          sendAmount: valueToSend,
+        ),
+      );
     } on Exception catch (e) {
-      _toastService.show(ToastMessage(
-        type: ToastType.error,
-        text: e.toString(),
-      ));
-      _analyticsService.sendEvent(WalletFeatureSendError(
-        network: _sendTokenData.chainId!,
-        sendToken: _sendTokenData.symbol!,
-        sendAmount: valueToSend,
-      ));
+      _toastService.show(
+        ToastMessage(type: ToastType.error, text: e.toString()),
+      );
+      _analyticsService.sendEvent(
+        WalletFeatureSendError(
+          network: _sendTokenData.chainId!,
+          sendToken: _sendTokenData.symbol!,
+          sendAmount: valueToSend,
+        ),
+      );
     }
   }
 
@@ -338,9 +347,7 @@ class _PreviewSendSolanaState extends State<PreviewSendSolana> {
                 height: 14.0,
               ),
             ),
-            ReceiveRow(
-              sendData: _sendData,
-            ),
+            ReceiveRow(sendData: _sendData),
             const SizedBox.square(dimension: kPadding16),
             if (_transaction != null)
               DetailsRow(

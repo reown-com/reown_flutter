@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/utils/render_utils.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 /// Widget to show the address or identity name
 class AddressText extends StatefulWidget {
-  const AddressText({
-    super.key,
-    required this.appKitModal,
-    this.style,
-  });
+  const AddressText({super.key, required this.appKitModal, this.style});
 
   final IReownAppKitModal appKitModal;
   final TextStyle? style;
@@ -40,11 +35,12 @@ class _AddressTextState extends State<AddressText> {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final identityName =
         (widget.appKitModal.blockchainIdentity?.name ?? '').isNotEmpty
-            ? widget.appKitModal.blockchainIdentity!.name!
-            : null;
+        ? widget.appKitModal.blockchainIdentity!.name!
+        : null;
     return Text(
       identityName ?? RenderUtils.truncate(_address ?? ''),
-      style: widget.style ??
+      style:
+          widget.style ??
           themeData.textStyles.paragraph600.copyWith(
             color: themeColors.foreground100,
           ),

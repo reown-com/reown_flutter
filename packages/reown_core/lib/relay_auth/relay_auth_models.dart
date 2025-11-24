@@ -11,17 +11,13 @@ class RelayAuthKeyPair {
   final String privateKey;
   final String publicKey;
 
-  RelayAuthKeyPair(
-    this.privateKeyBytes,
-    this.publicKeyBytes,
-  )   : privateKey = hex.encode(privateKeyBytes),
-        publicKey = hex.encode(publicKeyBytes);
+  RelayAuthKeyPair(this.privateKeyBytes, this.publicKeyBytes)
+    : privateKey = hex.encode(privateKeyBytes),
+      publicKey = hex.encode(publicKeyBytes);
 
-  RelayAuthKeyPair.fromStrings(
-    this.privateKey,
-    this.publicKey,
-  )   : privateKeyBytes = Uint8List.fromList(hex.decode(privateKey)),
-        publicKeyBytes = Uint8List.fromList(hex.decode(publicKey));
+  RelayAuthKeyPair.fromStrings(this.privateKey, this.publicKey)
+    : privateKeyBytes = Uint8List.fromList(hex.decode(privateKey)),
+      publicKeyBytes = Uint8List.fromList(hex.decode(publicKey));
 }
 
 @JsonSerializable()
@@ -32,10 +28,7 @@ class JWTHeader {
   String alg;
   String typ;
 
-  JWTHeader({
-    this.alg = 'EdDSA',
-    this.typ = 'JWT',
-  });
+  JWTHeader({this.alg = 'EdDSA', this.typ = 'JWT'});
 
   factory JWTHeader.fromJson(Map<String, dynamic> json) =>
       _$JWTHeaderFromJson(json);
@@ -51,13 +44,7 @@ class JWTPayload {
   int iat;
   int exp;
 
-  JWTPayload(
-    this.iss,
-    this.sub,
-    this.aud,
-    this.iat,
-    this.exp,
-  );
+  JWTPayload(this.iss, this.sub, this.aud, this.iat, this.exp);
 
   factory JWTPayload.fromJson(Map<String, dynamic> json) =>
       _$JWTPayloadFromJson(json);
@@ -75,11 +62,8 @@ class JWTData {
 class JWTSigned extends JWTData {
   List<int> signature;
 
-  JWTSigned(
-    this.signature,
-    JWTPayload payload, {
-    JWTHeader? header,
-  }) : super(header ?? JWTHeader(), payload);
+  JWTSigned(this.signature, JWTPayload payload, {JWTHeader? header})
+    : super(header ?? JWTHeader(), payload);
 }
 
 class JWTDecoded extends JWTSigned {
@@ -97,18 +81,12 @@ class IssuerDecodeError {
   String received;
   String message;
 
-  IssuerDecodeError(
-    this.received,
-    this.message,
-  );
+  IssuerDecodeError(this.received, this.message);
 }
 
 class VerifyJWTError {
   String jwt;
   String message;
 
-  VerifyJWTError(
-    this.jwt,
-    this.message,
-  );
+  VerifyJWTError(this.jwt, this.message);
 }

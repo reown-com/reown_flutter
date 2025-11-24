@@ -37,10 +37,7 @@ abstract class BorshArrayTypedCodec<T, U extends BorshCodec<T>>
 abstract class BorshArrayTypedEncoder<T, U extends BorshCodec<T>>
     extends BorshEncoder<List<T>> {
   /// Creates an encoder for fixed-length arrays.
-  const BorshArrayTypedEncoder(
-    this.subtype,
-    this.length,
-  );
+  const BorshArrayTypedEncoder(this.subtype, this.length);
 
   /// The data type's annotation.
   final U subtype;

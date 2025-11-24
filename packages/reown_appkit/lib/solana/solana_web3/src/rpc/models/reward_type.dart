@@ -6,8 +6,7 @@ enum RewardType {
   fee,
   rent,
   voting,
-  staking,
-  ;
+  staking;
 
   /// Returns the enum variant where [EnumName.name] is equal to [name].
   ///

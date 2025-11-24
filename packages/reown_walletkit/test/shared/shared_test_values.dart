@@ -115,12 +115,12 @@ final Map<String, RequiredNamespace> requiredNamespacesMatchingAvailable1 = {
 
 final Map<String, RequiredNamespace> requiredNamespacesNonconformingAccounts1 =
     {
-  'namespace3': const RequiredNamespace(
-    chains: ['namespace3:chain1'],
-    methods: [],
-    events: [],
-  ),
-};
+      'namespace3': const RequiredNamespace(
+        chains: ['namespace3:chain1'],
+        methods: [],
+        events: [],
+      ),
+    };
 
 final Map<String, RequiredNamespace> requiredNamespacesNonconformingMethods1 = {
   'namespace1:chain1': const RequiredNamespace(
@@ -205,32 +205,36 @@ final Map<String, RequiredNamespace> requiredNamespacesInAvailable3 = {
 };
 
 final Map<String, RequiredNamespace> optionalNamespacesInAvailable3 = {
-  'eip155': const RequiredNamespace(chains: [
-    'eip155:1',
-    'eip155:5',
-    sepolia,
-    'eip155:137',
-    'eip155:80001',
-    'eip155:42220',
-    'eip155:44787',
-    'eip155:56',
-    'eip155:43114',
-    'eip155:42161',
-    'eip155:421613',
-    'eip155:10',
-    'eip155:420',
-    'eip155:8453'
-  ], methods: [
-    'eth_sendTransaction',
-    'personal_sign',
-    'eth_signTypedData',
-    'eth_signTypedData_v4',
-    'eth_sign'
-  ], events: [
-    'chainChanged',
-    'accountsChanged',
-    'message',
-    'disconnect',
-    'connect'
-  ]),
+  'eip155': const RequiredNamespace(
+    chains: [
+      'eip155:1',
+      'eip155:5',
+      sepolia,
+      'eip155:137',
+      'eip155:80001',
+      'eip155:42220',
+      'eip155:44787',
+      'eip155:56',
+      'eip155:43114',
+      'eip155:42161',
+      'eip155:421613',
+      'eip155:10',
+      'eip155:420',
+      'eip155:8453',
+    ],
+    methods: [
+      'eth_sendTransaction',
+      'personal_sign',
+      'eth_signTypedData',
+      'eth_signTypedData_v4',
+      'eth_sign',
+    ],
+    events: [
+      'chainChanged',
+      'accountsChanged',
+      'message',
+      'disconnect',
+      'connect',
+    ],
+  ),
 };

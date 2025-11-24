@@ -20,8 +20,9 @@ BigInt _numToLamports(final num sol) {
   const int decimalPlaces = 9;
   final String value = sol.toStringAsFixed(decimalPlaces);
   final int decimalPosition = value.length - decimalPlaces;
-  return BigInt.parse(value.substring(0, decimalPosition - 1) +
-      value.substring(decimalPosition));
+  return BigInt.parse(
+    value.substring(0, decimalPosition - 1) + value.substring(decimalPosition),
+  );
 }
 
 /// Converts [sol] to lamports.
@@ -33,7 +34,8 @@ BigInt solToLamports(final num sol) {
 /// Converts [lamports] to sol.
 double lamportsToSol(final BigInt lamports) {
   assert(
-      lamports <= (BigInt.from(double.maxFinite) * lamportsPerSol.toBigInt()),
-      'The lamports value $lamports overflows the max double value ${double.maxFinite}.');
+    lamports <= (BigInt.from(double.maxFinite) * lamportsPerSol.toBigInt()),
+    'The lamports value $lamports overflows the max double value ${double.maxFinite}.',
+  );
   return lamports / lamportsPerSol.toBigInt();
 }

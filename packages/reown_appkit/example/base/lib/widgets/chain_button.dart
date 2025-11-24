@@ -19,14 +19,14 @@ class ChainButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: (min(Constants.smallScreen - 78.0,
-                  MediaQuery.of(context).size.width) /
+      width: (min(
+                Constants.smallScreen - 78.0,
+                MediaQuery.of(context).size.width,
+              ) /
               2) -
           14.0,
       height: StyleConstants.linear48,
-      margin: const EdgeInsets.only(
-        bottom: StyleConstants.linear8,
-      ),
+      margin: const EdgeInsets.only(bottom: StyleConstants.linear8),
       child: ElevatedButton(
         onPressed: onPressed,
         style: ButtonStyle(
@@ -40,16 +40,11 @@ class ChainButton extends StatelessWidget {
                 color: selected ? Colors.blue : Colors.grey.shade300,
                 width: selected ? 4 : 2,
               ),
-              borderRadius: BorderRadius.circular(
-                StyleConstants.linear8,
-              ),
+              borderRadius: BorderRadius.circular(StyleConstants.linear8),
             ),
           ),
         ),
-        child: Text(
-          chain.name,
-          style: StyleConstants.buttonText,
-        ),
+        child: Text(chain.name, style: StyleConstants.buttonText),
       ),
     );
   }

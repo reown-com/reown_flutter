@@ -3,10 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 
 class TransitionContainer extends StatefulWidget {
-  const TransitionContainer({
-    super.key,
-    required this.child,
-  });
+  const TransitionContainer({super.key, required this.child});
 
   final Widget child;
 
@@ -29,24 +26,17 @@ class _TransitionContainerState extends State<TransitionContainer>
     super.initState();
     _currentScreen = widget.child;
 
-    _fadeController = AnimationController(
-      vsync: this,
-      duration: fadeDuration,
-    );
+    _fadeController = AnimationController(vsync: this, duration: fadeDuration);
 
     _fadeAnimation = Tween<double>(
       begin: 1.0,
       end: 0.0,
-    ).animate(
-      _fadeController,
-    );
+    ).animate(_fadeController);
 
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: 0.98,
-    ).animate(
-      _fadeController,
-    );
+    ).animate(_fadeController);
   }
 
   @override
@@ -81,10 +71,7 @@ class _TransitionContainerState extends State<TransitionContainer>
       builder: (context, _) {
         return Opacity(
           opacity: _fadeAnimation.value,
-          child: AnimatedSize(
-            duration: resizeDuration,
-            child: _currentScreen,
-          ),
+          child: AnimatedSize(duration: resizeDuration, child: _currentScreen),
         );
       },
     );

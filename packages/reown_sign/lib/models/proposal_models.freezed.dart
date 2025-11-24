@@ -576,7 +576,7 @@ $ProposalDataCopyWith<$Res> get params {
 /// @nodoc
 mixin _$ProposalData {
 
- int get id; int get expiry; List<Relay> get relays; ConnectionMetadata get proposer; Map<String, RequiredNamespace> get requiredNamespaces; Map<String, RequiredNamespace> get optionalNamespaces; String get pairingTopic; Map<String, String>? get sessionProperties; Map<String, Namespace>? get generatedNamespaces;
+ int get id; int get expiry; List<Relay> get relays; ConnectionMetadata get proposer; Map<String, RequiredNamespace> get requiredNamespaces; Map<String, RequiredNamespace> get optionalNamespaces; String get pairingTopic; Map<String, String>? get sessionProperties; Map<String, Namespace>? get generatedNamespaces; ProposalRequests? get requests;
 /// Create a copy of ProposalData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -589,16 +589,16 @@ $ProposalDataCopyWith<ProposalData> get copyWith => _$ProposalDataCopyWithImpl<P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProposalData&&(identical(other.id, id) || other.id == id)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&const DeepCollectionEquality().equals(other.relays, relays)&&(identical(other.proposer, proposer) || other.proposer == proposer)&&const DeepCollectionEquality().equals(other.requiredNamespaces, requiredNamespaces)&&const DeepCollectionEquality().equals(other.optionalNamespaces, optionalNamespaces)&&(identical(other.pairingTopic, pairingTopic) || other.pairingTopic == pairingTopic)&&const DeepCollectionEquality().equals(other.sessionProperties, sessionProperties)&&const DeepCollectionEquality().equals(other.generatedNamespaces, generatedNamespaces));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProposalData&&(identical(other.id, id) || other.id == id)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&const DeepCollectionEquality().equals(other.relays, relays)&&(identical(other.proposer, proposer) || other.proposer == proposer)&&const DeepCollectionEquality().equals(other.requiredNamespaces, requiredNamespaces)&&const DeepCollectionEquality().equals(other.optionalNamespaces, optionalNamespaces)&&(identical(other.pairingTopic, pairingTopic) || other.pairingTopic == pairingTopic)&&const DeepCollectionEquality().equals(other.sessionProperties, sessionProperties)&&const DeepCollectionEquality().equals(other.generatedNamespaces, generatedNamespaces)&&(identical(other.requests, requests) || other.requests == requests));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,expiry,const DeepCollectionEquality().hash(relays),proposer,const DeepCollectionEquality().hash(requiredNamespaces),const DeepCollectionEquality().hash(optionalNamespaces),pairingTopic,const DeepCollectionEquality().hash(sessionProperties),const DeepCollectionEquality().hash(generatedNamespaces));
+int get hashCode => Object.hash(runtimeType,id,expiry,const DeepCollectionEquality().hash(relays),proposer,const DeepCollectionEquality().hash(requiredNamespaces),const DeepCollectionEquality().hash(optionalNamespaces),pairingTopic,const DeepCollectionEquality().hash(sessionProperties),const DeepCollectionEquality().hash(generatedNamespaces),requests);
 
 @override
 String toString() {
-  return 'ProposalData(id: $id, expiry: $expiry, relays: $relays, proposer: $proposer, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, pairingTopic: $pairingTopic, sessionProperties: $sessionProperties, generatedNamespaces: $generatedNamespaces)';
+  return 'ProposalData(id: $id, expiry: $expiry, relays: $relays, proposer: $proposer, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, pairingTopic: $pairingTopic, sessionProperties: $sessionProperties, generatedNamespaces: $generatedNamespaces, requests: $requests)';
 }
 
 
@@ -609,11 +609,11 @@ abstract mixin class $ProposalDataCopyWith<$Res>  {
   factory $ProposalDataCopyWith(ProposalData value, $Res Function(ProposalData) _then) = _$ProposalDataCopyWithImpl;
 @useResult
 $Res call({
- int id, int expiry, List<Relay> relays, ConnectionMetadata proposer, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace> optionalNamespaces, String pairingTopic, Map<String, String>? sessionProperties, Map<String, Namespace>? generatedNamespaces
+ int id, int expiry, List<Relay> relays, ConnectionMetadata proposer, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace> optionalNamespaces, String pairingTopic, Map<String, String>? sessionProperties, Map<String, Namespace>? generatedNamespaces, ProposalRequests? requests
 });
 
 
-$ConnectionMetadataCopyWith<$Res> get proposer;
+$ConnectionMetadataCopyWith<$Res> get proposer;$ProposalRequestsCopyWith<$Res>? get requests;
 
 }
 /// @nodoc
@@ -626,7 +626,7 @@ class _$ProposalDataCopyWithImpl<$Res>
 
 /// Create a copy of ProposalData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? expiry = null,Object? relays = null,Object? proposer = null,Object? requiredNamespaces = null,Object? optionalNamespaces = null,Object? pairingTopic = null,Object? sessionProperties = freezed,Object? generatedNamespaces = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? expiry = null,Object? relays = null,Object? proposer = null,Object? requiredNamespaces = null,Object? optionalNamespaces = null,Object? pairingTopic = null,Object? sessionProperties = freezed,Object? generatedNamespaces = freezed,Object? requests = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,expiry: null == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
@@ -637,7 +637,8 @@ as Map<String, RequiredNamespace>,optionalNamespaces: null == optionalNamespaces
 as Map<String, RequiredNamespace>,pairingTopic: null == pairingTopic ? _self.pairingTopic : pairingTopic // ignore: cast_nullable_to_non_nullable
 as String,sessionProperties: freezed == sessionProperties ? _self.sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
 as Map<String, String>?,generatedNamespaces: freezed == generatedNamespaces ? _self.generatedNamespaces : generatedNamespaces // ignore: cast_nullable_to_non_nullable
-as Map<String, Namespace>?,
+as Map<String, Namespace>?,requests: freezed == requests ? _self.requests : requests // ignore: cast_nullable_to_non_nullable
+as ProposalRequests?,
   ));
 }
 /// Create a copy of ProposalData
@@ -648,6 +649,18 @@ $ConnectionMetadataCopyWith<$Res> get proposer {
   
   return $ConnectionMetadataCopyWith<$Res>(_self.proposer, (value) {
     return _then(_self.copyWith(proposer: value));
+  });
+}/// Create a copy of ProposalData
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ProposalRequestsCopyWith<$Res>? get requests {
+    if (_self.requests == null) {
+    return null;
+  }
+
+  return $ProposalRequestsCopyWith<$Res>(_self.requests!, (value) {
+    return _then(_self.copyWith(requests: value));
   });
 }
 }
@@ -728,10 +741,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int expiry,  List<Relay> relays,  ConnectionMetadata proposer,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace> optionalNamespaces,  String pairingTopic,  Map<String, String>? sessionProperties,  Map<String, Namespace>? generatedNamespaces)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  int expiry,  List<Relay> relays,  ConnectionMetadata proposer,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace> optionalNamespaces,  String pairingTopic,  Map<String, String>? sessionProperties,  Map<String, Namespace>? generatedNamespaces,  ProposalRequests? requests)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProposalData() when $default != null:
-return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.requiredNamespaces,_that.optionalNamespaces,_that.pairingTopic,_that.sessionProperties,_that.generatedNamespaces);case _:
+return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.requiredNamespaces,_that.optionalNamespaces,_that.pairingTopic,_that.sessionProperties,_that.generatedNamespaces,_that.requests);case _:
   return orElse();
 
 }
@@ -749,10 +762,10 @@ return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.required
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int expiry,  List<Relay> relays,  ConnectionMetadata proposer,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace> optionalNamespaces,  String pairingTopic,  Map<String, String>? sessionProperties,  Map<String, Namespace>? generatedNamespaces)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  int expiry,  List<Relay> relays,  ConnectionMetadata proposer,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace> optionalNamespaces,  String pairingTopic,  Map<String, String>? sessionProperties,  Map<String, Namespace>? generatedNamespaces,  ProposalRequests? requests)  $default,) {final _that = this;
 switch (_that) {
 case _ProposalData():
-return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.requiredNamespaces,_that.optionalNamespaces,_that.pairingTopic,_that.sessionProperties,_that.generatedNamespaces);}
+return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.requiredNamespaces,_that.optionalNamespaces,_that.pairingTopic,_that.sessionProperties,_that.generatedNamespaces,_that.requests);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -766,10 +779,10 @@ return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.required
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int expiry,  List<Relay> relays,  ConnectionMetadata proposer,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace> optionalNamespaces,  String pairingTopic,  Map<String, String>? sessionProperties,  Map<String, Namespace>? generatedNamespaces)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  int expiry,  List<Relay> relays,  ConnectionMetadata proposer,  Map<String, RequiredNamespace> requiredNamespaces,  Map<String, RequiredNamespace> optionalNamespaces,  String pairingTopic,  Map<String, String>? sessionProperties,  Map<String, Namespace>? generatedNamespaces,  ProposalRequests? requests)?  $default,) {final _that = this;
 switch (_that) {
 case _ProposalData() when $default != null:
-return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.requiredNamespaces,_that.optionalNamespaces,_that.pairingTopic,_that.sessionProperties,_that.generatedNamespaces);case _:
+return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.requiredNamespaces,_that.optionalNamespaces,_that.pairingTopic,_that.sessionProperties,_that.generatedNamespaces,_that.requests);case _:
   return null;
 
 }
@@ -781,7 +794,7 @@ return $default(_that.id,_that.expiry,_that.relays,_that.proposer,_that.required
 
 @JsonSerializable(includeIfNull: false)
 class _ProposalData implements ProposalData {
-  const _ProposalData({required this.id, required this.expiry, required final  List<Relay> relays, required this.proposer, required final  Map<String, RequiredNamespace> requiredNamespaces, required final  Map<String, RequiredNamespace> optionalNamespaces, required this.pairingTopic, final  Map<String, String>? sessionProperties, final  Map<String, Namespace>? generatedNamespaces}): _relays = relays,_requiredNamespaces = requiredNamespaces,_optionalNamespaces = optionalNamespaces,_sessionProperties = sessionProperties,_generatedNamespaces = generatedNamespaces;
+  const _ProposalData({required this.id, required this.expiry, required final  List<Relay> relays, required this.proposer, required final  Map<String, RequiredNamespace> requiredNamespaces, required final  Map<String, RequiredNamespace> optionalNamespaces, required this.pairingTopic, final  Map<String, String>? sessionProperties, final  Map<String, Namespace>? generatedNamespaces, this.requests}): _relays = relays,_requiredNamespaces = requiredNamespaces,_optionalNamespaces = optionalNamespaces,_sessionProperties = sessionProperties,_generatedNamespaces = generatedNamespaces;
   factory _ProposalData.fromJson(Map<String, dynamic> json) => _$ProposalDataFromJson(json);
 
 @override final  int id;
@@ -827,6 +840,7 @@ class _ProposalData implements ProposalData {
   return EqualUnmodifiableMapView(value);
 }
 
+@override final  ProposalRequests? requests;
 
 /// Create a copy of ProposalData
 /// with the given fields replaced by the non-null parameter values.
@@ -841,16 +855,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProposalData&&(identical(other.id, id) || other.id == id)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&const DeepCollectionEquality().equals(other._relays, _relays)&&(identical(other.proposer, proposer) || other.proposer == proposer)&&const DeepCollectionEquality().equals(other._requiredNamespaces, _requiredNamespaces)&&const DeepCollectionEquality().equals(other._optionalNamespaces, _optionalNamespaces)&&(identical(other.pairingTopic, pairingTopic) || other.pairingTopic == pairingTopic)&&const DeepCollectionEquality().equals(other._sessionProperties, _sessionProperties)&&const DeepCollectionEquality().equals(other._generatedNamespaces, _generatedNamespaces));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProposalData&&(identical(other.id, id) || other.id == id)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&const DeepCollectionEquality().equals(other._relays, _relays)&&(identical(other.proposer, proposer) || other.proposer == proposer)&&const DeepCollectionEquality().equals(other._requiredNamespaces, _requiredNamespaces)&&const DeepCollectionEquality().equals(other._optionalNamespaces, _optionalNamespaces)&&(identical(other.pairingTopic, pairingTopic) || other.pairingTopic == pairingTopic)&&const DeepCollectionEquality().equals(other._sessionProperties, _sessionProperties)&&const DeepCollectionEquality().equals(other._generatedNamespaces, _generatedNamespaces)&&(identical(other.requests, requests) || other.requests == requests));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,expiry,const DeepCollectionEquality().hash(_relays),proposer,const DeepCollectionEquality().hash(_requiredNamespaces),const DeepCollectionEquality().hash(_optionalNamespaces),pairingTopic,const DeepCollectionEquality().hash(_sessionProperties),const DeepCollectionEquality().hash(_generatedNamespaces));
+int get hashCode => Object.hash(runtimeType,id,expiry,const DeepCollectionEquality().hash(_relays),proposer,const DeepCollectionEquality().hash(_requiredNamespaces),const DeepCollectionEquality().hash(_optionalNamespaces),pairingTopic,const DeepCollectionEquality().hash(_sessionProperties),const DeepCollectionEquality().hash(_generatedNamespaces),requests);
 
 @override
 String toString() {
-  return 'ProposalData(id: $id, expiry: $expiry, relays: $relays, proposer: $proposer, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, pairingTopic: $pairingTopic, sessionProperties: $sessionProperties, generatedNamespaces: $generatedNamespaces)';
+  return 'ProposalData(id: $id, expiry: $expiry, relays: $relays, proposer: $proposer, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, pairingTopic: $pairingTopic, sessionProperties: $sessionProperties, generatedNamespaces: $generatedNamespaces, requests: $requests)';
 }
 
 
@@ -861,11 +875,11 @@ abstract mixin class _$ProposalDataCopyWith<$Res> implements $ProposalDataCopyWi
   factory _$ProposalDataCopyWith(_ProposalData value, $Res Function(_ProposalData) _then) = __$ProposalDataCopyWithImpl;
 @override @useResult
 $Res call({
- int id, int expiry, List<Relay> relays, ConnectionMetadata proposer, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace> optionalNamespaces, String pairingTopic, Map<String, String>? sessionProperties, Map<String, Namespace>? generatedNamespaces
+ int id, int expiry, List<Relay> relays, ConnectionMetadata proposer, Map<String, RequiredNamespace> requiredNamespaces, Map<String, RequiredNamespace> optionalNamespaces, String pairingTopic, Map<String, String>? sessionProperties, Map<String, Namespace>? generatedNamespaces, ProposalRequests? requests
 });
 
 
-@override $ConnectionMetadataCopyWith<$Res> get proposer;
+@override $ConnectionMetadataCopyWith<$Res> get proposer;@override $ProposalRequestsCopyWith<$Res>? get requests;
 
 }
 /// @nodoc
@@ -878,7 +892,7 @@ class __$ProposalDataCopyWithImpl<$Res>
 
 /// Create a copy of ProposalData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? expiry = null,Object? relays = null,Object? proposer = null,Object? requiredNamespaces = null,Object? optionalNamespaces = null,Object? pairingTopic = null,Object? sessionProperties = freezed,Object? generatedNamespaces = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? expiry = null,Object? relays = null,Object? proposer = null,Object? requiredNamespaces = null,Object? optionalNamespaces = null,Object? pairingTopic = null,Object? sessionProperties = freezed,Object? generatedNamespaces = freezed,Object? requests = freezed,}) {
   return _then(_ProposalData(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,expiry: null == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
@@ -889,7 +903,8 @@ as Map<String, RequiredNamespace>,optionalNamespaces: null == optionalNamespaces
 as Map<String, RequiredNamespace>,pairingTopic: null == pairingTopic ? _self.pairingTopic : pairingTopic // ignore: cast_nullable_to_non_nullable
 as String,sessionProperties: freezed == sessionProperties ? _self._sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
 as Map<String, String>?,generatedNamespaces: freezed == generatedNamespaces ? _self._generatedNamespaces : generatedNamespaces // ignore: cast_nullable_to_non_nullable
-as Map<String, Namespace>?,
+as Map<String, Namespace>?,requests: freezed == requests ? _self.requests : requests // ignore: cast_nullable_to_non_nullable
+as ProposalRequests?,
   ));
 }
 
@@ -902,7 +917,549 @@ $ConnectionMetadataCopyWith<$Res> get proposer {
   return $ConnectionMetadataCopyWith<$Res>(_self.proposer, (value) {
     return _then(_self.copyWith(proposer: value));
   });
+}/// Create a copy of ProposalData
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ProposalRequestsCopyWith<$Res>? get requests {
+    if (_self.requests == null) {
+    return null;
+  }
+
+  return $ProposalRequestsCopyWith<$Res>(_self.requests!, (value) {
+    return _then(_self.copyWith(requests: value));
+  });
 }
+}
+
+
+/// @nodoc
+mixin _$ProposalRequests {
+
+ List<SessionAuthPayload>? get authentication;
+/// Create a copy of ProposalRequests
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ProposalRequestsCopyWith<ProposalRequests> get copyWith => _$ProposalRequestsCopyWithImpl<ProposalRequests>(this as ProposalRequests, _$identity);
+
+  /// Serializes this ProposalRequests to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProposalRequests&&const DeepCollectionEquality().equals(other.authentication, authentication));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(authentication));
+
+@override
+String toString() {
+  return 'ProposalRequests(authentication: $authentication)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ProposalRequestsCopyWith<$Res>  {
+  factory $ProposalRequestsCopyWith(ProposalRequests value, $Res Function(ProposalRequests) _then) = _$ProposalRequestsCopyWithImpl;
+@useResult
+$Res call({
+ List<SessionAuthPayload>? authentication
+});
+
+
+
+
+}
+/// @nodoc
+class _$ProposalRequestsCopyWithImpl<$Res>
+    implements $ProposalRequestsCopyWith<$Res> {
+  _$ProposalRequestsCopyWithImpl(this._self, this._then);
+
+  final ProposalRequests _self;
+  final $Res Function(ProposalRequests) _then;
+
+/// Create a copy of ProposalRequests
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? authentication = freezed,}) {
+  return _then(_self.copyWith(
+authentication: freezed == authentication ? _self.authentication : authentication // ignore: cast_nullable_to_non_nullable
+as List<SessionAuthPayload>?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [ProposalRequests].
+extension ProposalRequestsPatterns on ProposalRequests {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ProposalRequests value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ProposalRequests() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ProposalRequests value)  $default,){
+final _that = this;
+switch (_that) {
+case _ProposalRequests():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ProposalRequests value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ProposalRequests() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<SessionAuthPayload>? authentication)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ProposalRequests() when $default != null:
+return $default(_that.authentication);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<SessionAuthPayload>? authentication)  $default,) {final _that = this;
+switch (_that) {
+case _ProposalRequests():
+return $default(_that.authentication);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<SessionAuthPayload>? authentication)?  $default,) {final _that = this;
+switch (_that) {
+case _ProposalRequests() when $default != null:
+return $default(_that.authentication);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+@JsonSerializable(includeIfNull: false)
+class _ProposalRequests implements ProposalRequests {
+  const _ProposalRequests({final  List<SessionAuthPayload>? authentication}): _authentication = authentication;
+  factory _ProposalRequests.fromJson(Map<String, dynamic> json) => _$ProposalRequestsFromJson(json);
+
+ final  List<SessionAuthPayload>? _authentication;
+@override List<SessionAuthPayload>? get authentication {
+  final value = _authentication;
+  if (value == null) return null;
+  if (_authentication is EqualUnmodifiableListView) return _authentication;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
+
+/// Create a copy of ProposalRequests
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ProposalRequestsCopyWith<_ProposalRequests> get copyWith => __$ProposalRequestsCopyWithImpl<_ProposalRequests>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$ProposalRequestsToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProposalRequests&&const DeepCollectionEquality().equals(other._authentication, _authentication));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_authentication));
+
+@override
+String toString() {
+  return 'ProposalRequests(authentication: $authentication)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ProposalRequestsCopyWith<$Res> implements $ProposalRequestsCopyWith<$Res> {
+  factory _$ProposalRequestsCopyWith(_ProposalRequests value, $Res Function(_ProposalRequests) _then) = __$ProposalRequestsCopyWithImpl;
+@override @useResult
+$Res call({
+ List<SessionAuthPayload>? authentication
+});
+
+
+
+
+}
+/// @nodoc
+class __$ProposalRequestsCopyWithImpl<$Res>
+    implements _$ProposalRequestsCopyWith<$Res> {
+  __$ProposalRequestsCopyWithImpl(this._self, this._then);
+
+  final _ProposalRequests _self;
+  final $Res Function(_ProposalRequests) _then;
+
+/// Create a copy of ProposalRequests
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? authentication = freezed,}) {
+  return _then(_ProposalRequests(
+authentication: freezed == authentication ? _self._authentication : authentication // ignore: cast_nullable_to_non_nullable
+as List<SessionAuthPayload>?,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$ProposalRequestsResponses {
+
+ List<Cacao>? get authentication;
+/// Create a copy of ProposalRequestsResponses
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ProposalRequestsResponsesCopyWith<ProposalRequestsResponses> get copyWith => _$ProposalRequestsResponsesCopyWithImpl<ProposalRequestsResponses>(this as ProposalRequestsResponses, _$identity);
+
+  /// Serializes this ProposalRequestsResponses to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProposalRequestsResponses&&const DeepCollectionEquality().equals(other.authentication, authentication));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(authentication));
+
+@override
+String toString() {
+  return 'ProposalRequestsResponses(authentication: $authentication)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ProposalRequestsResponsesCopyWith<$Res>  {
+  factory $ProposalRequestsResponsesCopyWith(ProposalRequestsResponses value, $Res Function(ProposalRequestsResponses) _then) = _$ProposalRequestsResponsesCopyWithImpl;
+@useResult
+$Res call({
+ List<Cacao>? authentication
+});
+
+
+
+
+}
+/// @nodoc
+class _$ProposalRequestsResponsesCopyWithImpl<$Res>
+    implements $ProposalRequestsResponsesCopyWith<$Res> {
+  _$ProposalRequestsResponsesCopyWithImpl(this._self, this._then);
+
+  final ProposalRequestsResponses _self;
+  final $Res Function(ProposalRequestsResponses) _then;
+
+/// Create a copy of ProposalRequestsResponses
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? authentication = freezed,}) {
+  return _then(_self.copyWith(
+authentication: freezed == authentication ? _self.authentication : authentication // ignore: cast_nullable_to_non_nullable
+as List<Cacao>?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [ProposalRequestsResponses].
+extension ProposalRequestsResponsesPatterns on ProposalRequestsResponses {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ProposalRequestsResponses value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _ProposalRequestsResponses() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ProposalRequestsResponses value)  $default,){
+final _that = this;
+switch (_that) {
+case _ProposalRequestsResponses():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ProposalRequestsResponses value)?  $default,){
+final _that = this;
+switch (_that) {
+case _ProposalRequestsResponses() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<Cacao>? authentication)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _ProposalRequestsResponses() when $default != null:
+return $default(_that.authentication);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<Cacao>? authentication)  $default,) {final _that = this;
+switch (_that) {
+case _ProposalRequestsResponses():
+return $default(_that.authentication);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<Cacao>? authentication)?  $default,) {final _that = this;
+switch (_that) {
+case _ProposalRequestsResponses() when $default != null:
+return $default(_that.authentication);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+@JsonSerializable(includeIfNull: false)
+class _ProposalRequestsResponses implements ProposalRequestsResponses {
+  const _ProposalRequestsResponses({final  List<Cacao>? authentication}): _authentication = authentication;
+  factory _ProposalRequestsResponses.fromJson(Map<String, dynamic> json) => _$ProposalRequestsResponsesFromJson(json);
+
+ final  List<Cacao>? _authentication;
+@override List<Cacao>? get authentication {
+  final value = _authentication;
+  if (value == null) return null;
+  if (_authentication is EqualUnmodifiableListView) return _authentication;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
+
+/// Create a copy of ProposalRequestsResponses
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ProposalRequestsResponsesCopyWith<_ProposalRequestsResponses> get copyWith => __$ProposalRequestsResponsesCopyWithImpl<_ProposalRequestsResponses>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$ProposalRequestsResponsesToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProposalRequestsResponses&&const DeepCollectionEquality().equals(other._authentication, _authentication));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_authentication));
+
+@override
+String toString() {
+  return 'ProposalRequestsResponses(authentication: $authentication)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ProposalRequestsResponsesCopyWith<$Res> implements $ProposalRequestsResponsesCopyWith<$Res> {
+  factory _$ProposalRequestsResponsesCopyWith(_ProposalRequestsResponses value, $Res Function(_ProposalRequestsResponses) _then) = __$ProposalRequestsResponsesCopyWithImpl;
+@override @useResult
+$Res call({
+ List<Cacao>? authentication
+});
+
+
+
+
+}
+/// @nodoc
+class __$ProposalRequestsResponsesCopyWithImpl<$Res>
+    implements _$ProposalRequestsResponsesCopyWith<$Res> {
+  __$ProposalRequestsResponsesCopyWithImpl(this._self, this._then);
+
+  final _ProposalRequestsResponses _self;
+  final $Res Function(_ProposalRequestsResponses) _then;
+
+/// Create a copy of ProposalRequestsResponses
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? authentication = freezed,}) {
+  return _then(_ProposalRequestsResponses(
+authentication: freezed == authentication ? _self._authentication : authentication // ignore: cast_nullable_to_non_nullable
+as List<Cacao>?,
+  ));
+}
+
+
 }
 
 // dart format on

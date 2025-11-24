@@ -132,11 +132,7 @@ class Pairing implements IPairing {
       expiry: expiry,
     );
 
-    onPairingCreate.broadcast(
-      PairingEvent(
-        topic: topic,
-      ),
-    );
+    onPairingCreate.broadcast(PairingEvent(topic: topic));
 
     await pairings.set(topic, pairing);
     await core.relayClient.subscribe(
@@ -148,11 +144,7 @@ class Pairing implements IPairing {
     );
     await core.expirer.set(topic, expiry);
 
-    return CreateResponse(
-      topic: topic,
-      uri: uri,
-      pairingInfo: pairing,
-    );
+    return CreateResponse(topic: topic, uri: uri, pairingInfo: pairing);
   }
 
   @override
@@ -192,11 +184,7 @@ class Pairing implements IPairing {
       );
     } on ReownCoreError catch (e) {
       // Tell people that the pairing is invalid
-      onPairingInvalid.broadcast(
-        PairingInvalidEvent(
-          message: e.message,
-        ),
-      );
+      onPairingInvalid.broadcast(PairingInvalidEvent(message: e.message));
 
       // Delete the pairing: "publish internally with reason"
       // await _deletePairing(
@@ -210,18 +198,10 @@ class Pairing implements IPairing {
     try {
       await pairings.set(topic, pairing);
       await core.crypto.setSymKey(symKey, overrideTopic: topic);
-      await core.relayClient.subscribe(
-        options: SubscribeOptions(
-          topic: topic,
-        ),
-      );
+      await core.relayClient.subscribe(options: SubscribeOptions(topic: topic));
       await core.expirer.set(topic, expiry);
 
-      onPairingCreate.broadcast(
-        PairingEvent(
-          topic: topic,
-        ),
-      );
+      onPairingCreate.broadcast(PairingEvent(topic: topic));
 
       if (activatePairing) {
         await activate(topic: topic);
@@ -242,33 +222,24 @@ class Pairing implements IPairing {
     // print('Activating pairing with topic: $topic');
 
     onPairingActivate.broadcast(
-      PairingActivateEvent(
-        topic: topic,
-        expiry: expiry,
-      ),
+      PairingActivateEvent(topic: topic, expiry: expiry),
     );
 
-    await pairings.update(
-      topic,
-      expiry: expiry,
-      active: true,
-    );
+    await pairings.update(topic, expiry: expiry, active: true);
     await core.expirer.set(topic, expiry);
   }
 
   @override
   void register({
     required String method,
-    required Function(String, JsonRpcRequest, [TransportType]) function,
+    required Function(String, JsonRpcRequest, [String?, TransportType])
+    function,
     required ProtocolType type,
   }) {
     if (routerMapRequest.containsKey(method)) {
       final registered = routerMapRequest[method];
       if (registered!.type == type) {
-        throw const ReownCoreError(
-          code: -1,
-          message: 'Method already exists',
-        );
+        throw const ReownCoreError(code: -1, message: 'Method already exists');
       }
     }
 
@@ -306,24 +277,15 @@ class Pairing implements IPairing {
     _checkInitialized();
 
     // Validate the expiry is less than 30 days
-    if (expiry >
-        ReownCoreUtils.calculateExpiry(
-          ReownConstants.THIRTY_DAYS,
-        )) {
+    if (expiry > ReownCoreUtils.calculateExpiry(ReownConstants.THIRTY_DAYS)) {
       throw const ReownCoreError(
         code: -1,
         message: 'Expiry cannot be more than 30 days away',
       );
     }
 
-    await pairings.update(
-      topic,
-      expiry: expiry,
-    );
-    await core.expirer.set(
-      topic,
-      expiry,
-    );
+    await pairings.update(topic, expiry: expiry);
+    await core.expirer.set(topic, expiry);
   }
 
   @override
@@ -332,10 +294,7 @@ class Pairing implements IPairing {
     required PairingMetadata metadata,
   }) async {
     _checkInitialized();
-    await pairings.update(
-      topic,
-      metadata: metadata,
-    );
+    await pairings.update(topic, metadata: metadata);
   }
 
   @override
@@ -384,11 +343,7 @@ class Pairing implements IPairing {
       // Delete the pairing
       await pairings.delete(topic);
 
-      onPairingDelete.broadcast(
-        PairingEvent(
-          topic: topic,
-        ),
-      );
+      onPairingDelete.broadcast(PairingEvent(topic: topic));
     }
   }
 
@@ -428,11 +383,7 @@ class Pairing implements IPairing {
     bool openUrl = true,
     TVFData? tvf,
   }) async {
-    final payload = JsonRpcUtils.formatJsonRpcRequest(
-      method,
-      params,
-      id: id,
-    );
+    final payload = JsonRpcUtils.formatJsonRpcRequest(method, params, id: id);
     final requestId = payload['id'] as int;
 
     final isLinkMode = (appLink ?? '').isNotEmpty;
@@ -452,10 +403,12 @@ class Pairing implements IPairing {
     // print('adding payload to pending requests: $requestId');
     final resp = PendingRequestResponse(completer: Completer(), method: method);
     resp.completer.future.catchError(
-      (err) => core.events.recordEvent(BasicCoreEvent(
-        event: CoreEventType.ERROR,
-        properties: CoreEventProperties(topic: topic, method: resp.method),
-      )),
+      (err) => core.events.recordEvent(
+        BasicCoreEvent(
+          event: CoreEventType.ERROR,
+          properties: CoreEventProperties(topic: topic, method: resp.method),
+        ),
+      ),
     );
     pendingRequests[requestId] = resp;
 
@@ -470,11 +423,13 @@ class Pairing implements IPairing {
         await ReownCoreUtils.openURL(redirectURL);
       }
       // Send Event through Events SDK
-      core.events.recordEvent(LinkModeRequestEvent(
-        direction: 'sent',
-        correlationId: requestId,
-        method: method,
-      ));
+      core.events.recordEvent(
+        LinkModeRequestEvent(
+          direction: 'sent',
+          correlationId: requestId,
+          method: method,
+        ),
+      );
       core.logger.d(
         '[$runtimeType] sendRequest linkMode ($appLink), '
         'id: $requestId topic: $topic, method: $method, '
@@ -556,10 +511,12 @@ class Pairing implements IPairing {
       method: MethodConstants.WC_SESSION_PROPOSE,
     );
     resp.completer.future.catchError(
-      (err) => core.events.recordEvent(BasicCoreEvent(
-        event: CoreEventType.ERROR,
-        properties: CoreEventProperties(topic: topic, method: resp.method),
-      )),
+      (err) => core.events.recordEvent(
+        BasicCoreEvent(
+          event: CoreEventType.ERROR,
+          properties: CoreEventProperties(topic: topic, method: resp.method),
+        ),
+      ),
     );
     pendingRequests[requestId] = resp;
 
@@ -574,10 +531,7 @@ class Pairing implements IPairing {
       publishMethod: RelayClient.WC_PROPOSE_SESSION,
     );
 
-    await core.relayClient.publishPayload(
-      payload: payload,
-      options: options,
-    );
+    await core.relayClient.publishPayload(payload: payload, options: options);
     core.logger.d(
       '[$runtimeType] sendProposeSessionRequest relayClient, '
       'payload: ${jsonEncode(payload)}, options: ${jsonEncode(options.toJson())}',
@@ -610,10 +564,7 @@ class Pairing implements IPairing {
     String? appLink,
     TVFData? tvf,
   }) async {
-    final payload = JsonRpcUtils.formatJsonRpcResponse<dynamic>(
-      id,
-      result,
-    );
+    final payload = JsonRpcUtils.formatJsonRpcResponse<dynamic>(id, result);
     final resultId = payload['id'] as int;
 
     final isLinkMode = (appLink ?? '').isNotEmpty;
@@ -638,11 +589,13 @@ class Pairing implements IPairing {
       );
       await ReownCoreUtils.openURL(redirectURL);
       // Send Event through Events SDK
-      core.events.recordEvent(LinkModeResponseEvent(
-        direction: 'sent',
-        correlationId: resultId,
-        method: method,
-      ));
+      core.events.recordEvent(
+        LinkModeResponseEvent(
+          direction: 'sent',
+          correlationId: resultId,
+          method: method,
+        ),
+      );
       core.logger.d(
         '[$runtimeType] sendResult linkMode ($appLink), '
         'id: $id topic: $topic, method: $method, result: $result',
@@ -681,6 +634,10 @@ class Pairing implements IPairing {
     required Map<String, dynamic> sessionProposalResponse,
     required Map<String, dynamic> sessionSettlementRequest,
     EncodeOptions? encodeOptions,
+    List<String>? approvedChains,
+    List<String>? approvedMethods,
+    List<String>? approvedEvents,
+    Map<String, String>? sessionProperties,
   }) async {
     final pairingPayload = JsonRpcUtils.formatJsonRpcResponse<dynamic>(
       responseId,
@@ -718,6 +675,10 @@ class Pairing implements IPairing {
       'pairingTopic': pairingTopic,
       'sessionProposalResponse': pairingResponseMessage,
       'sessionSettlementRequest': sessionSettlementRequestMessage,
+      if (approvedChains != null) 'approvedChains': approvedChains,
+      if (approvedMethods != null) 'approvedMethods': approvedMethods,
+      if (approvedEvents != null) 'approvedEvents': approvedEvents,
+      if (sessionProperties != null) 'sessionProperties': sessionProperties,
     };
 
     // ttl and tag are not required on Sign 2.5 methods, it's assigned relay-side
@@ -726,10 +687,8 @@ class Pairing implements IPairing {
       publishMethod: RelayClient.WC_APPROVE_SESSION,
     );
 
-    await core.relayClient.publishPayload(
-      payload: payload,
-      options: options,
-    );
+    await core.relayClient.publishPayload(payload: payload, options: options);
+
     core.logger.d(
       '[$runtimeType] sendApproveSessionRequest relayClient, '
       'payload: ${jsonEncode(payload)}, options: ${jsonEncode(options.toJson())}',
@@ -775,12 +734,14 @@ class Pairing implements IPairing {
       );
       await ReownCoreUtils.openURL(redirectURL);
       // Send Event through Events SDK
-      core.events.recordEvent(LinkModeResponseEvent(
-        direction: 'sent',
-        correlationId: resultId,
-        method: method,
-        isRejected: _isSessionAuthRejectedError(method, error),
-      ));
+      core.events.recordEvent(
+        LinkModeResponseEvent(
+          direction: 'sent',
+          correlationId: resultId,
+          method: method,
+          isRejected: _isSessionAuthRejectedError(method, error),
+        ),
+      );
       core.logger.d(
         '[$runtimeType] sendError linkMode ($appLink), '
         'id: $id topic: $topic, method: $method, error: $error',
@@ -824,9 +785,7 @@ class Pairing implements IPairing {
     for (final PairingInfo pairing in pairings.getAll()) {
       core.logger.i('[$runtimeType] Resubscribe to pairing: ${pairing.topic}');
       await core.relayClient.subscribe(
-        options: SubscribeOptions(
-          topic: pairing.topic,
-        ),
+        options: SubscribeOptions(topic: pairing.topic),
       );
     }
   }
@@ -844,9 +803,7 @@ class Pairing implements IPairing {
   Future<void> _cleanup() async {
     core.logger.d('[$runtimeType] _cleanup');
     final List<PairingInfo> expiredPairings = getPairings()
-        .where(
-          (PairingInfo info) => ReownCoreUtils.isExpired(info.expiry),
-        )
+        .where((PairingInfo info) => ReownCoreUtils.isExpired(info.expiry))
         .toList();
     for (final PairingInfo pairing in expiredPairings) {
       // print('deleting expired pairing: ${pairing.topic}');
@@ -856,9 +813,7 @@ class Pairing implements IPairing {
     // Cleanup all history records
     final List<JsonRpcRecord> expiredHistory = history
         .getAll()
-        .where(
-          (record) => ReownCoreUtils.isExpired(record.expiry ?? -1),
-        )
+        .where((record) => ReownCoreUtils.isExpired(record.expiry ?? -1))
         .toList();
     // Loop through the expired records and delete them
     for (final JsonRpcRecord record in expiredHistory) {
@@ -950,9 +905,7 @@ class Pairing implements IPairing {
     String? payloadString = await core.crypto.decode(
       event.topic,
       event.message,
-      options: DecodeOptions(
-        receiverPublicKey: receiverPublicKey?.publicKey,
-      ),
+      options: DecodeOptions(receiverPublicKey: receiverPublicKey?.publicKey),
     );
 
     isLinkMode
@@ -979,6 +932,7 @@ class Pairing implements IPairing {
         routerMapRequest[request.method]!.function(
           event.topic,
           request,
+          event.attestation,
           event.transportType,
         );
       } else {
@@ -987,11 +941,13 @@ class Pairing implements IPairing {
 
       if (isLinkMode) {
         // Send Event through Events SDK
-        core.events.recordEvent(LinkModeRequestEvent(
-          direction: 'received',
-          correlationId: request.id,
-          method: request.method,
-        ));
+        core.events.recordEvent(
+          LinkModeRequestEvent(
+            direction: 'received',
+            correlationId: request.id,
+            method: request.method,
+          ),
+        );
       }
       // Otherwise handle it as a response
     } else {
@@ -1009,15 +965,17 @@ class Pairing implements IPairing {
 
         if (isLinkMode) {
           // Send Event through Events SDK
-          core.events.recordEvent(LinkModeResponseEvent(
-            direction: 'received',
-            correlationId: response.id,
-            method: pendingRequest.method,
-            isRejected: _isSessionAuthRejectedError(
-              pendingRequest.method,
-              response.error,
+          core.events.recordEvent(
+            LinkModeResponseEvent(
+              direction: 'received',
+              correlationId: response.id,
+              method: pendingRequest.method,
+              isRejected: _isSessionAuthRejectedError(
+                pendingRequest.method,
+                response.error,
+              ),
             ),
-          ));
+          );
         }
       }
     }
@@ -1025,7 +983,8 @@ class Pairing implements IPairing {
 
   bool _isSessionAuthRejectedError(String method, JsonRpcError? error) {
     final errorCode = error?.code ?? 0;
-    final sessionRejected = method == MethodConstants.WC_SESSION_AUTHENTICATE &&
+    final sessionRejected =
+        method == MethodConstants.WC_SESSION_AUTHENTICATE &&
         (errorCode == 12001 || (errorCode >= 5000 && errorCode <= 5003));
     return sessionRejected;
   }
@@ -1033,38 +992,25 @@ class Pairing implements IPairing {
   Future<void> _onPairingPingRequest(
     String topic,
     JsonRpcRequest request, [
+    __,
     _,
   ]) async {
     final int id = request.id;
     try {
       // print('ping req');
       await _isValidPing(topic);
-      await sendResult(
-        id,
-        topic,
-        request.method,
-        true,
-      );
-      onPairingPing.broadcast(
-        PairingEvent(
-          id: id,
-          topic: topic,
-        ),
-      );
+      await sendResult(id, topic, request.method, true);
+      onPairingPing.broadcast(PairingEvent(id: id, topic: topic));
     } on JsonRpcError catch (e) {
       // print(e);
-      await sendError(
-        id,
-        topic,
-        request.method,
-        e,
-      );
+      await sendError(id, topic, request.method, e);
     }
   }
 
   Future<void> _onPairingDeleteRequest(
     String topic,
     JsonRpcRequest request, [
+    __,
     _,
   ]) async {
     core.logger.d(
@@ -1073,26 +1019,11 @@ class Pairing implements IPairing {
     final int id = request.id;
     try {
       await _isValidDisconnect(topic);
-      await sendResult(
-        id,
-        topic,
-        request.method,
-        true,
-      );
+      await sendResult(id, topic, request.method, true);
       await pairings.delete(topic);
-      onPairingDelete.broadcast(
-        PairingEvent(
-          id: id,
-          topic: topic,
-        ),
-      );
+      onPairingDelete.broadcast(PairingEvent(id: id, topic: topic));
     } on JsonRpcError catch (e) {
-      await sendError(
-        id,
-        topic,
-        request.method,
-        e,
-      );
+      await sendError(id, topic, request.method, e);
     }
   }
 
@@ -1140,11 +1071,7 @@ class Pairing implements IPairing {
     if (pairings.has(event.target)) {
       // Clean up the pairing
       await _deletePairing(event.target, true);
-      onPairingExpire.broadcast(
-        PairingEvent(
-          topic: event.target,
-        ),
-      );
+      onPairingExpire.broadcast(PairingEvent(topic: event.target));
     }
   }
 

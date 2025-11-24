@@ -28,10 +28,7 @@ void signRequestAndHandler({
       clients.add(clientA);
       clients.add(clientB);
 
-      await clientA.sessions.set(
-        TEST_SESSION_VALID_TOPIC,
-        testSessionValid,
-      );
+      await clientA.sessions.set(TEST_SESSION_VALID_TOPIC, testSessionValid);
       await clientA.sessions.set(
         TEST_SESSION_EXPIRED_TOPIC,
         testSessionExpired,
@@ -48,8 +45,7 @@ void signRequestAndHandler({
       await clientB.core.relayClient.disconnect();
     });
 
-    test('register a request handler and receive method calls with it',
-        () async {
+    test('register a request handler and receive method calls with it', () async {
       final connectionInfo = await SignClientHelpers.testConnectPairApprove(
         clientA,
         clientB,
@@ -76,23 +72,18 @@ void signRequestAndHandler({
       expect(clientB.getPendingSessionRequests().length, 0);
 
       // Valid handler
-      Future<dynamic> Function(String, dynamic) requestHandler = (
-        String topic,
-        dynamic request,
-      ) async {
-        expect(topic, sessionTopic);
-        // expect(request, TEST_MESSAGE_1);
-        // print(clientB.getPendingSessionRequests());
-        expect(clientB.getPendingSessionRequests().length, 1);
-        final pRequest = clientB.pendingRequests.getAll().last;
-        return await clientB.respondSessionRequest(
-          topic: sessionTopic,
-          response: JsonRpcResponse(
-            id: pRequest.id,
-            result: request,
-          ),
-        );
-      };
+      Future<dynamic> Function(String, dynamic) requestHandler =
+          (String topic, dynamic request) async {
+            expect(topic, sessionTopic);
+            // expect(request, TEST_MESSAGE_1);
+            // print(clientB.getPendingSessionRequests());
+            expect(clientB.getPendingSessionRequests().length, 1);
+            final pRequest = clientB.pendingRequests.getAll().last;
+            return await clientB.respondSessionRequest(
+              topic: sessionTopic,
+              response: JsonRpcResponse(id: pRequest.id, result: request),
+            );
+          };
       clientB.registerRequestHandler(
         chainId: TEST_ETHEREUM_CHAIN,
         method: TEST_METHOD_1,
@@ -153,10 +144,7 @@ void signRequestAndHandler({
       }
 
       // Valid handler that throws an error
-      requestHandler = (
-        String topic,
-        dynamic request,
-      ) async {
+      requestHandler = (String topic, dynamic request) async {
         expect(topic, sessionTopic);
         expect(clientB.getPendingSessionRequests().length, 1);
         if (request == 'silent') {
@@ -194,10 +182,7 @@ void signRequestAndHandler({
         expect(true, false);
       } on JsonRpcError catch (e) {
         // print('user rejected sign error received');
-        expect(
-          e.code,
-          Errors.getSdkError(Errors.USER_REJECTED_SIGN).code,
-        );
+        expect(e.code, Errors.getSdkError(Errors.USER_REJECTED_SIGN).code);
         expect(
           e.message,
           Errors.getSdkError(Errors.USER_REJECTED_SIGN).message,
@@ -228,10 +213,7 @@ void signRequestAndHandler({
 
         expect(true, false);
       } on JsonRpcError catch (e) {
-        expect(
-          e.code,
-          JsonRpcError.invalidParams('swag').code,
-        );
+        expect(e.code, JsonRpcError.invalidParams('swag').code);
       }
 
       pendingRequestCompleter = Completer();
@@ -254,9 +236,7 @@ void signRequestAndHandler({
         chainId: TEST_ETHEREUM_CHAIN,
         method: TEST_METHOD_2,
       );
-      clientB.onSessionRequest.subscribe((
-        SessionRequestEvent? event,
-      ) async {
+      clientB.onSessionRequest.subscribe((SessionRequestEvent? event) async {
         expect(event != null, true);
         expect(event!.topic, sessionTopic);
         expect(event.params, TEST_MESSAGE_1);
@@ -309,18 +289,13 @@ void signRequestAndHandler({
         expect(true, false);
       } on JsonRpcError catch (e) {
         // print(e);
-        expect(
-          e.code,
-          JsonRpcError.invalidParams('swag').code,
-        );
+        expect(e.code, JsonRpcError.invalidParams('swag').code);
         expect(e.message!.contains(TEST_MESSAGE_1.toString()), true);
       }
 
       // Try an error
       clientB.onSessionRequest.unsubscribeAll();
-      clientB.onSessionRequest.subscribe((
-        SessionRequestEvent? event,
-      ) async {
+      clientB.onSessionRequest.subscribe((SessionRequestEvent? event) async {
         expect(event != null, true);
         expect(event!.topic, sessionTopic);
         expect(event.params, TEST_MESSAGE_1);
@@ -409,12 +384,7 @@ void signRequestAndHandler({
       await completer.future;
       await completerSession.future;
 
-      expect(
-        clientA.sessions.has(
-          TEST_SESSION_EXPIRED_TOPIC,
-        ),
-        false,
-      );
+      expect(clientA.sessions.has(TEST_SESSION_EXPIRED_TOPIC), false);
       expect(counter, 1);
       expect(counterSession, 1);
       clientA.core.expirer.onExpire.unsubscribeAll();

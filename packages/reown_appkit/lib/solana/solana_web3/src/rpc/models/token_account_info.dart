@@ -84,8 +84,8 @@ class TokenAccountInfo extends BorshObject {
   /// {@macro solana_borsh.BorshObject.tryFromBorshBase64}
   static TokenAccountInfo? tryFromBorshBase64(final String? encoded) =>
       encoded != null && encoded.isNotEmpty
-          ? TokenAccountInfo.fromBorshBase64(encoded)
-          : null;
+      ? TokenAccountInfo.fromBorshBase64(encoded)
+      : null;
 
   /// Creates an instance of `this` class from an account [info].
   ///
@@ -127,13 +127,13 @@ class TokenAccountInfo extends BorshObject {
 
   @override
   Map<String, dynamic> toJson() => {
-        'mint': mint,
-        'owner': owner,
-        'amount': amount,
-        'delegate': delegate,
-        'state': state,
-        'isNative': isNative,
-        'delegatedAmount': delegatedAmount,
-        'closeAuthority': closeAuthority,
-      };
+    'mint': mint,
+    'owner': owner,
+    'amount': amount,
+    'delegate': delegate,
+    'state': state,
+    'isNative': isNative,
+    'delegatedAmount': delegatedAmount,
+    'closeAuthority': closeAuthority,
+  };
 }

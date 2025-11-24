@@ -16,10 +16,7 @@ sealed class RpcOptions with _$RpcOptions {
 @freezed
 sealed class JsonRpcError with _$JsonRpcError {
   @JsonSerializable(includeIfNull: false)
-  const factory JsonRpcError({
-    int? code,
-    String? message,
-  }) = _JsonRpcError;
+  const factory JsonRpcError({int? code, String? message}) = _JsonRpcError;
 
   factory JsonRpcError.serverError(String message) =>
       JsonRpcError(code: -32000, message: message);

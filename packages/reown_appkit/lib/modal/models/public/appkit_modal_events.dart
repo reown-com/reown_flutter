@@ -54,7 +54,7 @@ class WalletNotInstalled extends ModalError {
 /// Error opening wallet
 class ErrorOpeningWallet extends ModalError {
   ErrorOpeningWallet({String? description})
-      : super('Unable to open Wallet app', description: description);
+    : super('Unable to open Wallet app', description: description);
 }
 
 /// Event fired when user rejects connection in the wallet
@@ -64,4 +64,14 @@ class UserRejectedConnection extends ModalError {
 
 class UserRejectedRequest extends ModalError {
   UserRejectedRequest() : super('User rejected request');
+}
+
+class DepositSuccessEvent extends EventArgs {
+  final Exchange exchange;
+  DepositSuccessEvent(this.exchange);
+
+  @override
+  String toString() {
+    return 'DepositSuccessEvent(exchange: ${exchange.toJson()})';
+  }
 }

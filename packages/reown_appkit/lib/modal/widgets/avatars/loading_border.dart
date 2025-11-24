@@ -40,10 +40,7 @@ class _LoadingBorderState extends State<LoadingBorder>
       vsync: this,
     );
 
-    _tweenAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(_controller);
+    _tweenAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
 
     _controller.repeat();
   }
@@ -187,10 +184,7 @@ class _NetworkPainter extends CustomPainter {
 }
 
 class _RotatingPainter extends CustomPainter {
-  const _RotatingPainter({
-    required this.backColor,
-    this.show = true,
-  });
+  const _RotatingPainter({required this.backColor, this.show = true});
   final Color backColor;
   final bool show;
 
@@ -207,13 +201,7 @@ class _RotatingPainter extends CustomPainter {
       height: h * 1.4,
     );
 
-    canvas.drawArc(
-      rect2,
-      0,
-      show ? math.pi * 1.5 : math.pi * 2,
-      true,
-      paint1,
-    );
+    canvas.drawArc(rect2, 0, show ? math.pi * 1.5 : math.pi * 2, true, paint1);
   }
 
   @override

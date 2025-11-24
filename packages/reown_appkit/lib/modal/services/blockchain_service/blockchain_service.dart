@@ -8,26 +8,29 @@ import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/blockchain_identity.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
+import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 
 // TODO move to Core SDK
 class BlockChainService implements IBlockChainService {
   late final IReownCore _core;
   late final String _baseUrl;
+  String? _bundleId;
   String? _clientId;
 
   BlockChainService({required IReownCore core})
-      : _core = core,
-        _baseUrl = '${UrlConstants.blockChainService}/v1';
+    : _core = core,
+      _baseUrl = '${UrlConstants.blockChainService}/v1';
 
   Map<String, String?> get _requiredParams => {
-        'projectId': _core.projectId,
-        'clientId': _clientId,
-      };
+    'projectId': _core.projectId,
+    'clientId': _clientId,
+  };
 
   Map<String, String> get _requiredHeaders => {
-        'x-sdk-type': CoreConstants.X_SDK_TYPE,
-        'x-sdk-version': ReownCoreUtils.coreSdkVersion(packageVersion),
-      };
+    'x-sdk-type': CoreConstants.X_SDK_TYPE,
+    'x-sdk-version': ReownCoreUtils.coreSdkVersion(packageVersion),
+    'origin': _bundleId ?? 'flutter-appkit',
+  };
 
   List<TokenBalance>? _tokensList;
   @override
@@ -42,6 +45,7 @@ class BlockChainService implements IBlockChainService {
 
   @override
   Future<void> init() async {
+    _bundleId = await ReownCoreUtils.getPackageName();
     _clientId = await _core.crypto.getClientId();
   }
 
@@ -97,7 +101,7 @@ class BlockChainService implements IBlockChainService {
   }
 
   @override
-  Future<List<TokenBalance>> getBalance({
+  Future<List<TokenBalance>> getTokenBalance({
     required String address,
     String? caip2Chain,
   }) async {
@@ -127,7 +131,7 @@ class BlockChainService implements IBlockChainService {
   }
 
   @override
-  Future<double> getTokenBalance({
+  Future<double> getNativeBalance({
     required String address,
     required String namespace,
     required String chainId,
@@ -141,7 +145,7 @@ class BlockChainService implements IBlockChainService {
       'method': _balanceMetod(namespace),
       'params': [
         address,
-        if (namespace == NetworkUtils.eip155) 'latest',
+        if (namespace == 'eip155' || namespace == 'tron') 'latest',
       ],
     });
     final response = await http.post(
@@ -216,9 +220,9 @@ class BlockChainService implements IBlockChainService {
         return _parseEstimateGasResult(response.body);
       } on JsonRpcError catch (e) {
         _core.logger.e('[$runtimeType] estimateGas, parse error => $e');
-        if ((e.message ?? '')
-            .toLowerCase()
-            .contains('insufficient funds for gas')) {
+        if ((e.message ?? '').toLowerCase().contains(
+          'insufficient funds for gas',
+        )) {
           throw 'Insufficient funds for gas';
         }
         throw 'Failed to estimate gas';
@@ -246,8 +250,9 @@ class BlockChainService implements IBlockChainService {
     // Keccak-256 of "allowance(address,address)"
     final functionSelector = 'dd62ed3e';
     final ownerPadded = senderAddress.replaceFirst('0x', '').padLeft(64, '0');
-    final spenderPadded =
-        receiverAddress.replaceFirst('0x', '').padLeft(64, '0');
+    final spenderPadded = receiverAddress
+        .replaceFirst('0x', '')
+        .padLeft(64, '0');
     final data = '0x$functionSelector$ownerPadded$spenderPadded';
     //
     final uri = Uri.parse(_baseUrl);
@@ -259,8 +264,8 @@ class BlockChainService implements IBlockChainService {
       'method': 'eth_call',
       'params': [
         {'to': contractAddress, 'data': data},
-        'latest'
-      ]
+        'latest',
+      ],
     });
     final response = await http.post(
       url,
@@ -299,30 +304,28 @@ class BlockChainService implements IBlockChainService {
 
   T _parseRpcResultAs<T>(String body) {
     try {
-      final result = Map<String, dynamic>.from({
-        ...jsonDecode(body),
-        'id': 1,
-      });
+      final result = Map<String, dynamic>.from({...jsonDecode(body), 'id': 1});
       final jsonResponse = JsonRpcResponse.fromJson(result);
       if (jsonResponse.result != null) {
         return jsonResponse.result;
       }
       throw jsonResponse.error ??
           // TODO ReownAppKitModal change this error
-          ReownSignError(
-            code: 0,
-            message: 'Error parsing result',
-          );
+          ReownSignError(code: 0, message: 'Error parsing result');
     } catch (e) {
       rethrow;
     }
   }
 
   String _balanceMetod(String namespace) {
-    if (namespace == NetworkUtils.eip155) {
+    if (namespace == 'eip155') {
       return 'eth_getBalance';
-    } else if (namespace == NetworkUtils.solana) {
+    } else if (namespace == 'solana') {
       return 'getBalance';
+    } else if (namespace == 'tron') {
+      return 'eth_getBalance';
+    } else if (namespace == 'ton') {
+      return 'getAddressBalance';
     }
     return '';
   }
@@ -334,10 +337,7 @@ class BlockChainService implements IBlockChainService {
       return value / 1000000000.0;
     } else if (namespace == NetworkUtils.eip155) {
       final result = _parseRpcResultAs<String>(balanceResult);
-      final amount = EtherAmount.fromBigInt(
-        EtherUnit.wei,
-        hexToInt(result),
-      );
+      final amount = EtherAmount.fromBigInt(EtherUnit.wei, hexToInt(result));
       final value = amount.getValueInUnit(EtherUnit.ether);
       if (value < 0.00001) {
         return 0.0;
@@ -358,6 +358,12 @@ class BlockChainService implements IBlockChainService {
 
   String _parseResponseError(String responseBody) {
     final errorData = jsonDecode(responseBody) as Map<String, dynamic>;
+
+    try {
+      final jsonResponse = JsonRpcResponse.fromJson(errorData);
+      return jsonResponse.error!.message!;
+    } catch (_) {}
+
     final reasons = errorData['reasons'] as List<dynamic>;
     return reasons.isNotEmpty
         ? reasons.first['description'] ?? ''
@@ -365,18 +371,19 @@ class BlockChainService implements IBlockChainService {
   }
 
   @override
-  Future<String> rawCall({
+  Future<JsonRpcResponse> rawCall({
     required String chainId,
-    required Map params,
+    required String method,
+    required List<dynamic> params,
   }) async {
     final uri = Uri.parse(_baseUrl);
     final queryParams = {..._requiredParams, 'chainId': chainId};
     final url = uri.replace(queryParameters: queryParams);
     final body = jsonEncode({
       'jsonrpc': '2.0',
-      'id': 1,
-      'method': 'eth_call',
-      'params': [params, 'latest']
+      'id': JsonRpcUtils.payloadId(),
+      'method': method,
+      'params': params,
     });
     final response = await http.post(
       url,
@@ -384,18 +391,14 @@ class BlockChainService implements IBlockChainService {
       body: body,
     );
     _core.logger.i('[$runtimeType] rawCall $url, $body => ${response.body}');
-    if (response.statusCode == 200 && response.body.isNotEmpty) {
-      try {
-        return jsonDecode(response.body)['result'] as String;
-      } on JsonRpcError catch (e) {
-        _core.logger.e('[$runtimeType] rawCall, parse error => $e');
-        rethrow;
-      } catch (e) {
-        _core.logger.e('[$runtimeType] rawCall, parse error => $e');
-        throw Exception('Requested failed');
-      }
-    } else {
-      throw Exception('Requested failed');
+    try {
+      final bodyResponse = response.body;
+      final parsedResponse = jsonDecode(bodyResponse) as Map<String, dynamic>;
+      final jsonRpcResponse = JsonRpcResponse.fromJson(parsedResponse);
+
+      return jsonRpcResponse;
+    } catch (e) {
+      rethrow;
     }
   }
 }

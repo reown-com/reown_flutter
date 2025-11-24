@@ -12,9 +12,7 @@ import 'annotation.dart';
 class BorshTupleTyped<U extends BorshAnnotation>
     extends BorshAnnotation<Tuple> {
   /// Creates a fixed-length array with multiple data types.
-  const BorshTupleTyped(
-    this.fields,
-  );
+  const BorshTupleTyped(this.fields);
 
   /// The field type annotations.
   final List<U> fields;

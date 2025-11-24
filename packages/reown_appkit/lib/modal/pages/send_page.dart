@@ -15,8 +15,6 @@ import 'package:reown_appkit/modal/services/blockchain_service/models/token_bala
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/buttons/network_button.dart';
-import 'package:reown_appkit/modal/widgets/buttons/primary_button.dart';
-import 'package:reown_appkit/modal/widgets/buttons/secondary_button.dart';
 import 'package:reown_appkit/modal/widgets/buttons/simple_icon_button.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/searchbar.dart';
@@ -74,9 +72,9 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
       setState(() {});
     });
 
-    _analyticsService.sendEvent(WalletFeatureOpenSend(
-      network: _selectedToken.chainId!,
-    ));
+    _analyticsService.sendEvent(
+      WalletFeatureOpenSend(network: _selectedToken.chainId!),
+    );
   }
 
   void _setMaxAmount(String? maxAmount) {
@@ -91,9 +89,7 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
   }
 
   void _pasteAddress() async {
-    final clipboardData = await Clipboard.getData(
-      Clipboard.kTextPlain,
-    );
+    final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
     // await Clipboard.setData(ClipboardData(text: ''));
     _setAddress(clipboardData?.text ?? '');
   }
@@ -142,9 +138,9 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final appKitModal = ModalProvider.of(context).instance;
-    final chainId = appKitModal.selectedChain!.chainId;
-    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-    final chainIcon = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
+    final chainIcon = GetIt.I<IExplorerService>().getChainIcon(
+      appKitModal.selectedChain,
+    );
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final tokenPrice = (_selectedToken.price ?? 0.0).toStringAsFixed(2);
@@ -211,6 +207,7 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
                     children: [
                       Stack(
                         children: [
+                          // TODO rename as TokenButton
                           NetworkButton(
                             serviceStatus: appKitModal.status,
                             chainInfo: appKitModal.selectedChain,
@@ -226,8 +223,9 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
                             child: Container(
                               decoration: BoxDecoration(
                                 color: themeColors.background150,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(30.0)),
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(30.0),
+                                ),
                               ),
                               padding: const EdgeInsets.all(1.0),
                               clipBehavior: Clip.antiAlias,
@@ -244,9 +242,8 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
                       Padding(
                         padding: const EdgeInsets.only(right: 4.0),
                         child: GestureDetector(
-                          onTap: () => _setMaxAmount(
-                            _selectedToken.quantity?.numeric,
-                          ),
+                          onTap: () =>
+                              _setMaxAmount(_selectedToken.quantity?.numeric),
                           child: Row(
                             children: [
                               Text(
@@ -266,7 +263,7 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
                             ],
                           ),
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -324,20 +321,23 @@ class _SendPageState extends State<SendPage> with WidgetsBindingObserver {
                         ? PrimaryButton(
                             title: 'Review send',
                             onTap: () {
-                              _widgetStack.push(PreviewSendPage(
-                                sendData: _sendData,
-                                sendTokenData: _selectedToken,
-                                networkTokenData: _networkToken,
-                              ));
-                            })
+                              _widgetStack.push(
+                                PreviewSendPage(
+                                  sendData: _sendData,
+                                  sendTokenData: _selectedToken,
+                                  networkTokenData: _networkToken,
+                                ),
+                              );
+                            },
+                          )
                         : SecondaryButton(
                             title: (_sendData.amount ?? '').isEmpty
                                 ? 'Add amount'
                                 : (_sendData.address ?? '').isEmpty
-                                    ? 'Add address'
-                                    : _isValidAddress(_sendData.address!)
-                                        ? 'Send'
-                                        : 'Invalid address',
+                                ? 'Add address'
+                                : _isValidAddress(_sendData.address!)
+                                ? 'Send'
+                                : 'Invalid address',
                           ),
                   ),
                 ),
