@@ -1,23 +1,22 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:reown_yttrium/reown_yttrium_method_channel.dart';
 
-class MethodChannelErc6492 {
-  /// The method channel used to interact with the native platform.
-  @visibleForTesting
-  final methodChannel = const MethodChannel('reown_yttrium');
+class Erc6492VerifyClient {
+  final _methodChannel = MethodChannelReownYttrium();
 
   Future<bool> init({
     required String projectId,
     required String networkId,
   }) async {
     try {
-      final bool? result = await methodChannel.invokeMethod<bool>(
-        'erc6492_init',
-        {'projectId': projectId, 'networkId': networkId},
+      final result = await _methodChannel.erc6492Channel.init(
+        projectId: projectId,
+        networkId: networkId,
       );
-      return result!;
+      return result;
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] erc6492_init $e');
+      debugPrint('[$runtimeType] init $e');
       rethrow;
     }
   }
@@ -30,17 +29,16 @@ class MethodChannelErc6492 {
     required String hexStringPrefixedMessageHash,
   }) async {
     try {
-      final bool? result = await methodChannel
-          .invokeMethod<bool>('erc6492_verify', {
-            'projectId': projectId,
-            'networkId': networkId,
-            'signature': signature,
-            'address': address,
-            'hexStringPrefixedMessageHash': hexStringPrefixedMessageHash,
-          });
-      return result!;
+      final result = await _methodChannel.erc6492Channel.verify(
+        projectId: projectId,
+        networkId: networkId,
+        signature: signature,
+        address: address,
+        hexStringPrefixedMessageHash: hexStringPrefixedMessageHash,
+      );
+      return result;
     } on PlatformException catch (e) {
-      debugPrint('[$runtimeType] erc6492_verify $e');
+      debugPrint('[$runtimeType] generateKeypair $e');
       rethrow;
     }
   }

@@ -7,7 +7,6 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import uniffi.yttrium.Erc6492Client
 
 /** ReownYttriumPlugin */
 class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
@@ -22,9 +21,17 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
 
   override fun onMethodCall(call: MethodCall, result: Result) {
     when (call.method) {
+      // === ERC6492 SIGNATURE VERIFICATION ===
       "erc6492_init" -> EIP6492Verifier.init(call.arguments, result)
       "erc6492_verify" -> EIP6492Verifier.verifySignature(call.arguments, result)
       "erc6492_dispose" -> EIP6492Verifier.dispose(call.arguments, result)
+      // === WALLET_PAY ===
+      "wallet_pay_createWalletPay" -> WalletPay.createWalletPay(call.arguments, result)
+      "wallet_pay_getDisplayData" -> WalletPay.getDisplayData(result)
+      "wallet_pay_getPaymentAction" -> WalletPay.getPaymentAction(call.arguments, result)
+      "wallet_pay_getActionFromPaymentOption" -> WalletPay.getActionFromPaymentOption(call.arguments, result)
+      "wallet_pay_finalize" -> WalletPay.finalize(call.arguments, result)
+      "wallet_pay_dispose" -> WalletPay.dispose(result)
       else -> result.notImplemented()
     }
   }

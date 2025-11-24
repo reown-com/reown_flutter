@@ -176,7 +176,7 @@ class ReownAppKit implements IReownAppKit {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<Relay>? relays,
-    List<SessionAuthRequestParams>? authentication,
+    ProposalRequests? proposalRequests,
     List<List<String>>? methods = DEFAULT_METHODS,
   }) async {
     try {
@@ -186,7 +186,7 @@ class ReownAppKit implements IReownAppKit {
         sessionProperties: sessionProperties,
         pairingTopic: pairingTopic,
         relays: relays,
-        authentication: authentication,
+        proposalRequests: proposalRequests,
         methods: methods,
       );
     } catch (e) {

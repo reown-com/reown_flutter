@@ -57,54 +57,55 @@ _ProposalData _$ProposalDataFromJson(
       ?.map(
         (k, e) => MapEntry(k, Namespace.fromJson(e as Map<String, dynamic>)),
       ),
-  requests: json['requests'] == null
+  authentication: (json['authentication'] as List<dynamic>?)
+      ?.map((e) => SessionAuthPayload.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  walletPay: json['wallet_pay'] == null
       ? null
-      : ProposalRequests.fromJson(json['requests'] as Map<String, dynamic>),
+      : WalletPayRequestParams.fromJson(
+          json['wallet_pay'] as Map<String, dynamic>,
+        ),
 );
 
-Map<String, dynamic> _$ProposalDataToJson(_ProposalData instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'expiry': instance.expiry,
-      'relays': instance.relays.map((e) => e.toJson()).toList(),
-      'proposer': instance.proposer.toJson(),
-      'requiredNamespaces': instance.requiredNamespaces.map(
-        (k, e) => MapEntry(k, e.toJson()),
-      ),
-      'optionalNamespaces': instance.optionalNamespaces.map(
-        (k, e) => MapEntry(k, e.toJson()),
-      ),
-      'pairingTopic': instance.pairingTopic,
-      'sessionProperties': ?instance.sessionProperties,
-      'generatedNamespaces': ?instance.generatedNamespaces?.map(
-        (k, e) => MapEntry(k, e.toJson()),
-      ),
-      'requests': ?instance.requests?.toJson(),
-    };
+Map<String, dynamic> _$ProposalDataToJson(
+  _ProposalData instance,
+) => <String, dynamic>{
+  'id': instance.id,
+  'expiry': instance.expiry,
+  'relays': instance.relays.map((e) => e.toJson()).toList(),
+  'proposer': instance.proposer.toJson(),
+  'requiredNamespaces': instance.requiredNamespaces.map(
+    (k, e) => MapEntry(k, e.toJson()),
+  ),
+  'optionalNamespaces': instance.optionalNamespaces.map(
+    (k, e) => MapEntry(k, e.toJson()),
+  ),
+  'pairingTopic': instance.pairingTopic,
+  'sessionProperties': ?instance.sessionProperties,
+  'generatedNamespaces': ?instance.generatedNamespaces?.map(
+    (k, e) => MapEntry(k, e.toJson()),
+  ),
+  'authentication': ?instance.authentication?.map((e) => e.toJson()).toList(),
+  'wallet_pay': ?instance.walletPay?.toJson(),
+};
 
 _ProposalRequests _$ProposalRequestsFromJson(Map<String, dynamic> json) =>
     _ProposalRequests(
       authentication: (json['authentication'] as List<dynamic>?)
-          ?.map((e) => SessionAuthPayload.fromJson(e as Map<String, dynamic>))
+          ?.map(
+            (e) => SessionAuthRequestParams.fromJson(e as Map<String, dynamic>),
+          )
           .toList(),
+      walletPay: json['wallet_pay'] == null
+          ? null
+          : WalletPayRequestParams.fromJson(
+              json['wallet_pay'] as Map<String, dynamic>,
+            ),
     );
 
 Map<String, dynamic> _$ProposalRequestsToJson(
   _ProposalRequests instance,
 ) => <String, dynamic>{
   'authentication': ?instance.authentication?.map((e) => e.toJson()).toList(),
-};
-
-_ProposalRequestsResponses _$ProposalRequestsResponsesFromJson(
-  Map<String, dynamic> json,
-) => _ProposalRequestsResponses(
-  authentication: (json['authentication'] as List<dynamic>?)
-      ?.map((e) => Cacao.fromJson(e as Map<String, dynamic>))
-      .toList(),
-);
-
-Map<String, dynamic> _$ProposalRequestsResponsesToJson(
-  _ProposalRequestsResponses instance,
-) => <String, dynamic>{
-  'authentication': ?instance.authentication?.map((e) => e.toJson()).toList(),
+  'wallet_pay': ?instance.walletPay?.toJson(),
 };

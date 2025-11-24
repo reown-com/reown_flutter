@@ -590,12 +590,25 @@ void main() {
           // Arrange
           final id = 131;
           final request = SessionRequestParams(
-            method: 'ton_sendTransaction',
+            method: 'ton_sendMessage',
             params: [
               {
-                'to': 'EQD0vdSA_NedR9uv6d8Q8N8ukdWVtJ3Fylj80P4g5zg-Lh0',
-                'value': '1000000000',
-                'data': 'te6ccgEBAQEADAAMABQAAAAASGVsbG8hCaTc/g==',
+                'valid_until': 1658253458,
+                'from': 'EQDmnxDMhId6v1Ofg_h5KR5coWlFG6e86Ro3pc7Tq4CA0-Jn',
+                'messages': [
+                  {
+                    'address':
+                        'EQBBJBB3HagsujBqVfqeDUPJ0kXjgTPLWPFFffuNXNiJL0aA',
+                    'amount': '20000000',
+                    'stateInit': 'base64boc...',
+                  },
+                  {
+                    'address':
+                        'EQDmnxDMhId6v1Ofg_h5KR5coWlFG6e86Ro3pc7Tq4CA0-Jn',
+                    'amount': '60000000',
+                    'payload': 'base64boc...',
+                  },
+                ],
               },
             ],
           );
@@ -611,9 +624,9 @@ void main() {
             namespaces: {
               'ton': Namespace(
                 accounts: [
-                  'ton:mainnet:EQD0vdSA_NedR9uv6d8Q8N8ukdWVtJ3Fylj80P4g5zg-Lh0',
+                  'ton:mainnet:EQDmnxDMhId6v1Ofg_h5KR5coWlFG6e86Ro3pc7Tq4CA0-Jn',
                 ],
-                methods: ['ton_sendTransaction'],
+                methods: ['ton_sendMessage'],
                 events: ['chainChanged'],
               ),
             },
@@ -648,7 +661,7 @@ void main() {
           final sessionRequest = SessionRequest(
             id: id,
             topic: 'test_topic_9',
-            method: 'ton_sendTransaction',
+            method: 'ton_sendMessage',
             chainId: 'ton:mainnet',
             params: request.params,
             verifyContext: VerifyContext(
@@ -806,12 +819,25 @@ void main() {
         final request = WcSessionRequestRequest(
           chainId: 'ton:mainnet',
           request: SessionRequestParams(
-            method: 'ton_sendTransaction',
+            method: 'ton_sendMessage',
             params: [
               {
-                'to': 'EQD0vdSA_NedR9uv6d8Q8N8ukdWVtJ3Fylj80P4g5zg-Lh0',
-                'value': '1000000000',
-                'data': 'te6ccgEBAQEADAAMABQAAAAASGVsbG8hCaTc/g==',
+                'valid_until': 1658253458,
+                'from': 'EQDmnxDMhId6v1Ofg_h5KR5coWlFG6e86Ro3pc7Tq4CA0-Jn',
+                'messages': [
+                  {
+                    'address':
+                        'EQBBJBB3HagsujBqVfqeDUPJ0kXjgTPLWPFFffuNXNiJL0aA',
+                    'amount': '20000000',
+                    'stateInit': 'base64boc...',
+                  },
+                  {
+                    'address':
+                        'EQDmnxDMhId6v1Ofg_h5KR5coWlFG6e86Ro3pc7Tq4CA0-Jn',
+                    'amount': '60000000',
+                    'payload': 'base64boc...',
+                  },
+                ],
               },
             ],
           ),
@@ -822,7 +848,7 @@ void main() {
 
         // Assert
         expect(tvfData, isNotNull);
-        expect(tvfData!.rpcMethods, equals(['ton_sendTransaction']));
+        expect(tvfData!.rpcMethods, equals(['ton_sendMessage']));
         expect(tvfData.chainId, equals('ton:mainnet'));
         expect(tvfData.contractAddresses, isNull);
         expect(tvfData.requestParams, equals(request.request.params));
@@ -877,12 +903,25 @@ void main() {
         final request = WcSessionRequestRequest(
           chainId: 'ton:mainnet',
           request: SessionRequestParams(
-            method: 'ton_sendTransaction',
+            method: 'ton_sendMessage',
             params: [
               {
-                'to': 'EQD0vdSA_NedR9uv6d8Q8N8ukdWVtJ3Fylj80P4g5zg-Lh0',
-                'value': '1000000000',
-                'data': 'te6ccgEBAQEADAAMABQAAAAASGVsbG8hCaTc/g==',
+                'valid_until': 1658253458,
+                'from': 'EQDmnxDMhId6v1Ofg_h5KR5coWlFG6e86Ro3pc7Tq4CA0-Jn',
+                'messages': [
+                  {
+                    'address':
+                        'EQBBJBB3HagsujBqVfqeDUPJ0kXjgTPLWPFFffuNXNiJL0aA',
+                    'amount': '20000000',
+                    'stateInit': 'base64boc...',
+                  },
+                  {
+                    'address':
+                        'EQDmnxDMhId6v1Ofg_h5KR5coWlFG6e86Ro3pc7Tq4CA0-Jn',
+                    'amount': '60000000',
+                    'payload': 'base64boc...',
+                  },
+                ],
               },
             ],
           ),
@@ -904,7 +943,7 @@ void main() {
 
         // Assert
         expect(tvfData, isNotNull);
-        expect(tvfData!.rpcMethods, equals(['ton_sendTransaction']));
+        expect(tvfData!.rpcMethods, equals(['ton_sendMessage']));
         expect(tvfData.chainId, equals('ton:mainnet'));
         expect(tvfData.contractAddresses, isNull);
         expect(tvfData.requestParams, equals(request.request.params));

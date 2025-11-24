@@ -55,9 +55,7 @@
 -keepattributes *Annotation*
 
 # Preserve the uniffi generated classes
--keep class uniffi.yttrium.** { *; }
--keep class com.reown.reown_yttrium.** { *; }
--dontwarn uniffi.yttrium.**
+-keep class uniffi.** { *; }
 
 # Preserve all public and protected fields and methods
 -keepclassmembers class ** {

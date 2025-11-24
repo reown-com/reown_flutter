@@ -9,6 +9,7 @@ class StringConstants {
       'We made this Example Wallet App to help developers integrate the Reown\'s WalletKit SDK and provide an amazing experience to their users.';
   static const String getStarted = 'Get Started';
   static const String wouldLikeToConnect = 'would like to connect';
+  static const String wouldLikeToPay = 'would like you to pay';
   static const String message = 'Message';
   static const String invalidUri = 'Invalid URI';
 

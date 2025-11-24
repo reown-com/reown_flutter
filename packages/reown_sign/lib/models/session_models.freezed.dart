@@ -307,7 +307,7 @@ as List<String>,
 /// @nodoc
 mixin _$SessionData {
 
- String get topic; String get pairingTopic; Relay get relay; int get expiry; bool get acknowledged; String get controller; Map<String, Namespace> get namespaces; ConnectionMetadata get self; ConnectionMetadata get peer; Map<String, RequiredNamespace>? get requiredNamespaces; Map<String, RequiredNamespace>? get optionalNamespaces; Map<String, String>? get sessionProperties; List<Cacao>? get authentication; TransportType get transportType;
+ String get topic; String get pairingTopic; Relay get relay; int get expiry; bool get acknowledged; String get controller; Map<String, Namespace> get namespaces; ConnectionMetadata get self; ConnectionMetadata get peer; Map<String, RequiredNamespace>? get requiredNamespaces; Map<String, RequiredNamespace>? get optionalNamespaces; Map<String, String>? get sessionProperties; List<Cacao>? get authentication; WalletPayResult? get walletPayResult; TransportType get transportType;
 /// Create a copy of SessionData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -320,16 +320,16 @@ $SessionDataCopyWith<SessionData> get copyWith => _$SessionDataCopyWithImpl<Sess
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionData&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.pairingTopic, pairingTopic) || other.pairingTopic == pairingTopic)&&(identical(other.relay, relay) || other.relay == relay)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.acknowledged, acknowledged) || other.acknowledged == acknowledged)&&(identical(other.controller, controller) || other.controller == controller)&&const DeepCollectionEquality().equals(other.namespaces, namespaces)&&(identical(other.self, self) || other.self == self)&&(identical(other.peer, peer) || other.peer == peer)&&const DeepCollectionEquality().equals(other.requiredNamespaces, requiredNamespaces)&&const DeepCollectionEquality().equals(other.optionalNamespaces, optionalNamespaces)&&const DeepCollectionEquality().equals(other.sessionProperties, sessionProperties)&&const DeepCollectionEquality().equals(other.authentication, authentication)&&(identical(other.transportType, transportType) || other.transportType == transportType));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionData&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.pairingTopic, pairingTopic) || other.pairingTopic == pairingTopic)&&(identical(other.relay, relay) || other.relay == relay)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.acknowledged, acknowledged) || other.acknowledged == acknowledged)&&(identical(other.controller, controller) || other.controller == controller)&&const DeepCollectionEquality().equals(other.namespaces, namespaces)&&(identical(other.self, self) || other.self == self)&&(identical(other.peer, peer) || other.peer == peer)&&const DeepCollectionEquality().equals(other.requiredNamespaces, requiredNamespaces)&&const DeepCollectionEquality().equals(other.optionalNamespaces, optionalNamespaces)&&const DeepCollectionEquality().equals(other.sessionProperties, sessionProperties)&&const DeepCollectionEquality().equals(other.authentication, authentication)&&(identical(other.walletPayResult, walletPayResult) || other.walletPayResult == walletPayResult)&&(identical(other.transportType, transportType) || other.transportType == transportType));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,topic,pairingTopic,relay,expiry,acknowledged,controller,const DeepCollectionEquality().hash(namespaces),self,peer,const DeepCollectionEquality().hash(requiredNamespaces),const DeepCollectionEquality().hash(optionalNamespaces),const DeepCollectionEquality().hash(sessionProperties),const DeepCollectionEquality().hash(authentication),transportType);
+int get hashCode => Object.hash(runtimeType,topic,pairingTopic,relay,expiry,acknowledged,controller,const DeepCollectionEquality().hash(namespaces),self,peer,const DeepCollectionEquality().hash(requiredNamespaces),const DeepCollectionEquality().hash(optionalNamespaces),const DeepCollectionEquality().hash(sessionProperties),const DeepCollectionEquality().hash(authentication),walletPayResult,transportType);
 
 @override
 String toString() {
-  return 'SessionData(topic: $topic, pairingTopic: $pairingTopic, relay: $relay, expiry: $expiry, acknowledged: $acknowledged, controller: $controller, namespaces: $namespaces, self: $self, peer: $peer, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, authentication: $authentication, transportType: $transportType)';
+  return 'SessionData(topic: $topic, pairingTopic: $pairingTopic, relay: $relay, expiry: $expiry, acknowledged: $acknowledged, controller: $controller, namespaces: $namespaces, self: $self, peer: $peer, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, authentication: $authentication, walletPayResult: $walletPayResult, transportType: $transportType)';
 }
 
 
@@ -340,11 +340,11 @@ abstract mixin class $SessionDataCopyWith<$Res>  {
   factory $SessionDataCopyWith(SessionData value, $Res Function(SessionData) _then) = _$SessionDataCopyWithImpl;
 @useResult
 $Res call({
- String topic, String pairingTopic, Relay relay, int expiry, bool acknowledged, String controller, Map<String, Namespace> namespaces, ConnectionMetadata self, ConnectionMetadata peer, Map<String, RequiredNamespace>? requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, List<Cacao>? authentication, TransportType transportType
+ String topic, String pairingTopic, Relay relay, int expiry, bool acknowledged, String controller, Map<String, Namespace> namespaces, ConnectionMetadata self, ConnectionMetadata peer, Map<String, RequiredNamespace>? requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, List<Cacao>? authentication, WalletPayResult? walletPayResult, TransportType transportType
 });
 
 
-$ConnectionMetadataCopyWith<$Res> get self;$ConnectionMetadataCopyWith<$Res> get peer;
+$ConnectionMetadataCopyWith<$Res> get self;$ConnectionMetadataCopyWith<$Res> get peer;$WalletPayResultCopyWith<$Res>? get walletPayResult;
 
 }
 /// @nodoc
@@ -357,7 +357,7 @@ class _$SessionDataCopyWithImpl<$Res>
 
 /// Create a copy of SessionData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? topic = null,Object? pairingTopic = null,Object? relay = null,Object? expiry = null,Object? acknowledged = null,Object? controller = null,Object? namespaces = null,Object? self = null,Object? peer = null,Object? requiredNamespaces = freezed,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? authentication = freezed,Object? transportType = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? topic = null,Object? pairingTopic = null,Object? relay = null,Object? expiry = null,Object? acknowledged = null,Object? controller = null,Object? namespaces = null,Object? self = null,Object? peer = null,Object? requiredNamespaces = freezed,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? authentication = freezed,Object? walletPayResult = freezed,Object? transportType = null,}) {
   return _then(_self.copyWith(
 topic: null == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
 as String,pairingTopic: null == pairingTopic ? _self.pairingTopic : pairingTopic // ignore: cast_nullable_to_non_nullable
@@ -372,7 +372,8 @@ as ConnectionMetadata,requiredNamespaces: freezed == requiredNamespaces ? _self.
 as Map<String, RequiredNamespace>?,optionalNamespaces: freezed == optionalNamespaces ? _self.optionalNamespaces : optionalNamespaces // ignore: cast_nullable_to_non_nullable
 as Map<String, RequiredNamespace>?,sessionProperties: freezed == sessionProperties ? _self.sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
 as Map<String, String>?,authentication: freezed == authentication ? _self.authentication : authentication // ignore: cast_nullable_to_non_nullable
-as List<Cacao>?,transportType: null == transportType ? _self.transportType : transportType // ignore: cast_nullable_to_non_nullable
+as List<Cacao>?,walletPayResult: freezed == walletPayResult ? _self.walletPayResult : walletPayResult // ignore: cast_nullable_to_non_nullable
+as WalletPayResult?,transportType: null == transportType ? _self.transportType : transportType // ignore: cast_nullable_to_non_nullable
 as TransportType,
   ));
 }
@@ -393,6 +394,18 @@ $ConnectionMetadataCopyWith<$Res> get peer {
   
   return $ConnectionMetadataCopyWith<$Res>(_self.peer, (value) {
     return _then(_self.copyWith(peer: value));
+  });
+}/// Create a copy of SessionData
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WalletPayResultCopyWith<$Res>? get walletPayResult {
+    if (_self.walletPayResult == null) {
+    return null;
+  }
+
+  return $WalletPayResultCopyWith<$Res>(_self.walletPayResult!, (value) {
+    return _then(_self.copyWith(walletPayResult: value));
   });
 }
 }
@@ -473,10 +486,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String topic,  String pairingTopic,  Relay relay,  int expiry,  bool acknowledged,  String controller,  Map<String, Namespace> namespaces,  ConnectionMetadata self,  ConnectionMetadata peer,  Map<String, RequiredNamespace>? requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  List<Cacao>? authentication,  TransportType transportType)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String topic,  String pairingTopic,  Relay relay,  int expiry,  bool acknowledged,  String controller,  Map<String, Namespace> namespaces,  ConnectionMetadata self,  ConnectionMetadata peer,  Map<String, RequiredNamespace>? requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  List<Cacao>? authentication,  WalletPayResult? walletPayResult,  TransportType transportType)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SessionData() when $default != null:
-return $default(_that.topic,_that.pairingTopic,_that.relay,_that.expiry,_that.acknowledged,_that.controller,_that.namespaces,_that.self,_that.peer,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.authentication,_that.transportType);case _:
+return $default(_that.topic,_that.pairingTopic,_that.relay,_that.expiry,_that.acknowledged,_that.controller,_that.namespaces,_that.self,_that.peer,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.authentication,_that.walletPayResult,_that.transportType);case _:
   return orElse();
 
 }
@@ -494,10 +507,10 @@ return $default(_that.topic,_that.pairingTopic,_that.relay,_that.expiry,_that.ac
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String topic,  String pairingTopic,  Relay relay,  int expiry,  bool acknowledged,  String controller,  Map<String, Namespace> namespaces,  ConnectionMetadata self,  ConnectionMetadata peer,  Map<String, RequiredNamespace>? requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  List<Cacao>? authentication,  TransportType transportType)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String topic,  String pairingTopic,  Relay relay,  int expiry,  bool acknowledged,  String controller,  Map<String, Namespace> namespaces,  ConnectionMetadata self,  ConnectionMetadata peer,  Map<String, RequiredNamespace>? requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  List<Cacao>? authentication,  WalletPayResult? walletPayResult,  TransportType transportType)  $default,) {final _that = this;
 switch (_that) {
 case _SessionData():
-return $default(_that.topic,_that.pairingTopic,_that.relay,_that.expiry,_that.acknowledged,_that.controller,_that.namespaces,_that.self,_that.peer,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.authentication,_that.transportType);}
+return $default(_that.topic,_that.pairingTopic,_that.relay,_that.expiry,_that.acknowledged,_that.controller,_that.namespaces,_that.self,_that.peer,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.authentication,_that.walletPayResult,_that.transportType);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -511,10 +524,10 @@ return $default(_that.topic,_that.pairingTopic,_that.relay,_that.expiry,_that.ac
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String topic,  String pairingTopic,  Relay relay,  int expiry,  bool acknowledged,  String controller,  Map<String, Namespace> namespaces,  ConnectionMetadata self,  ConnectionMetadata peer,  Map<String, RequiredNamespace>? requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  List<Cacao>? authentication,  TransportType transportType)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String topic,  String pairingTopic,  Relay relay,  int expiry,  bool acknowledged,  String controller,  Map<String, Namespace> namespaces,  ConnectionMetadata self,  ConnectionMetadata peer,  Map<String, RequiredNamespace>? requiredNamespaces,  Map<String, RequiredNamespace>? optionalNamespaces,  Map<String, String>? sessionProperties,  List<Cacao>? authentication,  WalletPayResult? walletPayResult,  TransportType transportType)?  $default,) {final _that = this;
 switch (_that) {
 case _SessionData() when $default != null:
-return $default(_that.topic,_that.pairingTopic,_that.relay,_that.expiry,_that.acknowledged,_that.controller,_that.namespaces,_that.self,_that.peer,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.authentication,_that.transportType);case _:
+return $default(_that.topic,_that.pairingTopic,_that.relay,_that.expiry,_that.acknowledged,_that.controller,_that.namespaces,_that.self,_that.peer,_that.requiredNamespaces,_that.optionalNamespaces,_that.sessionProperties,_that.authentication,_that.walletPayResult,_that.transportType);case _:
   return null;
 
 }
@@ -526,7 +539,7 @@ return $default(_that.topic,_that.pairingTopic,_that.relay,_that.expiry,_that.ac
 
 @JsonSerializable(includeIfNull: false)
 class _SessionData implements SessionData {
-  const _SessionData({required this.topic, required this.pairingTopic, required this.relay, required this.expiry, required this.acknowledged, required this.controller, required final  Map<String, Namespace> namespaces, required this.self, required this.peer, final  Map<String, RequiredNamespace>? requiredNamespaces, final  Map<String, RequiredNamespace>? optionalNamespaces, final  Map<String, String>? sessionProperties, final  List<Cacao>? authentication, this.transportType = TransportType.relay}): _namespaces = namespaces,_requiredNamespaces = requiredNamespaces,_optionalNamespaces = optionalNamespaces,_sessionProperties = sessionProperties,_authentication = authentication;
+  const _SessionData({required this.topic, required this.pairingTopic, required this.relay, required this.expiry, required this.acknowledged, required this.controller, required final  Map<String, Namespace> namespaces, required this.self, required this.peer, final  Map<String, RequiredNamespace>? requiredNamespaces, final  Map<String, RequiredNamespace>? optionalNamespaces, final  Map<String, String>? sessionProperties, final  List<Cacao>? authentication, this.walletPayResult, this.transportType = TransportType.relay}): _namespaces = namespaces,_requiredNamespaces = requiredNamespaces,_optionalNamespaces = optionalNamespaces,_sessionProperties = sessionProperties,_authentication = authentication;
   factory _SessionData.fromJson(Map<String, dynamic> json) => _$SessionDataFromJson(json);
 
 @override final  String topic;
@@ -580,6 +593,7 @@ class _SessionData implements SessionData {
   return EqualUnmodifiableListView(value);
 }
 
+@override final  WalletPayResult? walletPayResult;
 @override@JsonKey() final  TransportType transportType;
 
 /// Create a copy of SessionData
@@ -595,16 +609,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionData&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.pairingTopic, pairingTopic) || other.pairingTopic == pairingTopic)&&(identical(other.relay, relay) || other.relay == relay)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.acknowledged, acknowledged) || other.acknowledged == acknowledged)&&(identical(other.controller, controller) || other.controller == controller)&&const DeepCollectionEquality().equals(other._namespaces, _namespaces)&&(identical(other.self, self) || other.self == self)&&(identical(other.peer, peer) || other.peer == peer)&&const DeepCollectionEquality().equals(other._requiredNamespaces, _requiredNamespaces)&&const DeepCollectionEquality().equals(other._optionalNamespaces, _optionalNamespaces)&&const DeepCollectionEquality().equals(other._sessionProperties, _sessionProperties)&&const DeepCollectionEquality().equals(other._authentication, _authentication)&&(identical(other.transportType, transportType) || other.transportType == transportType));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionData&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.pairingTopic, pairingTopic) || other.pairingTopic == pairingTopic)&&(identical(other.relay, relay) || other.relay == relay)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.acknowledged, acknowledged) || other.acknowledged == acknowledged)&&(identical(other.controller, controller) || other.controller == controller)&&const DeepCollectionEquality().equals(other._namespaces, _namespaces)&&(identical(other.self, self) || other.self == self)&&(identical(other.peer, peer) || other.peer == peer)&&const DeepCollectionEquality().equals(other._requiredNamespaces, _requiredNamespaces)&&const DeepCollectionEquality().equals(other._optionalNamespaces, _optionalNamespaces)&&const DeepCollectionEquality().equals(other._sessionProperties, _sessionProperties)&&const DeepCollectionEquality().equals(other._authentication, _authentication)&&(identical(other.walletPayResult, walletPayResult) || other.walletPayResult == walletPayResult)&&(identical(other.transportType, transportType) || other.transportType == transportType));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,topic,pairingTopic,relay,expiry,acknowledged,controller,const DeepCollectionEquality().hash(_namespaces),self,peer,const DeepCollectionEquality().hash(_requiredNamespaces),const DeepCollectionEquality().hash(_optionalNamespaces),const DeepCollectionEquality().hash(_sessionProperties),const DeepCollectionEquality().hash(_authentication),transportType);
+int get hashCode => Object.hash(runtimeType,topic,pairingTopic,relay,expiry,acknowledged,controller,const DeepCollectionEquality().hash(_namespaces),self,peer,const DeepCollectionEquality().hash(_requiredNamespaces),const DeepCollectionEquality().hash(_optionalNamespaces),const DeepCollectionEquality().hash(_sessionProperties),const DeepCollectionEquality().hash(_authentication),walletPayResult,transportType);
 
 @override
 String toString() {
-  return 'SessionData(topic: $topic, pairingTopic: $pairingTopic, relay: $relay, expiry: $expiry, acknowledged: $acknowledged, controller: $controller, namespaces: $namespaces, self: $self, peer: $peer, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, authentication: $authentication, transportType: $transportType)';
+  return 'SessionData(topic: $topic, pairingTopic: $pairingTopic, relay: $relay, expiry: $expiry, acknowledged: $acknowledged, controller: $controller, namespaces: $namespaces, self: $self, peer: $peer, requiredNamespaces: $requiredNamespaces, optionalNamespaces: $optionalNamespaces, sessionProperties: $sessionProperties, authentication: $authentication, walletPayResult: $walletPayResult, transportType: $transportType)';
 }
 
 
@@ -615,11 +629,11 @@ abstract mixin class _$SessionDataCopyWith<$Res> implements $SessionDataCopyWith
   factory _$SessionDataCopyWith(_SessionData value, $Res Function(_SessionData) _then) = __$SessionDataCopyWithImpl;
 @override @useResult
 $Res call({
- String topic, String pairingTopic, Relay relay, int expiry, bool acknowledged, String controller, Map<String, Namespace> namespaces, ConnectionMetadata self, ConnectionMetadata peer, Map<String, RequiredNamespace>? requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, List<Cacao>? authentication, TransportType transportType
+ String topic, String pairingTopic, Relay relay, int expiry, bool acknowledged, String controller, Map<String, Namespace> namespaces, ConnectionMetadata self, ConnectionMetadata peer, Map<String, RequiredNamespace>? requiredNamespaces, Map<String, RequiredNamespace>? optionalNamespaces, Map<String, String>? sessionProperties, List<Cacao>? authentication, WalletPayResult? walletPayResult, TransportType transportType
 });
 
 
-@override $ConnectionMetadataCopyWith<$Res> get self;@override $ConnectionMetadataCopyWith<$Res> get peer;
+@override $ConnectionMetadataCopyWith<$Res> get self;@override $ConnectionMetadataCopyWith<$Res> get peer;@override $WalletPayResultCopyWith<$Res>? get walletPayResult;
 
 }
 /// @nodoc
@@ -632,7 +646,7 @@ class __$SessionDataCopyWithImpl<$Res>
 
 /// Create a copy of SessionData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? topic = null,Object? pairingTopic = null,Object? relay = null,Object? expiry = null,Object? acknowledged = null,Object? controller = null,Object? namespaces = null,Object? self = null,Object? peer = null,Object? requiredNamespaces = freezed,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? authentication = freezed,Object? transportType = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? topic = null,Object? pairingTopic = null,Object? relay = null,Object? expiry = null,Object? acknowledged = null,Object? controller = null,Object? namespaces = null,Object? self = null,Object? peer = null,Object? requiredNamespaces = freezed,Object? optionalNamespaces = freezed,Object? sessionProperties = freezed,Object? authentication = freezed,Object? walletPayResult = freezed,Object? transportType = null,}) {
   return _then(_SessionData(
 topic: null == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
 as String,pairingTopic: null == pairingTopic ? _self.pairingTopic : pairingTopic // ignore: cast_nullable_to_non_nullable
@@ -647,7 +661,8 @@ as ConnectionMetadata,requiredNamespaces: freezed == requiredNamespaces ? _self.
 as Map<String, RequiredNamespace>?,optionalNamespaces: freezed == optionalNamespaces ? _self._optionalNamespaces : optionalNamespaces // ignore: cast_nullable_to_non_nullable
 as Map<String, RequiredNamespace>?,sessionProperties: freezed == sessionProperties ? _self._sessionProperties : sessionProperties // ignore: cast_nullable_to_non_nullable
 as Map<String, String>?,authentication: freezed == authentication ? _self._authentication : authentication // ignore: cast_nullable_to_non_nullable
-as List<Cacao>?,transportType: null == transportType ? _self.transportType : transportType // ignore: cast_nullable_to_non_nullable
+as List<Cacao>?,walletPayResult: freezed == walletPayResult ? _self.walletPayResult : walletPayResult // ignore: cast_nullable_to_non_nullable
+as WalletPayResult?,transportType: null == transportType ? _self.transportType : transportType // ignore: cast_nullable_to_non_nullable
 as TransportType,
   ));
 }
@@ -669,6 +684,18 @@ $ConnectionMetadataCopyWith<$Res> get peer {
   
   return $ConnectionMetadataCopyWith<$Res>(_self.peer, (value) {
     return _then(_self.copyWith(peer: value));
+  });
+}/// Create a copy of SessionData
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$WalletPayResultCopyWith<$Res>? get walletPayResult {
+    if (_self.walletPayResult == null) {
+    return null;
+  }
+
+  return $WalletPayResultCopyWith<$Res>(_self.walletPayResult!, (value) {
+    return _then(_self.copyWith(walletPayResult: value));
   });
 }
 }
@@ -1484,6 +1511,280 @@ class __$SessionEventParamsCopyWithImpl<$Res>
 name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as dynamic,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$WalletPayResult {
+
+ String get version; String get txid; String get recipient; String get asset; String get amount;// Hex string
+ String? get orderId;
+/// Create a copy of WalletPayResult
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$WalletPayResultCopyWith<WalletPayResult> get copyWith => _$WalletPayResultCopyWithImpl<WalletPayResult>(this as WalletPayResult, _$identity);
+
+  /// Serializes this WalletPayResult to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WalletPayResult&&(identical(other.version, version) || other.version == version)&&(identical(other.txid, txid) || other.txid == txid)&&(identical(other.recipient, recipient) || other.recipient == recipient)&&(identical(other.asset, asset) || other.asset == asset)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.orderId, orderId) || other.orderId == orderId));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,version,txid,recipient,asset,amount,orderId);
+
+@override
+String toString() {
+  return 'WalletPayResult(version: $version, txid: $txid, recipient: $recipient, asset: $asset, amount: $amount, orderId: $orderId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $WalletPayResultCopyWith<$Res>  {
+  factory $WalletPayResultCopyWith(WalletPayResult value, $Res Function(WalletPayResult) _then) = _$WalletPayResultCopyWithImpl;
+@useResult
+$Res call({
+ String version, String txid, String recipient, String asset, String amount, String? orderId
+});
+
+
+
+
+}
+/// @nodoc
+class _$WalletPayResultCopyWithImpl<$Res>
+    implements $WalletPayResultCopyWith<$Res> {
+  _$WalletPayResultCopyWithImpl(this._self, this._then);
+
+  final WalletPayResult _self;
+  final $Res Function(WalletPayResult) _then;
+
+/// Create a copy of WalletPayResult
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? version = null,Object? txid = null,Object? recipient = null,Object? asset = null,Object? amount = null,Object? orderId = freezed,}) {
+  return _then(_self.copyWith(
+version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as String,txid: null == txid ? _self.txid : txid // ignore: cast_nullable_to_non_nullable
+as String,recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
+as String,asset: null == asset ? _self.asset : asset // ignore: cast_nullable_to_non_nullable
+as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
+as String,orderId: freezed == orderId ? _self.orderId : orderId // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [WalletPayResult].
+extension WalletPayResultPatterns on WalletPayResult {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _WalletPayResult value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _WalletPayResult() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _WalletPayResult value)  $default,){
+final _that = this;
+switch (_that) {
+case _WalletPayResult():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _WalletPayResult value)?  $default,){
+final _that = this;
+switch (_that) {
+case _WalletPayResult() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String version,  String txid,  String recipient,  String asset,  String amount,  String? orderId)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _WalletPayResult() when $default != null:
+return $default(_that.version,_that.txid,_that.recipient,_that.asset,_that.amount,_that.orderId);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String version,  String txid,  String recipient,  String asset,  String amount,  String? orderId)  $default,) {final _that = this;
+switch (_that) {
+case _WalletPayResult():
+return $default(_that.version,_that.txid,_that.recipient,_that.asset,_that.amount,_that.orderId);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String version,  String txid,  String recipient,  String asset,  String amount,  String? orderId)?  $default,) {final _that = this;
+switch (_that) {
+case _WalletPayResult() when $default != null:
+return $default(_that.version,_that.txid,_that.recipient,_that.asset,_that.amount,_that.orderId);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _WalletPayResult implements WalletPayResult {
+  const _WalletPayResult({required this.version, required this.txid, required this.recipient, required this.asset, required this.amount, this.orderId});
+  factory _WalletPayResult.fromJson(Map<String, dynamic> json) => _$WalletPayResultFromJson(json);
+
+@override final  String version;
+@override final  String txid;
+@override final  String recipient;
+@override final  String asset;
+@override final  String amount;
+// Hex string
+@override final  String? orderId;
+
+/// Create a copy of WalletPayResult
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$WalletPayResultCopyWith<_WalletPayResult> get copyWith => __$WalletPayResultCopyWithImpl<_WalletPayResult>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$WalletPayResultToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _WalletPayResult&&(identical(other.version, version) || other.version == version)&&(identical(other.txid, txid) || other.txid == txid)&&(identical(other.recipient, recipient) || other.recipient == recipient)&&(identical(other.asset, asset) || other.asset == asset)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.orderId, orderId) || other.orderId == orderId));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,version,txid,recipient,asset,amount,orderId);
+
+@override
+String toString() {
+  return 'WalletPayResult(version: $version, txid: $txid, recipient: $recipient, asset: $asset, amount: $amount, orderId: $orderId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$WalletPayResultCopyWith<$Res> implements $WalletPayResultCopyWith<$Res> {
+  factory _$WalletPayResultCopyWith(_WalletPayResult value, $Res Function(_WalletPayResult) _then) = __$WalletPayResultCopyWithImpl;
+@override @useResult
+$Res call({
+ String version, String txid, String recipient, String asset, String amount, String? orderId
+});
+
+
+
+
+}
+/// @nodoc
+class __$WalletPayResultCopyWithImpl<$Res>
+    implements _$WalletPayResultCopyWith<$Res> {
+  __$WalletPayResultCopyWithImpl(this._self, this._then);
+
+  final _WalletPayResult _self;
+  final $Res Function(_WalletPayResult) _then;
+
+/// Create a copy of WalletPayResult
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? version = null,Object? txid = null,Object? recipient = null,Object? asset = null,Object? amount = null,Object? orderId = freezed,}) {
+  return _then(_WalletPayResult(
+version: null == version ? _self.version : version // ignore: cast_nullable_to_non_nullable
+as String,txid: null == txid ? _self.txid : txid // ignore: cast_nullable_to_non_nullable
+as String,recipient: null == recipient ? _self.recipient : recipient // ignore: cast_nullable_to_non_nullable
+as String,asset: null == asset ? _self.asset : asset // ignore: cast_nullable_to_non_nullable
+as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
+as String,orderId: freezed == orderId ? _self.orderId : orderId // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

@@ -1,5 +1,6 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-import 'package:reown_yttrium/clients/erc6492_client.dart';
+import 'package:reown_yttrium/channels/erc6492_channel.dart';
+import 'package:reown_yttrium/channels/wallet_pay_channel.dart';
 
 import 'reown_yttrium_method_channel.dart';
 
@@ -25,4 +26,5 @@ abstract class ReownYttriumPlatform extends PlatformInterface {
   }
 
   abstract final MethodChannelErc6492 erc6492Channel;
+  abstract final MethodChannelWalletPay walletPayChannel;
 }

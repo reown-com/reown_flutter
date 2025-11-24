@@ -49,6 +49,14 @@ _WcSessionProposeRequest _$WcSessionProposeRequestFromJson(
   requests: json['requests'] == null
       ? null
       : ProposalRequests.fromJson(json['requests'] as Map<String, dynamic>),
+  authentication: (json['authentication'] as List<dynamic>?)
+      ?.map((e) => SessionAuthPayload.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  walletPay: json['wallet_pay'] == null
+      ? null
+      : WalletPayRequestParams.fromJson(
+          json['wallet_pay'] as Map<String, dynamic>,
+        ),
 );
 
 Map<String, dynamic> _$WcSessionProposeRequestToJson(
@@ -64,6 +72,8 @@ Map<String, dynamic> _$WcSessionProposeRequestToJson(
   'sessionProperties': ?instance.sessionProperties,
   'proposer': instance.proposer.toJson(),
   'requests': ?instance.requests?.toJson(),
+  'authentication': ?instance.authentication?.map((e) => e.toJson()).toList(),
+  'wallet_pay': ?instance.walletPay?.toJson(),
 };
 
 _WcSessionSettleRequest _$WcSessionSettleRequestFromJson(

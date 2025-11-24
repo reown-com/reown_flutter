@@ -448,6 +448,17 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   }
 
   @override
+  Future<WalletPayRequest> createWalletPayRequest({
+    required Map<String, dynamic> rawData,
+  }) async {
+    try {
+      return await reOwnSign.createWalletPayRequest(rawData: rawData);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
   IGenericStore<AuthPublicKey> get authKeys => reOwnSign.authKeys;
 
   @override

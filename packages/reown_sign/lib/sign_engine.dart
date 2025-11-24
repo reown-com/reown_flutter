@@ -142,8 +142,9 @@ class ReownSign implements IReownSign {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<Relay>? relays,
-    List<SessionAuthRequestParams>? authentication,
-    // WalletPayParams? walletPay;
+    // List<SessionAuthRequestParams>? authentication,
+    // WalletPayRequestParams? walletPay,
+    ProposalRequests? proposalRequests,
     List<List<String>>? methods = DEFAULT_METHODS,
   }) async {
     _checkInitialized();
@@ -159,7 +160,8 @@ class ReownSign implements IReownSign {
     String? pTopic = pairingTopic;
     Uri? uri;
 
-    final expiryFromAuthentication = authentication?.firstOrNull?.expiry;
+    final expiryFromAuthentication =
+        proposalRequests?.authentication?.firstOrNull?.expiry;
     final method = MethodConstants.WC_SESSION_PROPOSE;
     final ttl = MethodConstants.RPC_OPTS[method]?['req']?.ttl;
     final expiry =
@@ -195,16 +197,15 @@ class ReownSign implements IReownSign {
       optionalNamespaces: mergedNamespaces,
       proposer: ConnectionMetadata(publicKey: publicKey, metadata: metadata),
       sessionProperties: sessionProperties,
-      requests: ProposalRequests(
-        authentication: authentication
-            ?.map(
-              (params) => SessionAuthPayload.fromRequestParams(params).copyWith(
-                type: params.type?.t ?? CacaoHeader.CAIP122,
-                requestId: id.toString(),
-              ),
-            )
-            .toList(),
-      ),
+      authentication: proposalRequests?.authentication
+          ?.map(
+            (params) => SessionAuthPayload.fromRequestParams(params).copyWith(
+              type: params.type?.t ?? CacaoHeader.CAIP122,
+              requestId: id.toString(),
+            ),
+          )
+          .toList(),
+      walletPay: proposalRequests?.walletPay,
     );
 
     final ProposalData proposal = ProposalData(
@@ -216,7 +217,8 @@ class ReownSign implements IReownSign {
       optionalNamespaces: request.optionalNamespaces ?? {},
       sessionProperties: request.sessionProperties,
       pairingTopic: pTopic,
-      requests: request.requests,
+      authentication: request.authentication,
+      walletPay: request.walletPay,
     );
     await _setProposal(id, proposal);
 
@@ -359,7 +361,7 @@ class ReownSign implements IReownSign {
       sessionProperties: proposal.sessionProperties,
       transportType: TransportType.relay,
       authentication: proposalRequestsResponses?.authentication,
-      // walletPayResult: proposalRequestsResponses?.walletPayResult,
+      walletPayResult: proposalRequestsResponses?.walletPayResult,
     );
 
     onSessionConnect.broadcast(SessionConnect(session));
@@ -1057,7 +1059,8 @@ class ReownSign implements IReownSign {
         sessionProperties: proposeRequest.sessionProperties,
         pairingTopic: topic,
         generatedNamespaces: namespaces,
-        requests: proposeRequest.requests,
+        authentication: proposeRequest.authentication,
+        walletPay: proposeRequest.walletPay,
       );
 
       await _setProposal(payload.id, proposal);
@@ -1117,7 +1120,7 @@ class ReownSign implements IReownSign {
         peer: request.controller,
         transportType: TransportType.relay,
         authentication: request.proposalRequestsResponses?.authentication,
-        // walletPayResult: request.proposalRequestsResponses?.walletPay,
+        walletPayResult: request.proposalRequestsResponses?.walletPayResult,
       );
 
       // Update all the things: session, expiry, metadata, pairing
@@ -2669,6 +2672,20 @@ class ReownSign implements IReownSign {
         encodeOptions: encodeOpts,
         rpcOptions: rpcOpts?['autoReject'],
       );
+    }
+  }
+
+  @override
+  Future<WalletPayRequest> createWalletPayRequest({
+    required Map<String, dynamic> rawData,
+  }) async {
+    try {
+      core.logger.d(
+        '[$runtimeType] createWalletPayRequest ${jsonEncode(rawData)}',
+      );
+      return await core.walletPayClient.createWalletPay(rawData: rawData);
+    } catch (e) {
+      rethrow;
     }
   }
 

@@ -93,7 +93,7 @@ class SignClientTestWrapper implements IReownSign {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<Relay>? relays,
-    List<SessionAuthRequestParams>? authentication,
+    ProposalRequests? proposalRequests,
     List<List<String>>? methods = ReownSign.DEFAULT_METHODS,
   }) async {
     try {
@@ -103,7 +103,7 @@ class SignClientTestWrapper implements IReownSign {
         sessionProperties: sessionProperties,
         pairingTopic: pairingTopic,
         relays: relays,
-        authentication: authentication,
+        proposalRequests: proposalRequests,
         methods: methods,
       );
     } catch (e) {
@@ -471,6 +471,17 @@ class SignClientTestWrapper implements IReownSign {
   Map<int, PendingSessionAuthRequest> getPendingSessionAuthRequests() {
     try {
       return client.getPendingSessionAuthRequests();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<WalletPayRequest> createWalletPayRequest({
+    required Map<String, dynamic> rawData,
+  }) async {
+    try {
+      return client.createWalletPayRequest(rawData: rawData);
     } catch (e) {
       rethrow;
     }
