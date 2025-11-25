@@ -559,8 +559,8 @@ class WalletKitService extends IWalletKitService {
           iss: iss,
         );
         signedAuths.add(auth);
-      } catch (e, s) {
-        debugPrint('❌ signAuthenticationMessages error: $e, $s');
+      } catch (e) {
+        debugPrint('❌ signAuthenticationMessages error: $e');
       }
     }
     return signedAuths;

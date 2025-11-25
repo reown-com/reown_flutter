@@ -5,6 +5,9 @@
         android:label="${applicationLabel}"
         android:name="${applicationName}"
         android:icon="${appIcon}">
+        <meta-data
+            android:name="io.flutter.embedding.android.EnableImpeller"
+            android:value="false" />
         <activity
             android:name="com.walletconnect.flutterwallet.MainActivity"
             android:exported="true"

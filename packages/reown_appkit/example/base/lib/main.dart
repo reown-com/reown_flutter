@@ -261,7 +261,7 @@ class _MyHomePageState extends State<MyHomePage> {
     };
   }
 
-  void _logListener(String event) => _logManager.addLog(event);
+  void _logListener(String event) => {}; //_logManager.addLog(event);
 
   Future<double> _getBalanceFallback() async {
     try {

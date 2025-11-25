@@ -494,6 +494,7 @@ class ReownAppKitModal
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    _appKit.core.logger.d('[$runtimeType] didChangeAppLifecycleState $state');
     if (state == AppLifecycleState.resumed) {
       reconnectRelay();
     }
@@ -1292,8 +1293,8 @@ class ReownAppKitModal
       if (!_appKit.core.relayClient.isConnected) {
         await _appKit.core.relayClient.connect();
       }
-    } catch (e) {
-      _appKit.core.logger.e('[$runtimeType] reconnectRelay $e');
+    } catch (e, s) {
+      _appKit.core.logger.e('[$runtimeType] reconnectRelay $e.\n$s');
     }
   }
 
@@ -1305,12 +1306,6 @@ class ReownAppKitModal
     try {
       namespace = NamespaceUtils.getNamespaceFromChain(_selectedChainID!);
     } catch (_) {}
-
-    if (!_appKit.core.relayClient.isConnected) {
-      // onModalError.broadcast(ModalError('Websocket is not connected'));
-      // return;
-      await reconnectRelay();
-    }
 
     _status = ReownAppKitModalStatus.initializing;
     _notify();
@@ -1358,6 +1353,8 @@ class ReownAppKitModal
     }
 
     try {
+      await reconnectRelay();
+
       // If we want to disconnect all sessions, loop through them and disconnect them
       if (disconnectAllSessions) {
         for (final SessionData session in _appKit.sessions.getAll()) {
@@ -2486,6 +2483,7 @@ extension _AppKitModalExtension on ReownAppKitModal {
       _disconnectOnClose = true;
       _widgetStack.push(ApproveSIWEPage(onSiweFinish: _oneSIWEFinish));
     } else {
+      _appKit.core.logger.d('[$runtimeType] debugTrace, _isOpen: $_isOpen');
       if (_isOpen) {
         closeModal();
       }
