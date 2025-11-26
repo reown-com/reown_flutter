@@ -56,7 +56,6 @@ import 'package:reown_core/verify/i_verify.dart' as _i17;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
-// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeCryptoKeyPair_0 extends _i1.SmartFake implements _i2.CryptoKeyPair {
   _FakeCryptoKeyPair_0(Object parent, Invocation parentInvocation)
@@ -442,17 +441,6 @@ class MockCrypto extends _i1.Mock implements _i27.Crypto {
   }
 
   @override
-  String get name =>
-      (super.noSuchMethod(
-            Invocation.getter(#name),
-            returnValue: _i25.dummyValue<String>(
-              this,
-              Invocation.getter(#name),
-            ),
-          )
-          as String);
-
-  @override
   _i3.IReownCore get core =>
       (super.noSuchMethod(
             Invocation.getter(#core),
@@ -488,20 +476,31 @@ class MockCrypto extends _i1.Mock implements _i27.Crypto {
           as _i6.IRelayAuth);
 
   @override
-  set keyChain(_i4.IGenericStore<String>? value) => super.noSuchMethod(
-    Invocation.setter(#keyChain, value),
+  String get name =>
+      (super.noSuchMethod(
+            Invocation.getter(#name),
+            returnValue: _i25.dummyValue<String>(
+              this,
+              Invocation.getter(#name),
+            ),
+          )
+          as String);
+
+  @override
+  set keyChain(_i4.IGenericStore<String>? _keyChain) => super.noSuchMethod(
+    Invocation.setter(#keyChain, _keyChain),
     returnValueForMissingStub: null,
   );
 
   @override
-  set utils(_i5.ICryptoUtils? value) => super.noSuchMethod(
-    Invocation.setter(#utils, value),
+  set utils(_i5.ICryptoUtils? _utils) => super.noSuchMethod(
+    Invocation.setter(#utils, _utils),
     returnValueForMissingStub: null,
   );
 
   @override
-  set relayAuth(_i6.IRelayAuth? value) => super.noSuchMethod(
-    Invocation.setter(#relayAuth, value),
+  set relayAuth(_i6.IRelayAuth? _relayAuth) => super.noSuchMethod(
+    Invocation.setter(#relayAuth, _relayAuth),
     returnValueForMissingStub: null,
   );
 
@@ -704,17 +703,6 @@ class MockMessageTracker extends _i1.Mock implements _i28.MessageTracker {
           as String);
 
   @override
-  String get storageKey =>
-      (super.noSuchMethod(
-            Invocation.getter(#storageKey),
-            returnValue: _i25.dummyValue<String>(
-              this,
-              Invocation.getter(#storageKey),
-            ),
-          )
-          as String);
-
-  @override
   _i7.IStore<dynamic> get storage =>
       (super.noSuchMethod(
             Invocation.getter(#storage),
@@ -801,8 +789,19 @@ class MockMessageTracker extends _i1.Mock implements _i28.MessageTracker {
           as Map<String, String> Function(dynamic));
 
   @override
-  set data(Map<String, Map<String, String>>? value) => super.noSuchMethod(
-    Invocation.setter(#data, value),
+  String get storageKey =>
+      (super.noSuchMethod(
+            Invocation.getter(#storageKey),
+            returnValue: _i25.dummyValue<String>(
+              this,
+              Invocation.getter(#storageKey),
+            ),
+          )
+          as String);
+
+  @override
+  set data(Map<String, Map<String, String>>? _data) => super.noSuchMethod(
+    Invocation.setter(#data, _data),
     returnValueForMissingStub: null,
   );
 
@@ -969,28 +968,6 @@ class MockReownCore extends _i1.Mock implements _i31.ReownCore {
   }
 
   @override
-  String get protocol =>
-      (super.noSuchMethod(
-            Invocation.getter(#protocol),
-            returnValue: _i25.dummyValue<String>(
-              this,
-              Invocation.getter(#protocol),
-            ),
-          )
-          as String);
-
-  @override
-  String get version =>
-      (super.noSuchMethod(
-            Invocation.getter(#version),
-            returnValue: _i25.dummyValue<String>(
-              this,
-              Invocation.getter(#version),
-            ),
-          )
-          as String);
-
-  @override
   String get projectId =>
       (super.noSuchMethod(
             Invocation.getter(#projectId),
@@ -1116,14 +1093,6 @@ class MockReownCore extends _i1.Mock implements _i31.ReownCore {
           as _i19.ILinkModeStore);
 
   @override
-  _i20.Logger get logger =>
-      (super.noSuchMethod(
-            Invocation.getter(#logger),
-            returnValue: _FakeLogger_20(this, Invocation.getter(#logger)),
-          )
-          as _i20.Logger);
-
-  @override
   _i7.IStore<Map<String, dynamic>> get storage =>
       (super.noSuchMethod(
             Invocation.getter(#storage),
@@ -1146,87 +1115,117 @@ class MockReownCore extends _i1.Mock implements _i31.ReownCore {
           as _i7.IStore<Map<String, dynamic>>);
 
   @override
-  set relayUrl(String? value) => super.noSuchMethod(
-    Invocation.setter(#relayUrl, value),
+  String get protocol =>
+      (super.noSuchMethod(
+            Invocation.getter(#protocol),
+            returnValue: _i25.dummyValue<String>(
+              this,
+              Invocation.getter(#protocol),
+            ),
+          )
+          as String);
+
+  @override
+  String get version =>
+      (super.noSuchMethod(
+            Invocation.getter(#version),
+            returnValue: _i25.dummyValue<String>(
+              this,
+              Invocation.getter(#version),
+            ),
+          )
+          as String);
+
+  @override
+  _i20.Logger get logger =>
+      (super.noSuchMethod(
+            Invocation.getter(#logger),
+            returnValue: _FakeLogger_20(this, Invocation.getter(#logger)),
+          )
+          as _i20.Logger);
+
+  @override
+  set relayUrl(String? _relayUrl) => super.noSuchMethod(
+    Invocation.setter(#relayUrl, _relayUrl),
     returnValueForMissingStub: null,
   );
 
   @override
-  set pushUrl(String? value) => super.noSuchMethod(
-    Invocation.setter(#pushUrl, value),
+  set pushUrl(String? _pushUrl) => super.noSuchMethod(
+    Invocation.setter(#pushUrl, _pushUrl),
     returnValueForMissingStub: null,
   );
 
   @override
-  set crypto(_i10.ICrypto? value) => super.noSuchMethod(
-    Invocation.setter(#crypto, value),
+  set crypto(_i10.ICrypto? _crypto) => super.noSuchMethod(
+    Invocation.setter(#crypto, _crypto),
     returnValueForMissingStub: null,
   );
 
   @override
-  set relayClient(_i11.IRelayClient? value) => super.noSuchMethod(
-    Invocation.setter(#relayClient, value),
+  set relayClient(_i11.IRelayClient? _relayClient) => super.noSuchMethod(
+    Invocation.setter(#relayClient, _relayClient),
     returnValueForMissingStub: null,
   );
 
   @override
-  set expirer(_i12.IExpirer? value) => super.noSuchMethod(
-    Invocation.setter(#expirer, value),
+  set expirer(_i12.IExpirer? _expirer) => super.noSuchMethod(
+    Invocation.setter(#expirer, _expirer),
     returnValueForMissingStub: null,
   );
 
   @override
-  set pairing(_i13.IPairing? value) => super.noSuchMethod(
-    Invocation.setter(#pairing, value),
+  set pairing(_i13.IPairing? _pairing) => super.noSuchMethod(
+    Invocation.setter(#pairing, _pairing),
     returnValueForMissingStub: null,
   );
 
   @override
-  set echo(_i14.IEcho? value) => super.noSuchMethod(
-    Invocation.setter(#echo, value),
+  set echo(_i14.IEcho? _echo) => super.noSuchMethod(
+    Invocation.setter(#echo, _echo),
     returnValueForMissingStub: null,
   );
 
   @override
-  set events(_i15.IEvents? value) => super.noSuchMethod(
-    Invocation.setter(#events, value),
+  set events(_i15.IEvents? _events) => super.noSuchMethod(
+    Invocation.setter(#events, _events),
     returnValueForMissingStub: null,
   );
 
   @override
-  set heartbeat(_i16.IHeartBeat? value) => super.noSuchMethod(
-    Invocation.setter(#heartbeat, value),
+  set heartbeat(_i16.IHeartBeat? _heartbeat) => super.noSuchMethod(
+    Invocation.setter(#heartbeat, _heartbeat),
     returnValueForMissingStub: null,
   );
 
   @override
-  set verify(_i17.IVerify? value) => super.noSuchMethod(
-    Invocation.setter(#verify, value),
+  set verify(_i17.IVerify? _verify) => super.noSuchMethod(
+    Invocation.setter(#verify, _verify),
     returnValueForMissingStub: null,
   );
 
   @override
-  set connectivity(_i18.IConnectivity? value) => super.noSuchMethod(
-    Invocation.setter(#connectivity, value),
+  set connectivity(_i18.IConnectivity? _connectivity) => super.noSuchMethod(
+    Invocation.setter(#connectivity, _connectivity),
     returnValueForMissingStub: null,
   );
 
   @override
-  set linkModeStore(_i19.ILinkModeStore? value) => super.noSuchMethod(
-    Invocation.setter(#linkModeStore, value),
+  set linkModeStore(_i19.ILinkModeStore? _linkModeStore) => super.noSuchMethod(
+    Invocation.setter(#linkModeStore, _linkModeStore),
     returnValueForMissingStub: null,
   );
 
   @override
-  set storage(_i7.IStore<Map<String, dynamic>>? value) => super.noSuchMethod(
-    Invocation.setter(#storage, value),
+  set storage(_i7.IStore<Map<String, dynamic>>? _storage) => super.noSuchMethod(
+    Invocation.setter(#storage, _storage),
     returnValueForMissingStub: null,
   );
 
   @override
-  set secureStorage(_i7.IStore<Map<String, dynamic>>? value) =>
+  set secureStorage(_i7.IStore<Map<String, dynamic>>? _secureStorage) =>
       super.noSuchMethod(
-        Invocation.setter(#secureStorage, value),
+        Invocation.setter(#secureStorage, _secureStorage),
         returnValueForMissingStub: null,
       );
 
@@ -1420,11 +1419,6 @@ class MockRelayClient extends _i1.Mock implements _i33.RelayClient {
           as _i8.Event<_i8.EventArgs>);
 
   @override
-  bool get isConnected =>
-      (super.noSuchMethod(Invocation.getter(#isConnected), returnValue: false)
-          as bool);
-
-  @override
   Map<String, _i26.Future<dynamic>> get pendingSubscriptions =>
       (super.noSuchMethod(
             Invocation.getter(#pendingSubscriptions),
@@ -1474,33 +1468,40 @@ class MockRelayClient extends _i1.Mock implements _i33.RelayClient {
           as _i3.IReownCore);
 
   @override
-  set jsonRPC(_i35.Peer? value) => super.noSuchMethod(
-    Invocation.setter(#jsonRPC, value),
+  bool get isConnected =>
+      (super.noSuchMethod(Invocation.getter(#isConnected), returnValue: false)
+          as bool);
+
+  @override
+  set jsonRPC(_i35.Peer? _jsonRPC) => super.noSuchMethod(
+    Invocation.setter(#jsonRPC, _jsonRPC),
     returnValueForMissingStub: null,
   );
 
   @override
-  set pendingSubscriptions(Map<String, _i26.Future<dynamic>>? value) =>
+  set pendingSubscriptions(
+    Map<String, _i26.Future<dynamic>>? _pendingSubscriptions,
+  ) => super.noSuchMethod(
+    Invocation.setter(#pendingSubscriptions, _pendingSubscriptions),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  set messageTracker(_i21.IMessageTracker? _messageTracker) =>
       super.noSuchMethod(
-        Invocation.setter(#pendingSubscriptions, value),
+        Invocation.setter(#messageTracker, _messageTracker),
         returnValueForMissingStub: null,
       );
 
   @override
-  set messageTracker(_i21.IMessageTracker? value) => super.noSuchMethod(
-    Invocation.setter(#messageTracker, value),
+  set topicMap(_i4.IGenericStore<String>? _topicMap) => super.noSuchMethod(
+    Invocation.setter(#topicMap, _topicMap),
     returnValueForMissingStub: null,
   );
 
   @override
-  set topicMap(_i4.IGenericStore<String>? value) => super.noSuchMethod(
-    Invocation.setter(#topicMap, value),
-    returnValueForMissingStub: null,
-  );
-
-  @override
-  set core(_i3.IReownCore? value) => super.noSuchMethod(
-    Invocation.setter(#core, value),
+  set core(_i3.IReownCore? _core) => super.noSuchMethod(
+    Invocation.setter(#core, _core),
     returnValueForMissingStub: null,
   );
 

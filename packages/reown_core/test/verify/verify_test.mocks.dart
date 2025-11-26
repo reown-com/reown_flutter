@@ -40,7 +40,6 @@ import 'package:reown_core/verify/models/jwk.dart' as _i22;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
-// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeIHeartBeat_0 extends _i1.SmartFake implements _i2.IHeartBeat {
   _FakeIHeartBeat_0(Object parent, Invocation parentInvocation)
@@ -297,81 +296,81 @@ class MockIReownCore extends _i1.Mock implements _i16.IReownCore {
           as _i13.ILinkModeStore);
 
   @override
-  set relayUrl(String? value) => super.noSuchMethod(
-    Invocation.setter(#relayUrl, value),
+  set relayUrl(String? _relayUrl) => super.noSuchMethod(
+    Invocation.setter(#relayUrl, _relayUrl),
     returnValueForMissingStub: null,
   );
 
   @override
-  set heartbeat(_i2.IHeartBeat? value) => super.noSuchMethod(
-    Invocation.setter(#heartbeat, value),
+  set heartbeat(_i2.IHeartBeat? _heartbeat) => super.noSuchMethod(
+    Invocation.setter(#heartbeat, _heartbeat),
     returnValueForMissingStub: null,
   );
 
   @override
-  set crypto(_i3.ICrypto? value) => super.noSuchMethod(
-    Invocation.setter(#crypto, value),
+  set crypto(_i3.ICrypto? _crypto) => super.noSuchMethod(
+    Invocation.setter(#crypto, _crypto),
     returnValueForMissingStub: null,
   );
 
   @override
-  set relayClient(_i4.IRelayClient? value) => super.noSuchMethod(
-    Invocation.setter(#relayClient, value),
+  set relayClient(_i4.IRelayClient? _relayClient) => super.noSuchMethod(
+    Invocation.setter(#relayClient, _relayClient),
     returnValueForMissingStub: null,
   );
 
   @override
-  set storage(_i5.IStore<Map<String, dynamic>>? value) => super.noSuchMethod(
-    Invocation.setter(#storage, value),
+  set storage(_i5.IStore<Map<String, dynamic>>? _storage) => super.noSuchMethod(
+    Invocation.setter(#storage, _storage),
     returnValueForMissingStub: null,
   );
 
   @override
-  set secureStorage(_i5.IStore<Map<String, dynamic>>? value) =>
+  set secureStorage(_i5.IStore<Map<String, dynamic>>? _secureStorage) =>
       super.noSuchMethod(
-        Invocation.setter(#secureStorage, value),
+        Invocation.setter(#secureStorage, _secureStorage),
         returnValueForMissingStub: null,
       );
 
   @override
-  set connectivity(_i6.IConnectivity? value) => super.noSuchMethod(
-    Invocation.setter(#connectivity, value),
+  set connectivity(_i6.IConnectivity? _connectivity) => super.noSuchMethod(
+    Invocation.setter(#connectivity, _connectivity),
     returnValueForMissingStub: null,
   );
 
   @override
-  set expirer(_i7.IExpirer? value) => super.noSuchMethod(
-    Invocation.setter(#expirer, value),
+  set expirer(_i7.IExpirer? _expirer) => super.noSuchMethod(
+    Invocation.setter(#expirer, _expirer),
     returnValueForMissingStub: null,
   );
 
   @override
-  set pairing(_i8.IPairing? value) => super.noSuchMethod(
-    Invocation.setter(#pairing, value),
+  set pairing(_i8.IPairing? _pairing) => super.noSuchMethod(
+    Invocation.setter(#pairing, _pairing),
     returnValueForMissingStub: null,
   );
 
   @override
-  set echo(_i9.IEcho? value) => super.noSuchMethod(
-    Invocation.setter(#echo, value),
+  set echo(_i9.IEcho? _echo) => super.noSuchMethod(
+    Invocation.setter(#echo, _echo),
     returnValueForMissingStub: null,
   );
 
   @override
-  set events(_i10.IEvents? value) => super.noSuchMethod(
-    Invocation.setter(#events, value),
+  set events(_i10.IEvents? _events) => super.noSuchMethod(
+    Invocation.setter(#events, _events),
     returnValueForMissingStub: null,
   );
 
   @override
-  set verify(_i12.IVerify? value) => super.noSuchMethod(
-    Invocation.setter(#verify, value),
+  set verify(_i12.IVerify? _verify) => super.noSuchMethod(
+    Invocation.setter(#verify, _verify),
     returnValueForMissingStub: null,
   );
 
   @override
-  set linkModeStore(_i13.ILinkModeStore? value) => super.noSuchMethod(
-    Invocation.setter(#linkModeStore, value),
+  set linkModeStore(_i13.ILinkModeStore? _linkModeStore) => super.noSuchMethod(
+    Invocation.setter(#linkModeStore, _linkModeStore),
     returnValueForMissingStub: null,
   );
 

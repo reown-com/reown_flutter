@@ -21,6 +21,9 @@ import 'package:reown_appkit_dapp/utils/string_constants.dart';
 import 'package:reown_appkit_dapp/widgets/event_widget.dart';
 import 'package:reown_appkit_dapp/widgets/log_overlay.dart';
 
+// ignore: depend_on_referenced_packages
+import 'package:url_launcher/url_launcher_string.dart';
+
 Future<void> main() async {
   await runZonedGuarded<Future<void>>(
     () async {
@@ -738,6 +741,120 @@ class _MyHomePageState extends State<MyHomePage> {
           event?.message ?? event?.description ?? 'An error occurred',
         ),
         duration: Duration(seconds: 2),
+      ),
+    );
+  }
+}
+
+class MyEmptyApp extends StatefulWidget {
+  const MyEmptyApp({super.key});
+
+  @override
+  State<MyEmptyApp> createState() => _MyEmptyAppState();
+}
+
+class _MyEmptyAppState extends State<MyEmptyApp> {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: MyEmptyHomePage(),
+    );
+  }
+}
+
+class MyEmptyHomePage extends StatefulWidget {
+  const MyEmptyHomePage({super.key});
+
+  @override
+  State<MyEmptyHomePage> createState() => _MyEmptyHomePageState();
+}
+
+class _MyEmptyHomePageState extends State<MyEmptyHomePage> {
+  late final ReownAppKit _appKit;
+  // late final ReownAppKitModal _appKitModal;
+
+  @override
+  void initState() {
+    super.initState();
+    _appKit = ReownAppKit(
+      core: ReownCore(
+        projectId: 'cad4956f31a5e40a00b62865b030c6f8',
+        logLevel: LogLevel.all,
+      ),
+      metadata: PairingMetadata(
+        name: 'Reown\'s AppKit Internal',
+        description: 'Reown\'s sample dApp with Flutter SDK',
+        url: 'https://appkit-lab.reown.com/flutter_appkit_internal',
+        icons: [
+          'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/appkit-icon-internal.png',
+        ],
+        redirect: Redirect(
+          native: 'wcflutterdapp-internal://',
+          // universal: 'https://appkit-lab.reown.com/flutter_appkit_internal',
+          // enable linkMode on Wallet so Dapps can use relay-less connection
+          // universal: value must be set on cloud config as well
+          // linkMode: false,
+        ),
+      ),
+    );
+
+    _appKit.init().then((_) => setState(() {}));
+
+    // _appKitModal = ReownAppKitModal(
+    //   context: context,
+    //   logLevel: LogLevel.all,
+    //   projectId: 'cad4956f31a5e40a00b62865b030c6f8',
+    //   metadata: PairingMetadata(
+    //     name: 'Reown\'s AppKit Internal',
+    //     description: 'Reown\'s sample dApp with Flutter SDK',
+    //     url: 'https://appkit-lab.reown.com/flutter_appkit_internal',
+    //     icons: [
+    //       'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/appkit-icon-internal.png',
+    //     ],
+    //     redirect: Redirect(
+    //       native: 'wcflutterdapp-internal://',
+    //       // universal: 'https://appkit-lab.reown.com/flutter_appkit_internal',
+    //       // enable linkMode on Wallet so Dapps can use relay-less connection
+    //       // universal: value must be set on cloud config as well
+    //       // linkMode: false,
+    //     ),
+    //   ),
+    // );
+
+    // _appKitModal.init().then((_) => setState(() {}));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: true,
+      ),
+      body: Center(
+        child: TextButton(
+          onPressed: () async {
+            final Map<String, RequiredNamespace> namespaces = {};
+            final nss = ReownAppKitModalNetworks.getAllSupportedNamespaces();
+            for (var ns in nss) {
+              final networks = ReownAppKitModalNetworks.getAllSupportedNetworks(
+                namespace: ns,
+              );
+              namespaces[ns] = RequiredNamespace(
+                chains: networks.map((e) => e.chainId).toList(),
+                methods: NetworkUtils.defaultNetworkMethods[ns] ?? [],
+                events: NetworkUtils.defaultNetworkEvents[ns] ?? [],
+              );
+            }
+
+            // final connect = await _appKitModal.appKit!.connect();
+            final connect = await _appKit.connect(
+              optionalNamespaces: namespaces,
+            );
+            // launchUrlString('wcflutterwallet-internal://wc?uri=${connect.uri}');
+            launchUrlString('kotlin-web3wallet://wc?uri=${connect.uri}');
+          },
+          child: Text('Open Wallet'),
+        ),
       ),
     );
   }
