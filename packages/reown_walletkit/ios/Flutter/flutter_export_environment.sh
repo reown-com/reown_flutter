@@ -1,6 +1,6 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=/Users/alfreedom/fvm/versions/3.38.3"
+export "FLUTTER_ROOT=/Users/alfreedom/Development/flutter"
 export "FLUTTER_APPLICATION_PATH=/Users/alfreedom/Development/reown_flutter_bkp/packages/reown_walletkit"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_TARGET=lib/main.dart"
