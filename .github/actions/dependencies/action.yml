@@ -36,7 +36,7 @@ runs:
     - name: Install Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.35.1'
+        flutter-version: "3.38.3"
 
     # Get package dependencies for dapp and generate files
     - name: Get package dependencies for dapp and generate files
