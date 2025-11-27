@@ -124,6 +124,7 @@ extension TransactionRpcExtension on TransactionRpc {
   String get senderAddress {
     if (this is EvmTransactionRpc) {
       final paramsList = (params as List<EvmTransactionParams>);
+      if (paramsList.isEmpty) return '';
       return paramsList.first.from;
     } else if (this is SolanaTransactionRpc) {
       return (params as SolanaTransactionParams).pubkey;
