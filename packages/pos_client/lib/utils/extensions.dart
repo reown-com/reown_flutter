@@ -119,3 +119,18 @@ extension ListSupportedNamespaceExtension on List<SupportedNamespace> {
     return capabilities;
   }
 }
+
+extension TransactionRpcExtension on TransactionRpc {
+  String get senderAddress {
+    if (this is EvmTransactionRpc) {
+      final paramsList = (params as List<EvmTransactionParams>);
+      return paramsList.first.from;
+    } else if (this is SolanaTransactionRpc) {
+      return (params as SolanaTransactionParams).pubkey;
+    } else if (this is TronTransactionRpc) {
+      return (params as TronTransactionParams).address;
+    } else {
+      return '';
+    }
+  }
+}
