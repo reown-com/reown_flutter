@@ -262,7 +262,7 @@ class KeyService extends IKeyService {
   ChainKey? _chainKeyFromPrivate(CryptoKeyPair keyPair) {
     try {
       final private = EthPrivateKey.fromHex(keyPair.privateKey);
-      final address = private.address.hex;
+      final address = private.address.with0x;
       final evmChainKey = ChainKey(
         chains: ChainsDataList.eip155Chains.map((e) => e.chainId).toList(),
         privateKey: keyPair.privateKey,

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:eth_sig_util/util/utils.dart';
-import 'package:reown_appkit/reown_appkit.dart';
+import 'package:reown_appkit/reown_appkit.dart' hide bytesToHex;
 
 enum EIP155Methods {
   personalSign,

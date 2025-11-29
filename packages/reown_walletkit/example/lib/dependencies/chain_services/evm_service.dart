@@ -733,7 +733,7 @@ class EVMService {
       final credentials =
           privateKey != null ? EthPrivateKey.fromHex(privateKey) : _credentials;
 
-      final expectedAddress = credentials.address.hex;
+      final expectedAddress = credentials.address.with0x;
 
       // Prepare the data to verify
       final dataToVerify = hashToVerify.startsWith('0x')
@@ -761,7 +761,7 @@ class EVMService {
       final credentials =
           privateKey != null ? EthPrivateKey.fromHex(privateKey) : _credentials;
 
-      final expectedAddress = credentials.address.hex;
+      final expectedAddress = credentials.address.with0x;
 
       // Prepare the data to verify
       final dataToVerify = message.startsWith('0x')

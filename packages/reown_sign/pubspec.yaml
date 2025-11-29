@@ -31,11 +31,3 @@ dev_dependencies:
   logger: ^2.5.0
   mockito: ^5.4.4
   package_info_plus: ^8.1.2
-
-platforms:
-  android:
-  ios:
-  web:
-  macos:
-  linux:
-  windows:

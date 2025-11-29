@@ -2,20 +2,20 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:reown_appkit_example/services/contracts/base_usdc_contract.dart';
+import 'package:reown_appkit_modal_example/services/contracts/base_usdc_contract.dart';
 import 'package:toastification/toastification.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
-import 'package:reown_appkit_example/services/contracts/aave_contract.dart';
-import 'package:reown_appkit_example/services/contracts/arb_aave_contract.dart';
-import 'package:reown_appkit_example/services/contracts/contract.dart';
-import 'package:reown_appkit_example/services/contracts/usdt_contract.dart';
-import 'package:reown_appkit_example/services/contracts/wct_contract.dart';
-import 'package:reown_appkit_example/utils/styles.dart';
-import 'package:reown_appkit_example/utils/constants.dart';
-import 'package:reown_appkit_example/services/methods_service.dart';
-import 'package:reown_appkit_example/widgets/method_dialog.dart';
+import 'package:reown_appkit_modal_example/services/contracts/aave_contract.dart';
+import 'package:reown_appkit_modal_example/services/contracts/arb_aave_contract.dart';
+import 'package:reown_appkit_modal_example/services/contracts/contract.dart';
+import 'package:reown_appkit_modal_example/services/contracts/usdt_contract.dart';
+import 'package:reown_appkit_modal_example/services/contracts/wct_contract.dart';
+import 'package:reown_appkit_modal_example/utils/styles.dart';
+import 'package:reown_appkit_modal_example/utils/constants.dart';
+import 'package:reown_appkit_modal_example/services/methods_service.dart';
+import 'package:reown_appkit_modal_example/widgets/method_dialog.dart';
 
 class SessionWidget extends StatefulWidget {
   const SessionWidget({super.key, required this.appKit});

@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 
-import 'package:reown_appkit_example/utils/dart_defines.dart';
+import 'package:reown_appkit_modal_example/utils/dart_defines.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SIWESampleWebService {
