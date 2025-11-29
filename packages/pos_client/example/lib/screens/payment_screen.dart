@@ -158,7 +158,10 @@ class __EventsListWidgetState extends ConsumerState<_EventsListWidget> {
     } else if (event is PaymentFailedEvent) {
       _showDialogEvent('${event.runtimeType}', event.message);
     } else if (event is PaymentSuccessfulEvent) {
-      _showDialogEvent('${event.runtimeType}', event.txHash);
+      _showDialogEvent(
+        '${event.runtimeType}',
+        'txHash:\n${event.txHash}\n\nPayer address:\n${event.payerAddress}',
+      );
     } else if (event is DisconnectedEvent) {
       //
     }
