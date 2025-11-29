@@ -10,7 +10,7 @@ environment:
   flutter: ">=1.10.0"
 
 dependencies:
-  eth_sig_util: ^0.0.9
+  eth_sig_util_plus: ^0.0.10
   flutter:
     sdk: flutter
   freezed_annotation: ^3.1.0

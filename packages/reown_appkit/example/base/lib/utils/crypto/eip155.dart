@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:eth_sig_util/util/utils.dart';
+import 'package:eth_sig_util_plus/util/utils.dart';
 import 'package:reown_appkit/reown_appkit.dart' hide bytesToHex;
 
 enum EIP155Methods {

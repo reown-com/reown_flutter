@@ -3,7 +3,7 @@ import 'dart:developer' as dev;
 
 import 'package:bech32/bech32.dart';
 import 'package:convert/convert.dart';
-import 'package:eth_sig_util/util/utils.dart' as sig_utils;
+import 'package:eth_sig_util_plus/util/utils.dart' as sig_utils;
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:package_info_plus/package_info_plus.dart';
