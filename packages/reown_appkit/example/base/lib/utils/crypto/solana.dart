@@ -33,7 +33,8 @@ class Solana {
     ReownAppKitModalNetworkInfo chainData,
   ) async {
     // Create a connection to the devnet cluster.
-    final cluster = solana.Cluster.https(Uri.parse(chainData.rpcUrl).authority);
+    final cluster =
+        solana.Cluster.https(Uri.parse(chainData.extraRpcUrls.first).authority);
     // final cluster = solana.Cluster.devnet;
     final connection = solana.Connection(cluster);
 
@@ -68,7 +69,8 @@ class Solana {
     ReownAppKitModalNetworkInfo chainData,
   ) async {
     // Create a connection to the devnet cluster.
-    final cluster = solana.Cluster.https(Uri.parse(chainData.rpcUrl).authority);
+    final cluster =
+        solana.Cluster.https(Uri.parse(chainData.extraRpcUrls.first).authority);
     // final cluster = solana.Cluster.devnet;
     final connection = solana.Connection(cluster);
 

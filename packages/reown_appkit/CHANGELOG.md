@@ -1,3 +1,7 @@
+## 1.7.6
+
+- Solflare and Phantom bugfix
+
 ## 1.7.5
 
 - Bug fix on Deposit With Exchange
