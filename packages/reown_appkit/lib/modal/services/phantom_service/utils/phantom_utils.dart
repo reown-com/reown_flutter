@@ -50,8 +50,8 @@ class PhantomUtils {
 
   // mainnet-beta, testnet, or devnet
   static final Map<String, String> walletClusters = {
-    '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'mainnet-beta',
-    '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'testnet',
-    'EtWTRABZaYq6iMfeYKouRu166VU2xqa1': 'devnet',
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'mainnet-beta',
+    'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'testnet',
+    'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1': 'devnet',
   };
 }
