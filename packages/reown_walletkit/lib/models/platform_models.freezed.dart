@@ -436,10 +436,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _PlatformSessionSettle():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -498,10 +495,7 @@ return $default(_that.type,_that.session);case _:
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String type,  PlatformSession session)  $default,) {final _that = this;
 switch (_that) {
 case _PlatformSessionSettle():
-return $default(_that.type,_that.session);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.type,_that.session);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -726,10 +720,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _PlatformSession():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -788,10 +779,7 @@ return $default(_that.pairingTopic,_that.topic,_that.expiry,_that.requiredNamesp
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String pairingTopic,  String topic,  int expiry,  Map<String, dynamic> requiredNamespaces,  Map<String, PlatformNamespace> optionalNamespaces,  Map<String, PlatformNamespaceWithAccounts> namespaces,  PlatformMetaData metaData,  String redirect)  $default,) {final _that = this;
 switch (_that) {
 case _PlatformSession():
-return $default(_that.pairingTopic,_that.topic,_that.expiry,_that.requiredNamespaces,_that.optionalNamespaces,_that.namespaces,_that.metaData,_that.redirect);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.pairingTopic,_that.topic,_that.expiry,_that.requiredNamespaces,_that.optionalNamespaces,_that.namespaces,_that.metaData,_that.redirect);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1032,10 +1020,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _PlatformNamespace():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -1094,10 +1079,7 @@ return $default(_that.chains,_that.methods,_that.events);case _:
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<String> chains,  List<String> methods,  List<String> events)  $default,) {final _that = this;
 switch (_that) {
 case _PlatformNamespace():
-return $default(_that.chains,_that.methods,_that.events);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.chains,_that.methods,_that.events);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1320,10 +1302,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _PlatformNamespaceWithAccounts():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -1382,10 +1361,7 @@ return $default(_that.chains,_that.accounts,_that.methods,_that.events);case _:
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<String> chains,  List<String> accounts,  List<String> methods,  List<String> events)  $default,) {final _that = this;
 switch (_that) {
 case _PlatformNamespaceWithAccounts():
-return $default(_that.chains,_that.accounts,_that.methods,_that.events);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.chains,_that.accounts,_that.methods,_that.events);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1617,10 +1593,7 @@ return $default(_that);case _:
 final _that = this;
 switch (_that) {
 case _PlatformMetaData():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -1679,10 +1652,7 @@ return $default(_that.name,_that.description,_that.url,_that.icons,_that.redirec
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  String description,  String url,  List<String> icons,  String redirect)  $default,) {final _that = this;
 switch (_that) {
 case _PlatformMetaData():
-return $default(_that.name,_that.description,_that.url,_that.icons,_that.redirect);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return $default(_that.name,_that.description,_that.url,_that.icons,_that.redirect);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
