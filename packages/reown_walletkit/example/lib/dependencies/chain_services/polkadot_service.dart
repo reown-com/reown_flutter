@@ -55,7 +55,7 @@ class PolkadotService {
     String rpcUrl = chainSupported.rpc.first;
     if (Uri.parse(rpcUrl).host == 'rpc.walletconnect.org') {
       rpcUrl += '?chainId=${chainSupported.chainId}';
-      rpcUrl += '&projectId=${_walletKit.core.projectId}';
+      rpcUrl += '&projectId=${_walletKit.projectId}';
     }
     debugPrint('[SampleWallet] rpcUrl: $rpcUrl');
     return Uri.parse(rpcUrl);

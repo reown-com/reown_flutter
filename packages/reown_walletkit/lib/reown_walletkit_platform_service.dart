@@ -11,8 +11,8 @@ class ReownWalletKitPlatformService extends ReownWalletkitPlatform {
   final EventChannelReownWalletkit _eventChannel;
 
   ReownWalletKitPlatformService()
-      : _methodChannel = MethodChannelReownWalletkit(),
-        _eventChannel = EventChannelReownWalletkit();
+    : _methodChannel = MethodChannelReownWalletkit(),
+      _eventChannel = EventChannelReownWalletkit();
 
   // Method channel operations - delegate to method channel
   @override
@@ -84,7 +84,9 @@ class ReownWalletKitPlatformService extends ReownWalletkitPlatform {
     required String topic,
     required Map<String, dynamic> response,
   }) async {
-    debugPrint('[$runtimeType] respondSessionRequest - delegating to method channel');
+    debugPrint(
+      '[$runtimeType] respondSessionRequest - delegating to method channel',
+    );
     return await _methodChannel.respondSessionRequest(
       topic: topic,
       response: response,
@@ -98,7 +100,9 @@ class ReownWalletKitPlatformService extends ReownWalletkitPlatform {
     required String name,
     required String data,
   }) async {
-    debugPrint('[$runtimeType] emitSessionEvent - delegating to method channel');
+    debugPrint(
+      '[$runtimeType] emitSessionEvent - delegating to method channel',
+    );
     return await _methodChannel.emitSessionEvent(
       topic: topic,
       chainId: chainId,
@@ -112,7 +116,9 @@ class ReownWalletKitPlatformService extends ReownWalletkitPlatform {
     required String topic,
     required String disconnectReason,
   }) async {
-    debugPrint('[$runtimeType] disconnectSession - delegating to method channel');
+    debugPrint(
+      '[$runtimeType] disconnectSession - delegating to method channel',
+    );
     return await _methodChannel.disconnectSession(
       topic: topic,
       disconnectReason: disconnectReason,
@@ -121,7 +127,9 @@ class ReownWalletKitPlatformService extends ReownWalletkitPlatform {
 
   @override
   Future<bool> dispatchEnvelope({required String uri}) async {
-    debugPrint('[$runtimeType] dispatchEnvelope - delegating to method channel');
+    debugPrint(
+      '[$runtimeType] dispatchEnvelope - delegating to method channel',
+    );
     return await _methodChannel.dispatchEnvelope(uri: uri);
   }
 
@@ -130,7 +138,9 @@ class ReownWalletKitPlatformService extends ReownWalletkitPlatform {
     required int id,
     List<Map<String, dynamic>>? auths,
   }) async {
-    debugPrint('[$runtimeType] approveSessionAuthenticate - delegating to method channel');
+    debugPrint(
+      '[$runtimeType] approveSessionAuthenticate - delegating to method channel',
+    );
     return await _methodChannel.approveSessionAuthenticate(
       id: id,
       auths: auths,
@@ -142,7 +152,9 @@ class ReownWalletKitPlatformService extends ReownWalletkitPlatform {
     required int id,
     required String rejectionReason,
   }) async {
-    debugPrint('[$runtimeType] rejectSessionAuthenticate - delegating to method channel');
+    debugPrint(
+      '[$runtimeType] rejectSessionAuthenticate - delegating to method channel',
+    );
     return await _methodChannel.rejectSessionAuthenticate(
       id: id,
       rejectionReason: rejectionReason,
@@ -154,7 +166,9 @@ class ReownWalletKitPlatformService extends ReownWalletkitPlatform {
     required String issuer,
     required Map<String, dynamic> cacaoPayload,
   }) async {
-    debugPrint('[$runtimeType] formatAuthMessage - delegating to method channel');
+    debugPrint(
+      '[$runtimeType] formatAuthMessage - delegating to method channel',
+    );
     return await _methodChannel.formatAuthMessage(
       issuer: issuer,
       cacaoPayload: cacaoPayload,
@@ -163,7 +177,9 @@ class ReownWalletKitPlatformService extends ReownWalletkitPlatform {
 
   @override
   Future<List<Map<String, dynamic>>> getSessionProposals() async {
-    debugPrint('[$runtimeType] getSessionProposals - delegating to method channel');
+    debugPrint(
+      '[$runtimeType] getSessionProposals - delegating to method channel',
+    );
     return await _methodChannel.getSessionProposals();
   }
 
@@ -171,7 +187,9 @@ class ReownWalletKitPlatformService extends ReownWalletkitPlatform {
   Future<List<Map<String, dynamic>>> getPendingListOfSessionRequests({
     required String topic,
   }) async {
-    debugPrint('[$runtimeType] getPendingListOfSessionRequests - delegating to method channel');
+    debugPrint(
+      '[$runtimeType] getPendingListOfSessionRequests - delegating to method channel',
+    );
     return await _methodChannel.getPendingListOfSessionRequests(topic: topic);
   }
 
@@ -179,13 +197,17 @@ class ReownWalletKitPlatformService extends ReownWalletkitPlatform {
   Future<List<Map<String, dynamic>>> getActiveSessionByTopic({
     required String topic,
   }) async {
-    debugPrint('[$runtimeType] getActiveSessionByTopic - delegating to method channel');
+    debugPrint(
+      '[$runtimeType] getActiveSessionByTopic - delegating to method channel',
+    );
     return await _methodChannel.getActiveSessionByTopic(topic: topic);
   }
 
   @override
   Future<List<Map<String, dynamic>>> getListOfActiveSessions() async {
-    debugPrint('[$runtimeType] getListOfActiveSessions - delegating to method channel');
+    debugPrint(
+      '[$runtimeType] getListOfActiveSessions - delegating to method channel',
+    );
     return await _methodChannel.getListOfActiveSessions();
   }
 

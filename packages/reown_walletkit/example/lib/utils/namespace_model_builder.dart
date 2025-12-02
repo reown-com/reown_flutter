@@ -7,14 +7,15 @@ import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connectio
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_widget.dart';
 
 class ConnectionWidgetBuilder {
-  static List<WCConnectionWidget> buildFromRequiredNamespaces(
+  static Future<List<WCConnectionWidget>> buildFromRequiredNamespaces(
     Map<String, Namespace> generatedNamespaces,
     List<SessionAuthPayload>? authenticationRequests,
-  ) {
+  ) async {
     final walletKitService = GetIt.I<IWalletKitService>();
     final List<WCConnectionWidget> views = [];
 
-    final formattedMessages = walletKitService.prepareAuthenticationMessages(
+    final formattedMessages =
+        await walletKitService.prepareAuthenticationMessages(
       authenticationRequests,
       generatedNamespaces,
     );

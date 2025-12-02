@@ -113,6 +113,7 @@ class ReownWalletkitPlugin : FlutterPlugin, MethodCallHandler, EventChannel.Stre
                 val pairingUri = params["uri"] as String
                 val cleanUri = pairingUri.replaceFirst("wc:", "wc://")
                 val pairParams = Wallet.Params.Pair(uri = cleanUri)
+                Log.d("🤖 pairParams", pairParams.uri)
                 WalletKit.pair(
                     pairParams,
                     onSuccess = { params ->

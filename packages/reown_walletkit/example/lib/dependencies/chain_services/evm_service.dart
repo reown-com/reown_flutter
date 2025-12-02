@@ -95,7 +95,7 @@ class EVMService {
       );
     }
 
-    _walletKit.onSessionRequest.subscribe(_onSessionRequest);
+    // _walletKit.onSessionRequest.subscribe(_onSessionRequest);
 
     ethClient = Web3Client('${_formatRpcUrl(chainSupported)}', http.Client());
   }
@@ -108,7 +108,7 @@ class EVMService {
     String rpcUrl = chainSupported.rpc.first;
     if (Uri.parse(rpcUrl).host == 'rpc.walletconnect.org') {
       rpcUrl += '?chainId=${chainSupported.chainId}';
-      rpcUrl += '&projectId=${_walletKit.core.projectId}';
+      rpcUrl += '&projectId=${_walletKit.projectId}';
     }
     debugPrint('[SampleWallet] rpcUrl: $rpcUrl');
     return Uri.parse(rpcUrl);
@@ -577,7 +577,8 @@ class EVMService {
         final keysService = GetIt.I<IKeyService>();
         final chainKeys = keysService.getKeysForChain('eip155');
         final address = chainKeys.first.address;
-        _walletKit.registerAccount(chainId: chainId, accountAddress: address); // TODO [WRAP REFACTOR]
+        _walletKit.registerAccount(
+            chainId: chainId, accountAddress: address); // TODO [WRAP REFACTOR]
 
         // update session's namespaces
         final activeSessions = await _walletKit.getActiveSessionByTopic(

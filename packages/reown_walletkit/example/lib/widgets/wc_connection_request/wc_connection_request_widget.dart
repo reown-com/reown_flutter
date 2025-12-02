@@ -52,14 +52,14 @@ class WCConnectionRequestWidget extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: StyleConstants.linear8),
-          (sessionAuthPayload != null)
-              ? FutureBuilder(
-                  future: _buildSessionAuthRequestView(),
-                  builder: (context, snapshot) {
-                    return snapshot.data ?? SizedBox.shrink();
-                  },
-                )
-              : _buildSessionProposalView(),
+          FutureBuilder(
+            future: (sessionAuthPayload != null)
+                ? _buildSessionAuthRequestView()
+                : _buildSessionProposalView(),
+            builder: (context, snapshot) {
+              return snapshot.data ?? SizedBox.shrink();
+            },
+          ),
         ],
       ),
     );
@@ -96,12 +96,12 @@ class WCConnectionRequestWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSessionProposalView() {
+  Future<Widget> _buildSessionProposalView() async {
     // Create the connection models using the required and optional namespaces provided by the proposal data
     // The key is the title and the list of values is the data
     final generatedNamespaces = proposalData!.generatedNamespaces!;
     final authRequests = proposalData!.requests?.authentication;
-    final views = ConnectionWidgetBuilder.buildFromRequiredNamespaces(
+    final views = await ConnectionWidgetBuilder.buildFromRequiredNamespaces(
       generatedNamespaces,
       authRequests,
     );

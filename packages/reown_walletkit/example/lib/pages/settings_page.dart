@@ -33,7 +33,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   final _keysService = GetIt.I<IKeyService>();
 
-  // Future<void> _onDeleteData() async { // TODO 
+  // Future<void> _onDeleteData() async { // TODO
   //   final walletKit = GetIt.I<IWalletKitService>().walletKit;
   //   await walletKit.core.storage.deleteAll();
   //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -503,18 +503,18 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                   }).toList(),
                   onChanged: (ChainMetadata? chain) async {
                     setState(() => _selectedChain = chain!);
-                    final sessions = _walletKit.sessions.getAll();
-                    final cid = _selectedChain.chainId.split(':').last;
-                    for (var session in sessions) {
-                      await _walletKit.emitSessionEvent(
-                        topic: session.topic,
-                        chainId: _selectedChain.chainId,
-                        event: SessionEventParams(
-                          name: 'chainChanged',
-                          data: int.parse(cid),
-                        ),
-                      );
-                    }
+                    // final sessions = _walletKit.sessions.getAll(); // TODO
+                    // final cid = _selectedChain.chainId.split(':').last;
+                    // for (var session in sessions) {
+                    //   await _walletKit.emitSessionEvent(
+                    //     topic: session.topic,
+                    //     chainId: _selectedChain.chainId,
+                    //     event: SessionEventParams(
+                    //       name: 'chainChanged',
+                    //       data: int.parse(cid),
+                    //     ),
+                    //   );
+                    // }
                     _updateBalance();
                   },
                 ),
@@ -954,7 +954,7 @@ class _ChainKeyViewState extends State<_ChainKeyView> {
 class _DeviceData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final walletKit = GetIt.I<IWalletKitService>().walletKit;
+    // final walletKit = GetIt.I<IWalletKitService>().walletKit; // TODO [WRAP REFACTOR]
     return Column(
       children: [
         const SizedBox(height: 20.0),
