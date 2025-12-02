@@ -33,14 +33,14 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   final _keysService = GetIt.I<IKeyService>();
 
-  Future<void> _onDeleteData() async {
-    final walletKit = GetIt.I<IWalletKitService>().walletKit;
-    await walletKit.core.storage.deleteAll();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('Storage cleared'),
-      duration: Duration(seconds: 1),
-    ));
-  }
+  // Future<void> _onDeleteData() async { // TODO
+  //   final walletKit = GetIt.I<IWalletKitService>().walletKit;
+  //   await walletKit.core.storage.deleteAll();
+  //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //     content: Text('Storage cleared'),
+  //     duration: Duration(seconds: 1),
+  //   ));
+  // }
 
   Future<void> _onRestoreFromSeed() async {
     final mnemonic = await GetIt.I<IBottomSheetService>().queueBottomSheet(
@@ -163,7 +163,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   _DeviceData(),
                   _Metadata(),
                   _Buttons(
-                    onDeleteData: _onDeleteData,
+                    onDeleteData: () {}, // TODO
                     onRestoreFromSeed: _onRestoreFromSeed,
                     onRegenerateSeed: _onRegenerateSeed,
                     onCreateNewWallet: _onCreateNewWallet,
@@ -302,9 +302,9 @@ class _EVMAccountsState extends State<_EVMAccounts> {
 
   Future<void> _switchToChain(ChainMetadata? chainMetadata) async {
     try {
-      final sessions = _walletKit.sessions.getAll();
+      final sessions = await _walletKit.getActiveSessions();
       final chainId = chainMetadata!.chainId.split(':').last;
-      for (var session in sessions) {
+      for (var session in sessions.values) {
         await _walletKit.emitSessionEvent(
           topic: session.topic,
           chainId: chainMetadata.chainId,
@@ -351,8 +351,8 @@ class _EVMAccountsState extends State<_EVMAccounts> {
   }
 
   Future<void> _onEVMAccountChanged(String address) async {
-    final sessions = _walletKit.sessions.getAll();
-    for (var session in sessions) {
+    final sessions = await _walletKit.getActiveSessions();
+    for (var session in sessions.values) {
       await _walletKit.emitSessionEvent(
         topic: session.topic,
         chainId: 'eip155:1',
@@ -503,18 +503,18 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                   }).toList(),
                   onChanged: (ChainMetadata? chain) async {
                     setState(() => _selectedChain = chain!);
-                    final sessions = _walletKit.sessions.getAll();
-                    final cid = _selectedChain.chainId.split(':').last;
-                    for (var session in sessions) {
-                      await _walletKit.emitSessionEvent(
-                        topic: session.topic,
-                        chainId: _selectedChain.chainId,
-                        event: SessionEventParams(
-                          name: 'chainChanged',
-                          data: int.parse(cid),
-                        ),
-                      );
-                    }
+                    // final sessions = _walletKit.sessions.getAll(); // TODO
+                    // final cid = _selectedChain.chainId.split(':').last;
+                    // for (var session in sessions) {
+                    //   await _walletKit.emitSessionEvent(
+                    //     topic: session.topic,
+                    //     chainId: _selectedChain.chainId,
+                    //     event: SessionEventParams(
+                    //       name: 'chainChanged',
+                    //       data: int.parse(cid),
+                    //     ),
+                    //   );
+                    // }
                     _updateBalance();
                   },
                 ),
@@ -954,7 +954,7 @@ class _ChainKeyViewState extends State<_ChainKeyView> {
 class _DeviceData extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final walletKit = GetIt.I<IWalletKitService>().walletKit;
+    // final walletKit = GetIt.I<IWalletKitService>().walletKit; // TODO [WRAP REFACTOR]
     return Column(
       children: [
         const SizedBox(height: 20.0),
@@ -974,15 +974,15 @@ class _DeviceData extends StatelessWidget {
                   ),
                 ),
               ),
-              FutureBuilder<String>(
-                future: walletKit.core.crypto.getClientId(),
-                builder: (context, snapshot) {
-                  return _DataContainer(
-                    title: 'Client ID',
-                    data: snapshot.data ?? '',
-                  );
-                },
-              ),
+              // FutureBuilder<String>(
+              //   future: walletKit.core.crypto.getClientId(), // TODO [WRAP REFACTOR]
+              //   builder: (context, snapshot) {
+              //     return _DataContainer(
+              //       title: 'Client ID',
+              //       data: snapshot.data ?? '',
+              //     );
+              //   },
+              // ),
               const SizedBox(height: 12.0),
               FutureBuilder<PackageInfo>(
                 future: PackageInfo.fromPlatform(),

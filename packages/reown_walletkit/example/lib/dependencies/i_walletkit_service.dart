@@ -14,7 +14,7 @@ abstract class IWalletKitService extends Disposable {
   T getChainService<T extends Object>({required String chainId});
 
   // (iss, message, request)
-  List<(ISS, AuthMessage, AuthRequest)> prepareAuthenticationMessages(
+  Future<List<(ISS, AuthMessage, AuthRequest)>> prepareAuthenticationMessages(
     List<SessionAuthPayload>? authenticationRequests,
     Map<String, Namespace>? generatedNamespaces,
   );

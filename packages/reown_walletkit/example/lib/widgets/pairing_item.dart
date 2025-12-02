@@ -25,12 +25,6 @@ class PairingItem extends StatelessWidget {
         onTap: onTap,
       );
     }
-    final sessions = GetIt.I<IWalletKitService>()
-        .walletKit
-        .sessions
-        .getAll()
-        .where((element) => element.pairingTopic == pairing.topic)
-        .toList();
 
     return ListTile(
       leading: Builder(
@@ -64,15 +58,28 @@ class PairingItem extends StatelessWidget {
         },
       ),
       title: Text(metadata.name),
-      subtitle: Text(
-        sessions.isEmpty
-            ? 'No active sessions'
-            : 'Active sessions: ${sessions.length}',
-        style: TextStyle(
-          color: sessions.isEmpty ? null : Color(0xFF667DFF),
-          fontSize: 13.0,
-          fontWeight: sessions.isEmpty ? FontWeight.normal : FontWeight.bold,
-        ),
+      subtitle: FutureBuilder(
+        future: GetIt.I<IWalletKitService>()
+            .walletKit
+            .getSessionsForPairing(pairingTopic: pairing.topic),
+        builder: (context, snapshot) {
+          final sessionsMap = snapshot.data;
+          if (sessionsMap == null) {
+            return const SizedBox.shrink();
+          }
+          return Text(
+            sessionsMap.values.isEmpty
+                ? 'No active sessions'
+                : 'Active sessions: ${sessionsMap.values.length}',
+            style: TextStyle(
+              color: sessionsMap.values.isEmpty ? null : Color(0xFF667DFF),
+              fontSize: 13.0,
+              fontWeight: sessionsMap.values.isEmpty
+                  ? FontWeight.normal
+                  : FontWeight.bold,
+            ),
+          );
+        },
       ),
       trailing: const Icon(
         Icons.arrow_forward_ios,

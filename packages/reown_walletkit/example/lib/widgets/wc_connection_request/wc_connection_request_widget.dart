@@ -52,15 +52,20 @@ class WCConnectionRequestWidget extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: StyleConstants.linear8),
-          (sessionAuthPayload != null)
-              ? _buildSessionAuthRequestView()
-              : _buildSessionProposalView(),
+          FutureBuilder(
+            future: (sessionAuthPayload != null)
+                ? _buildSessionAuthRequestView()
+                : _buildSessionProposalView(),
+            builder: (context, snapshot) {
+              return snapshot.data ?? SizedBox.shrink();
+            },
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildSessionAuthRequestView() {
+  Future<Widget> _buildSessionAuthRequestView() async {
     final walletKit = GetIt.I<IWalletKitService>().walletKit;
     //
     final cacaoPayload = CacaoRequestPayload.fromSessionAuthPayload(
@@ -71,7 +76,7 @@ class WCConnectionRequestWidget extends StatelessWidget {
     for (var chain in sessionAuthPayload!.chains) {
       final chainKeys = GetIt.I<IKeyService>().getKeysForChain(chain);
       final iss = 'did:pkh:$chain:${chainKeys.first.address}';
-      final message = walletKit.formatAuthMessage(
+      final message = await walletKit.formatAuthMessage(
         iss: iss,
         cacaoPayload: cacaoPayload,
       );
@@ -91,12 +96,12 @@ class WCConnectionRequestWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildSessionProposalView() {
+  Future<Widget> _buildSessionProposalView() async {
     // Create the connection models using the required and optional namespaces provided by the proposal data
     // The key is the title and the list of values is the data
     final generatedNamespaces = proposalData!.generatedNamespaces!;
     final authRequests = proposalData!.requests?.authentication;
-    final views = ConnectionWidgetBuilder.buildFromRequiredNamespaces(
+    final views = await ConnectionWidgetBuilder.buildFromRequiredNamespaces(
       generatedNamespaces,
       authRequests,
     );

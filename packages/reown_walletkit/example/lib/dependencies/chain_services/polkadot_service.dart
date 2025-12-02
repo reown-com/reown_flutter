@@ -20,7 +20,7 @@ import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
 
 class PolkadotService {
-  late final ReownWalletKit _walletKit;
+  final _walletKit = GetIt.I<IWalletKitService>().walletKit;
 
   final ChainMetadata chainSupported;
   late final Keyring _keyring;
@@ -33,7 +33,6 @@ class PolkadotService {
       };
 
   PolkadotService({required this.chainSupported}) {
-    _walletKit = GetIt.I<IWalletKitService>().walletKit;
     _keyring = Keyring();
     _provider = polkadart.Provider.fromUri(_formatRpcUrl(chainSupported));
 
@@ -45,7 +44,7 @@ class PolkadotService {
       );
     }
 
-    _walletKit.onSessionRequest.subscribe(_onSessionRequest);
+    // _walletKit.onSessionRequest.subscribe(_onSessionRequest);
   }
 
   Uri _formatRpcUrl(ChainMetadata chainSupported) {
@@ -56,7 +55,7 @@ class PolkadotService {
     String rpcUrl = chainSupported.rpc.first;
     if (Uri.parse(rpcUrl).host == 'rpc.walletconnect.org') {
       rpcUrl += '?chainId=${chainSupported.chainId}';
-      rpcUrl += '&projectId=${_walletKit.core.projectId}';
+      rpcUrl += '&projectId=${_walletKit.projectId}';
     }
     debugPrint('[SampleWallet] rpcUrl: $rpcUrl');
     return Uri.parse(rpcUrl);
@@ -64,7 +63,10 @@ class PolkadotService {
 
   Future<void> polkadotSignMessage(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] polkadotSignMessage: $parameters');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(
       id: pRequest.id,
       jsonrpc: '2.0',
@@ -156,7 +158,10 @@ class PolkadotService {
   Future<void> polkadotSignTransaction(String topic, dynamic parameters) async {
     debugPrint(
         '[SampleWallet] polkadotSignTransaction: ${jsonEncode(parameters)}');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = await _walletKit.getPendingSessionRequests(
+      topic: topic,
+    );
+    final pRequest = pendingRequests.values.last;
     var response = JsonRpcResponse(
       id: pRequest.id,
       jsonrpc: '2.0',
@@ -241,7 +246,10 @@ class PolkadotService {
   }
 
   void _handleResponseForTopic(String topic, JsonRpcResponse response) async {
-    final session = _walletKit.sessions.get(topic);
+    final activeSessions = await _walletKit.getActiveSessionByTopic(
+      sessionTopic: topic,
+    );
+    final session = activeSessions.values.last;
 
     try {
       await _walletKit.respondSessionRequest(

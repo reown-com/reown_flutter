@@ -73,19 +73,19 @@ class EthUtils {
     }
   }
 
-  static Future<dynamic> decodeMessageEvent(MessageEvent event) async {
-    final walletKit = GetIt.I<IWalletKitService>().walletKit;
-    final payloadString = await walletKit.core.crypto.decode(
-      event.topic,
-      event.message,
-    );
-    if (payloadString == null) return null;
+  // static Future<dynamic> decodeMessageEvent(MessageEvent event) async {
+  //   final walletKit = GetIt.I<IWalletKitService>().walletKit;
+  //   final payloadString = await walletKit.core.crypto.decode(
+  //     event.topic,
+  //     event.message,
+  //   );
+  //   if (payloadString == null) return null;
 
-    final data = jsonDecode(payloadString) as Map<String, dynamic>;
-    if (data.containsKey('method')) {
-      return JsonRpcRequest.fromJson(data);
-    } else {
-      return JsonRpcResponse.fromJson(data);
-    }
-  }
+  //   final data = jsonDecode(payloadString) as Map<String, dynamic>;
+  //   if (data.containsKey('method')) {
+  //     return JsonRpcRequest.fromJson(data);
+  //   } else {
+  //     return JsonRpcResponse.fromJson(data);
+  //   }
+  // }
 }

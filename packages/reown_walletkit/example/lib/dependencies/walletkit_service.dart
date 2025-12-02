@@ -69,10 +69,11 @@ class WalletKitService extends IWalletKitService {
 
     // Create the ReownWalletKit instance
     _walletKit = ReownWalletKit(
-      core: ReownCore(
-        projectId: DartDefines.projectId,
-        logLevel: LogLevel.all,
-      ),
+      // core: ReownCore(
+      //   projectId: DartDefines.projectId,
+      //   logLevel: LogLevel.all,
+      // ),
+      projectId: DartDefines.projectId,
       metadata: PairingMetadata(
         name: 'FL WalletKit Sample',
         description: 'Reown\'s sample wallet with Flutter',
@@ -84,23 +85,23 @@ class WalletKitService extends IWalletKitService {
       ),
     );
 
-    _walletKit!.core.addLogListener(_logListener);
+    // _walletKit!.core.addLogListener(_logListener);
 
     // Setup our listeners
     debugPrint('[SampleWallet] create');
-    _walletKit!.core.pairing.onPairingInvalid.subscribe(_onPairingInvalid);
-    _walletKit!.core.pairing.onPairingCreate.subscribe(_onPairingCreate);
-    _walletKit!.core.relayClient.onRelayClientError.subscribe(
-      _onRelayClientError,
-    );
-    _walletKit!.core.relayClient.onRelayClientMessage.subscribe(
-      _onRelayClientMessage,
-    );
+    // _walletKit!.core.pairing.onPairingInvalid.subscribe(_onPairingInvalid);
+    // _walletKit!.core.pairing.onPairingCreate.subscribe(_onPairingCreate);
+    // _walletKit!.core.relayClient.onRelayClientError.subscribe(
+    //   _onRelayClientError,
+    // );
+    // _walletKit!.core.relayClient.onRelayClientMessage.subscribe(
+    //   _onRelayClientMessage,
+    // );
 
     _walletKit!.onSessionProposal.subscribe(_onSessionProposal);
-    _walletKit!.onSessionProposalError.subscribe(_onSessionProposalError);
+    // _walletKit!.onSessionProposalError.subscribe(_onSessionProposalError);
     _walletKit!.onSessionConnect.subscribe(_onSessionConnect);
-    _walletKit!.onSessionAuthRequest.subscribe(_onSessionAuthRequest);
+    // _walletKit!.onSessionAuthRequest.subscribe(_onSessionAuthRequest);
 
     // Support EVM Chains
     for (final chainData in ChainsDataList.eip155Chains) {
@@ -152,40 +153,40 @@ class WalletKitService extends IWalletKitService {
     }
 
     // Support Tron Chains
-    for (final chainData in ChainsDataList.tonChains) {
-      GetIt.I.registerSingletonAsync<TonService>(
-        () async {
-          final tonService = TonService(chainSupported: chainData);
-          await tonService.init();
-          return tonService;
-        },
-        instanceName: chainData.chainId,
-      );
-    }
+    // for (final chainData in ChainsDataList.tonChains) {
+    //   GetIt.I.registerSingletonAsync<TonService>(
+    //     () async {
+    //       final tonService = TonService(chainSupported: chainData);
+    //       await tonService.init();
+    //       return tonService;
+    //     },
+    //     instanceName: chainData.chainId,
+    //   );
+    // }
 
-    // Support Stacks Chains
-    for (final chainData in ChainsDataList.stacksChains) {
-      GetIt.I.registerSingletonAsync<StacksService>(
-        () async {
-          final stacksService = StacksService(chainSupported: chainData);
-          await stacksService.init();
-          return stacksService;
-        },
-        instanceName: chainData.chainId,
-      );
-    }
+    // // Support Stacks Chains
+    // for (final chainData in ChainsDataList.stacksChains) {
+    //   GetIt.I.registerSingletonAsync<StacksService>(
+    //     () async {
+    //       final stacksService = StacksService(chainSupported: chainData);
+    //       await stacksService.init();
+    //       return stacksService;
+    //     },
+    //     instanceName: chainData.chainId,
+    //   );
+    // }
 
-    // Support Sui Chains
-    for (final chainData in ChainsDataList.suiChains) {
-      GetIt.I.registerSingletonAsync<SUIService>(
-        () async {
-          final suiService = SUIService(chainSupported: chainData);
-          await suiService.init();
-          return suiService;
-        },
-        instanceName: chainData.chainId,
-      );
-    }
+    // // Support Sui Chains
+    // for (final chainData in ChainsDataList.suiChains) {
+    //   GetIt.I.registerSingletonAsync<SUIService>(
+    //     () async {
+    //       final suiService = SUIService(chainSupported: chainData);
+    //       await suiService.init();
+    //       return suiService;
+    //     },
+    //     instanceName: chainData.chainId,
+    //   );
+    // }
   }
 
   @override
@@ -221,19 +222,19 @@ class WalletKitService extends IWalletKitService {
   Future<void> init() async {
     // Await the initialization of the ReownWalletKit instance
     await _walletKit!.init();
-    await _emitEvent();
+    // await _emitEvent();
   }
 
   Future<void> _emitEvent() async {
-    final isOnline = _walletKit!.core.connectivity.isOnline.value;
-    if (!isOnline) {
-      await Future.delayed(const Duration(milliseconds: 500));
-      _emitEvent();
-      return;
-    }
+    // final isOnline = _walletKit!.core.connectivity.isOnline.value;
+    // if (!isOnline) {
+    //   await Future.delayed(const Duration(milliseconds: 500));
+    //   _emitEvent();
+    //   return;
+    // }
 
-    final sessions = _walletKit!.sessions.getAll();
-    for (var session in sessions) {
+    final sessions = await _walletKit!.getActiveSessions();
+    for (var session in sessions.values) {
       try {
         final events = NamespaceUtils.getNamespacesEventsForChain(
           chainId: 'eip155:1',
@@ -260,21 +261,21 @@ class WalletKitService extends IWalletKitService {
 
   @override
   FutureOr onDispose() {
-    _walletKit!.core.removeLogListener(_logListener);
+    // _walletKit!.core.removeLogListener(_logListener);
 
-    _walletKit!.core.pairing.onPairingInvalid.unsubscribe(_onPairingInvalid);
-    _walletKit!.core.pairing.onPairingCreate.unsubscribe(_onPairingCreate);
-    _walletKit!.core.relayClient.onRelayClientError.unsubscribe(
-      _onRelayClientError,
-    );
-    _walletKit!.core.relayClient.onRelayClientMessage.unsubscribe(
-      _onRelayClientMessage,
-    );
+    // _walletKit!.core.pairing.onPairingInvalid.unsubscribe(_onPairingInvalid);
+    // _walletKit!.core.pairing.onPairingCreate.unsubscribe(_onPairingCreate);
+    // _walletKit!.core.relayClient.onRelayClientError.unsubscribe(
+    //   _onRelayClientError,
+    // );
+    // _walletKit!.core.relayClient.onRelayClientMessage.unsubscribe(
+    //   _onRelayClientMessage,
+    // );
 
-    _walletKit!.onSessionProposal.unsubscribe(_onSessionProposal);
-    _walletKit!.onSessionProposalError.unsubscribe(_onSessionProposalError);
-    _walletKit!.onSessionConnect.unsubscribe(_onSessionConnect);
-    _walletKit!.onSessionAuthRequest.unsubscribe(_onSessionAuthRequest);
+    // _walletKit!.onSessionProposal.unsubscribe(_onSessionProposal);
+    // _walletKit!.onSessionProposalError.unsubscribe(_onSessionProposalError);
+    // _walletKit!.onSessionConnect.unsubscribe(_onSessionConnect);
+    // _walletKit!.onSessionAuthRequest.unsubscribe(_onSessionAuthRequest);
   }
 
   @override
@@ -290,17 +291,17 @@ class WalletKitService extends IWalletKitService {
         MethodConstants.WC_SESSION_AUTHENTICATE,
       ];
 
-  void _onRelayClientMessage(MessageEvent? event) async {
-    if (event != null) {
-      final jsonObject = await EthUtils.decodeMessageEvent(event);
-      debugPrint('[SampleWallet] _onRelayClientMessage $jsonObject');
-      if (jsonObject is JsonRpcRequest) {
-        DeepLinkHandler.waiting.value = _loaderMethods.contains(
-          jsonObject.method,
-        );
-      }
-    }
-  }
+  // void _onRelayClientMessage(MessageEvent? event) async {
+  //   if (event != null) {
+  //     final jsonObject = await EthUtils.decodeMessageEvent(event);
+  //     debugPrint('[SampleWallet] _onRelayClientMessage $jsonObject');
+  //     if (jsonObject is JsonRpcRequest) {
+  //       DeepLinkHandler.waiting.value = _loaderMethods.contains(
+  //         jsonObject.method,
+  //       );
+  //     }
+  //   }
+  // }
 
   void _onSessionProposal(SessionProposalEvent? args) async {
     final debugString = jsonEncode(args?.params);
@@ -331,15 +332,16 @@ class WalletKitService extends IWalletKitService {
         // generatedNamespaces is constructed based on registered methods handlers
         // so if you want to handle requests using onSessionRequest event then you would need to manually add that method in the approved namespaces
         try {
-          final cacaos = await signAuthenticationMessages(formattedMessages);
+          // final cacaos = await signAuthenticationMessages(formattedMessages);
 
           await _walletKit!.approveSession(
-            id: args.id,
+            // id: args.id,
+            proposalPublicKey: args.params.proposer.publicKey,
             namespaces: args.params.generatedNamespaces!,
             sessionProperties: args.params.sessionProperties,
-            proposalRequestsResponses: ProposalRequestsResponses(
-              authentication: cacaos,
-            ),
+            // proposalRequestsResponses: ProposalRequestsResponses(
+            //   authentication: cacaos,
+            // ),
           );
           // MethodsUtils.handleRedirect(
           //   session.topic,
@@ -356,10 +358,14 @@ class WalletKitService extends IWalletKitService {
         }
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED).toSignError();
-        await _walletKit!.rejectSession(id: args.id, reason: error);
-        await _walletKit!.core.pairing.disconnect(
-          topic: args.params.pairingTopic,
+        await _walletKit!.rejectSession(
+          // id: args.id,
+          proposalPublicKey: args.params.proposer.publicKey,
+          reason: error,
         );
+        // await _walletKit!.core.pairing.disconnect(
+        //   topic: args.params.pairingTopic,
+        // );
         MethodsUtils.handleRedirect(
           '',
           proposer.metadata.redirect,
@@ -428,7 +434,7 @@ class WalletKitService extends IWalletKitService {
       // which is only available for eip155 namespace and it's going to be deprecated soon
       final chainKeys = GetIt.I<IKeyService>().getKeysForChain('eip155');
       final address = chainKeys.first.address;
-      final formattedMessages = prepareAuthenticationMessages(
+      final formattedMessages = await prepareAuthenticationMessages(
         [authenticationRequest],
         {
           'eip155': Namespace(
@@ -459,12 +465,12 @@ class WalletKitService extends IWalletKitService {
             auths: cacaos,
           );
           debugPrint('[$runtimeType] approveSessionAuthenticate $session');
-          MethodsUtils.handleRedirect(
-            session.topic,
-            session.session?.peer.metadata.redirect,
-            '',
-            true,
-          );
+          // MethodsUtils.handleRedirect(
+          //   session.topic,
+          //   session.session?.peer.metadata.redirect,
+          //   '',
+          //   true,
+          // );
         } on ReownSignError catch (error) {
           MethodsUtils.handleRedirect(
             args.topic,
@@ -488,10 +494,10 @@ class WalletKitService extends IWalletKitService {
   }
 
   @override
-  List<(ISS, AuthMessage, AuthRequest)> prepareAuthenticationMessages(
+  Future<List<(ISS, AuthMessage, AuthRequest)>> prepareAuthenticationMessages(
     List<SessionAuthPayload>? authenticationRequests,
     Map<String, Namespace>? generatedNamespaces,
-  ) {
+  ) async {
     final List<(String, String, SessionAuthPayload)> formattedMessages = [];
     if (authenticationRequests == null || authenticationRequests.isEmpty) {
       return formattedMessages;
@@ -510,7 +516,7 @@ class WalletKitService extends IWalletKitService {
           if (account != null) {
             final address = NamespaceUtils.getAccount(account);
             final iss = 'did:pkh:$chain:$address';
-            final message = _walletKit!.formatAuthMessage(
+            final message = await _walletKit!.formatAuthMessage(
               iss: iss,
               cacaoPayload: CacaoRequestPayload.fromSessionAuthPayload(
                 request,
@@ -596,22 +602,22 @@ class WalletKitService extends IWalletKitService {
           final signature = await service.signMessage(message);
           final type = getSignatureType(namespace);
           return (signature, type, null);
-        case 'ton':
-          final service = getChainService<TonService>(chainId: caip2chain);
-          final signature = await service.signMessage(message);
-          final publicKey = service.getBase64PublicKey();
-          final type = getSignatureType(namespace);
-          return (signature, type, publicKey);
-        case 'sui':
-          final service = getChainService<SUIService>(chainId: caip2chain);
-          final signature = await service.signMessage(message);
-          final type = getSignatureType(namespace);
-          return (signature, type, null);
-        case 'stacks':
-          final service = getChainService<StacksService>(chainId: caip2chain);
-          final signature = await service.signMessage(message);
-          final type = getSignatureType(namespace);
-          return (signature, type, null);
+        // case 'ton':
+        //   final service = getChainService<TonService>(chainId: caip2chain);
+        //   final signature = await service.signMessage(message);
+        //   final publicKey = service.getBase64PublicKey();
+        //   final type = getSignatureType(namespace);
+        //   return (signature, type, publicKey);
+        // case 'sui':
+        //   final service = getChainService<SUIService>(chainId: caip2chain);
+        //   final signature = await service.signMessage(message);
+        //   final type = getSignatureType(namespace);
+        //   return (signature, type, null);
+        // case 'stacks':
+        //   final service = getChainService<StacksService>(chainId: caip2chain);
+        //   final signature = await service.signMessage(message);
+        //   final type = getSignatureType(namespace);
+        //   return (signature, type, null);
         default:
           throw StateError('Unsupported signature for chain $chainId');
       }

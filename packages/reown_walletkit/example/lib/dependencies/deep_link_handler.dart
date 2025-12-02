@@ -53,7 +53,7 @@ class DeepLinkHandler {
       final serviceRegistered = GetIt.I.isRegistered<IWalletKitService>();
       if (serviceRegistered) {
         final walletKit = GetIt.I<IWalletKitService>().walletKit;
-        return await walletKit.dispatchEnvelope('$link');
+        await walletKit.dispatchEnvelope('$link');
       }
     } catch (e) {
       _relayConnetionUri(link);
