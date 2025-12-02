@@ -1,6 +1,6 @@
-import 'package:eth_sig_util/eth_sig_util.dart';
-import 'package:eth_sig_util/util/bigint.dart';
-import 'package:eth_sig_util/util/utils.dart';
+import 'package:eth_sig_util_plus/eth_sig_util_plus.dart';
+import 'package:eth_sig_util_plus/util/bigint.dart';
+import 'package:eth_sig_util_plus/util/utils.dart';
 import 'package:reown_yttrium_utils/models/chain_abstraction.dart';
 
 extension SignatureExtension on String {

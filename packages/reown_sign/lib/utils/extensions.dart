@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
-import 'package:web3dart/crypto.dart' as crypto;
+import 'package:wallet/wallet.dart';
 import 'package:web3dart/web3dart.dart';
 
 import 'package:reown_core/reown_core.dart';
@@ -19,13 +19,13 @@ extension UriExtension on String {
 extension TransactionExtension on Transaction {
   Map<String, dynamic> toJson() {
     return {
-      if (from != null) 'from': from!.hexEip55,
-      if (to != null) 'to': to!.hexEip55,
+      if (from != null) 'from': from!.eip55With0x,
+      if (to != null) 'to': to!.eip55With0x,
       if (maxGas != null) 'gas': '0x${maxGas!.toRadixString(16)}',
       if (gasPrice != null)
         'gasPrice': '0x${gasPrice!.getInWei.toRadixString(16)}',
       if (value != null) 'value': '0x${value!.getInWei.toRadixString(16)}',
-      if (data != null) 'data': crypto.bytesToHex(data!, include0x: true),
+      if (data != null) 'data': bytesToHex(data!, include0x: true),
       if (nonce != null) 'nonce': nonce,
       if (maxFeePerGas != null)
         'maxFeePerGas': '0x${maxFeePerGas!.getInWei.toRadixString(16)}',

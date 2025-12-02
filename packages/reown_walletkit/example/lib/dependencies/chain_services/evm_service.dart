@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
 import 'package:get_it/get_it.dart';
-import 'package:eth_sig_util/eth_sig_util.dart' as eth_sig_util;
-import 'package:eth_sig_util/util/utils.dart' as eth_sig_util_util;
+import 'package:eth_sig_util_plus/eth_sig_util_plus.dart' as eth_sig_util;
+import 'package:eth_sig_util_plus/util/utils.dart' as eth_sig_util_util;
 import 'package:reown_walletkit/reown_walletkit.dart';
 
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
@@ -733,7 +733,7 @@ class EVMService {
       final credentials =
           privateKey != null ? EthPrivateKey.fromHex(privateKey) : _credentials;
 
-      final expectedAddress = credentials.address.hex;
+      final expectedAddress = credentials.address.with0x;
 
       // Prepare the data to verify
       final dataToVerify = hashToVerify.startsWith('0x')
@@ -761,7 +761,7 @@ class EVMService {
       final credentials =
           privateKey != null ? EthPrivateKey.fromHex(privateKey) : _credentials;
 
-      final expectedAddress = credentials.address.hex;
+      final expectedAddress = credentials.address.with0x;
 
       // Prepare the data to verify
       final dataToVerify = message.startsWith('0x')

@@ -17,9 +17,9 @@ import 'package:reown_walletkit_wallet/dependencies/walletkit_service.dart';
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:eth_sig_util/util/utils.dart' as eth_sig_util_util;
-import 'package:eth_sig_util/util/bigint.dart' as eth_bigint_util;
-import 'package:eth_sig_util/eth_sig_util.dart' as eth_sig_util;
+import 'package:eth_sig_util_plus/util/utils.dart' as eth_sig_util_util;
+import 'package:eth_sig_util_plus/util/bigint.dart' as eth_bigint_util;
+import 'package:eth_sig_util_plus/eth_sig_util_plus.dart' as eth_sig_util;
 
 Map<String, dynamic> get _mockInitialValues => {
       'appName': 'reown_core',

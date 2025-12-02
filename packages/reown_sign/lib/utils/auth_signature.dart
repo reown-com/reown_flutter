@@ -12,7 +12,7 @@ import 'package:reown_sign/models/basic_models.dart';
 import 'package:reown_sign/utils/address_utils.dart';
 import 'package:reown_sign/utils/constants.dart';
 import 'package:reown_sign/utils/recaps_utils.dart';
-import 'package:web3dart/crypto.dart' as crypto;
+import 'package:web3dart/web3dart.dart';
 
 class AuthSignature {
   static final KeccakDigest keccakDigest = KeccakDigest(256);
@@ -83,9 +83,9 @@ class AuthSignature {
     // }
 
     // Convert the public key to an address
-    final publicKeyBytes = crypto.ecRecover(
+    final publicKeyBytes = ecRecover(
       hashMessage(message),
-      crypto.MsgSignature(r, s, v),
+      MsgSignature(r, s, v),
     );
     // print(hex.encode(publicKeyBytes));
     final hashedPubKeyBytes = keccak256(publicKeyBytes);

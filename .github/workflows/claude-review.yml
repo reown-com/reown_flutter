@@ -41,7 +41,7 @@ jobs:
             - reown_sign: Sign protocol implementation using web3dart for EVM chain interactions, freezed for immutable models
             - reown_walletkit: Wallet implementation that orchestrates core networking and sign protocol, provides wallet-side WalletConnect functionality
             - reown_appkit: Full-featured UI toolkit with Coinbase Wallet SDK integration, WebView support for WalletConnect, QR code generation, and comprehensive modal components
-            - reown_yttrium: Chain abstraction layer (early access) with eth_sig_util for transaction signing across multiple chains
+            - reown_yttrium: Chain abstraction layer (early access) with eth_sig_util_plus for transaction signing across multiple chains
             - reown_cli: Command-line tool to easily create a reown_appkit project from scratch
             - pos_client: Point of sale SDK
             
@@ -53,7 +53,7 @@ jobs:
             - Networking: http, web_socket_channel, connectivity_plus
             - Storage: flutter_secure_storage, shared_preferences
             - UI Components: flutter_svg, cached_network_image, custom_sliding_segmented_control, shimmer
-            - Blockchain: web3dart, eth_sig_util, bs58
+            - Blockchain: web3dart, eth_sig_util_plus, bs58
             - Testing: build_runner, flutter_test, mockito, flutter_lints
             
             Multi-Chain Support:

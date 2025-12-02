@@ -1,4 +1,4 @@
-import 'package:reown_cli/src/templates/shared_template.dart';
+import 'shared_template.dart';
 
 const String customTemplate = '''
 $myApp

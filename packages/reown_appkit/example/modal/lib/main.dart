@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:reown_appkit_example/first_page.dart';
-import 'package:reown_appkit_example/services/deep_link_handler.dart';
-import 'package:reown_appkit_example/utils/constants.dart';
+import 'package:reown_appkit_modal_example/first_page.dart';
+import 'package:reown_appkit_modal_example/services/deep_link_handler.dart';
+import 'package:reown_appkit_modal_example/utils/constants.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 void main() {
