@@ -17,19 +17,12 @@ class MethodDialog extends StatefulWidget {
     return showDialog<dynamic>(
       context: context,
       builder: (BuildContext context) {
-        return MethodDialog(
-          method: method,
-          response: response,
-        );
+        return MethodDialog(method: method, response: response);
       },
     );
   }
 
-  const MethodDialog({
-    super.key,
-    required this.method,
-    required this.response,
-  });
+  const MethodDialog({super.key, required this.method, required this.response});
 
   final String method;
   final Future<dynamic> response;
@@ -63,8 +56,8 @@ class MethodDialogState extends State<MethodDialog> {
                 return InkWell(
                   onTap: () {
                     Clipboard.setData(
-                            ClipboardData(text: snapshot.data.toString()))
-                        .then(
+                      ClipboardData(text: snapshot.data.toString()),
+                    ).then(
                       (_) => toastification.show(
                         title: const Text(StringConstants.copiedToClipboard),
                         context: context,
@@ -76,9 +69,9 @@ class MethodDialogState extends State<MethodDialog> {
                   child: Text(snapshot.error.toString()),
                 );
               } else {
-                final response = const JsonEncoder.withIndent('   ').convert(
-                  snapshot.data,
-                );
+                final response = const JsonEncoder.withIndent(
+                  '   ',
+                ).convert(snapshot.data);
                 return InkWell(
                   onTap: () {
                     Clipboard.setData(ClipboardData(text: response)).then(
@@ -100,9 +93,7 @@ class MethodDialogState extends State<MethodDialog> {
               onPressed: () {
                 Navigator.of(context).pop(snapshot.data);
               },
-              child: const Text(
-                StringConstants.close,
-              ),
+              child: const Text(StringConstants.close),
             ),
           ],
         );

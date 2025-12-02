@@ -65,3 +65,13 @@ class UserRejectedConnection extends ModalError {
 class UserRejectedRequest extends ModalError {
   UserRejectedRequest() : super('User rejected request');
 }
+
+class DepositSuccessEvent extends EventArgs {
+  final Exchange exchange;
+  DepositSuccessEvent(this.exchange);
+
+  @override
+  String toString() {
+    return 'DepositSuccessEvent(exchange: ${exchange.toJson()})';
+  }
+}

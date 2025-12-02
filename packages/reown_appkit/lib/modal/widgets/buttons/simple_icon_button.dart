@@ -57,7 +57,12 @@ class SimpleIconButton extends StatelessWidget {
           }
           return foregroundColor ?? themeColors.inverse100;
         }),
-        overlayColor: overlayColor,
+        overlayColor:
+            overlayColor ??
+            WidgetStateProperty.all<Color>(themeColors.accenGlass010),
+        shadowColor:
+            overlayColor ??
+            WidgetStateProperty.all<Color>(themeColors.accenGlass010),
         shape: withBorder
             ? WidgetStateProperty.resolveWith<RoundedRectangleBorder>((states) {
                 return RoundedRectangleBorder(

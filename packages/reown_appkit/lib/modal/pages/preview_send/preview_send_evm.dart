@@ -5,9 +5,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'dart:ui' as ui;
 
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/models/send_data.dart';
 import 'package:reown_appkit/modal/pages/preview_send/utils.dart';
 import 'package:reown_appkit/modal/pages/preview_send/widgets.dart';
@@ -233,7 +233,7 @@ class _PreviewSendEvmState extends State<PreviewSendEvm> {
     );
     try {
       final appKitModal = ModalProvider.of(context).instance;
-      await appKitModal.request(
+      final response = await appKitModal.request(
         topic: appKitModal.session!.topic,
         chainId: _sendTokenData.chainId!,
         request: SessionRequestParams(
@@ -246,8 +246,13 @@ class _PreviewSendEvmState extends State<PreviewSendEvm> {
           network: _sendTokenData.chainId!,
           sendToken: _sendTokenData.symbol!,
           sendAmount: valueToSend,
+          hash: response.toString(),
         ),
       );
+      _toastService.show(
+        ToastMessage(type: ToastType.success, text: 'Send success'),
+      );
+      _widgetStack.popUntil(KeyConstants.walletFeaturesPage);
     } on ArgumentError catch (e) {
       _toastService.show(
         ToastMessage(

@@ -110,6 +110,12 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     }
 
     await core.start();
+    core.events.setQueryParams({
+      'projectId': core.projectId,
+      'st': 'events_sdk',
+      'sv': ReownCoreUtils.coreSdkVersion(packageVersion),
+    });
+    await core.events.sendStoredEvents();
     await reOwnSign.init();
 
     WidgetsBinding.instance.addObserver(this);
@@ -173,6 +179,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     required Map<String, Namespace> namespaces,
     Map<String, String>? sessionProperties,
     String? relayProtocol,
+    ProposalRequestsResponses? proposalRequestsResponses,
   }) async {
     try {
       return await reOwnSign.approveSession(
@@ -180,6 +187,7 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
         namespaces: namespaces,
         sessionProperties: sessionProperties,
         relayProtocol: relayProtocol,
+        proposalRequestsResponses: proposalRequestsResponses,
       );
     } catch (e) {
       rethrow;

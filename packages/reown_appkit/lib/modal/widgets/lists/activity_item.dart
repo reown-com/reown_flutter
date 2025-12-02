@@ -9,7 +9,6 @@ import 'package:reown_appkit/modal/services/blockchain_service/models/wallet_act
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
-import 'package:reown_appkit/modal/utils/public/appkit_modal_default_networks.dart';
 import 'package:reown_appkit/modal/utils/render_utils.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/base_list_item.dart';
@@ -33,10 +32,9 @@ class ActivityListItem extends StatelessWidget {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final appKitModal = ModalProvider.of(context).instance;
-    final imageId = ReownAppKitModalNetworks.getNetworkIconId(
-      appKitModal.selectedChain!.chainId,
+    final tokenImage = GetIt.I<IExplorerService>().getChainIcon(
+      appKitModal.selectedChain,
     );
-    final tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
     //
     final operationType = OperationType.values.firstWhere(
       (e) =>

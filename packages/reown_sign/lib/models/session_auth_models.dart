@@ -30,19 +30,23 @@ class SessionAuthRequestResponse {
 sealed class SessionAuthRequestParams with _$SessionAuthRequestParams {
   @JsonSerializable(includeIfNull: false)
   const factory SessionAuthRequestParams({
-    required List<String> chains,
     required String domain,
+    required List<String> chains,
     required String nonce,
     required String uri,
     //
     CacaoHeader? type,
-    String? nbf,
     String? exp,
+    String? nbf,
     String? statement,
     String? requestId,
     List<String>? resources,
     int? expiry,
-    @Default(<String>[]) List<String>? methods,
+    Map<String, List<String>>? signatureTypes,
+    @Deprecated(
+      '`methods` will be deprecated soon. Please use `connect` with `authentication` param',
+    )
+    List<String>? methods,
   }) = _SessionAuthRequestParams;
   //
   factory SessionAuthRequestParams.fromJson(Map<String, dynamic> json) =>
@@ -53,8 +57,8 @@ sealed class SessionAuthRequestParams with _$SessionAuthRequestParams {
 sealed class SessionAuthPayload with _$SessionAuthPayload {
   @JsonSerializable(includeIfNull: false)
   const factory SessionAuthPayload({
-    required List<String> chains,
     required String domain,
+    required List<String> chains,
     required String nonce,
     required String aud,
     required String type,

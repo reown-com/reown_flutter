@@ -79,13 +79,37 @@ sealed class SessionRequest with _$SessionRequest {
   const factory SessionRequest({
     required int id,
     required String topic,
-    required String method,
     required String chainId,
-    required dynamic params,
+    required String method, // SessionRequestParams??
+    required dynamic params, // SessionRequestParams??
     required VerifyContext verifyContext,
     @Default(TransportType.relay) TransportType transportType,
   }) = _SessionRequest;
 
   factory SessionRequest.fromJson(Map<String, dynamic> json) =>
       _$SessionRequestFromJson(json);
+}
+
+@freezed
+sealed class SessionRequestParams with _$SessionRequestParams {
+  @JsonSerializable()
+  const factory SessionRequestParams({
+    required String method,
+    required dynamic params,
+  }) = _SessionRequestParams;
+
+  factory SessionRequestParams.fromJson(Map<String, dynamic> json) =>
+      _$SessionRequestParamsFromJson(json);
+}
+
+@freezed
+sealed class SessionEventParams with _$SessionEventParams {
+  @JsonSerializable()
+  const factory SessionEventParams({
+    required String name,
+    required dynamic data,
+  }) = _SessionEventParams;
+
+  factory SessionEventParams.fromJson(Map<String, dynamic> json) =>
+      _$SessionEventParamsFromJson(json);
 }

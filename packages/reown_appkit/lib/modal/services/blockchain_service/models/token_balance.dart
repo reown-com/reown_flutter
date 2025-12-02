@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+// import 'package:reown_appkit/reown_appkit.dart';
+
 class TokenBalance {
   final String? name;
   final String? symbol;
@@ -20,6 +22,17 @@ class TokenBalance {
     this.quantity,
     this.iconUrl,
   });
+
+  // bool get isNative {
+  //   final ns = NamespaceUtils.getNamespaceFromChain(chainId!);
+  //   if (ns == 'eip155') {
+  //     return address == null;
+  //   }
+  //   if (ns == 'solana') {
+  //     return address == 'So11111111111111111111111111111111111111111';
+  //   }
+  //   return true;
+  // }
 
   factory TokenBalance.fromRawJson(String str) =>
       TokenBalance.fromJson(json.decode(str));
@@ -47,6 +60,28 @@ class TokenBalance {
     'quantity': quantity?.toJson(),
     'iconUrl': iconUrl,
   };
+
+  TokenBalance copyWith({
+    String? name,
+    String? symbol,
+    String? chainId,
+    String? address,
+    double? value,
+    double? price,
+    Quantity? quantity,
+    String? iconUrl,
+  }) {
+    return TokenBalance(
+      name: name ?? this.name,
+      symbol: symbol ?? this.symbol,
+      chainId: chainId ?? this.chainId,
+      address: address ?? this.address,
+      value: value ?? this.value,
+      price: price ?? this.price,
+      quantity: quantity ?? this.quantity,
+      iconUrl: iconUrl ?? this.iconUrl,
+    );
+  }
 
   @override
   String toString() => json.encode(toJson());

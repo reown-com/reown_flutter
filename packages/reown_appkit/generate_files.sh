@@ -21,9 +21,10 @@ dart format .
 # dart run polkadart_cli:generate -v
 
 cd ios
-rm Podfile.lock
+# rm Podfile.lock
 # pod deintegrate
 # pod cache clean --all
+# pod repo update
 pod install
 cd ..
 
@@ -42,9 +43,10 @@ dart format .
 # dart run dependency_validator
 
 cd ios
-rm Podfile.lock
+# rm Podfile.lock
 # pod deintegrate
 # pod cache clean --all
+# pod repo update
 pod install
 cd ..
 

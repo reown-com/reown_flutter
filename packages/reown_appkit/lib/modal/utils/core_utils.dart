@@ -140,4 +140,48 @@ class CoreUtils {
       if (origin != null) 'origin': origin,
     };
   }
+
+  static Map<String, String> getApiQueryParams(String projectId) {
+    return {
+      'st': CoreConstants.X_SDK_TYPE,
+      'sv': CoreConstants.X_SDK_VERSION,
+      'projectId': projectId,
+    };
+  }
+
+  static String formatImageUri(String imageUrl, String projectId) {
+    if (imageUrl.isNotEmpty) {
+      Uri imageUri = Uri.parse(imageUrl);
+      if (imageUri.host == 'api.web3modal.com') {
+        final queryParams = CoreUtils.getApiQueryParams(projectId);
+        imageUri = imageUri.replace(queryParameters: queryParams);
+      }
+      return imageUri.toString();
+    }
+    return imageUrl;
+  }
+}
+
+extension JsonRpcErrorExtensions on JsonRpcError {
+  bool get isUserRejected {
+    final regexp = RegExp(
+      r'\b(rejected|cancelled|disapproved|denied)\b',
+      caseSensitive: false,
+    );
+    final code = (this.code ?? 0);
+    final match = RegExp(r'\b500[0-3]\b').hasMatch(code.toString());
+    if (match || code == Errors.getSdkError(Errors.USER_REJECTED_SIGN).code) {
+      return true;
+    }
+    return regexp.hasMatch(toString());
+  }
+
+  String get cleanMessage {
+    return (message ?? '')
+        .replaceAll('reown_getExchangePayUrl:', '')
+        .replaceAll('Internal error:', '')
+        .replaceAll('Validation error:', '')
+        .replaceAll('Execution error:', '')
+        .trim();
+  }
 }

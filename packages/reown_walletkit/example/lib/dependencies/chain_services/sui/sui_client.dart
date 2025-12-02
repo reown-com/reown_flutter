@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit/version.dart' as wk;
 
-import 'package:reown_yttrium/reown_yttrium.dart';
+import 'package:reown_yttrium_utils/reown_yttrium_utils.dart';
 
 class SuiClient {
   final String projectId;
@@ -13,14 +13,13 @@ class SuiClient {
   Future<void> init() async {
     try {
       final packageName = await ReownCoreUtils.getPackageName();
-      await ReownYttrium.suiClient.init(
+      await ReownYttriumUtils.suiClient.init(
         projectId: projectId,
         networkId: networkId,
         pulseMetadata: PulseMetadataCompat(
           sdkVersion: wk.packageVersion,
           sdkPlatform: ReownCoreUtils.getId(),
-          packageName: ReownCoreUtils.getId() == 'android' ? packageName : null,
-          bundleId: ReownCoreUtils.getId() == 'ios' ? packageName : null,
+          bundleId: packageName,
         ),
       );
     } catch (e) {
@@ -29,7 +28,7 @@ class SuiClient {
   }
 
   Future<String> generateKeyPair({required String networkId}) async {
-    return await ReownYttrium.suiClient.generateKeyPair(
+    return await ReownYttriumUtils.suiClient.generateKeyPair(
       networkId: networkId,
     );
   }
@@ -38,7 +37,7 @@ class SuiClient {
     required String publicKey,
     required String networkId,
   }) async {
-    return await ReownYttrium.suiClient.getAddressFromPublicKey(
+    return await ReownYttriumUtils.suiClient.getAddressFromPublicKey(
       publicKey: publicKey,
       networkId: networkId,
     );
@@ -48,7 +47,7 @@ class SuiClient {
     required String keyPair,
     required String networkId,
   }) async {
-    return await ReownYttrium.suiClient.getPublicKeyFromKeyPair(
+    return await ReownYttriumUtils.suiClient.getPublicKeyFromKeyPair(
       keyPair: keyPair,
       networkId: networkId,
     );
@@ -59,7 +58,7 @@ class SuiClient {
     required String message,
     required String networkId,
   }) async {
-    return await ReownYttrium.suiClient.personalSign(
+    return await ReownYttriumUtils.suiClient.personalSign(
       keyPair: keyPair,
       message: message,
       networkId: networkId,
@@ -71,7 +70,7 @@ class SuiClient {
     required String keyPair,
     required String txData,
   }) async {
-    return await ReownYttrium.suiClient.signAndExecuteTransaction(
+    return await ReownYttriumUtils.suiClient.signAndExecuteTransaction(
       networkId: networkId,
       keyPair: keyPair,
       txData: txData,
@@ -83,7 +82,7 @@ class SuiClient {
     required String keyPair,
     required String txData,
   }) async {
-    return await ReownYttrium.suiClient.signTransaction(
+    return await ReownYttriumUtils.suiClient.signTransaction(
       networkId: networkId,
       keyPair: keyPair,
       txData: txData,

@@ -92,6 +92,10 @@ abstract class IPairing {
     required Map<String, dynamic> sessionProposalResponse,
     required Map<String, dynamic> sessionSettlementRequest,
     EncodeOptions? encodeOptions,
+    List<String>? approvedChains,
+    List<String>? approvedMethods,
+    List<String>? approvedEvents,
+    Map<String, String>? sessionProperties,
   });
 
   Future<void> isValidPairingTopic({required String topic});

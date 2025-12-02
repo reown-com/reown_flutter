@@ -7,22 +7,39 @@ import 'package:http/http.dart' as http;
 // ignore: depend_on_referenced_packages
 import 'package:convert/convert.dart';
 
-enum TronMethods {
-  tronSignTransaction,
-  tronSignMessage,
-}
-
-enum TronEvents {
-  none,
-}
-
 class Tron {
-  static final Map<TronMethods, String> methods = {
-    TronMethods.tronSignTransaction: 'tron_signTransaction',
-    TronMethods.tronSignMessage: 'tron_signMessage'
-  };
+  static final List<String> methods = [
+    'tron_signTransaction',
+    'tron_signMessage',
+  ];
 
   static final List<String> events = [];
+
+  static Map<String, dynamic> tronSignMessage({
+    required String chainId,
+    required String walletAdress,
+  }) {
+    return {
+      'message': 'Welcome to Flutter AppKit on Tron ($chainId)',
+      'address': walletAdress,
+    };
+  }
+
+  static Future<Map<String, dynamic>> tronSignTransaction({
+    required ReownAppKitModalNetworkInfo chainData,
+    required String walletAdress,
+    required bool isV1,
+  }) async {
+    final transaction = await triggerSmartContract(
+      chainData: chainData,
+      walletAdress: walletAdress,
+    );
+
+    return {
+      'address': walletAdress,
+      'transaction': isV1 ? transaction : {'transaction': transaction},
+    };
+  }
 
   static Future<Map<String, dynamic>> triggerSmartContract({
     required ReownAppKitModalNetworkInfo chainData,
@@ -33,14 +50,18 @@ class Tron {
         ? 'TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf'
         : 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';
 
+    final apiEndpoint = chainData.isTestNetwork
+        ? 'https://nile.trongrid.io'
+        : 'https://api.trongrid.io';
+
     final parameter = [
       {'type': 'address', 'value': walletAdress},
-      {'type': 'uint256', 'value': 1},
+      {'type': 'uint256', 'value': 100000},
     ];
     final params = _convertToFormat(parameter);
 
     // https://developers.tron.network/reference/triggersmartcontract
-    final url = '${chainData.rpcUrl}/wallet/triggersmartcontract';
+    final url = '$apiEndpoint/wallet/triggersmartcontract';
     final paradic = {
       'owner_address': walletAdress,
       'contract_address': usdTContract,
@@ -48,17 +69,16 @@ class Tron {
       'parameter': params,
       'fee_limit': 200000000,
       'call_value': 0,
-      'visible': true
+      'visible': true,
     };
     final response = await http.post(
       Uri.parse(url),
       body: jsonEncode(paradic),
-      headers: {
-        'accept': 'application/json',
-      },
+      headers: {'accept': 'application/json'},
     );
     try {
-      return jsonDecode(response.body) as Map<String, dynamic>;
+      final parsedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+      return parsedResponse['transaction'] as Map<String, dynamic>;
     } catch (e) {
       debugPrint(e.toString());
       rethrow;
@@ -69,8 +89,12 @@ class Tron {
     required ReownAppKitModalNetworkInfo chainData,
     required String walletAdress,
   }) async {
+    final apiEndpoint = chainData.isTestNetwork
+        ? 'https://nile.trongrid.io'
+        : 'https://api.trongrid.io';
+
     // https://developers.tron.network/reference/createtransaction
-    final url = '${chainData.rpcUrl}/wallet/createtransaction';
+    final url = '$apiEndpoint/wallet/createtransaction';
     final txPayload = {
       'owner_address': walletAdress,
       'to_address': walletAdress,
@@ -80,9 +104,30 @@ class Tron {
     final response = await http.post(
       Uri.parse(url),
       body: jsonEncode(txPayload),
-      headers: {
-        'accept': 'application/json',
-      },
+      headers: {'accept': 'application/json'},
+    );
+    try {
+      return jsonDecode(response.body) as Map<String, dynamic>;
+    } catch (e) {
+      debugPrint(e.toString());
+      rethrow;
+    }
+  }
+
+  static Future<Map<String, dynamic>> broadcastTransaction({
+    required ReownAppKitModalNetworkInfo chainData,
+    required Map<String, dynamic> signedTransaction,
+  }) async {
+    final apiEndpoint = chainData.isTestNetwork
+        ? 'https://nile.trongrid.io'
+        : 'https://api.trongrid.io';
+
+    // https://developers.tron.network/reference/broadcasttransaction
+    final url = '$apiEndpoint/wallet/broadcasttransaction';
+    final response = await http.post(
+      Uri.parse(url),
+      body: jsonEncode(signedTransaction),
+      headers: {'accept': 'application/json'},
     );
     try {
       return jsonDecode(response.body) as Map<String, dynamic>;

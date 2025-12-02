@@ -22,3 +22,4 @@ export 'modal/pages/public/appkit_modal_pages.dart';
 
 // Services
 export 'modal/appkit_modal_impl.dart';
+export 'modal/i_appkit_modal_impl.dart';

@@ -76,9 +76,11 @@ class _AppKitModalAllWalletsPageState
         curve: Curves.linear,
       ),
       onBack: () {
-        FocusManager.instance.primaryFocus?.unfocus();
-        _explorerService.search(query: null);
-        _widgetStack.pop();
+        try {
+          FocusManager.instance.primaryFocus?.unfocus();
+          _explorerService.search(query: null);
+          _widgetStack.pop();
+        } catch (_) {}
       },
       safeAreaBottom: false,
       safeAreaLeft: true,

@@ -7,7 +7,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'dart:ui' as ui;
 
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/models/send_data.dart';
 import 'package:reown_appkit/modal/pages/preview_send/utils.dart';
 import 'package:reown_appkit/modal/pages/preview_send/widgets.dart';
@@ -124,14 +123,15 @@ class _PreviewSendSolanaState extends State<PreviewSendSolana> {
     final chainId = ReownAppKitModalNetworks.getIdFromChain(
       _sendTokenData.chainId!,
     );
-    final chainData = ReownAppKitModalNetworks.getNetworkInfo(
+    final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
       'solana',
       chainId,
     );
     // Create a connection to the devnet cluster.
-    final cluster = solana.Cluster.https(
-      Uri.parse(chainData!.rpcUrl).authority,
-    );
+    final appKitModal = ModalProvider.of(context).instance;
+    final projectId = appKitModal.appKit!.core.projectId;
+    final rpcUrl = chainInfo!.formattedRpcUrl(projectId);
+    final cluster = solana.Cluster.https(Uri.parse(rpcUrl).authority);
     // final cluster = solana.Cluster.devnet;
     final connection = solana.Connection(cluster);
 
@@ -186,15 +186,16 @@ class _PreviewSendSolanaState extends State<PreviewSendSolana> {
       final chainId = ReownAppKitModalNetworks.getIdFromChain(
         _sendTokenData.chainId!,
       );
-      final chainData = ReownAppKitModalNetworks.getNetworkInfo(
+      final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
         'solana',
         chainId,
       );
 
       // Create a connection to the devnet cluster.
-      final cluster = solana.Cluster.https(
-        Uri.parse(chainData!.rpcUrl).authority,
-      );
+      final appKitModal = ModalProvider.of(context).instance;
+      final projectId = appKitModal.appKit!.core.projectId;
+      final rpcUrl = chainInfo!.formattedRpcUrl(projectId);
+      final cluster = solana.Cluster.https(Uri.parse(rpcUrl).authority);
       // final cluster = solana.Cluster.devnet;
       final connection = solana.Connection(cluster);
       final status = await connection.simulateTransaction(_transaction!);
@@ -254,7 +255,7 @@ class _PreviewSendSolanaState extends State<PreviewSendSolana> {
     try {
       final appKitModal = ModalProvider.of(context).instance;
 
-      await appKitModal.request(
+      final response = await appKitModal.request(
         topic: appKitModal.session!.topic,
         chainId: _sendTokenData.chainId!,
         request: SessionRequestParams(
@@ -272,6 +273,7 @@ class _PreviewSendSolanaState extends State<PreviewSendSolana> {
           network: _sendTokenData.chainId!,
           sendToken: _sendTokenData.symbol!,
           sendAmount: valueToSend,
+          hash: response.toString(),
         ),
       );
     } on ArgumentError catch (e) {

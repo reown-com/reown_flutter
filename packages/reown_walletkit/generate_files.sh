@@ -1,5 +1,11 @@
 #!/bin/bash
 
+rm -Rf pubspec.lock
+rm -Rf .dart_tool
+rm -Rf example/.dart_tool
+rm -Rf example/build
+rm -Rf example/ios/.symlinks
+
 flutter clean
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs

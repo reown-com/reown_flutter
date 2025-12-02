@@ -10,6 +10,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/tron_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
@@ -242,7 +244,7 @@ class _Metadata extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 20.0),
-        const Divider(height: 1.0, color: Colors.grey),
+        const Divider(height: 1.0, color: Colors.black12),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Column(
@@ -367,7 +369,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
   Widget build(BuildContext context) {
     final chainKeys = _keysService.getKeysForChain('eip155');
     final chainData = ChainsDataList.allChains.firstWhere(
-      (e) => e.chainId == chainKeys.first.chains.first,
+      (e) => e.chainId == _selectedChain.chainId,
     );
     return Column(
       children: [
@@ -376,7 +378,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
           child: Row(
             children: [
               CachedNetworkImage(
-                imageUrl: chainData.logo,
+                imageUrl: ChainsDataList.eip155Chains.first.logo,
                 width: 20.0,
                 height: 20.0,
                 errorWidget: (context, url, error) => const SizedBox.shrink(),
@@ -453,7 +455,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
             children: [
               Expanded(
                 child: Text(
-                  '${_balance.toStringAsFixed(6)} ETH',
+                  '${_balance.toStringAsFixed(6)} ${chainData.currency}',
                   style: TextStyle(
                     fontSize: 15.0,
                     fontWeight: FontWeight.bold,
@@ -462,70 +464,66 @@ class _EVMAccountsState extends State<_EVMAccounts> {
               ),
               SizedBox(
                 width: 200.0,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    DropdownButton(
-                      key: Key('evm_chains'),
-                      isExpanded: true,
-                      value: _selectedChain,
-                      items: ChainsDataList.eip155Chains.map((e) {
-                        return DropdownMenuItem<ChainMetadata>(
-                          value: e,
-                          child: RichText(
-                            text: TextSpan(
-                              children: [
-                                WidgetSpan(
-                                  child: CachedNetworkImage(
-                                    imageUrl: e.logo,
-                                    width: 20.0,
-                                    height: 20.0,
-                                    errorWidget: (context, url, error) =>
-                                        const SizedBox.shrink(),
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: ' ${e.name}',
-                                  style: TextStyle(
-                                    fontSize: 14.0,
-                                    color: Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? Colors.white
-                                        : Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
+                child: DropdownButton(
+                  key: Key('evm_chains'),
+                  isExpanded: true,
+                  value: _selectedChain,
+                  items: ChainsDataList.eip155Chains.map((
+                    ChainMetadata chain,
+                  ) {
+                    return DropdownMenuItem<ChainMetadata>(
+                      value: chain,
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            WidgetSpan(
+                              child: CachedNetworkImage(
+                                imageUrl: chain.logo,
+                                width: 20.0,
+                                height: 20.0,
+                                errorWidget: (context, url, error) =>
+                                    const SizedBox.shrink(),
+                              ),
                             ),
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (ChainMetadata? chain) async {
-                        setState(() => _selectedChain = chain!);
-                        final sessions = _walletKit.sessions.getAll();
-                        final cid = _selectedChain.chainId.split(':').last;
-                        for (var session in sessions) {
-                          await _walletKit.emitSessionEvent(
-                            topic: session.topic,
-                            chainId: _selectedChain.chainId,
-                            event: SessionEventParams(
-                              name: 'chainChanged',
-                              data: int.parse(cid),
+                            TextSpan(
+                              text: ' ${chain.name}',
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          );
-                        }
-                        _updateBalance();
-                      },
-                    ),
-                  ],
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (ChainMetadata? chain) async {
+                    setState(() => _selectedChain = chain!);
+                    final sessions = _walletKit.sessions.getAll();
+                    final cid = _selectedChain.chainId.split(':').last;
+                    for (var session in sessions) {
+                      await _walletKit.emitSessionEvent(
+                        topic: session.topic,
+                        chainId: _selectedChain.chainId,
+                        event: SessionEventParams(
+                          name: 'chainChanged',
+                          data: int.parse(cid),
+                        ),
+                      );
+                    }
+                    _updateBalance();
+                  },
                 ),
               ),
             ],
           ),
         ),
         SizedBox(
-          height: 300.0,
+          height: 210.0,
           child: PageView.builder(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
@@ -544,12 +542,6 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                     _DataContainer(
                       title: 'CAIP-10',
                       data: '${_selectedChain.chainId}:${chainKey.address}',
-                      height: 84.0,
-                    ),
-                    const SizedBox(height: 12.0),
-                    _DataContainer(
-                      title: 'Public key',
-                      data: chainKey.publicKey,
                       height: 84.0,
                     ),
                     const SizedBox(height: 12.0),
@@ -620,6 +612,7 @@ class _SolanaAccounts extends StatefulWidget {
 }
 
 class _SolanaAccountsState extends State<_SolanaAccounts> {
+  final _keysService = GetIt.I<IKeyService>();
   ChainMetadata? _selectedChain;
   double _balance = 0.0;
 
@@ -628,28 +621,31 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
     super.initState();
     try {
       _selectedChain = ChainsDataList.solanaChains.first;
-      final keysService = GetIt.I<IKeyService>();
-      final chainKeys = keysService.getKeysForChain('solana');
-      final evmService =
-          GetIt.I<IWalletKitService>().getChainService<EVMService>(
-        chainId: _selectedChain!.chainId,
-      );
-      final address = chainKeys.first.address;
-      evmService.getBalance(address: address).then((value) {
-        if (!mounted) return;
-        setState(() => _balance = value);
-      }).catchError((error) {
-        debugPrint(error);
-      });
+      _updateBalance();
     } catch (e) {
       debugPrint(e.toString());
     }
   }
 
+  Future<void> _updateBalance() async {
+    if (!mounted) return;
+    final chainKeys = _keysService.getKeysForChain('solana');
+    final solanaService =
+        GetIt.I<IWalletKitService>().getChainService<SolanaService>(
+      chainId: _selectedChain!.chainId,
+    );
+    final address = chainKeys.first.address;
+    solanaService.getBalance(address: address).then((value) {
+      if (!mounted) return;
+      setState(() => _balance = value);
+    }).catchError((error) {
+      debugPrint(error);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final keysService = GetIt.I<IKeyService>();
-    final chainKeys = keysService.getKeysForChain('solana');
+    final chainKeys = _keysService.getKeysForChain('solana');
     if (chainKeys.isEmpty) return const SizedBox.shrink();
     final chainData = ChainsDataList.allChains.firstWhere(
       (e) => e.chainId == chainKeys.first.chains.first,
@@ -657,7 +653,7 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
     return Column(
       children: [
         const SizedBox(height: 20.0),
-        const Divider(height: 1.0, color: Colors.grey),
+        const Divider(height: 1.0, color: Colors.black12),
         Padding(
           padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 12.0),
           child: Row(
@@ -694,7 +690,7 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
             children: [
               Expanded(
                 child: Text(
-                  '${_balance.toStringAsFixed(3)} SOL',
+                  '${_balance.toStringAsFixed(6)} ${chainData.currency}',
                   style: TextStyle(
                     fontSize: 15.0,
                     fontWeight: FontWeight.bold,
@@ -702,20 +698,22 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
                 ),
               ),
               SizedBox(
-                width: 150.0,
+                width: 200.0,
                 child: DropdownButton(
                   key: Key('solana_chains'),
                   isExpanded: true,
                   value: _selectedChain,
-                  items: ChainsDataList.solanaChains.map((e) {
+                  items: ChainsDataList.solanaChains.map((
+                    ChainMetadata chain,
+                  ) {
                     return DropdownMenuItem<ChainMetadata>(
-                      value: e,
+                      value: chain,
                       child: RichText(
                         text: TextSpan(
                           children: [
                             WidgetSpan(
                               child: CachedNetworkImage(
-                                imageUrl: e.logo,
+                                imageUrl: chain.logo,
                                 width: 20.0,
                                 height: 20.0,
                                 errorWidget: (context, url, error) =>
@@ -723,7 +721,7 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
                               ),
                             ),
                             TextSpan(
-                              text: ' ${e.name}',
+                              text: ' ${chain.name}',
                               style: TextStyle(
                                 fontSize: 14.0,
                                 color: Theme.of(context).brightness ==
@@ -739,16 +737,8 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
                     );
                   }).toList(),
                   onChanged: (ChainMetadata? chain) {
-                    setState(() => _selectedChain = chain);
-                    final chainKey = chainKeys.first;
-                    final walletKitService = GetIt.I<IWalletKitService>();
-                    final chainService =
-                        walletKitService.getChainService<EVMService>(
-                      chainId: _selectedChain!.chainId,
-                    );
-                    chainService.getBalance(address: chainKey.address).then(
-                          (value) => setState(() => _balance = value),
-                        );
+                    setState(() => _selectedChain = chain!);
+                    _updateBalance();
                   },
                 ),
               ),
@@ -761,8 +751,8 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
           child: Column(
             children: [
               _DataContainer(
-                title: 'Address',
-                data: chainKeys.first.address,
+                title: 'CAIP-10',
+                data: '${_selectedChain!.chainId}:${chainKeys.first.address}',
               ),
               const SizedBox(height: 12.0),
               _DataContainer(
@@ -778,13 +768,61 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
   }
 }
 
-class _ChainKeyView extends StatelessWidget {
+class _ChainKeyView extends StatefulWidget {
   const _ChainKeyView({required this.chain});
   final String chain;
+
+  @override
+  State<_ChainKeyView> createState() => _ChainKeyViewState();
+}
+
+class _ChainKeyViewState extends State<_ChainKeyView> {
+  final _keysService = GetIt.I<IKeyService>();
+  ChainMetadata? _selectedChain;
+  double _balance = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.chain.contains('tron')) {
+      try {
+        _selectedChain = ChainsDataList.tronChains.first;
+        _updateTronBalance();
+      } catch (e) {
+        debugPrint(e.toString());
+      }
+    }
+  }
+
+  Future<void> _updateTronBalance() async {
+    if (!mounted) return;
+    if (!widget.chain.contains('tron')) return;
+    if (!_selectedChain!.chainId.contains('tron')) return;
+
+    final chainKeys = _keysService.getKeysForChain('tron');
+    final tronService =
+        GetIt.I<IWalletKitService>().getChainService<TronService>(
+      chainId: _selectedChain!.chainId,
+    );
+    final address = chainKeys.first.address;
+    tronService.getBalance(address: address).then((value) {
+      if (!mounted) return;
+      setState(() => _balance = value);
+      debugPrint('_updateTronBalance $value');
+    }).catchError((error) {
+      debugPrint('_updateTronBalance error $error');
+    });
+    tronService.getTokens(address: address).then((tokens) {
+      for (var token in tokens) {
+        final balance = tronService.parsedBalance(token.values.first);
+        debugPrint('${token.keys.first} $balance');
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final keysService = GetIt.I<IKeyService>();
-    final chainKeys = keysService.getKeysForChain(chain);
+    final chainKeys = _keysService.getKeysForChain(widget.chain);
     if (chainKeys.isEmpty) return const SizedBox.shrink();
     final chainData = ChainsDataList.allChains.firstWhere(
       (e) => e.chainId == chainKeys.first.chains.first,
@@ -792,7 +830,7 @@ class _ChainKeyView extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 20.0),
-        const Divider(height: 1.0, color: Colors.grey),
+        const Divider(height: 1.0, color: Colors.black12),
         Padding(
           padding: EdgeInsets.all(12.0),
           child: Row(
@@ -801,12 +839,17 @@ class _ChainKeyView extends StatelessWidget {
                 imageUrl: chainData.logo,
                 width: 20.0,
                 height: 20.0,
-                errorWidget: (context, url, error) => const SizedBox.shrink(),
+                errorWidget: (context, url, error) {
+                  return CachedNetworkImage(
+                    imageUrl:
+                        'https://avatars.githubusercontent.com/u/179229932?s=200&v=4',
+                  );
+                },
               ),
               SizedBox.square(dimension: 8.0),
               Expanded(
                 child: Text(
-                  '$chain account',
+                  '${widget.chain} account',
                   style: TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.w500,
@@ -816,13 +859,83 @@ class _ChainKeyView extends StatelessWidget {
             ],
           ),
         ),
+        Visibility(
+          visible: chainData.chainId.contains('tron'),
+          child: Padding(
+            padding: const EdgeInsets.only(
+              left: 12.0,
+              right: 12.0,
+              top: 10.0,
+              bottom: 8.0,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Text(
+                    '${_balance.toStringAsFixed(4)} ${chainData.currency}',
+                    style: TextStyle(
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 200.0,
+                  child: DropdownButton(
+                    key: Key('tron_chains'),
+                    isExpanded: true,
+                    value: _selectedChain,
+                    items: ChainsDataList.tronChains.map((chainData) {
+                      return DropdownMenuItem<ChainMetadata>(
+                        value: chainData,
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              WidgetSpan(
+                                child: CachedNetworkImage(
+                                  imageUrl: chainData.logo,
+                                  width: 20.0,
+                                  height: 20.0,
+                                  errorWidget: (context, url, error) =>
+                                      const SizedBox.shrink(),
+                                ),
+                              ),
+                              TextSpan(
+                                text: ' ${chainData.name}',
+                                style: TextStyle(
+                                  fontSize: 14.0,
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Colors.white
+                                      : Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    onChanged: (ChainMetadata? chain) {
+                      setState(() => _selectedChain = chain!);
+                      _updateTronBalance();
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox.square(dimension: 8.0),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Column(
             children: [
               _DataContainer(
-                title: 'Address',
-                data: chainKeys.first.address,
+                title: 'CAIP-10',
+                data: '${chainData.chainId}:${chainKeys.first.address}',
               ),
               const SizedBox(height: 12.0),
               _DataContainer(
@@ -845,7 +958,7 @@ class _DeviceData extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 20.0),
-        const Divider(height: 1.0, color: Colors.grey),
+        const Divider(height: 1.0, color: Colors.black12),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
           child: Column(
@@ -911,7 +1024,7 @@ class _Buttons extends StatelessWidget {
     return Column(
       children: [
         const SizedBox(height: 20.0),
-        const Divider(height: 1.0, color: Colors.grey),
+        const Divider(height: 1.0, color: Colors.black12),
         Padding(
           padding: const EdgeInsets.all(12.0),
           child: Column(

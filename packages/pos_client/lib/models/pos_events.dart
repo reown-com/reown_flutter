@@ -62,7 +62,8 @@ class PaymentBroadcastedEvent extends PosEvent {}
 
 class PaymentSuccessfulEvent extends PosEvent {
   final String txHash;
-  PaymentSuccessfulEvent(this.txHash);
+  final String payerAddress;
+  PaymentSuccessfulEvent(this.txHash, this.payerAddress);
 }
 
 class PaymentFailedEvent extends PosErrorEvent {

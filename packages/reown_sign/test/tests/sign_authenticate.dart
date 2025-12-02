@@ -67,7 +67,7 @@ void signAuthenticate({
           nonce: 'XpJ0thNvq9lNixmwN',
           uri: 'https://lab.web3modal.com/dapp',
           statement: 'Connect to Web3Modal Lab',
-          methods: ['personal_sign'],
+          // methods: ['personal_sign'],
         ),
         walletUniversalLink: 'https://lab.web3modal.com/wallet',
       );

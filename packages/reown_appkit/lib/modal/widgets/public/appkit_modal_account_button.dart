@@ -5,7 +5,6 @@ import 'package:reown_appkit/modal/pages/social_login_page.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/models/magic_events.dart';
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
@@ -180,9 +179,9 @@ class _BalanceButton extends StatelessWidget {
     final textStyle = buttonSize == BaseButtonSize.small
         ? themeData.textStyles.small500
         : themeData.textStyles.paragraph500;
-    final chainId = appKit.selectedChain?.chainId ?? '';
-    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-    String tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
+    String tokenImage = GetIt.I<IExplorerService>().getChainIcon(
+      appKit.selectedChain,
+    );
     final balance = appKit.balanceNotifier.value;
     if (balance.contains(AppKitModalBalanceButton.balanceDefault)) {
       tokenImage = '';

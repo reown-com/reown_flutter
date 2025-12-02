@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:convert/convert.dart';
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -81,7 +80,7 @@ class SiweService implements ISiweService {
   }
 
   @override
-  Future<String> signMessageRequest(
+  Future<dynamic> signMessageRequest(
     String message, {
     required IReownAppKitModal modalService,
   }) async {

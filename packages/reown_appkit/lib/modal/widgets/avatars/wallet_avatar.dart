@@ -50,8 +50,10 @@ class ListAvatar extends StatelessWidget {
                       clipBehavior: Clip.antiAlias,
                       child: validImage
                           ? CachedNetworkImage(
-                              imageUrl: imageUrl!,
-                              httpHeaders: CoreUtils.getAPIHeaders(projectId),
+                              imageUrl: CoreUtils.formatImageUri(
+                                imageUrl!,
+                                projectId,
+                              ),
                               fit: BoxFit.cover,
                               fadeInDuration: const Duration(milliseconds: 500),
                               fadeOutDuration: const Duration(
@@ -89,8 +91,10 @@ class ListAvatar extends StatelessWidget {
                           BlendMode.saturation,
                         ),
                         child: CachedNetworkImage(
-                          imageUrl: imageUrl!,
-                          httpHeaders: CoreUtils.getAPIHeaders(projectId),
+                          imageUrl: CoreUtils.formatImageUri(
+                            imageUrl!,
+                            projectId,
+                          ),
                           fadeInDuration: const Duration(milliseconds: 500),
                           fadeOutDuration: const Duration(milliseconds: 500),
                           errorWidget: (context, url, error) =>

@@ -4,7 +4,6 @@ import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
@@ -68,6 +67,7 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
   @override
   void initState() {
     super.initState();
+    GetIt.I<IAnalyticsService>().sendEvent(ClickTransactionsEvent());
     _currentChain = widget.appKitModal.selectedChain!.chainId;
     final namespace = NamespaceUtils.getNamespaceFromChain(_currentChain);
     _currentAddress = widget.appKitModal.session!.getAddress(namespace)!;

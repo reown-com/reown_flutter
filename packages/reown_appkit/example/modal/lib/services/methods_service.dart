@@ -80,14 +80,9 @@ class MethodsService {
     final supportedMethod = MethodsService.methodFromName(method);
     switch (supportedMethod) {
       case SupportedMethods.requestAccounts:
-        return requestAccounts(
-          appKitModal: appKitModal,
-        );
+        return requestAccounts(appKitModal: appKitModal);
       case SupportedMethods.personalSign:
-        return personalSign(
-          appKitModal: appKitModal,
-          message: testSignData,
-        );
+        return personalSign(appKitModal: appKitModal, message: testSignData);
       case SupportedMethods.ethSignTypedDataV3:
         return ethSignTypedDataV3(
           appKitModal: appKitModal,
@@ -117,9 +112,7 @@ class MethodsService {
           ),
         );
       case SupportedMethods.walletWatchAsset:
-        return walletWatchAsset(
-          appKitModal: appKitModal,
-        );
+        return walletWatchAsset(appKitModal: appKitModal);
       case SupportedMethods.solanaSignMessage:
         return solanaSignMessage(
           appKitModal: appKitModal,
@@ -156,10 +149,7 @@ class MethodsService {
       chainId: appKitModal.selectedChain!.chainId,
       request: SessionRequestParams(
         method: SupportedMethods.personalSign.name,
-        params: [
-          '0x$encoded',
-          appKitModal.session!.getAddress(namespace)!,
-        ],
+        params: ['0x$encoded', appKitModal.session!.getAddress(namespace)!],
       ),
     );
   }
@@ -197,10 +187,7 @@ class MethodsService {
       chainId: appKitModal.selectedChain!.chainId,
       request: SessionRequestParams(
         method: SupportedMethods.ethSignTypedData.name,
-        params: [
-          data,
-          appKitModal.session!.getAddress(namespace)!,
-        ],
+        params: [data, appKitModal.session!.getAddress(namespace)!],
       ),
     );
   }
@@ -217,10 +204,7 @@ class MethodsService {
       chainId: appKitModal.selectedChain!.chainId,
       request: SessionRequestParams(
         method: SupportedMethods.ethSignTypedDataV3.name,
-        params: [
-          data,
-          appKitModal.session!.getAddress(namespace)!,
-        ],
+        params: [data, appKitModal.session!.getAddress(namespace)!],
       ),
     );
   }
@@ -237,10 +221,7 @@ class MethodsService {
       chainId: appKitModal.selectedChain!.chainId,
       request: SessionRequestParams(
         method: SupportedMethods.ethSignTypedDataV4.name,
-        params: [
-          data,
-          appKitModal.session!.getAddress(namespace)!,
-        ],
+        params: [data, appKitModal.session!.getAddress(namespace)!],
       ),
     );
   }
@@ -255,9 +236,7 @@ class MethodsService {
       chainId: appKitModal.selectedChain!.chainId,
       request: SessionRequestParams(
         method: method,
-        params: [
-          transaction.toJson(),
-        ],
+        params: [transaction.toJson()],
       ),
     );
   }
@@ -277,8 +256,8 @@ class MethodsService {
             'symbol': 'WONE',
             'decimals': 18,
             'image':
-                'https://s2.coinmarketcap.com/static/img/coins/64x64/11696.png'
-          }
+                'https://s2.coinmarketcap.com/static/img/coins/64x64/11696.png',
+          },
         },
       ),
     );

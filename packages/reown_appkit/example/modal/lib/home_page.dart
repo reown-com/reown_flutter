@@ -142,10 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
             final address = SIWEUtils.getAddressFromMessage(args.message);
             final cacaoSignature = args.cacao != null
                 ? args.cacao!.s
-                : CacaoSignature(
-                    t: CacaoSignature.EIP191,
-                    s: args.signature,
-                  );
+                : CacaoSignature(t: CacaoSignature.EIP191, s: args.signature);
             return await SIWEUtils.verifySignature(
               address,
               args.message,
@@ -603,7 +600,8 @@ class _ButtonsView extends StatelessWidget {
                 },
                 child: appKit.isConnected
                     ? Text(
-                        '${appKit.session!.getAddress('eip155')!.substring(0, 7)}...')
+                        '${appKit.session!.getAddress('eip155')!.substring(0, 7)}...',
+                      )
                     : const Text('CONNECT WALLET'),
               ),
             ),

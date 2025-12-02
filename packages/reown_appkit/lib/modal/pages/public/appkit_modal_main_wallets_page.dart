@@ -189,6 +189,7 @@ class _AppKitModalMainWalletsPageState
                                 event: SelectWalletEvent(
                                   name: 'WalletConnect',
                                   platform: AnalyticsPlatform.qrcode,
+                                  view: 'Connect',
                                 ),
                               );
                             } else {

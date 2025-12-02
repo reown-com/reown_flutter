@@ -22,10 +22,12 @@ import 'package:reown_appkit/reown_appkit.dart';
 class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
   IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
 
-  const ReownAppKitModalSelectNetworkPage({this.onTapNetwork})
-    : super(key: KeyConstants.selectNetworkPage);
-
+  final String? titleOverride;
   final Function(ReownAppKitModalNetworkInfo)? onTapNetwork;
+  const ReownAppKitModalSelectNetworkPage({
+    this.titleOverride,
+    this.onTapNetwork,
+  }) : super(key: KeyConstants.selectNetworkPage);
 
   void _onSelectNetwork(
     BuildContext context,
@@ -80,7 +82,9 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
     final isPortrait = ResponsiveData.isPortrait(context);
 
     return ModalNavbar(
-      title: isSwitch ? UIConstants.changeNetwork : UIConstants.selectNetwork,
+      title:
+          titleOverride ??
+          (isSwitch ? UIConstants.changeNetwork : UIConstants.selectNetwork),
       safeAreaLeft: true,
       safeAreaRight: true,
       body: Column(

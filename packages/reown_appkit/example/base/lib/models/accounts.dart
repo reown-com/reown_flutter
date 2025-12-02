@@ -4,10 +4,7 @@ class AccountDetails {
   final String address;
   final String chain;
 
-  const AccountDetails({
-    required this.address,
-    required this.chain,
-  });
+  const AccountDetails({required this.address, required this.chain});
 
   @override
   bool operator ==(Object other) {

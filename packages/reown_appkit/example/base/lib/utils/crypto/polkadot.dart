@@ -17,14 +17,11 @@
 // import 'package:reown_appkit_dapp/generated/polkadot/types/sp_runtime/multiaddress/multi_address.dart'
 //     as multi_address;
 
-enum PolkadotMethods {
-  polkadotSignTransaction,
-  polkadotSignMessage,
-}
+enum PolkadotMethods { polkadotSignTransaction, polkadotSignMessage }
 
 class Polkadot {
   static final Map<PolkadotMethods, String> methods = {
-    PolkadotMethods.polkadotSignMessage: 'polkadot_signMessage'
+    PolkadotMethods.polkadotSignMessage: 'polkadot_signMessage',
     // PolkadotMethods.polkadotSignTransaction: 'polkadot_signTransaction',
   };
 

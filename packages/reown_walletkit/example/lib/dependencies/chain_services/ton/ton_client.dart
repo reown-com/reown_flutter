@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit/version.dart' as wk;
 
-import 'package:reown_yttrium/reown_yttrium.dart';
+import 'package:reown_yttrium_utils/reown_yttrium_utils.dart';
 
 class TonClient {
   final String projectId;
@@ -16,14 +16,13 @@ class TonClient {
   Future<void> init() async {
     try {
       final packageName = await ReownCoreUtils.getPackageName();
-      await ReownYttrium.tonClient.init(
+      await ReownYttriumUtils.tonClient.init(
         projectId: projectId,
         networkId: networkId,
         pulseMetadata: PulseMetadataCompat(
           sdkVersion: wk.packageVersion,
           sdkPlatform: ReownCoreUtils.getId(),
-          packageName: ReownCoreUtils.getId() == 'android' ? packageName : null,
-          bundleId: ReownCoreUtils.getId() == 'ios' ? packageName : null,
+          bundleId: packageName,
         ),
       );
     } catch (e) {
@@ -32,18 +31,19 @@ class TonClient {
   }
 
   Future<TonKeyPair> generateKeypair() async {
-    return await ReownYttrium.tonClient.generateKeypair(networkId: networkId);
+    return await ReownYttriumUtils.tonClient
+        .generateKeypair(networkId: networkId);
   }
 
   Future<TonKeyPair> generateKeypairFromBip39Mnemonic(String mnemonic) async {
-    return await ReownYttrium.tonClient.generateKeypairFromBip39Mnemonic(
+    return await ReownYttriumUtils.tonClient.generateKeypairFromBip39Mnemonic(
       networkId: networkId,
       mnemonic: mnemonic,
     );
   }
 
   Future<TonIdentity> getAddressFromKeypair(TonKeyPair keyPair) async {
-    return await ReownYttrium.tonClient.getAddressFromKeypair(
+    return await ReownYttriumUtils.tonClient.getAddressFromKeypair(
       networkId: networkId,
       keyPair: keyPair,
     );
@@ -53,7 +53,7 @@ class TonClient {
     required String text,
     required TonKeyPair keyPair,
   }) async {
-    return await ReownYttrium.tonClient.signData(
+    return await ReownYttriumUtils.tonClient.signData(
       networkId: networkId,
       text: text,
       keyPair: keyPair,
@@ -67,7 +67,7 @@ class TonClient {
     required List<TonMessage> messages,
     required TonKeyPair keyPair,
   }) async {
-    return await ReownYttrium.tonClient.sendMessage(
+    return await ReownYttriumUtils.tonClient.sendMessage(
       networkId: networkId,
       from: from,
       validUntil: validUntil,
@@ -83,7 +83,7 @@ class TonClient {
     required List<TonMessage> messages,
     required TonKeyPair keyPair,
   }) async {
-    return await ReownYttrium.tonClient.broadcastMessage(
+    return await ReownYttriumUtils.tonClient.broadcastMessage(
       networkId: networkId,
       from: from,
       validUntil: validUntil,

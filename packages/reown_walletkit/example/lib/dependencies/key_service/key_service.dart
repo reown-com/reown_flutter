@@ -3,13 +3,11 @@ import 'dart:developer' as dev;
 
 import 'package:bech32/bech32.dart';
 import 'package:convert/convert.dart';
-import 'package:crypto/crypto.dart';
-import 'package:eth_sig_util/util/utils.dart';
+import 'package:eth_sig_util/util/utils.dart' as sig_utils;
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:pointycastle/digests/ripemd160.dart';
-import 'package:pointycastle/digests/keccak.dart';
 import 'package:pointycastle/ecc/curves/secp256k1.dart';
 import 'package:polkadart_keyring/polkadart_keyring.dart' as keyring;
 import 'package:reown_walletkit/reown_walletkit.dart';
@@ -25,12 +23,14 @@ import 'package:reown_walletkit_wallet/dependencies/bip39/bip39_base.dart'
     as bip39;
 import 'package:reown_walletkit_wallet/dependencies/bip32/bip32_base.dart'
     as bip32;
-import 'package:reown_yttrium/reown_yttrium.dart';
+import 'package:reown_yttrium_utils/reown_yttrium_utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:solana/solana.dart' as solana;
 import 'package:bitcoin_base/bitcoin_base.dart' as bitcoin;
 // ignore: depend_on_referenced_packages
 import 'package:ed25519_hd_key/ed25519_hd_key.dart' as ed25519_hd_key;
+import 'package:blockchain_utils/blockchain_utils.dart' as b_utils;
+import 'package:on_chain/on_chain.dart' as on_chain;
 
 class KeyService extends IKeyService {
   List<ChainKey> _keys = [];
@@ -313,7 +313,7 @@ class KeyService extends IKeyService {
       // adjust the default ss58Format for Polkadot https://github.com/paritytech/ss58-registry/blob/main/ss58-registry.json
       dotkeyPair.ss58Format = 0;
 
-      final publicKey = bytesToHex(
+      final publicKey = sig_utils.bytesToHex(
         dotkeyPair.publicKey.bytes,
         include0x: true,
       );
@@ -339,7 +339,7 @@ class KeyService extends IKeyService {
     try {
       final dotkeyPair = await keyring.Keyring().fromMnemonic(mnemonic);
 
-      final publicKey = bytesToHex(
+      final publicKey = sig_utils.bytesToHex(
         dotkeyPair.publicKey.bytes,
         include0x: true,
       );
@@ -373,8 +373,8 @@ class KeyService extends IKeyService {
       Uint8List publicKey = kadenaNode.publicKey;
 
       // Step 5: Convert to String Formats
-      String privateKeyHex = bytesToHex(privateKey);
-      String publicKeyHex = bytesToHex(publicKey);
+      final privateKeyHex = sig_utils.bytesToHex(privateKey);
+      final publicKeyHex = sig_utils.bytesToHex(publicKey);
 
       return ChainKey(
         chains: ChainsDataList.kadenaChains.map((e) => e.chainId).toList(),
@@ -487,30 +487,25 @@ class KeyService extends IKeyService {
 
   ChainKey? _tronChainKey(String mnemonic) {
     try {
-      final seed = bip39.mnemonicToSeed(mnemonic);
-      final root = bip32.BIP32.fromSeed(seed);
-      final tronNode = root.derivePath("m/44'/195'/0'/0/0");
+      final words = b_utils.Mnemonic(mnemonic.split(' '));
+      final seed = b_utils.Bip39SeedGenerator(words).generate();
+      final wallet = b_utils.Bip44.fromSeed(seed, b_utils.Bip44Coins.tron);
+      final defaultPath = wallet.deriveDefaultPath;
 
-      // Step 4: Extract Private and Public Keys
-      Uint8List privateKey = tronNode.privateKey!;
-      Uint8List publicKey = tronNode.publicKey;
-
-      // Compute Keccak256 hash of public key (drop 0x04 byte if uncompressed)
-      final keccak = KeccakDigest(256);
-      final hashed = keccak.process(publicKey.sublist(1)); // remove 0x04 prefix
-
-      // Get last 20 bytes of hash
-      // Tron uses 0x41 prefix
-      final addressBytes = Uint8List.fromList([0x41] + hashed.sublist(12));
-
-      // Base58Check encode
-      final address = _toTronAddress(addressBytes);
+      final address = on_chain.TronAddress(defaultPath.publicKey.toAddress);
+      final privateKey = on_chain.TronPrivateKey.fromBytes(
+        defaultPath.privateKey.raw,
+      );
+      final publicKey = on_chain.TronPublicKey.fromBytes(
+        defaultPath.publicKey.uncompressed,
+      );
+      final visibleAddress = address.toAddress(true);
 
       return ChainKey(
         chains: ChainsDataList.tronChains.map((e) => e.chainId).toList(),
-        privateKey: bytesToHex(privateKey, include0x: true),
-        publicKey: bytesToHex(publicKey, include0x: true),
-        address: address,
+        privateKey: privateKey.toHex(),
+        publicKey: publicKey.toHex(),
+        address: visibleAddress,
         namespace: 'tron',
       );
     } catch (e, s) {
@@ -680,17 +675,5 @@ class KeyService extends IKeyService {
     }
 
     return result;
-  }
-
-  Uint8List _sha256Twice(Uint8List input) {
-    final first = sha256.convert(input).bytes;
-    final second = sha256.convert(first).bytes;
-    return Uint8List.fromList(second);
-  }
-
-  String _toTronAddress(Uint8List addressBytesWith41Prefix) {
-    final checksum = _sha256Twice(addressBytesWith41Prefix).sublist(0, 4);
-    final full = Uint8List.fromList([...addressBytesWith41Prefix, ...checksum]);
-    return base58.encode(full);
   }
 }

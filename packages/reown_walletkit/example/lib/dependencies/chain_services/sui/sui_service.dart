@@ -97,18 +97,7 @@ class SUIService {
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
       )) {
-        final keys = GetIt.I<IKeyService>().getKeysForChain(
-          chainSupported.chainId,
-        );
-        final suiPrivateKey = keys[0].privateKey;
-
-        final signature = await _suiClient.personalSign(
-          keyPair: suiPrivateKey,
-          message: message,
-          networkId: chainSupported.chainId,
-        );
-
-        // TODO Check response format
+        final signature = await signMessage(message);
         response = response.copyWith(
           result: {
             'signature': signature,
@@ -135,6 +124,20 @@ class SUIService {
     }
 
     _handleResponseForTopic(topic, response);
+  }
+
+  Future<String> signMessage(String message) async {
+    final keys = GetIt.I<IKeyService>().getKeysForChain(
+      chainSupported.chainId,
+    );
+    final suiPrivateKey = keys[0].privateKey;
+
+    final signature = await _suiClient.personalSign(
+      keyPair: suiPrivateKey,
+      message: message,
+      networkId: chainSupported.chainId,
+    );
+    return signature;
   }
 
   Future<void> suiSignTransaction(String topic, dynamic parameters) async {

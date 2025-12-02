@@ -1,8 +1,12 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
+import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/models/grid_item.dart';
@@ -48,11 +52,23 @@ class GetWalletPage extends StatelessWidget {
             return WalletsList(
               itemList: itemsToShow,
               onTapWallet: (data) {
+                if (kIsWeb) {
+                  return;
+                }
                 final url = Platform.isIOS
                     ? data.listing.appStore
                     : data.listing.playStore;
                 if ((url ?? '').isNotEmpty) {
                   ReownCoreUtils.openURL(url!);
+                  GetIt.I<IAnalyticsService>().sendEvent(
+                    GetWalletEvent(
+                      name: data.listing.name,
+                      walletRank: data.listing.order,
+                      explorerId: data.listing.id,
+                      link: url,
+                      linkType: Platform.isIOS ? 'app_store' : 'play_store',
+                    ),
+                  );
                 }
               },
               bottomItems: [

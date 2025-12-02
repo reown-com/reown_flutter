@@ -6,7 +6,6 @@ import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/widgets/buttons/simple_icon_button.dart';
 import 'package:reown_appkit/modal/widgets/qr_code_view.dart';

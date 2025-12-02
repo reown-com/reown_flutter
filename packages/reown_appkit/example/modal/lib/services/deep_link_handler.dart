@@ -15,10 +15,7 @@ class DeepLinkHandler {
   static void initListener() {
     if (kIsWeb) return;
     try {
-      _eventChannel.receiveBroadcastStream().listen(
-            _onLink,
-            onError: _onError,
-          );
+      _eventChannel.receiveBroadcastStream().listen(_onLink, onError: _onError);
     } catch (e) {
       debugPrint('[SampleModal] initListener $e');
     }

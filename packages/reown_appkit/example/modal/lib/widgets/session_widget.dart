@@ -44,10 +44,13 @@ class SessionWidgetState extends State<SessionWidget> {
                 CircleAvatar(
                   radius: 18.0,
                   backgroundImage: NetworkImage(
-                    iconImage,
-                    headers: CoreUtils.getAPIHeaders(
-                      widget.appKit.appKit!.core.projectId,
-                    ),
+                    Uri.parse(iconImage)
+                        .replace(
+                          queryParameters: CoreUtils.getApiQueryParams(
+                            widget.appKit.appKit!.core.projectId,
+                          ),
+                        )
+                        .toString(),
                   ),
                 ),
                 const SizedBox(width: 8.0),
@@ -63,8 +66,9 @@ class SessionWidgetState extends State<SessionWidget> {
                         .textStyles
                         .paragraph600
                         .copyWith(
-                          color: ReownAppKitModalTheme.colorsOf(context)
-                              .foreground100,
+                          color: ReownAppKitModalTheme.colorsOf(
+                            context,
+                          ).foreground100,
                         ),
                   ),
                 ),
@@ -78,7 +82,7 @@ class SessionWidgetState extends State<SessionWidget> {
                     },
                     icon: const Icon(Icons.open_in_new),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -96,8 +100,9 @@ class SessionWidgetState extends State<SessionWidget> {
                   .textStyles
                   .small600
                   .copyWith(
-                    color:
-                        ReownAppKitModalTheme.colorsOf(context).foreground100,
+                    color: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).foreground100,
                   ),
             ),
             Text(
@@ -106,8 +111,9 @@ class SessionWidgetState extends State<SessionWidget> {
                   .textStyles
                   .small400
                   .copyWith(
-                    color:
-                        ReownAppKitModalTheme.colorsOf(context).foreground100,
+                    color: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).foreground100,
                   ),
             ),
           ],
@@ -159,14 +165,16 @@ class SessionWidgetState extends State<SessionWidget> {
               ),
             ),
             child: Text(
-              const JsonEncoder.withIndent('     ')
-                  .convert(widget.appKit.session?.toMap()),
+              const JsonEncoder.withIndent(
+                '     ',
+              ).convert(widget.appKit.session?.toMap()),
               style: ReownAppKitModalTheme.getDataOf(context)
                   .textStyles
                   .small400
                   .copyWith(
-                    color:
-                        ReownAppKitModalTheme.colorsOf(context).foreground100,
+                    color: ReownAppKitModalTheme.colorsOf(
+                      context,
+                    ).foreground100,
                   ),
             ),
           ),
@@ -238,15 +246,13 @@ class SessionWidgetState extends State<SessionWidget> {
       margin: const EdgeInsets.symmetric(vertical: StyleConstants.linear8),
       decoration: BoxDecoration(
         border: Border.all(
-            color: ReownAppKitModalTheme.colorsOf(context).accent100),
+          color: ReownAppKitModalTheme.colorsOf(context).accent100,
+        ),
         borderRadius: const BorderRadius.all(
           Radius.circular(StyleConstants.linear8),
         ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: children,
-      ),
+      child: Column(mainAxisSize: MainAxisSize.min, children: children),
     );
   }
 
@@ -266,7 +272,7 @@ class SessionWidgetState extends State<SessionWidget> {
               .copyWith(
                 color: ReownAppKitModalTheme.colorsOf(context).foreground100,
               ),
-        )
+        ),
       ];
     }
     final implementedMethods =
@@ -323,10 +329,7 @@ class SessionWidgetState extends State<SessionWidget> {
     }
 
     children.add(
-      Text(
-        'Test ${smartContract.name}',
-        textAlign: TextAlign.center,
-      ),
+      Text('Test ${smartContract.name}', textAlign: TextAlign.center),
     );
 
     children.addAll([
@@ -341,11 +344,7 @@ class SessionWidgetState extends State<SessionWidget> {
               smartContract: smartContract,
               action: 'read',
             );
-            MethodDialog.show(
-              context,
-              'Read on ${smartContract.name}',
-              future,
-            );
+            MethodDialog.show(context, 'Read on ${smartContract.name}', future);
           },
           style: buttonStyle(context),
           child: Text('Read on ${smartContract.name}'),
@@ -382,20 +381,18 @@ class SessionWidgetState extends State<SessionWidget> {
 
   List<Widget> _buildSupportedChainsWidget(String chainId) {
     List<Widget> children = [];
-    children.addAll(
-      [
-        const SizedBox(height: StyleConstants.linear8),
-        Text(
-          'Session chains:',
-          style: ReownAppKitModalTheme.getDataOf(context)
-              .textStyles
-              .small600
-              .copyWith(
-                color: ReownAppKitModalTheme.colorsOf(context).foreground100,
-              ),
-        ),
-      ],
-    );
+    children.addAll([
+      const SizedBox(height: StyleConstants.linear8),
+      Text(
+        'Session chains:',
+        style: ReownAppKitModalTheme.getDataOf(context)
+            .textStyles
+            .small600
+            .copyWith(
+              color: ReownAppKitModalTheme.colorsOf(context).foreground100,
+            ),
+      ),
+    ]);
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final approvedChains = widget.appKit.getApprovedChains(
       namespace: namespace,
@@ -459,9 +456,7 @@ class SessionWidgetState extends State<SessionWidget> {
       );
     }
 
-    return Wrap(
-      children: children,
-    );
+    return Wrap(children: children);
   }
 
   Future<dynamic> callChainMethod(String method) {

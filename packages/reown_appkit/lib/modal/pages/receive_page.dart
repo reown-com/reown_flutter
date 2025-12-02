@@ -195,16 +195,12 @@ class ReceivePage extends StatelessWidget {
     ];
 
     for (var chainInfo in orderedList) {
-      final imageId = ReownAppKitModalNetworks.getNetworkIconId(
-        chainInfo!.chainId,
-      );
-      final imageUrl = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
       buttons.add(
         SizedBox.square(
           dimension: 20.0,
           child: ListAvatar(
             borderRadius: radiuses.radius4XS,
-            imageUrl: imageUrl,
+            imageUrl: GetIt.I<IExplorerService>().getChainIcon(chainInfo),
             isNetwork: true,
           ),
         ),

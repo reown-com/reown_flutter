@@ -10,14 +10,14 @@ void main() {
   group('AddressUtils', () {
     test('getDidAddress', () async {
       expect(
-        AddressUtils.getDidAddress(TEST_ISSUER_EIP191),
+        AddressUtils.getDidAddressAddress(TEST_ISSUER_EIP191),
         TEST_ADDRESS_EIP191,
       );
     });
 
     test('getDidChainId', () async {
       expect(
-        AddressUtils.getDidChainId(TEST_ISSUER_EIP191),
+        AddressUtils.getDidAddressChainId(TEST_ISSUER_EIP191),
         TEST_ETHEREUM_CHAIN.split(':')[1],
       );
     });

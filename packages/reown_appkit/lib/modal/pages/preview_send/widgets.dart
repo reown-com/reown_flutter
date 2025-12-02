@@ -7,8 +7,6 @@ import 'package:reown_appkit/modal/utils/render_utils.dart';
 import 'package:reown_appkit/modal/widgets/avatars/account_avatar.dart';
 import 'package:reown_appkit/modal/widgets/buttons/address_button.dart';
 import 'package:reown_appkit/modal/widgets/buttons/network_button.dart';
-import 'package:reown_appkit/modal/widgets/buttons/primary_button.dart';
-import 'package:reown_appkit/modal/widgets/buttons/secondary_button.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/account_list_item.dart';
 import 'package:reown_appkit/reown_appkit.dart' hide TransactionExtension;
 import 'package:reown_appkit/modal/constants/style_constants.dart';

@@ -677,7 +677,9 @@ $ConnectionMetadataCopyWith<$Res> get peer {
 /// @nodoc
 mixin _$SessionRequest {
 
- int get id; String get topic; String get method; String get chainId; dynamic get params; VerifyContext get verifyContext; TransportType get transportType;
+ int get id; String get topic; String get chainId; String get method;// SessionRequestParams??
+ dynamic get params;// SessionRequestParams??
+ VerifyContext get verifyContext; TransportType get transportType;
 /// Create a copy of SessionRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -690,16 +692,16 @@ $SessionRequestCopyWith<SessionRequest> get copyWith => _$SessionRequestCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionRequest&&(identical(other.id, id) || other.id == id)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.method, method) || other.method == method)&&(identical(other.chainId, chainId) || other.chainId == chainId)&&const DeepCollectionEquality().equals(other.params, params)&&(identical(other.verifyContext, verifyContext) || other.verifyContext == verifyContext)&&(identical(other.transportType, transportType) || other.transportType == transportType));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionRequest&&(identical(other.id, id) || other.id == id)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.chainId, chainId) || other.chainId == chainId)&&(identical(other.method, method) || other.method == method)&&const DeepCollectionEquality().equals(other.params, params)&&(identical(other.verifyContext, verifyContext) || other.verifyContext == verifyContext)&&(identical(other.transportType, transportType) || other.transportType == transportType));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,topic,method,chainId,const DeepCollectionEquality().hash(params),verifyContext,transportType);
+int get hashCode => Object.hash(runtimeType,id,topic,chainId,method,const DeepCollectionEquality().hash(params),verifyContext,transportType);
 
 @override
 String toString() {
-  return 'SessionRequest(id: $id, topic: $topic, method: $method, chainId: $chainId, params: $params, verifyContext: $verifyContext, transportType: $transportType)';
+  return 'SessionRequest(id: $id, topic: $topic, chainId: $chainId, method: $method, params: $params, verifyContext: $verifyContext, transportType: $transportType)';
 }
 
 
@@ -710,7 +712,7 @@ abstract mixin class $SessionRequestCopyWith<$Res>  {
   factory $SessionRequestCopyWith(SessionRequest value, $Res Function(SessionRequest) _then) = _$SessionRequestCopyWithImpl;
 @useResult
 $Res call({
- int id, String topic, String method, String chainId, dynamic params, VerifyContext verifyContext, TransportType transportType
+ int id, String topic, String chainId, String method, dynamic params, VerifyContext verifyContext, TransportType transportType
 });
 
 
@@ -727,12 +729,12 @@ class _$SessionRequestCopyWithImpl<$Res>
 
 /// Create a copy of SessionRequest
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? topic = null,Object? method = null,Object? chainId = null,Object? params = freezed,Object? verifyContext = null,Object? transportType = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? topic = null,Object? chainId = null,Object? method = null,Object? params = freezed,Object? verifyContext = null,Object? transportType = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,topic: null == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
-as String,method: null == method ? _self.method : method // ignore: cast_nullable_to_non_nullable
 as String,chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
+as String,method: null == method ? _self.method : method // ignore: cast_nullable_to_non_nullable
 as String,params: freezed == params ? _self.params : params // ignore: cast_nullable_to_non_nullable
 as dynamic,verifyContext: null == verifyContext ? _self.verifyContext : verifyContext // ignore: cast_nullable_to_non_nullable
 as VerifyContext,transportType: null == transportType ? _self.transportType : transportType // ignore: cast_nullable_to_non_nullable
@@ -827,10 +829,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String topic,  String method,  String chainId,  dynamic params,  VerifyContext verifyContext,  TransportType transportType)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int id,  String topic,  String chainId,  String method,  dynamic params,  VerifyContext verifyContext,  TransportType transportType)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SessionRequest() when $default != null:
-return $default(_that.id,_that.topic,_that.method,_that.chainId,_that.params,_that.verifyContext,_that.transportType);case _:
+return $default(_that.id,_that.topic,_that.chainId,_that.method,_that.params,_that.verifyContext,_that.transportType);case _:
   return orElse();
 
 }
@@ -848,10 +850,10 @@ return $default(_that.id,_that.topic,_that.method,_that.chainId,_that.params,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String topic,  String method,  String chainId,  dynamic params,  VerifyContext verifyContext,  TransportType transportType)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int id,  String topic,  String chainId,  String method,  dynamic params,  VerifyContext verifyContext,  TransportType transportType)  $default,) {final _that = this;
 switch (_that) {
 case _SessionRequest():
-return $default(_that.id,_that.topic,_that.method,_that.chainId,_that.params,_that.verifyContext,_that.transportType);}
+return $default(_that.id,_that.topic,_that.chainId,_that.method,_that.params,_that.verifyContext,_that.transportType);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -865,10 +867,10 @@ return $default(_that.id,_that.topic,_that.method,_that.chainId,_that.params,_th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String topic,  String method,  String chainId,  dynamic params,  VerifyContext verifyContext,  TransportType transportType)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int id,  String topic,  String chainId,  String method,  dynamic params,  VerifyContext verifyContext,  TransportType transportType)?  $default,) {final _that = this;
 switch (_that) {
 case _SessionRequest() when $default != null:
-return $default(_that.id,_that.topic,_that.method,_that.chainId,_that.params,_that.verifyContext,_that.transportType);case _:
+return $default(_that.id,_that.topic,_that.chainId,_that.method,_that.params,_that.verifyContext,_that.transportType);case _:
   return null;
 
 }
@@ -880,14 +882,16 @@ return $default(_that.id,_that.topic,_that.method,_that.chainId,_that.params,_th
 
 @JsonSerializable()
 class _SessionRequest implements SessionRequest {
-  const _SessionRequest({required this.id, required this.topic, required this.method, required this.chainId, required this.params, required this.verifyContext, this.transportType = TransportType.relay});
+  const _SessionRequest({required this.id, required this.topic, required this.chainId, required this.method, required this.params, required this.verifyContext, this.transportType = TransportType.relay});
   factory _SessionRequest.fromJson(Map<String, dynamic> json) => _$SessionRequestFromJson(json);
 
 @override final  int id;
 @override final  String topic;
-@override final  String method;
 @override final  String chainId;
+@override final  String method;
+// SessionRequestParams??
 @override final  dynamic params;
+// SessionRequestParams??
 @override final  VerifyContext verifyContext;
 @override@JsonKey() final  TransportType transportType;
 
@@ -904,16 +908,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionRequest&&(identical(other.id, id) || other.id == id)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.method, method) || other.method == method)&&(identical(other.chainId, chainId) || other.chainId == chainId)&&const DeepCollectionEquality().equals(other.params, params)&&(identical(other.verifyContext, verifyContext) || other.verifyContext == verifyContext)&&(identical(other.transportType, transportType) || other.transportType == transportType));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionRequest&&(identical(other.id, id) || other.id == id)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.chainId, chainId) || other.chainId == chainId)&&(identical(other.method, method) || other.method == method)&&const DeepCollectionEquality().equals(other.params, params)&&(identical(other.verifyContext, verifyContext) || other.verifyContext == verifyContext)&&(identical(other.transportType, transportType) || other.transportType == transportType));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,topic,method,chainId,const DeepCollectionEquality().hash(params),verifyContext,transportType);
+int get hashCode => Object.hash(runtimeType,id,topic,chainId,method,const DeepCollectionEquality().hash(params),verifyContext,transportType);
 
 @override
 String toString() {
-  return 'SessionRequest(id: $id, topic: $topic, method: $method, chainId: $chainId, params: $params, verifyContext: $verifyContext, transportType: $transportType)';
+  return 'SessionRequest(id: $id, topic: $topic, chainId: $chainId, method: $method, params: $params, verifyContext: $verifyContext, transportType: $transportType)';
 }
 
 
@@ -924,7 +928,7 @@ abstract mixin class _$SessionRequestCopyWith<$Res> implements $SessionRequestCo
   factory _$SessionRequestCopyWith(_SessionRequest value, $Res Function(_SessionRequest) _then) = __$SessionRequestCopyWithImpl;
 @override @useResult
 $Res call({
- int id, String topic, String method, String chainId, dynamic params, VerifyContext verifyContext, TransportType transportType
+ int id, String topic, String chainId, String method, dynamic params, VerifyContext verifyContext, TransportType transportType
 });
 
 
@@ -941,12 +945,12 @@ class __$SessionRequestCopyWithImpl<$Res>
 
 /// Create a copy of SessionRequest
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? topic = null,Object? method = null,Object? chainId = null,Object? params = freezed,Object? verifyContext = null,Object? transportType = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? topic = null,Object? chainId = null,Object? method = null,Object? params = freezed,Object? verifyContext = null,Object? transportType = null,}) {
   return _then(_SessionRequest(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as int,topic: null == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
-as String,method: null == method ? _self.method : method // ignore: cast_nullable_to_non_nullable
 as String,chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
+as String,method: null == method ? _self.method : method // ignore: cast_nullable_to_non_nullable
 as String,params: freezed == params ? _self.params : params // ignore: cast_nullable_to_non_nullable
 as dynamic,verifyContext: null == verifyContext ? _self.verifyContext : verifyContext // ignore: cast_nullable_to_non_nullable
 as VerifyContext,transportType: null == transportType ? _self.transportType : transportType // ignore: cast_nullable_to_non_nullable
@@ -964,6 +968,526 @@ $VerifyContextCopyWith<$Res> get verifyContext {
     return _then(_self.copyWith(verifyContext: value));
   });
 }
+}
+
+
+/// @nodoc
+mixin _$SessionRequestParams {
+
+ String get method; dynamic get params;
+/// Create a copy of SessionRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SessionRequestParamsCopyWith<SessionRequestParams> get copyWith => _$SessionRequestParamsCopyWithImpl<SessionRequestParams>(this as SessionRequestParams, _$identity);
+
+  /// Serializes this SessionRequestParams to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionRequestParams&&(identical(other.method, method) || other.method == method)&&const DeepCollectionEquality().equals(other.params, params));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,method,const DeepCollectionEquality().hash(params));
+
+@override
+String toString() {
+  return 'SessionRequestParams(method: $method, params: $params)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SessionRequestParamsCopyWith<$Res>  {
+  factory $SessionRequestParamsCopyWith(SessionRequestParams value, $Res Function(SessionRequestParams) _then) = _$SessionRequestParamsCopyWithImpl;
+@useResult
+$Res call({
+ String method, dynamic params
+});
+
+
+
+
+}
+/// @nodoc
+class _$SessionRequestParamsCopyWithImpl<$Res>
+    implements $SessionRequestParamsCopyWith<$Res> {
+  _$SessionRequestParamsCopyWithImpl(this._self, this._then);
+
+  final SessionRequestParams _self;
+  final $Res Function(SessionRequestParams) _then;
+
+/// Create a copy of SessionRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? method = null,Object? params = freezed,}) {
+  return _then(_self.copyWith(
+method: null == method ? _self.method : method // ignore: cast_nullable_to_non_nullable
+as String,params: freezed == params ? _self.params : params // ignore: cast_nullable_to_non_nullable
+as dynamic,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SessionRequestParams].
+extension SessionRequestParamsPatterns on SessionRequestParams {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SessionRequestParams value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SessionRequestParams() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SessionRequestParams value)  $default,){
+final _that = this;
+switch (_that) {
+case _SessionRequestParams():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SessionRequestParams value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SessionRequestParams() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String method,  dynamic params)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SessionRequestParams() when $default != null:
+return $default(_that.method,_that.params);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String method,  dynamic params)  $default,) {final _that = this;
+switch (_that) {
+case _SessionRequestParams():
+return $default(_that.method,_that.params);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String method,  dynamic params)?  $default,) {final _that = this;
+switch (_that) {
+case _SessionRequestParams() when $default != null:
+return $default(_that.method,_that.params);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+@JsonSerializable()
+class _SessionRequestParams implements SessionRequestParams {
+  const _SessionRequestParams({required this.method, required this.params});
+  factory _SessionRequestParams.fromJson(Map<String, dynamic> json) => _$SessionRequestParamsFromJson(json);
+
+@override final  String method;
+@override final  dynamic params;
+
+/// Create a copy of SessionRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SessionRequestParamsCopyWith<_SessionRequestParams> get copyWith => __$SessionRequestParamsCopyWithImpl<_SessionRequestParams>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SessionRequestParamsToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionRequestParams&&(identical(other.method, method) || other.method == method)&&const DeepCollectionEquality().equals(other.params, params));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,method,const DeepCollectionEquality().hash(params));
+
+@override
+String toString() {
+  return 'SessionRequestParams(method: $method, params: $params)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SessionRequestParamsCopyWith<$Res> implements $SessionRequestParamsCopyWith<$Res> {
+  factory _$SessionRequestParamsCopyWith(_SessionRequestParams value, $Res Function(_SessionRequestParams) _then) = __$SessionRequestParamsCopyWithImpl;
+@override @useResult
+$Res call({
+ String method, dynamic params
+});
+
+
+
+
+}
+/// @nodoc
+class __$SessionRequestParamsCopyWithImpl<$Res>
+    implements _$SessionRequestParamsCopyWith<$Res> {
+  __$SessionRequestParamsCopyWithImpl(this._self, this._then);
+
+  final _SessionRequestParams _self;
+  final $Res Function(_SessionRequestParams) _then;
+
+/// Create a copy of SessionRequestParams
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? method = null,Object? params = freezed,}) {
+  return _then(_SessionRequestParams(
+method: null == method ? _self.method : method // ignore: cast_nullable_to_non_nullable
+as String,params: freezed == params ? _self.params : params // ignore: cast_nullable_to_non_nullable
+as dynamic,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$SessionEventParams {
+
+ String get name; dynamic get data;
+/// Create a copy of SessionEventParams
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SessionEventParamsCopyWith<SessionEventParams> get copyWith => _$SessionEventParamsCopyWithImpl<SessionEventParams>(this as SessionEventParams, _$identity);
+
+  /// Serializes this SessionEventParams to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SessionEventParams&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other.data, data));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,name,const DeepCollectionEquality().hash(data));
+
+@override
+String toString() {
+  return 'SessionEventParams(name: $name, data: $data)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SessionEventParamsCopyWith<$Res>  {
+  factory $SessionEventParamsCopyWith(SessionEventParams value, $Res Function(SessionEventParams) _then) = _$SessionEventParamsCopyWithImpl;
+@useResult
+$Res call({
+ String name, dynamic data
+});
+
+
+
+
+}
+/// @nodoc
+class _$SessionEventParamsCopyWithImpl<$Res>
+    implements $SessionEventParamsCopyWith<$Res> {
+  _$SessionEventParamsCopyWithImpl(this._self, this._then);
+
+  final SessionEventParams _self;
+  final $Res Function(SessionEventParams) _then;
+
+/// Create a copy of SessionEventParams
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? name = null,Object? data = freezed,}) {
+  return _then(_self.copyWith(
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as dynamic,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SessionEventParams].
+extension SessionEventParamsPatterns on SessionEventParams {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SessionEventParams value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SessionEventParams() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SessionEventParams value)  $default,){
+final _that = this;
+switch (_that) {
+case _SessionEventParams():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SessionEventParams value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SessionEventParams() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String name,  dynamic data)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SessionEventParams() when $default != null:
+return $default(_that.name,_that.data);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String name,  dynamic data)  $default,) {final _that = this;
+switch (_that) {
+case _SessionEventParams():
+return $default(_that.name,_that.data);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String name,  dynamic data)?  $default,) {final _that = this;
+switch (_that) {
+case _SessionEventParams() when $default != null:
+return $default(_that.name,_that.data);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+@JsonSerializable()
+class _SessionEventParams implements SessionEventParams {
+  const _SessionEventParams({required this.name, required this.data});
+  factory _SessionEventParams.fromJson(Map<String, dynamic> json) => _$SessionEventParamsFromJson(json);
+
+@override final  String name;
+@override final  dynamic data;
+
+/// Create a copy of SessionEventParams
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SessionEventParamsCopyWith<_SessionEventParams> get copyWith => __$SessionEventParamsCopyWithImpl<_SessionEventParams>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SessionEventParamsToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SessionEventParams&&(identical(other.name, name) || other.name == name)&&const DeepCollectionEquality().equals(other.data, data));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,name,const DeepCollectionEquality().hash(data));
+
+@override
+String toString() {
+  return 'SessionEventParams(name: $name, data: $data)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SessionEventParamsCopyWith<$Res> implements $SessionEventParamsCopyWith<$Res> {
+  factory _$SessionEventParamsCopyWith(_SessionEventParams value, $Res Function(_SessionEventParams) _then) = __$SessionEventParamsCopyWithImpl;
+@override @useResult
+$Res call({
+ String name, dynamic data
+});
+
+
+
+
+}
+/// @nodoc
+class __$SessionEventParamsCopyWithImpl<$Res>
+    implements _$SessionEventParamsCopyWith<$Res> {
+  __$SessionEventParamsCopyWithImpl(this._self, this._then);
+
+  final _SessionEventParams _self;
+  final $Res Function(_SessionEventParams) _then;
+
+/// Create a copy of SessionEventParams
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? name = null,Object? data = freezed,}) {
+  return _then(_SessionEventParams(
+name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as dynamic,
+  ));
+}
+
+
 }
 
 // dart format on
