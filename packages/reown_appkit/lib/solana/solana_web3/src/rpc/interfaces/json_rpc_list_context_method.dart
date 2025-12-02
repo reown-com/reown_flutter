@@ -11,11 +11,7 @@ import 'json_rpc_context_method.dart';
 abstract class JsonRpcListContextMethod<S, T>
     extends JsonRpcContextMethod<List, List<T>> {
   /// Creates a JSON RPC handler for context methods that return a [List].
-  const JsonRpcListContextMethod(
-    super.method, {
-    super.values,
-    super.config,
-  });
+  const JsonRpcListContextMethod(super.method, {super.values, super.config});
 
   @override
   List<T> valueDecoder(final List value) =>

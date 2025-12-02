@@ -1,0 +1,21 @@
+name: Check Xcode
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-26
+
+    steps:
+      - name: Show Xcode versions
+        run: |
+          echo "Current active Xcode:"
+          xcodebuild -version || true
+          echo "Current xcode-select path:"
+          xcode-select -p || true
+
+          echo "Looking for installed Xcode bundles in /Applications..."
+          INSTALLED=$(ls -1 /Applications | grep -i Xcode || true)
+          echo "Installed: $INSTALLED"
+        shell: bash

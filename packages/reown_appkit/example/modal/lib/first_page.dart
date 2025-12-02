@@ -53,9 +53,7 @@ class _FirstPageState extends State<FirstPage> {
                 child: const Text('Go to home page'),
               );
             }
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           },
         ),
       ),

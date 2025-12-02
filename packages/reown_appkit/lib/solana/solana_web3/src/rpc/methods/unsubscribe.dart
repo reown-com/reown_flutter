@@ -12,10 +12,5 @@ import '../interfaces/json_rpc_type_method.dart';
 /// A method handler for subscription cancellations.
 class Unsubscribe extends JsonRpcTypeMethod<bool> {
   /// Creates a method handler for subscription cancellations.
-  Unsubscribe(
-    super.method,
-    final SubscriptionId id,
-  ) : super(
-          values: [id],
-        );
+  Unsubscribe(super.method, final SubscriptionId id) : super(values: [id]);
 }

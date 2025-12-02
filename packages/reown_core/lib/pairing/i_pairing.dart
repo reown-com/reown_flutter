@@ -16,10 +16,7 @@ abstract class IPairing {
   abstract final Event<PairingEvent> onPairingExpire;
 
   Future<void> init();
-  Future<PairingInfo> pair({
-    required Uri uri,
-    bool activatePairing,
-  });
+  Future<PairingInfo> pair({required Uri uri, bool activatePairing});
   Future<CreateResponse> create({
     List<List<String>>? methods,
     TransportType transportType = TransportType.relay,
@@ -27,7 +24,8 @@ abstract class IPairing {
   Future<void> activate({required String topic});
   void register({
     required String method,
-    required Function(String, JsonRpcRequest, [TransportType]) function,
+    required Function(String, JsonRpcRequest, [String?, TransportType])
+    function,
     required ProtocolType type,
   });
   Future<void> setReceiverPublicKey({
@@ -35,10 +33,7 @@ abstract class IPairing {
     required String publicKey,
     int? expiry,
   });
-  Future<void> updateExpiry({
-    required String topic,
-    required int expiry,
-  });
+  Future<void> updateExpiry({required String topic, required int expiry});
   Future<void> updateMetadata({
     required String topic,
     required PairingMetadata metadata,
@@ -97,14 +92,13 @@ abstract class IPairing {
     required Map<String, dynamic> sessionProposalResponse,
     required Map<String, dynamic> sessionSettlementRequest,
     EncodeOptions? encodeOptions,
+    List<String>? approvedChains,
+    List<String>? approvedMethods,
+    List<String>? approvedEvents,
+    Map<String, String>? sessionProperties,
   });
 
-  Future<void> isValidPairingTopic({
-    required String topic,
-  });
+  Future<void> isValidPairingTopic({required String topic});
 
-  void dispatchEnvelope({
-    required String topic,
-    required String envelope,
-  });
+  void dispatchEnvelope({required String topic, required String envelope});
 }

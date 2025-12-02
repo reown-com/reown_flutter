@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:convert/convert.dart';
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -15,9 +14,9 @@ class SiweService implements ISiweService {
     required IReownAppKit appKit,
     required SIWEConfig? siweConfig,
     required Map<String, RequiredNamespace> namespaces,
-  })  : _appKit = appKit,
-        _siweConfig = siweConfig,
-        _namespaces = namespaces;
+  }) : _appKit = appKit,
+       _siweConfig = siweConfig,
+       _namespaces = namespaces;
 
   @override
   SIWEConfig? get config => _siweConfig;
@@ -81,7 +80,7 @@ class SiweService implements ISiweService {
   }
 
   @override
-  Future<String> signMessageRequest(
+  Future<dynamic> signMessageRequest(
     String message, {
     required IReownAppKitModal modalService,
   }) async {

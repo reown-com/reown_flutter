@@ -46,6 +46,20 @@ class KadenaService {
     // _walletKit.onSessionRequest.subscribe(_onSessionRequest);
   }
 
+  Uri _formatRpcUrl(ChainMetadata chainSupported) {
+    if (chainSupported.rpc.isEmpty) {
+      return Uri.parse('');
+    }
+
+    String rpcUrl = chainSupported.rpc.first;
+    if (Uri.parse(rpcUrl).host == 'rpc.walletconnect.org') {
+      rpcUrl += '?chainId=${chainSupported.chainId}';
+      rpcUrl += '&projectId=${_walletKit.core.projectId}';
+    }
+    debugPrint('[SampleWallet] rpcUrl: $rpcUrl');
+    return Uri.parse(rpcUrl);
+  }
+
   Future<void> kadenaGetAccountsV1(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] kadenaGetAccountsV1 request: $parameters');
     final pendingRequests = await _walletKit.getPendingSessionRequests(
@@ -121,7 +135,7 @@ class KadenaService {
       final chain = ChainsDataList.kadenaChains.firstWhere(
         (c) => c.chainId == chainSupported.chainId,
       );
-      final uri = Uri.parse(chain.rpc.first);
+      final uri = Uri.parse(_formatRpcUrl(chain).toString());
       final params = parameters as Map<String, dynamic>;
       params.putIfAbsent('networkId', () => uri.host);
 
@@ -290,6 +304,7 @@ class KadenaService {
         topic,
         session!.peer.metadata.redirect,
         response.error?.message,
+        response.result != null,
       );
     } on ReownSignError catch (error) {
       MethodsUtils.handleRedirect(

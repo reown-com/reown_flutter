@@ -19,12 +19,18 @@ void assertMaxLength(final int length, final int max) {
 
 /// Asserts that the encoded byte length of [value] is equal to [expected].
 void assertEncodedLength(
-    final String value, final BufferEncoding encoding, final int expected) {
+  final String value,
+  final BufferEncoding encoding,
+  final int expected,
+) {
   assertLength(Buffer.fromString(value, encoding).length, expected);
 }
 
 /// Asserts that the encoded byte length of [value] is less than or equal to [max].
 void assertEncodedMaxLength(
-    final String value, final BufferEncoding encoding, final int max) {
+  final String value,
+  final BufferEncoding encoding,
+  final int max,
+) {
   assertMaxLength(Buffer.fromString(value, encoding).length, max);
 }

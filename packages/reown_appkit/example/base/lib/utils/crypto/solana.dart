@@ -11,16 +11,14 @@ enum SolanaMethods {
   solanaSignAllTransactions,
 }
 
-enum SolanaEvents {
-  none,
-}
+enum SolanaEvents { none }
 
 class Solana {
   static final Map<SolanaMethods, String> methods = {
     SolanaMethods.solanaSignMessage: 'solana_signMessage',
     SolanaMethods.solanaSignTransaction: 'solana_signTransaction',
     SolanaMethods.solanaSignAndSendTransaction: 'solana_signAndSendTransaction',
-    SolanaMethods.solanaSignAllTransactions: 'solana_signAllTransactions'
+    SolanaMethods.solanaSignAllTransactions: 'solana_signAllTransactions',
   };
 
   static final List<String> events = [];
@@ -35,9 +33,8 @@ class Solana {
     ReownAppKitModalNetworkInfo chainData,
   ) async {
     // Create a connection to the devnet cluster.
-    final cluster = solana.Cluster.https(
-      Uri.parse(chainData.rpcUrl).authority,
-    );
+    final cluster =
+        solana.Cluster.https(Uri.parse(chainData.extraRpcUrls.first).authority);
     // final cluster = solana.Cluster.devnet;
     final connection = solana.Connection(cluster);
 
@@ -53,17 +50,13 @@ class Solana {
           'programId': '11111111111111111111111111111111',
           'data': [2, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
           'keys': [
-            {
-              'isSigner': true,
-              'isWritable': true,
-              'pubkey': address,
-            },
+            {'isSigner': true, 'isWritable': true, 'pubkey': address},
             {
               'isSigner': false,
               'isWritable': true,
               'pubkey': address, // should be recipient address
-            }
-          ]
+            },
+          ],
         }),
       ],
     );
@@ -76,9 +69,8 @@ class Solana {
     ReownAppKitModalNetworkInfo chainData,
   ) async {
     // Create a connection to the devnet cluster.
-    final cluster = solana.Cluster.https(
-      Uri.parse(chainData.rpcUrl).authority,
-    );
+    final cluster =
+        solana.Cluster.https(Uri.parse(chainData.extraRpcUrls.first).authority);
     // final cluster = solana.Cluster.devnet;
     final connection = solana.Connection(cluster);
 
@@ -99,9 +91,7 @@ class Solana {
     final transactionv0 = solana.Transaction.v0(
       payer: solana.Pubkey.fromBase58(address),
       recentBlockhash: blockhash.blockhash,
-      instructions: [
-        transferInstruction,
-      ],
+      instructions: [transferInstruction],
     );
 
     return transactionv0;

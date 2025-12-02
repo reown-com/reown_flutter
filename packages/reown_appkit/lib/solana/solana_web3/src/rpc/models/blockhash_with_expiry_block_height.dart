@@ -24,20 +24,20 @@ class BlockhashWithExpiryBlockHeight extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory BlockhashWithExpiryBlockHeight.fromJson(
-          final Map<String, dynamic> json) =>
-      BlockhashWithExpiryBlockHeight(
-        blockhash: json['blockhash'],
-        lastValidBlockHeight: json['lastValidBlockHeight'],
-      );
+    final Map<String, dynamic> json,
+  ) => BlockhashWithExpiryBlockHeight(
+    blockhash: json['blockhash'],
+    lastValidBlockHeight: json['lastValidBlockHeight'],
+  );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static BlockhashWithExpiryBlockHeight? tryFromJson(
-          final Map<String, dynamic>? json) =>
-      json != null ? BlockhashWithExpiryBlockHeight.fromJson(json) : null;
+    final Map<String, dynamic>? json,
+  ) => json != null ? BlockhashWithExpiryBlockHeight.fromJson(json) : null;
 
   @override
   Map<String, dynamic> toJson() => {
-        'blockhash': blockhash,
-        'lastValidBlockHeight': lastValidBlockHeight,
-      };
+    'blockhash': blockhash,
+    'lastValidBlockHeight': lastValidBlockHeight,
+  };
 }

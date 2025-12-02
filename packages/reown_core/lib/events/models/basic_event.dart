@@ -8,17 +8,13 @@ class BasicCoreEvent {
   final String event;
   final CoreEventProperties? properties;
 
-  BasicCoreEvent({
-    this.type,
-    required this.event,
-    required this.properties,
-  });
+  BasicCoreEvent({this.type, required this.event, required this.properties});
 
   Map<String, dynamic> toJson() => {
-        'type': type,
-        'event': event,
-        if (properties != null) 'properties': properties?.toJson(),
-      };
+    'type': type,
+    'event': event,
+    if (properties != null) 'properties': properties?.toJson(),
+  };
 }
 
 @freezed
@@ -29,8 +25,13 @@ sealed class CoreEventProperties with _$CoreEventProperties {
     String? name,
     String? method,
     bool? connected,
+    String? namespace,
     String? network,
-    String? explorer_id,
+    String? caipNetworkId,
+    String? explorerId,
+    int? walletRank,
+    int? displayIndex,
+    String? view,
     String? provider,
     String? platform,
     List<String>? trace,
@@ -39,11 +40,35 @@ sealed class CoreEventProperties with _$CoreEventProperties {
     String? client_id,
     String? direction,
     String? userAgent,
-    String? sendToken,
-    String? sendAmount,
+    String? token,
+    String? amount,
+    String? hash,
     String? address,
     String? project_id,
     String? cursor,
+    Map<String, String>? exchange,
+    Map<String, String>? configuration,
+    Map<String, String>? currentPayment,
+    String? source,
+    bool? headless,
+    bool? reconnect,
+    String? link,
+    String? linkType,
+    bool? showWallets,
+    Map<String, dynamic>? siweConfig,
+    String? themeMode,
+    //   themeVariables?: ThemeVariables
+    //   allowUnsupportedChain?: boolean
+    List<String>? networks,
+    String? defaultNetwork,
+    List<String>? chainImages,
+    //   connectorImages?: Record<string, string>
+    //   coinbasePreference?: 'all' | 'smartWalletOnly' | 'eoaOnly'
+    Map<String, dynamic>? metadata,
+    String? accountType,
+    String? query,
+    bool? certified,
+    bool? installed,
   }) = _CoreEventProperties;
 
   factory CoreEventProperties.fromJson(Map<String, dynamic> json) =>
@@ -59,7 +84,7 @@ class CoreEventType {
 
 class CoreEventEvent {
   static const Error = _ErrorOptions();
-  static const Track = _TrackOptions();
+  static const ModalTrack = _ModalTrackOptions();
 }
 
 class _ErrorOptions {
@@ -96,10 +121,10 @@ class _ErrorOptions {
   final AUTHENTICATED_SESSION_EXPIRED = 'AUTHENTICATED_SESSION_EXPIRED';
 }
 
-class _TrackOptions {
-  const _TrackOptions();
+class _ModalTrackOptions {
+  const _ModalTrackOptions();
 
-  // AppKit
+  // basic
   final MODAL_CREATED = 'MODAL_CREATED';
   final MODAL_LOADED = 'MODAL_LOADED';
   final MODAL_OPEN = 'MODAL_OPEN';
@@ -114,7 +139,13 @@ class _TrackOptions {
   final DISCONNECT_ERROR = 'DISCONNECT_ERROR';
   final CLICK_WALLET_HELP = 'CLICK_WALLET_HELP';
   final CLICK_NETWORK_HELP = 'CLICK_NETWORK_HELP';
-  final CLICK_GET_WALLET = 'CLICK_GET_WALLET';
+  final CLICK_GET_WALLET_HELP = 'CLICK_GET_WALLET_HELP';
+  final GET_WALLET = 'GET_WALLET';
+  final WALLET_IMPRESSION = 'WALLET_IMPRESSION';
+  final INITIALIZE = 'INITIALIZE';
+  final USER_REJECTED = 'USER_REJECTED';
+
+  // email login
   final EMAIL_LOGIN_SELECTED = 'EMAIL_LOGIN_SELECTED';
   final EMAIL_SUBMITTED = 'EMAIL_SUBMITTED';
   final DEVICE_REGISTERED_FOR_EMAIL = 'DEVICE_REGISTERED_FOR_EMAIL';
@@ -124,21 +155,36 @@ class _TrackOptions {
   final EMAIL_EDIT = 'EMAIL_EDIT';
   final EMAIL_EDIT_COMPLETE = 'EMAIL_EDIT_COMPLETE';
   final EMAIL_UPGRADE_FROM_MODAL = 'EMAIL_UPGRADE_FROM_MODAL';
+
+  // siwe
   final CLICK_SIGN_SIWE_MESSAGE = 'CLICK_SIGN_SIWE_MESSAGE';
   final CLICK_CANCEL_SIWE = 'CLICK_CANCEL_SIWE';
   final SIWE_AUTH_SUCCESS = 'SIWE_AUTH_SUCCESS';
   final SIWE_AUTH_ERROR = 'SIWE_AUTH_ERROR';
+
+  // smart accounts
+  final SET_PREFERRED_ACCOUNT_TYPE = 'SET_PREFERRED_ACCOUNT_TYPE';
+
+  // social
   final SOCIAL_LOGIN_STARTED = 'SOCIAL_LOGIN_STARTED';
   final SOCIAL_LOGIN_SUCCESS = 'SOCIAL_LOGIN_SUCCESS';
   final SOCIAL_LOGIN_ERROR = 'SOCIAL_LOGIN_ERROR';
   final SOCIAL_LOGIN_REQUEST_USER_DATA = 'SOCIAL_LOGIN_REQUEST_USER_DATA';
   final SOCIAL_LOGIN_CANCELED = 'SOCIAL_LOGIN_CANCELED';
+
+  // wallet features
   final OPEN_SEND = 'OPEN_SEND';
   final SEND_INITIATED = 'SEND_INITIATED';
   final SEND_SUCCESS = 'SEND_SUCCESS';
   final SEND_ERROR = 'SEND_ERROR';
-  final SIGN_TRANSACTION = 'SIGN_TRANSACTION';
-  final CLICK_TRANSACTIONS = 'CLICK_TRANSACTIONS'; // TODO
-  final ERROR_FETCH_TRANSACTIONS = 'ERROR_FETCH_TRANSACTIONS'; // TODO
-  final LOAD_MORE_TRANSACTIONS = 'LOAD_MORE_TRANSACTIONS'; // TODO
+
+  // final SIGN_TRANSACTION = 'SIGN_TRANSACTION';
+
+  // Transactions History
+  final CLICK_TRANSACTIONS = 'CLICK_TRANSACTIONS';
+  final ERROR_FETCH_TRANSACTIONS = 'ERROR_FETCH_TRANSACTIONS';
+  final LOAD_MORE_TRANSACTIONS = 'LOAD_MORE_TRANSACTIONS';
+
+  // fund from exchange
+  final PAY_EXCHANGE_SELECTED = 'PAY_EXCHANGE_SELECTED';
 }

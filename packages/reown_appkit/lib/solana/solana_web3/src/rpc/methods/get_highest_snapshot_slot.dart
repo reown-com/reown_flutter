@@ -15,8 +15,6 @@ class GetHighestSnapshotSlot
   GetHighestSnapshotSlot() : super('getHighestSnapshotSlot');
 
   @override
-  HighestSnapshotSlot decoder(
-    final Map<String, dynamic> value,
-  ) =>
+  HighestSnapshotSlot decoder(final Map<String, dynamic> value) =>
       HighestSnapshotSlot.fromJson(value);
 }

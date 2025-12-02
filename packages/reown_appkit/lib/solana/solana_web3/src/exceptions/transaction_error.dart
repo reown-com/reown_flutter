@@ -120,8 +120,7 @@ enum TransactionError {
   /// Transaction would exceed max account data limit within the block.
   ///
   /// ignore: constant_identifier_names
-  WouldExceedMaxAccountDataCostLimit,
-  ;
+  WouldExceedMaxAccountDataCostLimit;
 
   /// Returns the enum variant where [EnumName.name] is equal to [name].
   ///

@@ -93,9 +93,9 @@ class StakeAccountInfo extends BorshObject {
 
   @override
   Map<String, dynamic> toJson() => {
-        'state': state,
-        '_state_padding_': const [0, 0, 0],
-        'meta': meta.toJson(),
-        'stake': stake.toJson(),
-      };
+    'state': state,
+    '_state_padding_': const [0, 0, 0],
+    'meta': meta.toJson(),
+    'stake': stake.toJson(),
+  };
 }

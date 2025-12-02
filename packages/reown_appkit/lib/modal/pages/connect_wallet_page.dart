@@ -6,7 +6,6 @@ import 'package:get_it/get_it.dart';
 
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
@@ -37,7 +36,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
   ISiweService get _siweService => GetIt.I<ISiweService>();
   IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
 
-  IReownAppKitModal? _service;
+  IReownAppKitModal? _appkitModal;
   SegmentOption _selectedSegment = SegmentOption.option1;
   ModalError? errorEvent;
 
@@ -47,11 +46,11 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        _service = ModalProvider.of(context).instance;
-        _service?.onModalError.subscribe(_errorListener);
+        _appkitModal = ModalProvider.of(context).instance;
+        _appkitModal?.onModalError.subscribe(_errorListener);
       });
       Future.delayed(const Duration(milliseconds: 300), () {
-        _service?.connectSelectedWallet();
+        _appkitModal?.connectSelectedWallet();
       });
     });
   }
@@ -59,12 +58,12 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      final isOpen = _service?.isOpen ?? false;
-      final isConnected = _service?.isConnected ?? false;
+      final isOpen = _appkitModal?.isOpen ?? false;
+      final isConnected = _appkitModal?.isConnected ?? false;
       if (isOpen && isConnected && !_siweService.enabled) {
         Future.delayed(Duration(seconds: 1), () {
           if (!mounted) return;
-          _service?.closeModal();
+          _appkitModal?.closeModal();
         });
       }
     }
@@ -84,14 +83,14 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
 
   @override
   void dispose() {
-    _service?.onModalError.unsubscribe(_errorListener);
+    _appkitModal?.onModalError.unsubscribe(_errorListener);
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_service == null) {
+    if (_appkitModal == null) {
       return ContentLoading();
     }
     final themeData = ReownAppKitModalTheme.getDataOf(context);
@@ -103,14 +102,10 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
               kNavbarHeight -
               (kPadding16 * 2);
     //
-    final walletRedirect = _explorerService.getWalletRedirect(
-      _service!.selectedWallet,
-    );
-    //
-    final selectedWallet = _service!.selectedWallet;
+    final selectedWallet = _appkitModal!.selectedWallet;
+    final walletRedirect = _explorerService.getWalletRedirect(selectedWallet);
+    final imageUrl = _explorerService.getWalletIcon(selectedWallet);
     final walletName = selectedWallet?.listing.name ?? 'Wallet';
-    final imageId = selectedWallet?.listing.imageId ?? '';
-    final imageUrl = _explorerService.getWalletImageUrl(imageId);
     //
     final webOnlyWallet =
         walletRedirect?.webOnly == true &&
@@ -124,7 +119,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
     return ModalNavbar(
       title: walletName,
       onBack: () {
-        _service?.selectWallet(null);
+        _appkitModal?.selectWallet(null);
         _widgetStack.pop();
       },
       body: SingleChildScrollView(
@@ -214,7 +209,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
                         _selectedSegment != SegmentOption.option2 &&
                         errorEvent == null,
                     child: SimpleIconButton(
-                      onTap: () => _service!.connectSelectedWallet(),
+                      onTap: () => _appkitModal!.connectSelectedWallet(),
                       leftIcon: 'lib/modal/assets/icons/refresh_back.svg',
                       title: 'Try again',
                       backgroundColor: Colors.transparent,
@@ -227,7 +222,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
                         (webOnlyWallet ||
                             _selectedSegment == SegmentOption.option2),
                     child: SimpleIconButton(
-                      onTap: () => _service!.connectSelectedWallet(
+                      onTap: () => _appkitModal!.connectSelectedWallet(
                         inBrowser: _selectedSegment == SegmentOption.option2,
                       ),
                       rightIcon: 'lib/modal/assets/icons/arrow_top_right.svg',
@@ -252,7 +247,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
                         _selectedSegment != SegmentOption.option2 &&
                         errorEvent == null,
                     child: SimpleIconButton(
-                      onTap: () => _service!.connectSelectedWallet(),
+                      onTap: () => _appkitModal!.connectSelectedWallet(),
                       leftIcon: 'lib/modal/assets/icons/refresh_back.svg',
                       title: 'Try again',
                       backgroundColor: Colors.transparent,
@@ -265,7 +260,7 @@ class _ConnectWalletPageState extends State<ConnectWalletPage>
                         (webOnlyWallet ||
                             _selectedSegment == SegmentOption.option2),
                     child: SimpleIconButton(
-                      onTap: () => _service!.connectSelectedWallet(
+                      onTap: () => _appkitModal!.connectSelectedWallet(
                         inBrowser: _selectedSegment == SegmentOption.option2,
                       ),
                       leftIcon: 'lib/modal/assets/icons/arrow_top_right.svg',

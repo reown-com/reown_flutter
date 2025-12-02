@@ -38,36 +38,28 @@ class PrimaryButton extends StatelessWidget {
           : Text(title),
       onTap: loading ? null : onTap,
       buttonStyle: ButtonStyle(
-        backgroundColor: WidgetStateProperty.resolveWith<Color>(
-          (states) {
-            if (states.contains(WidgetState.disabled)) {
-              return themeColors.grayGlass010;
-            }
-            return color ?? themeColors.accent100;
-          },
-        ),
-        foregroundColor: WidgetStateProperty.resolveWith<Color>(
-          (states) {
-            if (states.contains(WidgetState.disabled)) {
-              return themeColors.foreground200;
-            }
-            return themeColors.inverse100;
-          },
-        ),
-        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
-          (states) {
-            return RoundedRectangleBorder(
-              side: BorderSide(
-                color: themeColors.grayGlass010,
-                width: 1.0,
-              ),
-              borderRadius: borderRadius ??
-                  (radiuses.isSquare()
-                      ? BorderRadius.all(Radius.zero)
-                      : BorderRadius.circular(16.0)),
-            );
-          },
-        ),
+        backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return themeColors.grayGlass002;
+          }
+          return color ?? themeColors.accent100;
+        }),
+        foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return themeColors.foreground200;
+          }
+          return themeColors.inverse100;
+        }),
+        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>((
+          states,
+        ) {
+          return RoundedRectangleBorder(
+            side: BorderSide(color: themeColors.grayGlass002, width: 1.0),
+            borderRadius: radiuses.isSquare()
+                ? BorderRadius.zero
+                : BorderRadius.circular(buttonSize.height),
+          );
+        }),
       ),
     );
   }

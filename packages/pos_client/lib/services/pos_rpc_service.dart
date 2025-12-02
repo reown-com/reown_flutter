@@ -23,14 +23,12 @@ mixin PosRpcService implements IPosRpcService {
 
     final qParams = queryParams.toJson();
     final jsonRequest = jsonRpcRequest.toJson();
-    print('build transaction request: ${jsonEncode(jsonRequest)}');
     final url = Uri.parse(_baseUrl).replace(queryParameters: qParams);
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(jsonRequest),
     );
-    print('build transaction response: ${response.body}');
 
     final responseData = jsonDecode(response.body);
     final jsonResponse = JsonRpcResponse.fromJson(responseData);

@@ -13,7 +13,7 @@ import 'package:reown_appkit/modal/widgets/miscellaneous/responsive_container.da
 
 class ReceiveCompatibleNetworks extends StatelessWidget {
   const ReceiveCompatibleNetworks()
-      : super(key: KeyConstants.receiveNetworksKey);
+    : super(key: KeyConstants.receiveNetworksKey);
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +32,7 @@ class ReceiveCompatibleNetworks extends StatelessWidget {
       safeAreaRight: true,
       divider: false,
       body: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: kPadding12,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: kPadding12),
         constraints: BoxConstraints(maxHeight: maxHeight),
         child: ListView.separated(
           itemBuilder: (_, index) {
@@ -93,24 +91,18 @@ class ReceiveCompatibleNetworks extends StatelessWidget {
     ];
 
     for (var chainInfo in orderedList) {
-      final imageId = ReownAppKitModalNetworks.getNetworkIconId(
-        chainInfo!.chainId,
-      );
-      final imageUrl = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
       buttons.add(
         AccountListItem(
           iconWidget: ListAvatar(
             borderRadius: radiuses.radiusXS,
-            imageUrl: imageUrl,
+            imageUrl: GetIt.I<IExplorerService>().getChainIcon(chainInfo),
             isNetwork: true,
           ),
-          title: chainInfo.name,
+          title: chainInfo!.name,
           titleStyle: themeData.textStyles.paragraph500.copyWith(
             color: themeColors.foreground100,
           ),
-          backgroundColor: WidgetStateProperty.all<Color>(
-            Colors.transparent,
-          ),
+          backgroundColor: WidgetStateProperty.all<Color>(Colors.transparent),
         ),
       );
     }

@@ -88,8 +88,8 @@ _SessionRequest _$SessionRequestFromJson(Map<String, dynamic> json) =>
     _SessionRequest(
       id: (json['id'] as num).toInt(),
       topic: json['topic'] as String,
-      method: json['method'] as String,
       chainId: json['chainId'] as String,
+      method: json['method'] as String,
       params: json['params'],
       verifyContext: VerifyContext.fromJson(
         json['verifyContext'] as Map<String, dynamic>,
@@ -103,9 +103,26 @@ Map<String, dynamic> _$SessionRequestToJson(_SessionRequest instance) =>
     <String, dynamic>{
       'id': instance.id,
       'topic': instance.topic,
-      'method': instance.method,
       'chainId': instance.chainId,
+      'method': instance.method,
       'params': instance.params,
       'verifyContext': instance.verifyContext.toJson(),
       'transportType': _$TransportTypeEnumMap[instance.transportType]!,
     };
+
+_SessionRequestParams _$SessionRequestParamsFromJson(
+  Map<String, dynamic> json,
+) => _SessionRequestParams(
+  method: json['method'] as String,
+  params: json['params'],
+);
+
+Map<String, dynamic> _$SessionRequestParamsToJson(
+  _SessionRequestParams instance,
+) => <String, dynamic>{'method': instance.method, 'params': instance.params};
+
+_SessionEventParams _$SessionEventParamsFromJson(Map<String, dynamic> json) =>
+    _SessionEventParams(name: json['name'] as String, data: json['data']);
+
+Map<String, dynamic> _$SessionEventParamsToJson(_SessionEventParams instance) =>
+    <String, dynamic>{'name': instance.name, 'data': instance.data};

@@ -4,7 +4,6 @@ import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
-import 'package:reown_appkit/modal/utils/public/appkit_modal_default_networks.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
@@ -44,10 +43,9 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
 
   void _modalNotifyListener() {
     setState(() {
-      final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
-      if (chainId.isNotEmpty) {
-        final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-        _tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
+      final chainInfo = widget.appKitModal.selectedChain;
+      if (chainInfo != null) {
+        _tokenImage = GetIt.I<IExplorerService>().getChainIcon(chainInfo);
       }
       final balance = widget.appKitModal.balanceNotifier.value;
       if (balance.contains(AppKitModalBalanceButton.balanceDefault)) {
@@ -67,25 +65,20 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
         backgroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) => themeColors.grayGlass002,
         ),
-        foregroundColor: WidgetStateProperty.resolveWith<Color>(
-          (states) {
-            if (states.contains(WidgetState.disabled)) {
-              return themeColors.grayGlass015;
-            }
-            return themeColors.foreground100;
-          },
-        ),
-        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
-          (states) {
-            return RoundedRectangleBorder(
-              side: BorderSide(
-                color: themeColors.grayGlass002,
-                width: 1.0,
-              ),
-              borderRadius: BorderRadius.circular(widget.size.height / 2),
-            );
-          },
-        ),
+        foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return themeColors.grayGlass015;
+          }
+          return themeColors.foreground100;
+        }),
+        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>((
+          states,
+        ) {
+          return RoundedRectangleBorder(
+            side: BorderSide(color: themeColors.grayGlass002, width: 1.0),
+            borderRadius: BorderRadius.circular(widget.size.height / 2),
+          );
+        }),
       ),
       overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
         EdgeInsets.only(
@@ -100,24 +93,21 @@ class _AppKitModalBalanceButtonState extends State<AppKitModalBalanceButton> {
               ? Row(
                   children: [
                     const SizedBox.square(dimension: kPadding6),
-                    CircularLoader(
-                      size: 16.0,
-                      strokeWidth: 1.5,
-                    ),
+                    CircularLoader(size: 16.0, strokeWidth: 1.5),
                     const SizedBox.square(dimension: kPadding6),
                   ],
                 )
               : (_tokenImage ?? '').isEmpty
-                  ? RoundedIcon(
-                      assetPath: 'lib/modal/assets/icons/network.svg',
-                      size: widget.size.height * 0.55,
-                      assetColor: themeColors.inverse100,
-                      padding: 4.0,
-                    )
-                  : RoundedIcon(
-                      imageUrl: _tokenImage!,
-                      size: widget.size.height * 0.55,
-                    ),
+              ? RoundedIcon(
+                  assetPath: 'lib/modal/assets/icons/network.svg',
+                  size: widget.size.height * 0.55,
+                  assetColor: themeColors.inverse100,
+                  padding: 4.0,
+                )
+              : RoundedIcon(
+                  imageUrl: _tokenImage!,
+                  size: widget.size.height * 0.55,
+                ),
           const SizedBox.square(dimension: 4.0),
           ValueListenableBuilder<String>(
             valueListenable: widget.appKitModal.balanceNotifier,

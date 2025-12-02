@@ -8,8 +8,8 @@ import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/activity_page.dart';
 import 'package:reown_appkit/modal/pages/upgrade_wallet_page.dart';
+import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/utils/asset_util.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
@@ -79,9 +79,7 @@ class _AccountPageState extends State<AccountPage> with WidgetsBindingObserver {
       divider: false,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: kPadding12),
-        child: _DefaultAccountView(
-          appKitModal: _appKitModal!,
-        ),
+        child: _DefaultAccountView(appKitModal: _appKitModal!),
       ),
     );
   }
@@ -89,7 +87,7 @@ class _AccountPageState extends State<AccountPage> with WidgetsBindingObserver {
 
 class _DefaultAccountView extends StatelessWidget {
   const _DefaultAccountView({required IReownAppKitModal appKitModal})
-      : _appKitMoldal = appKitModal;
+    : _appKitMoldal = appKitModal;
   final IReownAppKitModal _appKitMoldal;
 
   @override
@@ -145,14 +143,12 @@ class _DefaultAccountView extends StatelessWidget {
         //   child: _ConnectedWalletButton(),
         // ),
         _SelectNetworkButton(),
+        _FundWalletButton(),
         Visibility(
           visible: !isMagicService && !smartAccounts,
           child: _ActivityButton(),
         ),
-        Visibility(
-          visible: smartAccounts,
-          child: _SwitchSmartAccountButton(),
-        ),
+        Visibility(visible: smartAccounts, child: _SwitchSmartAccountButton()),
         _DisconnectButton(),
       ],
     );
@@ -181,8 +177,8 @@ class _UpgradeWalletButton extends StatelessWidget {
               borderRadius: radiuses.isSquare()
                   ? 0.0
                   : radiuses.isCircular()
-                      ? 40.0
-                      : 8.0,
+                  ? 40.0
+                  : 8.0,
               size: 40.0,
               assetPath: 'lib/modal/assets/icons/regular/wallet.svg',
               assetColor: themeColors.accent100,
@@ -211,12 +207,10 @@ class _EmailAndSocialLoginButton extends StatelessWidget {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
-    final provider = AppKitSocialOption.values.firstWhereOrNull(
-      (e) {
-        final socialProvider = modalInstance.session!.socialProvider ?? '';
-        return e.name.toLowerCase() == socialProvider.toString().toLowerCase();
-      },
-    );
+    final provider = AppKitSocialOption.values.firstWhereOrNull((e) {
+      final socialProvider = modalInstance.session!.socialProvider ?? '';
+      return e.name.toLowerCase() == socialProvider.toString().toLowerCase();
+    });
     final title = modalInstance.session!.sessionUsername;
     if (provider == null) {
       return SizedBox.shrink();
@@ -254,8 +248,8 @@ class _EmailAndSocialLoginButton extends StatelessWidget {
           ),
           onTap: provider == AppKitSocialOption.Email
               ? () {
-                  final walletInfo =
-                      GetIt.I<IExplorerService>().getConnectedWallet();
+                  final walletInfo = GetIt.I<IExplorerService>()
+                      .getConnectedWallet();
                   final url = walletInfo!.listing.webappLink;
                   final topic = modalInstance.session!.topic;
                   ReownCoreUtils.openURL('${url}emailUpdate/$topic');
@@ -332,23 +326,22 @@ class _ConnectedWalletButton extends StatelessWidget {
 
 class _SelectNetworkButton extends StatelessWidget {
   IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+  IExplorerService get _explorerService => GetIt.I<IExplorerService>();
 
   @override
   Widget build(BuildContext context) {
     final service = ModalProvider.of(context).instance;
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final chainId = service.selectedChain?.chainId ?? '';
-    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-    final tokenImage = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    final chainIcon = _explorerService.getChainIcon(service.selectedChain);
     return Column(
       children: [
         const SizedBox.square(dimension: kPadding8),
         AccountListItem(
           iconWidget: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: imageId.isEmpty
+            child: chainIcon.isEmpty
                 ? RoundedIcon(
                     assetPath: 'lib/modal/assets/icons/network.svg',
                     assetColor: themeColors.inverse100,
@@ -356,7 +349,7 @@ class _SelectNetworkButton extends StatelessWidget {
                   )
                 : RoundedIcon(
                     borderRadius: radiuses.isSquare() ? 0.0 : null,
-                    imageUrl: tokenImage,
+                    imageUrl: chainIcon,
                     assetColor: themeColors.background100,
                   ),
           ),
@@ -367,6 +360,52 @@ class _SelectNetworkButton extends StatelessWidget {
           onTap: () => _widgetStack.push(
             ReownAppKitModalSelectNetworkPage(),
             event: ClickNetworksEvent(),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _FundWalletButton extends StatelessWidget {
+  IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
+  @override
+  Widget build(BuildContext context) {
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    return Column(
+      children: [
+        const SizedBox.square(dimension: kPadding8),
+        AccountListItem(
+          iconWidget: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(17.0)),
+                border: Border.fromBorderSide(
+                  BorderSide(
+                    color: themeColors.grayGlass002,
+                    width: 2.0,
+                    strokeAlign: BorderSide.strokeAlignOutside,
+                  ),
+                ),
+              ),
+              child: CircleAvatar(
+                radius: 17.0,
+                child: Icon(
+                  Icons.attach_money_outlined,
+                  color: themeColors.accent100,
+                  size: 26.0,
+                ),
+                backgroundColor: themeColors.accenGlass015,
+                foregroundColor: themeColors.accent100,
+              ),
+            ),
+          ),
+          title: 'Fund wallet',
+          onTap: () => _widgetStack.push(
+            ReownAppKitModalDepositScreen(),
+            // event: ClickNetworksEvent(),
           ),
         ),
       ],
@@ -389,10 +428,7 @@ class _ActivityButton extends StatelessWidget {
           iconBGColor: themeColors.accenGlass015,
           iconBorderColor: themeColors.accenGlass005,
           title: 'Activity',
-          onTap: () => _widgetStack.push(
-            ActivityPage(),
-            event: ClickTransactionsEvent(),
-          ),
+          onTap: () => _widgetStack.push(ActivityPage()),
         ),
       ],
     );
@@ -453,9 +489,23 @@ class _SwitchSmartAccountButtonState extends State<_SwitchSmartAccountButton> {
             setState(() => _loading = !_loading);
             await service.switchSmartAccounts();
             setState(() => _loading = !_loading);
+            _sendEvent();
           },
         ),
       ],
+    );
+  }
+
+  void _sendEvent() {
+    final modalInstance = ModalProvider.of(context).instance;
+    final chainId = modalInstance.selectedChain!.chainId;
+    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+    final network = ReownAppKitModalNetworks.getNetworkInfo(namespace, chainId);
+    GetIt.I<IAnalyticsService>().sendEvent(
+      SetPreferredAccountTypeEvent(
+        network: network!.name,
+        accountType: _isSmartAccountSelected ? 'Smart Accounts' : 'EOA',
+      ),
     );
   }
 }

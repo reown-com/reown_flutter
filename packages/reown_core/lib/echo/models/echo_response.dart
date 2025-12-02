@@ -8,11 +8,7 @@ class EchoResponse {
   final List<Field>? fields;
   final String status;
 
-  EchoResponse({
-    this.errors,
-    this.fields,
-    required this.status,
-  });
+  EchoResponse({this.errors, this.fields, required this.status});
 
   factory EchoResponse.fromJson(Map<String, dynamic> json) =>
       _$EchoResponseFromJson(json);

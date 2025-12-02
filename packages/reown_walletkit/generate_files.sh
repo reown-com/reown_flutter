@@ -1,10 +1,16 @@
 #!/bin/bash
 
+rm -Rf pubspec.lock
+rm -Rf .dart_tool
+rm -Rf example/.dart_tool
+rm -Rf example/build
+rm -Rf example/ios/.symlinks
+
 flutter clean
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs
 # dart pub outdated --no-dev-dependencies --up-to-date --no-dependency-overrides
-# dart format .
+dart format .
 # dart run dependency_validator
 
 cd example
@@ -15,13 +21,14 @@ flutter clean
 flutter pub get
 dart run build_runner build --delete-conflicting-outputs
 # dart pub outdated --no-dev-dependencies --up-to-date --no-dependency-overrides
-# dart format .
+dart format .
 # dart run dependency_validator
 
 cd ios
-rm Podfile.lock
+# rm Podfile.lock
 # pod deintegrate
 # pod cache clean --all
+# pod repo update
 pod install
 cd ..
 

@@ -6,7 +6,6 @@ import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/services/magic_service/i_magic_service.dart';
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
@@ -135,11 +134,6 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
         : ResponsiveData.maxHeightOf(context) -
               kNavbarHeight -
               (kPadding16 * 2);
-    //
-    final chainId = widget.chainInfo.chainId;
-    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-    final imageUrl = _explorerService.getAssetImageUrl(imageId);
-    //
     return ModalNavbar(
       title: widget.chainInfo.name,
       noClose: true,
@@ -163,7 +157,7 @@ class _ConnectNetworkPageState extends State<ConnectNetworkPage>
                         : themeData.radiuses.radiusM + 4.0,
                     // themeData.radiuses.radiusM + 4.0
                     child: _WalletAvatar(
-                      imageUrl: imageUrl,
+                      imageUrl: _explorerService.getChainIcon(widget.chainInfo),
                       errorConnection: errorEvent is UserRejectedConnection,
                       themeColors: themeColors,
                     ),

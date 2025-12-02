@@ -5,10 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reown_appkit/modal/theme/public/appkit_modal_theme.dart';
 
-enum SegmentOption {
-  option1,
-  option2,
-}
+enum SegmentOption { option1, option2 }
 
 class SegmentedControl extends StatefulWidget {
   const SegmentedControl({
@@ -111,10 +108,7 @@ class _SegmentedControlState extends State<SegmentedControl> {
           borderRadius: radiuses.isSquare()
               ? BorderRadius.all(Radius.zero)
               : BorderRadius.circular(16.0),
-          border: Border.all(
-            color: themeColors.grayGlass002,
-            width: 1,
-          ),
+          border: Border.all(color: themeColors.grayGlass002, width: 1),
         ),
         duration: Duration(milliseconds: 200),
         curve: Curves.linear,

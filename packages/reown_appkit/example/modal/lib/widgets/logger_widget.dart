@@ -5,10 +5,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 class DraggableCard extends StatefulWidget {
   final OverlayController overlayController;
   //
-  const DraggableCard({
-    super.key,
-    required this.overlayController,
-  });
+  const DraggableCard({super.key, required this.overlayController});
 
   @override
   State<DraggableCard> createState() => _DraggableCardState();
@@ -34,10 +31,7 @@ class _DraggableCardState extends State<DraggableCard> {
     _logs.add(
       Text(
         '=> $message',
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12.0,
-        ),
+        style: const TextStyle(color: Colors.white, fontSize: 12.0),
       ),
     );
     setState(() {});
@@ -109,10 +103,7 @@ class _DraggableCardState extends State<DraggableCard> {
 }
 
 class OverlayController extends AnimatedOverlay {
-  OverlayController(
-    super.duration, {
-    required this.appKitModal,
-  });
+  OverlayController(super.duration, {required this.appKitModal});
   final ReownAppKitModal appKitModal;
   OverlayEntry? _entry;
   final _defaultAlign = const Alignment(0.0, -30.0);
@@ -194,10 +185,7 @@ abstract class AnimatedOverlay extends TickerProvider {
   late final AnimationController controller;
 
   AnimatedOverlay(Duration duration) : super() {
-    controller = AnimationController(
-      vsync: this,
-      duration: duration,
-    );
+    controller = AnimationController(vsync: this, duration: duration);
   }
 
   Animation<T> createAnimation<T>({
@@ -209,12 +197,10 @@ abstract class AnimatedOverlay extends TickerProvider {
     if (begin == end) {
       return AlwaysStoppedAnimation<T>(end);
     } else {
-      return Tween<T>(begin: begin, end: end).animate(
-        CurvedAnimation(
-          parent: controller,
-          curve: curve,
-        ),
-      );
+      return Tween<T>(
+        begin: begin,
+        end: end,
+      ).animate(CurvedAnimation(parent: controller, curve: curve));
     }
   }
 }
@@ -223,17 +209,11 @@ class CustomAlign extends AnimatedWidget {
   final Widget child;
   final Animation<Alignment> animation;
 
-  const CustomAlign({
-    super.key,
-    required this.child,
-    required this.animation,
-  }) : super(listenable: animation);
+  const CustomAlign({super.key, required this.child, required this.animation})
+      : super(listenable: animation);
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: animation.value,
-      child: child,
-    );
+    return Align(alignment: animation.value, child: child);
   }
 }

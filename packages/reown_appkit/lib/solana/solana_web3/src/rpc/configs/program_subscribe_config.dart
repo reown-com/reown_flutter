@@ -28,8 +28,8 @@ class ProgramSubscribeConfig extends CommitmentConfig {
 
   @override
   Map<String, dynamic> toJson() => {
-        'commitment': commitment?.name,
-        'filters': filters?.toJson(),
-        'encoding': encoding.name,
-      };
+    'commitment': commitment?.name,
+    'filters': filters?.toJson(),
+    'encoding': encoding.name,
+  };
 }

@@ -8,14 +8,11 @@ import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/siwe_service/i_siwe_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
 import 'package:reown_appkit/modal/widgets/avatars/account_avatar.dart';
-import 'package:reown_appkit/modal/widgets/buttons/primary_button.dart';
-import 'package:reown_appkit/modal/widgets/buttons/secondary_button.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/miscellaneous/content_loading.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
@@ -25,9 +22,8 @@ import 'package:reown_appkit/reown_appkit.dart';
 
 class ApproveSIWEPage extends StatefulWidget {
   final Function(ReownAppKitModalSession session) onSiweFinish;
-  const ApproveSIWEPage({
-    required this.onSiweFinish,
-  }) : super(key: KeyConstants.approveSiwePageKey);
+  const ApproveSIWEPage({required this.onSiweFinish})
+    : super(key: KeyConstants.approveSiwePageKey);
 
   @override
   State<ApproveSIWEPage> createState() => _ApproveSIWEPageState();
@@ -72,9 +68,7 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
     setState(() => _waitingSign = true);
     try {
       final chainId = _appKitModal!.selectedChain!.chainId;
-      final namespace = NamespaceUtils.getNamespaceFromChain(
-        chainId,
-      );
+      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
       final address = _appKitModal!.session!.getAddress(namespace)!;
       _analyticsService.sendEvent(ClickSignSiweMessage(network: chainId));
       //
@@ -91,7 +85,7 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
       final clientId = await _appKitModal!.appKit!.core.crypto.getClientId();
       await _siweService.verifyMessage(
         message: message,
-        signature: signature,
+        signature: signature.toString(),
         clientId: clientId,
       );
       //
@@ -114,10 +108,12 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
   void _handleError(String? error) {
     final chainId = _appKitModal!.selectedChain!.chainId;
     _analyticsService.sendEvent(SiweAuthError(network: chainId));
-    GetIt.I<IToastService>().show(ToastMessage(
-      type: ToastType.error,
-      text: error ?? 'Something went wrong.',
-    ));
+    GetIt.I<IToastService>().show(
+      ToastMessage(
+        type: ToastType.error,
+        text: error ?? 'Something went wrong.',
+      ),
+    );
     if (!mounted) return;
     setState(() => _waitingSign = false);
   }
@@ -174,23 +170,21 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
                     decoration: BoxDecoration(
                       borderRadius:
                           _appKitModal!.session!.sessionService.isMagic ||
-                                  peerIcon.isEmpty
-                              ? BorderRadius.circular(60.0)
-                              : BorderRadius.circular(radiuses.radiusM),
+                              peerIcon.isEmpty
+                          ? BorderRadius.circular(60.0)
+                          : BorderRadius.circular(radiuses.radiusM),
                       color: themeColors.background150,
                     ),
                     child: _appKitModal!.session!.sessionService.isMagic
-                        ? AccountAvatar(
-                            appKit: _appKitModal!,
-                            size: 60.0,
-                          )
+                        ? AccountAvatar(appKit: _appKitModal!, size: 60.0)
                         : SizedBox(
                             width: 60.0,
                             height: 60.0,
                             child: peerIcon.isEmpty
                                 ? RoundedIcon(
-                                    borderRadius:
-                                        radiuses.isSquare() ? 0.0 : 60.0,
+                                    borderRadius: radiuses.isSquare()
+                                        ? 0.0
+                                        : 60.0,
                                     size: 60.0,
                                     padding: 12.0,
                                     assetPath:
@@ -218,10 +212,7 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
                       color: themeColors.background150,
                     ),
                     child: selfIcon.isEmpty
-                        ? AccountAvatar(
-                            appKit: _appKitModal!,
-                            size: 60.0,
-                          )
+                        ? AccountAvatar(appKit: _appKitModal!, size: 60.0)
                         : SizedBox(
                             width: 60.0,
                             height: 60.0,
@@ -266,10 +257,7 @@ class _ApproveSIWEPageState extends State<ApproveSIWEPage> {
               children: [
                 const SizedBox.square(dimension: 4.0),
                 Expanded(
-                  child: SecondaryButton(
-                    title: 'Cancel',
-                    onTap: _cancelSIWE,
-                  ),
+                  child: SecondaryButton(title: 'Cancel', onTap: _cancelSIWE),
                 ),
                 const SizedBox.square(dimension: kPadding8),
                 Expanded(

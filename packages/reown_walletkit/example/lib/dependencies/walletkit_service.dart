@@ -1,12 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:eth_sig_util/util/utils.dart' as eth_sig_util_util;
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/cosmos_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/kadena_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/polkadot_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/stacks/stacks_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/sui/sui_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/ton/ton_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/chain_services/tron_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/deep_link_handler.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
@@ -92,9 +99,94 @@ class WalletKitService extends IWalletKitService {
     // );
 
     _walletKit!.onSessionProposal.subscribe(_onSessionProposal);
-    // _walletKit!.onSessionProposalError.subscribe(_onSessionProposalError);
-    // _walletKit!.onSessionConnect.subscribe(_onSessionConnect);
-    // _walletKit!.onSessionAuthRequest.subscribe(_onSessionAuthRequest);
+    _walletKit!.onSessionProposalError.subscribe(_onSessionProposalError);
+    _walletKit!.onSessionConnect.subscribe(_onSessionConnect);
+    _walletKit!.onSessionAuthRequest.subscribe(_onSessionAuthRequest);
+
+    // Support EVM Chains
+    for (final chainData in ChainsDataList.eip155Chains) {
+      GetIt.I.registerSingleton<EVMService>(
+        EVMService(chainSupported: chainData),
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Kadena Chains
+    for (final chainData in ChainsDataList.kadenaChains) {
+      GetIt.I.registerSingleton<KadenaService>(
+        KadenaService(chainSupported: chainData),
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Polkadot Chains
+    for (final chainData in ChainsDataList.polkadotChains) {
+      GetIt.I.registerSingleton<PolkadotService>(
+        PolkadotService(chainSupported: chainData),
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Solana Chains
+    // Change SolanaService to SolanaService2 to switch between `solana` package and `solana_web3` package
+    for (final chainData in ChainsDataList.solanaChains) {
+      GetIt.I.registerSingleton<SolanaService>(
+        SolanaService(chainSupported: chainData),
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Cosmos Chains
+    for (final chainData in ChainsDataList.cosmosChains) {
+      GetIt.I.registerSingleton<CosmosService>(
+        CosmosService(chainSupported: chainData),
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Tron Chains
+    for (final chainData in ChainsDataList.tronChains) {
+      GetIt.I.registerSingleton<TronService>(
+        TronService(chainSupported: chainData),
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Tron Chains
+    for (final chainData in ChainsDataList.tonChains) {
+      GetIt.I.registerSingletonAsync<TonService>(
+        () async {
+          final tonService = TonService(chainSupported: chainData);
+          await tonService.init();
+          return tonService;
+        },
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Stacks Chains
+    for (final chainData in ChainsDataList.stacksChains) {
+      GetIt.I.registerSingletonAsync<StacksService>(
+        () async {
+          final stacksService = StacksService(chainSupported: chainData);
+          await stacksService.init();
+          return stacksService;
+        },
+        instanceName: chainData.chainId,
+      );
+    }
+
+    // Support Sui Chains
+    for (final chainData in ChainsDataList.suiChains) {
+      GetIt.I.registerSingletonAsync<SUIService>(
+        () async {
+          final suiService = SUIService(chainSupported: chainData);
+          await suiService.init();
+          return suiService;
+        },
+        instanceName: chainData.chainId,
+      );
+    }
   }
 
   @override
@@ -189,6 +281,10 @@ class WalletKitService extends IWalletKitService {
   @override
   ReownWalletKit get walletKit => _walletKit!;
 
+  @override
+  T getChainService<T extends Object>({required String chainId}) =>
+      GetIt.I.get<T>(instanceName: chainId);
+
   List<String> get _loaderMethods => [
         MethodConstants.WC_SESSION_PROPOSE,
         MethodConstants.WC_SESSION_REQUEST,
@@ -208,9 +304,18 @@ class WalletKitService extends IWalletKitService {
   // }
 
   void _onSessionProposal(SessionProposalEvent? args) async {
-    debugPrint('[SampleWallet] _onSessionProposal ${jsonEncode(args?.params)}');
+    final debugString = jsonEncode(args?.params);
+    debugPrint('[SampleWallet] _onSessionProposal $debugString');
     if (args != null) {
       final proposer = args.params.proposer;
+      // Auth requests
+      final generatedNamespaces = args.params.generatedNamespaces;
+      final authenticationRequests = args.params.requests?.authentication;
+      final formattedMessages = prepareAuthenticationMessages(
+        authenticationRequests,
+        generatedNamespaces,
+      );
+
       final result = (await _bottomSheetHandler.queueBottomSheet(
             widget: WCRequestWidget(
               verifyContext: args.verifyContext,
@@ -227,11 +332,15 @@ class WalletKitService extends IWalletKitService {
         // generatedNamespaces is constructed based on registered methods handlers
         // so if you want to handle requests using onSessionRequest event then you would need to manually add that method in the approved namespaces
         try {
-          _walletKit!.approveSession(
-            // id: args.id,
-            proposalPublicKey: args.params.proposer.publicKey,
+          final cacaos = await signAuthenticationMessages(formattedMessages);
+
+          await _walletKit!.approveSession(
+            id: args.id,
             namespaces: args.params.generatedNamespaces!,
             sessionProperties: args.params.sessionProperties,
+            proposalRequestsResponses: ProposalRequestsResponses(
+              authentication: cacaos,
+            ),
           );
           // MethodsUtils.handleRedirect(
           //   session.topic,
@@ -310,36 +419,36 @@ class WalletKitService extends IWalletKitService {
   }
 
   void _onSessionAuthRequest(SessionAuthRequest? args) async {
+    final debugString = jsonEncode(args?.authPayload.toJson());
+    debugPrint('[SampleWallet] _onSessionAuthRequest $debugString');
     if (args != null) {
-      final SessionAuthPayload authPayload = args.authPayload;
-      final jsonPyaload = jsonEncode(authPayload.toJson());
-      debugPrint('[SampleWallet] _onSessionAuthRequest $jsonPyaload');
       final supportedChains = ChainsDataList.eip155Chains.map((e) => e.chainId);
       final supportedMethods = SupportedEVMMethods.values.map((e) => e.name);
-      final newAuthPayload = AuthSignature.populateAuthPayload(
-        authPayload: authPayload,
+      final authenticationRequest = AuthSignature.populateAuthPayload(
+        authPayload: args.authPayload,
         chains: supportedChains.toList(),
         methods: supportedMethods.toList(),
       );
-      final cacaoRequestPayload = CacaoRequestPayload.fromSessionAuthPayload(
-        newAuthPayload,
+      // _onSessionAuthRequest will only be executed during authenticate method,
+      // which is only available for eip155 namespace and it's going to be deprecated soon
+      final chainKeys = GetIt.I<IKeyService>().getKeysForChain('eip155');
+      final address = chainKeys.first.address;
+      final formattedMessages = prepareAuthenticationMessages(
+        [authenticationRequest],
+        {
+          'eip155': Namespace(
+            accounts: supportedChains.map((e) => '$e:$address').toList(),
+            methods: supportedMethods.toList(),
+            events: EventsConstants.allEvents,
+          )
+        },
       );
-      final List<Map<String, dynamic>> formattedMessages = [];
-      for (var chain in newAuthPayload.chains) {
-        final chainKeys = GetIt.I<IKeyService>().getKeysForChain(chain);
-        final iss = 'did:pkh:$chain:${chainKeys.first.address}';
-        final message = _walletKit!.formatAuthMessage(
-          iss: iss,
-          cacaoPayload: cacaoRequestPayload,
-        );
-        formattedMessages.add({iss: message});
-      }
 
       final WCBottomSheetResult rs =
           (await _bottomSheetHandler.queueBottomSheet(
                 widget: WCSessionAuthRequestWidget(
                   child: WCConnectionRequestWidget(
-                    sessionAuthPayload: newAuthPayload,
+                    sessionAuthPayload: authenticationRequest,
                     verifyContext: args.verifyContext,
                     requester: args.requester,
                   ),
@@ -348,37 +457,8 @@ class WalletKitService extends IWalletKitService {
               WCBottomSheetResult.reject;
 
       if (rs != WCBottomSheetResult.reject) {
-        final chainKeys = GetIt.I<IKeyService>().getKeysForChain('eip155');
-        final privateKey = '0x${chainKeys.first.privateKey}';
-        final credentials = EthPrivateKey.fromHex(privateKey);
-        //
-        final messageToSign = formattedMessages.length;
-        final count = (rs == WCBottomSheetResult.one) ? 1 : messageToSign;
-        //
-        final List<Cacao> cacaos = [];
-        for (var i = 0; i < count; i++) {
-          final iss = formattedMessages[i].keys.first;
-          final message = formattedMessages[i].values.first;
-          final signature = credentials.signPersonalMessageToUint8List(
-            Uint8List.fromList(message.codeUnits),
-          );
-          final hexSignature = eth_sig_util_util.bytesToHex(
-            signature,
-            include0x: true,
-          );
-          cacaos.add(
-            AuthSignature.buildAuthObject(
-              requestPayload: cacaoRequestPayload,
-              signature: CacaoSignature(
-                t: CacaoSignature.EIP191,
-                s: hexSignature,
-              ),
-              iss: iss,
-            ),
-          );
-        }
-        //
         try {
+          final cacaos = await signAuthenticationMessages(formattedMessages);
           final session = await _walletKit!.approveSessionAuthenticate(
             id: args.id,
             auths: cacaos,
@@ -409,6 +489,154 @@ class WalletKitService extends IWalletKitService {
           error.message,
         );
       }
+    }
+  }
+
+  @override
+  List<(ISS, AuthMessage, AuthRequest)> prepareAuthenticationMessages(
+    List<SessionAuthPayload>? authenticationRequests,
+    Map<String, Namespace>? generatedNamespaces,
+  ) {
+    final List<(String, String, SessionAuthPayload)> formattedMessages = [];
+    if (authenticationRequests == null || authenticationRequests.isEmpty) {
+      return formattedMessages;
+    }
+
+    if (generatedNamespaces == null || generatedNamespaces.isEmpty) {
+      return formattedMessages;
+    }
+
+    for (var request in authenticationRequests) {
+      for (var chain in request.chains) {
+        try {
+          final namespace = NamespaceUtils.getNamespaceFromChain(chain);
+          final namespaces = generatedNamespaces[namespace];
+          final account = namespaces?.accounts.first;
+          if (account != null) {
+            final address = NamespaceUtils.getAccount(account);
+            final iss = 'did:pkh:$chain:$address';
+            final message = _walletKit!.formatAuthMessage(
+              iss: iss,
+              cacaoPayload: CacaoRequestPayload.fromSessionAuthPayload(
+                request,
+              ),
+            );
+            formattedMessages.add((iss, message, request));
+          }
+        } catch (e, s) {
+          debugPrint('❌ prepareAuthenticationMessages error: $e, $s');
+        }
+      }
+    }
+
+    return formattedMessages;
+  }
+
+  Future<List<Cacao>> signAuthenticationMessages(
+    List<(String, String, SessionAuthPayload)> messagesToSign,
+  ) async {
+    final List<Cacao> signedAuths = [];
+    for (var messageToSign in messagesToSign) {
+      try {
+        final iss = messageToSign.$1;
+        final message = messageToSign.$2;
+        final request = messageToSign.$3;
+        final namespace = AddressUtils.getDidAddressNamespace(iss);
+        final chainId = AddressUtils.getDidAddressChainId(iss);
+        final (String, String, String?) result = await signAuthMessage(
+          namespace!,
+          chainId!,
+          message,
+        );
+        final signature = result.$1;
+        final type = result.$2;
+        final publicKey = result.$3;
+
+        final auth = AuthSignature.buildAuthObject(
+          requestPayload: CacaoRequestPayload.fromSessionAuthPayload(
+            request,
+          ),
+          signature: CacaoSignature(
+            s: signature,
+            t: type,
+            m: publicKey,
+          ),
+          iss: iss,
+        );
+        signedAuths.add(auth);
+      } catch (e, s) {
+        debugPrint('❌ signAuthenticationMessages error: $e, $s');
+      }
+    }
+    return signedAuths;
+  }
+
+  Future<(String, String, String?)> signAuthMessage(
+    String namespace,
+    String chainId,
+    String message,
+  ) async {
+    try {
+      final caip2chain = '$namespace:$chainId';
+      debugPrint('[$runtimeType] signAuthMessage: $caip2chain, $message');
+      switch (namespace) {
+        case 'eip155':
+          final service = getChainService<EVMService>(chainId: caip2chain);
+          final signature = service.signMessage(message);
+          final type = getSignatureType(namespace);
+          return (signature, type, null);
+        case 'solana':
+          final service = getChainService<SolanaService>(chainId: caip2chain);
+          final encodedMessage = base58.encode(utf8.encode(message));
+          final signature = await service.signMessage(encodedMessage);
+          final type = getSignatureType(namespace);
+          return (signature, type, null);
+        case 'polkadot':
+          final service = getChainService<PolkadotService>(chainId: caip2chain);
+          final signature = await service.signMessage(message);
+          final type = getSignatureType(namespace);
+          return (signature, type, null);
+        case 'tron':
+          final service = getChainService<TronService>(chainId: caip2chain);
+          final signature = await service.signMessage(message);
+          final type = getSignatureType(namespace);
+          return (signature, type, null);
+        case 'ton':
+          final service = getChainService<TonService>(chainId: caip2chain);
+          final signature = await service.signMessage(message);
+          final publicKey = service.getBase64PublicKey();
+          final type = getSignatureType(namespace);
+          return (signature, type, publicKey);
+        case 'sui':
+          final service = getChainService<SUIService>(chainId: caip2chain);
+          final signature = await service.signMessage(message);
+          final type = getSignatureType(namespace);
+          return (signature, type, null);
+        case 'stacks':
+          final service = getChainService<StacksService>(chainId: caip2chain);
+          final signature = await service.signMessage(message);
+          final type = getSignatureType(namespace);
+          return (signature, type, null);
+        default:
+          throw StateError('Unsupported signature for chain $chainId');
+      }
+    } catch (e, s) {
+      debugPrint('❌ signMessage error: $e, $s');
+      rethrow;
+    }
+  }
+
+  // TODO: Add more signature types for other chains
+  String getSignatureType(String namespace) {
+    switch (namespace) {
+      case 'eip155':
+        return CacaoSignature.EIP191;
+      case 'bip122':
+        return CacaoSignature.ECDSA;
+      case 'solana':
+        return CacaoSignature.ED25519;
+      default:
+        return namespace;
     }
   }
 }

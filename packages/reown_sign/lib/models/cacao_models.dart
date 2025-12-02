@@ -119,9 +119,7 @@ sealed class CacaoHeader with _$CacaoHeader {
   static const CAIP122 = 'caip122';
 
   @JsonSerializable(includeIfNull: false)
-  const factory CacaoHeader({
-    @Default('eip4361') String t,
-  }) = _CacaoHeader;
+  const factory CacaoHeader({@Default('eip4361') String t}) = _CacaoHeader;
 
   factory CacaoHeader.fromJson(Map<String, dynamic> json) =>
       _$CacaoHeaderFromJson(json);
@@ -131,6 +129,9 @@ sealed class CacaoHeader with _$CacaoHeader {
 sealed class CacaoSignature with _$CacaoSignature {
   static const EIP191 = 'eip191';
   static const EIP1271 = 'eip1271';
+  static const EIP6492 = 'eip6492';
+  static const ED25519 = 'ed25519';
+  static const ECDSA = 'ecdsa';
 
   @JsonSerializable(includeIfNull: false)
   const factory CacaoSignature({

@@ -14,9 +14,7 @@ part 'commitment_config.g.dart';
 @JsonSerializable(explicitToJson: true)
 class CommitmentConfig extends Serializable {
   /// JSON RPC configurations for `commitment`.
-  const CommitmentConfig({
-    this.commitment,
-  });
+  const CommitmentConfig({this.commitment});
 
   /// The type of block to query for the request. If commitment is not provided, the node will
   /// default to [Commitment.finalized].

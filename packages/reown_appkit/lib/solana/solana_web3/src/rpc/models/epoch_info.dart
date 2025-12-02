@@ -73,13 +73,13 @@ class EpochInfo extends BorshObject {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory EpochInfo.fromJson(final Map<String, dynamic> json) => EpochInfo(
-        absoluteSlot: json['absoluteSlot'],
-        blockHeight: json['blockHeight'],
-        epoch: json['epoch'],
-        slotIndex: json['slotIndex'],
-        slotsInEpoch: json['slotsInEpoch'],
-        transactionCount: json['transactionCount'],
-      );
+    absoluteSlot: json['absoluteSlot'],
+    blockHeight: json['blockHeight'],
+    epoch: json['epoch'],
+    slotIndex: json['slotIndex'],
+    slotsInEpoch: json['slotsInEpoch'],
+    transactionCount: json['transactionCount'],
+  );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static EpochInfo? tryFromJson(final Map<String, dynamic>? json) =>
@@ -87,11 +87,11 @@ class EpochInfo extends BorshObject {
 
   @override
   Map<String, dynamic> toJson() => {
-        'absoluteSlot': absoluteSlot,
-        'blockHeight': blockHeight,
-        'epoch': epoch,
-        'slotIndex': slotIndex,
-        'slotsInEpoch': slotsInEpoch,
-        'transactionCount': transactionCount,
-      };
+    'absoluteSlot': absoluteSlot,
+    'blockHeight': blockHeight,
+    'epoch': epoch,
+    'slotIndex': slotIndex,
+    'slotsInEpoch': slotsInEpoch,
+    'transactionCount': transactionCount,
+  };
 }

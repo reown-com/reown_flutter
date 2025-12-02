@@ -11,8 +11,13 @@ import 'exception.dart';
 import 'utils.dart';
 
 /// A callback for logging messages from the JSON-RPC client.
-typedef JsonRpcLogCallback = void Function(String level, String message,
-    [Object? error, StackTrace? stackTrace]);
+typedef JsonRpcLogCallback =
+    void Function(
+      String level,
+      String message, [
+      Object? error,
+      StackTrace? stackTrace,
+    ]);
 
 /// A JSON-RPC 2.0 client.
 ///
@@ -61,8 +66,10 @@ class Client {
   ///
   /// Note that the client won't begin listening to [responses] until
   /// [Client.listen] is called.
-  factory Client(StreamChannel<String> channel,
-      {JsonRpcLogCallback? logCallback}) {
+  factory Client(
+    StreamChannel<String> channel, {
+    JsonRpcLogCallback? logCallback,
+  }) {
     return Client.withoutJson(
       jsonDocument.bind(channel).transformStream(ignoreFormatExceptions),
       logCallback: logCallback,
@@ -78,22 +85,28 @@ class Client {
   /// Note that the client won't begin listening to [responses] until
   /// [Client.listen] is called.
   Client.withoutJson(this._channel, {JsonRpcLogCallback? logCallback})
-      : _logCallback = logCallback {
+    : _logCallback = logCallback {
     _messageStream = _channel.stream;
     _logDebug('Client initialized');
 
-    done.whenComplete(() {
-      _logDebug(
-          'Client completed, cleaning up ${_pendingRequests.length} pending requests');
-      for (var request in _pendingRequests.values) {
-        request.completer.completeError(StateError(
-            'The client closed with pending request "${request.method}".'));
-      }
-      _pendingRequests.clear();
-    }).catchError((error) {
-      _logError('Error during client completion', error);
-      // Avoid an unhandled error.
-    });
+    done
+        .whenComplete(() {
+          _logDebug(
+            'Client completed, cleaning up ${_pendingRequests.length} pending requests',
+          );
+          for (var request in _pendingRequests.values) {
+            request.completer.completeError(
+              StateError(
+                'The client closed with pending request "${request.method}".',
+              ),
+            );
+          }
+          _pendingRequests.clear();
+        })
+        .catchError((error) {
+          _logError('Error during client completion', error);
+          // Avoid an unhandled error.
+        });
   }
 
   /// Starts listening to the underlying stream.
@@ -132,7 +145,8 @@ class Client {
   /// This is the same as [done].
   Future<dynamic> close() {
     _logDebug(
-        'Closing client, cleaning up ${_activeSubscriptions.length} subscriptions');
+      'Closing client, cleaning up ${_activeSubscriptions.length} subscriptions',
+    );
     _channel.sink.close();
     if (!_done.isCompleted) _done.complete();
     _cleanupAllSubscriptions();
@@ -195,8 +209,10 @@ class Client {
   void _send(String method, parameters, [int? id]) {
     if (parameters is Iterable) parameters = parameters.toList();
     if (parameters is! Map && parameters is! List && parameters != null) {
-      throw ArgumentError('Only maps and lists may be used as JSON-RPC '
-          'parameters, was "$parameters".');
+      throw ArgumentError(
+        'Only maps and lists may be used as JSON-RPC '
+        'parameters, was "$parameters".',
+      );
     }
 
     var message = <String, dynamic>{'jsonrpc': '2.0', 'method': method};
@@ -272,11 +288,17 @@ class Client {
       request.completer.complete(response['result']);
     } else {
       _logError(
-          'Request failed: ${request.method} (ID: $id)', response['error']);
+        'Request failed: ${request.method} (ID: $id)',
+        response['error'],
+      );
       request.completer.completeError(
-          RpcException(response['error']['code'], response['error']['message'],
-              data: response['error']['data']),
-          request.chain);
+        RpcException(
+          response['error']['code'],
+          response['error']['message'],
+          data: response['error']['data'],
+        ),
+        request.chain,
+      );
     }
   }
 

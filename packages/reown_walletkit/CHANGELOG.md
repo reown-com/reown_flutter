@@ -1,3 +1,15 @@
+## 1.3.8
+
+- One Click Auth for non-EVM chains
+
+## 1.3.7
+
+- Analytics enhancements
+
+## 1.3.5
+
+- Security Improvements
+
 ## 1.3.2
 
 - Remove Yttrium dependency

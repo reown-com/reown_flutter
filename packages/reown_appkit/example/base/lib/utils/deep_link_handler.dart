@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
+import 'package:reown_appkit/reown_appkit.dart';
 
 class DeepLinkHandler {
   static const _methodChannel = MethodChannel(
@@ -15,10 +15,7 @@ class DeepLinkHandler {
   static void initListener() {
     if (kIsWeb) return;
     try {
-      _eventChannel.receiveBroadcastStream().listen(
-            _onLink,
-            onError: _onError,
-          );
+      _eventChannel.receiveBroadcastStream().listen(_onLink, onError: _onError);
     } catch (e) {
       debugPrint('[SampleDapp] checkInitialLink $e');
     }

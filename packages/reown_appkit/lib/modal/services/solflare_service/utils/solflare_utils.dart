@@ -5,8 +5,9 @@ class SolflareUtils {
   static final walletId =
       '1ca0bdd4747578705b1939af023d120677c64fe6ca76add81fda36e350605e79';
 
-  static final defaultListingData =
-      AppKitModalWalletListing.fromJson(defaultWalletData);
+  static final defaultListingData = AppKitModalWalletListing.fromJson(
+    defaultWalletData,
+  );
 
   static final Map<String, dynamic> defaultWalletData = {
     'id': walletId,
@@ -26,23 +27,23 @@ class SolflareUtils {
     'chrome_store':
         'https://chrome.google.com/webstore/detail/solflare-wallet/bhhhlbepdkbapadjdnnojkbgioiodbic',
     'injected': [
-      {'namespace': 'solana', 'injected_id': 'solflare'}
+      {'namespace': 'solana', 'injected_id': 'solflare'},
     ],
     'chains': [
       'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1'
+      'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
     ],
     'categories': ['b7c081de-c6d6-447e-ada6-a6f8e6e1480a'],
     'description':
         'Solflare is the safest way to start exploring Solana. Buy, store, swap tokens & NFTs and access Solana DeFi from web or mobile.',
-    'badge_type': 'none'
+    'badge_type': 'none',
   };
 
   // mainnet-beta, testnet, or devnet
   static final Map<String, String> walletClusters = {
-    '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'mainnet-beta',
-    '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'testnet',
-    'EtWTRABZaYq6iMfeYKouRu166VU2xqa1': 'devnet',
+    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': 'mainnet-beta',
+    'solana:4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z': 'testnet',
+    'solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1': 'devnet',
   };
 }

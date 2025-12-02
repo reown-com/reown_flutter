@@ -11,7 +11,9 @@ String get environment {
   }
 }
 
-// status, txid
+///
+/// (status, txid?)
+///
 typedef CheckResponse = (String, String?);
 
 enum ErrorStep { connection, payment, statusCheck }

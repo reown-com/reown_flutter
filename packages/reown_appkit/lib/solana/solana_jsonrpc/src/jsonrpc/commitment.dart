@@ -56,8 +56,7 @@ enum Commitment {
 
   /// The node will query the most recent block confirmed by supermajority of the cluster as having
   /// reached maximum lockout, meaning the cluster has recognised this block as finalised.
-  finalized,
-  ;
+  finalized;
 
   /// Compares `this` to `other`.
   ///

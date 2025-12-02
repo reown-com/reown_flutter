@@ -84,12 +84,15 @@ abstract class Client<R> {
   Future<JsonRpcSuccessResponse<T>> send<T>(
     final JsonRpcRequest request,
     final JsonRpcResponseDecoder<Map<String, dynamic>, JsonRpcResponse<T>>
-        decode, {
+    decode, {
     final JsonRpcClientConfig? config,
   }) async {
     final List<int> body = await encoder.convert(request);
-    final Map<String, dynamic> json =
-        await handler(body, config: config, id: request.id);
+    final Map<String, dynamic> json = await handler(
+      body,
+      config: config,
+      id: request.id,
+    );
     final JsonRpcResponse<T> response = decode(json);
     return response is JsonRpcErrorResponse<T>
         ? Future.error(response.error) // [JsonRpcException]
@@ -106,16 +109,21 @@ abstract class Client<R> {
   /// error ([JsonRpcException]) found in the response.
   Future<List<JsonRpcResponse<T>>> sendAll<T>(
     final List<JsonRpcRequest> request,
-    final JsonRpcResponseDecoder<List<Map<String, dynamic>>,
-            List<JsonRpcResponse<T>>>
-        decode, {
+    final JsonRpcResponseDecoder<
+      List<Map<String, dynamic>>,
+      List<JsonRpcResponse<T>>
+    >
+    decode, {
     final JsonRpcClientConfig? config,
     final bool eagerError = false,
   }) async {
     if (request.isEmpty) return const [];
     final List<int> body = await encoder.convert(request);
-    final List result =
-        await handler(body, config: config, id: request.first.id);
+    final List result = await handler(
+      body,
+      config: config,
+      id: request.first.id,
+    );
     final List<Map<String, dynamic>> json = result.cast<Map<String, dynamic>>();
     final List<JsonRpcResponse<T>> response = decode(json);
     return eagerError ? _errorOrValue(response) : Future.value(response);

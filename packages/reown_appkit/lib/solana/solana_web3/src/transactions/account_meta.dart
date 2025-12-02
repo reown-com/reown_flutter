@@ -30,14 +30,16 @@ class AccountMeta extends Serializable {
   final bool isWritable;
 
   /// Creates a signer account.
-  factory AccountMeta.signer(final Pubkey pubkey,
-          {final bool isWritable = false}) =>
-      AccountMeta(pubkey, isSigner: true, isWritable: isWritable);
+  factory AccountMeta.signer(
+    final Pubkey pubkey, {
+    final bool isWritable = false,
+  }) => AccountMeta(pubkey, isSigner: true, isWritable: isWritable);
 
   /// Creates a writable account.
-  factory AccountMeta.writable(final Pubkey pubkey,
-          {final bool isSigner = false}) =>
-      AccountMeta(pubkey, isSigner: isSigner, isWritable: true);
+  factory AccountMeta.writable(
+    final Pubkey pubkey, {
+    final bool isSigner = false,
+  }) => AccountMeta(pubkey, isSigner: isSigner, isWritable: true);
 
   /// Creates a signer and writable account.
   factory AccountMeta.signerAndWritable(final Pubkey pubkey) =>

@@ -13,12 +13,8 @@ import '../models/block_commitment.dart';
 class GetBlockCommitment
     extends JsonRpcMethod<Map<String, dynamic>, BlockCommitment> {
   /// Creates a codec for `getBlockCommitment` JSON RPC methods.
-  GetBlockCommitment(
-    final u64 block,
-  ) : super(
-          'getBlockCommitment',
-          values: [block],
-        );
+  GetBlockCommitment(final u64 block)
+    : super('getBlockCommitment', values: [block]);
 
   @override
   BlockCommitment decoder(final Map<String, dynamic> value) =>

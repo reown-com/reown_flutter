@@ -33,7 +33,6 @@ class BorshArraySizedCodec<T>
 /// An encoder for fixed-length arrays with fixed size data types.
 class BorshArraySizedEncoder<T>
     extends BorshArrayTypedEncoder<T, BorshCodecFixedSized<T>>
-
 /// Not using [BorshEncoderFixedSized] to prevent `0` padding.
 {
   /// Creates an encoder for fixed-length arrays with fixed size data types.

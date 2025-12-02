@@ -2,8 +2,11 @@
 
 const String testSignData = 'Test AppKit data';
 
-Map<String, dynamic> typedData() =>
-    {'type': 'string', 'name': 'Key', 'value': 'Value'};
+Map<String, dynamic> typedData() => {
+      'type': 'string',
+      'name': 'Key',
+      'value': 'Value',
+    };
 
 Map<String, dynamic> typeDataV3(int chainId) => {
       'types': {
@@ -11,36 +14,36 @@ Map<String, dynamic> typeDataV3(int chainId) => {
           {'name': 'name', 'type': 'string'},
           {'name': 'version', 'type': 'string'},
           {'name': 'chainId', 'type': 'uint256'},
-          {'name': 'verifyingContract', 'type': 'address'}
+          {'name': 'verifyingContract', 'type': 'address'},
         ],
         'Person': [
           {'name': 'name', 'type': 'string'},
-          {'name': 'wallet', 'type': 'address'}
+          {'name': 'wallet', 'type': 'address'},
         ],
         'Mail': [
           {'name': 'from', 'type': 'Person'},
           {'name': 'to', 'type': 'Person'},
-          {'name': 'contents', 'type': 'string'}
-        ]
+          {'name': 'contents', 'type': 'string'},
+        ],
       },
       'primaryType': 'Mail',
       'domain': {
         'name': 'Ether Mail',
         'version': '1',
         'chainId': chainId,
-        'verifyingContract': '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
+        'verifyingContract': '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
       },
       'message': {
         'from': {
           'name': 'Cow',
-          'wallet': '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
+          'wallet': '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
         },
         'to': {
           'name': 'Bob',
-          'wallet': '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
+          'wallet': '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
         },
-        'contents': 'Hello, Bob!'
-      }
+        'contents': 'Hello, Bob!',
+      },
     };
 
 Map<String, dynamic> typeDataV4(int chainId) => {
@@ -49,24 +52,24 @@ Map<String, dynamic> typeDataV4(int chainId) => {
           {'type': 'string', 'name': 'name'},
           {'type': 'string', 'name': 'version'},
           {'type': 'uint256', 'name': 'chainId'},
-          {'type': 'address', 'name': 'verifyingContract'}
+          {'type': 'address', 'name': 'verifyingContract'},
         ],
         'Part': [
           {'name': 'account', 'type': 'address'},
-          {'name': 'value', 'type': 'uint96'}
+          {'name': 'value', 'type': 'uint96'},
         ],
         'Mint721': [
           {'name': 'tokenId', 'type': 'uint256'},
           {'name': 'tokenURI', 'type': 'string'},
           {'name': 'creators', 'type': 'Part[]'},
-          {'name': 'royalties', 'type': 'Part[]'}
-        ]
+          {'name': 'royalties', 'type': 'Part[]'},
+        ],
       },
       'domain': {
         'name': 'Mint721',
         'version': '1',
         'chainId': chainId,
-        'verifyingContract': '0x2547760120aed692eb19d22a5d9ccfe0f7872fce'
+        'verifyingContract': '0x2547760120aed692eb19d22a5d9ccfe0f7872fce',
       },
       'primaryType': 'Mint721',
       'message': {
@@ -78,11 +81,11 @@ Map<String, dynamic> typeDataV4(int chainId) => {
           {
             'account': '0xc5eac3488524d577a1495492599e8013b1f91efa',
             'value': 10000
-          }
+          },
         ],
         'royalties': [],
-        'tokenURI': 'ipfs://ipfs/hash'
-      }
+        'tokenURI': 'ipfs://ipfs/hash',
+      },
     };
 
 /// KADENA ///

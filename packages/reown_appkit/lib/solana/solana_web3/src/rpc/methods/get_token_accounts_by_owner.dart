@@ -20,14 +20,12 @@ class GetTokenAccountsByOwner
     required final TokenAccountsFilter filter,
     final GetTokenAccountsByOwnerConfig? config,
   }) : super(
-          'getTokenAccountsByOwner',
-          values: [pubkey.toBase58(), filter.toJson()],
-          config: config ?? GetTokenAccountsByOwnerConfig(),
-        );
+         'getTokenAccountsByOwner',
+         values: [pubkey.toBase58(), filter.toJson()],
+         config: config ?? GetTokenAccountsByOwnerConfig(),
+       );
 
   @override
-  TokenAccount itemDecoder(
-    final Map<String, dynamic> item,
-  ) =>
+  TokenAccount itemDecoder(final Map<String, dynamic> item) =>
       TokenAccount.fromJson(item);
 }

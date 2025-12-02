@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
+import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
+import 'package:reown_appkit/modal/widgets/visibility_checker.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -29,12 +33,31 @@ class WalletsGrid extends StatelessWidget {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final List<Widget> children = itemList
         .map(
-          (info) => SizedBox(
-            child: WalletGridItem(
-              onTap: () => onTapWallet?.call(info.data),
-              imageUrl: info.image,
-              title: info.title,
-              showCheckmark: info.data.installed,
+          (wallet) => SizedBox(
+            child: VisibilityChecker(
+              enabled: GetIt.I<IAnalyticsService>().isEnabled,
+              onVisible: () {
+                try {
+                  debugPrint('onVisible ${wallet.data.listing.name}');
+                  GetIt.I<IAnalyticsService>().storeEvent(
+                    WalletImpressionEvent(
+                      name: wallet.data.listing.name,
+                      explorerId: wallet.data.listing.id,
+                      view: 'AllWallets',
+                      walletRank: wallet.data.listing.order,
+                      certified: wallet.data.listing.badgeType == 'certified',
+                      installed: wallet.data.installed,
+                    ),
+                  );
+                } catch (_) {}
+              },
+              child: WalletGridItem(
+                onTap: () => onTapWallet?.call(wallet.data),
+                imageUrl: wallet.image,
+                title: wallet.title,
+                showCheckmark: wallet.data.installed,
+                certified: wallet.data.listing.badgeType == 'certified',
+              ),
             ),
           ),
         )
@@ -73,15 +96,9 @@ class WalletsGrid extends StatelessWidget {
       ),
       itemBuilder: (_, index) {
         return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: itemSize.width,
-              height: itemSize.height,
-              child: children[index],
-            ),
-          ],
+          children: [children[index]],
         );
       },
       itemCount: children.length,

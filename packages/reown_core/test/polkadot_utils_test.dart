@@ -26,7 +26,7 @@ void main() {
         'tip': '00',
         'mode': '00',
         'metadataHash': '00',
-        'version': 4
+        'version': 4,
       };
 
       final requestParams = {
@@ -44,7 +44,7 @@ void main() {
         'result': {
           'id': 123456789,
           'signature':
-              '7e991d9bb5c47c4d2a44a125d410854835afec24ae58f30ee6fa0f764757b4409bde94c559567aeba33f9bd190209f6d2121afe32f267b593aa6cef2a87a808d'
+              '7e991d9bb5c47c4d2a44a125d410854835afec24ae58f30ee6fa0f764757b4409bde94c559567aeba33f9bd190209f6d2121afe32f267b593aa6cef2a87a808d',
         },
       };
 
@@ -120,7 +120,7 @@ void main() {
         'mode': '00',
         'metadataHash': '00',
         'address': '15MPNB1h2aaDg1ys2ZPEvVEhoyt78xUNPKwD5XfPpdJeoQ6H',
-        'version': 4
+        'version': 4,
       };
 
       final requestParams = {
@@ -138,7 +138,7 @@ void main() {
         'result': {
           'id': 123456789,
           'signature':
-              'e8831aa739643d5eae42ee2c4cf5d9aea46cc67cf32230b177154e683b360e28b5cbf71919a286fb67f3c0cf6a22fff6c8b33cb0e5ad6e3b2f85dc09a426c289'
+              'e8831aa739643d5eae42ee2c4cf5d9aea46cc67cf32230b177154e683b360e28b5cbf71919a286fb67f3c0cf6a22fff6c8b33cb0e5ad6e3b2f85dc09a426c289',
         },
       };
 
@@ -196,9 +196,7 @@ void main() {
       expect(derivedHash, realTxHash);
     });
 
-    test(
-        'derive hash from unsigned payload after transfer with signed extensions',
-        () {
+    test('derive hash from unsigned payload after transfer with signed extensions', () {
       // Request params
 
       final transactionPayload = {
@@ -216,7 +214,7 @@ void main() {
         'mode': '00',
         'metadataHash': '00',
         'address': '15JBFhDp1rQycRFuCtkr2VouMiWyDzh3qRUPA8STY53mdRmM',
-        'version': 4
+        'version': 4,
       };
 
       final requestParams = {
@@ -234,7 +232,7 @@ void main() {
         'result': {
           'id': 123456789,
           'signature':
-              '362cef5dff66aee851a5d8c5100a53590eddd7c75c1a53553b08861fb28ce80b96d53279f52a27c866639954c5efa32b52c148fefe78dbdad1f9d3be4f44538f'
+              '362cef5dff66aee851a5d8c5100a53590eddd7c75c1a53553b08861fb28ce80b96d53279f52a27c866639954c5efa32b52c148fefe78dbdad1f9d3be4f44538f',
         },
       };
 
@@ -292,9 +290,7 @@ void main() {
       expect(derivedHash, realTxHash);
     });
 
-    test(
-        'derive hash from unsigned payload after transfer with signed extensions',
-        () {
+    test('derive hash from unsigned payload after transfer with signed extensions', () {
       final transactionPayload = {
         'method':
             '050300c07d211d3c181df768d9d9d41df6f14f9d116d9c1906f38153b208259c315b4b02286bee',
@@ -310,7 +306,7 @@ void main() {
         'mode': '00',
         'metadataHash': '00',
         'address': '15MPNB1h2aaDg1ys2ZPEvVEhoyt78xUNPKwD5XfPpdJeoQ6H',
-        'version': 4
+        'version': 4,
       };
 
       final requestParams = {
@@ -328,7 +324,7 @@ void main() {
         'result': {
           'id': 123456789,
           'signature':
-              '926c22be4158edd2ccefdadd0e951c12da439661fc4e6bf259140f208d3fb815441ad8de4a393809b634643b857c247ea39f3d7bb2e1d3be70af920e2fbdbe84'
+              '926c22be4158edd2ccefdadd0e951c12da439661fc4e6bf259140f208d3fb815441ad8de4a393809b634643b857c247ea39f3d7bb2e1d3be70af920e2fbdbe84',
         },
       };
       debugPrint(jsonEncode(jsonRPCResponse));

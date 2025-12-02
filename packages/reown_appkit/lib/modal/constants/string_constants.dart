@@ -4,6 +4,7 @@ import 'package:reown_appkit/version.dart' as reown_appkit;
 import 'package:reown_core/version.dart' as reown_core;
 import 'package:reown_sign/version.dart' as reown_sign;
 
+// TODO move to /base folder
 class CoreConstants {
   // Request Headers
   static const X_SDK_TYPE = 'appkit';
@@ -50,8 +51,7 @@ class UrlConstants {
   static const exploreWallets =
       'https://explorer.walletconnect.com/?type=wallet';
   static const webWalletUrl = 'http://web-wallet.walletconnect.org/';
-  static const webWalletUrlInternal =
-      'http://develop.appkit-web-wallet.pages.dev/';
+  static const webWalletUrlInternal = 'http://web-wallet.walletconnect.org/';
   //
   static const secureOrigin1 = 'secure-mobile.walletconnect.com';
   static const secureOrigin2 = 'secure.walletconnect.com';

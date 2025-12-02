@@ -57,17 +57,18 @@ class Block extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory Block.fromJson(final Map<String, dynamic> json) => Block(
-        blockhash: json['blockhash'],
-        previousBlockhash: json['previousBlockhash'],
-        parentSlot: json['parentSlot'],
-        transactions: IterableSerializable.tryFromJson(
-            json['transactions'], TransactionData.parse),
-        signatures: json['signatures']?.cast<String>(),
-        rewards:
-            IterableSerializable.fromJson(json['rewards'], Reward.fromJson),
-        blockTime: json['blockTime'],
-        blockHeight: json['blockHeight'],
-      );
+    blockhash: json['blockhash'],
+    previousBlockhash: json['previousBlockhash'],
+    parentSlot: json['parentSlot'],
+    transactions: IterableSerializable.tryFromJson(
+      json['transactions'],
+      TransactionData.parse,
+    ),
+    signatures: json['signatures']?.cast<String>(),
+    rewards: IterableSerializable.fromJson(json['rewards'], Reward.fromJson),
+    blockTime: json['blockTime'],
+    blockHeight: json['blockHeight'],
+  );
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static Block? tryFromJson(final Map<String, dynamic>? json) {
@@ -76,13 +77,13 @@ class Block extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'blockhash': blockhash,
-        'previousBlockhash': previousBlockhash,
-        'parentSlot': parentSlot,
-        'transactions': transactions?.toJson(),
-        'signatures': signatures,
-        'rewards': rewards.toJson(),
-        'blockTime': blockTime,
-        'blockHeight': blockHeight,
-      };
+    'blockhash': blockhash,
+    'previousBlockhash': previousBlockhash,
+    'parentSlot': parentSlot,
+    'transactions': transactions?.toJson(),
+    'signatures': signatures,
+    'rewards': rewards.toJson(),
+    'blockTime': blockTime,
+    'blockHeight': blockHeight,
+  };
 }

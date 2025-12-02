@@ -14,18 +14,14 @@ import '../models/leader_schedule.dart';
 class GetLeaderSchedule
     extends JsonRpcMethod<Map<String, dynamic>?, LeaderSchedule?> {
   /// Creates a codec for `getLeaderSchedule` JSON RPC methods.
-  GetLeaderSchedule({
-    final u64? slot,
-    final GetLeaderScheduleConfig? config,
-  }) : super(
-          'getLeaderSchedule',
-          values: [slot],
-          config: config ?? const GetLeaderScheduleConfig(),
-        );
+  GetLeaderSchedule({final u64? slot, final GetLeaderScheduleConfig? config})
+    : super(
+        'getLeaderSchedule',
+        values: [slot],
+        config: config ?? const GetLeaderScheduleConfig(),
+      );
 
   @override
-  LeaderSchedule? decoder(
-    final Map<String, dynamic>? value,
-  ) =>
+  LeaderSchedule? decoder(final Map<String, dynamic>? value) =>
       value != null ? LeaderSchedule.castFrom(value) : null;
 }

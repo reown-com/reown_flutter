@@ -25,10 +25,12 @@ class DtcWalletAddressDialog extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<DtcWalletAddressDialog> createState() => _DtcWalletAddressDialogState();
+  ConsumerState<DtcWalletAddressDialog> createState() =>
+      _DtcWalletAddressDialogState();
 }
 
-class _DtcWalletAddressDialogState extends ConsumerState<DtcWalletAddressDialog> {
+class _DtcWalletAddressDialogState
+    extends ConsumerState<DtcWalletAddressDialog> {
   late TextEditingController evmController;
   late TextEditingController solanaController;
   late TextEditingController tronController;

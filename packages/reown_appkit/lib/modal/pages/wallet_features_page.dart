@@ -11,7 +11,6 @@ import 'package:reown_appkit/modal/pages/account_page.dart';
 import 'package:reown_appkit/modal/pages/receive_page.dart';
 import 'package:reown_appkit/modal/pages/send_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/token_balance.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
@@ -154,9 +153,9 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
-        _tokens = await _blockchainService.getBalance(
+        _tokens = await _blockchainService.getTokenBalance(
           address: address,
-          caip2Chain: '$namespace:$chainId',
+          caip2Chain: chainId,
         );
         setState(() {});
       } catch (_) {}
@@ -181,9 +180,9 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
-    final chainId = widget.appKitModal.selectedChain!.chainId;
-    final imageId = ReownAppKitModalNetworks.getNetworkIconId(chainId);
-    final chainIcon = GetIt.I<IExplorerService>().getAssetImageUrl(imageId);
+    final chainIcon = GetIt.I<IExplorerService>().getChainIcon(
+      widget.appKitModal.selectedChain,
+    );
     return ConstrainedBox(
       constraints: BoxConstraints(
         maxHeight: ResponsiveData.maxHeightOf(context),

@@ -40,6 +40,7 @@ import 'package:reown_core/utils/log_level.dart';
 import 'package:reown_core/utils/utils.dart';
 import 'package:reown_core/models/basic_models.dart';
 import 'package:reown_core/store/secure_store.dart';
+import 'package:reown_core/verify/verify_store.dart';
 
 class ReownCore implements IReownCore {
   @override
@@ -133,18 +134,15 @@ class ReownCore implements IReownCore {
       level: _logLevel.toLevel(),
       printer: _LogPrinter(
         stackTraceBeginIndex: 0,
-        methodCount:
-            _logLevel == LogLevel.debug || _logLevel == LogLevel.error ? 8 : 0,
+        methodCount: _logLevel == LogLevel.debug || _logLevel == LogLevel.error
+            ? 8
+            : 0,
         errorMethodCount: 8,
       ),
     );
     heartbeat = HeartBeat();
-    storage = SharedPrefsStores(
-      memoryStore: memoryStore,
-    );
-    secureStorage = SecureStore(
-      fallbackStorage: storage,
-    );
+    storage = SharedPrefsStores(memoryStore: memoryStore);
+    secureStorage = SecureStore(fallbackStorage: storage);
     crypto = Crypto(
       core: this,
       keyChain: GenericStore<String>(
@@ -203,10 +201,7 @@ class ReownCore implements IReownCore {
     );
     echo = Echo(
       core: this,
-      echoClient: EchoClient(
-        baseUrl: pushUrl,
-        httpClient: httpClient,
-      ),
+      echoClient: EchoClient(baseUrl: pushUrl, httpClient: httpClient),
     );
     events = Events(
       core: this,
@@ -221,11 +216,14 @@ class ReownCore implements IReownCore {
     verify = Verify(
       core: this,
       httpClient: httpClient,
+      verifyStore: VerifyStore(
+        storage: storage,
+        context: StoreVersions.CONTEXT_VERIFY,
+        version: StoreVersions.VERSION_VERIFY,
+        fromJson: (dynamic value) => value as Map<String, dynamic>,
+      ),
     );
-    connectivity = ConnectivityState(
-      core: this,
-      connectivity: Connectivity(),
-    );
+    connectivity = ConnectivityState(core: this, connectivity: Connectivity());
     linkModeStore = LinkModeStore(
       storage: storage,
       context: StoreVersions.CONTEXT_LINKMODE,
@@ -290,8 +288,9 @@ class _LogPrinter extends LogPrinter {
 
   static final _webStackTraceRegex = RegExp(r'^((packages|dart-sdk)/\S+/)');
 
-  static final _browserStackTraceRegex =
-      RegExp(r'^(?:package:)?(dart:\S+|\S+)');
+  static final _browserStackTraceRegex = RegExp(
+    r'^(?:package:)?(dart:\S+|\S+)',
+  );
 
   final int stackTraceBeginIndex;
 
@@ -381,8 +380,9 @@ class _LogPrinter extends LogPrinter {
         .toList();
     List<String> formatted = [];
 
-    int stackTraceLength =
-        (methodCount != null ? min(lines.length, methodCount) : lines.length);
+    int stackTraceLength = (methodCount != null
+        ? min(lines.length, methodCount)
+        : lines.length);
     for (int count = 0; count < stackTraceLength; count++) {
       var line = lines[count];
       if (count < stackTraceBeginIndex) {
@@ -479,8 +479,9 @@ class _LogPrinter extends LogPrinter {
     final hasBorders = methodCount != null && methodCount! > 0;
 
     List<String> buffer = [];
-    var verticalLineAtLevel =
-        (_includeBox[level]!) && hasBorders ? ('$verticalLine ') : '';
+    var verticalLineAtLevel = (_includeBox[level]!) && hasBorders
+        ? ('$verticalLine ')
+        : '';
 
     if (_includeBox[level]! && hasBorders) buffer.add(_topBorder);
 

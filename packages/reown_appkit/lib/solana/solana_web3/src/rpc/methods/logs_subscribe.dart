@@ -14,12 +14,10 @@ import '../interfaces/json_rpc_type_method.dart';
 /// A method handler for `logsSubscribe`.
 class LogsSubscribe extends JsonRpcTypeMethod<SubscriptionId> {
   /// Creates a method handler for `logsSubscribe`.
-  LogsSubscribe(
-    final LogsFilter filter, {
-    final LogsSubscribeConfig? config,
-  }) : super(
-          'logsSubscribe',
-          values: [filter.toJson()],
-          config: config ?? const LogsSubscribeConfig(),
-        );
+  LogsSubscribe(final LogsFilter filter, {final LogsSubscribeConfig? config})
+    : super(
+        'logsSubscribe',
+        values: [filter.toJson()],
+        config: config ?? const LogsSubscribeConfig(),
+      );
 }

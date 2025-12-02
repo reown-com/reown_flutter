@@ -10,10 +10,7 @@ import 'package:reown_appkit/solana/solana_common/types.dart' show u64;
 
 class HighestSnapshotSlot extends Serializable {
   /// The highest slot information that the node has snapshots for.
-  const HighestSnapshotSlot({
-    required this.full,
-    required this.incremental,
-  });
+  const HighestSnapshotSlot({required this.full, required this.incremental});
 
   /// The highest full snapshot slot.
   final u64 full;
@@ -23,10 +20,7 @@ class HighestSnapshotSlot extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory HighestSnapshotSlot.fromJson(final Map<String, dynamic> json) =>
-      HighestSnapshotSlot(
-        full: json['full'],
-        incremental: json['incremental'],
-      );
+      HighestSnapshotSlot(full: json['full'], incremental: json['incremental']);
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static HighestSnapshotSlot? tryFromJson(final Map<String, dynamic>? json) {
@@ -34,8 +28,5 @@ class HighestSnapshotSlot extends Serializable {
   }
 
   @override
-  Map<String, dynamic> toJson() => {
-        'full': full,
-        'incremental': incremental,
-      };
+  Map<String, dynamic> toJson() => {'full': full, 'incremental': incremental};
 }

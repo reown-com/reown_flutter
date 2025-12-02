@@ -13,8 +13,7 @@ enum BorshOptionType {
   rust(ByteLength.u8),
 
   /// A 4-byte option flag.
-  c(ByteLength.u32),
-  ;
+  c(ByteLength.u32);
 
   /// Creates a [BorshOptionType] with [byteLength].
   const BorshOptionType(this.byteLength);

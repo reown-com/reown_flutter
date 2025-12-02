@@ -43,9 +43,12 @@ mixin HttpConnection {
   /// print(result); // JsonRpcSuccessResponse<...>
   /// ```
   Future<JsonRpcSuccessResponse<T>> send<S, T>(
-          final JsonRpcMethod<S, T> method) =>
-      httpClient.send(method.request(commitment), method.response,
-          config: httpClientConfig);
+    final JsonRpcMethod<S, T> method,
+  ) => httpClient.send(
+    method.request(commitment),
+    method.response,
+    config: httpClientConfig,
+  );
 
   /// Makes a bulk JSON RPC HTTP method call.
   ///
@@ -60,13 +63,12 @@ mixin HttpConnection {
   Future<List<JsonRpcResponse<T>>> sendAll<S, T>(
     final JsonRpcMethodBuilder<S, T> builder, {
     final bool? eagerError,
-  }) =>
-      httpClient.sendAll(
-        builder.request(commitment),
-        builder.response,
-        config: httpClientConfig,
-        eagerError: eagerError ?? false,
-      );
+  }) => httpClient.sendAll(
+    builder.request(commitment),
+    builder.response,
+    config: httpClientConfig,
+    eagerError: eagerError ?? false,
+  );
 
   /// {@template solana_web3.Connection.getAccountInfo}
   /// Returns all information associated with the account of the provided [pubkey].
@@ -74,22 +76,19 @@ mixin HttpConnection {
   Future<JsonRpcContextResponse<AccountInfo?>> getAccountInfoRaw(
     final Pubkey pubkey, {
     final GetAccountInfoConfig? config,
-  }) =>
-      send(GetAccountInfo(pubkey, config: config));
+  }) => send(GetAccountInfo(pubkey, config: config));
 
   /// {@macro solana_web3.Connection.getAccountInfo}
   Future<AccountInfo?> getAccountInfo(
     final Pubkey pubkey, {
     final GetAccountInfoConfig? config,
-  }) async =>
-      (await getAccountInfoRaw(pubkey, config: config)).result?.value;
+  }) async => (await getAccountInfoRaw(pubkey, config: config)).result?.value;
 
   /// {@macro solana_web3.Connection.getAccountInfo} with [AccountEncoding.jsonParsed].
   Future<AccountInfo?> getParsedAccountInfo(
     final Pubkey pubkey, {
     final GetParsedAccountInfoConfig? config,
-  }) =>
-      getAccountInfo(pubkey, config: config);
+  }) => getAccountInfo(pubkey, config: config);
 
   /// {@template solana_web3.Connection.getBalance}
   /// Returns the balance of the account of provided [pubkey]
@@ -97,15 +96,13 @@ mixin HttpConnection {
   Future<JsonRpcContextResponse<u64>> getBalanceRaw(
     final Pubkey pubkey, {
     final GetBalanceConfig? config,
-  }) =>
-      send(GetBalance(pubkey, config: config));
+  }) => send(GetBalance(pubkey, config: config));
 
   /// {@macro solana_web3.Connection.getBalance}
   Future<u64> getBalance(
     final Pubkey pubkey, {
     final GetBalanceConfig? config,
-  }) async =>
-      (await getBalanceRaw(pubkey, config: config)).result!.value!;
+  }) async => (await getBalanceRaw(pubkey, config: config)).result!.value!;
 
   /// {@template solana_web3.Connection.getBlock}
   /// Returns identity and transaction information about a confirmed block at [slot] in the ledger.
@@ -113,28 +110,23 @@ mixin HttpConnection {
   Future<JsonRpcSuccessResponse<Block?>> getBlockRaw(
     final u64 slot, {
     final GetBlockConfig? config,
-  }) =>
-      send(GetBlock(slot, config: config));
+  }) => send(GetBlock(slot, config: config));
 
   /// {@macro solana_web3.Connection.getBlock}
   Future<Block?> getBlock(
     final u64 slot, {
     final GetBlockConfig? config,
-  }) async =>
-      (await getBlockRaw(slot, config: config)).result;
+  }) async => (await getBlockRaw(slot, config: config)).result;
 
   /// {@template solana_web3.Connection.getBlockHeight}
   /// Returns the current block height of the node.
   /// {@endtemplate}
   Future<JsonRpcSuccessResponse<u64>> getBlockHeightRaw({
     final GetBlockHeightConfig? config,
-  }) =>
-      send(GetBlockHeight(config: config));
+  }) => send(GetBlockHeight(config: config));
 
   /// {@macro solana_web3.Connection.getBlockHeight}
-  Future<u64> getBlockHeight({
-    final GetBlockHeightConfig? config,
-  }) async =>
+  Future<u64> getBlockHeight({final GetBlockHeightConfig? config}) async =>
       (await getBlockHeightRaw(config: config)).result!;
 
   /// {@template solana_web3.Connection.getBlockProduction}
@@ -142,27 +134,22 @@ mixin HttpConnection {
   /// {@endtemplate}
   Future<JsonRpcContextResponse<BlockProduction>> getBlockProductionRaw({
     final GetBlockProductionConfig? config,
-  }) =>
-      send(GetBlockProduction(config: config));
+  }) => send(GetBlockProduction(config: config));
 
   /// {@macro solana_web3.Connection.getBlockProduction}
   Future<BlockProduction> getBlockProduction({
     final GetBlockProductionConfig? config,
-  }) async =>
-      (await getBlockProductionRaw(config: config)).result!.value!;
+  }) async => (await getBlockProductionRaw(config: config)).result!.value!;
 
   /// {@template solana_web3.Connection.getBlockCommitment}
   /// Returns the commitment for a particular block (slot).
   /// {@endtemplate}
   Future<JsonRpcSuccessResponse<BlockCommitment>> getBlockCommitmentRaw(
     final u64 slot,
-  ) =>
-      send(GetBlockCommitment(slot));
+  ) => send(GetBlockCommitment(slot));
 
   /// {@macro solana_web3.Connection.getBlockCommitment}
-  Future<BlockCommitment> getBlockCommitment(
-    final u64 slot,
-  ) async =>
+  Future<BlockCommitment> getBlockCommitment(final u64 slot) async =>
       (await getBlockCommitmentRaw(slot)).result!;
 
   /// {@template solana_web3.Connection.getBlocks}
@@ -172,8 +159,7 @@ mixin HttpConnection {
     final u64 startSlot, {
     final u64? endSlot,
     final GetBlocksConfig? config,
-  }) =>
-      send(GetBlocks(startSlot, endSlot: endSlot, config: config));
+  }) => send(GetBlocks(startSlot, endSlot: endSlot, config: config));
 
   /// {@macro solana_web3.Connection.getBlocks}
   Future<List<u64>> getBlocks(
@@ -190,8 +176,7 @@ mixin HttpConnection {
     final u64 slot, {
     required final u64 limit,
     final GetBlocksWithLimitConfig? config,
-  }) =>
-      send(GetBlocksWithLimit(slot, limit: limit, config: config));
+  }) => send(GetBlocksWithLimit(slot, limit: limit, config: config));
 
   /// {@macro solana_web3.Connection.getBlocksWithLimit}
   Future<List<u64>> getBlocksWithLimit(
@@ -209,15 +194,11 @@ mixin HttpConnection {
   /// from the stake-weighted mean of the Vote timestamps in a set of recent blocks recorded on the
   /// ledger.
   /// {@endtemplate}
-  Future<JsonRpcSuccessResponse<i64?>> getBlockTimeRaw(
-    final u64 slot,
-  ) =>
+  Future<JsonRpcSuccessResponse<i64?>> getBlockTimeRaw(final u64 slot) =>
       send(GetBlockTime(slot));
 
   /// {@macro solana_web3.Connection.getBlockTime}
-  Future<i64?> getBlockTime(
-    final u64 slot,
-  ) async =>
+  Future<i64?> getBlockTime(final u64 slot) async =>
       (await getBlockTimeRaw(slot)).result;
 
   /// {@template solana_web3.Connection.getClusterNodes}
@@ -235,13 +216,10 @@ mixin HttpConnection {
   /// {@endtemplate}
   Future<JsonRpcSuccessResponse<EpochInfo>> getEpochInfoRaw({
     final GetEpochInfoConfig? config,
-  }) =>
-      send(GetEpochInfo(config: config));
+  }) => send(GetEpochInfo(config: config));
 
   /// {@macro solana_web3.Connection.getEpochInfo}
-  Future<EpochInfo> getEpochInfo({
-    final GetEpochInfoConfig? config,
-  }) async =>
+  Future<EpochInfo> getEpochInfo({final GetEpochInfoConfig? config}) async =>
       (await getEpochInfoRaw(config: config)).result!;
 
   /// {@template solana_web3.Connection.getEpochSchedule}
@@ -278,17 +256,17 @@ mixin HttpConnection {
   Future<JsonRpcContextResponse<u64?>> getFeeForEncodedMessageRaw(
     final String message, {
     final GetFeeForMessageConfig? config,
-  }) =>
-      send(GetFeeForMessage(message, config: config));
+  }) => send(GetFeeForMessage(message, config: config));
 
   /// {@macro solana_web3.Connection.getFeeForMessage}
   Future<u64> getFeeForEncodedMessage(
     final String message, {
     final GetFeeForMessageConfig? config,
   }) async {
-    final u64? fee = (await getFeeForEncodedMessageRaw(message, config: config))
-        .result
-        ?.value;
+    final u64? fee = (await getFeeForEncodedMessageRaw(
+      message,
+      config: config,
+    )).result?.value;
     return fee != null
         ? Future.value(fee)
         : Future.error(const JsonRpcException('Invalid fee.'));
@@ -333,7 +311,7 @@ mixin HttpConnection {
   /// on the full snapshot slot, if there is one.
   /// {@endtemplate}
   Future<JsonRpcSuccessResponse<HighestSnapshotSlot>>
-      getHighestSnapshotSlotRaw() => send(GetHighestSnapshotSlot());
+  getHighestSnapshotSlotRaw() => send(GetHighestSnapshotSlot());
 
   /// {@macro solana_web3.Connection.getHighestSnapshotSlot}
   Future<HighestSnapshotSlot> getHighestSnapshotSlot() async =>
@@ -353,14 +331,12 @@ mixin HttpConnection {
   /// {@endtemplate}
   Future<JsonRpcSuccessResponse<InflationGovernor>> getInflationGovernorRaw({
     final GetInflationGovernorConfig? config,
-  }) =>
-      send(GetInflationGovernor(config: config));
+  }) => send(GetInflationGovernor(config: config));
 
   /// {@macro solana_web3.Connection.getInflationGovernor}
   Future<InflationGovernor> getInflationGovernor({
     final GetInflationGovernorConfig? config,
-  }) async =>
-      (await getInflationGovernorRaw(config: config)).result!;
+  }) async => (await getInflationGovernorRaw(config: config)).result!;
 
   /// {@template solana_web3.Connection.getInflationRate}
   /// Returns the specific inflation values for the current epoch.
@@ -378,44 +354,37 @@ mixin HttpConnection {
   Future<JsonRpcSuccessResponse<List<InflationReward?>>> getInflationRewardRaw(
     final Iterable<Pubkey> addresses, {
     final GetInflationRewardConfig? config,
-  }) =>
-      send(GetInflationReward.map(addresses, config: config));
+  }) => send(GetInflationReward.map(addresses, config: config));
 
   /// {@macro solana_web3.Connection.getInflationReward}
   Future<List<InflationReward?>> getInflationReward(
     final Iterable<Pubkey> addresses, {
     final GetInflationRewardConfig? config,
-  }) async =>
-      (await getInflationRewardRaw(addresses, config: config)).result!;
+  }) async => (await getInflationRewardRaw(addresses, config: config)).result!;
 
   /// {@template solana_web3.Connection.getLargestAccounts}
   /// Returns the 20 largest accounts, by lamport balance (results may be cached up to two hours).
   /// {@endtemplate}
   Future<JsonRpcContextResponse<List<LargeAccount>>> getLargestAccountsRaw({
     final GetLargestAccountsConfig? config,
-  }) =>
-      send(GetLargestAccounts(config: config));
+  }) => send(GetLargestAccounts(config: config));
 
   /// {@macro solana_web3.Connection.getLargestAccounts}
   Future<List<LargeAccount>> getLargestAccounts({
     final GetLargestAccountsConfig? config,
-  }) async =>
-      (await getLargestAccountsRaw(config: config)).result!.value!;
+  }) async => (await getLargestAccountsRaw(config: config)).result!.value!;
 
   /// {@template solana_web3.Connection.getLatestBlockhash}
   /// Returns the latest blockhash.
   /// {@endtemplate}
   Future<JsonRpcContextResponse<BlockhashWithExpiryBlockHeight>>
-      getLatestBlockhashRaw({
-    final GetLatestBlockhashConfig? config,
-  }) =>
-          send(GetLatestBlockhash(config: config));
+  getLatestBlockhashRaw({final GetLatestBlockhashConfig? config}) =>
+      send(GetLatestBlockhash(config: config));
 
   /// {@macro solana_web3.Connection.getLatestBlockhash}
   Future<BlockhashWithExpiryBlockHeight> getLatestBlockhash({
     final GetLatestBlockhashConfig? config,
-  }) async =>
-      (await getLatestBlockhashRaw(config: config)).result!.value!;
+  }) async => (await getLatestBlockhashRaw(config: config)).result!.value!;
 
   /// {@template solana_web3.Connection.getLeaderSchedule}
   /// Returns the leader schedule for an epoch.
@@ -426,15 +395,13 @@ mixin HttpConnection {
   Future<JsonRpcSuccessResponse<LeaderSchedule?>> getLeaderScheduleRaw({
     final u64? slot,
     final GetLeaderScheduleConfig? config,
-  }) =>
-      send(GetLeaderSchedule(slot: slot, config: config));
+  }) => send(GetLeaderSchedule(slot: slot, config: config));
 
   /// {@macro solana_web3.Connection.getLeaderSchedule}
   Future<LeaderSchedule> getLeaderSchedule({
     final u64? slot,
     final GetLeaderScheduleConfig? config,
-  }) async =>
-      (await getLeaderScheduleRaw(slot: slot, config: config)).result!;
+  }) async => (await getLeaderScheduleRaw(slot: slot, config: config)).result!;
 
   /// {@template solana_web3.Connection.getMaxRetransmitSlot}
   /// Returns the max slot seen from retransmit stage.
@@ -462,16 +429,16 @@ mixin HttpConnection {
   Future<JsonRpcSuccessResponse<u64>> getMinimumBalanceForRentExemptionRaw(
     final usize length, {
     final GetMinimumBalanceForRentExemptionConfig? config,
-  }) =>
-      send(GetMinimumBalanceForRentExemption(length, config: config));
+  }) => send(GetMinimumBalanceForRentExemption(length, config: config));
 
   /// {@macro solana_web3.Connection.getMinimumBalanceForRentExemption}
   Future<u64> getMinimumBalanceForRentExemption(
     final usize length, {
     final GetMinimumBalanceForRentExemptionConfig? config,
-  }) async =>
-      (await getMinimumBalanceForRentExemptionRaw(length, config: config))
-          .result!;
+  }) async => (await getMinimumBalanceForRentExemptionRaw(
+    length,
+    config: config,
+  )).result!;
 
   /// {@template solana_web3.Connection.getMultipleAccounts}
   /// Returns the account information for a list of Pubkeys.
@@ -479,8 +446,7 @@ mixin HttpConnection {
   Future<JsonRpcContextResponse<List<AccountInfo?>>> getMultipleAccountsRaw(
     final List<Pubkey> pubkeys, {
     final GetMultipleAccountsConfig? config,
-  }) =>
-      send(GetMultipleAccounts.map(pubkeys, config: config));
+  }) => send(GetMultipleAccounts.map(pubkeys, config: config));
 
   /// {@macro solana_web3.Connection.getMultipleAccounts}
   Future<List<AccountInfo?>> getMultipleAccounts(
@@ -523,15 +489,13 @@ mixin HttpConnection {
   Future<JsonRpcSuccessResponse<List<ProgramAccount>>> getProgramAccountsRaw(
     final Pubkey program, {
     final GetProgramAccountsConfig? config,
-  }) =>
-      send(GetProgramAccounts(program, config: config));
+  }) => send(GetProgramAccounts(program, config: config));
 
   /// {@macro solana_web3.Connection.getProgramAccounts}
   Future<List<ProgramAccount>> getProgramAccounts(
     final Pubkey program, {
     final GetProgramAccountsConfig? config,
-  }) async =>
-      (await getProgramAccountsRaw(program, config: config)).result!;
+  }) async => (await getProgramAccountsRaw(program, config: config)).result!;
 
   /// {@template solana_web3.Connection.getRecentPerformanceSamples}
   /// Returns a list of recent performance samples, in reverse slot order. Performance samples are
@@ -539,16 +503,13 @@ mixin HttpConnection {
   /// time window.
   /// {@endtemplate}
   Future<JsonRpcSuccessResponse<List<PerformanceSample>>>
-      getRecentPerformanceSamplesRaw({
-    final usize? limit,
-  }) =>
-          send(GetRecentPerformanceSamples(limit: limit));
+  getRecentPerformanceSamplesRaw({final usize? limit}) =>
+      send(GetRecentPerformanceSamples(limit: limit));
 
   /// {@macro solana_web3.Connection.getRecentPerformanceSamples}
   Future<List<PerformanceSample>> getRecentPerformanceSamples({
     final usize? limit,
-  }) async =>
-      (await getRecentPerformanceSamplesRaw(limit: limit)).result!;
+  }) async => (await getRecentPerformanceSamplesRaw(limit: limit)).result!;
 
   /// {@template solana_web3.Connection.getRecentPrioritizationFees}
   /// Returns a list of prioritization fees from recent blocks.
@@ -557,16 +518,13 @@ mixin HttpConnection {
   /// of the provided accounts as writable.
   /// {@endtemplate}
   Future<JsonRpcSuccessResponse<List<PrioritizationFee>>>
-      getRecentPrioritizationFeesRaw([
-    final List<Pubkey>? addresses,
-  ]) =>
-          send(GetRecentPrioritizationFees.map(addresses));
+  getRecentPrioritizationFeesRaw([final List<Pubkey>? addresses]) =>
+      send(GetRecentPrioritizationFees.map(addresses));
 
   /// {@macro solana_web3.Connection.getRecentPrioritizationFees}
   Future<List<PrioritizationFee>> getRecentPrioritizationFees([
     final List<Pubkey>? addresses,
-  ]) async =>
-      (await getRecentPrioritizationFeesRaw(addresses)).result!;
+  ]) async => (await getRecentPrioritizationFeesRaw(addresses)).result!;
 
   /// {@template solana_web3.Connection.getSignaturesForAddress}
   /// Returns signatures for confirmed transactions that include the given [address] in their
@@ -574,11 +532,10 @@ mixin HttpConnection {
   /// recent confirmed block.
   /// {@endtemplate}
   Future<JsonRpcSuccessResponse<List<ConfirmedSignatureInfo>>>
-      getSignaturesForAddressRaw(
+  getSignaturesForAddressRaw(
     final Pubkey address, {
     final GetSignaturesForAddressConfig? config,
-  }) =>
-          send(GetSignaturesForAddress(address, config: config));
+  }) => send(GetSignaturesForAddress(address, config: config));
 
   /// {@macro solana_web3.Connection.getSignaturesForAddress}
   Future<List<ConfirmedSignatureInfo>> getSignaturesForAddress(
@@ -595,20 +552,19 @@ mixin HttpConnection {
   /// statuses for all active slots plus MAX_RECENT_BLOCKHASHES rooted slots.
   /// {@endtemplate}
   Future<JsonRpcContextResponse<List<SignatureStatus?>>>
-      getSignatureStatusesRaw(
+  getSignatureStatusesRaw(
     final List<String> signatures, {
     final GetSignatureStatusesConfig? config,
-  }) =>
-          send(GetSignatureStatuses(signatures, config: config));
+  }) => send(GetSignatureStatuses(signatures, config: config));
 
   /// {@macro solana_web3.Connection.getSignatureStatuses}
   Future<List<SignatureStatus?>> getSignatureStatuses(
     final List<String> signatures, {
     final GetSignatureStatusesConfig? config,
-  }) async =>
-      (await getSignatureStatusesRaw(signatures, config: config))
-          .result!
-          .value!;
+  }) async => (await getSignatureStatusesRaw(
+    signatures,
+    config: config,
+  )).result!.value!;
 
   /// Returns the status of [signature].
   ///
@@ -619,8 +575,9 @@ mixin HttpConnection {
     final String signature, {
     final GetSignatureStatusesConfig? config,
   }) async {
-    final List<SignatureStatus?> statuses =
-        await getSignatureStatuses([signature], config: config);
+    final List<SignatureStatus?> statuses = await getSignatureStatuses([
+      signature,
+    ], config: config);
     return statuses.isNotEmpty ? statuses.first : null;
   }
 
@@ -629,13 +586,10 @@ mixin HttpConnection {
   /// {@endtemplate}
   Future<JsonRpcSuccessResponse<u64>> getSlotRaw({
     final GetSlotConfig? config,
-  }) =>
-      send(GetSlot(config: config));
+  }) => send(GetSlot(config: config));
 
   /// {@macro solana_web3.Connection.getSlot}
-  Future<u64> getSlot({
-    final GetSlotConfig? config,
-  }) async =>
+  Future<u64> getSlot({final GetSlotConfig? config}) async =>
       (await getSlotRaw(config: config)).result!;
 
   /// {@template solana_web3.Connection.getSlotLeader}
@@ -643,13 +597,10 @@ mixin HttpConnection {
   /// {@endtemplate}
   Future<JsonRpcSuccessResponse<String>> getSlotLeaderRaw({
     final GetSlotLeaderConfig? config,
-  }) =>
-      send(GetSlotLeader(config: config));
+  }) => send(GetSlotLeader(config: config));
 
   /// {@macro solana_web3.Connection.getSlotLeader}
-  Future<String> getSlotLeader({
-    final GetSlotLeaderConfig? config,
-  }) async =>
+  Future<String> getSlotLeader({final GetSlotLeaderConfig? config}) async =>
       (await getSlotLeaderRaw(config: config)).result!;
 
   /// {@template solana_web3.Connection.getSlotLeaders}
@@ -658,15 +609,13 @@ mixin HttpConnection {
   Future<JsonRpcSuccessResponse<List<String>>> getSlotLeadersRaw(
     final u64 start, {
     required final u64 limit,
-  }) =>
-      send(GetSlotLeaders(start, limit: limit));
+  }) => send(GetSlotLeaders(start, limit: limit));
 
   /// {@macro solana_web3.Connection.getSlotLeaders}
   Future<List<String>> getSlotLeaders(
     final u64 start, {
     required final u64 limit,
-  }) async =>
-      (await getSlotLeadersRaw(start, limit: limit)).result!;
+  }) async => (await getSlotLeadersRaw(start, limit: limit)).result!;
 
   /// {@template solana_web3.Connection.getStakeActivation}
   /// Returns epoch activation information for a stake account.
@@ -674,23 +623,20 @@ mixin HttpConnection {
   Future<JsonRpcSuccessResponse<StakeActivation>> getStakeActivationRaw(
     final Pubkey account, {
     final GetStakeActivationConfig? config,
-  }) =>
-      send(GetStakeActivation(account, config: config));
+  }) => send(GetStakeActivation(account, config: config));
 
   /// {@macro solana_web3.Connection.getStakeActivation}
   Future<StakeActivation> getStakeActivation(
     final Pubkey account, {
     final GetStakeActivationConfig? config,
-  }) async =>
-      (await getStakeActivationRaw(account, config: config)).result!;
+  }) async => (await getStakeActivationRaw(account, config: config)).result!;
 
   /// {@template solana_web3.Connection.getStakeMinimumDelegation}
   /// Returns the stake minimum delegation in lamports.
   /// {@endtemplate}
   Future<JsonRpcContextResponse<u64>> getStakeMinimumDelegationRaw({
     final GetStakeMinimumDelegationConfig? config,
-  }) =>
-      send(GetStakeMinimumDelegation(config: config));
+  }) => send(GetStakeMinimumDelegation(config: config));
 
   /// {@macro solana_web3.Connection.getStakeMinimumDelegation}
   Future<u64> getStakeMinimumDelegation({
@@ -703,13 +649,10 @@ mixin HttpConnection {
   /// {@endtemplate}
   Future<JsonRpcContextResponse<Supply>> getSupplyRaw({
     final GetSupplyConfig? config,
-  }) =>
-      send(GetSupply(config: config));
+  }) => send(GetSupply(config: config));
 
   /// {@macro solana_web3.Connection.getSupply}
-  Future<Supply> getSupply({
-    final GetSupplyConfig? config,
-  }) async =>
+  Future<Supply> getSupply({final GetSupplyConfig? config}) async =>
       (await getSupplyRaw(config: config)).result!.value!;
 
   /// {@template solana_web3.Connection.getTokenAccountBalance}
@@ -718,8 +661,7 @@ mixin HttpConnection {
   Future<JsonRpcContextResponse<TokenAmount>> getTokenAccountBalanceRaw(
     final Pubkey account, {
     final GetTokenAccountBalanceConfig? config,
-  }) =>
-      send(GetTokenAccountBalance(account, config: config));
+  }) => send(GetTokenAccountBalance(account, config: config));
 
   /// {@macro solana_web3.Connection.getTokenAccountBalance}
   Future<TokenAmount> getTokenAccountBalance(
@@ -732,24 +674,24 @@ mixin HttpConnection {
   /// Returns all SPL Token accounts approved by [delegate].
   /// {@endtemplate}
   Future<JsonRpcContextResponse<List<TokenAccount>>>
-      getTokenAccountsByDelegateRaw(
+  getTokenAccountsByDelegateRaw(
     final Pubkey delegate, {
     required final TokenAccountsFilter filter,
     final GetTokenAccountsByDelegateConfig? config,
-  }) =>
-          send(GetTokenAccountsByDelegate(delegate,
-              filter: filter, config: config));
+  }) => send(
+    GetTokenAccountsByDelegate(delegate, filter: filter, config: config),
+  );
 
   /// {@macro solana_web3.Connection.getTokenAccountsByDelegate}
   Future<List<TokenAccount>> getTokenAccountsByDelegate(
     final Pubkey delegate, {
     required final TokenAccountsFilter filter,
     final GetTokenAccountsByDelegateConfig? config,
-  }) async =>
-      (await getTokenAccountsByDelegateRaw(delegate,
-              filter: filter, config: config))
-          .result!
-          .value!;
+  }) async => (await getTokenAccountsByDelegateRaw(
+    delegate,
+    filter: filter,
+    config: config,
+  )).result!.value!;
 
   /// {@template solana_web3.Connection.getTokenAccountsByOwner}
   /// Returns the token owner of an SPL Token [account].
@@ -758,19 +700,18 @@ mixin HttpConnection {
     final Pubkey account, {
     required final TokenAccountsFilter filter,
     final GetTokenAccountsByOwnerConfig? config,
-  }) =>
-      send(GetTokenAccountsByOwner(account, filter: filter, config: config));
+  }) => send(GetTokenAccountsByOwner(account, filter: filter, config: config));
 
   /// {@macro solana_web3.Connection.getTokenAccountsByOwner}
   Future<List<TokenAccount>> getTokenAccountsByOwner(
     final Pubkey account, {
     required final TokenAccountsFilter filter,
     final GetTokenAccountsByOwnerConfig? config,
-  }) async =>
-      (await getTokenAccountsByOwnerRaw(account,
-              filter: filter, config: config))
-          .result!
-          .value!;
+  }) async => (await getTokenAccountsByOwnerRaw(
+    account,
+    filter: filter,
+    config: config,
+  )).result!.value!;
 
   /// {@template solana_web3.Connection.getTokenLargestAccounts}
   /// Returns the 20 largest accounts of a particular SPL Token type.
@@ -778,8 +719,7 @@ mixin HttpConnection {
   Future<JsonRpcContextResponse<List<TokenAmount>>> getTokenLargestAccountsRaw(
     final Pubkey mint, {
     final GetTokenLargestAccountsConfig? config,
-  }) =>
-      send(GetTokenLargestAccounts(mint, config: config));
+  }) => send(GetTokenLargestAccounts(mint, config: config));
 
   /// {@macro solana_web3.Connection.getTokenLargestAccounts}
   Future<List<TokenAmount>> getTokenLargestAccounts(
@@ -794,15 +734,13 @@ mixin HttpConnection {
   Future<JsonRpcContextResponse<TokenAmount>> getTokenSupplyRaw(
     final Pubkey mint, {
     final GetTokenSupplyConfig? config,
-  }) =>
-      send(GetTokenSupply(mint, config: config));
+  }) => send(GetTokenSupply(mint, config: config));
 
   /// {@macro solana_web3.Connection.getTokenSupply}
   Future<TokenAmount> getTokenSupply(
     final Pubkey mint, {
     final GetTokenSupplyConfig? config,
-  }) async =>
-      (await getTokenSupplyRaw(mint, config: config)).result!.value!;
+  }) async => (await getTokenSupplyRaw(mint, config: config)).result!.value!;
 
   /// {@template solana_web3.Connection.getTransaction}
   /// Returns transaction details for a confirmed transaction signature (base-58).
@@ -810,29 +748,25 @@ mixin HttpConnection {
   Future<JsonRpcSuccessResponse<TransactionInfo?>> getTransactionRaw(
     final String signature, {
     final GetTransactionConfig? config,
-  }) =>
-      send(GetTransaction(signature, config: config));
+  }) => send(GetTransaction(signature, config: config));
 
   /// {@macro solana_web3.Connection.getTransaction}
   Future<TransactionInfo?> getTransaction(
     final String signature, {
     final GetTransactionConfig? config,
-  }) async =>
-      (await getTransactionRaw(signature, config: config)).result;
+  }) async => (await getTransactionRaw(signature, config: config)).result;
 
   /// {@template solana_web3.Connection.getTransactionCount}
   /// Returns the current [Transaction] count from the ledger.
   /// {@endtemplate}
   Future<JsonRpcSuccessResponse<u64>> getTransactionCountRaw({
     final GetTransactionCountConfig? config,
-  }) =>
-      send(GetTransactionCount(config: config));
+  }) => send(GetTransactionCount(config: config));
 
   /// {@macro solana_web3.Connection.getTransactionCount}
   Future<u64> getTransactionCount({
     final GetTransactionCountConfig? config,
-  }) async =>
-      (await getTransactionCountRaw(config: config)).result!;
+  }) async => (await getTransactionCountRaw(config: config)).result!;
 
   /// {@template solana_web3.Connection.getVersion}
   /// Returns the current solana versions running on the node.
@@ -847,14 +781,12 @@ mixin HttpConnection {
   /// {@endtemplate}
   Future<JsonRpcSuccessResponse<VoteAccountStatus>> getVoteAccountsRaw({
     final GetVoteAccountsConfig? config,
-  }) =>
-      send(GetVoteAccounts(config: config));
+  }) => send(GetVoteAccounts(config: config));
 
   /// {@macro solana_web3.Connection.getVoteAccounts}
   Future<VoteAccountStatus> getVoteAccounts({
     final GetVoteAccountsConfig? config,
-  }) async =>
-      (await getVoteAccountsRaw(config: config)).result!;
+  }) async => (await getVoteAccountsRaw(config: config)).result!;
 
   /// {@template solana_web3.Connection.isBlockhashValid}
   /// Returns whether a [blockhash] (base-58) is still valid or not.
@@ -862,8 +794,7 @@ mixin HttpConnection {
   Future<JsonRpcContextResponse<bool>> isBlockhashValidRaw(
     final String blockhash, {
     final IsBlockhashValidConfig? config,
-  }) =>
-      send(IsBlockhashValid(blockhash, config: config));
+  }) => send(IsBlockhashValid(blockhash, config: config));
 
   /// {@macro solana_web3.Connection.isBlockhashValid}
   Future<bool> isBlockhashValid(
@@ -892,8 +823,7 @@ mixin HttpConnection {
     final Pubkey pubkey,
     final u64 lamports, {
     final RequestAirdropConfig? config,
-  }) =>
-      send(RequestAirdrop(pubkey, lamports, config: config));
+  }) => send(RequestAirdrop(pubkey, lamports, config: config));
 
   /// {@macro solana_web3.Connection.requestAirdrop}
   Future<String> requestAirdrop(
@@ -945,10 +875,12 @@ mixin HttpConnection {
 
     final defaultConfig =
         config ?? SendTransactionConfig(preflightCommitment: commitment);
-    final BufferEncoding bufferEncoding =
-        BufferEncoding.fromJson(defaultConfig.encoding.name);
-    final String signedTransaction =
-        transaction.serialize().getString(bufferEncoding);
+    final BufferEncoding bufferEncoding = BufferEncoding.fromJson(
+      defaultConfig.encoding.name,
+    );
+    final String signedTransaction = transaction.serialize().getString(
+      bufferEncoding,
+    );
     return sendSignedTransactionRaw(signedTransaction, config: config);
   }
 
@@ -956,8 +888,7 @@ mixin HttpConnection {
   Future<TransactionSignature> sendTransaction(
     final Transaction transaction, {
     final SendTransactionConfig? config,
-  }) async =>
-      (await sendTransactionRaw(transaction, config: config)).result!;
+  }) async => (await sendTransactionRaw(transaction, config: config)).result!;
 
   /// {@template solana_web3.Connection.sendSignedTransaction}
   /// Sends a signed [Transaction] to the cluster for processing.
@@ -975,9 +906,10 @@ mixin HttpConnection {
   Future<TransactionSignature> sendSignedTransaction(
     final String signedTransaction, {
     final SendTransactionConfig? config,
-  }) async =>
-      (await sendSignedTransactionRaw(signedTransaction, config: config))
-          .result!;
+  }) async => (await sendSignedTransactionRaw(
+    signedTransaction,
+    config: config,
+  )).result!;
 
   /// {@template solana_web3.Connection.sendSignedTransactions}
   /// Sends the signed [Transaction]s to the cluster for processing (default `base-64` encoding).
@@ -986,14 +918,20 @@ mixin HttpConnection {
   /// If [eagerError] is true the method will return a list of [JsonRpcSuccessResponse]s or a
   /// [Future.error] with the first error found in the response.
   Future<List<JsonRpcResponse<TransactionSignature?>>>
-      sendSignedTransactionsRaw(final List<String> signedTransactions,
-          {final SendTransactionConfig? config, final bool? eagerError}) async {
+  sendSignedTransactionsRaw(
+    final List<String> signedTransactions, {
+    final SendTransactionConfig? config,
+    final bool? eagerError,
+  }) async {
     final defaultConfig =
         config ?? SendTransactionConfig(preflightCommitment: commitment);
-    final methods = signedTransactions
-        .map((tx) => SendTransaction(tx, config: defaultConfig));
-    return sendAll(JsonRpcMethodBuilder(methods.toList(growable: false)),
-        eagerError: eagerError);
+    final methods = signedTransactions.map(
+      (tx) => SendTransaction(tx, config: defaultConfig),
+    );
+    return sendAll(
+      JsonRpcMethodBuilder(methods.toList(growable: false)),
+      eagerError: eagerError,
+    );
   }
 
   /// {@macro solana_web3.Connection.sendSignedTransactions}
@@ -1001,18 +939,21 @@ mixin HttpConnection {
   /// If [eagerError] is true the method will return a list of non-null [TransactionSignature]s or a
   /// [Future.error] with the first error found in the response.
   Future<List<TransactionSignature?>> sendSignedTransactions(
-      final List<String> signedTransactions,
-      {final SendTransactionConfig? config,
-      final bool? eagerError}) async {
+    final List<String> signedTransactions, {
+    final SendTransactionConfig? config,
+    final bool? eagerError,
+  }) async {
     final List<JsonRpcResponse<String?>> responses =
         await sendSignedTransactionsRaw(
-      signedTransactions,
-      config: config,
-      eagerError: eagerError,
-    );
+          signedTransactions,
+          config: config,
+          eagerError: eagerError,
+        );
     return responses
-        .map<TransactionSignature?>((final JsonRpcResponse response) =>
-            response is JsonRpcSuccessResponse ? response.result : null)
+        .map<TransactionSignature?>(
+          (final JsonRpcResponse response) =>
+              response is JsonRpcSuccessResponse ? response.result : null,
+        )
         .toList(growable: false);
   }
 
@@ -1067,13 +1008,16 @@ mixin HttpConnection {
       encoding: TransactionEncoding.base64,
       accounts: includeAccounts
           ? AccountsFilter(
-              addresses:
-                  transaction.message.nonProgramIds().toList(growable: false))
+              addresses: transaction.message.nonProgramIds().toList(
+                growable: false,
+              ),
+            )
           : null,
     );
 
-    final String signedTransaction =
-        transaction.serialize().getString(BufferEncoding.base64);
+    final String signedTransaction = transaction.serialize().getString(
+      BufferEncoding.base64,
+    );
     return send(SimulateTransaction(signedTransaction, config: config));
   }
 
@@ -1082,12 +1026,9 @@ mixin HttpConnection {
     final Transaction transaction, {
     final bool includeAccounts = false,
     final Commitment? commitment,
-  }) async =>
-      (await simulateTransactionRaw(
-        transaction,
-        includeAccounts: includeAccounts,
-        commitment: commitment,
-      ))
-          .result!
-          .value!;
+  }) async => (await simulateTransactionRaw(
+    transaction,
+    includeAccounts: includeAccounts,
+    commitment: commitment,
+  )).result!.value!;
 }

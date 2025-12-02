@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 import 'package:reown_appkit/modal/utils/render_utils.dart';
 import 'package:reown_appkit/modal/widgets/avatars/account_avatar.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
@@ -61,8 +60,8 @@ class _AddressButtonState extends State<AddressButton> {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final identityName =
         (widget.service.blockchainIdentity?.name ?? '').isNotEmpty
-            ? widget.service.blockchainIdentity!.name!
-            : null;
+        ? widget.service.blockchainIdentity!.name!
+        : null;
     return BaseButton(
       semanticsLabel: 'AddressButton',
       size: widget.size,
@@ -71,25 +70,20 @@ class _AddressButtonState extends State<AddressButton> {
         backgroundColor: WidgetStateProperty.resolveWith<Color>(
           (states) => themeColors.grayGlass002,
         ),
-        foregroundColor: WidgetStateProperty.resolveWith<Color>(
-          (states) {
-            if (states.contains(WidgetState.disabled)) {
-              return themeColors.grayGlass015;
-            }
-            return themeColors.foreground100;
-          },
-        ),
-        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
-          (states) {
-            return RoundedRectangleBorder(
-              side: BorderSide(
-                color: themeColors.grayGlass002,
-                width: 1.0,
-              ),
-              borderRadius: BorderRadius.circular(widget.size.height / 2),
-            );
-          },
-        ),
+        foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return themeColors.grayGlass015;
+          }
+          return themeColors.foreground100;
+        }),
+        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>((
+          states,
+        ) {
+          return RoundedRectangleBorder(
+            side: BorderSide(color: themeColors.grayGlass002, width: 1.0),
+            borderRadius: BorderRadius.circular(widget.size.height / 2),
+          );
+        }),
       ),
       overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
         widget.child != null
@@ -99,7 +93,8 @@ class _AddressButtonState extends State<AddressButton> {
                 right: widget.size == BaseButtonSize.small ? 12.0 : 16.0,
               ),
       ),
-      child: widget.child ??
+      child:
+          widget.child ??
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [

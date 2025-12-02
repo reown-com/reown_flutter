@@ -20,7 +20,5 @@ import 'rust_enum_typed.dart';
 /// ```
 class BorshRustEnum<T> extends BorshRustEnumTyped<T, BorshAnnotation> {
   /// Creates an annotation for complex Rust style enums (tuple or struct constructors).
-  const BorshRustEnum(
-    super.variants,
-  );
+  const BorshRustEnum(super.variants);
 }

@@ -31,8 +31,9 @@ class BaseGridItem extends StatelessWidget {
           isSelected ? themeColors.accenGlass020 : themeColors.grayGlass002,
         ),
         overlayColor: WidgetStateProperty.all<Color>(
-          isSelected ? themeColors.accenGlass020 : themeColors.grayGlass005,
+          isSelected ? themeColors.accenGlass020 : themeColors.grayGlass002,
         ),
+        shadowColor: WidgetStateProperty.all<Color>(themeColors.grayGlass002),
         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(maxRadius),

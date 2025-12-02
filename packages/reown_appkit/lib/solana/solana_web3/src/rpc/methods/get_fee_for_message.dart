@@ -12,12 +12,10 @@ import '../interfaces/json_rpc_type_context_method.dart';
 /// A codec for `getFeeForMessage` JSON RPC methods.
 class GetFeeForMessage extends JsonRpcTypeContextMethod<u64?> {
   /// Creates a codec for `getFeeForMessage` JSON RPC methods.
-  GetFeeForMessage(
-    final String message, {
-    final GetFeeForMessageConfig? config,
-  }) : super(
-          'getFeeForMessage',
-          values: [message],
-          config: config ?? const GetFeeForMessageConfig(),
-        );
+  GetFeeForMessage(final String message, {final GetFeeForMessageConfig? config})
+    : super(
+        'getFeeForMessage',
+        values: [message],
+        config: config ?? const GetFeeForMessageConfig(),
+      );
 }

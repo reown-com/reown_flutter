@@ -19,8 +19,7 @@ part 'accounts.g.dart';
 
 enum MasterEditionKey {
   v1(2),
-  v2(6),
-  ;
+  v2(6);
 
   const MasterEditionKey(this.discriminator);
   final int discriminator;
@@ -50,10 +49,10 @@ class MasterEditionAccount extends BorshObjectSized {
 
   /// {@macro solana_borsh.BorshObject.borshCodec}
   static BorshStructSizedCodec get codec => borsh.structSized({
-        'key': borsh.u8,
-        'supply': borsh.u64.string(),
-        'maxSupply': borsh.u64.string().option(),
-      });
+    'key': borsh.u8,
+    'supply': borsh.u64.string(),
+    'maxSupply': borsh.u64.string().option(),
+  });
 
   @override
   BorshSchemaSized get borshSchema => codec.schema;
@@ -107,8 +106,7 @@ class MasterEditionAccount extends BorshObjectSized {
 /// ------------------------------------------------------------------------------------------------
 
 enum MetadataKey {
-  v1(4),
-  ;
+  v1(4);
 
   const MetadataKey(this.discriminator);
   final int discriminator;
@@ -213,22 +211,22 @@ class MetadataAccount extends BorshObject {
 
   /// {@macro solana_borsh.BorshObject.borshCodec}
   static BorshStructCodec get codec => borsh.struct({
-        'key': borsh.u8,
-        'updateAuthority': borsh.pubkey,
-        'mint': borsh.pubkey,
-        'name': MetaplexTokenMetadataProgram.metadataNameCodec,
-        'symbol': MetaplexTokenMetadataProgram.metadataSymbolCodec,
-        'uri': MetaplexTokenMetadataProgram.metadataUriCodec,
-        'sellerFeeBasisPoints':
-            MetaplexTokenMetadataProgram.metadataSellerFeeBasisPointsCodec,
-        'creators': MetaplexTokenMetadataProgram.metadataCreatorsCodec,
-        'primarySaleHappened': borsh.boolean,
-        'isMutable': borsh.boolean,
-        'editionNonce': borsh.u8.option(),
-        'tokenStandard': borsh.u8.option(),
-        'collection': MetaplexTokenMetadataProgram.metadataCollectionCodec,
-        'uses': MetaplexTokenMetadataProgram.metadataUsesCodec,
-      });
+    'key': borsh.u8,
+    'updateAuthority': borsh.pubkey,
+    'mint': borsh.pubkey,
+    'name': MetaplexTokenMetadataProgram.metadataNameCodec,
+    'symbol': MetaplexTokenMetadataProgram.metadataSymbolCodec,
+    'uri': MetaplexTokenMetadataProgram.metadataUriCodec,
+    'sellerFeeBasisPoints':
+        MetaplexTokenMetadataProgram.metadataSellerFeeBasisPointsCodec,
+    'creators': MetaplexTokenMetadataProgram.metadataCreatorsCodec,
+    'primarySaleHappened': borsh.boolean,
+    'isMutable': borsh.boolean,
+    'editionNonce': borsh.u8.option(),
+    'tokenStandard': borsh.u8.option(),
+    'collection': MetaplexTokenMetadataProgram.metadataCollectionCodec,
+    'uses': MetaplexTokenMetadataProgram.metadataUsesCodec,
+  });
 
   @override
   BorshSchema get borshSchema => codec.schema;

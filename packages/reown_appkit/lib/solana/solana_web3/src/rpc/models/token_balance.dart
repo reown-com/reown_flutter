@@ -42,9 +42,9 @@ class TokenBalance extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'accountIndex': accountIndex,
-        'mint': mint,
-        'owner': owner,
-        'uiTokenAmount': uiTokenAmount.toJson(),
-      };
+    'accountIndex': accountIndex,
+    'mint': mint,
+    'owner': owner,
+    'uiTokenAmount': uiTokenAmount.toJson(),
+  };
 }

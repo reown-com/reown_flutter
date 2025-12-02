@@ -191,7 +191,7 @@ class AuthSignature {
     if (!iss.contains('did:pkh:')) {
       iss = 'did:pkh:$iss';
     }
-    final address = AddressUtils.getDidAddress(iss);
+    final address = AddressUtils.getDidAddressAddress(iss)!;
     iss = iss.replaceAll(address, address.toEIP55());
     return Cacao(
       h: const CacaoHeader(t: CacaoHeader.CAIP122),

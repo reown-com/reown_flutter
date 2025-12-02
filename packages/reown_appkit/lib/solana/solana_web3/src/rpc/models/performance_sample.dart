@@ -44,9 +44,9 @@ class PerformanceSample extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'slot': slot,
-        'numTransactions': numTransactions,
-        'numSlots': numSlots,
-        'samplePeriodSecs': samplePeriodSecs,
-      };
+    'slot': slot,
+    'numTransactions': numTransactions,
+    'numSlots': numSlots,
+    'samplePeriodSecs': samplePeriodSecs,
+  };
 }

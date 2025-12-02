@@ -22,11 +22,12 @@ import 'package:reown_appkit/reown_appkit.dart';
 class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
   IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
 
+  final String? titleOverride;
+  final Function(ReownAppKitModalNetworkInfo)? onTapNetwork;
   const ReownAppKitModalSelectNetworkPage({
+    this.titleOverride,
     this.onTapNetwork,
   }) : super(key: KeyConstants.selectNetworkPage);
-
-  final Function(ReownAppKitModalNetworkInfo)? onTapNetwork;
 
   void _onSelectNetwork(
     BuildContext context,
@@ -53,10 +54,9 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
         }
       } else if (isChainApproved || isMagic) {
         if (isMagic) {
-          _widgetStack.push(ConnectNetworkPage(
-            chainInfo: chainInfo,
-            isMagic: true,
-          ));
+          _widgetStack.push(
+            ConnectNetworkPage(chainInfo: chainInfo, isMagic: true),
+          );
         } else {
           await appKitModal.selectChain(chainInfo, switchChain: true);
           if (_widgetStack.canPop()) {
@@ -82,7 +82,9 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
     final isPortrait = ResponsiveData.isPortrait(context);
 
     return ModalNavbar(
-      title: isSwitch ? UIConstants.changeNetwork : UIConstants.selectNetwork,
+      title:
+          titleOverride ??
+          (isSwitch ? UIConstants.changeNetwork : UIConstants.selectNetwork),
       safeAreaLeft: true,
       safeAreaRight: true,
       body: Column(
@@ -101,10 +103,8 @@ class ReownAppKitModalSelectNetworkPage extends StatelessWidget {
                 return ConstrainedBox(
                   constraints: BoxConstraints(maxHeight: maxHeight),
                   child: NetworksGrid(
-                    onTapNetwork: (chainInfo) => _onSelectNetwork(
-                      context,
-                      chainInfo,
-                    ),
+                    onTapNetwork: (chainInfo) =>
+                        _onSelectNetwork(context, chainInfo),
                     itemList: items,
                   ),
                 );

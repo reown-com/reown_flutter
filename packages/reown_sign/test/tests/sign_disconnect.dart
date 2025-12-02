@@ -35,10 +35,7 @@ void signDisconnect({
 
     test('using pairing works', () async {
       TestConnectMethodReturn connectionInfo =
-          await SignClientHelpers.testConnectPairApprove(
-        clientA,
-        clientB,
-      );
+          await SignClientHelpers.testConnectPairApprove(clientA, clientB);
       String pairingATopic = connectionInfo.pairing.topic;
       String sessionATopic = connectionInfo.session.topic;
 
@@ -149,10 +146,7 @@ void signDisconnect({
 
     test('using session works', () async {
       TestConnectMethodReturn connectionInfo =
-          await SignClientHelpers.testConnectPairApprove(
-        clientA,
-        clientB,
-      );
+          await SignClientHelpers.testConnectPairApprove(clientA, clientB);
       String sessionATopic = connectionInfo.session.topic;
 
       Completer completerA = Completer<void>();
@@ -219,10 +213,7 @@ void signDisconnect({
 
     for (var client in clients) {
       setUp(() async {
-        await client.sessions.set(
-          TEST_SESSION_VALID_TOPIC,
-          testSessionValid,
-        );
+        await client.sessions.set(TEST_SESSION_VALID_TOPIC, testSessionValid);
         await client.sessions.set(
           TEST_SESSION_EXPIRED_TOPIC,
           testSessionExpired,
@@ -238,10 +229,7 @@ void signDisconnect({
         expect(
           () async => await client.disconnectSession(
             topic: TEST_SESSION_INVALID_TOPIC,
-            reason: ReownSignError(
-              code: reason.code,
-              message: reason.message,
-            ),
+            reason: ReownSignError(code: reason.code, message: reason.message),
           ),
           throwsA(
             isA<ReownSignError>().having(
@@ -267,10 +255,7 @@ void signDisconnect({
         expect(
           () async => await client.disconnectSession(
             topic: TEST_SESSION_EXPIRED_TOPIC,
-            reason: ReownSignError(
-              code: reason.code,
-              message: reason.message,
-            ),
+            reason: ReownSignError(code: reason.code, message: reason.message),
           ),
           throwsA(
             isA<ReownSignError>().having(
@@ -285,12 +270,7 @@ void signDisconnect({
         await completer.future;
         await completerSession.future;
 
-        expect(
-          client.sessions.has(
-            TEST_SESSION_EXPIRED_TOPIC,
-          ),
-          false,
-        );
+        expect(client.sessions.has(TEST_SESSION_EXPIRED_TOPIC), false);
         expect(counter, 1);
         expect(counterSession, 1);
         client.core.expirer.onExpire.unsubscribeAll();

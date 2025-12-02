@@ -304,7 +304,6 @@ class PosClient with PosRpcService, ValidatorService implements IPosClient {
       return;
     }
 
-    print('[$runtimeType] onSessionConnect: $approvedSession');
     onPosEvent.broadcast(ConnectedEvent());
 
     try {
@@ -354,7 +353,7 @@ class PosClient with PosRpcService, ValidatorService implements IPosClient {
       // Loop on status check
       final String receiptId = transaction.id;
       _loopOnStatusCheck(receiptId, requestResponse, (checkResponse) async {
-        _checkResponseHandler(checkResponse, transaction.chainId);
+        _checkResponseHandler(checkResponse, transaction);
         await _disconnect(approvedSession.topic);
       });
     } catch (e, s) {
@@ -363,13 +362,20 @@ class PosClient with PosRpcService, ValidatorService implements IPosClient {
     }
   }
 
-  void _checkResponseHandler(CheckResponse checkResponse, String chainId) {
-    // PENDING is handled inside the loop
+  void _checkResponseHandler(
+    CheckResponse checkResponse,
+    TransactionRpc transaction,
+  ) {
+    // PENDING is handled inside the loop, this function handles FAILED and CONFIRMED
     if (checkResponse.$1 == StatusCheck.confirmed.value) {
-      onPosEvent.broadcast(PaymentSuccessfulEvent(checkResponse.$2!));
+      onPosEvent.broadcast(
+        PaymentSuccessfulEvent(checkResponse.$2!, transaction.senderAddress),
+      );
     } else if (checkResponse.$1 == StatusCheck.failed.value) {
       String message = 'Transaction failed.';
-      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+      final namespace = NamespaceUtils.getNamespaceFromChain(
+        transaction.chainId,
+      );
       if (namespace == 'eip155') {
         onPosEvent.broadcast(PaymentFailedEvent(message));
       } else {

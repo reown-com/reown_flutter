@@ -19,10 +19,10 @@ class SepoliaAAVEContract implements SmartContract {
             {'internalType': 'string', 'name': 'name', 'type': 'string'},
             {'internalType': 'string', 'name': 'symbol', 'type': 'string'},
             {'internalType': 'uint8', 'name': 'decimals', 'type': 'uint8'},
-            {'internalType': 'address', 'name': 'owner', 'type': 'address'}
+            {'internalType': 'address', 'name': 'owner', 'type': 'address'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'constructor'
+          'type': 'constructor',
         },
         {
           'anonymous': false,
@@ -31,23 +31,23 @@ class SepoliaAAVEContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'owner',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'spender',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'value',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Approval',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -56,17 +56,17 @@ class SepoliaAAVEContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'previousOwner',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'newOwner',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'OwnershipTransferred',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -75,94 +75,94 @@ class SepoliaAAVEContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'from',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'to',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'value',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Transfer',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'inputs': [],
           'name': 'DOMAIN_SEPARATOR',
           'outputs': [
-            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'EIP712_REVISION',
           'outputs': [
-            {'internalType': 'bytes', 'name': '', 'type': 'bytes'}
+            {'internalType': 'bytes', 'name': '', 'type': 'bytes'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'PERMIT_TYPEHASH',
           'outputs': [
-            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'owner', 'type': 'address'},
-            {'internalType': 'address', 'name': 'spender', 'type': 'address'}
+            {'internalType': 'address', 'name': 'spender', 'type': 'address'},
           ],
           'name': 'allowance',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'},
           ],
           'name': 'approve',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'}
+            {'internalType': 'address', 'name': 'account', 'type': 'address'},
           ],
           'name': 'balanceOf',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'decimals',
           'outputs': [
-            {'internalType': 'uint8', 'name': '', 'type': 'uint8'}
+            {'internalType': 'uint8', 'name': '', 'type': 'uint8'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -170,79 +170,83 @@ class SepoliaAAVEContract implements SmartContract {
             {
               'internalType': 'uint256',
               'name': 'subtractedValue',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'decreaseAllowance',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'addedValue', 'type': 'uint256'}
+            {
+              'internalType': 'uint256',
+              'name': 'addedValue',
+              'type': 'uint256'
+            },
           ],
           'name': 'increaseAllowance',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'account', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'mint',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'mint',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'name',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'owner', 'type': 'address'}
+            {'internalType': 'address', 'name': 'owner', 'type': 'address'},
           ],
           'name': 'nonces',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'owner',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'address', 'name': '', 'type': 'address'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -252,72 +256,72 @@ class SepoliaAAVEContract implements SmartContract {
             {'internalType': 'uint256', 'name': 'deadline', 'type': 'uint256'},
             {'internalType': 'uint8', 'name': 'v', 'type': 'uint8'},
             {'internalType': 'bytes32', 'name': 'r', 'type': 'bytes32'},
-            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'},
           ],
           'name': 'permit',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'renounceOwnership',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'symbol',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'totalSupply',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'recipient', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'},
           ],
           'name': 'transfer',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'sender', 'type': 'address'},
             {'internalType': 'address', 'name': 'recipient', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'},
           ],
           'name': 'transferFrom',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'}
+            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'},
           ],
           'name': 'transferOwnership',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
-        }
+          'type': 'function',
+        },
       ];
 }
 
@@ -338,23 +342,23 @@ class ARBUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'owner',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'spender',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'value',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Approval',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -363,17 +367,17 @@ class ARBUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'authorizer',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'bytes32',
               'name': 'nonce',
-              'type': 'bytes32'
-            }
+              'type': 'bytes32',
+            },
           ],
           'name': 'AuthorizationCanceled',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -382,17 +386,17 @@ class ARBUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'authorizer',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'bytes32',
               'name': 'nonce',
-              'type': 'bytes32'
-            }
+              'type': 'bytes32',
+            },
           ],
           'name': 'AuthorizationUsed',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -401,11 +405,11 @@ class ARBUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': '_account',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'Blacklisted',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -414,11 +418,11 @@ class ARBUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'newBlacklister',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'BlacklisterChanged',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -427,17 +431,17 @@ class ARBUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'burner',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'amount',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Burn',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -446,11 +450,11 @@ class ARBUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'newMasterMinter',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'MasterMinterChanged',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -459,23 +463,23 @@ class ARBUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'minter',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'to',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'amount',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Mint',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -484,17 +488,17 @@ class ARBUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'minter',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'minterAllowedAmount',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'MinterConfigured',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -503,11 +507,11 @@ class ARBUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'oldMinter',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'MinterRemoved',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -516,17 +520,17 @@ class ARBUSDCContract implements SmartContract {
               'indexed': false,
               'internalType': 'address',
               'name': 'previousOwner',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'address',
               'name': 'newOwner',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'OwnershipTransferred',
-          'type': 'event'
+          'type': 'event',
         },
         {'anonymous': false, 'inputs': [], 'name': 'Pause', 'type': 'event'},
         {
@@ -536,11 +540,11 @@ class ARBUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'newAddress',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'PauserChanged',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -549,11 +553,11 @@ class ARBUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'newRescuer',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'RescuerChanged',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -562,23 +566,23 @@ class ARBUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'from',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'to',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'value',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Transfer',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -587,81 +591,81 @@ class ARBUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': '_account',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'UnBlacklisted',
-          'type': 'event'
+          'type': 'event',
         },
         {'anonymous': false, 'inputs': [], 'name': 'Unpause', 'type': 'event'},
         {
           'inputs': [],
           'name': 'CANCEL_AUTHORIZATION_TYPEHASH',
           'outputs': [
-            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'DOMAIN_SEPARATOR',
           'outputs': [
-            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'PERMIT_TYPEHASH',
           'outputs': [
-            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'RECEIVE_WITH_AUTHORIZATION_TYPEHASH',
           'outputs': [
-            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'TRANSFER_WITH_AUTHORIZATION_TYPEHASH',
           'outputs': [
-            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'owner', 'type': 'address'},
-            {'internalType': 'address', 'name': 'spender', 'type': 'address'}
+            {'internalType': 'address', 'name': 'spender', 'type': 'address'},
           ],
           'name': 'allowance',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'approve',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -670,52 +674,52 @@ class ARBUSDCContract implements SmartContract {
               'name': 'authorizer',
               'type': 'address'
             },
-            {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
           ],
           'name': 'authorizationState',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'}
+            {'internalType': 'address', 'name': 'account', 'type': 'address'},
           ],
           'name': 'balanceOf',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': '_account', 'type': 'address'}
+            {'internalType': 'address', 'name': '_account', 'type': 'address'},
           ],
           'name': 'blacklist',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'blacklister',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'address', 'name': '', 'type': 'address'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'uint256', 'name': '_amount', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '_amount', 'type': 'uint256'},
           ],
           'name': 'burn',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -727,12 +731,12 @@ class ARBUSDCContract implements SmartContract {
             {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
             {'internalType': 'uint8', 'name': 'v', 'type': 'uint8'},
             {'internalType': 'bytes32', 'name': 'r', 'type': 'bytes32'},
-            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'},
           ],
           'name': 'cancelAuthorization',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -742,12 +746,12 @@ class ARBUSDCContract implements SmartContract {
               'type': 'address'
             },
             {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
-            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'}
+            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'},
           ],
           'name': 'cancelAuthorization',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -755,57 +759,57 @@ class ARBUSDCContract implements SmartContract {
             {
               'internalType': 'uint256',
               'name': 'minterAllowedAmount',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'configureMinter',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'currency',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'decimals',
           'outputs': [
-            {'internalType': 'uint8', 'name': '', 'type': 'uint8'}
+            {'internalType': 'uint8', 'name': '', 'type': 'uint8'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'decrement', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'decrement', 'type': 'uint256'},
           ],
           'name': 'decreaseAllowance',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'increment', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'increment', 'type': 'uint256'},
           ],
           'name': 'increaseAllowance',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -820,29 +824,29 @@ class ARBUSDCContract implements SmartContract {
             {
               'internalType': 'address',
               'name': 'newMasterMinter',
-              'type': 'address'
+              'type': 'address',
             },
             {'internalType': 'address', 'name': 'newPauser', 'type': 'address'},
             {
               'internalType': 'address',
               'name': 'newBlacklister',
-              'type': 'address'
+              'type': 'address',
             },
-            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'}
+            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'},
           ],
           'name': 'initialize',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'string', 'name': 'newName', 'type': 'string'}
+            {'internalType': 'string', 'name': 'newName', 'type': 'string'},
           ],
           'name': 'initializeV2',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -850,134 +854,134 @@ class ARBUSDCContract implements SmartContract {
               'internalType': 'address',
               'name': 'lostAndFound',
               'type': 'address'
-            }
+            },
           ],
           'name': 'initializeV2_1',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {
               'internalType': 'address[]',
               'name': 'accountsToBlacklist',
-              'type': 'address[]'
+              'type': 'address[]',
             },
-            {'internalType': 'string', 'name': 'newSymbol', 'type': 'string'}
+            {'internalType': 'string', 'name': 'newSymbol', 'type': 'string'},
           ],
           'name': 'initializeV2_2',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': '_account', 'type': 'address'}
+            {'internalType': 'address', 'name': '_account', 'type': 'address'},
           ],
           'name': 'isBlacklisted',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'}
+            {'internalType': 'address', 'name': 'account', 'type': 'address'},
           ],
           'name': 'isMinter',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'masterMinter',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'address', 'name': '', 'type': 'address'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': '_to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': '_amount', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '_amount', 'type': 'uint256'},
           ],
           'name': 'mint',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'minter', 'type': 'address'}
+            {'internalType': 'address', 'name': 'minter', 'type': 'address'},
           ],
           'name': 'minterAllowance',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'name',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'owner', 'type': 'address'}
+            {'internalType': 'address', 'name': 'owner', 'type': 'address'},
           ],
           'name': 'nonces',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'owner',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'address', 'name': '', 'type': 'address'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'pause',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'paused',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'pauser',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'address', 'name': '', 'type': 'address'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -985,12 +989,12 @@ class ARBUSDCContract implements SmartContract {
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
             {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
             {'internalType': 'uint256', 'name': 'deadline', 'type': 'uint256'},
-            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'}
+            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'},
           ],
           'name': 'permit',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -1000,12 +1004,12 @@ class ARBUSDCContract implements SmartContract {
             {'internalType': 'uint256', 'name': 'deadline', 'type': 'uint256'},
             {'internalType': 'uint8', 'name': 'v', 'type': 'uint8'},
             {'internalType': 'bytes32', 'name': 'r', 'type': 'bytes32'},
-            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'},
           ],
           'name': 'permit',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -1023,12 +1027,12 @@ class ARBUSDCContract implements SmartContract {
               'type': 'uint256'
             },
             {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
-            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'}
+            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'},
           ],
           'name': 'receiveWithAuthorization',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -1048,99 +1052,99 @@ class ARBUSDCContract implements SmartContract {
             {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
             {'internalType': 'uint8', 'name': 'v', 'type': 'uint8'},
             {'internalType': 'bytes32', 'name': 'r', 'type': 'bytes32'},
-            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'},
           ],
           'name': 'receiveWithAuthorization',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'minter', 'type': 'address'}
+            {'internalType': 'address', 'name': 'minter', 'type': 'address'},
           ],
           'name': 'removeMinter',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {
               'internalType': 'contract IERC20',
               'name': 'tokenContract',
-              'type': 'address'
+              'type': 'address',
             },
             {'internalType': 'address', 'name': 'to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'},
           ],
           'name': 'rescueERC20',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'rescuer',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'address', 'name': '', 'type': 'address'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'symbol',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'totalSupply',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'transfer',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'from', 'type': 'address'},
             {'internalType': 'address', 'name': 'to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'transferFrom',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'}
+            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'},
           ],
           'name': 'transferOwnership',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -1158,12 +1162,12 @@ class ARBUSDCContract implements SmartContract {
               'type': 'uint256'
             },
             {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
-            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'}
+            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'},
           ],
           'name': 'transferWithAuthorization',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -1183,82 +1187,90 @@ class ARBUSDCContract implements SmartContract {
             {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
             {'internalType': 'uint8', 'name': 'v', 'type': 'uint8'},
             {'internalType': 'bytes32', 'name': 'r', 'type': 'bytes32'},
-            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'},
           ],
           'name': 'transferWithAuthorization',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': '_account', 'type': 'address'}
+            {'internalType': 'address', 'name': '_account', 'type': 'address'},
           ],
           'name': 'unBlacklist',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'unpause',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {
               'internalType': 'address',
               'name': '_newBlacklister',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'updateBlacklister',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {
               'internalType': 'address',
               'name': '_newMasterMinter',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'updateMasterMinter',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': '_newPauser', 'type': 'address'}
+            {
+              'internalType': 'address',
+              'name': '_newPauser',
+              'type': 'address'
+            },
           ],
           'name': 'updatePauser',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'newRescuer', 'type': 'address'}
+            {
+              'internalType': 'address',
+              'name': 'newRescuer',
+              'type': 'address'
+            },
           ],
           'name': 'updateRescuer',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'version',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'pure',
-          'type': 'function'
-        }
+          'type': 'function',
+        },
       ];
 }
 
@@ -1279,23 +1291,23 @@ class BASEUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'owner',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'spender',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'value',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Approval',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -1304,17 +1316,17 @@ class BASEUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'authorizer',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'bytes32',
               'name': 'nonce',
-              'type': 'bytes32'
-            }
+              'type': 'bytes32',
+            },
           ],
           'name': 'AuthorizationCanceled',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -1323,17 +1335,17 @@ class BASEUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'authorizer',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'bytes32',
               'name': 'nonce',
-              'type': 'bytes32'
-            }
+              'type': 'bytes32',
+            },
           ],
           'name': 'AuthorizationUsed',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -1342,11 +1354,11 @@ class BASEUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': '_account',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'Blacklisted',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -1355,11 +1367,11 @@ class BASEUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'newBlacklister',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'BlacklisterChanged',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -1368,17 +1380,17 @@ class BASEUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'burner',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'amount',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Burn',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -1387,11 +1399,11 @@ class BASEUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'newMasterMinter',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'MasterMinterChanged',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -1400,23 +1412,23 @@ class BASEUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'minter',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'to',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'amount',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Mint',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -1425,17 +1437,17 @@ class BASEUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'minter',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'minterAllowedAmount',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'MinterConfigured',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -1444,11 +1456,11 @@ class BASEUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'oldMinter',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'MinterRemoved',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -1457,17 +1469,17 @@ class BASEUSDCContract implements SmartContract {
               'indexed': false,
               'internalType': 'address',
               'name': 'previousOwner',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'address',
               'name': 'newOwner',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'OwnershipTransferred',
-          'type': 'event'
+          'type': 'event',
         },
         {'anonymous': false, 'inputs': [], 'name': 'Pause', 'type': 'event'},
         {
@@ -1477,11 +1489,11 @@ class BASEUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'newAddress',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'PauserChanged',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -1490,11 +1502,11 @@ class BASEUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'newRescuer',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'RescuerChanged',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -1503,23 +1515,23 @@ class BASEUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'from',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'to',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'value',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Transfer',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -1528,81 +1540,81 @@ class BASEUSDCContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': '_account',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'UnBlacklisted',
-          'type': 'event'
+          'type': 'event',
         },
         {'anonymous': false, 'inputs': [], 'name': 'Unpause', 'type': 'event'},
         {
           'inputs': [],
           'name': 'CANCEL_AUTHORIZATION_TYPEHASH',
           'outputs': [
-            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'DOMAIN_SEPARATOR',
           'outputs': [
-            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'PERMIT_TYPEHASH',
           'outputs': [
-            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'RECEIVE_WITH_AUTHORIZATION_TYPEHASH',
           'outputs': [
-            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'TRANSFER_WITH_AUTHORIZATION_TYPEHASH',
           'outputs': [
-            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'owner', 'type': 'address'},
-            {'internalType': 'address', 'name': 'spender', 'type': 'address'}
+            {'internalType': 'address', 'name': 'spender', 'type': 'address'},
           ],
           'name': 'allowance',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'approve',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -1611,52 +1623,52 @@ class BASEUSDCContract implements SmartContract {
               'name': 'authorizer',
               'type': 'address'
             },
-            {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
           ],
           'name': 'authorizationState',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'}
+            {'internalType': 'address', 'name': 'account', 'type': 'address'},
           ],
           'name': 'balanceOf',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': '_account', 'type': 'address'}
+            {'internalType': 'address', 'name': '_account', 'type': 'address'},
           ],
           'name': 'blacklist',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'blacklister',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'address', 'name': '', 'type': 'address'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'uint256', 'name': '_amount', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '_amount', 'type': 'uint256'},
           ],
           'name': 'burn',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -1668,12 +1680,12 @@ class BASEUSDCContract implements SmartContract {
             {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
             {'internalType': 'uint8', 'name': 'v', 'type': 'uint8'},
             {'internalType': 'bytes32', 'name': 'r', 'type': 'bytes32'},
-            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'},
           ],
           'name': 'cancelAuthorization',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -1683,12 +1695,12 @@ class BASEUSDCContract implements SmartContract {
               'type': 'address'
             },
             {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
-            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'}
+            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'},
           ],
           'name': 'cancelAuthorization',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -1696,57 +1708,57 @@ class BASEUSDCContract implements SmartContract {
             {
               'internalType': 'uint256',
               'name': 'minterAllowedAmount',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'configureMinter',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'currency',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'decimals',
           'outputs': [
-            {'internalType': 'uint8', 'name': '', 'type': 'uint8'}
+            {'internalType': 'uint8', 'name': '', 'type': 'uint8'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'decrement', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'decrement', 'type': 'uint256'},
           ],
           'name': 'decreaseAllowance',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'increment', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'increment', 'type': 'uint256'},
           ],
           'name': 'increaseAllowance',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -1761,29 +1773,29 @@ class BASEUSDCContract implements SmartContract {
             {
               'internalType': 'address',
               'name': 'newMasterMinter',
-              'type': 'address'
+              'type': 'address',
             },
             {'internalType': 'address', 'name': 'newPauser', 'type': 'address'},
             {
               'internalType': 'address',
               'name': 'newBlacklister',
-              'type': 'address'
+              'type': 'address',
             },
-            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'}
+            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'},
           ],
           'name': 'initialize',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'string', 'name': 'newName', 'type': 'string'}
+            {'internalType': 'string', 'name': 'newName', 'type': 'string'},
           ],
           'name': 'initializeV2',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -1791,134 +1803,134 @@ class BASEUSDCContract implements SmartContract {
               'internalType': 'address',
               'name': 'lostAndFound',
               'type': 'address'
-            }
+            },
           ],
           'name': 'initializeV2_1',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {
               'internalType': 'address[]',
               'name': 'accountsToBlacklist',
-              'type': 'address[]'
+              'type': 'address[]',
             },
-            {'internalType': 'string', 'name': 'newSymbol', 'type': 'string'}
+            {'internalType': 'string', 'name': 'newSymbol', 'type': 'string'},
           ],
           'name': 'initializeV2_2',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': '_account', 'type': 'address'}
+            {'internalType': 'address', 'name': '_account', 'type': 'address'},
           ],
           'name': 'isBlacklisted',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'}
+            {'internalType': 'address', 'name': 'account', 'type': 'address'},
           ],
           'name': 'isMinter',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'masterMinter',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'address', 'name': '', 'type': 'address'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': '_to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': '_amount', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '_amount', 'type': 'uint256'},
           ],
           'name': 'mint',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'minter', 'type': 'address'}
+            {'internalType': 'address', 'name': 'minter', 'type': 'address'},
           ],
           'name': 'minterAllowance',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'name',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'owner', 'type': 'address'}
+            {'internalType': 'address', 'name': 'owner', 'type': 'address'},
           ],
           'name': 'nonces',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'owner',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'address', 'name': '', 'type': 'address'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'pause',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'paused',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'pauser',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'address', 'name': '', 'type': 'address'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -1926,12 +1938,12 @@ class BASEUSDCContract implements SmartContract {
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
             {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
             {'internalType': 'uint256', 'name': 'deadline', 'type': 'uint256'},
-            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'}
+            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'},
           ],
           'name': 'permit',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -1941,12 +1953,12 @@ class BASEUSDCContract implements SmartContract {
             {'internalType': 'uint256', 'name': 'deadline', 'type': 'uint256'},
             {'internalType': 'uint8', 'name': 'v', 'type': 'uint8'},
             {'internalType': 'bytes32', 'name': 'r', 'type': 'bytes32'},
-            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'},
           ],
           'name': 'permit',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -1964,12 +1976,12 @@ class BASEUSDCContract implements SmartContract {
               'type': 'uint256'
             },
             {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
-            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'}
+            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'},
           ],
           'name': 'receiveWithAuthorization',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -1989,99 +2001,99 @@ class BASEUSDCContract implements SmartContract {
             {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
             {'internalType': 'uint8', 'name': 'v', 'type': 'uint8'},
             {'internalType': 'bytes32', 'name': 'r', 'type': 'bytes32'},
-            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'},
           ],
           'name': 'receiveWithAuthorization',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'minter', 'type': 'address'}
+            {'internalType': 'address', 'name': 'minter', 'type': 'address'},
           ],
           'name': 'removeMinter',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {
               'internalType': 'contract IERC20',
               'name': 'tokenContract',
-              'type': 'address'
+              'type': 'address',
             },
             {'internalType': 'address', 'name': 'to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'},
           ],
           'name': 'rescueERC20',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'rescuer',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'address', 'name': '', 'type': 'address'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'symbol',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'totalSupply',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'transfer',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'from', 'type': 'address'},
             {'internalType': 'address', 'name': 'to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'transferFrom',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'}
+            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'},
           ],
           'name': 'transferOwnership',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -2099,12 +2111,12 @@ class BASEUSDCContract implements SmartContract {
               'type': 'uint256'
             },
             {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
-            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'}
+            {'internalType': 'bytes', 'name': 'signature', 'type': 'bytes'},
           ],
           'name': 'transferWithAuthorization',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -2124,82 +2136,90 @@ class BASEUSDCContract implements SmartContract {
             {'internalType': 'bytes32', 'name': 'nonce', 'type': 'bytes32'},
             {'internalType': 'uint8', 'name': 'v', 'type': 'uint8'},
             {'internalType': 'bytes32', 'name': 'r', 'type': 'bytes32'},
-            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'},
           ],
           'name': 'transferWithAuthorization',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': '_account', 'type': 'address'}
+            {'internalType': 'address', 'name': '_account', 'type': 'address'},
           ],
           'name': 'unBlacklist',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'unpause',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {
               'internalType': 'address',
               'name': '_newBlacklister',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'updateBlacklister',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {
               'internalType': 'address',
               'name': '_newMasterMinter',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'updateMasterMinter',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': '_newPauser', 'type': 'address'}
+            {
+              'internalType': 'address',
+              'name': '_newPauser',
+              'type': 'address'
+            },
           ],
           'name': 'updatePauser',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'newRescuer', 'type': 'address'}
+            {
+              'internalType': 'address',
+              'name': 'newRescuer',
+              'type': 'address'
+            },
           ],
           'name': 'updateRescuer',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'version',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'pure',
-          'type': 'function'
-        }
+          'type': 'function',
+        },
       ];
 }
 
@@ -2225,70 +2245,70 @@ class SepoliaTestContract implements SmartContract {
               'internalType': 'address',
               'name': 'initialOwner',
               'type': 'address'
-            }
+            },
           ],
           'stateMutability': 'nonpayable',
-          'type': 'constructor'
+          'type': 'constructor',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
             {'internalType': 'uint256', 'name': 'allowance', 'type': 'uint256'},
-            {'internalType': 'uint256', 'name': 'needed', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'needed', 'type': 'uint256'},
           ],
           'name': 'ERC20InsufficientAllowance',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'sender', 'type': 'address'},
             {'internalType': 'uint256', 'name': 'balance', 'type': 'uint256'},
-            {'internalType': 'uint256', 'name': 'needed', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'needed', 'type': 'uint256'},
           ],
           'name': 'ERC20InsufficientBalance',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'approver', 'type': 'address'}
+            {'internalType': 'address', 'name': 'approver', 'type': 'address'},
           ],
           'name': 'ERC20InvalidApprover',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'receiver', 'type': 'address'}
+            {'internalType': 'address', 'name': 'receiver', 'type': 'address'},
           ],
           'name': 'ERC20InvalidReceiver',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'sender', 'type': 'address'}
+            {'internalType': 'address', 'name': 'sender', 'type': 'address'},
           ],
           'name': 'ERC20InvalidSender',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'spender', 'type': 'address'}
+            {'internalType': 'address', 'name': 'spender', 'type': 'address'},
           ],
           'name': 'ERC20InvalidSpender',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'owner', 'type': 'address'}
+            {'internalType': 'address', 'name': 'owner', 'type': 'address'},
           ],
           'name': 'OwnableInvalidOwner',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'}
+            {'internalType': 'address', 'name': 'account', 'type': 'address'},
           ],
           'name': 'OwnableUnauthorizedAccount',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'anonymous': false,
@@ -2297,23 +2317,23 @@ class SepoliaTestContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'owner',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'spender',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'value',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Approval',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -2322,17 +2342,17 @@ class SepoliaTestContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'previousOwner',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'newOwner',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'OwnershipTransferred',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -2341,155 +2361,155 @@ class SepoliaTestContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'from',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'to',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'value',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Transfer',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'owner', 'type': 'address'},
-            {'internalType': 'address', 'name': 'spender', 'type': 'address'}
+            {'internalType': 'address', 'name': 'spender', 'type': 'address'},
           ],
           'name': 'allowance',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'approve',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'}
+            {'internalType': 'address', 'name': 'account', 'type': 'address'},
           ],
           'name': 'balanceOf',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'decimals',
           'outputs': [
-            {'internalType': 'uint8', 'name': '', 'type': 'uint8'}
+            {'internalType': 'uint8', 'name': '', 'type': 'uint8'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'},
           ],
           'name': 'mint',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'name',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'owner',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'address', 'name': '', 'type': 'address'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'renounceOwnership',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'symbol',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'totalSupply',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'transfer',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'from', 'type': 'address'},
             {'internalType': 'address', 'name': 'to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'transferFrom',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'}
+            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'},
           ],
           'name': 'transferOwnership',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
-        }
+          'type': 'function',
+        },
       ];
 }
 
@@ -2508,137 +2528,137 @@ class ERC20USDTContract implements SmartContract {
           'inputs': [],
           'name': 'name',
           'outputs': [
-            {'name': '', 'type': 'string'}
+            {'name': '', 'type': 'string'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': false,
           'inputs': [
-            {'name': '_upgradedAddress', 'type': 'address'}
+            {'name': '_upgradedAddress', 'type': 'address'},
           ],
           'name': 'deprecate',
           'outputs': [],
           'payable': false,
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': false,
           'inputs': [
             {'name': '_spender', 'type': 'address'},
-            {'name': '_value', 'type': 'uint256'}
+            {'name': '_value', 'type': 'uint256'},
           ],
           'name': 'approve',
           'outputs': [],
           'payable': false,
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [],
           'name': 'deprecated',
           'outputs': [
-            {'name': '', 'type': 'bool'}
+            {'name': '', 'type': 'bool'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': false,
           'inputs': [
-            {'name': '_evilUser', 'type': 'address'}
+            {'name': '_evilUser', 'type': 'address'},
           ],
           'name': 'addBlackList',
           'outputs': [],
           'payable': false,
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [],
           'name': 'totalSupply',
           'outputs': [
-            {'name': '', 'type': 'uint256'}
+            {'name': '', 'type': 'uint256'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': false,
           'inputs': [
             {'name': '_from', 'type': 'address'},
             {'name': '_to', 'type': 'address'},
-            {'name': '_value', 'type': 'uint256'}
+            {'name': '_value', 'type': 'uint256'},
           ],
           'name': 'transferFrom',
           'outputs': [],
           'payable': false,
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [],
           'name': 'upgradedAddress',
           'outputs': [
-            {'name': '', 'type': 'address'}
+            {'name': '', 'type': 'address'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [
-            {'name': '', 'type': 'address'}
+            {'name': '', 'type': 'address'},
           ],
           'name': 'balances',
           'outputs': [
-            {'name': '', 'type': 'uint256'}
+            {'name': '', 'type': 'uint256'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [],
           'name': 'decimals',
           'outputs': [
-            {'name': '', 'type': 'uint256'}
+            {'name': '', 'type': 'uint256'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [],
           'name': 'maximumFee',
           'outputs': [
-            {'name': '', 'type': 'uint256'}
+            {'name': '', 'type': 'uint256'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [],
           'name': '_totalSupply',
           'outputs': [
-            {'name': '', 'type': 'uint256'}
+            {'name': '', 'type': 'uint256'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': false,
@@ -2647,58 +2667,58 @@ class ERC20USDTContract implements SmartContract {
           'outputs': [],
           'payable': false,
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [
-            {'name': '_maker', 'type': 'address'}
+            {'name': '_maker', 'type': 'address'},
           ],
           'name': 'getBlackListStatus',
           'outputs': [
-            {'name': '', 'type': 'bool'}
+            {'name': '', 'type': 'bool'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [
             {'name': '', 'type': 'address'},
-            {'name': '', 'type': 'address'}
+            {'name': '', 'type': 'address'},
           ],
           'name': 'allowed',
           'outputs': [
-            {'name': '', 'type': 'uint256'}
+            {'name': '', 'type': 'uint256'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [],
           'name': 'paused',
           'outputs': [
-            {'name': '', 'type': 'bool'}
+            {'name': '', 'type': 'bool'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [
-            {'name': 'who', 'type': 'address'}
+            {'name': 'who', 'type': 'address'},
           ],
           'name': 'balanceOf',
           'outputs': [
-            {'name': '', 'type': 'uint256'}
+            {'name': '', 'type': 'uint256'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': false,
@@ -2707,260 +2727,260 @@ class ERC20USDTContract implements SmartContract {
           'outputs': [],
           'payable': false,
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [],
           'name': 'getOwner',
           'outputs': [
-            {'name': '', 'type': 'address'}
+            {'name': '', 'type': 'address'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [],
           'name': 'owner',
           'outputs': [
-            {'name': '', 'type': 'address'}
+            {'name': '', 'type': 'address'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [],
           'name': 'symbol',
           'outputs': [
-            {'name': '', 'type': 'string'}
+            {'name': '', 'type': 'string'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': false,
           'inputs': [
             {'name': '_to', 'type': 'address'},
-            {'name': '_value', 'type': 'uint256'}
+            {'name': '_value', 'type': 'uint256'},
           ],
           'name': 'transfer',
           'outputs': [],
           'payable': false,
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': false,
           'inputs': [
             {'name': 'newBasisPoints', 'type': 'uint256'},
-            {'name': 'newMaxFee', 'type': 'uint256'}
+            {'name': 'newMaxFee', 'type': 'uint256'},
           ],
           'name': 'setParams',
           'outputs': [],
           'payable': false,
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': false,
           'inputs': [
-            {'name': 'amount', 'type': 'uint256'}
+            {'name': 'amount', 'type': 'uint256'},
           ],
           'name': 'issue',
           'outputs': [],
           'payable': false,
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': false,
           'inputs': [
-            {'name': 'amount', 'type': 'uint256'}
+            {'name': 'amount', 'type': 'uint256'},
           ],
           'name': 'redeem',
           'outputs': [],
           'payable': false,
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [
             {'name': '_owner', 'type': 'address'},
-            {'name': '_spender', 'type': 'address'}
+            {'name': '_spender', 'type': 'address'},
           ],
           'name': 'allowance',
           'outputs': [
-            {'name': 'remaining', 'type': 'uint256'}
+            {'name': 'remaining', 'type': 'uint256'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [],
           'name': 'basisPointsRate',
           'outputs': [
-            {'name': '', 'type': 'uint256'}
+            {'name': '', 'type': 'uint256'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [
-            {'name': '', 'type': 'address'}
+            {'name': '', 'type': 'address'},
           ],
           'name': 'isBlackListed',
           'outputs': [
-            {'name': '', 'type': 'bool'}
+            {'name': '', 'type': 'bool'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': false,
           'inputs': [
-            {'name': '_clearedUser', 'type': 'address'}
+            {'name': '_clearedUser', 'type': 'address'},
           ],
           'name': 'removeBlackList',
           'outputs': [],
           'payable': false,
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': true,
           'inputs': [],
           'name': 'MAX_UINT',
           'outputs': [
-            {'name': '', 'type': 'uint256'}
+            {'name': '', 'type': 'uint256'},
           ],
           'payable': false,
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': false,
           'inputs': [
-            {'name': 'newOwner', 'type': 'address'}
+            {'name': 'newOwner', 'type': 'address'},
           ],
           'name': 'transferOwnership',
           'outputs': [],
           'payable': false,
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'constant': false,
           'inputs': [
-            {'name': '_blackListedUser', 'type': 'address'}
+            {'name': '_blackListedUser', 'type': 'address'},
           ],
           'name': 'destroyBlackFunds',
           'outputs': [],
           'payable': false,
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'name': '_initialSupply', 'type': 'uint256'},
             {'name': '_name', 'type': 'string'},
             {'name': '_symbol', 'type': 'string'},
-            {'name': '_decimals', 'type': 'uint256'}
+            {'name': '_decimals', 'type': 'uint256'},
           ],
           'payable': false,
           'stateMutability': 'nonpayable',
-          'type': 'constructor'
+          'type': 'constructor',
         },
         {
           'anonymous': false,
           'inputs': [
-            {'indexed': false, 'name': 'amount', 'type': 'uint256'}
+            {'indexed': false, 'name': 'amount', 'type': 'uint256'},
           ],
           'name': 'Issue',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
           'inputs': [
-            {'indexed': false, 'name': 'amount', 'type': 'uint256'}
+            {'indexed': false, 'name': 'amount', 'type': 'uint256'},
           ],
           'name': 'Redeem',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
           'inputs': [
-            {'indexed': false, 'name': 'newAddress', 'type': 'address'}
+            {'indexed': false, 'name': 'newAddress', 'type': 'address'},
           ],
           'name': 'Deprecate',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
           'inputs': [
             {'indexed': false, 'name': 'feeBasisPoints', 'type': 'uint256'},
-            {'indexed': false, 'name': 'maxFee', 'type': 'uint256'}
+            {'indexed': false, 'name': 'maxFee', 'type': 'uint256'},
           ],
           'name': 'Params',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
           'inputs': [
             {'indexed': false, 'name': '_blackListedUser', 'type': 'address'},
-            {'indexed': false, 'name': '_balance', 'type': 'uint256'}
+            {'indexed': false, 'name': '_balance', 'type': 'uint256'},
           ],
           'name': 'DestroyedBlackFunds',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
           'inputs': [
-            {'indexed': false, 'name': '_user', 'type': 'address'}
+            {'indexed': false, 'name': '_user', 'type': 'address'},
           ],
           'name': 'AddedBlackList',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
           'inputs': [
-            {'indexed': false, 'name': '_user', 'type': 'address'}
+            {'indexed': false, 'name': '_user', 'type': 'address'},
           ],
           'name': 'RemovedBlackList',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
           'inputs': [
             {'indexed': true, 'name': 'owner', 'type': 'address'},
             {'indexed': true, 'name': 'spender', 'type': 'address'},
-            {'indexed': false, 'name': 'value', 'type': 'uint256'}
+            {'indexed': false, 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'Approval',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
           'inputs': [
             {'indexed': true, 'name': 'from', 'type': 'address'},
             {'indexed': true, 'name': 'to', 'type': 'address'},
-            {'indexed': false, 'name': 'value', 'type': 'uint256'}
+            {'indexed': false, 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'Transfer',
-          'type': 'event'
+          'type': 'event',
         },
         {'anonymous': false, 'inputs': [], 'name': 'Pause', 'type': 'event'},
-        {'anonymous': false, 'inputs': [], 'name': 'Unpause', 'type': 'event'}
+        {'anonymous': false, 'inputs': [], 'name': 'Unpause', 'type': 'event'},
       ];
 }
 
@@ -2979,98 +2999,98 @@ class WCTOPETHContract implements SmartContract {
         {'inputs': [], 'name': 'ECDSAInvalidSignature', 'type': 'error'},
         {
           'inputs': [
-            {'internalType': 'uint256', 'name': 'length', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'length', 'type': 'uint256'},
           ],
           'name': 'ECDSAInvalidSignatureLength',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'},
           ],
           'name': 'ECDSAInvalidSignatureS',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
             {
               'internalType': 'uint256',
               'name': 'increasedSupply',
-              'type': 'uint256'
+              'type': 'uint256',
             },
-            {'internalType': 'uint256', 'name': 'cap', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'cap', 'type': 'uint256'},
           ],
           'name': 'ERC20ExceededSafeSupply',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
             {'internalType': 'uint256', 'name': 'allowance', 'type': 'uint256'},
-            {'internalType': 'uint256', 'name': 'needed', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'needed', 'type': 'uint256'},
           ],
           'name': 'ERC20InsufficientAllowance',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'sender', 'type': 'address'},
             {'internalType': 'uint256', 'name': 'balance', 'type': 'uint256'},
-            {'internalType': 'uint256', 'name': 'needed', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'needed', 'type': 'uint256'},
           ],
           'name': 'ERC20InsufficientBalance',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'approver', 'type': 'address'}
+            {'internalType': 'address', 'name': 'approver', 'type': 'address'},
           ],
           'name': 'ERC20InvalidApprover',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'receiver', 'type': 'address'}
+            {'internalType': 'address', 'name': 'receiver', 'type': 'address'},
           ],
           'name': 'ERC20InvalidReceiver',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'sender', 'type': 'address'}
+            {'internalType': 'address', 'name': 'sender', 'type': 'address'},
           ],
           'name': 'ERC20InvalidSender',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'spender', 'type': 'address'}
+            {'internalType': 'address', 'name': 'spender', 'type': 'address'},
           ],
           'name': 'ERC20InvalidSpender',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'uint256', 'name': 'deadline', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'deadline', 'type': 'uint256'},
           ],
           'name': 'ERC2612ExpiredSignature',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'signer', 'type': 'address'},
-            {'internalType': 'address', 'name': 'owner', 'type': 'address'}
+            {'internalType': 'address', 'name': 'owner', 'type': 'address'},
           ],
           'name': 'ERC2612InvalidSigner',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
             {'internalType': 'uint256', 'name': 'timepoint', 'type': 'uint256'},
-            {'internalType': 'uint48', 'name': 'clock', 'type': 'uint48'}
+            {'internalType': 'uint48', 'name': 'clock', 'type': 'uint48'},
           ],
           'name': 'ERC5805FutureLookup',
-          'type': 'error'
+          'type': 'error',
         },
         {'inputs': [], 'name': 'ERC6372InconsistentClock', 'type': 'error'},
         {
@@ -3080,41 +3100,41 @@ class WCTOPETHContract implements SmartContract {
               'internalType': 'uint256',
               'name': 'currentNonce',
               'type': 'uint256'
-            }
+            },
           ],
           'name': 'InvalidAccountNonce',
-          'type': 'error'
+          'type': 'error',
         },
         {'inputs': [], 'name': 'InvalidInitialization', 'type': 'error'},
         {'inputs': [], 'name': 'NotInitializing', 'type': 'error'},
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'owner', 'type': 'address'}
+            {'internalType': 'address', 'name': 'owner', 'type': 'address'},
           ],
           'name': 'OwnableInvalidOwner',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'}
+            {'internalType': 'address', 'name': 'account', 'type': 'address'},
           ],
           'name': 'OwnableUnauthorizedAccount',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
             {'internalType': 'uint8', 'name': 'bits', 'type': 'uint8'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'SafeCastOverflowedUintDowncast',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'uint256', 'name': 'expiry', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'expiry', 'type': 'uint256'},
           ],
           'name': 'VotesExpiredSignature',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'anonymous': false,
@@ -3123,23 +3143,23 @@ class WCTOPETHContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'owner',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'spender',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'value',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Approval',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -3148,23 +3168,23 @@ class WCTOPETHContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'delegator',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'fromDelegate',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'toDelegate',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'DelegateChanged',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -3173,29 +3193,29 @@ class WCTOPETHContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'delegate',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'previousVotes',
-              'type': 'uint256'
+              'type': 'uint256',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'newVotes',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'DelegateVotesChanged',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
           'inputs': [],
           'name': 'EIP712DomainChanged',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -3204,11 +3224,11 @@ class WCTOPETHContract implements SmartContract {
               'indexed': false,
               'internalType': 'uint64',
               'name': 'version',
-              'type': 'uint64'
-            }
+              'type': 'uint64',
+            },
           ],
           'name': 'Initialized',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -3217,17 +3237,17 @@ class WCTOPETHContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'previousOwner',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'newOwner',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'OwnershipTransferred',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -3236,142 +3256,146 @@ class WCTOPETHContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'from',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'to',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'value',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Transfer',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'inputs': [],
           'name': 'CLOCK_MODE',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'pure',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'DOMAIN_SEPARATOR',
           'outputs': [
-            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': '', 'type': 'bytes32'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'owner', 'type': 'address'},
-            {'internalType': 'address', 'name': 'spender', 'type': 'address'}
+            {'internalType': 'address', 'name': 'spender', 'type': 'address'},
           ],
           'name': 'allowance',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'approve',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'}
+            {'internalType': 'address', 'name': 'account', 'type': 'address'},
           ],
           'name': 'balanceOf',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'burn',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'account', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'burnFrom',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'account', 'type': 'address'},
-            {'internalType': 'uint32', 'name': 'pos', 'type': 'uint32'}
+            {'internalType': 'uint32', 'name': 'pos', 'type': 'uint32'},
           ],
           'name': 'checkpoints',
           'outputs': [
             {
               'components': [
                 {'internalType': 'uint48', 'name': '_key', 'type': 'uint48'},
-                {'internalType': 'uint208', 'name': '_value', 'type': 'uint208'}
+                {
+                  'internalType': 'uint208',
+                  'name': '_value',
+                  'type': 'uint208'
+                },
               ],
               'internalType': 'struct Checkpoints.Checkpoint208',
               'name': '',
-              'type': 'tuple'
-            }
+              'type': 'tuple',
+            },
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'clock',
           'outputs': [
-            {'internalType': 'uint48', 'name': '', 'type': 'uint48'}
+            {'internalType': 'uint48', 'name': '', 'type': 'uint48'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'decimals',
           'outputs': [
-            {'internalType': 'uint8', 'name': '', 'type': 'uint8'}
+            {'internalType': 'uint8', 'name': '', 'type': 'uint8'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'delegatee', 'type': 'address'}
+            {'internalType': 'address', 'name': 'delegatee', 'type': 'address'},
           ],
           'name': 'delegate',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -3380,23 +3404,23 @@ class WCTOPETHContract implements SmartContract {
             {'internalType': 'uint256', 'name': 'expiry', 'type': 'uint256'},
             {'internalType': 'uint8', 'name': 'v', 'type': 'uint8'},
             {'internalType': 'bytes32', 'name': 'r', 'type': 'bytes32'},
-            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'},
           ],
           'name': 'delegateBySig',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'}
+            {'internalType': 'address', 'name': 'account', 'type': 'address'},
           ],
           'name': 'delegates',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'address', 'name': '', 'type': 'address'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
@@ -3409,51 +3433,51 @@ class WCTOPETHContract implements SmartContract {
             {
               'internalType': 'address',
               'name': 'verifyingContract',
-              'type': 'address'
+              'type': 'address',
             },
             {'internalType': 'bytes32', 'name': 'salt', 'type': 'bytes32'},
             {
               'internalType': 'uint256[]',
               'name': 'extensions',
-              'type': 'uint256[]'
-            }
+              'type': 'uint256[]',
+            },
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'uint256', 'name': 'timepoint', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'timepoint', 'type': 'uint256'},
           ],
           'name': 'getPastTotalSupply',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'account', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'timepoint', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'timepoint', 'type': 'uint256'},
           ],
           'name': 'getPastVotes',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'}
+            {'internalType': 'address', 'name': 'account', 'type': 'address'},
           ],
           'name': 'getVotes',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -3462,68 +3486,72 @@ class WCTOPETHContract implements SmartContract {
                 {
                   'internalType': 'address',
                   'name': 'initialOwner',
-                  'type': 'address'
-                }
+                  'type': 'address',
+                },
               ],
               'internalType': 'struct WCT.Init',
               'name': 'init',
-              'type': 'tuple'
-            }
+              'type': 'tuple',
+            },
           ],
           'name': 'initialize',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'account', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'},
           ],
           'name': 'mint',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'name',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'nonceOwner', 'type': 'address'}
+            {
+              'internalType': 'address',
+              'name': 'nonceOwner',
+              'type': 'address'
+            },
           ],
           'name': 'nonces',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'}
+            {'internalType': 'address', 'name': 'account', 'type': 'address'},
           ],
           'name': 'numCheckpoints',
           'outputs': [
-            {'internalType': 'uint32', 'name': '', 'type': 'uint32'}
+            {'internalType': 'uint32', 'name': '', 'type': 'uint32'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'owner',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'address', 'name': '', 'type': 'address'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -3533,72 +3561,72 @@ class WCTOPETHContract implements SmartContract {
             {'internalType': 'uint256', 'name': 'deadline', 'type': 'uint256'},
             {'internalType': 'uint8', 'name': 'v', 'type': 'uint8'},
             {'internalType': 'bytes32', 'name': 'r', 'type': 'bytes32'},
-            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'}
+            {'internalType': 'bytes32', 'name': 's', 'type': 'bytes32'},
           ],
           'name': 'permit',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'renounceOwnership',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'symbol',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'totalSupply',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'transfer',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'from', 'type': 'address'},
             {'internalType': 'address', 'name': 'to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'transferFrom',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'}
+            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'},
           ],
           'name': 'transferOwnership',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
-        }
+          'type': 'function',
+        },
       ];
 }
 
@@ -3618,56 +3646,56 @@ class WrappedSonicContract implements SmartContract {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
             {'internalType': 'uint256', 'name': 'allowance', 'type': 'uint256'},
-            {'internalType': 'uint256', 'name': 'needed', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'needed', 'type': 'uint256'},
           ],
           'name': 'ERC20InsufficientAllowance',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'sender', 'type': 'address'},
             {'internalType': 'uint256', 'name': 'balance', 'type': 'uint256'},
-            {'internalType': 'uint256', 'name': 'needed', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'needed', 'type': 'uint256'},
           ],
           'name': 'ERC20InsufficientBalance',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'approver', 'type': 'address'}
+            {'internalType': 'address', 'name': 'approver', 'type': 'address'},
           ],
           'name': 'ERC20InvalidApprover',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'receiver', 'type': 'address'}
+            {'internalType': 'address', 'name': 'receiver', 'type': 'address'},
           ],
           'name': 'ERC20InvalidReceiver',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'sender', 'type': 'address'}
+            {'internalType': 'address', 'name': 'sender', 'type': 'address'},
           ],
           'name': 'ERC20InvalidSender',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'spender', 'type': 'address'}
+            {'internalType': 'address', 'name': 'spender', 'type': 'address'},
           ],
           'name': 'ERC20InvalidSpender',
-          'type': 'error'
+          'type': 'error',
         },
         {'inputs': [], 'name': 'ERC20InvalidZeroDeposit', 'type': 'error'},
         {
           'inputs': [
             {'internalType': 'address', 'name': 'recipient', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'ERC20WithdrawFailed',
-          'type': 'error'
+          'type': 'error',
         },
         {
           'anonymous': false,
@@ -3676,23 +3704,23 @@ class WrappedSonicContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'owner',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'spender',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'value',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Approval',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -3701,17 +3729,17 @@ class WrappedSonicContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'account',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'value',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Deposit',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -3720,23 +3748,23 @@ class WrappedSonicContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'from',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'to',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'value',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Transfer',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -3745,154 +3773,154 @@ class WrappedSonicContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'account',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'value',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Withdrawal',
-          'type': 'event'
+          'type': 'event',
         },
         {'stateMutability': 'payable', 'type': 'fallback'},
         {
           'inputs': [
             {'internalType': 'address', 'name': 'owner', 'type': 'address'},
-            {'internalType': 'address', 'name': 'spender', 'type': 'address'}
+            {'internalType': 'address', 'name': 'spender', 'type': 'address'},
           ],
           'name': 'allowance',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'approve',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'}
+            {'internalType': 'address', 'name': 'account', 'type': 'address'},
           ],
           'name': 'balanceOf',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'decimals',
           'outputs': [
-            {'internalType': 'uint8', 'name': '', 'type': 'uint8'}
+            {'internalType': 'uint8', 'name': '', 'type': 'uint8'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'deposit',
           'outputs': [],
           'stateMutability': 'payable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'account', 'type': 'address'}
+            {'internalType': 'address', 'name': 'account', 'type': 'address'},
           ],
           'name': 'depositFor',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'payable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'name',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'symbol',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'totalSupply',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'transfer',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'from', 'type': 'address'},
             {'internalType': 'address', 'name': 'to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'transferFrom',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'withdraw',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'account', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'value', 'type': 'uint256'},
           ],
           'name': 'withdrawTo',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
-        }
+          'type': 'function',
+        },
       ];
 }
 
@@ -3904,23 +3932,27 @@ class PolygonBONSAIContract implements SmartContract {
             {
               'internalType': 'uint96',
               'name': 'initialTokenSupply',
-              'type': 'uint96'
+              'type': 'uint96',
             },
             {
               'internalType': 'address',
               'name': 'initialSupplyOwner',
-              'type': 'address'
+              'type': 'address',
             },
-            {'internalType': 'uint96', 'name': 'tokensPerNft', 'type': 'uint96'}
+            {
+              'internalType': 'uint96',
+              'name': 'tokensPerNft',
+              'type': 'uint96'
+            },
           ],
           'stateMutability': 'nonpayable',
-          'type': 'constructor'
+          'type': 'constructor',
         },
         {'inputs': [], 'name': 'AlreadyInitialized', 'type': 'error'},
         {
           'inputs': [],
           'name': 'ApprovalCallerNotOwnerNorApproved',
-          'type': 'error'
+          'type': 'error',
         },
         {'inputs': [], 'name': 'DNAlreadyInitialized', 'type': 'error'},
         {'inputs': [], 'name': 'InsufficientAllowance', 'type': 'error'},
@@ -3935,7 +3967,7 @@ class PolygonBONSAIContract implements SmartContract {
         {
           'inputs': [],
           'name': 'TransferCallerNotOwnerNorApproved',
-          'type': 'error'
+          'type': 'error',
         },
         {'inputs': [], 'name': 'TransferFromIncorrectOwner', 'type': 'error'},
         {'inputs': [], 'name': 'TransferToZeroAddress', 'type': 'error'},
@@ -3948,23 +3980,23 @@ class PolygonBONSAIContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'owner',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'spender',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'amount',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Approval',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -3973,11 +4005,11 @@ class PolygonBONSAIContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'pendingOwner',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'OwnershipHandoverCanceled',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -3986,11 +4018,11 @@ class PolygonBONSAIContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'pendingOwner',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'OwnershipHandoverRequested',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -3999,17 +4031,17 @@ class PolygonBONSAIContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'oldOwner',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'newOwner',
-              'type': 'address'
-            }
+              'type': 'address',
+            },
           ],
           'name': 'OwnershipTransferred',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -4018,17 +4050,17 @@ class PolygonBONSAIContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'target',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'bool',
               'name': 'status',
-              'type': 'bool'
-            }
+              'type': 'bool',
+            },
           ],
           'name': 'SkipNFTSet',
-          'type': 'event'
+          'type': 'event',
         },
         {
           'anonymous': false,
@@ -4037,66 +4069,66 @@ class PolygonBONSAIContract implements SmartContract {
               'indexed': true,
               'internalType': 'address',
               'name': 'from',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': true,
               'internalType': 'address',
               'name': 'to',
-              'type': 'address'
+              'type': 'address',
             },
             {
               'indexed': false,
               'internalType': 'uint256',
               'name': 'amount',
-              'type': 'uint256'
-            }
+              'type': 'uint256',
+            },
           ],
           'name': 'Transfer',
-          'type': 'event'
+          'type': 'event',
         },
         {'stateMutability': 'payable', 'type': 'fallback'},
         {
           'inputs': [
             {'internalType': 'address', 'name': 'owner', 'type': 'address'},
-            {'internalType': 'address', 'name': 'spender', 'type': 'address'}
+            {'internalType': 'address', 'name': 'spender', 'type': 'address'},
           ],
           'name': 'allowance',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'spender', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'},
           ],
           'name': 'approve',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'owner', 'type': 'address'}
+            {'internalType': 'address', 'name': 'owner', 'type': 'address'},
           ],
           'name': 'balanceOf',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'cancelOwnershipHandover',
           'outputs': [],
           'stateMutability': 'payable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -4104,32 +4136,32 @@ class PolygonBONSAIContract implements SmartContract {
               'internalType': 'address',
               'name': 'pendingOwner',
               'type': 'address'
-            }
+            },
           ],
           'name': 'completeOwnershipHandover',
           'outputs': [],
           'stateMutability': 'payable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'decimals',
           'outputs': [
-            {'internalType': 'uint8', 'name': '', 'type': 'uint8'}
+            {'internalType': 'uint8', 'name': '', 'type': 'uint8'},
           ],
           'stateMutability': 'pure',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'a', 'type': 'address'}
+            {'internalType': 'address', 'name': 'a', 'type': 'address'},
           ],
           'name': 'getSkipNFT',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
@@ -4139,37 +4171,37 @@ class PolygonBONSAIContract implements SmartContract {
               'internalType': 'contract DN404Mirror',
               'name': '',
               'type': 'address'
-            }
+            },
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'mirrorERC721',
           'outputs': [
-            {'internalType': 'address', 'name': '', 'type': 'address'}
+            {'internalType': 'address', 'name': '', 'type': 'address'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'name',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'pure',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'owner',
           'outputs': [
-            {'internalType': 'address', 'name': 'result', 'type': 'address'}
+            {'internalType': 'address', 'name': 'result', 'type': 'address'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
@@ -4177,111 +4209,111 @@ class PolygonBONSAIContract implements SmartContract {
               'internalType': 'address',
               'name': 'pendingOwner',
               'type': 'address'
-            }
+            },
           ],
           'name': 'ownershipHandoverExpiresAt',
           'outputs': [
-            {'internalType': 'uint256', 'name': 'result', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'result', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'renounceOwnership',
           'outputs': [],
           'stateMutability': 'payable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'requestOwnershipHandover',
           'outputs': [],
           'stateMutability': 'payable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'string', 'name': 'baseURI_', 'type': 'string'}
+            {'internalType': 'string', 'name': 'baseURI_', 'type': 'string'},
           ],
           'name': 'setBaseURI',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'bool', 'name': 'skipNFT', 'type': 'bool'}
+            {'internalType': 'bool', 'name': 'skipNFT', 'type': 'bool'},
           ],
           'name': 'setSkipNFT',
           'outputs': [],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'symbol',
           'outputs': [
-            {'internalType': 'string', 'name': '', 'type': 'string'}
+            {'internalType': 'string', 'name': '', 'type': 'string'},
           ],
           'stateMutability': 'pure',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'uint256', 'name': 'tokenId', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'tokenId', 'type': 'uint256'},
           ],
           'name': 'tokenURI',
           'outputs': [
-            {'internalType': 'string', 'name': 'result', 'type': 'string'}
+            {'internalType': 'string', 'name': 'result', 'type': 'string'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [],
           'name': 'totalSupply',
           'outputs': [
-            {'internalType': 'uint256', 'name': '', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': '', 'type': 'uint256'},
           ],
           'stateMutability': 'view',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'},
           ],
           'name': 'transfer',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
             {'internalType': 'address', 'name': 'from', 'type': 'address'},
             {'internalType': 'address', 'name': 'to', 'type': 'address'},
-            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'}
+            {'internalType': 'uint256', 'name': 'amount', 'type': 'uint256'},
           ],
           'name': 'transferFrom',
           'outputs': [
-            {'internalType': 'bool', 'name': '', 'type': 'bool'}
+            {'internalType': 'bool', 'name': '', 'type': 'bool'},
           ],
           'stateMutability': 'nonpayable',
-          'type': 'function'
+          'type': 'function',
         },
         {
           'inputs': [
-            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'}
+            {'internalType': 'address', 'name': 'newOwner', 'type': 'address'},
           ],
           'name': 'transferOwnership',
           'outputs': [],
           'stateMutability': 'payable',
-          'type': 'function'
+          'type': 'function',
         },
-        {'stateMutability': 'payable', 'type': 'receive'}
+        {'stateMutability': 'payable', 'type': 'receive'},
       ];
 
   @override

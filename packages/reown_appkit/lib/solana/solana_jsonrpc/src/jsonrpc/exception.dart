@@ -40,11 +40,7 @@ class JsonRpcExceptionCode {
 @JsonSerializable()
 class JsonRpcException extends SolanaException {
   /// Creates an exception for a failed JSON RPC request.
-  const JsonRpcException(
-    super.message, {
-    super.code,
-    this.data,
-  });
+  const JsonRpcException(super.message, {super.code, this.data});
 
   /// Additional information about the error, defined by the server.
   final dynamic data;

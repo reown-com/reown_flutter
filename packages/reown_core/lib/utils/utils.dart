@@ -13,10 +13,8 @@ import 'package:reown_core/models/uri_parse_result.dart';
 class ReownCoreUtils {
   static bool isExpired(int expiry) {
     return DateTime.now().toUtc().compareTo(
-              DateTime.fromMillisecondsSinceEpoch(
-                toMilliseconds(expiry),
-              ),
-            ) >=
+          DateTime.fromMillisecondsSinceEpoch(toMilliseconds(expiry)),
+        ) >=
         0;
   }
 
@@ -38,8 +36,10 @@ class ReownCoreUtils {
       // TODO change this into an actual value
       return 'web-browser';
     } else {
-      return <String>[Platform.operatingSystem, Platform.operatingSystemVersion]
-          .join('-');
+      return <String>[
+        Platform.operatingSystem,
+        Platform.operatingSystemVersion,
+      ].join('-');
     }
   }
 
@@ -68,11 +68,7 @@ class ReownCoreUtils {
     }
   }
 
-  static String formatUA(
-    String protocol,
-    int version,
-    String sdkVersion,
-  ) {
+  static String formatUA(String protocol, int version, String sdkVersion) {
     String os = getOS();
     String id = getId();
     return <String>[
@@ -101,10 +97,7 @@ class ReownCoreUtils {
     final userAgent = formatUA(protocol, version, sdkVersion);
 
     // Add basic query params
-    final Map<String, String> relayParams = {
-      'auth': auth,
-      'ua': userAgent,
-    };
+    final Map<String, String> relayParams = {'auth': auth, 'ua': userAgent};
 
     // Add projectId query param
     if ((projectId ?? '').isNotEmpty) {
@@ -134,10 +127,7 @@ class ReownCoreUtils {
     String path = uri.path;
     final List<String> splitParams = path.split('@');
     if (splitParams.length == 1) {
-      throw const ReownCoreError(
-        code: 0,
-        message: 'Invalid URI: Missing @',
-      );
+      throw const ReownCoreError(code: 0, message: 'Invalid URI: Missing @');
     }
     List<String> methods = (uri.queryParameters['methods'] ?? '')
         // Replace all the square brackets with empty string, split by comma
@@ -215,8 +205,10 @@ class ReownCoreUtils {
     if ((methods ?? []).isNotEmpty) {
       final uriMethods = methods!.expand((e) => e).toList();
       if (uriMethods.isNotEmpty) {
-        params['methods'] =
-            uriMethods.map((e) => jsonEncode(e)).join(',').replaceAll('"', '');
+        params['methods'] = uriMethods
+            .map((e) => jsonEncode(e))
+            .join(',')
+            .replaceAll('"', '');
       }
     }
 

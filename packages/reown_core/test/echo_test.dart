@@ -24,10 +24,7 @@ void main() {
     core = MockReownCore();
     crypto = MockCrypto();
     http = MockHttpWrapper();
-    echoClient = EchoClient(
-      baseUrl: baseUrl,
-      httpClient: http,
-    );
+    echoClient = EchoClient(baseUrl: baseUrl, httpClient: http);
 
     when(core.projectId).thenReturn('projectId');
     when(core.crypto).thenReturn(crypto);
@@ -36,8 +33,9 @@ void main() {
 
   group('register -', () {
     test('should successfully register the fcm token', () async {
-      when(http.post(any, headers: anyNamed('headers'), body: anyNamed('body')))
-          .thenAnswer((_) async => Response('{"status": "SUCCESS"}', 200));
+      when(
+        http.post(any, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer((_) async => Response('{"status": "SUCCESS"}', 200));
 
       final echo = Echo(core: core, echoClient: echoClient);
       await echo.register(testFcmToken);
@@ -50,8 +48,9 @@ void main() {
     });
 
     test('should return an error on register', () async {
-      when(http.post(any, headers: anyNamed('headers'), body: anyNamed('body')))
-          .thenAnswer((_) async => Response(errorResponse, 400));
+      when(
+        http.post(any, headers: anyNamed('headers'), body: anyNamed('body')),
+      ).thenAnswer((_) async => Response(errorResponse, 400));
 
       final echo = Echo(core: core, echoClient: echoClient);
       await expectLater(
@@ -69,22 +68,22 @@ void main() {
 
   group('unregister -', () {
     test('should successfully unregister the fcm token', () async {
-      when(http.delete(any, headers: anyNamed('headers')))
-          .thenAnswer((_) async => Response('{"status": "SUCCESS"}', 200));
+      when(
+        http.delete(any, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response('{"status": "SUCCESS"}', 200));
 
       final echo = Echo(core: core, echoClient: echoClient);
       await echo.unregister();
 
       verify(core.projectId).called(1);
       verify(crypto.getClientId()).called(1);
-      verify(
-        http.delete(any, headers: anyNamed('headers')),
-      ).called(1);
+      verify(http.delete(any, headers: anyNamed('headers'))).called(1);
     });
 
     test('should return an error on unregister', () async {
-      when(http.delete(any, headers: anyNamed('headers')))
-          .thenAnswer((_) async => Response(errorResponse, 400));
+      when(
+        http.delete(any, headers: anyNamed('headers')),
+      ).thenAnswer((_) async => Response(errorResponse, 400));
 
       final echo = Echo(core: core, echoClient: echoClient);
       await expectLater(
@@ -94,9 +93,7 @@ void main() {
 
       verify(core.projectId).called(1);
       verify(crypto.getClientId()).called(1);
-      verify(
-        http.delete(any, headers: anyNamed('headers')),
-      ).called(1);
+      verify(http.delete(any, headers: anyNamed('headers'))).called(1);
     });
   });
 }

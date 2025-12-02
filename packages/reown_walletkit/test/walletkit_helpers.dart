@@ -129,11 +129,7 @@ class ReownWalletKitHelpers {
         throw Exception('uri is missing');
       }
       if (qrCodeScanLatencyMs != null) {
-        await Future.delayed(
-          Duration(
-            milliseconds: qrCodeScanLatencyMs,
-          ),
-        );
+        await Future.delayed(Duration(milliseconds: qrCodeScanLatencyMs));
       }
 
       final uriParams = ReownCoreUtils.parseUri(connectResponse.uri!);
@@ -170,7 +166,8 @@ class ReownWalletKitHelpers {
     // //     'Waiting for auth response: ${authReqResponse.completer.isCompleted}');
     // authResponse = await authReqResponse.completer.future;
 
-    final settlePairingLatencyMs = DateTime.now().millisecondsSinceEpoch -
+    final settlePairingLatencyMs =
+        DateTime.now().millisecondsSinceEpoch -
         start -
         (qrCodeScanLatencyMs ?? 0);
 
@@ -184,10 +181,7 @@ class ReownWalletKitHelpers {
 
     expect(sessionA.topic, sessionB!.topic);
     // relay
-    expect(
-      sessionA.relay.protocol,
-      TEST_RELAY_OPTIONS['protocol'],
-    );
+    expect(sessionA.relay.protocol, TEST_RELAY_OPTIONS['protocol']);
     expect(sessionA.relay.protocol, sessionB!.relay.protocol);
     // namespaces
     expect(sessionA.namespaces, workingNamespaces);
@@ -228,26 +222,14 @@ class ReownWalletKitHelpers {
     // topic
     expect(pairingA!.topic, pairingB!.topic);
     // relay
-    expect(
-      pairingA.relay.protocol,
-      TEST_RELAY_OPTIONS['protocol'],
-    );
-    expect(
-      pairingB.relay.protocol,
-      TEST_RELAY_OPTIONS['protocol'],
-    );
+    expect(pairingA.relay.protocol, TEST_RELAY_OPTIONS['protocol']);
+    expect(pairingB.relay.protocol, TEST_RELAY_OPTIONS['protocol']);
     // active
     expect(pairingA.active, true);
     expect(pairingB.active, true);
     // metadata
-    expect(
-      pairingA.peerMetadata,
-      sessionA.peer.metadata,
-    );
-    expect(
-      pairingB.peerMetadata,
-      sessionB!.peer.metadata,
-    );
+    expect(pairingA.peerMetadata, sessionA.peer.metadata);
+    expect(pairingB.peerMetadata, sessionB!.peer.metadata);
 
     b.onSessionProposal.unsubscribe(signHandler);
     // b.onAuthRequest.unsubscribe(authHandler);

@@ -16,17 +16,17 @@ void main() {
 
   final List<Future<IReownAppKit> Function(PairingMetadata)> appCreators = [
     (PairingMetadata metadata) async => await ReownAppKit.createInstance(
-          projectId: TEST_PROJECT_ID,
-          relayUrl: TEST_RELAY_URL,
-          memoryStore: true,
-          metadata: metadata,
-          logLevel: LogLevel.info,
-          httpClient: getHttpWrapper(),
-        ),
+      projectId: TEST_PROJECT_ID,
+      relayUrl: TEST_RELAY_URL,
+      memoryStore: true,
+      metadata: metadata,
+      logLevel: LogLevel.info,
+      httpClient: getHttpWrapper(),
+    ),
   ];
   final List<Future<IReownWalletKit> Function(PairingMetadata)> walletCreators =
       [
-    (PairingMetadata metadata) async => await ReownWalletKit.createInstance(
+        (PairingMetadata metadata) async => await ReownWalletKit.createInstance(
           projectId: TEST_PROJECT_ID,
           relayUrl: TEST_RELAY_URL,
           memoryStore: true,
@@ -34,7 +34,7 @@ void main() {
           logLevel: LogLevel.info,
           httpClient: getHttpWrapper(),
         ),
-  ];
+      ];
 
   final List<String> contexts = ['ReownWalletKit'];
 
@@ -122,10 +122,7 @@ void runTests({
           clientA.pairings.getAll().length,
           clientB.pairings.getAll().length,
         );
-        expect(
-          clientA.getActiveSessions().length,
-          1,
-        );
+        expect(clientA.getActiveSessions().length, 1);
         expect(
           clientA.getActiveSessions().length,
           clientB.getActiveSessions().length,

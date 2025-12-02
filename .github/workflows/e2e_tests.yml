@@ -60,7 +60,7 @@ jobs:
           - platform: android
             runner: ubuntu-16core
           - platform: ios
-            runner: macos-14-xlarge
+            runner: macos-26-xlarge
     runs-on: ${{ matrix.runner }}
 
     steps:

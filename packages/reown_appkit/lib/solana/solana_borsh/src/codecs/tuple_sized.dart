@@ -38,7 +38,6 @@ class BorshTupleSizedCodec extends BorshTupleTypedCodec<BorshCodecFixedSized>
 /// An encoder for fixed-length arrays with multiple sized data types.
 class BorshTupleSizedEncoder<T>
     extends BorshTupleTypedEncoder<BorshCodecFixedSized>
-
 /// Not using [BorshEncoderFixedSized] to prevent `0` padding.
 {
   /// Creates an encoder for fixed-length arrays with multiple sized data types.

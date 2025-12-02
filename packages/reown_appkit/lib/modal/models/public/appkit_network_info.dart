@@ -40,13 +40,17 @@ extension ReownAppKitModalNetworkInfoExtension on ReownAppKitModalNetworkInfo {
         'symbol': currency,
         'decimals': decimals ?? 18,
       },
-      'rpcUrls': [
-        rpcUrl,
-        ...extraRpcUrls,
-      ],
-      'blockExplorerUrls': [
-        explorerUrl,
-      ],
+      'rpcUrls': [rpcUrl, ...extraRpcUrls],
+      'blockExplorerUrls': [explorerUrl],
     };
+  }
+
+  String formattedRpcUrl(String projectId) {
+    String formattedRpc = rpcUrl;
+    if (Uri.parse(formattedRpc).host == 'rpc.walletconnect.org') {
+      formattedRpc += '?chainId=$chainId';
+      formattedRpc += '&projectId=$projectId';
+    }
+    return formattedRpc;
   }
 }

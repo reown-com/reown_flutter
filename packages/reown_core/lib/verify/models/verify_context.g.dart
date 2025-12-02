@@ -43,3 +43,21 @@ Map<String, dynamic> _$AttestationResponseToJson(
   'attestationId': instance.attestationId,
   'isScam': instance.isScam,
 };
+
+_VerifyClaims _$VerifyClaimsFromJson(Map<String, dynamic> json) =>
+    _VerifyClaims(
+      origin: json['origin'] as String,
+      id: json['id'] as String,
+      isScam: json['isScam'] as bool?,
+      expiration: (json['exp'] as num).toInt(),
+      isVerified: json['isVerified'] as bool,
+    );
+
+Map<String, dynamic> _$VerifyClaimsToJson(_VerifyClaims instance) =>
+    <String, dynamic>{
+      'origin': instance.origin,
+      'id': instance.id,
+      'isScam': instance.isScam,
+      'exp': instance.expiration,
+      'isVerified': instance.isVerified,
+    };

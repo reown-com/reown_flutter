@@ -24,8 +24,8 @@ class CommitmentAndMinContextSlotConfig extends CommitmentConfig {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory CommitmentAndMinContextSlotConfig.fromJson(
-          final Map<String, dynamic> json) =>
-      _$CommitmentAndMinContextSlotConfigFromJson(json);
+    final Map<String, dynamic> json,
+  ) => _$CommitmentAndMinContextSlotConfigFromJson(json);
 
   @override
   Map<String, dynamic> toJson() =>

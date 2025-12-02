@@ -89,8 +89,7 @@ class CoinbaseService implements ICoinbaseService {
           recent: false,
         );
 
-    final imageId = _coinbaseWalletData?.listing.imageId ?? '';
-    _iconImage = _explorerService.getWalletImageUrl(imageId);
+    _iconImage = _explorerService.getWalletIcon(_coinbaseWalletData);
 
     final walletLink =
         (walletMetadata.metadata.redirect?.linkMode == true

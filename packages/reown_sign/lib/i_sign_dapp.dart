@@ -18,6 +18,7 @@ abstract class IReownSignDapp extends IReownSignCommon {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<Relay>? relays,
+    List<SessionAuthRequestParams>? authentication,
     List<List<String>>? methods,
   });
   Future<dynamic> request({
@@ -32,9 +33,7 @@ abstract class IReownSignDapp extends IReownSignCommon {
     required String event,
     dynamic Function(String, dynamic)? handler,
   });
-  Future<void> ping({
-    required String topic,
-  });
+  Future<void> ping({required String topic});
 
   Future<SessionAuthRequestResponse> authenticate({
     required SessionAuthRequestParams params,

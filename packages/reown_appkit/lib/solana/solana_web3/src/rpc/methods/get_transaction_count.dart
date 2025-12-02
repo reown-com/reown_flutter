@@ -12,10 +12,9 @@ import '../interfaces/json_rpc_type_method.dart';
 /// A codec for `getTransactionCount` JSON RPC methods.
 class GetTransactionCount extends JsonRpcTypeMethod<u64> {
   /// Creates a codec for `getTransactionCount` JSON RPC methods.
-  GetTransactionCount({
-    final GetTransactionCountConfig? config,
-  }) : super(
-          'getTransactionCount',
-          config: config ?? const GetTransactionCountConfig(),
-        );
+  GetTransactionCount({final GetTransactionCountConfig? config})
+    : super(
+        'getTransactionCount',
+        config: config ?? const GetTransactionCountConfig(),
+      );
 }

@@ -24,9 +24,8 @@ sealed class WcPairingDeleteRequest with _$WcPairingDeleteRequest {
 @freezed
 sealed class WcPairingPingRequest with _$WcPairingPingRequest {
   @JsonSerializable()
-  const factory WcPairingPingRequest({
-    required Map<String, dynamic> data,
-  }) = _WcPairingPingRequest;
+  const factory WcPairingPingRequest({required Map<String, dynamic> data}) =
+      _WcPairingPingRequest;
 
   factory WcPairingPingRequest.fromJson(Map<String, dynamic> json) =>
       _$WcPairingPingRequestFromJson(json);
@@ -41,10 +40,29 @@ sealed class WcSessionProposeRequest with _$WcSessionProposeRequest {
     Map<String, RequiredNamespace>? optionalNamespaces,
     Map<String, String>? sessionProperties,
     required ConnectionMetadata proposer,
+    ProposalRequests? requests,
   }) = _WcSessionProposeRequest;
 
   factory WcSessionProposeRequest.fromJson(Map<String, dynamic> json) =>
       _$WcSessionProposeRequestFromJson(json);
+}
+
+@freezed
+sealed class WcSessionSettleRequest with _$WcSessionSettleRequest {
+  @JsonSerializable(includeIfNull: false)
+  const factory WcSessionSettleRequest({
+    required Relay relay,
+    required Map<String, Namespace> namespaces,
+    required int expiry,
+    required ConnectionMetadata controller,
+    Map<String, RequiredNamespace>? requiredNamespaces,
+    Map<String, RequiredNamespace>? optionalNamespaces,
+    Map<String, String>? sessionProperties,
+    ProposalRequestsResponses? proposalRequestsResponses,
+  }) = _WcSessionSettleRequest;
+
+  factory WcSessionSettleRequest.fromJson(Map<String, dynamic> json) =>
+      _$WcSessionSettleRequestFromJson(json);
 }
 
 @freezed
@@ -57,23 +75,6 @@ sealed class WcSessionProposeResponse with _$WcSessionProposeResponse {
 
   factory WcSessionProposeResponse.fromJson(Map<String, dynamic> json) =>
       _$WcSessionProposeResponseFromJson(json);
-}
-
-@freezed
-sealed class WcSessionSettleRequest with _$WcSessionSettleRequest {
-  @JsonSerializable(includeIfNull: false)
-  const factory WcSessionSettleRequest({
-    required Relay relay,
-    required Map<String, Namespace> namespaces,
-    Map<String, RequiredNamespace>? requiredNamespaces,
-    Map<String, RequiredNamespace>? optionalNamespaces,
-    Map<String, String>? sessionProperties,
-    required int expiry,
-    required ConnectionMetadata controller,
-  }) = _WcSessionSettleRequest;
-
-  factory WcSessionSettleRequest.fromJson(Map<String, dynamic> json) =>
-      _$WcSessionSettleRequestFromJson(json);
 }
 
 @freezed
@@ -90,9 +91,8 @@ sealed class WcSessionUpdateRequest with _$WcSessionUpdateRequest {
 @freezed
 sealed class WcSessionExtendRequest with _$WcSessionExtendRequest {
   @JsonSerializable(includeIfNull: false)
-  const factory WcSessionExtendRequest({
-    Map<String, dynamic>? data,
-  }) = _WcSessionExtendRequest;
+  const factory WcSessionExtendRequest({Map<String, dynamic>? data}) =
+      _WcSessionExtendRequest;
 
   factory WcSessionExtendRequest.fromJson(Map<String, dynamic> json) =>
       _$WcSessionExtendRequestFromJson(json);
@@ -114,9 +114,8 @@ sealed class WcSessionDeleteRequest with _$WcSessionDeleteRequest {
 @freezed
 sealed class WcSessionPingRequest with _$WcSessionPingRequest {
   @JsonSerializable(includeIfNull: false)
-  const factory WcSessionPingRequest({
-    Map<String, dynamic>? data,
-  }) = _WcSessionPingRequest;
+  const factory WcSessionPingRequest({Map<String, dynamic>? data}) =
+      _WcSessionPingRequest;
 
   factory WcSessionPingRequest.fromJson(Map<String, dynamic> json) =>
       _$WcSessionPingRequestFromJson(json);
@@ -135,18 +134,6 @@ sealed class WcSessionRequestRequest with _$WcSessionRequestRequest {
 }
 
 @freezed
-sealed class SessionRequestParams with _$SessionRequestParams {
-  @JsonSerializable()
-  const factory SessionRequestParams({
-    required String method,
-    required dynamic params,
-  }) = _SessionRequestParams;
-
-  factory SessionRequestParams.fromJson(Map<String, dynamic> json) =>
-      _$SessionRequestParamsFromJson(json);
-}
-
-@freezed
 sealed class WcSessionEventRequest with _$WcSessionEventRequest {
   @JsonSerializable()
   const factory WcSessionEventRequest({
@@ -156,18 +143,6 @@ sealed class WcSessionEventRequest with _$WcSessionEventRequest {
 
   factory WcSessionEventRequest.fromJson(Map<String, dynamic> json) =>
       _$WcSessionEventRequestFromJson(json);
-}
-
-@freezed
-sealed class SessionEventParams with _$SessionEventParams {
-  @JsonSerializable()
-  const factory SessionEventParams({
-    required String name,
-    required dynamic data,
-  }) = _SessionEventParams;
-
-  factory SessionEventParams.fromJson(Map<String, dynamic> json) =>
-      _$SessionEventParamsFromJson(json);
 }
 
 @freezed

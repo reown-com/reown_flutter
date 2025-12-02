@@ -48,15 +48,15 @@ class ConfirmedSignatureInfo extends Serializable {
 
   /// {@macro solana_common.Serializable.tryFromJson}
   static ConfirmedSignatureInfo? tryFromJson(
-          final Map<String, dynamic>? json) =>
-      json != null ? ConfirmedSignatureInfo.fromJson(json) : null;
+    final Map<String, dynamic>? json,
+  ) => json != null ? ConfirmedSignatureInfo.fromJson(json) : null;
 
   @override
   Map<String, dynamic> toJson() => {
-        'signature': signature,
-        'slot': slot,
-        'err': err,
-        'memo': memo,
-        'blockTime': blockTime,
-      };
+    'signature': signature,
+    'slot': slot,
+    'err': err,
+    'memo': memo,
+    'blockTime': blockTime,
+  };
 }

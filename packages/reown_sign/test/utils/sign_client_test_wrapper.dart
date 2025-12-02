@@ -71,10 +71,7 @@ class SignClientTestWrapper implements IReownSign {
     required IReownCore core,
     required PairingMetadata metadata,
   }) {
-    client = ReownSignClient(
-      core: core,
-      metadata: metadata,
-    );
+    client = ReownSignClient(core: core, metadata: metadata);
   }
 
   @override
@@ -96,6 +93,7 @@ class SignClientTestWrapper implements IReownSign {
     Map<String, String>? sessionProperties,
     String? pairingTopic,
     List<Relay>? relays,
+    List<SessionAuthRequestParams>? authentication,
     List<List<String>>? methods = ReownSign.DEFAULT_METHODS,
   }) async {
     try {
@@ -105,6 +103,7 @@ class SignClientTestWrapper implements IReownSign {
         sessionProperties: sessionProperties,
         pairingTopic: pairingTopic,
         relays: relays,
+        authentication: authentication,
         methods: methods,
       );
     } catch (e) {
@@ -114,9 +113,7 @@ class SignClientTestWrapper implements IReownSign {
   }
 
   @override
-  Future<PairingInfo> pair({
-    required Uri uri,
-  }) async {
+  Future<PairingInfo> pair({required Uri uri}) async {
     try {
       return await client.pair(uri: uri);
     } catch (e) {
@@ -130,12 +127,15 @@ class SignClientTestWrapper implements IReownSign {
     required Map<String, Namespace> namespaces,
     Map<String, String>? sessionProperties,
     String? relayProtocol,
+    ProposalRequestsResponses? proposalRequestsResponses,
   }) async {
     try {
       return await client.approve(
         id: id,
         namespaces: namespaces,
         relayProtocol: relayProtocol,
+        sessionProperties: sessionProperties,
+        proposalRequestsResponses: proposalRequestsResponses,
       );
     } catch (e) {
       rethrow;
@@ -148,10 +148,7 @@ class SignClientTestWrapper implements IReownSign {
     required ReownSignError reason,
   }) async {
     try {
-      return await client.reject(
-        id: id,
-        reason: reason,
-      );
+      return await client.reject(id: id, reason: reason);
     } catch (e) {
       rethrow;
     }
@@ -163,10 +160,7 @@ class SignClientTestWrapper implements IReownSign {
     required Map<String, Namespace> namespaces,
   }) async {
     try {
-      return await client.update(
-        topic: topic,
-        namespaces: namespaces,
-      );
+      return await client.update(topic: topic, namespaces: namespaces);
     } catch (e) {
       // final error = e as WCError;
       rethrow;
@@ -174,9 +168,7 @@ class SignClientTestWrapper implements IReownSign {
   }
 
   @override
-  Future<void> extendSession({
-    required String topic,
-  }) async {
+  Future<void> extendSession({required String topic}) async {
     try {
       return await client.extend(topic: topic);
     } catch (e) {
@@ -225,10 +217,7 @@ class SignClientTestWrapper implements IReownSign {
     required JsonRpcResponse response,
   }) {
     try {
-      return client.respond(
-        topic: topic,
-        response: response,
-      );
+      return client.respond(topic: topic, response: response);
     } catch (e) {
       rethrow;
     }
@@ -252,15 +241,9 @@ class SignClientTestWrapper implements IReownSign {
   }
 
   @override
-  void registerEventEmitter({
-    required String chainId,
-    required String event,
-  }) {
+  void registerEventEmitter({required String chainId, required String event}) {
     try {
-      return client.registerEventEmitter(
-        chainId: chainId,
-        event: event,
-      );
+      return client.registerEventEmitter(chainId: chainId, event: event);
     } catch (e) {
       rethrow;
     }
@@ -288,20 +271,14 @@ class SignClientTestWrapper implements IReownSign {
     required SessionEventParams event,
   }) async {
     try {
-      return await client.emit(
-        topic: topic,
-        chainId: chainId,
-        event: event,
-      );
+      return await client.emit(topic: topic, chainId: chainId, event: event);
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<void> ping({
-    required String topic,
-  }) async {
+  Future<void> ping({required String topic}) async {
     try {
       return await client.ping(topic: topic);
     } catch (e) {
@@ -315,10 +292,7 @@ class SignClientTestWrapper implements IReownSign {
     required ReownSignError reason,
   }) async {
     try {
-      return await client.disconnect(
-        topic: topic,
-        reason: reason,
-      );
+      return await client.disconnect(topic: topic, reason: reason);
     } catch (e) {
       rethrow;
     }
@@ -349,9 +323,7 @@ class SignClientTestWrapper implements IReownSign {
     required String pairingTopic,
   }) {
     try {
-      return client.getSessionsForPairing(
-        pairingTopic: pairingTopic,
-      );
+      return client.getSessionsForPairing(pairingTopic: pairingTopic);
     } catch (e) {
       rethrow;
     }
@@ -389,10 +361,7 @@ class SignClientTestWrapper implements IReownSign {
     required String topic,
     required Redirect? redirect,
   }) {
-    return client.redirectToDapp(
-      topic: topic,
-      redirect: redirect,
-    );
+    return client.redirectToDapp(topic: topic, redirect: redirect);
   }
 
   @override
@@ -400,10 +369,7 @@ class SignClientTestWrapper implements IReownSign {
     required String topic,
     required Redirect? redirect,
   }) {
-    return client.redirectToWallet(
-      topic: topic,
-      redirect: redirect,
-    );
+    return client.redirectToWallet(topic: topic, redirect: redirect);
   }
 
   @override
@@ -425,10 +391,7 @@ class SignClientTestWrapper implements IReownSign {
     required String projectId,
   }) {
     try {
-      return client.validateSignedCacao(
-        cacao: cacao,
-        projectId: projectId,
-      );
+      return client.validateSignedCacao(cacao: cacao, projectId: projectId);
     } catch (e) {
       rethrow;
     }
@@ -440,10 +403,7 @@ class SignClientTestWrapper implements IReownSign {
     required CacaoRequestPayload cacaoPayload,
   }) {
     try {
-      return client.formatAuthMessage(
-        iss: iss,
-        cacaoPayload: cacaoPayload,
-      );
+      return client.formatAuthMessage(iss: iss, cacaoPayload: cacaoPayload);
     } catch (e) {
       rethrow;
     }
@@ -489,10 +449,7 @@ class SignClientTestWrapper implements IReownSign {
     List<Cacao>? auths,
   }) async {
     try {
-      return await client.approveSessionAuthenticate(
-        id: id,
-        auths: auths,
-      );
+      return await client.approveSessionAuthenticate(id: id, auths: auths);
     } catch (e) {
       rethrow;
     }
@@ -504,10 +461,7 @@ class SignClientTestWrapper implements IReownSign {
     required ReownSignError reason,
   }) async {
     try {
-      return await client.rejectSessionAuthenticate(
-        id: id,
-        reason: reason,
-      );
+      return await client.rejectSessionAuthenticate(id: id, reason: reason);
     } catch (e) {
       rethrow;
     }

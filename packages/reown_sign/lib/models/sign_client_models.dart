@@ -23,10 +23,7 @@ class ApproveResponse {
   final String topic;
   final SessionData? session;
 
-  ApproveResponse({
-    required this.topic,
-    required this.session,
-  });
+  ApproveResponse({required this.topic, required this.session});
 
   @override
   String toString() {

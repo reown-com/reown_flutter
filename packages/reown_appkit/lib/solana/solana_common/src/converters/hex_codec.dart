@@ -17,6 +17,5 @@ import 'package:convert/convert.dart';
 String hexEncode(final Uint8List input) => hex.encode(input);
 
 /// Decodes a hexadecimal [encoded] string.
-Uint8List hexDecode(final String encoded) => Uint8List.fromList(hex.decode(
-      encoded,
-    ));
+Uint8List hexDecode(final String encoded) =>
+    Uint8List.fromList(hex.decode(encoded));

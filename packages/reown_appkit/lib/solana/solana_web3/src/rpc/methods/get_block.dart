@@ -13,14 +13,8 @@ import '../models/block.dart';
 /// A method handler for `getBlock`.
 class GetBlock extends JsonRpcMethod<Map<String, dynamic>?, Block?> {
   /// Creates a method handler for `getBlock`.
-  GetBlock(
-    final u64 slot, {
-    final GetBlockConfig? config,
-  }) : super(
-          'getBlock',
-          values: [slot],
-          config: config ?? GetBlockConfig(),
-        );
+  GetBlock(final u64 slot, {final GetBlockConfig? config})
+    : super('getBlock', values: [slot], config: config ?? GetBlockConfig());
 
   @override
   Block? decoder(final Map<String, dynamic>? value) =>

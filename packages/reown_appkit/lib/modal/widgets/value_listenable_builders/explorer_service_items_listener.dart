@@ -16,7 +16,8 @@ class ExplorerServiceItemsListener extends StatefulWidget {
     bool initialised,
     List<GridItem<ReownAppKitModalWalletInfo>> items,
     bool searching,
-  ) builder;
+  )
+  builder;
   final bool listen;
 
   @override
@@ -67,9 +68,7 @@ extension on List<ReownAppKitModalWalletInfo> {
         GridItem<ReownAppKitModalWalletInfo>(
           title: item.listing.name,
           id: item.listing.id,
-          image: GetIt.I<IExplorerService>().getWalletImageUrl(
-            item.listing.imageId,
-          ),
+          image: GetIt.I<IExplorerService>().getWalletIcon(item),
           data: item,
         ),
       );

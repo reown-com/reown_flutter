@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
+import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
+import 'package:reown_appkit/modal/widgets/visibility_checker.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -25,19 +29,20 @@ class WalletsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final loadingList = [
-      const WalletListItem(title: ''),
-      const WalletListItem(title: ''),
-      const WalletListItem(title: ''),
-      const WalletListItem(title: ''),
-      const WalletListItem(title: ''),
-    ].map(
-      (e) => Shimmer.fromColors(
-        baseColor: themeColors.grayGlass100,
-        highlightColor: themeColors.grayGlass025,
-        child: e,
-      ),
-    );
+    final loadingList =
+        [
+          const WalletListItem(title: ''),
+          const WalletListItem(title: ''),
+          const WalletListItem(title: ''),
+          const WalletListItem(title: ''),
+          const WalletListItem(title: ''),
+        ].map(
+          (e) => Shimmer.fromColors(
+            baseColor: themeColors.grayGlass100,
+            highlightColor: themeColors.grayGlass025,
+            child: e,
+          ),
+        );
 
     final walletsListItems = isLoading
         ? loadingList.map(
@@ -47,16 +52,35 @@ class WalletsList extends StatelessWidget {
             ),
           )
         : itemList.map(
-            (listItem) => Padding(
+            (wallet) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: WalletListItem(
-                onTap: () => onTapWallet?.call(listItem.data),
-                showCheckmark: listItem.data.installed,
-                imageUrl: listItem.image,
-                title: listItem.title,
-                trailing: listItem.data.recent
-                    ? const WalletItemChip(value: ' RECENT ')
-                    : null,
+              child: VisibilityChecker(
+                enabled: GetIt.I<IAnalyticsService>().isEnabled,
+                onVisible: () {
+                  try {
+                    debugPrint('onVisible ${wallet.data.listing.name}');
+                    GetIt.I<IAnalyticsService>().storeEvent(
+                      WalletImpressionEvent(
+                        name: wallet.data.listing.name,
+                        explorerId: wallet.data.listing.id,
+                        view: 'Connect',
+                        walletRank: wallet.data.listing.order,
+                        certified: wallet.data.listing.badgeType == 'certified',
+                        installed: wallet.data.installed,
+                      ),
+                    );
+                  } catch (_) {}
+                },
+                child: WalletListItem(
+                  onTap: () => onTapWallet?.call(wallet.data),
+                  showCheckmark: wallet.data.installed,
+                  imageUrl: wallet.image,
+                  title: wallet.title,
+                  certified: wallet.data.listing.badgeType == 'certified',
+                  trailing: wallet.data.recent
+                      ? const WalletItemChip(value: ' RECENT ')
+                      : null,
+                ),
               ),
             ),
           );
@@ -74,14 +98,10 @@ class WalletsList extends StatelessWidget {
         vertical: kPadding12,
       ),
       itemBuilder: (context, index) {
-        return SizedBox(
-          width: 1000.0,
-          child: items[index],
-        );
+        return SizedBox(width: 1000.0, child: items[index]);
       },
-      separatorBuilder: (_, index) => SizedBox.square(
-        dimension: kListViewSeparatorHeight,
-      ),
+      separatorBuilder: (_, index) =>
+          SizedBox.square(dimension: kListViewSeparatorHeight),
       itemCount: items.length,
     );
   }

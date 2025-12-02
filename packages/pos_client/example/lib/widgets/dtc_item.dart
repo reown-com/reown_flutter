@@ -54,7 +54,6 @@ class DtcItem extends StatelessWidget {
               ),
             )
           : null,
-
       trailing: trailing,
     );
   }

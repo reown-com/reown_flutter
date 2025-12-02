@@ -307,34 +307,23 @@ class RelayClient implements IRelayClient {
       _buildIRNMethod(IRN_SUBSCRIPTION),
       _handleSubscription,
     );
-    jsonRPC!.registerMethod(
-      _buildIRNMethod(IRN_SUBSCRIBE),
-      _handleSubscribe,
-    );
+    jsonRPC!.registerMethod(_buildIRNMethod(IRN_SUBSCRIBE), _handleSubscribe);
     jsonRPC!.registerMethod(
       _buildIRNMethod(IRN_UNSUBSCRIBE),
       _handleUnsubscribe,
     );
 
     if (jsonRPC!.isClosed) {
-      throw const ReownCoreError(
-        code: 0,
-        message: 'WebSocket closed',
-      );
+      throw const ReownCoreError(code: 0, message: 'WebSocket closed');
     }
 
     jsonRPC!.listen();
 
     // When jsonRPC closes, emit the event
     _handledClose = false;
-    jsonRPC!.done.then(
-      (value) {
-        _handleRelayClose(
-          socketHandler.closeCode,
-          socketHandler.closeReason,
-        );
-      },
-    );
+    jsonRPC!.done.then((value) {
+      _handleRelayClose(socketHandler.closeCode, socketHandler.closeReason);
+    });
 
     onRelayClientConnect.broadcast();
     core.logger.i('[$runtimeType]: Connected to relay ${core.relayUrl}');
@@ -366,10 +355,7 @@ class RelayClient implements IRelayClient {
             ? reason ?? WebSocketErrors.INVALID_PROJECT_ID_OR_JWT
             : '';
         onRelayClientError.broadcast(
-          ErrorEvent(ReownCoreError(
-            code: code,
-            message: errorReason,
-          )),
+          ErrorEvent(ReownCoreError(code: code, message: errorReason)),
         );
         core.logger.e('[$runtimeType], _handleRelayClose: $core, $errorReason');
       }
@@ -417,6 +403,7 @@ class RelayClient implements IRelayClient {
         topic,
         message,
         DateTime.now().millisecondsSinceEpoch,
+        null,
         TransportType.linkMode,
       ),
     );
@@ -425,7 +412,11 @@ class RelayClient implements IRelayClient {
 
   /// JSON RPC MESSAGE HANDLERS
 
-  Future<bool> handlePublish(String topic, String message) async {
+  Future<bool> handlePublish(
+    String topic,
+    String message, [
+    String? attestation,
+  ]) async {
     core.logger.d('[$runtimeType]: Handling Publish Message: $topic, $message');
     // If we want to ignore the message, stop
     if (await _shouldIgnoreMessageEvent(topic, message)) {
@@ -442,6 +433,7 @@ class RelayClient implements IRelayClient {
         topic,
         message,
         DateTime.now().millisecondsSinceEpoch,
+        attestation,
         TransportType.relay,
       ),
     );
@@ -472,9 +464,11 @@ class RelayClient implements IRelayClient {
   }
 
   Future<bool> _handleSubscription(Parameters params) async {
+    core.logger.d('[$runtimeType] _handleSubscription ${params.asMap}');
     String topic = params['data']['topic'].value;
     String message = params['data']['message'].value;
-    return await handlePublish(topic, message);
+    String? attestation = params['data']['attestation'].valueOr(null);
+    return await handlePublish(topic, message, attestation);
   }
 
   int _handleSubscribe(Parameters params) {
@@ -515,11 +509,7 @@ class RelayClient implements IRelayClient {
     else {
       return null;
     }
-    return await jsonRPC!.sendRequest(
-      method,
-      parameters,
-      id,
-    );
+    return await jsonRPC!.sendRequest(method, parameters, id);
   }
 
   Future<String> _onSubscribe(SubscribeOptions options) async {

@@ -34,8 +34,8 @@ class UITokenAmount extends Serializable {
 
   @override
   Map<String, dynamic> toJson() => {
-        'amount': amount,
-        'decimals': decimals,
-        'uiAmountString': uiAmountString,
-      };
+    'amount': amount,
+    'decimals': decimals,
+    'uiAmountString': uiAmountString,
+  };
 }

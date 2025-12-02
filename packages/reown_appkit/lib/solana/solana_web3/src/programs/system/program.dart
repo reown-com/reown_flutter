@@ -85,9 +85,7 @@ class SystemProgram extends Program {
       AccountMeta.writable(toPubkey),
     ];
 
-    final List<Iterable<int>> data = [
-      borsh.u64.encode(lamports),
-    ];
+    final List<Iterable<int>> data = [borsh.u64.encode(lamports)];
 
     return _instance.createTransactionIntruction(
       SystemInstruction.transfer,
@@ -253,20 +251,19 @@ class SystemProgram extends Program {
     required final Pubkey noncePubkey,
     required final Pubkey authorizedPubkey,
     required final bu64 lamports,
-  }) =>
-      [
-        SystemProgram.createAccount(
-          fromPubkey: fromPubkey,
-          newAccountPubkey: noncePubkey,
-          lamports: lamports,
-          space: NonceAccount.length.toBigInt(),
-          programId: SystemProgram.programId,
-        ),
-        nonceInitialize(
-          noncePubkey: noncePubkey,
-          authorizedPubkey: authorizedPubkey,
-        ),
-      ];
+  }) => [
+    SystemProgram.createAccount(
+      fromPubkey: fromPubkey,
+      newAccountPubkey: noncePubkey,
+      lamports: lamports,
+      space: NonceAccount.length.toBigInt(),
+      programId: SystemProgram.programId,
+    ),
+    nonceInitialize(
+      noncePubkey: noncePubkey,
+      authorizedPubkey: authorizedPubkey,
+    ),
+  ];
 
   /// Generates a transaction that creates a new Nonce account.
   ///
@@ -286,22 +283,21 @@ class SystemProgram extends Program {
     required final bu64 lamports,
     required final Pubkey basePubkey,
     required final String seed,
-  }) =>
-      [
-        SystemProgram.createAccountWithSeed(
-          fromPubkey: fromPubkey,
-          newAccountPubkey: noncePubkey,
-          basePubkey: basePubkey,
-          seed: seed,
-          lamports: lamports,
-          space: NonceAccount.length.toBigInt(),
-          programId: SystemProgram.programId,
-        ),
-        nonceInitialize(
-          noncePubkey: noncePubkey,
-          authorizedPubkey: authorizedPubkey,
-        )
-      ];
+  }) => [
+    SystemProgram.createAccountWithSeed(
+      fromPubkey: fromPubkey,
+      newAccountPubkey: noncePubkey,
+      basePubkey: basePubkey,
+      seed: seed,
+      lamports: lamports,
+      space: NonceAccount.length.toBigInt(),
+      programId: SystemProgram.programId,
+    ),
+    nonceInitialize(
+      noncePubkey: noncePubkey,
+      authorizedPubkey: authorizedPubkey,
+    ),
+  ];
 
   /// Generates an instruction to initialize a Nonce account.
   ///
@@ -376,9 +372,7 @@ class SystemProgram extends Program {
       AccountMeta.signer(authorizedPubkey),
     ];
 
-    final List<Iterable<int>> data = [
-      borsh.u64.encode(lamports),
-    ];
+    final List<Iterable<int>> data = [borsh.u64.encode(lamports)];
 
     return _instance.createTransactionIntruction(
       SystemInstruction.withdrawNonceAccount,
@@ -432,9 +426,7 @@ class SystemProgram extends Program {
       AccountMeta.signerAndWritable(accountPubkey),
     ];
 
-    final List<Iterable<int>> data = [
-      borsh.u64.encode(space),
-    ];
+    final List<Iterable<int>> data = [borsh.u64.encode(space)];
 
     return _instance.createTransactionIntruction(
       SystemInstruction.allocate,

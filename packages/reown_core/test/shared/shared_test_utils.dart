@@ -31,10 +31,7 @@ import 'shared_test_utils.mocks.dart';
 ])
 class SharedTestUtils {}
 
-ICrypto getCrypto({
-  IReownCore? core,
-  MockCryptoUtils? utils,
-}) {
+ICrypto getCrypto({IReownCore? core, MockCryptoUtils? utils}) {
   final IReownCore _core = core ?? ReownCore(projectId: '', memoryStore: true);
   final ICrypto crypto = Crypto(
     core: _core,
@@ -50,9 +47,7 @@ ICrypto getCrypto({
   return crypto;
 }
 
-IMessageTracker getMessageTracker({
-  IReownCore? core,
-}) {
+IMessageTracker getMessageTracker({IReownCore? core}) {
   final IReownCore _core = core ?? ReownCore(projectId: '', memoryStore: true);
   return MessageTracker(
     storage: _core.storage,
@@ -62,9 +57,7 @@ IMessageTracker getMessageTracker({
   );
 }
 
-IGenericStore<String> getTopicMap({
-  IReownCore? core,
-}) {
+IGenericStore<String> getTopicMap({IReownCore? core}) {
   final IReownCore _core = core ?? ReownCore(projectId: '', memoryStore: true);
   return GenericStore<String>(
     storage: _core.storage,
@@ -98,25 +91,22 @@ mockPackageInfo() {
 mockConnectivity([List<dynamic> values = const ['wifi']]) {
   const channel = MethodChannel('dev.fluttercommunity.plus/connectivity');
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMessageHandler(
-    channel.name,
-    (data) async {
-      final call = channel.codec.decodeMethodCall(data);
-      if (call.method == 'getAll') {
-        return channel.codec.encodeSuccessEnvelope(_mockInitialValues);
-      }
-      if (call.method == 'check') {
-        return channel.codec.encodeSuccessEnvelope(values);
-      }
-      return null;
-    },
-  );
+      .setMockMessageHandler(channel.name, (data) async {
+        final call = channel.codec.decodeMethodCall(data);
+        if (call.method == 'getAll') {
+          return channel.codec.encodeSuccessEnvelope(_mockInitialValues);
+        }
+        if (call.method == 'check') {
+          return channel.codec.encodeSuccessEnvelope(values);
+        }
+        return null;
+      });
 }
 
 Map<String, dynamic> get _mockInitialValues => {
-      'appName': 'ReownCoreTest',
-      'packageName': 'com.walletconnect.flutterdapp',
-      'version': '1.0',
-      'buildNumber': '2',
-      'buildSignature': 'buildSignature',
-    };
+  'appName': 'ReownCoreTest',
+  'packageName': 'com.walletconnect.flutterdapp',
+  'version': '1.0',
+  'buildNumber': '2',
+  'buildSignature': 'buildSignature',
+};

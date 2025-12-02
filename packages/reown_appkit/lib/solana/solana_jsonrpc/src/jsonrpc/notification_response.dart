@@ -42,8 +42,8 @@ class JsonRpcNotificationResponse<T> extends Serializable {
 
   /// {@macro solana_common.Serializable.fromJson}
   factory JsonRpcNotificationResponse.fromJson(
-          final Map<String, dynamic> json) =>
-      _$JsonRpcNotificationResponseFromJson(json);
+    final Map<String, dynamic> json,
+  ) => _$JsonRpcNotificationResponseFromJson(json);
 
   @override
   Map<String, dynamic> toJson() => _$JsonRpcNotificationResponseToJson(this);

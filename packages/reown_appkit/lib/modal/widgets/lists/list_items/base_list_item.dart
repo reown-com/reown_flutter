@@ -48,15 +48,17 @@ class BaseListItem extends StatelessWidget {
                   const Size(1000.0, kListItemHeight),
                 )
               : null,
-          backgroundColor: backgroundColor ??
+          backgroundColor:
+              backgroundColor ??
               WidgetStateProperty.all<Color>(
                 hightlighted
                     ? themeColors.accenGlass015
                     : themeColors.grayGlass002,
               ),
-          overlayColor: WidgetStateProperty.all<Color>(
-            themeColors.grayGlass005,
-          ),
+          overlayColor:
+              backgroundColor ??
+              WidgetStateProperty.all<Color>(themeColors.grayGlass002),
+          shadowColor: WidgetStateProperty.all<Color>(themeColors.grayGlass002),
           shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(radiuses.radiusXS),

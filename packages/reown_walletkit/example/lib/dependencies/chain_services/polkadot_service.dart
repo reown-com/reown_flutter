@@ -34,7 +34,7 @@ class PolkadotService {
 
   PolkadotService({required this.chainSupported}) {
     _keyring = Keyring();
-    _provider = polkadart.Provider.fromUri(Uri.parse(chainSupported.rpc.first));
+    _provider = polkadart.Provider.fromUri(_formatRpcUrl(chainSupported));
 
     for (var handler in polkadotRequestHandlers.entries) {
       _walletKit.registerRequestHandler(
@@ -45,6 +45,20 @@ class PolkadotService {
     }
 
     // _walletKit.onSessionRequest.subscribe(_onSessionRequest);
+  }
+
+  Uri _formatRpcUrl(ChainMetadata chainSupported) {
+    if (chainSupported.rpc.isEmpty) {
+      return Uri.parse('');
+    }
+
+    String rpcUrl = chainSupported.rpc.first;
+    if (Uri.parse(rpcUrl).host == 'rpc.walletconnect.org') {
+      rpcUrl += '?chainId=${chainSupported.chainId}';
+      rpcUrl += '&projectId=${_walletKit.core.projectId}';
+    }
+    debugPrint('[SampleWallet] rpcUrl: $rpcUrl');
+    return Uri.parse(rpcUrl);
   }
 
   Future<void> polkadotSignMessage(String topic, dynamic parameters) async {
@@ -85,16 +99,11 @@ class PolkadotService {
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
       )) {
-        final encodedMessage = utf8.encode(message);
-        final signature = dotkeyPair.sign(encodedMessage);
+        final hexSignature = await signMessage(message);
 
-        final isVerified = dotkeyPair.verify(encodedMessage, signature);
-        debugPrint('[$runtimeType] isVerified $isVerified');
-
-        final hexSignature = hex.encode(signature);
         response = response.copyWith(
           result: {
-            'signature': '0x$hexSignature',
+            'signature': hexSignature,
           },
         );
       } else {
@@ -119,6 +128,31 @@ class PolkadotService {
     }
 
     _handleResponseForTopic(topic, response);
+  }
+
+  Future<String> signMessage(String message) async {
+    // code
+    final keys = GetIt.I<IKeyService>().getKeysForChain(
+      chainSupported.chainId,
+    );
+    final dotkeyPair = await _keyring.fromMnemonic(
+      keys[0].privateKey,
+      keyPairType: KeyPairType.sr25519,
+    );
+    // adjust the default ss58Format for Polkadot https://github.com/paritytech/ss58-registry/blob/main/ss58-registry.json
+    // if westend (testnet) we don't need ss58 format
+    if (!chainSupported.isTestnet) {
+      dotkeyPair.ss58Format = 0;
+    }
+
+    final encodedMessage = utf8.encode(message);
+    final signature = dotkeyPair.sign(encodedMessage);
+
+    final isVerified = dotkeyPair.verify(encodedMessage, signature);
+    debugPrint('[$runtimeType] isVerified $isVerified');
+
+    final hexSignature = hex.encode(signature);
+    return '0x$hexSignature';
   }
 
   Future<void> polkadotSignTransaction(String topic, dynamic parameters) async {
@@ -226,6 +260,7 @@ class PolkadotService {
         topic,
         session!.peer.metadata.redirect,
         response.error?.message,
+        response.result != null,
       );
     } on ReownSignError catch (error) {
       MethodsUtils.handleRedirect(

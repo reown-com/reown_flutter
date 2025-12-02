@@ -109,14 +109,16 @@ class ReCapsUtils {
         if (limits is! List) {
           throw Errors.getInternalError(
             Errors.MISSING_OR_INVALID,
-            context: 'Invalid ReCap. Ability limits $ability must be an array '
+            context:
+                'Invalid ReCap. Ability limits $ability must be an array '
                 'of objects, found: $limits',
           ).toSignError();
         }
         if ((limits).isEmpty) {
           throw Errors.getInternalError(
             Errors.MISSING_OR_INVALID,
-            context: 'Invalid ReCap. Value of $ability is empty array, must be '
+            context:
+                'Invalid ReCap. Value of $ability is empty array, must be '
                 'an array with objects',
           ).toSignError();
         }
@@ -173,9 +175,7 @@ class ReCapsUtils {
       }
 
       return {
-        'att': {
-          namespace: Map<String, dynamic>.fromEntries(abilities.entries),
-        }
+        'att': {namespace: Map<String, dynamic>.fromEntries(abilities.entries)},
       };
     } catch (e) {
       rethrow;
@@ -197,9 +197,7 @@ class ReCapsUtils {
     isValidRecap(recap2);
     final att1 = recap1['att'] as Map<String, dynamic>;
     final att2 = recap2['att'] as Map<String, dynamic>;
-    final keys = [...att1.keys, ...att2.keys]..sort(
-        (a, b) => a.compareTo(b),
-      );
+    final keys = [...att1.keys, ...att2.keys]..sort((a, b) => a.compareTo(b));
     final mergedRecap = {'att': {}};
 
     for (var key in keys) {
@@ -207,9 +205,8 @@ class ReCapsUtils {
       final actions1Keys = actions1.keys;
       final actions2 = att2[key] as Map<String, dynamic>? ?? {};
       final actions2Keys = actions2.keys;
-      final actions = [...actions1Keys, ...actions2Keys]..sort(
-          (a, b) => a.compareTo(b),
-        );
+      final actions = [...actions1Keys, ...actions2Keys]
+        ..sort((a, b) => a.compareTo(b));
 
       for (var action in actions) {
         mergedRecap['att']![key] = {
