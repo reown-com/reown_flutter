@@ -268,6 +268,7 @@ class _MyHomePageState extends State<MyHomePage> {
       final chainId = _appKitModal!.selectedChain!.chainId;
       final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
       final address = _appKitModal!.session!.getAddress(namespace)!;
+      if (namespace != 'eip155') return 0.0;
 
       final JsonRpcResponse response = await _appKitModal!.rpcRequest(
         chainId: chainId,

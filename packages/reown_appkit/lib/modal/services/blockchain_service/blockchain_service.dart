@@ -144,8 +144,10 @@ class BlockChainService implements IBlockChainService {
       'jsonrpc': '2.0',
       'method': _balanceMetod(namespace),
       'params': [
-        address,
+        if (namespace == 'eip155' || namespace == 'solana') address,
+        if (namespace == 'tron') tronBase58ToHex(address),
         if (namespace == 'eip155' || namespace == 'tron') 'latest',
+        if (namespace == 'sui') '0x2::sui::SUI',
       ],
     });
     final response = await http.post(
@@ -325,26 +327,47 @@ class BlockChainService implements IBlockChainService {
     } else if (namespace == 'tron') {
       return 'eth_getBalance';
     } else if (namespace == 'ton') {
+      // getAddressInformation
+      // getWalletInformation
       return 'getAddressBalance';
+    } else if (namespace == 'sui') {
+      return 'suix_getBalance';
+    } else if (namespace == 'stacks') {
+      return 'stacks_accounts';
     }
     return '';
   }
 
   double _parseBalanceResult(String namespace, String balanceResult) {
-    if (namespace == NetworkUtils.solana) {
+    if (namespace == NetworkUtils.eip155) {
+      final result = _parseRpcResultAs<String>(balanceResult);
+      return hexToInt(result).toDouble() / 1000000000000000000.0;
+    } else if (namespace == NetworkUtils.solana) {
       final result = _parseRpcResultAs<Map<String, dynamic>>(balanceResult);
       final value = result['value'] as int;
       return value / 1000000000.0;
-    } else if (namespace == NetworkUtils.eip155) {
+    } else if (namespace == 'tron') {
       final result = _parseRpcResultAs<String>(balanceResult);
-      final amount = EtherAmount.fromBigInt(EtherUnit.wei, hexToInt(result));
-      final value = amount.getValueInUnit(EtherUnit.ether);
-      if (value < 0.00001) {
-        return 0.0;
-      }
-      return value;
+      return hexToInt(result).toDouble() / 1000000.0;
+    } else if (namespace == 'sui') {
+      final result = _parseRpcResultAs<Map<String, dynamic>>(balanceResult);
+      final value = result['totalBalance'] as String;
+      return double.parse(value) / 1000000000.0;
+    } else if (namespace == 'stacks') {
+      final result = _parseRpcResultAs<Map<String, dynamic>>(balanceResult);
+      final value = result['balance'] as String;
+      return hexToInt(value).toDouble() / 1000000.0;
     }
     return 0.0;
+  }
+
+  String tronBase58ToHex(String base58Address) {
+    // Decode base58
+    final decoded = base58.decode(base58Address);
+    // Remove checksum (last 4 bytes)
+    final addressBytes = decoded.sublist(0, decoded.length - 4);
+    // Convert to hex with 0x prefix
+    return '0x${addressBytes.map((b) => b.toRadixString(16).padLeft(2, '0')).join()}';
   }
 
   BigInt _parseEstimateGasResult(String gasResult) {
