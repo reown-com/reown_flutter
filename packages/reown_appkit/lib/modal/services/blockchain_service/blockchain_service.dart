@@ -8,6 +8,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/constants/string_constants.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/blockchain_identity.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/i_blockchain_service.dart';
+import 'package:reown_appkit/modal/services/blockchain_service/chain_handlers/chain_handler_factory.dart';
 import 'package:reown_core/pairing/utils/json_rpc_utils.dart';
 
 // TODO move to Core SDK
@@ -51,21 +52,15 @@ class BlockChainService implements IBlockChainService {
 
   @override
   Future<BlockchainIdentity> getIdentity({required String address}) async {
-    final uri = Uri.parse('$_baseUrl/identity/$address');
-    final queryParams = {..._requiredParams};
-    final url = uri.replace(queryParameters: queryParams);
+    final url = _buildUrl('identity/$address');
     final response = await http.get(url, headers: _requiredHeaders);
     _core.logger.i('[$runtimeType] getIdentity $url => ${response.body}');
-    if (response.statusCode == 200 && response.body.isNotEmpty) {
-      return BlockchainIdentity.fromJson(jsonDecode(response.body));
-    }
-    try {
-      final reason = _parseResponseError(response.body);
-      throw Exception(reason);
-    } catch (e) {
-      _core.logger.e('[$runtimeType] getIdentity, decode result error => $e');
-      rethrow;
-    }
+
+    return _handleResponse(
+      response: response,
+      parser: (body) => BlockchainIdentity.fromJson(jsonDecode(body)),
+      errorContext: 'getIdentity',
+    );
   }
 
   @override
@@ -74,30 +69,20 @@ class BlockChainService implements IBlockChainService {
     String? caip2Chain,
     String? cursor,
   }) async {
-    final uri = Uri.parse('$_baseUrl/account/$address/history');
     final queryParams = {
-      ..._requiredParams,
       if (caip2Chain != null) 'chainId': caip2Chain,
       if (cursor != null) 'cursor': cursor,
     };
-    final url = uri.replace(queryParameters: queryParams);
+    final url = _buildUrl('account/$address/history', queryParams);
     final response = await http.get(url, headers: _requiredHeaders);
     _core.logger.i('[$runtimeType] getHistory $url => ${response.body}');
-    if (response.statusCode == 200 && response.body.isNotEmpty) {
-      try {
-        return ActivityData.fromRawJson(response.body);
-      } catch (e) {
-        _core.logger.e('[$runtimeType] getHistory, parse result error => $e');
-        throw Exception('Failed to load wallet activity. $e');
-      }
-    }
-    try {
-      final reason = _parseResponseError(response.body);
-      throw Exception(reason);
-    } catch (e) {
-      _core.logger.e('[$runtimeType] getHistory, decode result error => $e');
-      rethrow;
-    }
+
+    return _handleResponse(
+      response: response,
+      parser: (body) => ActivityData.fromRawJson(body),
+      errorContext: 'getHistory',
+      errorMessage: 'Failed to load wallet activity',
+    );
   }
 
   @override
@@ -105,94 +90,75 @@ class BlockChainService implements IBlockChainService {
     required String address,
     String? caip2Chain,
   }) async {
-    final uri = Uri.parse('$_baseUrl/account/$address/balance');
-    final queryParams = {
-      ..._requiredParams,
-      'currency': 'usd',
-      if (caip2Chain != null) 'chainId': caip2Chain,
-      // 'forceUpdate': ,
-    };
-    final url = uri.replace(queryParameters: queryParams);
-    final response = await http.get(url, headers: _requiredHeaders);
-    _core.logger.i('[$runtimeType] getBalance $url => ${response.body}');
-    if (response.statusCode == 200 && response.body.isNotEmpty) {
-      final result = jsonDecode(response.body) as Map<String, dynamic>;
-      final balances = result['balances'] as List;
-      _tokensList = balances.map((e) => TokenBalance.fromJson(e)).toList();
-      return _tokensList!;
-    }
     try {
-      final reason = _parseResponseError(response.body);
-      throw Exception(reason);
+      final queryParams = {
+        'currency': 'usd',
+        if (caip2Chain != null) 'chainId': caip2Chain,
+      };
+      final url = _buildUrl('account/$address/balance', queryParams);
+      _core.logger.i('[$runtimeType] getTokenBalance, url: $url');
+      final response = await http.get(url, headers: _requiredHeaders);
+      _core.logger.i('[$runtimeType] getTokenBalance => ${response.body}');
+
+      final balances = _handleResponse<Map<String, dynamic>>(
+        response: response,
+        parser: (body) => jsonDecode(body) as Map<String, dynamic>,
+        errorContext: 'getTokenBalance',
+      );
+
+      _tokensList = (balances['balances'] as List)
+          .map((e) => TokenBalance.fromJson(e))
+          .toList();
+      return _tokensList!;
     } catch (e) {
-      _core.logger.e('[$runtimeType] getBalance, decode result error => $e');
+      _tokensList = [];
       rethrow;
     }
   }
 
   @override
-  Future<double> getNativeBalance({
+  Future<double> getNativeTokenBalance({
     required String address,
     required String namespace,
     required String chainId,
   }) async {
-    final uri = Uri.parse(_baseUrl);
-    final queryParams = {..._requiredParams, 'chainId': chainId};
-    final url = uri.replace(queryParameters: queryParams);
-    final body = jsonEncode({
-      'id': 1,
-      'jsonrpc': '2.0',
-      'method': _balanceMetod(namespace),
-      'params': [
-        if (namespace == 'eip155' || namespace == 'solana') address,
-        if (namespace == 'tron') tronBase58ToHex(address),
-        if (namespace == 'eip155' || namespace == 'tron') 'latest',
-        if (namespace == 'sui') '0x2::sui::SUI',
-      ],
-    });
+    final handler = ChainHandlerFactory.getHandlerOrThrow(namespace);
+    final params = handler.buildBalanceParams(address);
+    final body = _buildJsonRpcRequest(
+      method: handler.balanceMethod,
+      params: params,
+    );
+
+    final url = _buildRpcUrl(chainId);
     final response = await http.post(
       url,
       headers: _requiredHeaders,
       body: body,
     );
     _core.logger.i(
-      '[$runtimeType] getTokenBalance $url, $body => ${response.body}',
+      '[$runtimeType] getNativeTokenBalance $url, $body => ${response.body}',
     );
-    if (response.statusCode == 200 && response.body.isNotEmpty) {
-      try {
-        return _parseBalanceResult(namespace, response.body);
-      } catch (e) {
-        _core.logger.e('[$runtimeType] getTokenBalance, parse error => $e');
-        throw Exception('Failed to load balance. $e');
-      }
-    }
-    try {
-      final reason = _parseResponseError(response.body);
-      throw Exception(reason);
-    } catch (e) {
-      _core.logger.e('[$runtimeType] getTokenBalance, decode error => $e');
-      rethrow;
-    }
+
+    return _handleResponse(
+      response: response,
+      parser: (body) => handler.parseBalance(body, _parseRpcResultAs),
+      errorContext: 'getNativeTokenBalance',
+      errorMessage: 'Failed to load balance',
+    );
   }
 
   @override
   Future<GasPrice> gasPrice({required String caip2Chain}) async {
-    final uri = Uri.parse('$_baseUrl/convert/gas-price');
-    final queryParams = {..._requiredParams, 'chainId': caip2Chain};
-    final url = uri.replace(queryParameters: queryParams);
+    final url = _buildUrl('convert/gas-price', {'chainId': caip2Chain});
     final response = await http.get(url, headers: _requiredHeaders);
     _core.logger.i('[$runtimeType] gasPrice $url => ${response.body}');
-    if (response.statusCode == 200 && response.body.isNotEmpty) {
-      final result = jsonDecode(response.body) as Map<String, dynamic>;
-      return GasPrice.fromJson(result);
-    }
-    try {
-      final reason = _parseResponseError(response.body);
-      throw Exception(reason);
-    } catch (e) {
-      _core.logger.e('[$runtimeType] gasPrice, decode result error => $e');
-      rethrow;
-    }
+
+    return _handleResponse(
+      response: response,
+      parser: (body) =>
+          GasPrice.fromJson(jsonDecode(body) as Map<String, dynamic>),
+      errorContext: 'gasPrice',
+    );
   }
 
   @override
@@ -200,15 +166,11 @@ class BlockChainService implements IBlockChainService {
     required Map<String, dynamic> transaction,
     required String caip2Chain,
   }) async {
-    final uri = Uri.parse(_baseUrl);
-    final queryParams = {..._requiredParams, 'chainId': caip2Chain};
-    final url = uri.replace(queryParameters: queryParams);
-    final body = jsonEncode({
-      'jsonrpc': '2.0',
-      'method': 'eth_estimateGas',
-      'params': [transaction],
-      'id': 1,
-    });
+    final body = _buildJsonRpcRequest(
+      method: 'eth_estimateGas',
+      params: [transaction],
+    );
+    final url = _buildRpcUrl(caip2Chain);
     final response = await http.post(
       url,
       headers: _requiredHeaders,
@@ -217,28 +179,21 @@ class BlockChainService implements IBlockChainService {
     _core.logger.i(
       '[$runtimeType] estimateGas $url, $body => ${response.body}',
     );
-    if (response.statusCode == 200 && response.body.isNotEmpty) {
-      try {
-        return _parseEstimateGasResult(response.body);
-      } on JsonRpcError catch (e) {
-        _core.logger.e('[$runtimeType] estimateGas, parse error => $e');
-        if ((e.message ?? '').toLowerCase().contains(
-          'insufficient funds for gas',
-        )) {
-          throw 'Insufficient funds for gas';
-        }
-        throw 'Failed to estimate gas';
-      } catch (e) {
-        _core.logger.e('[$runtimeType] estimateGas, parse error => $e');
-        throw 'Failed to estimate gas.';
-      }
-    }
+
     try {
-      final reason = _parseResponseError(response.body);
-      throw Exception(reason);
-    } catch (e) {
-      _core.logger.e('[$runtimeType] getBalance, decode error => $e');
-      rethrow;
+      return _handleResponse(
+        response: response,
+        parser: (body) => _parseEstimateGasResult(body),
+        errorContext: 'estimateGas',
+      );
+    } on JsonRpcError catch (e) {
+      _core.logger.e('[$runtimeType] estimateGas, parse error => $e');
+      if ((e.message ?? '').toLowerCase().contains(
+        'insufficient funds for gas',
+      )) {
+        throw 'Insufficient funds for gas';
+      }
+      throw 'Failed to estimate gas';
     }
   }
 
@@ -249,26 +204,15 @@ class BlockChainService implements IBlockChainService {
     required String contractAddress,
     required String caip2Chain,
   }) async {
-    // Keccak-256 of "allowance(address,address)"
-    final functionSelector = 'dd62ed3e';
-    final ownerPadded = senderAddress.replaceFirst('0x', '').padLeft(64, '0');
-    final spenderPadded = receiverAddress
-        .replaceFirst('0x', '')
-        .padLeft(64, '0');
-    final data = '0x$functionSelector$ownerPadded$spenderPadded';
-    //
-    final uri = Uri.parse(_baseUrl);
-    final queryParams = {..._requiredParams, 'chainId': caip2Chain};
-    final url = uri.replace(queryParameters: queryParams);
-    final body = jsonEncode({
-      'jsonrpc': '2.0',
-      'id': 1,
-      'method': 'eth_call',
-      'params': [
+    final data = _buildAllowanceCallData(senderAddress, receiverAddress);
+    final body = _buildJsonRpcRequest(
+      method: 'eth_call',
+      params: [
         {'to': contractAddress, 'data': data},
         'latest',
       ],
-    });
+    );
+    final url = _buildRpcUrl(caip2Chain);
     final response = await http.post(
       url,
       headers: _requiredHeaders,
@@ -277,120 +221,19 @@ class BlockChainService implements IBlockChainService {
     _core.logger.i(
       '[$runtimeType] checkAllowance $url, $body => ${response.body}',
     );
-    if (response.statusCode == 200 && response.body.isNotEmpty) {
-      try {
-        final namespace = NamespaceUtils.getNamespaceFromChain(caip2Chain);
-        return _parseBalanceResult(namespace, response.body);
-      } on JsonRpcError catch (e) {
-        _core.logger.e('[$runtimeType] checkAllowance, parse error => $e');
-        throw 'Failed checking allowance';
-      } catch (e) {
-        _core.logger.e('[$runtimeType] checkAllowance, parse error => $e');
-        throw 'Failed checking allowance';
-      }
-    }
-    try {
-      final reason = _parseResponseError(response.body);
-      throw Exception(reason);
-    } catch (e) {
-      _core.logger.e('[$runtimeType] checkAllowance, decode error => $e');
-      rethrow;
-    }
-  }
-
-  @override
-  void dispose() {
-    _selectedToken = null;
-    _tokensList?.clear();
-  }
-
-  T _parseRpcResultAs<T>(String body) {
-    try {
-      final result = Map<String, dynamic>.from({...jsonDecode(body), 'id': 1});
-      final jsonResponse = JsonRpcResponse.fromJson(result);
-      if (jsonResponse.result != null) {
-        return jsonResponse.result;
-      }
-      throw jsonResponse.error ??
-          // TODO ReownAppKitModal change this error
-          ReownSignError(code: 0, message: 'Error parsing result');
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  String _balanceMetod(String namespace) {
-    if (namespace == 'eip155') {
-      return 'eth_getBalance';
-    } else if (namespace == 'solana') {
-      return 'getBalance';
-    } else if (namespace == 'tron') {
-      return 'eth_getBalance';
-    } else if (namespace == 'ton') {
-      // getAddressInformation
-      // getWalletInformation
-      return 'getAddressBalance';
-    } else if (namespace == 'sui') {
-      return 'suix_getBalance';
-    } else if (namespace == 'stacks') {
-      return 'stacks_accounts';
-    }
-    return '';
-  }
-
-  double _parseBalanceResult(String namespace, String balanceResult) {
-    if (namespace == NetworkUtils.eip155) {
-      final result = _parseRpcResultAs<String>(balanceResult);
-      return hexToInt(result).toDouble() / 1000000000000000000.0;
-    } else if (namespace == NetworkUtils.solana) {
-      final result = _parseRpcResultAs<Map<String, dynamic>>(balanceResult);
-      final value = result['value'] as int;
-      return value / 1000000000.0;
-    } else if (namespace == 'tron') {
-      final result = _parseRpcResultAs<String>(balanceResult);
-      return hexToInt(result).toDouble() / 1000000.0;
-    } else if (namespace == 'sui') {
-      final result = _parseRpcResultAs<Map<String, dynamic>>(balanceResult);
-      final value = result['totalBalance'] as String;
-      return double.parse(value) / 1000000000.0;
-    } else if (namespace == 'stacks') {
-      final result = _parseRpcResultAs<Map<String, dynamic>>(balanceResult);
-      final value = result['balance'] as String;
-      return hexToInt(value).toDouble() / 1000000.0;
-    }
-    return 0.0;
-  }
-
-  String tronBase58ToHex(String base58Address) {
-    // Decode base58
-    final decoded = base58.decode(base58Address);
-    // Remove checksum (last 4 bytes)
-    final addressBytes = decoded.sublist(0, decoded.length - 4);
-    // Convert to hex with 0x prefix
-    return '0x${addressBytes.map((b) => b.toRadixString(16).padLeft(2, '0')).join()}';
-  }
-
-  BigInt _parseEstimateGasResult(String gasResult) {
-    try {
-      final result = _parseRpcResultAs<String>(gasResult);
-      return hexToInt(result);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  String _parseResponseError(String responseBody) {
-    final errorData = jsonDecode(responseBody) as Map<String, dynamic>;
 
     try {
-      final jsonResponse = JsonRpcResponse.fromJson(errorData);
-      return jsonResponse.error!.message!;
-    } catch (_) {}
-
-    final reasons = errorData['reasons'] as List<dynamic>;
-    return reasons.isNotEmpty
-        ? reasons.first['description'] ?? ''
-        : responseBody;
+      final namespace = NamespaceUtils.getNamespaceFromChain(caip2Chain);
+      final handler = ChainHandlerFactory.getHandlerOrThrow(namespace);
+      return _handleResponse(
+        response: response,
+        parser: (body) => handler.parseBalance(body, _parseRpcResultAs),
+        errorContext: 'checkAllowance',
+      );
+    } on JsonRpcError catch (e) {
+      _core.logger.e('[$runtimeType] checkAllowance, parse error => $e');
+      throw 'Failed checking allowance';
+    }
   }
 
   @override
@@ -399,29 +242,114 @@ class BlockChainService implements IBlockChainService {
     required String method,
     required List<dynamic> params,
   }) async {
-    final uri = Uri.parse(_baseUrl);
-    final queryParams = {..._requiredParams, 'chainId': chainId};
-    final url = uri.replace(queryParameters: queryParams);
     final body = jsonEncode({
       'jsonrpc': '2.0',
       'id': JsonRpcUtils.payloadId(),
       'method': method,
       'params': params,
     });
+    final url = _buildRpcUrl(chainId);
     final response = await http.post(
       url,
       headers: _requiredHeaders,
       body: body,
     );
     _core.logger.i('[$runtimeType] rawCall $url, $body => ${response.body}');
-    try {
-      final bodyResponse = response.body;
-      final parsedResponse = jsonDecode(bodyResponse) as Map<String, dynamic>;
-      final jsonRpcResponse = JsonRpcResponse.fromJson(parsedResponse);
 
-      return jsonRpcResponse;
-    } catch (e) {
-      rethrow;
+    final parsedResponse = jsonDecode(response.body) as Map<String, dynamic>;
+    return JsonRpcResponse.fromJson(parsedResponse);
+  }
+
+  @override
+  void dispose() {
+    _selectedToken = null;
+    _tokensList?.clear();
+  }
+
+  // HTTP Request Helpers
+  Uri _buildUrl(String path, [Map<String, String>? additionalParams]) {
+    final uri = Uri.parse('$_baseUrl/$path');
+    final queryParams = {..._requiredParams, ...?additionalParams};
+    return uri.replace(queryParameters: queryParams);
+  }
+
+  Uri _buildRpcUrl(String chainId) {
+    return _buildUrl('', {'chainId': chainId});
+  }
+
+  String _buildJsonRpcRequest({
+    required String method,
+    required dynamic params,
+    int? id,
+  }) {
+    return jsonEncode({
+      'jsonrpc': '2.0',
+      'method': method,
+      'params': params,
+      'id': id ?? 1,
+    });
+  }
+
+  // Response Handling
+  T _handleResponse<T>({
+    required http.Response response,
+    required T Function(String body) parser,
+    required String errorContext,
+    String? errorMessage,
+  }) {
+    if (response.statusCode == 200 && response.body.isNotEmpty) {
+      try {
+        return parser(response.body);
+      } catch (e) {
+        _core.logger.e('[$runtimeType] $errorContext, parse error => $e');
+        throw Exception(errorMessage ?? 'Failed to parse response. $e');
+      }
     }
+
+    final reason = _parseResponseError(response.body);
+    _core.logger.e('[$runtimeType] $errorContext, decode error => $reason');
+    throw Exception(reason);
+  }
+
+  String _parseResponseError(String responseBody) {
+    try {
+      final errorData = jsonDecode(responseBody) as Map<String, dynamic>;
+      final jsonResponse = JsonRpcResponse.fromJson(errorData);
+      if (jsonResponse.error != null) {
+        return jsonResponse.error!.message ?? '';
+      }
+
+      final reasons = errorData['reasons'] as List<dynamic>?;
+      if (reasons != null && reasons.isNotEmpty) {
+        return reasons.first['description'] ?? '';
+      }
+    } catch (_) {}
+
+    return responseBody;
+  }
+
+  // RPC Result Parsing
+  T _parseRpcResultAs<T>(String body) {
+    final result = Map<String, dynamic>.from({...jsonDecode(body), 'id': 1});
+    final jsonResponse = JsonRpcResponse.fromJson(result);
+    if (jsonResponse.result != null) {
+      return jsonResponse.result as T;
+    }
+    throw jsonResponse.error ??
+        ReownSignError(code: 0, message: 'Error parsing result');
+  }
+
+  BigInt _parseEstimateGasResult(String gasResult) {
+    final result = _parseRpcResultAs<String>(gasResult);
+    return hexToInt(result);
+  }
+
+  // Allowance Helpers
+  String _buildAllowanceCallData(String owner, String spender) {
+    final ownerPadded = owner.replaceFirst('0x', '').padLeft(64, '0');
+    final spenderPadded = spender.replaceFirst('0x', '').padLeft(64, '0');
+
+    final allowanceFunctionSelector = 'dd62ed3e';
+    return '0x$allowanceFunctionSelector$ownerPadded$spenderPadded';
   }
 }

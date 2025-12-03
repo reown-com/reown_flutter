@@ -56,7 +56,10 @@ class _SelectTokenPageState extends State<SelectTokenPage> {
             );
           }
           setState(() {});
-        } catch (_) {}
+        } catch (e) {
+          _tokens = [];
+          setState(() {});
+        }
       });
     }
   }
