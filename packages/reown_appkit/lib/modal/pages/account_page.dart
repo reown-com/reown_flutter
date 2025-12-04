@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/pages/activity_page.dart';
+// import 'package:reown_appkit/modal/pages/receive_page.dart';
 import 'package:reown_appkit/modal/pages/upgrade_wallet_page.dart';
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
@@ -144,10 +145,10 @@ class _DefaultAccountView extends StatelessWidget {
         // ),
         _SelectNetworkButton(),
         _FundWalletButton(),
-        Visibility(
-          visible: !isMagicService && !smartAccounts,
-          child: _ActivityButton(),
-        ),
+        // Visibility(
+        //   visible: !isMagicService && !smartAccounts,
+        //   child: _ActivityButton(),
+        // ),
         Visibility(visible: smartAccounts, child: _SwitchSmartAccountButton()),
         _DisconnectButton(),
       ],
@@ -413,6 +414,7 @@ class _FundWalletButton extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _ActivityButton extends StatelessWidget {
   IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
 
@@ -434,6 +436,28 @@ class _ActivityButton extends StatelessWidget {
     );
   }
 }
+
+// class _ReceiveButton extends StatelessWidget {
+//   IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final themeColors = ReownAppKitModalTheme.colorsOf(context);
+//     return Column(
+//       children: [
+//         const SizedBox.square(dimension: kPadding8),
+//         AccountListItem(
+//           iconPath: 'lib/modal/assets/icons/arrow_bottom_circle.svg',
+//           iconColor: themeColors.accent100,
+//           iconBGColor: themeColors.accenGlass015,
+//           iconBorderColor: themeColors.accenGlass005,
+//           title: 'Receive',
+//           onTap: () => _widgetStack.push(ReceivePage()),
+//         ),
+//       ],
+//     );
+//   }
+// }
 
 class _SwitchSmartAccountButton extends StatefulWidget {
   @override
