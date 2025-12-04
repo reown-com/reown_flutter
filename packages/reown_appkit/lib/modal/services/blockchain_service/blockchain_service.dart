@@ -191,9 +191,9 @@ class BlockChainService implements IBlockChainService {
       if ((e.message ?? '').toLowerCase().contains(
         'insufficient funds for gas',
       )) {
-        throw 'Insufficient funds for gas';
+        throw JsonRpcError(code: e.code, message: 'Insufficient funds for gas');
       }
-      throw 'Failed to estimate gas';
+      throw JsonRpcError(code: e.code, message: 'Failed to estimate gas');
     }
   }
 
@@ -302,7 +302,7 @@ class BlockChainService implements IBlockChainService {
         return parser(response.body);
       } catch (e) {
         _core.logger.e('[$runtimeType] $errorContext, parse error => $e');
-        throw Exception(errorMessage ?? 'Failed to parse response. $e');
+        rethrow;
       }
     }
 
