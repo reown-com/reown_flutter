@@ -104,7 +104,7 @@ class PhantomService implements IPhantomService {
 
   @override
   Future<void> connect({String? chainId}) async {
-    await _checkInstalled();
+    // await _checkInstalled();
     try {
       final solanaNets = ReownAppKitModalNetworks.getAllSupportedNetworks(
         namespace: NetworkUtils.solana,
@@ -149,7 +149,7 @@ class PhantomService implements IPhantomService {
     required String chainId,
     required SessionRequestParams request,
   }) async {
-    await _checkInstalled();
+    // await _checkInstalled();
     _core.logger.d(
       '[$runtimeType] ${request.method} ${jsonEncode(request.params)}',
     );
@@ -192,7 +192,7 @@ class PhantomService implements IPhantomService {
 
   @override
   Future<void> disconnect() async {
-    await _checkInstalled();
+    // await _checkInstalled();
     try {
       final disconnectUri = _phantomHelper?.buildDisconnectUri();
       await ReownCoreUtils.openURL(disconnectUri.toString());
@@ -227,12 +227,12 @@ class PhantomService implements IPhantomService {
     }
   }
 
-  Future<bool> _checkInstalled() async {
-    if (!isInstalled) {
-      throw ThirdPartyWalletNotInstalled(walletName: 'Phantom Wallet');
-    }
-    return true;
-  }
+  // Future<bool> _checkInstalled() async {
+  //   if (!isInstalled) {
+  //     throw ThirdPartyWalletNotInstalled(walletName: 'Phantom Wallet');
+  //   }
+  //   return true;
+  // }
 
   Future<void> _onConnectPhantomWallet(Map<String, dynamic> payload) async {
     if (payload.containsKey('errorCode')) {
