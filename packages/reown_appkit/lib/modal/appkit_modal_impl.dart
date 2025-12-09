@@ -1429,8 +1429,16 @@ class ReownAppKitModal
   }
 
   @override
-  void selectWallet(ReownAppKitModalWalletInfo? walletInfo) {
-    _selectedWallet = walletInfo;
+  void selectWallet(ReownAppKitModalWalletInfo? walletInfo) async {
+    if (walletInfo?.isPhantom == true) {
+      _selectedWallet = await _explorerService.getPhantomWalletObject();
+    } else if (walletInfo?.isSolflare == true) {
+      _selectedWallet = await _explorerService.getSolflareWalletObject();
+    } else if (walletInfo?.isCoinbase == true) {
+      _selectedWallet = await _explorerService.getCoinbaseWalletObject();
+    } else {
+      _selectedWallet = walletInfo;
+    }
   }
 
   @override
