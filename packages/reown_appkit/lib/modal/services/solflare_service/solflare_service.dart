@@ -105,7 +105,7 @@ class SolflareService implements ISolflareService {
 
   @override
   Future<void> connect({String? chainId}) async {
-    await _checkInstalled();
+    // await _checkInstalled();
     try {
       final solanaNets = ReownAppKitModalNetworks.getAllSupportedNetworks(
         namespace: NetworkUtils.solana,
@@ -150,7 +150,7 @@ class SolflareService implements ISolflareService {
     required String chainId,
     required SessionRequestParams request,
   }) async {
-    await _checkInstalled();
+    // await _checkInstalled();
     _core.logger.d(
       '[$runtimeType] ${request.method} ${jsonEncode(request.params)}',
     );
@@ -193,7 +193,7 @@ class SolflareService implements ISolflareService {
 
   @override
   Future<void> disconnect() async {
-    await _checkInstalled();
+    // await _checkInstalled();
     try {
       final disconnectUri = _solflareHelper?.buildDisconnectUri();
       await ReownCoreUtils.openURL(disconnectUri.toString());
@@ -228,12 +228,12 @@ class SolflareService implements ISolflareService {
     }
   }
 
-  Future<bool> _checkInstalled() async {
-    if (!isInstalled) {
-      throw ThirdPartyWalletNotInstalled(walletName: 'Solflare Wallet');
-    }
-    return true;
-  }
+  // Future<bool> _checkInstalled() async {
+  //   if (!isInstalled) {
+  //     throw ThirdPartyWalletNotInstalled(walletName: 'Solflare Wallet');
+  //   }
+  //   return true;
+  // }
 
   Future<void> _onConnectSolflareWallet(Map<String, dynamic> payload) async {
     if (payload.containsKey('errorCode')) {

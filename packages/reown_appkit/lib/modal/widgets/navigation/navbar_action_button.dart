@@ -10,19 +10,19 @@ class NavbarActionButton extends StatelessWidget {
     this.asset = '',
     this.child,
     this.color,
-    this.dimension = kNavbarHeight,
+    this.width = kNavbarHeight,
   });
   final String asset;
   final VoidCallback? action;
   final Color? color;
-  final double dimension;
+  final double width;
   final Widget? child;
 
   @override
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    return SizedBox.square(
-      dimension: dimension,
+    return SizedBox.fromSize(
+      size: Size(width, kNavbarHeight),
       child:
           child ??
           IconButton(

@@ -142,12 +142,13 @@ class _PreviewSendEvmState extends State<PreviewSendEvm> {
         amount: max(0.000000, actualValueToSend).toString(),
       );
       _transaction = Transaction(
+        from: EthereumAddress.fromHex(_senderAddress),
         to: EthereumAddress.fromHex(_recipientAddress),
         value: EtherAmount.fromBigInt(
           EtherUnit.wei,
           _valueToBigInt(actualValueToSend),
         ),
-        data: utf8.encode('0x'),
+        // data: utf8.encode('0x'),
       );
     }
     _logger('[$runtimeType] transaction ${jsonEncode(_transaction?.toJson())}');
@@ -216,6 +217,13 @@ class _PreviewSendEvmState extends State<PreviewSendEvm> {
       _toastService.show(
         ToastMessage(type: ToastType.error, text: e.toString()),
       );
+    } on JsonRpcError catch (e) {
+      _toastService.show(
+        ToastMessage(
+          type: ToastType.error,
+          text: e.message ?? 'Some error happened',
+        ),
+      );
     }
   }
 
@@ -231,8 +239,8 @@ class _PreviewSendEvmState extends State<PreviewSendEvm> {
         sendAmount: valueToSend,
       ),
     );
+    final appKitModal = ModalProvider.of(context).instance;
     try {
-      final appKitModal = ModalProvider.of(context).instance;
       final response = await appKitModal.request(
         topic: appKitModal.session!.topic,
         chainId: _sendTokenData.chainId!,
@@ -270,6 +278,17 @@ class _PreviewSendEvmState extends State<PreviewSendEvm> {
     } on Exception catch (e) {
       _toastService.show(
         ToastMessage(type: ToastType.error, text: e.toString()),
+      );
+      _analyticsService.sendEvent(
+        WalletFeatureSendError(
+          network: _sendTokenData.chainId!,
+          sendToken: _sendTokenData.symbol!,
+          sendAmount: valueToSend,
+        ),
+      );
+    } on JsonRpcError catch (e) {
+      _toastService.show(
+        ToastMessage(type: ToastType.error, text: e.message ?? 'Error'),
       );
       _analyticsService.sendEvent(
         WalletFeatureSendError(

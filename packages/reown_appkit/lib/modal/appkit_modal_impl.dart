@@ -795,22 +795,18 @@ class ReownAppKitModal
   @override
   Future<void> openModalView([Widget? startWidget]) {
     final keyString = startWidget?.key?.toString() ?? '';
-    final smartAccounts = _currentSession?.sessionSmartAccounts;
-    final isMagic = _currentSession?.sessionService.isMagic == true;
-    final embeddedWallet = isMagic || (smartAccounts ?? []).isNotEmpty;
+    // final smartAccounts = _currentSession?.sessionSmartAccounts;
+    // final isMagic = _currentSession?.sessionService.isMagic == true;
+    // final embeddedWallet = isMagic || (smartAccounts ?? []).isNotEmpty;
     if (_isConnected) {
       final connectedKeys = _allowedScreensWhenConnected
           .map((e) => e.toString())
           .toList();
       if (startWidget == null) {
-        startWidget = embeddedWallet
-            ? const WalletFeaturesPage()
-            : const AccountPage();
+        startWidget = const WalletFeaturesPage();
       } else {
         if (!connectedKeys.contains(keyString)) {
-          startWidget = embeddedWallet
-              ? const WalletFeaturesPage()
-              : const AccountPage();
+          startWidget = const WalletFeaturesPage();
         }
       }
     } else {
@@ -1433,8 +1429,16 @@ class ReownAppKitModal
   }
 
   @override
-  void selectWallet(ReownAppKitModalWalletInfo? walletInfo) {
-    _selectedWallet = walletInfo;
+  void selectWallet(ReownAppKitModalWalletInfo? walletInfo) async {
+    if (walletInfo?.isPhantom == true) {
+      _selectedWallet = await _explorerService.getPhantomWalletObject();
+    } else if (walletInfo?.isSolflare == true) {
+      _selectedWallet = await _explorerService.getSolflareWalletObject();
+    } else if (walletInfo?.isCoinbase == true) {
+      _selectedWallet = await _explorerService.getCoinbaseWalletObject();
+    } else {
+      _selectedWallet = walletInfo;
+    }
   }
 
   @override
@@ -1574,6 +1578,9 @@ class ReownAppKitModal
     required String method,
     required List<dynamic> params,
   }) async {
+    _appKit.core.logger.e(
+      '[$runtimeType] rpcRequest chainId: $chainId, method: $method, params: $params',
+    );
     return await _blockchainService.rawCall(
       chainId: chainId,
       method: method,
@@ -1807,7 +1814,7 @@ class ReownAppKitModal
     final namespace = NamespaceUtils.getNamespaceFromChain(_selectedChainID!);
 
     try {
-      _chainBalance = await _blockchainService.getNativeBalance(
+      _chainBalance = await _blockchainService.getNativeTokenBalance(
         address: _currentSession!.getAddress(namespace)!,
         namespace: namespace,
         chainId: _selectedChainID!,

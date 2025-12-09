@@ -82,20 +82,21 @@ class _WalletFeaturesPageState extends State<WalletFeaturesPage>
       safeAreaBottom: false,
       divider: false,
       leftAction: NavbarActionButton(
+        width: kNavbarHeight * 1.3,
         child: GestureDetector(
           onTap: () => _widgetStack.push(
             ReownAppKitModalSelectNetworkPage(),
             event: ClickNetworksEvent(),
           ),
-          child: Padding(
-            padding: const EdgeInsets.only(top: 4.0),
+          child: Container(
+            color: themeColors.background100,
             child: Row(
               children: [
                 const SizedBox.square(dimension: 20.0),
                 NetworkButton(
                   serviceStatus: _appKitModal!.status,
                   chainInfo: _appKitModal!.selectedChain,
-                  size: BaseButtonSize.small,
+                  size: BaseButtonSize.regular,
                   iconOnly: true,
                 ),
                 const SizedBox.square(dimension: 4.0),
@@ -140,26 +141,33 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
   @override
   void initState() {
     super.initState();
-    final chainId = widget.appKitModal.selectedChain!.chainId;
-    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-    final address = widget.appKitModal.session!.getAddress(namespace)!;
-
     // cached items
-    final cachedTokens = _blockchainService.tokensList ?? <TokenBalance>[];
-    if (cachedTokens.isNotEmpty) {
-      _tokens = List<TokenBalance>.from(cachedTokens);
-      setState(() {});
-    }
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      try {
-        _tokens = await _blockchainService.getTokenBalance(
-          address: address,
-          caip2Chain: chainId,
-        );
+      final chainId = widget.appKitModal.selectedChain!.chainId;
+      final cachedTokens = _blockchainService.tokensList ?? <TokenBalance>[];
+      if (cachedTokens.isNotEmpty && cachedTokens.first.chainId == chainId) {
+        _tokens = List<TokenBalance>.from(cachedTokens);
         setState(() {});
-      } catch (_) {}
+      } else {
+        final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+        final address = widget.appKitModal.session!.getAddress(namespace)!;
+        await _getTokenBalance(address, chainId);
+      }
     });
+  }
+
+  Future<void> _getTokenBalance(String address, String chainId) async {
+    try {
+      _tokens = await _blockchainService.getTokenBalance(
+        address: address,
+        caip2Chain: chainId,
+      );
+      setState(() {});
+    } catch (e) {
+      _tokens = [];
+      setState(() {});
+    }
   }
 
   String get _sumBalance {

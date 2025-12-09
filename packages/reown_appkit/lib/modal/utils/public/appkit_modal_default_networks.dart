@@ -312,7 +312,7 @@ class ReownAppKitModalNetworks {
     ],
     'sui': [
       ReownAppKitModalNetworkInfo(
-        name: 'Sui',
+        name: 'Sui testnet',
         chainId: 'testnet',
         currency: 'SUI',
         rpcUrl: 'https://rpc.walletconnect.org/v1',
@@ -320,7 +320,7 @@ class ReownAppKitModalNetworks {
         isTestNetwork: true,
       ),
       ReownAppKitModalNetworkInfo(
-        name: 'Sui',
+        name: 'Sui devnet',
         chainId: 'devnet',
         currency: 'SUI',
         rpcUrl: 'https://rpc.walletconnect.org/v1',
