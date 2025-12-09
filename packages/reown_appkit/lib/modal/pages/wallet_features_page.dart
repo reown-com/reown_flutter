@@ -142,22 +142,23 @@ class _SmartAccountViewState extends State<_SmartAccountView> {
   void initState() {
     super.initState();
     // cached items
-    final cachedTokens = _blockchainService.tokensList ?? <TokenBalance>[];
-    if (cachedTokens.isNotEmpty) {
-      _tokens = List<TokenBalance>.from(cachedTokens);
-      setState(() {});
-    }
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await _getTokenBalance();
+      final chainId = widget.appKitModal.selectedChain!.chainId;
+      final cachedTokens = _blockchainService.tokensList ?? <TokenBalance>[];
+      if (cachedTokens.isNotEmpty && cachedTokens.first.chainId == chainId) {
+        _tokens = List<TokenBalance>.from(cachedTokens);
+        setState(() {});
+      } else {
+        final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+        final address = widget.appKitModal.session!.getAddress(namespace)!;
+        await _getTokenBalance(address, chainId);
+      }
     });
   }
 
-  Future<void> _getTokenBalance() async {
+  Future<void> _getTokenBalance(String address, String chainId) async {
     try {
-      final chainId = widget.appKitModal.selectedChain!.chainId;
-      final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-      final address = widget.appKitModal.session!.getAddress(namespace)!;
       _tokens = await _blockchainService.getTokenBalance(
         address: address,
         caip2Chain: chainId,
