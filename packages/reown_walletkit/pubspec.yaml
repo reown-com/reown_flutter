@@ -26,5 +26,4 @@ dev_dependencies:
   logger: ^2.5.0
   mockito: ^5.4.4
   package_info_plus: '>=8.1.2 <10.0.0'
-  reown_appkit:
-    path: ../reown_appkit/
+  reown_appkit: ^1.7.6
