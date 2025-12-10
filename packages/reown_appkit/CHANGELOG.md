@@ -1,3 +1,11 @@
+## 1.7.7-beta01
+
+- Enabled Wallet Features for all wallets (EVM and Solana). You can now send and receive directly from AppKit
+
+## 1.7.6
+
+- Solflare and Phantom bugfix
+
 ## 1.7.5
 
 - Bug fix on Deposit With Exchange

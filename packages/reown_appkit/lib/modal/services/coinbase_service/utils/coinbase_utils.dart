@@ -38,7 +38,6 @@ class CoinbaseUtils {
       'eip155:56',
       'eip155:80084',
       'eip155:80085',
-      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
     ],
     'categories': [
       'b7c081de-c6d6-447e-ada6-a6f8e6e1480a',

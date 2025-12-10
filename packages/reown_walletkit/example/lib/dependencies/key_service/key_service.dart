@@ -265,7 +265,7 @@ class KeyService extends IKeyService {
       final address = private.address.with0x;
       final evmChainKey = ChainKey(
         chains: ChainsDataList.eip155Chains.map((e) => e.chainId).toList(),
-        privateKey: keyPair.privateKey,
+        privateKey: '0x${keyPair.privateKey}',
         publicKey: keyPair.publicKey,
         address: address,
         namespace: 'eip155',
@@ -288,11 +288,12 @@ class KeyService extends IKeyService {
       );
       final publicBytes = solanaKeyPair.publicKey.bytes;
       final privateBytes = (await solanaKeyPair.extract()).bytes;
+      final privateKey =
+          hex.encode(Uint8List.fromList(privateBytes + publicBytes));
 
       return ChainKey(
         chains: ChainsDataList.solanaChains.map((e) => e.chainId).toList(),
-        privateKey:
-            base58.encode(Uint8List.fromList(privateBytes + publicBytes)),
+        privateKey: '0x$privateKey',
         publicKey: solanaKeyPair.publicKey.toString(),
         address: solanaKeyPair.address,
         namespace: 'solana',

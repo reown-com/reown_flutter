@@ -92,7 +92,7 @@ class PhantomHelper {
       queryParameters: {
         'dapp_encryption_public_key': dappPublicKey,
         'cluster': cluster ?? 'mainnet-beta',
-        'app_url': _appUrl,
+        'app_url': _appUrl, // has to be valid url to work
         'redirect_link': '$_redirectLink?phantomRequest=connect',
       },
     );
