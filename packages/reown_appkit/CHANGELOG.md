@@ -1,6 +1,7 @@
-## 1.7.7-beta01
+## 1.7.7-beta02
 
 - Enabled Wallet Features for all wallets (EVM and Solana). You can now send and receive directly from AppKit
+- Bug fixes and improvements
 
 ## 1.7.6
 
