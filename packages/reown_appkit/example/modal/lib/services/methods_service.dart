@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:intl/intl.dart';
-import 'package:reown_appkit_example/services/contracts/contract.dart';
+import 'package:reown_appkit_modal_example/services/contracts/contract.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:convert/convert.dart';
 
-import 'package:reown_appkit_example/services/contracts/test_data.dart';
+import 'package:reown_appkit_modal_example/services/contracts/test_data.dart';
 
 enum SupportedMethods {
   personalSign,

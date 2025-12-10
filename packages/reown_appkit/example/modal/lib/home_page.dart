@@ -2,16 +2,16 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:reown_appkit_example/services/deep_link_handler.dart';
+import 'package:reown_appkit_modal_example/services/deep_link_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:reown_appkit/reown_appkit.dart';
-import 'package:reown_appkit_example/widgets/debug_drawer.dart';
-import 'package:reown_appkit_example/utils/constants.dart';
-import 'package:reown_appkit_example/services/siwe_service.dart';
-import 'package:reown_appkit_example/widgets/logger_widget.dart';
-import 'package:reown_appkit_example/widgets/session_widget.dart';
-import 'package:reown_appkit_example/utils/dart_defines.dart';
+import 'package:reown_appkit_modal_example/widgets/debug_drawer.dart';
+import 'package:reown_appkit_modal_example/utils/constants.dart';
+import 'package:reown_appkit_modal_example/services/siwe_service.dart';
+import 'package:reown_appkit_modal_example/widgets/logger_widget.dart';
+import 'package:reown_appkit_modal_example/widgets/session_widget.dart';
+import 'package:reown_appkit_modal_example/utils/dart_defines.dart';
 import 'package:toastification/toastification.dart';
 
 class MyHomePage extends StatefulWidget {

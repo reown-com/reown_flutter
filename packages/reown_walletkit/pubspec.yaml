@@ -25,13 +25,5 @@ dev_dependencies:
   http: ^1.2.2
   logger: ^2.5.0
   mockito: ^5.4.4
-  package_info_plus: ^8.1.2
-  reown_appkit: ^1.7.6
-
-platforms:
-  android:
-  ios:
-  web:
-  macos:
-  linux:
-  windows:
+  package_info_plus: '>=8.1.2 <10.0.0'
+  reown_appkit: ^1.7.4

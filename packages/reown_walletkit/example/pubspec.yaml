@@ -18,7 +18,7 @@ dependencies:
   convert: ^3.1.2
   crypto: ^3.0.6
   cupertino_icons: ^1.0.8
-  eth_sig_util: ^0.0.9
+  eth_sig_util_plus: ^0.0.10
   flutter:
     sdk: flutter
   flutter_svg: ^2.0.16
@@ -28,9 +28,9 @@ dependencies:
   kadena_dart_sdk: ^2.3.2
   on_chain: ^7.1.0
   package_info_plus: ^8.1.2
-  pointycastle: ^3.9.1
-  polkadart: ^0.4.7
-  polkadart_keyring: ^0.4.4
+  pointycastle: ^4.0.0
+  polkadart: '>=0.4.7 <0.8.0'
+  polkadart_keyring: '>=0.4.4 <0.8.0'
   qr_bar_code_scanner_dialog:
     path: packages/qr-bar-code-scanner-dialog
   reown_walletkit:
@@ -47,6 +47,7 @@ dependency_overrides:
   # because of solana
   freezed_annotation: ^3.1.0
   pinenacl: ^0.6.0
+  pointycastle: ^4.0.0
   shelf_web_socket: ^2.0.1
   web_socket_channel: ^3.0.1
 

@@ -4,8 +4,8 @@ import 'package:reown_appkit/reown_appkit.dart' hide TransactionExtension;
 extension TxExtension on Transaction {
   Map<String, dynamic> toJson() {
     return {
-      if (from != null) 'from': from!.hexEip55,
-      if (to != null) 'to': to!.hexEip55,
+      if (from != null) 'from': from!.eip55With0x,
+      if (to != null) 'to': to!.eip55With0x,
       if (maxGas != null) 'gas': '0x${maxGas!.toRadixString(16)}',
       if (gasPrice != null)
         'gasPrice': '0x${gasPrice!.getInWei.toRadixString(16)}',

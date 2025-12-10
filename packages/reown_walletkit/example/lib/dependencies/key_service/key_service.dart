@@ -3,7 +3,7 @@ import 'dart:developer' as dev;
 
 import 'package:bech32/bech32.dart';
 import 'package:convert/convert.dart';
-import 'package:eth_sig_util/util/utils.dart' as sig_utils;
+import 'package:eth_sig_util_plus/util/utils.dart' as sig_utils;
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -262,7 +262,7 @@ class KeyService extends IKeyService {
   ChainKey? _chainKeyFromPrivate(CryptoKeyPair keyPair) {
     try {
       final private = EthPrivateKey.fromHex(keyPair.privateKey);
-      final address = private.address.hex;
+      final address = private.address.with0x;
       final evmChainKey = ChainKey(
         chains: ChainsDataList.eip155Chains.map((e) => e.chainId).toList(),
         privateKey: '0x${keyPair.privateKey}',

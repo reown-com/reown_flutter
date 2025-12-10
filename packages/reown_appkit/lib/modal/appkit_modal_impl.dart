@@ -1488,7 +1488,7 @@ class ReownAppKitModal
           .encodeCall(parameters);
       final params = {
         'from': _currentSession!.getAddress('eip155'),
-        'to': deployedContract.address.hex,
+        'to': deployedContract.address.with0x,
         'data': '0x${_bytesToHex(data)}',
       };
 

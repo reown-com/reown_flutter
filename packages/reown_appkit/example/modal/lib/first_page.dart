@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:reown_appkit_example/home_page.dart';
+import 'package:reown_appkit_modal_example/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:reown_appkit/reown_appkit.dart';

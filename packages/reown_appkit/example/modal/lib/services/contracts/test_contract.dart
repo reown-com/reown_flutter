@@ -1,4 +1,4 @@
-import 'package:reown_appkit_example/services/contracts/contract.dart';
+import 'package:reown_appkit_modal_example/services/contracts/contract.dart';
 
 class SepoliaTestContract implements SmartContract {
   // Alfreedoms2 ALF2 in Sepolia

@@ -551,7 +551,7 @@ class _KastMockedModalState extends State<KastMockedModal>
       child: SafeArea(
         top: false,
         child: Stack(
-          alignment: AlignmentGeometry.center,
+          alignment: Alignment.center,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
