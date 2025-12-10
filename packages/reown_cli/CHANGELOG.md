@@ -1,3 +1,7 @@
+## 0.0.6
+
+- Dependency updates
+
 ## 0.0.5
 
 - LICENSE UPDATE
