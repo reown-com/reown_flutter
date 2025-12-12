@@ -17,6 +17,7 @@ import uniffi.yttrium_utils.TxnDetails
 import uniffi.yttrium_utils.SolanaTxnDetails
 import uniffi.yttrium_utils.UiFields
 import uniffi.yttrium_utils.Route
+import uniffi.yttrium_utils.SendTxMessage
 import uniffi.yttrium_utils.SolanaTransaction
 import uniffi.yttrium_utils.Transactions
 
@@ -185,7 +186,7 @@ fun ExecuteDetails.toMap(): Map<String, Any> {
     )
 }
 
-fun Map<*, *>.toSendTxMessage(): uniffi.yttrium_utils.SendTxMessage {
+fun Map<*, *>.toSendTxMessage(): SendTxMessage {
     val address = this["address"] as? String
         ?: error("Missing or invalid 'address' in SendTxMessage map")
 
@@ -195,7 +196,7 @@ fun Map<*, *>.toSendTxMessage(): uniffi.yttrium_utils.SendTxMessage {
     val stateInit = this["stateInit"] as? String
     val payload = this["payload"] as? String
 
-    return uniffi.yttrium_utils.SendTxMessage(
+    return SendTxMessage(
         address = address,
         amount = amount,
         stateInit = stateInit,
@@ -203,8 +204,36 @@ fun Map<*, *>.toSendTxMessage(): uniffi.yttrium_utils.SendTxMessage {
     )
 }
 
-fun List<*>.toSendTxMessageList(): List<uniffi.yttrium_utils.SendTxMessage> {
+fun List<*>.toSendTxMessageList(): List<SendTxMessage> {
     return this.mapNotNull { item ->
         (item as? Map<*, *>)?.toSendTxMessage()
     }
 }
+
+///** JSON string -> Map<String, Any?> (single function) */
+//fun jsonStringToMap(json: String): Map<String, Any?> {
+//    val root = Json.parseToJsonElement(json)
+//    require(root is JsonObject) { "Root JSON element must be an object" }
+//    fun elemToAny(e: JsonElement): Any? = when (e) {
+//        is JsonNull -> null
+//        is JsonPrimitive -> e.booleanOrNull ?: e.intOrNull ?: e.longOrNull ?: e.doubleOrNull ?: e.content
+//        is JsonObject -> e.mapValues { (_, v) -> elemToAny(v) }
+//        is JsonArray -> e.map { elemToAny(it) }
+//    }
+//    return root.mapValues { (_, v) -> elemToAny(v) }
+//}
+//
+///** Map<String, Any?> -> JSON string (single function) */
+//fun mapToJsonString(map: Map<String, Any?>): String {
+//    fun anyToElem(value: Any?): JsonElement = when (value) {
+//        null -> JsonNull
+//        is Boolean -> JsonPrimitive(value)
+//        is Number -> JsonPrimitive(value)
+//        is String -> JsonPrimitive(value)
+//        is Map<*, *> -> buildJsonObject { value.forEach { (k, v) -> put(k.toString(), anyToElem(v)) } }
+//        is Collection<*> -> buildJsonArray { value.forEach { add(anyToElem(it)) } }
+//        is Array<*> -> buildJsonArray { value.forEach { add(anyToElem(it)) } }
+//        else -> JsonPrimitive(value.toString())
+//    }
+//    return Json.encodeToString(anyToElem(map))
+//}
