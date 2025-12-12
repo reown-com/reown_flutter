@@ -82,7 +82,7 @@ dependencies {
 //    }
     implementation("com.github.reown-com:yttrium-utils:unspecified")
     implementation("net.java.dev.jna:jna:5.17.0@aar")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+//    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.mockito:mockito-core:5.0.0")

@@ -1,6 +1,5 @@
 package com.reown.reown_yttrium_utils
 
-import kotlinx.serialization.json.*
 import uniffi.uniffi_yttrium_utils.Eip1559Estimation
 import uniffi.yttrium_utils.Amount
 import uniffi.yttrium_utils.BridgingError
@@ -180,47 +179,61 @@ fun Amount.toMap(): Map<String, Any> {
     )
 }
 
-fun ExecuteDetails.toMap(): Map<String, *> {
-    val json = Json.encodeToString(this)
-    val elem = Json.parseToJsonElement(json)
-    return (elem as JsonObject).mapValues { Json.encodeToString(it.value) }
+fun ExecuteDetails.toMap(): Map<String, Any> {
+    return mapOf(
+        "initialTxnReceipt" to initialTxnReceipt,
+        "initialTxnHash" to initialTxnHash
+    )
 }
 
-fun Map<String, Any?>.toSendTxMessage(): SendTxMessage {
-    val jsonString = mapToJsonString(this)
-    return Json.decodeFromString<SendTxMessage>(jsonString)
+fun Map<*, *>.toSendTxMessage(): SendTxMessage {
+    val address = this["address"] as? String
+        ?: error("Missing or invalid 'address' in SendTxMessage map")
+
+    val amount = this["amount"] as? String
+        ?: error("Missing or invalid 'amount' in SendTxMessage map")
+
+    val stateInit = this["stateInit"] as? String
+    val payload = this["payload"] as? String
+
+    return SendTxMessage(
+        address = address,
+        amount = amount,
+        stateInit = stateInit,
+        payload = payload
+    )
 }
 
 fun List<*>.toSendTxMessageList(): List<SendTxMessage> {
     return this.mapNotNull { item ->
-        (item as? Map<String, Any?>)?.toSendTxMessage()
+        (item as? Map<*, *>)?.toSendTxMessage()
     }
 }
 
-/** JSON string -> Map<String, Any?> (single function) */
-fun jsonStringToMap(json: String): Map<String, Any?> {
-    val root = Json.parseToJsonElement(json)
-    require(root is JsonObject) { "Root JSON element must be an object" }
-    fun elemToAny(e: JsonElement): Any? = when (e) {
-        is JsonNull -> null
-        is JsonPrimitive -> e.booleanOrNull ?: e.intOrNull ?: e.longOrNull ?: e.doubleOrNull ?: e.content
-        is JsonObject -> e.mapValues { (_, v) -> elemToAny(v) }
-        is JsonArray -> e.map { elemToAny(it) }
-    }
-    return root.mapValues { (_, v) -> elemToAny(v) }
-}
-
-/** Map<String, Any?> -> JSON string (single function) */
-fun mapToJsonString(map: Map<String, Any?>): String {
-    fun anyToElem(value: Any?): JsonElement = when (value) {
-        null -> JsonNull
-        is Boolean -> JsonPrimitive(value)
-        is Number -> JsonPrimitive(value)
-        is String -> JsonPrimitive(value)
-        is Map<*, *> -> buildJsonObject { value.forEach { (k, v) -> put(k.toString(), anyToElem(v)) } }
-        is Collection<*> -> buildJsonArray { value.forEach { add(anyToElem(it)) } }
-        is Array<*> -> buildJsonArray { value.forEach { add(anyToElem(it)) } }
-        else -> JsonPrimitive(value.toString())
-    }
-    return Json.encodeToString(anyToElem(map))
-}
+///** JSON string -> Map<String, Any?> (single function) */
+//fun jsonStringToMap(json: String): Map<String, Any?> {
+//    val root = Json.parseToJsonElement(json)
+//    require(root is JsonObject) { "Root JSON element must be an object" }
+//    fun elemToAny(e: JsonElement): Any? = when (e) {
+//        is JsonNull -> null
+//        is JsonPrimitive -> e.booleanOrNull ?: e.intOrNull ?: e.longOrNull ?: e.doubleOrNull ?: e.content
+//        is JsonObject -> e.mapValues { (_, v) -> elemToAny(v) }
+//        is JsonArray -> e.map { elemToAny(it) }
+//    }
+//    return root.mapValues { (_, v) -> elemToAny(v) }
+//}
+//
+///** Map<String, Any?> -> JSON string (single function) */
+//fun mapToJsonString(map: Map<String, Any?>): String {
+//    fun anyToElem(value: Any?): JsonElement = when (value) {
+//        null -> JsonNull
+//        is Boolean -> JsonPrimitive(value)
+//        is Number -> JsonPrimitive(value)
+//        is String -> JsonPrimitive(value)
+//        is Map<*, *> -> buildJsonObject { value.forEach { (k, v) -> put(k.toString(), anyToElem(v)) } }
+//        is Collection<*> -> buildJsonArray { value.forEach { add(anyToElem(it)) } }
+//        is Array<*> -> buildJsonArray { value.forEach { add(anyToElem(it)) } }
+//        else -> JsonPrimitive(value.toString())
+//    }
+//    return Json.encodeToString(anyToElem(map))
+//}
