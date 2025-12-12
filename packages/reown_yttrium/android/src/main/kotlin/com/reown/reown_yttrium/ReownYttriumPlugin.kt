@@ -7,7 +7,6 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
-import uniffi.yttrium.Erc6492Client
 
 /** ReownYttriumPlugin */
 class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
@@ -25,6 +24,8 @@ class ReownYttriumPlugin: FlutterPlugin, MethodCallHandler {
       "erc6492_init" -> EIP6492Verifier.init(call.arguments, result)
       "erc6492_verify" -> EIP6492Verifier.verifySignature(call.arguments, result)
       "erc6492_dispose" -> EIP6492Verifier.dispose(call.arguments, result)
+      "wcp_init" -> WalletConnectPay.initialize(call.arguments, result)
+      "wcp_createPayment" -> WalletConnectPay.createPayment(call.arguments, result)
       else -> result.notImplemented()
     }
   }
