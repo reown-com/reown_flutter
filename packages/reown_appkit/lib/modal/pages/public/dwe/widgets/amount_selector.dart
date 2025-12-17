@@ -35,8 +35,13 @@ class _AmountSelectorState extends State<AmountSelector> {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = ReownAppKitModalTheme.getDataOf(context);
-    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    if (_dweService.supportedAssets.isEmpty) {
+      return _AmountInputBody(
+        amountController: _amountController,
+        amountToReceive: 'No assets supported',
+        onTapAmount: (e) {},
+      );
+    }
     return ValueListenableBuilder(
       valueListenable: _dweService.selectedAsset,
       builder: (context, selectedAsset, _) {
@@ -55,82 +60,107 @@ class _AmountSelectorState extends State<AmountSelector> {
                               (token.price ?? 0.0))
                           .toStringAsFixed(4)
                     : 'Unable to estimate ';
-                return Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(width: 40.0),
-                        IntrinsicWidth(
-                          child: TextField(
-                            maxLines: 1,
-                            cursorHeight: 40.0,
-                            controller: _amountController,
-                            style: themeData.textStyles.title400.copyWith(
-                              color: themeColors.foreground150,
-                              fontSize: 40.0,
-                            ),
-                            keyboardType: const TextInputType.numberWithOptions(
-                              decimal: true,
-                            ),
-                            inputFormatters: [
-                              DecimalTextInputFormatter(),
-                              FilteringTextInputFormatter.allow(
-                                RegExp(r'^\d*\.?\d{0,2}$'),
-                              ),
-                              LengthLimitingTextInputFormatter(10),
-                            ],
-                            textAlign: TextAlign.center,
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: '0.00',
-                              hintStyle: themeData.textStyles.title400.copyWith(
-                                color: themeColors.foreground275,
-                                fontSize: 40.0,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Text(
-                          ' USD',
-                          style: themeData.textStyles.paragraph500.copyWith(
-                            color: themeColors.foreground275,
-                          ),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      '$amountToReceive ${selectedAsset.metadata.symbol}',
-                      style: themeData.textStyles.paragraph500.copyWith(
-                        color: themeColors.foreground275,
-                      ),
-                    ),
-                    const SizedBox.square(dimension: kPadding16),
-                    Row(
-                      children: [10, 50, 100].map((e) {
-                        return Expanded(
-                          child: _AmountButton(
-                            value: e,
-                            selected: _dweService.selectedAmount.value == e,
-                            onTap: () {
-                              FocusManager.instance.primaryFocus?.unfocus();
-                              _dweService.selectedAmount.value = e.toDouble();
-                              _amountController.text = _dweService
-                                  .selectedAmount
-                                  .value
-                                  .toString();
-                            },
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                  ],
+                final symbol = selectedAsset.metadata.symbol;
+                return _AmountInputBody(
+                  amountController: _amountController,
+                  amountToReceive: '$amountToReceive $symbol',
+                  onTapAmount: (e) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    _dweService.selectedAmount.value = e.toDouble();
+                    _amountController.text = _dweService.selectedAmount.value
+                        .toString();
+                  },
                 );
               },
             );
           },
         );
       },
+    );
+  }
+}
+
+class _AmountInputBody extends StatelessWidget {
+  IDWEService get _dweService => GetIt.I<IDWEService>();
+
+  const _AmountInputBody({
+    required this.amountController,
+    required this.onTapAmount,
+    required this.amountToReceive,
+  });
+
+  final TextEditingController amountController;
+  final Function(int) onTapAmount;
+  final String amountToReceive;
+
+  @override
+  Widget build(BuildContext context) {
+    final themeData = ReownAppKitModalTheme.getDataOf(context);
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(width: 40.0),
+            IntrinsicWidth(
+              child: TextField(
+                maxLines: 1,
+                cursorHeight: 40.0,
+                controller: amountController,
+                style: themeData.textStyles.title400.copyWith(
+                  color: themeColors.foreground150,
+                  fontSize: 40.0,
+                ),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
+                inputFormatters: [
+                  DecimalTextInputFormatter(),
+                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}$')),
+                  LengthLimitingTextInputFormatter(10),
+                ],
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: '0.00',
+                  hintStyle: themeData.textStyles.title400.copyWith(
+                    color: themeColors.foreground275,
+                    fontSize: 40.0,
+                  ),
+                ),
+              ),
+            ),
+            Text(
+              ' USD',
+              style: themeData.textStyles.paragraph500.copyWith(
+                color: themeColors.foreground275,
+              ),
+            ),
+          ],
+        ),
+        Visibility(
+          visible: amountToReceive.isNotEmpty,
+          child: Text(
+            amountToReceive,
+            style: themeData.textStyles.paragraph500.copyWith(
+              color: themeColors.foreground275,
+            ),
+          ),
+        ),
+        const SizedBox.square(dimension: kPadding16),
+        Row(
+          children: [10, 50, 100].map((e) {
+            return Expanded(
+              child: _AmountButton(
+                value: e,
+                selected: _dweService.selectedAmount.value == e,
+                onTap: () => onTapAmount.call(e),
+              ),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 }

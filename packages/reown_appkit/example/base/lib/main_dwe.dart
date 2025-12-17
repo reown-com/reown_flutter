@@ -101,6 +101,18 @@ class _MyHomePageState extends State<MyHomePage> {
     _initSDK();
   }
 
+  void _onModalNetworkChange(ModalNetworkChange event) {
+    if (!mounted) return;
+    setState(() {});
+    debugPrint('onModalNetworkChange: ${event.toString()}');
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _appKitModal.onModalNetworkChange.unsubscribe(_onModalNetworkChange);
+  }
+
   String get _flavor {
     String flavor = '-${const String.fromEnvironment('FLUTTER_APP_FLAVOR')}';
     return flavor.replaceAll('-production', '');
@@ -118,6 +130,7 @@ class _MyHomePageState extends State<MyHomePage> {
         redirect: Redirect(native: 'wcflutterdapp$_flavor://'),
       ),
     );
+    _appKitModal.onModalNetworkChange.subscribe(_onModalNetworkChange);
     await _appKitModal.init();
     setState(() => _initialized = true);
   }
@@ -133,16 +146,24 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: _initialized
-            ? SecondaryButton(
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (context) =>
-                        KastMockedModal(appKitModal: _appKitModal),
-                  );
-                },
-                title: 'Open Kast Mocked Modal',
+            ? Column(
+                // mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox.square(dimension: 10.0),
+                  SecondaryButton(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) => KastMockedModal(
+                          appKitModal: _appKitModal,
+                        ),
+                      );
+                    },
+                    title: 'Open Kast Mocked Modal',
+                  ),
+                  Text('${_appKitModal.selectedChain?.chainId}'),
+                ],
               )
             : CircularProgressIndicator(),
       ),
@@ -320,10 +341,10 @@ class _KastMockedModalState extends State<KastMockedModal>
     try {
       // CONFIGURE NETWORK YOU WANT TO RECEIVE FUNDS ON
       // Since AppKit defines some EVM and Solana Mainnet by default, you can do this as well
-      // final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
-      //   'solana',
-      //   '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', // Solana Mainnet
-      // );
+      final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
+        'solana',
+        '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', // Solana Mainnet
+      );
       // Other examples...
       // final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
       //   'eip155',
@@ -333,58 +354,97 @@ class _KastMockedModalState extends State<KastMockedModal>
       //   'eip155',
       //   '42161', // Arbitrum
       // );
-      final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
-        'eip155',
-        '137', // Polygon
-      );
+      // final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
+      //   'eip155',
+      //   '137', // Polygon
+      // );
 
-      // If you wan't to use some custom chain that is not included in `ReownAppKitModalNetworks` you will have to configure it as follows...
-      // final solanaNetwork = ReownAppKitModalNetworkInfo(
-      //   name: 'Solana',
-      //   chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-      //   currency: 'SOL',
-      //   rpcUrl: 'https://rpc.walletconnect.org/v1',
-      //   explorerUrl: 'https://solscan.io',
+      /// If you wan't to use some custom chain that is not included in `ReownAppKitModalNetworks` you will have to configure it as follows
+      /// But anyway currently only EVM and Solana tokens are supported
+      // final customNetwork = ReownAppKitModalNetworkInfo(
+      //   name: 'My network',
+      //   chainId: 'namespace:chainId',
+      //   currency: 'XYZ',
+      //   rpcUrl: 'https://example.com/rpc',
+      //   explorerUrl: 'https://example.com/explorer',
       // );
       // and then include it in supported networks. See docs https://docs.reown.com/appkit/flutter/core/custom-chains
-      // ReownAppKitModalNetworks.addSupportedNetworks('solana', [
-      //   solanaNetwork,
+      // ReownAppKitModalNetworks.addSupportedNetworks('namespace', [
+      //   customNetwork,
       // ]);
-
-      // Just a util to get the namespace out of the chainId
-      final namespace = NamespaceUtils.getNamespaceFromChain(
-        workingChain!.chainId,
-      );
-      // Get the proper address for the chain/namespace
-      final depositAddress = _kastDepositAddressForChain[namespace]!;
 
       // PRESELECT THE CONFIGURED NETWORK SO THE USER DOESN'T HAVE TO
       await widget.appKitModal.selectChain(workingChain);
 
-      // INCLUDE ALL ASSETS BUT NATIVES
-      // this call is only necessary if you want to exclude native tokens such as SOL, ETH
-      final assets = widget.appKitModal.getPaymentAssetsForNetwork(
-        chainId: workingChain.chainId,
+      /// FILTER YOUR SUPPORTED ASSETS IF NEEDED
+      /// No needed if you acually call `selectChain()` in the previous step unless you want to filter out native tokens
+      // This call is only necessary if you want to support assets on a given chain or don't support native tokens
+      final filteredAssets = widget.appKitModal.getPaymentAssetsForNetwork(
+        // chainId: widget.appKitModal.selectedChain?.chainId,
         includeNative: false,
       );
 
       // CONFIGURE THE FEATURE BEFORE USING IT
       widget.appKitModal.configDeposit(
-        supportedAssets: assets,
-        preselectedRecipient: depositAddress,
-        showNetworkIcon: false,
+        /// pass a list of supported assets. If not passed, `allExchangeAssets` are supported
+        // supportedAssets: filteredAssets,
+
+        /// disables asset selection button and fixes the feature to the given asset
+        // preselectedAsset: assets.first,
+
+        /// shows or hide network icon from asset option. If `false` then `filterByNetwork` will be set to `true` internally
+        // showNetworkIcon: true,
+
+        /// filter `supportedAssets` by the selected network (if any) or by the first asset network
+        filterByNetwork: false,
+
+        /// configured recipients by namespace.
+        /// If not set, then connected wallet address will be used.
+        /// If not connected wallet, then error will happen
+        configuredRecipients: _kastDepositAddressForChain,
       );
 
       // OPEN MODAL
       // widget.appKitModal.openDepositView();
-      widget.appKitModal.openModalView(
+      await widget.appKitModal.openModalView(
         ReownAppKitModalDepositScreen(titleOverride: 'Deposit on Kast'),
       );
-      // await widget.appKitModal.selectChain(null);
+      await widget.appKitModal.selectChain(null);
     } catch (e) {
       debugPrint('❌ Internal Error: $e');
     }
   }
+
+  // Future<void> topUpFromExchangeNew() async {
+  //   try {
+  //     final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
+  //       'solana',
+  //       '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+  //     )!;
+  //     final assets = widget.appKitModal.getPaymentAssetsForNetwork(
+  //       // chainId: workingChain.chainId,
+  //       includeNative: false,
+  //     );
+  //     // CONFIGURE THE FEATURE BEFORE USING IT
+  //     widget.appKitModal.configDeposit(
+  //       // supportedAssets: assets,
+  //       // preselectedAsset: solanaUSDT,
+  //       configuredRecipients: {
+  //         'eip155': '0xD6d146ec0F...', // KAST deposit address on EVM
+  //         'solana': '3ZFT4Cwvy17q...', // KAST deposit address on SOLANA
+  //       },
+  //       // filters by network and hides icon
+  //       showNetworkIcon: false,
+  //       filterByNetwork: true,
+  //     );
+  //     // if showNetworkIcon is false then a chain must be passed and assets will be filtered by chain
+  //     // OPEN MODAL
+  //     await widget.appKitModal.openDepositView();
+  //     await widget.appKitModal.selectChain(null);
+  //   } catch (e) {
+  //     debugPrint('❌ Internal Error: $e');
+  //   }
+  // }
 
   @override
   void initState() {

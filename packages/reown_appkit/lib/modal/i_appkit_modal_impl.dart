@@ -76,7 +76,8 @@ abstract class IReownAppKitModal with ChangeNotifier {
     List<ExchangeAsset>? supportedAssets,
     ExchangeAsset? preselectedAsset,
     bool? showNetworkIcon,
-    String? preselectedRecipient,
+    bool? filterByNetwork,
+    Map<String, String> configuredRecipients = const {},
     // bool? enableNetworkSelection,
     // String? preselectedNamespace,
   });

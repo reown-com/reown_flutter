@@ -12,9 +12,8 @@ import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class ExchangesListWidget extends StatefulWidget {
-  final String? recipient;
   final Function(Exchange exchange, GetExchangeUrlResult result) onSelect;
-  const ExchangesListWidget({this.recipient, required this.onSelect});
+  const ExchangesListWidget({required this.onSelect});
 
   @override
   State<ExchangesListWidget> createState() => _ExchangesListWidgetState();
@@ -43,7 +42,6 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
           // no re-request
           return _ExchangesList(
             exchanges: _exchanges,
-            recipient: widget.recipient,
             onSelect: widget.onSelect,
           );
         }
@@ -69,7 +67,6 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
               ..addAll(snapshot.data?.exchanges ?? []);
             return _ExchangesList(
               exchanges: _exchanges,
-              recipient: widget.recipient,
               onSelect: widget.onSelect,
             );
           },
@@ -80,13 +77,8 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
 }
 
 class _ExchangesList extends StatefulWidget {
-  const _ExchangesList({
-    required this.exchanges,
-    required this.recipient,
-    required this.onSelect,
-  });
+  const _ExchangesList({required this.exchanges, required this.onSelect});
   final List<Exchange> exchanges;
-  final String? recipient;
   final Function(Exchange exchange, GetExchangeUrlResult result) onSelect;
 
   @override
@@ -121,6 +113,7 @@ class __ExchangesListState extends State<_ExchangesList> {
                     child: ValueListenableBuilder(
                       valueListenable: _dweService.selectedAmount,
                       builder: (context, amount, _) {
+                        final enabled = amount > 0.0;
                         return AccountListItem(
                           iconWidget: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -134,8 +127,12 @@ class __ExchangesListState extends State<_ExchangesList> {
                           ),
                           title: exchange.name,
                           titleStyle: themeData.textStyles.paragraph500
-                              .copyWith(color: themeColors.foreground100),
-                          onTap: amount > 0.0
+                              .copyWith(
+                                color: enabled
+                                    ? themeColors.foreground100
+                                    : null,
+                              ),
+                          onTap: enabled
                               ? () => _selectExchange(exchange)
                               : null,
                           trailing: _selectedExchange?.id == exchange.id
@@ -170,8 +167,9 @@ class __ExchangesListState extends State<_ExchangesList> {
     final chainId = selectedAsset.network;
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final appKitModal = ModalProvider.of(context).instance;
-    final recipient =
-        widget.recipient ?? appKitModal.session?.getAddress(namespace);
+    final configRecipient = _dweService.configuredRecipients[namespace];
+    final connectedAddress = appKitModal.session?.getAddress(namespace);
+    final recipient = configRecipient ?? connectedAddress;
     if (recipient == null) {
       appKitModal.onModalError.broadcast(ModalError('No recipient found'));
       setState(() => _selectedExchange = null);

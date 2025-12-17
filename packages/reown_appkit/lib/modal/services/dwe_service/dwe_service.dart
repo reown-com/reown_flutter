@@ -33,19 +33,7 @@ class DWEService implements IDWEService {
   @override
   final selectedAmount = ValueNotifier<double>(0.0);
 
-  @override
-  Future<void> init() async {
-    _bundleId = await ReownCoreUtils.getPackageName();
-  }
-
-  @override
-  void clearState() {
-    selectedAmount.value = 0.0;
-    selectedAsset.value = null;
-    // _supportedAssets.clear();
-  }
-
-  final List<ExchangeAsset> _supportedAssets = [];
+  final List<ExchangeAsset> _supportedAssets = [...allExchangeAssets];
   @override
   List<ExchangeAsset> get supportedAssets => _supportedAssets;
 
@@ -57,24 +45,26 @@ class DWEService implements IDWEService {
   @override
   bool get showNetworkIcon => _showNetworkIcon;
 
-  // bool _enableNetworkSelection = false;
-  // @override
-  // bool get enableNetworkSelection => _enableNetworkSelection;
-
-  // String? _preselectedNamespace;
-  // @override
-  // String? get preselectedNamespace => _preselectedNamespace;
-
-  String? _preselectedRecipient;
+  bool _filterByNetwork = true;
   @override
-  String? get preselectedRecipient => _preselectedRecipient;
+  bool get filterByNetwork => _filterByNetwork;
+
+  Map<String, String> _configuredRecipients = {};
+  @override
+  Map<String, String> get configuredRecipients => _configuredRecipients;
+
+  @override
+  Future<void> init() async {
+    _bundleId = await ReownCoreUtils.getPackageName();
+  }
 
   @override
   void configDeposit({
     List<ExchangeAsset>? supportedAssets,
     ExchangeAsset? preselectedAsset,
     bool? showNetworkIcon,
-    String? preselectedRecipient,
+    bool? filterByNetwork,
+    Map<String, String> configuredRecipients = const {},
     // bool? enableNetworkSelection,
     // String? preselectedNamespace,
   }) {
@@ -104,14 +94,15 @@ class DWEService implements IDWEService {
       }
     }
 
-    if (supportedAssets != null) {
-      _supportedAssets
-        ..clear()
-        ..addAll(supportedAssets);
-    }
+    _supportedAssets
+      ..clear()
+      ..addAll(supportedAssets ?? allExchangeAssets);
+
     _preselectedAsset = preselectedAsset ?? _preselectedAsset;
     _showNetworkIcon = showNetworkIcon ?? _showNetworkIcon;
-    _preselectedRecipient = preselectedRecipient ?? _preselectedRecipient;
+    _filterByNetwork = filterByNetwork ?? _filterByNetwork;
+    // _preselectedRecipient = preselectedRecipient ?? _preselectedRecipient;
+    _configuredRecipients = configuredRecipients;
     // _enableNetworkSelection = enableNetworkSelection ?? false;
     // _preselectedNamespace = preselectedNamespace;
   }
@@ -242,6 +233,20 @@ class DWEService implements IDWEService {
     } catch (e) {
       rethrow;
     }
+  }
+
+  @override
+  void clearState() {
+    selectedAmount.value = 0.0;
+    selectedAsset.value = null;
+    _preselectedAsset = null;
+    _showNetworkIcon = true;
+    _configuredRecipients = {};
+    _supportedAssets
+      ..clear()
+      ..addAll(allExchangeAssets);
+    _filterByNetwork = true;
+    // _supportedAssets.clear();
   }
 
   // TokenBalance, timestamp

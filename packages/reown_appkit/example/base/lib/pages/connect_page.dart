@@ -172,8 +172,19 @@ class ConnectPageState extends State<ConnectPage> {
     );
   }
 
-  void _openDepositScreen() {
-    widget.appKitModal.openModalView(ReownAppKitModalDepositScreen());
+  void _openDepositScreen() async {
+    // final assets = widget.appKitModal.getPaymentAssetsForNetwork(
+    //   // chainId: 'eip155:137',
+    //   includeNative: false,
+    // );
+    widget.appKitModal.configDeposit(
+      // supportedAssets: assets,
+      showNetworkIcon: true,
+      filterByNetwork: false,
+      // preselectedRecipients: {},
+    );
+    await widget.appKitModal.openModalView(ReownAppKitModalDepositScreen());
+    // await widget.appKitModal.selectChain(null);
   }
 
   void _onSessionConnect(SessionConnect? event) async {

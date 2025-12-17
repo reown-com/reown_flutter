@@ -22,7 +22,7 @@ sealed class GetExchangesParams with _$GetExchangesParams {
   @JsonSerializable(includeIfNull: false)
   const factory GetExchangesParams({
     @Default(1) int page,
-    ExchangeAsset? asset, // CAIP-19 token address
+    ExchangeAsset? asset, // CAIP-19 token address // TODO no needed in future
     List<String>? includeOnly, // list of exchangeIds
     List<String>? exclude, // list of exchangeIds
   }) = _GetExchangesParams;

@@ -9,8 +9,8 @@ abstract class IDWEService {
   List<ExchangeAsset> get supportedAssets;
   ExchangeAsset? get preselectedAsset;
   bool get showNetworkIcon;
-  // bool get enableNetworkSelection;
-  String? get preselectedRecipient;
+  bool get filterByNetwork;
+  Map<String, String> get configuredRecipients;
   bool get isCheckingStatus;
 
   Future<void> init();
@@ -19,9 +19,8 @@ abstract class IDWEService {
     List<ExchangeAsset>? supportedAssets,
     ExchangeAsset? preselectedAsset,
     bool? showNetworkIcon,
-    String? preselectedRecipient,
-    // bool? enableNetworkSelection, // TODO
-    // String? preselectedNamespace, // TODO maybe?
+    bool? filterByNetwork,
+    Map<String, String> configuredRecipients = const {},
   });
 
   List<ExchangeAsset> getAvailableAssets({String? chainId});

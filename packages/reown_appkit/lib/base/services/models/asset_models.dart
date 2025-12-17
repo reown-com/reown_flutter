@@ -80,12 +80,17 @@ extension ExchangeAssetExtension on ExchangeAsset {
         return '$network:$address';
       }
 
-      final ns = NamespaceUtils.getNamespaceFromChain(network);
-      final nativeAddress = _nativeTokenAddress[ns]!;
+      final nativeAddress = getNativeAddress();
       return '$network:$nativeAddress';
     } catch (e) {
       return '';
     }
+  }
+
+  String getNativeAddress() {
+    final ns = NamespaceUtils.getNamespaceFromChain(network);
+    final nativeAddress = _nativeTokenAddress[ns]!;
+    return nativeAddress;
   }
 }
 

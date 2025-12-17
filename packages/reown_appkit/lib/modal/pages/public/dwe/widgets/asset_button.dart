@@ -6,7 +6,6 @@ import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
-import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -33,15 +32,16 @@ class _AssetsButtonState extends State<AssetsButton> {
 
   @override
   Widget build(BuildContext context) {
-    final chainInfo = ModalProvider.of(context).instance.selectedChain;
-    if (chainInfo == null) {
+    final selectedAsset = _dweService.selectedAsset.value;
+    if (selectedAsset == null) {
       return SizedBox.shrink();
     }
-
+    final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
+      selectedAsset.network,
+      selectedAsset.network,
+    );
     final chainIcon = GetIt.I<IExplorerService>().getChainIcon(chainInfo);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
-    final borderRadius = radiuses.isSquare() ? 0.0 : widget.size.height / 2;
 
     return ValueListenableBuilder(
       valueListenable: _dweService.selectedAsset,
@@ -91,35 +91,7 @@ class _AssetsButtonState extends State<AssetsButton> {
                             _widgetStack.push(AssetSelectorPage());
                             // }
                           },
-                          buttonStyle: ButtonStyle(
-                            backgroundColor:
-                                WidgetStateProperty.resolveWith<Color>(
-                                  (states) => themeColors.grayGlass002,
-                                ),
-                            foregroundColor:
-                                WidgetStateProperty.resolveWith<Color>((
-                                  states,
-                                ) {
-                                  if (states.contains(WidgetState.disabled)) {
-                                    return themeColors.grayGlass015;
-                                  }
-                                  return themeColors.foreground100;
-                                }),
-                            shape:
-                                WidgetStateProperty.resolveWith<
-                                  RoundedRectangleBorder
-                                >((states) {
-                                  return RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      color: themeColors.grayGlass002,
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                      borderRadius,
-                                    ),
-                                  );
-                                }),
-                          ),
+                          buttonStyle: _buttonStyle,
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -222,10 +194,34 @@ class _AssetsButtonState extends State<AssetsButton> {
   //   ReownAppKitModalNetworkInfo network,
   // ) async {
   //   await appKitModal.selectChain(network);
-  //   final supportedAssets = _dweService.getPaymentAssetsForNetwork(
+  //   final availableAssets = _dweService.getPaymentAssetsForNetwork(
   //     chainId: network.chainId,
   //   );
-  //   _dweService.setSupportedAssets(supportedAssets);
+  //   _dweService.setSupportedAssets(availableAssets);
   //   _widgetStack.push(AssetSelectorPage());
   // }
+
+  ButtonStyle get _buttonStyle {
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    final borderRadius = radiuses.isSquare() ? 0.0 : widget.size.height / 2;
+
+    return ButtonStyle(
+      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+        (states) => themeColors.grayGlass002,
+      ),
+      foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.disabled)) {
+          return themeColors.grayGlass015;
+        }
+        return themeColors.foreground100;
+      }),
+      shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>((states) {
+        return RoundedRectangleBorder(
+          side: BorderSide(color: themeColors.grayGlass002, width: 1.0),
+          borderRadius: BorderRadius.circular(borderRadius),
+        );
+      }),
+    );
+  }
 }

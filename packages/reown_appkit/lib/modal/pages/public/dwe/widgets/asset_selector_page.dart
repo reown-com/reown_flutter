@@ -22,8 +22,12 @@ class AssetSelectorPage extends StatelessWidget {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);
     final appKitModal = ModalProvider.of(context).instance;
-    final chainId = appKitModal.selectedChain?.chainId;
-    final supportedAssets = _dweService.getAvailableAssets(chainId: chainId);
+    var availableAssets = List.from(_dweService.supportedAssets);
+    if (!_dweService.showNetworkIcon || _dweService.filterByNetwork) {
+      final chainId = appKitModal.selectedChain?.chainId;
+      availableAssets = _dweService.getAvailableAssets(chainId: chainId);
+    }
+
     return ModalNavbar(
       title: 'Select asset',
       safeAreaLeft: true,
@@ -42,7 +46,7 @@ class AssetSelectorPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Visibility(
-                visible: supportedAssets.isEmpty,
+                visible: availableAssets.isEmpty,
                 child: Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -51,7 +55,7 @@ class AssetSelectorPage extends StatelessWidget {
                   ),
                 ),
               ),
-              ...supportedAssets.mapIndexed((_, asset) {
+              ...availableAssets.mapIndexed((_, asset) {
                 final networkInfo = ReownAppKitModalNetworks.getNetworkInfo(
                   asset.network,
                   asset.network,
@@ -117,14 +121,15 @@ class AssetSelectorPage extends StatelessWidget {
                       subtitleStyle: themeData.textStyles.small400.copyWith(
                         color: themeColors.foreground200,
                       ),
-                      onTap: () {
-                        // _dweService.configDeposit(preselectedAsset: asset);
+                      onTap: () async {
                         _dweService.selectedAsset.value = asset;
-                        // if (_dweService.enableNetworkSelection) {
-                        //   _widgetStack.popUntil(KeyConstants.depositPageKey);
-                        // } else {
+                        final chainInfo =
+                            ReownAppKitModalNetworks.getNetworkInfo(
+                              asset.network,
+                              asset.network,
+                            );
+                        await appKitModal.selectChain(chainInfo);
                         _widgetStack.pop();
-                        // }
                       },
                     );
                   },
