@@ -11,6 +11,8 @@ abstract class IWalletKitService extends Disposable {
   Future<void> create();
   Future<void> setUpAccounts();
   Future<void> init();
+  Future<void> processPayment(String paymentLink);
+
   T getChainService<T extends Object>({required String chainId});
 
   // (iss, message, request)

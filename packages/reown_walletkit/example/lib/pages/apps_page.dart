@@ -13,6 +13,7 @@ import 'package:reown_walletkit_wallet/utils/eth_utils.dart';
 import 'package:reown_walletkit_wallet/widgets/pairing_item.dart';
 import 'package:reown_walletkit_wallet/widgets/uri_input_popup.dart';
 import 'package:toastification/toastification.dart';
+import 'package:walletconnect_pay/walletconnect_pay_models.dart';
 
 class AppsPage extends StatefulWidget {
   AppsPage({
@@ -196,11 +197,22 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
     if ((uri ?? '').isEmpty) return;
     try {
       DeepLinkHandler.waiting.value = true;
-      await _walletKit.pair(uri: Uri.parse(uri!));
+      // TODO if Payment
+      await _walletKitService.processPayment(uri!);
+      // else
+      // await _walletKit.pair(uri: Uri.parse(uri!));
     } on ReownSignError catch (e) {
       _showErrorDialog('${e.code}: ${e.message}\n$uri');
     } on TimeoutException catch (_) {
       _showErrorDialog('Time out error. Check your connection.');
+    } on GetPaymentOptionsError catch (e) {
+      _showErrorDialog('GetPaymentOptionsError. $e');
+    } on GetRequiredActionError catch (e) {
+      _showErrorDialog('GetRequiredActionError. $e');
+      rethrow;
+    } on ConfirmPaymentError catch (e) {
+      _showErrorDialog('ConfirmPaymentError. $e');
+      rethrow;
     }
   }
 

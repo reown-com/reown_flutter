@@ -424,6 +424,65 @@ class KeyService extends IKeyService {
     }
   }
 
+  ChainKey? _tronChainKey(String mnemonic) {
+    try {
+      final words = b_utils.Mnemonic(mnemonic.split(' '));
+      final seed = b_utils.Bip39SeedGenerator(words).generate();
+      final wallet = b_utils.Bip44.fromSeed(seed, b_utils.Bip44Coins.tron);
+      final defaultPath = wallet.deriveDefaultPath;
+
+      final address = on_chain.TronAddress(defaultPath.publicKey.toAddress);
+      final privateKey = on_chain.TronPrivateKey.fromBytes(
+        defaultPath.privateKey.raw,
+      );
+      final publicKey = on_chain.TronPublicKey.fromBytes(
+        defaultPath.publicKey.uncompressed,
+      );
+      final visibleAddress = address.toAddress(true);
+
+      return ChainKey(
+        chains: ChainsDataList.tronChains.map((e) => e.chainId).toList(),
+        privateKey: privateKey.toHex(),
+        publicKey: publicKey.toHex(),
+        address: visibleAddress,
+        namespace: 'tron',
+      );
+    } catch (e, s) {
+      debugPrint('[$runtimeType] _tronChainKey error: $e');
+      debugPrint('[$runtimeType] _tronChainKey error: $s');
+      return null;
+    }
+  }
+
+  // ignore: unused_element
+  Future<ChainKey?> _bitcoinChainKey(String mnemonic) async {
+    try {
+      final mnemonic = getMnemonic();
+      final seed = bip39.mnemonicToSeed(mnemonic);
+      final root = bip32.BIP32.fromSeed(seed, BITCOIN);
+      final bitcoinNode = root.derivePath("m/84'/0'/0'/0/0");
+
+      final privateKeyBytes = bitcoinNode.privateKey!;
+      final privateKey = bitcoin.ECPrivate.fromBytes(privateKeyBytes);
+      final publicKey = privateKey.getPublic();
+      final address = publicKey.toSegwitAddress().toAddress(
+            bitcoin.BitcoinNetwork.mainnet,
+          );
+
+      return ChainKey(
+        chains: ChainsDataList.bitcoinChains.map((e) => e.chainId).toList(),
+        privateKey: privateKey.toWif(),
+        publicKey: base58.encode(Uint8List.fromList(publicKey.toBytes())),
+        address: address,
+        namespace: 'bip122',
+      );
+    } catch (e, s) {
+      debugPrint('[$runtimeType] _bitcoinChainKey error: $e');
+      debugPrint('[$runtimeType] _bitcoinChainKey error: $s');
+      return null;
+    }
+  }
+
   Future<ChainKey?> _tonChainKey(String mnemonic) async {
     try {
       final service = GetIt.I<IWalletKitService>();
@@ -485,65 +544,6 @@ class KeyService extends IKeyService {
   //     return null;
   //   }
   // }
-
-  ChainKey? _tronChainKey(String mnemonic) {
-    try {
-      final words = b_utils.Mnemonic(mnemonic.split(' '));
-      final seed = b_utils.Bip39SeedGenerator(words).generate();
-      final wallet = b_utils.Bip44.fromSeed(seed, b_utils.Bip44Coins.tron);
-      final defaultPath = wallet.deriveDefaultPath;
-
-      final address = on_chain.TronAddress(defaultPath.publicKey.toAddress);
-      final privateKey = on_chain.TronPrivateKey.fromBytes(
-        defaultPath.privateKey.raw,
-      );
-      final publicKey = on_chain.TronPublicKey.fromBytes(
-        defaultPath.publicKey.uncompressed,
-      );
-      final visibleAddress = address.toAddress(true);
-
-      return ChainKey(
-        chains: ChainsDataList.tronChains.map((e) => e.chainId).toList(),
-        privateKey: privateKey.toHex(),
-        publicKey: publicKey.toHex(),
-        address: visibleAddress,
-        namespace: 'tron',
-      );
-    } catch (e, s) {
-      debugPrint('[$runtimeType] _tronChainKey error: $e');
-      debugPrint('[$runtimeType] _tronChainKey error: $s');
-      return null;
-    }
-  }
-
-  // ignore: unused_element
-  Future<ChainKey?> _bitcoinChainKey(String mnemonic) async {
-    try {
-      final mnemonic = getMnemonic();
-      final seed = bip39.mnemonicToSeed(mnemonic);
-      final root = bip32.BIP32.fromSeed(seed, BITCOIN);
-      final bitcoinNode = root.derivePath("m/84'/0'/0'/0/0");
-
-      final privateKeyBytes = bitcoinNode.privateKey!;
-      final privateKey = bitcoin.ECPrivate.fromBytes(privateKeyBytes);
-      final publicKey = privateKey.getPublic();
-      final address = publicKey.toSegwitAddress().toAddress(
-            bitcoin.BitcoinNetwork.mainnet,
-          );
-
-      return ChainKey(
-        chains: ChainsDataList.bitcoinChains.map((e) => e.chainId).toList(),
-        privateKey: privateKey.toWif(),
-        publicKey: base58.encode(Uint8List.fromList(publicKey.toBytes())),
-        address: address,
-        namespace: 'bip122',
-      );
-    } catch (e, s) {
-      debugPrint('[$runtimeType] _bitcoinChainKey error: $e');
-      debugPrint('[$runtimeType] _bitcoinChainKey error: $s');
-      return null;
-    }
-  }
 
   Future<ChainKey?> _stacksChainKey(String mnemonic) async {
     try {

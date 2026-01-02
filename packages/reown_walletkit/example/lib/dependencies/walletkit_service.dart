@@ -27,6 +27,8 @@ import 'package:reown_walletkit_wallet/widgets/wc_connection_request/wc_connecti
 import 'package:reown_walletkit_wallet/widgets/wc_request_widget.dart/wc_request_widget.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_request_widget.dart/wc_session_auth_request_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:walletconnect_pay/walletconnect_pay.dart';
+import 'package:walletconnect_pay/walletconnect_pay_models.dart';
 
 class WalletKitService extends IWalletKitService {
   final _bottomSheetHandler = GetIt.I<IBottomSheetService>();
@@ -62,11 +64,14 @@ class WalletKitService extends IWalletKitService {
     ),
   );
 
+  late final WalletconnectPay _walletConnectPay;
+
   @override
   Future<void> create() async {
     final prefs = await SharedPreferences.getInstance();
     final linkModeEnabled = prefs.getBool('rwkt_sample_linkmode') ?? true;
 
+    _walletConnectPay = WalletconnectPay();
     // Create the ReownWalletKit instance
     _walletKit = ReownWalletKit(
       core: ReownCore(
@@ -188,9 +193,9 @@ class WalletKitService extends IWalletKitService {
     }
   }
 
-  @override
-  Future<void> setUpAccounts() async {
+  Future<List<String>> walletCaip10Accounts() async {
     // Setup our accounts
+    final List<String> accounts = [];
     List<ChainKey> chainKeys = await GetIt.I<IKeyService>().loadKeys();
     if (chainKeys.isEmpty) {
       await GetIt.I<IKeyService>().createRandomWallet();
@@ -199,29 +204,77 @@ class WalletKitService extends IWalletKitService {
     for (final chainKey in chainKeys) {
       for (final chainId in chainKey.chains) {
         if (chainId.startsWith('kadena')) {
-          final account = '$chainId:k**${chainKey.address}';
-          debugPrint('[SampleWallet] registerAccount $account');
-          _walletKit!.registerAccount(
-            chainId: chainId,
-            accountAddress: 'k**${chainKey.address}',
-          );
+          accounts.add('$chainId:k**${chainKey.address}');
         } else {
-          final account = '$chainId:${chainKey.address}';
-          debugPrint('[SampleWallet] registerAccount $account');
-          _walletKit!.registerAccount(
-            chainId: chainId,
-            accountAddress: chainKey.address,
-          );
+          accounts.add('$chainId:${chainKey.address}');
         }
       }
+    }
+    return accounts;
+  }
+
+  @override
+  Future<void> setUpAccounts() async {
+    // Setup our accounts
+    final accounts = await walletCaip10Accounts();
+    for (var account in accounts) {
+      final chainId = NamespaceUtils.getChainFromAccount(account);
+      final address = NamespaceUtils.getAccount(account);
+      _walletKit!.registerAccount(chainId: chainId, accountAddress: address);
     }
   }
 
   @override
   Future<void> init() async {
     // Await the initialization of the ReownWalletKit instance
+    await _walletConnectPay.initialize(apiKey: 'apiKey'); // TODO apiKey
     await _walletKit!.init();
     await _emitEvent();
+  }
+
+  @override
+  Future<void> processPayment(String paymentLink) async {
+    try {
+      final accounts = await walletCaip10Accounts();
+      final request = GetPaymentOptionsRequest(
+        paymentLink: paymentLink,
+        accounts: accounts,
+      );
+      // PaymentOptionsResponse
+      final result2 = await _walletConnectPay.getPaymentOptions(
+        request: request,
+      );
+      debugPrint('[WCP] getPaymentOptions ${jsonEncode(result2.toJson())}');
+      //
+      // final request2 = GetRequiredPaymentActionsRequest(
+      //   paymentId: paymentId,
+      //   optionId: '1',
+      // );
+      // // List<RequiredAction>
+      // final result3 = await walletConnectPay.getRequiredPaymentActions(
+      //   request: request2,
+      // );
+      // debugPrint(
+      //     '[WCP] getRequiredPaymentActions ${result3.map((e) => jsonEncode(e.toJson())).toList()}');
+      // //
+      // final request3 = ConfirmPaymentJsonRequest(
+      //   paymentId: paymentId,
+      //   maxPollMs: 10000,
+      //   optionId: '1',
+      //   results: [
+      //     SignatureResult(
+      //       signature: SignatureValue(value: 'test-signature'),
+      //     ),
+      //   ],
+      // );
+      // // ConfirmPaymentResponse
+      // final result4 = await walletConnectPay.confirmPayment(
+      //   request: request3,
+      // );
+      // debugPrint('[WCP] confirmPayment ${jsonEncode(result4.toJson())}');
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<void> _emitEvent() async {

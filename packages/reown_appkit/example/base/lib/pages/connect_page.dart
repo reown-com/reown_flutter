@@ -188,6 +188,20 @@ class ConnectPageState extends State<ConnectPage> {
   }
 
   void _onModalConnect(ModalConnect? event) async {
+    final session = event!.session;
+    if (session.connectedWalletName == 'Metamask') {
+      final approvedEvmChains = session.getApprovedChains(namespace: 'eip155');
+      if (approvedEvmChains != null) {
+        final chainId = approvedEvmChains.first;
+        final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
+        final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
+          namespace,
+          chainId,
+        );
+        await widget.appKitModal.selectChain(chainInfo);
+      }
+    }
+
     setState(() {});
   }
 

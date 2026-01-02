@@ -1,4 +1,4 @@
-group = "com.reown.reown_yttrium_utils"
+group = "com.walletconnect.walletconnect_pay"
 version = "1.0-SNAPSHOT"
 
 buildscript {
@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:8.1.0")
+        classpath("com.android.tools.build:gradle:8.11.2")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
     }
 }
@@ -26,18 +26,17 @@ apply plugin: "kotlin-android"
 
 android {
     if (project.android.hasProperty("namespace")) {
-        namespace = "com.reown.reown_yttrium_utils"
+        namespace = "com.walletconnect.walletconnect_pay"
     }
-
-    compileSdk = 34
+    compileSdk = 36
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = JavaVersion.VERSION_17
     }
 
     sourceSets {
@@ -46,20 +45,20 @@ android {
     }
 
     defaultConfig {
-        minSdk = 21
+        minSdk = 24
     }
 
-    buildTypes {
-        release {
-//            minifyEnabled = true
-            consumerProguardFiles 'consumer-rules.pro'
-        }
-    }
+//    buildTypes {
+//        release {
+////            minifyEnabled = true
+//            consumerProguardFiles 'consumer-rules.pro'
+//        }
+//    }
 
     packaging {
-        jniLibs.pickFirsts.add("lib/arm64-v8a/libuniffi_yttrium_utils.so")
-        jniLibs.pickFirsts.add("lib/armeabi-v7a/libuniffi_yttrium_utils.so")	        
-        jniLibs.pickFirsts.add("lib/x86_64/libuniffi_yttrium_utils.so")
+        jniLibs.pickFirsts.add("lib/arm64-v8a/libuniffi_yttrium.so")
+        jniLibs.pickFirsts.add("lib/armeabi-v7a/libuniffi_yttrium.so")
+        jniLibs.pickFirsts.add("lib/x86_64/libuniffi_yttrium.so")
         jniLibs.pickFirsts.add("lib/**/libjnidispatch.so")
     }
 
@@ -77,12 +76,12 @@ android {
 }
 
 dependencies {
-//    implementation("com.github.reown-com:yttrium:kotlin-utils-0.9.113") {
+//    compileOnly("com.github.reown-com:yttrium:unspecified") {
 //        exclude(group: 'net.java.dev.jna', module: 'jna')
 //    }
-    implementation("com.github.reown-com:yttrium-utils:unspecified")
+    implementation("com.github.reown-com:yttrium:unspecified")
     implementation("net.java.dev.jna:jna:5.17.0@aar")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation("org.mockito:mockito-core:5.0.0")
+    testImplementation("org.mockito:mockito-core:5.20.0")
 }
