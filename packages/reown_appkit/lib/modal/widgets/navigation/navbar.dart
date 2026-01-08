@@ -80,16 +80,17 @@ class ModalNavbar extends StatelessWidget {
                         child:
                             titleOverride ??
                             GestureDetector(
-                          onTap: () => onTapTitle?.call(),
-                          child: Center(
-                            child: Text(
-                              title,
-                              style: themeData.textStyles.paragraph600.copyWith(
-                                color: themeColors.foreground100,
+                              onTap: () => onTapTitle?.call(),
+                              child: Center(
+                                child: Text(
+                                  title,
+                                  style: themeData.textStyles.paragraph600
+                                      .copyWith(
+                                        color: themeColors.foreground100,
+                                      ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
                       ),
                       noClose
                           ? const SizedBox.square(dimension: kNavbarHeight)

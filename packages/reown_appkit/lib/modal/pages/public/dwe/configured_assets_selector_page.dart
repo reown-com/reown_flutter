@@ -14,7 +14,8 @@ import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class ConfiguredAssetsSelectorPage extends StatelessWidget {
-  const ConfiguredAssetsSelectorPage() : super(key: KeyConstants.configuredAssetsSelectorPage);
+  const ConfiguredAssetsSelectorPage()
+    : super(key: KeyConstants.configuredAssetsSelectorPage);
   IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
   IDWEService get _dweService => GetIt.I<IDWEService>();
 

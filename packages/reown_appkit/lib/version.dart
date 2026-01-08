@@ -1,2 +1,2 @@
 // Generated code. Do not modify.
-const packageVersion = '1.7.7';
+const packageVersion = '1.8.0-beta01';

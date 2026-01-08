@@ -175,7 +175,6 @@ class _AssetsButtonState extends State<AssetsButton> {
     );
   }
 
-
   ButtonStyle get _buttonStyle {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final radiuses = ReownAppKitModalTheme.radiusesOf(context);

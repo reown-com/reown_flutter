@@ -20,10 +20,10 @@ const _$QuoteStatusEnumMap = {
   QuoteStatus.waiting: 'waiting',
   QuoteStatus.pending: 'pending',
   QuoteStatus.success: 'success',
+  QuoteStatus.submitted: 'submitted',
   QuoteStatus.failure: 'failure',
   QuoteStatus.refund: 'refund',
   QuoteStatus.timeout: 'timeout',
-  QuoteStatus.submitted: 'submitted',
 };
 
 _GetExchangeAssetsResult _$GetExchangeAssetsResultFromJson(

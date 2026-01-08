@@ -1,3 +1,7 @@
+## 1.8.0-beta01
+
+- Deposit From Exchange enhancement: Swapping/Bridging tokens if needed
+
 ## 1.7.7
 
 - Enabled Wallet Features for all wallets (EVM and Solana). You can now send and receive directly from AppKit
@@ -9,7 +13,7 @@
 
 ## 1.7.5
 
-- Bug fix on Deposit With Exchange
+- Bug fix on Deposit From Exchange
 
 ## 1.7.4
 
@@ -17,7 +21,7 @@
 
 ## 1.7.3
 
-- New onDepositSuccess event for `Deposit with Exchange` feature
+- New onDepositSuccess event for `Deposit From Exchange` feature
 
 ## 1.7.2
 
