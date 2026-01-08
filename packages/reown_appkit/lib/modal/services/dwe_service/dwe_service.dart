@@ -453,14 +453,14 @@ class DWEService implements IDWEService {
     depositAmountInUSD.value = 0.0;
     depositAmountInAsset.value = 0.0;
     depositAsset.value = null;
-    _preselectedAsset = null;
-    _showNetworkIcon = true;
-    _depositAssetButton = true;
-    _configuredRecipients = {};
-    _supportedAssets
-      ..clear()
-      ..addAll(allExchangeAssets);
-    _filterByNetwork = true;
+    // _preselectedAsset = null;
+    // _showNetworkIcon = true;
+    // _depositAssetButton = true;
+    // _configuredRecipients = {};
+    // _supportedAssets
+    //   ..clear()
+    //   ..addAll(allExchangeAssets);
+    // _filterByNetwork = true;
   }
 
   // TokenBalance, timestamp

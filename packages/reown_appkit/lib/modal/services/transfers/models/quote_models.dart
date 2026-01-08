@@ -163,11 +163,23 @@ extension QuoteFeeExtension on QuoteFee {
 }
 
 extension QuoteExtension on Quote? {
-  String get formattedAmount {
+  String formattedAmount({bool withSymbol = true}) {
     final amount = this?.origin.amount ?? '0';
     final decimals = this?.origin.currency.metadata.decimals ?? 0;
-    final symbol = this?.origin.currency.metadata.symbol ?? '';
     final doubleAmount = CoreUtils.stringAmountToDouble(amount, decimals);
-    return CoreUtils.toPrecision(doubleAmount, withSymbol: symbol, decimals: 6);
+    if (withSymbol) {
+      final symbol = this?.origin.currency.metadata.symbol ?? '';
+      return CoreUtils.toPrecision(
+        doubleAmount,
+        withSymbol: symbol,
+        decimals: 6,
+      );
+    }
+
+    return CoreUtils.toPrecision(
+      doubleAmount,
+      withSymbol: '',
+      decimals: 6,
+    ).trim();
   }
 }

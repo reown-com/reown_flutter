@@ -404,10 +404,7 @@ class _FundWalletButton extends StatelessWidget {
             ),
           ),
           title: 'Fund wallet',
-          onTap: () => _widgetStack.push(
-            ReownAppKitModalDepositScreen(),
-            // event: ClickNetworksEvent(),
-          ),
+          onTap: () => _widgetStack.push(ReownAppKitModalDepositScreen()),
         ),
       ],
     );

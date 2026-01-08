@@ -152,7 +152,7 @@ class _ExchangeAssetsSelectorPageState
                   _ShimmerWidget(
                     enabled: _loadingQuote,
                     child: Text(
-                      _quoteResult.formattedAmount,
+                      _quoteResult.formattedAmount(),
                       style: themeData.textStyles.paragraph400,
                     ),
                   ),
@@ -386,7 +386,7 @@ class _PaymentDetails extends StatelessWidget {
               _ShimmerWidget(
                 enabled: loadingQuote,
                 child: Text(
-                  quoteResult.formattedAmount,
+                  quoteResult.formattedAmount(),
                   style: themeData.textStyles.small400,
                 ),
               ),

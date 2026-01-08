@@ -162,7 +162,7 @@ class CoreUtils {
   }
 
   /// Converts an amount string (in smallest units) to a decimal number.
-  /// For example, _toDecimal('10000000', 6) returns 10.0.
+  /// For example, stringAmountToDouble('10000000', 6) returns 10.0.
   static double stringAmountToDouble(String amount, int decimals) {
     final bigIntValue = BigInt.parse(amount);
     final factor = BigInt.from(10).pow(decimals);

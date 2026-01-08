@@ -59,7 +59,7 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
     if (step.isDeposit) {
       final receiver = (step as QuoteStepDeposit).deposit.receiver;
       recipient = '$depositAssetChain:$receiver';
-      amount = step.deposit.amount;
+      amount = widget.quoteResult.formattedAmount(withSymbol: false);
     } else {
       appKitModal.onModalError.broadcast(ModalError('Something went wrong'));
       return;
@@ -190,7 +190,7 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
                     ),
                     Spacer(),
                     Text(
-                      widget.quoteResult.formattedAmount,
+                      widget.quoteResult.formattedAmount(),
                       style: themeData.textStyles.paragraph400,
                     ),
                   ],
@@ -533,7 +533,7 @@ class __CircledSendWidgetState extends State<_CircledSendWidget> {
             Positioned(
               bottom: 10,
               child: Container(
-                color: themeColors.background100,
+                color: themeColors.background125,
                 child: BaseButton(
                   semanticsLabel: '${runtimeType}_title_button',
                   size: BaseButtonSize.small,

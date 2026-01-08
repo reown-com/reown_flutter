@@ -8,7 +8,6 @@ import 'package:get_it/get_it.dart';
 import 'dart:ui' as ui;
 
 import 'package:reown_appkit/modal/models/send_data.dart';
-import 'package:reown_appkit/modal/pages/preview_send/utils.dart';
 import 'package:reown_appkit/modal/pages/preview_send/widgets.dart';
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
