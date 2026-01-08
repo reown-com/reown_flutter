@@ -18,23 +18,20 @@ sealed class GetQuoteParams with _$GetQuoteParams {
       _$GetQuoteParamsFromJson(json);
 }
 
-// typedef GetCrossChainQuoteParams = GetQuoteParams;
-// typedef GetSameChainQuoteParams = GetQuoteParams;
-
 @freezed
-sealed class GetCrossChainQuoteParams with _$GetCrossChainQuoteParams {
-  const factory GetCrossChainQuoteParams({
-    required String user,
+sealed class GetTransfersQuoteParams with _$GetTransfersQuoteParams {
+  const factory GetTransfersQuoteParams({
+    @JsonKey(includeIfNull: false) String? user,
     required String originChainId,
     required String originCurrency,
     required String destinationChainId,
     required String destinationCurrency,
     required String recipient,
     required String amount,
-  }) = _GetCrossChainQuoteParams;
+  }) = _GetTransfersQuoteParams;
 
-  factory GetCrossChainQuoteParams.fromJson(Map<String, dynamic> json) =>
-      _$GetCrossChainQuoteParamsFromJson(json);
+  factory GetTransfersQuoteParams.fromJson(Map<String, dynamic> json) =>
+      _$GetTransfersQuoteParamsFromJson(json);
 }
 
 @freezed

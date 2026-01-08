@@ -538,10 +538,12 @@ class ReownAppKitModal
   List<ExchangeAsset> getPaymentAssetsForNetwork({
     String? chainId,
     bool includeNative = true,
+    bool includeTest = true,
   }) {
     return _appKit.getPaymentAssetsForNetwork(
       chainId: chainId,
       includeNative: includeNative,
+      includeTest: includeTest,
     );
   }
 
@@ -551,18 +553,16 @@ class ReownAppKitModal
     ExchangeAsset? preselectedAsset,
     bool? showNetworkIcon,
     bool? filterByNetwork,
+    bool? depositAssetButton,
     Map<String, String> configuredRecipients = const {},
-    // bool? enableNetworkSelection,
-    // String? preselectedNamespace,
   }) {
     _dweService.configDeposit(
       supportedAssets: supportedAssets,
       preselectedAsset: preselectedAsset,
       showNetworkIcon: showNetworkIcon,
       filterByNetwork: filterByNetwork,
+      depositAssetButton: depositAssetButton,
       configuredRecipients: configuredRecipients,
-      // enableNetworkSelection: enableNetworkSelection,
-      // preselectedNamespace: preselectedNamespace,
     );
   }
 

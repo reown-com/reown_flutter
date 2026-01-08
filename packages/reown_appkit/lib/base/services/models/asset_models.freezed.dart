@@ -804,7 +804,7 @@ as int,
 /// @nodoc
 mixin _$ExchangeAsset {
 
- String get network; String get address; AssetMetadata get metadata;
+ String get network;@JsonKey(name: 'asset') String get address; AssetMetadata get metadata;
 /// Create a copy of ExchangeAsset
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -837,7 +837,7 @@ abstract mixin class $ExchangeAssetCopyWith<$Res>  {
   factory $ExchangeAssetCopyWith(ExchangeAsset value, $Res Function(ExchangeAsset) _then) = _$ExchangeAssetCopyWithImpl;
 @useResult
 $Res call({
- String network, String address, AssetMetadata metadata
+ String network,@JsonKey(name: 'asset') String address, AssetMetadata metadata
 });
 
 
@@ -950,7 +950,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String network,  String address,  AssetMetadata metadata)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String network, @JsonKey(name: 'asset')  String address,  AssetMetadata metadata)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ExchangeAsset() when $default != null:
 return $default(_that.network,_that.address,_that.metadata);case _:
@@ -971,7 +971,7 @@ return $default(_that.network,_that.address,_that.metadata);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String network,  String address,  AssetMetadata metadata)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String network, @JsonKey(name: 'asset')  String address,  AssetMetadata metadata)  $default,) {final _that = this;
 switch (_that) {
 case _ExchangeAsset():
 return $default(_that.network,_that.address,_that.metadata);}
@@ -988,7 +988,7 @@ return $default(_that.network,_that.address,_that.metadata);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String network,  String address,  AssetMetadata metadata)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String network, @JsonKey(name: 'asset')  String address,  AssetMetadata metadata)?  $default,) {final _that = this;
 switch (_that) {
 case _ExchangeAsset() when $default != null:
 return $default(_that.network,_that.address,_that.metadata);case _:
@@ -1003,11 +1003,11 @@ return $default(_that.network,_that.address,_that.metadata);case _:
 @JsonSerializable()
 
 class _ExchangeAsset implements ExchangeAsset {
-  const _ExchangeAsset({required this.network, required this.address, required this.metadata});
+  const _ExchangeAsset({required this.network, @JsonKey(name: 'asset') required this.address, required this.metadata});
   factory _ExchangeAsset.fromJson(Map<String, dynamic> json) => _$ExchangeAssetFromJson(json);
 
 @override final  String network;
-@override final  String address;
+@override@JsonKey(name: 'asset') final  String address;
 @override final  AssetMetadata metadata;
 
 /// Create a copy of ExchangeAsset
@@ -1043,7 +1043,7 @@ abstract mixin class _$ExchangeAssetCopyWith<$Res> implements $ExchangeAssetCopy
   factory _$ExchangeAssetCopyWith(_ExchangeAsset value, $Res Function(_ExchangeAsset) _then) = __$ExchangeAssetCopyWithImpl;
 @override @useResult
 $Res call({
- String network, String address, AssetMetadata metadata
+ String network,@JsonKey(name: 'asset') String address, AssetMetadata metadata
 });
 
 

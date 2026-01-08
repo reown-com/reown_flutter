@@ -5,6 +5,6 @@ abstract class ITransfersService {
   Future<GetQuoteStatusResult> getQuoteStatus({
     required GetQuoteStatusParams params,
   });
-
   Future<GetQuoteResult> getQuote({required GetQuoteParams params});
+  Future<GetExchangeAssetsResult> getExchangeAssets({required String exchange});
 }

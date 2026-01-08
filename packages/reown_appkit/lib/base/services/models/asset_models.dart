@@ -47,7 +47,7 @@ sealed class AssetMetadata with _$AssetMetadata {
 sealed class ExchangeAsset with _$ExchangeAsset {
   const factory ExchangeAsset({
     required String network,
-    required String address,
+    @JsonKey(name: 'asset') required String address,
     required AssetMetadata metadata,
   }) = _ExchangeAsset;
 

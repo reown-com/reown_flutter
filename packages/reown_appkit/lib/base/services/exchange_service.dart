@@ -23,9 +23,6 @@ class ExchangeService implements IExchangeService {
       method: 'reown_getExchanges',
       params: params.toParams(),
     );
-    core.logger.d(
-      '[$runtimeType] reown_getExchanges request: ${jsonEncode(rpcRequest.toJson())}',
-    );
 
     // await Future.delayed(Duration(seconds: 1));
     // return JsonRpcResponse.fromJson(_getExchangesMockResponse);
@@ -45,9 +42,6 @@ class ExchangeService implements IExchangeService {
       id: JsonRpcUtils.payloadId(),
       method: 'reown_getExchangePayUrl',
       params: params.toParams(),
-    );
-    core.logger.d(
-      '[$runtimeType] reown_getExchangePayUrl request: ${jsonEncode(rpcRequest.toJson())}',
     );
 
     // await Future.delayed(Duration(seconds: 1));
@@ -69,9 +63,6 @@ class ExchangeService implements IExchangeService {
       method: 'reown_getExchangeBuyStatus',
       params: params.toJson(),
     );
-    core.logger.d(
-      '[$runtimeType] reown_getExchangeBuyStatus request: ${jsonEncode(rpcRequest.toJson())}',
-    );
 
     // await Future.delayed(Duration(seconds: 1));
     // return JsonRpcResponse.fromJson(_getExchangeBuyStatusMockResponse);
@@ -90,12 +81,13 @@ class ExchangeService implements IExchangeService {
       st: CoreConstants.X_SDK_TYPE,
       sv: ReownCoreUtils.coreSdkVersion(packageVersion),
     ).toJson();
-    final jsonRequest = rpcRequest.toJson();
+    final bodyRequest = jsonEncode(rpcRequest.toJson());
+    core.logger.d('[$runtimeType] ${rpcRequest.method} request: $bodyRequest');
     final url = Uri.parse(_baseUrl).replace(queryParameters: qParams);
     final response = await http.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(jsonRequest),
+      body: bodyRequest,
     );
     core.logger.d(
       '[$runtimeType] ${rpcRequest.method} response: ${response.body}',

@@ -118,7 +118,7 @@ class EVMService {
     final keys = GetIt.I<IKeyService>().getKeysForChain(
       chainSupported.chainId,
     );
-    final pk = '0x${keys[0].privateKey}';
+    final pk = keys[0].privateKey;
     return EthPrivateKey.fromHex(pk);
   }
 

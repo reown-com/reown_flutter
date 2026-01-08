@@ -293,7 +293,7 @@ class KeyService extends IKeyService {
 
       return ChainKey(
         chains: ChainsDataList.solanaChains.map((e) => e.chainId).toList(),
-        privateKey: '0x$privateKey',
+        privateKey: privateKey,
         publicKey: solanaKeyPair.publicKey.toString(),
         address: solanaKeyPair.address,
         namespace: 'solana',

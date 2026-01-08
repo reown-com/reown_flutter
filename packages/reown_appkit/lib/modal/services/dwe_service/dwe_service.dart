@@ -8,6 +8,9 @@ import 'package:reown_appkit/modal/services/analytics_service/i_analytics_servic
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/token_balance.dart';
 import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
+import 'package:reown_appkit/modal/services/transfers/i_transfers_service.dart';
+import 'package:reown_appkit/modal/services/transfers/models/quote_models.dart';
+import 'package:reown_appkit/modal/services/transfers/models/quote_params.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 import 'package:http/http.dart' as http;
@@ -28,10 +31,13 @@ class DWEService implements IDWEService {
   };
 
   @override
-  final selectedAsset = ValueNotifier<ExchangeAsset?>(null);
+  final depositAsset = ValueNotifier<ExchangeAsset?>(null);
 
   @override
-  final selectedAmount = ValueNotifier<double>(0.0);
+  final depositAmountInUSD = ValueNotifier<double>(0.0);
+
+  @override
+  final depositAmountInAsset = ValueNotifier<double>(0.0);
 
   final List<ExchangeAsset> _supportedAssets = [...allExchangeAssets];
   @override
@@ -44,6 +50,10 @@ class DWEService implements IDWEService {
   bool _showNetworkIcon = true;
   @override
   bool get showNetworkIcon => _showNetworkIcon;
+
+  bool _depositAssetButton = true;
+  @override
+  bool get depositAssetButton => _depositAssetButton;
 
   bool _filterByNetwork = true;
   @override
@@ -64,16 +74,9 @@ class DWEService implements IDWEService {
     ExchangeAsset? preselectedAsset,
     bool? showNetworkIcon,
     bool? filterByNetwork,
+    bool? depositAssetButton,
     Map<String, String> configuredRecipients = const {},
-    // bool? enableNetworkSelection,
-    // String? preselectedNamespace,
   }) {
-    // if (preselectedRecipient != null) {
-    //   if (preselectedNamespace == null && preselectedAsset == null) {
-    //     'Either `preselectedNamespace` or `preselectedAsset` has to be set when `preselectedRecipient` is used';
-    //   }
-    // }
-
     if (preselectedAsset != null) {
       final chainId = preselectedAsset.network;
       if (!NamespaceUtils.isValidChainId(chainId)) {
@@ -101,14 +104,16 @@ class DWEService implements IDWEService {
     _preselectedAsset = preselectedAsset ?? _preselectedAsset;
     _showNetworkIcon = showNetworkIcon ?? _showNetworkIcon;
     _filterByNetwork = filterByNetwork ?? _filterByNetwork;
-    // _preselectedRecipient = preselectedRecipient ?? _preselectedRecipient;
+    _depositAssetButton = depositAssetButton ?? _depositAssetButton;
+    if (_preselectedAsset == null) {
+      _depositAssetButton = true;
+    }
     _configuredRecipients = configuredRecipients;
-    // _enableNetworkSelection = enableNetworkSelection ?? false;
-    // _preselectedNamespace = preselectedNamespace;
   }
 
   @override
   List<ExchangeAsset> getAvailableAssets({String? chainId}) {
+    _appKit.core.logger.d('[$runtimeType] available assets, chainId: $chainId');
     if (_supportedAssets.isEmpty) {
       return _appKit.getPaymentAssetsForNetwork(chainId: chainId);
     }
@@ -155,10 +160,10 @@ class DWEService implements IDWEService {
   bool _shouldStopLooping = false;
 
   @override
-  void loopOnStatusCheck(
+  void loopOnDepositStatusCheck(
     String exchangeId,
     String sessionId,
-    Function(GetExchangeDepositStatusResult?) completer,
+    Function((QuoteStatus status, dynamic data)) completer,
   ) async {
     if (_isLooping) return;
     _isLooping = true;
@@ -174,32 +179,240 @@ class DWEService implements IDWEService {
           sessionId: sessionId,
         );
         final response = await _appKit.getExchangeDepositStatus(params: params);
-        //
-        if (response.status == 'UNKNOWN' || response.status == 'IN_PROGRESS') {
-          currentAttempt++;
-          if (currentAttempt < maxAttempts && !_shouldStopLooping) {
-            // Keep trying
-            await Future.delayed(Duration(seconds: 5));
-          } else {
-            // Max attempts reached or stopped by user, complete with appropriate status
-            _isLooping = false;
-            completer.call(
-              _shouldStopLooping
-                  ? GetExchangeDepositStatusResult(status: 'CANCELLED')
-                  : GetExchangeDepositStatusResult(status: 'TIMEOUT'),
-            );
+        final quoteStatus = QuoteStatus.fromStatus(response.status);
+        switch (quoteStatus) {
+          case QuoteStatus.waiting:
+          case QuoteStatus.pending:
+            currentAttempt++;
+            if (currentAttempt < maxAttempts && !_shouldStopLooping) {
+              // Keep trying
+              completer.call((quoteStatus, null));
+              await Future.delayed(Duration(seconds: 3));
+            } else {
+              // Max attempts reached or stopped by user, complete with appropriate status
+              stopCheckingStatus();
+              final statusResult = _shouldStopLooping
+                  ? QuoteStatus.failure
+                  : QuoteStatus.timeout;
+              completer.call((statusResult, null));
+              break;
+            }
+          // case QuoteStatus.timeout:
+          // case QuoteStatus.success:
+          // case QuoteStatus.failure:
+          // case QuoteStatus.refund:
+          // case QuoteStatus.submitted:
+          default:
+            // Either success, submitted, failure, refund, timeout
+            completer.call((quoteStatus, null));
+            stopCheckingStatus();
             break;
-          }
-        } else {
-          // Either SUCCESS or FAILED received
-          _isLooping = false;
-          completer.call(response);
-          break;
         }
       } catch (e) {
-        debugPrint(e.toString());
-        _isLooping = false;
-        completer.call(null);
+        stopCheckingStatus();
+        completer.call((QuoteStatus.failure, null));
+        break;
+      }
+    }
+  }
+
+  ITransfersService get _transferService => GetIt.I<ITransfersService>();
+
+  @override
+  void loopOnTransferStatusCheck(
+    String exchangeId,
+    String requestId,
+    Function((QuoteStatus status, dynamic data)) completer,
+  ) async {
+    // return loopOnStatusUnhappyPathMock2(exchangeId, requestId, completer);
+
+    if (_isLooping) return;
+    _isLooping = true;
+    _shouldStopLooping = false;
+    int currentAttempt = 0;
+    int waitingInterval = 5;
+    int maxAttempts = 60; // 5 min max
+
+    while (currentAttempt < maxAttempts && !_shouldStopLooping) {
+      try {
+        final params = GetQuoteStatusParams(requestId: requestId);
+        final response = await _transferService.getQuoteStatus(params: params);
+        final QuoteStatus quoteStatus = response.status;
+        switch (quoteStatus) {
+          case QuoteStatus.waiting:
+          case QuoteStatus.pending:
+            currentAttempt++;
+            if (currentAttempt < maxAttempts && !_shouldStopLooping) {
+              // Keep trying
+              completer.call((quoteStatus, null));
+              await Future.delayed(Duration(seconds: waitingInterval));
+            } else {
+              // Max attempts reached or stopped by user, complete with appropriate status
+              stopCheckingStatus();
+              final statusResult = _shouldStopLooping
+                  ? QuoteStatus.failure
+                  : QuoteStatus.timeout;
+              completer.call((statusResult, null));
+              break;
+            }
+          // case QuoteStatus.timeout:
+          // case QuoteStatus.success:
+          // case QuoteStatus.failure:
+          // case QuoteStatus.refund:
+          // case QuoteStatus.submitted:
+          default:
+            // Either success, submitted, failure, refund, timeout
+            completer.call((quoteStatus, null));
+            stopCheckingStatus();
+            break;
+        }
+      } catch (e) {
+        stopCheckingStatus();
+        completer.call((QuoteStatus.failure, null));
+        break;
+      }
+    }
+  }
+
+  @visibleForTesting
+  void loopOnStatusHappyPathMock(
+    String exchangeId,
+    String requestId,
+    Function((QuoteStatus status, dynamic data)) completer,
+  ) async {
+    if (_isLooping) return;
+    _isLooping = true;
+    _shouldStopLooping = false;
+    int maxAttempts = 30;
+    int currentAttempt = 0;
+
+    while (currentAttempt < maxAttempts && !_shouldStopLooping) {
+      try {
+        final quoteStatus = currentAttempt < 2
+            ? QuoteStatus.waiting
+            : (currentAttempt < 4 ? QuoteStatus.pending : QuoteStatus.success);
+        switch (quoteStatus) {
+          case QuoteStatus.waiting:
+          case QuoteStatus.pending:
+            currentAttempt++;
+            if (currentAttempt < maxAttempts && !_shouldStopLooping) {
+              // Keep trying
+              completer.call((quoteStatus, null));
+              await Future.delayed(Duration(seconds: 3));
+            } else {
+              // Max attempts reached or stopped by user, complete with appropriate status
+              stopCheckingStatus();
+              final statusResult = _shouldStopLooping
+                  ? QuoteStatus.failure
+                  : QuoteStatus.timeout;
+              completer.call((statusResult, null));
+              break;
+            }
+          default:
+            // Either success, submitted, failure, refund, timeout
+            completer.call((quoteStatus, null));
+            stopCheckingStatus();
+            break;
+        }
+      } catch (e) {
+        stopCheckingStatus();
+        completer.call((QuoteStatus.failure, null));
+        break;
+      }
+    }
+  }
+
+  @visibleForTesting
+  void loopOnStatusUnhappyPathMock1(
+    String exchangeId,
+    String requestId,
+    Function((QuoteStatus status, dynamic data)) completer,
+  ) async {
+    if (_isLooping) return;
+    _isLooping = true;
+    _shouldStopLooping = false;
+    int maxAttempts = 30;
+    int currentAttempt = 0;
+
+    while (currentAttempt < maxAttempts && !_shouldStopLooping) {
+      try {
+        final quoteStatus = currentAttempt < 2
+            ? QuoteStatus.waiting
+            : (currentAttempt < 4 ? QuoteStatus.pending : QuoteStatus.failure);
+        switch (quoteStatus) {
+          case QuoteStatus.waiting:
+          case QuoteStatus.pending:
+            currentAttempt++;
+            if (currentAttempt < maxAttempts && !_shouldStopLooping) {
+              // Keep trying
+              completer.call((quoteStatus, null));
+              await Future.delayed(Duration(seconds: 3));
+            } else {
+              // Max attempts reached or stopped by user, complete with appropriate status
+              stopCheckingStatus();
+              final statusResult = _shouldStopLooping
+                  ? QuoteStatus.failure
+                  : QuoteStatus.timeout;
+              completer.call((statusResult, null));
+              break;
+            }
+          default:
+            // Either success, submitted, failure, refund, timeout
+            completer.call((quoteStatus, null));
+            stopCheckingStatus();
+            break;
+        }
+      } catch (e) {
+        stopCheckingStatus();
+        completer.call((QuoteStatus.failure, null));
+        break;
+      }
+    }
+  }
+
+  @visibleForTesting
+  void loopOnStatusUnhappyPathMock2(
+    String exchangeId,
+    String requestId,
+    Function((QuoteStatus status, dynamic data)) completer,
+  ) async {
+    if (_isLooping) return;
+    _isLooping = true;
+    _shouldStopLooping = false;
+    int maxAttempts = 30;
+    int currentAttempt = 0;
+
+    while (currentAttempt < maxAttempts && !_shouldStopLooping) {
+      try {
+        final quoteStatus = currentAttempt < 2
+            ? QuoteStatus.waiting
+            : QuoteStatus.failure;
+        switch (quoteStatus) {
+          case QuoteStatus.waiting:
+          case QuoteStatus.pending:
+            currentAttempt++;
+            if (currentAttempt < maxAttempts && !_shouldStopLooping) {
+              // Keep trying
+              completer.call((quoteStatus, null));
+              await Future.delayed(Duration(seconds: 3));
+            } else {
+              // Max attempts reached or stopped by user, complete with appropriate status
+              stopCheckingStatus();
+              final statusResult = _shouldStopLooping
+                  ? QuoteStatus.failure
+                  : QuoteStatus.timeout;
+              completer.call((statusResult, null));
+              break;
+            }
+          default:
+            // Either success, submitted, failure, refund, timeout
+            completer.call((quoteStatus, null));
+            stopCheckingStatus();
+            break;
+        }
+      } catch (e) {
+        stopCheckingStatus();
+        completer.call((QuoteStatus.failure, null));
         break;
       }
     }
@@ -237,16 +450,17 @@ class DWEService implements IDWEService {
 
   @override
   void clearState() {
-    selectedAmount.value = 0.0;
-    selectedAsset.value = null;
+    depositAmountInUSD.value = 0.0;
+    depositAmountInAsset.value = 0.0;
+    depositAsset.value = null;
     _preselectedAsset = null;
     _showNetworkIcon = true;
+    _depositAssetButton = true;
     _configuredRecipients = {};
     _supportedAssets
       ..clear()
       ..addAll(allExchangeAssets);
     _filterByNetwork = true;
-    // _supportedAssets.clear();
   }
 
   // TokenBalance, timestamp
@@ -274,6 +488,9 @@ class DWEService implements IDWEService {
     }
     try {
       final reason = _parseResponseError(response.body);
+      if (reason.toLowerCase().contains('asset is not supported')) {
+        return [];
+      }
       throw Exception(reason);
     } catch (e) {
       _appKit.core.logger.e('[$runtimeType] getFungiblePrices error: $e');

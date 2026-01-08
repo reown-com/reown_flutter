@@ -281,7 +281,7 @@ as String,
 /// @nodoc
 mixin _$GetExchangesParams {
 
- int get page; ExchangeAsset? get asset;// CAIP-19 token address
+ int get page; ExchangeAsset? get asset;// CAIP-19 token address // TODO no needed in future
  List<String>? get includeOnly;// list of exchangeIds
  List<String>? get exclude;
 /// Create a copy of GetExchangesParams
@@ -491,9 +491,9 @@ class _GetExchangesParams implements GetExchangesParams {
 
 @override@JsonKey() final  int page;
 @override final  ExchangeAsset? asset;
-// CAIP-19 token address
+// CAIP-19 token address // TODO no needed in future
  final  List<String>? _includeOnly;
-// CAIP-19 token address
+// CAIP-19 token address // TODO no needed in future
 @override List<String>? get includeOnly {
   final value = _includeOnly;
   if (value == null) return null;

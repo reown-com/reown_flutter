@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$QuoteFee {
 
- String get id; String get label; String get amount; String get amountFormatted; String get chainId; String get amountUsd; ExchangeAsset get currency;
+ String get id; String get label; String get amount; ExchangeAsset get currency;
 /// Create a copy of QuoteFee
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $QuoteFeeCopyWith<QuoteFee> get copyWith => _$QuoteFeeCopyWithImpl<QuoteFee>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuoteFee&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.amountFormatted, amountFormatted) || other.amountFormatted == amountFormatted)&&(identical(other.chainId, chainId) || other.chainId == chainId)&&(identical(other.amountUsd, amountUsd) || other.amountUsd == amountUsd)&&(identical(other.currency, currency) || other.currency == currency));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuoteFee&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.currency, currency) || other.currency == currency));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,label,amount,amountFormatted,chainId,amountUsd,currency);
+int get hashCode => Object.hash(runtimeType,id,label,amount,currency);
 
 @override
 String toString() {
-  return 'QuoteFee(id: $id, label: $label, amount: $amount, amountFormatted: $amountFormatted, chainId: $chainId, amountUsd: $amountUsd, currency: $currency)';
+  return 'QuoteFee(id: $id, label: $label, amount: $amount, currency: $currency)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $QuoteFeeCopyWith<$Res>  {
   factory $QuoteFeeCopyWith(QuoteFee value, $Res Function(QuoteFee) _then) = _$QuoteFeeCopyWithImpl;
 @useResult
 $Res call({
- String id, String label, String amount, String amountFormatted, String chainId, String amountUsd, ExchangeAsset currency
+ String id, String label, String amount, ExchangeAsset currency
 });
 
 
@@ -65,14 +65,11 @@ class _$QuoteFeeCopyWithImpl<$Res>
 
 /// Create a copy of QuoteFee
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? label = null,Object? amount = null,Object? amountFormatted = null,Object? chainId = null,Object? amountUsd = null,Object? currency = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? label = null,Object? amount = null,Object? currency = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
-as String,amountFormatted: null == amountFormatted ? _self.amountFormatted : amountFormatted // ignore: cast_nullable_to_non_nullable
-as String,chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
-as String,amountUsd: null == amountUsd ? _self.amountUsd : amountUsd // ignore: cast_nullable_to_non_nullable
 as String,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
 as ExchangeAsset,
   ));
@@ -165,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String label,  String amount,  String amountFormatted,  String chainId,  String amountUsd,  ExchangeAsset currency)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String label,  String amount,  ExchangeAsset currency)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _QuoteFee() when $default != null:
-return $default(_that.id,_that.label,_that.amount,_that.amountFormatted,_that.chainId,_that.amountUsd,_that.currency);case _:
+return $default(_that.id,_that.label,_that.amount,_that.currency);case _:
   return orElse();
 
 }
@@ -186,10 +183,10 @@ return $default(_that.id,_that.label,_that.amount,_that.amountFormatted,_that.ch
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String label,  String amount,  String amountFormatted,  String chainId,  String amountUsd,  ExchangeAsset currency)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String label,  String amount,  ExchangeAsset currency)  $default,) {final _that = this;
 switch (_that) {
 case _QuoteFee():
-return $default(_that.id,_that.label,_that.amount,_that.amountFormatted,_that.chainId,_that.amountUsd,_that.currency);}
+return $default(_that.id,_that.label,_that.amount,_that.currency);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -203,10 +200,10 @@ return $default(_that.id,_that.label,_that.amount,_that.amountFormatted,_that.ch
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String label,  String amount,  String amountFormatted,  String chainId,  String amountUsd,  ExchangeAsset currency)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String label,  String amount,  ExchangeAsset currency)?  $default,) {final _that = this;
 switch (_that) {
 case _QuoteFee() when $default != null:
-return $default(_that.id,_that.label,_that.amount,_that.amountFormatted,_that.chainId,_that.amountUsd,_that.currency);case _:
+return $default(_that.id,_that.label,_that.amount,_that.currency);case _:
   return null;
 
 }
@@ -218,15 +215,12 @@ return $default(_that.id,_that.label,_that.amount,_that.amountFormatted,_that.ch
 @JsonSerializable()
 
 class _QuoteFee implements QuoteFee {
-  const _QuoteFee({required this.id, required this.label, required this.amount, required this.amountFormatted, required this.chainId, required this.amountUsd, required this.currency});
+  const _QuoteFee({required this.id, required this.label, required this.amount, required this.currency});
   factory _QuoteFee.fromJson(Map<String, dynamic> json) => _$QuoteFeeFromJson(json);
 
 @override final  String id;
 @override final  String label;
 @override final  String amount;
-@override final  String amountFormatted;
-@override final  String chainId;
-@override final  String amountUsd;
 @override final  ExchangeAsset currency;
 
 /// Create a copy of QuoteFee
@@ -242,16 +236,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuoteFee&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.amountFormatted, amountFormatted) || other.amountFormatted == amountFormatted)&&(identical(other.chainId, chainId) || other.chainId == chainId)&&(identical(other.amountUsd, amountUsd) || other.amountUsd == amountUsd)&&(identical(other.currency, currency) || other.currency == currency));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuoteFee&&(identical(other.id, id) || other.id == id)&&(identical(other.label, label) || other.label == label)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.currency, currency) || other.currency == currency));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,label,amount,amountFormatted,chainId,amountUsd,currency);
+int get hashCode => Object.hash(runtimeType,id,label,amount,currency);
 
 @override
 String toString() {
-  return 'QuoteFee(id: $id, label: $label, amount: $amount, amountFormatted: $amountFormatted, chainId: $chainId, amountUsd: $amountUsd, currency: $currency)';
+  return 'QuoteFee(id: $id, label: $label, amount: $amount, currency: $currency)';
 }
 
 
@@ -262,7 +256,7 @@ abstract mixin class _$QuoteFeeCopyWith<$Res> implements $QuoteFeeCopyWith<$Res>
   factory _$QuoteFeeCopyWith(_QuoteFee value, $Res Function(_QuoteFee) _then) = __$QuoteFeeCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String label, String amount, String amountFormatted, String chainId, String amountUsd, ExchangeAsset currency
+ String id, String label, String amount, ExchangeAsset currency
 });
 
 
@@ -279,14 +273,11 @@ class __$QuoteFeeCopyWithImpl<$Res>
 
 /// Create a copy of QuoteFee
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? label = null,Object? amount = null,Object? amountFormatted = null,Object? chainId = null,Object? amountUsd = null,Object? currency = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? label = null,Object? amount = null,Object? currency = null,}) {
   return _then(_QuoteFee(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,label: null == label ? _self.label : label // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
-as String,amountFormatted: null == amountFormatted ? _self.amountFormatted : amountFormatted // ignore: cast_nullable_to_non_nullable
-as String,chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
-as String,amountUsd: null == amountUsd ? _self.amountUsd : amountUsd // ignore: cast_nullable_to_non_nullable
 as String,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
 as ExchangeAsset,
   ));
@@ -306,74 +297,80 @@ $ExchangeAssetCopyWith<$Res> get currency {
 
 
 /// @nodoc
-mixin _$QuoteCurrency {
+mixin _$QuoteAmount {
 
- String get amount; String get amountFormatted; String get chainId; String? get symbol; int? get decimals;
-/// Create a copy of QuoteCurrency
+ String get amount; ExchangeAsset get currency;
+/// Create a copy of QuoteAmount
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$QuoteCurrencyCopyWith<QuoteCurrency> get copyWith => _$QuoteCurrencyCopyWithImpl<QuoteCurrency>(this as QuoteCurrency, _$identity);
+$QuoteAmountCopyWith<QuoteAmount> get copyWith => _$QuoteAmountCopyWithImpl<QuoteAmount>(this as QuoteAmount, _$identity);
 
-  /// Serializes this QuoteCurrency to a JSON map.
+  /// Serializes this QuoteAmount to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuoteCurrency&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.amountFormatted, amountFormatted) || other.amountFormatted == amountFormatted)&&(identical(other.chainId, chainId) || other.chainId == chainId)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.decimals, decimals) || other.decimals == decimals));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuoteAmount&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.currency, currency) || other.currency == currency));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,amount,amountFormatted,chainId,symbol,decimals);
+int get hashCode => Object.hash(runtimeType,amount,currency);
 
 @override
 String toString() {
-  return 'QuoteCurrency(amount: $amount, amountFormatted: $amountFormatted, chainId: $chainId, symbol: $symbol, decimals: $decimals)';
+  return 'QuoteAmount(amount: $amount, currency: $currency)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $QuoteCurrencyCopyWith<$Res>  {
-  factory $QuoteCurrencyCopyWith(QuoteCurrency value, $Res Function(QuoteCurrency) _then) = _$QuoteCurrencyCopyWithImpl;
+abstract mixin class $QuoteAmountCopyWith<$Res>  {
+  factory $QuoteAmountCopyWith(QuoteAmount value, $Res Function(QuoteAmount) _then) = _$QuoteAmountCopyWithImpl;
 @useResult
 $Res call({
- String amount, String amountFormatted, String chainId, String? symbol, int? decimals
+ String amount, ExchangeAsset currency
 });
 
 
-
+$ExchangeAssetCopyWith<$Res> get currency;
 
 }
 /// @nodoc
-class _$QuoteCurrencyCopyWithImpl<$Res>
-    implements $QuoteCurrencyCopyWith<$Res> {
-  _$QuoteCurrencyCopyWithImpl(this._self, this._then);
+class _$QuoteAmountCopyWithImpl<$Res>
+    implements $QuoteAmountCopyWith<$Res> {
+  _$QuoteAmountCopyWithImpl(this._self, this._then);
 
-  final QuoteCurrency _self;
-  final $Res Function(QuoteCurrency) _then;
+  final QuoteAmount _self;
+  final $Res Function(QuoteAmount) _then;
 
-/// Create a copy of QuoteCurrency
+/// Create a copy of QuoteAmount
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? amount = null,Object? amountFormatted = null,Object? chainId = null,Object? symbol = freezed,Object? decimals = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? amount = null,Object? currency = null,}) {
   return _then(_self.copyWith(
 amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
-as String,amountFormatted: null == amountFormatted ? _self.amountFormatted : amountFormatted // ignore: cast_nullable_to_non_nullable
-as String,chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
-as String,symbol: freezed == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
-as String?,decimals: freezed == decimals ? _self.decimals : decimals // ignore: cast_nullable_to_non_nullable
-as int?,
+as String,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
+as ExchangeAsset,
   ));
 }
-
+/// Create a copy of QuoteAmount
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ExchangeAssetCopyWith<$Res> get currency {
+  
+  return $ExchangeAssetCopyWith<$Res>(_self.currency, (value) {
+    return _then(_self.copyWith(currency: value));
+  });
+}
 }
 
 
-/// Adds pattern-matching-related methods to [QuoteCurrency].
-extension QuoteCurrencyPatterns on QuoteCurrency {
+/// Adds pattern-matching-related methods to [QuoteAmount].
+extension QuoteAmountPatterns on QuoteAmount {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -386,10 +383,10 @@ extension QuoteCurrencyPatterns on QuoteCurrency {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _QuoteCurrency value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _QuoteAmount value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _QuoteCurrency() when $default != null:
+case _QuoteAmount() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -408,10 +405,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _QuoteCurrency value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _QuoteAmount value)  $default,){
 final _that = this;
 switch (_that) {
-case _QuoteCurrency():
+case _QuoteAmount():
 return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -426,10 +423,10 @@ return $default(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _QuoteCurrency value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _QuoteAmount value)?  $default,){
 final _that = this;
 switch (_that) {
-case _QuoteCurrency() when $default != null:
+case _QuoteAmount() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -447,10 +444,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String amount,  String amountFormatted,  String chainId,  String? symbol,  int? decimals)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String amount,  ExchangeAsset currency)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _QuoteCurrency() when $default != null:
-return $default(_that.amount,_that.amountFormatted,_that.chainId,_that.symbol,_that.decimals);case _:
+case _QuoteAmount() when $default != null:
+return $default(_that.amount,_that.currency);case _:
   return orElse();
 
 }
@@ -468,10 +465,10 @@ return $default(_that.amount,_that.amountFormatted,_that.chainId,_that.symbol,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String amount,  String amountFormatted,  String chainId,  String? symbol,  int? decimals)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String amount,  ExchangeAsset currency)  $default,) {final _that = this;
 switch (_that) {
-case _QuoteCurrency():
-return $default(_that.amount,_that.amountFormatted,_that.chainId,_that.symbol,_that.decimals);}
+case _QuoteAmount():
+return $default(_that.amount,_that.currency);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -485,10 +482,10 @@ return $default(_that.amount,_that.amountFormatted,_that.chainId,_that.symbol,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String amount,  String amountFormatted,  String chainId,  String? symbol,  int? decimals)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String amount,  ExchangeAsset currency)?  $default,) {final _that = this;
 switch (_that) {
-case _QuoteCurrency() when $default != null:
-return $default(_that.amount,_that.amountFormatted,_that.chainId,_that.symbol,_that.decimals);case _:
+case _QuoteAmount() when $default != null:
+return $default(_that.amount,_that.currency);case _:
   return null;
 
 }
@@ -499,50 +496,121 @@ return $default(_that.amount,_that.amountFormatted,_that.chainId,_that.symbol,_t
 /// @nodoc
 @JsonSerializable()
 
-class _QuoteCurrency implements QuoteCurrency {
-  const _QuoteCurrency({required this.amount, required this.amountFormatted, required this.chainId, this.symbol, this.decimals});
-  factory _QuoteCurrency.fromJson(Map<String, dynamic> json) => _$QuoteCurrencyFromJson(json);
+class _QuoteAmount implements QuoteAmount {
+  const _QuoteAmount({required this.amount, required this.currency});
+  factory _QuoteAmount.fromJson(Map<String, dynamic> json) => _$QuoteAmountFromJson(json);
 
 @override final  String amount;
-@override final  String amountFormatted;
-@override final  String chainId;
-@override final  String? symbol;
-@override final  int? decimals;
+@override final  ExchangeAsset currency;
 
-/// Create a copy of QuoteCurrency
+/// Create a copy of QuoteAmount
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$QuoteCurrencyCopyWith<_QuoteCurrency> get copyWith => __$QuoteCurrencyCopyWithImpl<_QuoteCurrency>(this, _$identity);
+_$QuoteAmountCopyWith<_QuoteAmount> get copyWith => __$QuoteAmountCopyWithImpl<_QuoteAmount>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$QuoteCurrencyToJson(this, );
+  return _$QuoteAmountToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuoteCurrency&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.amountFormatted, amountFormatted) || other.amountFormatted == amountFormatted)&&(identical(other.chainId, chainId) || other.chainId == chainId)&&(identical(other.symbol, symbol) || other.symbol == symbol)&&(identical(other.decimals, decimals) || other.decimals == decimals));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuoteAmount&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.currency, currency) || other.currency == currency));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,amount,amountFormatted,chainId,symbol,decimals);
+int get hashCode => Object.hash(runtimeType,amount,currency);
 
 @override
 String toString() {
-  return 'QuoteCurrency(amount: $amount, amountFormatted: $amountFormatted, chainId: $chainId, symbol: $symbol, decimals: $decimals)';
+  return 'QuoteAmount(amount: $amount, currency: $currency)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$QuoteCurrencyCopyWith<$Res> implements $QuoteCurrencyCopyWith<$Res> {
-  factory _$QuoteCurrencyCopyWith(_QuoteCurrency value, $Res Function(_QuoteCurrency) _then) = __$QuoteCurrencyCopyWithImpl;
+abstract mixin class _$QuoteAmountCopyWith<$Res> implements $QuoteAmountCopyWith<$Res> {
+  factory _$QuoteAmountCopyWith(_QuoteAmount value, $Res Function(_QuoteAmount) _then) = __$QuoteAmountCopyWithImpl;
 @override @useResult
 $Res call({
- String amount, String amountFormatted, String chainId, String? symbol, int? decimals
+ String amount, ExchangeAsset currency
+});
+
+
+@override $ExchangeAssetCopyWith<$Res> get currency;
+
+}
+/// @nodoc
+class __$QuoteAmountCopyWithImpl<$Res>
+    implements _$QuoteAmountCopyWith<$Res> {
+  __$QuoteAmountCopyWithImpl(this._self, this._then);
+
+  final _QuoteAmount _self;
+  final $Res Function(_QuoteAmount) _then;
+
+/// Create a copy of QuoteAmount
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? amount = null,Object? currency = null,}) {
+  return _then(_QuoteAmount(
+amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
+as String,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
+as ExchangeAsset,
+  ));
+}
+
+/// Create a copy of QuoteAmount
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ExchangeAssetCopyWith<$Res> get currency {
+  
+  return $ExchangeAssetCopyWith<$Res>(_self.currency, (value) {
+    return _then(_self.copyWith(currency: value));
+  });
+}
+}
+
+
+/// @nodoc
+mixin _$QuoteDeposit {
+
+ String get amount; String get currency; String get receiver;
+/// Create a copy of QuoteDeposit
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$QuoteDepositCopyWith<QuoteDeposit> get copyWith => _$QuoteDepositCopyWithImpl<QuoteDeposit>(this as QuoteDeposit, _$identity);
+
+  /// Serializes this QuoteDeposit to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuoteDeposit&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.receiver, receiver) || other.receiver == receiver));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,amount,currency,receiver);
+
+@override
+String toString() {
+  return 'QuoteDeposit(amount: $amount, currency: $currency, receiver: $receiver)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $QuoteDepositCopyWith<$Res>  {
+  factory $QuoteDepositCopyWith(QuoteDeposit value, $Res Function(QuoteDeposit) _then) = _$QuoteDepositCopyWithImpl;
+@useResult
+$Res call({
+ String amount, String currency, String receiver
 });
 
 
@@ -550,23 +618,594 @@ $Res call({
 
 }
 /// @nodoc
-class __$QuoteCurrencyCopyWithImpl<$Res>
-    implements _$QuoteCurrencyCopyWith<$Res> {
-  __$QuoteCurrencyCopyWithImpl(this._self, this._then);
+class _$QuoteDepositCopyWithImpl<$Res>
+    implements $QuoteDepositCopyWith<$Res> {
+  _$QuoteDepositCopyWithImpl(this._self, this._then);
 
-  final _QuoteCurrency _self;
-  final $Res Function(_QuoteCurrency) _then;
+  final QuoteDeposit _self;
+  final $Res Function(QuoteDeposit) _then;
 
-/// Create a copy of QuoteCurrency
+/// Create a copy of QuoteDeposit
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? amount = null,Object? amountFormatted = null,Object? chainId = null,Object? symbol = freezed,Object? decimals = freezed,}) {
-  return _then(_QuoteCurrency(
+@pragma('vm:prefer-inline') @override $Res call({Object? amount = null,Object? currency = null,Object? receiver = null,}) {
+  return _then(_self.copyWith(
 amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
-as String,amountFormatted: null == amountFormatted ? _self.amountFormatted : amountFormatted // ignore: cast_nullable_to_non_nullable
-as String,chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
-as String,symbol: freezed == symbol ? _self.symbol : symbol // ignore: cast_nullable_to_non_nullable
-as String?,decimals: freezed == decimals ? _self.decimals : decimals // ignore: cast_nullable_to_non_nullable
-as int?,
+as String,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
+as String,receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [QuoteDeposit].
+extension QuoteDepositPatterns on QuoteDeposit {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _QuoteDeposit value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _QuoteDeposit() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _QuoteDeposit value)  $default,){
+final _that = this;
+switch (_that) {
+case _QuoteDeposit():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _QuoteDeposit value)?  $default,){
+final _that = this;
+switch (_that) {
+case _QuoteDeposit() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String amount,  String currency,  String receiver)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _QuoteDeposit() when $default != null:
+return $default(_that.amount,_that.currency,_that.receiver);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String amount,  String currency,  String receiver)  $default,) {final _that = this;
+switch (_that) {
+case _QuoteDeposit():
+return $default(_that.amount,_that.currency,_that.receiver);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String amount,  String currency,  String receiver)?  $default,) {final _that = this;
+switch (_that) {
+case _QuoteDeposit() when $default != null:
+return $default(_that.amount,_that.currency,_that.receiver);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _QuoteDeposit implements QuoteDeposit {
+  const _QuoteDeposit({required this.amount, required this.currency, required this.receiver});
+  factory _QuoteDeposit.fromJson(Map<String, dynamic> json) => _$QuoteDepositFromJson(json);
+
+@override final  String amount;
+@override final  String currency;
+@override final  String receiver;
+
+/// Create a copy of QuoteDeposit
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$QuoteDepositCopyWith<_QuoteDeposit> get copyWith => __$QuoteDepositCopyWithImpl<_QuoteDeposit>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$QuoteDepositToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _QuoteDeposit&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.currency, currency) || other.currency == currency)&&(identical(other.receiver, receiver) || other.receiver == receiver));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,amount,currency,receiver);
+
+@override
+String toString() {
+  return 'QuoteDeposit(amount: $amount, currency: $currency, receiver: $receiver)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$QuoteDepositCopyWith<$Res> implements $QuoteDepositCopyWith<$Res> {
+  factory _$QuoteDepositCopyWith(_QuoteDeposit value, $Res Function(_QuoteDeposit) _then) = __$QuoteDepositCopyWithImpl;
+@override @useResult
+$Res call({
+ String amount, String currency, String receiver
+});
+
+
+
+
+}
+/// @nodoc
+class __$QuoteDepositCopyWithImpl<$Res>
+    implements _$QuoteDepositCopyWith<$Res> {
+  __$QuoteDepositCopyWithImpl(this._self, this._then);
+
+  final _QuoteDeposit _self;
+  final $Res Function(_QuoteDeposit) _then;
+
+/// Create a copy of QuoteDeposit
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? amount = null,Object? currency = null,Object? receiver = null,}) {
+  return _then(_QuoteDeposit(
+amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
+as String,currency: null == currency ? _self.currency : currency // ignore: cast_nullable_to_non_nullable
+as String,receiver: null == receiver ? _self.receiver : receiver // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+QuoteStep _$QuoteStepFromJson(
+  Map<String, dynamic> json
+) {
+        switch (json['type']) {
+                  case 'deposit':
+          return QuoteStepDeposit.fromJson(
+            json
+          );
+                case 'transaction':
+          return QuoteStepTransaction.fromJson(
+            json
+          );
+        
+          default:
+            throw CheckedFromJsonException(
+  json,
+  'type',
+  'QuoteStep',
+  'Invalid union type "${json['type']}"!'
+);
+        }
+      
+}
+
+/// @nodoc
+mixin _$QuoteStep {
+
+ String get requestId;
+/// Create a copy of QuoteStep
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$QuoteStepCopyWith<QuoteStep> get copyWith => _$QuoteStepCopyWithImpl<QuoteStep>(this as QuoteStep, _$identity);
+
+  /// Serializes this QuoteStep to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuoteStep&&(identical(other.requestId, requestId) || other.requestId == requestId));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,requestId);
+
+@override
+String toString() {
+  return 'QuoteStep(requestId: $requestId)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $QuoteStepCopyWith<$Res>  {
+  factory $QuoteStepCopyWith(QuoteStep value, $Res Function(QuoteStep) _then) = _$QuoteStepCopyWithImpl;
+@useResult
+$Res call({
+ String requestId
+});
+
+
+
+
+}
+/// @nodoc
+class _$QuoteStepCopyWithImpl<$Res>
+    implements $QuoteStepCopyWith<$Res> {
+  _$QuoteStepCopyWithImpl(this._self, this._then);
+
+  final QuoteStep _self;
+  final $Res Function(QuoteStep) _then;
+
+/// Create a copy of QuoteStep
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? requestId = null,}) {
+  return _then(_self.copyWith(
+requestId: null == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [QuoteStep].
+extension QuoteStepPatterns on QuoteStep {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( QuoteStepDeposit value)?  deposit,TResult Function( QuoteStepTransaction value)?  transaction,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case QuoteStepDeposit() when deposit != null:
+return deposit(_that);case QuoteStepTransaction() when transaction != null:
+return transaction(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( QuoteStepDeposit value)  deposit,required TResult Function( QuoteStepTransaction value)  transaction,}){
+final _that = this;
+switch (_that) {
+case QuoteStepDeposit():
+return deposit(_that);case QuoteStepTransaction():
+return transaction(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( QuoteStepDeposit value)?  deposit,TResult? Function( QuoteStepTransaction value)?  transaction,}){
+final _that = this;
+switch (_that) {
+case QuoteStepDeposit() when deposit != null:
+return deposit(_that);case QuoteStepTransaction() when transaction != null:
+return transaction(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String requestId,  QuoteDeposit deposit)?  deposit,TResult Function( String requestId,  dynamic transaction)?  transaction,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case QuoteStepDeposit() when deposit != null:
+return deposit(_that.requestId,_that.deposit);case QuoteStepTransaction() when transaction != null:
+return transaction(_that.requestId,_that.transaction);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String requestId,  QuoteDeposit deposit)  deposit,required TResult Function( String requestId,  dynamic transaction)  transaction,}) {final _that = this;
+switch (_that) {
+case QuoteStepDeposit():
+return deposit(_that.requestId,_that.deposit);case QuoteStepTransaction():
+return transaction(_that.requestId,_that.transaction);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String requestId,  QuoteDeposit deposit)?  deposit,TResult? Function( String requestId,  dynamic transaction)?  transaction,}) {final _that = this;
+switch (_that) {
+case QuoteStepDeposit() when deposit != null:
+return deposit(_that.requestId,_that.deposit);case QuoteStepTransaction() when transaction != null:
+return transaction(_that.requestId,_that.transaction);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class QuoteStepDeposit implements QuoteStep {
+  const QuoteStepDeposit({required this.requestId, required this.deposit, final  String? $type}): $type = $type ?? 'deposit';
+  factory QuoteStepDeposit.fromJson(Map<String, dynamic> json) => _$QuoteStepDepositFromJson(json);
+
+@override final  String requestId;
+ final  QuoteDeposit deposit;
+
+@JsonKey(name: 'type')
+final String $type;
+
+
+/// Create a copy of QuoteStep
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$QuoteStepDepositCopyWith<QuoteStepDeposit> get copyWith => _$QuoteStepDepositCopyWithImpl<QuoteStepDeposit>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$QuoteStepDepositToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuoteStepDeposit&&(identical(other.requestId, requestId) || other.requestId == requestId)&&(identical(other.deposit, deposit) || other.deposit == deposit));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,requestId,deposit);
+
+@override
+String toString() {
+  return 'QuoteStep.deposit(requestId: $requestId, deposit: $deposit)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $QuoteStepDepositCopyWith<$Res> implements $QuoteStepCopyWith<$Res> {
+  factory $QuoteStepDepositCopyWith(QuoteStepDeposit value, $Res Function(QuoteStepDeposit) _then) = _$QuoteStepDepositCopyWithImpl;
+@override @useResult
+$Res call({
+ String requestId, QuoteDeposit deposit
+});
+
+
+$QuoteDepositCopyWith<$Res> get deposit;
+
+}
+/// @nodoc
+class _$QuoteStepDepositCopyWithImpl<$Res>
+    implements $QuoteStepDepositCopyWith<$Res> {
+  _$QuoteStepDepositCopyWithImpl(this._self, this._then);
+
+  final QuoteStepDeposit _self;
+  final $Res Function(QuoteStepDeposit) _then;
+
+/// Create a copy of QuoteStep
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? requestId = null,Object? deposit = null,}) {
+  return _then(QuoteStepDeposit(
+requestId: null == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
+as String,deposit: null == deposit ? _self.deposit : deposit // ignore: cast_nullable_to_non_nullable
+as QuoteDeposit,
+  ));
+}
+
+/// Create a copy of QuoteStep
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$QuoteDepositCopyWith<$Res> get deposit {
+  
+  return $QuoteDepositCopyWith<$Res>(_self.deposit, (value) {
+    return _then(_self.copyWith(deposit: value));
+  });
+}
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class QuoteStepTransaction implements QuoteStep {
+  const QuoteStepTransaction({required this.requestId, required this.transaction, final  String? $type}): $type = $type ?? 'transaction';
+  factory QuoteStepTransaction.fromJson(Map<String, dynamic> json) => _$QuoteStepTransactionFromJson(json);
+
+@override final  String requestId;
+ final  dynamic transaction;
+
+@JsonKey(name: 'type')
+final String $type;
+
+
+/// Create a copy of QuoteStep
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$QuoteStepTransactionCopyWith<QuoteStepTransaction> get copyWith => _$QuoteStepTransactionCopyWithImpl<QuoteStepTransaction>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$QuoteStepTransactionToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is QuoteStepTransaction&&(identical(other.requestId, requestId) || other.requestId == requestId)&&const DeepCollectionEquality().equals(other.transaction, transaction));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,requestId,const DeepCollectionEquality().hash(transaction));
+
+@override
+String toString() {
+  return 'QuoteStep.transaction(requestId: $requestId, transaction: $transaction)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $QuoteStepTransactionCopyWith<$Res> implements $QuoteStepCopyWith<$Res> {
+  factory $QuoteStepTransactionCopyWith(QuoteStepTransaction value, $Res Function(QuoteStepTransaction) _then) = _$QuoteStepTransactionCopyWithImpl;
+@override @useResult
+$Res call({
+ String requestId, dynamic transaction
+});
+
+
+
+
+}
+/// @nodoc
+class _$QuoteStepTransactionCopyWithImpl<$Res>
+    implements $QuoteStepTransactionCopyWith<$Res> {
+  _$QuoteStepTransactionCopyWithImpl(this._self, this._then);
+
+  final QuoteStepTransaction _self;
+  final $Res Function(QuoteStepTransaction) _then;
+
+/// Create a copy of QuoteStep
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? requestId = null,Object? transaction = freezed,}) {
+  return _then(QuoteStepTransaction(
+requestId: null == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
+as String,transaction: freezed == transaction ? _self.transaction : transaction // ignore: cast_nullable_to_non_nullable
+as dynamic,
   ));
 }
 
@@ -577,7 +1216,7 @@ as int?,
 /// @nodoc
 mixin _$Quote {
 
- QuoteType get type; QuoteCurrency get origin; QuoteCurrency get destination; List<QuoteFee> get fees; String get requestId; String get depositAddress; int get timeEstimate;
+@JsonKey(includeIfNull: false) QuoteType? get type; QuoteAmount get origin; QuoteAmount get destination; List<QuoteStep> get steps; List<QuoteFee> get fees; int get timeInSeconds;
 /// Create a copy of Quote
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -590,16 +1229,16 @@ $QuoteCopyWith<Quote> get copyWith => _$QuoteCopyWithImpl<Quote>(this as Quote, 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Quote&&(identical(other.type, type) || other.type == type)&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.destination, destination) || other.destination == destination)&&const DeepCollectionEquality().equals(other.fees, fees)&&(identical(other.requestId, requestId) || other.requestId == requestId)&&(identical(other.depositAddress, depositAddress) || other.depositAddress == depositAddress)&&(identical(other.timeEstimate, timeEstimate) || other.timeEstimate == timeEstimate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Quote&&(identical(other.type, type) || other.type == type)&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.destination, destination) || other.destination == destination)&&const DeepCollectionEquality().equals(other.steps, steps)&&const DeepCollectionEquality().equals(other.fees, fees)&&(identical(other.timeInSeconds, timeInSeconds) || other.timeInSeconds == timeInSeconds));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,type,origin,destination,const DeepCollectionEquality().hash(fees),requestId,depositAddress,timeEstimate);
+int get hashCode => Object.hash(runtimeType,type,origin,destination,const DeepCollectionEquality().hash(steps),const DeepCollectionEquality().hash(fees),timeInSeconds);
 
 @override
 String toString() {
-  return 'Quote(type: $type, origin: $origin, destination: $destination, fees: $fees, requestId: $requestId, depositAddress: $depositAddress, timeEstimate: $timeEstimate)';
+  return 'Quote(type: $type, origin: $origin, destination: $destination, steps: $steps, fees: $fees, timeInSeconds: $timeInSeconds)';
 }
 
 
@@ -610,11 +1249,11 @@ abstract mixin class $QuoteCopyWith<$Res>  {
   factory $QuoteCopyWith(Quote value, $Res Function(Quote) _then) = _$QuoteCopyWithImpl;
 @useResult
 $Res call({
- QuoteType type, QuoteCurrency origin, QuoteCurrency destination, List<QuoteFee> fees, String requestId, String depositAddress, int timeEstimate
+@JsonKey(includeIfNull: false) QuoteType? type, QuoteAmount origin, QuoteAmount destination, List<QuoteStep> steps, List<QuoteFee> fees, int timeInSeconds
 });
 
 
-$QuoteCurrencyCopyWith<$Res> get origin;$QuoteCurrencyCopyWith<$Res> get destination;
+$QuoteAmountCopyWith<$Res> get origin;$QuoteAmountCopyWith<$Res> get destination;
 
 }
 /// @nodoc
@@ -627,15 +1266,14 @@ class _$QuoteCopyWithImpl<$Res>
 
 /// Create a copy of Quote
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? type = null,Object? origin = null,Object? destination = null,Object? fees = null,Object? requestId = null,Object? depositAddress = null,Object? timeEstimate = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? type = freezed,Object? origin = null,Object? destination = null,Object? steps = null,Object? fees = null,Object? timeInSeconds = null,}) {
   return _then(_self.copyWith(
-type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as QuoteType,origin: null == origin ? _self.origin : origin // ignore: cast_nullable_to_non_nullable
-as QuoteCurrency,destination: null == destination ? _self.destination : destination // ignore: cast_nullable_to_non_nullable
-as QuoteCurrency,fees: null == fees ? _self.fees : fees // ignore: cast_nullable_to_non_nullable
-as List<QuoteFee>,requestId: null == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
-as String,depositAddress: null == depositAddress ? _self.depositAddress : depositAddress // ignore: cast_nullable_to_non_nullable
-as String,timeEstimate: null == timeEstimate ? _self.timeEstimate : timeEstimate // ignore: cast_nullable_to_non_nullable
+type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as QuoteType?,origin: null == origin ? _self.origin : origin // ignore: cast_nullable_to_non_nullable
+as QuoteAmount,destination: null == destination ? _self.destination : destination // ignore: cast_nullable_to_non_nullable
+as QuoteAmount,steps: null == steps ? _self.steps : steps // ignore: cast_nullable_to_non_nullable
+as List<QuoteStep>,fees: null == fees ? _self.fees : fees // ignore: cast_nullable_to_non_nullable
+as List<QuoteFee>,timeInSeconds: null == timeInSeconds ? _self.timeInSeconds : timeInSeconds // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -643,18 +1281,18 @@ as int,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$QuoteCurrencyCopyWith<$Res> get origin {
+$QuoteAmountCopyWith<$Res> get origin {
   
-  return $QuoteCurrencyCopyWith<$Res>(_self.origin, (value) {
+  return $QuoteAmountCopyWith<$Res>(_self.origin, (value) {
     return _then(_self.copyWith(origin: value));
   });
 }/// Create a copy of Quote
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$QuoteCurrencyCopyWith<$Res> get destination {
+$QuoteAmountCopyWith<$Res> get destination {
   
-  return $QuoteCurrencyCopyWith<$Res>(_self.destination, (value) {
+  return $QuoteAmountCopyWith<$Res>(_self.destination, (value) {
     return _then(_self.copyWith(destination: value));
   });
 }
@@ -736,10 +1374,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( QuoteType type,  QuoteCurrency origin,  QuoteCurrency destination,  List<QuoteFee> fees,  String requestId,  String depositAddress,  int timeEstimate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeIfNull: false)  QuoteType? type,  QuoteAmount origin,  QuoteAmount destination,  List<QuoteStep> steps,  List<QuoteFee> fees,  int timeInSeconds)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Quote() when $default != null:
-return $default(_that.type,_that.origin,_that.destination,_that.fees,_that.requestId,_that.depositAddress,_that.timeEstimate);case _:
+return $default(_that.type,_that.origin,_that.destination,_that.steps,_that.fees,_that.timeInSeconds);case _:
   return orElse();
 
 }
@@ -757,10 +1395,10 @@ return $default(_that.type,_that.origin,_that.destination,_that.fees,_that.reque
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( QuoteType type,  QuoteCurrency origin,  QuoteCurrency destination,  List<QuoteFee> fees,  String requestId,  String depositAddress,  int timeEstimate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeIfNull: false)  QuoteType? type,  QuoteAmount origin,  QuoteAmount destination,  List<QuoteStep> steps,  List<QuoteFee> fees,  int timeInSeconds)  $default,) {final _that = this;
 switch (_that) {
 case _Quote():
-return $default(_that.type,_that.origin,_that.destination,_that.fees,_that.requestId,_that.depositAddress,_that.timeEstimate);}
+return $default(_that.type,_that.origin,_that.destination,_that.steps,_that.fees,_that.timeInSeconds);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -774,10 +1412,10 @@ return $default(_that.type,_that.origin,_that.destination,_that.fees,_that.reque
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( QuoteType type,  QuoteCurrency origin,  QuoteCurrency destination,  List<QuoteFee> fees,  String requestId,  String depositAddress,  int timeEstimate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeIfNull: false)  QuoteType? type,  QuoteAmount origin,  QuoteAmount destination,  List<QuoteStep> steps,  List<QuoteFee> fees,  int timeInSeconds)?  $default,) {final _that = this;
 switch (_that) {
 case _Quote() when $default != null:
-return $default(_that.type,_that.origin,_that.destination,_that.fees,_that.requestId,_that.depositAddress,_that.timeEstimate);case _:
+return $default(_that.type,_that.origin,_that.destination,_that.steps,_that.fees,_that.timeInSeconds);case _:
   return null;
 
 }
@@ -789,12 +1427,19 @@ return $default(_that.type,_that.origin,_that.destination,_that.fees,_that.reque
 @JsonSerializable()
 
 class _Quote implements Quote {
-  const _Quote({required this.type, required this.origin, required this.destination, required final  List<QuoteFee> fees, required this.requestId, required this.depositAddress, required this.timeEstimate}): _fees = fees;
+  const _Quote({@JsonKey(includeIfNull: false) this.type, required this.origin, required this.destination, required final  List<QuoteStep> steps, required final  List<QuoteFee> fees, required this.timeInSeconds}): _steps = steps,_fees = fees;
   factory _Quote.fromJson(Map<String, dynamic> json) => _$QuoteFromJson(json);
 
-@override final  QuoteType type;
-@override final  QuoteCurrency origin;
-@override final  QuoteCurrency destination;
+@override@JsonKey(includeIfNull: false) final  QuoteType? type;
+@override final  QuoteAmount origin;
+@override final  QuoteAmount destination;
+ final  List<QuoteStep> _steps;
+@override List<QuoteStep> get steps {
+  if (_steps is EqualUnmodifiableListView) return _steps;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_steps);
+}
+
  final  List<QuoteFee> _fees;
 @override List<QuoteFee> get fees {
   if (_fees is EqualUnmodifiableListView) return _fees;
@@ -802,9 +1447,7 @@ class _Quote implements Quote {
   return EqualUnmodifiableListView(_fees);
 }
 
-@override final  String requestId;
-@override final  String depositAddress;
-@override final  int timeEstimate;
+@override final  int timeInSeconds;
 
 /// Create a copy of Quote
 /// with the given fields replaced by the non-null parameter values.
@@ -819,16 +1462,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Quote&&(identical(other.type, type) || other.type == type)&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.destination, destination) || other.destination == destination)&&const DeepCollectionEquality().equals(other._fees, _fees)&&(identical(other.requestId, requestId) || other.requestId == requestId)&&(identical(other.depositAddress, depositAddress) || other.depositAddress == depositAddress)&&(identical(other.timeEstimate, timeEstimate) || other.timeEstimate == timeEstimate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Quote&&(identical(other.type, type) || other.type == type)&&(identical(other.origin, origin) || other.origin == origin)&&(identical(other.destination, destination) || other.destination == destination)&&const DeepCollectionEquality().equals(other._steps, _steps)&&const DeepCollectionEquality().equals(other._fees, _fees)&&(identical(other.timeInSeconds, timeInSeconds) || other.timeInSeconds == timeInSeconds));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,type,origin,destination,const DeepCollectionEquality().hash(_fees),requestId,depositAddress,timeEstimate);
+int get hashCode => Object.hash(runtimeType,type,origin,destination,const DeepCollectionEquality().hash(_steps),const DeepCollectionEquality().hash(_fees),timeInSeconds);
 
 @override
 String toString() {
-  return 'Quote(type: $type, origin: $origin, destination: $destination, fees: $fees, requestId: $requestId, depositAddress: $depositAddress, timeEstimate: $timeEstimate)';
+  return 'Quote(type: $type, origin: $origin, destination: $destination, steps: $steps, fees: $fees, timeInSeconds: $timeInSeconds)';
 }
 
 
@@ -839,11 +1482,11 @@ abstract mixin class _$QuoteCopyWith<$Res> implements $QuoteCopyWith<$Res> {
   factory _$QuoteCopyWith(_Quote value, $Res Function(_Quote) _then) = __$QuoteCopyWithImpl;
 @override @useResult
 $Res call({
- QuoteType type, QuoteCurrency origin, QuoteCurrency destination, List<QuoteFee> fees, String requestId, String depositAddress, int timeEstimate
+@JsonKey(includeIfNull: false) QuoteType? type, QuoteAmount origin, QuoteAmount destination, List<QuoteStep> steps, List<QuoteFee> fees, int timeInSeconds
 });
 
 
-@override $QuoteCurrencyCopyWith<$Res> get origin;@override $QuoteCurrencyCopyWith<$Res> get destination;
+@override $QuoteAmountCopyWith<$Res> get origin;@override $QuoteAmountCopyWith<$Res> get destination;
 
 }
 /// @nodoc
@@ -856,15 +1499,14 @@ class __$QuoteCopyWithImpl<$Res>
 
 /// Create a copy of Quote
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? type = null,Object? origin = null,Object? destination = null,Object? fees = null,Object? requestId = null,Object? depositAddress = null,Object? timeEstimate = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? type = freezed,Object? origin = null,Object? destination = null,Object? steps = null,Object? fees = null,Object? timeInSeconds = null,}) {
   return _then(_Quote(
-type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
-as QuoteType,origin: null == origin ? _self.origin : origin // ignore: cast_nullable_to_non_nullable
-as QuoteCurrency,destination: null == destination ? _self.destination : destination // ignore: cast_nullable_to_non_nullable
-as QuoteCurrency,fees: null == fees ? _self._fees : fees // ignore: cast_nullable_to_non_nullable
-as List<QuoteFee>,requestId: null == requestId ? _self.requestId : requestId // ignore: cast_nullable_to_non_nullable
-as String,depositAddress: null == depositAddress ? _self.depositAddress : depositAddress // ignore: cast_nullable_to_non_nullable
-as String,timeEstimate: null == timeEstimate ? _self.timeEstimate : timeEstimate // ignore: cast_nullable_to_non_nullable
+type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as QuoteType?,origin: null == origin ? _self.origin : origin // ignore: cast_nullable_to_non_nullable
+as QuoteAmount,destination: null == destination ? _self.destination : destination // ignore: cast_nullable_to_non_nullable
+as QuoteAmount,steps: null == steps ? _self._steps : steps // ignore: cast_nullable_to_non_nullable
+as List<QuoteStep>,fees: null == fees ? _self._fees : fees // ignore: cast_nullable_to_non_nullable
+as List<QuoteFee>,timeInSeconds: null == timeInSeconds ? _self.timeInSeconds : timeInSeconds // ignore: cast_nullable_to_non_nullable
 as int,
   ));
 }
@@ -873,18 +1515,18 @@ as int,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$QuoteCurrencyCopyWith<$Res> get origin {
+$QuoteAmountCopyWith<$Res> get origin {
   
-  return $QuoteCurrencyCopyWith<$Res>(_self.origin, (value) {
+  return $QuoteAmountCopyWith<$Res>(_self.origin, (value) {
     return _then(_self.copyWith(origin: value));
   });
 }/// Create a copy of Quote
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$QuoteCurrencyCopyWith<$Res> get destination {
+$QuoteAmountCopyWith<$Res> get destination {
   
-  return $QuoteCurrencyCopyWith<$Res>(_self.destination, (value) {
+  return $QuoteAmountCopyWith<$Res>(_self.destination, (value) {
     return _then(_self.copyWith(destination: value));
   });
 }

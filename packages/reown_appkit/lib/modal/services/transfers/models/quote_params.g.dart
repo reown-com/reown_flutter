@@ -26,10 +26,10 @@ Map<String, dynamic> _$GetQuoteParamsToJson(_GetQuoteParams instance) =>
       'address': instance.address,
     };
 
-_GetCrossChainQuoteParams _$GetCrossChainQuoteParamsFromJson(
+_GetTransfersQuoteParams _$GetTransfersQuoteParamsFromJson(
   Map<String, dynamic> json,
-) => _GetCrossChainQuoteParams(
-  user: json['user'] as String,
+) => _GetTransfersQuoteParams(
+  user: json['user'] as String?,
   originChainId: json['originChainId'] as String,
   originCurrency: json['originCurrency'] as String,
   destinationChainId: json['destinationChainId'] as String,
@@ -38,10 +38,10 @@ _GetCrossChainQuoteParams _$GetCrossChainQuoteParamsFromJson(
   amount: json['amount'] as String,
 );
 
-Map<String, dynamic> _$GetCrossChainQuoteParamsToJson(
-  _GetCrossChainQuoteParams instance,
+Map<String, dynamic> _$GetTransfersQuoteParamsToJson(
+  _GetTransfersQuoteParams instance,
 ) => <String, dynamic>{
-  'user': instance.user,
+  'user': ?instance.user,
   'originChainId': instance.originChainId,
   'originCurrency': instance.originCurrency,
   'destinationChainId': instance.destinationChainId,

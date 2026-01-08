@@ -9,7 +9,6 @@ import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'dart:ui' as ui;
 
 import 'package:reown_appkit/modal/models/send_data.dart';
-import 'package:reown_appkit/modal/pages/preview_send/utils.dart';
 import 'package:reown_appkit/modal/pages/preview_send/widgets.dart';
 import 'package:reown_appkit/modal/services/analytics_service/i_analytics_service.dart';
 import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
@@ -20,7 +19,7 @@ import 'package:reown_appkit/modal/services/toast_service/models/toast_message.d
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
-import 'package:reown_appkit/reown_appkit.dart' hide TransactionExtension;
+import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';

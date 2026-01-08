@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
-import 'package:reown_appkit/modal/pages/public/dwe/widgets/asset_selector_page.dart';
+import 'package:reown_appkit/modal/pages/public/dwe/configured_assets_selector_page.dart';
 import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
@@ -32,7 +32,7 @@ class _AssetsButtonState extends State<AssetsButton> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedAsset = _dweService.selectedAsset.value;
+    final selectedAsset = _dweService.depositAsset.value;
     if (selectedAsset == null) {
       return SizedBox.shrink();
     }
@@ -44,7 +44,7 @@ class _AssetsButtonState extends State<AssetsButton> {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
 
     return ValueListenableBuilder(
-      valueListenable: _dweService.selectedAsset,
+      valueListenable: _dweService.depositAsset,
       builder: (context, selectedAsset, _) {
         if (selectedAsset == null) {
           return const SizedBox.shrink();
@@ -76,20 +76,7 @@ class _AssetsButtonState extends State<AssetsButton> {
                           semanticsLabel: 'AppKitModalAssetButton',
                           size: widget.size,
                           onTap: () {
-                            // if (_dweService.enableNetworkSelection) {
-                            //   _widgetStack.push(
-                            //     ReownAppKitModalSelectNetworkPage(
-                            //       onTapNetwork: (info) async {
-                            //         await _navigateAfterChainSelection(
-                            //           appKitModal,
-                            //           info,
-                            //         );
-                            //       },
-                            //     ),
-                            //   );
-                            // } else {
-                            _widgetStack.push(AssetSelectorPage());
-                            // }
+                            _widgetStack.push(ConfiguredAssetsSelectorPage());
                           },
                           buttonStyle: _buttonStyle,
                           child: Row(
@@ -188,18 +175,6 @@ class _AssetsButtonState extends State<AssetsButton> {
     );
   }
 
-  // TODO DWE: Not yet supported, dependes on `enableNetworkSelection`
-  // Future<void> _navigateAfterChainSelection(
-  //   IReownAppKitModal appKitModal,
-  //   ReownAppKitModalNetworkInfo network,
-  // ) async {
-  //   await appKitModal.selectChain(network);
-  //   final availableAssets = _dweService.getPaymentAssetsForNetwork(
-  //     chainId: network.chainId,
-  //   );
-  //   _dweService.setSupportedAssets(availableAssets);
-  //   _widgetStack.push(AssetSelectorPage());
-  // }
 
   ButtonStyle get _buttonStyle {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);

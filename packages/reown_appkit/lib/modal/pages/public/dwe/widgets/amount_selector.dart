@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/services/blockchain_service/models/token_balance.dart';
 import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
+import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -20,13 +22,13 @@ class _AmountSelectorState extends State<AmountSelector> {
   void initState() {
     super.initState();
     _amountController = TextEditingController(
-      text: _dweService.selectedAmount.value > 0.0
-          ? _dweService.selectedAmount.value.toString()
+      text: _dweService.depositAmountInUSD.value > 0.0
+          ? _dweService.depositAmountInUSD.value.toStringAsFixed(2)
           : '',
     );
     _amountController.addListener(() {
       try {
-        _dweService.selectedAmount.value = _amountController.text.isEmpty
+        _dweService.depositAmountInUSD.value = _amountController.text.isEmpty
             ? 0.0
             : double.parse(_amountController.text);
       } catch (_) {}
@@ -43,32 +45,28 @@ class _AmountSelectorState extends State<AmountSelector> {
       );
     }
     return ValueListenableBuilder(
-      valueListenable: _dweService.selectedAsset,
+      valueListenable: _dweService.depositAsset,
       builder: (context, selectedAsset, _) {
         if (selectedAsset == null) {
           return const SizedBox.shrink();
         }
-        return FutureBuilder(
+        return FutureBuilder<TokenBalance?>(
           future: _dweService.getFungiblePrice(asset: selectedAsset),
           builder: (context, snapshot) {
             return ValueListenableBuilder(
-              valueListenable: _dweService.selectedAmount,
+              valueListenable: _dweService.depositAmountInUSD,
               builder: (context, selectedAmount, _) {
-                final token = snapshot.data;
-                final amountToReceive = token != null
-                    ? (_dweService.selectedAmount.value.toDouble() /
-                              (token.price ?? 0.0))
-                          .toStringAsFixed(4)
-                    : 'Unable to estimate ';
-                final symbol = selectedAsset.metadata.symbol;
+                final amountToDeposit = _setAmountToDeposit(
+                  selectedAsset,
+                  snapshot.data,
+                );
                 return _AmountInputBody(
                   amountController: _amountController,
-                  amountToReceive: '$amountToReceive $symbol',
+                  amountToReceive: amountToDeposit,
                   onTapAmount: (e) {
                     FocusManager.instance.primaryFocus?.unfocus();
-                    _dweService.selectedAmount.value = e.toDouble();
-                    _amountController.text = _dweService.selectedAmount.value
-                        .toString();
+                    _dweService.depositAmountInUSD.value = e.toDouble();
+                    _amountController.text = e.toDouble().toStringAsFixed(2);
                   },
                 );
               },
@@ -77,6 +75,19 @@ class _AmountSelectorState extends State<AmountSelector> {
         );
       },
     );
+  }
+
+  String _setAmountToDeposit(
+    ExchangeAsset selectedExchangeAsset,
+    TokenBalance? tokenBalance,
+  ) {
+    if (tokenBalance == null) {
+      return 'Unable to estimate';
+    }
+    final tokenPrice = (tokenBalance.price ?? 0.0);
+    final amount = _dweService.depositAmountInUSD.value / tokenPrice;
+    _dweService.depositAmountInAsset.value = amount;
+    return CoreUtils.toPrecision(amount, withSymbol: tokenBalance.symbol!);
   }
 }
 
@@ -143,7 +154,7 @@ class _AmountInputBody extends StatelessWidget {
           visible: amountToReceive.isNotEmpty,
           child: Text(
             amountToReceive,
-            style: themeData.textStyles.paragraph500.copyWith(
+            style: themeData.textStyles.paragraph400.copyWith(
               color: themeColors.foreground275,
             ),
           ),
@@ -154,7 +165,7 @@ class _AmountInputBody extends StatelessWidget {
             return Expanded(
               child: _AmountButton(
                 value: e,
-                selected: _dweService.selectedAmount.value == e,
+                selected: _dweService.depositAmountInUSD.value == e,
                 onTap: () => onTapAmount.call(e),
               ),
             );
@@ -182,9 +193,9 @@ class _AmountButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
       child: BaseButton(
-        semanticsLabel: '_AmountButton',
+        semanticsLabel: '${runtimeType}_$value',
         size: BaseButtonSize.regular,
-        child: Text('\$$value'),
+        child: Text('\$$value USD'),
         onTap: selected ? null : onTap,
         buttonStyle: ButtonStyle(
           backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {

@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_appkit/modal/constants/key_constants.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
 import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
@@ -12,7 +13,8 @@ import 'package:reown_appkit/modal/widgets/navigation/navbar.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
-class AssetSelectorPage extends StatelessWidget {
+class ConfiguredAssetsSelectorPage extends StatelessWidget {
+  const ConfiguredAssetsSelectorPage() : super(key: KeyConstants.configuredAssetsSelectorPage);
   IWidgetStack get _widgetStack => GetIt.I<IWidgetStack>();
   IDWEService get _dweService => GetIt.I<IDWEService>();
 
@@ -29,7 +31,7 @@ class AssetSelectorPage extends StatelessWidget {
     }
 
     return ModalNavbar(
-      title: 'Select asset',
+      title: 'Select asset to deposit',
       safeAreaLeft: true,
       safeAreaRight: true,
       safeAreaBottom: false,
@@ -70,9 +72,6 @@ class AssetSelectorPage extends StatelessWidget {
                 return FutureBuilder(
                   future: _dweService.getFungiblePrice(asset: asset),
                   builder: (context, snapshot) {
-                    // if (snapshot.hasError) {
-                    //   return const SizedBox.shrink();
-                    // }
                     return AccountListItem(
                       padding: const EdgeInsets.all(0.0),
                       backgroundColor: WidgetStatePropertyAll(
@@ -122,7 +121,7 @@ class AssetSelectorPage extends StatelessWidget {
                         color: themeColors.foreground200,
                       ),
                       onTap: () async {
-                        _dweService.selectedAsset.value = asset;
+                        _dweService.depositAsset.value = asset;
                         final chainInfo =
                             ReownAppKitModalNetworks.getNetworkInfo(
                               asset.network,

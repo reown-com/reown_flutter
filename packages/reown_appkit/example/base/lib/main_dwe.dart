@@ -6,6 +6,7 @@ import 'package:reown_appkit/reown_appkit.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:http/http.dart' as http;
+import 'package:reown_appkit_dapp/utils/dart_defines.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -120,7 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _initSDK() async {
     _appKitModal = ReownAppKitModal(
-      projectId: '876c626bd43841c04f50fc96ea1e31a2',
+      projectId: DartDefines.projectId,
       logLevel: LogLevel.all,
       context: context,
       metadata: PairingMetadata(
@@ -162,7 +163,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     },
                     title: 'Open Kast Mocked Modal',
                   ),
-                  Text('${_appKitModal.selectedChain?.chainId}'),
+                  Text('Chain: ${_appKitModal.selectedChain?.chainId}'),
                 ],
               )
             : CircularProgressIndicator(),
@@ -341,10 +342,10 @@ class _KastMockedModalState extends State<KastMockedModal>
     try {
       // CONFIGURE NETWORK YOU WANT TO RECEIVE FUNDS ON
       // Since AppKit defines some EVM and Solana Mainnet by default, you can do this as well
-      final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
-        'solana',
-        '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', // Solana Mainnet
-      );
+      // final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
+      //   'solana',
+      //   '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', // Solana Mainnet
+      // );
       // Other examples...
       // final workingChain = ReownAppKitModalNetworks.getNetworkInfo(
       //   'eip155',
@@ -374,11 +375,12 @@ class _KastMockedModalState extends State<KastMockedModal>
       // ]);
 
       // PRESELECT THE CONFIGURED NETWORK SO THE USER DOESN'T HAVE TO
-      await widget.appKitModal.selectChain(workingChain);
+      // await widget.appKitModal.selectChain(workingChain);
 
       /// FILTER YOUR SUPPORTED ASSETS IF NEEDED
       /// No needed if you acually call `selectChain()` in the previous step unless you want to filter out native tokens
       // This call is only necessary if you want to support assets on a given chain or don't support native tokens
+      // ignore: unused_local_variable
       final filteredAssets = widget.appKitModal.getPaymentAssetsForNetwork(
         // chainId: widget.appKitModal.selectedChain?.chainId,
         includeNative: false,
@@ -390,13 +392,16 @@ class _KastMockedModalState extends State<KastMockedModal>
         // supportedAssets: filteredAssets,
 
         /// disables asset selection button and fixes the feature to the given asset
-        // preselectedAsset: assets.first,
+        // preselectedAsset: solanaUSDC,
 
         /// shows or hide network icon from asset option. If `false` then `filterByNetwork` will be set to `true` internally
-        // showNetworkIcon: true,
+        // showNetworkIcon: false,
 
         /// filter `supportedAssets` by the selected network (if any) or by the first asset network
         filterByNetwork: false,
+
+        /// wether to hide or show the deposit asset selection button. Works only if `preselectedAsset` is configured
+        // depositAssetButton: false,
 
         /// configured recipients by namespace.
         /// If not set, then connected wallet address will be used.

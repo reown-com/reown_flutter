@@ -318,22 +318,22 @@ $ExchangeAssetCopyWith<$Res> get toToken {
 
 
 /// @nodoc
-mixin _$GetCrossChainQuoteParams {
+mixin _$GetTransfersQuoteParams {
 
- String get user; String get originChainId; String get originCurrency; String get destinationChainId; String get destinationCurrency; String get recipient; String get amount;
-/// Create a copy of GetCrossChainQuoteParams
+@JsonKey(includeIfNull: false) String? get user; String get originChainId; String get originCurrency; String get destinationChainId; String get destinationCurrency; String get recipient; String get amount;
+/// Create a copy of GetTransfersQuoteParams
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$GetCrossChainQuoteParamsCopyWith<GetCrossChainQuoteParams> get copyWith => _$GetCrossChainQuoteParamsCopyWithImpl<GetCrossChainQuoteParams>(this as GetCrossChainQuoteParams, _$identity);
+$GetTransfersQuoteParamsCopyWith<GetTransfersQuoteParams> get copyWith => _$GetTransfersQuoteParamsCopyWithImpl<GetTransfersQuoteParams>(this as GetTransfersQuoteParams, _$identity);
 
-  /// Serializes this GetCrossChainQuoteParams to a JSON map.
+  /// Serializes this GetTransfersQuoteParams to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetCrossChainQuoteParams&&(identical(other.user, user) || other.user == user)&&(identical(other.originChainId, originChainId) || other.originChainId == originChainId)&&(identical(other.originCurrency, originCurrency) || other.originCurrency == originCurrency)&&(identical(other.destinationChainId, destinationChainId) || other.destinationChainId == destinationChainId)&&(identical(other.destinationCurrency, destinationCurrency) || other.destinationCurrency == destinationCurrency)&&(identical(other.recipient, recipient) || other.recipient == recipient)&&(identical(other.amount, amount) || other.amount == amount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetTransfersQuoteParams&&(identical(other.user, user) || other.user == user)&&(identical(other.originChainId, originChainId) || other.originChainId == originChainId)&&(identical(other.originCurrency, originCurrency) || other.originCurrency == originCurrency)&&(identical(other.destinationChainId, destinationChainId) || other.destinationChainId == destinationChainId)&&(identical(other.destinationCurrency, destinationCurrency) || other.destinationCurrency == destinationCurrency)&&(identical(other.recipient, recipient) || other.recipient == recipient)&&(identical(other.amount, amount) || other.amount == amount));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -342,18 +342,18 @@ int get hashCode => Object.hash(runtimeType,user,originChainId,originCurrency,de
 
 @override
 String toString() {
-  return 'GetCrossChainQuoteParams(user: $user, originChainId: $originChainId, originCurrency: $originCurrency, destinationChainId: $destinationChainId, destinationCurrency: $destinationCurrency, recipient: $recipient, amount: $amount)';
+  return 'GetTransfersQuoteParams(user: $user, originChainId: $originChainId, originCurrency: $originCurrency, destinationChainId: $destinationChainId, destinationCurrency: $destinationCurrency, recipient: $recipient, amount: $amount)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $GetCrossChainQuoteParamsCopyWith<$Res>  {
-  factory $GetCrossChainQuoteParamsCopyWith(GetCrossChainQuoteParams value, $Res Function(GetCrossChainQuoteParams) _then) = _$GetCrossChainQuoteParamsCopyWithImpl;
+abstract mixin class $GetTransfersQuoteParamsCopyWith<$Res>  {
+  factory $GetTransfersQuoteParamsCopyWith(GetTransfersQuoteParams value, $Res Function(GetTransfersQuoteParams) _then) = _$GetTransfersQuoteParamsCopyWithImpl;
 @useResult
 $Res call({
- String user, String originChainId, String originCurrency, String destinationChainId, String destinationCurrency, String recipient, String amount
+@JsonKey(includeIfNull: false) String? user, String originChainId, String originCurrency, String destinationChainId, String destinationCurrency, String recipient, String amount
 });
 
 
@@ -361,19 +361,19 @@ $Res call({
 
 }
 /// @nodoc
-class _$GetCrossChainQuoteParamsCopyWithImpl<$Res>
-    implements $GetCrossChainQuoteParamsCopyWith<$Res> {
-  _$GetCrossChainQuoteParamsCopyWithImpl(this._self, this._then);
+class _$GetTransfersQuoteParamsCopyWithImpl<$Res>
+    implements $GetTransfersQuoteParamsCopyWith<$Res> {
+  _$GetTransfersQuoteParamsCopyWithImpl(this._self, this._then);
 
-  final GetCrossChainQuoteParams _self;
-  final $Res Function(GetCrossChainQuoteParams) _then;
+  final GetTransfersQuoteParams _self;
+  final $Res Function(GetTransfersQuoteParams) _then;
 
-/// Create a copy of GetCrossChainQuoteParams
+/// Create a copy of GetTransfersQuoteParams
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? user = null,Object? originChainId = null,Object? originCurrency = null,Object? destinationChainId = null,Object? destinationCurrency = null,Object? recipient = null,Object? amount = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? user = freezed,Object? originChainId = null,Object? originCurrency = null,Object? destinationChainId = null,Object? destinationCurrency = null,Object? recipient = null,Object? amount = null,}) {
   return _then(_self.copyWith(
-user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as String,originChainId: null == originChainId ? _self.originChainId : originChainId // ignore: cast_nullable_to_non_nullable
+user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as String?,originChainId: null == originChainId ? _self.originChainId : originChainId // ignore: cast_nullable_to_non_nullable
 as String,originCurrency: null == originCurrency ? _self.originCurrency : originCurrency // ignore: cast_nullable_to_non_nullable
 as String,destinationChainId: null == destinationChainId ? _self.destinationChainId : destinationChainId // ignore: cast_nullable_to_non_nullable
 as String,destinationCurrency: null == destinationCurrency ? _self.destinationCurrency : destinationCurrency // ignore: cast_nullable_to_non_nullable
@@ -386,8 +386,8 @@ as String,
 }
 
 
-/// Adds pattern-matching-related methods to [GetCrossChainQuoteParams].
-extension GetCrossChainQuoteParamsPatterns on GetCrossChainQuoteParams {
+/// Adds pattern-matching-related methods to [GetTransfersQuoteParams].
+extension GetTransfersQuoteParamsPatterns on GetTransfersQuoteParams {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -400,10 +400,10 @@ extension GetCrossChainQuoteParamsPatterns on GetCrossChainQuoteParams {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _GetCrossChainQuoteParams value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _GetTransfersQuoteParams value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _GetCrossChainQuoteParams() when $default != null:
+case _GetTransfersQuoteParams() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -422,10 +422,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _GetCrossChainQuoteParams value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _GetTransfersQuoteParams value)  $default,){
 final _that = this;
 switch (_that) {
-case _GetCrossChainQuoteParams():
+case _GetTransfersQuoteParams():
 return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -440,10 +440,10 @@ return $default(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _GetCrossChainQuoteParams value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _GetTransfersQuoteParams value)?  $default,){
 final _that = this;
 switch (_that) {
-case _GetCrossChainQuoteParams() when $default != null:
+case _GetTransfersQuoteParams() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -461,9 +461,9 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String user,  String originChainId,  String originCurrency,  String destinationChainId,  String destinationCurrency,  String recipient,  String amount)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(includeIfNull: false)  String? user,  String originChainId,  String originCurrency,  String destinationChainId,  String destinationCurrency,  String recipient,  String amount)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _GetCrossChainQuoteParams() when $default != null:
+case _GetTransfersQuoteParams() when $default != null:
 return $default(_that.user,_that.originChainId,_that.originCurrency,_that.destinationChainId,_that.destinationCurrency,_that.recipient,_that.amount);case _:
   return orElse();
 
@@ -482,9 +482,9 @@ return $default(_that.user,_that.originChainId,_that.originCurrency,_that.destin
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String user,  String originChainId,  String originCurrency,  String destinationChainId,  String destinationCurrency,  String recipient,  String amount)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(includeIfNull: false)  String? user,  String originChainId,  String originCurrency,  String destinationChainId,  String destinationCurrency,  String recipient,  String amount)  $default,) {final _that = this;
 switch (_that) {
-case _GetCrossChainQuoteParams():
+case _GetTransfersQuoteParams():
 return $default(_that.user,_that.originChainId,_that.originCurrency,_that.destinationChainId,_that.destinationCurrency,_that.recipient,_that.amount);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -499,9 +499,9 @@ return $default(_that.user,_that.originChainId,_that.originCurrency,_that.destin
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String user,  String originChainId,  String originCurrency,  String destinationChainId,  String destinationCurrency,  String recipient,  String amount)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(includeIfNull: false)  String? user,  String originChainId,  String originCurrency,  String destinationChainId,  String destinationCurrency,  String recipient,  String amount)?  $default,) {final _that = this;
 switch (_that) {
-case _GetCrossChainQuoteParams() when $default != null:
+case _GetTransfersQuoteParams() when $default != null:
 return $default(_that.user,_that.originChainId,_that.originCurrency,_that.destinationChainId,_that.destinationCurrency,_that.recipient,_that.amount);case _:
   return null;
 
@@ -513,11 +513,11 @@ return $default(_that.user,_that.originChainId,_that.originCurrency,_that.destin
 /// @nodoc
 @JsonSerializable()
 
-class _GetCrossChainQuoteParams implements GetCrossChainQuoteParams {
-  const _GetCrossChainQuoteParams({required this.user, required this.originChainId, required this.originCurrency, required this.destinationChainId, required this.destinationCurrency, required this.recipient, required this.amount});
-  factory _GetCrossChainQuoteParams.fromJson(Map<String, dynamic> json) => _$GetCrossChainQuoteParamsFromJson(json);
+class _GetTransfersQuoteParams implements GetTransfersQuoteParams {
+  const _GetTransfersQuoteParams({@JsonKey(includeIfNull: false) this.user, required this.originChainId, required this.originCurrency, required this.destinationChainId, required this.destinationCurrency, required this.recipient, required this.amount});
+  factory _GetTransfersQuoteParams.fromJson(Map<String, dynamic> json) => _$GetTransfersQuoteParamsFromJson(json);
 
-@override final  String user;
+@override@JsonKey(includeIfNull: false) final  String? user;
 @override final  String originChainId;
 @override final  String originCurrency;
 @override final  String destinationChainId;
@@ -525,20 +525,20 @@ class _GetCrossChainQuoteParams implements GetCrossChainQuoteParams {
 @override final  String recipient;
 @override final  String amount;
 
-/// Create a copy of GetCrossChainQuoteParams
+/// Create a copy of GetTransfersQuoteParams
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$GetCrossChainQuoteParamsCopyWith<_GetCrossChainQuoteParams> get copyWith => __$GetCrossChainQuoteParamsCopyWithImpl<_GetCrossChainQuoteParams>(this, _$identity);
+_$GetTransfersQuoteParamsCopyWith<_GetTransfersQuoteParams> get copyWith => __$GetTransfersQuoteParamsCopyWithImpl<_GetTransfersQuoteParams>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$GetCrossChainQuoteParamsToJson(this, );
+  return _$GetTransfersQuoteParamsToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetCrossChainQuoteParams&&(identical(other.user, user) || other.user == user)&&(identical(other.originChainId, originChainId) || other.originChainId == originChainId)&&(identical(other.originCurrency, originCurrency) || other.originCurrency == originCurrency)&&(identical(other.destinationChainId, destinationChainId) || other.destinationChainId == destinationChainId)&&(identical(other.destinationCurrency, destinationCurrency) || other.destinationCurrency == destinationCurrency)&&(identical(other.recipient, recipient) || other.recipient == recipient)&&(identical(other.amount, amount) || other.amount == amount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetTransfersQuoteParams&&(identical(other.user, user) || other.user == user)&&(identical(other.originChainId, originChainId) || other.originChainId == originChainId)&&(identical(other.originCurrency, originCurrency) || other.originCurrency == originCurrency)&&(identical(other.destinationChainId, destinationChainId) || other.destinationChainId == destinationChainId)&&(identical(other.destinationCurrency, destinationCurrency) || other.destinationCurrency == destinationCurrency)&&(identical(other.recipient, recipient) || other.recipient == recipient)&&(identical(other.amount, amount) || other.amount == amount));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -547,18 +547,18 @@ int get hashCode => Object.hash(runtimeType,user,originChainId,originCurrency,de
 
 @override
 String toString() {
-  return 'GetCrossChainQuoteParams(user: $user, originChainId: $originChainId, originCurrency: $originCurrency, destinationChainId: $destinationChainId, destinationCurrency: $destinationCurrency, recipient: $recipient, amount: $amount)';
+  return 'GetTransfersQuoteParams(user: $user, originChainId: $originChainId, originCurrency: $originCurrency, destinationChainId: $destinationChainId, destinationCurrency: $destinationCurrency, recipient: $recipient, amount: $amount)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$GetCrossChainQuoteParamsCopyWith<$Res> implements $GetCrossChainQuoteParamsCopyWith<$Res> {
-  factory _$GetCrossChainQuoteParamsCopyWith(_GetCrossChainQuoteParams value, $Res Function(_GetCrossChainQuoteParams) _then) = __$GetCrossChainQuoteParamsCopyWithImpl;
+abstract mixin class _$GetTransfersQuoteParamsCopyWith<$Res> implements $GetTransfersQuoteParamsCopyWith<$Res> {
+  factory _$GetTransfersQuoteParamsCopyWith(_GetTransfersQuoteParams value, $Res Function(_GetTransfersQuoteParams) _then) = __$GetTransfersQuoteParamsCopyWithImpl;
 @override @useResult
 $Res call({
- String user, String originChainId, String originCurrency, String destinationChainId, String destinationCurrency, String recipient, String amount
+@JsonKey(includeIfNull: false) String? user, String originChainId, String originCurrency, String destinationChainId, String destinationCurrency, String recipient, String amount
 });
 
 
@@ -566,19 +566,19 @@ $Res call({
 
 }
 /// @nodoc
-class __$GetCrossChainQuoteParamsCopyWithImpl<$Res>
-    implements _$GetCrossChainQuoteParamsCopyWith<$Res> {
-  __$GetCrossChainQuoteParamsCopyWithImpl(this._self, this._then);
+class __$GetTransfersQuoteParamsCopyWithImpl<$Res>
+    implements _$GetTransfersQuoteParamsCopyWith<$Res> {
+  __$GetTransfersQuoteParamsCopyWithImpl(this._self, this._then);
 
-  final _GetCrossChainQuoteParams _self;
-  final $Res Function(_GetCrossChainQuoteParams) _then;
+  final _GetTransfersQuoteParams _self;
+  final $Res Function(_GetTransfersQuoteParams) _then;
 
-/// Create a copy of GetCrossChainQuoteParams
+/// Create a copy of GetTransfersQuoteParams
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? user = null,Object? originChainId = null,Object? originCurrency = null,Object? destinationChainId = null,Object? destinationCurrency = null,Object? recipient = null,Object? amount = null,}) {
-  return _then(_GetCrossChainQuoteParams(
-user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as String,originChainId: null == originChainId ? _self.originChainId : originChainId // ignore: cast_nullable_to_non_nullable
+@override @pragma('vm:prefer-inline') $Res call({Object? user = freezed,Object? originChainId = null,Object? originCurrency = null,Object? destinationChainId = null,Object? destinationCurrency = null,Object? recipient = null,Object? amount = null,}) {
+  return _then(_GetTransfersQuoteParams(
+user: freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as String?,originChainId: null == originChainId ? _self.originChainId : originChainId // ignore: cast_nullable_to_non_nullable
 as String,originCurrency: null == originCurrency ? _self.originCurrency : originCurrency // ignore: cast_nullable_to_non_nullable
 as String,destinationChainId: null == destinationChainId ? _self.destinationChainId : destinationChainId // ignore: cast_nullable_to_non_nullable
 as String,destinationCurrency: null == destinationCurrency ? _self.destinationCurrency : destinationCurrency // ignore: cast_nullable_to_non_nullable

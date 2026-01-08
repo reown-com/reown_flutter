@@ -25,3 +25,26 @@ const _$QuoteStatusEnumMap = {
   QuoteStatus.timeout: 'timeout',
   QuoteStatus.submitted: 'submitted',
 };
+
+_GetExchangeAssetsResult _$GetExchangeAssetsResultFromJson(
+  Map<String, dynamic> json,
+) => _GetExchangeAssetsResult(
+  exchangeId: json['exchangeId'] as String,
+  assets: (json['assets'] as Map<String, dynamic>).map(
+    (k, e) => MapEntry(
+      k,
+      (e as List<dynamic>)
+          .map((e) => ExchangeAsset.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    ),
+  ),
+);
+
+Map<String, dynamic> _$GetExchangeAssetsResultToJson(
+  _GetExchangeAssetsResult instance,
+) => <String, dynamic>{
+  'exchangeId': instance.exchangeId,
+  'assets': instance.assets.map(
+    (k, e) => MapEntry(k, e.map((e) => e.toJson()).toList()),
+  ),
+};

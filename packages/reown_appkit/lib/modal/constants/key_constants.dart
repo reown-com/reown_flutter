@@ -36,6 +36,13 @@ class KeyConstants {
   static const Key approveSiwePageKey = Key('approveSiwePageKey');
   static const Key socialLoginPage = Key('socialLoginPage');
   static const Key activityPageKey = Key('activityPageKey');
+  static const Key configuredAssetsSelectorPage = Key(
+    'ConfiguredAssetsSelectorPage',
+  );
+  static const Key paymentProcessPage = Key('PaymentProcessPage');
+  static const Key exchangeAssetsSelectorPage = Key(
+    'ExchangeAssetsSelectorPage',
+  );
 
   // Buttons
   static const Key helpButtonKey = Key('helpButtonKey');

@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:reown_appkit/base/services/models/asset_models.dart';
 import 'package:reown_appkit/modal/services/transfers/models/quote_models.dart';
 
 part 'quote_results.freezed.dart';
@@ -13,4 +14,15 @@ sealed class GetQuoteStatusResult with _$GetQuoteStatusResult {
 
   factory GetQuoteStatusResult.fromJson(Map<String, dynamic> json) =>
       _$GetQuoteStatusResultFromJson(json);
+}
+
+@freezed
+sealed class GetExchangeAssetsResult with _$GetExchangeAssetsResult {
+  const factory GetExchangeAssetsResult({
+    required String exchangeId,
+    required Map<String, List<ExchangeAsset>> assets,
+  }) = _GetExchangeAssetsResult;
+
+  factory GetExchangeAssetsResult.fromJson(Map<String, dynamic> json) =>
+      _$GetExchangeAssetsResultFromJson(json);
 }
