@@ -45,7 +45,7 @@ void main() {
 
       // Register the mock service BEFORE creating DWEService
       GetIt.instance.registerSingleton<ITransfersService>(mockTransfersService);
-      
+
       // Set up default stub to prevent throwOnMissingStub errors
       when(
         mockTransfersService.getQuoteStatus(params: anyNamed('params')),
@@ -78,20 +78,18 @@ void main() {
           (_) async => GetQuoteStatusResult(status: QuoteStatus.success),
         );
 
-        dweService.loopOnTransferStatusCheck(
-          'exchange-id',
-          'request-id',
-          (result) {
-            final status = result.$1;
-            final data = result.$2;
-            statuses.add(status);
-            if (status.isSuccess || status.isError) {
+        dweService.loopOnTransferStatusCheck('exchange-id', 'request-id', (
+          result,
+        ) {
+          final status = result.$1;
+          final data = result.$2;
+          statuses.add(status);
+          if (status.isSuccess || status.isError) {
             if (!completer.isCompleted) {
               completer.complete((status, data));
             }
           }
-          },
-        );
+        });
 
         final result = await completer.future.timeout(
           const Duration(seconds: 10),
@@ -119,8 +117,7 @@ void main() {
         );
         when(
           mockTransfersService.getQuoteStatus(params: anyNamed('params')),
-        )
-            .thenAnswer((_) async {
+        ).thenAnswer((_) async {
           callCount++;
           if (callCount < 3) {
             return GetQuoteStatusResult(status: QuoteStatus.waiting);
@@ -130,20 +127,18 @@ void main() {
 
         final completer = Completer<(QuoteStatus, dynamic)>();
 
-        dweService.loopOnTransferStatusCheck(
-          'exchange-id',
-          'request-id',
-          (result) {
-            final status = result.$1;
-            final data = result.$2;
-            statuses.add(status);
-            if (status.isSuccess || status.isError) {
+        dweService.loopOnTransferStatusCheck('exchange-id', 'request-id', (
+          result,
+        ) {
+          final status = result.$1;
+          final data = result.$2;
+          statuses.add(status);
+          if (status.isSuccess || status.isError) {
             if (!completer.isCompleted) {
               completer.complete((status, data));
             }
           }
-          },
-        );
+        });
 
         final result = await completer.future.timeout(
           const Duration(seconds: 20),
@@ -172,8 +167,7 @@ void main() {
         );
         when(
           mockTransfersService.getQuoteStatus(params: anyNamed('params')),
-        )
-            .thenAnswer((_) async {
+        ).thenAnswer((_) async {
           callCount++;
           if (callCount < 3) {
             return GetQuoteStatusResult(status: QuoteStatus.pending);
@@ -183,20 +177,18 @@ void main() {
 
         final completer = Completer<(QuoteStatus, dynamic)>();
 
-        dweService.loopOnTransferStatusCheck(
-          'exchange-id',
-          'request-id',
-          (result) {
-            final status = result.$1;
-            final data = result.$2;
-            statuses.add(status);
-            if (status.isSuccess || status.isError) {
+        dweService.loopOnTransferStatusCheck('exchange-id', 'request-id', (
+          result,
+        ) {
+          final status = result.$1;
+          final data = result.$2;
+          statuses.add(status);
+          if (status.isSuccess || status.isError) {
             if (!completer.isCompleted) {
               completer.complete((status, data));
             }
           }
-          },
-        );
+        });
 
         final result = await completer.future.timeout(
           const Duration(seconds: 20),
@@ -215,16 +207,15 @@ void main() {
 
         when(
           mockTransfersService.getQuoteStatus(params: anyNamed('params')),
-        )
-            .thenAnswer((_) async => GetQuoteStatusResult(status: QuoteStatus.failure));
-
-        dweService.loopOnTransferStatusCheck(
-          'exchange-id',
-          'request-id',
-          (result) {
-            completer.complete((result.$1, result.$2));
-          },
+        ).thenAnswer(
+          (_) async => GetQuoteStatusResult(status: QuoteStatus.failure),
         );
+
+        dweService.loopOnTransferStatusCheck('exchange-id', 'request-id', (
+          result,
+        ) {
+          completer.complete((result.$1, result.$2));
+        });
 
         final result = await completer.future.timeout(
           const Duration(seconds: 10),
@@ -235,37 +226,45 @@ void main() {
         expect(result.$1.isError, true);
       });
 
-      test('handles timeout after max attempts', () async {
-        final statuses = <QuoteStatus>[];
+      test(
+        'handles timeout after max attempts',
+        () async {
+          final statuses = <QuoteStatus>[];
 
           when(
             mockTransfersService.getQuoteStatus(params: anyNamed('params')),
-          )
-            .thenAnswer((_) async => GetQuoteStatusResult(status: QuoteStatus.waiting));
+          ).thenAnswer(
+            (_) async => GetQuoteStatusResult(status: QuoteStatus.waiting),
+          );
 
-        final completer = Completer<(QuoteStatus, dynamic)>();
+          final completer = Completer<(QuoteStatus, dynamic)>();
 
-        dweService.loopOnTransferStatusCheck(
-          'exchange-id',
-          'request-id',
-          (result) {
+          dweService.loopOnTransferStatusCheck('exchange-id', 'request-id', (
+            result,
+          ) {
             final status = result.$1;
             final data = result.$2;
             statuses.add(status);
-            if (status == QuoteStatus.timeout || status == QuoteStatus.failure) {
+            if (status == QuoteStatus.timeout ||
+                status == QuoteStatus.failure) {
               completer.complete((status, data));
             }
-          },
-        );
+          });
 
-        final result = await completer.future.timeout(
-          const Duration(seconds: 6 * 60), // 5 min max + buffer
-          onTimeout: () => (QuoteStatus.timeout, null),
-        );
+          final result = await completer.future.timeout(
+            const Duration(seconds: 6 * 60), // 5 min max + buffer
+            onTimeout: () => (QuoteStatus.timeout, null),
+          );
 
-        // Should timeout after max attempts (60 attempts * 5 seconds = 5 minutes)
-        expect(result.$1 == QuoteStatus.timeout || result.$1 == QuoteStatus.failure, true);
-      }, timeout: const Timeout(Duration(minutes: 6)));
+          // Should timeout after max attempts (60 attempts * 5 seconds = 5 minutes)
+          expect(
+            result.$1 == QuoteStatus.timeout ||
+                result.$1 == QuoteStatus.failure,
+            true,
+          );
+        },
+        timeout: const Timeout(Duration(minutes: 6)),
+      );
 
       test('stops checking when stopCheckingStatus is called', () async {
         final statuses = <QuoteStatus>[];
@@ -273,21 +272,20 @@ void main() {
         // Override the default stub
         when(
           mockTransfersService.getQuoteStatus(params: anyNamed('params')),
-        )
-            .thenAnswer((_) async => GetQuoteStatusResult(status: QuoteStatus.waiting));
-
-        dweService.loopOnTransferStatusCheck(
-          'exchange-id',
-          'request-id',
-          (result) {
-            final status = result.$1;
-            statuses.add(status);
-            // Stop after first status update
-            if (statuses.length == 1) {
-              dweService.stopCheckingStatus();
-            }
-          },
+        ).thenAnswer(
+          (_) async => GetQuoteStatusResult(status: QuoteStatus.waiting),
         );
+
+        dweService.loopOnTransferStatusCheck('exchange-id', 'request-id', (
+          result,
+        ) {
+          final status = result.$1;
+          statuses.add(status);
+          // Stop after first status update
+          if (statuses.length == 1) {
+            dweService.stopCheckingStatus();
+          }
+        });
 
         // Wait a bit to ensure it stops
         await Future.delayed(const Duration(seconds: 2));
@@ -307,22 +305,18 @@ void main() {
           (_) async => GetQuoteStatusResult(status: QuoteStatus.waiting),
         );
 
-        dweService.loopOnTransferStatusCheck(
-          'exchange-id',
-          'request-id',
-          (result) {
-            // Do nothing
-          },
-        );
+        dweService.loopOnTransferStatusCheck('exchange-id', 'request-id', (
+          result,
+        ) {
+          // Do nothing
+        });
 
         // Try to start another loop immediately
-        dweService.loopOnTransferStatusCheck(
-          'exchange-id-2',
-          'request-id-2',
-          (result) {
-            // Do nothing
-          },
-        );
+        dweService.loopOnTransferStatusCheck('exchange-id-2', 'request-id-2', (
+          result,
+        ) {
+          // Do nothing
+        });
 
         await Future.delayed(const Duration(milliseconds: 100));
 
@@ -335,16 +329,13 @@ void main() {
 
         when(
           mockTransfersService.getQuoteStatus(params: anyNamed('params')),
-        )
-            .thenThrow(Exception('API Error'));
+        ).thenThrow(Exception('API Error'));
 
-        dweService.loopOnTransferStatusCheck(
-          'exchange-id',
-          'request-id',
-          (result) {
-            completer.complete((result.$1, result.$2));
-          },
-        );
+        dweService.loopOnTransferStatusCheck('exchange-id', 'request-id', (
+          result,
+        ) {
+          completer.complete((result.$1, result.$2));
+        });
 
         final result = await completer.future.timeout(
           const Duration(seconds: 10),
@@ -370,22 +361,20 @@ void main() {
 
         final completer = Completer<(QuoteStatus, dynamic)>();
 
-        dweService.loopOnTransferStatusCheck(
-          'exchange-id',
-          requestId,
-          (result) {
-            completer.complete((result.$1, result.$2));
-          },
-        );
+        dweService.loopOnTransferStatusCheck('exchange-id', requestId, (
+          result,
+        ) {
+          completer.complete((result.$1, result.$2));
+        });
 
         await completer.future.timeout(
           const Duration(seconds: 10),
           onTimeout: () => (QuoteStatus.timeout, null),
         );
 
-        verify(mockTransfersService.getQuoteStatus(
-          params: anyNamed('params'),
-        )).called(greaterThan(0));
+        verify(
+          mockTransfersService.getQuoteStatus(params: anyNamed('params')),
+        ).called(greaterThan(0));
       });
     });
 
@@ -397,16 +386,15 @@ void main() {
         );
         when(
           mockTransfersService.getQuoteStatus(params: anyNamed('params')),
-        )
-            .thenAnswer((_) async => GetQuoteStatusResult(status: QuoteStatus.waiting));
-
-        dweService.loopOnTransferStatusCheck(
-          'exchange-id',
-          'request-id',
-          (result) {
-            // Do nothing
-          },
+        ).thenAnswer(
+          (_) async => GetQuoteStatusResult(status: QuoteStatus.waiting),
         );
+
+        dweService.loopOnTransferStatusCheck('exchange-id', 'request-id', (
+          result,
+        ) {
+          // Do nothing
+        });
 
         expect(dweService.isCheckingStatus, true);
 

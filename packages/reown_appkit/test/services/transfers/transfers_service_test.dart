@@ -32,55 +32,61 @@ void main() {
     });
 
     group('getQuote', () {
-      test('returns direct transfer quote for same chain and same asset', () async {
-        final params = GetQuoteParams(
-          sourceToken: ethereumETH,
-          toToken: ethereumETH,
-          recipient: '0x1234567890123456789012345678901234567890',
-          amount: '1.0',
-        );
+      test(
+        'returns direct transfer quote for same chain and same asset',
+        () async {
+          final params = GetQuoteParams(
+            sourceToken: ethereumETH,
+            toToken: ethereumETH,
+            recipient: '0x1234567890123456789012345678901234567890',
+            amount: '1.0',
+          );
 
-        final result = await transfersService.getQuote(params: params);
+          final result = await transfersService.getQuote(params: params);
 
-        expect(result, isA<Quote>());
-        expect(result.type, QuoteType.directTransfer);
-        expect(result.origin.currency, ethereumETH);
-        expect(result.destination.currency, ethereumETH);
-        expect(result.steps.length, 1);
-        expect(result.steps.first.isDeposit, true);
-        expect(result.fees.length, 1);
-        expect(result.fees.first.amount, '0');
-      });
+          expect(result, isA<Quote>());
+          expect(result.type, QuoteType.directTransfer);
+          expect(result.origin.currency, ethereumETH);
+          expect(result.destination.currency, ethereumETH);
+          expect(result.steps.length, 1);
+          expect(result.steps.first.isDeposit, true);
+          expect(result.fees.length, 1);
+          expect(result.fees.first.amount, '0');
+        },
+      );
 
-      test('handles different decimals for same asset direct transfer', () async {
-        final sourceToken = ethereumETH.copyWith(
-          metadata: const AssetMetadata(
-            name: 'Ethereum',
-            symbol: 'ETH',
-            decimals: 18,
-          ),
-        );
-        final toToken = ethereumETH.copyWith(
-          metadata: const AssetMetadata(
-            name: 'Ethereum',
-            symbol: 'ETH',
-            decimals: 9,
-          ),
-        );
+      test(
+        'handles different decimals for same asset direct transfer',
+        () async {
+          final sourceToken = ethereumETH.copyWith(
+            metadata: const AssetMetadata(
+              name: 'Ethereum',
+              symbol: 'ETH',
+              decimals: 18,
+            ),
+          );
+          final toToken = ethereumETH.copyWith(
+            metadata: const AssetMetadata(
+              name: 'Ethereum',
+              symbol: 'ETH',
+              decimals: 9,
+            ),
+          );
 
-        final params = GetQuoteParams(
-          sourceToken: sourceToken,
-          toToken: toToken,
-          recipient: '0x1234567890123456789012345678901234567890',
-          amount: '1.5',
-        );
+          final params = GetQuoteParams(
+            sourceToken: sourceToken,
+            toToken: toToken,
+            recipient: '0x1234567890123456789012345678901234567890',
+            amount: '1.5',
+          );
 
-        final result = await transfersService.getQuote(params: params);
+          final result = await transfersService.getQuote(params: params);
 
-        expect(result.type, QuoteType.directTransfer);
-        expect(result.origin.amount, isNotEmpty);
-        expect(result.destination.amount, isNotEmpty);
-      });
+          expect(result.type, QuoteType.directTransfer);
+          expect(result.origin.amount, isNotEmpty);
+          expect(result.destination.amount, isNotEmpty);
+        },
+      );
 
       test('handles invalid chainId in direct transfer', () async {
         // Note: The current implementation may not throw for all invalid chainIds
@@ -133,11 +139,7 @@ void main() {
               'currency': {
                 'network': 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
                 'asset': 'native',
-                'metadata': {
-                  'name': 'Solana',
-                  'symbol': 'SOL',
-                  'decimals': 9,
-                },
+                'metadata': {'name': 'Solana', 'symbol': 'SOL', 'decimals': 9},
               },
             },
             'steps': [

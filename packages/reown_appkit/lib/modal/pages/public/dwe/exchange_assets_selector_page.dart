@@ -1,3 +1,5 @@
+import 'dart:async' show Timer;
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -99,15 +101,11 @@ class _ExchangeAssetsSelectorPageState
       _quoteResult = await _transferService.getQuote(params: params);
       setState(() {});
     } on StateError catch (e) {
-      ModalProvider.of(
-        context,
-      ).instance.onModalError.broadcast(ModalError(e.message));
+      appKitModal.onModalError.broadcast(ModalError(e.message));
       _quoteResult = null;
       _selectedExchangeAsset.value = null;
     } on ArgumentError catch (e) {
-      ModalProvider.of(
-        context,
-      ).instance.onModalError.broadcast(ModalError(e.message));
+      appKitModal.onModalError.broadcast(ModalError(e.message));
       _quoteResult = null;
       _selectedExchangeAsset.value = null;
     }
@@ -240,7 +238,7 @@ class _ExchangeAssetsSelectorPageState
   }
 }
 
-class _AssetOptionsList extends StatelessWidget {
+class _AssetOptionsList extends StatefulWidget {
   const _AssetOptionsList({
     required this.exchangeAssets,
     required this.selectedExchangeAsset,
@@ -250,8 +248,29 @@ class _AssetOptionsList extends StatelessWidget {
   final ExchangeAsset? selectedExchangeAsset;
   final Function(ExchangeAsset) onSelectAsset;
 
-  IDWEService get _dweService => GetIt.I<IDWEService>();
+  @override
+  State<_AssetOptionsList> createState() => _AssetOptionsListState();
+}
 
+class _AssetOptionsListState extends State<_AssetOptionsList> {
+  IDWEService get _dweService => GetIt.I<IDWEService>();
+  Timer? _fetchPriceTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPriceTimer ??= Timer.periodic(Duration(seconds: 5), _fetchTokenPrice);
+  }
+
+  void _fetchTokenPrice(_) => setState(() {});
+
+  @override
+  void deactivate() {
+    _fetchPriceTimer?.cancel();
+    _fetchPriceTimer = null;
+    super.deactivate();
+  }
+  
   @override
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
@@ -277,7 +296,7 @@ class _AssetOptionsList extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Visibility(
-              visible: exchangeAssets.isEmpty,
+              visible: widget.exchangeAssets.isEmpty,
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -286,7 +305,7 @@ class _AssetOptionsList extends StatelessWidget {
                 ),
               ),
             ),
-            ...exchangeAssets.mapIndexed((_, asset) {
+            ...widget.exchangeAssets.mapIndexed((_, asset) {
               final networkInfo = ReownAppKitModalNetworks.getNetworkInfo(
                 asset.network,
                 asset.network,
@@ -295,7 +314,10 @@ class _AssetOptionsList extends StatelessWidget {
                 networkInfo,
               );
               return FutureBuilder(
-                future: _dweService.getFungiblePrice(asset: asset),
+                future: _dweService.getFungiblePrice(
+                  asset: asset,
+                  forceFetch: asset.isNative(),
+                ),
                 builder: (context, snapshot) {
                   return AccountListItem(
                     padding: const EdgeInsets.all(0.0),
@@ -336,9 +358,11 @@ class _AssetOptionsList extends StatelessWidget {
                     titleStyle: themeData.textStyles.paragraph500.copyWith(
                       color: themeColors.foreground100,
                     ),
-                    onTap: () => onSelectAsset.call(asset),
+                    onTap: () => widget.onSelectAsset.call(asset),
                     trailing: Visibility(
-                      visible: selectedExchangeAsset?.address == asset.address,
+                      visible:
+                          widget.selectedExchangeAsset?.address ==
+                          asset.address,
                       child: Padding(
                         padding: const EdgeInsets.only(right: kPadding6),
                         child: Icon(Icons.check, color: Colors.green),
@@ -444,7 +468,7 @@ class _PaymentDetails extends StatelessWidget {
                           size: 13.0,
                         ),
                         Text(
-                          ' ${networkInfo!.name}',
+                          ' ${networkInfo?.name ?? 'Unknown'}',
                           style: themeData.textStyles.micro600.copyWith(
                             fontWeight: FontWeight.w400,
                             color: themeColors.foreground200,
@@ -511,68 +535,84 @@ class _TitleButton extends StatefulWidget {
 
 class __TitleButtonState extends State<_TitleButton> {
   IDWEService get _dweService => GetIt.I<IDWEService>();
+  Timer? _fetchPriceTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPriceTimer ??= Timer.periodic(Duration(seconds: 5), _fetchTokenPrice);
+  }
+
+  TokenBalance? _fungible;
+  Future<void> _fetchTokenPrice(_) async {
+    final selectedAsset = _dweService.depositAsset.value!;
+    _fungible = await _dweService.getFungiblePrice(
+      asset: selectedAsset,
+      forceFetch: selectedAsset.isNative(),
+    );
+    setState(() {});
+  }
+
+  @override
+  void deactivate() {
+    _fetchPriceTimer?.cancel();
+    _fetchPriceTimer = null;
+    super.deactivate();
+  }
 
   @override
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final themeData = ReownAppKitModalTheme.getDataOf(context);
+    if (_fungible == null) {
+      return SizedBox.shrink();
+    }
+    final networkInfo = ReownAppKitModalNetworks.getNetworkInfo(
+      _fungible!.chainId!,
+      _fungible!.chainId!,
+    );
     final selectedAsset = _dweService.depositAsset.value!;
-
-    return FutureBuilder(
-      future: _dweService.getFungiblePrice(asset: selectedAsset),
-      builder: (context, snapshot) {
-        final TokenBalance? fungible = snapshot.data;
-        if (fungible == null) {
-          return SizedBox.shrink();
-        }
-        final networkInfo = ReownAppKitModalNetworks.getNetworkInfo(
-          fungible.chainId!,
-          fungible.chainId!,
-        );
-        // final chainIcon = GetIt.I<IExplorerService>().getChainIcon(networkInfo);
-        return BaseButton(
-          semanticsLabel: '${runtimeType}_title_button',
-          size: BaseButtonSize.small,
-          buttonStyle: _buttonStyle,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
+    return BaseButton(
+      semanticsLabel: '${runtimeType}_title_button',
+      size: BaseButtonSize.small,
+      buttonStyle: _buttonStyle,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
             children: [
-              Row(
-                children: [
-                  RoundedIcon(
-                    assetPath: 'lib/modal/assets/icons/coin.svg',
-                    imageUrl: fungible.iconUrl,
-                    size: BaseButtonSize.small.height * 0.6,
-                    assetColor: themeColors.inverse100,
-                    padding: 5.0,
-                  ),
-                  const SizedBox.square(dimension: 4.0),
-                ],
+              RoundedIcon(
+                assetPath: 'lib/modal/assets/icons/coin.svg',
+                imageUrl: _fungible!.iconUrl,
+                size: BaseButtonSize.small.height * 0.6,
+                assetColor: themeColors.inverse100,
+                padding: 5.0,
               ),
-              Text(
-                CoreUtils.toPrecision(
-                  _dweService.depositAmountInAsset.value,
-                  withSymbol: selectedAsset.metadata.symbol,
-                ),
-                style: themeData.textStyles.paragraph400,
-              ),
-              Visibility(
-                visible: _dweService.showNetworkIcon,
-                child: Text(
-                  ' on ${networkInfo?.name}',
-                  style: themeData.textStyles.small400.copyWith(
-                    color: themeColors.foreground300,
-                    fontSize: 11,
-                  ),
-                ),
-              ),
+              const SizedBox.square(dimension: 4.0),
             ],
           ),
-          overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
-            const EdgeInsets.only(left: 6.0, right: 10.0),
+          Text(
+            CoreUtils.toPrecision(
+              _dweService.depositAmountInAsset.value,
+              withSymbol: selectedAsset.metadata.symbol,
+            ),
+            style: themeData.textStyles.paragraph400,
           ),
-        );
-      },
+          Visibility(
+            visible: _dweService.showNetworkIcon,
+            child: Text(
+              ' on ${networkInfo?.name}',
+              style: themeData.textStyles.small400.copyWith(
+                color: themeColors.foreground300,
+                fontSize: 11,
+              ),
+            ),
+          ),
+        ],
+      ),
+      overridePadding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+        const EdgeInsets.only(left: 6.0, right: 10.0),
+      ),
     );
   }
 

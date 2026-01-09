@@ -425,24 +425,31 @@ class DWEService implements IDWEService {
   }
 
   @override
-  Future<TokenBalance?> getFungiblePrice({required ExchangeAsset asset}) async {
+  Future<TokenBalance?> getFungiblePrice({
+    required ExchangeAsset asset,
+    bool forceFetch = false,
+  }) async {
     try {
       _fetchedTokens.removeWhere((token) => _tokenPriceIsOld(token.$2));
-      final cachedToken = _getCachedToken(asset);
-      // always fetch price for native tokens
-      if (cachedToken == null || asset.isNative()) {
-        final tokens = await _getFungiblePrices(addresses: [asset.toCaip10()]);
-        if (tokens.isNotEmpty) {
-          final tokenBalance = tokens.first.copyWith(chainId: asset.network);
-          if (!asset.isNative()) {
+      final cachedAsset = _getCachedAssetIfAny(asset);
+      if (cachedAsset == null || forceFetch) {
+        final response = await _getFungiblePrice(addresses: [asset.toCaip10()]);
+        if (response.isNotEmpty) {
+          final tokenBalance = response.first.copyWith(chainId: asset.network);
+          if (!forceFetch) {
             _setCachedToken(tokenBalance);
           }
-          _appKit.core.logger.d('[$runtimeType] token fetched: $tokenBalance');
+          _appKit.core.logger.d(
+            '[$runtimeType] fetched ${asset.metadata.symbol} for ${asset.metadata.name} ${asset.network}',
+          );
           return tokenBalance;
         }
         return null;
       }
-      return cachedToken;
+      _appKit.core.logger.d(
+        '[$runtimeType] cached ${asset.metadata.symbol} for ${asset.metadata.name} ${asset.network}',
+      );
+      return cachedAsset;
     } catch (e) {
       rethrow;
     }
@@ -466,7 +473,7 @@ class DWEService implements IDWEService {
   // TokenBalance, timestamp
   final List<(TokenBalance, int)> _fetchedTokens = [];
 
-  Future<List<TokenBalance>> _getFungiblePrices({
+  Future<List<TokenBalance>> _getFungiblePrice({
     required List<String> addresses,
   }) async {
     final url = Uri.parse('$_baseUrl/fungible/price');
@@ -475,11 +482,9 @@ class DWEService implements IDWEService {
       'currency': 'usd',
       'projectId': _appKit.core.projectId,
     });
-    final response = await http.post(
-      url,
-      headers: _requiredHeaders,
-      body: body,
-    );
+    final response = await http
+        .post(url, headers: _requiredHeaders, body: body)
+        .timeout(Duration(seconds: 30));
 
     if (response.statusCode == 200 && response.body.isNotEmpty) {
       final jsonResponse = jsonDecode(response.body);
@@ -515,7 +520,7 @@ class DWEService implements IDWEService {
     }
   }
 
-  TokenBalance? _getCachedToken(ExchangeAsset asset) {
+  TokenBalance? _getCachedAssetIfAny(ExchangeAsset asset) {
     return _fetchedTokens.firstWhereOrNull((t) {
       final address1 = t.$1.address;
       final address2 = asset.toCaip10();
@@ -523,12 +528,11 @@ class DWEService implements IDWEService {
     })?.$1;
   }
 
-  bool _tokenPriceIsOld(int timestampSeconds) {
-    final now = DateTime.now();
+  bool _tokenPriceIsOld(int timestampMilliseconds) {
     final timestamp = DateTime.fromMillisecondsSinceEpoch(
-      timestampSeconds * 1000,
+      timestampMilliseconds,
     );
-    final difference = now.difference(timestamp);
-    return difference.inMinutes > 5;
+    final difference = DateTime.now().difference(timestamp);
+    return difference.inMinutes >= 5;
   }
 }

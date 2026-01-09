@@ -153,11 +153,12 @@ class TransfersService implements ITransfersService {
         url.replace(queryParameters: _requiredParams),
         headers: _requiredHeaders,
         body: body,
-      );
+          )
+          .timeout(Duration(seconds: 30));
       final responseBody = response.body;
       core.logger.d('[$runtimeType] -- quote response: $responseBody');
 
-      final responseData = jsonDecode(response.body) as Map<String, dynamic>;
+      final responseData = jsonDecode(responseBody) as Map<String, dynamic>;
       if (responseData.containsKey('error')) {
         throw StateError(responseData['error']);
       }
@@ -179,9 +180,10 @@ class TransfersService implements ITransfersService {
       '$_baseUrl/status',
     ).replace(queryParameters: {...qParams, ..._requiredParams});
     final response = await http.get(url, headers: _requiredHeaders);
-    core.logger.d('[$runtimeType] getQuoteStatus response: ${response.body}');
+    final responseBody = response.body;
+    core.logger.d('[$runtimeType] -- status response: $responseBody');
 
-    final responseData = jsonDecode(response.body) as Map<String, dynamic>;
+    final responseData = jsonDecode(responseBody) as Map<String, dynamic>;
     if (responseData.containsKey('error')) {
       throw StateError(responseData['error']);
     }
@@ -198,11 +200,10 @@ class TransfersService implements ITransfersService {
     ).replace(queryParameters: _requiredParams);
     core.logger.d('[$runtimeType] getExchangeAssets request: $url');
     final response = await http.get(url, headers: _requiredHeaders);
-    core.logger.d(
-      '[$runtimeType] getExchangeAssets response: ${response.body}',
-    );
+    final responseBody = response.body;
+    core.logger.d('[$runtimeType] -- assets response: $responseBody');
 
-    final responseData = jsonDecode(response.body) as Map<String, dynamic>;
+    final responseData = jsonDecode(responseBody) as Map<String, dynamic>;
     return GetExchangeAssetsResult.fromJson(responseData);
   }
 }

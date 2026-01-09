@@ -53,20 +53,12 @@ void main() {
         'sourceToken': {
           'network': 'eip155:1',
           'asset': 'native',
-          'metadata': {
-            'name': 'Ethereum',
-            'symbol': 'ETH',
-            'decimals': 18,
-          },
+          'metadata': {'name': 'Ethereum', 'symbol': 'ETH', 'decimals': 18},
         },
         'toToken': {
           'network': 'eip155:1',
           'asset': '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-          'metadata': {
-            'name': 'USD Coin',
-            'symbol': 'USDC',
-            'decimals': 6,
-          },
+          'metadata': {'name': 'USD Coin', 'symbol': 'USDC', 'decimals': 6},
         },
         'recipient': '0x1234567890123456789012345678901234567890',
         'amount': '1.0',
@@ -98,7 +90,10 @@ void main() {
       expect(params.originChainId, '1');
       expect(params.originCurrency, 'native');
       expect(params.destinationChainId, '137');
-      expect(params.destinationCurrency, '0x2791bca1f2de4661ed88a30c99a7a9449aa84174');
+      expect(
+        params.destinationCurrency,
+        '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+      );
       expect(params.recipient, '0x9876543210987654321098765432109876543210');
       expect(params.amount, '1000000000000000000');
     });
@@ -132,7 +127,10 @@ void main() {
       expect(json['originChainId'], '1');
       expect(json['originCurrency'], 'native');
       expect(json['destinationChainId'], '137');
-      expect(json['destinationCurrency'], '0x2791bca1f2de4661ed88a30c99a7a9449aa84174');
+      expect(
+        json['destinationCurrency'],
+        '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
+      );
       expect(json['recipient'], '0x9876543210987654321098765432109876543210');
       expect(json['amount'], '1000000000000000000');
     });

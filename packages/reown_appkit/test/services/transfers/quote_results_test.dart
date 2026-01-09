@@ -81,11 +81,7 @@ void main() {
             {
               'network': 'eip155:1',
               'asset': 'native',
-              'metadata': {
-                'name': 'Ethereum',
-                'symbol': 'ETH',
-                'decimals': 18,
-              },
+              'metadata': {'name': 'Ethereum', 'symbol': 'ETH', 'decimals': 18},
             },
           ],
         },
@@ -115,10 +111,7 @@ void main() {
           amount: '1000000000000000000',
           currency: ethereumETH,
         ),
-        destination: QuoteAmount(
-          amount: '1000000000',
-          currency: solanaSOL,
-        ),
+        destination: QuoteAmount(amount: '1000000000', currency: solanaSOL),
         steps: [
           QuoteStep.deposit(
             requestId: 'test-id',
@@ -155,10 +148,7 @@ void main() {
           amount: '1000000000000000000',
           currency: ethereumETH,
         ),
-        destination: QuoteAmount(
-          amount: '1000000000',
-          currency: solanaSOL,
-        ),
+        destination: QuoteAmount(amount: '1000000000', currency: solanaSOL),
         steps: [],
         fees: [],
         timeInSeconds: 60,
@@ -179,11 +169,7 @@ void main() {
           'currency': {
             'network': 'eip155:1',
             'asset': 'native',
-            'metadata': {
-              'name': 'Ethereum',
-              'symbol': 'ETH',
-              'decimals': 18,
-            },
+            'metadata': {'name': 'Ethereum', 'symbol': 'ETH', 'decimals': 18},
           },
         },
         'destination': {
@@ -191,11 +177,7 @@ void main() {
           'currency': {
             'network': 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
             'asset': 'native',
-            'metadata': {
-              'name': 'Solana',
-              'symbol': 'SOL',
-              'decimals': 9,
-            },
+            'metadata': {'name': 'Solana', 'symbol': 'SOL', 'decimals': 9},
           },
         },
         'steps': [
@@ -217,11 +199,7 @@ void main() {
             'currency': {
               'network': 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
               'asset': 'native',
-              'metadata': {
-                'name': 'Solana',
-                'symbol': 'SOL',
-                'decimals': 9,
-              },
+              'metadata': {'name': 'Solana', 'symbol': 'SOL', 'decimals': 9},
             },
           },
         ],

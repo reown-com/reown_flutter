@@ -49,7 +49,10 @@ abstract class IDWEService {
 
   void stopCheckingStatus();
 
-  Future<TokenBalance?> getFungiblePrice({required ExchangeAsset asset});
+  Future<TokenBalance?> getFungiblePrice({
+    required ExchangeAsset asset,
+    bool forceFetch = false,
+  });
 
   void clearState();
 }

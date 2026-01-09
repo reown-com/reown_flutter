@@ -56,9 +56,10 @@ class _AmountSelectorState extends State<AmountSelector> {
             return ValueListenableBuilder(
               valueListenable: _dweService.depositAmountInUSD,
               builder: (context, selectedAmount, _) {
+                final tokenBalance = snapshot.data;
                 final amountToDeposit = _setAmountToDeposit(
                   selectedAsset,
-                  snapshot.data,
+                  tokenBalance,
                 );
                 return _AmountInputBody(
                   amountController: _amountController,

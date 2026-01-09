@@ -42,7 +42,8 @@ const getExchangeBuyStatusMockResponse = {
   'jsonrpc': '2.0',
   'result': {
     'status': 'UNKNOWN',
-    'txHash': null, // 'UNKNOWN' | 'IN_PROGRESS' | 'FAILED' | 'SUCCESS' (with txHash)
+    'txHash':
+        null, // 'UNKNOWN' | 'IN_PROGRESS' | 'FAILED' | 'SUCCESS' (with txHash)
   },
 };
 
@@ -50,7 +51,6 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   group('ExchangeService Mock Responses', () {
-
     group('getExchanges', () {
       test('mock response has correct structure', () {
         // Verify the mock response structure is correct
@@ -81,12 +81,17 @@ void main() {
     group('getExchangeUrl', () {
       test('mock response has correct structure', () {
         // Verify the mock response structure
-        final mockResponse = JsonRpcResponse.fromJson(getExchangeUrlMockResponse);
+        final mockResponse = JsonRpcResponse.fromJson(
+          getExchangeUrlMockResponse,
+        );
 
         expect(mockResponse.result, isA<Map>());
         expect(mockResponse.result['sessionId'], isA<String>());
         expect(mockResponse.result['url'], isA<String>());
-        expect(mockResponse.result['sessionId'], '57a5ac338fc4470abb069c34a2228711');
+        expect(
+          mockResponse.result['sessionId'],
+          '57a5ac338fc4470abb069c34a2228711',
+        );
         expect(
           mockResponse.result['url'],
           contains('appkit-pay-test-exchange.reown.com'),
@@ -94,12 +99,17 @@ void main() {
       });
 
       test('mock response URL contains expected parameters', () {
-        final mockResponse = JsonRpcResponse.fromJson(getExchangeUrlMockResponse);
+        final mockResponse = JsonRpcResponse.fromJson(
+          getExchangeUrlMockResponse,
+        );
         final url = mockResponse.result['url'] as String;
 
         expect(url, contains('asset=eip155:84532/slip44:60'));
         expect(url, contains('amount=0.00001'));
-        expect(url, contains('recipient=0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340'));
+        expect(
+          url,
+          contains('recipient=0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340'),
+        );
         expect(url, contains('sessionId='));
         expect(url, contains('projectId='));
       });
@@ -108,8 +118,9 @@ void main() {
     group('getExchangeDepositStatus', () {
       test('mock response has correct structure', () {
         // Verify the mock response structure
-        final mockResponse =
-            JsonRpcResponse.fromJson(getExchangeBuyStatusMockResponse);
+        final mockResponse = JsonRpcResponse.fromJson(
+          getExchangeBuyStatusMockResponse,
+        );
 
         expect(mockResponse.result, isA<Map>());
         expect(mockResponse.result['status'], isA<String>());
@@ -119,18 +130,16 @@ void main() {
 
       test('mock response handles different status values', () {
         // Test UNKNOWN status
-        final unknownResponse =
-            JsonRpcResponse.fromJson(getExchangeBuyStatusMockResponse);
+        final unknownResponse = JsonRpcResponse.fromJson(
+          getExchangeBuyStatusMockResponse,
+        );
         expect(unknownResponse.result['status'], 'UNKNOWN');
 
         // Test IN_PROGRESS status
         final inProgressResponse = JsonRpcResponse.fromJson({
           'id': 1,
           'jsonrpc': '2.0',
-          'result': {
-            'status': 'IN_PROGRESS',
-            'txHash': null,
-          },
+          'result': {'status': 'IN_PROGRESS', 'txHash': null},
         });
         expect(inProgressResponse.result['status'], 'IN_PROGRESS');
 
@@ -138,10 +147,7 @@ void main() {
         final successResponse = JsonRpcResponse.fromJson({
           'id': 1,
           'jsonrpc': '2.0',
-          'result': {
-            'status': 'SUCCESS',
-            'txHash': '0x1234567890abcdef',
-          },
+          'result': {'status': 'SUCCESS', 'txHash': '0x1234567890abcdef'},
         });
         expect(successResponse.result['status'], 'SUCCESS');
         expect(successResponse.result['txHash'], '0x1234567890abcdef');
@@ -150,10 +156,7 @@ void main() {
         final failedResponse = JsonRpcResponse.fromJson({
           'id': 1,
           'jsonrpc': '2.0',
-          'result': {
-            'status': 'FAILED',
-            'txHash': null,
-          },
+          'result': {'status': 'FAILED', 'txHash': null},
         });
         expect(failedResponse.result['status'], 'FAILED');
       });
@@ -161,19 +164,24 @@ void main() {
 
     group('Mock Response Validation', () {
       test('getExchangesMockResponse has valid JSON structure', () {
-        expect(() => JsonRpcResponse.fromJson(getExchangesMockResponse),
-            returnsNormally);
+        expect(
+          () => JsonRpcResponse.fromJson(getExchangesMockResponse),
+          returnsNormally,
+        );
       });
 
       test('getExchangeUrlMockResponse has valid JSON structure', () {
-        expect(() => JsonRpcResponse.fromJson(getExchangeUrlMockResponse),
-            returnsNormally);
+        expect(
+          () => JsonRpcResponse.fromJson(getExchangeUrlMockResponse),
+          returnsNormally,
+        );
       });
 
       test('getExchangeBuyStatusMockResponse has valid JSON structure', () {
         expect(
-            () => JsonRpcResponse.fromJson(getExchangeBuyStatusMockResponse),
-            returnsNormally);
+          () => JsonRpcResponse.fromJson(getExchangeBuyStatusMockResponse),
+          returnsNormally,
+        );
       });
 
       test('all mock responses have correct jsonrpc version', () {

@@ -49,7 +49,7 @@ enum QuoteStatus {
   // failuer: red cross on everyone
   //
   // waiting: loaders on every state
-  // pending: cgeck on 1st, and loaders on every other one
+  // pending: check on 1st, and loaders on every other one
   // failure: red cross on everything
 
   factory QuoteStatus.fromStatus(String status) {
