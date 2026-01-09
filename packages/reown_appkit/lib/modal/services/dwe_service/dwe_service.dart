@@ -435,7 +435,11 @@ class DWEService implements IDWEService {
       if (cachedAsset == null || forceFetch) {
         final response = await _getFungiblePrice(addresses: [asset.toCaip10()]);
         if (response.isNotEmpty) {
-          final tokenBalance = response.first.copyWith(chainId: asset.network);
+          final relayPrice = await _relayTokenPrice(asset: asset);
+          final tokenBalance = response.first.copyWith(
+            chainId: asset.network,
+            price: relayPrice,
+          );
           if (!forceFetch) {
             _setCachedToken(tokenBalance);
           }
@@ -451,6 +455,54 @@ class DWEService implements IDWEService {
       );
       return cachedAsset;
     } catch (e) {
+      rethrow;
+    }
+  }
+
+  final _relayAddressMap = {
+    '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee':
+        '0x0000000000000000000000000000000000000000', // ETH
+    'So11111111111111111111111111111111111111111':
+        '11111111111111111111111111111111', // SOL
+  };
+
+  final _relayChainMap = {
+    '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': '792703809', // Solana
+    '000000000019d6689c085ae165831e93': '8253038', // Bitcoin
+  };
+
+  Future<double?> _relayTokenPrice({required ExchangeAsset asset}) async {
+    try {
+      final address = asset.toCaip10().split(':').last;
+      final chainId = asset.network.split(':').last;
+      final params = {
+        'address': _relayAddressMap[address] ?? address,
+        'chainId': _relayChainMap[chainId] ?? chainId,
+      };
+      final url = Uri.parse(
+        'https://api.relay.link/currencies/token/price',
+      ).replace(queryParameters: params);
+
+      _appKit.core.logger.d('[$runtimeType] relay price: $address $chainId');
+      _appKit.core.logger.d('[$runtimeType] relay price params: $params');
+
+      final response = await http
+          .get(url, headers: _requiredHeaders)
+          .timeout(Duration(seconds: 30));
+
+      if (response.statusCode == 200 && response.body.isNotEmpty) {
+        final jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
+        final price = jsonResponse['price'];
+        if (price != null) {
+          return (price is num) ? price.toDouble() : null;
+        }
+        return null;
+      }
+
+      _appKit.core.logger.e('[$runtimeType] relay price api error: $response');
+      return null;
+    } catch (e) {
+      _appKit.core.logger.e('[$runtimeType] relay price error: $e');
       rethrow;
     }
   }

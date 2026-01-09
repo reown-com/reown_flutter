@@ -86,7 +86,8 @@ class _AmountSelectorState extends State<AmountSelector> {
       return 'Unable to estimate';
     }
     final tokenPrice = (tokenBalance.price ?? 0.0);
-    final amount = _dweService.depositAmountInUSD.value / tokenPrice;
+    final usdValue = _dweService.depositAmountInUSD.value;
+    final amount = usdValue / tokenPrice;
     _dweService.depositAmountInAsset.value = amount;
     return CoreUtils.toPrecision(amount, withSymbol: tokenBalance.symbol!);
   }

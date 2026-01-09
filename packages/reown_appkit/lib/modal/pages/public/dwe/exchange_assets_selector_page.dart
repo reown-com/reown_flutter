@@ -259,7 +259,10 @@ class _AssetOptionsListState extends State<_AssetOptionsList> {
   @override
   void initState() {
     super.initState();
-    _fetchPriceTimer ??= Timer.periodic(Duration(seconds: 5), _fetchTokenPrice);
+    _fetchPriceTimer ??= Timer.periodic(
+      Duration(seconds: 10),
+      _fetchTokenPrice,
+    );
   }
 
   void _fetchTokenPrice(_) => setState(() {});
@@ -540,7 +543,11 @@ class __TitleButtonState extends State<_TitleButton> {
   @override
   void initState() {
     super.initState();
-    _fetchPriceTimer ??= Timer.periodic(Duration(seconds: 5), _fetchTokenPrice);
+    _fetchPriceTimer ??= Timer.periodic(
+      Duration(seconds: 10),
+      _fetchTokenPrice,
+    );
+    _fetchTokenPrice(_fetchPriceTimer);
   }
 
   TokenBalance? _fungible;
