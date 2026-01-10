@@ -74,7 +74,7 @@ class WalletKitService extends IWalletKitService {
         logLevel: LogLevel.all,
       ),
       metadata: PairingMetadata(
-        name: 'FL WalletKit Sample',
+        name: 'Flutter Wallet Sample',
         description: 'Reown\'s sample wallet with Flutter',
         url: _universalLink(),
         icons: [

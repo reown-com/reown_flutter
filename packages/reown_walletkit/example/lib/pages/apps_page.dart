@@ -95,24 +95,6 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
     _pairings = _pairings.where((p) => p.active).toList();
     return Stack(
       children: [
-        Center(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              Center(
-                child: Image.asset(
-                  'assets/walletkit-logo.png',
-                  width: 200.0,
-                ),
-              ),
-              Container(
-                color: widget.isDarkMode
-                    ? Colors.black.withValues(alpha: 0.8)
-                    : Colors.white.withValues(alpha: 0.8),
-              )
-            ],
-          ),
-        ),
         if (_pairings.isNotEmpty) _buildPairingList(),
         Positioned(
           bottom: StyleConstants.magic20,
