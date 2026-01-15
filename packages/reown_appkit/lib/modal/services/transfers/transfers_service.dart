@@ -149,10 +149,11 @@ class TransfersService implements ITransfersService {
         ).toJson(),
       );
       core.logger.d('[$runtimeType] -- quote body: $body');
-      final response = await http.post(
-        url.replace(queryParameters: _requiredParams),
-        headers: _requiredHeaders,
-        body: body,
+      final response = await http
+          .post(
+            url.replace(queryParameters: _requiredParams),
+            headers: _requiredHeaders,
+            body: body,
           )
           .timeout(Duration(seconds: 30));
       final responseBody = response.body;

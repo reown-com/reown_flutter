@@ -273,7 +273,7 @@ class _AssetOptionsListState extends State<_AssetOptionsList> {
     _fetchPriceTimer = null;
     super.deactivate();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
