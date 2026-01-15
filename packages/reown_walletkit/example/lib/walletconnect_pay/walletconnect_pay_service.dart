@@ -34,7 +34,7 @@ class WalletConnectPayService implements IWalletConnectPayService {
     final wcpApiKey = GetIt.I<IKeyService>().getWCPApiKey();
     _walletConnectPay = WalletConnectPay(
       projectId: DartDefines.projectId,
-      apiKey: wcpApiKey,
+      apiKey: wcpApiKey ?? DartDefines.wcpApiKey,
     );
     await _walletConnectPay.init();
   }

@@ -71,8 +71,8 @@ class KeyService extends IKeyService {
   }
 
   @override
-  String getWCPApiKey() {
-    return _prefs.getString('rwkt_wcp_api_key') ?? '';
+  String? getWCPApiKey() {
+    return _prefs.getString('rwkt_wcp_api_key');
   }
 
   @override
