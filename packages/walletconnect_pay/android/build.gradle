@@ -48,12 +48,12 @@ android {
         minSdk = 24
     }
 
-//    buildTypes {
-//        release {
-////            minifyEnabled = true
-//            consumerProguardFiles 'consumer-rules.pro'
-//        }
-//    }
+    buildTypes {
+        release {
+//            minifyEnabled = true
+            consumerProguardFiles 'consumer-rules.pro'
+        }
+    }
 
     packaging {
         jniLibs.pickFirsts.add("lib/arm64-v8a/libuniffi_yttrium.so")
@@ -76,10 +76,10 @@ android {
 }
 
 dependencies {
-//    compileOnly("com.github.reown-com:yttrium:unspecified") {
-//        exclude(group: 'net.java.dev.jna', module: 'jna')
-//    }
-    implementation("com.github.reown-com:yttrium:unspecified")
+//    implementation("com.github.reown-com:yttrium:unspecified")
+    implementation("com.github.reown-com.yttrium:yttrium-wcpay:0.10.2") {
+        exclude(group: 'net.java.dev.jna', module: 'jna')
+    }
     implementation("net.java.dev.jna:jna:5.17.0@aar")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test")

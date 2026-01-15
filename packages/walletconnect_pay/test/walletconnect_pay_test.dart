@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:walletconnect_pay/walletconnect_pay.dart';
-import 'package:walletconnect_pay/walletconnect_pay_models.dart';
 import 'package:walletconnect_pay/walletconnect_pay_platform_interface.dart';
 import 'package:walletconnect_pay/walletconnect_pay_method_channel.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
@@ -8,9 +7,11 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 class MockWalletconnectPayPlatform
     with MockPlatformInterfaceMixin
     implements WalletconnectPayPlatform {
-      
   @override
-  Future<bool> initialize({required String apiKey}) async {
+  Future<bool> initialize({
+    required String projectId,
+    required String apiKey,
+  }) async {
     return true;
   }
 
@@ -21,7 +22,7 @@ class MockWalletconnectPayPlatform
 
   @override
   Future<String> getPaymentOptions({required String requestJson}) async {
-    return '{"options": []}';
+    return '{"paymentId": "test-payment-id", "options": []}';
   }
 
   @override
@@ -41,18 +42,21 @@ void main() {
   });
 
   test('initialize', () async {
-    WalletconnectPay walletconnectPayPlugin = WalletconnectPay();
+    WalletConnectPay walletconnectPayPlugin = WalletConnectPay(
+      projectId: 'test-project-id',
+      apiKey: 'test-api-key',
+    );
     MockWalletconnectPayPlatform fakePlatform = MockWalletconnectPayPlatform();
     WalletconnectPayPlatform.instance = fakePlatform;
 
-    expect(
-      await walletconnectPayPlugin.initialize(apiKey: 'test-api-key'),
-      true,
-    );
+    expect(await walletconnectPayPlugin.init(), true);
   });
 
   test('confirmPayment', () async {
-    WalletconnectPay walletconnectPayPlugin = WalletconnectPay();
+    WalletConnectPay walletconnectPayPlugin = WalletConnectPay(
+      projectId: 'test-project-id',
+      apiKey: 'test-api-key',
+    );
     MockWalletconnectPayPlatform fakePlatform = MockWalletconnectPayPlatform();
     WalletconnectPayPlatform.instance = fakePlatform;
 
@@ -60,11 +64,7 @@ void main() {
       request: ConfirmPaymentJsonRequest(
         paymentId: 'test-payment-id',
         optionId: 'test-option-id',
-        results: [
-          SignatureResult(
-            signature: SignatureValue(value: 'test-signature'),
-          ),
-        ],
+        signatures: ['test-signature'],
       ),
     );
     expect(result.status, PaymentStatus.succeeded);
@@ -72,7 +72,10 @@ void main() {
   });
 
   test('getPaymentOptions', () async {
-    WalletconnectPay walletconnectPayPlugin = WalletconnectPay();
+    WalletConnectPay walletconnectPayPlugin = WalletConnectPay(
+      projectId: 'test-project-id',
+      apiKey: 'test-api-key',
+    );
     MockWalletconnectPayPlatform fakePlatform = MockWalletconnectPayPlatform();
     WalletconnectPayPlatform.instance = fakePlatform;
 
@@ -86,7 +89,10 @@ void main() {
   });
 
   test('getRequiredPaymentActions', () async {
-    WalletconnectPay walletconnectPayPlugin = WalletconnectPay();
+    WalletConnectPay walletconnectPayPlugin = WalletConnectPay(
+      projectId: 'test-project-id',
+      apiKey: 'test-api-key',
+    );
     MockWalletconnectPayPlatform fakePlatform = MockWalletconnectPayPlatform();
     WalletconnectPayPlatform.instance = fakePlatform;
 

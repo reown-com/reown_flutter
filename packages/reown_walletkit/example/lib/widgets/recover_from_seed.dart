@@ -15,7 +15,7 @@ class RecoverFromSeed extends StatelessWidget {
       borderRadius: BorderRadius.circular(12.0),
     );
     final focusedBorder = unfocusedBorder.copyWith(
-      borderSide: const BorderSide(color: Colors.blue, width: 1.0),
+      borderSide: BorderSide(color: StyleConstants.accentPrimary, width: 1.0),
     );
     return Container(
       height: 340.0,
@@ -49,7 +49,7 @@ class RecoverFromSeed extends StatelessWidget {
               controller: controller,
               maxLines: 4,
               textAlignVertical: TextAlignVertical.center,
-              cursorColor: Colors.blue,
+              cursorColor: StyleConstants.accentPrimary,
               enableSuggestions: false,
               autocorrect: false,
               cursorHeight: 16.0,
@@ -75,7 +75,8 @@ class RecoverFromSeed extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () => Navigator.of(context).pop(controller.text),
               style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                backgroundColor: WidgetStateProperty.all<Color>(
+                    StyleConstants.accentPrimary),
                 foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
               ),
               child: const Text('Recover'),

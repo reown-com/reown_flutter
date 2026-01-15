@@ -15,7 +15,7 @@ class WCConnectionWidgetInfo extends StatelessWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        color: Colors.black12,
+        color: StyleConstants.neutrals.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(
           StyleConstants.linear16,
         ),
@@ -64,7 +64,7 @@ class WCConnectionWidgetInfo extends StatelessWidget {
         padding: WidgetStateProperty.all(const EdgeInsets.all(0.0)),
         visualDensity: VisualDensity.compact,
         backgroundColor: WidgetStateProperty.all(
-          StyleConstants.layerColor4,
+          StyleConstants.neutrals.withValues(alpha: 0.8),
         ),
         overlayColor: WidgetStateProperty.all(Colors.white),
         shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
@@ -81,7 +81,9 @@ class WCConnectionWidgetInfo extends StatelessWidget {
         ),
         child: Text(
           text,
-          style: StyleConstants.layerTextStyle4,
+          style: StyleConstants.bodyText.copyWith(
+            color: StyleConstants.textPrimary,
+          ),
         ),
       ),
     );

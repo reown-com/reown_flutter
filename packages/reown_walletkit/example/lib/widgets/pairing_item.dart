@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
+import 'package:reown_walletkit_wallet/utils/constants.dart';
 
 class PairingItem extends StatelessWidget {
   const PairingItem({
@@ -69,7 +70,7 @@ class PairingItem extends StatelessWidget {
             ? 'No active sessions'
             : 'Active sessions: ${sessions.length}',
         style: TextStyle(
-          color: sessions.isEmpty ? null : Color(0xFF667DFF),
+          color: sessions.isEmpty ? null : StyleConstants.accentPrimary,
           fontSize: 13.0,
           fontWeight: sessions.isEmpty ? FontWeight.normal : FontWeight.bold,
         ),

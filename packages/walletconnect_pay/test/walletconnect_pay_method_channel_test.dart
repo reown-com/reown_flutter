@@ -7,8 +7,27 @@ void main() {
 
   MethodChannelWalletconnectPay platform = MethodChannelWalletconnectPay();
   const MethodChannel channel = MethodChannel('walletconnect_pay');
+  const MethodChannel packageInfoChannel = MethodChannel(
+    'dev.fluttercommunity.plus/package_info',
+  );
 
   setUp(() {
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(packageInfoChannel, (
+          MethodCall methodCall,
+        ) async {
+          if (methodCall.method == 'getAll') {
+            return {
+              'appName': 'Test App',
+              'packageName': 'com.test.app',
+              'version': '1.0.0',
+              'buildNumber': '1',
+              'buildSignature': 'test',
+            };
+          }
+          throw UnimplementedError(methodCall.method);
+        });
+
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
           if (methodCall.method == 'initialize') {
@@ -34,11 +53,16 @@ void main() {
   tearDown(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, null);
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(packageInfoChannel, null);
   });
 
   test('initialize', () async {
     expect(
-      await platform.initialize(apiKey: 'test-api-key'),
+      await platform.initialize(
+        projectId: 'test-project-id',
+        apiKey: 'test-api-key',
+      ),
       true,
     );
   });

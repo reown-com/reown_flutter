@@ -17,7 +17,7 @@ class WCConnectionWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: StyleConstants.lightGray,
+        color: StyleConstants.neutrals.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(
           StyleConstants.linear16,
         ),
@@ -43,7 +43,7 @@ class WCConnectionWidget extends StatelessWidget {
   Widget _buildTitle(String text) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.black12,
+        color: StyleConstants.neutrals.withValues(alpha: 0.4),
         borderRadius: BorderRadius.circular(
           StyleConstants.linear16,
         ),

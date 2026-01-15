@@ -18,11 +18,11 @@ class CustomButton extends StatelessWidget {
   Color _getBackgroundColor(CustomButtonType? type) {
     switch (type) {
       case CustomButtonType.normal:
-        return Colors.blue;
+        return StyleConstants.accentPrimary;
       case CustomButtonType.valid:
-        return StyleConstants.successColor;
+        return StyleConstants.textSuccess;
       case CustomButtonType.invalid:
-        return StyleConstants.errorColor;
+        return StyleConstants.textError;
       default:
         return Colors.black54;
     }

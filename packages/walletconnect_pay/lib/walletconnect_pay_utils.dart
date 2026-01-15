@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:package_info_plus/package_info_plus.dart';
 
 class WalletconnectPayUtils {
-  static String sdkName = 'walletconnectpay-flutter';
+  static String sdkName = 'flutter-walletconnect-pay';
   static String baseUrl = 'https://api.pay.walletconnect.com';
 
   static String getOS() {
@@ -40,20 +40,5 @@ class WalletconnectPayUtils {
         return 'unknown';
       }
     }
-  }
-
-  static String formatUA(String protocol, int version, String sdkVersion) {
-    String os = getOS();
-    String id = getPlatform();
-    return <String>[
-      [protocol, version].join('-'),
-      coreSdkVersion(sdkVersion),
-      os,
-      id,
-    ].join('/').toLowerCase();
-  }
-
-  static String coreSdkVersion(String sdkVersion) {
-    return <String>['reown-flutter', sdkVersion].join('-');
   }
 }

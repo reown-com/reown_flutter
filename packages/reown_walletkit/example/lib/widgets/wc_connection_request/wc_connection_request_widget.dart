@@ -122,7 +122,7 @@ class VerifyContextWidget extends StatelessWidget {
 
     if (verifyContext!.validation.scam) {
       return VerifyBanner(
-        color: StyleConstants.errorColor,
+        color: StyleConstants.textError,
         origin: verifyContext!.origin,
         title: 'Security risk',
         text: 'This domain is flagged as unsafe by multiple security providers.'
@@ -131,7 +131,7 @@ class VerifyContextWidget extends StatelessWidget {
     }
     if (verifyContext!.validation.invalid) {
       return VerifyBanner(
-        color: StyleConstants.errorColor,
+        color: StyleConstants.textError,
         origin: verifyContext!.origin,
         title: 'Domain mismatch',
         text:
@@ -141,7 +141,7 @@ class VerifyContextWidget extends StatelessWidget {
     }
     if (verifyContext!.validation.valid) {
       return VerifyHeader(
-        iconColor: StyleConstants.successColor,
+        iconColor: StyleConstants.textSuccess,
         title: verifyContext!.origin,
       );
     }

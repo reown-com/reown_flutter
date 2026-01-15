@@ -3,33 +3,38 @@ import 'package:flutter/material.dart';
 class Constants {
   static const smallScreen = 640;
 
-  static const String domain = 'reown.com';
+  static const String domain = 'walletconnect.com';
   static const String aud = 'https://$domain/login';
 }
 
 class StyleConstants {
-  static const Color backgroundColor = Colors.black;
-  static const Color primaryColor = Color(0xFF3396FF);
+  static TextStyle get wcpTextPrimaryStyle => TextStyle(
+        color: textPrimary,
+        fontSize: 16,
+        fontFamily: 'KH Teka',
+        fontWeight: FontWeight.w400,
+        // height: 1.0, // 20px line height / 20px font size = 1.0
+        // letterSpacing: -0.6, // -3% of 20px = -0.6
+      );
 
-  static const Color darkGray = Color(0xFF141414);
-  static const Color lightGray = Color.fromARGB(255, 227, 227, 227);
+  static TextStyle get wcpTextSecondaryStyle => TextStyle(
+        color: textSecondary,
+        fontSize: 16,
+        fontFamily: 'KH Teka',
+        fontWeight: FontWeight.w400,
+        // height: 1.0, // 20px line height / 20px font size = 1.0
+        // letterSpacing: -0.6, // -3% of 20px = -0.6
+      );
 
-  static const Color clear = Color.fromARGB(0, 0, 0, 0);
-  static const Color layerColor0 = Color(0xFF000000);
-  static const Color layerColor1 = Color.fromARGB(255, 18, 18, 19);
-  static const Color layerColor1NoAlpha = Color(0xFF141415);
-  static const Color layerColor2 = Color.fromARGB(255, 65, 65, 71);
-  static const Color layerBubbleColor2 = Color(0xFF798686);
-  static const Color layerTextColor2 = Color(0xFF141414);
-  static const Color layerColor3 = Color.fromARGB(255, 39, 42, 42);
-  static const Color layerTextColor3 = Color(0xFF9EA9A9);
-  static const Color layerColor4 = Color(0xFF153B47);
-  static const Color layerTextColor4 = Color(0xFF1AC6FF);
-
-  static const Color titleTextColor = Color(0xFFFFFFFF);
-
-  static const Color successColor = Color(0xFF2BEE6C);
-  static const Color errorColor = Color(0xFFF25A67);
+  static Color get accentPrimary => Color(0xFF0988F0);
+  static Color get foregroundPrimary => Color(0xFFF3F3F3);
+  static Color get foregroundSecondary => Color(0xFFE9E9E9);
+  static Color get neutrals => Color(0xFFBBBBBB);
+  static Color get textPrimary => Color(0xFF202020);
+  static Color get textSecondary => Color(0xFF9A9A9A);
+  static Color get textTertiary => Color(0xFF6C6C6C);
+  static Color get textSuccess => Color(0xFF30A46B);
+  static Color get textError => Color(0xFFDF4A34);
 
   // Linear
   static const double linear8 = 8;
@@ -77,12 +82,12 @@ class StyleConstants {
     fontSize: magic14,
     fontWeight: FontWeight.w400,
   );
-  static const TextStyle bodyLightGray = TextStyle(
-    color: lightGray,
+  static TextStyle bodyLightGray = TextStyle(
+    color: textSecondary,
     fontSize: magic14,
   );
-  static const TextStyle layerTextStyle2 = TextStyle(
-    color: layerTextColor2,
+  static TextStyle layerTextStyle2 = TextStyle(
+    color: textPrimary,
     fontSize: magic14,
     fontWeight: FontWeight.w600,
   );
@@ -91,8 +96,8 @@ class StyleConstants {
     fontSize: magic14,
     fontWeight: FontWeight.w600,
   );
-  static const TextStyle layerTextStyle4 = TextStyle(
-    color: layerTextColor4,
+  static TextStyle layerTextStyle4 = TextStyle(
+    color: accentPrimary,
     fontSize: magic14,
     fontWeight: FontWeight.w600,
   );

@@ -191,7 +191,7 @@ class _LinkModeButton extends StatelessWidget {
           final prefs = snapshot.data!;
           final linkModeEnabled = prefs.getBool('rwkt_sample_linkmode') ?? true;
           return FloatingActionButton.extended(
-            backgroundColor: Colors.blue,
+            backgroundColor: StyleConstants.accentPrimary,
             label: Row(
               children: [
                 Text('Link Mode: ${linkModeEnabled ? 'True' : 'False'}'),
@@ -284,7 +284,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
   late ChainMetadata _selectedChain;
 
   int _currentPage = 0;
-  double _balance = 0.0;
+  // double _balance = 0.0;
 
   @override
   void initState() {
@@ -324,6 +324,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
     }
   }
 
+  final List<Map<String, dynamic>> _balances = [];
   Future<void> _updateBalance() async {
     if (!mounted) return;
     final chainKeys = _keysService.getKeysForChain('eip155');
@@ -331,12 +332,18 @@ class _EVMAccountsState extends State<_EVMAccounts> {
     final evmService = _walletKitService.getChainService<EVMService>(
       chainId: _selectedChain.chainId,
     );
-    evmService.getBalance(address: chainKey.address).then((value) {
+    evmService.getBalance(address: chainKey.address).then((balances) {
       if (!mounted) return;
-      setState(() => _balance = value);
+      _balances
+        ..clear()
+        ..addAll(balances);
+      setState(() {});
+      // setState(() => _balance = value);
     }).onError((a, b) {
       if (!mounted) return;
-      setState(() => _balance = 0.0);
+      // setState(() => _balance = 0.0);
+      _balances.clear();
+      setState(() {});
     });
     setState(() => {});
   }
@@ -454,12 +461,22 @@ class _EVMAccountsState extends State<_EVMAccounts> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Expanded(
-                child: Text(
-                  '${_balance.toStringAsFixed(6)} ${chainData.currency}',
-                  style: TextStyle(
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                child: _balances.isEmpty
+                    ? Text('No balances on ${chainData.name}')
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: _balances.map((b) {
+                          final symbol = b['symbol'];
+                          final value = b['value'];
+                          return Text(
+                            '${value.toStringAsFixed(6)} $symbol',
+                            style: TextStyle(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        }).toList(),
                 ),
               ),
               SizedBox(
@@ -572,8 +589,8 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                     child: CircleAvatar(
                       radius: e.$1 == _currentPage ? 4.0 : 3.0,
                       backgroundColor: e.$1 == _currentPage
-                          ? StyleConstants.lightGray
-                          : StyleConstants.lightGray.withValues(alpha: 0.5),
+                          ? StyleConstants.textSecondary
+                          : StyleConstants.textSecondary.withValues(alpha: 0.5),
                     ),
                   ),
                 )
@@ -1145,7 +1162,7 @@ class __DataContainerState extends State<_DataContainer> {
       child: Container(
         height: widget.height,
         decoration: BoxDecoration(
-          color: StyleConstants.lightGray.withValues(alpha: 0.5),
+          color: StyleConstants.neutrals.withValues(alpha: 0.4),
           borderRadius: BorderRadius.circular(
             StyleConstants.linear16,
           ),

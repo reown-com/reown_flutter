@@ -17,6 +17,8 @@ import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/i_walletconnect_pay_service.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/walletconnect_pay_service.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -128,10 +130,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       theme: ThemeData(
         colorScheme: _isDarkMode
             ? ColorScheme.dark(
-                primary: Color(0xFF667DFF),
+                primary: StyleConstants.accentPrimary,
               )
             : ColorScheme.light(
-                primary: Color(0xFF667DFF),
+                primary: StyleConstants.accentPrimary,
               ),
       ),
       home: MyHomePage(
@@ -168,12 +170,20 @@ class _MyHomePageState extends State<MyHomePage> {
         return keyService;
       });
       GetIt.I.registerSingleton<IWalletKitService>(WalletKitService());
+      GetIt.I.registerSingleton<IWalletConnectPayService>(
+        WalletConnectPayService(),
+      );
       await GetIt.I.allReady(timeout: Duration(seconds: 1));
 
       final walletKitService = GetIt.I<IWalletKitService>();
       await walletKitService.create();
       await walletKitService.setUpAccounts();
       await walletKitService.init();
+
+      final accounts = await walletKitService.getWalletAccounts('eip155');
+      final wcPayService = GetIt.I<IWalletConnectPayService>();
+      await wcPayService.setUpAccounts(accounts);
+      await wcPayService.init();
 
       walletKitService.walletKit.core.relayClient.onRelayClientConnect
           .subscribe(
@@ -228,10 +238,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     if (_pageDatas.isEmpty) {
-      return const Material(
+      return Material(
         child: Center(
           child: CircularProgressIndicator(
-            color: StyleConstants.primaryColor,
+            color: StyleConstants.accentPrimary,
           ),
         ),
       );
@@ -259,8 +269,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 radius: 6.0,
                 backgroundColor: walletKit.core.relayClient.isConnected &&
                         walletKit.core.connectivity.isOnline.value
-                    ? Colors.green
-                    : Colors.red,
+                    ? StyleConstants.textSuccess
+                    : StyleConstants.textError,
               );
             },
           ),
@@ -307,8 +317,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _buildBottomNavBar() {
     return BottomNavigationBar(
       currentIndex: _selectedIndex,
-      unselectedItemColor: Colors.grey,
-      selectedItemColor: Color(0xFF667DFF),
+      unselectedItemColor: StyleConstants.textSecondary,
+      selectedItemColor: StyleConstants.accentPrimary,
       showUnselectedLabels: true,
       type: BottomNavigationBarType.fixed,
       // called when one tab is selected

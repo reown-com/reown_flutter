@@ -10,10 +10,12 @@ import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/pages/app_detail_page.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/utils/eth_utils.dart';
+import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/i_walletconnect_pay_service.dart';
 import 'package:reown_walletkit_wallet/widgets/pairing_item.dart';
 import 'package:reown_walletkit_wallet/widgets/uri_input_popup.dart';
 import 'package:toastification/toastification.dart';
-import 'package:walletconnect_pay/walletconnect_pay_models.dart';
+import 'package:walletconnect_pay/walletconnect_pay.dart';
 
 class AppsPage extends StatefulWidget {
   AppsPage({
@@ -30,11 +32,13 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
   List<PairingInfo> _pairings = [];
   late IWalletKitService _walletKitService;
   late IReownWalletKit _walletKit;
+  late IWalletConnectPayService _wcPayService;
 
   @override
   void initState() {
     super.initState();
     _walletKitService = GetIt.I<IWalletKitService>();
+    _wcPayService = GetIt.I<IWalletConnectPayService>();
     _walletKit = _walletKitService.walletKit;
     _pairings = _walletKit.pairings.getAll();
     _pairings = _pairings.where((p) => p.active).toList();
@@ -154,7 +158,7 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
   Widget _buildIconButton(IconData icon, void Function()? onPressed) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xFF667DFF),
+        color: StyleConstants.accentPrimary,
         borderRadius: BorderRadius.circular(
           StyleConstants.linear48,
         ),
@@ -162,7 +166,7 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
       child: IconButton(
         icon: Icon(
           icon,
-          color: StyleConstants.titleTextColor,
+          color: StyleConstants.foregroundPrimary,
         ),
         iconSize: StyleConstants.linear24,
         onPressed: onPressed,
@@ -197,22 +201,26 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
     if ((uri ?? '').isEmpty) return;
     try {
       DeepLinkHandler.waiting.value = true;
-      // TODO if Payment
-      await _walletKitService.processPayment(uri!);
-      // else
-      // await _walletKit.pair(uri: Uri.parse(uri!));
+      if (MethodsUtils.isPaymentUrl(uri!)) {
+        await _wcPayService.processPayment(uri);
+        DeepLinkHandler.waiting.value = false;
+      } else {
+        await _walletKit.pair(uri: Uri.parse(uri));
+      }
     } on ReownSignError catch (e) {
       _showErrorDialog('${e.code}: ${e.message}\n$uri');
     } on TimeoutException catch (_) {
       _showErrorDialog('Time out error. Check your connection.');
+    } on PayInitializeError catch (e) {
+      _showErrorDialog('PayInitializeError. $e');
     } on GetPaymentOptionsError catch (e) {
       _showErrorDialog('GetPaymentOptionsError. $e');
     } on GetRequiredActionError catch (e) {
       _showErrorDialog('GetRequiredActionError. $e');
-      rethrow;
     } on ConfirmPaymentError catch (e) {
       _showErrorDialog('ConfirmPaymentError. $e');
-      rethrow;
+    } catch (e) {
+      _showErrorDialog('$e');
     }
   }
 

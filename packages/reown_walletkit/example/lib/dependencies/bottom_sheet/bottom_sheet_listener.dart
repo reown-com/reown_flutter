@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 
 class BottomSheetListener extends StatefulWidget {
   final Widget child;
@@ -36,7 +37,7 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
       BottomSheetQueueItem item = _bottomSheetService.currentSheet.value!;
       final value = await showModalBottomSheet(
         context: context,
-        backgroundColor: StyleConstants.clear,
+        backgroundColor: Colors.transparent,
         isScrollControlled: true,
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height * 0.9,
@@ -47,7 +48,7 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
               try {
                 if (!mounted) return;
                 if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
+                  Navigator.of(context).pop(WCBottomSheetResult.close.name);
                 }
               } catch (e) {
                 debugPrint('[$runtimeType] close $e');
@@ -55,8 +56,9 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
             });
           }
           return Material(
-            borderRadius: BorderRadius.all(
-              Radius.circular(StyleConstants.linear16),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(StyleConstants.linear32),
+              topRight: Radius.circular(StyleConstants.linear32),
             ),
             child: Padding(
               padding: EdgeInsets.only(
@@ -70,14 +72,38 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      (item.showBackButton)
+                          ? IconButton(
+                              padding: const EdgeInsets.all(0.0),
+                              visualDensity: VisualDensity.compact,
+                              onPressed: () {
+                                if (Navigator.canPop(context)) {
+                                  Navigator.of(context).pop(
+                                    WCBottomSheetResult.back.name,
+                                  );
+                                }
+                              },
+                              icon: const Icon(Icons.arrow_back),
+                            )
+                          : const SizedBox(width: 40.0),
+                      //
+                      (item.stepper.$1 > 0 && item.stepper.$2 > 0)
+                          ? WCPStepsIndicator(
+                              currentStep: item.stepper.$1,
+                              totalSteps: item.stepper.$2,
+                            )
+                          : const SizedBox(width: 40.0),
+                      //
                       IconButton(
                         padding: const EdgeInsets.all(0.0),
                         visualDensity: VisualDensity.compact,
                         onPressed: () {
                           if (Navigator.canPop(context)) {
-                            Navigator.pop(context);
+                            Navigator.of(context).pop(
+                              WCBottomSheetResult.close.name,
+                            );
                           }
                         },
                         icon: const Icon(Icons.close_sharp),

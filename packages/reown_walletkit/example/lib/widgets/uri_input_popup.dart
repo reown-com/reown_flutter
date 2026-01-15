@@ -16,7 +16,7 @@ class UriInputPopup extends StatelessWidget {
       borderRadius: BorderRadius.circular(12.0),
     );
     final focusedBorder = unfocusedBorder.copyWith(
-      borderSide: const BorderSide(color: Colors.blue, width: 1.0),
+      borderSide: BorderSide(color: StyleConstants.accentPrimary, width: 1.0),
     );
     return Container(
       height: 280.0,
@@ -39,7 +39,7 @@ class UriInputPopup extends StatelessWidget {
             child: TextFormField(
               controller: controller,
               textAlignVertical: TextAlignVertical.center,
-              cursorColor: Colors.blue,
+              cursorColor: StyleConstants.accentPrimary,
               enableSuggestions: false,
               autocorrect: false,
               cursorHeight: 16.0,
@@ -68,7 +68,8 @@ class UriInputPopup extends StatelessWidget {
               onPressed: () => Navigator.of(context).pop(controller.text),
               style: ButtonStyle(
                 backgroundColor:
-                    WidgetStateProperty.all<Color>(Color(0xFF667DFF)),
+                    WidgetStateProperty.all<Color>(
+                    StyleConstants.accentPrimary),
                 foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
               ),
               child: const Text('Connect'),
@@ -79,9 +80,9 @@ class UriInputPopup extends StatelessWidget {
             width: double.infinity,
             child: TextButton(
               onPressed: () => Navigator.of(context).pop(null),
-              child: const Text(
+              child: Text(
                 'Cancel',
-                style: TextStyle(color: Color(0xFF667DFF)),
+                style: TextStyle(color: StyleConstants.accentPrimary),
               ),
             ),
           ),

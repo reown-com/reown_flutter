@@ -10,8 +10,8 @@ typedef AuthRequest = SessionAuthPayload;
 abstract class IWalletKitService extends Disposable {
   Future<void> create();
   Future<void> setUpAccounts();
+  Future<List<String>> getWalletAccounts([String namespace = '']);
   Future<void> init();
-  Future<void> processPayment(String paymentLink);
 
   T getChainService<T extends Object>({required String chainId});
 

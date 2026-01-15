@@ -5,6 +5,14 @@ echo "******* GENERATING ROOT *******"
 flutter clean
 flutter pub get
 
+echo "******* GENERATING WALLETCONNECTPAY *******"
+
+cd packages/walletconnect_pay/
+sh generate_files.sh
+
+cd ..
+cd ..
+
 echo "******* GENERATING YTTRIUM *******"
 
 cd packages/reown_yttrium/
@@ -68,3 +76,4 @@ sh generate_files.sh
 
 cd ..
 cd ..
+

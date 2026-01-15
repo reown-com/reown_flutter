@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:get_it/get_it.dart';
 import 'package:eth_sig_util_plus/eth_sig_util_plus.dart' as eth_sig_util;
 import 'package:eth_sig_util_plus/util/utils.dart' as eth_sig_util_util;
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
@@ -290,6 +291,34 @@ class EVMService {
     _handleResponseForTopic(topic, response);
   }
 
+  String _normalizeHexValues(String jsonString) {
+    // The eth_sig_util_plus library expects hex values to have an even number of digits after 0x (e.g., 0x0186a0). Some values in the typed data have an odd number (e.g., 0x186a0), which causes a parsing error.
+    // The solution uses a regex to find all hex strings in the JSON ("0x...") and pads odd-length values with a leading zero. This ensures all hex values are valid before signing.
+    // Pad odd-length hex values (e.g., "0x186a0" -> "0x0186a0")
+    // The signing library requires hex values to have even number of digits
+    return jsonString.replaceAllMapped(
+      RegExp(r'"0x([0-9a-fA-F]+)"'),
+      (match) {
+        final hex = match.group(1)!;
+        // Pad with leading zero if odd length
+        return hex.length % 2 == 0 ? match.group(0)! : '"0x0$hex"';
+      },
+    );
+  }
+
+  String ethSignTypedDataV4(String jsonData) {
+    final keys = GetIt.I<IKeyService>().getKeysForChain(
+      chainSupported.chainId,
+    );
+
+    final signature = eth_sig_util.EthSigUtil.signTypedData(
+      privateKey: keys[0].privateKey,
+      jsonData: _normalizeHexValues(jsonData),
+      version: eth_sig_util.TypedDataVersion.V4,
+    );
+    return signature;
+  }
+
   Future<void> ethSignTypedDataV4Handler(
     String topic,
     dynamic parameters,
@@ -312,16 +341,7 @@ class EVMService {
       verifyContext: pRequest.verifyContext,
     )) {
       try {
-        final keys = GetIt.I<IKeyService>().getKeysForChain(
-          chainSupported.chainId,
-        );
-
-        final signature = eth_sig_util.EthSigUtil.signTypedData(
-          privateKey: keys[0].privateKey,
-          jsonData: data,
-          version: eth_sig_util.TypedDataVersion.V4,
-        );
-
+        final signature = ethSignTypedDataV4(data);
         response = response.copyWith(result: signature);
       } catch (e) {
         debugPrint('[SampleWallet] ethSignTypedDataV4 error $e');
@@ -682,30 +702,33 @@ class EVMService {
     return signature;
   }
 
-  Future<dynamic> getBalance({required String address}) async {
-    final uri = Uri.parse('https://rpc.walletconnect.org/v1');
+  Future<List<Map<String, dynamic>>> getBalance({
+    required String address,
+  }) async {
+    final uri =
+        Uri.parse('https://rpc.walletconnect.org/v1/account/$address/balance');
     final queryParams = {
       'projectId': _walletKit.core.projectId,
-      'chainId': chainSupported.chainId
+      'currency': 'usd',
+      'chainId': chainSupported.chainId,
     };
-    final response = await http.post(
+    final package = await PackageInfo.fromPlatform();
+    final response = await http.get(
       uri.replace(queryParameters: queryParams),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'id': 1,
-        'jsonrpc': '2.0',
-        'method': 'eth_getBalance',
-        'params': [address, 'latest'],
-      }),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-sdk-type': 'flutter-sample-wallet',
+        'x-sdk-version': package.version,
+        'origin': package.packageName,
+      },
     );
     if (response.statusCode == 200 && response.body.isNotEmpty) {
       try {
-        final result = _parseRpcResultAs<String>(response.body);
-        final amount = EtherAmount.fromBigInt(
-          EtherUnit.wei,
-          hexToInt(result),
-        );
-        return amount.getValueInUnit(EtherUnit.ether);
+        final jsonData = jsonDecode(response.body) as Map<String, dynamic>;
+        final balances = (jsonData['balances'] as List).map((e) {
+          return e as Map<String, dynamic>;
+        }).toList();
+        return balances;
       } catch (e) {
         throw Exception('Failed to load balance. $e');
       }
@@ -778,20 +801,6 @@ class EVMService {
     } catch (e) {
       debugPrint('[SampleWallet] $e');
       return false;
-    }
-  }
-
-  T _parseRpcResultAs<T>(String body) {
-    try {
-      final result = Map<String, dynamic>.from({...jsonDecode(body), 'id': 1});
-      final jsonResponse = JsonRpcResponse.fromJson(result);
-      if (jsonResponse.result != null) {
-        return jsonResponse.result;
-      } else {
-        throw jsonResponse.error ?? 'Error parsing result';
-      }
-    } catch (e) {
-      rethrow;
     }
   }
 

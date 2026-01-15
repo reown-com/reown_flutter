@@ -14,6 +14,8 @@ class BottomSheetService extends IBottomSheetService {
   Future<dynamic> queueBottomSheet({
     required Widget widget,
     int closeAfter = 0,
+    bool showBackButton = false,
+    (int, int) stepper = (0, 0),
   }) async {
     // Create the bottom sheet queue item
     final completer = Completer<dynamic>();
@@ -21,6 +23,8 @@ class BottomSheetService extends IBottomSheetService {
       widget: widget,
       completer: completer,
       closeAfter: closeAfter,
+      showBackButton: showBackButton,
+      stepper: stepper,
     );
 
     // If the current sheet it null, set it to the queue item

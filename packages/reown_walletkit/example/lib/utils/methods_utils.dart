@@ -4,6 +4,7 @@ import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/deep_link_handler.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
+import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_model.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_widget.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_request_widget.dart/wc_request_widget.dart';
@@ -101,7 +102,9 @@ class MethodsUtils {
           children: [
             Icon(
               success ? Icons.check_circle_sharp : Icons.error_outline_sharp,
-              color: success ? Colors.green[100] : Colors.red[100],
+              color: success
+                  ? StyleConstants.textSuccess
+                  : StyleConstants.textError,
               size: 80.0,
             ),
             Text(
@@ -113,5 +116,13 @@ class MethodsUtils {
         ),
       ),
     );
+  }
+
+  static bool isPaymentUrl(String uri) {
+    final url = Uri.parse(uri);
+    return (url.host == 'pay.walletconnect.com' ||
+        url.host == 'gateway-wc.vercel.app' ||
+        url.host ==
+            'wc-pay-buyer-experience-dev.walletconnect-v1-bridge.workers.dev');
   }
 }
