@@ -207,23 +207,29 @@ class WCPPaymentDetails extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        RichText(
-          textAlign: TextAlign.center,
-          text: TextSpan(
-            style: StyleConstants.wcpTextPrimaryStyle.copyWith(fontSize: 20.0),
-            children: [
-              const TextSpan(text: 'Pay '),
-              TextSpan(text: paymentInfo.amount.formattedAmount),
-              const TextSpan(text: ' to '),
-              TextSpan(text: paymentInfo.merchant.name),
-            ],
+        Expanded(
+          child: RichText(
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            text: TextSpan(
+              style:
+                  StyleConstants.wcpTextPrimaryStyle.copyWith(fontSize: 20.0),
+              children: [
+                const TextSpan(text: 'Pay '),
+                TextSpan(text: paymentInfo.amount.formattedAmount),
+                const TextSpan(text: ' to '),
+                TextSpan(text: paymentInfo.merchant.name),
+                const TextSpan(text: ' '),
+                WidgetSpan(
+                  child: SvgPicture.asset(
+                    'lib/walletconnect_pay/assets/verified.svg',
+                    width: 20.0,
+                    height: 20.0,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(width: 6),
-        SvgPicture.asset(
-          'lib/walletconnect_pay/assets/verified.svg',
-          width: 20.0,
-          height: 20.0,
         ),
       ],
     );

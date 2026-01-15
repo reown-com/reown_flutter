@@ -19,6 +19,7 @@ import 'package:reown_walletkit_wallet/models/chain_data.dart';
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
+import 'package:reown_walletkit_wallet/widgets/input_wcp_api_key.dart';
 import 'package:reown_walletkit_wallet/widgets/recover_from_seed.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toastification/toastification.dart';
@@ -40,6 +41,32 @@ class _SettingsPageState extends State<SettingsPage> {
       content: Text('Storage cleared'),
       duration: Duration(seconds: 1),
     ));
+  }
+
+  Future<void> _onSetWCPApiKey() async {
+    final inputKey = await GetIt.I<IBottomSheetService>().queueBottomSheet(
+      widget: InputWalletConnectPayApiKey(),
+    );
+    if (inputKey is String && inputKey.isNotEmpty && inputKey != 'close') {
+      final result = await _keysService.setWCPApiKey(inputKey);
+      if (result) {
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return const AlertDialog(
+              content: Text(
+                'Wallet restored. App will close.',
+              ),
+            );
+          },
+        );
+        if (!kDebugMode) {
+          exit(0);
+        } else {
+          setState(() {});
+        }
+      }
+    }
   }
 
   Future<void> _onRestoreFromSeed() async {
@@ -167,6 +194,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     onRestoreFromSeed: _onRestoreFromSeed,
                     onRegenerateSeed: _onRegenerateSeed,
                     onCreateNewWallet: _onCreateNewWallet,
+                    onSetWCPApiKey: _onSetWCPApiKey,
                   ),
                   //
                 ],
@@ -375,10 +403,9 @@ class _EVMAccountsState extends State<_EVMAccounts> {
   @override
   Widget build(BuildContext context) {
     final chainKeys = _keysService.getKeysForChain('eip155');
-    final chainData = ChainsDataList.allChains.firstWhere(
-      (e) => e.chainId == _selectedChain.chainId,
-    );
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -453,90 +480,67 @@ class _EVMAccountsState extends State<_EVMAccounts> {
           padding: const EdgeInsets.only(
             left: 12.0,
             right: 12.0,
-            top: 10.0,
             bottom: 8.0,
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: _balances.isEmpty
-                    ? Text('No balances on ${chainData.name}')
-                    : Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: _balances.map((b) {
-                          final symbol = b['symbol'];
-                          final value = b['value'];
-                          return Text(
-                            '${value.toStringAsFixed(6)} $symbol',
+          child: Align(
+            alignment: AlignmentGeometry.centerRight,
+            child: SizedBox(
+              width: 200.0,
+              child: DropdownButton(
+                key: Key('evm_chains'),
+                isExpanded: true,
+                value: _selectedChain,
+                items: ChainsDataList.eip155Chains.map((
+                  ChainMetadata chain,
+                ) {
+                  return DropdownMenuItem<ChainMetadata>(
+                    value: chain,
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          WidgetSpan(
+                            child: CachedNetworkImage(
+                              imageUrl: chain.logo,
+                              width: 20.0,
+                              height: 20.0,
+                              errorWidget: (context, url, error) =>
+                                  const SizedBox.shrink(),
+                            ),
+                          ),
+                          TextSpan(
+                            text: ' ${chain.name}',
                             style: TextStyle(
-                              fontSize: 15.0,
+                              fontSize: 14.0,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
-                          );
-                        }).toList(),
+                          ),
+                        ],
                       ),
-              ),
-              SizedBox(
-                width: 200.0,
-                child: DropdownButton(
-                  key: Key('evm_chains'),
-                  isExpanded: true,
-                  value: _selectedChain,
-                  items: ChainsDataList.eip155Chains.map((
-                    ChainMetadata chain,
-                  ) {
-                    return DropdownMenuItem<ChainMetadata>(
-                      value: chain,
-                      child: RichText(
-                        text: TextSpan(
-                          children: [
-                            WidgetSpan(
-                              child: CachedNetworkImage(
-                                imageUrl: chain.logo,
-                                width: 20.0,
-                                height: 20.0,
-                                errorWidget: (context, url, error) =>
-                                    const SizedBox.shrink(),
-                              ),
-                            ),
-                            TextSpan(
-                              text: ' ${chain.name}',
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                color: Theme.of(context).brightness ==
-                                        Brightness.dark
-                                    ? Colors.white
-                                    : Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
+                    ),
+                  );
+                }).toList(),
+                onChanged: (ChainMetadata? chain) async {
+                  setState(() => _selectedChain = chain!);
+                  final sessions = _walletKit.sessions.getAll();
+                  final cid = _selectedChain.chainId.split(':').last;
+                  for (var session in sessions) {
+                    await _walletKit.emitSessionEvent(
+                      topic: session.topic,
+                      chainId: _selectedChain.chainId,
+                      event: SessionEventParams(
+                        name: 'chainChanged',
+                        data: int.parse(cid),
                       ),
                     );
-                  }).toList(),
-                  onChanged: (ChainMetadata? chain) async {
-                    setState(() => _selectedChain = chain!);
-                    final sessions = _walletKit.sessions.getAll();
-                    final cid = _selectedChain.chainId.split(':').last;
-                    for (var session in sessions) {
-                      await _walletKit.emitSessionEvent(
-                        topic: session.topic,
-                        chainId: _selectedChain.chainId,
-                        event: SessionEventParams(
-                          name: 'chainChanged',
-                          data: int.parse(cid),
-                        ),
-                      );
-                    }
-                    _updateBalance();
-                  },
-                ),
+                  }
+                  _updateBalance();
+                },
               ),
-            ],
+            ),
           ),
         ),
         SizedBox(
@@ -617,6 +621,49 @@ class _EVMAccountsState extends State<_EVMAccounts> {
               ),
             );
           },
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 14.0, top: 14.0, right: 14.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Balances:',
+                style: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              ..._balances.map((b) {
+                final symbol = b['symbol'];
+                final value = b['value'];
+                final chainId = b['chainId'];
+                final chainData = ChainsDataList.allChains.firstWhere(
+                  (e) => e.chainId == chainId,
+                );
+                return Row(
+                  children: [
+                    Text(
+                      '${value.toStringAsFixed(6)} ',
+                      style: TextStyle(fontSize: 13.0),
+                    ),
+                    Text(
+                      '$symbol ',
+                      style: TextStyle(
+                        fontSize: 13.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'on ${chainData.name}',
+                      style: TextStyle(fontSize: 13.0),
+                    ),
+                  ],
+                );
+              }),
+            ],
+          ),
         ),
       ],
     );
@@ -1028,11 +1075,13 @@ class _Buttons extends StatelessWidget {
   final VoidCallback onRestoreFromSeed;
   final VoidCallback onRegenerateSeed;
   final VoidCallback onCreateNewWallet;
+  final VoidCallback onSetWCPApiKey;
   final VoidCallback onDeleteData;
   const _Buttons({
     required this.onRestoreFromSeed,
     required this.onRegenerateSeed,
     required this.onCreateNewWallet,
+    required this.onSetWCPApiKey,
     required this.onDeleteData,
   });
 
@@ -1053,6 +1102,24 @@ class _Buttons extends StatelessWidget {
                   'Clear local storage',
                   style: TextStyle(color: Colors.black),
                 ),
+              ),
+              const SizedBox(height: 12.0),
+              Row(
+                children: [
+                  CustomButton(
+                    type: CustomButtonType.valid,
+                    onTap: onSetWCPApiKey,
+                    child: const Center(
+                      child: Text(
+                        'Set WalletConnect API Key',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 12.0),
               Row(

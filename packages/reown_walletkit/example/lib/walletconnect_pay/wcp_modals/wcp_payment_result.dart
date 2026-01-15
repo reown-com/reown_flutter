@@ -60,8 +60,11 @@ class _WCPPaymentResultState extends State<WCPPaymentResult> {
                 case PaymentStatus.failed:
                   return Column(
                     children: [
-                      Icon(Icons.error,
-                          color: StyleConstants.textError, size: 60),
+                      SvgPicture.asset(
+                        'lib/walletconnect_pay/assets/pay_failed.svg',
+                        width: 40.0,
+                        height: 40.0,
+                      ),
                       const SizedBox(height: StyleConstants.linear24),
                       WCModalTitle(text: 'Payment failed'),
                     ],
@@ -69,8 +72,11 @@ class _WCPPaymentResultState extends State<WCPPaymentResult> {
                 default:
                   return Column(
                     children: [
-                      Icon(Icons.info,
-                          color: StyleConstants.textSecondary, size: 60),
+                      SvgPicture.asset(
+                        'lib/walletconnect_pay/assets/pay_failed.svg',
+                        width: 40.0,
+                        height: 40.0,
+                      ),
                       const SizedBox(height: StyleConstants.linear24),
                       WCModalTitle(text: 'Payment ${widget.status.name}'),
                     ],

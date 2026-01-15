@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:convert/convert.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
@@ -74,7 +75,7 @@ class SolanaService {
       }
       //
     } catch (e) {
-      debugPrint('[SampleWallet] polkadotSignMessage error $e');
+      debugPrint('[SampleWallet] solanaSignMessage error $e');
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
         error: JsonRpcError(
@@ -83,11 +84,6 @@ class SolanaService {
         ),
       );
     }
-
-    await _walletKit.respondSessionRequest(
-      topic: topic,
-      response: response,
-    );
 
     _handleResponseForTopic(topic, response);
   }
@@ -185,11 +181,6 @@ class SolanaService {
       );
     }
 
-    await _walletKit.respondSessionRequest(
-      topic: topic,
-      response: response,
-    );
-
     _handleResponseForTopic(topic, response);
   }
 
@@ -261,11 +252,6 @@ class SolanaService {
         ),
       );
     }
-
-    await _walletKit.respondSessionRequest(
-      topic: topic,
-      response: response,
-    );
 
     _handleResponseForTopic(topic, response);
   }
@@ -358,12 +344,33 @@ class SolanaService {
 extension on String {
   // SigningKey used by solana package requires a 32 bytes key
   Uint8List parse32Bytes() {
+    // Try comma-separated integers first (legacy format)
+    if (contains(',')) {
+      try {
+        final List<int> secBytes = split(',').map((e) => int.parse(e)).toList();
+        return Uint8List.fromList(secBytes.sublist(0, 32));
+      } catch (_) {}
+    }
+
+    // Try hex decoding (stored format from _solanaChainKey is hex-encoded)
+    // Check if it looks like hex: even length, only hex characters
+    if (length % 2 == 0 && RegExp(r'^[0-9a-fA-F]+$').hasMatch(this)) {
+      try {
+        final secKeyBytes = hex.decode(this);
+        // Extract first 32 bytes (private key)
+        // Stored format from _solanaChainKey is privateBytes(32) + publicBytes(32) = 64 bytes = 128 hex chars
+        // But also handle case where only private key is stored = 32 bytes = 64 hex chars
+        return Uint8List.fromList(secKeyBytes.sublist(0, 32));
+      } catch (_) {}
+    }
+
+    // Fallback to base58 decoding
     try {
-      final List<int> secBytes = split(',').map((e) => int.parse(e)).toList();
-      return Uint8List.fromList(secBytes.sublist(0, 32));
-    } catch (e) {
       final secKeyBytes = base58.decode(this);
       return Uint8List.fromList(secKeyBytes.sublist(0, 32));
+    } catch (e) {
+      throw FormatException(
+          'Unable to parse private key. Expected comma-separated integers, hex string, or base58 string.');
     }
   }
 }

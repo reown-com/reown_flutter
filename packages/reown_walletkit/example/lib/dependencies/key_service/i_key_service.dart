@@ -12,6 +12,10 @@ abstract class IKeyService {
   /// Returns a list of all the chain ids.
   List<String> getChains();
 
+  Future<bool> setWCPApiKey(String apiKey);
+
+  String getWCPApiKey();
+
   /// Returns a list of all the keys for a given chain id.
   /// If the chain is not found, returns an empty list.
   ///  - [chain]: The chain to get the keys for.

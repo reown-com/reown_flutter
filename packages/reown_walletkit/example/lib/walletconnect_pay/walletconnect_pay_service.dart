@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/material.dart' hide Action;
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/i_walletconnect_pay_service.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_confirming_payment.dart';
@@ -30,9 +31,10 @@ class WalletConnectPayService implements IWalletConnectPayService {
 
   @override
   Future<void> init() async {
+    final wcpApiKey = GetIt.I<IKeyService>().getWCPApiKey();
     _walletConnectPay = WalletConnectPay(
       projectId: DartDefines.projectId,
-      apiKey: DartDefines.merchantApiKey,
+      apiKey: wcpApiKey,
     );
     await _walletConnectPay.init();
   }
@@ -59,8 +61,7 @@ class WalletConnectPayService implements IWalletConnectPayService {
         }
       }
 
-      final action = await _processPayment(_currentPaymentOptions!);
-      print(action);
+      await _processPayment(_currentPaymentOptions!);
     } catch (e) {
       if (e is String && e == 'cancelled') {
         return;

@@ -10,8 +10,14 @@ public class WalletconnectPayPlugin: NSObject, FlutterPlugin {
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     switch call.method {
-    case "getPlatformVersion":
-      result("iOS " + UIDevice.current.systemVersion)
+    case "initialize":
+      WalletConnectPayClient.initialize(params: call.arguments, result: result)
+    case "confirmPayment":
+      WalletConnectPayClient.confirmPayment(params: call.arguments, result: result)
+    case "getPaymentOptions":
+      WalletConnectPayClient.getPaymentOptions(params: call.arguments, result: result)
+    case "getRequiredPaymentActions":
+      WalletConnectPayClient.getRequiredPaymentActions(params: call.arguments, result: result)
     default:
       result(FlutterMethodNotImplemented)
     }

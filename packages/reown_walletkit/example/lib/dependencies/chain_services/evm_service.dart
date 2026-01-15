@@ -119,7 +119,7 @@ class EVMService {
     final keys = GetIt.I<IKeyService>().getKeysForChain(
       chainSupported.chainId,
     );
-    final pk = '0x${keys[0].privateKey}';
+    final pk = keys[0].privateKey;
     return EthPrivateKey.fromHex(pk);
   }
 
@@ -710,7 +710,7 @@ class EVMService {
     final queryParams = {
       'projectId': _walletKit.core.projectId,
       'currency': 'usd',
-      'chainId': chainSupported.chainId,
+      // 'chainId': chainSupported.chainId,
     };
     final package = await PackageInfo.fromPlatform();
     final response = await http.get(
@@ -728,7 +728,10 @@ class EVMService {
         final balances = (jsonData['balances'] as List).map((e) {
           return e as Map<String, dynamic>;
         }).toList();
-        return balances;
+        return balances
+          ..sort((a, b) {
+            return b['chainId'].toString().compareTo(a['chainId'].toString());
+          });
       } catch (e) {
         throw Exception('Failed to load balance. $e');
       }

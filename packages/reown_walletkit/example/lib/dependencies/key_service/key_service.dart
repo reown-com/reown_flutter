@@ -66,6 +66,16 @@ class KeyService extends IKeyService {
   }
 
   @override
+  Future<bool> setWCPApiKey(String apiKey) async {
+    return await _prefs.setString('rwkt_wcp_api_key', apiKey);
+  }
+
+  @override
+  String getWCPApiKey() {
+    return _prefs.getString('rwkt_wcp_api_key') ?? '';
+  }
+
+  @override
   Future<List<ChainKey>> loadKeys() async {
     // ⚠️ WARNING: SharedPreferences is not the best way to store your keys! This is just for example purposes!
     try {
