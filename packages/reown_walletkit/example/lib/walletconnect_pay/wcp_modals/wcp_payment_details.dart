@@ -227,7 +227,9 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: isSelected ? StyleConstants.accentPrimary.withValues(alpha: 0.1) : null,
+          color: isSelected
+              ? StyleConstants.accentPrimary.withValues(alpha: 0.1)
+              : null,
           borderRadius: BorderRadius.circular(16),
         ),
         margin: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
@@ -336,9 +338,8 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
                       const SizedBox(width: 4.0),
                       Text(
                         '(${widget.selectedOption.amount.display.networkName ?? 'Unknown'})',
-                        style: StyleConstants.wcpTextSecondaryStyle.copyWith(
-                          fontSize: 14.0
-                        ),
+                        style: StyleConstants.wcpTextSecondaryStyle
+                            .copyWith(fontSize: 14.0),
                       ),
                       const SizedBox(width: 4.0),
                       Stack(

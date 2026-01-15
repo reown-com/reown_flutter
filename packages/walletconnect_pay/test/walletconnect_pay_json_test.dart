@@ -30,7 +30,10 @@ class MockWalletconnectPayPlatform
   }
 
   @override
-  Future<bool> initialize({required String projectId, required String apiKey}) async {
+  Future<bool> initialize({
+    required String projectId,
+    required String apiKey,
+  }) async {
     if (_throwException != null) throw _throwException!;
     return true;
   }
@@ -92,8 +95,8 @@ void main() {
                 'assetName': 'USD Coin',
                 'decimals': 6,
                 'iconUrl': 'https://example.com/usdc.png',
-                'networkName': 'Base'
-              }
+                'networkName': 'Base',
+              },
             },
             'etaS': 5,
             'actions': [
@@ -102,12 +105,12 @@ void main() {
                 'data': {
                   'chainId': 'eip155:8453',
                   'method': 'eth_signTypedData_v4',
-                  'params': '["0x123", {"types": {}}]'
-                }
-              }
-            ]
-          }
-        ]
+                  'params': '["0x123", {"types": {}}]',
+                },
+              },
+            ],
+          },
+        ],
       };
 
       mockPlatform.setGetPaymentOptionsResponse(jsonEncode(mockResponse));
@@ -128,9 +131,7 @@ void main() {
     });
 
     test('test_json_get_payment_options_invalid_json', () async {
-      mockPlatform.setException(
-        const FormatException('Invalid JSON'),
-      );
+      mockPlatform.setException(const FormatException('Invalid JSON'));
 
       expect(
         () => walletconnectPayPlugin.getPaymentOptions(
@@ -157,8 +158,8 @@ void main() {
                 'assetName': 'Dai Stablecoin',
                 'decimals': 18,
                 'iconUrl': 'https://example.com/dai.png',
-                'networkName': 'Ethereum'
-              }
+                'networkName': 'Ethereum',
+              },
             },
             'etaS': 10,
             'actions': [
@@ -167,12 +168,12 @@ void main() {
                 'data': {
                   'chainId': 'eip155:1',
                   'method': 'eth_signTypedData_v4',
-                  'params': '["0xwallet", {"types": {}}]'
-                }
-              }
-            ]
-          }
-        ]
+                  'params': '["0xwallet", {"types": {}}]',
+                },
+              },
+            ],
+          },
+        ],
       };
 
       final actionsResponse = [
@@ -181,9 +182,9 @@ void main() {
           'data': {
             'chainId': 'eip155:1',
             'method': 'eth_signTypedData_v4',
-            'params': '["0xwallet", {"types": {}}]'
-          }
-        }
+            'params': '["0xwallet", {"types": {}}]',
+          },
+        },
       ];
 
       mockPlatform.setGetPaymentOptionsResponse(jsonEncode(optionsResponse));
@@ -207,10 +208,7 @@ void main() {
 
       expect(actions.length, 1);
       final walletRpcAction = actions[0];
-      expect(
-        walletRpcAction,
-        isA<WalletRpcAction>(),
-      );
+      expect(walletRpcAction, isA<WalletRpcAction>());
       final walletRpc = (walletRpcAction as WalletRpcAction);
       expect(walletRpc.chainId, 'eip155:1');
       expect(walletRpc.method, 'eth_signTypedData_v4');
@@ -359,19 +357,19 @@ void main() {
               'assetName': 'USD Coin',
               'decimals': 6,
               'iconUrl': 'https://example.com/usdc.png',
-              'networkName': 'Ethereum'
-            }
+              'networkName': 'Ethereum',
+            },
           },
           'expiresAt': 1234567890,
           'merchant': {
             'name': 'Test Merchant',
-            'iconUrl': 'https://example.com/merchant.png'
+            'iconUrl': 'https://example.com/merchant.png',
           },
           'buyer': {
             'accountCaip10': 'eip155:1:0xabc',
             'accountProviderName': 'MetaMask',
-            'accountProviderIcon': 'https://example.com/metamask.png'
-          }
+            'accountProviderIcon': 'https://example.com/metamask.png',
+          },
         },
         'options': [],
         'collectData': {
@@ -380,16 +378,16 @@ void main() {
               'id': 'email',
               'name': 'Email',
               'required': true,
-              'fieldType': 'text'
+              'fieldType': 'text',
             },
             {
               'id': 'birthdate',
               'name': 'Birth Date',
               'required': false,
-              'fieldType': 'date'
-            }
-          ]
-        }
+              'fieldType': 'date',
+            },
+          ],
+        },
       };
 
       mockPlatform.setGetPaymentOptionsResponse(jsonEncode(mockResponse));
@@ -410,8 +408,14 @@ void main() {
       expect(result.info!.buyer!.accountCaip10, 'eip155:1:0xabc');
       expect(result.collectData, isNotNull);
       expect(result.collectData!.fields.length, 2);
-      expect(result.collectData!.fields[0].fieldType, CollectDataFieldType.text);
-      expect(result.collectData!.fields[1].fieldType, CollectDataFieldType.date);
+      expect(
+        result.collectData!.fields[0].fieldType,
+        CollectDataFieldType.text,
+      );
+      expect(
+        result.collectData!.fields[1].fieldType,
+        CollectDataFieldType.date,
+      );
     });
   });
 }

@@ -477,7 +477,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                             ),
                           );
                         }).toList(),
-                ),
+                      ),
               ),
               SizedBox(
                 width: 200.0,

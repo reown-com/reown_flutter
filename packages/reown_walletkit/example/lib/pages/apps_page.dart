@@ -178,7 +178,9 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
     final uri = await GetIt.I<IBottomSheetService>().queueBottomSheet(
       widget: UriInputPopup(),
     );
-    if (uri is String) {
+    
+    if (uri != WCBottomSheetResult.reject.name &&
+        uri != WCBottomSheetResult.close.name) {
       _onFoundUri(uri);
     }
   }

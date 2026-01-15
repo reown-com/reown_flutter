@@ -39,6 +39,7 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
         context: context,
         backgroundColor: Colors.transparent,
         isScrollControlled: true,
+        isDismissible: false,
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height * 0.9,
         ),

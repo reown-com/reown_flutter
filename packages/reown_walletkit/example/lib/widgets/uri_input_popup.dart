@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
 
@@ -67,8 +68,7 @@ class UriInputPopup extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () => Navigator.of(context).pop(controller.text),
               style: ButtonStyle(
-                backgroundColor:
-                    WidgetStateProperty.all<Color>(
+                backgroundColor: WidgetStateProperty.all<Color>(
                     StyleConstants.accentPrimary),
                 foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
               ),
@@ -79,7 +79,9 @@ class UriInputPopup extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: TextButton(
-              onPressed: () => Navigator.of(context).pop(null),
+              onPressed: () => Navigator.of(context).pop(
+                WCBottomSheetResult.reject.name,
+              ),
               child: Text(
                 'Cancel',
                 style: TextStyle(color: StyleConstants.accentPrimary),

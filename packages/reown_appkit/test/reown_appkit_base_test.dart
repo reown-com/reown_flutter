@@ -4,11 +4,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 
+import 'appkit_test_helpers.dart';
 import 'shared/shared_test_utils.dart';
 import 'shared/shared_test_values.dart';
 
 import '../../reown_sign/test/tests/sign_common.dart';
-import '../../reown_walletkit/test/walletkit_helpers.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -124,7 +124,7 @@ void runTests({
         //   completerBAuth.complete();
         // });
 
-        final connectionInfo = await ReownWalletKitHelpers.testWalletKit(
+        final connectionInfo = await AppKitTestHelpers.testWalletKit(
           clientA,
           clientB,
           qrCodeScanLatencyMs: 1000,
@@ -155,7 +155,7 @@ void runTests({
         completerBSign = Completer();
         // completerBAuth = Completer();
 
-        final _ = await ReownWalletKitHelpers.testWalletKit(
+        final _ = await AppKitTestHelpers.testWalletKit(
           clientA,
           clientB,
           pairingTopic: connectionInfo.pairing.topic,
@@ -177,7 +177,7 @@ void runTests({
       });
 
       test('connects, and reconnects with scan latency', () async {
-        final connectionInfo = await ReownWalletKitHelpers.testWalletKit(
+        final connectionInfo = await AppKitTestHelpers.testWalletKit(
           clientA,
           clientB,
           qrCodeScanLatencyMs: 1000,
@@ -186,7 +186,7 @@ void runTests({
           clientA.pairings.getAll().length,
           clientB.pairings.getAll().length,
         );
-        final _ = await ReownWalletKitHelpers.testWalletKit(
+        final _ = await AppKitTestHelpers.testWalletKit(
           clientA,
           clientB,
           pairingTopic: connectionInfo.pairing.topic,

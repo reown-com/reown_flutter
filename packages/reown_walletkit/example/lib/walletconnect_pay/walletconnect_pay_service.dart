@@ -53,11 +53,18 @@ class WalletConnectPayService implements IWalletConnectPayService {
       );
 
       if (_currentPaymentOptions!.collectData != null) {
-        await _startDataCollection(_currentPaymentOptions!);
+        final action = await _startDataCollection(_currentPaymentOptions!);
+        if (action == WCBottomSheetResult.close.name) {
+          return;
+        }
       }
 
-      await _processPayment(_currentPaymentOptions!);
+      final action = await _processPayment(_currentPaymentOptions!);
+      print(action);
     } catch (e) {
+      if (e is String && e == 'cancelled') {
+        return;
+      }
       debugPrint('[WalletConnectPay] processPayment error: $e');
       rethrow;
     }
@@ -102,20 +109,21 @@ class WalletConnectPayService implements IWalletConnectPayService {
   }
 
   /// Initiates the data collection flow by showing the start modal and collecting required fields.
-  Future<void> _startDataCollection(PaymentOptionsResponse response) async {
+  Future<dynamic> _startDataCollection(PaymentOptionsResponse response) async {
     final startResult = await _bottomSheetHandler.queueBottomSheet(
       widget: WCPInformationCaptureStartWidget(
         paymentInfo: response.info!,
       ),
     );
     if (startResult != WCBottomSheetResult.next.name) {
-      throw 'Payment cancelled by user';
+      return startResult;
     }
 
     _pendingPaymentRequest = _pendingPaymentRequest!.copyWith(
       collectedData: [],
     );
-    await _showDataCollectionSteps(response, startIndex: 0);
+    final action = await _showDataCollectionSteps(response, startIndex: 0);
+    return action;
   }
 
   /// Adds a collected data field result to the pending payment request.
@@ -144,7 +152,7 @@ class WalletConnectPayService implements IWalletConnectPayService {
   }
 
   /// Resumes data collection from a specific index, typically used when navigating back from payment details.
-  Future<void> _resumeDataCollectionLastStep(
+  Future<dynamic> _resumeDataCollectionLastStep(
     PaymentOptionsResponse response,
   ) async {
     final fields = response.collectData!.fields;
@@ -156,11 +164,15 @@ class WalletConnectPayService implements IWalletConnectPayService {
       _removeLastCollectedData();
     }
 
-    await _showDataCollectionSteps(response, startIndex: startIndex);
+    final action = await _showDataCollectionSteps(
+      response,
+      startIndex: startIndex,
+    );
+    return action;
   }
 
   /// Collects data fields sequentially, showing modals for each required field and handling back navigation.
-  Future<void> _showDataCollectionSteps(
+  Future<dynamic> _showDataCollectionSteps(
     PaymentOptionsResponse response, {
     required int startIndex,
   }) async {
@@ -201,19 +213,19 @@ class WalletConnectPayService implements IWalletConnectPayService {
             ),
           );
           if (startResult != WCBottomSheetResult.next.name) {
-            throw 'cancelled';
+            return startResult;
           }
           _pendingPaymentRequest =
               _pendingPaymentRequest!.copyWith(collectedData: []);
         }
       } else {
-        throw 'cancelled';
+        return result;
       }
     }
   }
 
   /// Processes the payment flow: shows payment details, confirms payment, and displays the result.
-  Future<void> _processPayment(PaymentOptionsResponse response) async {
+  Future<dynamic> _processPayment(PaymentOptionsResponse response) async {
     final paymentConfirmRequest = await _showPaymentDetails(response);
 
     // Step 2: Confirming Payment
@@ -225,7 +237,7 @@ class WalletConnectPayService implements IWalletConnectPayService {
     if (paymentStatusResult is! PaymentStatus) {
       _pendingPaymentRequest = null;
       _currentPaymentOptions = null;
-      throw 'cancelled';
+      return paymentStatusResult;
     }
 
     // Step 3: Payment Result
@@ -238,7 +250,7 @@ class WalletConnectPayService implements IWalletConnectPayService {
     if (result != WCBottomSheetResult.next.name) {
       _pendingPaymentRequest = null;
       _currentPaymentOptions = null;
-      throw 'cancelled';
+      return result;
     }
     _pendingPaymentRequest = null;
     _currentPaymentOptions = null;

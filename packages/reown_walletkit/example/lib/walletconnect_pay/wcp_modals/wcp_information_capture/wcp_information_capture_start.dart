@@ -104,7 +104,8 @@ class PaymentStep extends StatelessWidget {
                   children: [
                     Text(title, style: StyleConstants.wcpTextPrimaryStyle),
                     const SizedBox.square(dimension: 6.0),
-                    Text(description, style: StyleConstants.wcpTextSecondaryStyle),
+                    Text(description,
+                        style: StyleConstants.wcpTextSecondaryStyle),
                     if (!isLast) const SizedBox.square(dimension: 16.0),
                   ],
                 ),
@@ -197,4 +198,3 @@ class TimeEstimateBadge extends StatelessWidget {
     );
   }
 }
-
