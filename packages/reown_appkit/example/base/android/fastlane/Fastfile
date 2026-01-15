@@ -51,6 +51,7 @@ platform :android do
     firebase_dapp_id = ENV['FIREBASE_DAPP_ID']
     _flavor = ENV['FLAVOR']
     _download_url = ENV['DOWNLOAD_URL']
+    _sentry_dsn = ENV['DAPP_SENTRY_DSN']
     
     _latest_release = firebase_app_distribution_get_latest_release(
       app: "#{firebase_dapp_id}",
@@ -65,7 +66,7 @@ platform :android do
     _project_id = "#{options[:project_id]}"
 
     # gradle(task: 'assemble', build_type: 'Release')
-    sh "flutter build apk --build-name #{_app_version} --build-number #{_new_build_number} --dart-define='PROJECT_ID=#{_project_id}' --flavor #{_flavor} --release --verbose"
+    sh "flutter build apk --build-name #{_app_version} --build-number #{_new_build_number} --dart-define='PROJECT_ID=#{_project_id}' --dart-define='DAPP_SENTRY_DSN=#{_sentry_dsn}' --flavor #{_flavor} --release --verbose"
 
     changelog = read_changelog
 

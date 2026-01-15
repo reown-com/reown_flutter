@@ -63,6 +63,8 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_DAPP_ID: ${{ secrets.APPLE_WALLET_ID_INTERNAL }}
           PROJECT_ID: ${{ secrets.WALLET_PROJECT_ID }}
+          WALLET_SENTRY_DSN: ${{ secrets.WALLET_SENTRY_DSN }}
+          WCP_API_KEY: ${{ secrets.WCP_API_KEY }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           APP_STORE_KEY_ID: ${{ secrets.APP_STORE_KEY_ID }}
           APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
@@ -78,7 +80,7 @@ jobs:
           FULL_VERSION=${PARTS[1]}
           VERSION_NUMBER=(${FULL_VERSION//-/ })
 
-          fastlane release_testflight username:$APPLE_ID token:$GH_BASIC_AUTH project_id:$PROJECT_ID app_id:$APPLE_DAPP_ID app_store_key_id:$APP_STORE_KEY_ID apple_issuer_id:$APPLE_ISSUER_ID match_git_url:$MATCH_GIT_URL app_version:$VERSION_NUMBER flavor:internal
+          fastlane release_testflight username:$APPLE_ID token:$GH_BASIC_AUTH project_id:$PROJECT_ID sentry_dsn:$WALLET_SENTRY_DSN wcp_api_key:$WCP_API_KEY app_id:$APPLE_DAPP_ID app_store_key_id:$APP_STORE_KEY_ID apple_issuer_id:$APPLE_ISSUER_ID match_git_url:$MATCH_GIT_URL app_version:$VERSION_NUMBER flavor:internal
 
 # Launch locally
 # act -j build --container-architecture linux/amd64 -P macos-26=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_wallet_ios_internal.yml

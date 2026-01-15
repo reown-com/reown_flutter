@@ -55,7 +55,7 @@ runs:
       env:
         RELAY_ENDPOINT: ${{ inputs.relay-endpoint }}
         PROJECT_ID: ${{ inputs.project-id }}
-      run: flutter test --dart-define=RELAY_ENDPOINT=$RELAY_ENDPOINT --dart-define=PROJECT_ID=$PROJECT_ID --dart-define=DAPP_SENTRY_DSN=$DAPP_SENTRY_DSN
+      run: flutter test --dart-define=RELAY_ENDPOINT=$RELAY_ENDPOINT --dart-define=PROJECT_ID=$PROJECT_ID
 
     # Run WalletKit Unit and Integration Tests
     - name: Run WalletKit tests
@@ -65,7 +65,7 @@ runs:
       env:
         RELAY_ENDPOINT: ${{ inputs.relay-endpoint }}
         PROJECT_ID: ${{ inputs.project-id }}
-      run: flutter test --dart-define=RELAY_ENDPOINT=$RELAY_ENDPOINT --dart-define=PROJECT_ID=$PROJECT_ID --dart-define=WALLET_SENTRY_DSN=$WALLET_SENTRY_DSN --dart-define=WCP_API_KEY=$WCP_API_KEY
+      run: flutter test --dart-define=RELAY_ENDPOINT=$RELAY_ENDPOINT --dart-define=PROJECT_ID=$PROJECT_ID
 
     # MAESTRO TESTS
 

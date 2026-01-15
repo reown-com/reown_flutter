@@ -42,6 +42,7 @@ jobs:
         env:
           FLAVOR: "internal"
           PROJECT_ID: ${{ secrets.DAPP_PROJECT_ID }}
+          DAPP_SENTRY_DSN: ${{ secrets.DAPP_SENTRY_DSN }}
           SLACK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_DAPP_ID: ${{ secrets.FIREBASE_DAPP_ID_INTERNAL }}
