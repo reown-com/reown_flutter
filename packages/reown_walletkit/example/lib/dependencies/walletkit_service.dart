@@ -62,14 +62,10 @@ class WalletKitService implements IWalletKitService {
     ),
   );
 
-  // late final WalletConnectPayService _walletConnectPayService;
-
   @override
   Future<void> create() async {
     final prefs = await SharedPreferences.getInstance();
     final linkModeEnabled = prefs.getBool('rwkt_sample_linkmode') ?? true;
-
-    // _walletConnectPayService = WalletConnectPayService();
 
     // Create the ReownWalletKit instance
     _walletKit = ReownWalletKit(
@@ -233,11 +229,6 @@ class WalletKitService implements IWalletKitService {
     await _walletKit!.init();
     await _emitEvent();
   }
-
-  // @override
-  // Future<void> processPayment(String paymentLink) async {
-  //   await _walletConnectPayService.processPayment(paymentLink);
-  // }
 
   Future<void> _emitEvent() async {
     final isOnline = _walletKit!.core.connectivity.isOnline.value;
