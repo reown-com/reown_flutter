@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:reown_appkit/modal/models/send_data.dart';
-import 'package:reown_appkit/modal/pages/preview_send/utils.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/token_balance.dart';
 import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/utils/render_utils.dart';

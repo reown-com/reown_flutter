@@ -47,7 +47,7 @@ sealed class AssetMetadata with _$AssetMetadata {
 sealed class ExchangeAsset with _$ExchangeAsset {
   const factory ExchangeAsset({
     required String network,
-    required String address,
+    @JsonKey(name: 'asset') required String address,
     required AssetMetadata metadata,
   }) = _ExchangeAsset;
 
@@ -80,12 +80,17 @@ extension ExchangeAssetExtension on ExchangeAsset {
         return '$network:$address';
       }
 
-      final ns = NamespaceUtils.getNamespaceFromChain(network);
-      final nativeAddress = _nativeTokenAddress[ns]!;
+      final nativeAddress = getNativeAddress();
       return '$network:$nativeAddress';
     } catch (e) {
       return '';
     }
+  }
+
+  String getNativeAddress() {
+    final ns = NamespaceUtils.getNamespaceFromChain(network);
+    final nativeAddress = _nativeTokenAddress[ns]!;
+    return nativeAddress;
   }
 }
 

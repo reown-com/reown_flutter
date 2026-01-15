@@ -23,12 +23,14 @@ class ModalNavbar extends StatelessWidget {
     this.noClose = false,
     this.noBack = false,
     this.divider = true,
+    this.titleOverride,
   });
 
   final VoidCallback? onBack;
   final VoidCallback? onTapTitle;
   final Widget body;
   final String title;
+  final Widget? titleOverride;
   final NavbarActionButton? leftAction;
   final List<Widget> rightActions;
   final bool safeAreaLeft,
@@ -75,17 +77,20 @@ class ModalNavbar extends StatelessWidget {
                                   dimension: kNavbarHeight,
                                 )),
                       Expanded(
-                        child: GestureDetector(
-                          onTap: () => onTapTitle?.call(),
-                          child: Center(
-                            child: Text(
-                              title,
-                              style: themeData.textStyles.paragraph600.copyWith(
-                                color: themeColors.foreground100,
+                        child:
+                            titleOverride ??
+                            GestureDetector(
+                              onTap: () => onTapTitle?.call(),
+                              child: Center(
+                                child: Text(
+                                  title,
+                                  style: themeData.textStyles.paragraph600
+                                      .copyWith(
+                                        color: themeColors.foreground100,
+                                      ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
                       ),
                       noClose
                           ? const SizedBox.square(dimension: kNavbarHeight)

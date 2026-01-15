@@ -160,6 +160,46 @@ class CoreUtils {
     }
     return imageUrl;
   }
+
+  /// Converts an amount string (in smallest units) to a decimal number.
+  /// For example, stringAmountToDouble('10000000', 6) returns 10.0.
+  static double stringAmountToDouble(String amount, int decimals) {
+    final bigIntValue = BigInt.parse(amount);
+    final factor = BigInt.from(10).pow(decimals);
+    return bigIntValue / factor;
+  }
+
+  static String toPrecision(
+    double value, {
+    String? withSymbol,
+    int decimals = 4,
+  }) {
+    final parsed = value
+        .toStringAsPrecision(8)
+        .toDouble()
+        .toStringAsFixed(decimals);
+    if ((withSymbol ?? '').isNotEmpty) {
+      return '$parsed $withSymbol';
+    }
+    return parsed;
+  }
+}
+
+extension StringExtension on String {
+  double toDouble() {
+    return double.parse(this);
+  }
+}
+
+String constructCallData(String recipient, BigInt sendValue) {
+  // Keccak256 hash of `transfer(address,uint256)`'s signature
+  final transferMethodId = 'a9059cbb';
+  // Remove '0x' and pad
+  final paddedReceiver = recipient.replaceFirst('0x', '').padLeft(64, '0');
+  // Amount in hex, padded
+  final paddedAmount = sendValue.toRadixString(16).padLeft(64, '0');
+  //
+  return '0x$transferMethodId$paddedReceiver$paddedAmount';
 }
 
 extension JsonRpcErrorExtensions on JsonRpcError {

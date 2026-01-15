@@ -13,7 +13,7 @@ class ModalConnect extends EventArgs {
 
 /// Event fired when network is changed through the modal
 class ModalNetworkChange extends EventArgs {
-  final String chainId;
+  final String? chainId;
   ModalNetworkChange({required this.chainId});
 
   @override

@@ -115,17 +115,17 @@ class ConnectPageState extends State<ConnectPage> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  PrimaryButton(
-                    buttonSize: BaseButtonSize.regular,
-                    onTap: _openDepositScreen,
-                    title: 'Deposit with Exchange',
-                  ),
-                ],
-              ),
-              Divider(color: themeColors.grayGlass010),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.center,
+              //   children: [
+              //     PrimaryButton(
+              //       buttonSize: BaseButtonSize.regular,
+              //       onTap: _openDepositScreen,
+              //       title: 'Deposit with Exchange',
+              //     ),
+              //   ],
+              // ),
+              // Divider(color: themeColors.grayGlass010),
               const SizedBox(height: StyleConstants.linear8),
               Visibility(
                 visible: widget.appKitModal.isConnected,
@@ -148,13 +148,16 @@ class ConnectPageState extends State<ConnectPage> {
                       ],
                     ),
                     const SizedBox.square(dimension: 8.0),
+                    Divider(color: themeColors.grayGlass010),
                     Text(
                       'Connected with ${widget.appKitModal.session?.connectedWalletName ?? 'Unknown wallet'}',
                     ),
                     const SizedBox.square(dimension: 8.0),
                     _RequestButtons(appKitModal: widget.appKitModal),
                     const SizedBox.square(dimension: 8.0),
+                    Divider(color: themeColors.grayGlass010),
                     _SmartAccountButtons(appKitModal: widget.appKitModal),
+                    Divider(color: themeColors.grayGlass010),
                     const SizedBox.square(dimension: 8.0),
                     Text(
                       const JsonEncoder.withIndent(
@@ -172,8 +175,53 @@ class ConnectPageState extends State<ConnectPage> {
     );
   }
 
-  void _openDepositScreen() {
-    widget.appKitModal.openModalView(ReownAppKitModalDepositScreen());
+  // ignore: unused_element
+  void _openDepositScreen() async {
+    try {
+      // /// FILTER YOUR SUPPORTED ASSETS IF NEEDED
+      // /// No needed if you acually call `selectChain()` in the previous step unless you want to filter out native tokens
+      // // This call is only necessary if you want to support assets on a given chain or don't support native tokens
+      // // ignore: unused_local_variable
+      // final filteredAssets = widget.appKitModal.getPaymentAssetsForNetwork(
+      //   // chainId: widget.appKitModal.selectedChain?.chainId,
+      //   includeNative: true,
+      //   includeTest: true,
+      // );
+
+      // // CONFIGURE THE FEATURE BEFORE USING IT
+      // widget.appKitModal.configDeposit(
+      //   /// pass a list of supported assets. If not passed, `allExchangeAssets` are supported
+      //   supportedAssets: filteredAssets,
+
+      //   /// disables asset selection button and fixes the feature to the given asset
+      //   // preselectedAsset: solanaUSDC,
+
+      //   /// shows or hide network icon from asset option. If `false` then `filterByNetwork` will be set to `true` internally
+      //   // showNetworkIcon: false,
+
+      //   /// filter `supportedAssets` by the selected network (if any) or by the first asset network
+      //   filterByNetwork: false,
+
+      //   /// wether to hide or show the deposit asset selection button. Works only if `preselectedAsset` is configured
+      //   // depositAssetButton: false,
+
+      //   /// configured recipients by namespace.
+      //   /// Will override connected wallet address if any
+      //   /// Only use if you want deposit on a different address than the connected wallet
+      //   // configuredRecipients: {
+      //   //   'eip155': '0xD6d146ec0FA91C790737cFB4EE3D7e965a51c340',
+      //   //   'solana': '3ZFT4Cwvy17qzEvjvjyVhgQDYrkzfaXHe8wrpFX8Z5tL',
+      //   // },
+      // );
+
+      // OPEN MODAL
+      await widget.appKitModal.openDepositView();
+      if (widget.appKitModal.session == null) {
+        await widget.appKitModal.selectChain(null);
+      }
+    } catch (e) {
+      debugPrint('❌ Internal Error: $e');
+    }
   }
 
   void _onSessionConnect(SessionConnect? event) async {

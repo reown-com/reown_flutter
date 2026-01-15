@@ -139,6 +139,14 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		E4514703A05ADEC63BCB610D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FF36B265B48AB6B1CBEB8A6E /* Pods_Runner.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -382,7 +390,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-internal";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -391,7 +399,7 @@
 				DEVELOPMENT_TEAM = W5R8AG9K22;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "Runner/Info-internal.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "FL WalletKit";
+				INFOPLIST_KEY_CFBundleDisplayName = "Flutter Wallet";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -462,7 +470,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-internal";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -473,7 +481,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = W5R8AG9K22;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "Runner/Info-internal.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "FL WalletKit";
+				INFOPLIST_KEY_CFBundleDisplayName = "Flutter Wallet";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -542,7 +550,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-internal";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -553,7 +561,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = W5R8AG9K22;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "Runner/Info-internal.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "FL WalletKit";
+				INFOPLIST_KEY_CFBundleDisplayName = "Flutter Wallet";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -633,7 +641,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = W5R8AG9K22;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "FL WalletKit";
+				INFOPLIST_KEY_CFBundleDisplayName = "Flutter Wallet";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -768,7 +776,7 @@
 				DEVELOPMENT_TEAM = W5R8AG9K22;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "FL WalletKit";
+				INFOPLIST_KEY_CFBundleDisplayName = "Flutter Wallet";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -798,7 +806,7 @@
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = W5R8AG9K22;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "FL WalletKit";
+				INFOPLIST_KEY_CFBundleDisplayName = "Flutter Wallet";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

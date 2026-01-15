@@ -24,6 +24,7 @@ abstract class IReownAppKit implements IReownSignDapp {
   List<ExchangeAsset> getPaymentAssetsForNetwork({
     String? chainId,
     bool includeNative = true,
+    bool includeTest = true,
   });
 
   ///

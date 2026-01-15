@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
-import 'package:reown_appkit/modal/pages/public/dwe/widgets/asset_selector_page.dart';
+import 'package:reown_appkit/modal/pages/public/dwe/configured_assets_selector_page.dart';
 import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/modal/services/explorer_service/i_explorer_service.dart';
 import 'package:reown_appkit/modal/widgets/buttons/base_button.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
-import 'package:reown_appkit/modal/widgets/modal_provider.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -33,18 +32,19 @@ class _AssetsButtonState extends State<AssetsButton> {
 
   @override
   Widget build(BuildContext context) {
-    final chainInfo = ModalProvider.of(context).instance.selectedChain;
-    if (chainInfo == null) {
+    final selectedAsset = _dweService.depositAsset.value;
+    if (selectedAsset == null) {
       return SizedBox.shrink();
     }
-
+    final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
+      selectedAsset.network,
+      selectedAsset.network,
+    );
     final chainIcon = GetIt.I<IExplorerService>().getChainIcon(chainInfo);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
-    final borderRadius = radiuses.isSquare() ? 0.0 : widget.size.height / 2;
 
     return ValueListenableBuilder(
-      valueListenable: _dweService.selectedAsset,
+      valueListenable: _dweService.depositAsset,
       builder: (context, selectedAsset, _) {
         if (selectedAsset == null) {
           return const SizedBox.shrink();
@@ -76,50 +76,9 @@ class _AssetsButtonState extends State<AssetsButton> {
                           semanticsLabel: 'AppKitModalAssetButton',
                           size: widget.size,
                           onTap: () {
-                            // if (_dweService.enableNetworkSelection) {
-                            //   _widgetStack.push(
-                            //     ReownAppKitModalSelectNetworkPage(
-                            //       onTapNetwork: (info) async {
-                            //         await _navigateAfterChainSelection(
-                            //           appKitModal,
-                            //           info,
-                            //         );
-                            //       },
-                            //     ),
-                            //   );
-                            // } else {
-                            _widgetStack.push(AssetSelectorPage());
-                            // }
+                            _widgetStack.push(ConfiguredAssetsSelectorPage());
                           },
-                          buttonStyle: ButtonStyle(
-                            backgroundColor:
-                                WidgetStateProperty.resolveWith<Color>(
-                                  (states) => themeColors.grayGlass002,
-                                ),
-                            foregroundColor:
-                                WidgetStateProperty.resolveWith<Color>((
-                                  states,
-                                ) {
-                                  if (states.contains(WidgetState.disabled)) {
-                                    return themeColors.grayGlass015;
-                                  }
-                                  return themeColors.foreground100;
-                                }),
-                            shape:
-                                WidgetStateProperty.resolveWith<
-                                  RoundedRectangleBorder
-                                >((states) {
-                                  return RoundedRectangleBorder(
-                                    side: BorderSide(
-                                      color: themeColors.grayGlass002,
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(
-                                      borderRadius,
-                                    ),
-                                  );
-                                }),
-                          ),
+                          buttonStyle: _buttonStyle,
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -216,16 +175,27 @@ class _AssetsButtonState extends State<AssetsButton> {
     );
   }
 
-  // TODO DWE: Not yet supported, dependes on `enableNetworkSelection`
-  // Future<void> _navigateAfterChainSelection(
-  //   IReownAppKitModal appKitModal,
-  //   ReownAppKitModalNetworkInfo network,
-  // ) async {
-  //   await appKitModal.selectChain(network);
-  //   final supportedAssets = _dweService.getPaymentAssetsForNetwork(
-  //     chainId: network.chainId,
-  //   );
-  //   _dweService.setSupportedAssets(supportedAssets);
-  //   _widgetStack.push(AssetSelectorPage());
-  // }
+  ButtonStyle get _buttonStyle {
+    final themeColors = ReownAppKitModalTheme.colorsOf(context);
+    final radiuses = ReownAppKitModalTheme.radiusesOf(context);
+    final borderRadius = radiuses.isSquare() ? 0.0 : widget.size.height / 2;
+
+    return ButtonStyle(
+      backgroundColor: WidgetStateProperty.resolveWith<Color>(
+        (states) => themeColors.grayGlass002,
+      ),
+      foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+        if (states.contains(WidgetState.disabled)) {
+          return themeColors.grayGlass015;
+        }
+        return themeColors.foreground100;
+      }),
+      shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>((states) {
+        return RoundedRectangleBorder(
+          side: BorderSide(color: themeColors.grayGlass002, width: 1.0),
+          borderRadius: BorderRadius.circular(borderRadius),
+        );
+      }),
+    );
+  }
 }

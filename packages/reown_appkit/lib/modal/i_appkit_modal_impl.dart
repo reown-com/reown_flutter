@@ -70,15 +70,16 @@ abstract class IReownAppKitModal with ChangeNotifier {
   List<ExchangeAsset> getPaymentAssetsForNetwork({
     String? chainId,
     bool includeNative = true,
+    bool includeTest = true,
   });
 
   void configDeposit({
     List<ExchangeAsset>? supportedAssets,
     ExchangeAsset? preselectedAsset,
     bool? showNetworkIcon,
-    String? preselectedRecipient,
-    // bool? enableNetworkSelection,
-    // String? preselectedNamespace,
+    bool? filterByNetwork,
+    bool? depositAssetButton,
+    Map<String, String> configuredRecipients = const {},
   });
 
   /// Opens modal on Network Selection Screen

@@ -1,16 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/token_balance.dart';
+import 'package:reown_appkit/modal/services/transfers/models/quote_models.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 abstract class IDWEService {
-  abstract final ValueNotifier<ExchangeAsset?> selectedAsset;
-  abstract final ValueNotifier<double> selectedAmount;
+  abstract final ValueNotifier<ExchangeAsset?> depositAsset;
+  abstract final ValueNotifier<double> depositAmountInUSD;
+  abstract final ValueNotifier<double> depositAmountInAsset;
 
   List<ExchangeAsset> get supportedAssets;
   ExchangeAsset? get preselectedAsset;
   bool get showNetworkIcon;
-  // bool get enableNetworkSelection;
-  String? get preselectedRecipient;
+  bool get filterByNetwork;
+  bool get depositAssetButton;
+  Map<String, String> get configuredRecipients;
   bool get isCheckingStatus;
 
   Future<void> init();
@@ -19,9 +22,9 @@ abstract class IDWEService {
     List<ExchangeAsset>? supportedAssets,
     ExchangeAsset? preselectedAsset,
     bool? showNetworkIcon,
-    String? preselectedRecipient,
-    // bool? enableNetworkSelection, // TODO
-    // String? preselectedNamespace, // TODO maybe?
+    bool? filterByNetwork,
+    bool? depositAssetButton,
+    Map<String, String> configuredRecipients = const {},
   });
 
   List<ExchangeAsset> getAvailableAssets({String? chainId});
@@ -32,15 +35,24 @@ abstract class IDWEService {
     required GetExchangeUrlParams params,
   });
 
-  void loopOnStatusCheck(
+  void loopOnDepositStatusCheck(
     String exchangeId,
     String sessionId,
-    Function(GetExchangeDepositStatusResult?) completer,
+    Function((QuoteStatus status, dynamic data)) completer,
+  );
+
+  void loopOnTransferStatusCheck(
+    String exchangeId,
+    String requestId,
+    Function((QuoteStatus status, dynamic data)) completer,
   );
 
   void stopCheckingStatus();
 
-  Future<TokenBalance?> getFungiblePrice({required ExchangeAsset asset});
+  Future<TokenBalance?> getFungiblePrice({
+    required ExchangeAsset asset,
+    bool forceFetch = false,
+  });
 
   void clearState();
 }

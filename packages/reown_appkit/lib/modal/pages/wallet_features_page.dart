@@ -88,30 +88,27 @@ class _WalletFeaturesPageState extends State<WalletFeaturesPage>
             ReownAppKitModalSelectNetworkPage(),
             event: ClickNetworksEvent(),
           ),
-          child: Container(
-            color: themeColors.background100,
-            child: Row(
-              children: [
-                const SizedBox.square(dimension: 20.0),
-                NetworkButton(
-                  serviceStatus: _appKitModal!.status,
-                  chainInfo: _appKitModal!.selectedChain,
-                  size: BaseButtonSize.regular,
-                  iconOnly: true,
+          child: Row(
+            children: [
+              const SizedBox.square(dimension: 20.0),
+              NetworkButton(
+                serviceStatus: _appKitModal!.status,
+                chainInfo: _appKitModal!.selectedChain,
+                size: BaseButtonSize.regular,
+                iconOnly: true,
+              ),
+              const SizedBox.square(dimension: 4.0),
+              SvgPicture.asset(
+                'lib/modal/assets/icons/chevron_down.svg',
+                package: 'reown_appkit',
+                colorFilter: ColorFilter.mode(
+                  themeColors.foreground200,
+                  BlendMode.srcIn,
                 ),
-                const SizedBox.square(dimension: 4.0),
-                SvgPicture.asset(
-                  'lib/modal/assets/icons/chevron_down.svg',
-                  package: 'reown_appkit',
-                  colorFilter: ColorFilter.mode(
-                    themeColors.foreground200,
-                    BlendMode.srcIn,
-                  ),
-                  width: 14.0,
-                  height: 14.0,
-                ),
-              ],
-            ),
+                width: 14.0,
+                height: 14.0,
+              ),
+            ],
           ),
         ),
       ),

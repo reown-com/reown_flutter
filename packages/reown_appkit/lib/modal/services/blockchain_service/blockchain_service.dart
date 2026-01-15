@@ -29,8 +29,8 @@ class BlockChainService implements IBlockChainService {
 
   Map<String, String> get _requiredHeaders => {
     'x-sdk-type': CoreConstants.X_SDK_TYPE,
-    'x-sdk-version': ReownCoreUtils.coreSdkVersion(packageVersion),
-    'origin': _bundleId ?? 'flutter-appkit',
+    'x-sdk-version': CoreConstants.X_SDK_VERSION,
+    'origin': _bundleId ?? CoreConstants.X_SDK_VERSION,
   };
 
   List<TokenBalance>? _tokensList;

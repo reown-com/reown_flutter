@@ -408,6 +408,17 @@ class _MyHomePageState extends State<MyHomePage> {
     await _appKitModal!.init();
     await _registerEventHandlers();
 
+    // CONFIGURE THE FEATURE BEFORE USING IT
+    final filteredAssets = _appKitModal!.getPaymentAssetsForNetwork(
+      // chainId: widget.appKitModal.selectedChain?.chainId,
+      includeNative: true,
+      includeTest: true,
+    );
+    _appKitModal!.configDeposit(
+      supportedAssets: filteredAssets,
+      filterByNetwork: false,
+    );
+
     DeepLinkHandler.init(_appKitModal!);
     DeepLinkHandler.checkInitialLink();
 

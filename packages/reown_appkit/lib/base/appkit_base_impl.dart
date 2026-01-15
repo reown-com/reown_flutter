@@ -362,26 +362,54 @@ class ReownAppKit implements IReownAppKit {
   List<ExchangeAsset> getPaymentAssetsForNetwork({
     String? chainId,
     bool includeNative = true,
+    bool includeTest = true,
   }) {
+    final List<ExchangeAsset> assetList = [];
     if (chainId == null) {
       if (includeNative) {
-        return allExchangeAssets;
+        assetList
+          ..clear()
+          ..addAll(allExchangeAssets);
+      } else {
+        final nonNatives = allExchangeAssets.where((e) => !e.isNative());
+        assetList
+          ..clear()
+          ..addAll(nonNatives);
       }
-      return allExchangeAssets.where((e) => !e.isNative()).toList();
+    } else {
+      if (!NamespaceUtils.isValidChainId(chainId)) {
+        throw Errors.getSdkError(
+          Errors.UNSUPPORTED_CHAINS,
+          context: 'chainId should conform to "CAIP-2" format',
+        ).toSignError();
+      }
+
+      final matchingChain = allExchangeAssets.where(
+        (a) => a.network == chainId,
+      );
+      if (includeNative) {
+        assetList
+          ..clear()
+          ..addAll(matchingChain);
+      } else {
+        final matchingNonNatives = matchingChain.where((a) => !a.isNative());
+        assetList
+          ..clear()
+          ..addAll(matchingNonNatives);
+      }
     }
 
-    if (!NamespaceUtils.isValidChainId(chainId)) {
-      throw Errors.getSdkError(
-        Errors.UNSUPPORTED_CHAINS,
-        context: 'chainId should conform to "CAIP-2" format',
-      ).toSignError();
+    if (!includeTest) {
+      assetList.removeWhere((a) {
+        final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
+          a.network,
+          a.network,
+        );
+        return chainInfo?.isTestNetwork == true;
+      });
     }
-    if (includeNative) {
-      return allExchangeAssets.where((a) => a.network == chainId).toList();
-    }
-    return allExchangeAssets
-        .where((a) => a.network == chainId && !a.isNative())
-        .toList();
+
+    return assetList;
   }
 
   @override

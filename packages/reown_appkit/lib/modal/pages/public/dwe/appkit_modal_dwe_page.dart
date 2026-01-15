@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -41,60 +40,76 @@ class _ReownAppKitModalDepositScreenState
           namespace,
           chainId,
         );
+        if (networkInfo == null) {
+          GetIt.I<IToastService>().show(
+            ToastMessage(
+              type: ToastType.error,
+              text: 'Asset chain not supported',
+            ),
+          );
+          setState(() {});
+          return;
+        }
+        if (appKitModal.session != null) {
+          final approvedChains = NamespaceUtils.getChainIdsFromNamespaces(
+            namespaces: appKitModal.session!.namespaces!,
+          );
+          if (!approvedChains.contains(networkInfo.chainId)) {
+            GetIt.I<IToastService>().show(
+              ToastMessage(type: ToastType.error, text: 'Asset not supported'),
+            );
+            setState(() {});
+            return;
+          }
+        }
         await appKitModal.selectChain(networkInfo);
-        _dweService.selectedAsset.value = _dweService.preselectedAsset;
-        // _dweService.setSupportedAssets([widget.preselectedAsset!]);
+        _dweService.depositAsset.value = _dweService.preselectedAsset;
       }
 
       // IF NO SELECTED CHAIN
       if (appKitModal.selectedChain == null) {
-        try {
-          final assetChain = _dweService.supportedAssets.first.network;
-          final namespace = NamespaceUtils.getNamespaceFromChain(assetChain);
-          final networks = ReownAppKitModalNetworks.getAllSupportedNetworks(
-            namespace: namespace,
-          ).where((e) => !e.isTestNetwork);
-          await appKitModal.selectChain(networks.first);
-        } catch (e) {
-          appKitModal.appKit!.core.logger.e('[$runtimeType] init error: $e');
-        }
-        try {
-          final networks = ReownAppKitModalNetworks.getAllSupportedNetworks()
-              .where((e) => !e.isTestNetwork);
-          await appKitModal.selectChain(networks.first);
-        } catch (e) {
-          appKitModal.appKit!.core.logger.e('[$runtimeType] init error: $e');
-          GetIt.I<IToastService>().show(
-            ToastMessage(type: ToastType.error, text: 'No supported networks'),
+        final selectedAssetChain = _dweService.depositAsset.value?.network;
+        if (selectedAssetChain != null) {
+          final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
+            selectedAssetChain,
+            selectedAssetChain,
           );
+          await appKitModal.selectChain(chainInfo);
+        } else if (_dweService.supportedAssets.isNotEmpty) {
+          final firstAssetChain = _dweService.supportedAssets.first.network;
+          final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
+            firstAssetChain,
+            firstAssetChain,
+          );
+          await appKitModal.selectChain(chainInfo);
+        } else {
+          GetIt.I<IToastService>().show(
+            ToastMessage(type: ToastType.error, text: 'No assets supported'),
+          );
+          setState(() {});
+          return;
         }
       }
 
-      final chainId = appKitModal.selectedChain?.chainId;
-      debugPrint('[$runtimeType] selected chain id: $chainId');
-      final supportedAssets = _dweService.getAvailableAssets(chainId: chainId);
-      if (supportedAssets.isEmpty) {
-        GetIt.I<IToastService>().show(
-          ToastMessage(type: ToastType.error, text: 'No assets supported'),
+      final selectedChainId = appKitModal.selectedChain?.chainId;
+      final assetChainId = _dweService.depositAsset.value?.network;
+      if (assetChainId != selectedChainId) {
+        final firstAsset = _dweService.supportedAssets.firstWhere(
+          (e) => e.network == selectedChainId,
         );
-        setState(() {});
-        return;
+        _dweService.depositAsset.value = firstAsset;
       }
-      if (_dweService.selectedAsset.value?.network != chainId) {
-        _dweService.selectedAsset.value =
-            supportedAssets.firstWhereOrNull(
-              (asset) => asset.address != 'native',
-            ) ??
-            supportedAssets.first;
-      } else {
-        _dweService.selectedAsset.value =
-            _dweService.selectedAsset.value ??
-            supportedAssets.firstWhereOrNull(
-              (asset) => asset.address != 'native',
-            ) ??
-            supportedAssets.first;
-      }
-      // _dweService.setSupportedAssets(supportedAssets);
+
+      // if (_dweService.configuredRecipients.isEmpty) {
+      //   Map<String, String> configuredRecipients = {};
+      //   final namespaces = appKitModal.session?.namespaces?.keys ?? [];
+      //   for (var ns in namespaces) {
+      //     final address = appKitModal.session!.getAddress(ns)!;
+      //     configuredRecipients[ns] = address;
+      //   }
+      //   appKitModal.configDeposit(configuredRecipients: configuredRecipients);
+      // }
+
       setState(() {});
     });
   }
@@ -103,9 +118,9 @@ class _ReownAppKitModalDepositScreenState
   Widget build(BuildContext context) {
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
-    final appKitModal = ModalProvider.of(context).instance;
-    final chainId = appKitModal.selectedChain?.chainId;
-    final supportedAssets = _dweService.getAvailableAssets(chainId: chainId);
+    // final appKitModal = ModalProvider.of(context).instance;
+    // final chainId = appKitModal.selectedChain?.chainId;
+    // final availableAssets = _dweService.getAvailableAssets(chainId: chainId);
     return ModalNavbar(
       title: widget.titleOverride ?? 'Deposit from Exchange',
       divider: false,
@@ -120,59 +135,36 @@ class _ReownAppKitModalDepositScreenState
             mainAxisSize: MainAxisSize.min,
             children: [
               Visibility(
-                visible: supportedAssets.isNotEmpty,
+                visible:
+                    _dweService.supportedAssets.isNotEmpty &&
+                    _dweService.depositAssetButton,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: Row(
                     children: [
                       Text(
-                        'Asset',
+                        'Asset to deposit',
                         style: themeData.textStyles.large400.copyWith(
                           color: themeColors.foreground300,
                         ),
                       ),
                       Spacer(),
                       AssetsButton(
-                        disabled:
-                            _dweService.preselectedAsset != null &&
-                            _dweService.supportedAssets.isEmpty,
+                        disabled: _dweService.preselectedAsset != null,
                       ),
                     ],
                   ),
                 ),
               ),
               const SizedBox.square(dimension: kPadding12),
-              _dweService.isCheckingStatus
-                  ? Column(
-                      children: [
-                        CircularProgressIndicator(
-                          color: themeColors.foreground200,
-                        ),
-                        const SizedBox.square(dimension: kPadding16),
-                        Text(
-                          'Waiting confirmation..',
-                          style: themeData.textStyles.small400.copyWith(
-                            color: themeColors.foreground300,
-                          ),
-                        ),
-                        const SizedBox.square(dimension: kPadding16),
-                        SecondaryButton(
-                          title: 'Stop checking',
-                          onTap: () {
-                            _dweService.stopCheckingStatus();
-                            setState(() {});
-                          },
-                        ),
-                      ],
-                    )
-                  : AmountSelector(),
+              AmountSelector(),
               const SizedBox.square(dimension: kPadding16),
               Visibility(
-                visible: supportedAssets.isNotEmpty,
+                visible: _dweService.supportedAssets.isNotEmpty,
                 child: Divider(color: themeColors.grayGlass005, height: 0.0),
               ),
               Visibility(
-                visible: supportedAssets.isEmpty,
+                visible: _dweService.supportedAssets.isEmpty,
                 child: Text(
                   'No assets supported for the selected network',
                   style: themeData.textStyles.paragraph400.copyWith(
@@ -181,30 +173,7 @@ class _ReownAppKitModalDepositScreenState
                 ),
               ),
               const SizedBox.square(dimension: kPadding12),
-              ExchangesListWidget(
-                recipient: _dweService.preselectedRecipient,
-                onSelect: (Exchange exchange, GetExchangeUrlResult urlResult) {
-                  setState(() {});
-                  _dweService.loopOnStatusCheck(
-                    exchange.id,
-                    urlResult.sessionId,
-                    (result) {
-                      appKitModal.onDepositSuccess.broadcast(
-                        DepositSuccessEvent(exchange),
-                      );
-                      GetIt.I<IToastService>().show(
-                        ToastMessage(
-                          type: result!.status == 'SUCCESS'
-                              ? ToastType.success
-                              : ToastType.error,
-                          text: result.status,
-                        ),
-                      );
-                      setState(() {});
-                    },
-                  );
-                },
-              ),
+              ExchangesListWidget(),
             ],
           ),
         ),

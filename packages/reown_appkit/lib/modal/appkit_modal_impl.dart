@@ -10,6 +10,8 @@ import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/modal/services/solflare_service/i_solflare_service.dart';
 import 'package:reown_appkit/modal/services/solflare_service/models/solflare_events.dart';
 import 'package:reown_appkit/modal/services/solflare_service/solflare_service.dart';
+import 'package:reown_appkit/modal/services/transfers/i_transfers_service.dart';
+import 'package:reown_appkit/modal/services/transfers/transfers_service.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/modal/widgets/widget_stack/widget_stack.dart';
 
@@ -278,6 +280,9 @@ class ReownAppKitModal
     GetIt.I.registerSingletonIfAbsent<IBlockChainService>(
       () => BlockChainService(core: _appKit.core),
     );
+    GetIt.I.registerSingletonIfAbsent<ITransfersService>(
+      () => TransfersService(core: _appKit.core),
+    );
     GetIt.I.registerSingletonIfAbsent<IDWEService>(
       () => DWEService(appKit: _appKit),
     );
@@ -533,10 +538,12 @@ class ReownAppKitModal
   List<ExchangeAsset> getPaymentAssetsForNetwork({
     String? chainId,
     bool includeNative = true,
+    bool includeTest = true,
   }) {
     return _appKit.getPaymentAssetsForNetwork(
       chainId: chainId,
       includeNative: includeNative,
+      includeTest: includeTest,
     );
   }
 
@@ -545,17 +552,17 @@ class ReownAppKitModal
     List<ExchangeAsset>? supportedAssets,
     ExchangeAsset? preselectedAsset,
     bool? showNetworkIcon,
-    String? preselectedRecipient,
-    // bool? enableNetworkSelection,
-    // String? preselectedNamespace,
+    bool? filterByNetwork,
+    bool? depositAssetButton,
+    Map<String, String> configuredRecipients = const {},
   }) {
     _dweService.configDeposit(
       supportedAssets: supportedAssets,
       preselectedAsset: preselectedAsset,
       showNetworkIcon: showNetworkIcon,
-      preselectedRecipient: preselectedRecipient,
-      // enableNetworkSelection: enableNetworkSelection,
-      // preselectedNamespace: preselectedNamespace,
+      filterByNetwork: filterByNetwork,
+      depositAssetButton: depositAssetButton,
+      configuredRecipients: configuredRecipients,
     );
   }
 
@@ -651,6 +658,10 @@ class ReownAppKitModal
 
     // If the chain is null, disconnect and stop.
     if (chainInfo == null) {
+      if (_selectedChainID != null) {
+        _selectedChainID = null;
+        onModalNetworkChange.broadcast(ModalNetworkChange(chainId: null));
+      }
       await disconnect();
       return;
     }
@@ -764,12 +775,10 @@ class ReownAppKitModal
         SwitchNetworkEvent(network: _selectedChainID!),
       );
     }
-    if (_lastChainEmitted != _selectedChainID && _isConnected) {
-      if (_lastChainEmitted != null) {
-        onModalNetworkChange.broadcast(
-          ModalNetworkChange(chainId: _selectedChainID!),
-        );
-      }
+    if (_lastChainEmitted != _selectedChainID) {
+      onModalNetworkChange.broadcast(
+        ModalNetworkChange(chainId: _selectedChainID!),
+      );
       _lastChainEmitted = _selectedChainID;
     }
     loadAccountData();

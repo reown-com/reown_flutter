@@ -11,6 +11,13 @@ class NamespaceUtils {
     return false;
   }
 
+  static String? getIdFromCaip2Chain(String value) {
+    if (isValidChainId(value)) {
+      return value.split(':').last;
+    }
+    return null;
+  }
+
   /// Checks if the string is an account
   static bool isValidAccount(String value) {
     if (value.contains(':')) {

@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_appkit/modal/constants/style_constants.dart';
+import 'package:reown_appkit/modal/pages/public/dwe/exchange_assets_selector_page.dart';
 import 'package:reown_appkit/modal/services/dwe_service/i_dwe_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/i_toast_service.dart';
 import 'package:reown_appkit/modal/services/toast_service/models/toast_message.dart';
-import 'package:reown_appkit/modal/utils/core_utils.dart';
 import 'package:reown_appkit/modal/widgets/circular_loader.dart';
 import 'package:reown_appkit/modal/widgets/icons/rounded_icon.dart';
 import 'package:reown_appkit/modal/widgets/lists/list_items/account_list_item.dart';
 import 'package:reown_appkit/modal/widgets/modal_provider.dart';
+import 'package:reown_appkit/modal/widgets/widget_stack/i_widget_stack.dart';
 import 'package:reown_appkit/reown_appkit.dart';
 
 class ExchangesListWidget extends StatefulWidget {
-  final String? recipient;
-  final Function(Exchange exchange, GetExchangeUrlResult result) onSelect;
-  const ExchangesListWidget({this.recipient, required this.onSelect});
-
   @override
   State<ExchangesListWidget> createState() => _ExchangesListWidgetState();
 }
@@ -33,7 +30,7 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
     }
 
     return ValueListenableBuilder(
-      valueListenable: _dweService.selectedAsset,
+      valueListenable: _dweService.depositAsset,
       builder: (context, selectedAsset, _) {
         if (selectedAsset == null) {
           return const SizedBox.shrink();
@@ -41,17 +38,11 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
         if (selectedAsset.toCaip19() == _selectedAsset?.toCaip19() &&
             _exchanges.isNotEmpty) {
           // no re-request
-          return _ExchangesList(
-            exchanges: _exchanges,
-            recipient: widget.recipient,
-            onSelect: widget.onSelect,
-          );
+          return _ExchangesList(exchanges: _exchanges);
         }
 
         return FutureBuilder(
-          future: _dweService.getExchanges(
-            params: GetExchangesParams(page: 1, asset: selectedAsset),
-          ),
+          future: _dweService.getExchanges(params: GetExchangesParams(page: 1)),
           builder: (context, snapshot) {
             if (!snapshot.hasData && !snapshot.hasError) {
               return CircularLoader();
@@ -64,14 +55,24 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
                 ),
               );
             }
+
+            final exchanges = List<Exchange>.from(
+              snapshot.data?.exchanges ?? [],
+            );
+            final chainInfo = ReownAppKitModalNetworks.getNetworkInfo(
+              selectedAsset.network,
+              selectedAsset.network,
+            );
+            if (chainInfo?.isTestNetwork == true) {
+              exchanges.removeWhere((e) => e.id != 'reown_test');
+            } else {
+              exchanges.removeWhere((e) => e.id == 'reown_test');
+            }
+
             _exchanges
               ..clear()
-              ..addAll(snapshot.data?.exchanges ?? []);
-            return _ExchangesList(
-              exchanges: _exchanges,
-              recipient: widget.recipient,
-              onSelect: widget.onSelect,
-            );
+              ..addAll(exchanges);
+            return _ExchangesList(exchanges: _exchanges);
           },
         );
       },
@@ -80,14 +81,8 @@ class _ExchangesListWidgetState extends State<ExchangesListWidget> {
 }
 
 class _ExchangesList extends StatefulWidget {
-  const _ExchangesList({
-    required this.exchanges,
-    required this.recipient,
-    required this.onSelect,
-  });
+  const _ExchangesList({required this.exchanges});
   final List<Exchange> exchanges;
-  final String? recipient;
-  final Function(Exchange exchange, GetExchangeUrlResult result) onSelect;
 
   @override
   State<_ExchangesList> createState() => __ExchangesListState();
@@ -119,8 +114,9 @@ class __ExchangesListState extends State<_ExchangesList> {
                   (exchange) => Padding(
                     padding: const EdgeInsets.only(top: kPadding8),
                     child: ValueListenableBuilder(
-                      valueListenable: _dweService.selectedAmount,
+                      valueListenable: _dweService.depositAmountInUSD,
                       builder: (context, amount, _) {
+                        final enabled = amount > 0.0;
                         return AccountListItem(
                           iconWidget: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -134,9 +130,19 @@ class __ExchangesListState extends State<_ExchangesList> {
                           ),
                           title: exchange.name,
                           titleStyle: themeData.textStyles.paragraph500
-                              .copyWith(color: themeColors.foreground100),
-                          onTap: amount > 0.0
-                              ? () => _selectExchange(exchange)
+                              .copyWith(
+                                color: enabled
+                                    ? themeColors.foreground100
+                                    : null,
+                              ),
+                          onTap: enabled
+                              ? () {
+                                  GetIt.I<IWidgetStack>().push(
+                                    ExchangeAssetsSelectorPage(
+                                      exchange: exchange,
+                                    ),
+                                  );
+                                }
                               : null,
                           trailing: _selectedExchange?.id == exchange.id
                               ? Row(
@@ -161,45 +167,5 @@ class __ExchangesListState extends State<_ExchangesList> {
                 )
                 .toList(),
           );
-  }
-
-  Future<void> _selectExchange(Exchange exchange) async {
-    // 2 GET PAYMENT URL
-    setState(() => _selectedExchange = exchange);
-    final selectedAsset = _dweService.selectedAsset.value!;
-    final chainId = selectedAsset.network;
-    final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
-    final appKitModal = ModalProvider.of(context).instance;
-    final recipient =
-        widget.recipient ?? appKitModal.session?.getAddress(namespace);
-    if (recipient == null) {
-      appKitModal.onModalError.broadcast(ModalError('No recipient found'));
-      setState(() => _selectedExchange = null);
-      return;
-    }
-
-    try {
-      final amount = _dweService.selectedAmount.value;
-      final getExchangeUrlParams = GetExchangeUrlParams(
-        exchangeId: exchange.id,
-        asset: selectedAsset,
-        amount: '${amount.toDouble()}',
-        recipient: '$chainId:$recipient',
-      );
-      final GetExchangeUrlResult result = await _dweService.getExchangeUrl(
-        params: getExchangeUrlParams,
-      );
-      setState(() => _selectedExchange = null);
-      await ReownCoreUtils.openURL(result.url);
-      widget.onSelect.call(exchange, result);
-    } on JsonRpcError catch (e) {
-      appKitModal.onModalError.broadcast(ModalError(e.cleanMessage));
-      setState(() => _selectedExchange = null);
-    } catch (e) {
-      appKitModal.onModalError.broadcast(
-        ModalError('Something wrong happened'),
-      );
-      setState(() => _selectedExchange = null);
-    }
   }
 }

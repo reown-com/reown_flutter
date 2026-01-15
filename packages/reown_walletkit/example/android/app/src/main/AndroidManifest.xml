@@ -4,7 +4,7 @@
     <application
         android:label="${applicationLabel}"
         android:name="${applicationName}"
-        android:icon="${appIcon}">
+        android:icon="@mipmap/ic_launcher">
         <activity
             android:name="com.walletconnect.flutterwallet.MainActivity"
             android:exported="true"

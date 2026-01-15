@@ -24,6 +24,32 @@ rm -Rf .dart_tool
 cd ..
 cd ..
 
+echo "******* CLEAN CLI *******"
+
+cd packages/reown_cli/
+
+flutter clean
+rm -Rf .dart_tool
+
+cd ..
+cd ..
+
+echo "******* CLEAN POS CLIENT *******"
+
+cd packages/pos_client/
+
+flutter clean
+rm -Rf .dart_tool
+rm -Rf example/.dart_tool
+rm -Rf example/build
+
+rm -Rf example/android/.gradle
+rm -Rf example/android/.idea
+rm -Rf example/android/.kotlin
+
+cd ..
+cd ..
+
 echo "******* CLEAN YTTRIUM *******"
 
 cd packages/reown_yttrium/
