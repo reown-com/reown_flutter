@@ -43,6 +43,7 @@ jobs:
         working-directory: packages/reown_appkit/example/base
         env:
           PROJECT_ID: ${{ secrets.DAPP_PROJECT_ID }}
+          DAPP_SENTRY_DSN: ${{ secrets.DAPP_SENTRY_DSN_PROD }}
         run: |
           PUBSPEC_FILE=../../pubspec.yaml
           FILE_VALUE=$(echo | grep "^version: " $PUBSPEC_FILE)
@@ -50,7 +51,7 @@ jobs:
           FULL_VERSION=${PARTS[1]}
           VERSION_NUMBER=(${FULL_VERSION//-/ })
 
-          flutter build ios --flavor production --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --config-only --release
+          flutter build ios --flavor production --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --dart-define="DAPP_SENTRY_DSN=$DAPP_SENTRY_DSN" --config-only --release
         
       - name: Set Xcode Version
         run: sudo xcode-select -s /Applications/Xcode_26.1.app
@@ -63,7 +64,6 @@ jobs:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_DAPP_ID: ${{ secrets.APPLE_DAPP_ID }}
           PROJECT_ID: ${{ secrets.DAPP_PROJECT_ID }}
-          DAPP_SENTRY_DSN: ${{ secrets.DAPP_SENTRY_DSN }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           APP_STORE_KEY_ID: ${{ secrets.APP_STORE_KEY_ID }}
           APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
@@ -79,7 +79,7 @@ jobs:
           FULL_VERSION=${PARTS[1]}
           VERSION_NUMBER=(${FULL_VERSION//-/ })
 
-          fastlane release_testflight username:$APPLE_ID token:$GH_BASIC_AUTH project_id:$PROJECT_ID app_id:$APPLE_DAPP_ID app_store_key_id:$APP_STORE_KEY_ID apple_issuer_id:$APPLE_ISSUER_ID match_git_url:$MATCH_GIT_URL app_version:$VERSION_NUMBER sentry_dsn:$DAPP_SENTRY_DSN flavor:production
+          fastlane release_testflight username:$APPLE_ID token:$GH_BASIC_AUTH project_id:$PROJECT_ID app_id:$APPLE_DAPP_ID app_store_key_id:$APP_STORE_KEY_ID apple_issuer_id:$APPLE_ISSUER_ID match_git_url:$MATCH_GIT_URL app_version:$VERSION_NUMBER flavor:production
 
 # Launch locally
 # act -j build --container-architecture linux/amd64 -P macos-26=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_dapp_ios.yml

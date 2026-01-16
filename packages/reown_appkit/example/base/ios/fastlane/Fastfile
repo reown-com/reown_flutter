@@ -101,7 +101,7 @@ platform :ios do
       scheme: _flavor,
       export_method: "app-store",
       clean: true,
-      xcargs: "PROJECT_ID='#{options[:project_id]}', DAPP_SENTRY_DSN='#{options[:sentry_dsn]}'",
+      xcargs: "PROJECT_ID='#{options[:project_id]}'",
       output_directory: "build", # Explicitly set output directory
       include_symbols: false,
     )
