@@ -54,18 +54,14 @@ class WalletConnectPayClient {
         Task {
             do {
                 let response = try await client.getPaymentOptions(requestJson: requestJson)
-                DispatchQueue.main.async {
-                    result(response)
-                }
+                result(response)
             } catch {
                 print("🤖 WalletConnectPayClient.getPaymentOptions ❌: \(error.localizedDescription)")
-                DispatchQueue.main.async {
-                    result(FlutterError(
-                        code: "WalletConnectPayClient",
-                        message: "getPaymentOptions error: \(error.localizedDescription)",
-                        details: nil
-                    ))
-                }
+                result(FlutterError(
+                    code: "WalletConnectPayClient",
+                    message: "getPaymentOptions error: \(error.localizedDescription)",
+                    details: nil
+                ))
             }
         }
     }
@@ -94,18 +90,14 @@ class WalletConnectPayClient {
         Task {
             do {
                 let response = try await client.getRequiredPaymentActions(requestJson: requestJson)
-                DispatchQueue.main.async {
-                    result(response)
-                }
+                result(response)
             } catch {
                 print("🤖 WalletConnectPayClient.getRequiredPaymentActions ❌: \(error.localizedDescription)")
-                DispatchQueue.main.async {
-                    result(FlutterError(
-                        code: "WalletConnectPayClient",
-                        message: "getRequiredPaymentActions error: \(error.localizedDescription)",
-                        details: nil
-                    ))
-                }
+                result(FlutterError(
+                    code: "WalletConnectPayClient",
+                    message: "getRequiredPaymentActions error: \(error.localizedDescription)",
+                    details: nil
+                ))
             }
         }
     }
@@ -134,18 +126,14 @@ class WalletConnectPayClient {
         Task {
             do {
                 let response = try await client.confirmPayment(requestJson: requestJson)
-                DispatchQueue.main.async {
-                    result(response)
-                }
+                result(response)
             } catch {
                 print("🤖 WalletConnectPayClient.confirmPayment ❌: \(error.localizedDescription)")
-                DispatchQueue.main.async {
-                    result(FlutterError(
-                        code: "WalletConnectPayClient",
-                        message: "confirmPayment error: \(error.localizedDescription)",
-                        details: nil
-                    ))
-                }
+                result(FlutterError(
+                    code: "WalletConnectPayClient",
+                    message: "confirmPayment error: \(error.localizedDescription)",
+                    details: nil
+                ))
             }
         }
     }

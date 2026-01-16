@@ -10,14 +10,20 @@ class WalletConnectPay {
 
   final String projectId;
   final String apiKey;
+  final String? clientId;
 
-  const WalletConnectPay({required this.projectId, required this.apiKey});
+  const WalletConnectPay({
+    required this.projectId,
+    required this.apiKey,
+    this.clientId,
+  });
 
   Future<bool> init() async {
     try {
       return await WalletconnectPayPlatform.instance.initialize(
         apiKey: apiKey,
         projectId: projectId,
+        clientId: clientId,
       );
     } catch (e) {
       rethrow;

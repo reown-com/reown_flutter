@@ -156,9 +156,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       showModalBottomSheet(
                         context: context,
                         isScrollControlled: true,
-                        builder: (context) => KastMockedModal(
-                          appKitModal: _appKitModal,
-                        ),
+                        builder: (context) =>
+                            KastMockedModal(appKitModal: _appKitModal),
                       );
                     },
                     title: 'Open Kast Mocked Modal',

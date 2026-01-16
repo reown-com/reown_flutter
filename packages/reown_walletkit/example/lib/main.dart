@@ -11,6 +11,7 @@ import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.da
 import 'package:reown_walletkit_wallet/dependencies/key_service/key_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/walletkit_service.dart';
 import 'package:reown_walletkit_wallet/models/page_data.dart';
+import 'package:reown_walletkit_wallet/pages/balances_page.dart';
 import 'package:reown_walletkit_wallet/pages/apps_page.dart';
 import 'package:reown_walletkit_wallet/pages/settings_page.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
@@ -213,6 +214,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _setPages() => setState(() {
         _pageDatas = [
+          PageData(
+            page: BalancesPage(isDarkMode: widget.isDarkMode),
+            title: 'Balances',
+            icon: Icons.account_balance_wallet_outlined,
+          ),
           PageData(
             page: AppsPage(isDarkMode: widget.isDarkMode),
             title: StringConstants.connectPageTitle,

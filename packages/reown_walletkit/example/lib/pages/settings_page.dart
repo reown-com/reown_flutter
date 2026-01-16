@@ -10,7 +10,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
-import 'package:reown_walletkit_wallet/dependencies/chain_services/solana_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/tron_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
@@ -622,49 +621,6 @@ class _EVMAccountsState extends State<_EVMAccounts> {
             );
           },
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 14.0, top: 14.0, right: 14.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Balances:',
-                style: TextStyle(
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              ..._balances.map((b) {
-                final symbol = b['symbol'];
-                final value = b['value'];
-                final chainId = b['chainId'];
-                final chainData = ChainsDataList.allChains.firstWhere(
-                  (e) => e.chainId == chainId,
-                );
-                return Row(
-                  children: [
-                    Text(
-                      '${value.toStringAsFixed(6)} ',
-                      style: TextStyle(fontSize: 13.0),
-                    ),
-                    Text(
-                      '$symbol ',
-                      style: TextStyle(
-                        fontSize: 13.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      'on ${chainData.name}',
-                      style: TextStyle(fontSize: 13.0),
-                    ),
-                  ],
-                );
-              }),
-            ],
-          ),
-        ),
       ],
     );
   }
@@ -678,33 +634,15 @@ class _SolanaAccounts extends StatefulWidget {
 class _SolanaAccountsState extends State<_SolanaAccounts> {
   final _keysService = GetIt.I<IKeyService>();
   ChainMetadata? _selectedChain;
-  double _balance = 0.0;
 
   @override
   void initState() {
     super.initState();
     try {
       _selectedChain = ChainsDataList.solanaChains.first;
-      _updateBalance();
     } catch (e) {
       debugPrint(e.toString());
     }
-  }
-
-  Future<void> _updateBalance() async {
-    if (!mounted) return;
-    final chainKeys = _keysService.getKeysForChain('solana');
-    final solanaService =
-        GetIt.I<IWalletKitService>().getChainService<SolanaService>(
-      chainId: _selectedChain!.chainId,
-    );
-    final address = chainKeys.first.address;
-    solanaService.getBalance(address: address).then((value) {
-      if (!mounted) return;
-      setState(() => _balance = value);
-    }).catchError((error) {
-      debugPrint(error);
-    });
   }
 
   @override
@@ -752,15 +690,7 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                child: Text(
-                  '${_balance.toStringAsFixed(6)} ${chainData.currency}',
-                  style: TextStyle(
-                    fontSize: 15.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+              Spacer(),
               SizedBox(
                 width: 200.0,
                 child: DropdownButton(
@@ -802,7 +732,6 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
                   }).toList(),
                   onChanged: (ChainMetadata? chain) {
                     setState(() => _selectedChain = chain!);
-                    _updateBalance();
                   },
                 ),
               ),
@@ -1229,7 +1158,7 @@ class __DataContainerState extends State<_DataContainer> {
       child: Container(
         height: widget.height,
         decoration: BoxDecoration(
-          color: StyleConstants.neutrals.withValues(alpha: 0.4),
+          color: StyleConstants.neutrals.withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(
             StyleConstants.linear16,
           ),

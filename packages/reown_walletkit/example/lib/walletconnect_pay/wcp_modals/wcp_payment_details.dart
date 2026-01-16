@@ -229,7 +229,7 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
         decoration: BoxDecoration(
           color: isSelected
               ? StyleConstants.accentPrimary.withValues(alpha: 0.1)
-              : null,
+              : StyleConstants.textSecondary.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(16),
         ),
         margin: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
@@ -279,10 +279,7 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
                     Icons.radio_button_on,
                     color: StyleConstants.accentPrimary,
                   )
-                : Icon(
-                    Icons.radio_button_off,
-                    color: StyleConstants.neutrals,
-                  ),
+                : SizedBox.shrink(),
           ],
         ),
       ),

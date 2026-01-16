@@ -730,7 +730,11 @@ class EVMService {
         }).toList();
         return balances
           ..sort((a, b) {
-            return b['chainId'].toString().compareTo(a['chainId'].toString());
+            // final bQuantity = double.tryParse(b['quantity']['numeric']) ?? 0.0;
+            // final aQuantity = double.tryParse(a['quantity']['numeric']) ?? 0.0;
+            final bQuantity = b['value'] as double? ?? 0.0;
+            final aQuantity = a['value'] as double? ?? 0.0;
+            return bQuantity.compareTo(aQuantity);
           });
       } catch (e) {
         throw Exception('Failed to load balance. $e');

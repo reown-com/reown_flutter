@@ -143,7 +143,7 @@ class ChainsDataList {
       name: 'OP Mainnet',
       currency: 'ETH',
       logo:
-          'https://pbs.twimg.com/profile_images/1734354549496836096/-laoU9C9_400x400.jpg',
+          'https://pbs.twimg.com/profile_images/2003410448197062656/Wb6_emPm_400x400.jpg',
       color: Colors.red,
       rpc: [
         'https://rpc.walletconnect.org/v1',

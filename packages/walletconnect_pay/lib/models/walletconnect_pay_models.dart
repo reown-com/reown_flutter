@@ -20,6 +20,7 @@ sealed class SdkConfig with _$SdkConfig {
     required String sdkVersion,
     required String sdkPlatform,
     required String bundleId,
+    String? clientId,
   }) = _SdkConfig;
 
   factory SdkConfig.fromJson(Map<String, dynamic> json) =>

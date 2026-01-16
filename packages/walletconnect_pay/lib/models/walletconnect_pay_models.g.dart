@@ -14,6 +14,7 @@ _SdkConfig _$SdkConfigFromJson(Map<String, dynamic> json) => _SdkConfig(
   sdkVersion: json['sdkVersion'] as String,
   sdkPlatform: json['sdkPlatform'] as String,
   bundleId: json['bundleId'] as String,
+  clientId: json['clientId'] as String?,
 );
 
 Map<String, dynamic> _$SdkConfigToJson(_SdkConfig instance) =>
@@ -25,6 +26,7 @@ Map<String, dynamic> _$SdkConfigToJson(_SdkConfig instance) =>
       'sdkVersion': instance.sdkVersion,
       'sdkPlatform': instance.sdkPlatform,
       'bundleId': instance.bundleId,
+      'clientId': instance.clientId,
     };
 
 _GetPaymentOptionsRequest _$GetPaymentOptionsRequestFromJson(

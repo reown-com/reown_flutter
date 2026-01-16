@@ -33,6 +33,7 @@ class MockWalletconnectPayPlatform
   Future<bool> initialize({
     required String projectId,
     required String apiKey,
+    String? clientId,
   }) async {
     if (_throwException != null) throw _throwException!;
     return true;

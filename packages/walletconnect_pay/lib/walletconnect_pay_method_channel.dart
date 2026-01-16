@@ -17,6 +17,7 @@ class MethodChannelWalletconnectPay extends WalletconnectPayPlatform {
   Future<bool> initialize({
     required String projectId,
     required String apiKey,
+    String? clientId,
   }) async {
     try {
       final packageName = await WalletconnectPayUtils.getPackageName();
@@ -28,6 +29,7 @@ class MethodChannelWalletconnectPay extends WalletconnectPayPlatform {
         sdkPlatform: WalletconnectPayUtils.getPlatform(),
         projectId: projectId,
         bundleId: packageName,
+        clientId: clientId,
       );
       final result = await methodChannel.invokeMethod<bool>(
         'initialize',

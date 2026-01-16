@@ -89,33 +89,35 @@ class PaymentStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        StepIndicator(isLast: isLast),
-        const SizedBox(width: StyleConstants.linear16),
-        Expanded(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(title, style: StyleConstants.wcpTextPrimaryStyle),
-                    const SizedBox.square(dimension: 6.0),
-                    Text(description,
-                        style: StyleConstants.wcpTextSecondaryStyle),
-                    if (!isLast) const SizedBox.square(dimension: 16.0),
-                  ],
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          StepIndicator(isLast: isLast),
+          const SizedBox(width: StyleConstants.linear16),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title, style: StyleConstants.wcpTextPrimaryStyle),
+                      const SizedBox.square(dimension: 6.0),
+                      Text(description,
+                          style: StyleConstants.wcpTextSecondaryStyle),
+                      if (!isLast) const SizedBox.square(dimension: 30.0),
+                    ],
+                  ),
                 ),
-              ),
-              if (timeEstimate != null)
-                TimeEstimateBadge(timeEstimate: timeEstimate!),
-            ],
+                if (timeEstimate != null)
+                  TimeEstimateBadge(timeEstimate: timeEstimate!),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -130,13 +132,11 @@ class StepIndicator extends StatelessWidget {
 
   static const double _circleSize = 14.0;
   static const double _lineWidth = 2.0;
-  static const double _lineHeight = 65.0;
   static const double _topLineHeight = 16.0;
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
         if (isLast) StepLine(height: _topLineHeight),
         Container(
@@ -148,7 +148,7 @@ class StepIndicator extends StatelessWidget {
             border: Border.all(color: Colors.grey[300]!, width: _lineWidth),
           ),
         ),
-        if (!isLast) StepLine(height: _lineHeight),
+        if (!isLast) const Expanded(child: StepLine.expandable()),
       ],
     );
   }
@@ -160,17 +160,26 @@ class StepLine extends StatelessWidget {
     required this.height,
   });
 
-  final double height;
+  const StepLine.expandable({super.key}) : height = null;
+
+  final double? height;
 
   static const double _width = 2.0;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: _width,
-      height: height,
-      color: Colors.grey[300],
-    );
+    if (height != null) {
+      return Container(
+        width: _width,
+        height: height,
+        color: Colors.grey[300],
+      );
+    } else {
+      return Container(
+        width: _width,
+        color: Colors.grey[300],
+      );
+    }
   }
 }
 

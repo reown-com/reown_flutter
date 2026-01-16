@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SdkConfig {
 
- String get baseUrl; String get projectId; String get apiKey; String get sdkName; String get sdkVersion; String get sdkPlatform; String get bundleId;
+ String get baseUrl; String get projectId; String get apiKey; String get sdkName; String get sdkVersion; String get sdkPlatform; String get bundleId; String? get clientId;
 /// Create a copy of SdkConfig
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $SdkConfigCopyWith<SdkConfig> get copyWith => _$SdkConfigCopyWithImpl<SdkConfig>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SdkConfig&&(identical(other.baseUrl, baseUrl) || other.baseUrl == baseUrl)&&(identical(other.projectId, projectId) || other.projectId == projectId)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey)&&(identical(other.sdkName, sdkName) || other.sdkName == sdkName)&&(identical(other.sdkVersion, sdkVersion) || other.sdkVersion == sdkVersion)&&(identical(other.sdkPlatform, sdkPlatform) || other.sdkPlatform == sdkPlatform)&&(identical(other.bundleId, bundleId) || other.bundleId == bundleId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SdkConfig&&(identical(other.baseUrl, baseUrl) || other.baseUrl == baseUrl)&&(identical(other.projectId, projectId) || other.projectId == projectId)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey)&&(identical(other.sdkName, sdkName) || other.sdkName == sdkName)&&(identical(other.sdkVersion, sdkVersion) || other.sdkVersion == sdkVersion)&&(identical(other.sdkPlatform, sdkPlatform) || other.sdkPlatform == sdkPlatform)&&(identical(other.bundleId, bundleId) || other.bundleId == bundleId)&&(identical(other.clientId, clientId) || other.clientId == clientId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,baseUrl,projectId,apiKey,sdkName,sdkVersion,sdkPlatform,bundleId);
+int get hashCode => Object.hash(runtimeType,baseUrl,projectId,apiKey,sdkName,sdkVersion,sdkPlatform,bundleId,clientId);
 
 @override
 String toString() {
-  return 'SdkConfig(baseUrl: $baseUrl, projectId: $projectId, apiKey: $apiKey, sdkName: $sdkName, sdkVersion: $sdkVersion, sdkPlatform: $sdkPlatform, bundleId: $bundleId)';
+  return 'SdkConfig(baseUrl: $baseUrl, projectId: $projectId, apiKey: $apiKey, sdkName: $sdkName, sdkVersion: $sdkVersion, sdkPlatform: $sdkPlatform, bundleId: $bundleId, clientId: $clientId)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $SdkConfigCopyWith<$Res>  {
   factory $SdkConfigCopyWith(SdkConfig value, $Res Function(SdkConfig) _then) = _$SdkConfigCopyWithImpl;
 @useResult
 $Res call({
- String baseUrl, String projectId, String apiKey, String sdkName, String sdkVersion, String sdkPlatform, String bundleId
+ String baseUrl, String projectId, String apiKey, String sdkName, String sdkVersion, String sdkPlatform, String bundleId, String? clientId
 });
 
 
@@ -65,7 +65,7 @@ class _$SdkConfigCopyWithImpl<$Res>
 
 /// Create a copy of SdkConfig
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? baseUrl = null,Object? projectId = null,Object? apiKey = null,Object? sdkName = null,Object? sdkVersion = null,Object? sdkPlatform = null,Object? bundleId = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? baseUrl = null,Object? projectId = null,Object? apiKey = null,Object? sdkName = null,Object? sdkVersion = null,Object? sdkPlatform = null,Object? bundleId = null,Object? clientId = freezed,}) {
   return _then(_self.copyWith(
 baseUrl: null == baseUrl ? _self.baseUrl : baseUrl // ignore: cast_nullable_to_non_nullable
 as String,projectId: null == projectId ? _self.projectId : projectId // ignore: cast_nullable_to_non_nullable
@@ -74,7 +74,8 @@ as String,sdkName: null == sdkName ? _self.sdkName : sdkName // ignore: cast_nul
 as String,sdkVersion: null == sdkVersion ? _self.sdkVersion : sdkVersion // ignore: cast_nullable_to_non_nullable
 as String,sdkPlatform: null == sdkPlatform ? _self.sdkPlatform : sdkPlatform // ignore: cast_nullable_to_non_nullable
 as String,bundleId: null == bundleId ? _self.bundleId : bundleId // ignore: cast_nullable_to_non_nullable
-as String,
+as String,clientId: freezed == clientId ? _self.clientId : clientId // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -156,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String baseUrl,  String projectId,  String apiKey,  String sdkName,  String sdkVersion,  String sdkPlatform,  String bundleId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String baseUrl,  String projectId,  String apiKey,  String sdkName,  String sdkVersion,  String sdkPlatform,  String bundleId,  String? clientId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SdkConfig() when $default != null:
-return $default(_that.baseUrl,_that.projectId,_that.apiKey,_that.sdkName,_that.sdkVersion,_that.sdkPlatform,_that.bundleId);case _:
+return $default(_that.baseUrl,_that.projectId,_that.apiKey,_that.sdkName,_that.sdkVersion,_that.sdkPlatform,_that.bundleId,_that.clientId);case _:
   return orElse();
 
 }
@@ -177,10 +178,10 @@ return $default(_that.baseUrl,_that.projectId,_that.apiKey,_that.sdkName,_that.s
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String baseUrl,  String projectId,  String apiKey,  String sdkName,  String sdkVersion,  String sdkPlatform,  String bundleId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String baseUrl,  String projectId,  String apiKey,  String sdkName,  String sdkVersion,  String sdkPlatform,  String bundleId,  String? clientId)  $default,) {final _that = this;
 switch (_that) {
 case _SdkConfig():
-return $default(_that.baseUrl,_that.projectId,_that.apiKey,_that.sdkName,_that.sdkVersion,_that.sdkPlatform,_that.bundleId);}
+return $default(_that.baseUrl,_that.projectId,_that.apiKey,_that.sdkName,_that.sdkVersion,_that.sdkPlatform,_that.bundleId,_that.clientId);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -194,10 +195,10 @@ return $default(_that.baseUrl,_that.projectId,_that.apiKey,_that.sdkName,_that.s
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String baseUrl,  String projectId,  String apiKey,  String sdkName,  String sdkVersion,  String sdkPlatform,  String bundleId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String baseUrl,  String projectId,  String apiKey,  String sdkName,  String sdkVersion,  String sdkPlatform,  String bundleId,  String? clientId)?  $default,) {final _that = this;
 switch (_that) {
 case _SdkConfig() when $default != null:
-return $default(_that.baseUrl,_that.projectId,_that.apiKey,_that.sdkName,_that.sdkVersion,_that.sdkPlatform,_that.bundleId);case _:
+return $default(_that.baseUrl,_that.projectId,_that.apiKey,_that.sdkName,_that.sdkVersion,_that.sdkPlatform,_that.bundleId,_that.clientId);case _:
   return null;
 
 }
@@ -209,7 +210,7 @@ return $default(_that.baseUrl,_that.projectId,_that.apiKey,_that.sdkName,_that.s
 @JsonSerializable()
 
 class _SdkConfig implements SdkConfig {
-  const _SdkConfig({required this.baseUrl, required this.projectId, required this.apiKey, required this.sdkName, required this.sdkVersion, required this.sdkPlatform, required this.bundleId});
+  const _SdkConfig({required this.baseUrl, required this.projectId, required this.apiKey, required this.sdkName, required this.sdkVersion, required this.sdkPlatform, required this.bundleId, this.clientId});
   factory _SdkConfig.fromJson(Map<String, dynamic> json) => _$SdkConfigFromJson(json);
 
 @override final  String baseUrl;
@@ -219,6 +220,7 @@ class _SdkConfig implements SdkConfig {
 @override final  String sdkVersion;
 @override final  String sdkPlatform;
 @override final  String bundleId;
+@override final  String? clientId;
 
 /// Create a copy of SdkConfig
 /// with the given fields replaced by the non-null parameter values.
@@ -233,16 +235,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SdkConfig&&(identical(other.baseUrl, baseUrl) || other.baseUrl == baseUrl)&&(identical(other.projectId, projectId) || other.projectId == projectId)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey)&&(identical(other.sdkName, sdkName) || other.sdkName == sdkName)&&(identical(other.sdkVersion, sdkVersion) || other.sdkVersion == sdkVersion)&&(identical(other.sdkPlatform, sdkPlatform) || other.sdkPlatform == sdkPlatform)&&(identical(other.bundleId, bundleId) || other.bundleId == bundleId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SdkConfig&&(identical(other.baseUrl, baseUrl) || other.baseUrl == baseUrl)&&(identical(other.projectId, projectId) || other.projectId == projectId)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey)&&(identical(other.sdkName, sdkName) || other.sdkName == sdkName)&&(identical(other.sdkVersion, sdkVersion) || other.sdkVersion == sdkVersion)&&(identical(other.sdkPlatform, sdkPlatform) || other.sdkPlatform == sdkPlatform)&&(identical(other.bundleId, bundleId) || other.bundleId == bundleId)&&(identical(other.clientId, clientId) || other.clientId == clientId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,baseUrl,projectId,apiKey,sdkName,sdkVersion,sdkPlatform,bundleId);
+int get hashCode => Object.hash(runtimeType,baseUrl,projectId,apiKey,sdkName,sdkVersion,sdkPlatform,bundleId,clientId);
 
 @override
 String toString() {
-  return 'SdkConfig(baseUrl: $baseUrl, projectId: $projectId, apiKey: $apiKey, sdkName: $sdkName, sdkVersion: $sdkVersion, sdkPlatform: $sdkPlatform, bundleId: $bundleId)';
+  return 'SdkConfig(baseUrl: $baseUrl, projectId: $projectId, apiKey: $apiKey, sdkName: $sdkName, sdkVersion: $sdkVersion, sdkPlatform: $sdkPlatform, bundleId: $bundleId, clientId: $clientId)';
 }
 
 
@@ -253,7 +255,7 @@ abstract mixin class _$SdkConfigCopyWith<$Res> implements $SdkConfigCopyWith<$Re
   factory _$SdkConfigCopyWith(_SdkConfig value, $Res Function(_SdkConfig) _then) = __$SdkConfigCopyWithImpl;
 @override @useResult
 $Res call({
- String baseUrl, String projectId, String apiKey, String sdkName, String sdkVersion, String sdkPlatform, String bundleId
+ String baseUrl, String projectId, String apiKey, String sdkName, String sdkVersion, String sdkPlatform, String bundleId, String? clientId
 });
 
 
@@ -270,7 +272,7 @@ class __$SdkConfigCopyWithImpl<$Res>
 
 /// Create a copy of SdkConfig
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? baseUrl = null,Object? projectId = null,Object? apiKey = null,Object? sdkName = null,Object? sdkVersion = null,Object? sdkPlatform = null,Object? bundleId = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? baseUrl = null,Object? projectId = null,Object? apiKey = null,Object? sdkName = null,Object? sdkVersion = null,Object? sdkPlatform = null,Object? bundleId = null,Object? clientId = freezed,}) {
   return _then(_SdkConfig(
 baseUrl: null == baseUrl ? _self.baseUrl : baseUrl // ignore: cast_nullable_to_non_nullable
 as String,projectId: null == projectId ? _self.projectId : projectId // ignore: cast_nullable_to_non_nullable
@@ -279,7 +281,8 @@ as String,sdkName: null == sdkName ? _self.sdkName : sdkName // ignore: cast_nul
 as String,sdkVersion: null == sdkVersion ? _self.sdkVersion : sdkVersion // ignore: cast_nullable_to_non_nullable
 as String,sdkPlatform: null == sdkPlatform ? _self.sdkPlatform : sdkPlatform // ignore: cast_nullable_to_non_nullable
 as String,bundleId: null == bundleId ? _self.bundleId : bundleId // ignore: cast_nullable_to_non_nullable
-as String,
+as String,clientId: freezed == clientId ? _self.clientId : clientId // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
