@@ -11,11 +11,13 @@ class WalletConnectPay {
   final String projectId;
   final String apiKey;
   final String? clientId;
+  final String? baseUrl;
 
   const WalletConnectPay({
     required this.projectId,
     required this.apiKey,
     this.clientId,
+    this.baseUrl,
   });
 
   Future<bool> init() async {
@@ -24,6 +26,7 @@ class WalletConnectPay {
         apiKey: apiKey,
         projectId: projectId,
         clientId: clientId,
+        baseUrl: baseUrl,
       );
     } catch (e) {
       rethrow;
@@ -61,7 +64,7 @@ class WalletConnectPay {
   }
 
   Future<ConfirmPaymentResponse> confirmPayment({
-    required ConfirmPaymentJsonRequest request,
+    required ConfirmPaymentRequest request,
   }) async {
     try {
       final requestJson = jsonEncode(request.toJson());

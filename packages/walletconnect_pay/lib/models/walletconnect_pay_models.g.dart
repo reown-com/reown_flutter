@@ -248,9 +248,9 @@ Map<String, dynamic> _$GetRequiredPaymentActionsRequestToJson(
   'paymentId': instance.paymentId,
 };
 
-_ConfirmPaymentJsonRequest _$ConfirmPaymentJsonRequestFromJson(
+_ConfirmPaymentRequest _$ConfirmPaymentRequestFromJson(
   Map<String, dynamic> json,
-) => _ConfirmPaymentJsonRequest(
+) => _ConfirmPaymentRequest(
   paymentId: json['paymentId'] as String,
   optionId: json['optionId'] as String,
   signatures: (json['signatures'] as List<dynamic>)
@@ -262,8 +262,8 @@ _ConfirmPaymentJsonRequest _$ConfirmPaymentJsonRequestFromJson(
   maxPollMs: (json['maxPollMs'] as num?)?.toInt(),
 );
 
-Map<String, dynamic> _$ConfirmPaymentJsonRequestToJson(
-  _ConfirmPaymentJsonRequest instance,
+Map<String, dynamic> _$ConfirmPaymentRequestToJson(
+  _ConfirmPaymentRequest instance,
 ) => <String, dynamic>{
   'paymentId': instance.paymentId,
   'optionId': instance.optionId,

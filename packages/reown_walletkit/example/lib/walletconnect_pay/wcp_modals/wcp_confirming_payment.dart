@@ -12,7 +12,7 @@ class WCPConfirmingPayment extends StatefulWidget {
     required this.paymentRequest,
   });
 
-  final ConfirmPaymentJsonRequest paymentRequest;
+  final ConfirmPaymentRequest paymentRequest;
 
   @override
   State<WCPConfirmingPayment> createState() => _WCPConfirmingPaymentState();
@@ -20,7 +20,7 @@ class WCPConfirmingPayment extends StatefulWidget {
 
 class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
   final _wcPayService = GetIt.I<IWalletConnectPayService>();
-  late final ConfirmPaymentJsonRequest _paymentRequest;
+  late final ConfirmPaymentRequest _paymentRequest;
 
   @override
   void initState() {

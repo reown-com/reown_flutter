@@ -18,11 +18,12 @@ class MethodChannelWalletconnectPay extends WalletconnectPayPlatform {
     required String projectId,
     required String apiKey,
     String? clientId,
+    String? baseUrl,
   }) async {
     try {
       final packageName = await WalletconnectPayUtils.getPackageName();
       final sdkConfig = SdkConfig(
-        baseUrl: WalletconnectPayUtils.baseUrl,
+        baseUrl: baseUrl ?? WalletconnectPayUtils.baseUrl,
         apiKey: apiKey,
         sdkName: WalletconnectPayUtils.sdkName,
         sdkVersion: packageVersion,

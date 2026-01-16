@@ -27,6 +27,7 @@ abstract class WalletconnectPayPlatform extends PlatformInterface {
     required String projectId,
     required String apiKey,
     String? clientId,
+    String? baseUrl,
   });
 
   Future<String> confirmPayment({required String requestJson});

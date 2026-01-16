@@ -259,19 +259,18 @@ sealed class GetRequiredPaymentActionsRequest
 /// ConfirmPayment request models
 ///
 
-// TODO WCP: Change name to match yttrium
 @freezed
-sealed class ConfirmPaymentJsonRequest with _$ConfirmPaymentJsonRequest {
-  const factory ConfirmPaymentJsonRequest({
+sealed class ConfirmPaymentRequest with _$ConfirmPaymentRequest {
+  const factory ConfirmPaymentRequest({
     required String paymentId,
     required String optionId,
     required List<String> signatures,
     List<CollectDataFieldResult>? collectedData,
     int? maxPollMs,
-  }) = _ConfirmPaymentJsonRequest;
+  }) = _ConfirmPaymentRequest;
 
-  factory ConfirmPaymentJsonRequest.fromJson(Map<String, dynamic> json) =>
-      _$ConfirmPaymentJsonRequestFromJson(json);
+  factory ConfirmPaymentRequest.fromJson(Map<String, dynamic> json) =>
+      _$ConfirmPaymentRequestFromJson(json);
 }
 
 @freezed

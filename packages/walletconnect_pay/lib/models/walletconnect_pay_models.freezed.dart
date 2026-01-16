@@ -4159,22 +4159,22 @@ as String,
 
 
 /// @nodoc
-mixin _$ConfirmPaymentJsonRequest {
+mixin _$ConfirmPaymentRequest {
 
  String get paymentId; String get optionId; List<String> get signatures; List<CollectDataFieldResult>? get collectedData; int? get maxPollMs;
-/// Create a copy of ConfirmPaymentJsonRequest
+/// Create a copy of ConfirmPaymentRequest
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$ConfirmPaymentJsonRequestCopyWith<ConfirmPaymentJsonRequest> get copyWith => _$ConfirmPaymentJsonRequestCopyWithImpl<ConfirmPaymentJsonRequest>(this as ConfirmPaymentJsonRequest, _$identity);
+$ConfirmPaymentRequestCopyWith<ConfirmPaymentRequest> get copyWith => _$ConfirmPaymentRequestCopyWithImpl<ConfirmPaymentRequest>(this as ConfirmPaymentRequest, _$identity);
 
-  /// Serializes this ConfirmPaymentJsonRequest to a JSON map.
+  /// Serializes this ConfirmPaymentRequest to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConfirmPaymentJsonRequest&&(identical(other.paymentId, paymentId) || other.paymentId == paymentId)&&(identical(other.optionId, optionId) || other.optionId == optionId)&&const DeepCollectionEquality().equals(other.signatures, signatures)&&const DeepCollectionEquality().equals(other.collectedData, collectedData)&&(identical(other.maxPollMs, maxPollMs) || other.maxPollMs == maxPollMs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ConfirmPaymentRequest&&(identical(other.paymentId, paymentId) || other.paymentId == paymentId)&&(identical(other.optionId, optionId) || other.optionId == optionId)&&const DeepCollectionEquality().equals(other.signatures, signatures)&&const DeepCollectionEquality().equals(other.collectedData, collectedData)&&(identical(other.maxPollMs, maxPollMs) || other.maxPollMs == maxPollMs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -4183,15 +4183,15 @@ int get hashCode => Object.hash(runtimeType,paymentId,optionId,const DeepCollect
 
 @override
 String toString() {
-  return 'ConfirmPaymentJsonRequest(paymentId: $paymentId, optionId: $optionId, signatures: $signatures, collectedData: $collectedData, maxPollMs: $maxPollMs)';
+  return 'ConfirmPaymentRequest(paymentId: $paymentId, optionId: $optionId, signatures: $signatures, collectedData: $collectedData, maxPollMs: $maxPollMs)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $ConfirmPaymentJsonRequestCopyWith<$Res>  {
-  factory $ConfirmPaymentJsonRequestCopyWith(ConfirmPaymentJsonRequest value, $Res Function(ConfirmPaymentJsonRequest) _then) = _$ConfirmPaymentJsonRequestCopyWithImpl;
+abstract mixin class $ConfirmPaymentRequestCopyWith<$Res>  {
+  factory $ConfirmPaymentRequestCopyWith(ConfirmPaymentRequest value, $Res Function(ConfirmPaymentRequest) _then) = _$ConfirmPaymentRequestCopyWithImpl;
 @useResult
 $Res call({
  String paymentId, String optionId, List<String> signatures, List<CollectDataFieldResult>? collectedData, int? maxPollMs
@@ -4202,14 +4202,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$ConfirmPaymentJsonRequestCopyWithImpl<$Res>
-    implements $ConfirmPaymentJsonRequestCopyWith<$Res> {
-  _$ConfirmPaymentJsonRequestCopyWithImpl(this._self, this._then);
+class _$ConfirmPaymentRequestCopyWithImpl<$Res>
+    implements $ConfirmPaymentRequestCopyWith<$Res> {
+  _$ConfirmPaymentRequestCopyWithImpl(this._self, this._then);
 
-  final ConfirmPaymentJsonRequest _self;
-  final $Res Function(ConfirmPaymentJsonRequest) _then;
+  final ConfirmPaymentRequest _self;
+  final $Res Function(ConfirmPaymentRequest) _then;
 
-/// Create a copy of ConfirmPaymentJsonRequest
+/// Create a copy of ConfirmPaymentRequest
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? paymentId = null,Object? optionId = null,Object? signatures = null,Object? collectedData = freezed,Object? maxPollMs = freezed,}) {
   return _then(_self.copyWith(
@@ -4225,8 +4225,8 @@ as int?,
 }
 
 
-/// Adds pattern-matching-related methods to [ConfirmPaymentJsonRequest].
-extension ConfirmPaymentJsonRequestPatterns on ConfirmPaymentJsonRequest {
+/// Adds pattern-matching-related methods to [ConfirmPaymentRequest].
+extension ConfirmPaymentRequestPatterns on ConfirmPaymentRequest {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -4239,10 +4239,10 @@ extension ConfirmPaymentJsonRequestPatterns on ConfirmPaymentJsonRequest {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ConfirmPaymentJsonRequest value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ConfirmPaymentRequest value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _ConfirmPaymentJsonRequest() when $default != null:
+case _ConfirmPaymentRequest() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -4261,10 +4261,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ConfirmPaymentJsonRequest value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ConfirmPaymentRequest value)  $default,){
 final _that = this;
 switch (_that) {
-case _ConfirmPaymentJsonRequest():
+case _ConfirmPaymentRequest():
 return $default(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -4279,10 +4279,10 @@ return $default(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ConfirmPaymentJsonRequest value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ConfirmPaymentRequest value)?  $default,){
 final _that = this;
 switch (_that) {
-case _ConfirmPaymentJsonRequest() when $default != null:
+case _ConfirmPaymentRequest() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -4302,7 +4302,7 @@ return $default(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String paymentId,  String optionId,  List<String> signatures,  List<CollectDataFieldResult>? collectedData,  int? maxPollMs)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _ConfirmPaymentJsonRequest() when $default != null:
+case _ConfirmPaymentRequest() when $default != null:
 return $default(_that.paymentId,_that.optionId,_that.signatures,_that.collectedData,_that.maxPollMs);case _:
   return orElse();
 
@@ -4323,7 +4323,7 @@ return $default(_that.paymentId,_that.optionId,_that.signatures,_that.collectedD
 
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String paymentId,  String optionId,  List<String> signatures,  List<CollectDataFieldResult>? collectedData,  int? maxPollMs)  $default,) {final _that = this;
 switch (_that) {
-case _ConfirmPaymentJsonRequest():
+case _ConfirmPaymentRequest():
 return $default(_that.paymentId,_that.optionId,_that.signatures,_that.collectedData,_that.maxPollMs);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -4340,7 +4340,7 @@ return $default(_that.paymentId,_that.optionId,_that.signatures,_that.collectedD
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String paymentId,  String optionId,  List<String> signatures,  List<CollectDataFieldResult>? collectedData,  int? maxPollMs)?  $default,) {final _that = this;
 switch (_that) {
-case _ConfirmPaymentJsonRequest() when $default != null:
+case _ConfirmPaymentRequest() when $default != null:
 return $default(_that.paymentId,_that.optionId,_that.signatures,_that.collectedData,_that.maxPollMs);case _:
   return null;
 
@@ -4352,9 +4352,9 @@ return $default(_that.paymentId,_that.optionId,_that.signatures,_that.collectedD
 /// @nodoc
 @JsonSerializable()
 
-class _ConfirmPaymentJsonRequest implements ConfirmPaymentJsonRequest {
-  const _ConfirmPaymentJsonRequest({required this.paymentId, required this.optionId, required final  List<String> signatures, final  List<CollectDataFieldResult>? collectedData, this.maxPollMs}): _signatures = signatures,_collectedData = collectedData;
-  factory _ConfirmPaymentJsonRequest.fromJson(Map<String, dynamic> json) => _$ConfirmPaymentJsonRequestFromJson(json);
+class _ConfirmPaymentRequest implements ConfirmPaymentRequest {
+  const _ConfirmPaymentRequest({required this.paymentId, required this.optionId, required final  List<String> signatures, final  List<CollectDataFieldResult>? collectedData, this.maxPollMs}): _signatures = signatures,_collectedData = collectedData;
+  factory _ConfirmPaymentRequest.fromJson(Map<String, dynamic> json) => _$ConfirmPaymentRequestFromJson(json);
 
 @override final  String paymentId;
 @override final  String optionId;
@@ -4376,20 +4376,20 @@ class _ConfirmPaymentJsonRequest implements ConfirmPaymentJsonRequest {
 
 @override final  int? maxPollMs;
 
-/// Create a copy of ConfirmPaymentJsonRequest
+/// Create a copy of ConfirmPaymentRequest
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$ConfirmPaymentJsonRequestCopyWith<_ConfirmPaymentJsonRequest> get copyWith => __$ConfirmPaymentJsonRequestCopyWithImpl<_ConfirmPaymentJsonRequest>(this, _$identity);
+_$ConfirmPaymentRequestCopyWith<_ConfirmPaymentRequest> get copyWith => __$ConfirmPaymentRequestCopyWithImpl<_ConfirmPaymentRequest>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$ConfirmPaymentJsonRequestToJson(this, );
+  return _$ConfirmPaymentRequestToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConfirmPaymentJsonRequest&&(identical(other.paymentId, paymentId) || other.paymentId == paymentId)&&(identical(other.optionId, optionId) || other.optionId == optionId)&&const DeepCollectionEquality().equals(other._signatures, _signatures)&&const DeepCollectionEquality().equals(other._collectedData, _collectedData)&&(identical(other.maxPollMs, maxPollMs) || other.maxPollMs == maxPollMs));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ConfirmPaymentRequest&&(identical(other.paymentId, paymentId) || other.paymentId == paymentId)&&(identical(other.optionId, optionId) || other.optionId == optionId)&&const DeepCollectionEquality().equals(other._signatures, _signatures)&&const DeepCollectionEquality().equals(other._collectedData, _collectedData)&&(identical(other.maxPollMs, maxPollMs) || other.maxPollMs == maxPollMs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -4398,15 +4398,15 @@ int get hashCode => Object.hash(runtimeType,paymentId,optionId,const DeepCollect
 
 @override
 String toString() {
-  return 'ConfirmPaymentJsonRequest(paymentId: $paymentId, optionId: $optionId, signatures: $signatures, collectedData: $collectedData, maxPollMs: $maxPollMs)';
+  return 'ConfirmPaymentRequest(paymentId: $paymentId, optionId: $optionId, signatures: $signatures, collectedData: $collectedData, maxPollMs: $maxPollMs)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$ConfirmPaymentJsonRequestCopyWith<$Res> implements $ConfirmPaymentJsonRequestCopyWith<$Res> {
-  factory _$ConfirmPaymentJsonRequestCopyWith(_ConfirmPaymentJsonRequest value, $Res Function(_ConfirmPaymentJsonRequest) _then) = __$ConfirmPaymentJsonRequestCopyWithImpl;
+abstract mixin class _$ConfirmPaymentRequestCopyWith<$Res> implements $ConfirmPaymentRequestCopyWith<$Res> {
+  factory _$ConfirmPaymentRequestCopyWith(_ConfirmPaymentRequest value, $Res Function(_ConfirmPaymentRequest) _then) = __$ConfirmPaymentRequestCopyWithImpl;
 @override @useResult
 $Res call({
  String paymentId, String optionId, List<String> signatures, List<CollectDataFieldResult>? collectedData, int? maxPollMs
@@ -4417,17 +4417,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$ConfirmPaymentJsonRequestCopyWithImpl<$Res>
-    implements _$ConfirmPaymentJsonRequestCopyWith<$Res> {
-  __$ConfirmPaymentJsonRequestCopyWithImpl(this._self, this._then);
+class __$ConfirmPaymentRequestCopyWithImpl<$Res>
+    implements _$ConfirmPaymentRequestCopyWith<$Res> {
+  __$ConfirmPaymentRequestCopyWithImpl(this._self, this._then);
 
-  final _ConfirmPaymentJsonRequest _self;
-  final $Res Function(_ConfirmPaymentJsonRequest) _then;
+  final _ConfirmPaymentRequest _self;
+  final $Res Function(_ConfirmPaymentRequest) _then;
 
-/// Create a copy of ConfirmPaymentJsonRequest
+/// Create a copy of ConfirmPaymentRequest
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? paymentId = null,Object? optionId = null,Object? signatures = null,Object? collectedData = freezed,Object? maxPollMs = freezed,}) {
-  return _then(_ConfirmPaymentJsonRequest(
+  return _then(_ConfirmPaymentRequest(
 paymentId: null == paymentId ? _self.paymentId : paymentId // ignore: cast_nullable_to_non_nullable
 as String,optionId: null == optionId ? _self.optionId : optionId // ignore: cast_nullable_to_non_nullable
 as String,signatures: null == signatures ? _self._signatures : signatures // ignore: cast_nullable_to_non_nullable

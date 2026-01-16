@@ -21,7 +21,7 @@ class WalletConnectPayService implements IWalletConnectPayService {
 
   late final WalletConnectPay _walletConnectPay;
   late final List<String> _accounts;
-  ConfirmPaymentJsonRequest? _pendingPaymentRequest;
+  ConfirmPaymentRequest? _pendingPaymentRequest;
   PaymentOptionsResponse? _currentPaymentOptions;
 
   @override
@@ -48,7 +48,7 @@ class WalletConnectPayService implements IWalletConnectPayService {
         throw 'No options found for this payment';
       }
 
-      _pendingPaymentRequest = ConfirmPaymentJsonRequest(
+      _pendingPaymentRequest = ConfirmPaymentRequest(
         paymentId: _currentPaymentOptions!.paymentId,
         optionId: _currentPaymentOptions!.options.first.id,
         signatures: [],
@@ -87,7 +87,7 @@ class WalletConnectPayService implements IWalletConnectPayService {
 
   @override
   Future<ConfirmPaymentResponse> confirmPayment(
-    ConfirmPaymentJsonRequest payment,
+    ConfirmPaymentRequest payment,
   ) async {
     final response = await _walletConnectPay.confirmPayment(
       request: payment.copyWith(
@@ -258,7 +258,7 @@ class WalletConnectPayService implements IWalletConnectPayService {
   }
 
   /// Shows the payment details modal and handles back navigation to resume data collection if needed.
-  Future<ConfirmPaymentJsonRequest> _showPaymentDetails(
+  Future<ConfirmPaymentRequest> _showPaymentDetails(
     PaymentOptionsResponse response,
   ) async {
     (int, int) stepper = (0, 0);
@@ -275,7 +275,7 @@ class WalletConnectPayService implements IWalletConnectPayService {
       stepper: stepper,
     );
 
-    if (result is ConfirmPaymentJsonRequest) {
+    if (result is ConfirmPaymentRequest) {
       return result;
     } else if (result == WCBottomSheetResult.back.name) {
       if (response.collectData != null) {

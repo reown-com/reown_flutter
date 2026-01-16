@@ -34,6 +34,7 @@ class MockWalletconnectPayPlatform
     required String projectId,
     required String apiKey,
     String? clientId,
+    String? baseUrl,
   }) async {
     if (_throwException != null) throw _throwException!;
     return true;
@@ -227,7 +228,7 @@ void main() {
       mockPlatform.setConfirmPaymentResponse(jsonEncode(confirmResponse));
 
       final result = await walletconnectPayPlugin.confirmPayment(
-        request: ConfirmPaymentJsonRequest(
+        request: ConfirmPaymentRequest(
           paymentId: 'pay_json_789',
           optionId: 'opt_1',
           signatures: ['0x123'],
@@ -287,7 +288,7 @@ void main() {
 
     test('test_json_confirm_payment_empty_payment_id', () async {
       // Validation happens at platform level
-      final request = ConfirmPaymentJsonRequest(
+      final request = ConfirmPaymentRequest(
         paymentId: '',
         optionId: 'opt_1',
         signatures: [],
@@ -307,7 +308,7 @@ void main() {
       mockPlatform.setConfirmPaymentResponse(jsonEncode(confirmResponse));
 
       final result = await walletconnectPayPlugin.confirmPayment(
-        request: ConfirmPaymentJsonRequest(
+        request: ConfirmPaymentRequest(
           paymentId: 'pay_123',
           optionId: 'opt_1',
           signatures: ['0xsignature1', '0xsignature2'],

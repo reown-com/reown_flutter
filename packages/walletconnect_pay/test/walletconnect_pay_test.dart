@@ -12,6 +12,7 @@ class MockWalletconnectPayPlatform
     required String projectId,
     required String apiKey,
     String? clientId,
+    String? baseUrl,
   }) async {
     return true;
   }
@@ -62,7 +63,7 @@ void main() {
     WalletconnectPayPlatform.instance = fakePlatform;
 
     final result = await walletconnectPayPlugin.confirmPayment(
-      request: ConfirmPaymentJsonRequest(
+      request: ConfirmPaymentRequest(
         paymentId: 'test-payment-id',
         optionId: 'test-option-id',
         signatures: ['test-signature'],

@@ -18,7 +18,7 @@ class WCPPaymentDetailsWidget extends StatefulWidget {
   });
 
   final PaymentOptionsResponse paymentOptionsResponse;
-  final ConfirmPaymentJsonRequest paymentRequest;
+  final ConfirmPaymentRequest paymentRequest;
 
   @override
   State<WCPPaymentDetailsWidget> createState() =>
@@ -28,7 +28,7 @@ class WCPPaymentDetailsWidget extends StatefulWidget {
 class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
   final _wcPayService = GetIt.I<IWalletConnectPayService>();
   late final PaymentOptionsResponse paymentOptionsResponse;
-  late ConfirmPaymentJsonRequest confirmRequest;
+  late ConfirmPaymentRequest confirmRequest;
 
   @override
   void initState() {

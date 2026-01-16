@@ -6,7 +6,7 @@ abstract class IWalletConnectPayService extends Disposable {
   Future<void> init();
   Future<void> processPayment(String paymentLink);
   Future<ConfirmPaymentResponse> confirmPayment(
-    ConfirmPaymentJsonRequest payment,
+    ConfirmPaymentRequest payment,
   );
   Future<List<Action>> getPaymentActions(
     String optionId,

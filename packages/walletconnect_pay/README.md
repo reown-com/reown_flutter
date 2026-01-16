@@ -85,6 +85,7 @@ final payClient = WalletConnectPay(
   projectId: 'YOUR_PROJECT_ID',
   apiKey: 'YOUR_API_KEY',
   clientId: 'OPTIONAL_CLIENT_ID', // Optional
+  baseUrl: 'https://api.pay.walletconnect.com', // Optional
 );
 
 // Initialize the SDK
@@ -94,7 +95,7 @@ if (!success) {
 }
 ```
 
-### Get Payment Options
+### Get Payment Options 
 
 Retrieve available payment options for a payment link:
 
@@ -154,7 +155,7 @@ for (final action in actions) {
 Confirm a payment with signatures and optional collected data:
 
 ```dart
-final confirmRequest = ConfirmPaymentJsonRequest(
+final confirmRequest = ConfirmPaymentRequest(
   paymentId: response.paymentId,
   optionId: response.options.first.id,
   signatures: ['0x...', '0x...'], // Signatures from wallet actions
@@ -196,12 +197,14 @@ WalletConnectPay({
   required String projectId,
   required String apiKey,
   String? clientId,
+  String? baseUrl,
 })
 ```
 
 - `projectId`: Your WalletConnect project ID
 - `apiKey`: Your WalletConnect Pay API key
 - `clientId`: Optional client identifier
+- `baseUrl`: Optional base URL for the API. Defaults to `https://api.pay.walletconnect.com` if not provided
 
 #### Methods
 
@@ -217,7 +220,7 @@ Retrieves available payment options for a payment link.
 
 Gets the required wallet actions for a payment option.
 
-##### `Future<ConfirmPaymentResponse> confirmPayment({required ConfirmPaymentJsonRequest request})`
+##### `Future<ConfirmPaymentResponse> confirmPayment({required ConfirmPaymentRequest request})`
 
 Confirms a payment with signatures and optional collected data.
 
@@ -267,10 +270,10 @@ PaymentOption({
 })
 ```
 
-### ConfirmPaymentJsonRequest
+### ConfirmPaymentRequest
 
 ```dart
-ConfirmPaymentJsonRequest({
+ConfirmPaymentRequest({
   required String paymentId,
   required String optionId,
   required List<String> signatures,
