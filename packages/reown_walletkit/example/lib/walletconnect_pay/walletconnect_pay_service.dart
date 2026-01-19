@@ -4,10 +4,12 @@ import 'dart:async';
 import 'package:flutter/material.dart' hide Action;
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/i_walletconnect_pay_service.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_confirming_payment.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_get_payment_options.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_information_capture/wcp_birthdate_capture.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_information_capture/wcp_full_name_capture.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_information_capture/wcp_place_of_birth_capture.dart';
@@ -31,20 +33,39 @@ class WalletConnectPayService implements IWalletConnectPayService {
 
   @override
   Future<void> init() async {
+    // Get apikey from storage if configured in settings or pass from --dart-defines
     final wcpApiKey = GetIt.I<IKeyService>().getWCPApiKey();
+    final walletKit = GetIt.I<IWalletKitService>().walletKit;
+    final clientId = await walletKit.core.crypto.getClientId();
+    // It should be either apiKey alone or appId + clientId
     _walletConnectPay = WalletConnectPay(
-      projectId: DartDefines.projectId,
-      apiKey: wcpApiKey ?? DartDefines.wcpApiKey,
+      apiKey: wcpApiKey ?? DartDefines.wcpApiKey, // has preference
+      // appId: DartDefines.projectId, // if no api
+      clientId: clientId, // if via walletkit
     );
     await _walletConnectPay.init();
+    debugPrint('[$runtimeType] initialized');
   }
 
   @override
   Future<void> processPayment(String paymentLink) async {
     try {
       // PaymentOptionsResponse
-      _currentPaymentOptions = await _getPaymentOptions(paymentLink);
+      final optionsResponse = await _bottomSheetHandler.queueBottomSheet(
+        widget: WCPGetPaymentOptions(
+          paymentLink: paymentLink,
+          accounts: _accounts,
+        ),
+      );
+
+      if (optionsResponse is! PaymentOptionsResponse) {
+        throw optionsResponse;
+      }
+
+      _currentPaymentOptions = optionsResponse;
+
       if (_currentPaymentOptions!.options.isEmpty) {
+        _currentPaymentOptions = null;
         throw 'No options found for this payment';
       }
 
@@ -63,16 +84,26 @@ class WalletConnectPayService implements IWalletConnectPayService {
 
       await _processPayment(_currentPaymentOptions!);
     } catch (e) {
-      if (e is String && e == 'cancelled') {
+      if (e == 'cancelled' || e == 'close') {
         return;
       }
-      debugPrint('[WalletConnectPay] processPayment error: $e');
       rethrow;
     }
   }
 
+  /// Fetches payment options from the WalletConnect Pay API for the given payment link.
   @override
-  Future<List<Action>> getPaymentActions(
+  Future<PaymentOptionsResponse> getPaymentOptions(
+    GetPaymentOptionsRequest request,
+  ) async {
+    final response = await _walletConnectPay.getPaymentOptions(
+      request: request,
+    );
+    return response;
+  }
+
+  @override
+  Future<List<Action>> getRequiredPaymentActions(
     String optionId,
     String paymentId,
   ) async {
@@ -95,18 +126,6 @@ class WalletConnectPayService implements IWalletConnectPayService {
       ),
     );
     return response;
-  }
-
-  /// Fetches payment options from the WalletConnect Pay API for the given payment link.
-  Future<PaymentOptionsResponse> _getPaymentOptions(String paymentLink) async {
-    final paymentOptionsRequest = GetPaymentOptionsRequest(
-      paymentLink: paymentLink,
-      accounts: _accounts,
-      includePaymentInfo: true,
-    );
-    return await _walletConnectPay.getPaymentOptions(
-      request: paymentOptionsRequest,
-    );
   }
 
   /// Initiates the data collection flow by showing the start modal and collecting required fields.
@@ -238,8 +257,11 @@ class WalletConnectPayService implements IWalletConnectPayService {
     if (paymentStatusResult is! PaymentStatus) {
       _pendingPaymentRequest = null;
       _currentPaymentOptions = null;
-      return paymentStatusResult;
+      throw paymentStatusResult;
     }
+
+    _pendingPaymentRequest = null;
+    _currentPaymentOptions = null;
 
     // Step 3: Payment Result
     final result = await _bottomSheetHandler.queueBottomSheet(
@@ -249,12 +271,8 @@ class WalletConnectPayService implements IWalletConnectPayService {
       ),
     );
     if (result != WCBottomSheetResult.next.name) {
-      _pendingPaymentRequest = null;
-      _currentPaymentOptions = null;
-      return result;
+      throw result;
     }
-    _pendingPaymentRequest = null;
-    _currentPaymentOptions = null;
   }
 
   /// Shows the payment details modal and handles back navigation to resume data collection if needed.
@@ -282,10 +300,10 @@ class WalletConnectPayService implements IWalletConnectPayService {
         await _resumeDataCollectionLastStep(response);
         return _showPaymentDetails(response);
       } else {
-        throw 'cancelled';
+        throw result;
       }
     } else {
-      throw 'cancelled';
+      throw result;
     }
   }
 

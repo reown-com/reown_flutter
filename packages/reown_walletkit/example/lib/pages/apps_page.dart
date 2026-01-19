@@ -18,11 +18,7 @@ import 'package:toastification/toastification.dart';
 import 'package:walletconnect_pay/walletconnect_pay.dart';
 
 class AppsPage extends StatefulWidget {
-  AppsPage({
-    super.key,
-    required this.isDarkMode,
-  });
-  final bool isDarkMode;
+  AppsPage({super.key});
 
   @override
   AppsPageState createState() => AppsPageState();
@@ -185,24 +181,26 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
     if ((uri ?? '').isEmpty) return;
     try {
       DeepLinkHandler.waiting.value = true;
-      if (MethodsUtils.isPaymentUrl(uri!)) {
+      if (MethodsUtils.isPaymentLink(uri!)) {
         await _wcPayService.processPayment(uri);
         DeepLinkHandler.waiting.value = false;
       } else {
         await _walletKit.pair(uri: Uri.parse(uri));
       }
-    } on ReownSignError catch (e) {
-      _showErrorDialog('${e.code}: ${e.message}\n$uri');
     } on TimeoutException catch (_) {
       _showErrorDialog('Time out error. Check your connection.');
+    } on ReownSignError catch (e) {
+      _showErrorDialog('${e.code}:\n${e.message}');
     } on PayInitializeError catch (e) {
-      _showErrorDialog('PayInitializeError. $e');
+      _showErrorDialog('${e.code}:\n${e.message}');
     } on GetPaymentOptionsError catch (e) {
-      _showErrorDialog('GetPaymentOptionsError. $e');
-    } on GetRequiredActionError catch (e) {
-      _showErrorDialog('GetRequiredActionError. $e');
+      _showErrorDialog('${e.code}:\n${e.message}');
+    } on GetRequiredActionsError catch (e) {
+      _showErrorDialog('${e.code}:\n${e.message}');
     } on ConfirmPaymentError catch (e) {
-      _showErrorDialog('ConfirmPaymentError. $e');
+      _showErrorDialog('${e.code}:\n${e.message}');
+    } on PayError catch (e) {
+      _showErrorDialog('${e.code}\n${e.message}');
     } catch (e) {
       _showErrorDialog('$e');
     }

@@ -76,14 +76,14 @@ android {
 
 ### Initialization
 
-First, initialize the `WalletConnectPay` client with your project ID and API key:
+First, initialize the `WalletConnectPay` client with your app ID and client ID or just API key:
 
 ```dart
 import 'package:walletconnect_pay/walletconnect_pay.dart';
 
 final payClient = WalletConnectPay(
-  projectId: 'YOUR_PROJECT_ID',
-  apiKey: 'YOUR_API_KEY',
+  appId: 'YOUR_APP_ID', // Optional
+  apiKey: 'YOUR_API_KEY', // Optional
   clientId: 'OPTIONAL_CLIENT_ID', // Optional
   baseUrl: 'https://api.pay.walletconnect.com', // Optional
 );
@@ -194,15 +194,15 @@ The main class for interacting with the WalletConnect Pay SDK.
 
 ```dart
 WalletConnectPay({
-  required String projectId,
-  required String apiKey,
+  String? apiKey,
+  String? appId,
   String? clientId,
   String? baseUrl,
 })
 ```
 
-- `projectId`: Your WalletConnect project ID
-- `apiKey`: Your WalletConnect Pay API key
+- `apiKey`: Optional WalletConnect Pay API key
+- `appId`: Optional WalletConnect app ID
 - `clientId`: Optional client identifier
 - `baseUrl`: Optional base URL for the API. Defaults to `https://api.pay.walletconnect.com` if not provided
 

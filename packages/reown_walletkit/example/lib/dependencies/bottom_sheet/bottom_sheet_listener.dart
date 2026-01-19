@@ -56,11 +56,14 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
               }
             });
           }
+          // final isDark =
+          //     MediaQuery.of(context).platformBrightness == Brightness.dark;
           return Material(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(StyleConstants.linear32),
               topRight: Radius.circular(StyleConstants.linear32),
             ),
+            color: StyleConstants.bgPrimary,
             child: Padding(
               padding: EdgeInsets.only(
                 top: StyleConstants.linear16,

@@ -9,8 +9,8 @@ class MockWalletconnectPayPlatform
     implements WalletconnectPayPlatform {
   @override
   Future<bool> initialize({
-    required String projectId,
-    required String apiKey,
+    String? apiKey,
+    String? appId,
     String? clientId,
     String? baseUrl,
   }) async {
@@ -45,7 +45,7 @@ void main() {
 
   test('initialize', () async {
     WalletConnectPay walletconnectPayPlugin = WalletConnectPay(
-      projectId: 'test-project-id',
+      appId: 'test-project-id',
       apiKey: 'test-api-key',
     );
     MockWalletconnectPayPlatform fakePlatform = MockWalletconnectPayPlatform();
@@ -56,7 +56,7 @@ void main() {
 
   test('confirmPayment', () async {
     WalletConnectPay walletconnectPayPlugin = WalletConnectPay(
-      projectId: 'test-project-id',
+      appId: 'test-project-id',
       apiKey: 'test-api-key',
     );
     MockWalletconnectPayPlatform fakePlatform = MockWalletconnectPayPlatform();
@@ -75,7 +75,7 @@ void main() {
 
   test('getPaymentOptions', () async {
     WalletConnectPay walletconnectPayPlugin = WalletConnectPay(
-      projectId: 'test-project-id',
+      appId: 'test-project-id',
       apiKey: 'test-api-key',
     );
     MockWalletconnectPayPlatform fakePlatform = MockWalletconnectPayPlatform();
@@ -92,7 +92,7 @@ void main() {
 
   test('getRequiredPaymentActions', () async {
     WalletConnectPay walletconnectPayPlugin = WalletConnectPay(
-      projectId: 'test-project-id',
+      appId: 'test-project-id',
       apiKey: 'test-api-key',
     );
     MockWalletconnectPayPlatform fakePlatform = MockWalletconnectPayPlatform();

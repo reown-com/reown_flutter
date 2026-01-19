@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
-import 'package:walletconnect_pay/models/walletconnect_pay_models.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
+import 'package:walletconnect_pay/walletconnect_pay.dart';
 
 class WCModalTitle extends StatelessWidget {
   const WCModalTitle({
@@ -120,6 +121,7 @@ class WCPTextField extends StatefulWidget {
     this.suffix,
     this.padding,
     this.keyboardType,
+    this.textStyle,
     this.onSubmitted,
   });
 
@@ -131,6 +133,7 @@ class WCPTextField extends StatefulWidget {
   final EdgeInsetsGeometry? padding;
   final ValueChanged<String>? onSubmitted;
   final TextInputType? keyboardType;
+  final TextStyle? textStyle;
 
   @override
   State<WCPTextField> createState() => _WCPTextFieldState();
@@ -179,6 +182,7 @@ class _WCPTextFieldState extends State<WCPTextField> {
         controller: widget.controller,
         focusNode: widget.focusNode,
         onSubmitted: widget.onSubmitted,
+        style: widget.textStyle ?? StyleConstants.wcpTextPrimaryStyle,
         placeholder: widget.label,
         placeholderStyle: StyleConstants.wcpTextSecondaryStyle.copyWith(
           color: StyleConstants.textTertiary,
@@ -216,7 +220,7 @@ class WCPPaymentDetails extends StatelessWidget {
                   StyleConstants.wcpTextPrimaryStyle.copyWith(fontSize: 20.0),
               children: [
                 const TextSpan(text: 'Pay '),
-                TextSpan(text: paymentInfo.amount.formattedAmount),
+                TextSpan(text: formatPayAmount(paymentInfo.amount)),
                 const TextSpan(text: ' to '),
                 TextSpan(text: paymentInfo.merchant.name),
                 const TextSpan(text: ' '),

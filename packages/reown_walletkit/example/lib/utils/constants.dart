@@ -26,6 +26,7 @@ class StyleConstants {
         // letterSpacing: -0.6, // -3% of 20px = -0.6
       );
 
+  static Color get bgPrimary => Color(0xFFFFFFFF);
   static Color get accentPrimary => Color(0xFF0988F0);
   static Color get foregroundPrimary => Color(0xFFF3F3F3);
   static Color get foregroundSecondary => Color(0xFFE9E9E9);

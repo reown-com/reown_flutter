@@ -3,7 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
-import 'package:walletconnect_pay/models/walletconnect_pay_models.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
+import 'package:walletconnect_pay/walletconnect_pay.dart';
 
 class WCPPaymentResult extends StatefulWidget {
   const WCPPaymentResult({
@@ -51,9 +52,37 @@ class _WCPPaymentResultState extends State<WCPPaymentResult> {
                         height: 40.0,
                       ),
                       const SizedBox(height: StyleConstants.linear24),
-                      WCModalTitle(
-                        text:
-                            'You\'ve paid ${widget.info.amount.formattedAmount} to ${widget.info.merchant.name}',
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: RichText(
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              text: TextSpan(
+                                style: StyleConstants.wcpTextPrimaryStyle
+                                    .copyWith(fontSize: 20.0),
+                                children: [
+                                  const TextSpan(text: 'You\'ve paid '),
+                                  TextSpan(
+                                      text:
+                                          formatPayAmount(widget.info.amount)),
+                                  const TextSpan(text: ' to '),
+                                  TextSpan(text: widget.info.merchant.name),
+                                  const TextSpan(text: ' '),
+                                  WidgetSpan(
+                                    child: SvgPicture.asset(
+                                      'lib/walletconnect_pay/assets/verified.svg',
+                                      width: 20.0,
+                                      height: 20.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   );
@@ -87,9 +116,9 @@ class _WCPPaymentResultState extends State<WCPPaymentResult> {
           const SizedBox(height: StyleConstants.linear48),
           WCPrimaryButton(
             onPressed: () {
-              if (Navigator.canPop(context)) {
-                Navigator.of(context).pop(WCBottomSheetResult.next.name);
-              }
+              Navigator.of(context).pop(
+                WCBottomSheetResult.next.name,
+              );
             },
             text: 'Got it!',
           ),

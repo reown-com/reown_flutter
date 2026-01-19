@@ -1,11 +1,9 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:walletconnect_pay/version.dart' show packageVersion;
 
 class WalletconnectPayUtils {
-  static String sdkName = 'flutter-walletconnect-pay';
-  static String baseUrl = 'https://api.pay.walletconnect.com';
-
   static String getOS() {
     if (kIsWeb) {
       return 'web-browser';
@@ -15,6 +13,18 @@ class WalletconnectPayUtils {
         Platform.operatingSystemVersion,
       ].join('-');
     }
+  }
+
+  static String getBaseUrl() {
+    return 'https://api.pay.walletconnect.com';
+  }
+
+  static String getSdkName() {
+    return 'flutter-walletconnect-pay';
+  }
+
+  static String getSdkVersion() {
+    return packageVersion;
   }
 
   static Future<String> getPackageName() async {

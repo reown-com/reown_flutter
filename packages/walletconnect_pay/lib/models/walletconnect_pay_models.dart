@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'walletconnect_pay_models.g.dart';
@@ -14,8 +13,9 @@ part 'walletconnect_pay_models.freezed.dart';
 sealed class SdkConfig with _$SdkConfig {
   const factory SdkConfig({
     required String baseUrl,
-    required String projectId,
-    required String apiKey,
+    String? apiKey,
+    String? projectId,
+    String? appId,
     required String sdkName,
     required String sdkVersion,
     required String sdkPlatform,
@@ -128,9 +128,10 @@ enum CollectDataFieldType { text, date }
 sealed class PaymentOption with _$PaymentOption {
   const factory PaymentOption({
     required String id,
+    required String account,
     required PayAmount amount,
     @JsonKey(name: 'etaS') required int etaSeconds,
-    @JsonKey(name: 'actions') required List<Action> actions,
+    required List<Action> actions,
   }) = _PaymentOption;
 
   factory PaymentOption.fromJson(Map<String, dynamic> json) =>
@@ -159,14 +160,6 @@ sealed class WalletRpcAction with _$WalletRpcAction {
 }
 
 @freezed
-sealed class BuildAction with _$BuildAction {
-  const factory BuildAction({required String data}) = _BuildAction;
-
-  factory BuildAction.fromJson(Map<String, dynamic> json) =>
-      _$BuildActionFromJson(json);
-}
-
-@freezed
 sealed class PayAmount with _$PayAmount {
   const factory PayAmount({
     required String unit,
@@ -176,51 +169,6 @@ sealed class PayAmount with _$PayAmount {
 
   factory PayAmount.fromJson(Map<String, dynamic> json) =>
       _$PayAmountFromJson(json);
-}
-
-extension PayAmountExtension on PayAmount {
-  String get formattedAmount {
-    final decimals = display.decimals;
-    final symbol = display.assetSymbol;
-    try {
-      final raw = BigInt.parse(value);
-      final divisor = BigInt.from(10).pow(decimals);
-
-      final BigInt intPart = raw ~/ divisor;
-      BigInt rem = raw % divisor;
-
-      const int scale = 4; // 4 decimal places
-      final BigInt factorWithExtra = BigInt.from(
-        10,
-      ).pow(scale + 1); // extra digit for HALF_UP
-      BigInt fracWithExtra = (rem * factorWithExtra) ~/ divisor;
-
-      final BigInt last = fracWithExtra % BigInt.from(10);
-      BigInt frac = fracWithExtra ~/ BigInt.from(10);
-
-      if (last >= BigInt.from(5)) frac += BigInt.one; // HALF_UP
-
-      final BigInt maxFrac = BigInt.from(10).pow(scale);
-      BigInt finalInt = intPart;
-      if (frac >= maxFrac) {
-        finalInt += BigInt.one;
-        frac = BigInt.zero;
-      }
-
-      final String intStr = _withCommas(finalInt.toString());
-      String fracStr = frac
-          .toString()
-          .padLeft(scale, '0')
-          .replaceFirst(RegExp(r'0+$'), '');
-
-      return fracStr.isEmpty ? '$intStr $symbol' : '$intStr.$fracStr $symbol';
-    } catch (_) {
-      return '$value $symbol';
-    }
-  }
-
-  String _withCommas(String s) =>
-      s.replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (_) => ',');
 }
 
 @freezed
@@ -302,59 +250,3 @@ sealed class ConfirmPaymentResponse with _$ConfirmPaymentResponse {
 
 @JsonEnum(fieldRename: FieldRename.none)
 enum PaymentStatus { requires_action, processing, succeeded, failed, expired }
-
-///
-/// Exceptions
-///
-
-class PayInitializeError extends PlatformException {
-  PayInitializeError({
-    required super.code,
-    required super.message,
-    required super.details,
-    required super.stacktrace,
-  });
-
-  @override
-  String toString() =>
-      'PayInitializeError($code, $message, $details, $stacktrace)';
-}
-
-class GetPaymentOptionsError extends PlatformException {
-  GetPaymentOptionsError({
-    required super.code,
-    required super.message,
-    required super.details,
-    required super.stacktrace,
-  });
-
-  @override
-  String toString() =>
-      'GetPaymentOptionsError($code, $message, $details, $stacktrace)';
-}
-
-class GetRequiredActionError extends PlatformException {
-  GetRequiredActionError({
-    required super.code,
-    required super.message,
-    required super.details,
-    required super.stacktrace,
-  });
-
-  @override
-  String toString() =>
-      'GetRequiredActionError($code, $message, $details, $stacktrace)';
-}
-
-class ConfirmPaymentError extends PlatformException {
-  ConfirmPaymentError({
-    required super.code,
-    required super.message,
-    required super.details,
-    required super.stacktrace,
-  });
-
-  @override
-  String toString() =>
-      'ConfirmPaymentError($code, $message, $details, $stacktrace)';
-}

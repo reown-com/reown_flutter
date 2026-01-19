@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
-import 'package:walletconnect_pay/models/walletconnect_pay_models.dart';
+import 'package:walletconnect_pay/walletconnect_pay.dart';
 
 class WCPFullNameCapture extends StatefulWidget {
   const WCPFullNameCapture({

@@ -202,9 +202,9 @@ class TronService {
         ? 'https://nile.trongrid.io'
         : 'https://api.trongrid.io';
 
-    final url = '$apiEndpoint/v1/accounts/$address';
-    final response = await http.get(Uri.parse(url));
     try {
+      final url = '$apiEndpoint/v1/accounts/$address';
+      final response = await http.get(Uri.parse(url));
       final parsedResponse = jsonDecode(response.body) as Map<String, dynamic>;
       final data = parsedResponse['data'] as List;
       if (data.isEmpty) {

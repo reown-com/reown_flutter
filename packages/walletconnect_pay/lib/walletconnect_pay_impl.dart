@@ -8,14 +8,14 @@ class WalletConnectPay {
   WalletconnectPayPlatform get _platformInstance =>
       WalletconnectPayPlatform.instance;
 
-  final String projectId;
-  final String apiKey;
+  final String? apiKey;
+  final String? appId;
   final String? clientId;
   final String? baseUrl;
 
   const WalletConnectPay({
-    required this.projectId,
-    required this.apiKey,
+    this.apiKey,
+    this.appId,
     this.clientId,
     this.baseUrl,
   });
@@ -24,7 +24,7 @@ class WalletConnectPay {
     try {
       return await WalletconnectPayPlatform.instance.initialize(
         apiKey: apiKey,
-        projectId: projectId,
+        appId: appId,
         clientId: clientId,
         baseUrl: baseUrl,
       );

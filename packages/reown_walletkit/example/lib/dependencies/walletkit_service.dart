@@ -225,7 +225,6 @@ class WalletKitService implements IWalletKitService {
 
   @override
   Future<void> init() async {
-    // await _walletConnectPayService.init();
     await _walletKit!.init();
     await _emitEvent();
   }

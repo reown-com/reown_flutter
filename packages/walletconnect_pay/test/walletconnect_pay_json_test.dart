@@ -31,8 +31,8 @@ class MockWalletconnectPayPlatform
 
   @override
   Future<bool> initialize({
-    required String projectId,
-    required String apiKey,
+    String? apiKey,
+    String? appId,
     String? clientId,
     String? baseUrl,
   }) async {
@@ -74,7 +74,7 @@ void main() {
     late MockWalletconnectPayPlatform mockPlatform;
 
     setUp(() {
-      walletconnectPayPlugin = WalletConnectPay(projectId: '', apiKey: '');
+      walletconnectPayPlugin = WalletConnectPay(appId: '', apiKey: '');
       mockPlatform = MockWalletconnectPayPlatform();
       WalletconnectPayPlatform.instance = mockPlatform;
     });
@@ -103,8 +103,7 @@ void main() {
             'etaS': 5,
             'actions': [
               {
-                'type': 'walletRpc',
-                'data': {
+                'walletRpc': {
                   'chainId': 'eip155:8453',
                   'method': 'eth_signTypedData_v4',
                   'params': '["0x123", {"types": {}}]',
@@ -166,8 +165,7 @@ void main() {
             'etaS': 10,
             'actions': [
               {
-                'type': 'walletRpc',
-                'data': {
+                'walletRpc': {
                   'chainId': 'eip155:1',
                   'method': 'eth_signTypedData_v4',
                   'params': '["0xwallet", {"types": {}}]',
@@ -180,8 +178,7 @@ void main() {
 
       final actionsResponse = [
         {
-          'type': 'walletRpc',
-          'data': {
+          'walletRpc': {
             'chainId': 'eip155:1',
             'method': 'eth_signTypedData_v4',
             'params': '["0xwallet", {"types": {}}]',
@@ -209,9 +206,9 @@ void main() {
       );
 
       expect(actions.length, 1);
-      final walletRpcAction = actions[0];
-      expect(walletRpcAction, isA<WalletRpcAction>());
-      final walletRpc = (walletRpcAction as WalletRpcAction);
+      final action = actions[0];
+      expect(action, isA<Action>());
+      final walletRpc = action.walletRpc;
       expect(walletRpc.chainId, 'eip155:1');
       expect(walletRpc.method, 'eth_signTypedData_v4');
       final params = jsonDecode(walletRpc.params) as List;

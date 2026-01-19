@@ -18,7 +18,7 @@ class WCPInformationCaptureStartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        // color: StyleConstants.bgPrimary,
         borderRadius: BorderRadius.circular(StyleConstants.linear48),
       ),
       padding: const EdgeInsets.all(StyleConstants.linear8),

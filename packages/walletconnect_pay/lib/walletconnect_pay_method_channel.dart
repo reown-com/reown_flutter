@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:walletconnect_pay/version.dart';
+import 'package:walletconnect_pay/models/walletconnect_pay_exceptions.dart';
 import 'package:walletconnect_pay/models/walletconnect_pay_models.dart';
 import 'package:walletconnect_pay/walletconnect_pay_utils.dart';
 
@@ -15,20 +15,21 @@ class MethodChannelWalletconnectPay extends WalletconnectPayPlatform {
   // only apikey
   @override
   Future<bool> initialize({
-    required String projectId,
-    required String apiKey,
+    String? apiKey,
+    String? appId,
     String? clientId,
     String? baseUrl,
   }) async {
     try {
       final packageName = await WalletconnectPayUtils.getPackageName();
       final sdkConfig = SdkConfig(
-        baseUrl: baseUrl ?? WalletconnectPayUtils.baseUrl,
-        apiKey: apiKey,
-        sdkName: WalletconnectPayUtils.sdkName,
-        sdkVersion: packageVersion,
+        baseUrl: WalletconnectPayUtils.getBaseUrl(),
+        sdkName: WalletconnectPayUtils.getSdkName(),
+        sdkVersion: WalletconnectPayUtils.getSdkVersion(),
         sdkPlatform: WalletconnectPayUtils.getPlatform(),
-        projectId: projectId,
+        apiKey: apiKey,
+        projectId: appId,
+        appId: appId,
         bundleId: packageName,
         clientId: clientId,
       );
@@ -41,7 +42,7 @@ class MethodChannelWalletconnectPay extends WalletconnectPayPlatform {
       debugPrint('[$runtimeType] ❌ initialize: $e');
       throw PayInitializeError(
         code: e.code,
-        message: e.message,
+        message: e.message?.replaceFirst('v1=', ''),
         details: e.details,
         stacktrace: e.stacktrace,
       );
@@ -61,7 +62,7 @@ class MethodChannelWalletconnectPay extends WalletconnectPayPlatform {
       debugPrint('[$runtimeType] ❌ getPaymentOptions: $e');
       throw GetPaymentOptionsError(
         code: e.code,
-        message: e.message,
+        message: e.message?.replaceFirst('v1=', ''),
         details: e.details,
         stacktrace: e.stacktrace,
       );
@@ -81,9 +82,9 @@ class MethodChannelWalletconnectPay extends WalletconnectPayPlatform {
       return result!;
     } on PlatformException catch (e) {
       debugPrint('[$runtimeType] ❌ getRequiredPaymentActions: $e');
-      throw GetRequiredActionError(
+      throw GetRequiredActionsError(
         code: e.code,
-        message: e.message,
+        message: e.message?.replaceFirst('v1=', ''),
         details: e.details,
         stacktrace: e.stacktrace,
       );
@@ -103,7 +104,7 @@ class MethodChannelWalletconnectPay extends WalletconnectPayPlatform {
       debugPrint('[$runtimeType] ❌ confirmPayment: $e');
       throw ConfirmPaymentError(
         code: e.code,
-        message: e.message,
+        message: e.message?.replaceFirst('v1=', ''),
         details: e.details,
         stacktrace: e.stacktrace,
       );

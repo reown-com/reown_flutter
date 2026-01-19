@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SdkConfig {
 
- String get baseUrl; String get projectId; String get apiKey; String get sdkName; String get sdkVersion; String get sdkPlatform; String get bundleId; String? get clientId;
+ String get baseUrl; String? get apiKey; String? get projectId; String? get appId; String get sdkName; String get sdkVersion; String get sdkPlatform; String get bundleId; String? get clientId;
 /// Create a copy of SdkConfig
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $SdkConfigCopyWith<SdkConfig> get copyWith => _$SdkConfigCopyWithImpl<SdkConfig>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SdkConfig&&(identical(other.baseUrl, baseUrl) || other.baseUrl == baseUrl)&&(identical(other.projectId, projectId) || other.projectId == projectId)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey)&&(identical(other.sdkName, sdkName) || other.sdkName == sdkName)&&(identical(other.sdkVersion, sdkVersion) || other.sdkVersion == sdkVersion)&&(identical(other.sdkPlatform, sdkPlatform) || other.sdkPlatform == sdkPlatform)&&(identical(other.bundleId, bundleId) || other.bundleId == bundleId)&&(identical(other.clientId, clientId) || other.clientId == clientId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SdkConfig&&(identical(other.baseUrl, baseUrl) || other.baseUrl == baseUrl)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey)&&(identical(other.projectId, projectId) || other.projectId == projectId)&&(identical(other.appId, appId) || other.appId == appId)&&(identical(other.sdkName, sdkName) || other.sdkName == sdkName)&&(identical(other.sdkVersion, sdkVersion) || other.sdkVersion == sdkVersion)&&(identical(other.sdkPlatform, sdkPlatform) || other.sdkPlatform == sdkPlatform)&&(identical(other.bundleId, bundleId) || other.bundleId == bundleId)&&(identical(other.clientId, clientId) || other.clientId == clientId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,baseUrl,projectId,apiKey,sdkName,sdkVersion,sdkPlatform,bundleId,clientId);
+int get hashCode => Object.hash(runtimeType,baseUrl,apiKey,projectId,appId,sdkName,sdkVersion,sdkPlatform,bundleId,clientId);
 
 @override
 String toString() {
-  return 'SdkConfig(baseUrl: $baseUrl, projectId: $projectId, apiKey: $apiKey, sdkName: $sdkName, sdkVersion: $sdkVersion, sdkPlatform: $sdkPlatform, bundleId: $bundleId, clientId: $clientId)';
+  return 'SdkConfig(baseUrl: $baseUrl, apiKey: $apiKey, projectId: $projectId, appId: $appId, sdkName: $sdkName, sdkVersion: $sdkVersion, sdkPlatform: $sdkPlatform, bundleId: $bundleId, clientId: $clientId)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $SdkConfigCopyWith<$Res>  {
   factory $SdkConfigCopyWith(SdkConfig value, $Res Function(SdkConfig) _then) = _$SdkConfigCopyWithImpl;
 @useResult
 $Res call({
- String baseUrl, String projectId, String apiKey, String sdkName, String sdkVersion, String sdkPlatform, String bundleId, String? clientId
+ String baseUrl, String? apiKey, String? projectId, String? appId, String sdkName, String sdkVersion, String sdkPlatform, String bundleId, String? clientId
 });
 
 
@@ -65,12 +65,13 @@ class _$SdkConfigCopyWithImpl<$Res>
 
 /// Create a copy of SdkConfig
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? baseUrl = null,Object? projectId = null,Object? apiKey = null,Object? sdkName = null,Object? sdkVersion = null,Object? sdkPlatform = null,Object? bundleId = null,Object? clientId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? baseUrl = null,Object? apiKey = freezed,Object? projectId = freezed,Object? appId = freezed,Object? sdkName = null,Object? sdkVersion = null,Object? sdkPlatform = null,Object? bundleId = null,Object? clientId = freezed,}) {
   return _then(_self.copyWith(
 baseUrl: null == baseUrl ? _self.baseUrl : baseUrl // ignore: cast_nullable_to_non_nullable
-as String,projectId: null == projectId ? _self.projectId : projectId // ignore: cast_nullable_to_non_nullable
-as String,apiKey: null == apiKey ? _self.apiKey : apiKey // ignore: cast_nullable_to_non_nullable
-as String,sdkName: null == sdkName ? _self.sdkName : sdkName // ignore: cast_nullable_to_non_nullable
+as String,apiKey: freezed == apiKey ? _self.apiKey : apiKey // ignore: cast_nullable_to_non_nullable
+as String?,projectId: freezed == projectId ? _self.projectId : projectId // ignore: cast_nullable_to_non_nullable
+as String?,appId: freezed == appId ? _self.appId : appId // ignore: cast_nullable_to_non_nullable
+as String?,sdkName: null == sdkName ? _self.sdkName : sdkName // ignore: cast_nullable_to_non_nullable
 as String,sdkVersion: null == sdkVersion ? _self.sdkVersion : sdkVersion // ignore: cast_nullable_to_non_nullable
 as String,sdkPlatform: null == sdkPlatform ? _self.sdkPlatform : sdkPlatform // ignore: cast_nullable_to_non_nullable
 as String,bundleId: null == bundleId ? _self.bundleId : bundleId // ignore: cast_nullable_to_non_nullable
@@ -157,10 +158,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String baseUrl,  String projectId,  String apiKey,  String sdkName,  String sdkVersion,  String sdkPlatform,  String bundleId,  String? clientId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String baseUrl,  String? apiKey,  String? projectId,  String? appId,  String sdkName,  String sdkVersion,  String sdkPlatform,  String bundleId,  String? clientId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SdkConfig() when $default != null:
-return $default(_that.baseUrl,_that.projectId,_that.apiKey,_that.sdkName,_that.sdkVersion,_that.sdkPlatform,_that.bundleId,_that.clientId);case _:
+return $default(_that.baseUrl,_that.apiKey,_that.projectId,_that.appId,_that.sdkName,_that.sdkVersion,_that.sdkPlatform,_that.bundleId,_that.clientId);case _:
   return orElse();
 
 }
@@ -178,10 +179,10 @@ return $default(_that.baseUrl,_that.projectId,_that.apiKey,_that.sdkName,_that.s
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String baseUrl,  String projectId,  String apiKey,  String sdkName,  String sdkVersion,  String sdkPlatform,  String bundleId,  String? clientId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String baseUrl,  String? apiKey,  String? projectId,  String? appId,  String sdkName,  String sdkVersion,  String sdkPlatform,  String bundleId,  String? clientId)  $default,) {final _that = this;
 switch (_that) {
 case _SdkConfig():
-return $default(_that.baseUrl,_that.projectId,_that.apiKey,_that.sdkName,_that.sdkVersion,_that.sdkPlatform,_that.bundleId,_that.clientId);}
+return $default(_that.baseUrl,_that.apiKey,_that.projectId,_that.appId,_that.sdkName,_that.sdkVersion,_that.sdkPlatform,_that.bundleId,_that.clientId);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -195,10 +196,10 @@ return $default(_that.baseUrl,_that.projectId,_that.apiKey,_that.sdkName,_that.s
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String baseUrl,  String projectId,  String apiKey,  String sdkName,  String sdkVersion,  String sdkPlatform,  String bundleId,  String? clientId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String baseUrl,  String? apiKey,  String? projectId,  String? appId,  String sdkName,  String sdkVersion,  String sdkPlatform,  String bundleId,  String? clientId)?  $default,) {final _that = this;
 switch (_that) {
 case _SdkConfig() when $default != null:
-return $default(_that.baseUrl,_that.projectId,_that.apiKey,_that.sdkName,_that.sdkVersion,_that.sdkPlatform,_that.bundleId,_that.clientId);case _:
+return $default(_that.baseUrl,_that.apiKey,_that.projectId,_that.appId,_that.sdkName,_that.sdkVersion,_that.sdkPlatform,_that.bundleId,_that.clientId);case _:
   return null;
 
 }
@@ -210,12 +211,13 @@ return $default(_that.baseUrl,_that.projectId,_that.apiKey,_that.sdkName,_that.s
 @JsonSerializable()
 
 class _SdkConfig implements SdkConfig {
-  const _SdkConfig({required this.baseUrl, required this.projectId, required this.apiKey, required this.sdkName, required this.sdkVersion, required this.sdkPlatform, required this.bundleId, this.clientId});
+  const _SdkConfig({required this.baseUrl, this.apiKey, this.projectId, this.appId, required this.sdkName, required this.sdkVersion, required this.sdkPlatform, required this.bundleId, this.clientId});
   factory _SdkConfig.fromJson(Map<String, dynamic> json) => _$SdkConfigFromJson(json);
 
 @override final  String baseUrl;
-@override final  String projectId;
-@override final  String apiKey;
+@override final  String? apiKey;
+@override final  String? projectId;
+@override final  String? appId;
 @override final  String sdkName;
 @override final  String sdkVersion;
 @override final  String sdkPlatform;
@@ -235,16 +237,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SdkConfig&&(identical(other.baseUrl, baseUrl) || other.baseUrl == baseUrl)&&(identical(other.projectId, projectId) || other.projectId == projectId)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey)&&(identical(other.sdkName, sdkName) || other.sdkName == sdkName)&&(identical(other.sdkVersion, sdkVersion) || other.sdkVersion == sdkVersion)&&(identical(other.sdkPlatform, sdkPlatform) || other.sdkPlatform == sdkPlatform)&&(identical(other.bundleId, bundleId) || other.bundleId == bundleId)&&(identical(other.clientId, clientId) || other.clientId == clientId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SdkConfig&&(identical(other.baseUrl, baseUrl) || other.baseUrl == baseUrl)&&(identical(other.apiKey, apiKey) || other.apiKey == apiKey)&&(identical(other.projectId, projectId) || other.projectId == projectId)&&(identical(other.appId, appId) || other.appId == appId)&&(identical(other.sdkName, sdkName) || other.sdkName == sdkName)&&(identical(other.sdkVersion, sdkVersion) || other.sdkVersion == sdkVersion)&&(identical(other.sdkPlatform, sdkPlatform) || other.sdkPlatform == sdkPlatform)&&(identical(other.bundleId, bundleId) || other.bundleId == bundleId)&&(identical(other.clientId, clientId) || other.clientId == clientId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,baseUrl,projectId,apiKey,sdkName,sdkVersion,sdkPlatform,bundleId,clientId);
+int get hashCode => Object.hash(runtimeType,baseUrl,apiKey,projectId,appId,sdkName,sdkVersion,sdkPlatform,bundleId,clientId);
 
 @override
 String toString() {
-  return 'SdkConfig(baseUrl: $baseUrl, projectId: $projectId, apiKey: $apiKey, sdkName: $sdkName, sdkVersion: $sdkVersion, sdkPlatform: $sdkPlatform, bundleId: $bundleId, clientId: $clientId)';
+  return 'SdkConfig(baseUrl: $baseUrl, apiKey: $apiKey, projectId: $projectId, appId: $appId, sdkName: $sdkName, sdkVersion: $sdkVersion, sdkPlatform: $sdkPlatform, bundleId: $bundleId, clientId: $clientId)';
 }
 
 
@@ -255,7 +257,7 @@ abstract mixin class _$SdkConfigCopyWith<$Res> implements $SdkConfigCopyWith<$Re
   factory _$SdkConfigCopyWith(_SdkConfig value, $Res Function(_SdkConfig) _then) = __$SdkConfigCopyWithImpl;
 @override @useResult
 $Res call({
- String baseUrl, String projectId, String apiKey, String sdkName, String sdkVersion, String sdkPlatform, String bundleId, String? clientId
+ String baseUrl, String? apiKey, String? projectId, String? appId, String sdkName, String sdkVersion, String sdkPlatform, String bundleId, String? clientId
 });
 
 
@@ -272,12 +274,13 @@ class __$SdkConfigCopyWithImpl<$Res>
 
 /// Create a copy of SdkConfig
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? baseUrl = null,Object? projectId = null,Object? apiKey = null,Object? sdkName = null,Object? sdkVersion = null,Object? sdkPlatform = null,Object? bundleId = null,Object? clientId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? baseUrl = null,Object? apiKey = freezed,Object? projectId = freezed,Object? appId = freezed,Object? sdkName = null,Object? sdkVersion = null,Object? sdkPlatform = null,Object? bundleId = null,Object? clientId = freezed,}) {
   return _then(_SdkConfig(
 baseUrl: null == baseUrl ? _self.baseUrl : baseUrl // ignore: cast_nullable_to_non_nullable
-as String,projectId: null == projectId ? _self.projectId : projectId // ignore: cast_nullable_to_non_nullable
-as String,apiKey: null == apiKey ? _self.apiKey : apiKey // ignore: cast_nullable_to_non_nullable
-as String,sdkName: null == sdkName ? _self.sdkName : sdkName // ignore: cast_nullable_to_non_nullable
+as String,apiKey: freezed == apiKey ? _self.apiKey : apiKey // ignore: cast_nullable_to_non_nullable
+as String?,projectId: freezed == projectId ? _self.projectId : projectId // ignore: cast_nullable_to_non_nullable
+as String?,appId: freezed == appId ? _self.appId : appId // ignore: cast_nullable_to_non_nullable
+as String?,sdkName: null == sdkName ? _self.sdkName : sdkName // ignore: cast_nullable_to_non_nullable
 as String,sdkVersion: null == sdkVersion ? _self.sdkVersion : sdkVersion // ignore: cast_nullable_to_non_nullable
 as String,sdkPlatform: null == sdkPlatform ? _self.sdkPlatform : sdkPlatform // ignore: cast_nullable_to_non_nullable
 as String,bundleId: null == bundleId ? _self.bundleId : bundleId // ignore: cast_nullable_to_non_nullable
@@ -2263,7 +2266,7 @@ as CollectDataFieldType,
 /// @nodoc
 mixin _$PaymentOption {
 
- String get id; PayAmount get amount;@JsonKey(name: 'etaS') int get etaSeconds;@JsonKey(name: 'actions') List<Action> get actions;
+ String get id; String get account; PayAmount get amount;@JsonKey(name: 'etaS') int get etaSeconds; List<Action> get actions;
 /// Create a copy of PaymentOption
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2276,16 +2279,16 @@ $PaymentOptionCopyWith<PaymentOption> get copyWith => _$PaymentOptionCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentOption&&(identical(other.id, id) || other.id == id)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.etaSeconds, etaSeconds) || other.etaSeconds == etaSeconds)&&const DeepCollectionEquality().equals(other.actions, actions));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PaymentOption&&(identical(other.id, id) || other.id == id)&&(identical(other.account, account) || other.account == account)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.etaSeconds, etaSeconds) || other.etaSeconds == etaSeconds)&&const DeepCollectionEquality().equals(other.actions, actions));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,amount,etaSeconds,const DeepCollectionEquality().hash(actions));
+int get hashCode => Object.hash(runtimeType,id,account,amount,etaSeconds,const DeepCollectionEquality().hash(actions));
 
 @override
 String toString() {
-  return 'PaymentOption(id: $id, amount: $amount, etaSeconds: $etaSeconds, actions: $actions)';
+  return 'PaymentOption(id: $id, account: $account, amount: $amount, etaSeconds: $etaSeconds, actions: $actions)';
 }
 
 
@@ -2296,7 +2299,7 @@ abstract mixin class $PaymentOptionCopyWith<$Res>  {
   factory $PaymentOptionCopyWith(PaymentOption value, $Res Function(PaymentOption) _then) = _$PaymentOptionCopyWithImpl;
 @useResult
 $Res call({
- String id, PayAmount amount,@JsonKey(name: 'etaS') int etaSeconds,@JsonKey(name: 'actions') List<Action> actions
+ String id, String account, PayAmount amount,@JsonKey(name: 'etaS') int etaSeconds, List<Action> actions
 });
 
 
@@ -2313,9 +2316,10 @@ class _$PaymentOptionCopyWithImpl<$Res>
 
 /// Create a copy of PaymentOption
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? amount = null,Object? etaSeconds = null,Object? actions = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? account = null,Object? amount = null,Object? etaSeconds = null,Object? actions = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,account: null == account ? _self.account : account // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as PayAmount,etaSeconds: null == etaSeconds ? _self.etaSeconds : etaSeconds // ignore: cast_nullable_to_non_nullable
 as int,actions: null == actions ? _self.actions : actions // ignore: cast_nullable_to_non_nullable
@@ -2410,10 +2414,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  PayAmount amount, @JsonKey(name: 'etaS')  int etaSeconds, @JsonKey(name: 'actions')  List<Action> actions)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String account,  PayAmount amount, @JsonKey(name: 'etaS')  int etaSeconds,  List<Action> actions)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PaymentOption() when $default != null:
-return $default(_that.id,_that.amount,_that.etaSeconds,_that.actions);case _:
+return $default(_that.id,_that.account,_that.amount,_that.etaSeconds,_that.actions);case _:
   return orElse();
 
 }
@@ -2431,10 +2435,10 @@ return $default(_that.id,_that.amount,_that.etaSeconds,_that.actions);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  PayAmount amount, @JsonKey(name: 'etaS')  int etaSeconds, @JsonKey(name: 'actions')  List<Action> actions)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String account,  PayAmount amount, @JsonKey(name: 'etaS')  int etaSeconds,  List<Action> actions)  $default,) {final _that = this;
 switch (_that) {
 case _PaymentOption():
-return $default(_that.id,_that.amount,_that.etaSeconds,_that.actions);}
+return $default(_that.id,_that.account,_that.amount,_that.etaSeconds,_that.actions);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -2448,10 +2452,10 @@ return $default(_that.id,_that.amount,_that.etaSeconds,_that.actions);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  PayAmount amount, @JsonKey(name: 'etaS')  int etaSeconds, @JsonKey(name: 'actions')  List<Action> actions)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String account,  PayAmount amount, @JsonKey(name: 'etaS')  int etaSeconds,  List<Action> actions)?  $default,) {final _that = this;
 switch (_that) {
 case _PaymentOption() when $default != null:
-return $default(_that.id,_that.amount,_that.etaSeconds,_that.actions);case _:
+return $default(_that.id,_that.account,_that.amount,_that.etaSeconds,_that.actions);case _:
   return null;
 
 }
@@ -2463,14 +2467,15 @@ return $default(_that.id,_that.amount,_that.etaSeconds,_that.actions);case _:
 @JsonSerializable()
 
 class _PaymentOption implements PaymentOption {
-  const _PaymentOption({required this.id, required this.amount, @JsonKey(name: 'etaS') required this.etaSeconds, @JsonKey(name: 'actions') required final  List<Action> actions}): _actions = actions;
+  const _PaymentOption({required this.id, required this.account, required this.amount, @JsonKey(name: 'etaS') required this.etaSeconds, required final  List<Action> actions}): _actions = actions;
   factory _PaymentOption.fromJson(Map<String, dynamic> json) => _$PaymentOptionFromJson(json);
 
 @override final  String id;
+@override final  String account;
 @override final  PayAmount amount;
 @override@JsonKey(name: 'etaS') final  int etaSeconds;
  final  List<Action> _actions;
-@override@JsonKey(name: 'actions') List<Action> get actions {
+@override List<Action> get actions {
   if (_actions is EqualUnmodifiableListView) return _actions;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_actions);
@@ -2490,16 +2495,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaymentOption&&(identical(other.id, id) || other.id == id)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.etaSeconds, etaSeconds) || other.etaSeconds == etaSeconds)&&const DeepCollectionEquality().equals(other._actions, _actions));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PaymentOption&&(identical(other.id, id) || other.id == id)&&(identical(other.account, account) || other.account == account)&&(identical(other.amount, amount) || other.amount == amount)&&(identical(other.etaSeconds, etaSeconds) || other.etaSeconds == etaSeconds)&&const DeepCollectionEquality().equals(other._actions, _actions));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,amount,etaSeconds,const DeepCollectionEquality().hash(_actions));
+int get hashCode => Object.hash(runtimeType,id,account,amount,etaSeconds,const DeepCollectionEquality().hash(_actions));
 
 @override
 String toString() {
-  return 'PaymentOption(id: $id, amount: $amount, etaSeconds: $etaSeconds, actions: $actions)';
+  return 'PaymentOption(id: $id, account: $account, amount: $amount, etaSeconds: $etaSeconds, actions: $actions)';
 }
 
 
@@ -2510,7 +2515,7 @@ abstract mixin class _$PaymentOptionCopyWith<$Res> implements $PaymentOptionCopy
   factory _$PaymentOptionCopyWith(_PaymentOption value, $Res Function(_PaymentOption) _then) = __$PaymentOptionCopyWithImpl;
 @override @useResult
 $Res call({
- String id, PayAmount amount,@JsonKey(name: 'etaS') int etaSeconds,@JsonKey(name: 'actions') List<Action> actions
+ String id, String account, PayAmount amount,@JsonKey(name: 'etaS') int etaSeconds, List<Action> actions
 });
 
 
@@ -2527,9 +2532,10 @@ class __$PaymentOptionCopyWithImpl<$Res>
 
 /// Create a copy of PaymentOption
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? amount = null,Object? etaSeconds = null,Object? actions = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? account = null,Object? amount = null,Object? etaSeconds = null,Object? actions = null,}) {
   return _then(_PaymentOption(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,account: null == account ? _self.account : account // ignore: cast_nullable_to_non_nullable
 as String,amount: null == amount ? _self.amount : amount // ignore: cast_nullable_to_non_nullable
 as PayAmount,etaSeconds: null == etaSeconds ? _self.etaSeconds : etaSeconds // ignore: cast_nullable_to_non_nullable
 as int,actions: null == actions ? _self._actions : actions // ignore: cast_nullable_to_non_nullable
@@ -3080,263 +3086,6 @@ class __$WalletRpcActionCopyWithImpl<$Res>
 chainId: null == chainId ? _self.chainId : chainId // ignore: cast_nullable_to_non_nullable
 as String,method: null == method ? _self.method : method // ignore: cast_nullable_to_non_nullable
 as String,params: null == params ? _self.params : params // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
-
-
-/// @nodoc
-mixin _$BuildAction {
-
- String get data;
-/// Create a copy of BuildAction
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$BuildActionCopyWith<BuildAction> get copyWith => _$BuildActionCopyWithImpl<BuildAction>(this as BuildAction, _$identity);
-
-  /// Serializes this BuildAction to a JSON map.
-  Map<String, dynamic> toJson();
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BuildAction&&(identical(other.data, data) || other.data == data));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,data);
-
-@override
-String toString() {
-  return 'BuildAction(data: $data)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $BuildActionCopyWith<$Res>  {
-  factory $BuildActionCopyWith(BuildAction value, $Res Function(BuildAction) _then) = _$BuildActionCopyWithImpl;
-@useResult
-$Res call({
- String data
-});
-
-
-
-
-}
-/// @nodoc
-class _$BuildActionCopyWithImpl<$Res>
-    implements $BuildActionCopyWith<$Res> {
-  _$BuildActionCopyWithImpl(this._self, this._then);
-
-  final BuildAction _self;
-  final $Res Function(BuildAction) _then;
-
-/// Create a copy of BuildAction
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? data = null,}) {
-  return _then(_self.copyWith(
-data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-}
-
-
-/// Adds pattern-matching-related methods to [BuildAction].
-extension BuildActionPatterns on BuildAction {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _BuildAction value)?  $default,{required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case _BuildAction() when $default != null:
-return $default(_that);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _BuildAction value)  $default,){
-final _that = this;
-switch (_that) {
-case _BuildAction():
-return $default(_that);}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _BuildAction value)?  $default,){
-final _that = this;
-switch (_that) {
-case _BuildAction() when $default != null:
-return $default(_that);case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String data)?  $default,{required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case _BuildAction() when $default != null:
-return $default(_that.data);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String data)  $default,) {final _that = this;
-switch (_that) {
-case _BuildAction():
-return $default(_that.data);}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String data)?  $default,) {final _that = this;
-switch (_that) {
-case _BuildAction() when $default != null:
-return $default(_that.data);case _:
-  return null;
-
-}
-}
-
-}
-
-/// @nodoc
-@JsonSerializable()
-
-class _BuildAction implements BuildAction {
-  const _BuildAction({required this.data});
-  factory _BuildAction.fromJson(Map<String, dynamic> json) => _$BuildActionFromJson(json);
-
-@override final  String data;
-
-/// Create a copy of BuildAction
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$BuildActionCopyWith<_BuildAction> get copyWith => __$BuildActionCopyWithImpl<_BuildAction>(this, _$identity);
-
-@override
-Map<String, dynamic> toJson() {
-  return _$BuildActionToJson(this, );
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BuildAction&&(identical(other.data, data) || other.data == data));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,data);
-
-@override
-String toString() {
-  return 'BuildAction(data: $data)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$BuildActionCopyWith<$Res> implements $BuildActionCopyWith<$Res> {
-  factory _$BuildActionCopyWith(_BuildAction value, $Res Function(_BuildAction) _then) = __$BuildActionCopyWithImpl;
-@override @useResult
-$Res call({
- String data
-});
-
-
-
-
-}
-/// @nodoc
-class __$BuildActionCopyWithImpl<$Res>
-    implements _$BuildActionCopyWith<$Res> {
-  __$BuildActionCopyWithImpl(this._self, this._then);
-
-  final _BuildAction _self;
-  final $Res Function(_BuildAction) _then;
-
-/// Create a copy of BuildAction
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? data = null,}) {
-  return _then(_BuildAction(
-data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

@@ -8,8 +8,9 @@ part of 'walletconnect_pay_models.dart';
 
 _SdkConfig _$SdkConfigFromJson(Map<String, dynamic> json) => _SdkConfig(
   baseUrl: json['baseUrl'] as String,
-  projectId: json['projectId'] as String,
-  apiKey: json['apiKey'] as String,
+  apiKey: json['apiKey'] as String?,
+  projectId: json['projectId'] as String?,
+  appId: json['appId'] as String?,
   sdkName: json['sdkName'] as String,
   sdkVersion: json['sdkVersion'] as String,
   sdkPlatform: json['sdkPlatform'] as String,
@@ -20,8 +21,9 @@ _SdkConfig _$SdkConfigFromJson(Map<String, dynamic> json) => _SdkConfig(
 Map<String, dynamic> _$SdkConfigToJson(_SdkConfig instance) =>
     <String, dynamic>{
       'baseUrl': instance.baseUrl,
-      'projectId': instance.projectId,
       'apiKey': instance.apiKey,
+      'projectId': instance.projectId,
+      'appId': instance.appId,
       'sdkName': instance.sdkName,
       'sdkVersion': instance.sdkVersion,
       'sdkPlatform': instance.sdkPlatform,
@@ -156,6 +158,7 @@ const _$CollectDataFieldTypeEnumMap = {
 _PaymentOption _$PaymentOptionFromJson(Map<String, dynamic> json) =>
     _PaymentOption(
       id: json['id'] as String,
+      account: json['account'] as String,
       amount: PayAmount.fromJson(json['amount'] as Map<String, dynamic>),
       etaSeconds: (json['etaS'] as num).toInt(),
       actions: (json['actions'] as List<dynamic>)
@@ -166,6 +169,7 @@ _PaymentOption _$PaymentOptionFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$PaymentOptionToJson(_PaymentOption instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'account': instance.account,
       'amount': instance.amount.toJson(),
       'etaS': instance.etaSeconds,
       'actions': instance.actions.map((e) => e.toJson()).toList(),
@@ -194,12 +198,6 @@ Map<String, dynamic> _$WalletRpcActionToJson(_WalletRpcAction instance) =>
       'method': instance.method,
       'params': instance.params,
     };
-
-_BuildAction _$BuildActionFromJson(Map<String, dynamic> json) =>
-    _BuildAction(data: json['data'] as String);
-
-Map<String, dynamic> _$BuildActionToJson(_BuildAction instance) =>
-    <String, dynamic>{'data': instance.data};
 
 _PayAmount _$PayAmountFromJson(Map<String, dynamic> json) => _PayAmount(
   unit: json['unit'] as String,

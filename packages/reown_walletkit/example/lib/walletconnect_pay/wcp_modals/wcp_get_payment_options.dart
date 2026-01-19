@@ -1,38 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/i_walletconnect_pay_service.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 import 'package:walletconnect_pay/walletconnect_pay.dart';
 
-class WCPConfirmingPayment extends StatefulWidget {
-  const WCPConfirmingPayment({
+class WCPGetPaymentOptions extends StatefulWidget {
+  const WCPGetPaymentOptions({
     super.key,
-    required this.paymentRequest,
+    required this.paymentLink,
+    required this.accounts,
   });
 
-  final ConfirmPaymentRequest paymentRequest;
+  final String paymentLink;
+  final List<String> accounts;
 
   @override
-  State<WCPConfirmingPayment> createState() => _WCPConfirmingPaymentState();
+  State<WCPGetPaymentOptions> createState() => _WCPGetPaymentOptionsState();
 }
 
-class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
+class _WCPGetPaymentOptionsState extends State<WCPGetPaymentOptions> {
   final _wcPayService = GetIt.I<IWalletConnectPayService>();
-  late final ConfirmPaymentRequest _paymentRequest;
 
   @override
   void initState() {
     super.initState();
-    _paymentRequest = widget.paymentRequest;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
-        final response = await _wcPayService.confirmPayment(
-          _paymentRequest,
+        final request = GetPaymentOptionsRequest(
+          paymentLink: widget.paymentLink,
+          accounts: widget.accounts,
+          includePaymentInfo: true,
         );
-        Navigator.of(context).pop(response.status);
-      } catch (e) {
+        final response = await _wcPayService.getPaymentOptions(request);
+        Navigator.of(context).pop(response);
+      } on GetPaymentOptionsError catch (e) {
         Navigator.of(context).pop(e);
+      } catch (e) {
+        Navigator.of(context).pop(WCBottomSheetResult.reject.name);
       }
     });
   }
@@ -58,8 +64,8 @@ class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
           const Center(
             child: WalletConnectLoading(size: 120.0),
           ),
-          const SizedBox(height: 24.0),
-          WCModalTitle(text: 'Confirming your payment...'),
+          // const SizedBox(height: 24.0),
+          // WCModalTitle(text: 'Confirming your payment...'),
           const SizedBox(height: StyleConstants.linear24),
         ],
       ),

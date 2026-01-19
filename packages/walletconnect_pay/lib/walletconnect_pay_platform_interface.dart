@@ -24,8 +24,8 @@ abstract class WalletconnectPayPlatform extends PlatformInterface {
   }
 
   Future<bool> initialize({
-    required String projectId,
-    required String apiKey,
+    String? apiKey,
+    String? appId,
     String? clientId,
     String? baseUrl,
   });

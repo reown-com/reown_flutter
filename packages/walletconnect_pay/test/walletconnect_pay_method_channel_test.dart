@@ -60,7 +60,7 @@ void main() {
   test('initialize', () async {
     expect(
       await platform.initialize(
-        projectId: 'test-project-id',
+        appId: 'test-project-id',
         apiKey: 'test-api-key',
       ),
       true,

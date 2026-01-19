@@ -8,6 +8,7 @@ import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/i_walletconnect_pay_service.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
 import 'package:walletconnect_pay/walletconnect_pay.dart';
 
 class WCPPaymentDetailsWidget extends StatefulWidget {
@@ -69,7 +70,7 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
     try {
       final actions = List<Action>.from(_selectedOption.actions);
       if (actions.isEmpty) {
-        final requiredActions = await _wcPayService.getPaymentActions(
+        final requiredActions = await _wcPayService.getRequiredPaymentActions(
           _selectedOption.id,
           confirmRequest.paymentId,
         );
@@ -77,12 +78,9 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
       }
       final signatures = actions.map((action) => _sign(action)).toList();
       confirmRequest = confirmRequest.copyWith(signatures: signatures);
-      // print(jsonEncode(confirmRequest.toJson()));
-      if (Navigator.canPop(context)) {
-        Navigator.of(context).pop(confirmRequest);
-      }
-    } catch (e, s) {
-      print('sign and pay error: $e, $s');
+      Navigator.of(context).pop(confirmRequest);
+    } catch (e) {
+      Navigator.of(context).pop(e);
     }
   }
 
@@ -113,7 +111,6 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
             options: paymentOptionsResponse.options,
             selectedOption: _selectedOption,
             onOptionSelected: (option) {
-              print(option.actions);
               setState(() {
                 confirmRequest = confirmRequest.copyWith(optionId: option.id);
               });
@@ -122,7 +119,7 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
           const SizedBox(height: StyleConstants.linear32),
           WCPrimaryButton(
             onPressed: _signAndPay,
-            text: 'Pay ${paymentInfo.amount.formattedAmount}',
+            text: 'Pay ${formatPayAmount(paymentInfo.amount)}',
           ),
         ],
       ),
@@ -171,7 +168,7 @@ class PaymentDetailsSection extends StatelessWidget {
           focusNode: FocusNode(),
           label: 'Amount',
           suffix: Text(
-            paymentInfo.amount.formattedAmount,
+            formatPayAmount(paymentInfo.amount),
             style: StyleConstants.wcpTextPrimaryStyle,
           ),
           enabled: false,
@@ -185,7 +182,6 @@ class PaymentDetailsSection extends StatelessWidget {
           selectedOption: selectedOption,
           options: options,
           onOptionSelected: (option) {
-            // setState(() => _selectedOption = option);
             onOptionSelected?.call(option);
           },
         ),
@@ -225,63 +221,60 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
         }
         setState(() => _isExpanded = false);
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: isSelected
-              ? StyleConstants.accentPrimary.withValues(alpha: 0.1)
-              : StyleConstants.textSecondary.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        margin: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
-        padding: const EdgeInsets.all(16.0),
-        height: 64.0,
-        child: Row(
-          children: [
-            Stack(
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: isSelected
+                  ? StyleConstants.accentPrimary.withValues(alpha: 0.1)
+                  : StyleConstants.textSecondary.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            margin: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
+            padding: const EdgeInsets.all(16.0),
+            height: 64.0,
+            child: Row(
               children: [
                 CircleAvatar(
                   radius: 12.0,
                   backgroundImage: NetworkImage(display.iconUrl ?? ''),
                 ),
-                Positioned(
-                  bottom: -2,
-                  right: 0,
-                  child: Visibility(
-                    visible: (display.networkIconUrl ?? '').isNotEmpty,
-                    child: CircleAvatar(
-                      radius: 9.0,
-                      backgroundColor: Colors.white,
-                      child: Padding(
-                        padding: const EdgeInsets.all(2.0),
-                        child: Image.network(display.networkIconUrl ?? ''),
-                      ),
-                    ),
-                  ),
+                const SizedBox(width: 8.0),
+                Text(
+                  formatPayAmount(option.amount),
+                  style: StyleConstants.wcpTextPrimaryStyle,
                 ),
+                Spacer(),
+                (widget.selectedOption.id == option.id)
+                    ? Icon(
+                        Icons.radio_button_on,
+                        color: StyleConstants.accentPrimary,
+                      )
+                    : SizedBox.shrink(),
               ],
             ),
-            const SizedBox(width: 8.0),
-            Text(
-              option.amount.formattedAmount,
-              style: StyleConstants.wcpTextPrimaryStyle,
-            ),
-            const SizedBox(width: 4.0),
-            Text(
-              option.amount.display.networkName ?? 'Unknown',
-              style: StyleConstants.wcpTextPrimaryStyle.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 14.0,
+          ),
+          Positioned(
+            bottom: 26,
+            left: 38,
+            child: Visibility(
+              visible: (display.networkIconUrl ?? '').isNotEmpty,
+              child: Container(
+                padding: const EdgeInsets.all(1.5),
+                decoration: BoxDecoration(
+                  color: StyleConstants.foregroundPrimary,
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: CircleAvatar(
+                  radius: 6.0,
+                  backgroundImage: NetworkImage(
+                    display.networkIconUrl ?? '',
+                  ),
+                ),
               ),
             ),
-            Spacer(),
-            (widget.selectedOption.id == option.id)
-                ? Icon(
-                    Icons.radio_button_on,
-                    color: StyleConstants.accentPrimary,
-                  )
-                : SizedBox.shrink(),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -308,81 +301,82 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
             onTap: hasMultipleOptions
                 ? () => setState(() => _isExpanded = !_isExpanded)
                 : null,
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 16.0,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    widget.label,
-                    style: StyleConstants.wcpTextSecondaryStyle.copyWith(
-                      color: StyleConstants.textTertiary,
-                    ),
+            child: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    // color: Colors.red,
                   ),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 16.0,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        widget.selectedOption.amount.formattedAmount,
-                        style: StyleConstants.wcpTextPrimaryStyle,
+                        widget.label,
+                        style: StyleConstants.wcpTextSecondaryStyle.copyWith(
+                          color: StyleConstants.textTertiary,
+                        ),
                       ),
-                      const SizedBox(width: 4.0),
-                      Text(
-                        '(${widget.selectedOption.amount.display.networkName ?? 'Unknown'})',
-                        style: StyleConstants.wcpTextSecondaryStyle
-                            .copyWith(fontSize: 14.0),
-                      ),
-                      const SizedBox(width: 4.0),
-                      Stack(
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
+                          Text(
+                            formatPayAmount(widget.selectedOption.amount),
+                            style: StyleConstants.wcpTextPrimaryStyle,
+                          ),
+                          const SizedBox(width: 8.0),
                           CircleAvatar(
                             radius: 12.0,
-                            backgroundImage:
-                                NetworkImage(display.iconUrl ?? ''),
+                            backgroundImage: NetworkImage(
+                              display.iconUrl ?? '',
+                            ),
                           ),
-                          Positioned(
-                            bottom: -2,
-                            right: 0,
-                            child: Visibility(
-                              visible:
-                                  (display.networkIconUrl ?? '').isNotEmpty,
-                              child: CircleAvatar(
-                                radius: 9.0,
-                                backgroundColor: Colors.white,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2.0),
-                                  child: Image.network(
-                                      display.networkIconUrl ?? ''),
+                          Visibility(
+                            visible: hasMultipleOptions,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: AnimatedRotation(
+                                turns: _isExpanded ? 0.5 : 0.0,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                                child: SvgPicture.asset(
+                                  'lib/walletconnect_pay/assets/caret_up_down.svg',
+                                  width: 20.0,
+                                  height: 20.0,
                                 ),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      if (hasMultipleOptions)
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: AnimatedRotation(
-                            turns: _isExpanded ? 0.5 : 0.0,
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeInOut,
-                            child: SvgPicture.asset(
-                              'lib/walletconnect_pay/assets/caret_up_down.svg',
-                              width: 20.0,
-                              height: 20.0,
-                            ),
-                          ),
-                        ),
                     ],
                   ),
-                ],
-              ),
+                ),
+                Positioned(
+                  bottom: 15,
+                  right: hasMultipleOptions ? 46 : 18,
+                  child: Visibility(
+                    visible: (display.networkIconUrl ?? '').isNotEmpty,
+                    child: Container(
+                      padding: const EdgeInsets.all(1.5),
+                      decoration: BoxDecoration(
+                        color: StyleConstants.foregroundPrimary,
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: CircleAvatar(
+                        radius: 6.0,
+                        backgroundImage: NetworkImage(
+                          display.networkIconUrl ?? '',
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           // Expanded options list with animation
