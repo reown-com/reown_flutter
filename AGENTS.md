@@ -1,6 +1,6 @@
-# AI Agent Guidance for Reown Flutter
+# AGENTS.md
 
-This document provides guidance for AI agents working with the Reown Flutter repository.
+This file provides guidance to AI agents when working with code in this repository.
 
 ## AI Skills
 
