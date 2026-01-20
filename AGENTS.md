@@ -2,6 +2,13 @@
 
 This document provides guidance for AI agents working with the Reown Flutter repository.
 
+## AI Skills
+
+When writing or modifying Flutter/Dart code in this repository, use the **flutter-coding** skill located at:
+- `.claude/skills/flutter-coding/SKILL.md` - Core patterns, validation checklist, and Flutter/Dart best practices
+
+This skill encodes project-specific conventions including interface-based design, freezed models, event-driven architecture, code generation patterns, and testing practices aligned with official Flutter guidelines.
+
 ## Project Overview
 
 **Reown Flutter** is a Flutter/Dart SDK implementing the WalletConnect protocol for multi-platform applications. Reown (formerly WalletConnect) is the communications protocol for web3, bringing the ecosystem together by enabling hundreds of wallets and apps to securely connect and interact.
