@@ -1,3 +1,7 @@
+## 1.4.0
+
+- Support for WalletConnectPay
+
 ## 1.3.9
 
 - Dependency updates
