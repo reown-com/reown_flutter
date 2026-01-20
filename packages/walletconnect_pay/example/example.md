@@ -1,19 +1,18 @@
 # WalletConnect Pay Example
 
-This example demonstrates how to use the WalletConnect Pay SDK to process payments.
+This example demonstrates how to use the WalletConnect Pay SDK to process payments in standalone mode.
 
 ## Basic Setup
 
 ```dart
 import 'package:walletconnect_pay/walletconnect_pay.dart';
-import 'package:walletconnect_pay/models/walletconnect_pay_models.dart';
 
-// Initialize WalletConnect Pay
+// Initialize WalletConnect Pay. Either apiKey or appId must be passed
 final walletConnectPay = WalletConnectPay(
   apiKey: 'your-api-key', // Optional: if using API key
   // appId: 'your-app-id', // Optional: if using appId instead
-  clientId: 'your-client-id', // Optional: if using clientId
-  baseUrl: 'https://pay.walletconnect.com', // Optional: custom base URL
+  // clientId: 'your-client-id', // Optional: if using clientId
+  // baseUrl: 'https://api.pay.walletconnect.com', // Optional: custom base URL
 );
 
 // Initialize the SDK
@@ -24,28 +23,25 @@ await walletConnectPay.init();
 
 ```dart
 import 'package:walletconnect_pay/walletconnect_pay.dart';
-import 'package:walletconnect_pay/models/walletconnect_pay_models.dart';
 
 class PaymentService {
   late final WalletConnectPay _walletConnectPay;
-  final List<String> _accounts = ['0x1234...']; // User's wallet accounts
 
   Future<void> initialize() async {
     _walletConnectPay = WalletConnectPay(
       apiKey: 'your-api-key',
-      clientId: 'your-client-id',
     );
     await _walletConnectPay.init();
   }
 
-  /// Process a payment from a payment link
+  /// Process a payment from a payment link (e.g., after scanning QR code)
   Future<void> processPayment(String paymentLink) async {
     try {
       // Step 1: Get payment options
       final optionsResponse = await _walletConnectPay.getPaymentOptions(
         request: GetPaymentOptionsRequest(
           paymentLink: paymentLink,
-          accounts: _accounts,
+          accounts: ['eip155:1:0x1234...'], // User's wallet CAIP-10 accounts
           includePaymentInfo: true,
         ),
       );
@@ -54,28 +50,7 @@ class PaymentService {
         throw Exception('No payment options available');
       }
 
-      // Select the first payment option (or let user choose)
-      final selectedOption = optionsResponse.options.first;
-      final paymentId = optionsResponse.paymentId;
-      final optionId = selectedOption.id;
-
-      // Step 2: Get required payment actions (if needed)
-      final requiredActions = await _walletConnectPay.getRequiredPaymentActions(
-        request: GetRequiredPaymentActionsRequest(
-          optionId: optionId,
-          paymentId: paymentId,
-        ),
-      );
-
-      // Step 3: Execute wallet actions and collect signatures
-      // This is where you would interact with your wallet to sign transactions
-      final signatures = <String>[];
-      for (final action in requiredActions) {
-        // Execute the wallet RPC action and collect signature
-        // Example: signatures.add(await signTransaction(action.walletRpc));
-      }
-
-      // Step 4: Collect additional data if required
+      // Step 2: Collect additional data if required (KYB/KYC)
       final collectedData = <CollectDataFieldResult>[];
       if (optionsResponse.collectData != null) {
         for (final field in optionsResponse.collectData!.fields) {
@@ -84,8 +59,31 @@ class PaymentService {
         }
       }
 
-      // Step 5: Confirm payment
-      final confirmResponse = await _walletConnectPay.confirmPayment(
+      // Step 3: Select payment option (or let user choose)
+      PaymentOption selectedOption = optionsResponse.options.first;
+      final paymentId = optionsResponse.paymentId;
+      final optionId = selectedOption.id;
+
+      // Step 4: Get required payment actions (if not already in the option)
+      List<Action> actions = selectedOption.actions;
+      if (actions.isEmpty) {
+        actions = await _walletConnectPay.getRequiredPaymentActions(
+          request: GetRequiredPaymentActionsRequest(
+            optionId: optionId,
+            paymentId: paymentId,
+          ),
+        );
+      }
+
+      // Step 5: Execute wallet actions and collect signatures
+      final signatures = <String>[];
+      for (final action in actions) {
+        // Sign the transaction using your wallet SDK
+        // Example: signatures.add(await signTransaction(action.walletRpc));
+      }
+
+      // Step 6: Confirm payment with polling
+      ConfirmPaymentResponse confirmResponse = await _walletConnectPay.confirmPayment(
         request: ConfirmPaymentRequest(
           paymentId: paymentId,
           optionId: optionId,
@@ -95,14 +93,24 @@ class PaymentService {
         ),
       );
 
-      // Handle payment status
+      // Step 7: Poll until final status (if needed)
+      while (!confirmResponse.isFinal && confirmResponse.pollInMs != null) {
+        await Future.delayed(Duration(milliseconds: confirmResponse.pollInMs!));
+        confirmResponse = await _walletConnectPay.confirmPayment(
+          request: ConfirmPaymentRequest(
+            paymentId: paymentId,
+            optionId: optionId,
+            signatures: signatures,
+            collectedData: collectedData.isNotEmpty ? collectedData : null,
+            maxPollMs: 60000,
+          ),
+        );
+      }
+
+      // Handle final payment status
       switch (confirmResponse.status) {
         case PaymentStatus.succeeded:
           print('Payment succeeded!');
-          break;
-        case PaymentStatus.processing:
-          print('Payment is processing...');
-          // Poll again if pollInMs is provided
           break;
         case PaymentStatus.failed:
           throw Exception('Payment failed');
@@ -110,6 +118,9 @@ class PaymentService {
           throw Exception('Payment expired');
         case PaymentStatus.requires_action:
           throw Exception('Payment requires additional action');
+        case PaymentStatus.processing:
+          // Should not happen if isFinal is true
+          break;
       }
     } catch (e) {
       print('Payment error: $e');
@@ -135,7 +146,7 @@ final response = await walletConnectPay.getPaymentOptions(
 // Access payment information
 print('Payment ID: ${response.paymentId}');
 print('Merchant: ${response.info?.merchant.name}');
-print('Amount: ${response.info?.amount.display.assetSymbol} ${response.info?.amount.value}');
+print('Amount: ${response.info?.amount.formatAmount()}');
 print('Options available: ${response.options.length}');
 ```
 
@@ -206,3 +217,5 @@ try {
 - `signatures` are required for `confirmPayment` - you need to execute the wallet RPC actions and collect signatures from your wallet
 - `collectedData` is optional and only needed if `collectData` is present in the payment options response
 - Use `maxPollMs` to control how long the SDK should poll for payment status updates
+- Payment options may include actions directly, or you may need to call `getRequiredPaymentActions` separately
+- Always poll until `isFinal` is `true` to get the final payment status

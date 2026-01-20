@@ -125,7 +125,6 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     // Initialize WalletConnectPay using projectId as appId
     final clientId = await core.crypto.getClientId();
     pay = WalletConnectPay(
-      apiKey: 'apikey',
       appId: core.projectId,
       clientId: clientId,
     );

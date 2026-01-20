@@ -81,16 +81,18 @@ First, initialize the `WalletConnectPay` client with your app ID and client ID o
 ```dart
 import 'package:walletconnect_pay/walletconnect_pay.dart';
 
+// Initialize WalletConnect Pay. Either apiKey or appId must be passed
 final payClient = WalletConnectPay(
-  appId: 'YOUR_APP_ID', // Optional
   apiKey: 'YOUR_API_KEY', // Optional
+  appId: 'YOUR_APP_ID', // Optional
   clientId: 'OPTIONAL_CLIENT_ID', // Optional
   baseUrl: 'https://api.pay.walletconnect.com', // Optional
 );
 
 // Initialize the SDK
-final success = await payClient.init();
-if (!success) {
+try {
+  await payClient.init();
+} on PayInitializeError catch (e) {
   // Handle initialization error
 }
 ```
@@ -101,8 +103,8 @@ Retrieve available payment options for a payment link:
 
 ```dart
 final request = GetPaymentOptionsRequest(
-  paymentLink: 'https://pay.walletconnect.com/pay/...',
-  accounts: ['eip155:1:0x...', 'eip155:137:0x...'], // User's wallet accounts
+  paymentLink: 'https://pay.walletconnect.com/pay_123',
+  accounts: ['eip155:1:0x...', 'eip155:137:0x...'], // User's wallet CAIP-10 accounts
   includePaymentInfo: true, // Include payment details in response
 );
 
@@ -113,7 +115,7 @@ print('Payment ID: ${response.paymentId}');
 print('Options available: ${response.options.length}');
 
 if (response.info != null) {
-  print('Amount: ${response.info!.amount.formattedAmount}');
+  print('Amount: ${response.info!.amount.formatAmount()}');
   print('Status: ${response.info!.status}');
   print('Merchant: ${response.info!.merchant.name}');
 }
@@ -130,10 +132,9 @@ Get the required wallet actions (e.g., transactions to sign) for a selected paym
 
 ```dart
 final actionsRequest = GetRequiredPaymentActionsRequest(
-  optionId: response.options.first.id,
+  optionId: response.options.first.id, // Or whatever other option chosen by the user
   paymentId: response.paymentId,
 );
-
 final actions = await payClient.getRequiredPaymentActions(
   request: actionsRequest,
 );
@@ -175,7 +176,7 @@ final confirmRequest = ConfirmPaymentRequest(
 final confirmResponse = await payClient.confirmPayment(request: confirmRequest);
 
 print('Payment Status: ${confirmResponse.status}');
-print('Is Final: ${confirmResponse.isFinal}');
+print('Is Final status: ${confirmResponse.isFinal}');
 
 if (!confirmResponse.isFinal && confirmResponse.pollInMs != null) {
   // Poll again after the specified interval
@@ -264,9 +265,10 @@ PaymentInfo({
 ```dart
 PaymentOption({
   required String id,
+  required String account,
   required PayAmount amount,
   @JsonKey(name: 'etaS') required int etaSeconds,
-  @JsonKey(name: 'actions') required List<Action> actions,
+  required List<Action> actions,
 })
 ```
 
