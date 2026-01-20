@@ -146,7 +146,7 @@ final response = await walletConnectPay.getPaymentOptions(
 // Access payment information
 print('Payment ID: ${response.paymentId}');
 print('Merchant: ${response.info?.merchant.name}');
-print('Amount: ${response.info?.amount.display.assetSymbol} ${response.info?.amount.value}');
+print('Amount: ${response.info?.amount.formatAmount()}');
 print('Options available: ${response.options.length}');
 ```
 

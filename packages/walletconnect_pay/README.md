@@ -115,7 +115,7 @@ print('Payment ID: ${response.paymentId}');
 print('Options available: ${response.options.length}');
 
 if (response.info != null) {
-  print('Amount: ${response.info!.amount.formattedAmount}');
+  print('Amount: ${response.info!.amount.formatAmount()}');
   print('Status: ${response.info!.status}');
   print('Merchant: ${response.info!.merchant.name}');
 }
@@ -265,9 +265,10 @@ PaymentInfo({
 ```dart
 PaymentOption({
   required String id,
+  required String account,
   required PayAmount amount,
   @JsonKey(name: 'etaS') required int etaSeconds,
-  @JsonKey(name: 'actions') required List<Action> actions,
+  required List<Action> actions,
 })
 ```
 
