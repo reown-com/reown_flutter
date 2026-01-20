@@ -35,7 +35,8 @@ extension PayAmountExtension on PayAmount {
           .padLeft(scale, '0')
           .replaceFirst(RegExp(r'0+$'), '');
 
-      return (fracStr.isEmpty ? '$intStr $symbol' : '$intStr.$fracStr $symbol').trim();
+      return (fracStr.isEmpty ? '$intStr $symbol' : '$intStr.$fracStr $symbol')
+          .trim();
     } catch (_) {
       return '$value $symbol'.trim();
     }

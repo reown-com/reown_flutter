@@ -8,10 +8,15 @@ typedef AuthMessage = String;
 typedef AuthRequest = SessionAuthPayload;
 
 abstract class IWalletKitService extends Disposable {
+  abstract final ValueNotifier<ChainMetadata?> currentSelectedChain;
+  ReownWalletKit get walletKit;
+  IPairingStore? get pairings;
+
   Future<void> create();
   Future<void> setUpAccounts();
   Future<List<String>> getWalletAccounts([String namespace = '']);
   Future<void> init();
+  Future<dynamic> pair(String uri);
 
   T getChainService<T extends Object>({required String chainId});
 
@@ -21,6 +26,14 @@ abstract class IWalletKitService extends Disposable {
     Map<String, Namespace>? generatedNamespaces,
   );
 
-  abstract final ValueNotifier<ChainMetadata?> currentSelectedChain;
-  ReownWalletKit get walletKit;
+  Future<PaymentOptionsResponse> getPaymentOptions(
+    GetPaymentOptionsRequest request,
+  );
+  Future<List<Action>> getRequiredPaymentActions(
+    String optionId,
+    String paymentId,
+  );
+  Future<ConfirmPaymentResponse> confirmPayment(
+    ConfirmPaymentRequest payment,
+  );
 }

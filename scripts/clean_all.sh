@@ -70,6 +70,16 @@ rm -Rf .dart_tool
 cd ..
 cd ..
 
+echo "******* CLEAN WALLETCONNECT PAY *******"
+
+cd packages/walletconnect_pay/
+
+flutter clean
+rm -Rf .dart_tool
+
+cd ..
+cd ..
+
 echo "******* CLEAN WALLETKIT *******"
 
 cd packages/reown_walletkit/

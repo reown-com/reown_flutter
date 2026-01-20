@@ -60,6 +60,12 @@
 @import url_launcher_ios;
 #endif
 
+#if __has_include(<walletconnect_pay/WalletconnectPayPlugin.h>)
+#import <walletconnect_pay/WalletconnectPayPlugin.h>
+#else
+@import walletconnect_pay;
+#endif
+
 #if __has_include(<webview_flutter_wkwebview/WebViewFlutterPlugin.h>)
 #import <webview_flutter_wkwebview/WebViewFlutterPlugin.h>
 #else
@@ -78,6 +84,7 @@
   [SharedPreferencesPlugin registerWithRegistrar:[registry registrarForPlugin:@"SharedPreferencesPlugin"]];
   [SqflitePlugin registerWithRegistrar:[registry registrarForPlugin:@"SqflitePlugin"]];
   [URLLauncherPlugin registerWithRegistrar:[registry registrarForPlugin:@"URLLauncherPlugin"]];
+  [WalletconnectPayPlugin registerWithRegistrar:[registry registrarForPlugin:@"WalletconnectPayPlugin"]];
   [WebViewFlutterPlugin registerWithRegistrar:[registry registrarForPlugin:@"WebViewFlutterPlugin"]];
 }
 

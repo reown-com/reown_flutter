@@ -117,15 +117,4 @@ class MethodsUtils {
       ),
     );
   }
-
-  // TODO: Move as part of walletkit SDK
-  static bool isPaymentLink(String uri) {
-    final lower = uri.toLowerCase();
-    return lower.contains('pay.') ||
-        lower.contains('pay=') ||
-        lower.contains('pay_') ||
-        lower.contains('pay%2e') || // encoded "pay."
-        lower.contains('pay%3d') || // encoded "pay="
-        lower.contains('pay%5f'); // encoded "pay_"
-  }
 }

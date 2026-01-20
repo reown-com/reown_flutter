@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart' hide Action;
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
+
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
-import 'package:reown_walletkit_wallet/walletconnect_pay/i_walletconnect_pay_service.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
-import 'package:walletconnect_pay/walletconnect_pay.dart';
 
 class WCPPaymentDetailsWidget extends StatefulWidget {
   const WCPPaymentDetailsWidget({
@@ -27,7 +27,7 @@ class WCPPaymentDetailsWidget extends StatefulWidget {
 }
 
 class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
-  final _wcPayService = GetIt.I<IWalletConnectPayService>();
+  final _walletKitService = GetIt.I<IWalletKitService>();
   late final PaymentOptionsResponse paymentOptionsResponse;
   late ConfirmPaymentRequest confirmRequest;
 
@@ -56,9 +56,7 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
       case 'eth_signTypedData_v4':
         final decodedParams = jsonDecode(params) as List<dynamic>;
         final typedData = decodedParams.last;
-        // final normalizedData = _normalizeHexValues(typedData);
-        final signature = service.ethSignTypedDataV4(typedData);
-        return signature;
+        return service.ethSignTypedDataV4(typedData);
       case 'personal_sign':
         return '';
       default:
@@ -70,7 +68,8 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
     try {
       final actions = List<Action>.from(_selectedOption.actions);
       if (actions.isEmpty) {
-        final requiredActions = await _wcPayService.getRequiredPaymentActions(
+        final requiredActions =
+            await _walletKitService.getRequiredPaymentActions(
           _selectedOption.id,
           confirmRequest.paymentId,
         );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
-import 'package:walletconnect_pay/walletconnect_pay.dart';
 
 class WCPFullNameCapture extends StatefulWidget {
   const WCPFullNameCapture({
@@ -82,10 +82,6 @@ class _WCPFullNameCaptureState extends State<WCPFullNameCapture> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          // WCPStepsIndicator(
-          //   currentStep: 1,
-          //   totalSteps: 3,
-          // ),
           const SizedBox(height: StyleConstants.linear24),
           WCModalTitle(text: 'What\'s your name?'),
           const SizedBox(height: StyleConstants.linear32),

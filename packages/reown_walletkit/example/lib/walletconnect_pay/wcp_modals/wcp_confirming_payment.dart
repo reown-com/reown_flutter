@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
+import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
-import 'package:reown_walletkit_wallet/walletconnect_pay/i_walletconnect_pay_service.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
-import 'package:walletconnect_pay/walletconnect_pay.dart';
 
 class WCPConfirmingPayment extends StatefulWidget {
   const WCPConfirmingPayment({
@@ -18,7 +18,7 @@ class WCPConfirmingPayment extends StatefulWidget {
 }
 
 class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
-  final _wcPayService = GetIt.I<IWalletConnectPayService>();
+  final _walletKitService = GetIt.I<IWalletKitService>();
   late final ConfirmPaymentRequest _paymentRequest;
 
   @override
@@ -27,7 +27,7 @@ class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
     _paymentRequest = widget.paymentRequest;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       try {
-        final response = await _wcPayService.confirmPayment(
+        final response = await _walletKitService.confirmPayment(
           _paymentRequest,
         );
         Navigator.of(context).pop(response.status);

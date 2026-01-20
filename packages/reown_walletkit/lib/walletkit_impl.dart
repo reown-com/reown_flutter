@@ -1,10 +1,11 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart' hide Action;
 import 'package:reown_core/relay_client/websocket/http_client.dart';
 import 'package:reown_core/relay_client/websocket/i_http_client.dart';
 import 'package:reown_core/store/generic_store.dart';
 import 'package:reown_core/store/i_generic_store.dart';
+import 'package:walletconnect_pay/walletconnect_pay.dart' show Action;
 
-import 'package:reown_walletkit/reown_walletkit.dart';
+import 'package:reown_walletkit/reown_walletkit.dart' hide Action;
 
 class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   bool _initialized = false;
@@ -47,6 +48,9 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
 
   @override
   final PairingMetadata metadata;
+
+  @override
+  late final WalletConnectPay pay;
 
   ReownWalletKit({required this.core, required this.metadata}) {
     reOwnSign = ReownSign(
@@ -117,6 +121,15 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
     });
     await core.events.sendStoredEvents();
     await reOwnSign.init();
+
+    // Initialize WalletConnectPay using projectId as appId
+    final clientId = await core.crypto.getClientId();
+    pay = WalletConnectPay(
+      apiKey: 'apikey',
+      appId: core.projectId,
+      clientId: clientId,
+    );
+    await pay.init();
 
     WidgetsBinding.instance.addObserver(this);
     _initialized = true;
@@ -252,9 +265,12 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   Future<void> respondSessionRequest({
     required String topic,
     required JsonRpcResponse response,
-  }) {
+  }) async {
     try {
-      return reOwnSign.respondSessionRequest(topic: topic, response: response);
+      return await reOwnSign.respondSessionRequest(
+        topic: topic,
+        response: response,
+      );
     } catch (e) {
       rethrow;
     }
@@ -375,8 +391,12 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   Future<bool> redirectToDapp({
     required String topic,
     required Redirect? redirect,
-  }) {
-    return reOwnSign.redirectToDapp(topic: topic, redirect: redirect);
+  }) async {
+    try {
+      return await reOwnSign.redirectToDapp(topic: topic, redirect: redirect);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   @override
@@ -394,9 +414,9 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   Future<ApproveResponse> approveSessionAuthenticate({
     required int id,
     List<Cacao>? auths,
-  }) {
+  }) async {
     try {
-      return reOwnSign.approveSessionAuthenticate(id: id, auths: auths);
+      return await reOwnSign.approveSessionAuthenticate(id: id, auths: auths);
     } catch (e) {
       rethrow;
     }
@@ -406,9 +426,9 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   Future<void> rejectSessionAuthenticate({
     required int id,
     required ReownSignError reason,
-  }) {
+  }) async {
     try {
-      return reOwnSign.rejectSessionAuthenticate(id: id, reason: reason);
+      return await reOwnSign.rejectSessionAuthenticate(id: id, reason: reason);
     } catch (e) {
       rethrow;
     }
@@ -439,9 +459,12 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
   Future<bool> validateSignedCacao({
     required Cacao cacao,
     required String projectId,
-  }) {
+  }) async {
     try {
-      return reOwnSign.validateSignedCacao(cacao: cacao, projectId: projectId);
+      return await reOwnSign.validateSignedCacao(
+        cacao: cacao,
+        projectId: projectId,
+      );
     } catch (e) {
       rethrow;
     }
@@ -460,5 +483,51 @@ class ReownWalletKit with WidgetsBindingObserver implements IReownWalletKit {
         await core.relayClient.connect();
       }
     }
+  }
+
+  ///---------- WALLETCONNECT PAY ----------///
+
+  @override
+  Future<PaymentOptionsResponse> getPaymentOptions({
+    required GetPaymentOptionsRequest request,
+  }) async {
+    try {
+      return await pay.getPaymentOptions(request: request);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<Action>> getRequiredPaymentActions({
+    required GetRequiredPaymentActionsRequest request,
+  }) async {
+    try {
+      return await pay.getRequiredPaymentActions(request: request);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<ConfirmPaymentResponse> confirmPayment({
+    required ConfirmPaymentRequest request,
+  }) async {
+    try {
+      return await pay.confirmPayment(request: request);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  bool isPaymentLink(String uri) {
+    final lower = uri.toLowerCase();
+    return lower.contains('pay.') ||
+        lower.contains('pay=') ||
+        lower.contains('pay_') ||
+        lower.contains('pay%2e') || // encoded "pay."
+        lower.contains('pay%3d') || // encoded "pay="
+        lower.contains('pay%5f'); // encoded "pay_"
   }
 }

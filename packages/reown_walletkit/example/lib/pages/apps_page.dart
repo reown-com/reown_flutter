@@ -10,12 +10,9 @@ import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/pages/app_detail_page.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/utils/eth_utils.dart';
-import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
-import 'package:reown_walletkit_wallet/walletconnect_pay/i_walletconnect_pay_service.dart';
 import 'package:reown_walletkit_wallet/widgets/pairing_item.dart';
 import 'package:reown_walletkit_wallet/widgets/uri_input_popup.dart';
 import 'package:toastification/toastification.dart';
-import 'package:walletconnect_pay/walletconnect_pay.dart';
 
 class AppsPage extends StatefulWidget {
   AppsPage({super.key});
@@ -26,40 +23,35 @@ class AppsPage extends StatefulWidget {
 
 class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
   List<PairingInfo> _pairings = [];
-  late IWalletKitService _walletKitService;
-  late IReownWalletKit _walletKit;
-  late IWalletConnectPayService _wcPayService;
+  final _walletKitService = GetIt.I<IWalletKitService>();
 
   @override
   void initState() {
     super.initState();
-    _walletKitService = GetIt.I<IWalletKitService>();
-    _wcPayService = GetIt.I<IWalletConnectPayService>();
-    _walletKit = _walletKitService.walletKit;
-    _pairings = _walletKit.pairings.getAll();
-    _pairings = _pairings.where((p) => p.active).toList();
-    //
+    _pairings =
+        _walletKitService.pairings!.getAll().where((p) => p.active).toList();
     _registerListeners();
   }
 
   void _registerListeners() {
-    _walletKit.core.relayClient.onRelayClientMessage.subscribe(
+    _walletKitService.walletKit.core.relayClient.onRelayClientMessage.subscribe(
       _onRelayClientMessage,
     );
-    _walletKit.pairings.onSync.subscribe(_refreshState);
-    _walletKit.pairings.onUpdate.subscribe(_refreshState);
-    _walletKit.onSessionConnect.subscribe(_refreshState);
-    _walletKit.onSessionDelete.subscribe(_refreshState);
+    _walletKitService.pairings!.onSync.subscribe(_refreshState);
+    _walletKitService.pairings!.onUpdate.subscribe(_refreshState);
+    _walletKitService.walletKit.onSessionConnect.subscribe(_refreshState);
+    _walletKitService.walletKit.onSessionDelete.subscribe(_refreshState);
   }
 
   void _unregisterListeners() {
-    _walletKit.onSessionDelete.unsubscribe(_refreshState);
-    _walletKit.onSessionConnect.unsubscribe(_refreshState);
-    _walletKit.pairings.onSync.unsubscribe(_refreshState);
-    _walletKit.pairings.onUpdate.unsubscribe(_refreshState);
-    _walletKit.core.relayClient.onRelayClientMessage.unsubscribe(
+    _walletKitService.walletKit.core.relayClient.onRelayClientMessage
+        .unsubscribe(
       _onRelayClientMessage,
     );
+    _walletKitService.walletKit.onSessionDelete.unsubscribe(_refreshState);
+    _walletKitService.walletKit.onSessionConnect.unsubscribe(_refreshState);
+    _walletKitService.pairings!.onSync.unsubscribe(_refreshState);
+    _walletKitService.pairings!.onUpdate.unsubscribe(_refreshState);
   }
 
   @override
@@ -92,8 +84,8 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    _pairings = _walletKit.pairings.getAll();
-    _pairings = _pairings.where((p) => p.active).toList();
+    _pairings =
+        _walletKitService.pairings!.getAll().where((p) => p.active).toList();
     return Stack(
       children: [
         if (_pairings.isNotEmpty) _buildPairingList(),
@@ -181,12 +173,8 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
     if ((uri ?? '').isEmpty) return;
     try {
       DeepLinkHandler.waiting.value = true;
-      if (MethodsUtils.isPaymentLink(uri!)) {
-        await _wcPayService.processPayment(uri);
-        DeepLinkHandler.waiting.value = false;
-      } else {
-        await _walletKit.pair(uri: Uri.parse(uri));
-      }
+      await _walletKitService.pair(uri!);
+      DeepLinkHandler.waiting.value = false;
     } on TimeoutException catch (_) {
       _showErrorDialog('Time out error. Check your connection.');
     } on ReownSignError catch (e) {

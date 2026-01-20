@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
+import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
-import 'package:reown_walletkit_wallet/walletconnect_pay/i_walletconnect_pay_service.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
-import 'package:walletconnect_pay/walletconnect_pay.dart';
 
 class WCPGetPaymentOptions extends StatefulWidget {
   const WCPGetPaymentOptions({
@@ -21,7 +21,7 @@ class WCPGetPaymentOptions extends StatefulWidget {
 }
 
 class _WCPGetPaymentOptionsState extends State<WCPGetPaymentOptions> {
-  final _wcPayService = GetIt.I<IWalletConnectPayService>();
+  final _walletKitService = GetIt.I<IWalletKitService>();
 
   @override
   void initState() {
@@ -33,7 +33,7 @@ class _WCPGetPaymentOptionsState extends State<WCPGetPaymentOptions> {
           accounts: widget.accounts,
           includePaymentInfo: true,
         );
-        final response = await _wcPayService.getPaymentOptions(request);
+        final response = await _walletKitService.getPaymentOptions(request);
         Navigator.of(context).pop(response);
       } on GetPaymentOptionsError catch (e) {
         Navigator.of(context).pop(e);
@@ -64,8 +64,6 @@ class _WCPGetPaymentOptionsState extends State<WCPGetPaymentOptions> {
           const Center(
             child: WalletConnectLoading(size: 120.0),
           ),
-          // const SizedBox(height: 24.0),
-          // WCModalTitle(text: 'Confirming your payment...'),
           const SizedBox(height: StyleConstants.linear24),
         ],
       ),

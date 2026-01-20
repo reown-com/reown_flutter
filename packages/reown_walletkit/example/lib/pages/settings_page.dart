@@ -1033,24 +1033,24 @@ class _Buttons extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12.0),
-              Row(
-                children: [
-                  CustomButton(
-                    type: CustomButtonType.valid,
-                    onTap: onSetWCPApiKey,
-                    child: const Center(
-                      child: Text(
-                        'Set WalletConnect API Key',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12.0),
+              // Row(
+              //   children: [
+              //     CustomButton(
+              //       type: CustomButtonType.valid,
+              //       onTap: onSetWCPApiKey,
+              //       child: const Center(
+              //         child: Text(
+              //           'Set WalletConnect API Key',
+              //           style: TextStyle(
+              //             color: Colors.white,
+              //             fontWeight: FontWeight.bold,
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
+              // const SizedBox(height: 12.0),
               Row(
                 children: [
                   CustomButton(

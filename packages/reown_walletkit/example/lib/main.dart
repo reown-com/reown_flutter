@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/bottom_sheet_listener.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
@@ -15,13 +18,8 @@ import 'package:reown_walletkit_wallet/pages/balances_page.dart';
 import 'package:reown_walletkit_wallet/pages/apps_page.dart';
 import 'package:reown_walletkit_wallet/pages/settings_page.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
-import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
-import 'package:reown_walletkit_wallet/walletconnect_pay/i_walletconnect_pay_service.dart';
-import 'package:reown_walletkit_wallet/walletconnect_pay/walletconnect_pay_service.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:walletconnect_pay/walletconnect_pay.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -173,20 +171,12 @@ class _MyHomePageState extends State<MyHomePage> {
         return keyService;
       });
       GetIt.I.registerSingleton<IWalletKitService>(WalletKitService());
-      GetIt.I.registerSingleton<IWalletConnectPayService>(
-        WalletConnectPayService(),
-      );
       await GetIt.I.allReady(timeout: Duration(seconds: 1));
 
       final walletKitService = GetIt.I<IWalletKitService>();
       await walletKitService.create();
       await walletKitService.setUpAccounts();
       await walletKitService.init();
-
-      final accounts = await walletKitService.getWalletAccounts('eip155');
-      final wcPayService = GetIt.I<IWalletConnectPayService>();
-      await wcPayService.setUpAccounts(accounts);
-      await wcPayService.init();
 
       walletKitService.walletKit.core.relayClient.onRelayClientConnect
           .subscribe(
@@ -202,11 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
       _setPages();
 
-      // TODO _walletKit.core.echo.register(firebaseAccessToken);
       DeepLinkHandler.checkInitialLink();
-    } on PayInitializeError catch (e) {
-      debugPrint('[$runtimeType] ❌ ${e.code}: ${e.message}');
-      await Sentry.captureException(e);
     } catch (e, s) {
       debugPrint('[$runtimeType] ❌ crash during initialize, $e, $s');
       await Sentry.captureException(e, stackTrace: s);

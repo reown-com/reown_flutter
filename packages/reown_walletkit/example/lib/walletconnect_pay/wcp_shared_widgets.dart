@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
-import 'package:walletconnect_pay/walletconnect_pay.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
 
 class WCModalTitle extends StatelessWidget {
   const WCModalTitle({
@@ -190,7 +190,7 @@ class _WCPTextFieldState extends State<WCPTextField> {
         decoration: const BoxDecoration(),
         padding: EdgeInsets.zero,
         suffix: widget.suffix,
-        inputFormatters: [],
+        textCapitalization: TextCapitalization.words,
         keyboardType: widget.keyboardType ?? TextInputType.text,
       ),
     );

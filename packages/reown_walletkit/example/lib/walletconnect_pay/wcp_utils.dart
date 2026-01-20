@@ -1,4 +1,4 @@
-import 'package:walletconnect_pay/walletconnect_pay.dart';
+import 'package:reown_walletkit/reown_walletkit.dart';
 
 extension DateTimeExtension on DateTime {
   String get formatted {
