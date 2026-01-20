@@ -1,11 +1,11 @@
 ---
 description: Review a pull request thoroughly
-argument-hint: <pr-number>
+argument-hint: [pr-number]
 ---
 
 # Review Pull Request #$1
 
-You are reviewing PR #$1 with the following priorities:
+You are reviewing the PR for the current branch. If a PR number is provided, use #$1. Otherwise, detect the current branch and find its PR. Review with the following priorities:
 
 1. **Would tests catch regressions?** - If someone changes this code incorrectly, will tests fail?
 2. **Can a newcomer understand this?** - Is the code self-documenting?
