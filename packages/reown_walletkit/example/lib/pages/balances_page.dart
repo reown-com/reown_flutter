@@ -20,6 +20,31 @@ class _BalancesPageState extends State<BalancesPage> {
   final _keysService = GetIt.I<IKeyService>();
   final List<Map<String, dynamic>> _balances = [];
   bool _isLoading = false;
+  final Set<String> _selectedSymbols = {};
+
+  Map<String, String> get _symbolsWithIcons {
+    final result = <String, String>{};
+    for (final balance in _balances) {
+      final symbol = balance['symbol'] as String? ?? '';
+      final iconUrl = balance['iconUrl'] as String? ?? '';
+      if (symbol.isNotEmpty && !result.containsKey(symbol)) {
+        result[symbol] = iconUrl;
+      }
+    }
+    return Map.fromEntries(
+      result.entries.toList()..sort((a, b) => a.key.compareTo(b.key)),
+    );
+  }
+
+  List<Map<String, dynamic>> get _filteredBalances {
+    if (_selectedSymbols.isEmpty) {
+      return _balances;
+    }
+    return _balances.where((balance) {
+      final symbol = balance['symbol'] as String? ?? '';
+      return _selectedSymbols.contains(symbol);
+    }).toList();
+  }
 
   @override
   void initState() {
@@ -68,6 +93,7 @@ class _BalancesPageState extends State<BalancesPage> {
       debugPrint('Error in _updateBalance: $e');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +145,24 @@ class _BalancesPageState extends State<BalancesPage> {
                     ),
                     Divider(height: 1.0, color: StyleConstants.neutrals),
                     const SizedBox(height: 12.0),
+                    // Filter widgets
+                    _BalancesFilterWidget(
+                      symbolsWithIcons: _symbolsWithIcons,
+                      selectedSymbols: _selectedSymbols,
+                      onSelectionChanged: (symbol, selected) {
+                        setState(() {
+                          if (selected) {
+                            _selectedSymbols.add(symbol);
+                          } else {
+                            _selectedSymbols.remove(symbol);
+                          }
+                        });
+                      },
+                      onSelectAll: () {
+                        setState(() => _selectedSymbols.clear());
+                      },
+                    ),
+                    const SizedBox(height: 12.0),
                     if (_isLoading)
                       const Center(
                         child: Padding(
@@ -126,18 +170,20 @@ class _BalancesPageState extends State<BalancesPage> {
                           child: CircularProgressIndicator(),
                         ),
                       )
-                    else if (_balances.isEmpty)
+                    else if (_filteredBalances.isEmpty)
                       WCPTextField(
                         controller: TextEditingController(),
                         focusNode: FocusNode(),
                         padding: const EdgeInsets.symmetric(
                           horizontal: 18.0,
                         ),
-                        label: 'No balances found',
+                        label: _balances.isEmpty
+                            ? 'No balances found'
+                            : 'No balances match selected filters',
                         enabled: false,
                       )
                     else
-                      ..._balances.map(
+                      ..._filteredBalances.map(
                         (balance) {
                           final symbol = balance['symbol'] as String? ?? '';
                           final value = balance['value'] as num? ?? 0.0;
@@ -218,6 +264,118 @@ class _BalancesPageState extends State<BalancesPage> {
                 ),
               ),
             ),
+    );
+  }
+}
+
+class _BalancesFilterWidget extends StatelessWidget {
+  const _BalancesFilterWidget({
+    required this.symbolsWithIcons,
+    required this.selectedSymbols,
+    required this.onSelectionChanged,
+    required this.onSelectAll,
+  });
+
+  final Map<String, String> symbolsWithIcons;
+  final Set<String> selectedSymbols;
+  final void Function(String symbol, bool selected) onSelectionChanged;
+  final VoidCallback onSelectAll;
+
+  @override
+  Widget build(BuildContext context) {
+    if (symbolsWithIcons.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final isAllSelected = selectedSymbols.isEmpty;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Filter by token',
+          style: StyleConstants.wcpTextPrimaryStyle.copyWith(
+            fontSize: 14.0,
+          ),
+        ),
+        const SizedBox(height: 8.0),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              FilterChip(
+                label: const Text('All'),
+                selected: isAllSelected,
+                onSelected: (_) => onSelectAll(),
+                selectedColor:
+                    StyleConstants.accentPrimary.withValues(alpha: 0.2),
+                showCheckmark: false,
+                backgroundColor: StyleConstants.foregroundPrimary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  side: BorderSide(
+                    color: isAllSelected
+                        ? StyleConstants.accentPrimary
+                        : StyleConstants.foregroundSecondary,
+                  ),
+                ),
+                labelStyle: StyleConstants.wcpTextPrimaryStyle.copyWith(
+                  fontSize: 13.0,
+                  color: isAllSelected
+                      ? StyleConstants.accentPrimary
+                      : StyleConstants.textPrimary,
+                ),
+              ),
+              ...symbolsWithIcons.entries.map((entry) {
+                final symbol = entry.key;
+                final iconUrl = entry.value;
+                final isSelected = selectedSymbols.contains(symbol);
+                return Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: FilterChip(
+                    avatar: iconUrl.isNotEmpty
+                        ? CircleAvatar(
+                            backgroundColor: StyleConstants.foregroundSecondary,
+                            child: ClipOval(
+                              child: CachedNetworkImage(
+                                imageUrl: iconUrl,
+                                width: 20.0,
+                                height: 20.0,
+                                errorWidget: (context, url, error) =>
+                                    const SizedBox.shrink(),
+                              ),
+                            ),
+                          )
+                        : null,
+                    label: Text(symbol),
+                    selected: isSelected,
+                    onSelected: (selected) =>
+                        onSelectionChanged(symbol, selected),
+                    selectedColor:
+                        StyleConstants.accentPrimary.withValues(alpha: 0.2),
+                    showCheckmark: false,
+                    backgroundColor: StyleConstants.foregroundPrimary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      side: BorderSide(
+                        color: isSelected
+                            ? StyleConstants.accentPrimary
+                            : StyleConstants.foregroundSecondary,
+                      ),
+                    ),
+                    labelStyle: StyleConstants.wcpTextPrimaryStyle.copyWith(
+                      fontSize: 13.0,
+                      color: isSelected
+                          ? StyleConstants.accentPrimary
+                          : StyleConstants.textPrimary,
+                    ),
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

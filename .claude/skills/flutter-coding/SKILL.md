@@ -376,6 +376,7 @@ void main() {
 - [ ] Line length ≤ 80 characters (preferred)
 - [ ] Private members use `_` prefix
 - [ ] Constants are properly scoped
+- [ ] UI components use widgets, not functions (no `Widget _buildX()` methods)
 
 ## Flutter-Specific Patterns
 
@@ -384,9 +385,9 @@ void main() {
 // Prefer composition over large widgets
 class SessionList extends StatelessWidget {
   final List<Session> sessions;
-  
+
   const SessionList({required this.sessions, super.key});
-  
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -399,15 +400,85 @@ class SessionList extends StatelessWidget {
 // Private widget for reusable UI
 class _SessionTile extends StatelessWidget {
   final Session session;
-  
+
   const _SessionTile({required this.session});
-  
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(session.topic),
       subtitle: Text('Expires: ${session.expiry}'),
     );
+  }
+}
+```
+
+### Avoid Functions for UI - Use Widgets Instead
+**IMPORTANT:** Never use functions to return UI components. Always use `StatelessWidget` or `StatefulWidget` classes instead.
+
+Functions for UI are problematic because:
+- They don't benefit from Flutter's widget rebuild optimizations
+- They can't be `const` constructed
+- They don't appear in widget inspector/devtools
+- They're not reusable across files
+- They don't support widget keys properly
+
+```dart
+// BAD - Don't use functions for UI
+class MyPage extends StatelessWidget {
+  Widget _buildHeader() {
+    return Container(
+      child: Text('Header'),
+    );
+  }
+
+  Widget _buildContent() {
+    return Column(children: [...]);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _buildHeader(),
+        _buildContent(),
+      ],
+    );
+  }
+}
+
+// GOOD - Use widget classes instead
+class MyPage extends StatelessWidget {
+  const MyPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Column(
+      children: [
+        _Header(),
+        _Content(),
+      ],
+    );
+  }
+}
+
+class _Header extends StatelessWidget {
+  const _Header();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: const Text('Header'),
+    );
+  }
+}
+
+class _Content extends StatelessWidget {
+  const _Content();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(children: [...]);
   }
 }
 ```
