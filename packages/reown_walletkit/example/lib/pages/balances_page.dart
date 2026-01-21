@@ -94,7 +94,6 @@ class _BalancesPageState extends State<BalancesPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final chainKeys = _keysService.getKeysForChain('eip155');

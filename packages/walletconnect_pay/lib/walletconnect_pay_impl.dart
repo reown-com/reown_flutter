@@ -67,9 +67,9 @@ class WalletConnectPay {
     required ConfirmPaymentRequest request,
   }) async {
     try {
-      final requestJson = jsonEncode(request.toJson());
+      final requestJson = request.copyWith(maxPollMs: 60000).toJson();
       final channelResponse = await _platformInstance.confirmPayment(
-        requestJson: requestJson,
+        requestJson: jsonEncode(requestJson),
       );
       final json = jsonDecode(channelResponse) as Map<String, dynamic>;
       return ConfirmPaymentResponse.fromJson(json);
