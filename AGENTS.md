@@ -66,25 +66,31 @@ reown_flutter/
 
 The packages follow a dependency hierarchy:
 
+**Independent packages** (no internal reown dependencies):
+- **reown_yttrium**: Chain abstraction layer (ERC-4337, ERC-7702 support)
+- **walletconnect_pay**: Payment protocol implementation
+- **reown_cli**: Command-line tool
+- **pos_client**: Point of sale SDK
+
+**Dependent chain**:
+
 1. **reown_core** (Foundation)
-   - No internal reown dependencies
+   - Depends on: `reown_yttrium`
    - Provides: networking, cryptography, storage, message serialization
 
 2. **reown_sign** (Protocol Layer)
    - Depends on: `reown_core`
    - Provides: Sign protocol implementation, session management
 
-3. **reown_walletkit** (Wallet Side)
-   - Depends on: `reown_core`, `reown_sign`, `walletconnect_pay`
-   - Provides: Wallet-side WalletConnect functionality
-
-4. **reown_appkit** (DApp Side)
+3. **reown_appkit** (DApp Side)
    - Depends on: `reown_core`, `reown_sign`
    - Provides: Full UI toolkit with modals, QR codes, WebView support
 
-5. **reown_yttrium** (Chain Abstraction)
-   - Early access package for smart account functionality
-   - Provides: ERC-4337, ERC-7702 support
+4. **reown_walletkit** (Wallet Side)
+   - Depends on: `reown_core`, `reown_sign`, `walletconnect_pay`
+   - Provides: Wallet-side WalletConnect functionality
+
+Note: `reown_appkit` and `reown_walletkit` are independent of each other.
 
 ### Package Details
 
@@ -121,6 +127,32 @@ Full-featured UI toolkit:
 - Comprehensive modal components
 - Asset caching (`cached_network_image`)
 - Shimmer loading effects
+
+#### reown_yttrium
+Chain abstraction layer (early access):
+- Smart account functionality (ERC-4337, ERC-7702)
+- Native platform plugins (Android/iOS)
+- `freezed` for immutable models
+- `eth_sig_util_plus` for signature utilities
+
+#### walletconnect_pay
+Payment protocol plugin:
+- Crypto and stablecoin payment acceptance
+- Multi-blockchain network support
+- Native platform plugins (Android/iOS)
+- `freezed` for immutable models
+
+#### reown_cli
+Command-line tool:
+- Flutter project scaffolding with AppKit SDK integration
+- Project generation and setup automation
+
+#### pos_client
+Point of Sale SDK:
+- Cryptocurrency payment acceptance for POS systems
+- QR code generation for payment requests
+- Event-driven architecture
+- Depends on `reown_core` and `reown_sign` at runtime
 
 ## Key Commands
 
@@ -193,13 +225,20 @@ Packages are published via GitHub Actions workflow (`.github/workflows/publish-p
    - Creating PR with updates
 
 **Publishing Order** (due to dependencies):
-1. `reown_core`
-2. `reown_sign` (depends on core)
-3. `reown_yttrium` (independent)
-4. `reown_walletkit` (depends on core, sign, yttrium)
-5. `reown_appkit` (depends on core, sign, walletkit)
-6. `reown_cli` (independent)
-7. `pos_client` (independent)
+
+Independent packages (run in parallel):
+- `reown_yttrium`
+- `walletconnect_pay`
+- `reown_cli`
+- `pos_client`
+
+Dependent chain:
+1. `reown_yttrium` → `reown_core` (core depends on yttrium)
+2. `reown_core` → `reown_sign` (sign depends on core)
+3. `reown_sign` → `reown_appkit` (appkit depends on core, sign)
+4. `reown_sign` + `walletconnect_pay` → `reown_walletkit` (walletkit depends on core, sign, walletconnect_pay)
+
+Note: `reown_appkit` and `reown_walletkit` are independent and can be published in parallel after `reown_sign`.
 
 ## Architecture Overview
 
@@ -331,9 +370,14 @@ Semantic versioning: `MAJOR.MINOR.PATCH`
 ### Publishing Dependencies
 
 Packages must be published in dependency order:
-1. Foundation packages first (`reown_core`)
-2. Protocol packages (`reown_sign`)
-3. Application packages (`reown_walletkit`, `reown_appkit`)
+
+1. Independent packages first (can run in parallel):
+   - `reown_yttrium`, `walletconnect_pay`, `reown_cli`, `pos_client`
+2. Foundation package: `reown_core` (waits for `reown_yttrium`)
+3. Protocol package: `reown_sign` (waits for `reown_core`)
+4. Application packages (can run in parallel after `reown_sign`):
+   - `reown_appkit` (depends on `reown_core`, `reown_sign`)
+   - `reown_walletkit` (depends on `reown_core`, `reown_sign`, `walletconnect_pay`)
 
 The workflow automatically:
 - Updates `pubspec.yaml` with new dependency versions
