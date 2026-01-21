@@ -119,7 +119,9 @@ void main() {
         final error = PayInitializeError(
           code: 'CONFIG_ERROR',
           message: 'Both api_key and app_id are missing',
-          details: {'missing_fields': ['api_key', 'app_id']},
+          details: {
+            'missing_fields': ['api_key', 'app_id'],
+          },
           stacktrace: 'at initialize() line 42',
         );
 
@@ -269,10 +271,7 @@ void main() {
 
     test('test_get_payment_options_throws_on_404', () async {
       mockPlatform.setGetPaymentOptionsException(
-        PlatformException(
-          code: '404',
-          message: 'Payment not found',
-        ),
+        PlatformException(code: '404', message: 'Payment not found'),
       );
 
       expect(
@@ -288,10 +287,7 @@ void main() {
 
     test('test_get_payment_options_throws_on_410_expired', () async {
       mockPlatform.setGetPaymentOptionsException(
-        PlatformException(
-          code: '410',
-          message: 'Payment expired',
-        ),
+        PlatformException(code: '410', message: 'Payment expired'),
       );
 
       expect(

@@ -54,5 +54,5 @@ app.*.map.json
 **/*.keystore
 
 # Run scripts
-run_tests_all.sh
+# run_tests_all.sh
 *.env.secret*

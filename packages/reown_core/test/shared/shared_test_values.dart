@@ -4,10 +4,7 @@ const TEST_RELAY_URL = String.fromEnvironment(
   'RELAY_ENDPOINT',
   defaultValue: 'wss://relay.walletconnect.org',
 );
-const TEST_PROJECT_ID = String.fromEnvironment(
-  'PROJECT_ID',
-  defaultValue: 'cad4956f31a5e40a00b62865b030c6f8',
-);
+const TEST_PROJECT_ID = String.fromEnvironment('PROJECT_ID', defaultValue: '');
 
 const PROPOSER = PairingMetadata(
   name: 'App A (Proposer, dapp)',

@@ -275,7 +275,8 @@ void main() {
     group('PayAmount and AmountDisplay', () {
       test('test_pay_amount_serialization', () {
         const amount = PayAmount(
-          unit: 'caip19/eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+          unit:
+              'caip19/eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
           value: '100000000',
           display: AmountDisplay(
             assetSymbol: 'USDC',
@@ -327,9 +328,7 @@ void main() {
             },
           },
           'expiresAt': 1700000000,
-          'merchant': {
-            'name': 'Test Merchant',
-          },
+          'merchant': {'name': 'Test Merchant'},
         };
 
         final info = PaymentInfo.fromJson(json);
@@ -478,11 +477,7 @@ void main() {
 
     group('ConfirmPaymentResponse', () {
       test('test_confirm_payment_response_serialization', () {
-        final json = {
-          'status': 'succeeded',
-          'isFinal': true,
-          'pollInMs': null,
-        };
+        final json = {'status': 'succeeded', 'isFinal': true, 'pollInMs': null};
 
         final response = ConfirmPaymentResponse.fromJson(json);
 
@@ -593,10 +588,7 @@ void main() {
       };
 
       for (final entry in statuses.entries) {
-        final json = {
-          'status': entry.key,
-          'isFinal': true,
-        };
+        final json = {'status': entry.key, 'isFinal': true};
         final response = ConfirmPaymentResponse.fromJson(json);
         expect(response.status, entry.value);
       }
@@ -616,10 +608,7 @@ void main() {
     });
 
     test('test_payment_status_succeeded_is_final', () {
-      final json = {
-        'status': 'succeeded',
-        'isFinal': true,
-      };
+      final json = {'status': 'succeeded', 'isFinal': true};
 
       final response = ConfirmPaymentResponse.fromJson(json);
 
@@ -628,10 +617,7 @@ void main() {
     });
 
     test('test_payment_status_failed_is_final', () {
-      final json = {
-        'status': 'failed',
-        'isFinal': true,
-      };
+      final json = {'status': 'failed', 'isFinal': true};
 
       final response = ConfirmPaymentResponse.fromJson(json);
 
@@ -640,10 +626,7 @@ void main() {
     });
 
     test('test_payment_status_expired_is_final', () {
-      final json = {
-        'status': 'expired',
-        'isFinal': true,
-      };
+      final json = {'status': 'expired', 'isFinal': true};
 
       final response = ConfirmPaymentResponse.fromJson(json);
 

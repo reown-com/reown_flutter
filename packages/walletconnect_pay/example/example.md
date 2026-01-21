@@ -9,9 +9,9 @@ import 'package:walletconnect_pay/walletconnect_pay.dart';
 
 // Initialize WalletConnect Pay. Either apiKey or appId must be passed
 final walletConnectPay = WalletConnectPay(
-  apiKey: 'your-api-key', // Optional: if using API key
-  // appId: 'your-app-id', // Optional: if using appId instead
-  // clientId: 'your-client-id', // Optional: if using clientId
+  apiKey: 'your-api-key',
+  // appId: 'your-app-id',
+  // clientId: 'your-client-id', // Optional
   // baseUrl: 'https://api.pay.walletconnect.com', // Optional: custom base URL
 );
 
