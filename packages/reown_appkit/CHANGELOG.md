@@ -1,4 +1,4 @@
-## 1.8.0-beta01
+## 1.8.0
 
 - Deposit From Exchange enhancement: Swapping/Bridging tokens if needed
 
