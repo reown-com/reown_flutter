@@ -59,6 +59,14 @@ on:
         options:
           - "true"
           - "false"
+      walletconnect_pay:
+        description: "Publish WalletConnect Pay?"
+        required: false
+        default: "false"
+        type: choice
+        options:
+          - "true"
+          - "false"
 
 permissions:
   contents: write # Required to commit pubspec.yaml changes back to the repo
@@ -94,7 +102,7 @@ jobs:
 
   publish-core:
     name: Publish reown_core
-    needs: [create-branch]
+    needs: [create-branch, publish-yttrium]
     runs-on: ubuntu-latest
     outputs:
       package_version: ${{ steps.get_version.outputs.version }}
@@ -121,6 +129,31 @@ jobs:
       - name: Install yq
         if: github.event.inputs.core == 'true'
         run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
+
+      - name: Update reown_yttrium dependency in reown_core/pubspec.yaml
+        if: github.event.inputs.core == 'true' && github.event.inputs.yttrium == 'true' && needs.publish-yttrium.outputs.package_version != ''
+        working-directory: packages/reown_core
+        run: |
+          YTTRIUM_VERSION=${{ needs.publish-yttrium.outputs.package_version }}
+          echo "Updating reown_yttrium dependency to ^$YTTRIUM_VERSION in reown_core/pubspec.yaml"
+          yq e ".dependencies.reown_yttrium = \"^$YTTRIUM_VERSION\"" -i pubspec.yaml
+
+      - name: Commit and push pubspec.yaml changes for reown_core
+        if: github.event.inputs.core == 'true' && github.event.inputs.yttrium == 'true' && needs.publish-yttrium.outputs.package_version != ''
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          cd packages/reown_core
+          # Check if there are changes to commit to prevent empty commits
+          if [[ -n $(git status -s pubspec.yaml) ]]; then
+            git add pubspec.yaml
+            git commit -m "ci(reown_core): Update reown_yttrium to ^${{ needs.publish-yttrium.outputs.package_version }} [skip ci]"
+            git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} ${{ needs.create-branch.outputs.branch_name }}
+          else
+            echo "No changes to commit in reown_core/pubspec.yaml"
+          fi
 
       - name: Get package version from reown_core/pubspec.yaml
         if: github.event.inputs.core == 'true'
@@ -289,7 +322,7 @@ jobs:
 
   publish-appkit:
     name: Publish reown_appkit
-    needs: [create-branch, publish-core, publish-sign, publish-walletkit]
+    needs: [create-branch, publish-core, publish-sign]
     runs-on: ubuntu-latest
     steps:
       - name: Check if reown_appkit should be published
@@ -391,6 +424,12 @@ jobs:
         working-directory: packages/reown_appkit
         run: flutter pub publish --force
 
+      - name: Wait for reown_appkit to be available on pub.dev
+        if: github.event.inputs.appkit == 'true'
+        run: |
+          chmod +x .github/scripts/wait_for_package.sh
+          .github/scripts/wait_for_package.sh reown_appkit ${{ steps.get_version.outputs.version }}
+
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.appkit == 'true'
@@ -402,7 +441,7 @@ jobs:
 
   publish-walletkit:
     name: Publish reown_walletkit
-    needs: [create-branch, publish-core, publish-sign, publish-yttrium]
+    needs: [create-branch, publish-core, publish-sign, publish-walletconnect-pay]
     runs-on: ubuntu-latest
     steps:
       - name: Check if reown_walletkit should be published
@@ -429,12 +468,12 @@ jobs:
         run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
 
       - name: Update dependencies in reown_walletkit/pubspec.yaml
-        if: github.event.inputs.walletkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != '') || (github.event.inputs.yttrium == 'true' && needs.publish-yttrium.outputs.package_version != ''))
+        if: github.event.inputs.walletkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != '') || (github.event.inputs.walletconnect_pay == 'true' && needs.publish-walletconnect-pay.outputs.package_version != ''))
         working-directory: packages/reown_walletkit
         env:
           CORE_VERSION: ${{ needs.publish-core.outputs.package_version }}
           SIGN_VERSION: ${{ needs.publish-sign.outputs.package_version }}
-          YTTRIUM_VERSION: ${{ needs.publish-yttrium.outputs.package_version }}
+          WALLETCONNECT_PAY_VERSION: ${{ needs.publish-walletconnect-pay.outputs.package_version }}
         run: |
           echo "Updating dependencies in reown_walletkit/pubspec.yaml"
           if [[ "${{ github.event.inputs.core }}" == 'true' && -n "$CORE_VERSION" ]]; then
@@ -445,13 +484,13 @@ jobs:
             echo "Setting reown_sign to ^$SIGN_VERSION"
             yq e ".dependencies.reown_sign = \"^$SIGN_VERSION\"" -i pubspec.yaml
           fi
-          if [[ "${{ github.event.inputs.yttrium }}" == 'true' && -n "$YTTRIUM_VERSION" ]]; then
-            echo "Setting reown_yttrium to ^$YTTRIUM_VERSION"
-            yq e ".dependencies.reown_yttrium = \"^$YTTRIUM_VERSION\"" -i pubspec.yaml
+          if [[ "${{ github.event.inputs.walletconnect_pay }}" == 'true' && -n "$WALLETCONNECT_PAY_VERSION" ]]; then
+            echo "Setting walletconnect_pay to ^$WALLETCONNECT_PAY_VERSION"
+            yq e ".dependencies.walletconnect_pay = \"^$WALLETCONNECT_PAY_VERSION\"" -i pubspec.yaml
           fi
 
       - name: Commit and push pubspec.yaml changes for reown_walletkit
-        if: github.event.inputs.walletkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != '') || (github.event.inputs.yttrium == 'true' && needs.publish-yttrium.outputs.package_version != ''))
+        if: github.event.inputs.walletkit == 'true' && ((github.event.inputs.core == 'true' && needs.publish-core.outputs.package_version != '') || (github.event.inputs.sign == 'true' && needs.publish-sign.outputs.package_version != '') || (github.event.inputs.walletconnect_pay == 'true' && needs.publish-walletconnect-pay.outputs.package_version != ''))
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -461,7 +500,7 @@ jobs:
           # Check if there are changes to commit to prevent empty commits
           if [[ -n $(git status -s pubspec.yaml) ]]; then
             git add pubspec.yaml
-            git commit -m "ci(reown_walletkit): Update core/sign/yttrium dependencies [skip ci]"
+            git commit -m "ci(reown_walletkit): Update core/sign/walletconnect_pay dependencies [skip ci]"
             git push https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }} ${{ needs.create-branch.outputs.branch_name }}
           else
             echo "No changes to commit in reown_walletkit/pubspec.yaml"
@@ -507,6 +546,12 @@ jobs:
         working-directory: packages/reown_walletkit
         run: flutter pub publish --force
 
+      - name: Wait for reown_walletkit to be available on pub.dev
+        if: github.event.inputs.walletkit == 'true'
+        run: |
+          chmod +x .github/scripts/wait_for_package.sh
+          .github/scripts/wait_for_package.sh reown_walletkit ${{ steps.get_version.outputs.version }}
+
       - name: Post a message in a channel
         uses: slackapi/slack-github-action@v2.1.0
         if: github.event.inputs.walletkit == 'true'
@@ -541,6 +586,10 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.38.3"
+
+      - name: Install yq
+        if: github.event.inputs.yttrium == 'true'
+        run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
 
       - name: Get package version from reown_yttrium/pubspec.yaml
         if: github.event.inputs.yttrium == 'true'
@@ -623,6 +672,10 @@ jobs:
         with:
           flutter-version: "3.38.3"
 
+      - name: Install yq
+        if: github.event.inputs.cli == 'true'
+        run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
+
       - name: Get package version from reown_cli/pubspec.yaml
         if: github.event.inputs.cli == 'true'
         id: get_version
@@ -704,6 +757,10 @@ jobs:
         with:
           flutter-version: "3.38.3"
 
+      - name: Install yq
+        if: github.event.inputs.pos == 'true'
+        run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
+
       - name: Get package version from pos_client/pubspec.yaml
         if: github.event.inputs.pos == 'true'
         id: get_version
@@ -759,6 +816,92 @@ jobs:
           payload: |
             text: "*pos_client*: ^${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/pos_client"
 
+  publish-walletconnect-pay:
+    name: Publish walletconnect_pay
+    needs: [create-branch]
+    runs-on: ubuntu-latest
+    outputs:
+      package_version: ${{ steps.get_version.outputs.version }}
+    steps:
+      - name: Check if walletconnect_pay should be published
+        if: github.event.inputs.walletconnect_pay == 'false'
+        run: |
+          echo "Skipping walletconnect_pay publishing because input was false."
+        continue-on-error: false
+
+      - name: Checkout code
+        if: github.event.inputs.walletconnect_pay == 'true'
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.create-branch.outputs.branch_name }}
+          fetch-depth: 0
+
+      - name: Set up Flutter
+        if: github.event.inputs.walletconnect_pay == 'true'
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.38.3"
+
+      - name: Install yq
+        if: github.event.inputs.walletconnect_pay == 'true'
+        run: sudo wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq && sudo chmod +x /usr/bin/yq
+
+      - name: Get package version from walletconnect_pay/pubspec.yaml
+        if: github.event.inputs.walletconnect_pay == 'true'
+        id: get_version
+        working-directory: packages/walletconnect_pay
+        run: echo "version=$(yq e '.version' pubspec.yaml)" >> $GITHUB_OUTPUT
+
+      - name: Configure pub.dev credentials
+        if: github.event.inputs.walletconnect_pay == 'true'
+        run: |
+          mkdir -p $HOME/.config/dart
+          echo '${{ secrets.PUB_CREDENTIALS }}' > $HOME/.config/dart/pub-credentials.json
+
+      - name: Run code generation for walletconnect_pay
+        if: github.event.inputs.walletconnect_pay == 'true'
+        working-directory: packages/walletconnect_pay
+        run: |
+          flutter pub get
+          dart run build_runner build --delete-conflicting-outputs
+
+      - name: Check Publish Warnings
+        if: github.event.inputs.walletconnect_pay == 'true'
+        shell: bash
+        working-directory: packages/walletconnect_pay
+        run: |
+          set -o pipefail
+
+          OUTPUT=$(flutter pub publish --dry-run 2>&1 || true)
+          echo "$OUTPUT"
+
+          if echo "$OUTPUT" | grep -iE "^Error:|validation.*error|validation.*failed"; then
+            echo "❌ Real error(s) detected in pub publish dry-run"
+            exit 1
+          else
+            echo "✅ No real errors, only warnings (e.g. missing CHANGELOG.md)"
+          fi
+
+      - name: Publish walletconnect_pay to pub.dev
+        if: github.event.inputs.walletconnect_pay == 'true'
+        working-directory: packages/walletconnect_pay
+        run: flutter pub publish --force
+
+      - name: Wait for walletconnect_pay to be available on pub.dev
+        if: github.event.inputs.walletconnect_pay == 'true'
+        run: |
+          chmod +x .github/scripts/wait_for_package.sh
+          .github/scripts/wait_for_package.sh walletconnect_pay ${{ steps.get_version.outputs.version }}
+
+      - name: Post a message in a channel
+        uses: slackapi/slack-github-action@v2.1.0
+        if: github.event.inputs.walletconnect_pay == 'true'
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "*walletconnect_pay*: ^${{ steps.get_version.outputs.version }} has been published: https://pub.dev/packages/walletconnect_pay"
+
   create-pull-request:
     name: Create Pull Request
     needs:
@@ -770,9 +913,11 @@ jobs:
         publish-walletkit,
         publish-yttrium,
         publish-cli,
+        publish-pos,
+        publish-walletconnect-pay,
       ]
     runs-on: ubuntu-latest
-    if: always() && (needs.publish-core.result == 'success' || needs.publish-sign.result == 'success' || needs.publish-appkit.result == 'success' || needs.publish-walletkit.result == 'success' || needs.publish-yttrium.result == 'success' || needs.publish-cli.result == 'success')
+    if: always() && (needs.publish-core.result == 'success' || needs.publish-sign.result == 'success' || needs.publish-appkit.result == 'success' || needs.publish-walletkit.result == 'success' || needs.publish-yttrium.result == 'success' || needs.publish-cli.result == 'success' || needs.publish-pos.result == 'success' || needs.publish-walletconnect-pay.result == 'success')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -821,6 +966,8 @@ jobs:
             ${{ github.event.inputs.walletkit == 'true' && '- reown_walletkit' || '' }}
             ${{ github.event.inputs.yttrium == 'true' && '- reown_yttrium' || '' }}
             ${{ github.event.inputs.cli == 'true' && '- reown_cli' || '' }}
+            ${{ github.event.inputs.pos == 'true' && '- pos_client' || '' }}
+            ${{ github.event.inputs.walletconnect_pay == 'true' && '- walletconnect_pay' || '' }}
 
             ## Changes
             - Updated package dependencies to latest published versions
