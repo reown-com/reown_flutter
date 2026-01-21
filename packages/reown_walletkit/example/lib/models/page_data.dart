@@ -5,9 +5,5 @@ class PageData {
   String title;
   IconData icon;
 
-  PageData({
-    required this.page,
-    required this.title,
-    required this.icon,
-  });
+  PageData({required this.page, required this.title, required this.icon});
 }

@@ -26,15 +26,9 @@ class WCRequestWidget extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        VerifyContextWidget(
-          verifyContext: verifyContext,
-        ),
+        VerifyContextWidget(verifyContext: verifyContext),
         const SizedBox(height: StyleConstants.linear8),
-        Flexible(
-          child: SingleChildScrollView(
-            child: child,
-          ),
-        ),
+        Flexible(child: SingleChildScrollView(child: child)),
         const SizedBox(height: StyleConstants.linear16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -53,9 +47,7 @@ class WCRequestWidget extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ),
-            const SizedBox(
-              width: StyleConstants.linear16,
-            ),
+            const SizedBox(width: StyleConstants.linear16),
             CustomButton(
               onTap: onAccept ??
                   () {

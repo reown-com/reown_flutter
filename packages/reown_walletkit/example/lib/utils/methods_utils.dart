@@ -35,9 +35,7 @@ class MethodsUtils {
                       'Chain ID: $chainId\n'
                       '${address != null ? 'Address: $address' : ''}'
                       '${text.isNotEmpty ? '\n\nMessage:' : ''}',
-                  elements: [
-                    text,
-                  ],
+                  elements: [text],
                 ),
                 ...extraModels,
               ],
@@ -56,7 +54,8 @@ class MethodsUtils {
     bool success = false,
   ]) {
     debugPrint(
-        '[SampleWallet] handleRedirect topic: $topic, redirect: $redirect, error: $error');
+      '[SampleWallet] handleRedirect topic: $topic, redirect: $redirect, error: $error',
+    );
     openApp(
       topic,
       redirect,
@@ -77,10 +76,7 @@ class MethodsUtils {
     await Future.delayed(Duration(milliseconds: delay));
     DeepLinkHandler.waiting.value = false;
     try {
-      await walletKit.redirectToDapp(
-        topic: topic,
-        redirect: redirect,
-      );
+      await walletKit.redirectToDapp(topic: topic, redirect: redirect);
     } on ReownSignError catch (e) {
       onFail?.call(e);
     }

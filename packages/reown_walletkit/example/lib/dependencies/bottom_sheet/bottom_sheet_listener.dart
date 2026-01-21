@@ -7,10 +7,7 @@ import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart
 class BottomSheetListener extends StatefulWidget {
   final Widget child;
 
-  const BottomSheetListener({
-    super.key,
-    required this.child,
-  });
+  const BottomSheetListener({super.key, required this.child});
 
   @override
   BottomSheetListenerState createState() => BottomSheetListenerState();
@@ -84,9 +81,9 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
                               visualDensity: VisualDensity.compact,
                               onPressed: () {
                                 if (Navigator.canPop(context)) {
-                                  Navigator.of(context).pop(
-                                    WCBottomSheetResult.back.name,
-                                  );
+                                  Navigator.of(
+                                    context,
+                                  ).pop(WCBottomSheetResult.back.name);
                                 }
                               },
                               icon: const Icon(Icons.arrow_back),
@@ -105,9 +102,9 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
                         visualDensity: VisualDensity.compact,
                         onPressed: () {
                           if (Navigator.canPop(context)) {
-                            Navigator.of(context).pop(
-                              WCBottomSheetResult.close.name,
-                            );
+                            Navigator.of(
+                              context,
+                            ).pop(WCBottomSheetResult.close.name);
                           }
                         },
                         icon: const Icon(Icons.close_sharp),

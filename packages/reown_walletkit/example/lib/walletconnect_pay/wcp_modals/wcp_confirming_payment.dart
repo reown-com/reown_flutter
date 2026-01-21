@@ -6,10 +6,7 @@ import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 
 class WCPConfirmingPayment extends StatefulWidget {
-  const WCPConfirmingPayment({
-    super.key,
-    required this.paymentRequest,
-  });
+  const WCPConfirmingPayment({super.key, required this.paymentRequest});
 
   final ConfirmPaymentRequest paymentRequest;
 
@@ -55,9 +52,7 @@ class _WCPConfirmingPaymentState extends State<WCPConfirmingPayment> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const SizedBox(height: StyleConstants.linear48),
-          const Center(
-            child: WalletConnectLoading(size: 120.0),
-          ),
+          const Center(child: WalletConnectLoading(size: 120.0)),
           const SizedBox(height: 24.0),
           WCModalTitle(text: 'Confirming your payment...'),
           const SizedBox(height: StyleConstants.linear24),

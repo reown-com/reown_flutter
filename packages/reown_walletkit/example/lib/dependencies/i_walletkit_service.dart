@@ -33,7 +33,5 @@ abstract class IWalletKitService extends Disposable {
     String optionId,
     String paymentId,
   );
-  Future<ConfirmPaymentResponse> confirmPayment(
-    ConfirmPaymentRequest payment,
-  );
+  Future<ConfirmPaymentResponse> confirmPayment(ConfirmPaymentRequest payment);
 }

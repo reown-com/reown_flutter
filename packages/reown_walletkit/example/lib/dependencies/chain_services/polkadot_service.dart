@@ -65,10 +65,7 @@ class PolkadotService {
   Future<void> polkadotSignMessage(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] polkadotSignMessage: $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
-    );
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
       final params = parameters as Map<String, dynamic>;
@@ -99,18 +96,11 @@ class PolkadotService {
       )) {
         final hexSignature = await signMessage(message);
 
-        response = response.copyWith(
-          result: {
-            'signature': hexSignature,
-          },
-        );
+        response = response.copyWith(result: {'signature': hexSignature});
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } catch (e, s) {
@@ -118,10 +108,7 @@ class PolkadotService {
       debugPrint(s.toString());
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -130,9 +117,7 @@ class PolkadotService {
 
   Future<String> signMessage(String message) async {
     // code
-    final keys = GetIt.I<IKeyService>().getKeysForChain(
-      chainSupported.chainId,
-    );
+    final keys = GetIt.I<IKeyService>().getKeysForChain(chainSupported.chainId);
     final dotkeyPair = await _keyring.fromMnemonic(
       keys[0].privateKey,
       keyPairType: KeyPairType.sr25519,
@@ -155,12 +140,10 @@ class PolkadotService {
 
   Future<void> polkadotSignTransaction(String topic, dynamic parameters) async {
     debugPrint(
-        '[SampleWallet] polkadotSignTransaction: ${jsonEncode(parameters)}');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
+      '[SampleWallet] polkadotSignTransaction: ${jsonEncode(parameters)}',
     );
+    final pRequest = _walletKit.pendingRequests.getAll().last;
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     late final List<ChainKey> keys;
     if (chainSupported.chainId.contains('e143f23803ac50e8f6f8e62695d1ce9e')) {
@@ -200,9 +183,7 @@ class PolkadotService {
         final customMetadata = await stateApi.getMetadata();
         final registry = customMetadata.chainInfo.scaleCodec.registry;
 
-        final payloadToSign = trxPayload.toSigningPayload(
-          registry,
-        );
+        final payloadToSign = trxPayload.toSigningPayload(registry);
         final payloadBytes = payloadToSign.encode(registry);
         final signature = dotkeyPair.sign(payloadBytes);
 
@@ -211,29 +192,20 @@ class PolkadotService {
 
         final hexSignature = hex.encode(signature);
         response = response.copyWith(
-          result: {
-            'id': response.id,
-            'signature': '0x$hexSignature',
-          },
+          result: {'id': response.id, 'signature': '0x$hexSignature'},
         );
       } catch (e, s) {
         debugPrint('[SampleWallet] polkadotSignTransaction error $e');
         debugPrint(s.toString());
         final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } else {
       final error = Errors.getSdkError(Errors.USER_REJECTED);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -244,10 +216,7 @@ class PolkadotService {
     final session = _walletKit.sessions.get(topic);
 
     try {
-      await _walletKit.respondSessionRequest(
-        topic: topic,
-        response: response,
-      );
+      await _walletKit.respondSessionRequest(topic: topic, response: response);
       MethodsUtils.handleRedirect(
         topic,
         session!.peer.metadata.redirect,

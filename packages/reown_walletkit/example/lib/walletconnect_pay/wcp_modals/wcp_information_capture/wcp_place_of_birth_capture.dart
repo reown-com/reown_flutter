@@ -4,10 +4,7 @@ import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 
 class WCPPlaceOfBirthCapture extends StatefulWidget {
-  const WCPPlaceOfBirthCapture({
-    super.key,
-    required this.collectDataField,
-  });
+  const WCPPlaceOfBirthCapture({super.key, required this.collectDataField});
 
   final CollectDataField collectDataField;
 

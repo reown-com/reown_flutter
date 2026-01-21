@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 
 class RecoverFromSeed extends StatelessWidget {
-  RecoverFromSeed({
-    super.key,
-  });
+  RecoverFromSeed({super.key});
 
   final controller = TextEditingController();
 
@@ -76,7 +74,8 @@ class RecoverFromSeed extends StatelessWidget {
               onPressed: () => Navigator.of(context).pop(controller.text),
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all<Color>(
-                    StyleConstants.accentPrimary),
+                  StyleConstants.accentPrimary,
+                ),
                 foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
               ),
               child: const Text('Recover'),
@@ -87,10 +86,7 @@ class RecoverFromSeed extends StatelessWidget {
             width: double.infinity,
             child: TextButton(
               onPressed: () => Navigator.of(context).pop(null),
-              child: const Text(
-                'Cancel',
-                style: TextStyle(color: Colors.grey),
-              ),
+              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
             ),
           ),
         ],

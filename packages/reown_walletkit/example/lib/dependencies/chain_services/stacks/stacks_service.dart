@@ -64,10 +64,7 @@ class StacksService {
   Future<void> stxSignMessage(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] stxSignMessage: $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
-    );
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
       final params = parameters as Map<String, dynamic>;
@@ -100,28 +97,18 @@ class StacksService {
         verifyContext: pRequest.verifyContext,
       )) {
         final signature = await signMessage(message);
-        response = response.copyWith(
-          result: {
-            'signature': signature,
-          },
-        );
+        response = response.copyWith(result: {'signature': signature});
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } catch (e) {
       debugPrint('[SampleWallet] stxSignMessage error $e');
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -129,9 +116,7 @@ class StacksService {
   }
 
   Future<String> signMessage(String message) async {
-    final keys = GetIt.I<IKeyService>().getKeysForChain(
-      chainSupported.chainId,
-    );
+    final keys = GetIt.I<IKeyService>().getKeysForChain(chainSupported.chainId);
 
     final privateKey = keys[0].privateKey;
     final signature = await _stacksClient.signMessage(
@@ -145,10 +130,7 @@ class StacksService {
   Future<void> stxTransferStx(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] stxTransferStx: ${jsonEncode(parameters)}');
     final pRequest = _walletKit.pendingRequests.getAll().last;
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
-    );
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
       final params = parameters as Map<String, dynamic>;
@@ -182,34 +164,23 @@ class StacksService {
         );
 
         response = response.copyWith(
-          result: {
-            'txid': result.txid,
-            'transaction': result.transaction,
-          },
+          result: {'txid': result.txid, 'transaction': result.transaction},
         );
       } else {
         // User rejected manually
         final error = Errors.getSdkError(Errors.USER_REJECTED);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } on JsonRpcError catch (e) {
       debugPrint('[SampleWallet] stxTransferStx error $e');
-      response = response.copyWith(
-        error: e,
-      );
+      response = response.copyWith(error: e);
     } catch (e) {
       debugPrint('[SampleWallet] stxTransferStx error $e');
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: '${error.message} $e',
-        ),
+        error: JsonRpcError(code: error.code, message: '${error.message} $e'),
       );
     }
 
@@ -220,10 +191,7 @@ class StacksService {
     final session = _walletKit.sessions.get(topic);
 
     try {
-      await _walletKit.respondSessionRequest(
-        topic: topic,
-        response: response,
-      );
+      await _walletKit.respondSessionRequest(topic: topic, response: response);
       MethodsUtils.handleRedirect(
         topic,
         session!.peer.metadata.redirect,

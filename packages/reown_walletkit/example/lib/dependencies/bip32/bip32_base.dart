@@ -20,10 +20,7 @@ class NetworkType {
 
 final BITCOIN = NetworkType(
   wif: 0x80,
-  bip32: Bip32Type(
-    public: 0x0488b21e,
-    private: 0x0488ade4,
-  ),
+  bip32: Bip32Type(public: 0x0488b21e, private: 0x0488ade4),
 );
 const HIGHEST_BIT = 0x80000000;
 const UINT31_MAX = 2147483647; // 2^31 - 1
@@ -85,11 +82,7 @@ class BIP32 {
       throw ArgumentError('Missing private key');
     }
     return wif.encode(
-      wif.WIF(
-        version: network.wif,
-        privateKey: privateKey!,
-        compressed: true,
-      ),
+      wif.WIF(version: network.wif, privateKey: privateKey!, compressed: true),
     );
   }
 
@@ -243,7 +236,8 @@ class BIP32 {
     NetworkType network = nw ?? BITCOIN;
     if (privateKey.length != 32) {
       throw ArgumentError(
-          'Expected property privateKey of type Buffer(Length: 32)');
+        'Expected property privateKey of type Buffer(Length: 32)',
+      );
     }
     if (!ecc.isPrivate(privateKey)) {
       throw ArgumentError('Private key not in range [1, n]');

@@ -42,8 +42,6 @@ dependencies:
   solana: ^0.31.2+1
   solana_web3: ^0.1.3
   toastification: ^2.3.0
-  walletconnect_pay:
-    path: ../../walletconnect_pay/
 
 dependency_overrides:
   # because of solana

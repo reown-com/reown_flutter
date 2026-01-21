@@ -3,10 +3,7 @@ import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_model.dart';
 
 class WCConnectionWidgetInfo extends StatelessWidget {
-  const WCConnectionWidgetInfo({
-    super.key,
-    required this.model,
-  });
+  const WCConnectionWidgetInfo({super.key, required this.model});
 
   final WCConnectionModel model;
 
@@ -16,16 +13,10 @@ class WCConnectionWidgetInfo extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: StyleConstants.neutrals.withValues(alpha: 0.4),
-        borderRadius: BorderRadius.circular(
-          StyleConstants.linear16,
-        ),
+        borderRadius: BorderRadius.circular(StyleConstants.linear16),
       ),
-      padding: const EdgeInsets.all(
-        StyleConstants.linear8,
-      ),
-      margin: const EdgeInsetsDirectional.only(
-        top: StyleConstants.linear8,
-      ),
+      padding: const EdgeInsets.all(StyleConstants.linear8),
+      margin: const EdgeInsetsDirectional.only(top: StyleConstants.linear8),
       child: model.elements != null ? _buildList() : _buildText(),
     );
   }
@@ -35,10 +26,7 @@ class WCConnectionWidgetInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (model.title != null)
-          Text(
-            model.title!,
-            style: StyleConstants.layerTextStyle3,
-          ),
+          Text(model.title!, style: StyleConstants.layerTextStyle3),
         if (model.title != null) const SizedBox(height: StyleConstants.linear8),
         Wrap(
           spacing: 4,
@@ -67,18 +55,16 @@ class WCConnectionWidgetInfo extends StatelessWidget {
           StyleConstants.neutrals.withValues(alpha: 0.8),
         ),
         overlayColor: WidgetStateProperty.all(Colors.white),
-        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>(
-          (states) {
-            return RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(StyleConstants.linear16),
-            );
-          },
-        ),
+        shape: WidgetStateProperty.resolveWith<RoundedRectangleBorder>((
+          states,
+        ) {
+          return RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(StyleConstants.linear16),
+          );
+        }),
       ),
       child: Container(
-        padding: const EdgeInsets.all(
-          StyleConstants.linear8,
-        ),
+        padding: const EdgeInsets.all(StyleConstants.linear8),
         child: Text(
           text,
           style: StyleConstants.bodyText.copyWith(
@@ -90,9 +76,6 @@ class WCConnectionWidgetInfo extends StatelessWidget {
   }
 
   Widget _buildText() {
-    return Text(
-      model.text!,
-      style: StyleConstants.layerTextStyle3,
-    );
+    return Text(model.text!, style: StyleConstants.layerTextStyle3);
   }
 }

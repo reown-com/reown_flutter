@@ -122,10 +122,12 @@ String mnemonicToEntropy(mnemonic) {
 
   // calculate the checksum and compare
   final regex = RegExp(r'.{1,8}');
-  final entropyBytes = Uint8List.fromList(regex
-      .allMatches(entropyBits)
-      .map((match) => _binaryToByte(match.group(0)!))
-      .toList(growable: false));
+  final entropyBytes = Uint8List.fromList(
+    regex
+        .allMatches(entropyBits)
+        .map((match) => _binaryToByte(match.group(0)!))
+        .toList(growable: false),
+  );
   if (entropyBytes.length < 16) {
     throw StateError(_INVALID_ENTROPY);
   }
@@ -143,6 +145,7 @@ String mnemonicToEntropy(mnemonic) {
     return byte.toRadixString(16).padLeft(2, '0');
   }).join('');
 }
+
 // List<String>> _loadWordList() {
 //   final res = new Resource('package:bip39/src/wordlists/english.json').readAsString();
 //   List<String> words = (json.decode(res) as List).map((e) => e.toString()).toList();

@@ -4,10 +4,7 @@ import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 
 class WCPFullNameCapture extends StatefulWidget {
-  const WCPFullNameCapture({
-    super.key,
-    required this.collectDataField,
-  });
+  const WCPFullNameCapture({super.key, required this.collectDataField});
 
   final CollectDataField collectDataField;
 

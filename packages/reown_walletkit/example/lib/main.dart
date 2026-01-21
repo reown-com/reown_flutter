@@ -24,21 +24,21 @@ import 'package:reown_walletkit_wallet/utils/string_constants.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
-  await runZonedGuarded<Future<void>>(() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    DeepLinkHandler.initListener();
+  await runZonedGuarded<Future<void>>(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      DeepLinkHandler.initListener();
 
-    if (kDebugMode) {
-      runApp(MyApp());
-    } else {
-      // Catch Flutter framework errors
-      FlutterError.onError = (FlutterErrorDetails details) {
-        FlutterError.presentError(details);
-        Sentry.captureException(details.exception, stackTrace: details.stack);
-      };
+      if (kDebugMode) {
+        runApp(MyApp());
+      } else {
+        // Catch Flutter framework errors
+        FlutterError.onError = (FlutterErrorDetails details) {
+          FlutterError.presentError(details);
+          Sentry.captureException(details.exception, stackTrace: details.stack);
+        };
 
-      await SentryFlutter.init(
-        (options) {
+        await SentryFlutter.init((options) {
           options.dsn = DartDefines.sentryDSN;
           options.environment = kDebugMode ? 'debug_app' : 'deployed_app';
           options.attachScreenshot = true;
@@ -51,21 +51,17 @@ Future<void> main() async {
           // The sampling rate for profiling is relative to tracesSampleRate
           // Setting to 1.0 will profile 100% of sampled transactions:
           options.profilesSampleRate = 1.0;
-        },
-        appRunner: () => runApp(
-          SentryWidget(
-            child: const MyApp(),
-          ),
-        ),
-      );
-    }
-  }, (error, stackTrace) async {
-    if (!kDebugMode) {
-      await Sentry.captureException(error, stackTrace: stackTrace);
-    }
-    debugPrint('Uncaught error: $error');
-    debugPrint('Stack trace: $stackTrace');
-  });
+        }, appRunner: () => runApp(SentryWidget(child: const MyApp())));
+      }
+    },
+    (error, stackTrace) async {
+      if (!kDebugMode) {
+        await Sentry.captureException(error, stackTrace: stackTrace);
+      }
+      debugPrint('Uncaught error: $error');
+      debugPrint('Stack trace: $stackTrace');
+    },
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -124,22 +120,14 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
-      navigatorObservers: [
-        SentryNavigatorObserver(),
-      ],
+      navigatorObservers: [SentryNavigatorObserver()],
       title: StringConstants.appTitle,
       theme: ThemeData(
         colorScheme: _isDarkMode
-            ? ColorScheme.dark(
-                primary: StyleConstants.accentPrimary,
-              )
-            : ColorScheme.light(
-                primary: StyleConstants.accentPrimary,
-              ),
+            ? ColorScheme.dark(primary: StyleConstants.accentPrimary)
+            : ColorScheme.light(primary: StyleConstants.accentPrimary),
       ),
-      home: MyHomePage(
-        isDarkMode: _isDarkMode,
-      ),
+      home: MyHomePage(isDarkMode: _isDarkMode),
     );
   }
 }
@@ -179,13 +167,9 @@ class _MyHomePageState extends State<MyHomePage> {
       await walletKitService.init();
 
       walletKitService.walletKit.core.relayClient.onRelayClientConnect
-          .subscribe(
-        _setState,
-      );
+          .subscribe(_setState);
       walletKitService.walletKit.core.relayClient.onRelayClientDisconnect
-          .subscribe(
-        _setState,
-      );
+          .subscribe(_setState);
       walletKitService.walletKit.core.connectivity.isOnline.addListener(
         _onLine,
       );
@@ -237,9 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (_pageDatas.isEmpty) {
       return Material(
         child: Center(
-          child: CircularProgressIndicator(
-            color: StyleConstants.accentPrimary,
-          ),
+          child: CircularProgressIndicator(color: StyleConstants.accentPrimary),
         ),
       );
     }
@@ -248,11 +230,7 @@ class _MyHomePageState extends State<MyHomePage> {
     if (MediaQuery.of(context).size.width >= Constants.smallScreen) {
       navRail.add(_buildNavigationRail());
     }
-    navRail.add(
-      Expanded(
-        child: _pageDatas[_selectedIndex].page,
-      ),
-    );
+    navRail.add(Expanded(child: _pageDatas[_selectedIndex].page));
 
     return Scaffold(
       appBar: AppBar(
@@ -277,10 +255,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Stack(
         children: [
           BottomSheetListener(
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: navRail,
-            ),
+            child: Row(mainAxisSize: MainAxisSize.max, children: navRail),
           ),
           ValueListenableBuilder(
             valueListenable: DeepLinkHandler.waiting,
@@ -294,9 +269,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       borderRadius: BorderRadius.all(Radius.circular(50.0)),
                     ),
                     padding: const EdgeInsets.all(12.0),
-                    child: const CircularProgressIndicator(
-                      color: Colors.white,
-                    ),
+                    child: const CircularProgressIndicator(color: Colors.white),
                   ),
                 ),
               );
@@ -319,16 +292,11 @@ class _MyHomePageState extends State<MyHomePage> {
       showUnselectedLabels: true,
       type: BottomNavigationBarType.fixed,
       // called when one tab is selected
-      onTap: (int index) => setState(
-        () => _selectedIndex = index,
-      ),
+      onTap: (int index) => setState(() => _selectedIndex = index),
       // bottom tab items
       items: _pageDatas
           .map(
-            (e) => BottomNavigationBarItem(
-              icon: Icon(e.icon),
-              label: e.title,
-            ),
+            (e) => BottomNavigationBarItem(icon: Icon(e.icon), label: e.title),
           )
           .toList(),
     );
@@ -337,9 +305,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget _buildNavigationRail() {
     return NavigationRail(
       selectedIndex: _selectedIndex,
-      onDestinationSelected: (int index) => setState(
-        () => _selectedIndex = index,
-      ),
+      onDestinationSelected: (int index) =>
+          setState(() => _selectedIndex = index),
       labelType: NavigationRailLabelType.selected,
       destinations: _pageDatas
           .map(

@@ -45,9 +45,7 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
 
   void _unregisterListeners() {
     _walletKitService.walletKit.core.relayClient.onRelayClientMessage
-        .unsubscribe(
-      _onRelayClientMessage,
-    );
+        .unsubscribe(_onRelayClientMessage);
     _walletKitService.walletKit.onSessionDelete.unsubscribe(_refreshState);
     _walletKitService.walletKit.onSessionConnect.unsubscribe(_refreshState);
     _walletKitService.pairings!.onSync.unsubscribe(_refreshState);
@@ -129,15 +127,10 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
     return Container(
       decoration: BoxDecoration(
         color: StyleConstants.accentPrimary,
-        borderRadius: BorderRadius.circular(
-          StyleConstants.linear48,
-        ),
+        borderRadius: BorderRadius.circular(StyleConstants.linear48),
       ),
       child: IconButton(
-        icon: Icon(
-          icon,
-          color: StyleConstants.foregroundPrimary,
-        ),
+        icon: Icon(icon, color: StyleConstants.foregroundPrimary),
         iconSize: StyleConstants.linear24,
         onPressed: onPressed,
       ),
@@ -197,50 +190,39 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
   void _showErrorDialog(String message) async {
     DeepLinkHandler.waiting.value = false;
     await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text(
-              'Error',
-              style: TextStyle(
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            content: Text(
-              message,
-              style: const TextStyle(
-                color: Colors.black,
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  if (Navigator.canPop(context)) {
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text(
-                  'Close',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text(
+            'Error',
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+          content: Text(message, style: const TextStyle(color: Colors.black)),
+          actions: [
+            TextButton(
+              onPressed: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text(
+                'Close',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
                 ),
-              )
-            ],
-          );
-        });
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void _onListItemTap(PairingInfo pairing) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => AppDetailPage(
-          pairing: pairing,
-        ),
-      ),
+      MaterialPageRoute(builder: (context) => AppDetailPage(pairing: pairing)),
     );
   }
 }

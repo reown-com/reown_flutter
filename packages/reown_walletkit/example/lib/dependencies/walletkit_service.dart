@@ -52,9 +52,7 @@ class WalletKitService implements IWalletKitService {
 
   @override
   final ValueNotifier<ChainMetadata?> currentSelectedChain = ValueNotifier(
-    ChainsDataList.eip155Chains.firstWhere(
-      (e) => e.chainId == 'eip155:1',
-    ),
+    ChainsDataList.eip155Chains.firstWhere((e) => e.chainId == 'eip155:1'),
   );
 
   @override
@@ -64,16 +62,13 @@ class WalletKitService implements IWalletKitService {
 
     // Create the ReownWalletKit instance
     _walletKit = ReownWalletKit(
-      core: ReownCore(
-        projectId: DartDefines.projectId,
-        logLevel: LogLevel.all,
-      ),
+      core: ReownCore(projectId: DartDefines.projectId, logLevel: LogLevel.all),
       metadata: PairingMetadata(
         name: 'Flutter Wallet Sample',
         description: 'Reown\'s sample wallet with Flutter',
         url: _universalLink(),
         icons: [
-          'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/walletkit-icon$_flavor.png'
+          'https://raw.githubusercontent.com/reown-com/reown_flutter/refs/heads/develop/assets/walletkit-icon$_flavor.png',
         ],
         redirect: _constructRedirect(linkModeEnabled),
       ),
@@ -148,38 +143,29 @@ class WalletKitService implements IWalletKitService {
 
     // Support Tron Chains
     for (final chainData in ChainsDataList.tonChains) {
-      GetIt.I.registerSingletonAsync<TonService>(
-        () async {
-          final tonService = TonService(chainSupported: chainData);
-          await tonService.init();
-          return tonService;
-        },
-        instanceName: chainData.chainId,
-      );
+      GetIt.I.registerSingletonAsync<TonService>(() async {
+        final tonService = TonService(chainSupported: chainData);
+        await tonService.init();
+        return tonService;
+      }, instanceName: chainData.chainId);
     }
 
     // Support Stacks Chains
     for (final chainData in ChainsDataList.stacksChains) {
-      GetIt.I.registerSingletonAsync<StacksService>(
-        () async {
-          final stacksService = StacksService(chainSupported: chainData);
-          await stacksService.init();
-          return stacksService;
-        },
-        instanceName: chainData.chainId,
-      );
+      GetIt.I.registerSingletonAsync<StacksService>(() async {
+        final stacksService = StacksService(chainSupported: chainData);
+        await stacksService.init();
+        return stacksService;
+      }, instanceName: chainData.chainId);
     }
 
     // Support Sui Chains
     for (final chainData in ChainsDataList.suiChains) {
-      GetIt.I.registerSingletonAsync<SUIService>(
-        () async {
-          final suiService = SUIService(chainSupported: chainData);
-          await suiService.init();
-          return suiService;
-        },
-        instanceName: chainData.chainId,
-      );
+      GetIt.I.registerSingletonAsync<SUIService>(() async {
+        final suiService = SUIService(chainSupported: chainData);
+        await suiService.init();
+        return suiService;
+      }, instanceName: chainData.chainId);
     }
   }
 
@@ -258,9 +244,7 @@ class WalletKitService implements IWalletKitService {
             final iss = 'did:pkh:$chain:$address';
             final message = _walletKit!.formatAuthMessage(
               iss: iss,
-              cacaoPayload: CacaoRequestPayload.fromSessionAuthPayload(
-                request,
-              ),
+              cacaoPayload: CacaoRequestPayload.fromSessionAuthPayload(request),
             );
             formattedMessages.add((iss, message, request));
           }
@@ -322,9 +306,7 @@ class WalletKitService implements IWalletKitService {
   Future<PaymentOptionsResponse> getPaymentOptions(
     GetPaymentOptionsRequest request,
   ) async {
-    final response = await _walletKit!.getPaymentOptions(
-      request: request,
-    );
+    final response = await _walletKit!.getPaymentOptions(request: request);
     return response;
   }
 
@@ -347,9 +329,7 @@ class WalletKitService implements IWalletKitService {
     ConfirmPaymentRequest payment,
   ) async {
     final response = await _walletKit!.confirmPayment(
-      request: payment.copyWith(
-        maxPollMs: 60000,
-      ),
+      request: payment.copyWith(maxPollMs: 60000),
     );
     return response;
   }
@@ -502,10 +482,14 @@ class WalletKitService implements IWalletKitService {
     if (args != null) {
       String errorMessage = args.error.message;
       if (args.error.code == 5100) {
-        errorMessage =
-            errorMessage.replaceFirst('Requested:', '\n\nRequested:');
-        errorMessage =
-            errorMessage.replaceFirst('Supported:', '\n\nSupported:');
+        errorMessage = errorMessage.replaceFirst(
+          'Requested:',
+          '\n\nRequested:',
+        );
+        errorMessage = errorMessage.replaceFirst(
+          'Supported:',
+          '\n\nSupported:',
+        );
       }
       MethodsUtils.goBackModal(
         title: 'Error',
@@ -562,7 +546,7 @@ class WalletKitService implements IWalletKitService {
             accounts: supportedChains.map((e) => '$e:$address').toList(),
             methods: supportedMethods.toList(),
             events: EventsConstants.allEvents,
-          )
+          ),
         },
       );
 
@@ -635,14 +619,8 @@ class WalletKitService implements IWalletKitService {
         final publicKey = result.$3;
 
         final auth = AuthSignature.buildAuthObject(
-          requestPayload: CacaoRequestPayload.fromSessionAuthPayload(
-            request,
-          ),
-          signature: CacaoSignature(
-            s: signature,
-            t: type,
-            m: publicKey,
-          ),
+          requestPayload: CacaoRequestPayload.fromSessionAuthPayload(request),
+          signature: CacaoSignature(s: signature, t: type, m: publicKey),
           iss: iss,
         );
         signedAuths.add(auth);
@@ -750,9 +728,7 @@ class WalletKitService implements IWalletKitService {
   /// Initiates the data collection flow by showing the start modal and collecting required fields.
   Future<dynamic> _startDataCollection(PaymentOptionsResponse response) async {
     final startResult = await _bottomSheetHandler.queueBottomSheet(
-      widget: WCPInformationCaptureStartWidget(
-        paymentInfo: response.info!,
-      ),
+      widget: WCPInformationCaptureStartWidget(paymentInfo: response.info!),
     );
     if (startResult != WCBottomSheetResult.next.name) {
       return startResult;
@@ -853,8 +829,9 @@ class WalletKitService implements IWalletKitService {
           if (startResult != WCBottomSheetResult.next.name) {
             return startResult;
           }
-          _pendingPaymentRequest =
-              _pendingPaymentRequest!.copyWith(collectedData: []);
+          _pendingPaymentRequest = _pendingPaymentRequest!.copyWith(
+            collectedData: [],
+          );
         }
       } else {
         return result;
@@ -868,9 +845,7 @@ class WalletKitService implements IWalletKitService {
 
     // Step 2: Confirming Payment
     final paymentStatusResult = await _bottomSheetHandler.queueBottomSheet(
-      widget: WCPConfirmingPayment(
-        paymentRequest: paymentConfirmRequest,
-      ),
+      widget: WCPConfirmingPayment(paymentRequest: paymentConfirmRequest),
     );
     if (paymentStatusResult is! PaymentStatus) {
       _pendingPaymentRequest = null;

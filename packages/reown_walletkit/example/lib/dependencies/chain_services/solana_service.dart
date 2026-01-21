@@ -59,18 +59,11 @@ class SolanaService {
       )) {
         final signature = await signMessage(message);
 
-        response = response.copyWith(
-          result: {
-            'signature': signature,
-          },
-        );
+        response = response.copyWith(result: {'signature': signature});
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
       //
@@ -78,10 +71,7 @@ class SolanaService {
       debugPrint('[SampleWallet] solanaSignMessage error $e');
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -97,7 +87,8 @@ class SolanaService {
 
   Future<void> solanaSignTransaction(String topic, dynamic parameters) async {
     debugPrint(
-        '[SampleWallet] solanaSignTransaction: ${jsonEncode(parameters)}');
+      '[SampleWallet] solanaSignTransaction: ${jsonEncode(parameters)}',
+    );
     final pRequest = _walletKit.pendingRequests.getAll().last;
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
@@ -120,9 +111,7 @@ class SolanaService {
         if (params.containsKey('transaction')) {
           final transaction = params['transaction'] as String;
           final transactionBytes = base64.decode(transaction);
-          final signedTx = solana_encoder.SignedTx.fromBytes(
-            transactionBytes,
-          );
+          final signedTx = solana_encoder.SignedTx.fromBytes(transactionBytes);
 
           // Sign the transaction.
           final signature = await keyPair.sign(
@@ -130,9 +119,7 @@ class SolanaService {
           );
 
           response = response.copyWith(
-            result: {
-              'signature': signature.toBase58(),
-            },
+            result: {'signature': signature.toBase58()},
           );
         } else {
           // else we parse the other key/values, see https://docs.walletconnect.com/advanced/multichain/rpc-reference/solana-rpc#solana_signtransaction
@@ -151,33 +138,23 @@ class SolanaService {
           );
 
           // Sign the transaction.
-          final signature = await keyPair.sign(
-            compiledMessage.toByteArray(),
-          );
+          final signature = await keyPair.sign(compiledMessage.toByteArray());
 
           response = response.copyWith(
-            result: {
-              'signature': signature.toBase58(),
-            },
+            result: {'signature': signature.toBase58()},
           );
         }
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } catch (e, s) {
       debugPrint('[SampleWallet] solanaSignTransaction error $e, $s');
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -220,36 +197,26 @@ class SolanaService {
             final signature = await keyPair.sign(
               unsignedTx.compiledMessage.toByteArray(),
             );
-            final signedTx = unsignedTx.copyWith(signatures: [
-              signature,
-            ]);
+            final signedTx = unsignedTx.copyWith(signatures: [signature]);
             final reEncodedTx = signedTx.encode();
             signedTransactions.add(reEncodedTx);
           }
 
           response = response.copyWith(
-            result: {
-              'transactions': signedTransactions,
-            },
+            result: {'transactions': signedTransactions},
           );
         }
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } catch (e, s) {
       debugPrint('[SampleWallet] solanaSignAllTransactions error $e, $s');
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -257,9 +224,7 @@ class SolanaService {
   }
 
   Future<solana.Ed25519HDKeyPair> _getKeyPair() async {
-    final keys = GetIt.I<IKeyService>().getKeysForChain(
-      chainSupported.chainId,
-    );
+    final keys = GetIt.I<IKeyService>().getKeysForChain(chainSupported.chainId);
     final secKeyBytes = keys[0].privateKey.parse32Bytes();
     return await solana.Ed25519HDKeyPair.fromPrivateKeyBytes(
       privateKey: secKeyBytes,
@@ -270,10 +235,7 @@ class SolanaService {
     final session = _walletKit.sessions.get(topic);
 
     try {
-      await _walletKit.respondSessionRequest(
-        topic: topic,
-        response: response,
-      );
+      await _walletKit.respondSessionRequest(topic: topic, response: response);
       MethodsUtils.handleRedirect(
         topic,
         session!.peer.metadata.redirect,
@@ -293,7 +255,7 @@ class SolanaService {
     final uri = Uri.parse('https://rpc.walletconnect.org/v1');
     final queryParams = {
       'projectId': _walletKit.core.projectId,
-      'chainId': chainSupported.chainId
+      'chainId': chainSupported.chainId,
     };
     final response = await http.post(
       uri.replace(queryParameters: queryParams),
@@ -302,7 +264,7 @@ class SolanaService {
         'id': 1,
         'jsonrpc': '2.0',
         'method': 'getBalance',
-        'params': [address]
+        'params': [address],
       }),
     );
     if (response.statusCode == 200 && response.body.isNotEmpty) {
@@ -370,7 +332,8 @@ extension on String {
       return Uint8List.fromList(secKeyBytes.sublist(0, 32));
     } catch (e) {
       throw FormatException(
-          'Unable to parse private key. Expected comma-separated integers, hex string, or base58 string.');
+        'Unable to parse private key. Expected comma-separated integers, hex string, or base58 string.',
+      );
     }
   }
 }
@@ -378,8 +341,9 @@ extension on String {
 extension on Map<String, dynamic> {
   solana_encoder.Instruction toInstruction() {
     final programId = this['programId'] as String;
-    final programKey =
-        solana.Ed25519HDPublicKey(base58.decode(programId).toList());
+    final programKey = solana.Ed25519HDPublicKey(
+      base58.decode(programId).toList(),
+    );
 
     final data = (this['data'] as List).map((e) => e as int).toList();
     final data58 = base58.encode(Uint8List.fromList(data));

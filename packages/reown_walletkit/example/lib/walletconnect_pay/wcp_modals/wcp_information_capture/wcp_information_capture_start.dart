@@ -105,8 +105,10 @@ class PaymentStep extends StatelessWidget {
                     children: [
                       Text(title, style: StyleConstants.wcpTextPrimaryStyle),
                       const SizedBox.square(dimension: 6.0),
-                      Text(description,
-                          style: StyleConstants.wcpTextSecondaryStyle),
+                      Text(
+                        description,
+                        style: StyleConstants.wcpTextSecondaryStyle,
+                      ),
                       if (!isLast) const SizedBox.square(dimension: 30.0),
                     ],
                   ),
@@ -123,10 +125,7 @@ class PaymentStep extends StatelessWidget {
 }
 
 class StepIndicator extends StatelessWidget {
-  const StepIndicator({
-    super.key,
-    required this.isLast,
-  });
+  const StepIndicator({super.key, required this.isLast});
 
   final bool isLast;
 
@@ -155,10 +154,7 @@ class StepIndicator extends StatelessWidget {
 }
 
 class StepLine extends StatelessWidget {
-  const StepLine({
-    super.key,
-    required this.height,
-  });
+  const StepLine({super.key, required this.height});
 
   const StepLine.expandable({super.key}) : height = null;
 
@@ -169,25 +165,15 @@ class StepLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (height != null) {
-      return Container(
-        width: _width,
-        height: height,
-        color: Colors.grey[300],
-      );
+      return Container(width: _width, height: height, color: Colors.grey[300]);
     } else {
-      return Container(
-        width: _width,
-        color: Colors.grey[300],
-      );
+      return Container(width: _width, color: Colors.grey[300]);
     }
   }
 }
 
 class TimeEstimateBadge extends StatelessWidget {
-  const TimeEstimateBadge({
-    super.key,
-    required this.timeEstimate,
-  });
+  const TimeEstimateBadge({super.key, required this.timeEstimate});
 
   final String timeEstimate;
 

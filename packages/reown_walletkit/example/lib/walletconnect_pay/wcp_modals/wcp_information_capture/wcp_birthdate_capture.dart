@@ -6,10 +6,7 @@ import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
 
 class WCPBirthdateCapture extends StatefulWidget {
-  const WCPBirthdateCapture({
-    super.key,
-    required this.collectDataField,
-  });
+  const WCPBirthdateCapture({super.key, required this.collectDataField});
 
   final CollectDataField collectDataField;
 

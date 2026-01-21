@@ -100,9 +100,7 @@ class _BalancesPageState extends State<BalancesPage> {
 
     return Scaffold(
       body: chainKeys.isEmpty
-          ? const Center(
-              child: Text('No EVM accounts found'),
-            )
+          ? const Center(child: Text('No EVM accounts found'))
           : RefreshIndicator(
               onRefresh: () => _updateBalance(showLoading: false),
               child: SingleChildScrollView(
@@ -132,9 +130,7 @@ class _BalancesPageState extends State<BalancesPage> {
                                 Text(
                                   chainKeys.first.address,
                                   style: StyleConstants.wcpTextPrimaryStyle
-                                      .copyWith(
-                                    fontSize: 12,
-                                  ),
+                                      .copyWith(fontSize: 12),
                                 ),
                               ],
                             ),
@@ -173,92 +169,90 @@ class _BalancesPageState extends State<BalancesPage> {
                       WCPTextField(
                         controller: TextEditingController(),
                         focusNode: FocusNode(),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 18.0,
-                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 18.0),
                         label: _balances.isEmpty
                             ? 'No balances found'
                             : 'No balances match selected filters',
                         enabled: false,
                       )
                     else
-                      ..._filteredBalances.map(
-                        (balance) {
-                          final symbol = balance['symbol'] as String? ?? '';
-                          final value = balance['value'] as num? ?? 0.0;
-                          final quantity =
-                              double.tryParse(balance['quantity']['numeric']) ??
-                                  0.0;
-                          final chainId = balance['chainId'] as String? ?? '';
-                          final iconUrl = balance['iconUrl'] as String? ?? '';
-                          final selectedChain =
-                              _walletKitService.currentSelectedChain.value ??
-                                  ChainsDataList.eip155Chains.first;
-                          final chainData = ChainsDataList.allChains.firstWhere(
-                            (e) => e.chainId == chainId,
-                            orElse: () => selectedChain,
-                          );
+                      ..._filteredBalances.map((balance) {
+                        final symbol = balance['symbol'] as String? ?? '';
+                        final value = balance['value'] as num? ?? 0.0;
+                        final quantity =
+                            double.tryParse(balance['quantity']['numeric']) ??
+                                0.0;
+                        final chainId = balance['chainId'] as String? ?? '';
+                        final iconUrl = balance['iconUrl'] as String? ?? '';
+                        final selectedChain =
+                            _walletKitService.currentSelectedChain.value ??
+                                ChainsDataList.eip155Chains.first;
+                        final chainData = ChainsDataList.allChains.firstWhere(
+                          (e) => e.chainId == chainId,
+                          orElse: () => selectedChain,
+                        );
 
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0),
-                            child: WCPTextField(
-                              controller: TextEditingController(
-                                text:
-                                    '${quantity.toStringAsFixed(6)} $symbol (${value.toStringAsFixed(2)} USD)',
-                              ),
-                              focusNode: FocusNode(),
-                              textStyle:
-                                  StyleConstants.wcpTextPrimaryStyle.copyWith(
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 18.0,
-                              ),
-                              label: '',
-                              suffix: Stack(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 16,
-                                    backgroundColor: Colors.white,
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: WCPTextField(
+                            controller: TextEditingController(
+                              text:
+                                  '${quantity.toStringAsFixed(6)} $symbol (${value.toStringAsFixed(2)} USD)',
+                            ),
+                            focusNode: FocusNode(),
+                            textStyle:
+                                StyleConstants.wcpTextPrimaryStyle.copyWith(
+                              fontSize: 15.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 18.0,
+                            ),
+                            label: '',
+                            suffix: Stack(
+                              children: [
+                                CircleAvatar(
+                                  radius: 16,
+                                  backgroundColor: Colors.white,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(16),
+                                    ),
+                                    child: CachedNetworkImage(
+                                      imageUrl: iconUrl,
+                                      width: 32.0,
+                                      height: 32.0,
+                                      errorWidget: (context, url, error) =>
+                                          const SizedBox.shrink(),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 0,
+                                  bottom: 0,
+                                  child: CircleAvatar(
+                                    radius: 9,
+                                    backgroundColor: Colors.transparent,
                                     child: ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(16)),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(9),
+                                      ),
                                       child: CachedNetworkImage(
-                                        imageUrl: iconUrl,
-                                        width: 32.0,
-                                        height: 32.0,
+                                        imageUrl: chainData.logo,
+                                        width: 18.0,
+                                        height: 18.0,
                                         errorWidget: (context, url, error) =>
                                             const SizedBox.shrink(),
                                       ),
                                     ),
                                   ),
-                                  Positioned(
-                                    right: 0,
-                                    bottom: 0,
-                                    child: CircleAvatar(
-                                      radius: 9,
-                                      backgroundColor: Colors.transparent,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(9)),
-                                        child: CachedNetworkImage(
-                                          imageUrl: chainData.logo,
-                                          width: 18.0,
-                                          height: 18.0,
-                                          errorWidget: (context, url, error) =>
-                                              const SizedBox.shrink(),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              enabled: false,
+                                ),
+                              ],
                             ),
-                          );
-                        },
-                      ),
+                            enabled: false,
+                          ),
+                        );
+                      }),
                   ],
                 ),
               ),
@@ -293,9 +287,7 @@ class _BalancesFilterWidget extends StatelessWidget {
       children: [
         Text(
           'Filter by token',
-          style: StyleConstants.wcpTextPrimaryStyle.copyWith(
-            fontSize: 14.0,
-          ),
+          style: StyleConstants.wcpTextPrimaryStyle.copyWith(fontSize: 14.0),
         ),
         const SizedBox(height: 8.0),
         SingleChildScrollView(
@@ -306,8 +298,9 @@ class _BalancesFilterWidget extends StatelessWidget {
                 label: const Text('All'),
                 selected: isAllSelected,
                 onSelected: (_) => onSelectAll(),
-                selectedColor:
-                    StyleConstants.accentPrimary.withValues(alpha: 0.2),
+                selectedColor: StyleConstants.accentPrimary.withValues(
+                  alpha: 0.2,
+                ),
                 showCheckmark: false,
                 backgroundColor: StyleConstants.foregroundPrimary,
                 shape: RoundedRectangleBorder(
@@ -350,8 +343,9 @@ class _BalancesFilterWidget extends StatelessWidget {
                     selected: isSelected,
                     onSelected: (selected) =>
                         onSelectionChanged(symbol, selected),
-                    selectedColor:
-                        StyleConstants.accentPrimary.withValues(alpha: 0.2),
+                    selectedColor: StyleConstants.accentPrimary.withValues(
+                      alpha: 0.2,
+                    ),
                     showCheckmark: false,
                     backgroundColor: StyleConstants.foregroundPrimary,
                     shape: RoundedRectangleBorder(

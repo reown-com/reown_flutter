@@ -4,10 +4,7 @@ import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 
 class WCSessionAuthRequestWidget extends StatelessWidget {
-  const WCSessionAuthRequestWidget({
-    super.key,
-    required this.child,
-  });
+  const WCSessionAuthRequestWidget({super.key, required this.child});
 
   final Widget child;
 
@@ -16,11 +13,7 @@ class WCSessionAuthRequestWidget extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Expanded(
-          child: SingleChildScrollView(
-            child: child,
-          ),
-        ),
+        Expanded(child: SingleChildScrollView(child: child)),
         const SizedBox(height: StyleConstants.linear16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

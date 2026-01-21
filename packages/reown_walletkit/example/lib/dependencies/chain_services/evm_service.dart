@@ -116,9 +116,7 @@ class EVMService {
   }
 
   EthPrivateKey get _credentials {
-    final keys = GetIt.I<IKeyService>().getKeysForChain(
-      chainSupported.chainId,
-    );
+    final keys = GetIt.I<IKeyService>().getKeysForChain(chainSupported.chainId);
     final pk = keys[0].privateKey;
     return EthPrivateKey.fromHex(pk);
   }
@@ -131,10 +129,7 @@ class EVMService {
     final address = EthUtils.getAddressFromSessionRequest(pRequest);
     final data = EthUtils.getDataFromSessionRequest(pRequest);
     final message = EthUtils.getUtf8Message(data.toString());
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
-    );
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     if (await MethodsUtils.requestApproval(
       message,
@@ -155,19 +150,13 @@ class EVMService {
         // TODO document errors
         final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } else {
       final error = Errors.getSdkError(Errors.USER_REJECTED);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -178,10 +167,7 @@ class EVMService {
     final signature = _credentials.signPersonalMessageToUint8List(
       utf8.encode(message),
     );
-    return eth_sig_util_util.bytesToHex(
-      signature,
-      include0x: true,
-    );
+    return eth_sig_util_util.bytesToHex(signature, include0x: true);
   }
 
   Future<void> ethSignHandler(String topic, dynamic parameters) async {
@@ -190,10 +176,7 @@ class EVMService {
     final address = EthUtils.getAddressFromSessionRequest(pRequest);
     final data = EthUtils.getDataFromSessionRequest(pRequest);
     final message = EthUtils.getUtf8Message(data.toString());
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
-    );
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     if (await MethodsUtils.requestApproval(
       message,
@@ -204,9 +187,7 @@ class EVMService {
       verifyContext: pRequest.verifyContext,
     )) {
       try {
-        final signature = _credentials.signToUint8List(
-          utf8.encode(message),
-        );
+        final signature = _credentials.signToUint8List(utf8.encode(message));
         final signedTx = eth_sig_util_util.bytesToHex(
           signature,
           include0x: true,
@@ -219,19 +200,13 @@ class EVMService {
         debugPrint('[SampleWallet] ethSign error $e');
         final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } else {
       final error = Errors.getSdkError(Errors.USER_REJECTED).toSignError();
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -243,10 +218,7 @@ class EVMService {
     final pRequest = _walletKit.pendingRequests.getAll().last;
     final address = EthUtils.getAddressFromSessionRequest(pRequest);
     final data = EthUtils.getDataFromSessionRequest(pRequest);
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
-    );
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     if (await MethodsUtils.requestApproval(
       data,
@@ -272,19 +244,13 @@ class EVMService {
         debugPrint('[SampleWallet] ethSignTypedData error $e');
         final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } else {
       final error = Errors.getSdkError(Errors.USER_REJECTED).toSignError();
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -296,20 +262,15 @@ class EVMService {
     // The solution uses a regex to find all hex strings in the JSON ("0x...") and pads odd-length values with a leading zero. This ensures all hex values are valid before signing.
     // Pad odd-length hex values (e.g., "0x186a0" -> "0x0186a0")
     // The signing library requires hex values to have even number of digits
-    return jsonString.replaceAllMapped(
-      RegExp(r'"0x([0-9a-fA-F]+)"'),
-      (match) {
-        final hex = match.group(1)!;
-        // Pad with leading zero if odd length
-        return hex.length % 2 == 0 ? match.group(0)! : '"0x0$hex"';
-      },
-    );
+    return jsonString.replaceAllMapped(RegExp(r'"0x([0-9a-fA-F]+)"'), (match) {
+      final hex = match.group(1)!;
+      // Pad with leading zero if odd length
+      return hex.length % 2 == 0 ? match.group(0)! : '"0x0$hex"';
+    });
   }
 
   String ethSignTypedDataV4(String jsonData) {
-    final keys = GetIt.I<IKeyService>().getKeysForChain(
-      chainSupported.chainId,
-    );
+    final keys = GetIt.I<IKeyService>().getKeysForChain(chainSupported.chainId);
 
     final signature = eth_sig_util.EthSigUtil.signTypedData(
       privateKey: keys[0].privateKey,
@@ -327,10 +288,7 @@ class EVMService {
     final pRequest = _walletKit.pendingRequests.getAll().last;
     final address = EthUtils.getAddressFromSessionRequest(pRequest);
     final data = EthUtils.getDataFromSessionRequest(pRequest);
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
-    );
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     if (await MethodsUtils.requestApproval(
       data,
@@ -347,10 +305,7 @@ class EVMService {
         debugPrint('[SampleWallet] ethSignTypedDataV4 error $e');
         final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } else {
@@ -373,10 +328,7 @@ class EVMService {
     if (data == null) return;
     final address = EthUtils.getAddressFromSessionRequest(pRequest);
 
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
-    );
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     final transaction = await approveTransaction(
       data,
@@ -405,19 +357,13 @@ class EVMService {
       } on RPCError catch (e) {
         debugPrint('[SampleWallet] ethSignTransaction error $e');
         response = response.copyWith(
-          error: JsonRpcError(
-            code: e.errorCode,
-            message: e.message,
-          ),
+          error: JsonRpcError(code: e.errorCode, message: e.message),
         );
       } catch (e) {
         debugPrint('[SampleWallet] ethSignTransaction error $e');
         final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } else {
@@ -474,19 +420,13 @@ class EVMService {
       } on RPCError catch (e) {
         debugPrint('[SampleWallet] ethSendTransaction error $e');
         response = response.copyWith(
-          error: JsonRpcError(
-            code: e.errorCode,
-            message: e.message,
-          ),
+          error: JsonRpcError(code: e.errorCode, message: e.message),
         );
       } catch (e) {
         debugPrint('[SampleWallet] ethSendTransaction error $e');
         final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } else {
@@ -513,19 +453,13 @@ class EVMService {
     } on ReownSignError catch (e) {
       debugPrint('[SampleWallet] switchChain error $e');
       response = response.copyWith(
-        error: JsonRpcError(
-          code: e.code,
-          message: e.message,
-        ),
+        error: JsonRpcError(code: e.code, message: e.message),
       );
     } catch (e) {
       debugPrint('[SampleWallet] switchChain error $e');
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -535,10 +469,7 @@ class EVMService {
   Future<void> addChainHandler(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] addChain request: $topic $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
-    );
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     if (await MethodsUtils.requestApproval(
       jsonEncode(parameters),
@@ -592,28 +523,19 @@ class EVMService {
       } on ReownSignError catch (e) {
         debugPrint('[SampleWallet] addChain error $e');
         response = response.copyWith(
-          error: JsonRpcError(
-            code: e.code,
-            message: e.message,
-          ),
+          error: JsonRpcError(code: e.code, message: e.message),
         );
       } catch (e) {
         debugPrint('[SampleWallet] addChain error $e');
         final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } else {
       final error = Errors.getSdkError(Errors.USER_REJECTED);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -705,8 +627,9 @@ class EVMService {
   Future<List<Map<String, dynamic>>> getBalance({
     required String address,
   }) async {
-    final uri =
-        Uri.parse('https://rpc.walletconnect.org/v1/account/$address/balance');
+    final uri = Uri.parse(
+      'https://rpc.walletconnect.org/v1/account/$address/balance',
+    );
     final queryParams = {
       'projectId': _walletKit.core.projectId,
       'currency': 'usd',
@@ -822,10 +745,7 @@ class EVMService {
     }
     final session = _walletKit.sessions.get(topic);
     try {
-      await _walletKit.respondSessionRequest(
-        topic: topic,
-        response: response,
-      );
+      await _walletKit.respondSessionRequest(topic: topic, response: response);
       MethodsUtils.handleRedirect(
         topic,
         session!.peer.metadata.redirect,

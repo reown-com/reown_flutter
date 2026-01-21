@@ -11,7 +11,7 @@ YELLOW='\033[1;33m'
 RED='\033[0;31m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}Converting reown_* dependencies from local paths to pub.dev versions...${NC}"
+echo -e "${BLUE}Converting reown_* and walletconnect_pay dependencies from local paths to pub.dev versions...${NC}"
 echo ""
 
 # Function to get latest version from pub.dev
@@ -52,8 +52,8 @@ find . -name "pubspec.yaml" -type f \
   # Skip if file doesn't exist
   [ ! -f "$pubspec_file" ] && continue
   
-  # Check if file has any reown_* dependencies with path: ../reown_*/
-  if grep -qE "^[[:space:]]*reown_[a-zA-Z0-9_]+:[[:space:]]*$" "$pubspec_file" 2>/dev/null; then
+  # Check if file has any reown_* or walletconnect_pay dependencies with path: ../
+  if grep -qE "^[[:space:]]*(reown_[a-zA-Z0-9_]+|walletconnect_pay):[[:space:]]*$" "$pubspec_file" 2>/dev/null; then
     echo -e "${GREEN}Processing: $pubspec_file${NC}"
     
     # Read file into array to allow look-ahead (portable method)
@@ -70,8 +70,8 @@ find . -name "pubspec.yaml" -type f \
     while [ $i -lt ${#lines[@]} ]; do
       line="${lines[$i]}"
       
-      # Check if line matches pattern: spaces + reown_*package*: (empty value, meaning next line has path)
-      if [[ $line =~ ^([[:space:]]*)(reown_[a-zA-Z0-9_]+):[[:space:]]*$ ]]; then
+      # Check if line matches pattern: spaces + reown_*package* or walletconnect_pay: (empty value, meaning next line has path)
+      if [[ $line =~ ^([[:space:]]*)((reown_[a-zA-Z0-9_]+|walletconnect_pay)):[[:space:]]*$ ]]; then
         # Extract indentation and package name
         indent="${BASH_REMATCH[1]}"
         full_package="${BASH_REMATCH[2]}"

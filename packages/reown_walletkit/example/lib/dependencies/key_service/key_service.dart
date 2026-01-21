@@ -298,8 +298,9 @@ class KeyService extends IKeyService {
       );
       final publicBytes = solanaKeyPair.publicKey.bytes;
       final privateBytes = (await solanaKeyPair.extract()).bytes;
-      final privateKey =
-          hex.encode(Uint8List.fromList(privateBytes + publicBytes));
+      final privateKey = hex.encode(
+        Uint8List.fromList(privateBytes + publicBytes),
+      );
 
       return ChainKey(
         chains: ChainsDataList.solanaChains.map((e) => e.chainId).toList(),
@@ -506,9 +507,7 @@ class KeyService extends IKeyService {
       final keyPair = await tonService.generateKeypairFromBip39Mnemonic(
         mnemonic,
       );
-      final address = await tonService.getAddressFromKeypair(
-        keyPair,
-      );
+      final address = await tonService.getAddressFromKeypair(keyPair);
 
       return ChainKey(
         chains: chainIds,

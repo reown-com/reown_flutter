@@ -2046,5 +2046,5 @@ const WORDLIST = [
   'zebra',
   'zero',
   'zone',
-  'zoo'
+  'zoo',
 ];

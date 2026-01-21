@@ -7,11 +7,7 @@ import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 
 class WCPPaymentResult extends StatefulWidget {
-  const WCPPaymentResult({
-    super.key,
-    required this.status,
-    required this.info,
-  });
+  const WCPPaymentResult({super.key, required this.status, required this.info});
 
   // enum PaymentStatus { requires_action, processing, succeeded, failed, expired }
   final PaymentStatus status;
@@ -66,8 +62,8 @@ class _WCPPaymentResultState extends State<WCPPaymentResult> {
                                 children: [
                                   const TextSpan(text: 'You\'ve paid '),
                                   TextSpan(
-                                      text:
-                                          formatPayAmount(widget.info.amount)),
+                                    text: formatPayAmount(widget.info.amount),
+                                  ),
                                   const TextSpan(text: ' to '),
                                   TextSpan(text: widget.info.merchant.name),
                                   const TextSpan(text: ' '),
@@ -116,9 +112,7 @@ class _WCPPaymentResultState extends State<WCPPaymentResult> {
           const SizedBox(height: StyleConstants.linear48),
           WCPrimaryButton(
             onPressed: () {
-              Navigator.of(context).pop(
-                WCBottomSheetResult.next.name,
-              );
+              Navigator.of(context).pop(WCBottomSheetResult.next.name);
             },
             text: 'Got it!',
           ),

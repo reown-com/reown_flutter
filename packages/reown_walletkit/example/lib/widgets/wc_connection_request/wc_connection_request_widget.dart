@@ -34,9 +34,7 @@ class WCConnectionRequestWidget extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          StyleConstants.linear8,
-        ),
+        borderRadius: BorderRadius.circular(StyleConstants.linear8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -45,10 +43,7 @@ class WCConnectionRequestWidget extends StatelessWidget {
           const SizedBox(height: StyleConstants.linear8),
           Text(
             '${requester!.metadata.name} ${StringConstants.wouldLikeToConnect}',
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: StyleConstants.linear8),
@@ -78,9 +73,7 @@ class WCConnectionRequestWidget extends StatelessWidget {
       messagesModels.add(
         WCConnectionModel(
           title: 'Message ${messagesModels.length + 1}',
-          elements: [
-            message,
-          ],
+          elements: [message],
         ),
       );
     }
@@ -101,17 +94,12 @@ class WCConnectionRequestWidget extends StatelessWidget {
       authRequests,
     );
 
-    return Column(
-      children: views,
-    );
+    return Column(children: views);
   }
 }
 
 class VerifyContextWidget extends StatelessWidget {
-  const VerifyContextWidget({
-    super.key,
-    required this.verifyContext,
-  });
+  const VerifyContextWidget({super.key, required this.verifyContext});
   final VerifyContext? verifyContext;
 
   @override
@@ -156,11 +144,7 @@ class VerifyContextWidget extends StatelessWidget {
 }
 
 class VerifyHeader extends StatelessWidget {
-  const VerifyHeader({
-    super.key,
-    required this.iconColor,
-    required this.title,
-  });
+  const VerifyHeader({super.key, required this.iconColor, required this.title});
   final Color iconColor;
   final String title;
 
@@ -169,18 +153,12 @@ class VerifyHeader extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(
-          Icons.shield_outlined,
-          color: iconColor,
-        ),
+        Icon(Icons.shield_outlined, color: iconColor),
         const SizedBox(width: StyleConstants.linear8),
         Expanded(
           child: Text(
             title,
-            style: TextStyle(
-              color: iconColor,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(color: iconColor, fontWeight: FontWeight.bold),
           ),
         ),
       ],
@@ -203,12 +181,7 @@ class VerifyBanner extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(
-          origin,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        Text(origin, style: const TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox.square(dimension: 8.0),
         Container(
           padding: const EdgeInsets.all(8.0),
@@ -218,18 +191,12 @@ class VerifyBanner extends StatelessWidget {
           ),
           child: Column(
             children: [
-              VerifyHeader(
-                iconColor: color,
-                title: title,
-              ),
+              VerifyHeader(iconColor: color, title: title),
               const SizedBox(height: 4.0),
               Text(
                 text,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: color,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(color: color, fontWeight: FontWeight.bold),
               ),
             ],
           ),

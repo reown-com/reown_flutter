@@ -6,10 +6,7 @@ import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 
 class WCModalTitle extends StatelessWidget {
-  const WCModalTitle({
-    super.key,
-    required this.text,
-  });
+  const WCModalTitle({super.key, required this.text});
 
   final String text;
 
@@ -18,9 +15,7 @@ class WCModalTitle extends StatelessWidget {
     return Center(
       child: Text(
         text,
-        style: StyleConstants.wcpTextPrimaryStyle.copyWith(
-          fontSize: 20,
-        ),
+        style: StyleConstants.wcpTextPrimaryStyle.copyWith(fontSize: 20),
         textAlign: TextAlign.center,
       ),
     );
@@ -50,9 +45,7 @@ class WCPrimaryButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: enabled
                 ? StyleConstants.accentPrimary
-                : StyleConstants.accentPrimary.withValues(
-                    alpha: 0.6,
-                  ),
+                : StyleConstants.accentPrimary.withValues(alpha: 0.6),
             borderRadius: BorderRadius.circular(StyleConstants.linear16),
           ),
           padding: const EdgeInsets.symmetric(
@@ -87,26 +80,21 @@ class WCPStepsIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children: List.generate(
-        totalSteps,
-        (index) {
-          final isActive = index < currentStep;
-          final isCurrent = index == currentStep - 1;
-          return Container(
-            width: _barWidth,
-            height: _barHeight,
-            margin: EdgeInsets.only(
-              right: index < totalSteps - 1 ? 8 : 0,
-            ),
-            decoration: BoxDecoration(
-              color: isActive || isCurrent
-                  ? StyleConstants.accentPrimary
-                  : StyleConstants.foregroundSecondary,
-              borderRadius: BorderRadius.circular(3),
-            ),
-          );
-        },
-      ),
+      children: List.generate(totalSteps, (index) {
+        final isActive = index < currentStep;
+        final isCurrent = index == currentStep - 1;
+        return Container(
+          width: _barWidth,
+          height: _barHeight,
+          margin: EdgeInsets.only(right: index < totalSteps - 1 ? 8 : 0),
+          decoration: BoxDecoration(
+            color: isActive || isCurrent
+                ? StyleConstants.accentPrimary
+                : StyleConstants.foregroundSecondary,
+            borderRadius: BorderRadius.circular(3),
+          ),
+        );
+      }),
     );
   }
 }
@@ -169,10 +157,7 @@ class _WCPTextFieldState extends State<WCPTextField> {
         color: StyleConstants.foregroundPrimary,
         borderRadius: BorderRadius.circular(20),
         border: widget.enabled
-            ? Border.all(
-                color: borderColor,
-                width: isFocused ? 4 : 1,
-              )
+            ? Border.all(color: borderColor, width: isFocused ? 4 : 1)
             : null,
       ),
       padding: widget.padding ??
@@ -198,10 +183,7 @@ class _WCPTextFieldState extends State<WCPTextField> {
 }
 
 class WCPPaymentDetails extends StatelessWidget {
-  const WCPPaymentDetails({
-    super.key,
-    required this.paymentInfo,
-  });
+  const WCPPaymentDetails({super.key, required this.paymentInfo});
 
   final PaymentInfo paymentInfo;
 
@@ -216,8 +198,9 @@ class WCPPaymentDetails extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 2,
             text: TextSpan(
-              style:
-                  StyleConstants.wcpTextPrimaryStyle.copyWith(fontSize: 20.0),
+              style: StyleConstants.wcpTextPrimaryStyle.copyWith(
+                fontSize: 20.0,
+              ),
               children: [
                 const TextSpan(text: 'Pay '),
                 TextSpan(text: formatPayAmount(paymentInfo.amount)),
@@ -241,10 +224,7 @@ class WCPPaymentDetails extends StatelessWidget {
 }
 
 class WCPMerchantHeader extends StatelessWidget {
-  const WCPMerchantHeader({
-    super.key,
-    required this.merchant,
-  });
+  const WCPMerchantHeader({super.key, required this.merchant});
 
   final MerchantInfo merchant;
 
@@ -269,9 +249,8 @@ class WCPMerchantHeader extends StatelessWidget {
                     width: _logoSize,
                     height: _logoSize,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => _DefaultLogo(
-                      text: merchant.name.characters.first,
-                    ),
+                    errorBuilder: (_, __, ___) =>
+                        _DefaultLogo(text: merchant.name.characters.first),
                   ),
                 )
               : _DefaultLogo(text: merchant.name.characters.first),
@@ -299,10 +278,7 @@ class _DefaultLogo extends StatelessWidget {
 }
 
 class WalletConnectLoading extends StatefulWidget {
-  const WalletConnectLoading({
-    super.key,
-    this.size = 120.0,
-  });
+  const WalletConnectLoading({super.key, this.size = 120.0});
 
   final double size;
 
@@ -335,10 +311,7 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
     super.initState();
     _squareSize = (widget.size - _gap) / 2;
 
-    _controller = AnimationController(
-      duration: _cycleDuration,
-      vsync: this,
-    );
+    _controller = AnimationController(duration: _cycleDuration, vsync: this);
 
     _setupAnimations();
     _controller.repeat();
@@ -349,16 +322,18 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
     _opacityBL = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 0.0, end: 0.0), weight: 30),
       TweenSequenceItem(
-        tween: Tween(begin: 0.0, end: 1.0).chain(
-          CurveTween(curve: Curves.easeInOut),
-        ),
+        tween: Tween(
+          begin: 0.0,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 80,
       ),
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.0), weight: 3470),
       TweenSequenceItem(
-        tween: Tween(begin: 1.0, end: 0.0).chain(
-          CurveTween(curve: Curves.easeInOut),
-        ),
+        tween: Tween(
+          begin: 1.0,
+          end: 0.0,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 80,
       ),
       TweenSequenceItem(tween: Tween(begin: 0.0, end: 0.0), weight: 340),
@@ -371,8 +346,10 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
         weight: 30,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: _squareSize * 0.1, end: _squareSize * 0.15)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: _squareSize * 0.1,
+          end: _squareSize * 0.15,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 50,
       ),
       TweenSequenceItem(
@@ -380,8 +357,10 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
         weight: 1150,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: _squareSize * 0.15, end: _squareSize * 0.25)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: _squareSize * 0.15,
+          end: _squareSize * 0.25,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 1000,
       ),
       TweenSequenceItem(
@@ -389,8 +368,10 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
         weight: 500,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: _squareSize * 0.25, end: _squareSize * 0.1)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: _squareSize * 0.25,
+          end: _squareSize * 0.1,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 1000,
       ),
       TweenSequenceItem(
@@ -403,16 +384,18 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
     _opacityBR = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 0.0, end: 0.0), weight: 120),
       TweenSequenceItem(
-        tween: Tween(begin: 0.0, end: 1.0).chain(
-          CurveTween(curve: Curves.easeInOut),
-        ),
+        tween: Tween(
+          begin: 0.0,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 80,
       ),
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.0), weight: 3460),
       TweenSequenceItem(
-        tween: Tween(begin: 1.0, end: 0.0).chain(
-          CurveTween(curve: Curves.easeInOut),
-        ),
+        tween: Tween(
+          begin: 1.0,
+          end: 0.0,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 80,
       ),
       TweenSequenceItem(tween: Tween(begin: 0.0, end: 0.0), weight: 260),
@@ -425,8 +408,10 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
         weight: 120,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: _squareSize * 0.12, end: _squareSize * 0.2)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: _squareSize * 0.12,
+          end: _squareSize * 0.2,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 850,
       ),
       TweenSequenceItem(
@@ -434,13 +419,17 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
         weight: 600,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: _squareSize * 0.2, end: _squareSize * 0.48)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: _squareSize * 0.2,
+          end: _squareSize * 0.48,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 1100,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: _squareSize * 0.48, end: _squareSize * 0.12)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: _squareSize * 0.48,
+          end: _squareSize * 0.12,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 900,
       ),
       TweenSequenceItem(
@@ -453,16 +442,18 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
     _opacityTR = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 0.0, end: 0.0), weight: 200),
       TweenSequenceItem(
-        tween: Tween(begin: 0.0, end: 1.0).chain(
-          CurveTween(curve: Curves.easeInOut),
-        ),
+        tween: Tween(
+          begin: 0.0,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 80,
       ),
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.0), weight: 3460),
       TweenSequenceItem(
-        tween: Tween(begin: 1.0, end: 0.0).chain(
-          CurveTween(curve: Curves.easeInOut),
-        ),
+        tween: Tween(
+          begin: 1.0,
+          end: 0.0,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 80,
       ),
       TweenSequenceItem(tween: Tween(begin: 0.0, end: 0.0), weight: 180),
@@ -475,8 +466,10 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
         weight: 200,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: _squareSize * 0.12, end: _squareSize * 0.45)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: _squareSize * 0.12,
+          end: _squareSize * 0.45,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 800,
       ),
       TweenSequenceItem(
@@ -484,8 +477,10 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
         weight: 500,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: _squareSize * 0.45, end: _squareSize * 0.2)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: _squareSize * 0.45,
+          end: _squareSize * 0.2,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 900,
       ),
       TweenSequenceItem(
@@ -493,8 +488,10 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
         weight: 600,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: _squareSize * 0.2, end: _squareSize * 0.12)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: _squareSize * 0.2,
+          end: _squareSize * 0.12,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 700,
       ),
       TweenSequenceItem(
@@ -507,16 +504,18 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
     _opacityTL = TweenSequence<double>([
       TweenSequenceItem(tween: Tween(begin: 0.0, end: 0.0), weight: 250),
       TweenSequenceItem(
-        tween: Tween(begin: 0.0, end: 1.0).chain(
-          CurveTween(curve: Curves.easeInOut),
-        ),
+        tween: Tween(
+          begin: 0.0,
+          end: 1.0,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 80,
       ),
       TweenSequenceItem(tween: Tween(begin: 1.0, end: 1.0), weight: 3450),
       TweenSequenceItem(
-        tween: Tween(begin: 1.0, end: 0.0).chain(
-          CurveTween(curve: Curves.easeInOut),
-        ),
+        tween: Tween(
+          begin: 1.0,
+          end: 0.0,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 80,
       ),
       TweenSequenceItem(tween: Tween(begin: 0.0, end: 0.0), weight: 140),
@@ -529,8 +528,10 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
         weight: 250,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: _squareSize * 0.12, end: _squareSize * 0.3)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: _squareSize * 0.12,
+          end: _squareSize * 0.3,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 750,
       ),
       TweenSequenceItem(
@@ -538,8 +539,10 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
         weight: 600,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: _squareSize * 0.3, end: _squareSize * 0.2)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: _squareSize * 0.3,
+          end: _squareSize * 0.2,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 1000,
       ),
       TweenSequenceItem(
@@ -547,8 +550,10 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
         weight: 1000,
       ),
       TweenSequenceItem(
-        tween: Tween(begin: _squareSize * 0.2, end: _squareSize * 0.12)
-            .chain(CurveTween(curve: Curves.easeInOut)),
+        tween: Tween(
+          begin: _squareSize * 0.2,
+          end: _squareSize * 0.12,
+        ).chain(CurveTween(curve: Curves.easeInOut)),
         weight: 400,
       ),
     ]).animate(_controller);

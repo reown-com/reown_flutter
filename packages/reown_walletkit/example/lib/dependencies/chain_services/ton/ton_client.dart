@@ -8,10 +8,7 @@ class TonClient {
   final String projectId;
   final String networkId;
 
-  TonClient({
-    required this.projectId,
-    required this.networkId,
-  });
+  TonClient({required this.projectId, required this.networkId});
 
   Future<void> init() async {
     try {
@@ -31,8 +28,9 @@ class TonClient {
   }
 
   Future<TonKeyPair> generateKeypair() async {
-    return await ReownYttriumUtils.tonClient
-        .generateKeypair(networkId: networkId);
+    return await ReownYttriumUtils.tonClient.generateKeypair(
+      networkId: networkId,
+    );
   }
 
   Future<TonKeyPair> generateKeypairFromBip39Mnemonic(String mnemonic) async {

@@ -18,23 +18,15 @@ class WCConnectionWidget extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: StyleConstants.neutrals.withValues(alpha: 0.4),
-        borderRadius: BorderRadius.circular(
-          StyleConstants.linear16,
-        ),
+        borderRadius: BorderRadius.circular(StyleConstants.linear16),
       ),
-      padding: const EdgeInsets.all(
-        StyleConstants.linear8,
-      ),
+      padding: const EdgeInsets.all(StyleConstants.linear8),
       margin: const EdgeInsets.only(bottom: 12.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildTitle(title),
-          ...info.map(
-            (e) => WCConnectionWidgetInfo(
-              model: e,
-            ),
-          ),
+          ...info.map((e) => WCConnectionWidgetInfo(model: e)),
         ],
       ),
     );
@@ -44,15 +36,10 @@ class WCConnectionWidget extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: StyleConstants.neutrals.withValues(alpha: 0.4),
-        borderRadius: BorderRadius.circular(
-          StyleConstants.linear16,
-        ),
+        borderRadius: BorderRadius.circular(StyleConstants.linear16),
       ),
       padding: StyleConstants.bubblePadding,
-      child: Text(
-        text,
-        style: StyleConstants.layerTextStyle2,
-      ),
+      child: Text(text, style: StyleConstants.layerTextStyle2),
     );
   }
 }

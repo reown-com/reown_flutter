@@ -22,8 +22,9 @@ class ConnectionWidgetBuilder {
     for (final key in generatedNamespaces.keys) {
       final namespaces = generatedNamespaces[key]!;
       final chains = NamespaceUtils.getChainsFromAccounts(namespaces.accounts);
-      final namespaceMessages =
-          formattedMessages.where((e) => e.$1.contains(key));
+      final namespaceMessages = formattedMessages.where(
+        (e) => e.$1.contains(key),
+      );
 
       final List<WCConnectionModel> models = [];
       // If the chains property is present, add the chain data to the models
@@ -37,10 +38,7 @@ class ConnectionWidgetBuilder {
         ),
       );
       models.add(
-        WCConnectionModel(
-          title: StringConstants.chains,
-          elements: chains,
-        ),
+        WCConnectionModel(title: StringConstants.chains, elements: chains),
       );
       models.add(
         WCConnectionModel(
@@ -65,12 +63,7 @@ class ConnectionWidgetBuilder {
         );
       }
 
-      views.add(
-        WCConnectionWidget(
-          title: '$key namespace',
-          info: models,
-        ),
-      );
+      views.add(WCConnectionWidget(title: '$key namespace', info: models));
     }
 
     return views;
@@ -93,27 +86,16 @@ class ConnectionWidgetBuilder {
         ),
       );
       models.add(
-        WCConnectionModel(
-          title: StringConstants.methods,
-          elements: ns.methods,
-        ),
+        WCConnectionModel(title: StringConstants.methods, elements: ns.methods),
       );
 
       if (ns.events.isNotEmpty) {
         models.add(
-          WCConnectionModel(
-            title: StringConstants.events,
-            elements: ns.events,
-          ),
+          WCConnectionModel(title: StringConstants.events, elements: ns.events),
         );
       }
 
-      views.add(
-        WCConnectionWidget(
-          title: key,
-          info: models,
-        ),
-      );
+      views.add(WCConnectionWidget(title: key, info: models));
     }
 
     return views;

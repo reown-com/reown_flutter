@@ -61,9 +61,7 @@ class _WCPGetPaymentOptionsState extends State<WCPGetPaymentOptions> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const SizedBox(height: StyleConstants.linear48),
-          const Center(
-            child: WalletConnectLoading(size: 120.0),
-          ),
+          const Center(child: WalletConnectLoading(size: 120.0)),
           const SizedBox(height: StyleConstants.linear24),
         ],
       ),

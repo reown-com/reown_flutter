@@ -12,10 +12,7 @@ import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 class AppDetailPage extends StatefulWidget {
   final PairingInfo pairing;
 
-  const AppDetailPage({
-    super.key,
-    required this.pairing,
-  });
+  const AppDetailPage({super.key, required this.pairing});
 
   @override
   AppDetailPageState createState() => AppDetailPageState();
@@ -48,8 +45,9 @@ class AppDetailPageState extends State<AppDetailPage> {
   @override
   Widget build(BuildContext context) {
     final metadata = widget.pairing.peerMetadata;
-    DateTime dateTime =
-        DateTime.fromMillisecondsSinceEpoch(widget.pairing.expiry * 1000);
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(
+      widget.pairing.expiry * 1000,
+    );
     int year = dateTime.year;
     int month = dateTime.month;
     int day = dateTime.day;
@@ -84,9 +82,7 @@ class AppDetailPageState extends State<AppDetailPage> {
               type: CustomButtonType.normal,
               onTap: () async {
                 try {
-                  await _walletKit.extendSession(
-                    topic: session.topic,
-                  );
+                  await _walletKit.extendSession(topic: session.topic);
                   setState(() {});
                 } catch (e) {
                   debugPrint('[SampleWallet] ${e.toString()}');
@@ -145,8 +141,9 @@ class AppDetailPageState extends State<AppDetailPage> {
                 try {
                   await _walletKit.disconnectSession(
                     topic: session.topic,
-                    reason: Errors.getSdkError(Errors.USER_DISCONNECTED)
-                        .toSignError(),
+                    reason: Errors.getSdkError(
+                      Errors.USER_DISCONNECTED,
+                    ).toSignError(),
                   );
                   setState(() {});
                 } catch (e) {
@@ -174,9 +171,7 @@ class AppDetailPageState extends State<AppDetailPage> {
           Visibility(
             visible: metadata?.redirect?.native != null,
             child: IconButton(
-              icon: const Icon(
-                Icons.open_in_new_rounded,
-              ),
+              icon: const Icon(Icons.open_in_new_rounded),
               onPressed: () {
                 MethodsUtils.openApp(
                   sessions.first.topic,
@@ -184,7 +179,7 @@ class AppDetailPageState extends State<AppDetailPage> {
                 );
               },
             ),
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -210,22 +205,24 @@ class AppDetailPageState extends State<AppDetailPage> {
                             height: 80.0,
                             padding: const EdgeInsets.all(1.0),
                             decoration: BoxDecoration(
-                              border:
-                                  Border.all(width: 1.0, color: Colors.black38),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(40.0)),
+                              border: Border.all(
+                                width: 1.0,
+                                color: Colors.black38,
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(40.0),
+                              ),
                             ),
                             child: ClipRRect(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(40.0)),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(40.0),
+                              ),
                               child: SvgPicture.network(imageUrl),
                             ),
                           );
                         }
                         return CircleAvatar(
-                          backgroundImage: CachedNetworkImageProvider(
-                            imageUrl,
-                          ),
+                          backgroundImage: CachedNetworkImageProvider(imageUrl),
                           radius: 40.0,
                         );
                       }
@@ -273,8 +270,9 @@ class AppDetailPageState extends State<AppDetailPage> {
                       for (var session in topicSession) {
                         await _walletKit.disconnectSession(
                           topic: session.topic,
-                          reason: Errors.getSdkError(Errors.USER_DISCONNECTED)
-                              .toSignError(),
+                          reason: Errors.getSdkError(
+                            Errors.USER_DISCONNECTED,
+                          ).toSignError(),
                         );
                       }
                       _back();

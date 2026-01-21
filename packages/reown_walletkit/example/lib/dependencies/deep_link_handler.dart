@@ -21,10 +21,7 @@ class DeepLinkHandler {
 
   static void initListener() {
     if (kIsWeb) return;
-    _eventChannel.receiveBroadcastStream().listen(
-          _onLink,
-          onError: _onError,
-        );
+    _eventChannel.receiveBroadcastStream().listen(_onLink, onError: _onError);
   }
 
   static void checkInitialLink() async {

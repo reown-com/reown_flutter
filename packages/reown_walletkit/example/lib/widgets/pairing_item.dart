@@ -7,11 +7,7 @@ import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 
 class PairingItem extends StatelessWidget {
-  const PairingItem({
-    super.key,
-    required this.pairing,
-    required this.onTap,
-  });
+  const PairingItem({super.key, required this.pairing, required this.onTap});
 
   final PairingInfo pairing;
   final void Function() onTap;
@@ -54,14 +50,10 @@ class PairingItem extends StatelessWidget {
               );
             }
             return CircleAvatar(
-              backgroundImage: CachedNetworkImageProvider(
-                imageUrl,
-              ),
+              backgroundImage: CachedNetworkImageProvider(imageUrl),
             );
           }
-          return CircleAvatar(
-            backgroundColor: Colors.black12,
-          );
+          return CircleAvatar(backgroundColor: Colors.black12);
         },
       ),
       title: Text(metadata.name),
@@ -75,10 +67,7 @@ class PairingItem extends StatelessWidget {
           fontWeight: sessions.isEmpty ? FontWeight.normal : FontWeight.bold,
         ),
       ),
-      trailing: const Icon(
-        Icons.arrow_forward_ios,
-        size: 20.0,
-      ),
+      trailing: const Icon(Icons.arrow_forward_ios, size: 20.0),
       onTap: onTap,
     );
   }

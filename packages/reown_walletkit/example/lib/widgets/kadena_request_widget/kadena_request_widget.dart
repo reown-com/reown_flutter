@@ -23,10 +23,7 @@ import 'package:reown_walletkit_wallet/widgets/wc_request_widget.dart/wc_request
 /// displays the code of the PactCommandPayload and the data.
 /// It also shows each [Capability] that is included in the payload.
 class KadenaRequestWidget extends StatefulWidget {
-  const KadenaRequestWidget({
-    super.key,
-    required this.payloads,
-  });
+  const KadenaRequestWidget({super.key, required this.payloads});
 
   final List<PactCommandPayload> payloads;
 
@@ -49,11 +46,7 @@ class KadenaRequestWidgetState extends State<KadenaRequestWidget> {
             .map(
               (e) => WCConnectionModel(
                 title: e.name,
-                elements: e.args
-                    .map(
-                      (e) => e.toString(),
-                    )
-                    .toList(),
+                elements: e.args.map((e) => e.toString()).toList(),
               ),
             )
             .toList(),
@@ -68,11 +61,7 @@ class KadenaRequestWidgetState extends State<KadenaRequestWidget> {
           style: StyleConstants.subtitleText,
         ),
       );
-      signCounter.add(
-        const SizedBox(
-          height: StyleConstants.magic20,
-        ),
-      );
+      signCounter.add(const SizedBox(height: StyleConstants.magic20));
     }
 
     return WCRequestWidget(

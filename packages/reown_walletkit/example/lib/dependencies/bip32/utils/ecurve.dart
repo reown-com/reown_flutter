@@ -9,10 +9,12 @@ import 'package:pointycastle/digests/sha256.dart';
 // import 'package:pointycastle/src/utils.dart';
 
 final ZERO32 = Uint8List.fromList(List.generate(32, (index) => 0));
-final EC_GROUP_ORDER = hex
-    .decode('fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141');
-final EC_P = hex
-    .decode('fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f');
+final EC_GROUP_ORDER = hex.decode(
+  'fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141',
+);
+final EC_P = hex.decode(
+  'fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f',
+);
 final secp256k1 = ECCurve_secp256k1();
 final n = secp256k1.n;
 final G = secp256k1.G;
@@ -249,7 +251,7 @@ ECSignature deterministicGenerateK(Uint8List hash, Uint8List x) {
   final signer = ECDSASigner(null, HMac(SHA256Digest(), 64));
   var pkp = PrivateKeyParameter(ECPrivateKey(_decodeBigInt(x), secp256k1));
   signer.init(true, pkp);
-//  signer.init(false, new PublicKeyParameter(new ECPublicKey(secp256k1.curve.decodePoint(x), secp256k1)));
+  //  signer.init(false, new PublicKeyParameter(new ECPublicKey(secp256k1.curve.decodePoint(x), secp256k1)));
   return signer.generateSignature(hash) as ECSignature;
 }
 

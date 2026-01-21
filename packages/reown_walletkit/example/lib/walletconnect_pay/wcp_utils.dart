@@ -48,7 +48,7 @@ String formatPayAmount(PayAmount payAmount) {
     'PHP': '₱',
     'ILS': '₪',
     'AED': 'د.إ',
-    'SAR': '﷼'
+    'SAR': '﷼',
   };
 
   final symbolOrCode = symbols[code] ?? code;

@@ -36,10 +36,12 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _onDeleteData() async {
     final walletKit = GetIt.I<IWalletKitService>().walletKit;
     await walletKit.core.storage.deleteAll();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text('Storage cleared'),
-      duration: Duration(seconds: 1),
-    ));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Storage cleared'),
+        duration: Duration(seconds: 1),
+      ),
+    );
   }
 
   Future<void> _onSetWCPApiKey() async {
@@ -53,9 +55,7 @@ class _SettingsPageState extends State<SettingsPage> {
           context: context,
           builder: (BuildContext context) {
             return const AlertDialog(
-              content: Text(
-                'Wallet restored. App will close.',
-              ),
+              content: Text('Wallet restored. App will close.'),
             );
           },
         );
@@ -74,17 +74,13 @@ class _SettingsPageState extends State<SettingsPage> {
     );
     if (mnemonic is String) {
       await _keysService.clearAll();
-      await _keysService.restoreWallet(
-        mnemonicOrPrivate: mnemonic,
-      );
+      await _keysService.restoreWallet(mnemonicOrPrivate: mnemonic);
       await _keysService.loadKeys();
       await showDialog(
         context: context,
         builder: (BuildContext context) {
           return const AlertDialog(
-            content: Text(
-              'Wallet restored. App will close.',
-            ),
+            content: Text('Wallet restored. App will close.'),
           );
         },
       );
@@ -232,7 +228,8 @@ class _LinkModeButton extends StatelessWidget {
                 builder: (BuildContext context) {
                   return AlertDialog(
                     content: Text(
-                        'To ${value ? 'enable' : 'disable'} Link mode app will be closed'),
+                      'To ${value ? 'enable' : 'disable'} Link mode app will be closed',
+                    ),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(false),
@@ -390,10 +387,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
       await _walletKit.emitSessionEvent(
         topic: session.topic,
         chainId: 'eip155:1',
-        event: SessionEventParams(
-          name: 'accountsChanged',
-          data: [address],
-        ),
+        event: SessionEventParams(name: 'accountsChanged', data: [address]),
       );
     }
     setState(() {});
@@ -476,11 +470,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(
-            left: 12.0,
-            right: 12.0,
-            bottom: 8.0,
-          ),
+          padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
           child: Align(
             alignment: AlignmentGeometry.centerRight,
             child: SizedBox(
@@ -489,9 +479,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                 key: Key('evm_chains'),
                 isExpanded: true,
                 value: _selectedChain,
-                items: ChainsDataList.eip155Chains.map((
-                  ChainMetadata chain,
-                ) {
+                items: ChainsDataList.eip155Chains.map((ChainMetadata chain) {
                   return DropdownMenuItem<ChainMetadata>(
                     value: chain,
                     child: RichText(
@@ -670,10 +658,7 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
               Expanded(
                 child: Text(
                   'solana Accounts',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
                 ),
               ),
             ],
@@ -697,9 +682,7 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
                   key: Key('solana_chains'),
                   isExpanded: true,
                   value: _selectedChain,
-                  items: ChainsDataList.solanaChains.map((
-                    ChainMetadata chain,
-                  ) {
+                  items: ChainsDataList.solanaChains.map((ChainMetadata chain) {
                     return DropdownMenuItem<ChainMetadata>(
                       value: chain,
                       child: RichText(
@@ -793,10 +776,8 @@ class _ChainKeyViewState extends State<_ChainKeyView> {
     if (!_selectedChain!.chainId.contains('tron')) return;
 
     final chainKeys = _keysService.getKeysForChain('tron');
-    final tronService =
-        GetIt.I<IWalletKitService>().getChainService<TronService>(
-      chainId: _selectedChain!.chainId,
-    );
+    final tronService = GetIt.I<IWalletKitService>()
+        .getChainService<TronService>(chainId: _selectedChain!.chainId);
     final address = chainKeys.first.address;
     tronService.getBalance(address: address).then((value) {
       if (!mounted) return;
@@ -843,10 +824,7 @@ class _ChainKeyViewState extends State<_ChainKeyView> {
               Expanded(
                 child: Text(
                   '${widget.chain} account',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
                 ),
               ),
             ],
@@ -938,7 +916,7 @@ class _ChainKeyViewState extends State<_ChainKeyView> {
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -961,10 +939,7 @@ class _DeviceData extends StatelessWidget {
                 padding: EdgeInsets.only(bottom: 8.0, top: 12.0, left: 10.0),
                 child: Text(
                   'device info',
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
                 ),
               ),
               FutureBuilder<String>(
@@ -1159,9 +1134,7 @@ class __DataContainerState extends State<_DataContainer> {
         height: widget.height,
         decoration: BoxDecoration(
           color: StyleConstants.neutrals.withValues(alpha: 0.2),
-          borderRadius: BorderRadius.circular(
-            StyleConstants.linear16,
-          ),
+          borderRadius: BorderRadius.circular(StyleConstants.linear16),
         ),
         padding: const EdgeInsets.all(12.0),
         child: Column(

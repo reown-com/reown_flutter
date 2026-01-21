@@ -5,10 +5,11 @@ class WIF {
   int version;
   Uint8List privateKey;
   bool compressed;
-  WIF(
-      {required this.version,
-      required this.privateKey,
-      required this.compressed});
+  WIF({
+    required this.version,
+    required this.privateKey,
+    required this.compressed,
+  });
 }
 
 WIF decodeRaw(Uint8List buffer, [int? version]) {
@@ -17,9 +18,10 @@ WIF decodeRaw(Uint8List buffer, [int? version]) {
   }
   if (buffer.length == 33) {
     return WIF(
-        version: buffer[0],
-        privateKey: buffer.sublist(1, 33),
-        compressed: false);
+      version: buffer[0],
+      privateKey: buffer.sublist(1, 33),
+      compressed: false,
+    );
   }
   if (buffer.length != 34) {
     throw ArgumentError('Invalid WIF length');
@@ -28,7 +30,10 @@ WIF decodeRaw(Uint8List buffer, [int? version]) {
     throw ArgumentError('Invalid compression flag');
   }
   return WIF(
-      version: buffer[0], privateKey: buffer.sublist(1, 33), compressed: true);
+    version: buffer[0],
+    privateKey: buffer.sublist(1, 33),
+    compressed: true,
+  );
 }
 
 Uint8List encodeRaw(int version, Uint8List privateKey, bool compressed) {

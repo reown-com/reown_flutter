@@ -4,9 +4,7 @@ import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
 
 class UriInputPopup extends StatelessWidget {
-  UriInputPopup({
-    super.key,
-  });
+  UriInputPopup({super.key});
 
   final controller = TextEditingController();
 
@@ -25,10 +23,7 @@ class UriInputPopup extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 20.0),
       child: Column(
         children: [
-          Text(
-            StringConstants.enterUri,
-            style: TextStyle(fontSize: 18.0),
-          ),
+          Text(StringConstants.enterUri, style: TextStyle(fontSize: 18.0)),
           const Text(
             StringConstants.enterUriMessage,
             textAlign: TextAlign.center,
@@ -44,9 +39,7 @@ class UriInputPopup extends StatelessWidget {
               enableSuggestions: false,
               autocorrect: false,
               cursorHeight: 16.0,
-              style: TextStyle(
-                color: Colors.black,
-              ),
+              style: TextStyle(color: Colors.black),
               decoration: InputDecoration(
                 isDense: true,
                 hintText: 'wc://as87d6...',
@@ -69,7 +62,8 @@ class UriInputPopup extends StatelessWidget {
               onPressed: () => Navigator.of(context).pop(controller.text),
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all<Color>(
-                    StyleConstants.accentPrimary),
+                  StyleConstants.accentPrimary,
+                ),
                 foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
               ),
               child: const Text('Connect'),
@@ -79,9 +73,8 @@ class UriInputPopup extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: TextButton(
-              onPressed: () => Navigator.of(context).pop(
-                WCBottomSheetResult.reject.name,
-              ),
+              onPressed: () =>
+                  Navigator.of(context).pop(WCBottomSheetResult.reject.name),
               child: Text(
                 'Cancel',
                 style: TextStyle(color: StyleConstants.accentPrimary),

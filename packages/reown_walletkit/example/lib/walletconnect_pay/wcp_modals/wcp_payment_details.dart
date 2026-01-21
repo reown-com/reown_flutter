@@ -266,9 +266,7 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
                 ),
                 child: CircleAvatar(
                   radius: 6.0,
-                  backgroundImage: NetworkImage(
-                    display.networkIconUrl ?? '',
-                  ),
+                  backgroundImage: NetworkImage(display.networkIconUrl ?? ''),
                 ),
               ),
             ),
@@ -288,9 +286,7 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
         color: StyleConstants.foregroundPrimary,
         borderRadius: BorderRadius.circular(20),
       ),
-      constraints: BoxConstraints(
-        minHeight: 64.0,
-      ),
+      constraints: BoxConstraints(minHeight: 64.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -425,10 +421,7 @@ class PaymentDetailRow extends StatelessWidget {
     final row = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          label,
-          style: StyleConstants.wcpTextSecondaryStyle,
-        ),
+        Text(label, style: StyleConstants.wcpTextSecondaryStyle),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -436,10 +429,7 @@ class PaymentDetailRow extends StatelessWidget {
               Icon(icon, color: iconColor, size: 20),
               const SizedBox(width: 6),
             ],
-            Text(
-              value,
-              style: StyleConstants.wcpTextPrimaryStyle,
-            ),
+            Text(value, style: StyleConstants.wcpTextPrimaryStyle),
             if (showChevron) ...[
               const SizedBox(width: 6),
               Icon(Icons.chevron_right, color: Colors.grey[600], size: 20),

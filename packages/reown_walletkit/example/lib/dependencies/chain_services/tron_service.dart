@@ -39,10 +39,7 @@ class TronService {
   Future<void> tronSignMessage(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] tronSignMessage: $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
-    );
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
       final params = parameters as Map<String, dynamic>;
@@ -60,28 +57,18 @@ class TronService {
         // Convert signature to hex string (r, s, v) → 65 bytes
         final signatureHex = await signMessage(message);
 
-        response = response.copyWith(
-          result: {
-            'signature': signatureHex,
-          },
-        );
+        response = response.copyWith(result: {'signature': signatureHex});
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } catch (e) {
       debugPrint('[SampleWallet] tronSignMessage error $e');
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -108,10 +95,7 @@ class TronService {
   Future<void> tronSignTransaction(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] tronSignTransaction: ${jsonEncode(parameters)}');
     final pRequest = _walletKit.pendingRequests.getAll().last;
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
-    );
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     final params = parameters as Map<String, dynamic>;
     final address = params['address'] as String;
@@ -148,26 +132,18 @@ class TronService {
         transactionJson['signature'] = [hexSignature];
 
         // Return signed tx
-        response = response.copyWith(
-          result: transactionJson,
-        );
+        response = response.copyWith(result: transactionJson);
       } catch (e) {
         debugPrint('[SampleWallet] tronSignTransaction error $e');
         final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } else {
       final error = Errors.getSdkError(Errors.USER_REJECTED);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -182,10 +158,7 @@ class TronService {
     final url = '$apiEndpoint/wallet/getaccount';
     final response = await http.post(
       Uri.parse(url),
-      body: jsonEncode({
-        'address': address,
-        'visible': true,
-      }),
+      body: jsonEncode({'address': address, 'visible': true}),
       headers: {'accept': 'application/json'},
     );
     try {
@@ -241,7 +214,7 @@ class TronService {
       body: jsonEncode({
         'account_identifier': {'address': address},
         'block_identifier': {'hash': blockID, 'number': blockNumber},
-        'visible': true
+        'visible': true,
       }),
       headers: {'accept': 'application/json'},
     );
@@ -266,10 +239,7 @@ class TronService {
     final session = _walletKit.sessions.get(topic);
 
     try {
-      await _walletKit.respondSessionRequest(
-        topic: topic,
-        response: response,
-      );
+      await _walletKit.respondSessionRequest(topic: topic, response: response);
       MethodsUtils.handleRedirect(
         topic,
         session!.peer.metadata.redirect,

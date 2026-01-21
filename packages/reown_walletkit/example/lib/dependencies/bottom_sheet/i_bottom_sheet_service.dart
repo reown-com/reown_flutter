@@ -2,14 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-enum WCBottomSheetResult {
-  reject,
-  one,
-  all,
-  next,
-  back,
-  close;
-}
+enum WCBottomSheetResult { reject, one, all, next, back, close }
 
 class BottomSheetQueueItem {
   final Widget widget;

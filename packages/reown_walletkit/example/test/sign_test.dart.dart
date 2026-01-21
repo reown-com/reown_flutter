@@ -42,19 +42,16 @@ mockPackageInfo() {
 mockConnectivity([List<dynamic> values = const ['wifi']]) {
   const channel = MethodChannel('dev.fluttercommunity.plus/connectivity');
   TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-      .setMockMessageHandler(
-    channel.name,
-    (data) async {
-      final call = channel.codec.decodeMethodCall(data);
-      if (call.method == 'getAll') {
-        return channel.codec.encodeSuccessEnvelope(_mockInitialValues);
-      }
-      if (call.method == 'check') {
-        return channel.codec.encodeSuccessEnvelope(values);
-      }
-      return null;
-    },
-  );
+      .setMockMessageHandler(channel.name, (data) async {
+    final call = channel.codec.decodeMethodCall(data);
+    if (call.method == 'getAll') {
+      return channel.codec.encodeSuccessEnvelope(_mockInitialValues);
+    }
+    if (call.method == 'check') {
+      return channel.codec.encodeSuccessEnvelope(values);
+    }
+    return null;
+  });
 }
 
 void main() {
@@ -131,8 +128,10 @@ void main() {
       '0x2727fcadfbc14134d6cfd50c2cb70e85870e16b32ca790822ea3d75e6e8b72a3', // pk
     );
 
-    expect(signature,
-        '0xf7d4d35037d8cf5c757f0761fe84e312ba40a9493e868b5d3066b84a8dfc1bbb13dafc39e0dd6ef6a44cf17007580ef3ec8051097bfdab3996070971ae5cb13a1b');
+    expect(
+      signature,
+      '0xf7d4d35037d8cf5c757f0761fe84e312ba40a9493e868b5d3066b84a8dfc1bbb13dafc39e0dd6ef6a44cf17007580ef3ec8051097bfdab3996070971ae5cb13a1b',
+    );
   });
 
   test('isValidHashSignature', () {
@@ -153,16 +152,16 @@ void main() {
     );
 
     expect(
-      eth_sig_util_util.bytesToHex(eth_bigint_util.encodeBigInt(
-        ecdsaSignature.r,
-      )),
+      eth_sig_util_util.bytesToHex(
+        eth_bigint_util.encodeBigInt(ecdsaSignature.r),
+      ),
       'f7d4d35037d8cf5c757f0761fe84e312ba40a9493e868b5d3066b84a8dfc1bbb',
     );
 
     expect(
-      eth_sig_util_util.bytesToHex(eth_bigint_util.encodeBigInt(
-        ecdsaSignature.s,
-      )),
+      eth_sig_util_util.bytesToHex(
+        eth_bigint_util.encodeBigInt(ecdsaSignature.s),
+      ),
       '13dafc39e0dd6ef6a44cf17007580ef3ec8051097bfdab3996070971ae5cb13a',
     );
 

@@ -64,10 +64,7 @@ class KadenaService {
   Future<void> kadenaGetAccountsV1(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] kadenaGetAccountsV1 request: $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
-    );
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
       final accountRequest = AccountRequest.fromJson(parameters);
@@ -107,10 +104,7 @@ class KadenaService {
       debugPrint('[SampleWallet] kadenaGetAccountsV1 error: $e');
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -119,12 +113,10 @@ class KadenaService {
 
   Future<void> kadenaSignV1(String topic, dynamic parameters) async {
     debugPrint(
-        '[SampleWallet] kadenaSignV1 request: ${jsonEncode(parameters)}');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
+      '[SampleWallet] kadenaSignV1 request: ${jsonEncode(parameters)}',
     );
+    final pRequest = _walletKit.pendingRequests.getAll().last;
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
       final chain = ChainsDataList.kadenaChains.firstWhere(
@@ -161,45 +153,32 @@ class KadenaService {
           ),
         );
 
-        response = response.copyWith(
-          result: signature.toJson(),
-        );
+        response = response.copyWith(result: signature.toJson());
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } catch (e) {
       debugPrint('[SampleWallet] kadenaSignV1 error: $e');
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
-    await _walletKit.respondSessionRequest(
-      topic: topic,
-      response: response,
-    );
+    await _walletKit.respondSessionRequest(topic: topic, response: response);
 
     _handleResponseForTopic(topic, response);
   }
 
   Future<void> kadenaQuicksignV1(String topic, dynamic parameters) async {
     debugPrint(
-        '[SampleWallet] kadenaQuicksignV1 request: ${jsonEncode(parameters)}');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
+      '[SampleWallet] kadenaQuicksignV1 request: ${jsonEncode(parameters)}',
     );
+    final pRequest = _walletKit.pendingRequests.getAll().last;
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
       final quicksignRequest = kadenaClient.parseQuicksignRequest(
@@ -237,7 +216,7 @@ class KadenaService {
                 KadenaSignKeyPair(
                   privateKey: keys[0].privateKey,
                   publicKey: keys[0].publicKey,
-                )
+                ),
               ],
             );
           } else {
@@ -255,26 +234,18 @@ class KadenaService {
 
         final result = QuicksignResult(responses: signatures);
 
-        response = response.copyWith(
-          result: result.toJson(),
-        );
+        response = response.copyWith(result: result.toJson());
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } catch (e) {
       debugPrint('[SampleWallet] kadenaSignV1 error: $e');
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -285,10 +256,7 @@ class KadenaService {
     final session = _walletKit.sessions.get(topic);
 
     try {
-      await _walletKit.respondSessionRequest(
-        topic: topic,
-        response: response,
-      );
+      await _walletKit.respondSessionRequest(topic: topic, response: response);
       MethodsUtils.handleRedirect(
         topic,
         session!.peer.metadata.redirect,

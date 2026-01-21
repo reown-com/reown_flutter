@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 
 class InputWalletConnectPayApiKey extends StatelessWidget {
-  InputWalletConnectPayApiKey({
-    super.key,
-  });
+  InputWalletConnectPayApiKey({super.key});
 
   final controller = TextEditingController();
 
@@ -67,7 +65,8 @@ class InputWalletConnectPayApiKey extends StatelessWidget {
               onPressed: () => Navigator.of(context).pop(controller.text),
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all<Color>(
-                    StyleConstants.accentPrimary),
+                  StyleConstants.accentPrimary,
+                ),
                 foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
               ),
               child: const Text('Set'),
@@ -78,10 +77,7 @@ class InputWalletConnectPayApiKey extends StatelessWidget {
             width: double.infinity,
             child: TextButton(
               onPressed: () => Navigator.of(context).pop(''),
-              child: const Text(
-                'Cancel',
-                style: TextStyle(color: Colors.grey),
-              ),
+              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
             ),
           ),
         ],

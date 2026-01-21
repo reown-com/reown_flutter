@@ -68,10 +68,7 @@ class TonService {
   Future<void> tonSignData(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] tonSignData: $parameters');
     final pRequest = _walletKit.pendingRequests.getAll().last;
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
-    );
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
       final params = parameters as List;
@@ -112,20 +109,14 @@ class TonService {
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } catch (e) {
       debugPrint('[SampleWallet] tonSignData error: $e');
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -148,20 +139,14 @@ class TonService {
 
     return await _tonClient.signData(
       text: message,
-      keyPair: TonKeyPair(
-        sk: privateKey,
-        pk: publicKey,
-      ),
+      keyPair: TonKeyPair(sk: privateKey, pk: publicKey),
     );
   }
 
   Future<void> tonSendMessage(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] tonSendMessage: ${jsonEncode(parameters)}');
     final pRequest = _walletKit.pendingRequests.getAll().last;
-    var response = JsonRpcResponse(
-      id: pRequest.id,
-      jsonrpc: '2.0',
-    );
+    var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
       final paramsMap = parameters as Map<String, dynamic>;
@@ -172,18 +157,22 @@ class TonService {
           .toList();
 
       const encoder = JsonEncoder.withIndent('  ');
-      if (await MethodsUtils.requestApproval('',
-          method: pRequest.method,
-          chainId: pRequest.chainId,
-          address: address,
-          transportType: pRequest.transportType.name,
-          verifyContext: pRequest.verifyContext,
-          extraModels: messages
-              .map((m) => WCConnectionModel(
-                    title: 'Message',
-                    elements: [encoder.convert(m.toJson())],
-                  ))
-              .toList())) {
+      if (await MethodsUtils.requestApproval(
+        '',
+        method: pRequest.method,
+        chainId: pRequest.chainId,
+        address: address,
+        transportType: pRequest.transportType.name,
+        verifyContext: pRequest.verifyContext,
+        extraModels: messages
+            .map(
+              (m) => WCConnectionModel(
+                title: 'Message',
+                elements: [encoder.convert(m.toJson())],
+              ),
+            )
+            .toList(),
+      )) {
         final keyPair = GetIt.I<IKeyService>()
             .getKeysForChain(chainSupported.chainId)
             .first;
@@ -193,33 +182,22 @@ class TonService {
           from: address,
           validUntil: validUntil,
           messages: messages,
-          keyPair: TonKeyPair(
-            sk: keyPair.privateKey,
-            pk: keyPair.publicKey,
-          ),
+          keyPair: TonKeyPair(sk: keyPair.privateKey, pk: keyPair.publicKey),
         );
 
-        response = response.copyWith(
-          result: signature,
-        );
+        response = response.copyWith(result: signature);
         //
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED);
         response = response.copyWith(
-          error: JsonRpcError(
-            code: error.code,
-            message: error.message,
-          ),
+          error: JsonRpcError(code: error.code, message: error.message),
         );
       }
     } catch (e) {
       debugPrint('[SampleWallet] tonSendMessage error: $e');
       final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
       response = response.copyWith(
-        error: JsonRpcError(
-          code: error.code,
-          message: error.message,
-        ),
+        error: JsonRpcError(code: error.code, message: error.message),
       );
     }
 
@@ -230,10 +208,7 @@ class TonService {
     final session = _walletKit.sessions.get(topic);
 
     try {
-      await _walletKit.respondSessionRequest(
-        topic: topic,
-        response: response,
-      );
+      await _walletKit.respondSessionRequest(topic: topic, response: response);
       MethodsUtils.handleRedirect(
         topic,
         session!.peer.metadata.redirect,
