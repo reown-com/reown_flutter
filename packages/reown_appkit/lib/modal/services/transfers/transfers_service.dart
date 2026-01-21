@@ -50,9 +50,16 @@ class TransfersService implements ITransfersService {
     }
   }
 
+  static String? getIdFromCaip2Chain(String value) {
+    if (NamespaceUtils.isValidChainId(value)) {
+      return value.split(':').last;
+    }
+    return null;
+  }
+
   Future<Quote> _getDirectTransferQuote(GetQuoteParams params) async {
     final chainId = params.toToken.network;
-    final toChainId = NamespaceUtils.getIdFromCaip2Chain(chainId);
+    final toChainId = getIdFromCaip2Chain(chainId);
     if (toChainId == null) {
       throw Exception('Invalid chainId ${params.toToken.network}');
     }
@@ -109,13 +116,13 @@ class TransfersService implements ITransfersService {
     );
 
     final fromChainId = params.sourceToken.network;
-    final originId = NamespaceUtils.getIdFromCaip2Chain(fromChainId);
+    final originId = getIdFromCaip2Chain(fromChainId);
     if (originId == null) {
       throw ArgumentError('Invalid source chainId $fromChainId');
     }
 
     final toChainId = params.toToken.network;
-    final destinationId = NamespaceUtils.getIdFromCaip2Chain(toChainId);
+    final destinationId = getIdFromCaip2Chain(toChainId);
     if (destinationId == null) {
       throw ArgumentError('Invalid destination chainId $toChainId');
     }
