@@ -1,8 +1,8 @@
 name: walletconnect_pay
-description: "A new Flutter plugin project."
-version: 0.0.1
+description: "Official Flutter plugin for WalletConnect Pay - enabling wallets to accept crypto and stablecoin payments across multiple blockchain networks."
+version: 1.0.0
 homepage: https://github.com/reown-com/reown_flutter
-repository: https://github.com/reown-com/reown_flutter/tree/master/packages/walletconnect_pay
+repository: https://github.com/reown-com/reown_flutter/tree/develop/packages/walletconnect_pay
 
 environment:
   sdk: ">=3.8.0 <4.0.0"
