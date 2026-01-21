@@ -89,6 +89,7 @@ void main() {
         'options': [
           {
             'id': 'opt_json_1',
+            'account': 'eip155:8453:0xabc',
             'amount': {
               'unit': 'caip19/eip155:8453/erc20:0xUSDC',
               'value': '500000',
@@ -151,6 +152,7 @@ void main() {
         'options': [
           {
             'id': 'opt_json_2',
+            'account': 'eip155:1:0x123',
             'amount': {
               'unit': 'caip19/eip155:1/erc20:0xDAI',
               'value': '100000000000000000000',
