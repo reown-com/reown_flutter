@@ -9,7 +9,7 @@ class WalletConnectPayClient {
         let mirror = Mirror(reflecting: error)
         var errorCode = "PayError"
         var message = error.localizedDescription
-
+        
         if let child = mirror.children.first {
             if let label = child.label {
                 errorCode = label
@@ -18,7 +18,7 @@ class WalletConnectPayClient {
                 message = msg
             }
         }
-
+        print("🍎 handlePayError, errorCode: \(errorCode), message: \(message)")
         result(FlutterError(code: errorCode, message: message, details: nil))
     }
     
@@ -28,7 +28,7 @@ class WalletConnectPayClient {
             return
         }
         
-        print("🤖 WalletConnectPayClient.initialize sdkConfig: \(sdkConfig)")
+        print("🍎 WalletConnectPayClient.initialize sdkConfig: \(sdkConfig)")
         
         do {
             walletConnectPayClient = try WalletConnectPayJson(sdkConfig: sdkConfig)
@@ -50,7 +50,7 @@ class WalletConnectPayClient {
             return
         }
         
-        print("🤖 WalletConnectPayClient.getPaymentOptions requestJson: \(requestJson)")
+        print("🍎 WalletConnectPayClient.getPaymentOptions requestJson: \(requestJson)")
         
         guard let client = walletConnectPayClient else {
             result(FlutterError(code: "WalletConnectPayClient", message: "Client not initialized. Call initialize first.", details: nil))
@@ -61,6 +61,27 @@ class WalletConnectPayClient {
             do {
                 let response = try await client.getPaymentOptions(requestJson: requestJson)
                 result(response)
+            } catch let e as GetPaymentOptionsError {
+                switch e {
+                case .Http(let message):
+                    result(FlutterError(code: "Http", message: message, details: nil))
+                case .ComplianceFailed(let message):
+                    result(FlutterError(code: "ComplianceFailed", message: message, details: nil))
+                case .InternalError(let message):
+                    result(FlutterError(code: "InternalException", message: message, details: nil))
+                case .InvalidAccount(let message):
+                    result(FlutterError(code: "InvalidAccount", message: message, details: nil))
+                case .InvalidRequest(let message):
+                    result(FlutterError(code: "InvalidRequest", message: message, details: nil))
+                case .OptionNotFound(let message):
+                    result(FlutterError(code: "OptionNotFound", message: message, details: nil))
+                case .PaymentExpired(let message):
+                    result(FlutterError(code: "PaymentExpired", message: message, details: nil))
+                case .PaymentNotFound(let message):
+                    result(FlutterError(code: "PaymentNotFound", message: message, details: nil))
+                case .PaymentNotReady(let message):
+                    result(FlutterError(code: "PaymentNotReady", message: message, details: nil))
+                }
             } catch {
                 handlePayError(error, result: result)
             }
@@ -73,7 +94,7 @@ class WalletConnectPayClient {
             return
         }
         
-        print("🤖 WalletConnectPayClient.getRequiredPaymentActions requestJson: \(requestJson)")
+        print("🍎 WalletConnectPayClient.getRequiredPaymentActions requestJson: \(requestJson)")
         
         guard let client = walletConnectPayClient else {
             result(FlutterError(code: "WalletConnectPayClient", message: "Client not initialized. Call initialize first.", details: nil))
@@ -84,6 +105,21 @@ class WalletConnectPayClient {
             do {
                 let response = try await client.getRequiredPaymentActions(requestJson: requestJson)
                 result(response)
+            } catch let e as GetPaymentRequestError {
+                switch e {
+                case .Http(let message):
+                    result(FlutterError(code: "Http", message: message, details: nil))
+                case .FetchError(let message):
+                    result(FlutterError(code: "FetchException", message: message, details: nil))
+                case .InternalError(let message):
+                    result(FlutterError(code: "InternalException", message: message, details: nil))
+                case .InvalidAccount(let message):
+                    result(FlutterError(code: "InvalidAccount", message: message, details: nil))
+                case .OptionNotFound(let message):
+                    result(FlutterError(code: "OptionNotFound", message: message, details: nil))
+                case .PaymentNotFound(let message):
+                    result(FlutterError(code: "PaymentNotFound", message: message, details: nil))
+                }
             } catch {
                 handlePayError(error, result: result)
             }
@@ -96,7 +132,7 @@ class WalletConnectPayClient {
             return
         }
         
-        print("🤖 WalletConnectPayClient.confirmPayment requestJson: \(requestJson)")
+        print("🍎 WalletConnectPayClient.confirmPayment requestJson: \(requestJson)")
         
         guard let client = walletConnectPayClient else {
             result(FlutterError(code: "WalletConnectPayClient", message: "Client not initialized. Call initialize first.", details: nil))
@@ -107,6 +143,25 @@ class WalletConnectPayClient {
             do {
                 let response = try await client.confirmPayment(requestJson: requestJson)
                 result(response)
+            } catch let e as ConfirmPaymentError {
+                switch e {
+                case .Http(let message):
+                    result(FlutterError(code: "Http", message: message, details: nil))
+                case .InternalError(let message):
+                    result(FlutterError(code: "InternalException", message: message, details: nil))
+                case .InvalidOption(let message):
+                    result(FlutterError(code: "InvalidOption", message: message, details: nil))
+                case .InvalidSignature(let message):
+                    result(FlutterError(code: "InvalidSignature", message: message, details: nil))
+                case .PaymentExpired(let message):
+                    result(FlutterError(code: "PaymentExpired", message: message, details: nil))
+                case .PaymentNotFound(let message):
+                    result(FlutterError(code: "PaymentNotFound", message: message, details: nil))
+                case .RouteExpired(let message):
+                    result(FlutterError(code: "RouteExpired", message: message, details: nil))
+                case .UnsupportedMethod(let message):
+                    result(FlutterError(code: "UnsupportedMethod", message: message, details: nil))
+                }
             } catch {
                 handlePayError(error, result: result)
             }
