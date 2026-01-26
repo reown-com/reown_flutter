@@ -342,7 +342,7 @@ try {
 
 ## Examples
 
-For a complete example implementation, see the [reown_walletkit example](https://github.com/reown-com/reown_flutter/tree/master/packages/reown_walletkit/example/lib/walletconnect_pay).
+For a complete example implementation, see the [example](./example/lib/) folder
 
 ## License
 

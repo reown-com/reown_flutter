@@ -80,9 +80,9 @@ class _ExchangeAssetsSelectorPageState
       final sourceAsset = _selectedExchangeAsset.value!;
       final toAsset = _dweService.depositAsset.value!;
       final toNS = NamespaceUtils.getNamespaceFromChain(toAsset.network);
-      final configuredRecipient = _dweService.configuredRecipients[toNS];
       final connectedAddress = appKitModal.session?.getAddress(toNS);
-      final finalRecipient = configuredRecipient ?? connectedAddress;
+      final configuredRecipient = _dweService.configuredRecipients[toNS];
+      final finalRecipient = connectedAddress ?? configuredRecipient;
       if (finalRecipient == null) {
         appKitModal.onModalError.broadcast(ModalError('No recipient found'));
         _selectedExchangeAsset.value = null;

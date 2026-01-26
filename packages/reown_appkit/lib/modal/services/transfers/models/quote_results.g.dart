@@ -10,11 +10,15 @@ _GetQuoteStatusResult _$GetQuoteStatusResultFromJson(
   Map<String, dynamic> json,
 ) => _GetQuoteStatusResult(
   status: $enumDecode(_$QuoteStatusEnumMap, json['status']),
+  txHash: json['txHash'] as String?,
 );
 
 Map<String, dynamic> _$GetQuoteStatusResultToJson(
   _GetQuoteStatusResult instance,
-) => <String, dynamic>{'status': _$QuoteStatusEnumMap[instance.status]!};
+) => <String, dynamic>{
+  'status': _$QuoteStatusEnumMap[instance.status]!,
+  'txHash': instance.txHash,
+};
 
 const _$QuoteStatusEnumMap = {
   QuoteStatus.waiting: 'waiting',

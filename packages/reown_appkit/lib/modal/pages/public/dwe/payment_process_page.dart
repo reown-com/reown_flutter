@@ -63,7 +63,7 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
     } else {
       appKitModal.onModalError.broadcast(ModalError('Something went wrong'));
       return;
-      // TO ENABLE WHEN DEPOSITO FROM WALLET IS DEVELOPED
+      // TO ENABLE WHEN DEPOSIT FROM WALLET IS DEVELOPED
       // final namespace = NamespaceUtils.getNamespaceFromChain(depositAssetChain);
       // final configuredRecipient = _dweService.configuredRecipients[namespace];
       // final connectedAddress = appKitModal.session?.getAddress(namespace);
@@ -135,7 +135,7 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
       GetIt.I<IToastService>().show(
         ToastMessage(
           type: ToastType.success,
-          text: statusCheckResult.$2 ?? 'Success',
+          text: statusCheckResult.$1.name.toUpperCase(),
         ),
       );
     }

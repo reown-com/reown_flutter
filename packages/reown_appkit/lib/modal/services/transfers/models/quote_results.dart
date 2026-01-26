@@ -9,8 +9,10 @@ typedef GetQuoteResult = Quote;
 
 @freezed
 sealed class GetQuoteStatusResult with _$GetQuoteStatusResult {
-  const factory GetQuoteStatusResult({required QuoteStatus status}) =
-      _GetQuoteStatusResult;
+  const factory GetQuoteStatusResult({
+    required QuoteStatus status,
+    String? txHash,
+  }) = _GetQuoteStatusResult;
 
   factory GetQuoteStatusResult.fromJson(Map<String, dynamic> json) =>
       _$GetQuoteStatusResultFromJson(json);

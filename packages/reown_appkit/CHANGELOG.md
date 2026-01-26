@@ -1,3 +1,4 @@
+## 1.8.1
 ## 1.8.0
 
 - Deposit From Exchange enhancement: Swapping/Bridging tokens if needed

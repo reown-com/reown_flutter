@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GetQuoteStatusResult {
 
- QuoteStatus get status;
+ QuoteStatus get status; String? get txHash;
 /// Create a copy of GetQuoteStatusResult
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $GetQuoteStatusResultCopyWith<GetQuoteStatusResult> get copyWith => _$GetQuoteSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetQuoteStatusResult&&(identical(other.status, status) || other.status == status));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetQuoteStatusResult&&(identical(other.status, status) || other.status == status)&&(identical(other.txHash, txHash) || other.txHash == txHash));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,status);
+int get hashCode => Object.hash(runtimeType,status,txHash);
 
 @override
 String toString() {
-  return 'GetQuoteStatusResult(status: $status)';
+  return 'GetQuoteStatusResult(status: $status, txHash: $txHash)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $GetQuoteStatusResultCopyWith<$Res>  {
   factory $GetQuoteStatusResultCopyWith(GetQuoteStatusResult value, $Res Function(GetQuoteStatusResult) _then) = _$GetQuoteStatusResultCopyWithImpl;
 @useResult
 $Res call({
- QuoteStatus status
+ QuoteStatus status, String? txHash
 });
 
 
@@ -65,10 +65,11 @@ class _$GetQuoteStatusResultCopyWithImpl<$Res>
 
 /// Create a copy of GetQuoteStatusResult
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? status = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? status = null,Object? txHash = freezed,}) {
   return _then(_self.copyWith(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as QuoteStatus,
+as QuoteStatus,txHash: freezed == txHash ? _self.txHash : txHash // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -150,10 +151,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( QuoteStatus status)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( QuoteStatus status,  String? txHash)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GetQuoteStatusResult() when $default != null:
-return $default(_that.status);case _:
+return $default(_that.status,_that.txHash);case _:
   return orElse();
 
 }
@@ -171,10 +172,10 @@ return $default(_that.status);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( QuoteStatus status)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( QuoteStatus status,  String? txHash)  $default,) {final _that = this;
 switch (_that) {
 case _GetQuoteStatusResult():
-return $default(_that.status);}
+return $default(_that.status,_that.txHash);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -188,10 +189,10 @@ return $default(_that.status);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( QuoteStatus status)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( QuoteStatus status,  String? txHash)?  $default,) {final _that = this;
 switch (_that) {
 case _GetQuoteStatusResult() when $default != null:
-return $default(_that.status);case _:
+return $default(_that.status,_that.txHash);case _:
   return null;
 
 }
@@ -203,10 +204,11 @@ return $default(_that.status);case _:
 @JsonSerializable()
 
 class _GetQuoteStatusResult implements GetQuoteStatusResult {
-  const _GetQuoteStatusResult({required this.status});
+  const _GetQuoteStatusResult({required this.status, this.txHash});
   factory _GetQuoteStatusResult.fromJson(Map<String, dynamic> json) => _$GetQuoteStatusResultFromJson(json);
 
 @override final  QuoteStatus status;
+@override final  String? txHash;
 
 /// Create a copy of GetQuoteStatusResult
 /// with the given fields replaced by the non-null parameter values.
@@ -221,16 +223,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetQuoteStatusResult&&(identical(other.status, status) || other.status == status));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetQuoteStatusResult&&(identical(other.status, status) || other.status == status)&&(identical(other.txHash, txHash) || other.txHash == txHash));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,status);
+int get hashCode => Object.hash(runtimeType,status,txHash);
 
 @override
 String toString() {
-  return 'GetQuoteStatusResult(status: $status)';
+  return 'GetQuoteStatusResult(status: $status, txHash: $txHash)';
 }
 
 
@@ -241,7 +243,7 @@ abstract mixin class _$GetQuoteStatusResultCopyWith<$Res> implements $GetQuoteSt
   factory _$GetQuoteStatusResultCopyWith(_GetQuoteStatusResult value, $Res Function(_GetQuoteStatusResult) _then) = __$GetQuoteStatusResultCopyWithImpl;
 @override @useResult
 $Res call({
- QuoteStatus status
+ QuoteStatus status, String? txHash
 });
 
 
@@ -258,10 +260,11 @@ class __$GetQuoteStatusResultCopyWithImpl<$Res>
 
 /// Create a copy of GetQuoteStatusResult
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? status = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? status = null,Object? txHash = freezed,}) {
   return _then(_GetQuoteStatusResult(
 status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
-as QuoteStatus,
+as QuoteStatus,txHash: freezed == txHash ? _self.txHash : txHash // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

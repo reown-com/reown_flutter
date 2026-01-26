@@ -204,7 +204,7 @@ class DWEService implements IDWEService {
           // case QuoteStatus.submitted:
           default:
             // Either success, submitted, failure, refund, timeout
-            completer.call((quoteStatus, null));
+            completer.call((quoteStatus, response.txHash));
             stopCheckingStatus();
             break;
         }
@@ -262,7 +262,7 @@ class DWEService implements IDWEService {
           // case QuoteStatus.submitted:
           default:
             // Either success, submitted, failure, refund, timeout
-            completer.call((quoteStatus, null));
+            completer.call((quoteStatus, response.txHash));
             stopCheckingStatus();
             break;
         }
