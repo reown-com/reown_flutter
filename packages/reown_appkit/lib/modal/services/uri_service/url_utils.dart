@@ -17,7 +17,7 @@ class UriService extends IUriService {
     }
 
     // If the wallet is just a generic wc:// then it is not installed
-    if (uri.contains('wc://')) {
+    if (uri.startsWith('wc://')) {
       return false;
     }
 
