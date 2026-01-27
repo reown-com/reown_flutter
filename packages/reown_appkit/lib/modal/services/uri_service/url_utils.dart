@@ -8,10 +8,15 @@ import 'package:reown_appkit/modal/services/explorer_service/models/redirect.dar
 
 class UriService extends IUriService {
   UriService({required IReownCore core}) : _core = core;
+
   final IReownCore _core;
 
   @override
-  Future<bool> isInstalled(String? uri, {String? id}) async {
+  Future<bool> isInstalled(
+    String? uri, {
+    String? id,
+    String? applicationId,
+  }) async {
     if (uri == null || uri.isEmpty) {
       return false;
     }
@@ -25,7 +30,7 @@ class UriService extends IUriService {
       final p = PlatformUtils.getPlatformExact();
       try {
         if (p == PlatformExact.android) {
-          return await _androidAppCheck(uri);
+          return await _androidAppCheck(uri, applicationId);
         } else if (p == PlatformExact.ios) {
           return await ReownCoreUtils.canOpenUrl(Uri.parse(uri).toString());
         }
@@ -96,11 +101,31 @@ class UriService extends IUriService {
     }
   }
 
-  Future<bool> _androidAppCheck(String uri) async {
+  Future<bool> _androidAppCheck(String uri, String? applicationId) async {
     try {
-      final installed = await AppCheck().isAppInstalled(uri);
-      final enabled = await AppCheck().isAppEnabled(uri);
-      return installed || enabled;
+      bool installed = false;
+      if (applicationId != null && applicationId.isNotEmpty) {
+        installed = await AppCheck().isAppInstalled(applicationId);
+      }
+      if (installed) {
+        return true;
+      }
+
+      installed = await AppCheck().isAppInstalled(uri);
+      if (installed) {
+        return true;
+      }
+
+      bool enabled = false;
+      if (applicationId != null && applicationId.isNotEmpty) {
+        enabled = await AppCheck().isAppEnabled(applicationId);
+      }
+      if (enabled) {
+        return true;
+      }
+
+      enabled = await AppCheck().isAppEnabled(uri);
+      return enabled;
     } catch (e) {
       return false;
     }

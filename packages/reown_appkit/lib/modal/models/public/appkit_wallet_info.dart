@@ -23,6 +23,7 @@ sealed class AppKitModalWalletListing with _$AppKitModalWalletListing {
     required String homepage,
     @JsonKey(name: 'image_id') required String imageId,
     required int order,
+    @JsonKey(name: 'application_id') String? applicationId,
     @JsonKey(name: 'mobile_link') String? mobileLink,
     @JsonKey(name: 'desktop_link') String? desktopLink,
     @JsonKey(name: 'link_mode') String? linkMode,
