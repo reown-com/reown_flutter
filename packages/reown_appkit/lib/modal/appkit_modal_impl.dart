@@ -1400,14 +1400,13 @@ class ReownAppKitModal
 
   @override
   void closeModal({bool disconnectSession = false}) async {
-    _disconnectOnClose = disconnectSession;
-
     // If we aren't open, then we can't and shouldn't close.
     // This is a necessary check to avoid unnecessary navigator pops.
     if (!_isOpen) {
       return;
     }
 
+    _disconnectOnClose = disconnectSession;
     _close();
     if (_context != null) {
       Navigator.maybeOf(_context!, rootNavigator: true)?.maybePop();
