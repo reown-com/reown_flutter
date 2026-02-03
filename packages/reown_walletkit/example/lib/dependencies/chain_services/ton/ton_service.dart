@@ -87,21 +87,30 @@ class TonService {
 
   Future<void> tonSignData(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] tonSignData: $parameters');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = _walletKit.pendingRequests.getAll();
+    if (pendingRequests.isEmpty) {
+      debugPrint('[SampleWallet] tonSignData: No pending requests');
+      return;
+    }
+    final pRequest = pendingRequests.last;
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
-      final params = parameters as List;
-      final paramsMap = params.first as Map<String, dynamic>;
+      // Parse and validate parameters
+      if (parameters is! List || parameters.isEmpty) {
+        throw TonValidationError('Parameters must be a non-empty array');
+      }
+      final paramsMap = parameters.first;
+      if (paramsMap is! Map<String, dynamic>) {
+        throw TonValidationError('First parameter must be an object');
+      }
 
       // Validate BEFORE showing approval modal
       _validateSignData(paramsMap);
 
-      final type = paramsMap['type'] as String;
+      // After validation, we know type is 'text' and text is a String
+      final text = paramsMap['text'] as String;
       final address = paramsMap['from'] as String?;
-      // Extract text for display (only present for 'text' type)
-      final text = paramsMap['text'] as String?;
-      final displayText = text ?? '(binary/cell data)';
 
       // Extract domain from session peer metadata
       final session = _walletKit.sessions.get(topic);
@@ -109,37 +118,26 @@ class TonService {
       final domain = Uri.tryParse(peerUrl)?.host ?? 'unknown';
 
       if (await MethodsUtils.requestApproval(
-        displayText,
+        text,
         method: pRequest.method,
         chainId: pRequest.chainId,
         address: address ?? '',
         transportType: pRequest.transportType.name,
         verifyContext: pRequest.verifyContext,
       )) {
-        if (type == 'text' && text != null) {
-          final signature = await signMessage(text);
-          final timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-          final network = chainSupported.chainId.split(':').last;
-          response = response.copyWith(
-            result: {
-              'signature': signature,
-              if (address != null) 'address': address,
-              'publicKey': getBase64PublicKey(),
-              'timestamp': timestamp,
-              'domain': domain,
-              'payload': {...paramsMap, 'network': network},
-            },
-          );
-        } else {
-          final error = Errors.getSdkError(Errors.MALFORMED_REQUEST_PARAMS);
-          response = response.copyWith(
-            error: JsonRpcError(
-              code: error.code,
-              message: 'Unsupported type $type',
-            ),
-          );
-        }
-        //
+        final signature = await signMessage(text);
+        final timestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+        final network = chainSupported.chainId.split(':').last;
+        response = response.copyWith(
+          result: {
+            'signature': signature,
+            if (address != null) 'address': address,
+            'publicKey': getBase64PublicKey(),
+            'timestamp': timestamp,
+            'domain': domain,
+            'payload': {...paramsMap, 'network': network},
+          },
+        );
       } else {
         final error = Errors.getSdkError(Errors.USER_REJECTED);
         response = response.copyWith(
@@ -176,20 +174,28 @@ class TonService {
 
   Future<void> tonSendMessage(String topic, dynamic parameters) async {
     debugPrint('[SampleWallet] tonSendMessage: ${jsonEncode(parameters)}');
-    final pRequest = _walletKit.pendingRequests.getAll().last;
+    final pendingRequests = _walletKit.pendingRequests.getAll();
+    if (pendingRequests.isEmpty) {
+      debugPrint('[SampleWallet] tonSendMessage: No pending requests');
+      return;
+    }
+    final pRequest = pendingRequests.last;
     var response = JsonRpcResponse(id: pRequest.id, jsonrpc: '2.0');
 
     try {
-      final paramsMap = parameters as Map<String, dynamic>;
+      // Parse and validate parameters
+      if (parameters is! Map<String, dynamic>) {
+        throw TonValidationError('Parameters must be an object');
+      }
 
       // Validate BEFORE showing approval modal
-      _validateSendMessage(paramsMap);
+      _validateSendMessage(parameters);
 
-      final rawValidUntil = paramsMap['valid_until'] as int;
+      final rawValidUntil = parameters['valid_until'] as int;
       // Normalize milliseconds to seconds if needed
       final validUntil = normalizeValidUntil(rawValidUntil);
-      final address = paramsMap['from'] as String;
-      final messages = (paramsMap['messages'] as List)
+      final address = parameters['from'] as String;
+      final messages = (parameters['messages'] as List)
           .map((e) => TonMessage.fromJson(e as Map<String, dynamic>))
           .toList();
 
@@ -246,19 +252,23 @@ class TonService {
 
   void _handleResponseForTopic(String topic, JsonRpcResponse response) async {
     final session = _walletKit.sessions.get(topic);
+    if (session == null) {
+      debugPrint('[$runtimeType] Session not found for topic: $topic');
+      return;
+    }
 
     try {
       await _walletKit.respondSessionRequest(topic: topic, response: response);
       MethodsUtils.handleRedirect(
         topic,
-        session!.peer.metadata.redirect,
+        session.peer.metadata.redirect,
         response.error?.message,
         response.result != null,
       );
     } on ReownSignError catch (error) {
       MethodsUtils.handleRedirect(
         topic,
-        session!.peer.metadata.redirect,
+        session.peer.metadata.redirect,
         error.message,
       );
     }
@@ -319,32 +329,14 @@ class TonService {
 
   void _validateSignData(Map<String, dynamic> params) {
     final type = params['type'];
-    switch (type) {
-      case 'text':
-        if (params['text'] is! String) {
-          throw TonValidationError('Text payload must have a "text" string');
-        }
-      case 'binary':
-        if (params['bytes'] is! String) {
-          throw TonValidationError(
-            'Binary payload must have a "bytes" base64 string',
-          );
-        }
-      case 'cell':
-        if (params['cell'] is! String) {
-          throw TonValidationError(
-            'Cell payload must have a "cell" base64 string',
-          );
-        }
-        if (params['schema'] is! String) {
-          throw TonValidationError(
-            'Cell payload must have a "schema" TL-B string',
-          );
-        }
-      default:
-        throw TonValidationError(
-          'Invalid payload type. Must be "text", "binary", or "cell"',
-        );
+    // Only 'text' type is currently implemented
+    if (type != 'text') {
+      throw TonValidationError(
+        'Only "text" payload type is currently supported',
+      );
+    }
+    if (params['text'] is! String) {
+      throw TonValidationError('Text payload must have a "text" string');
     }
   }
 }
