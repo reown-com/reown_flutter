@@ -35,6 +35,10 @@ target 'Runner' do
   use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+
+  # Local Yttrium development - override CocoaPods version with local build
+  # Comment out to use published version
+  # pod 'YttriumUtilsWrapper', :path => '/path/to/yttrium/local'
 end
 
 post_install do |installer|

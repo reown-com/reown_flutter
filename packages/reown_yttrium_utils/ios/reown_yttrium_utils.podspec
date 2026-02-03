@@ -15,7 +15,9 @@ A new Flutter plugin project.
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'YttriumUtilsWrapper', '0.9.110'
+  s.dependency 'YttriumUtilsWrapper', '0.10.30'
+  # For local development, comment out version constraint
+  #s.dependency 'YttriumUtilsWrapper'
   s.platform = :ios, '13.0'
 
   # Flutter.framework does not contain a i386 slice.

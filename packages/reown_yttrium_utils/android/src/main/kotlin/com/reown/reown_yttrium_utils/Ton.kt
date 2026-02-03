@@ -76,6 +76,28 @@ class Ton(private val projectId: String, private val networkId: String, private 
         }
     }
 
+    @SuppressLint("LongLogTag")
+    fun getSessionProperties(params: Any?, result: MethodChannel.Result) {
+        val dict = params as? Map<*, *> ?: return result.error("getSessionProperties", "Invalid parameters", null)
+        Log.d("🤖 Ton.getSessionProperties", "params: $dict")
+
+        val sk = dict["sk"] as? String ?: return result.error("getSessionProperties", "Missing sk", null)
+        val pk = dict["pk"] as? String ?: return result.error("getSessionProperties", "Missing pk", null)
+
+        try {
+            val keyPair = Keypair(sk, pk)
+            val props = tonClient.getSessionProperties(keypair = keyPair)
+            result.success(
+                mapOf(
+                    "publicKey" to props.publicKey,
+                    "stateInit" to props.stateInit
+                )
+            )
+        } catch (e: Exception) {
+            result.error("Ton.getSessionProperties", e.message, null)
+        }
+    }
+
     fun signData(params: Any?, result: MethodChannel.Result) {
         val dict = params as? Map<*, *> ?: return result.error("signData", "Invalid parameters", null)
         Log.d("🤖 Ton.signData", "params: $dict")
@@ -220,6 +242,15 @@ class Ton(private val projectId: String, private val networkId: String, private 
 
             val networkId = dict["networkId"] as? String ?: return result.error("ton_getAddressFromKeypair", "Missing networkId", null)
             getClient(networkId, result)?.getAddressFromKeypair(dict, result)
+        }
+
+        @SuppressLint("LongLogTag")
+        fun getSessionProperties(params: Any?, result: MethodChannel.Result) {
+            val dict = params as? Map<*, *> ?: return result.error("ton_getSessionProperties", "Invalid parameters", null)
+            Log.d("🤖 Ton.getSessionProperties", "params: $dict")
+
+            val networkId = dict["networkId"] as? String ?: return result.error("ton_getSessionProperties", "Missing networkId", null)
+            getClient(networkId, result)?.getSessionProperties(dict, result)
         }
 
         fun signData(params: Any?, result: MethodChannel.Result) {

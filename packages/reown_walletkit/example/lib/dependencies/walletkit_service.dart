@@ -440,10 +440,23 @@ class WalletKitService implements IWalletKitService {
         try {
           final cacaos = await signAuthenticationMessages(formattedMessages);
 
+          // Build session properties, merging with proposal's existing ones
+          final sessionProperties = Map<String, String>.from(
+            args.params.sessionProperties ?? {},
+          );
+
+          // Add TON session properties if TON namespace is present
+          if (generatedNamespaces?.containsKey('ton') == true) {
+            await _addTonSessionProperties(
+              sessionProperties,
+              generatedNamespaces!,
+            );
+          }
+
           await _walletKit!.approveSession(
             id: args.id,
             namespaces: args.params.generatedNamespaces!,
-            sessionProperties: args.params.sessionProperties,
+            sessionProperties: sessionProperties,
             proposalRequestsResponses: ProposalRequestsResponses(
               authentication: cacaos,
             ),
@@ -473,6 +486,44 @@ class WalletKitService implements IWalletKitService {
           error.message,
         );
       }
+    }
+  }
+
+  /// Adds TON-specific session properties (public key and state init)
+  Future<void> _addTonSessionProperties(
+    Map<String, String> sessionProperties,
+    Map<String, Namespace> namespaces,
+  ) async {
+    try {
+      final tonNamespace = namespaces['ton'];
+      if (tonNamespace == null || tonNamespace.accounts.isEmpty) return;
+
+      final firstAccount = tonNamespace.accounts.first;
+      final chainId = NamespaceUtils.getChainFromAccount(firstAccount);
+
+      final tonService = getChainService<TonService>(chainId: chainId);
+      final props = await tonService.getSessionProperties();
+
+      if (props != null) {
+        sessionProperties['ton_getPublicKey'] = props.publicKey;
+        sessionProperties['ton_getStateInit'] = props.stateInit;
+
+        final pkPreview = props.publicKey.length > 10
+            ? '${props.publicKey.substring(0, 10)}...'
+            : props.publicKey;
+        final siPreview = props.stateInit.length > 10
+            ? '${props.stateInit.substring(0, 10)}...'
+            : props.stateInit;
+        debugPrint(
+          '[$runtimeType] Added TON session properties: '
+          'ton_getPublicKey=$pkPreview, '
+          'ton_getStateInit=$siPreview',
+        );
+      } else {
+        debugPrint('[$runtimeType] TON session properties not available');
+      }
+    } catch (e) {
+      debugPrint('[$runtimeType] Failed to add TON session properties: $e');
     }
   }
 

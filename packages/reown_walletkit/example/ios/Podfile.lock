@@ -1,9 +1,11 @@
 PODS:
+  - connectivity_plus (0.0.1):
+    - Flutter
   - Flutter (1.0.0)
   - flutter_secure_storage (6.0.0):
     - Flutter
   - MTBBarcodeScanner (5.0.11)
-  - objective_c (0.0.1):
+  - package_info_plus (0.4.5):
     - Flutter
   - qr_bar_code_scanner_dialog (0.0.1):
     - Flutter
@@ -12,56 +14,91 @@ PODS:
     - MTBBarcodeScanner
   - reown_yttrium_utils (0.0.1):
     - Flutter
-    - YttriumUtilsWrapper (= 0.9.110)
+    - YttriumUtilsWrapper (= 0.10.30)
+  - Sentry/HybridSDK (8.56.2)
+  - sentry_flutter (9.10.0):
+    - Flutter
+    - FlutterMacOS
+    - Sentry/HybridSDK (= 8.56.2)
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
+  - sqflite_darwin (0.0.4):
+    - Flutter
+    - FlutterMacOS
+  - url_launcher_ios (0.0.1):
+    - Flutter
   - walletconnect_pay (0.0.1):
     - Flutter
     - YttriumWrapper (= 0.10.15)
-  - YttriumUtilsWrapper (0.9.110)
+  - YttriumUtilsWrapper (0.10.30)
   - YttriumWrapper (0.10.15)
 
 DEPENDENCIES:
+  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - Flutter (from `Flutter`)
   - flutter_secure_storage (from `.symlinks/plugins/flutter_secure_storage/ios`)
-  - objective_c (from `.symlinks/plugins/objective_c/ios`)
+  - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
   - qr_bar_code_scanner_dialog (from `.symlinks/plugins/qr_bar_code_scanner_dialog/ios`)
   - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
   - reown_yttrium_utils (from `.symlinks/plugins/reown_yttrium_utils/ios`)
+  - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
+  - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
+  - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - walletconnect_pay (from `.symlinks/plugins/walletconnect_pay/ios`)
 
 SPEC REPOS:
   trunk:
     - MTBBarcodeScanner
+    - Sentry
     - YttriumUtilsWrapper
     - YttriumWrapper
 
 EXTERNAL SOURCES:
+  connectivity_plus:
+    :path: ".symlinks/plugins/connectivity_plus/ios"
   Flutter:
     :path: Flutter
   flutter_secure_storage:
     :path: ".symlinks/plugins/flutter_secure_storage/ios"
-  objective_c:
-    :path: ".symlinks/plugins/objective_c/ios"
+  package_info_plus:
+    :path: ".symlinks/plugins/package_info_plus/ios"
   qr_bar_code_scanner_dialog:
     :path: ".symlinks/plugins/qr_bar_code_scanner_dialog/ios"
   qr_code_scanner:
     :path: ".symlinks/plugins/qr_code_scanner/ios"
   reown_yttrium_utils:
     :path: ".symlinks/plugins/reown_yttrium_utils/ios"
+  sentry_flutter:
+    :path: ".symlinks/plugins/sentry_flutter/ios"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
+  sqflite_darwin:
+    :path: ".symlinks/plugins/sqflite_darwin/darwin"
+  url_launcher_ios:
+    :path: ".symlinks/plugins/url_launcher_ios/ios"
   walletconnect_pay:
     :path: ".symlinks/plugins/walletconnect_pay/ios"
 
 SPEC CHECKSUMS:
+  connectivity_plus: cb623214f4e1f6ef8fe7403d580fdad517d2f7dd
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_secure_storage: 1ed9476fba7e7a782b22888f956cce43e2c62f13
   MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
-  objective_c: 89e720c30d716b036faf9c9684022048eee1eee2
+  package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   qr_bar_code_scanner_dialog: a4cb7ad7201cbf8b888f3e6e58972b611ac43b28
   qr_code_scanner: d77f94ecc9abf96d9b9b8fc04ef13f611e5a147a
-  reown_yttrium_utils: b72dcd07e1b012cbe7ca4e8f23ed554108b28c91
+  reown_yttrium_utils: e18e2133d6ce15a687675e71c02cf110c475813c
+  Sentry: b53951377b78e21a734f5dc8318e333dbfc682d7
+  sentry_flutter: da39d10e3f2f3e060eebc9d7ecea027d34443d66
+  shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
+  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
+  url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
   walletconnect_pay: 95df6f3533532d72e2ce2a64354f4326177c6fc1
-  YttriumUtilsWrapper: d5704a305f87956ec06040d1687eef3943459438
+  YttriumUtilsWrapper: 2ea5f95a061f642004859f4565b8e86f0a974e5d
   YttriumWrapper: cbddb60c835ebc4232d9f57064084ab30686a18e
 
-PODFILE CHECKSUM: 0772a2bd8cd4c7aaeb2576ddfaf6b03be722593b
+PODFILE CHECKSUM: 6f04bd8bad3200377a7456b3b14a877fb4b2f5b4
 
 COCOAPODS: 1.16.2

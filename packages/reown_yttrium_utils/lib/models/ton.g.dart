@@ -25,6 +25,20 @@ Map<String, dynamic> _$TonIdentityToJson(_TonIdentity instance) =>
       'workchain': instance.workchain,
     };
 
+_TonSessionProperties _$TonSessionPropertiesFromJson(
+  Map<String, dynamic> json,
+) => _TonSessionProperties(
+  publicKey: json['publicKey'] as String,
+  stateInit: json['stateInit'] as String,
+);
+
+Map<String, dynamic> _$TonSessionPropertiesToJson(
+  _TonSessionProperties instance,
+) => <String, dynamic>{
+  'publicKey': instance.publicKey,
+  'stateInit': instance.stateInit,
+};
+
 _TonMessage _$TonMessageFromJson(Map<String, dynamic> json) => _TonMessage(
   address: json['address'] as String,
   amount: json['amount'] as String,

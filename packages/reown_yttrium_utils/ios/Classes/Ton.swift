@@ -67,7 +67,7 @@ class Ton {
         else {
             return result(FlutterError(code: "Ton.getAddressFromKeypair", message: "Missing sk or pk", details: nil))
         }
-        
+
         do {
             let keyPair = Keypair(sk: sk, pk: pk)
             let identity = try tonClient.getAddressFromKeypair(keypair: keyPair)
@@ -78,6 +78,26 @@ class Ton {
             ])
         } catch {
             result(FlutterError(code: "Ton.getAddressFromKeypair", message: error.localizedDescription, details: nil))
+        }
+    }
+
+    private func getSessionProperties(params: [String: Any], result: FlutterResult) {
+        guard
+            let sk = params["sk"] as? String,
+            let pk = params["pk"] as? String
+        else {
+            return result(FlutterError(code: "Ton.getSessionProperties", message: "Missing sk or pk", details: nil))
+        }
+
+        do {
+            let keyPair = Keypair(sk: sk, pk: pk)
+            let props = try tonClient.getSessionProperties(keypair: keyPair)
+            result([
+                "publicKey": props.publicKey,
+                "stateInit": props.stateInit
+            ])
+        } catch {
+            result(FlutterError(code: "Ton.getSessionProperties", message: error.localizedDescription, details: nil))
         }
     }
     
@@ -263,7 +283,22 @@ class Ton {
         
         client.getAddressFromKeypair(params: dict, result: result)
     }
-    
+
+    public static func getSessionProperties(_ params: Any, result: @escaping FlutterResult) {
+        guard let dict = params as? [String: Any],
+              let networkId = dict["networkId"] as? String else {
+            result(FlutterError(code: "Ton.getSessionProperties", message: "Invalid parameters", details: params))
+            return
+        }
+
+        guard let client = getClient(for: networkId, result: result) else {
+            result(FlutterError(code: "Ton.getSessionProperties", message: "TonClient for networkId \(networkId) not found", details: nil))
+            return
+        }
+
+        client.getSessionProperties(params: dict, result: result)
+    }
+
     public static func signData(_ params: Any, result: @escaping FlutterResult) {
         guard let dict = params as? [String: Any],
               let networkId = dict["networkId"] as? String else {

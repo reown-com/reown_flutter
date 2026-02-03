@@ -87,6 +87,22 @@ class TonClient {
     }
   }
 
+  Future<TonSessionProperties> getSessionProperties({
+    required String networkId,
+    required TonKeyPair keyPair,
+  }) async {
+    try {
+      final result = await _methodChannel.tonChannel.getSessionProperties(
+        networkId: networkId,
+        keyPair: keyPair,
+      );
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('[$runtimeType] getSessionProperties $e');
+      rethrow;
+    }
+  }
+
   Future<String> signData({
     required String text,
     required String networkId,

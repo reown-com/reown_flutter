@@ -53,6 +53,7 @@ class ReownYttriumUtilsPlugin: FlutterPlugin, MethodCallHandler {
       "ton_generateKeypairFromTonMnemonic" -> Ton.generateKeypairFromTonMnemonic(call.arguments, result)
       "ton_generateKeypairFromBip39Mnemonic" -> Ton.generateKeypairFromBip39Mnemonic(call.arguments, result)
       "ton_getAddressFromKeypair" -> Ton.getAddressFromKeypair(call.arguments, result)
+      "ton_getSessionProperties" -> Ton.getSessionProperties(call.arguments, result)
       "ton_signData" -> Ton.signData(call.arguments, result)
       "ton_sendMessage" -> Ton.sendMessage(call.arguments, result)
       "ton_broadcastMessage" -> Ton.broadcastMessage(call.arguments, result)
