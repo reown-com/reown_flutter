@@ -32,6 +32,7 @@ jobs:
         with:
           tools-version: 13.0.1
           gcp_sa_key: ${{ secrets.GSA_KEY }}
+          gcp_sa_key_output_path: ${{ runner.temp }}/gcp_key.json
 
       # Add Secrets file on wallet
       - name: Add Secrets file
