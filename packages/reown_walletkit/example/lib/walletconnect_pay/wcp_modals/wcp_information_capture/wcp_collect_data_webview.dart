@@ -11,11 +11,56 @@ class WCPCollectDataWebView extends StatefulWidget {
   const WCPCollectDataWebView({
     super.key,
     required this.collectDataUrl,
+    this.prefillData,
     this.stepper = const (1, 2),
   });
 
   final String collectDataUrl;
   final (int, int) stepper;
+
+  /// Optional data to prefill form fields in the WebView.
+  ///
+  /// Supported fields (check backend documentation for current list):
+  /// - `fullName`: User's full name (e.g., 'John Doe')
+  /// - `dob`: Date of birth in YYYY-MM-DD format (e.g., '1990-06-15')
+  ///
+  /// Example usage:
+  /// ```dart
+  /// WCPCollectDataWebView(
+  ///   collectDataUrl: 'https://example.com/collect',
+  ///   prefillData: {
+  ///     'fullName': 'John Doe',
+  ///     'dob': '1990-06-15',
+  ///   },
+  /// )
+  /// ```
+  final Map<String, String>? prefillData;
+
+  /// Builds a URL with prefill data encoded as a base64 JSON query parameter.
+  ///
+  /// The prefill data is JSON-encoded, then base64-encoded, and appended
+  /// to the URL as `?prefill=<base64>` or `&prefill=<base64>`.
+  static String buildUrlWithPrefill(
+    String baseUrl,
+    Map<String, String> prefillData,
+  ) {
+    if (prefillData.isEmpty) return baseUrl;
+
+    final prefillJson = jsonEncode(prefillData);
+    final prefillBase64 = base64Encode(utf8.encode(prefillJson));
+
+    // Replace existing prefill parameter if present
+    if (baseUrl.contains('prefill=')) {
+      return baseUrl.replaceFirst(
+        RegExp(r'prefill=[^&]*'),
+        'prefill=$prefillBase64',
+      );
+    }
+
+    // Append prefill parameter
+    final separator = baseUrl.contains('?') ? '&' : '?';
+    return '$baseUrl${separator}prefill=$prefillBase64';
+  }
 
   @override
   State<WCPCollectDataWebView> createState() => _WCPCollectDataWebViewState();
@@ -59,7 +104,15 @@ class _WCPCollectDataWebViewState extends State<WCPCollectDataWebView> {
   }
 
   void _initController() {
-    final uri = Uri.tryParse(widget.collectDataUrl);
+    // Build URL with prefill data if provided
+    final urlWithPrefill = widget.prefillData != null
+        ? WCPCollectDataWebView.buildUrlWithPrefill(
+            widget.collectDataUrl,
+            widget.prefillData!,
+          )
+        : widget.collectDataUrl;
+
+    final uri = Uri.tryParse(urlWithPrefill);
     if (uri == null || !uri.hasScheme) {
       setState(() {
         _loadError = 'Invalid data collection URL.';

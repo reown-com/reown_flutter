@@ -750,6 +750,11 @@ class WalletKitService implements IWalletKitService {
     final context = navigatorKey.currentContext;
     if (context == null) return WCBottomSheetResult.close.name;
 
+    // To prefill form fields, pass a map with user data:
+    // prefillData: {
+    //   'fullName': 'John Doe',
+    //   'dob': '1990-06-15',  // YYYY-MM-DD format
+    // },
     final result = await Navigator.of(context).push<dynamic>(
       MaterialPageRoute(
         builder: (_) => WCPCollectDataWebView(
