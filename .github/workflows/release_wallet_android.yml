@@ -56,7 +56,7 @@ jobs:
           FIREBASE_WALLET_ID: ${{ secrets.FIREBASE_WALLET_ID }}
           DOWNLOAD_URL: ${{ secrets.DOWNLOAD_URL_WALLET }}
         run: |
-          PUBSPEC_FILE=../../pubspec.yaml
+          PUBSPEC_FILE=../pubspec.yaml
           FILE_VALUE=$(grep "^version: " $PUBSPEC_FILE)
           PARTS=(${FILE_VALUE//:/ })
           FULL_VERSION=${PARTS[1]}
