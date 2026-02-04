@@ -56,7 +56,7 @@ class Ton(private val projectId: String, private val networkId: String, private 
     @SuppressLint("LongLogTag")
     fun getAddressFromKeypair(params: Any?, result: MethodChannel.Result) {
         val dict = params as? Map<*, *> ?: return result.error("getAddressFromKeypair", "Invalid parameters", null)
-        Log.d("🤖 Ton.getAddressFromKeypair", "params: $dict")
+        // Don't log params - contains sensitive key material
 
         val sk = dict["sk"] as? String ?: return result.error("getAddressFromKeypair", "Missing sk", null)
         val pk = dict["pk"] as? String ?: return result.error("getAddressFromKeypair", "Missing pk", null)
@@ -79,7 +79,7 @@ class Ton(private val projectId: String, private val networkId: String, private 
     @SuppressLint("LongLogTag")
     fun getSessionProperties(params: Any?, result: MethodChannel.Result) {
         val dict = params as? Map<*, *> ?: return result.error("getSessionProperties", "Invalid parameters", null)
-        Log.d("🤖 Ton.getSessionProperties", "params: $dict")
+        // Don't log params - contains sensitive key material
 
         val sk = dict["sk"] as? String ?: return result.error("getSessionProperties", "Missing sk", null)
         val pk = dict["pk"] as? String ?: return result.error("getSessionProperties", "Missing pk", null)
@@ -100,7 +100,7 @@ class Ton(private val projectId: String, private val networkId: String, private 
 
     fun signData(params: Any?, result: MethodChannel.Result) {
         val dict = params as? Map<*, *> ?: return result.error("signData", "Invalid parameters", null)
-        Log.d("🤖 Ton.signData", "params: $dict")
+        // Don't log params - contains sensitive key material
 
         val text = dict["text"] as? String ?: return result.error("signData", "Missing text", null)
         val sk = dict["sk"] as? String ?: return result.error("signData", "Missing sk", null)
@@ -117,7 +117,7 @@ class Ton(private val projectId: String, private val networkId: String, private 
 
     fun sendMessage(params: Any?, result: MethodChannel.Result) {
         val dict = params as? Map<*, *> ?: return result.error("sendMessage", "Invalid parameters", null)
-        Log.d("🤖 Ton.sendMessage", "params: $dict")
+        // Don't log params - contains sensitive key material
 
         val networkId = dict["networkId"] as? String ?: return result.error("sendMessage", "Missing network", null)
         val from = dict["from"] as? String ?: return result.error("sendMessage", "Missing from", null)
@@ -146,7 +146,7 @@ class Ton(private val projectId: String, private val networkId: String, private 
 
     fun broadcastMessage(params: Any?, result: MethodChannel.Result) {
         val dict = params as? Map<*, *> ?: return result.error("broadcastMessage", "Invalid parameters", null)
-        Log.d("🤖 Ton.broadcastMessage", "params: $dict")
+        // Don't log params - contains sensitive key material
 
         val from = dict["from"] as? String ?: return result.error("broadcastMessage", "Missing from", null)
         val validUntil = dict["validUntil"] as? UInt ?: return result.error("broadcastMessage", "Missing validUntil", null)
@@ -238,7 +238,7 @@ class Ton(private val projectId: String, private val networkId: String, private 
         @SuppressLint("LongLogTag")
         fun getAddressFromKeypair(params: Any?, result: MethodChannel.Result) {
             val dict = params as? Map<*, *> ?: return result.error("ton_getAddressFromKeypair", "Invalid parameters", null)
-            Log.d("🤖 Ton.getAddressFromKeypair", "params: $dict")
+            // Don't log params - contains sensitive key material
 
             val networkId = dict["networkId"] as? String ?: return result.error("ton_getAddressFromKeypair", "Missing networkId", null)
             getClient(networkId, result)?.getAddressFromKeypair(dict, result)
@@ -247,7 +247,7 @@ class Ton(private val projectId: String, private val networkId: String, private 
         @SuppressLint("LongLogTag")
         fun getSessionProperties(params: Any?, result: MethodChannel.Result) {
             val dict = params as? Map<*, *> ?: return result.error("ton_getSessionProperties", "Invalid parameters", null)
-            Log.d("🤖 Ton.getSessionProperties", "params: $dict")
+            // Don't log params - contains sensitive key material
 
             val networkId = dict["networkId"] as? String ?: return result.error("ton_getSessionProperties", "Missing networkId", null)
             getClient(networkId, result)?.getSessionProperties(dict, result)
@@ -255,7 +255,7 @@ class Ton(private val projectId: String, private val networkId: String, private 
 
         fun signData(params: Any?, result: MethodChannel.Result) {
             val dict = params as? Map<*, *> ?: return result.error("ton_signData", "Invalid parameters", null)
-            Log.d("🤖 Ton.signData", "params: $dict")
+            // Don't log params - contains sensitive key material
 
             val networkId = dict["networkId"] as? String ?: return result.error("ton_signData", "Missing networkId", null)
             getClient(networkId, result)?.signData(dict, result)
@@ -263,7 +263,7 @@ class Ton(private val projectId: String, private val networkId: String, private 
 
         fun sendMessage(params: Any?, result: MethodChannel.Result) {
             val dict = params as? Map<*, *> ?: return result.error("ton_sendMessage", "Invalid parameters", null)
-            Log.d("🤖 Ton.sendMessage", "params: $dict")
+            // Don't log params - contains sensitive key material
 
             val networkId = dict["networkId"] as? String ?: return result.error("ton_sendMessage", "Missing networkId", null)
             getClient(networkId, result)?.sendMessage(dict, result)
@@ -271,7 +271,7 @@ class Ton(private val projectId: String, private val networkId: String, private 
 
         fun broadcastMessage(params: Any?, result: MethodChannel.Result) {
             val dict = params as? Map<*, *> ?: return result.error("ton_broadcastMessage", "Invalid parameters", null)
-            Log.d("🤖 Ton.broadcastMessage", "params: $dict")
+            // Don't log params - contains sensitive key material
 
             val networkId = dict["networkId"] as? String ?: return result.error("ton_broadcastMessage", "Missing networkId", null)
             getClient(networkId, result)?.broadcastMessage(dict, result)

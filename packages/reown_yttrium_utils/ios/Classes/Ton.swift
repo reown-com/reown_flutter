@@ -272,7 +272,8 @@ class Ton {
     public static func getAddressFromKeypair(_ params: Any, result: @escaping FlutterResult) {
         guard let dict = params as? [String: Any],
               let networkId = dict["networkId"] as? String else {
-            result(FlutterError(code: "Ton.getAddressFromKeypair", message: "Invalid parameters", details: params))
+            // Don't include params in details - may contain sensitive key material
+            result(FlutterError(code: "Ton.getAddressFromKeypair", message: "Invalid parameters: missing networkId", details: nil))
             return
         }
         
@@ -287,7 +288,8 @@ class Ton {
     public static func getSessionProperties(_ params: Any, result: @escaping FlutterResult) {
         guard let dict = params as? [String: Any],
               let networkId = dict["networkId"] as? String else {
-            result(FlutterError(code: "Ton.getSessionProperties", message: "Invalid parameters", details: params))
+            // Don't include params in details - may contain sensitive key material
+            result(FlutterError(code: "Ton.getSessionProperties", message: "Invalid parameters: missing networkId", details: nil))
             return
         }
 
@@ -302,7 +304,8 @@ class Ton {
     public static func signData(_ params: Any, result: @escaping FlutterResult) {
         guard let dict = params as? [String: Any],
               let networkId = dict["networkId"] as? String else {
-            result(FlutterError(code: "Ton.signData", message: "Invalid parameters", details: params))
+            // Don't include params in details - may contain sensitive key material
+            result(FlutterError(code: "Ton.signData", message: "Invalid parameters: missing networkId", details: nil))
             return
         }
         
@@ -317,7 +320,8 @@ class Ton {
     public static func sendMessage(_ params: Any, result: @escaping FlutterResult) {
         guard let dict = params as? [String: Any],
               let networkId = dict["networkId"] as? String else {
-            result(FlutterError(code: "Ton.sendMessage", message: "Invalid parameters", details: params))
+            // Don't include params in details - may contain sensitive key material
+            result(FlutterError(code: "Ton.sendMessage", message: "Invalid parameters: missing networkId", details: nil))
             return
         }
         
@@ -332,7 +336,8 @@ class Ton {
     public static func broadcastMessage(_ params: Any, result: @escaping FlutterResult) {
         guard let dict = params as? [String: Any],
               let networkId = dict["networkId"] as? String else {
-            result(FlutterError(code: "Ton.broadcastMessage", message: "Invalid parameters", details: params))
+            // Don't include params in details - may contain sensitive key material
+            result(FlutterError(code: "Ton.broadcastMessage", message: "Invalid parameters: missing networkId", details: nil))
             return
         }
         
