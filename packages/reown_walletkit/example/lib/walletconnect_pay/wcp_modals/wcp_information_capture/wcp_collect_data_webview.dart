@@ -66,9 +66,9 @@ class _WCPCollectDataWebViewState extends State<WCPCollectDataWebView> {
       });
       return;
     }
-    if (uri.scheme != 'https' && uri.scheme != 'http') {
+    if (uri.scheme != 'https') {
       setState(() {
-        _loadError = 'Unsupported data collection URL scheme.';
+        _loadError = 'Data collection requires a secure HTTPS connection.';
       });
       return;
     }
