@@ -1,0 +1,166 @@
+name: iOS Release Base
+
+on:
+  workflow_call:
+    inputs:
+      app-name:
+        required: true
+        type: string
+      working-directory:
+        required: true
+        type: string
+      flavor:
+        required: true
+        type: string
+      bundle-id:
+        required: true
+        type: string
+      apple-app-id-secret:
+        required: true
+        type: string
+      testflight-url:
+        required: true
+        type: string
+      project-id-secret:
+        required: true
+        type: string
+      sentry-dsn-secret:
+        required: true
+        type: string
+      sentry-env-var:
+        required: true
+        type: string
+      wcp-api-key-secret:
+        required: false
+        type: string
+        default: ''
+      app-description:
+        required: true
+        type: string
+      release-notes:
+        required: false
+        type: string
+        default: ''
+      pubspec-path:
+        description: 'Relative path from working-directory to pubspec.yaml'
+        required: false
+        type: string
+        default: '../pubspec.yaml'
+
+jobs:
+  build:
+    runs-on: macos-26
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup SSH for Match
+        uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387 # v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.MATCH_SSH_KEY }}
+
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            .build
+            SourcePackagesCache
+            DerivedDataCache
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - uses: ./.github/actions/dependencies
+        with:
+          platform: 'ios'
+
+      - name: Build App
+        working-directory: ${{ inputs.working-directory }}
+        env:
+          PROJECT_ID: ${{ secrets[inputs.project-id-secret] }}
+          SENTRY_DSN: ${{ secrets[inputs.sentry-dsn-secret] }}
+          WCP_API_KEY: ${{ secrets[inputs.wcp-api-key-secret] }}
+        run: |
+          VERSION=$(grep "^version: " ${{ inputs.pubspec-path }} | cut -d' ' -f2 | cut -d'-' -f1)
+
+          BUILD_ARGS="--flavor ${{ inputs.flavor }}"
+          BUILD_ARGS="$BUILD_ARGS --build-name $VERSION"
+          BUILD_ARGS="$BUILD_ARGS --dart-define=PROJECT_ID=$PROJECT_ID"
+          BUILD_ARGS="$BUILD_ARGS --dart-define=${{ inputs.sentry-env-var }}=$SENTRY_DSN"
+
+          if [ -n "$WCP_API_KEY" ]; then
+            BUILD_ARGS="$BUILD_ARGS --dart-define=WCP_API_KEY=$WCP_API_KEY"
+          fi
+
+          BUILD_ARGS="$BUILD_ARGS --config-only --release"
+
+          flutter build ios $BUILD_ARGS
+
+      - name: Set Xcode Version
+        run: sudo xcode-select -s /Applications/Xcode_26.1.app
+
+      - name: Fastlane
+        id: fastlane
+        env:
+          XCODE_PROJECT_PATH: ${{ inputs.working-directory }}/ios/Runner.xcodeproj
+          XCWORKSPACE_PATH: ${{ inputs.working-directory }}/ios/Runner.xcworkspace
+          APP_DESCRIPTION: ${{ inputs.app-description }}
+          RELEASE_NOTES: ${{ inputs.release-notes != '' && inputs.release-notes || format('Branch: {0}', github.ref_name) }}
+          BUNDLE_ID: ${{ inputs.bundle-id }}
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_ID: ${{ secrets[inputs.apple-app-id-secret] }}
+          PROJECT_ID: ${{ secrets[inputs.project-id-secret] }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          APP_STORE_KEY_ID: ${{ secrets.APP_STORE_KEY_ID }}
+          APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
+          APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+        run: |
+          VERSION=$(grep "^version: " ${{ inputs.working-directory }}/${{ inputs.pubspec-path }} | cut -d' ' -f2 | cut -d'-' -f1)
+          bundle install
+          bundle exec fastlane release_testflight \
+            project_id:$PROJECT_ID \
+            app_version:$VERSION \
+            flavor:${{ inputs.flavor }}
+
+      - name: Send Slack notification
+        if: always() && !cancelled()
+        uses: slackapi/slack-github-action@v2.1.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "iOS Build Report - ${{ inputs.app-name }} - ${{ inputs.flavor }}",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": { "type": "plain_text", "text": "🍎 iOS Build Report" }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Project:*\n`${{ inputs.app-name }}`" },
+                    { "type": "mrkdwn", "text": "*Release Type:*\n`${{ inputs.flavor }}`" },
+                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Build & TestFlight:*\n`${{ steps.fastlane.outcome == 'success' && '✅ Success' || '❌ Failed' }}`" },
+                    { "type": "mrkdwn", "text": "*Overall Status:*\n`${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}`" }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "View Workflow Run" },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }${{ steps.fastlane.outcome == 'success' && inputs.testflight-url != '' && format(',{{"type":"button","text":{{"type":"plain_text","text":"View in TestFlight"}},"url":"{0}"}}', inputs.testflight-url) || '' }}
+                  ]
+                }
+              ]
+            }

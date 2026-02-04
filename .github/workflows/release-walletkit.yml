@@ -24,10 +24,37 @@ on:
         required: false
         type: string
 
-permissions: {}
-
 jobs:
-  placeholder:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Placeholder - will be replaced by PR #340"
+  android:
+    if: inputs.platform == 'android'
+    uses: ./.github/workflows/release-android-base.yml
+    with:
+      app-name: 'WalletKit Flutter'
+      working-directory: 'packages/reown_walletkit/example'
+      flavor: ${{ inputs.release-type }}
+      firebase-app-id: ${{ inputs.release-type == 'internal' && vars.FIREBASE_WALLET_ID_INTERNAL || vars.FIREBASE_WALLET_ID }}
+      firebase-url: ${{ inputs.release-type == 'internal' && vars.FIREBASE_URL_WALLET_INTERNAL || vars.FIREBASE_URL_WALLET }}
+      project-id-secret: 'WALLET_PROJECT_ID'
+      sentry-dsn-secret: ${{ inputs.release-type == 'internal' && 'WALLET_SENTRY_DSN' || 'WALLET_SENTRY_DSN_PROD' }}
+      sentry-env-var: 'WALLET_SENTRY_DSN'
+      wcp-api-key-secret: 'WCP_API_KEY'
+      release-notes: ${{ inputs.release-notes }}
+    secrets: inherit
+
+  ios:
+    if: inputs.platform == 'ios'
+    uses: ./.github/workflows/release-ios-base.yml
+    with:
+      app-name: 'WalletKit Flutter'
+      working-directory: 'packages/reown_walletkit/example'
+      flavor: ${{ inputs.release-type }}
+      bundle-id: ${{ inputs.release-type == 'internal' && 'com.walletconnect.flutterwallet.internal' || 'com.walletconnect.flutterwallet' }}
+      apple-app-id-secret: ${{ inputs.release-type == 'internal' && 'APPLE_WALLET_ID_INTERNAL' || 'APPLE_WALLET_ID' }}
+      testflight-url: ${{ inputs.release-type == 'internal' && vars.TESTFLIGHT_URL_WALLET_INTERNAL || vars.TESTFLIGHT_URL_WALLET }}
+      project-id-secret: 'WALLET_PROJECT_ID'
+      sentry-dsn-secret: ${{ inputs.release-type == 'internal' && 'WALLET_SENTRY_DSN' || 'WALLET_SENTRY_DSN_PROD' }}
+      sentry-env-var: 'WALLET_SENTRY_DSN'
+      wcp-api-key-secret: 'WCP_API_KEY'
+      app-description: 'WalletKit sample app'
+      release-notes: ${{ inputs.release-notes }}
+    secrets: inherit

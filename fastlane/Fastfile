@@ -10,52 +10,25 @@
 #     https://docs.fastlane.tools/plugins/available-plugins
 #
 
-# Uncomment the line if you want fastlane to automatically update itself
-# update_fastlane
-
 ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "120"
 
 default_platform(:ios)
 
 platform :ios do
 
-  # Helper method to read the changelog
-  def read_changelog
-    changelog_file = '../../../../CHANGELOG.md'
-    changelog = ""
-
-    if File.exist?(changelog_file)
-      File.open(changelog_file, 'r') do |file|
-        changelog = file.read
-      end
-
-      # Split the changelog into entries based on the version header pattern
-      entries = changelog.split(/^##\s/)
-
-      # Get the latest entry, which is the first one after splitting
-      latest_entry = entries[1]
-
-      # Re-add the '##' header to the latest entry and remove empty lines
-      changelog = latest_entry.strip if latest_entry
-      changelog = changelog.gsub /^$\n/, ''
-    else
-      UI.user_error!("CHANGELOG.md file not found")
-    end
-
-    changelog
-  end
-
   lane :release_testflight do |options|
-
     # Setup the keychain and match to work with CI
     setup_ci
 
-    match_password = ENV['MATCH_PASSWORD']
+    # All config via ENV vars (set by workflow)
     app_identifier = ENV['BUNDLE_ID']
+    xcode_project = ENV['XCODE_PROJECT_PATH']
+    xcworkspace = ENV['XCWORKSPACE_PATH']
+    app_description = ENV['APP_DESCRIPTION'] || 'Sample app'
 
     api_key = app_store_connect_api_key(
-      key_id: options[:app_store_key_id],
-      issuer_id: options[:apple_issuer_id],
+      key_id: ENV['APP_STORE_KEY_ID'],
+      issuer_id: ENV['APPLE_ISSUER_ID'],
       key_content: ENV['APP_STORE_CONNECT_KEY'],
       duration: 1200,
       in_house: false,
@@ -64,8 +37,8 @@ platform :ios do
     match(
       readonly: false,
       type: "appstore",
-      app_identifier: "#{app_identifier}",
-      git_url: options[:match_git_url],
+      app_identifier: app_identifier,
+      git_url: ENV['MATCH_GIT_URL'],
       api_key: api_key,
       include_all_certificates: true,
       force_for_new_devices: true,
@@ -74,38 +47,35 @@ platform :ios do
     )
 
     number = latest_testflight_build_number(
-      app_identifier: "#{app_identifier}",
-      username: options[:username],
+      app_identifier: app_identifier,
+      username: ENV['APPLE_ID'],
     )
-    if number && !number.to_s.empty?
-      new_build_number = number.to_i + 1
-    else
-      # Handle the case where there is no previous build number
-      new_build_number = 1
-    end
+    new_build_number = number.to_i + 1
 
     increment_build_number(
       build_number: new_build_number,
-      xcodeproj: "Runner.xcodeproj"
+      xcodeproj: xcode_project
     )
 
     _flavor = options[:flavor]
+    _app_version = options[:app_version]
 
     gym(
       configuration: "Release-#{_flavor}",
-      # project: "Runner.xcodeproj",
-      workspace: "Runner.xcworkspace",
+      workspace: xcworkspace,
       scheme: _flavor,
       export_method: "app-store",
       clean: true,
       xcargs: "PROJECT_ID='#{options[:project_id]}'",
-      output_directory: "build", # Explicitly set output directory
+      output_directory: "build",
       include_symbols: false,
     )
 
-    # Add step to remove macOS hidden files from the archive
+    # Remove macOS hidden files from archive
+    # Note: sh() runs from fastlane/ directory, so use ../ to reach repo root
     sh('''
       IPA_PATH="../build/Runner.ipa"
+
       if [ -f "$IPA_PATH" ]; then
         echo "Checking for unwanted files like ._Symbols in $IPA_PATH"
         unzip -l "$IPA_PATH" | grep ._Symbols && zip -d "$IPA_PATH" ._Symbols/ || echo "No ._Symbols found"
@@ -114,26 +84,24 @@ platform :ios do
       fi
     ''')
 
-    _app_version = "#{options[:app_version]}"
-
-    changelog = read_changelog
+    # Get release notes from ENV (set by workflow, defaults to branch name)
+    changelog = ENV['RELEASE_NOTES'] || 'New release'
 
     upload_to_testflight(
-      apple_id: options[:app_id],
-      app_version: "#{_app_version}",
-      build_number: "#{new_build_number}",
-      app_identifier: "#{app_identifier}",
+      apple_id: ENV['APPLE_APP_ID'],
+      app_version: _app_version,
+      build_number: new_build_number.to_s,
+      app_identifier: app_identifier,
       changelog: changelog,
       distribute_external: true,
       notify_external_testers: true,
       skip_waiting_for_build_processing: false,
       beta_app_feedback_email: "alfredo@reown.com",
-      beta_app_description: "AppKit sample app",
+      beta_app_description: app_description,
       groups: ["External Testers"]
     )
 
     clean_build_artifacts()
-
   end
 
 end

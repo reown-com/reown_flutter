@@ -1,0 +1,158 @@
+name: Android Release Base
+
+on:
+  workflow_call:
+    inputs:
+      app-name:
+        required: true
+        type: string
+      working-directory:
+        required: true
+        type: string
+      flavor:
+        required: true
+        type: string
+      firebase-app-id:
+        required: true
+        type: string
+      firebase-url:
+        required: true
+        type: string
+      project-id-secret:
+        required: true
+        type: string
+      sentry-dsn-secret:
+        required: true
+        type: string
+      sentry-env-var:
+        required: true
+        type: string
+      wcp-api-key-secret:
+        required: false
+        type: string
+        default: ''
+      release-notes:
+        required: false
+        type: string
+        default: ''
+      pubspec-path:
+        description: 'Relative path from working-directory to pubspec.yaml'
+        required: false
+        type: string
+        default: '../pubspec.yaml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - uses: ./.github/actions/dependencies
+        with:
+          platform: 'android'
+
+      - name: Setup Firebase
+        # Note: Key file is written to runner.temp which is automatically cleaned up after job
+        run: |
+          echo "${{ secrets.GSA_KEY }}" > ${{ runner.temp }}/gcp_key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=${{ runner.temp }}/gcp_key.json" >> $GITHUB_ENV
+          npm install -g firebase-tools
+
+      - name: Add Secrets file
+        working-directory: ${{ inputs.working-directory }}/android
+        run: echo "${{ secrets.SECRETS_FILE }}" > secrets.properties
+
+      - name: Add Keystore file
+        working-directory: ${{ inputs.working-directory }}/android
+        run: echo "${{ secrets.KEYSTORE }}" | base64 --decode > app/debug.keystore
+
+      - name: Get Build Number
+        id: build-number
+        run: |
+          LATEST=$(firebase appdistribution:releases:list \
+            --app ${{ inputs.firebase-app-id }} \
+            --json 2>/dev/null | jq -r '.[0].buildVersion // "0"') || LATEST="0"
+          echo "number=$((LATEST + 1))" >> $GITHUB_OUTPUT
+
+      - name: Build APK
+        id: build
+        working-directory: ${{ inputs.working-directory }}
+        env:
+          PROJECT_ID: ${{ secrets[inputs.project-id-secret] }}
+          SENTRY_DSN: ${{ secrets[inputs.sentry-dsn-secret] }}
+          WCP_API_KEY: ${{ secrets[inputs.wcp-api-key-secret] }}
+        run: |
+          VERSION=$(grep "^version: " ${{ inputs.pubspec-path }} | cut -d' ' -f2 | cut -d'-' -f1)
+
+          BUILD_ARGS="--build-name $VERSION"
+          BUILD_ARGS="$BUILD_ARGS --build-number ${{ steps.build-number.outputs.number }}"
+          BUILD_ARGS="$BUILD_ARGS --dart-define=PROJECT_ID=$PROJECT_ID"
+          BUILD_ARGS="$BUILD_ARGS --dart-define=${{ inputs.sentry-env-var }}=$SENTRY_DSN"
+
+          if [ -n "$WCP_API_KEY" ]; then
+            BUILD_ARGS="$BUILD_ARGS --dart-define=WCP_API_KEY=$WCP_API_KEY"
+          fi
+
+          BUILD_ARGS="$BUILD_ARGS --flavor ${{ inputs.flavor }}"
+          BUILD_ARGS="$BUILD_ARGS --release"
+
+          flutter build apk $BUILD_ARGS
+
+      - name: Upload to Firebase
+        id: firebase-upload
+        working-directory: ${{ inputs.working-directory }}
+        run: |
+          if [ -n "${{ inputs.release-notes }}" ]; then
+            CHANGELOG="${{ inputs.release-notes }}"
+          else
+            CHANGELOG="Branch: ${{ github.ref_name }}"
+          fi
+
+          firebase appdistribution:distribute \
+            build/app/outputs/flutter-apk/app-${{ inputs.flavor }}-release.apk \
+            --app ${{ inputs.firebase-app-id }} \
+            --groups "flutter-team, javascript-team, kotlin-team, rust-team, unity, wc-testers" \
+            --release-notes "$CHANGELOG"
+
+      - name: Send Slack notification
+        if: always() && !cancelled()
+        uses: slackapi/slack-github-action@v2.1.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "Android Build Report - ${{ inputs.app-name }} - ${{ inputs.flavor }}",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": { "type": "plain_text", "text": "🤖 Android Build Report" }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Project:*\n`${{ inputs.app-name }}`" },
+                    { "type": "mrkdwn", "text": "*Release Type:*\n`${{ inputs.flavor }}`" },
+                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Build & Firebase:*\n`${{ steps.firebase-upload.outcome == 'success' && '✅ Success' || '❌ Failed' }}`" },
+                    { "type": "mrkdwn", "text": "*Overall Status:*\n`${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}`" }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "View Workflow Run" },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }${{ steps.firebase-upload.outcome == 'success' && inputs.firebase-url != '' && format(',{{"type":"button","text":{{"type":"plain_text","text":"View in Firebase"}},"url":"{0}"}}', inputs.firebase-url) || '' }}
+                  ]
+                }
+              ]
+            }

@@ -24,10 +24,37 @@ on:
         required: false
         type: string
 
-permissions: {}
-
 jobs:
-  placeholder:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Placeholder - will be replaced by PR #340"
+  android:
+    if: inputs.platform == 'android'
+    uses: ./.github/workflows/release-android-base.yml
+    with:
+      app-name: 'AppKit Flutter'
+      working-directory: 'packages/reown_appkit/example/base'
+      flavor: ${{ inputs.release-type }}
+      firebase-app-id: ${{ inputs.release-type == 'internal' && vars.FIREBASE_DAPP_ID_INTERNAL || vars.FIREBASE_DAPP_ID }}
+      firebase-url: ${{ inputs.release-type == 'internal' && vars.FIREBASE_URL_DAPP_INTERNAL || vars.FIREBASE_URL_DAPP }}
+      project-id-secret: 'DAPP_PROJECT_ID'
+      sentry-dsn-secret: ${{ inputs.release-type == 'internal' && 'DAPP_SENTRY_DSN' || 'DAPP_SENTRY_DSN_PROD' }}
+      sentry-env-var: 'DAPP_SENTRY_DSN'
+      pubspec-path: '../../pubspec.yaml'
+      release-notes: ${{ inputs.release-notes }}
+    secrets: inherit
+
+  ios:
+    if: inputs.platform == 'ios'
+    uses: ./.github/workflows/release-ios-base.yml
+    with:
+      app-name: 'AppKit Flutter'
+      working-directory: 'packages/reown_appkit/example/base'
+      flavor: ${{ inputs.release-type }}
+      bundle-id: ${{ inputs.release-type == 'internal' && 'com.walletconnect.flutterdapp.internal' || 'com.walletconnect.flutterdapp' }}
+      apple-app-id-secret: ${{ inputs.release-type == 'internal' && 'APPLE_DAPP_ID_INTERNAL' || 'APPLE_DAPP_ID' }}
+      testflight-url: ${{ inputs.release-type == 'internal' && vars.TESTFLIGHT_URL_DAPP_INTERNAL || vars.TESTFLIGHT_URL_DAPP }}
+      project-id-secret: 'DAPP_PROJECT_ID'
+      sentry-dsn-secret: ${{ inputs.release-type == 'internal' && 'DAPP_SENTRY_DSN' || 'DAPP_SENTRY_DSN_PROD' }}
+      sentry-env-var: 'DAPP_SENTRY_DSN'
+      app-description: 'AppKit sample app'
+      pubspec-path: '../../pubspec.yaml'
+      release-notes: ${{ inputs.release-notes }}
+    secrets: inherit
