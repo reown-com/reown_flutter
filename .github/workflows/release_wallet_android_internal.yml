@@ -28,11 +28,10 @@ jobs:
 
       # Setup Firebase CLI with service account
       - name: Setup Firebase
-        uses: w9jds/setup-firebase@869785322147e6a53d463a55db0a5af1b4ce4ba6 # main
-        with:
-          tools-version: 13.0.1
-          gcp_sa_key: ${{ secrets.GSA_KEY }}
-          gcp_sa_key_output_path: ${{ runner.temp }}/gcp_key.json
+        run: |
+          npm install -g firebase-tools@13.0.1
+          echo '${{ secrets.GSA_KEY }}' > ${{ runner.temp }}/gcp_key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=${{ runner.temp }}/gcp_key.json" >> $GITHUB_ENV
 
       # Add Secrets file on wallet
       - name: Add Secrets file
