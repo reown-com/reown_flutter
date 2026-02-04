@@ -114,7 +114,7 @@ platform :ios do
       fi
     ''')
 
-    _app_version = "3.0.0" #"options[:app_version]"
+    _app_version = "#{options[:app_version]}"
 
     changelog = read_changelog
 
