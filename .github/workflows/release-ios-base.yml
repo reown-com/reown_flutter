@@ -115,8 +115,9 @@ jobs:
           APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
           APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+        working-directory: fastlane
         run: |
-          VERSION=$(grep "^version: " ${{ inputs.working-directory }}/${{ inputs.pubspec-path }} | cut -d' ' -f2 | cut -d'-' -f1)
+          VERSION=$(grep "^version: " ../${{ inputs.working-directory }}/${{ inputs.pubspec-path }} | cut -d' ' -f2 | cut -d'-' -f1)
           bundle install
           bundle exec fastlane release_testflight \
             project_id:$PROJECT_ID \
