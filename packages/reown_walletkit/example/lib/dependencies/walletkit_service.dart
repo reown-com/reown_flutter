@@ -26,15 +26,14 @@ import 'package:reown_walletkit_wallet/utils/eth_utils.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_confirming_payment.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_get_payment_options.dart';
-import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_information_capture/wcp_birthdate_capture.dart';
-import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_information_capture/wcp_full_name_capture.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_information_capture/wcp_collect_data_webview.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_information_capture/wcp_information_capture_start.dart';
-import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_information_capture/wcp_place_of_birth_capture.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_payment_details.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_payment_result.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_request/wc_connection_request_widget.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_request_widget.dart/wc_request_widget.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_request_widget.dart/wc_session_auth_request_widget.dart';
+import 'package:reown_walletkit_wallet/main.dart' show navigatorKey;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class WalletKitService implements IWalletKitService {
@@ -273,10 +272,11 @@ class WalletKitService implements IWalletKitService {
       }
 
       _currentPaymentOptions = optionsResponse;
+      final collectDataUrl = _currentPaymentOptions!.collectData?.url;
 
       if (_currentPaymentOptions!.options.isEmpty) {
         _currentPaymentOptions = null;
-        throw 'No options found for this payment';
+        throw 'No payment options available.\n\nThis wallet does not have any compatible tokens to complete this payment.';
       }
 
       _pendingPaymentRequest = ConfirmPaymentRequest(
@@ -285,10 +285,16 @@ class WalletKitService implements IWalletKitService {
         signatures: [],
       );
 
-      if (_currentPaymentOptions!.collectData != null) {
-        final action = await _startDataCollection(_currentPaymentOptions!);
-        if (action == WCBottomSheetResult.close.name) {
-          return;
+      if (collectDataUrl != null && collectDataUrl.isNotEmpty) {
+        final action = await _startDataCollection(
+          _currentPaymentOptions!,
+          collectDataUrl,
+        );
+        if (action != WCBottomSheetResult.next.name) {
+          if (action == WCBottomSheetResult.close.name) {
+            return;
+          }
+          throw action;
         }
       }
 
@@ -725,8 +731,11 @@ class WalletKitService implements IWalletKitService {
 
   // WalletConnectPay related UX
 
-  /// Initiates the data collection flow by showing the start modal and collecting required fields.
-  Future<dynamic> _startDataCollection(PaymentOptionsResponse response) async {
+  /// Initiates the data collection flow by showing the start modal and webview.
+  Future<dynamic> _startDataCollection(
+    PaymentOptionsResponse response,
+    String collectDataUrl,
+  ) async {
     final startResult = await _bottomSheetHandler.queueBottomSheet(
       widget: WCPInformationCaptureStartWidget(paymentInfo: response.info!),
     );
@@ -734,109 +743,22 @@ class WalletKitService implements IWalletKitService {
       return startResult;
     }
 
-    _pendingPaymentRequest = _pendingPaymentRequest!.copyWith(
-      collectedData: [],
-    );
-    final action = await _showDataCollectionSteps(response, startIndex: 0);
-    return action;
+    return _showCollectDataWebView(collectDataUrl);
   }
 
-  /// Adds a collected data field result to the pending payment request.
-  void _addCollectedDataToPaymentRequest(CollectDataFieldResult result) {
-    final currentList = List<CollectDataFieldResult>.from(
-      _pendingPaymentRequest!.collectedData ?? [],
+  Future<dynamic> _showCollectDataWebView(String collectDataUrl) async {
+    final context = navigatorKey.currentContext;
+    if (context == null) return WCBottomSheetResult.close.name;
+
+    final result = await Navigator.of(context).push<dynamic>(
+      MaterialPageRoute(
+        builder: (_) => WCPCollectDataWebView(
+          collectDataUrl: collectDataUrl,
+          stepper: (1, 2),
+        ),
+      ),
     );
-    currentList.add(result);
-    _pendingPaymentRequest = _pendingPaymentRequest!.copyWith(
-      collectedData: currentList,
-    );
-  }
-
-  /// Removes the last collected data field result from the pending payment request.
-  void _removeLastCollectedData() {
-    final currentList = List<CollectDataFieldResult>.from(
-      _pendingPaymentRequest!.collectedData ?? [],
-    );
-    if (currentList.isNotEmpty) {
-      currentList.removeLast();
-      _pendingPaymentRequest = _pendingPaymentRequest!.copyWith(
-        collectedData: currentList,
-      );
-    }
-  }
-
-  /// Resumes data collection from a specific index, typically used when navigating back from payment details.
-  Future<dynamic> _resumeDataCollectionLastStep(
-    PaymentOptionsResponse response,
-  ) async {
-    final fields = response.collectData!.fields;
-    final collectedData = _pendingPaymentRequest!.collectedData ?? [];
-
-    int startIndex = collectedData.length;
-    if (startIndex >= fields.length) {
-      startIndex = fields.length - 1;
-      _removeLastCollectedData();
-    }
-
-    final action = await _showDataCollectionSteps(
-      response,
-      startIndex: startIndex,
-    );
-    return action;
-  }
-
-  /// Collects data fields sequentially, showing modals for each required field and handling back navigation.
-  Future<dynamic> _showDataCollectionSteps(
-    PaymentOptionsResponse response, {
-    required int startIndex,
-  }) async {
-    final fields = response.collectData!.fields;
-    int currentIndex = startIndex;
-
-    Widget icMap(CollectDataField field) {
-      switch (field.id) {
-        case 'fullName':
-          return WCPFullNameCapture(collectDataField: field);
-        case 'dob':
-          return WCPBirthdateCapture(collectDataField: field);
-        case 'pob':
-          return WCPPlaceOfBirthCapture(collectDataField: field);
-        default:
-          throw UnimplementedError('Unrecognized field ${field.id}');
-      }
-    }
-
-    while (currentIndex < fields.length) {
-      final result = await _bottomSheetHandler.queueBottomSheet(
-        widget: icMap(fields[currentIndex]),
-        showBackButton: true,
-        stepper: (currentIndex + 1, fields.length + 1),
-      );
-
-      if (result is CollectDataFieldResult) {
-        _addCollectedDataToPaymentRequest(result);
-        currentIndex++;
-      } else if (result == WCBottomSheetResult.back.name) {
-        if (currentIndex > 0) {
-          _removeLastCollectedData();
-          currentIndex--;
-        } else {
-          final startResult = await _bottomSheetHandler.queueBottomSheet(
-            widget: WCPInformationCaptureStartWidget(
-              paymentInfo: response.info!,
-            ),
-          );
-          if (startResult != WCBottomSheetResult.next.name) {
-            return startResult;
-          }
-          _pendingPaymentRequest = _pendingPaymentRequest!.copyWith(
-            collectedData: [],
-          );
-        }
-      } else {
-        return result;
-      }
-    }
+    return result;
   }
 
   /// Processes the payment flow: shows payment details, confirms payment, and displays the result.
@@ -868,14 +790,14 @@ class WalletKitService implements IWalletKitService {
     }
   }
 
-  /// Shows the payment details modal and handles back navigation to resume data collection if needed.
+  /// Shows the payment details modal and re-opens webview on back if needed.
   Future<ConfirmPaymentRequest> _showPaymentDetails(
     PaymentOptionsResponse response,
   ) async {
     (int, int) stepper = (0, 0);
-    final fieldsLength = response.collectData?.fields.length ?? 0;
-    if (fieldsLength > 0) {
-      stepper = (fieldsLength + 1, fieldsLength + 1);
+    final hasCollectDataUrl = response.collectData?.url?.isNotEmpty ?? false;
+    if (hasCollectDataUrl) {
+      stepper = (2, 2);
     }
     final result = await _bottomSheetHandler.queueBottomSheet(
       widget: WCPPaymentDetailsWidget(
@@ -889,12 +811,15 @@ class WalletKitService implements IWalletKitService {
     if (result is ConfirmPaymentRequest) {
       return result;
     } else if (result == WCBottomSheetResult.back.name) {
-      if (response.collectData != null) {
-        await _resumeDataCollectionLastStep(response);
+      final collectDataUrl = response.collectData?.url;
+      if (collectDataUrl != null && collectDataUrl.isNotEmpty) {
+        final action = await _showCollectDataWebView(collectDataUrl);
+        if (action != WCBottomSheetResult.next.name) {
+          throw action;
+        }
         return _showPaymentDetails(response);
-      } else {
-        throw result;
       }
+      throw result;
     } else {
       throw result;
     }

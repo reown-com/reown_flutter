@@ -101,8 +101,10 @@ sealed class BuyerInfo with _$BuyerInfo {
 
 @freezed
 sealed class CollectDataAction with _$CollectDataAction {
-  const factory CollectDataAction({required List<CollectDataField> fields}) =
-      _CollectDataAction;
+  const factory CollectDataAction({
+    String? url,
+    @Default(<CollectDataField>[]) List<CollectDataField> fields,
+  }) = _CollectDataAction;
 
   factory CollectDataAction.fromJson(Map<String, dynamic> json) =>
       _$CollectDataActionFromJson(json);
@@ -122,7 +124,7 @@ sealed class CollectDataField with _$CollectDataField {
 }
 
 @JsonEnum(fieldRename: FieldRename.none)
-enum CollectDataFieldType { text, date }
+enum CollectDataFieldType { text, date, checkbox }
 
 @freezed
 sealed class PaymentOption with _$PaymentOption {

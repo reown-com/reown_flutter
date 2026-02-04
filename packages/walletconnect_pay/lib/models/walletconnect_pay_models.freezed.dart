@@ -1737,7 +1737,7 @@ as String?,
 /// @nodoc
 mixin _$CollectDataAction {
 
- List<CollectDataField> get fields;
+ String? get url; List<CollectDataField> get fields;
 /// Create a copy of CollectDataAction
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1750,16 +1750,16 @@ $CollectDataActionCopyWith<CollectDataAction> get copyWith => _$CollectDataActio
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectDataAction&&const DeepCollectionEquality().equals(other.fields, fields));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CollectDataAction&&(identical(other.url, url) || other.url == url)&&const DeepCollectionEquality().equals(other.fields, fields));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(fields));
+int get hashCode => Object.hash(runtimeType,url,const DeepCollectionEquality().hash(fields));
 
 @override
 String toString() {
-  return 'CollectDataAction(fields: $fields)';
+  return 'CollectDataAction(url: $url, fields: $fields)';
 }
 
 
@@ -1770,7 +1770,7 @@ abstract mixin class $CollectDataActionCopyWith<$Res>  {
   factory $CollectDataActionCopyWith(CollectDataAction value, $Res Function(CollectDataAction) _then) = _$CollectDataActionCopyWithImpl;
 @useResult
 $Res call({
- List<CollectDataField> fields
+ String? url, List<CollectDataField> fields
 });
 
 
@@ -1787,9 +1787,10 @@ class _$CollectDataActionCopyWithImpl<$Res>
 
 /// Create a copy of CollectDataAction
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? fields = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? url = freezed,Object? fields = null,}) {
   return _then(_self.copyWith(
-fields: null == fields ? _self.fields : fields // ignore: cast_nullable_to_non_nullable
+url: freezed == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String?,fields: null == fields ? _self.fields : fields // ignore: cast_nullable_to_non_nullable
 as List<CollectDataField>,
   ));
 }
@@ -1872,10 +1873,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<CollectDataField> fields)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? url,  List<CollectDataField> fields)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CollectDataAction() when $default != null:
-return $default(_that.fields);case _:
+return $default(_that.url,_that.fields);case _:
   return orElse();
 
 }
@@ -1893,10 +1894,10 @@ return $default(_that.fields);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<CollectDataField> fields)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? url,  List<CollectDataField> fields)  $default,) {final _that = this;
 switch (_that) {
 case _CollectDataAction():
-return $default(_that.fields);}
+return $default(_that.url,_that.fields);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -1910,10 +1911,10 @@ return $default(_that.fields);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<CollectDataField> fields)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? url,  List<CollectDataField> fields)?  $default,) {final _that = this;
 switch (_that) {
 case _CollectDataAction() when $default != null:
-return $default(_that.fields);case _:
+return $default(_that.url,_that.fields);case _:
   return null;
 
 }
@@ -1925,11 +1926,12 @@ return $default(_that.fields);case _:
 @JsonSerializable()
 
 class _CollectDataAction implements CollectDataAction {
-  const _CollectDataAction({required final  List<CollectDataField> fields}): _fields = fields;
+  const _CollectDataAction({this.url, final  List<CollectDataField> fields = const <CollectDataField>[]}): _fields = fields;
   factory _CollectDataAction.fromJson(Map<String, dynamic> json) => _$CollectDataActionFromJson(json);
 
+@override final  String? url;
  final  List<CollectDataField> _fields;
-@override List<CollectDataField> get fields {
+@override@JsonKey() List<CollectDataField> get fields {
   if (_fields is EqualUnmodifiableListView) return _fields;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_fields);
@@ -1949,16 +1951,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CollectDataAction&&const DeepCollectionEquality().equals(other._fields, _fields));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CollectDataAction&&(identical(other.url, url) || other.url == url)&&const DeepCollectionEquality().equals(other._fields, _fields));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_fields));
+int get hashCode => Object.hash(runtimeType,url,const DeepCollectionEquality().hash(_fields));
 
 @override
 String toString() {
-  return 'CollectDataAction(fields: $fields)';
+  return 'CollectDataAction(url: $url, fields: $fields)';
 }
 
 
@@ -1969,7 +1971,7 @@ abstract mixin class _$CollectDataActionCopyWith<$Res> implements $CollectDataAc
   factory _$CollectDataActionCopyWith(_CollectDataAction value, $Res Function(_CollectDataAction) _then) = __$CollectDataActionCopyWithImpl;
 @override @useResult
 $Res call({
- List<CollectDataField> fields
+ String? url, List<CollectDataField> fields
 });
 
 
@@ -1986,9 +1988,10 @@ class __$CollectDataActionCopyWithImpl<$Res>
 
 /// Create a copy of CollectDataAction
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? fields = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? url = freezed,Object? fields = null,}) {
   return _then(_CollectDataAction(
-fields: null == fields ? _self._fields : fields // ignore: cast_nullable_to_non_nullable
+url: freezed == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
+as String?,fields: null == fields ? _self._fields : fields // ignore: cast_nullable_to_non_nullable
 as List<CollectDataField>,
   ));
 }

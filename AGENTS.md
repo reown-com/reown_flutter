@@ -339,6 +339,60 @@ Most packages use code generation:
 - **iOS**: Native code in `ios/` directories
 - **Platform Channels**: Used for native functionality (e.g., `walletconnect_pay`)
 
+### Yttrium Native Dependencies
+
+Several packages depend on **Yttrium**, a Rust-based library that provides chain abstraction and payment functionality. Yttrium is consumed differently on each platform:
+
+**Native Dependency Locations:**
+
+| Package | iOS (CocoaPods) | Android (Gradle) |
+|---------|-----------------|------------------|
+| `reown_yttrium` | `packages/reown_yttrium/ios/reown_yttrium.podspec` → `YttriumWrapper` | `packages/reown_yttrium/android/build.gradle` |
+| `reown_yttrium_utils` | `packages/reown_yttrium_utils/ios/reown_yttrium_utils.podspec` → `YttriumUtilsWrapper` | `packages/reown_yttrium_utils/android/build.gradle` |
+| `walletconnect_pay` | `packages/walletconnect_pay/ios/walletconnect_pay.podspec` → `YttriumWrapper` | `packages/walletconnect_pay/android/build.gradle` → `yttrium-wcpay` |
+
+**Yttrium Releases:** https://github.com/reown-com/yttrium/releases
+
+**IMPORTANT:** iOS and Android use different Yttrium artifacts with potentially different versions. Always ensure both platforms are using compatible versions that include the required API features.
+
+### Updating Yttrium When API Changes
+
+When the Yttrium/Pay API adds new fields or changes response structures, you must update multiple files:
+
+**1. Update Native Dependencies (iOS & Android):**
+
+```bash
+# iOS - Update podspec files with new YttriumWrapper version
+packages/reown_yttrium/ios/reown_yttrium.podspec
+packages/reown_yttrium_utils/ios/reown_yttrium_utils.podspec
+packages/walletconnect_pay/ios/walletconnect_pay.podspec
+
+# Android - Update build.gradle files with new yttrium version
+packages/reown_yttrium/android/build.gradle
+packages/reown_yttrium_utils/android/build.gradle
+packages/walletconnect_pay/android/build.gradle
+```
+
+**2. Update Dart Models:**
+
+If the API adds new fields, update the corresponding Dart model in `packages/walletconnect_pay/lib/models/walletconnect_pay_models.dart` and regenerate:
+
+```bash
+cd packages/walletconnect_pay
+sh generate_files.sh
+```
+
+**3. Run Pod Update (iOS):**
+
+After updating podspecs, update the example app's pods:
+
+```bash
+cd packages/reown_walletkit/example/ios
+pod update YttriumWrapper YttriumUtilsWrapper
+```
+
+**Common Pitfall:** If a feature works on Android but not iOS (or vice versa), check that both platforms are using the same Yttrium version. The iOS podspec and Android build.gradle versions can drift apart.
+
 ### Code Style
 
 - Follow Flutter/Dart style guide

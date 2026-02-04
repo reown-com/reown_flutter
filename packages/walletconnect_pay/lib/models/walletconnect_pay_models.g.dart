@@ -124,13 +124,17 @@ Map<String, dynamic> _$BuyerInfoToJson(_BuyerInfo instance) =>
 
 _CollectDataAction _$CollectDataActionFromJson(Map<String, dynamic> json) =>
     _CollectDataAction(
-      fields: (json['fields'] as List<dynamic>)
-          .map((e) => CollectDataField.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      url: json['url'] as String?,
+      fields:
+          (json['fields'] as List<dynamic>?)
+              ?.map((e) => CollectDataField.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const <CollectDataField>[],
     );
 
 Map<String, dynamic> _$CollectDataActionToJson(_CollectDataAction instance) =>
     <String, dynamic>{
+      'url': instance.url,
       'fields': instance.fields.map((e) => e.toJson()).toList(),
     };
 
@@ -153,6 +157,7 @@ Map<String, dynamic> _$CollectDataFieldToJson(_CollectDataField instance) =>
 const _$CollectDataFieldTypeEnumMap = {
   CollectDataFieldType.text: 'text',
   CollectDataFieldType.date: 'date',
+  CollectDataFieldType.checkbox: 'checkbox',
 };
 
 _PaymentOption _$PaymentOptionFromJson(Map<String, dynamic> json) =>

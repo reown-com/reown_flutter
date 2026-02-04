@@ -18,6 +18,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
 }
 
@@ -77,7 +78,7 @@ android {
 
 dependencies {
 //    implementation("com.github.reown-com:yttrium-wcpay:unspecified")
-    implementation("com.github.reown-com.yttrium:yttrium-wcpay:0.10.17") {
+    implementation("com.github.reown-com.yttrium:yttrium-wcpay:0.10.29") {
         exclude(group: 'net.java.dev.jna', module: 'jna')
     }
     implementation("net.java.dev.jna:jna:5.17.0@aar")
