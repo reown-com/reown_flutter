@@ -359,7 +359,11 @@ class TonService {
     if (address.contains(':')) {
       final parts = address.split(':');
       if (parts.length == 2 && int.tryParse(parts[0]) != null) {
-        return '${parts[0]}:${parts[1].toLowerCase()}';
+        final hexPart = parts[1];
+        // Validate hex part contains only valid hex characters
+        if (RegExp(r'^[0-9a-fA-F]+$').hasMatch(hexPart)) {
+          return '${parts[0]}:${hexPart.toLowerCase()}';
+        }
       }
     }
 
