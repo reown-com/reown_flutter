@@ -30,7 +30,7 @@ PODS:
     - Flutter
   - walletconnect_pay (0.0.1):
     - Flutter
-    - YttriumWrapper (~> 0.10)
+    - YttriumWrapper (= 0.10.31)
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -106,6 +106,6 @@ SPEC CHECKSUMS:
   YttriumUtilsWrapper: 2ea5f95a061f642004859f4565b8e86f0a974e5d
   YttriumWrapper: c951f1ef208f7fe876348c47f69827fd5e3da9f1
 
-PODFILE CHECKSUM: 0772a2bd8cd4c7aaeb2576ddfaf6b03be722593b
+PODFILE CHECKSUM: 6f04bd8bad3200377a7456b3b14a877fb4b2f5b4
 
 COCOAPODS: 1.16.2

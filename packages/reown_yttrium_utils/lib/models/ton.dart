@@ -24,6 +24,23 @@ sealed class TonIdentity with _$TonIdentity {
       _$TonIdentityFromJson(json);
 }
 
+/// TON session properties for WalletConnect session approval.
+/// These properties are required by TON Connect for signature verification
+/// and wallet address computation.
+@freezed
+sealed class TonSessionProperties with _$TonSessionProperties {
+  const factory TonSessionProperties({
+    /// Hex-encoded Ed25519 public key
+    required String publicKey,
+
+    /// Base64-encoded StateInit BOC (Bag of Cells)
+    required String stateInit,
+  }) = _TonSessionProperties;
+
+  factory TonSessionProperties.fromJson(Map<String, dynamic> json) =>
+      _$TonSessionPropertiesFromJson(json);
+}
+
 @freezed
 sealed class TonMessage with _$TonMessage {
   const factory TonMessage({

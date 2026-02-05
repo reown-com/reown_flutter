@@ -96,6 +96,27 @@ class MethodChannelTon {
     }
   }
 
+  Future<TonSessionProperties> getSessionProperties({
+    required String networkId,
+    required TonKeyPair keyPair,
+  }) async {
+    try {
+      final dynamic result = await methodChannel.invokeMethod<dynamic>(
+        'ton_getSessionProperties',
+        {
+          'networkId': _chainMapper[networkId],
+          'sk': keyPair.sk,
+          'pk': keyPair.pk,
+        },
+      );
+      final parsedResult = ChannelUtils.handlePlatformResult(result);
+      return TonSessionProperties.fromJson(parsedResult);
+    } on PlatformException catch (e) {
+      debugPrint('[$runtimeType] ton_getSessionProperties $e');
+      rethrow;
+    }
+  }
+
   Future<String> signData({
     required String text,
     required String networkId,

@@ -47,6 +47,13 @@ class TonClient {
     );
   }
 
+  Future<TonSessionProperties> getSessionProperties(TonKeyPair keyPair) async {
+    return await ReownYttriumUtils.tonClient.getSessionProperties(
+      networkId: networkId,
+      keyPair: keyPair,
+    );
+  }
+
   Future<String> signData({
     required String text,
     required TonKeyPair keyPair,

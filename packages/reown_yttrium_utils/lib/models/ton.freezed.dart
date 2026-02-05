@@ -536,6 +536,270 @@ as String,
 
 
 /// @nodoc
+mixin _$TonSessionProperties {
+
+/// Hex-encoded Ed25519 public key
+ String get publicKey;/// Base64-encoded StateInit BOC (Bag of Cells)
+ String get stateInit;
+/// Create a copy of TonSessionProperties
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TonSessionPropertiesCopyWith<TonSessionProperties> get copyWith => _$TonSessionPropertiesCopyWithImpl<TonSessionProperties>(this as TonSessionProperties, _$identity);
+
+  /// Serializes this TonSessionProperties to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TonSessionProperties&&(identical(other.publicKey, publicKey) || other.publicKey == publicKey)&&(identical(other.stateInit, stateInit) || other.stateInit == stateInit));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,publicKey,stateInit);
+
+@override
+String toString() {
+  return 'TonSessionProperties(publicKey: $publicKey, stateInit: $stateInit)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $TonSessionPropertiesCopyWith<$Res>  {
+  factory $TonSessionPropertiesCopyWith(TonSessionProperties value, $Res Function(TonSessionProperties) _then) = _$TonSessionPropertiesCopyWithImpl;
+@useResult
+$Res call({
+ String publicKey, String stateInit
+});
+
+
+
+
+}
+/// @nodoc
+class _$TonSessionPropertiesCopyWithImpl<$Res>
+    implements $TonSessionPropertiesCopyWith<$Res> {
+  _$TonSessionPropertiesCopyWithImpl(this._self, this._then);
+
+  final TonSessionProperties _self;
+  final $Res Function(TonSessionProperties) _then;
+
+/// Create a copy of TonSessionProperties
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? publicKey = null,Object? stateInit = null,}) {
+  return _then(_self.copyWith(
+publicKey: null == publicKey ? _self.publicKey : publicKey // ignore: cast_nullable_to_non_nullable
+as String,stateInit: null == stateInit ? _self.stateInit : stateInit // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [TonSessionProperties].
+extension TonSessionPropertiesPatterns on TonSessionProperties {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _TonSessionProperties value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _TonSessionProperties() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _TonSessionProperties value)  $default,){
+final _that = this;
+switch (_that) {
+case _TonSessionProperties():
+return $default(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _TonSessionProperties value)?  $default,){
+final _that = this;
+switch (_that) {
+case _TonSessionProperties() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String publicKey,  String stateInit)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _TonSessionProperties() when $default != null:
+return $default(_that.publicKey,_that.stateInit);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String publicKey,  String stateInit)  $default,) {final _that = this;
+switch (_that) {
+case _TonSessionProperties():
+return $default(_that.publicKey,_that.stateInit);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String publicKey,  String stateInit)?  $default,) {final _that = this;
+switch (_that) {
+case _TonSessionProperties() when $default != null:
+return $default(_that.publicKey,_that.stateInit);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _TonSessionProperties implements TonSessionProperties {
+  const _TonSessionProperties({required this.publicKey, required this.stateInit});
+  factory _TonSessionProperties.fromJson(Map<String, dynamic> json) => _$TonSessionPropertiesFromJson(json);
+
+/// Hex-encoded Ed25519 public key
+@override final  String publicKey;
+/// Base64-encoded StateInit BOC (Bag of Cells)
+@override final  String stateInit;
+
+/// Create a copy of TonSessionProperties
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TonSessionPropertiesCopyWith<_TonSessionProperties> get copyWith => __$TonSessionPropertiesCopyWithImpl<_TonSessionProperties>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TonSessionPropertiesToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _TonSessionProperties&&(identical(other.publicKey, publicKey) || other.publicKey == publicKey)&&(identical(other.stateInit, stateInit) || other.stateInit == stateInit));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,publicKey,stateInit);
+
+@override
+String toString() {
+  return 'TonSessionProperties(publicKey: $publicKey, stateInit: $stateInit)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$TonSessionPropertiesCopyWith<$Res> implements $TonSessionPropertiesCopyWith<$Res> {
+  factory _$TonSessionPropertiesCopyWith(_TonSessionProperties value, $Res Function(_TonSessionProperties) _then) = __$TonSessionPropertiesCopyWithImpl;
+@override @useResult
+$Res call({
+ String publicKey, String stateInit
+});
+
+
+
+
+}
+/// @nodoc
+class __$TonSessionPropertiesCopyWithImpl<$Res>
+    implements _$TonSessionPropertiesCopyWith<$Res> {
+  __$TonSessionPropertiesCopyWithImpl(this._self, this._then);
+
+  final _TonSessionProperties _self;
+  final $Res Function(_TonSessionProperties) _then;
+
+/// Create a copy of TonSessionProperties
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? publicKey = null,Object? stateInit = null,}) {
+  return _then(_TonSessionProperties(
+publicKey: null == publicKey ? _self.publicKey : publicKey // ignore: cast_nullable_to_non_nullable
+as String,stateInit: null == stateInit ? _self.stateInit : stateInit // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
 mixin _$TonMessage {
 
  String get address; String get amount; String? get payload; String? get stateInit;
