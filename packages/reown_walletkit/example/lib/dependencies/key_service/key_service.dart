@@ -514,6 +514,7 @@ class KeyService extends IKeyService {
         privateKey: keyPair.sk,
         publicKey: keyPair.pk,
         address: address.friendlyEq,
+        addressRaw: '${address.workchain}:${address.rawHex}',
         namespace: 'ton',
       );
     } catch (e, s) {

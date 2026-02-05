@@ -284,7 +284,18 @@ class TonService {
     }
     final keys =
         GetIt.I<IKeyService>().getKeysForChain(chainSupported.chainId);
-    if (from != keys[0].address) {
+    final walletKey = keys[0];
+
+    // Compare addresses - dApps may send raw format (0:hex) or any friendly format
+    // Try to normalize both to raw format for comparison
+    final fromRaw = _toRawAddress(from);
+    final walletRaw = walletKey.addressRaw ?? _toRawAddress(walletKey.address);
+
+    final isMatch = from == walletKey.address ||
+        from == walletKey.addressRaw ||
+        (fromRaw != null && walletRaw != null && fromRaw == walletRaw);
+
+    if (!isMatch) {
       throw TonValidationError('From address does not match wallet');
     }
 
@@ -337,6 +348,41 @@ class TonService {
     }
     if (params['text'] is! String) {
       throw TonValidationError('Text payload must have a "text" string');
+    }
+  }
+
+  /// Converts any TON address format to raw format for comparison.
+  /// Handles both raw format (0:hex) and friendly format (base64).
+  /// Returns normalized raw format: {workchain}:{lowercase_hex}
+  String? _toRawAddress(String address) {
+    // Try raw format first (workchain:hex)
+    if (address.contains(':')) {
+      final parts = address.split(':');
+      if (parts.length == 2 && int.tryParse(parts[0]) != null) {
+        return '${parts[0]}:${parts[1].toLowerCase()}';
+      }
+    }
+
+    // Try friendly format (base64 encoded)
+    // TON friendly address structure: 1 byte flags + 1 byte workchain + 32 bytes hash + 2 bytes CRC
+    // Total: 36 bytes -> 48 base64 chars
+    try {
+      // Handle URL-safe base64 (replace - with + and _ with /)
+      final normalizedBase64 =
+          address.replaceAll('-', '+').replaceAll('_', '/');
+      final decoded = base64.decode(normalizedBase64);
+
+      if (decoded.length != 36) return null;
+
+      // Byte 1 is workchain (signed int8)
+      final workchain = decoded[1] < 128 ? decoded[1] : decoded[1] - 256;
+      // Bytes 2-33 are the hash
+      final hashBytes = decoded.sublist(2, 34);
+      final hashHex = hex.encode(hashBytes);
+
+      return '$workchain:$hashHex';
+    } catch (_) {
+      return null;
     }
   }
 }
