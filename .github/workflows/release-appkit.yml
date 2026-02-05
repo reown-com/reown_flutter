@@ -24,6 +24,8 @@ on:
         required: false
         type: string
 
+permissions: {}
+
 jobs:
   android:
     if: inputs.platform == 'android'
