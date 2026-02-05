@@ -21,10 +21,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Set up environment 
+      # Set up environment
       - uses: ./.github/actions/dependencies
         with:
           platform: 'android'
+
+      # Setup Firebase CLI with service account
+      - name: Setup Firebase
+        run: |
+          npm install -g firebase-tools@13.0.1
+          echo '${{ secrets.GSA_KEY }}' > ${{ runner.temp }}/gcp_key.json
+          chmod 600 ${{ runner.temp }}/gcp_key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=${{ runner.temp }}/gcp_key.json" >> $GITHUB_ENV
 
       # Add Secrets file on wallet
       - name: Add Secrets file
@@ -35,28 +43,75 @@ jobs:
       - name: Add Keystore file
         working-directory: packages/reown_walletkit/example/android
         run: echo "${{ secrets.KEYSTORE }}" | base64 --decode >> app/debug.keystore
-      
+
       # Fastlane
       - name: Fastlane
+        id: fastlane
         working-directory: packages/reown_walletkit/example/android
         env:
           FLAVOR: "internal"
+          PROJECT_NAME: "WalletKit Flutter"
           PROJECT_ID: ${{ secrets.WALLET_PROJECT_ID }}
           WALLET_SENTRY_DSN: ${{ secrets.WALLET_SENTRY_DSN }}
           WCP_API_KEY: ${{ secrets.WCP_API_KEY }}
-          SLACK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_WALLET_ID: ${{ secrets.FIREBASE_WALLET_ID_INTERNAL }}
           DOWNLOAD_URL: ${{ secrets.DOWNLOAD_URL_WALLET_INTERNAL }}
         run: |
-          PUBSPEC_FILE=../../pubspec.yaml
-          FILE_VALUE=$(echo | grep "^version: " $PUBSPEC_FILE)
+          PUBSPEC_FILE=../pubspec.yaml
+          FILE_VALUE=$(grep "^version: " $PUBSPEC_FILE)
           PARTS=(${FILE_VALUE//:/ })
           FULL_VERSION=${PARTS[1]}
-          VERSION_NUMBER=(${FULL_VERSION//-/ })
+          VERSION_NUMBER=${FULL_VERSION%%-*}
 
           fastlane add_plugin firebase_app_distribution
           fastlane release_firebase project_id:$PROJECT_ID app_version:$VERSION_NUMBER
+
+      # Send Slack notification
+      - name: Send Slack notification
+        if: always() && !cancelled()
+        uses: slackapi/slack-github-action@v2.1.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "Android Build Report - ${{ env.PROJECT_NAME }} - ${{ env.FLAVOR }}",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": { "type": "plain_text", "text": "🤖 Android Build Report" }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Project:*\n`${{ env.PROJECT_NAME }}`" },
+                    { "type": "mrkdwn", "text": "*Release Type:*\n`${{ env.FLAVOR }}`" },
+                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Build & Firebase:*\n`${{ steps.fastlane.outcome == 'success' && '✅ Success' || '❌ Failed' }}`" },
+                    { "type": "mrkdwn", "text": "*Overall Status:*\n`${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}`" }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "View Workflow Run" },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }${{ steps.fastlane.outcome == 'success' && env.DOWNLOAD_URL != '' && format(',{{"type":"button","text":{{"type":"plain_text","text":"View in Firebase"}},"url":"{0}"}}', env.DOWNLOAD_URL) || '' }}
+                  ]
+                }
+              ]
+            }
+        env:
+          PROJECT_NAME: "WalletKit Flutter"
+          FLAVOR: "internal"
+          DOWNLOAD_URL: ${{ secrets.DOWNLOAD_URL_WALLET_INTERNAL }}
 
 # Launch locally
 # Remove build: if:

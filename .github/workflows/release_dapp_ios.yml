@@ -21,6 +21,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Setup SSH for Match certificates repository
+      - name: Setup SSH for Match
+        uses: webfactory/ssh-agent@dc588b651fe13675774614f8e6a936a468676387 # v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.MATCH_SSH_KEY }}
+
       # Cache
       - name: Cache
         uses: actions/cache@v3
@@ -45,21 +51,24 @@ jobs:
           PROJECT_ID: ${{ secrets.DAPP_PROJECT_ID }}
           DAPP_SENTRY_DSN: ${{ secrets.DAPP_SENTRY_DSN_PROD }}
         run: |
-          PUBSPEC_FILE=../../pubspec.yaml
-          FILE_VALUE=$(echo | grep "^version: " $PUBSPEC_FILE)
+          PUBSPEC_FILE=pubspec.yaml
+          FILE_VALUE=$(grep "^version: " $PUBSPEC_FILE)
           PARTS=(${FILE_VALUE//:/ })
           FULL_VERSION=${PARTS[1]}
-          VERSION_NUMBER=(${FULL_VERSION//-/ })
+          VERSION_NUMBER=${FULL_VERSION%%-*}
 
-          flutter build ios --flavor production --build-name 3.0.0 --dart-define="PROJECT_ID=$PROJECT_ID" --dart-define="DAPP_SENTRY_DSN=$DAPP_SENTRY_DSN" --config-only --release
-        
+          flutter build ios --flavor production --build-name $VERSION_NUMBER --dart-define="PROJECT_ID=$PROJECT_ID" --dart-define="DAPP_SENTRY_DSN=$DAPP_SENTRY_DSN" --config-only --release
+
       - name: Set Xcode Version
         run: sudo xcode-select -s /Applications/Xcode_26.1.app
 
       # Fastlane
       - name: Fastlane
+        id: fastlane
         working-directory: packages/reown_appkit/example/base/ios
         env:
+          FLAVOR: "production"
+          PROJECT_NAME: "AppKit Flutter"
           BUNDLE_ID: "com.walletconnect.flutterdapp"
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_DAPP_ID: ${{ secrets.APPLE_DAPP_ID }}
@@ -67,19 +76,64 @@ jobs:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           APP_STORE_KEY_ID: ${{ secrets.APP_STORE_KEY_ID }}
           APPLE_ISSUER_ID: ${{ secrets.APPLE_ISSUER_ID }}
-          GH_BASIC_AUTH: ${{ secrets.GH_BASIC_AUTH }}
           APP_STORE_CONNECT_KEY: ${{ secrets.APP_STORE_CONNECT_KEY }}
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
-          SLACK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           TESTFLIGHT_URL: ${{ secrets.TESTFLIGHT_URL_DAPP }}
         run: |
-          PUBSPEC_FILE=../../../pubspec.yaml
-          FILE_VALUE=$(echo | grep "^version: " $PUBSPEC_FILE)
+          PUBSPEC_FILE=../pubspec.yaml
+          FILE_VALUE=$(grep "^version: " $PUBSPEC_FILE)
           PARTS=(${FILE_VALUE//:/ })
           FULL_VERSION=${PARTS[1]}
-          VERSION_NUMBER=(${FULL_VERSION//-/ })
+          VERSION_NUMBER=${FULL_VERSION%%-*}
 
-          fastlane release_testflight username:$APPLE_ID token:$GH_BASIC_AUTH project_id:$PROJECT_ID app_id:$APPLE_DAPP_ID app_store_key_id:$APP_STORE_KEY_ID apple_issuer_id:$APPLE_ISSUER_ID match_git_url:$MATCH_GIT_URL app_version:$VERSION_NUMBER flavor:production
+          fastlane release_testflight username:$APPLE_ID project_id:$PROJECT_ID app_id:$APPLE_DAPP_ID app_store_key_id:$APP_STORE_KEY_ID apple_issuer_id:$APPLE_ISSUER_ID match_git_url:$MATCH_GIT_URL app_version:$VERSION_NUMBER flavor:production
+
+      # Send Slack notification
+      - name: Send Slack notification
+        if: always() && !cancelled()
+        uses: slackapi/slack-github-action@v2.1.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "iOS Build Report - ${{ env.PROJECT_NAME }} - ${{ env.FLAVOR }}",
+              "blocks": [
+                {
+                  "type": "header",
+                  "text": { "type": "plain_text", "text": "🍎 iOS Build Report" }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Project:*\n`${{ env.PROJECT_NAME }}`" },
+                    { "type": "mrkdwn", "text": "*Release Type:*\n`${{ env.FLAVOR }}`" },
+                    { "type": "mrkdwn", "text": "*Branch:*\n`${{ github.ref_name }}`" }
+                  ]
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    { "type": "mrkdwn", "text": "*Build & TestFlight:*\n`${{ steps.fastlane.outcome == 'success' && '✅ Success' || '❌ Failed' }}`" },
+                    { "type": "mrkdwn", "text": "*Overall Status:*\n`${{ job.status == 'success' && '✅ Success' || '❌ Failed' }}`" }
+                  ]
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": { "type": "plain_text", "text": "View Workflow Run" },
+                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }${{ steps.fastlane.outcome == 'success' && env.TESTFLIGHT_URL != '' && format(',{{"type":"button","text":{{"type":"plain_text","text":"View in TestFlight"}},"url":"{0}"}}', env.TESTFLIGHT_URL) || '' }}
+                  ]
+                }
+              ]
+            }
+        env:
+          PROJECT_NAME: "AppKit Flutter"
+          FLAVOR: "production"
+          TESTFLIGHT_URL: ${{ secrets.TESTFLIGHT_URL_DAPP }}
 
 # Launch locally
 # act -j build --container-architecture linux/amd64 -P macos-26=-self-hosted --secret-file .github/workflows/.env.secret -W .github/workflows/release_dapp_ios.yml

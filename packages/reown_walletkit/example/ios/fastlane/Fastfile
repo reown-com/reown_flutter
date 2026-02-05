@@ -51,9 +51,7 @@ platform :ios do
     setup_ci
 
     match_password = ENV['MATCH_PASSWORD']
-    slack_url = ENV['SLACK_URL']
     app_identifier = ENV['BUNDLE_ID']
-    _testflight_url = ENV['TESTFLIGHT_URL']
 
     api_key = app_store_connect_api_key(
       key_id: options[:app_store_key_id],
@@ -68,7 +66,6 @@ platform :ios do
       type: "appstore",
       app_identifier: "#{app_identifier}",
       git_url: options[:match_git_url],
-      git_basic_authorization: options[:token],
       api_key: api_key,
       include_all_certificates: true,
       force_for_new_devices: true,
@@ -118,7 +115,7 @@ platform :ios do
       fi
     ''')
 
-    _app_version = "3.0.0" #"options[:app_version]"
+    _app_version = "#{options[:app_version]}"
 
     changelog = read_changelog
 
@@ -134,23 +131,6 @@ platform :ios do
       beta_app_feedback_email: "alfredo@reown.com",
       beta_app_description: "WalletKit sample app",
       groups: ["External Testers"]
-    )
-
-    slack(
-      message: ":reown-walletkit: 🍎 WalletKit Flutter iOS Sample #{_app_version}-#{_flavor} (#{new_build_number}) successfully released!\n\n",
-      default_payloads: [],
-      attachment_properties: {
-        fields: [
-          {
-            title: "CHANGELOG",
-            value: changelog,
-          },
-          {
-            title: "LINK",
-            value: "#{_testflight_url}",
-          },
-        ]
-      }
     )
 
     clean_build_artifacts()
