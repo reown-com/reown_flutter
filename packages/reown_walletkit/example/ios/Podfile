@@ -1,3 +1,6 @@
+# Use git source to avoid CDN propagation delays
+source 'https://github.com/CocoaPods/Specs.git'
+
 # Uncomment this line to define a global platform for your project
 platform :ios, '13.0'
 

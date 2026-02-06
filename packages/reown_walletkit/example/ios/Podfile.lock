@@ -14,9 +14,9 @@ PODS:
     - MTBBarcodeScanner
   - reown_yttrium_utils (0.0.1):
     - Flutter
-    - YttriumUtilsWrapper (= 0.10.30)
+    - YttriumUtilsWrapper (= 0.10.33)
   - Sentry/HybridSDK (8.56.2)
-  - sentry_flutter (9.10.0):
+  - sentry_flutter (9.12.0):
     - Flutter
     - FlutterMacOS
     - Sentry/HybridSDK (= 8.56.2)
@@ -34,7 +34,7 @@ PODS:
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
     - FlutterMacOS
-  - YttriumUtilsWrapper (0.10.30)
+  - YttriumUtilsWrapper (0.10.33)
   - YttriumWrapper (0.10.31)
 
 DEPENDENCIES:
@@ -53,7 +53,7 @@ DEPENDENCIES:
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/darwin`)
 
 SPEC REPOS:
-  trunk:
+  https://github.com/CocoaPods/Specs.git:
     - MTBBarcodeScanner
     - Sentry
     - YttriumUtilsWrapper
@@ -95,17 +95,17 @@ SPEC CHECKSUMS:
   package_info_plus: af8e2ca6888548050f16fa2f1938db7b5a5df499
   qr_bar_code_scanner_dialog: a4cb7ad7201cbf8b888f3e6e58972b611ac43b28
   qr_code_scanner: d77f94ecc9abf96d9b9b8fc04ef13f611e5a147a
-  reown_yttrium_utils: e18e2133d6ce15a687675e71c02cf110c475813c
+  reown_yttrium_utils: f1eab97119ca83d2c4a13718019c94496060863e
   Sentry: b53951377b78e21a734f5dc8318e333dbfc682d7
-  sentry_flutter: da39d10e3f2f3e060eebc9d7ecea027d34443d66
+  sentry_flutter: 26f4615de8bdc741318397fdc78ba3e4e08df07f
   shared_preferences_foundation: 7036424c3d8ec98dfe75ff1667cb0cd531ec82bb
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   url_launcher_ios: 7a95fa5b60cc718a708b8f2966718e93db0cef1b
-  walletconnect_pay: 95286bfaa3d0926695e350b7408de167cc8a298b
+  walletconnect_pay: df5449d1a7f9caf4f7f05e8c7da266c1fdebb1d1
   webview_flutter_wkwebview: 8ebf4fded22593026f7dbff1fbff31ea98573c8d
-  YttriumUtilsWrapper: 2ea5f95a061f642004859f4565b8e86f0a974e5d
+  YttriumUtilsWrapper: 67c9e33159131d0625f86c5cb3cad83d45b045f1
   YttriumWrapper: c951f1ef208f7fe876348c47f69827fd5e3da9f1
 
-PODFILE CHECKSUM: 6f04bd8bad3200377a7456b3b14a877fb4b2f5b4
+PODFILE CHECKSUM: f15d300013bf3f49206576bb82c1d46cc60fd0fe
 
 COCOAPODS: 1.16.2

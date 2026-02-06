@@ -355,43 +355,101 @@ Several packages depend on **Yttrium**, a Rust-based library that provides chain
 
 **IMPORTANT:** iOS and Android use different Yttrium artifacts with potentially different versions. Always ensure both platforms are using compatible versions that include the required API features.
 
-### Updating Yttrium When API Changes
+### Updating Yttrium Versions
 
-When the Yttrium/Pay API adds new fields or changes response structures, you must update multiple files:
+#### Step 1: Update Android (Gradle)
 
-**1. Update Native Dependencies (iOS & Android):**
+Edit the `build.gradle` file for the relevant package and change the version in the `implementation` line:
+
+| Package | File | Dependency |
+|---------|------|------------|
+| `reown_yttrium` | `packages/reown_yttrium/android/build.gradle` | `com.github.reown-com.yttrium:yttrium:X.Y.Z` |
+| `reown_yttrium_utils` | `packages/reown_yttrium_utils/android/build.gradle` | `com.github.reown-com.yttrium:yttrium-utils:X.Y.Z` |
+| `walletconnect_pay` | `packages/walletconnect_pay/android/build.gradle` | `com.github.reown-com.yttrium:yttrium-wcpay:X.Y.Z` |
+
+Android artifacts are hosted on **JitPack** and are usually available immediately after a GitHub release.
+
+#### Step 2: Update iOS (CocoaPods)
+
+Edit the podspec file for the relevant package and change the version in the `s.dependency` line:
+
+| Package | File | Dependency |
+|---------|------|------------|
+| `reown_yttrium` | `packages/reown_yttrium/ios/reown_yttrium.podspec` | `YttriumWrapper` |
+| `reown_yttrium_utils` | `packages/reown_yttrium_utils/ios/reown_yttrium_utils.podspec` | `YttriumUtilsWrapper` |
+| `walletconnect_pay` | `packages/walletconnect_pay/ios/walletconnect_pay.podspec` | `YttriumWrapper` |
+
+**IMPORTANT:** iOS pods must be published to CocoaPods trunk before they can be used. Always verify the version is available before updating:
 
 ```bash
-# iOS - Update podspec files with new YttriumWrapper version
-packages/reown_yttrium/ios/reown_yttrium.podspec
-packages/reown_yttrium_utils/ios/reown_yttrium_utils.podspec
-packages/walletconnect_pay/ios/walletconnect_pay.podspec
-
-# Android - Update build.gradle files with new yttrium version
-packages/reown_yttrium/android/build.gradle
-packages/reown_yttrium_utils/android/build.gradle
-packages/walletconnect_pay/android/build.gradle
+# Check available versions on trunk
+pod trunk info YttriumWrapper
+pod trunk info YttriumUtilsWrapper
 ```
 
-**2. Update Dart Models:**
+#### Step 3: Run Pod Install (iOS)
 
-If the API adds new fields, update the corresponding Dart model in `packages/walletconnect_pay/lib/models/walletconnect_pay_models.dart` and regenerate:
+After updating podspecs, reinstall pods in the example app:
+
+```bash
+cd packages/reown_walletkit/example/ios
+rm Podfile.lock
+pod repo update          # Force refresh the local spec cache
+pod install
+```
+
+**Common Pitfalls:**
+- If `pod install` can't find the new version, run `pod repo update` first to refresh the local CocoaPods spec cache. The `--repo-update` flag on `pod install` does not always fully refresh the CDN cache.
+- iOS and Android use different Yttrium artifacts with potentially different versions. Always ensure both platforms are using compatible versions that include the required API features.
+- If a feature works on Android but not iOS (or vice versa), check that both platforms are using the same Yttrium version.
+
+#### Step 4: Update Dart Models (if API changed)
+
+If the Yttrium/Pay API adds new fields, update the corresponding Dart model in `packages/walletconnect_pay/lib/models/walletconnect_pay_models.dart` and regenerate:
 
 ```bash
 cd packages/walletconnect_pay
 sh generate_files.sh
 ```
 
-**3. Run Pod Update (iOS):**
+### Local Yttrium Development
 
-After updating podspecs, update the example app's pods:
+To test local Yttrium builds before publishing:
 
-```bash
-cd packages/reown_walletkit/example/ios
-pod update YttriumWrapper YttriumUtilsWrapper
+#### Android
+
+1. Build Yttrium locally and publish to Maven local (`~/.m2/repository`)
+2. In the example app's `build.gradle` (`packages/reown_walletkit/example/android/app/build.gradle`), exclude the published artifact and add your local one:
+
+```gradle
+configurations.all {
+    exclude group: 'com.github.reown-com.yttrium', module: 'yttrium-utils'
+}
+
+dependencies {
+    implementation 'com.github.reown-com:yttrium-utils:unspecified'
+}
 ```
 
-**Common Pitfall:** If a feature works on Android but not iOS (or vice versa), check that both platforms are using the same Yttrium version. The iOS podspec and Android build.gradle versions can drift apart.
+**Note:** The local Maven artifact uses a different group ID (`com.github.reown-com`) than the published one (`com.github.reown-com.yttrium`). A simple `resolutionStrategy.force` won't work because the group IDs differ.
+
+#### iOS
+
+1. In the Yttrium repo, modify the podspec (e.g. `YttriumUtilsWrapper.podspec`) to use local paths:
+
+```ruby
+spec.source = { :path => "." }
+spec.vendored_frameworks = "target/ios-utils/libyttrium-utils.xcframework"
+spec.source_files = "platforms/swift/Sources/YttriumUtils/**/*.swift"
+```
+
+2. In the example app's Podfile (`packages/reown_walletkit/example/ios/Podfile`), add a local pod override:
+
+```ruby
+pod 'YttriumUtilsWrapper', :path => '/path/to/yttrium/repo'
+```
+
+3. Run `pod install` in the example app's `ios/` directory
 
 ### Code Style
 
