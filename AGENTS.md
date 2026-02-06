@@ -179,6 +179,10 @@ sh scripts/convert_to_local_deps.sh
 # Convert back to pub.dev dependencies
 sh scripts/convert_to_pub_deps.sh
 
+# Resolve dependencies for a specific package or example app
+cd packages/reown_appkit/example/base
+flutter pub get
+
 # Run WalletKit example
 cd packages/reown_walletkit/example
 flutter run --dart-define="PROJECT_ID=0123..." --flavor internal

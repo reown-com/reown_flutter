@@ -108,8 +108,8 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
   void _loopOnDepositStatusCheck(String sessionId) async {
     _dweService.loopOnDepositStatusCheck(widget.exchange.id, sessionId, (
       statusCheckResult,
-    ) {
-      _processStatus(statusCheckResult);
+    ) async {
+      await _processStatus(statusCheckResult);
     });
   }
 
@@ -117,14 +117,16 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
     final requestId = widget.quoteResult.steps.first.requestId;
     _dweService.loopOnTransferStatusCheck(widget.exchange.id, requestId, (
       statusCheckResult,
-    ) {
-      _processStatus(statusCheckResult);
+    ) async {
+      await _processStatus(statusCheckResult);
     });
   }
 
   QuoteStatus _quoteStatus = QuoteStatus.waiting;
 
-  void _processStatus((QuoteStatus status, dynamic data) statusCheckResult) {
+  Future<void> _processStatus(
+    (QuoteStatus status, dynamic data) statusCheckResult,
+  ) async {
     debugPrint('[$runtimeType] _processStatus ${statusCheckResult.$1.name}');
     _quoteStatus = statusCheckResult.$1;
     final appKitModal = ModalProvider.of(context).instance;
@@ -132,12 +134,24 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
       appKitModal.onDepositSuccess.broadcast(
         DepositSuccessEvent(widget.exchange),
       );
+      // Trigger rebuild to show checkmarks before the delayed navigation
+      setState(() {});
+      await Future.delayed(const Duration(milliseconds: 400));
+      if (!mounted) return;
+      await appKitModal.loadAccountData();
+      final widgetStack = GetIt.I<IWidgetStack>();
+      if (widgetStack.containsKey(KeyConstants.walletFeaturesPage)) {
+        widgetStack.popUntil(KeyConstants.walletFeaturesPage);
+      } else if (widgetStack.containsKey(KeyConstants.eoAccountPage)) {
+        widgetStack.popUntil(KeyConstants.eoAccountPage);
+      }
       GetIt.I<IToastService>().show(
         ToastMessage(
           type: ToastType.success,
-          text: statusCheckResult.$1.name.toUpperCase(),
+          text: 'Deposit successful',
         ),
       );
+      return;
     }
     if (_quoteStatus.isError) {
       GetIt.I<IToastService>().show(
@@ -328,6 +342,19 @@ class _PaymentDetails extends StatelessWidget {
   final QuoteStatus status;
   final bool depositError;
 
+  Widget _inactiveDot(ReownAppKitModalColors themeColors) {
+    return Center(
+      child: Container(
+        width: 6,
+        height: 6,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: themeColors.foreground300,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
@@ -393,8 +420,10 @@ class _PaymentDetails extends StatelessWidget {
               dimension: 15,
               child: Builder(
                 builder: (_) {
-                  if (status == QuoteStatus.waiting ||
-                      status == QuoteStatus.pending) {
+                  if (status == QuoteStatus.waiting) {
+                    return _inactiveDot(themeColors);
+                  }
+                  if (status == QuoteStatus.pending) {
                     return CircularProgressIndicator(strokeWidth: 1.0);
                   }
                   if (isError) {
@@ -434,7 +463,7 @@ class _PaymentDetails extends StatelessWidget {
                   if (isError) {
                     return Icon(Icons.close, color: themeColors.error100);
                   }
-                  return CircularProgressIndicator(strokeWidth: 1.0);
+                  return _inactiveDot(themeColors);
                 },
               ),
             ),
