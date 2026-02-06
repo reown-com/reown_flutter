@@ -3,6 +3,10 @@
 - Improved deposit-exchange flow
 
 ## 1.8.1
+
+- Added transaction hash support to deposit-exchange status results
+- Fixed recipient address priority in exchange flow
+
 ## 1.8.0
 
 - Deposit From Exchange enhancement: Swapping/Bridging tokens if needed
