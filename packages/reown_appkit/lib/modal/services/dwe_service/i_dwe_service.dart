@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:reown_appkit/modal/services/blockchain_service/models/token_balance.dart';
 import 'package:reown_appkit/modal/services/transfers/models/quote_models.dart';
@@ -38,13 +40,13 @@ abstract class IDWEService {
   void loopOnDepositStatusCheck(
     String exchangeId,
     String sessionId,
-    Function((QuoteStatus status, dynamic data)) completer,
+    FutureOr<void> Function((QuoteStatus status, dynamic data)) completer,
   );
 
   void loopOnTransferStatusCheck(
     String exchangeId,
     String requestId,
-    Function((QuoteStatus status, dynamic data)) completer,
+    FutureOr<void> Function((QuoteStatus status, dynamic data)) completer,
   );
 
   void stopCheckingStatus();

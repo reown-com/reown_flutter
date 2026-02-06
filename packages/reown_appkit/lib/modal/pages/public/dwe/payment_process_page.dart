@@ -139,11 +139,14 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
       await Future.delayed(const Duration(milliseconds: 400));
       if (!mounted) return;
       await appKitModal.loadAccountData();
+      if (!mounted) return;
       final widgetStack = GetIt.I<IWidgetStack>();
       if (widgetStack.containsKey(KeyConstants.walletFeaturesPage)) {
         widgetStack.popUntil(KeyConstants.walletFeaturesPage);
       } else if (widgetStack.containsKey(KeyConstants.eoAccountPage)) {
         widgetStack.popUntil(KeyConstants.eoAccountPage);
+      } else if (widgetStack.containsKey(KeyConstants.depositPageKey)) {
+        widgetStack.popUntil(KeyConstants.depositPageKey);
       }
       GetIt.I<IToastService>().show(
         ToastMessage(
@@ -161,6 +164,7 @@ class _PaymentProcessPageState extends State<PaymentProcessPage> {
         ),
       );
     }
+    if (!mounted) return;
     setState(() {});
   }
 

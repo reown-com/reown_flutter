@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
@@ -163,7 +164,7 @@ class DWEService implements IDWEService {
   void loopOnDepositStatusCheck(
     String exchangeId,
     String sessionId,
-    Function((QuoteStatus status, dynamic data)) completer,
+    FutureOr<void> Function((QuoteStatus status, dynamic data)) completer,
   ) async {
     if (_isLooping) return;
     _isLooping = true;
@@ -186,7 +187,7 @@ class DWEService implements IDWEService {
             currentAttempt++;
             if (currentAttempt < maxAttempts && !_shouldStopLooping) {
               // Keep trying
-              completer.call((quoteStatus, null));
+              await completer.call((quoteStatus, null));
               await Future.delayed(Duration(seconds: 3));
             } else {
               // Max attempts reached or stopped by user, complete with appropriate status
@@ -194,7 +195,7 @@ class DWEService implements IDWEService {
               final statusResult = _shouldStopLooping
                   ? QuoteStatus.failure
                   : QuoteStatus.timeout;
-              completer.call((statusResult, null));
+              await completer.call((statusResult, null));
               break;
             }
           // case QuoteStatus.timeout:
@@ -204,13 +205,13 @@ class DWEService implements IDWEService {
           // case QuoteStatus.submitted:
           default:
             // Either success, submitted, failure, refund, timeout
-            completer.call((quoteStatus, response.txHash));
+            await completer.call((quoteStatus, response.txHash));
             stopCheckingStatus();
             break;
         }
       } catch (e) {
         stopCheckingStatus();
-        completer.call((QuoteStatus.failure, null));
+        await completer.call((QuoteStatus.failure, null));
         break;
       }
     }
@@ -222,7 +223,7 @@ class DWEService implements IDWEService {
   void loopOnTransferStatusCheck(
     String exchangeId,
     String requestId,
-    Function((QuoteStatus status, dynamic data)) completer,
+    FutureOr<void> Function((QuoteStatus status, dynamic data)) completer,
   ) async {
     // return loopOnStatusUnhappyPathMock2(exchangeId, requestId, completer);
 
@@ -244,7 +245,7 @@ class DWEService implements IDWEService {
             currentAttempt++;
             if (currentAttempt < maxAttempts && !_shouldStopLooping) {
               // Keep trying
-              completer.call((quoteStatus, null));
+              await completer.call((quoteStatus, null));
               await Future.delayed(Duration(seconds: waitingInterval));
             } else {
               // Max attempts reached or stopped by user, complete with appropriate status
@@ -252,7 +253,7 @@ class DWEService implements IDWEService {
               final statusResult = _shouldStopLooping
                   ? QuoteStatus.failure
                   : QuoteStatus.timeout;
-              completer.call((statusResult, null));
+              await completer.call((statusResult, null));
               break;
             }
           // case QuoteStatus.timeout:
@@ -262,13 +263,13 @@ class DWEService implements IDWEService {
           // case QuoteStatus.submitted:
           default:
             // Either success, submitted, failure, refund, timeout
-            completer.call((quoteStatus, response.txHash));
+            await completer.call((quoteStatus, response.txHash));
             stopCheckingStatus();
             break;
         }
       } catch (e) {
         stopCheckingStatus();
-        completer.call((QuoteStatus.failure, null));
+        await completer.call((QuoteStatus.failure, null));
         break;
       }
     }
