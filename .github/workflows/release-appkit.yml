@@ -29,7 +29,7 @@ permissions: {}
 jobs:
   android:
     if: inputs.platform == 'android'
-    uses: reown-com/reown_flutter/.github/workflows/release-android-base.yml@simplify-sample-ci
+    uses: ./.github/workflows/release-android-base.yml
     with:
       app-name: 'AppKit Flutter'
       working-directory: 'packages/reown_appkit/example/base'
@@ -45,7 +45,7 @@ jobs:
 
   ios:
     if: inputs.platform == 'ios'
-    uses: reown-com/reown_flutter/.github/workflows/release-ios-base.yml@simplify-sample-ci
+    uses: ./.github/workflows/release-ios-base.yml
     with:
       app-name: 'AppKit Flutter'
       working-directory: 'packages/reown_appkit/example/base'
