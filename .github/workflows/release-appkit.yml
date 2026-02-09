@@ -1,0 +1,33 @@
+name: Release AppKit
+
+run-name: "AppKit - ${{ inputs.platform == 'ios' && '🍎 iOS' || '🤖 Android' }} (${{ inputs.release-type }})"
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform:
+        description: 'Platform to build'
+        required: true
+        type: choice
+        options:
+          - android
+          - ios
+      release-type:
+        description: 'Release type'
+        required: true
+        type: choice
+        options:
+          - internal
+          - production
+      release-notes:
+        description: 'Custom release notes (optional, defaults to branch name)'
+        required: false
+        type: string
+
+permissions: {}
+
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Placeholder - will be replaced by PR #340"
