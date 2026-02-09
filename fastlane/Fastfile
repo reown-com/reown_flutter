@@ -49,8 +49,11 @@ platform :ios do
     number = latest_testflight_build_number(
       app_identifier: app_identifier,
       api_key: api_key,
+      version: '*',
+      platform: 'ios',
     )
     new_build_number = number.to_i + 1
+    UI.message("📦 Latest TestFlight build number: #{number} → new build number: #{new_build_number}")
 
     _flavor = options[:flavor]
     _app_version = options[:app_version]
