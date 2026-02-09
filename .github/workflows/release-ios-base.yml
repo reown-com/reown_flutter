@@ -84,7 +84,7 @@ jobs:
           SENTRY_DSN: ${{ secrets[inputs.sentry-dsn-secret] }}
           WCP_API_KEY: ${{ secrets[inputs.wcp-api-key-secret] }}
         run: |
-          VERSION=$(grep "^version: " ${{ inputs.pubspec-path }} | cut -d' ' -f2 | cut -d'-' -f1)
+          VERSION=$(grep "^version: " ${{ inputs.pubspec-path }} | cut -d' ' -f2 | cut -d'+' -f1 | cut -d'-' -f1)
 
           BUILD_ARGS="--flavor ${{ inputs.flavor }}"
           BUILD_ARGS="$BUILD_ARGS --build-name $VERSION"
@@ -120,7 +120,7 @@ jobs:
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
         working-directory: fastlane
         run: |
-          VERSION=$(grep "^version: " ../${{ inputs.working-directory }}/${{ inputs.pubspec-path }} | cut -d' ' -f2 | cut -d'-' -f1)
+          VERSION=$(grep "^version: " ../${{ inputs.working-directory }}/${{ inputs.pubspec-path }} | cut -d' ' -f2 | cut -d'+' -f1 | cut -d'-' -f1)
           bundle install
           bundle exec fastlane release_testflight \
             project_id:$PROJECT_ID \
