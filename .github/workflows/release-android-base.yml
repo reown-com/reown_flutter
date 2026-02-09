@@ -74,16 +74,20 @@ jobs:
       - name: Get Build Number
         id: build-number
         run: |
+          echo "Fetching latest release for app: ${{ inputs.firebase-app-id }}"
           JSON=$(firebase appdistribution:releases:list \
             --app ${{ inputs.firebase-app-id }} \
-            --json 2>/dev/null) || JSON="[]"
-          echo "Firebase response type: $(echo "$JSON" | jq -r 'type')"
-          # Handle both array format and {releases: [...]} format
+            --json 2>&1) && echo "Firebase CLI succeeded" || echo "Firebase CLI failed with exit code $?"
+          echo "Raw response (first 500 chars): ${JSON:0:500}"
+          # Firebase CLI --json wraps output in {status, result} envelope
           LATEST=$(echo "$JSON" | jq -r '
-            if type == "array" then .[0].buildVersion // "0"
-            elif .releases then .releases[0].buildVersion // "0"
-            else "0"
-            end') || LATEST="0"
+            # Unwrap Firebase CLI envelope if present
+            (if .result then .result else . end) |
+            # Handle both array and {releases: [...]} formats
+            (if type == "array" then . elif .releases then .releases else [] end) |
+            # Get highest buildVersion across all releases
+            [.[].buildVersion // "0" | tonumber] | max // 0
+          ') || LATEST="0"
           echo "Latest build number: $LATEST"
           echo "number=$((LATEST + 1))" >> $GITHUB_OUTPUT
 
