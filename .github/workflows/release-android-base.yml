@@ -73,14 +73,37 @@ jobs:
 
       - name: Get Build Number
         id: build-number
+        env:
+          APP_ID: ${{ inputs.firebase-app-id }}
         run: |
-          gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-          TOKEN=$(gcloud auth print-access-token)
-          JSON=$(curl -s -H "Authorization: Bearer $TOKEN" \
-            "https://firebaseappdistribution.googleapis.com/v1/projects/-/apps/${{ inputs.firebase-app-id }}/releases?pageSize=100")
-          LATEST=$(echo "$JSON" | jq -r '[.releases[]?.buildVersion // "0" | tonumber] | max // 0') || LATEST="0"
-          echo "Latest build number: $LATEST"
-          echo "number=$((LATEST + 1))" >> $GITHUB_OUTPUT
+          PROJECT_NUMBER=$(echo "$APP_ID" | cut -d':' -f2)
+          ACCESS_TOKEN=$(gcloud auth application-default print-access-token)
+
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            -H "Authorization: Bearer $ACCESS_TOKEN" \
+            "https://firebaseappdistribution.googleapis.com/v1/projects/${PROJECT_NUMBER}/apps/${APP_ID}/releases?pageSize=1&orderBy=createTime%20desc")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -1)
+          BODY=$(echo "$RESPONSE" | head -n -1)
+
+          if [ "$HTTP_CODE" -ne 200 ]; then
+            echo "::warning::Firebase API returned HTTP $HTTP_CODE. Defaulting to build number 1."
+            echo "$BODY"
+            echo "number=1" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          LATEST_BUILD=$(echo "$BODY" | jq -r '.releases[0].buildVersion // "0"')
+
+          if ! [[ "$LATEST_BUILD" =~ ^[0-9]+$ ]]; then
+            echo "::warning::Invalid buildVersion '$LATEST_BUILD'. Defaulting to build number 1."
+            echo "number=1" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          NEW_BUILD=$((LATEST_BUILD + 1))
+          echo "Latest Firebase build: $LATEST_BUILD -> New build: $NEW_BUILD"
+          echo "number=$NEW_BUILD" >> "$GITHUB_OUTPUT"
 
       - name: Build APK
         id: build
