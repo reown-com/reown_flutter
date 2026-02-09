@@ -1,6 +1,6 @@
 name: Release WalletKit
 
-run-name: "WalletKit - ${{ inputs.platform == 'ios' && '🍎 iOS' || '🤖 Android' }} (${{ inputs.release-type }})"
+run-name: "WalletKit - ${{ inputs.platform == 'both' && '🍎+🤖 Both' || (inputs.platform == 'ios' && '🍎 iOS' || '🤖 Android') }} (${{ inputs.release-type }})"
 
 on:
   workflow_dispatch:
@@ -10,6 +10,7 @@ on:
         required: true
         type: choice
         options:
+          - both
           - android
           - ios
       release-type:
@@ -29,7 +30,7 @@ permissions:
 
 jobs:
   android:
-    if: inputs.platform == 'android'
+    if: inputs.platform == 'android' || inputs.platform == 'both'
     uses: ./.github/workflows/release-android-base.yml
     with:
       app-name: 'WalletKit Flutter'
@@ -45,7 +46,7 @@ jobs:
     secrets: inherit
 
   ios:
-    if: inputs.platform == 'ios'
+    if: inputs.platform == 'ios' || inputs.platform == 'both'
     uses: ./.github/workflows/release-ios-base.yml
     with:
       app-name: 'WalletKit Flutter'
