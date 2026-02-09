@@ -58,7 +58,8 @@ jobs:
       - name: Setup Firebase
         # Note: Key file is written to runner.temp which is automatically cleaned up after job
         run: |
-          echo "${{ secrets.GSA_KEY }}" > ${{ runner.temp }}/gcp_key.json
+          echo '${{ secrets.GSA_KEY }}' > ${{ runner.temp }}/gcp_key.json
+          chmod 600 ${{ runner.temp }}/gcp_key.json
           echo "GOOGLE_APPLICATION_CREDENTIALS=${{ runner.temp }}/gcp_key.json" >> $GITHUB_ENV
           npm install -g firebase-tools
 
