@@ -74,9 +74,17 @@ jobs:
       - name: Get Build Number
         id: build-number
         run: |
-          LATEST=$(firebase appdistribution:releases:list \
+          JSON=$(firebase appdistribution:releases:list \
             --app ${{ inputs.firebase-app-id }} \
-            --json 2>/dev/null | jq -r '.[0].buildVersion // "0"') || LATEST="0"
+            --json 2>/dev/null) || JSON="[]"
+          echo "Firebase response type: $(echo "$JSON" | jq -r 'type')"
+          # Handle both array format and {releases: [...]} format
+          LATEST=$(echo "$JSON" | jq -r '
+            if type == "array" then .[0].buildVersion // "0"
+            elif .releases then .releases[0].buildVersion // "0"
+            else "0"
+            end') || LATEST="0"
+          echo "Latest build number: $LATEST"
           echo "number=$((LATEST + 1))" >> $GITHUB_OUTPUT
 
       - name: Build APK
