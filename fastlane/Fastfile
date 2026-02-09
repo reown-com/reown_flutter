@@ -52,21 +52,19 @@ platform :ios do
     )
     new_build_number = number.to_i + 1
 
-    increment_build_number(
-      build_number: new_build_number,
-      xcodeproj: xcode_project
-    )
-
     _flavor = options[:flavor]
     _app_version = options[:app_version]
 
+    # Override FLUTTER_BUILD_NUMBER via xcargs (highest precedence).
+    # increment_build_number doesn't work for Flutter because Info.plist
+    # uses $(FLUTTER_BUILD_NUMBER) from Generated.xcconfig.
     gym(
       configuration: "Release-#{_flavor}",
       workspace: xcworkspace,
       scheme: _flavor,
       export_method: "app-store",
       clean: true,
-      xcargs: "PROJECT_ID='#{options[:project_id]}'",
+      xcargs: "PROJECT_ID='#{options[:project_id]}' FLUTTER_BUILD_NUMBER=#{new_build_number} FLUTTER_BUILD_NAME=#{_app_version}",
       output_directory: "build",
       include_symbols: false,
     )
