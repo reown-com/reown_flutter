@@ -108,7 +108,7 @@ jobs:
           XCODE_PROJECT_PATH: ${{ inputs.working-directory }}/ios/Runner.xcodeproj
           XCWORKSPACE_PATH: ${{ inputs.working-directory }}/ios/Runner.xcworkspace
           APP_DESCRIPTION: ${{ inputs.app-description }}
-          RELEASE_NOTES: ${{ inputs.release-notes != '' && inputs.release-notes || format('Branch: {0}', github.ref_name) }}
+          RELEASE_NOTES: "${{ inputs.release-notes != '' && inputs.release-notes || format('Branch: {0}', github.ref_name) }}"
           BUNDLE_ID: ${{ inputs.bundle-id }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_ID: ${{ secrets[inputs.apple-app-id-secret] }}
