@@ -45,7 +45,7 @@ on:
         description: 'Relative path from working-directory to pubspec.yaml'
         required: false
         type: string
-        default: '../pubspec.yaml'
+        default: 'pubspec.yaml'
 
 permissions:
   contents: read

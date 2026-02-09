@@ -40,7 +40,6 @@ jobs:
       project-id-secret: 'DAPP_PROJECT_ID'
       sentry-dsn-secret: ${{ inputs.release-type == 'internal' && 'DAPP_SENTRY_DSN' || 'DAPP_SENTRY_DSN_PROD' }}
       sentry-env-var: 'DAPP_SENTRY_DSN'
-      pubspec-path: '../../pubspec.yaml'
       release-notes: ${{ inputs.release-notes }}
     secrets: inherit
 
@@ -58,6 +57,5 @@ jobs:
       sentry-dsn-secret: ${{ inputs.release-type == 'internal' && 'DAPP_SENTRY_DSN' || 'DAPP_SENTRY_DSN_PROD' }}
       sentry-env-var: 'DAPP_SENTRY_DSN'
       app-description: 'AppKit sample app'
-      pubspec-path: '../../pubspec.yaml'
       release-notes: ${{ inputs.release-notes }}
     secrets: inherit
