@@ -46,11 +46,9 @@ platform :ios do
       verbose: true,
     )
 
+    # Get latest build number (api_key is auto-shared from app_store_connect_api_key above)
     number = latest_testflight_build_number(
       app_identifier: app_identifier,
-      api_key: api_key,
-      version: '*',
-      platform: 'ios',
     )
     new_build_number = number.to_i + 1
     UI.message("📦 Latest TestFlight build number: #{number} → new build number: #{new_build_number}")
