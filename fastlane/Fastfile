@@ -49,6 +49,7 @@ platform :ios do
     number = latest_testflight_build_number(
       app_identifier: app_identifier,
       username: ENV['APPLE_ID'],
+      version: '*',
     )
     new_build_number = number.to_i + 1
 
