@@ -24,7 +24,8 @@ on:
         required: false
         type: string
 
-permissions: {}
+permissions:
+  contents: read
 
 jobs:
   android:
