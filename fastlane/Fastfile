@@ -49,15 +49,15 @@ platform :ios do
     _flavor = options[:flavor]
     _app_version = options[:app_version]
 
-    # Get latest build number for the version being built
-    # NOTE: We must pass version: explicitly because Flutter's Info.plist uses
-    # $(FLUTTER_BUILD_NAME) which Fastlane can't resolve via get_version_number.
+    # Get latest build number from TestFlight (across all versions).
     number = latest_testflight_build_number(
       app_identifier: app_identifier,
-      version: _app_version,
     )
     new_build_number = number.to_i + 1
-    UI.message("📦 Latest TestFlight build number for v#{_app_version}: #{number} → new build number: #{new_build_number}")
+    UI.message(
+      "📦 Latest TestFlight build number: #{number} " \
+      "→ new build number: #{new_build_number}"
+    )
 
     # Set build number in the Xcode project (modifies CURRENT_PROJECT_VERSION)
     increment_build_number(
