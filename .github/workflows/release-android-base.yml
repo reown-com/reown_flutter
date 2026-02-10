@@ -61,7 +61,7 @@ jobs:
           echo '${{ secrets.GSA_KEY }}' > ${{ runner.temp }}/gcp_key.json
           chmod 600 ${{ runner.temp }}/gcp_key.json
           echo "GOOGLE_APPLICATION_CREDENTIALS=${{ runner.temp }}/gcp_key.json" >> $GITHUB_ENV
-          npm install -g firebase-tools
+          npm install -g firebase-tools@13.29.0
 
       - name: Add Secrets file
         working-directory: ${{ inputs.working-directory }}/android
@@ -113,7 +113,7 @@ jobs:
           SENTRY_DSN: ${{ secrets[inputs.sentry-dsn-secret] }}
           WCP_API_KEY: ${{ secrets[inputs.wcp-api-key-secret] }}
         run: |
-          VERSION=$(grep "^version: " ${{ inputs.pubspec-path }} | cut -d' ' -f2 | cut -d'-' -f1)
+          VERSION=$(grep "^version: " ${{ inputs.pubspec-path }} | cut -d' ' -f2 | cut -d'+' -f1 | cut -d'-' -f1)
 
           BUILD_ARGS="--build-name $VERSION"
           BUILD_ARGS="$BUILD_ARGS --build-number ${{ steps.build-number.outputs.number }}"
