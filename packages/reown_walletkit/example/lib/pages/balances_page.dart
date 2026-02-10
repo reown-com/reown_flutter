@@ -203,7 +203,7 @@ class _BalancesPageState extends State<BalancesPage> {
                             textStyle:
                                 StyleConstants.wcpTextPrimaryStyle.copyWith(
                               fontSize: 15.0,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w400,
                             ),
                             padding: const EdgeInsets.symmetric(
                               horizontal: 18.0,

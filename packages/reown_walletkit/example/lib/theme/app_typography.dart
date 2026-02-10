@@ -42,12 +42,15 @@ class AppTypography {
         fontSize: 14.0,
       );
 
+  /// Used for general primary-colored labels (e.g. session item names).
   TextStyle get layerTextStyle2 => TextStyle(
         color: _c.textPrimary,
         fontSize: 14.0,
         fontWeight: FontWeight.w500,
       );
 
+  /// Used for connection widget info titles. Currently identical to
+  /// layerTextStyle2 but kept separate for semantic distinction.
   TextStyle get layerTextStyle3 => TextStyle(
         color: _c.textPrimary,
         fontSize: 14.0,

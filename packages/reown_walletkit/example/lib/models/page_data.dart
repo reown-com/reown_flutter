@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class PageData {
   Widget page;
   String title;
-  IconData icon;
+  String svgIcon;
 
-  PageData({required this.page, required this.title, required this.icon});
+  PageData({required this.page, required this.title, required this.svgIcon});
 }

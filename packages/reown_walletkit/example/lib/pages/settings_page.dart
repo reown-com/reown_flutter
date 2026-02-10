@@ -1031,11 +1031,11 @@ class _Buttons extends StatelessWidget {
                   CustomButton(
                     type: CustomButtonType.valid,
                     onTap: onRestoreFromSeed,
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        'Restore a wallet',
+                        'Import Wallet',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -1049,11 +1049,11 @@ class _Buttons extends StatelessWidget {
                   CustomButton(
                     type: CustomButtonType.normal,
                     onTap: onRegenerateSeed,
-                    child: const Center(
+                    child: Center(
                       child: Text(
                         'Regenerate current wallet',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -1067,11 +1067,11 @@ class _Buttons extends StatelessWidget {
                   CustomButton(
                     type: CustomButtonType.invalid,
                     onTap: onCreateNewWallet,
-                    child: const Center(
+                    child: Center(
                       child: Text(
                         'Create new random wallet',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.onPrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

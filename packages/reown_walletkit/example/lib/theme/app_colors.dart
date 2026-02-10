@@ -20,6 +20,8 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.inputFill,
     required this.inputBorder,
     required this.inputBorderFocused,
+    required this.backgroundInvert,
+    required this.onBackgroundInvert,
   });
 
   final Color background;
@@ -39,6 +41,8 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color inputFill;
   final Color inputBorder;
   final Color inputBorderFocused;
+  final Color backgroundInvert;
+  final Color onBackgroundInvert;
 
   static const light = AppColors(
     background: Color(0xFFFFFFFF),
@@ -58,6 +62,8 @@ class AppColors extends ThemeExtension<AppColors> {
     inputFill: Color(0xFFF0F0F0),
     inputBorder: Color(0xFFD0D0D0),
     inputBorderFocused: Color(0xFF0988F0),
+    backgroundInvert: Color(0xFF202020),
+    onBackgroundInvert: Color(0xFFFFFFFF),
   );
 
   static const dark = AppColors(
@@ -78,6 +84,8 @@ class AppColors extends ThemeExtension<AppColors> {
     inputFill: Color(0xFF1E1E1E),
     inputBorder: Color(0xFF3A3A3A),
     inputBorderFocused: Color(0xFF0988F0),
+    backgroundInvert: Color(0xFFEAEAEA),
+    onBackgroundInvert: Color(0xFF202020),
   );
 
   @override
@@ -99,6 +107,8 @@ class AppColors extends ThemeExtension<AppColors> {
     Color? inputFill,
     Color? inputBorder,
     Color? inputBorderFocused,
+    Color? backgroundInvert,
+    Color? onBackgroundInvert,
   }) {
     return AppColors(
       background: background ?? this.background,
@@ -118,6 +128,8 @@ class AppColors extends ThemeExtension<AppColors> {
       inputFill: inputFill ?? this.inputFill,
       inputBorder: inputBorder ?? this.inputBorder,
       inputBorderFocused: inputBorderFocused ?? this.inputBorderFocused,
+      backgroundInvert: backgroundInvert ?? this.backgroundInvert,
+      onBackgroundInvert: onBackgroundInvert ?? this.onBackgroundInvert,
     );
   }
 
@@ -145,6 +157,10 @@ class AppColors extends ThemeExtension<AppColors> {
       inputBorder: Color.lerp(inputBorder, other.inputBorder, t)!,
       inputBorderFocused:
           Color.lerp(inputBorderFocused, other.inputBorderFocused, t)!,
+      backgroundInvert:
+          Color.lerp(backgroundInvert, other.backgroundInvert, t)!,
+      onBackgroundInvert:
+          Color.lerp(onBackgroundInvert, other.onBackgroundInvert, t)!,
     );
   }
 }

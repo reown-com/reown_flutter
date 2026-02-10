@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/bottom_sheet_listener.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
@@ -20,8 +21,10 @@ import 'package:reown_walletkit_wallet/pages/settings_page.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_theme.dart';
 import 'package:reown_walletkit_wallet/theme/theme_provider.dart';
+import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
+import 'package:reown_walletkit_wallet/widgets/scan_modal.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -107,7 +110,7 @@ class _MyAppState extends State<MyApp> {
           theme: AppTheme.light(),
           darkTheme: AppTheme.dark(),
           themeMode: themeProvider.themeMode,
-          home: MyHomePage(),
+          home: const MyHomePage(),
         );
       },
     );
@@ -115,7 +118,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({super.key});
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -172,18 +175,18 @@ class _MyHomePageState extends State<MyHomePage> {
         _pageDatas = [
           PageData(
             page: BalancesPage(),
-            title: 'Balances',
-            icon: Icons.account_balance_wallet_outlined,
+            title: 'Wallets',
+            svgIcon: 'assets/Wallet.svg',
           ),
           PageData(
             page: AppsPage(),
-            title: StringConstants.connectPageTitle,
-            icon: Icons.swap_vert_circle_outlined,
+            title: 'Connected Apps',
+            svgIcon: 'assets/Stack.svg',
           ),
           PageData(
             page: const SettingsPage(),
             title: 'Settings',
-            icon: Icons.settings_outlined,
+            svgIcon: 'assets/Gear.svg',
           ),
         ];
       });
@@ -207,54 +210,183 @@ class _MyHomePageState extends State<MyHomePage> {
       );
     }
 
+    final colors = context.colors;
+    final isWideScreen =
+        MediaQuery.of(context).size.width >= Constants.smallScreen;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_pageDatas[_selectedIndex].title),
-      ),
-      body: Stack(
-        children: [
-          BottomSheetListener(
-            child: _pageDatas[_selectedIndex].page,
-          ),
-          ValueListenableBuilder(
-            valueListenable: DeepLinkHandler.waiting,
-            builder: (context, value, _) {
-              return Visibility(
-                visible: value,
-                child: Center(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: context.colors.overlay,
-                      borderRadius: BorderRadius.all(Radius.circular(50.0)),
-                    ),
-                    padding: const EdgeInsets.all(12.0),
-                    child: CircularProgressIndicator(
-                      color: context.colors.onAccent,
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildHeader(colors),
+            Expanded(
+              child: Stack(
+                children: [
+                  BottomSheetListener(
+                    child: Row(
+                      children: [
+                        if (isWideScreen) _buildNavigationRail(colors),
+                        Expanded(child: _pageDatas[_selectedIndex].page),
+                      ],
                     ),
                   ),
+                  ValueListenableBuilder(
+                    valueListenable: DeepLinkHandler.waiting,
+                    builder: (context, value, _) {
+                      return Visibility(
+                        visible: value,
+                        child: Center(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: colors.overlay,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50.0)),
+                            ),
+                            padding: const EdgeInsets.all(12.0),
+                            child: CircularProgressIndicator(
+                              color: colors.onAccent,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: isWideScreen ? null : _buildBottomNavBar(),
+    );
+  }
+
+  Widget _buildHeader(AppColors colors) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // WalletConnect logo
+          Container(
+            width: 38.0,
+            height: 38.0,
+            decoration: BoxDecoration(
+              color: colors.accent,
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            child: SvgPicture.asset(
+              'assets/WalletConnect.svg',
+              width: 20,
+              colorFilter: ColorFilter.mode(
+                colors.onAccent,
+                BlendMode.srcIn,
+              ),
+            ),
+          ),
+          // Scan button
+          GestureDetector(
+            onTap: _onScanPressed,
+            child: Container(
+              width: 38.0,
+              height: 38.0,
+              decoration: BoxDecoration(
+                color: colors.backgroundInvert,
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              alignment: Alignment.center,
+              child: SvgPicture.asset(
+                'assets/Barcode.svg',
+                width: 18.0,
+                height: 18.0,
+                colorFilter: ColorFilter.mode(
+                  colors.onBackgroundInvert,
+                  BlendMode.srcIn,
                 ),
-              );
-            },
+              ),
+            ),
           ),
         ],
       ),
-      bottomNavigationBar: _buildBottomNavBar(),
+    );
+  }
+
+  void _onScanPressed() {
+    if (!GetIt.I.isRegistered<IBottomSheetService>()) return;
+    GetIt.I<IBottomSheetService>().queueBottomSheet(
+      widget: const ScanModal(),
+    );
+  }
+
+  Widget _buildNavigationRail(AppColors colors) {
+    return NavigationRail(
+      selectedIndex: _selectedIndex,
+      onDestinationSelected: (int index) =>
+          setState(() => _selectedIndex = index),
+      labelType: NavigationRailLabelType.selected,
+      backgroundColor: colors.background,
+      selectedIconTheme: IconThemeData(color: colors.backgroundInvert),
+      unselectedIconTheme: IconThemeData(color: colors.textSecondary),
+      destinations: _pageDatas
+          .map(
+            (e) => NavigationRailDestination(
+              icon: SvgPicture.asset(
+                e.svgIcon,
+                width: 24.0,
+                height: 24.0,
+                colorFilter: ColorFilter.mode(
+                  colors.textSecondary,
+                  BlendMode.srcIn,
+                ),
+              ),
+              selectedIcon: SvgPicture.asset(
+                e.svgIcon,
+                width: 24.0,
+                height: 24.0,
+                colorFilter: ColorFilter.mode(
+                  colors.backgroundInvert,
+                  BlendMode.srcIn,
+                ),
+              ),
+              label: Text(e.title),
+            ),
+          )
+          .toList(),
     );
   }
 
   Widget _buildBottomNavBar() {
+    final colors = context.colors;
     return BottomNavigationBar(
       currentIndex: _selectedIndex,
-      unselectedItemColor: context.colors.textSecondary,
-      selectedItemColor: context.colors.accent,
+      unselectedItemColor: colors.textSecondary,
+      selectedItemColor: colors.backgroundInvert,
+      selectedFontSize: 12.0,
+      unselectedFontSize: 12.0,
+      iconSize: 24.0,
       showUnselectedLabels: true,
       type: BottomNavigationBarType.fixed,
       onTap: (int index) => setState(() => _selectedIndex = index),
-      items: _pageDatas
-          .map(
-            (e) => BottomNavigationBarItem(icon: Icon(e.icon), label: e.title),
-          )
-          .toList(),
+      items: _pageDatas.asMap().entries.map((entry) {
+        final isSelected = entry.key == _selectedIndex;
+        final e = entry.value;
+        return BottomNavigationBarItem(
+          icon: Padding(
+            padding: const EdgeInsets.only(top: 20.0, bottom: 4.0),
+            child: SvgPicture.asset(
+              e.svgIcon,
+              width: 24.0,
+              height: 24.0,
+              colorFilter: ColorFilter.mode(
+                isSelected ? colors.backgroundInvert : colors.textSecondary,
+                BlendMode.srcIn,
+              ),
+            ),
+          ),
+          label: e.title,
+        );
+      }).toList(),
     );
   }
 }

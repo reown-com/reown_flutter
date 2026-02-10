@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:reown_walletkit_wallet/utils/constants.dart';
+import 'package:reown_walletkit_wallet/theme/app_colors.dart';
+import 'package:reown_walletkit_wallet/theme/app_typography.dart';
 
 class InputWalletConnectPayApiKey extends StatelessWidget {
   InputWalletConnectPayApiKey({super.key});
@@ -8,12 +9,13 @@ class InputWalletConnectPayApiKey extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final unfocusedBorder = OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.grey.shade300, width: 1.0),
+      borderSide: BorderSide(color: colors.inputBorder, width: 1.0),
       borderRadius: BorderRadius.circular(12.0),
     );
     final focusedBorder = unfocusedBorder.copyWith(
-      borderSide: BorderSide(color: StyleConstants.accentPrimary, width: 1.0),
+      borderSide: BorderSide(color: colors.inputBorderFocused, width: 1.0),
     );
     return Container(
       height: 280.0,
@@ -23,61 +25,56 @@ class InputWalletConnectPayApiKey extends StatelessWidget {
         children: [
           Text(
             'Insert WalletConnectPay API Key',
-            style: StyleConstants.subtitleText.copyWith(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
-              fontSize: 18.0,
-            ),
+            style: context.textStyles.subtitleText.copyWith(fontSize: 18.0),
           ),
-          const SizedBox(height: StyleConstants.magic20),
+          const SizedBox(height: 20.0),
           SizedBox(
             height: 60.0,
-            // padding: const EdgeInsets.all(3.0),
             child: TextFormField(
               controller: controller,
               maxLines: 4,
               textAlignVertical: TextAlignVertical.center,
-              cursorColor: StyleConstants.accentPrimary,
+              cursorColor: colors.accent,
               enableSuggestions: false,
               autocorrect: false,
               cursorHeight: 16.0,
+              style: TextStyle(color: colors.textPrimary),
               decoration: InputDecoration(
                 isDense: true,
-                hintStyle: const TextStyle(color: Colors.grey),
+                hintStyle: TextStyle(color: colors.textSecondary),
                 border: unfocusedBorder,
                 errorBorder: unfocusedBorder,
                 enabledBorder: unfocusedBorder,
                 disabledBorder: unfocusedBorder,
                 focusedBorder: focusedBorder,
                 filled: true,
-                fillColor: Theme.of(context).brightness == Brightness.dark
-                    ? Colors.white24
-                    : Colors.black12,
+                fillColor: colors.inputFill,
                 contentPadding: const EdgeInsets.all(8.0),
               ),
             ),
           ),
-          const SizedBox(height: StyleConstants.magic10),
+          const SizedBox(height: 10.0),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () => Navigator.of(context).pop(controller.text),
               style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(
-                  StyleConstants.accentPrimary,
-                ),
-                foregroundColor: WidgetStateProperty.all<Color>(Colors.white),
+                backgroundColor: WidgetStateProperty.all<Color>(colors.accent),
+                foregroundColor:
+                    WidgetStateProperty.all<Color>(colors.onAccent),
               ),
               child: const Text('Set'),
             ),
           ),
-          const SizedBox(height: StyleConstants.magic10),
+          const SizedBox(height: 10.0),
           SizedBox(
             width: double.infinity,
             child: TextButton(
               onPressed: () => Navigator.of(context).pop(''),
-              child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+              child: Text(
+                'Cancel',
+                style: TextStyle(color: colors.textSecondary),
+              ),
             ),
           ),
         ],
