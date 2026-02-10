@@ -71,11 +71,15 @@ flutter:
     - assets/
     - lib/walletconnect_pay/assets/
 
-  # fonts:
-  #   - family: KH Teka
-  #     fonts:
-  #       - asset: fonts/KHTeka-Regular.ttf
-  #         weight: 400
+  fonts:
+    - family: KH Teka
+      fonts:
+        - asset: fonts/KHTeka-Light.otf
+          weight: 300
+        - asset: fonts/KHTeka-Regular.otf
+          weight: 400
+        - asset: fonts/KHTeka-Medium.otf
+          weight: 500
 
 flutter_launcher_icons:
   android: true

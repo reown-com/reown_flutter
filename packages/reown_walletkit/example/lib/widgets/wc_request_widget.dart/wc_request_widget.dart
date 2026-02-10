@@ -41,7 +41,7 @@ class WCRequestWidget extends StatelessWidget {
                     }
                   },
               type: CustomButtonType.invalid,
-              child: const Text(
+              child: Text(
                 StringConstants.reject,
                 style: StyleConstants.buttonText,
                 textAlign: TextAlign.center,
@@ -56,7 +56,7 @@ class WCRequestWidget extends StatelessWidget {
                     }
                   },
               type: CustomButtonType.valid,
-              child: const Text(
+              child: Text(
                 StringConstants.approve,
                 style: StyleConstants.buttonText,
                 textAlign: TextAlign.center,

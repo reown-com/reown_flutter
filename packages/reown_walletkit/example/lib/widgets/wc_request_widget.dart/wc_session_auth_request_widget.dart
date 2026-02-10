@@ -25,7 +25,7 @@ class WCSessionAuthRequestWidget extends StatelessWidget {
                 }
               },
               type: CustomButtonType.invalid,
-              child: const Text(
+              child: Text(
                 'Cancel',
                 style: StyleConstants.buttonText,
                 textAlign: TextAlign.center,
@@ -39,7 +39,7 @@ class WCSessionAuthRequestWidget extends StatelessWidget {
                 }
               },
               type: CustomButtonType.normal,
-              child: const Text(
+              child: Text(
                 'Sign One',
                 style: StyleConstants.buttonText,
                 textAlign: TextAlign.center,
@@ -53,7 +53,7 @@ class WCSessionAuthRequestWidget extends StatelessWidget {
                 }
               },
               type: CustomButtonType.valid,
-              child: const Text(
+              child: Text(
                 'Sign All',
                 style: StyleConstants.buttonText,
                 textAlign: TextAlign.center,

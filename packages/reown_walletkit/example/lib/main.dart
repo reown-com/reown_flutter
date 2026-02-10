@@ -17,7 +17,9 @@ import 'package:reown_walletkit_wallet/models/page_data.dart';
 import 'package:reown_walletkit_wallet/pages/balances_page.dart';
 import 'package:reown_walletkit_wallet/pages/apps_page.dart';
 import 'package:reown_walletkit_wallet/pages/settings_page.dart';
-import 'package:reown_walletkit_wallet/utils/constants.dart';
+import 'package:reown_walletkit_wallet/theme/app_colors.dart';
+import 'package:reown_walletkit_wallet/theme/app_theme.dart';
+import 'package:reown_walletkit_wallet/theme/theme_provider.dart';
 import 'package:reown_walletkit_wallet/utils/dart_defines.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
 
@@ -27,6 +29,11 @@ Future<void> main() async {
   await runZonedGuarded<Future<void>>(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+
+      final themeProvider = ThemeProvider();
+      await themeProvider.init();
+      GetIt.I.registerSingleton<ThemeProvider>(themeProvider);
+
       DeepLinkHandler.initListener();
 
       if (kDebugMode) {
@@ -72,9 +79,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // WidgetsBindingObserver
-  final bool _isDarkMode = false;
-
   @override
   void initState() {
     super.initState();
@@ -85,56 +89,33 @@ class _MyAppState extends State<MyApp> {
           builder: (context) => AlertDialog(content: Text(message)),
         ),
       );
-      // WidgetsBinding.instance.addObserver(this);
-      // WidgetsBinding.instance.addPostFrameCallback((_) {
-      //   setState(() {
-      //     final platformDispatcher = View.of(context).platformDispatcher;
-      //     final platformBrightness = platformDispatcher.platformBrightness;
-      //     _isDarkMode = platformBrightness == Brightness.dark;
-      //   });
-      // });
     } catch (e, s) {
       Sentry.captureException(e, stackTrace: s);
     }
   }
 
   @override
-  void dispose() {
-    // WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
-
-  // @override
-  // void didChangePlatformBrightness() {
-  //   if (mounted) {
-  //     setState(() {
-  //       final platformDispatcher = View.of(context).platformDispatcher;
-  //       final platformBrightness = platformDispatcher.platformBrightness;
-  //       _isDarkMode = platformBrightness == Brightness.dark;
-  //     });
-  //   }
-  //   super.didChangePlatformBrightness();
-  // }
-
-  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      navigatorObservers: [SentryNavigatorObserver()],
-      title: StringConstants.appTitle,
-      theme: ThemeData(
-        colorScheme: _isDarkMode
-            ? ColorScheme.dark(primary: StyleConstants.accentPrimary)
-            : ColorScheme.light(primary: StyleConstants.accentPrimary),
-      ),
-      home: MyHomePage(isDarkMode: _isDarkMode),
+    final themeProvider = GetIt.I<ThemeProvider>();
+    return ListenableBuilder(
+      listenable: themeProvider,
+      builder: (context, _) {
+        return MaterialApp(
+          navigatorKey: navigatorKey,
+          navigatorObservers: [SentryNavigatorObserver()],
+          title: StringConstants.appTitle,
+          theme: AppTheme.light(),
+          darkTheme: AppTheme.dark(),
+          themeMode: themeProvider.themeMode,
+          home: MyHomePage(),
+        );
+      },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({super.key, required this.isDarkMode});
-  final bool isDarkMode;
+  MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -221,41 +202,19 @@ class _MyHomePageState extends State<MyHomePage> {
     if (_pageDatas.isEmpty) {
       return Material(
         child: Center(
-          child: CircularProgressIndicator(color: StyleConstants.accentPrimary),
+          child: CircularProgressIndicator(color: context.colors.accent),
         ),
       );
     }
 
-    final List<Widget> navRail = [];
-    if (MediaQuery.of(context).size.width >= Constants.smallScreen) {
-      navRail.add(_buildNavigationRail());
-    }
-    navRail.add(Expanded(child: _pageDatas[_selectedIndex].page));
-
     return Scaffold(
       appBar: AppBar(
         title: Text(_pageDatas[_selectedIndex].title),
-        actions: [
-          const Text('Relay '),
-          Builder(
-            builder: (context) {
-              final walletKit = GetIt.I<IWalletKitService>().walletKit;
-              return CircleAvatar(
-                radius: 6.0,
-                backgroundColor: walletKit.core.relayClient.isConnected &&
-                        walletKit.core.connectivity.isOnline.value
-                    ? StyleConstants.textSuccess
-                    : StyleConstants.textError,
-              );
-            },
-          ),
-          const SizedBox(width: 16.0),
-        ],
       ),
       body: Stack(
         children: [
           BottomSheetListener(
-            child: Row(mainAxisSize: MainAxisSize.max, children: navRail),
+            child: _pageDatas[_selectedIndex].page,
           ),
           ValueListenableBuilder(
             valueListenable: DeepLinkHandler.waiting,
@@ -264,12 +223,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 visible: value,
                 child: Center(
                   child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.black38,
+                    decoration: BoxDecoration(
+                      color: context.colors.overlay,
                       borderRadius: BorderRadius.all(Radius.circular(50.0)),
                     ),
                     padding: const EdgeInsets.all(12.0),
-                    child: const CircularProgressIndicator(color: Colors.white),
+                    child: CircularProgressIndicator(
+                      color: context.colors.onAccent,
+                    ),
                   ),
                 ),
               );
@@ -277,43 +238,21 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      bottomNavigationBar:
-          MediaQuery.of(context).size.width < Constants.smallScreen
-              ? _buildBottomNavBar()
-              : null,
+      bottomNavigationBar: _buildBottomNavBar(),
     );
   }
 
   Widget _buildBottomNavBar() {
     return BottomNavigationBar(
       currentIndex: _selectedIndex,
-      unselectedItemColor: StyleConstants.textSecondary,
-      selectedItemColor: StyleConstants.accentPrimary,
+      unselectedItemColor: context.colors.textSecondary,
+      selectedItemColor: context.colors.accent,
       showUnselectedLabels: true,
       type: BottomNavigationBarType.fixed,
-      // called when one tab is selected
       onTap: (int index) => setState(() => _selectedIndex = index),
-      // bottom tab items
       items: _pageDatas
           .map(
             (e) => BottomNavigationBarItem(icon: Icon(e.icon), label: e.title),
-          )
-          .toList(),
-    );
-  }
-
-  Widget _buildNavigationRail() {
-    return NavigationRail(
-      selectedIndex: _selectedIndex,
-      onDestinationSelected: (int index) =>
-          setState(() => _selectedIndex = index),
-      labelType: NavigationRailLabelType.selected,
-      destinations: _pageDatas
-          .map(
-            (e) => NavigationRailDestination(
-              icon: Icon(e.icon),
-              label: Text(e.title),
-            ),
           )
           .toList(),
     );

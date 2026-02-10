@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 
 class Constants {
   static const smallScreen = 640;
@@ -8,35 +9,6 @@ class Constants {
 }
 
 class StyleConstants {
-  static TextStyle get wcpTextPrimaryStyle => TextStyle(
-        color: textPrimary,
-        fontSize: 16,
-        fontFamily: 'KH Teka',
-        fontWeight: FontWeight.w400,
-        // height: 1.0, // 20px line height / 20px font size = 1.0
-        // letterSpacing: -0.6, // -3% of 20px = -0.6
-      );
-
-  static TextStyle get wcpTextSecondaryStyle => TextStyle(
-        color: textSecondary,
-        fontSize: 16,
-        fontFamily: 'KH Teka',
-        fontWeight: FontWeight.w400,
-        // height: 1.0, // 20px line height / 20px font size = 1.0
-        // letterSpacing: -0.6, // -3% of 20px = -0.6
-      );
-
-  static Color get bgPrimary => Color(0xFFFFFFFF);
-  static Color get accentPrimary => Color(0xFF0988F0);
-  static Color get foregroundPrimary => Color(0xFFF3F3F3);
-  static Color get foregroundSecondary => Color(0xFFE9E9E9);
-  static Color get neutrals => Color(0xFFBBBBBB);
-  static Color get textPrimary => Color(0xFF202020);
-  static Color get textSecondary => Color(0xFF9A9A9A);
-  static Color get textTertiary => Color(0xFF6C6C6C);
-  static Color get textSuccess => Color(0xFF30A46B);
-  static Color get textError => Color(0xFFDF4A34);
-
   // Linear
   static const double linear8 = 8;
   static const double linear16 = 16;
@@ -57,55 +29,127 @@ class StyleConstants {
   // Width
   static const double maxWidth = 400;
 
-  // Text styles
-  static const TextStyle titleText = TextStyle(
-    color: Colors.grey,
-    fontSize: magic40,
-    fontWeight: FontWeight.w600,
-  );
-  static const TextStyle subtitleText = TextStyle(
-    color: Colors.white,
-    fontSize: linear24,
-    fontWeight: FontWeight.w600,
-  );
-  static const TextStyle buttonText = TextStyle(
-    color: Colors.white,
-    fontSize: linear16,
-    fontWeight: FontWeight.w600,
-  );
-  static const TextStyle bodyTextBold = TextStyle(
-    color: Colors.grey,
-    fontSize: magic14,
-    fontWeight: FontWeight.w900,
-  );
-  static const TextStyle bodyText = TextStyle(
-    color: Colors.grey,
-    fontSize: magic14,
-    fontWeight: FontWeight.w400,
-  );
-  static TextStyle bodyLightGray = TextStyle(
-    color: textSecondary,
-    fontSize: magic14,
-  );
-  static TextStyle layerTextStyle2 = TextStyle(
-    color: textPrimary,
-    fontSize: magic14,
-    fontWeight: FontWeight.w600,
-  );
-  static const TextStyle layerTextStyle3 = TextStyle(
-    color: Colors.black,
-    fontSize: magic14,
-    fontWeight: FontWeight.w600,
-  );
-  static TextStyle layerTextStyle4 = TextStyle(
-    color: accentPrimary,
-    fontSize: magic14,
-    fontWeight: FontWeight.w600,
-  );
-
   // Bubbles
   static const EdgeInsets bubblePadding = EdgeInsets.symmetric(
     vertical: linear8,
     horizontal: linear8,
   );
+
+  // ----------------------------------------------------------
+  // Deprecated color bridges — use context.colors.* instead.
+  // These delegate to AppColors.light for backward compatibility.
+  // Consumer files will NOT respond to dark mode until migrated.
+  // ----------------------------------------------------------
+
+  @Deprecated('Use context.colors.background')
+  static Color get bgPrimary => AppColors.light.background;
+
+  @Deprecated('Use context.colors.accent')
+  static Color get accentPrimary => AppColors.light.accent;
+
+  @Deprecated('Use context.colors.backgroundSecondary')
+  static Color get foregroundPrimary => AppColors.light.backgroundSecondary;
+
+  @Deprecated('Use context.colors.backgroundTertiary')
+  static Color get foregroundSecondary => AppColors.light.backgroundTertiary;
+
+  @Deprecated('Use context.colors.neutrals')
+  static Color get neutrals => AppColors.light.neutrals;
+
+  @Deprecated('Use context.colors.textPrimary')
+  static Color get textPrimary => AppColors.light.textPrimary;
+
+  @Deprecated('Use context.colors.textSecondary')
+  static Color get textSecondary => AppColors.light.textSecondary;
+
+  @Deprecated('Use context.colors.textTertiary')
+  static Color get textTertiary => AppColors.light.textTertiary;
+
+  @Deprecated('Use context.colors.success')
+  static Color get textSuccess => AppColors.light.success;
+
+  @Deprecated('Use context.colors.error')
+  static Color get textError => AppColors.light.error;
+
+  // ----------------------------------------------------------
+  // Deprecated text style bridges — use context.textStyles.* instead.
+  // ----------------------------------------------------------
+
+  @Deprecated('Use context.textStyles.wcpTextPrimary')
+  static TextStyle get wcpTextPrimaryStyle => TextStyle(
+        color: AppColors.light.textPrimary,
+        fontSize: 16,
+        fontFamily: 'KH Teka',
+        fontWeight: FontWeight.w400,
+      );
+
+  @Deprecated('Use context.textStyles.wcpTextSecondary')
+  static TextStyle get wcpTextSecondaryStyle => TextStyle(
+        color: AppColors.light.textSecondary,
+        fontSize: 16,
+        fontFamily: 'KH Teka',
+        fontWeight: FontWeight.w400,
+      );
+
+  @Deprecated('Use context.textStyles.titleText')
+  static TextStyle get titleText => TextStyle(
+        color: AppColors.light.textSecondary,
+        fontSize: magic40,
+        fontWeight: FontWeight.w500,
+      );
+
+  @Deprecated('Use context.textStyles.subtitleText')
+  static TextStyle get subtitleText => TextStyle(
+        color: AppColors.light.textPrimary,
+        fontSize: linear24,
+        fontWeight: FontWeight.w500,
+      );
+
+  @Deprecated('Use context.textStyles.buttonText')
+  static TextStyle get buttonText => TextStyle(
+        color: AppColors.light.onAccent,
+        fontSize: linear16,
+        fontWeight: FontWeight.w500,
+      );
+
+  @Deprecated('Use context.textStyles.bodyTextBold')
+  static TextStyle get bodyTextBold => TextStyle(
+        color: AppColors.light.textSecondary,
+        fontSize: magic14,
+        fontWeight: FontWeight.w500,
+      );
+
+  @Deprecated('Use context.textStyles.bodyText')
+  static TextStyle get bodyText => TextStyle(
+        color: AppColors.light.textSecondary,
+        fontSize: magic14,
+        fontWeight: FontWeight.w400,
+      );
+
+  @Deprecated('Use context.textStyles.bodyLightGray')
+  static TextStyle get bodyLightGray => TextStyle(
+        color: AppColors.light.textSecondary,
+        fontSize: magic14,
+      );
+
+  @Deprecated('Use context.textStyles.layerTextStyle2')
+  static TextStyle get layerTextStyle2 => TextStyle(
+        color: AppColors.light.textPrimary,
+        fontSize: magic14,
+        fontWeight: FontWeight.w500,
+      );
+
+  @Deprecated('Use context.textStyles.layerTextStyle3')
+  static TextStyle get layerTextStyle3 => TextStyle(
+        color: AppColors.light.textPrimary,
+        fontSize: magic14,
+        fontWeight: FontWeight.w500,
+      );
+
+  @Deprecated('Use context.textStyles.layerTextStyle4')
+  static TextStyle get layerTextStyle4 => TextStyle(
+        color: AppColors.light.accent,
+        fontSize: magic14,
+        fontWeight: FontWeight.w500,
+      );
 }
