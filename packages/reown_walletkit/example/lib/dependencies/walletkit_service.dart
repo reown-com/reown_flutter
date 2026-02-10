@@ -810,7 +810,6 @@ class WalletKitService implements IWalletKitService {
       MaterialPageRoute(
         builder: (_) => WCPCollectDataWebView(
           collectDataUrl: collectDataUrl,
-          stepper: (1, 2),
         ),
       ),
     );
@@ -850,18 +849,12 @@ class WalletKitService implements IWalletKitService {
   Future<ConfirmPaymentRequest> _showPaymentDetails(
     PaymentOptionsResponse response,
   ) async {
-    (int, int) stepper = (0, 0);
-    final hasCollectDataUrl = response.collectData?.url?.isNotEmpty ?? false;
-    if (hasCollectDataUrl) {
-      stepper = (2, 2);
-    }
     final result = await _bottomSheetHandler.queueBottomSheet(
       widget: WCPPaymentDetailsWidget(
         paymentOptionsResponse: response,
         paymentRequest: _pendingPaymentRequest!,
       ),
       showBackButton: true,
-      stepper: stepper,
     );
 
     if (result is ConfirmPaymentRequest) {

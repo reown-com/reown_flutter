@@ -12,11 +12,9 @@ class WCPCollectDataWebView extends StatefulWidget {
     super.key,
     required this.collectDataUrl,
     this.prefillData,
-    this.stepper = const (1, 2),
   });
 
   final String collectDataUrl;
-  final (int, int) stepper;
 
   /// Optional data to prefill form fields in the WebView.
   ///
@@ -224,27 +222,19 @@ class _WCPCollectDataWebViewState extends State<WCPCollectDataWebView> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: StyleConstants.bgPrimary,
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Column(
           children: [
-            // Header with stepper and close button
+            // Header with close button
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: StyleConstants.linear16,
                 vertical: StyleConstants.linear8,
               ),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  const SizedBox(width: 40.0),
-                  if (widget.stepper.$1 > 0 && widget.stepper.$2 > 0)
-                    WCPStepsIndicator(
-                      currentStep: widget.stepper.$1,
-                      totalSteps: widget.stepper.$2,
-                    )
-                  else
-                    const SizedBox(width: 40.0),
                   IconButton(
                     padding: const EdgeInsets.all(0.0),
                     visualDensity: VisualDensity.compact,
@@ -254,8 +244,16 @@ class _WCPCollectDataWebViewState extends State<WCPCollectDataWebView> {
                 ],
               ),
             ),
-            // Content
-            Expanded(child: _buildContent()),
+            // Content — shrink by keyboard height so bottom fields
+            // remain reachable while avoiding full-scaffold resize jumps.
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                child: _buildContent(),
+              ),
+            ),
           ],
         ),
       ),
