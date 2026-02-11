@@ -8,6 +8,7 @@ import 'package:qr_bar_code_scanner_dialog/qr_bar_code_scanner_dialog.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/deep_link_handler.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
+import 'package:reown_walletkit_wallet/main.dart' show navigatorKey;
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_radius.dart';
 
@@ -40,13 +41,14 @@ class ScanModal extends StatelessWidget {
   }
 
   void _onScanQrCode(BuildContext context) {
-    final navigator = Navigator.of(context);
-    navigator.pop();
+    Navigator.of(context).pop();
+    final rootContext = navigatorKey.currentContext;
+    if (rootContext == null) return;
     try {
       QrBarCodeScannerDialog().getScannedQrBarCode(
-        context: context,
+        context: rootContext,
         onCode: (value) {
-          _pairWithUri(context, value);
+          _pairWithUri(value);
         },
       );
     } catch (e) {
@@ -55,102 +57,64 @@ class ScanModal extends StatelessWidget {
   }
 
   Future<void> _onPasteUri(BuildContext context) async {
-    final navigator = Navigator.of(context);
-    navigator.pop();
+    Navigator.of(context).pop();
     try {
       final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
       final uri = clipboardData?.text?.trim();
       if (uri == null || uri.isEmpty) {
-        if (context.mounted) _showError(context, 'Clipboard is empty');
+        _showError('Clipboard is empty');
         return;
       }
-      _pairWithUri(context, uri);
+      await _pairWithUri(uri);
     } catch (e) {
-      if (context.mounted) {
-        _showError(context, 'Failed to read clipboard');
-      }
+      _showError('Failed to read clipboard');
     }
   }
 
-  Future<void> _pairWithUri(BuildContext context, String? uri) async {
+  Future<void> _pairWithUri(String? uri) async {
     if (uri == null || uri.isEmpty) return;
     final walletKitService = GetIt.I<IWalletKitService>();
     try {
       DeepLinkHandler.waiting.value = true;
       await walletKitService.pair(uri);
     } on TimeoutException catch (_) {
-      if (context.mounted) {
-        _showError(context, 'Time out error. Check your connection.');
-      }
+      _showError('Time out error. Check your connection.');
     } on ReownSignError catch (e) {
-      if (context.mounted) {
-        _showError(context, '${e.code}:\n${e.message}');
-      }
+      _showError('${e.code}: ${e.message}');
     } on PayInitializeError catch (e) {
-      if (context.mounted) {
-        _showError(context, '${e.code}:\n${e.message}');
-      }
+      _showError('${e.code}: ${e.message}');
     } on GetPaymentOptionsError catch (e) {
-      if (context.mounted) {
-        _showError(context, '${e.code}:\n${e.message}');
-      }
+      _showError('${e.code}: ${e.message}');
     } on GetRequiredActionsError catch (e) {
-      if (context.mounted) {
-        _showError(context, '${e.code}:\n${e.message}');
-      }
+      _showError('${e.code}: ${e.message}');
     } on ConfirmPaymentError catch (e) {
-      if (context.mounted) {
-        _showError(context, '${e.code}:\n${e.message}');
-      }
+      _showError('${e.code}: ${e.message}');
     } on PayError catch (e) {
-      if (context.mounted) {
-        _showError(context, '${e.code}\n${e.message}');
-      }
+      _showError('${e.code}: ${e.message}');
     } catch (e) {
-      if (context.mounted) {
-        _showError(context, 'Invalid URI or connection error:\n$e');
-      }
+      _showError('Invalid URI or connection error: $e');
     } finally {
       DeepLinkHandler.waiting.value = false;
     }
   }
 
-  void _showError(BuildContext context, String message) {
+  void _showError(String message) {
+    final context = navigatorKey.currentContext;
+    if (context == null) return;
     final colors = context.colors;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: colors.background,
-          title: Text(
-            'Error',
-            style: TextStyle(
-              color: colors.textPrimary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          content: Text(
-            message,
-            style: TextStyle(color: colors.textPrimary),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                if (Navigator.canPop(context)) {
-                  Navigator.pop(context);
-                }
-              },
-              child: Text(
-                'Close',
-                style: TextStyle(
-                  color: colors.accent,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        );
-      },
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(color: colors.onAccent),
+        ),
+        backgroundColor: colors.error,
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        margin: const EdgeInsets.all(16.0),
+      ),
     );
   }
 }
