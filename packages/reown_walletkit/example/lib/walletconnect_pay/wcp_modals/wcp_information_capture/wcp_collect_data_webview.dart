@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
@@ -90,10 +91,85 @@ class _WCPCollectDataWebViewState extends State<WCPCollectDataWebView> {
     })();
   ''';
 
+  // iOS keyboard stabilization for WKWebView:
+  // - Track keyboard inset through visualViewport
+  // - Add bottom padding so content can scroll above keyboard
+  // - Keep focused input visible without smooth-scroll jitter
+  static const _keyboardFixScript = '''
+    (function() {
+      if (window.__wcpKeyboardFix) return;
+      window.__wcpKeyboardFix = true;
+
+      function isTextInput(el) {
+        return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA'
+          || el.tagName === 'SELECT' || el.isContentEditable);
+      }
+
+      function keyboardInset() {
+        if (!window.visualViewport) return 0;
+        var inset = window.innerHeight - window.visualViewport.height
+          - window.visualViewport.offsetTop;
+        return inset > 0 ? inset : 0;
+      }
+
+      function applyKeyboardInset() {
+        var inset = keyboardInset();
+        document.body.style.paddingBottom = inset + 'px';
+      }
+
+      function keepFocusedVisible() {
+        var el = document.activeElement;
+        if (!isTextInput(el)) return;
+        if (!window.visualViewport) {
+          el.scrollIntoView({ behavior: 'auto', block: 'center' });
+          return;
+        }
+
+        var rect = el.getBoundingClientRect();
+        var topPadding = 12;
+        var bottomPadding = 12;
+        var visibleTop = topPadding;
+        var visibleBottom = window.visualViewport.height - bottomPadding;
+        var isOutOfView = rect.top < visibleTop || rect.bottom > visibleBottom;
+
+        if (isOutOfView) {
+          el.scrollIntoView({ behavior: 'auto', block: 'center' });
+        }
+      }
+
+      var rafId = null;
+      function syncLayout() {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = requestAnimationFrame(function() {
+          applyKeyboardInset();
+          keepFocusedVisible();
+          rafId = null;
+        });
+      }
+
+      window.addEventListener('resize', syncLayout);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', syncLayout);
+        window.visualViewport.addEventListener('scroll', syncLayout);
+      }
+
+      document.addEventListener('focusin', function() {
+        setTimeout(syncLayout, 50);
+        setTimeout(syncLayout, 250);
+      });
+      document.addEventListener('focusout', function() {
+        setTimeout(syncLayout, 50);
+      });
+
+      syncLayout();
+    })();
+  ''';
+
   late final WebViewController _controller;
   bool _isLoading = true;
   bool _didComplete = false;
   String? _loadError;
+  bool get _isIOS => !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS;
 
   @override
   void initState() {
@@ -134,6 +210,9 @@ class _WCPCollectDataWebViewState extends State<WCPCollectDataWebView> {
           onPageFinished: (_) async {
             _setLoading(false);
             await _injectBridge();
+            if (_isIOS) {
+              await _injectKeyboardFix();
+            }
           },
           onWebResourceError: (_) {
             _setLoading(false);
@@ -161,6 +240,13 @@ class _WCPCollectDataWebViewState extends State<WCPCollectDataWebView> {
     if (_loadError != null) return;
     try {
       await _controller.runJavaScript(_bridgeScript);
+    } catch (_) {}
+  }
+
+  Future<void> _injectKeyboardFix() async {
+    if (_loadError != null || !_isIOS) return;
+    try {
+      await _controller.runJavaScript(_keyboardFixScript);
     } catch (_) {}
   }
 
@@ -220,43 +306,44 @@ class _WCPCollectDataWebViewState extends State<WCPCollectDataWebView> {
 
   @override
   Widget build(BuildContext context) {
+    final content = SafeArea(
+      bottom: !_isIOS,
+      child: Column(
+        children: [
+          // Header with close button
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: StyleConstants.linear16,
+              vertical: StyleConstants.linear8,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  padding: const EdgeInsets.all(0.0),
+                  visualDensity: VisualDensity.compact,
+                  onPressed: _close,
+                  icon: const Icon(Icons.close_sharp),
+                ),
+              ],
+            ),
+          ),
+          // Content
+          Expanded(child: _buildContent()),
+        ],
+      ),
+    );
+
     return Scaffold(
       backgroundColor: StyleConstants.bgPrimary,
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Header with close button
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: StyleConstants.linear16,
-                vertical: StyleConstants.linear8,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  IconButton(
-                    padding: const EdgeInsets.all(0.0),
-                    visualDensity: VisualDensity.compact,
-                    onPressed: _close,
-                    icon: const Icon(Icons.close_sharp),
-                  ),
-                ],
-              ),
-            ),
-            // Content — shrink by keyboard height so bottom fields
-            // remain reachable while avoiding full-scaffold resize jumps.
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
-                ),
-                child: _buildContent(),
-              ),
-            ),
-          ],
-        ),
-      ),
+      resizeToAvoidBottomInset: !_isIOS,
+      body: _isIOS
+          ? MediaQuery.removeViewInsets(
+              context: context,
+              removeBottom: true,
+              child: content,
+            )
+          : content,
     );
   }
 
