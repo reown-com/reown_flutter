@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Identity Check</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #fff;
+      color: #141414;
+      padding: 24px 16px;
+      min-height: 100vh;
+    }
+    h1 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .subtitle { font-size: 14px; color: #787878; margin-bottom: 24px; }
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block;
+      font-size: 13px;
+      color: #787878;
+      margin-bottom: 6px;
+    }
+    .field input, .field select {
+      width: 100%;
+      height: 52px;
+      border: 1px solid #e0e0e0;
+      border-radius: 16px;
+      padding: 0 16px;
+      font-size: 16px;
+      color: #141414;
+      background: #fafafa;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .field input:focus, .field select:focus {
+      border-color: #3396ff;
+      border-width: 2px;
+      background: #fff;
+    }
+    .field select { padding-right: 32px; }
+    .actions { margin-top: 32px; }
+    .btn-primary {
+      width: 100%;
+      height: 52px;
+      background: #3396ff;
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-primary:active { background: #2b80d9; }
+    .btn-cancel {
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin-top: 16px;
+      color: #787878;
+      font-size: 14px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>One-time identity check</h1>
+  <p class="subtitle">We need to collect a few details to meet legal requirements.</p>
+
+  <form id="form">
+    <div class="field">
+      <label for="dob">Date of Birth</label>
+      <input type="date" id="dob" name="dob" required>
+    </div>
+    <div class="field">
+      <label for="fullName">Full Name</label>
+      <input type="text" id="fullName" name="fullName" placeholder="John Doe" required>
+    </div>
+    <div class="field">
+      <label for="address">Place of Birth Address</label>
+      <input type="text" id="address" name="address" placeholder="123 Main St">
+    </div>
+    <div class="field">
+      <label for="city">Place of Birth City</label>
+      <input type="text" id="city" name="city" placeholder="New York">
+    </div>
+    <div class="field">
+      <label for="country">Place of Birth Country</label>
+      <select id="country" name="country">
+        <option value="">Select country...</option>
+        <option value="US">United States</option>
+        <option value="GB">United Kingdom</option>
+        <option value="DE">Germany</option>
+        <option value="FR">France</option>
+        <option value="ES">Spain</option>
+        <option value="IT">Italy</option>
+        <option value="JP">Japan</option>
+        <option value="KR">South Korea</option>
+        <option value="BR">Brazil</option>
+        <option value="AR">Argentina</option>
+        <option value="MX">Mexico</option>
+        <option value="CA">Canada</option>
+        <option value="AU">Australia</option>
+        <option value="IN">India</option>
+        <option value="CN">China</option>
+        <option value="NG">Nigeria</option>
+        <option value="ZA">South Africa</option>
+        <option value="CH">Switzerland</option>
+        <option value="SG">Singapore</option>
+        <option value="AE">United Arab Emirates</option>
+      </select>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn-primary">Continue</button>
+      <a id="cancel" class="btn-cancel">Cancel</a>
+    </div>
+  </form>
+
+  <script>
+    var params = new URLSearchParams(window.location.search);
+    var callback = params.get('callback') || 'https://appkit-lab.reown.com/flutter_walletkit_internal';
+
+    document.getElementById('form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      window.location.href = callback + '?status=success';
+    });
+
+    document.getElementById('cancel').addEventListener('click', function(e) {
+      e.preventDefault();
+      window.location.href = callback + '?status=cancelled';
+    });
+  </script>
+</body>
+</html>

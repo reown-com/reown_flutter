@@ -26,6 +26,7 @@ import 'package:reown_walletkit_wallet/utils/eth_utils.dart';
 import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_confirming_payment.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_get_payment_options.dart';
+import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_information_capture/wcp_collect_data_browser.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_information_capture/wcp_collect_data_webview.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_information_capture/wcp_information_capture_start.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_payment_details.dart';
@@ -794,7 +795,16 @@ class WalletKitService implements IWalletKitService {
       return startResult;
     }
 
-    return _showCollectDataWebView(collectDataUrl);
+    return _showCollectDataBrowser(collectDataUrl);
+  }
+
+  Future<dynamic> _showCollectDataBrowser(String collectDataUrl) async {
+    // TODO: remove test URL override before merging
+    // Use 10.0.2.2 for Android emulator (maps to host localhost)
+    final isAndroid = defaultTargetPlatform == TargetPlatform.android;
+    final host = isAndroid ? '10.0.2.2' : 'localhost';
+    final testUrl = 'http://$host:8080/test_form.html';
+    return WCPCollectDataBrowser.show(testUrl);
   }
 
   Future<dynamic> _showCollectDataWebView(String collectDataUrl) async {

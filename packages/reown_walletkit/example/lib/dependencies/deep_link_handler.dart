@@ -19,6 +19,11 @@ class DeepLinkHandler {
   static final _errorStream = StreamController<String>();
   static Stream<String> get errorStream => _errorStream.stream;
 
+  /// Temporary interceptor for deep links. When set, incoming links are
+  /// checked against this callback first. If it returns true the link is
+  /// considered handled and normal processing is skipped.
+  static bool Function(Uri uri)? oneShotInterceptor;
+
   static void initListener() {
     if (kIsWeb) return;
     _eventChannel.receiveBroadcastStream().listen(_onLink, onError: _onError);
@@ -46,6 +51,16 @@ class DeepLinkHandler {
 
   static void _onLink(dynamic link) async {
     debugPrint('[WalletKit] [DeepLinkHandler] _onLink $link');
+
+    // Check one-shot interceptor first (used by in-app browser callback).
+    if (oneShotInterceptor != null) {
+      final uri = Uri.tryParse('$link');
+      if (uri != null && oneShotInterceptor!(uri)) {
+        oneShotInterceptor = null;
+        return;
+      }
+    }
+
     try {
       final serviceRegistered = GetIt.I.isRegistered<IWalletKitService>();
       if (serviceRegistered) {
