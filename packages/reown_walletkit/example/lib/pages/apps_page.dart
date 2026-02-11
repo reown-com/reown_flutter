@@ -15,7 +15,7 @@ class AppsPage extends StatefulWidget {
   AppsPageState createState() => AppsPageState();
 }
 
-class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
+class AppsPageState extends State<AppsPage> {
   final _walletKitService = GetIt.I<IWalletKitService>();
 
   List<SessionData> get _sessions =>
@@ -48,7 +48,6 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
   @override
   void dispose() {
     _unregisterListeners();
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 

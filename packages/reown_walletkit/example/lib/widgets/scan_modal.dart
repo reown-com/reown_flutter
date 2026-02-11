@@ -78,7 +78,7 @@ class ScanModal extends StatelessWidget {
       DeepLinkHandler.waiting.value = true;
       await walletKitService.pair(uri);
     } on TimeoutException catch (_) {
-      _showError('Time out error. Check your connection.');
+      _showError('Timeout error. Check your connection.');
     } on ReownSignError catch (e) {
       _showError('${e.code}: ${e.message}');
     } on PayInitializeError catch (e) {
