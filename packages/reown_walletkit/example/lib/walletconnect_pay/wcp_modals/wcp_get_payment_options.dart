@@ -47,7 +47,7 @@ class _WCPGetPaymentOptionsState extends State<WCPGetPaymentOptions> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(StyleConstants.linear48),
       ),
       padding: const EdgeInsets.only(

@@ -7,6 +7,7 @@ import 'package:reown_walletkit/reown_walletkit.dart';
 
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
+import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
@@ -92,7 +93,7 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(StyleConstants.linear48),
       ),
       padding: const EdgeInsets.all(StyleConstants.linear8),
@@ -162,19 +163,26 @@ class PaymentDetailsSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        WCPTextField(
-          controller: TextEditingController(),
-          focusNode: FocusNode(),
-          label: 'Amount',
-          suffix: Text(
-            formatPayAmount(paymentInfo.amount),
-            style: StyleConstants.wcpTextPrimaryStyle,
-          ),
+        Builder(builder: (context) {
+          final colors = context.colors;
+          return WCPTextField(
+            controller: TextEditingController(),
+            focusNode: FocusNode(),
+            label: 'Amount',
+            suffix: Text(
+              formatPayAmount(paymentInfo.amount),
+              style: TextStyle(
+                color: colors.textPrimary,
+                fontSize: 16.0,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           enabled: false,
           onSubmitted: (_) {
             //
           },
-        ),
+        );
+        }),
         const SizedBox(height: 12.0),
         WCPPaymentOptionDropdown(
           label: 'Pay with',
@@ -213,6 +221,7 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
 
   Widget _buildOptionRow(PaymentOption option, bool isSelected) {
     final display = option.amount.display;
+    final colors = context.colors;
     return InkWell(
       onTap: () {
         if (!isSelected) {
@@ -225,8 +234,8 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
           Container(
             decoration: BoxDecoration(
               color: isSelected
-                  ? StyleConstants.accentPrimary.withValues(alpha: 0.1)
-                  : StyleConstants.textSecondary.withValues(alpha: 0.1),
+                  ? colors.accent.withValues(alpha: 0.1)
+                  : colors.textSecondary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
             ),
             margin: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
@@ -241,13 +250,17 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
                 const SizedBox(width: 8.0),
                 Text(
                   formatPayAmount(option.amount),
-                  style: StyleConstants.wcpTextPrimaryStyle,
+                  style: TextStyle(
+                    color: colors.textPrimary,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 Spacer(),
                 (widget.selectedOption.id == option.id)
                     ? Icon(
                         Icons.radio_button_on,
-                        color: StyleConstants.accentPrimary,
+                        color: colors.accent,
                       )
                     : SizedBox.shrink(),
               ],
@@ -261,7 +274,7 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
               child: Container(
                 padding: const EdgeInsets.all(1.5),
                 decoration: BoxDecoration(
-                  color: StyleConstants.foregroundPrimary,
+                  color: colors.backgroundSecondary,
                   borderRadius: BorderRadius.circular(12.0),
                 ),
                 child: CircleAvatar(
@@ -280,10 +293,11 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
   Widget build(BuildContext context) {
     final display = widget.selectedOption.amount.display;
     final hasMultipleOptions = widget.options.length > 1;
+    final colors = context.colors;
 
     return Container(
       decoration: BoxDecoration(
-        color: StyleConstants.foregroundPrimary,
+        color: colors.backgroundSecondary,
         borderRadius: BorderRadius.circular(20),
       ),
       constraints: BoxConstraints(minHeight: 64.0),
@@ -301,7 +315,6 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    // color: Colors.red,
                   ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20.0,
@@ -312,8 +325,9 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
                     children: [
                       Text(
                         widget.label,
-                        style: StyleConstants.wcpTextSecondaryStyle.copyWith(
-                          color: StyleConstants.textTertiary,
+                        style: TextStyle(
+                          color: colors.textTertiary,
+                          fontSize: 16.0,
                         ),
                       ),
                       Row(
@@ -321,7 +335,11 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
                         children: [
                           Text(
                             formatPayAmount(widget.selectedOption.amount),
-                            style: StyleConstants.wcpTextPrimaryStyle,
+                            style: TextStyle(
+                              color: colors.textPrimary,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                           const SizedBox(width: 8.0),
                           CircleAvatar(
@@ -359,7 +377,7 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
                     child: Container(
                       padding: const EdgeInsets.all(1.5),
                       decoration: BoxDecoration(
-                        color: StyleConstants.foregroundPrimary,
+                        color: colors.backgroundSecondary,
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       child: CircleAvatar(
@@ -418,10 +436,11 @@ class PaymentDetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final row = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: StyleConstants.wcpTextSecondaryStyle),
+        Text(label, style: TextStyle(color: colors.textSecondary, fontSize: 16.0)),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -429,10 +448,10 @@ class PaymentDetailRow extends StatelessWidget {
               Icon(icon, color: iconColor, size: 20),
               const SizedBox(width: 6),
             ],
-            Text(value, style: StyleConstants.wcpTextPrimaryStyle),
+            Text(value, style: TextStyle(color: colors.textPrimary, fontSize: 16.0, fontWeight: FontWeight.w500)),
             if (showChevron) ...[
               const SizedBox(width: 6),
-              Icon(Icons.chevron_right, color: Colors.grey[600], size: 20),
+              Icon(Icons.chevron_right, color: colors.textTertiary, size: 20),
             ],
           ],
         ),

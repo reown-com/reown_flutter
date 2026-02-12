@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
+import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -335,7 +336,7 @@ class _WCPCollectDataWebViewState extends State<WCPCollectDataWebView> {
     );
 
     return Scaffold(
-      backgroundColor: StyleConstants.bgPrimary,
+      backgroundColor: context.colors.background,
       resizeToAvoidBottomInset: !_isIOS,
       body: _isIOS
           ? MediaQuery.removeViewInsets(
@@ -360,7 +361,12 @@ class _WCPCollectDataWebViewState extends State<WCPCollectDataWebView> {
             const SizedBox(height: StyleConstants.linear16),
             Text(
               _loadError!,
-              style: StyleConstants.wcpTextSecondaryStyle,
+              style: TextStyle(
+                color: context.colors.textSecondary,
+                fontSize: 16,
+                fontFamily: 'KH Teka',
+                fontWeight: FontWeight.w400,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: StyleConstants.linear24),
@@ -376,7 +382,7 @@ class _WCPCollectDataWebViewState extends State<WCPCollectDataWebView> {
         if (_isLoading)
           Positioned.fill(
             child: Container(
-              color: StyleConstants.bgPrimary.withValues(alpha: 0.9),
+              color: context.colors.background.withValues(alpha: 0.9),
               child: const Center(
                 child: WalletConnectLoading(size: 120.0),
               ),

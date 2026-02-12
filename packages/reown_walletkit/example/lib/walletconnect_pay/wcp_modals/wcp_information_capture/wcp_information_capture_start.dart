@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
+import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 
@@ -31,7 +32,7 @@ class WCPInformationCaptureStartWidget extends StatelessWidget {
           const SizedBox(height: StyleConstants.linear16),
           WCPPaymentDetails(paymentInfo: paymentInfo),
           const SizedBox(height: StyleConstants.linear32),
-          const PaymentSteps(),
+          PaymentSteps(),
           const SizedBox(height: StyleConstants.linear32),
           WCPrimaryButton(
             onPressed: onStart ??
@@ -53,7 +54,7 @@ class PaymentSteps extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         PaymentStep(
@@ -89,6 +90,7 @@ class PaymentStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,11 +105,24 @@ class PaymentStep extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(title, style: StyleConstants.wcpTextPrimaryStyle),
+                      Text(
+                        title,
+                        style: TextStyle(
+                          color: colors.textPrimary,
+                          fontSize: 16,
+                          fontFamily: 'KH Teka',
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
                       const SizedBox.square(dimension: 6.0),
                       Text(
                         description,
-                        style: StyleConstants.wcpTextSecondaryStyle,
+                        style: TextStyle(
+                          color: colors.textSecondary,
+                          fontSize: 16,
+                          fontFamily: 'KH Teka',
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                       if (!isLast) const SizedBox.square(dimension: 30.0),
                     ],
@@ -135,6 +150,7 @@ class StepIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Column(
       children: [
         if (isLast) StepLine(height: _topLineHeight),
@@ -144,10 +160,10 @@ class StepIndicator extends StatelessWidget {
           height: _circleSize,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: Colors.grey[300]!, width: _lineWidth),
+            border: Border.all(color: colors.neutrals, width: _lineWidth),
           ),
         ),
-        if (!isLast) const Expanded(child: StepLine.expandable()),
+        if (!isLast) Expanded(child: StepLine.expandable()),
       ],
     );
   }
@@ -164,10 +180,11 @@ class StepLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final lineColor = context.colors.neutrals;
     if (height != null) {
-      return Container(width: _width, height: height, color: Colors.grey[300]);
+      return Container(width: _width, height: height, color: lineColor);
     } else {
-      return Container(width: _width, color: Colors.grey[300]);
+      return Container(width: _width, color: lineColor);
     }
   }
 }
@@ -179,16 +196,22 @@ class TimeEstimateBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Container(
       margin: const EdgeInsets.only(top: 12.0),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
+        color: colors.backgroundSecondary,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
         timeEstimate,
-        style: StyleConstants.wcpTextPrimaryStyle.copyWith(fontSize: 14.0),
+        style: TextStyle(
+          color: colors.textPrimary,
+          fontSize: 14.0,
+          fontFamily: 'KH Teka',
+          fontWeight: FontWeight.w400,
+        ),
       ),
     );
   }
