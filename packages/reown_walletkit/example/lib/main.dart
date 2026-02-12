@@ -326,6 +326,7 @@ class _MyHomePageState extends State<MyHomePage> {
           setState(() => _selectedIndex = index),
       labelType: NavigationRailLabelType.selected,
       backgroundColor: colors.background,
+      indicatorColor: Colors.transparent,
       selectedIconTheme: IconThemeData(color: colors.backgroundInvert),
       unselectedIconTheme: IconThemeData(color: colors.textSecondary),
       destinations: _pageDatas
