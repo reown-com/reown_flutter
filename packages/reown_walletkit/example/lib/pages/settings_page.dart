@@ -16,6 +16,8 @@ import 'package:reown_walletkit_wallet/dependencies/key_service/chain_key.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
 import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
+import 'package:reown_walletkit_wallet/theme/app_colors.dart';
+import 'package:reown_walletkit_wallet/theme/theme_provider.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/input_wcp_api_key.dart';
@@ -162,6 +164,7 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  _ThemeSwitch(),
                   FutureBuilder<List<ChainKey>>(
                     future: _keysService.loadKeys(),
                     initialData: _keysService.keys,
@@ -199,6 +202,47 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
       ),
       // floatingActionButton: _LinkModeButton(),
+    );
+  }
+}
+
+class _ThemeSwitch extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final themeProvider = GetIt.I<ThemeProvider>();
+    final colors = context.colors;
+    return ListenableBuilder(
+      listenable: themeProvider,
+      builder: (context, _) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+          child: Row(
+            children: [
+              Icon(
+                themeProvider.isDark ? Icons.dark_mode : Icons.light_mode,
+                color: colors.textPrimary,
+                size: 20.0,
+              ),
+              const SizedBox(width: 8.0),
+              Expanded(
+                child: Text(
+                  'Dark mode',
+                  style: TextStyle(
+                    color: colors.textPrimary,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              Switch(
+                value: themeProvider.isDark,
+                activeColor: colors.accent,
+                onChanged: (_) => themeProvider.toggleTheme(),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
