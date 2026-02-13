@@ -77,7 +77,7 @@ android {
 }
 
 dependencies {
-    compileOnly("com.github.reown-com:yttrium:0.9.109") {
+    compileOnly("com.github.reown-com:yttrium:0.10.38") {
         exclude(group: 'net.java.dev.jna', module: 'jna')
     }
     // compileOnly("com.github.reown-com:yttrium:unspecified") {

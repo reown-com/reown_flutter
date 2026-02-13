@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
@@ -29,7 +30,8 @@ class WCPCollectDataBrowser {
     final callbackUrl = _getCallbackUrl();
     final separator = collectDataUrl.contains('?') ? '&' : '?';
     final encodedCallback = Uri.encodeComponent(callbackUrl);
-    final url = '$collectDataUrl${separator}callback=$encodedCallback';
+    final url =
+        '$collectDataUrl${separator}callbackUrl=$encodedCallback';
 
     final completer = Completer<Uri>();
 
@@ -45,17 +47,38 @@ class WCPCollectDataBrowser {
       return false;
     };
 
+    // Listen for app resume — if the user dismisses the browser without
+    // submitting the form, no deep link callback fires and the completer
+    // would hang forever. When the app resumes and the completer is still
+    // pending, treat it as a user cancellation.
+    late final AppLifecycleListener lifecycleListener;
+    lifecycleListener = AppLifecycleListener(
+      onStateChange: (state) {
+        if (state == AppLifecycleState.resumed && !completer.isCompleted) {
+          // Small delay to allow a deep link to arrive first (the resume
+          // event can fire slightly before the deep link is dispatched).
+          Future.delayed(const Duration(milliseconds: 500), () {
+            if (!completer.isCompleted) {
+              completer.completeError('Browser dismissed');
+            }
+          });
+        }
+      },
+    );
+
     try {
       final launched = await launchUrl(
         Uri.parse(url),
         mode: LaunchMode.inAppBrowserView,
       );
       if (!launched) {
+        lifecycleListener.dispose();
         DeepLinkHandler.oneShotInterceptor = null;
         return 'Failed to open browser';
       }
 
       final uri = await completer.future;
+      lifecycleListener.dispose();
       await closeInAppWebView();
 
       final status = uri.queryParameters['status'];
@@ -65,6 +88,7 @@ class WCPCollectDataBrowser {
 
       return uri.queryParameters['error'] ?? 'Data collection failed';
     } catch (e) {
+      lifecycleListener.dispose();
       DeepLinkHandler.oneShotInterceptor = null;
       debugPrint('[WCPCollectDataBrowser] error: $e');
       return WCBottomSheetResult.close.name;

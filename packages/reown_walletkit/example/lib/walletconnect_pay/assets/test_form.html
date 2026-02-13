@@ -72,7 +72,7 @@
   <form id="form">
     <div class="field">
       <label for="dob">Date of Birth</label>
-      <input type="date" id="dob" name="dob" required>
+      <input type="text" id="dob" name="dob" placeholder="DD/MM/YYYY" inputmode="numeric" maxlength="10" required>
     </div>
     <div class="field">
       <label for="fullName">Full Name</label>
@@ -120,17 +120,32 @@
   </form>
 
   <script>
+    // Auto-format DOB field as DD/MM/YYYY
+    document.getElementById('dob').addEventListener('input', function(e) {
+      var v = this.value.replace(/\D/g, '');
+      if (v.length > 8) v = v.slice(0, 8);
+      if (v.length >= 5) {
+        this.value = v.slice(0, 2) + '/' + v.slice(2, 4) + '/' + v.slice(4);
+      } else if (v.length >= 3) {
+        this.value = v.slice(0, 2) + '/' + v.slice(2);
+      } else {
+        this.value = v;
+      }
+    });
+
     var params = new URLSearchParams(window.location.search);
-    var callback = params.get('callback') || 'https://appkit-lab.reown.com/flutter_walletkit_internal';
+    var fallback = 'https://appkit-lab.reown.com/flutter_walletkit_internal';
+    var successUrl = params.get('successUrl') || fallback;
+    var errorUrl = params.get('errorUrl') || fallback;
 
     document.getElementById('form').addEventListener('submit', function(e) {
       e.preventDefault();
-      window.location.href = callback + '?status=success';
+      window.location.href = successUrl + '?status=success';
     });
 
     document.getElementById('cancel').addEventListener('click', function(e) {
       e.preventDefault();
-      window.location.href = callback + '?status=cancelled';
+      window.location.href = errorUrl + '?status=cancelled';
     });
   </script>
 </body>
