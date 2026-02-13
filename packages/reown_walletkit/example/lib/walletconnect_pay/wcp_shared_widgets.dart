@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:reown_walletkit_wallet/utils/constants.dart';
+import 'package:reown_walletkit_wallet/theme/app_colors.dart';
+import 'package:reown_walletkit_wallet/theme/app_radius.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 
@@ -12,10 +14,15 @@ class WCModalTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Center(
       child: Text(
         text,
-        style: StyleConstants.wcpTextPrimaryStyle.copyWith(fontSize: 20),
+        style: TextStyle(
+          color: colors.textPrimary,
+          fontSize: 20.0,
+          fontWeight: FontWeight.w500,
+        ),
         textAlign: TextAlign.center,
       ),
     );
@@ -40,24 +47,31 @@ class WCPrimaryButton extends StatelessWidget {
       width: double.infinity,
       child: InkWell(
         onTap: enabled ? onPressed : null,
-        borderRadius: BorderRadius.circular(StyleConstants.linear16),
-        child: Container(
-          decoration: BoxDecoration(
-            color: enabled
-                ? StyleConstants.accentPrimary
-                : StyleConstants.accentPrimary.withValues(alpha: 0.6),
-            borderRadius: BorderRadius.circular(StyleConstants.linear16),
-          ),
-          padding: const EdgeInsets.symmetric(
-            horizontal: StyleConstants.linear16,
-            vertical: StyleConstants.linear16,
-          ),
-          child: Text(
-            text,
-            style: StyleConstants.buttonText,
-            textAlign: TextAlign.center,
-          ),
-        ),
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: Builder(builder: (context) {
+          final colors = context.colors;
+          return Container(
+            decoration: BoxDecoration(
+              color: enabled
+                  ? colors.accent
+                  : colors.accent.withValues(alpha: 0.6),
+              borderRadius: BorderRadius.circular(AppRadius.md),
+            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.s4,
+              vertical: AppSpacing.s4,
+            ),
+            child: Text(
+              text,
+              style: TextStyle(
+                color: colors.onAccent,
+                fontSize: 16.0,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          );
+        }),
       ),
     );
   }
@@ -78,6 +92,7 @@ class WCPStepsIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: List.generate(totalSteps, (index) {
@@ -89,8 +104,8 @@ class WCPStepsIndicator extends StatelessWidget {
           margin: EdgeInsets.only(right: index < totalSteps - 1 ? 8 : 0),
           decoration: BoxDecoration(
             color: isActive || isCurrent
-                ? StyleConstants.accentPrimary
-                : StyleConstants.foregroundSecondary,
+                ? colors.accent
+                : colors.neutrals,
             borderRadius: BorderRadius.circular(3),
           ),
         );
@@ -146,31 +161,38 @@ class _WCPTextFieldState extends State<WCPTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final isFocused = widget.focusNode.hasFocus;
     final borderColor = isFocused
-        ? StyleConstants.accentPrimary.withValues(alpha: 0.4)
-        : StyleConstants.foregroundSecondary;
+        ? colors.accent.withValues(alpha: 0.4)
+        : colors.inputBorder;
 
     return Container(
       height: 64.0,
       decoration: BoxDecoration(
-        color: StyleConstants.foregroundPrimary,
+        color: colors.backgroundSecondary,
         borderRadius: BorderRadius.circular(20),
         border: widget.enabled
             ? Border.all(color: borderColor, width: isFocused ? 4 : 1)
             : null,
       ),
       padding: widget.padding ??
-          const EdgeInsets.symmetric(horizontal: StyleConstants.linear24),
+          const EdgeInsets.symmetric(horizontal: AppSpacing.s6),
       child: CupertinoTextField(
         enabled: widget.enabled,
         controller: widget.controller,
         focusNode: widget.focusNode,
         onSubmitted: widget.onSubmitted,
-        style: widget.textStyle ?? StyleConstants.wcpTextPrimaryStyle,
+        style: widget.textStyle ??
+            TextStyle(
+              color: colors.textPrimary,
+              fontSize: 16.0,
+              fontWeight: FontWeight.w500,
+            ),
         placeholder: widget.label,
-        placeholderStyle: StyleConstants.wcpTextSecondaryStyle.copyWith(
-          color: StyleConstants.textTertiary,
+        placeholderStyle: TextStyle(
+          color: colors.textTertiary,
+          fontSize: 16.0,
         ),
         decoration: const BoxDecoration(),
         padding: EdgeInsets.zero,
@@ -189,6 +211,7 @@ class WCPPaymentDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -198,8 +221,11 @@ class WCPPaymentDetails extends StatelessWidget {
             textAlign: TextAlign.center,
             maxLines: 2,
             text: TextSpan(
-              style: StyleConstants.wcpTextPrimaryStyle.copyWith(
+              style: TextStyle(
+                color: colors.textPrimary,
                 fontSize: 20.0,
+                fontFamily: 'KH Teka',
+                fontWeight: FontWeight.w400,
               ),
               children: [
                 const TextSpan(text: 'Pay '),
@@ -237,13 +263,13 @@ class WCPMerchantHeader extends StatelessWidget {
         width: _logoSize,
         height: _logoSize,
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: context.colors.backgroundInvert,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Center(
           child: merchant.iconUrl != null
               ? ClipRRect(
-                  borderRadius: BorderRadius.circular(StyleConstants.linear8),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
                   child: Image.network(
                     merchant.iconUrl!,
                     width: _logoSize,
@@ -269,7 +295,7 @@ class _DefaultLogo extends StatelessWidget {
     return Text(
       text,
       style: TextStyle(
-        color: Colors.white,
+        color: context.colors.onBackgroundInvert,
         fontSize: 32,
         fontWeight: FontWeight.bold,
       ),
@@ -651,7 +677,7 @@ class _WalletConnectLoadingState extends State<WalletConnectLoading>
                     width: _squareSize,
                     height: _squareSize,
                     decoration: BoxDecoration(
-                      color: StyleConstants.accentPrimary,
+                      color: context.colors.accent,
                       borderRadius: BorderRadius.circular(_cornerBR.value),
                     ),
                   ),

@@ -5,8 +5,8 @@ import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.d
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
-import 'package:reown_walletkit_wallet/utils/constants.dart';
-import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
+import 'package:reown_walletkit_wallet/theme/app_colors.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 
 class BalancesPage extends StatefulWidget {
   const BalancesPage({super.key});
@@ -97,15 +97,22 @@ class _BalancesPageState extends State<BalancesPage> {
   @override
   Widget build(BuildContext context) {
     final chainKeys = _keysService.getKeysForChain('eip155');
+    final colors = context.colors;
 
     return Scaffold(
       body: chainKeys.isEmpty
-          ? const Center(child: Text('No EVM accounts found'))
+          ? Center(
+              child: Text(
+                'No EVM accounts found',
+                style: TextStyle(color: colors.textPrimary),
+              ),
+            )
           : RefreshIndicator(
               onRefresh: () => _updateBalance(showLoading: false),
+              color: colors.accent,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(AppSpacing.s4),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -115,22 +122,28 @@ class _BalancesPageState extends State<BalancesPage> {
                         Expanded(
                           child: Container(
                             padding: const EdgeInsets.only(
-                              bottom: 12.0,
-                              left: 12.0,
-                              right: 12.0,
+                              bottom: AppSpacing.s3,
+                              left: AppSpacing.s3,
+                              right: AppSpacing.s3,
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Text(
                                   'Wallet address',
-                                  style: StyleConstants.wcpTextPrimaryStyle,
+                                  style: TextStyle(
+                                    color: colors.textPrimary,
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                                const SizedBox(height: 4.0),
+                                const SizedBox(height: AppSpacing.s1),
                                 Text(
                                   chainKeys.first.address,
-                                  style: StyleConstants.wcpTextPrimaryStyle
-                                      .copyWith(fontSize: 12),
+                                  style: TextStyle(
+                                    color: colors.textSecondary,
+                                    fontSize: 12.0,
+                                  ),
                                 ),
                               ],
                             ),
@@ -138,8 +151,8 @@ class _BalancesPageState extends State<BalancesPage> {
                         ),
                       ],
                     ),
-                    Divider(height: 1.0, color: StyleConstants.neutrals),
-                    const SizedBox(height: 12.0),
+                    Divider(height: 1.0, color: colors.divider),
+                    const SizedBox(height: AppSpacing.s3),
                     // Filter widgets
                     _BalancesFilterWidget(
                       symbolsWithIcons: _symbolsWithIcons,
@@ -157,23 +170,29 @@ class _BalancesPageState extends State<BalancesPage> {
                         setState(() => _selectedSymbols.clear());
                       },
                     ),
-                    const SizedBox(height: 12.0),
+                    const SizedBox(height: AppSpacing.s3),
                     if (_isLoading)
-                      const Center(
+                      Center(
                         child: Padding(
-                          padding: EdgeInsets.all(24.0),
-                          child: CircularProgressIndicator(),
+                          padding: const EdgeInsets.all(AppSpacing.s6),
+                          child: CircularProgressIndicator(color: colors.accent),
                         ),
                       )
                     else if (_filteredBalances.isEmpty)
-                      WCPTextField(
-                        controller: TextEditingController(),
-                        focusNode: FocusNode(),
+                      Container(
+                        height: 64.0,
+                        decoration: BoxDecoration(
+                          color: colors.backgroundSecondary,
+                          borderRadius: BorderRadius.circular(20.0),
+                        ),
+                        alignment: Alignment.center,
                         padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                        label: _balances.isEmpty
-                            ? 'No balances found'
-                            : 'No balances match selected filters',
-                        enabled: false,
+                        child: Text(
+                          _balances.isEmpty
+                              ? 'No balances found'
+                              : 'No balances match selected filters',
+                          style: TextStyle(color: colors.textTertiary),
+                        ),
                       )
                     else
                       ..._filteredBalances.map((balance) {
@@ -193,63 +212,73 @@ class _BalancesPageState extends State<BalancesPage> {
                         );
 
                         return Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: WCPTextField(
-                            controller: TextEditingController(
-                              text:
-                                  '${quantity.toStringAsFixed(6)} $symbol (${value.toStringAsFixed(2)} USD)',
-                            ),
-                            focusNode: FocusNode(),
-                            textStyle:
-                                StyleConstants.wcpTextPrimaryStyle.copyWith(
-                              fontSize: 15.0,
-                              fontWeight: FontWeight.bold,
+                          padding: const EdgeInsets.only(bottom: AppSpacing.s2),
+                          child: Container(
+                            height: 64.0,
+                            decoration: BoxDecoration(
+                              color: colors.backgroundSecondary,
+                              borderRadius: BorderRadius.circular(20.0),
                             ),
                             padding: const EdgeInsets.symmetric(
                               horizontal: 18.0,
                             ),
-                            label: '',
-                            suffix: Stack(
+                            child: Row(
                               children: [
-                                CircleAvatar(
-                                  radius: 16,
-                                  backgroundColor: Colors.white,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(16),
-                                    ),
-                                    child: CachedNetworkImage(
-                                      imageUrl: iconUrl,
-                                      width: 32.0,
-                                      height: 32.0,
-                                      errorWidget: (context, url, error) =>
-                                          const SizedBox.shrink(),
+                                Expanded(
+                                  child: Text(
+                                    '${quantity.toStringAsFixed(6)} $symbol (${value.toStringAsFixed(2)} USD)',
+                                    style: TextStyle(
+                                      color: colors.textPrimary,
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.w400,
                                     ),
                                   ),
                                 ),
-                                Positioned(
-                                  right: 0,
-                                  bottom: 0,
-                                  child: CircleAvatar(
-                                    radius: 9,
-                                    backgroundColor: Colors.transparent,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(9),
-                                      ),
-                                      child: CachedNetworkImage(
-                                        imageUrl: chainData.logo,
-                                        width: 18.0,
-                                        height: 18.0,
-                                        errorWidget: (context, url, error) =>
-                                            const SizedBox.shrink(),
+                                Stack(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 16,
+                                      backgroundColor:
+                                          colors.backgroundTertiary,
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(16),
+                                        ),
+                                        child: CachedNetworkImage(
+                                          imageUrl: iconUrl,
+                                          width: 32.0,
+                                          height: 32.0,
+                                          errorWidget:
+                                              (context, url, error) =>
+                                                  const SizedBox.shrink(),
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                    Positioned(
+                                      right: 0,
+                                      bottom: 0,
+                                      child: CircleAvatar(
+                                        radius: 9,
+                                        backgroundColor: Colors.transparent,
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.all(
+                                            Radius.circular(9),
+                                          ),
+                                          child: CachedNetworkImage(
+                                            imageUrl: chainData.logo,
+                                            width: 18.0,
+                                            height: 18.0,
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const SizedBox.shrink(),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                            enabled: false,
                           ),
                         );
                       }),
@@ -280,6 +309,7 @@ class _BalancesFilterWidget extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final colors = context.colors;
     final isAllSelected = selectedSymbols.isEmpty;
 
     return Column(
@@ -287,9 +317,12 @@ class _BalancesFilterWidget extends StatelessWidget {
       children: [
         Text(
           'Filter by token',
-          style: StyleConstants.wcpTextPrimaryStyle.copyWith(fontSize: 14.0),
+          style: TextStyle(
+            color: colors.textPrimary,
+            fontSize: 14.0,
+          ),
         ),
-        const SizedBox(height: 8.0),
+        const SizedBox(height: AppSpacing.s2),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
@@ -298,24 +331,18 @@ class _BalancesFilterWidget extends StatelessWidget {
                 label: const Text('All'),
                 selected: isAllSelected,
                 onSelected: (_) => onSelectAll(),
-                selectedColor: StyleConstants.accentPrimary.withValues(
-                  alpha: 0.2,
-                ),
+                selectedColor: colors.accent.withValues(alpha: 0.2),
                 showCheckmark: false,
-                backgroundColor: StyleConstants.foregroundPrimary,
+                backgroundColor: colors.backgroundSecondary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
                   side: BorderSide(
-                    color: isAllSelected
-                        ? StyleConstants.accentPrimary
-                        : StyleConstants.foregroundSecondary,
+                    color: isAllSelected ? colors.accent : colors.inputBorder,
                   ),
                 ),
-                labelStyle: StyleConstants.wcpTextPrimaryStyle.copyWith(
+                labelStyle: TextStyle(
                   fontSize: 13.0,
-                  color: isAllSelected
-                      ? StyleConstants.accentPrimary
-                      : StyleConstants.textPrimary,
+                  color: isAllSelected ? colors.accent : colors.textPrimary,
                 ),
               ),
               ...symbolsWithIcons.entries.map((entry) {
@@ -323,11 +350,11 @@ class _BalancesFilterWidget extends StatelessWidget {
                 final iconUrl = entry.value;
                 final isSelected = selectedSymbols.contains(symbol);
                 return Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
+                  padding: const EdgeInsets.only(left: AppSpacing.s2),
                   child: FilterChip(
                     avatar: iconUrl.isNotEmpty
                         ? CircleAvatar(
-                            backgroundColor: StyleConstants.foregroundSecondary,
+                            backgroundColor: colors.backgroundTertiary,
                             child: ClipOval(
                               child: CachedNetworkImage(
                                 imageUrl: iconUrl,
@@ -343,24 +370,20 @@ class _BalancesFilterWidget extends StatelessWidget {
                     selected: isSelected,
                     onSelected: (selected) =>
                         onSelectionChanged(symbol, selected),
-                    selectedColor: StyleConstants.accentPrimary.withValues(
-                      alpha: 0.2,
-                    ),
+                    selectedColor: colors.accent.withValues(alpha: 0.2),
                     showCheckmark: false,
-                    backgroundColor: StyleConstants.foregroundPrimary,
+                    backgroundColor: colors.backgroundSecondary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                       side: BorderSide(
-                        color: isSelected
-                            ? StyleConstants.accentPrimary
-                            : StyleConstants.foregroundSecondary,
+                        color:
+                            isSelected ? colors.accent : colors.inputBorder,
                       ),
                     ),
-                    labelStyle: StyleConstants.wcpTextPrimaryStyle.copyWith(
+                    labelStyle: TextStyle(
                       fontSize: 13.0,
-                      color: isSelected
-                          ? StyleConstants.accentPrimary
-                          : StyleConstants.textPrimary,
+                      color:
+                          isSelected ? colors.accent : colors.textPrimary,
                     ),
                   ),
                 );

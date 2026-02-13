@@ -9,6 +9,7 @@ class BottomSheetQueueItem {
   final Completer<dynamic> completer;
   final int closeAfter;
   final bool showBackButton;
+  final Widget? leadingWidget;
   final (int, int) stepper;
 
   BottomSheetQueueItem({
@@ -16,6 +17,7 @@ class BottomSheetQueueItem {
     required this.completer,
     this.closeAfter = 0,
     this.showBackButton = false,
+    this.leadingWidget,
     this.stepper = (0, 0),
   });
 }
@@ -27,6 +29,7 @@ abstract class IBottomSheetService {
     required Widget widget,
     int closeAfter = 0,
     bool showBackButton = false,
+    Widget? leadingWidget,
     (int, int) stepper = (0, 0),
   });
 

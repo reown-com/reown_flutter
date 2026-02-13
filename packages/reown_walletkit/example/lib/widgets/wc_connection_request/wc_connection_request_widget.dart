@@ -3,7 +3,8 @@ import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
-import 'package:reown_walletkit_wallet/utils/constants.dart';
+import 'package:reown_walletkit_wallet/theme/app_colors.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/utils/namespace_model_builder.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_widget.dart';
@@ -13,14 +14,12 @@ import '../wc_connection_widget/wc_connection_model.dart';
 class WCConnectionRequestWidget extends StatelessWidget {
   const WCConnectionRequestWidget({
     super.key,
-    // this.authPayloadParams,
     this.sessionAuthPayload,
     this.proposalData,
     this.requester,
     this.verifyContext,
   });
 
-  // final AuthPayloadParams? authPayloadParams;
   final SessionAuthPayload? sessionAuthPayload;
   final ProposalData? proposalData;
   final ConnectionMetadata? requester;
@@ -34,19 +33,19 @@ class WCConnectionRequestWidget extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(StyleConstants.linear8),
+        borderRadius: BorderRadius.circular(AppSpacing.s2),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: StyleConstants.linear8),
+          const SizedBox(height: AppSpacing.s2),
           Text(
             '${requester!.metadata.name} ${StringConstants.wouldLikeToConnect}',
             style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: StyleConstants.linear8),
+          const SizedBox(height: AppSpacing.s2),
           (sessionAuthPayload != null)
               ? _buildSessionAuthRequestView()
               : _buildSessionProposalView(),
@@ -57,11 +56,9 @@ class WCConnectionRequestWidget extends StatelessWidget {
 
   Widget _buildSessionAuthRequestView() {
     final walletKit = GetIt.I<IWalletKitService>().walletKit;
-    //
     final cacaoPayload = CacaoRequestPayload.fromSessionAuthPayload(
       sessionAuthPayload!,
     );
-    //
     final List<WCConnectionModel> messagesModels = [];
     for (var chain in sessionAuthPayload!.chains) {
       final chainKeys = GetIt.I<IKeyService>().getKeysForChain(chain);
@@ -77,7 +74,6 @@ class WCConnectionRequestWidget extends StatelessWidget {
         ),
       );
     }
-    //
     return WCConnectionWidget(
       title: '${messagesModels.length} Messages',
       info: messagesModels,
@@ -85,8 +81,6 @@ class WCConnectionRequestWidget extends StatelessWidget {
   }
 
   Widget _buildSessionProposalView() {
-    // Create the connection models using the required and optional namespaces provided by the proposal data
-    // The key is the title and the list of values is the data
     final generatedNamespaces = proposalData!.generatedNamespaces!;
     final authRequests = proposalData!.requests?.authentication;
     final views = ConnectionWidgetBuilder.buildFromRequiredNamespaces(
@@ -108,9 +102,10 @@ class VerifyContextWidget extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final colors = context.colors;
     if (verifyContext!.validation.scam) {
       return VerifyBanner(
-        color: StyleConstants.textError,
+        color: colors.error,
         origin: verifyContext!.origin,
         title: 'Security risk',
         text: 'This domain is flagged as unsafe by multiple security providers.'
@@ -119,7 +114,7 @@ class VerifyContextWidget extends StatelessWidget {
     }
     if (verifyContext!.validation.invalid) {
       return VerifyBanner(
-        color: StyleConstants.textError,
+        color: colors.error,
         origin: verifyContext!.origin,
         title: 'Domain mismatch',
         text:
@@ -129,12 +124,12 @@ class VerifyContextWidget extends StatelessWidget {
     }
     if (verifyContext!.validation.valid) {
       return VerifyHeader(
-        iconColor: StyleConstants.textSuccess,
+        iconColor: colors.success,
         title: verifyContext!.origin,
       );
     }
     return VerifyBanner(
-      color: Colors.orange,
+      color: colors.warning,
       origin: verifyContext!.origin,
       title: 'Cannot verify',
       text: 'This domain cannot be verified. '
@@ -154,7 +149,7 @@ class VerifyHeader extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Icon(Icons.shield_outlined, color: iconColor),
-        const SizedBox(width: StyleConstants.linear8),
+        const SizedBox(width: AppSpacing.s2),
         Expanded(
           child: Text(
             title,
@@ -184,7 +179,7 @@ class VerifyBanner extends StatelessWidget {
         Text(origin, style: const TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox.square(dimension: 8.0),
         Container(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(AppSpacing.s2),
           decoration: BoxDecoration(
             color: color.withValues(alpha: 0.2),
             borderRadius: const BorderRadius.all(Radius.circular(12.0)),
@@ -192,7 +187,7 @@ class VerifyBanner extends StatelessWidget {
           child: Column(
             children: [
               VerifyHeader(iconColor: color, title: title),
-              const SizedBox(height: 4.0),
+              const SizedBox(height: AppSpacing.s1),
               Text(
                 text,
                 textAlign: TextAlign.center,

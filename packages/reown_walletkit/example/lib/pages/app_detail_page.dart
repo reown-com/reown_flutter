@@ -1,306 +1,274 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
+import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
-import 'package:reown_walletkit_wallet/utils/constants.dart';
-import 'package:reown_walletkit_wallet/utils/methods_utils.dart';
-import 'package:reown_walletkit_wallet/utils/namespace_model_builder.dart';
-import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
+import 'package:reown_walletkit_wallet/models/chain_data.dart';
+import 'package:reown_walletkit_wallet/models/chain_metadata.dart';
+import 'package:reown_walletkit_wallet/theme/app_colors.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
+import 'package:reown_walletkit_wallet/widgets/shared/app_icon_widget.dart';
+import 'package:reown_walletkit_wallet/widgets/shared/chain_icon_widget.dart';
 
-class AppDetailPage extends StatefulWidget {
-  final PairingInfo pairing;
+class AppDetailPage extends StatelessWidget {
+  final SessionData session;
 
-  const AppDetailPage({super.key, required this.pairing});
-
-  @override
-  AppDetailPageState createState() => AppDetailPageState();
-}
-
-class AppDetailPageState extends State<AppDetailPage> {
-  late ReownWalletKit _walletKit;
-
-  @override
-  void initState() {
-    super.initState();
-    _walletKit = GetIt.I<IWalletKitService>().walletKit;
-    _walletKit.onSessionDelete.subscribe(_onSessionDelete);
-    _walletKit.onSessionExpire.subscribe(_onSessionDelete);
-  }
-
-  @override
-  void dispose() {
-    _walletKit.onSessionDelete.unsubscribe(_onSessionDelete);
-    _walletKit.onSessionExpire.unsubscribe(_onSessionDelete);
-    super.dispose();
-  }
-
-  void _onSessionDelete(dynamic args) {
-    setState(() {
-      _walletKit = GetIt.I<IWalletKitService>().walletKit;
-    });
-  }
+  const AppDetailPage({super.key, required this.session});
 
   @override
   Widget build(BuildContext context) {
-    final metadata = widget.pairing.peerMetadata;
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(
-      widget.pairing.expiry * 1000,
-    );
-    int year = dateTime.year;
-    int month = dateTime.month;
-    int day = dateTime.day;
+    final colors = context.colors;
+    final metadata = session.peer.metadata;
 
-    String expiryDate =
-        '$year-${month.toString().padLeft(2, '0')}-${day.toString().padLeft(2, '0')}';
+    final allMethods = <String>[];
+    final allEvents = <String>[];
+    final chainIds = <String>{};
 
-    final sessions = _walletKit.sessions
-        .getAll()
-        .where((element) => element.pairingTopic == widget.pairing.topic)
-        .toList();
-
-    List<Widget> sessionWidgets = [];
-    for (final SessionData session in sessions) {
-      final namespaceWidget = ConnectionWidgetBuilder.buildFromNamespaces(
-        session.topic,
-        session.namespaces,
-        context,
-      );
-      // Loop through and add the namespace widgets, but put 20 pixels between each one
-      for (int i = 0; i < namespaceWidget.length; i++) {
-        sessionWidgets.add(namespaceWidget[i]);
-        if (i != namespaceWidget.length - 1) {
-          sessionWidgets.add(const SizedBox(height: 20.0));
+    for (final ns in session.namespaces.values) {
+      allMethods.addAll(ns.methods);
+      allEvents.addAll(ns.events);
+      for (final account in ns.accounts) {
+        final parts = account.split(':');
+        if (parts.length >= 2) {
+          chainIds.add('${parts[0]}:${parts[1]}');
         }
       }
-      sessionWidgets.add(const SizedBox.square(dimension: 10.0));
-      sessionWidgets.add(
-        Row(
-          children: [
-            CustomButton(
-              type: CustomButtonType.normal,
-              onTap: () async {
-                try {
-                  await _walletKit.extendSession(topic: session.topic);
-                  setState(() {});
-                } catch (e) {
-                  debugPrint('[SampleWallet] ${e.toString()}');
-                }
-              },
-              child: const Center(
-                child: Text(
-                  'Extend Session',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-      sessionWidgets.add(const SizedBox.square(dimension: 10.0));
-      sessionWidgets.add(
-        Row(
-          children: [
-            CustomButton(
-              type: CustomButtonType.normal,
-              onTap: () async {
-                try {
-                  await _walletKit.updateSession(
-                    topic: session.topic,
-                    namespaces: session.namespaces,
-                  );
-                  setState(() {});
-                } catch (e) {
-                  debugPrint('[SampleWallet] ${e.toString()}');
-                }
-              },
-              child: const Center(
-                child: Text(
-                  'Update Session',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-      sessionWidgets.add(const SizedBox.square(dimension: 10.0));
-      sessionWidgets.add(
-        Row(
-          children: [
-            CustomButton(
-              type: CustomButtonType.normal,
-              onTap: () async {
-                try {
-                  await _walletKit.disconnectSession(
-                    topic: session.topic,
-                    reason: Errors.getSdkError(
-                      Errors.USER_DISCONNECTED,
-                    ).toSignError(),
-                  );
-                  setState(() {});
-                } catch (e) {
-                  debugPrint('[SampleWallet] ${e.toString()}');
-                }
-              },
-              child: const Center(
-                child: Text(
-                  'Disconnect Session',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
     }
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(metadata?.name ?? 'Unknown'),
-        actions: [
-          Visibility(
-            visible: metadata?.redirect?.native != null,
-            child: IconButton(
-              icon: const Icon(Icons.open_in_new_rounded),
-              onPressed: () {
-                MethodsUtils.openApp(
-                  sessions.first.topic,
-                  sessions.first.peer.metadata.redirect,
-                );
-              },
+
+    final chains = chainIds
+        .map((id) {
+          try {
+            return ChainsDataList.allChains.firstWhere(
+              (c) => c.chainId == id,
+            );
+          } catch (_) {
+            return null;
+          }
+        })
+        .whereType<ChainMetadata>()
+        .toList();
+
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          const SizedBox(height: AppSpacing.s5),
+          // App info card
+          _AppInfoCard(
+            metadata: metadata,
+            chains: chains,
+            colors: colors,
+          ),
+          const SizedBox(height: AppSpacing.s2),
+          // Methods card
+          if (allMethods.isNotEmpty)
+            _DetailCard(
+              title: 'Methods',
+              content: allMethods.join(', '),
+              colors: colors,
+            ),
+          if (allMethods.isNotEmpty) const SizedBox(height: AppSpacing.s2),
+          // Events card
+          if (allEvents.isNotEmpty)
+            _DetailCard(
+              title: 'Events',
+              content: allEvents.join(', '),
+              colors: colors,
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Disconnect button shown in the bottom sheet header.
+/// Filled dark background with white text/icon, 12px border-radius.
+class DisconnectButton extends StatelessWidget {
+  final String sessionTopic;
+
+  const DisconnectButton({super.key, required this.sessionTopic});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors;
+    return GestureDetector(
+      onTap: () => _disconnect(context),
+      child: Container(
+        height: 38.0,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.s4,
+        ),
+        decoration: BoxDecoration(
+          color: colors.backgroundInvert,
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SvgPicture.asset(
+              'assets/LinkBreak.svg',
+              width: 14.0,
+              height: 14.0,
+              colorFilter: ColorFilter.mode(
+                colors.onBackgroundInvert,
+                BlendMode.srcIn,
+              ),
+            ),
+            const SizedBox(width: 6.0),
+            Text(
+              'Disconnect',
+              style: TextStyle(
+                color: colors.onBackgroundInvert,
+                fontSize: 14.0,
+                fontWeight: FontWeight.w400,
+                fontFamily: 'KH Teka',
+                letterSpacing: -0.14,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _disconnect(BuildContext context) async {
+    final walletKit = GetIt.I<IWalletKitService>().walletKit;
+    try {
+      await walletKit.disconnectSession(
+        topic: sessionTopic,
+        reason: Errors.getSdkError(
+          Errors.USER_DISCONNECTED,
+        ).toSignError(),
+      );
+    } catch (e) {
+      debugPrint('[SampleWallet] ${e.toString()}');
+    }
+    if (context.mounted && Navigator.canPop(context)) {
+      Navigator.of(context).pop(WCBottomSheetResult.close);
+    }
+  }
+}
+
+/// Horizontal app info card: icon | name+url | chain icons
+class _AppInfoCard extends StatelessWidget {
+  const _AppInfoCard({
+    required this.metadata,
+    required this.chains,
+    required this.colors,
+  });
+
+  final PairingMetadata metadata;
+  final List<ChainMetadata> chains;
+  final AppColors colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.s5),
+      decoration: BoxDecoration(
+        color: colors.backgroundSecondary,
+        borderRadius: BorderRadius.circular(AppSpacing.s5),
+      ),
+      child: Row(
+        children: [
+          AppIcon(metadata: metadata, size: 42.0, borderRadius: 12.0),
+          const SizedBox(width: AppSpacing.s4),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  metadata.name,
+                  style: TextStyle(
+                    color: colors.textPrimary,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w400,
+                    fontFamily: 'KH Teka',
+                    letterSpacing: -0.16,
+                    height: 18.0 / 16.0,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+                const SizedBox(height: AppSpacing.s05),
+                Text(
+                  metadata.url,
+                  style: TextStyle(
+                    color: colors.textSecondary,
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.w400,
+                    fontFamily: 'KH Teka',
+                    letterSpacing: -0.16,
+                    height: 18.0 / 16.0,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ],
+            ),
+          ),
+          if (chains.isNotEmpty) ...[
+            const SizedBox(width: AppSpacing.s2),
+            ChainIcons(logoUrls: chains.map((c) => c.logo).toList()),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Card for Methods/Events sections with gray background.
+class _DetailCard extends StatelessWidget {
+  const _DetailCard({
+    required this.title,
+    required this.content,
+    required this.colors,
+  });
+
+  final String title;
+  final String content;
+  final AppColors colors;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(AppSpacing.s5),
+      decoration: BoxDecoration(
+        color: colors.backgroundSecondary,
+        borderRadius: BorderRadius.circular(AppSpacing.s5),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              color: colors.textPrimary,
+              fontSize: 16.0,
+              fontWeight: FontWeight.w400,
+              fontFamily: 'KH Teka',
+              letterSpacing: -0.16,
+              height: 18.0 / 16.0,
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+          ),
+          const SizedBox(height: AppSpacing.s1),
+          Text(
+            content,
+            style: TextStyle(
+              color: colors.textSecondary,
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+              fontFamily: 'KH Teka',
+              letterSpacing: -0.14,
+              height: 16.0 / 14.0,
             ),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.only(
-          left: StyleConstants.linear8,
-          top: StyleConstants.linear8,
-          right: StyleConstants.linear8,
-          bottom: StyleConstants.linear32,
-        ),
-        child: Column(
-          children: [
-            Visibility(
-              visible: metadata != null,
-              child: Row(
-                children: [
-                  Builder(
-                    builder: (BuildContext context) {
-                      if (metadata!.icons.isNotEmpty) {
-                        final imageUrl = metadata.icons.first;
-                        if (imageUrl.split('.').last == 'svg') {
-                          return Container(
-                            width: 80.0,
-                            height: 80.0,
-                            padding: const EdgeInsets.all(1.0),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 1.0,
-                                color: Colors.black38,
-                              ),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(40.0),
-                              ),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(40.0),
-                              ),
-                              child: SvgPicture.network(imageUrl),
-                            ),
-                          );
-                        }
-                        return CircleAvatar(
-                          backgroundImage: CachedNetworkImageProvider(imageUrl),
-                          radius: 40.0,
-                        );
-                      }
-                      return CircleAvatar(
-                        radius: 40.0,
-                        backgroundColor: Colors.black12,
-                      );
-                    },
-                  ),
-                  const SizedBox(width: 10.0),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(metadata?.url ?? ''),
-                        Text('Expires on: $expiryDate'),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20.0),
-            Visibility(
-              visible: metadata != null,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: sessionWidgets,
-              ),
-            ),
-            const SizedBox(height: 20.0),
-            Row(
-              children: [
-                CustomButton(
-                  type: CustomButtonType.invalid,
-                  onTap: () async {
-                    try {
-                      await _walletKit.core.pairing.disconnect(
-                        topic: widget.pairing.topic,
-                      );
-                      final topicSession = sessions.where(
-                        (s) => s.pairingTopic == widget.pairing.topic,
-                      );
-                      for (var session in topicSession) {
-                        await _walletKit.disconnectSession(
-                          topic: session.topic,
-                          reason: Errors.getSdkError(
-                            Errors.USER_DISCONNECTED,
-                          ).toSignError(),
-                        );
-                      }
-                      _back();
-                    } catch (e) {
-                      debugPrint('[SampleWallet] ${e.toString()}');
-                    }
-                  },
-                  child: const Center(
-                    child: Text(
-                      'Delete Pairing',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
     );
-  }
-
-  void _back() {
-    if (Navigator.canPop(context)) {
-      Navigator.pop(context);
-    }
   }
 }

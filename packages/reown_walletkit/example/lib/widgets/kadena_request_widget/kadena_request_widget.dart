@@ -2,7 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:kadena_dart_sdk/kadena_dart_sdk.dart';
-import 'package:reown_walletkit_wallet/utils/constants.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
+import 'package:reown_walletkit_wallet/theme/app_typography.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_model.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_widget.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_request_widget.dart/wc_request_widget.dart';
@@ -58,10 +59,10 @@ class KadenaRequestWidgetState extends State<KadenaRequestWidget> {
       signCounter.add(
         Text(
           '${_currentIndex + 1} of ${widget.payloads.length}',
-          style: StyleConstants.subtitleText,
+          style: context.textStyles.subtitleText,
         ),
       );
-      signCounter.add(const SizedBox(height: StyleConstants.magic20));
+      signCounter.add(const SizedBox(height: AppSpacing.s5));
     }
 
     return WCRequestWidget(

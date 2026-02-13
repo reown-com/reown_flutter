@@ -4,7 +4,8 @@ import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/deep_link_handler.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
-import 'package:reown_walletkit_wallet/utils/constants.dart';
+import 'package:reown_walletkit_wallet/theme/app_colors.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_model.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_widget/wc_connection_widget.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_request_widget.dart/wc_request_widget.dart';
@@ -90,26 +91,31 @@ class MethodsUtils {
     DeepLinkHandler.waiting.value = false;
     await GetIt.I<IBottomSheetService>().queueBottomSheet(
       closeAfter: success ? 3 : 0,
-      widget: Container(
-        height: 320.0,
-        width: double.infinity,
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            Icon(
-              success ? Icons.check_circle_sharp : Icons.error_outline_sharp,
-              color: success
-                  ? StyleConstants.textSuccess
-                  : StyleConstants.textError,
-              size: 80.0,
+      widget: Builder(
+        builder: (context) {
+          final colors = context.colors;
+          return Container(
+            height: 320.0,
+            width: double.infinity,
+            padding: const EdgeInsets.all(AppSpacing.s5),
+            child: Column(
+              children: [
+                Icon(
+                  success
+                      ? Icons.check_circle_sharp
+                      : Icons.error_outline_sharp,
+                  color: success ? colors.success : colors.error,
+                  size: 80.0,
+                ),
+                Text(
+                  title ?? 'Connected',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(message ?? 'You can go back to your dApp now'),
+              ],
             ),
-            Text(
-              title ?? 'Connected',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            Text(message ?? 'You can go back to your dApp now'),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
