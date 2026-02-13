@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
-import 'package:reown_walletkit_wallet/utils/constants.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -202,7 +202,7 @@ class _WCPCollectDataWebViewState extends State<WCPCollectDataWebView> {
     }
 
     _controller = WebViewController()
-      ..setBackgroundColor(StyleConstants.bgPrimary)
+      ..setBackgroundColor(const Color(0xFFFFFFFF))
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..addJavaScriptChannel(_channelName, onMessageReceived: _handleMessage)
       ..setNavigationDelegate(
@@ -314,8 +314,8 @@ class _WCPCollectDataWebViewState extends State<WCPCollectDataWebView> {
           // Header with close button
           Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: StyleConstants.linear16,
-              vertical: StyleConstants.linear8,
+              horizontal: AppSpacing.s4,
+              vertical: AppSpacing.s2,
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -352,13 +352,13 @@ class _WCPCollectDataWebViewState extends State<WCPCollectDataWebView> {
     if (_loadError != null) {
       return Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: StyleConstants.linear16,
+          horizontal: AppSpacing.s4,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const WCModalTitle(text: 'Verification needed'),
-            const SizedBox(height: StyleConstants.linear16),
+            const SizedBox(height: AppSpacing.s4),
             Text(
               _loadError!,
               style: TextStyle(
@@ -369,7 +369,7 @@ class _WCPCollectDataWebViewState extends State<WCPCollectDataWebView> {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: StyleConstants.linear24),
+            const SizedBox(height: AppSpacing.s6),
             WCPrimaryButton(onPressed: _close, text: 'Close'),
           ],
         ),

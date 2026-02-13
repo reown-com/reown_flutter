@@ -6,6 +6,7 @@ import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/key_service/i_key_service.dart';
 import 'package:reown_walletkit_wallet/models/chain_data.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 
 class BalancesPage extends StatefulWidget {
   const BalancesPage({super.key});
@@ -111,7 +112,7 @@ class _BalancesPageState extends State<BalancesPage> {
               color: colors.accent,
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(AppSpacing.s4),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -121,9 +122,9 @@ class _BalancesPageState extends State<BalancesPage> {
                         Expanded(
                           child: Container(
                             padding: const EdgeInsets.only(
-                              bottom: 12.0,
-                              left: 12.0,
-                              right: 12.0,
+                              bottom: AppSpacing.s3,
+                              left: AppSpacing.s3,
+                              right: AppSpacing.s3,
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -136,7 +137,7 @@ class _BalancesPageState extends State<BalancesPage> {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                const SizedBox(height: 4.0),
+                                const SizedBox(height: AppSpacing.s1),
                                 Text(
                                   chainKeys.first.address,
                                   style: TextStyle(
@@ -151,7 +152,7 @@ class _BalancesPageState extends State<BalancesPage> {
                       ],
                     ),
                     Divider(height: 1.0, color: colors.divider),
-                    const SizedBox(height: 12.0),
+                    const SizedBox(height: AppSpacing.s3),
                     // Filter widgets
                     _BalancesFilterWidget(
                       symbolsWithIcons: _symbolsWithIcons,
@@ -169,11 +170,11 @@ class _BalancesPageState extends State<BalancesPage> {
                         setState(() => _selectedSymbols.clear());
                       },
                     ),
-                    const SizedBox(height: 12.0),
+                    const SizedBox(height: AppSpacing.s3),
                     if (_isLoading)
                       Center(
                         child: Padding(
-                          padding: const EdgeInsets.all(24.0),
+                          padding: const EdgeInsets.all(AppSpacing.s6),
                           child: CircularProgressIndicator(color: colors.accent),
                         ),
                       )
@@ -211,7 +212,7 @@ class _BalancesPageState extends State<BalancesPage> {
                         );
 
                         return Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(bottom: AppSpacing.s2),
                           child: Container(
                             height: 64.0,
                             decoration: BoxDecoration(
@@ -321,7 +322,7 @@ class _BalancesFilterWidget extends StatelessWidget {
             fontSize: 14.0,
           ),
         ),
-        const SizedBox(height: 8.0),
+        const SizedBox(height: AppSpacing.s2),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
@@ -349,7 +350,7 @@ class _BalancesFilterWidget extends StatelessWidget {
                 final iconUrl = entry.value;
                 final isSelected = selectedSymbols.contains(symbol);
                 return Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
+                  padding: const EdgeInsets.only(left: AppSpacing.s2),
                   child: FilterChip(
                     avatar: iconUrl.isNotEmpty
                         ? CircleAvatar(

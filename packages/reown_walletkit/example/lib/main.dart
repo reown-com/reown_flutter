@@ -19,6 +19,7 @@ import 'package:reown_walletkit_wallet/pages/balances_page.dart';
 import 'package:reown_walletkit_wallet/pages/apps_page.dart';
 import 'package:reown_walletkit_wallet/pages/settings_page.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/theme/app_theme.dart';
 import 'package:reown_walletkit_wallet/theme/theme_provider.dart';
 import 'package:reown_walletkit_wallet/utils/constants.dart';
@@ -242,7 +243,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(50.0)),
                             ),
-                            padding: const EdgeInsets.all(12.0),
+                            padding: const EdgeInsets.all(AppSpacing.s3),
                             child: CircularProgressIndicator(
                               color: colors.onAccent,
                             ),
@@ -263,7 +264,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildHeader(AppColors colors) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.s4, vertical: AppSpacing.s3),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -359,7 +360,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Widget _buildBottomNavBar() {
     final colors = context.colors;
-    return BottomNavigationBar(
+    return Theme(
+      data: Theme.of(context).copyWith(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+      ),
+      child: BottomNavigationBar(
       currentIndex: _selectedIndex,
       unselectedItemColor: colors.textSecondary,
       selectedItemColor: colors.backgroundInvert,
@@ -374,7 +380,7 @@ class _MyHomePageState extends State<MyHomePage> {
         final e = entry.value;
         return BottomNavigationBarItem(
           icon: Padding(
-            padding: const EdgeInsets.only(top: 20.0, bottom: 4.0),
+            padding: const EdgeInsets.only(top: AppSpacing.s2, bottom: AppSpacing.s1),
             child: SvgPicture.asset(
               e.svgIcon,
               width: 24.0,
@@ -388,6 +394,7 @@ class _MyHomePageState extends State<MyHomePage> {
           label: e.title,
         );
       }).toList(),
+    ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/theme/app_typography.dart';
 
 class InputWalletConnectPayApiKey extends StatelessWidget {
@@ -20,14 +21,14 @@ class InputWalletConnectPayApiKey extends StatelessWidget {
     return Container(
       height: 280.0,
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 20.0),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.s5),
       child: Column(
         children: [
           Text(
             'Insert WalletConnectPay API Key',
             style: context.textStyles.subtitleText.copyWith(fontSize: 18.0),
           ),
-          const SizedBox(height: 20.0),
+          const SizedBox(height: AppSpacing.s5),
           SizedBox(
             height: 60.0,
             child: TextFormField(
@@ -49,7 +50,7 @@ class InputWalletConnectPayApiKey extends StatelessWidget {
                 focusedBorder: focusedBorder,
                 filled: true,
                 fillColor: colors.inputFill,
-                contentPadding: const EdgeInsets.all(8.0),
+                contentPadding: const EdgeInsets.all(AppSpacing.s2),
               ),
             ),
           ),

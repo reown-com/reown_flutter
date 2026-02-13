@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
-import 'package:reown_walletkit_wallet/utils/constants.dart';
+import 'package:reown_walletkit_wallet/theme/app_radius.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 
@@ -46,7 +47,7 @@ class WCPrimaryButton extends StatelessWidget {
       width: double.infinity,
       child: InkWell(
         onTap: enabled ? onPressed : null,
-        borderRadius: BorderRadius.circular(StyleConstants.linear16),
+        borderRadius: BorderRadius.circular(AppRadius.md),
         child: Builder(builder: (context) {
           final colors = context.colors;
           return Container(
@@ -54,11 +55,11 @@ class WCPrimaryButton extends StatelessWidget {
               color: enabled
                   ? colors.accent
                   : colors.accent.withValues(alpha: 0.6),
-              borderRadius: BorderRadius.circular(StyleConstants.linear16),
+              borderRadius: BorderRadius.circular(AppRadius.md),
             ),
             padding: const EdgeInsets.symmetric(
-              horizontal: StyleConstants.linear16,
-              vertical: StyleConstants.linear16,
+              horizontal: AppSpacing.s4,
+              vertical: AppSpacing.s4,
             ),
             child: Text(
               text,
@@ -176,7 +177,7 @@ class _WCPTextFieldState extends State<WCPTextField> {
             : null,
       ),
       padding: widget.padding ??
-          const EdgeInsets.symmetric(horizontal: StyleConstants.linear24),
+          const EdgeInsets.symmetric(horizontal: AppSpacing.s6),
       child: CupertinoTextField(
         enabled: widget.enabled,
         controller: widget.controller,
@@ -262,13 +263,13 @@ class WCPMerchantHeader extends StatelessWidget {
         width: _logoSize,
         height: _logoSize,
         decoration: BoxDecoration(
-          color: Colors.black,
+          color: context.colors.backgroundInvert,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Center(
           child: merchant.iconUrl != null
               ? ClipRRect(
-                  borderRadius: BorderRadius.circular(StyleConstants.linear8),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
                   child: Image.network(
                     merchant.iconUrl!,
                     width: _logoSize,
@@ -294,7 +295,7 @@ class _DefaultLogo extends StatelessWidget {
     return Text(
       text,
       style: TextStyle(
-        color: Colors.white,
+        color: context.colors.onBackgroundInvert,
         fontSize: 32,
         fontWeight: FontWeight.bold,
       ),

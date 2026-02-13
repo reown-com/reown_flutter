@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
-import 'package:reown_walletkit_wallet/utils/constants.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
+import 'package:reown_walletkit_wallet/theme/app_typography.dart';
 import 'package:reown_walletkit_wallet/utils/string_constants.dart';
 import 'package:reown_walletkit_wallet/widgets/custom_button.dart';
 import 'package:reown_walletkit_wallet/widgets/wc_connection_request/wc_connection_request_widget.dart';
@@ -27,9 +28,9 @@ class WCRequestWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         VerifyContextWidget(verifyContext: verifyContext),
-        const SizedBox(height: StyleConstants.linear8),
+        const SizedBox(height: AppSpacing.s2),
         Flexible(child: SingleChildScrollView(child: child)),
-        const SizedBox(height: StyleConstants.linear16),
+        const SizedBox(height: AppSpacing.s4),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -43,11 +44,11 @@ class WCRequestWidget extends StatelessWidget {
               type: CustomButtonType.invalid,
               child: Text(
                 StringConstants.reject,
-                style: StyleConstants.buttonText,
+                style: context.textStyles.buttonText,
                 textAlign: TextAlign.center,
               ),
             ),
-            const SizedBox(width: StyleConstants.linear16),
+            const SizedBox(width: AppSpacing.s4),
             CustomButton(
               onTap: onAccept ??
                   () {
@@ -58,7 +59,7 @@ class WCRequestWidget extends StatelessWidget {
               type: CustomButtonType.valid,
               child: Text(
                 StringConstants.approve,
-                style: StyleConstants.buttonText,
+                style: context.textStyles.buttonText,
                 textAlign: TextAlign.center,
               ),
             ),

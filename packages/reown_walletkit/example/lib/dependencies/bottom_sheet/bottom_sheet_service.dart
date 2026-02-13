@@ -15,6 +15,7 @@ class BottomSheetService extends IBottomSheetService {
     required Widget widget,
     int closeAfter = 0,
     bool showBackButton = false,
+    Widget? leadingWidget,
     (int, int) stepper = (0, 0),
   }) async {
     // Create the bottom sheet queue item
@@ -24,6 +25,7 @@ class BottomSheetService extends IBottomSheetService {
       completer: completer,
       closeAfter: closeAfter,
       showBackButton: showBackButton,
+      leadingWidget: leadingWidget,
       stepper: stepper,
     );
 

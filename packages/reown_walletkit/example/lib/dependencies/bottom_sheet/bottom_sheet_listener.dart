@@ -64,11 +64,11 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
             color: colors.background,
             child: Padding(
               padding: EdgeInsets.only(
-                top: AppSpacing.mdLg,
-                left: AppSpacing.mdLg,
-                right: AppSpacing.mdLg,
+                top: AppSpacing.s5,
+                left: AppSpacing.s5,
+                right: AppSpacing.s5,
                 bottom:
-                    MediaQuery.of(context).viewInsets.bottom + AppSpacing.mdLg,
+                    MediaQuery.of(context).viewInsets.bottom + AppSpacing.s5,
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -87,13 +87,14 @@ class BottomSheetListenerState extends State<BottomSheetListener> {
                                 }
                               },
                             )
-                          : const SizedBox(width: 40.0),
+                          : item.leadingWidget ??
+                              const SizedBox(width: AppSpacing.s10),
                       (item.stepper.$1 > 0 && item.stepper.$2 > 0)
                           ? WCPStepsIndicator(
                               currentStep: item.stepper.$1,
                               totalSteps: item.stepper.$2,
                             )
-                          : const SizedBox(width: 40.0),
+                          : const SizedBox(width: AppSpacing.s10),
                       _SheetIconButton(
                         icon: Icons.close,
                         colors: colors,
@@ -140,8 +141,8 @@ class _SheetIconButton extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        width: 36.0,
-        height: 36.0,
+        width: 38.0,
+        height: 38.0,
         decoration: BoxDecoration(
           color: colors.backgroundSecondary,
           borderRadius: BorderRadius.circular(12.0),

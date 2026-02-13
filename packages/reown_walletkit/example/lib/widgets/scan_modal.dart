@@ -11,6 +11,7 @@ import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/main.dart' show navigatorKey;
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_radius.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 
 class ScanModal extends StatelessWidget {
   const ScanModal({super.key});
@@ -22,14 +23,14 @@ class ScanModal extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const SizedBox(height: 20.0),
+        const SizedBox(height: AppSpacing.s5),
         _OptionCard(
           svgAsset: 'assets/Barcode.svg',
           title: 'Scan QR code',
           onTap: () => _onScanQrCode(context),
           colors: colors,
         ),
-        const SizedBox(height: 8.0),
+        const SizedBox(height: AppSpacing.s2),
         _OptionCard(
           svgAsset: 'assets/Copy.svg',
           title: 'Paste a URL',
@@ -113,7 +114,7 @@ class ScanModal extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
-        margin: const EdgeInsets.all(16.0),
+        margin: const EdgeInsets.all(AppSpacing.s4),
       ),
     );
   }
@@ -137,7 +138,7 @@ class _OptionCard extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(AppSpacing.s6),
         decoration: BoxDecoration(
           color: colors.backgroundSecondary,
           borderRadius: AppRadius.borderRadiusLg,

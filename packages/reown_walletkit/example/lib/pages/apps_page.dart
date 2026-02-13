@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
+import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/pages/app_detail_page.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/utils/eth_utils.dart';
 import 'package:reown_walletkit_wallet/widgets/session_item.dart';
 import 'package:toastification/toastification.dart';
@@ -90,7 +92,7 @@ class AppsPageState extends State<AppsPage> {
                 fontWeight: FontWeight.w400,
               ),
             ),
-            const SizedBox(height: 8.0),
+            const SizedBox(height: AppSpacing.s2),
             Text(
               'Scan a WalletConnect QR code to get started.',
               style: TextStyle(
@@ -105,7 +107,7 @@ class AppsPageState extends State<AppsPage> {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.s2),
       itemCount: sessions.length,
       itemBuilder: (BuildContext context, int index) {
         final session = sessions[index];
@@ -119,15 +121,9 @@ class AppsPageState extends State<AppsPage> {
   }
 
   void _onSessionTap(SessionData session) {
-    // Find the pairing that owns this session for the detail page
-    final pairings = _walletKitService.pairings!.getAll();
-    final pairing = pairings
-        .where((p) => p.topic == session.pairingTopic)
-        .firstOrNull;
-    if (pairing == null) return;
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => AppDetailPage(pairing: pairing)),
+    GetIt.I<IBottomSheetService>().queueBottomSheet(
+      widget: AppDetailPage(session: session),
+      leadingWidget: DisconnectButton(sessionTopic: session.topic),
     );
   }
 }

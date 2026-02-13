@@ -30,9 +30,7 @@ import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_informat
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_information_capture/wcp_information_capture_start.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_payment_details.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_modals/wcp_payment_result.dart';
-import 'package:reown_walletkit_wallet/widgets/wc_connection_request/wc_connection_request_widget.dart';
-import 'package:reown_walletkit_wallet/widgets/wc_request_widget.dart/wc_request_widget.dart';
-import 'package:reown_walletkit_wallet/widgets/wc_request_widget.dart/wc_session_auth_request_widget.dart';
+import 'package:reown_walletkit_wallet/widgets/wc_connection_request/wc_connect_modal.dart';
 import 'package:reown_walletkit_wallet/main.dart' show navigatorKey;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -420,29 +418,24 @@ class WalletKitService implements IWalletKitService {
     debugPrint('[SampleWallet] _onSessionProposal $debugString');
     if (args != null) {
       final proposer = args.params.proposer;
-      // Auth requests
-      final generatedNamespaces = args.params.generatedNamespaces;
-      final authenticationRequests = args.params.requests?.authentication;
-      final formattedMessages = prepareAuthenticationMessages(
-        authenticationRequests,
-        generatedNamespaces,
+
+      final result = await _bottomSheetHandler.queueBottomSheet(
+        widget: WCConnectModal(
+          proposalData: args.params,
+          verifyContext: args.verifyContext,
+          requester: proposer,
+        ),
       );
 
-      final result = (await _bottomSheetHandler.queueBottomSheet(
-            widget: WCRequestWidget(
-              verifyContext: args.verifyContext,
-              child: WCConnectionRequestWidget(
-                proposalData: args.params,
-                verifyContext: args.verifyContext,
-                requester: proposer,
-              ),
-            ),
-          )) ??
-          WCBottomSheetResult.reject;
+      if (result is ConnectApprovalResult) {
+        final approvedNamespaces = result.namespaces;
+        // Auth requests
+        final authenticationRequests = args.params.requests?.authentication;
+        final formattedMessages = prepareAuthenticationMessages(
+          authenticationRequests,
+          approvedNamespaces,
+        );
 
-      if (result != WCBottomSheetResult.reject) {
-        // generatedNamespaces is constructed based on registered methods handlers
-        // so if you want to handle requests using onSessionRequest event then you would need to manually add that method in the approved namespaces
         try {
           final cacaos = await signAuthenticationMessages(formattedMessages);
 
@@ -452,27 +445,21 @@ class WalletKitService implements IWalletKitService {
           );
 
           // Add TON session properties if TON namespace is present
-          if (generatedNamespaces?.containsKey('ton') == true) {
+          if (approvedNamespaces.containsKey('ton')) {
             await _addTonSessionProperties(
               sessionProperties,
-              generatedNamespaces!,
+              approvedNamespaces,
             );
           }
 
           await _walletKit!.approveSession(
             id: args.id,
-            namespaces: args.params.generatedNamespaces!,
+            namespaces: approvedNamespaces,
             sessionProperties: sessionProperties,
             proposalRequestsResponses: ProposalRequestsResponses(
               authentication: cacaos,
             ),
           );
-          // MethodsUtils.handleRedirect(
-          //   session.topic,
-          //   session.session!.peer.metadata.redirect,
-          //   '',
-          //   true,
-          // );
         } on ReownSignError catch (error) {
           MethodsUtils.handleRedirect(
             '',
@@ -596,30 +583,31 @@ class WalletKitService implements IWalletKitService {
       // which is only available for eip155 namespace and it's going to be deprecated soon
       final chainKeys = GetIt.I<IKeyService>().getKeysForChain('eip155');
       final address = chainKeys.first.address;
-      final formattedMessages = prepareAuthenticationMessages(
-        [authenticationRequest],
-        {
-          'eip155': Namespace(
-            accounts: supportedChains.map((e) => '$e:$address').toList(),
-            methods: supportedMethods.toList(),
-            events: EventsConstants.allEvents,
-          ),
-        },
+
+      final result = await _bottomSheetHandler.queueBottomSheet(
+        widget: WCConnectModal(
+          sessionAuthPayload: authenticationRequest,
+          verifyContext: args.verifyContext,
+          requester: args.requester,
+        ),
       );
 
-      final WCBottomSheetResult rs =
-          (await _bottomSheetHandler.queueBottomSheet(
-                widget: WCSessionAuthRequestWidget(
-                  child: WCConnectionRequestWidget(
-                    sessionAuthPayload: authenticationRequest,
-                    verifyContext: args.verifyContext,
-                    requester: args.requester,
-                  ),
-                ),
-              )) ??
-              WCBottomSheetResult.reject;
-
-      if (rs != WCBottomSheetResult.reject) {
+      if (result is AuthApprovalResult) {
+        final selectedChains = result.selectedChainIds;
+        // Filter supported chains to only include selected ones
+        final filteredChains = supportedChains
+            .where((c) => selectedChains.contains(c))
+            .toList();
+        final formattedMessages = prepareAuthenticationMessages(
+          [authenticationRequest],
+          {
+            'eip155': Namespace(
+              accounts: filteredChains.map((e) => '$e:$address').toList(),
+              methods: supportedMethods.toList(),
+              events: EventsConstants.allEvents,
+            ),
+          },
+        );
         try {
           final cacaos = await signAuthenticationMessages(formattedMessages);
           final session = await _walletKit!.approveSessionAuthenticate(

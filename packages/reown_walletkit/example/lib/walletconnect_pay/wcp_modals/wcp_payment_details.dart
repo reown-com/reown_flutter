@@ -8,7 +8,8 @@ import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/chain_services/evm_service.dart';
 import 'package:reown_walletkit_wallet/dependencies/i_walletkit_service.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
-import 'package:reown_walletkit_wallet/utils/constants.dart';
+import 'package:reown_walletkit_wallet/theme/app_radius.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_utils.dart';
 
@@ -94,18 +95,18 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
     return Container(
       decoration: BoxDecoration(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(StyleConstants.linear48),
+        borderRadius: BorderRadius.circular(AppRadius.xxl),
       ),
-      padding: const EdgeInsets.all(StyleConstants.linear8),
+      padding: const EdgeInsets.all(AppSpacing.s2),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox.square(dimension: 20.0),
           WCPMerchantHeader(merchant: paymentInfo.merchant),
-          const SizedBox(height: StyleConstants.linear16),
+          const SizedBox(height: AppSpacing.s4),
           WCPPaymentDetails(paymentInfo: paymentInfo),
-          const SizedBox(height: StyleConstants.linear32),
+          const SizedBox(height: AppSpacing.s8),
           PaymentDetailsSection(
             paymentInfo: paymentInfo,
             options: paymentOptionsResponse.options,
@@ -116,7 +117,7 @@ class _WCPPaymentDetailsWidgetState extends State<WCPPaymentDetailsWidget> {
               });
             },
           ),
-          const SizedBox(height: StyleConstants.linear32),
+          const SizedBox(height: AppSpacing.s8),
           WCPrimaryButton(
             onPressed: _signAndPay,
             text: 'Pay ${formatPayAmount(paymentInfo.amount)}',
@@ -136,7 +137,7 @@ class DefaultLogo extends StatelessWidget {
     return Text(
       text,
       style: TextStyle(
-        color: Colors.white,
+        color: context.colors.onBackgroundInvert,
         fontSize: 32,
         fontWeight: FontWeight.bold,
       ),
@@ -183,7 +184,7 @@ class PaymentDetailsSection extends StatelessWidget {
           },
         );
         }),
-        const SizedBox(height: 12.0),
+        const SizedBox(height: AppSpacing.s3),
         WCPPaymentOptionDropdown(
           label: 'Pay with',
           selectedOption: selectedOption,
@@ -238,8 +239,8 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
                   : colors.textSecondary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(16),
             ),
-            margin: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
-            padding: const EdgeInsets.all(16.0),
+            margin: const EdgeInsets.only(left: AppSpacing.s3, right: AppSpacing.s3, bottom: AppSpacing.s2),
+            padding: const EdgeInsets.all(AppSpacing.s4),
             height: 64.0,
             child: Row(
               children: [
@@ -247,7 +248,7 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
                   radius: 12.0,
                   backgroundImage: NetworkImage(display.iconUrl ?? ''),
                 ),
-                const SizedBox(width: 8.0),
+                const SizedBox(width: AppSpacing.s2),
                 Text(
                   formatPayAmount(option.amount),
                   style: TextStyle(
@@ -341,7 +342,7 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          const SizedBox(width: 8.0),
+                          const SizedBox(width: AppSpacing.s2),
                           CircleAvatar(
                             radius: 12.0,
                             backgroundImage: NetworkImage(
@@ -351,7 +352,7 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
                           Visibility(
                             visible: hasMultipleOptions,
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
+                              padding: const EdgeInsets.only(left: AppSpacing.s2),
                               child: AnimatedRotation(
                                 turns: _isExpanded ? 0.5 : 0.0,
                                 duration: const Duration(milliseconds: 300),

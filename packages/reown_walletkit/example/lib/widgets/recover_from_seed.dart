@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/theme/app_typography.dart';
 
 class RecoverFromSeed extends StatelessWidget {
@@ -20,7 +21,7 @@ class RecoverFromSeed extends StatelessWidget {
     return Container(
       height: 340.0,
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 20.0),
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.s5),
       child: Column(
         children: [
           Text(
@@ -32,7 +33,7 @@ class RecoverFromSeed extends StatelessWidget {
             'Only Ethereum private key is supported for now, if you want to restore other chains as well please use mnemonic phrase',
             style: context.textStyles.bodyText,
           ),
-          const SizedBox(height: 20.0),
+          const SizedBox(height: AppSpacing.s5),
           SizedBox(
             height: 60.0,
             child: TextFormField(
@@ -54,7 +55,7 @@ class RecoverFromSeed extends StatelessWidget {
                 focusedBorder: focusedBorder,
                 filled: true,
                 fillColor: colors.inputFill,
-                contentPadding: const EdgeInsets.all(8.0),
+                contentPadding: const EdgeInsets.all(AppSpacing.s2),
               ),
             ),
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
 import 'package:reown_walletkit_wallet/theme/app_radius.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 
 enum CustomButtonType { normal, valid, invalid }
 
@@ -70,7 +71,7 @@ class CustomButton extends StatelessWidget {
                 ? Border.all(color: _getBorderColor(context))
                 : null,
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+          padding: EdgeInsets.symmetric(horizontal: AppSpacing.s2, vertical: AppSpacing.s3),
           child: child,
         ),
       ),

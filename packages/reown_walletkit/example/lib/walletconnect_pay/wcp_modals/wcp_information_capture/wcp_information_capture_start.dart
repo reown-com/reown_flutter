@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:reown_walletkit/reown_walletkit.dart';
 import 'package:reown_walletkit_wallet/dependencies/bottom_sheet/i_bottom_sheet_service.dart';
 import 'package:reown_walletkit_wallet/theme/app_colors.dart';
-import 'package:reown_walletkit_wallet/utils/constants.dart';
+import 'package:reown_walletkit_wallet/theme/app_radius.dart';
+import 'package:reown_walletkit_wallet/theme/app_spacing.dart';
 import 'package:reown_walletkit_wallet/walletconnect_pay/wcp_shared_widgets.dart';
 
 class WCPInformationCaptureStartWidget extends StatelessWidget {
@@ -19,21 +20,20 @@ class WCPInformationCaptureStartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        // color: StyleConstants.bgPrimary,
-        borderRadius: BorderRadius.circular(StyleConstants.linear48),
+        borderRadius: BorderRadius.circular(AppRadius.xxl),
       ),
-      padding: const EdgeInsets.all(StyleConstants.linear8),
+      padding: const EdgeInsets.all(AppSpacing.s2),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox.square(dimension: 20.0),
           WCPMerchantHeader(merchant: paymentInfo.merchant),
-          const SizedBox(height: StyleConstants.linear16),
+          const SizedBox(height: AppSpacing.s4),
           WCPPaymentDetails(paymentInfo: paymentInfo),
-          const SizedBox(height: StyleConstants.linear32),
+          const SizedBox(height: AppSpacing.s8),
           PaymentSteps(),
-          const SizedBox(height: StyleConstants.linear32),
+          const SizedBox(height: AppSpacing.s8),
           WCPrimaryButton(
             onPressed: onStart ??
                 () {
@@ -96,7 +96,7 @@ class PaymentStep extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           StepIndicator(isLast: isLast),
-          const SizedBox(width: StyleConstants.linear16),
+          const SizedBox(width: AppSpacing.s4),
           Expanded(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,7 +155,7 @@ class StepIndicator extends StatelessWidget {
       children: [
         if (isLast) StepLine(height: _topLineHeight),
         Container(
-          margin: !isLast ? const EdgeInsets.only(top: 24.0) : null,
+          margin: !isLast ? const EdgeInsets.only(top: AppSpacing.s6) : null,
           width: _circleSize,
           height: _circleSize,
           decoration: BoxDecoration(
@@ -198,7 +198,7 @@ class TimeEstimateBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final colors = context.colors;
     return Container(
-      margin: const EdgeInsets.only(top: 12.0),
+      margin: const EdgeInsets.only(top: AppSpacing.s3),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
         color: colors.backgroundSecondary,
