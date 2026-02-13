@@ -828,7 +828,7 @@ class WalletKitService implements IWalletKitService {
     } else if (result == WCBottomSheetResult.back.name) {
       final collectDataUrl = response.collectData?.url;
       if (collectDataUrl != null && collectDataUrl.isNotEmpty) {
-        final action = await _showCollectDataWebView(collectDataUrl);
+        final action = await _showCollectDataBrowser(collectDataUrl);
         if (action != WCBottomSheetResult.next.name) {
           throw action;
         }
