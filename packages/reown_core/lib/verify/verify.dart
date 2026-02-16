@@ -50,7 +50,9 @@ class Verify implements IVerify {
         '$_verifyUrl/attestation/$attestationId?v2Supported=true',
       );
       _core.logger.d('[$runtimeType] resolve attestationId: $attestationId');
-      final response = await _httpClient.get(uri).timeout(Duration(seconds: 5));
+      final response = await _httpClient
+          .get(uri)
+          .timeout(const Duration(seconds: 5));
       if (response.statusCode == 404 || response.body.isEmpty) {
         throw AttestationNotFound(
           code: 404,
@@ -126,7 +128,9 @@ extension VerifyV2 on Verify {
     try {
       final url = Uri.parse('${Verify._verifyUrlV2}/public-key');
       _core.logger.d('[$runtimeType] fetching public key from $url');
-      final response = await _httpClient.get(url).timeout(Duration(seconds: 5));
+      final response = await _httpClient
+          .get(url)
+          .timeout(const Duration(seconds: 5));
       final pk = JWK.fromJson(jsonDecode(response.body));
       final expDate = DateTime.fromMillisecondsSinceEpoch(pk.expiresAt * 1000);
       _core.logger.d('[$runtimeType] public key fetched: ${pk.toJson()}');

@@ -225,7 +225,7 @@ class ReownAppKitModalNetworks {
 
   static final Map<String, List<ReownAppKitModalNetworkInfo>> _testnets = {
     NetworkUtils.eip155: [
-      ReownAppKitModalNetworkInfo(
+      const ReownAppKitModalNetworkInfo(
         name: 'Eth sepolia',
         chainId: '11155111',
         currency: 'SEP',
@@ -234,7 +234,7 @@ class ReownAppKitModalNetworks {
         explorerUrl: 'https://sepolia.etherscan.io/',
         isTestNetwork: true,
       ),
-      ReownAppKitModalNetworkInfo(
+      const ReownAppKitModalNetworkInfo(
         name: 'Eth holesky',
         chainId: '17000',
         currency: 'ETH',
@@ -243,7 +243,7 @@ class ReownAppKitModalNetworks {
         explorerUrl: 'https://explorer.holesky.test',
         isTestNetwork: true,
       ),
-      ReownAppKitModalNetworkInfo(
+      const ReownAppKitModalNetworkInfo(
         name: 'Pol amoy',
         chainId: '80002',
         currency: 'POL',
@@ -252,7 +252,7 @@ class ReownAppKitModalNetworks {
         explorerUrl: 'https://amoy.polygonscan.com',
         isTestNetwork: true,
       ),
-      ReownAppKitModalNetworkInfo(
+      const ReownAppKitModalNetworkInfo(
         name: 'BSC testnet',
         chainId: '97',
         currency: 'tBNB',
@@ -261,7 +261,7 @@ class ReownAppKitModalNetworks {
         explorerUrl: 'https://testnet.bscscan.com',
         isTestNetwork: true,
       ),
-      ReownAppKitModalNetworkInfo(
+      const ReownAppKitModalNetworkInfo(
         name: 'Base sepolia',
         chainId: '84532',
         currency: 'SEP',
@@ -270,7 +270,7 @@ class ReownAppKitModalNetworks {
         explorerUrl: 'https://sepolia.basescan.org/',
         isTestNetwork: true,
       ),
-      ReownAppKitModalNetworkInfo(
+      const ReownAppKitModalNetworkInfo(
         name: 'Sonic testnet',
         chainId: '57054',
         currency: 'wS',
@@ -281,7 +281,7 @@ class ReownAppKitModalNetworks {
       ),
     ],
     NetworkUtils.solana: [
-      ReownAppKitModalNetworkInfo(
+      const ReownAppKitModalNetworkInfo(
         name: 'Sol testnet',
         chainId: '4uhcVJyU9pJkvQyS88uRDiswHXSCkY3z',
         currency: 'SOL',
@@ -290,7 +290,7 @@ class ReownAppKitModalNetworks {
         explorerUrl: 'https://explorer.solana.com/?cluster=testnet',
         isTestNetwork: true,
       ),
-      ReownAppKitModalNetworkInfo(
+      const ReownAppKitModalNetworkInfo(
         name: 'Sol devnet',
         chainId: 'EtWTRABZaYq6iMfeYKouRu166VU2xqa1',
         currency: 'SOL',
@@ -301,7 +301,7 @@ class ReownAppKitModalNetworks {
       ),
     ],
     'bip122': [
-      ReownAppKitModalNetworkInfo(
+      const ReownAppKitModalNetworkInfo(
         name: 'Btc testnet',
         chainId: '000000000933ea01ad0ee984209779ba',
         currency: 'BTC',
@@ -311,7 +311,7 @@ class ReownAppKitModalNetworks {
       ),
     ],
     'sui': [
-      ReownAppKitModalNetworkInfo(
+      const ReownAppKitModalNetworkInfo(
         name: 'Sui testnet',
         chainId: 'testnet',
         currency: 'SUI',
@@ -319,7 +319,7 @@ class ReownAppKitModalNetworks {
         explorerUrl: 'https://suiscan.xyz/testnet/home',
         isTestNetwork: true,
       ),
-      ReownAppKitModalNetworkInfo(
+      const ReownAppKitModalNetworkInfo(
         name: 'Sui devnet',
         chainId: 'devnet',
         currency: 'SUI',
@@ -329,7 +329,7 @@ class ReownAppKitModalNetworks {
       ),
     ],
     'tron': [
-      ReownAppKitModalNetworkInfo(
+      const ReownAppKitModalNetworkInfo(
         name: 'Tron nile',
         chainId: '0xcd8690dc',
         currency: 'TRX',
@@ -339,7 +339,7 @@ class ReownAppKitModalNetworks {
       ),
     ],
     'ton': [
-      ReownAppKitModalNetworkInfo(
+      const ReownAppKitModalNetworkInfo(
         name: 'Ton testnet',
         chainId: '-3',
         currency: 'TON',
@@ -349,7 +349,7 @@ class ReownAppKitModalNetworks {
       ),
     ],
     'stacks': [
-      ReownAppKitModalNetworkInfo(
+      const ReownAppKitModalNetworkInfo(
         name: 'Stacks testnet',
         chainId: '2147483648',
         currency: 'STX',

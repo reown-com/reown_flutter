@@ -37,7 +37,7 @@ class PairingsPageState extends State<PairingsPage> {
   @override
   Widget build(BuildContext context) {
     if (_pairings.isEmpty) {
-      return Center(child: Text('No relay pairings'));
+      return const Center(child: Text('No relay pairings'));
     }
     final List<PairingItem> pairingItems = _pairings
         .map(

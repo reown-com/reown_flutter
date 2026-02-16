@@ -21,7 +21,7 @@ void signApproveSessionAuthenticate({
     setUp(() async {
       clientA = await clientACreator(
         PROPOSER.copyWith(
-          redirect: Redirect(
+          redirect: const Redirect(
             native: 'clientA://',
             universal: 'https://lab.web3modal.com/dapp',
             linkMode: true,
@@ -30,7 +30,7 @@ void signApproveSessionAuthenticate({
       );
       clientB = await clientBCreator(
         RESPONDER.copyWith(
-          redirect: Redirect(
+          redirect: const Redirect(
             native: 'clientB://',
             universal: 'https://lab.web3modal.com/wallet',
             linkMode: true,
@@ -56,7 +56,7 @@ void signApproveSessionAuthenticate({
           ),
           authPayload: CacaoRequestPayload.fromCacaoPayload(testCacaoPayload),
           expiryTimestamp: 1000000000000,
-          verifyContext: VerifyContext(
+          verifyContext: const VerifyContext(
             origin: 'test.com',
             validation: Validation.VALID,
             verifyUrl: ReownConstants.VERIFY_SERVER,

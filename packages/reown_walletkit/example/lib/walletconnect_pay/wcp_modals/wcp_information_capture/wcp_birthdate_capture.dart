@@ -58,7 +58,7 @@ class _WCPBirthdateCaptureState extends State<WCPBirthdateCapture> {
           //   totalSteps: 3,
           // ),
           const SizedBox(height: StyleConstants.linear24),
-          WCModalTitle(text: 'What\'s your date of birth?'),
+          const WCModalTitle(text: 'What\'s your date of birth?'),
           const SizedBox(height: StyleConstants.linear32),
           DatePicker(
             initialDate: _selectedDate,

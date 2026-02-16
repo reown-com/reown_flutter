@@ -5,11 +5,11 @@ part 'asset_models.g.dart';
 part 'asset_models.freezed.dart';
 
 final Map<String, AssetInfo> _chainAssetInfoMap = {
-  'eip155': AssetInfo(
+  'eip155': const AssetInfo(
     native: NativeInfo(namespace: 'slip44', reference: '60'),
     standard: 'erc20',
   ),
-  'solana': AssetInfo(
+  'solana': const AssetInfo(
     native: NativeInfo(namespace: 'slip44', reference: '501'),
     standard: 'token',
   ),

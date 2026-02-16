@@ -35,7 +35,7 @@ void main() {
       test(
         'returns direct transfer quote for same chain and same asset',
         () async {
-          final params = GetQuoteParams(
+          final params = const GetQuoteParams(
             sourceToken: ethereumETH,
             toToken: ethereumETH,
             recipient: '0x1234567890123456789012345678901234567890',
@@ -108,7 +108,7 @@ void main() {
       });
 
       test('calls transfers API for different chain', () async {
-        final params = GetQuoteParams(
+        final params = const GetQuoteParams(
           sourceToken: ethereumETH,
           toToken: solanaSOL,
           recipient: 'CbKGgVKLJFb8bBrf58DnAkdryX6ubewVytn7X957YwNr',
@@ -119,7 +119,7 @@ void main() {
         // Mock HTTP response would go here if we had HTTP mocking
         // For now, we verify the logic that determines which path to take
         // ignore: unused_local_variable
-        final _mockResponse = http.Response(
+        final mockResponse = http.Response(
           jsonEncode({
             'type': 'direct-transfer',
             'origin': {
@@ -184,7 +184,7 @@ void main() {
       });
 
       test('calls transfers API for same chain but different asset', () async {
-        final params = GetQuoteParams(
+        final params = const GetQuoteParams(
           sourceToken: ethereumETH,
           toToken: ethereumUSDC,
           recipient: '0x1234567890123456789012345678901234567890',
@@ -204,7 +204,7 @@ void main() {
 
     group('getQuoteStatus', () {
       test('returns quote status successfully', () async {
-        final params = GetQuoteStatusParams(requestId: 'test-request-id');
+        final params = const GetQuoteStatusParams(requestId: 'test-request-id');
 
         // Note: This test demonstrates the expected behavior.
         // In a real implementation, we'd need to mock http.get
@@ -215,7 +215,7 @@ void main() {
       test('throws exception on API error response', () async {
         // Verify error handling structure would be tested with mocked HTTP
         // For now, we verify the params structure
-        final params = GetQuoteStatusParams(requestId: 'test-request-id');
+        final params = const GetQuoteStatusParams(requestId: 'test-request-id');
         expect(params.requestId, 'test-request-id');
       });
     });

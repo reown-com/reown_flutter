@@ -216,7 +216,7 @@ class AuthSignature {
         .where((value) => requested.contains(value))
         .toList();
     if (approvedChains.isEmpty) {
-      throw ReownSignError(code: -1, message: 'No supported chains');
+      throw const ReownSignError(code: -1, message: 'No supported chains');
     }
 
     final requestedRecaps = ReCapsUtils.getDecodedRecapFromResources(

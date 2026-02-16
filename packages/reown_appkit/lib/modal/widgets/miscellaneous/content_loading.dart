@@ -10,11 +10,8 @@ class ContentLoading extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8.0),
       height: viewHeight ?? 300.0,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: CircularLoader(),
-        ),
+      child: const Center(
+        child: Padding(padding: EdgeInsets.all(8.0), child: CircularLoader()),
       ),
     );
   }

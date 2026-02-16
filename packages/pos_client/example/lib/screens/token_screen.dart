@@ -24,7 +24,7 @@ class _TokenScreenState extends ConsumerState<TokenScreen> {
   void _navigateToNetworkScreen() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => NetworkScreen()),
+      MaterialPageRoute(builder: (context) => const NetworkScreen()),
     );
   }
 
@@ -111,7 +111,7 @@ class _TokenScreenState extends ConsumerState<TokenScreen> {
                                   // subtitle:
                                   //     'On ${token.token.network.networkData.name}',
                                   trailing: token.selected
-                                      ? Icon(Icons.check)
+                                      ? const Icon(Icons.check)
                                       : null,
                                 ),
                               ),
@@ -119,7 +119,7 @@ class _TokenScreenState extends ConsumerState<TokenScreen> {
                           },
                           itemCount: reducedTokens.length,
                           separatorBuilder: (BuildContext context, int index) {
-                            return SizedBox.square(dimension: 12.0);
+                            return const SizedBox.square(dimension: 12.0);
                           },
                         ),
                       ),
@@ -150,7 +150,7 @@ class _TokenScreenState extends ConsumerState<TokenScreen> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      SizedBox(
+                      const SizedBox(
                         width: double.infinity,
                         height: 56,
                         child: DtcRestartButton(),
@@ -163,7 +163,7 @@ class _TokenScreenState extends ConsumerState<TokenScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: DtcFooter(),
+      bottomNavigationBar: const DtcFooter(),
     );
   }
 }

@@ -272,7 +272,8 @@ class PolkadotService {
       );
 
       if (response.statusCode != 200) {
-        debugPrint('[PolkadotService] Subscan API error: ${response.statusCode}');
+        debugPrint(
+            '[PolkadotService] Subscan API error: ${response.statusCode}');
         // Fallback to native balance only
         return _getNativeBalanceOnly(address);
       }

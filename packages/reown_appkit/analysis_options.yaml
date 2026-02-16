@@ -30,6 +30,9 @@ linter:
     avoid_unnecessary_containers: true
     cancel_subscriptions: true
     public_member_api_docs: false
+    prefer_const_constructors: true
+    # prefer_const_literals_to_create_immutables: true
+    avoid_field_initializers_in_const_classes: true
 
 analyzer:
   exclude:

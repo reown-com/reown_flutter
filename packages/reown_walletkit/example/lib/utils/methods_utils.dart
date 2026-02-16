@@ -105,7 +105,7 @@ class MethodsUtils {
             ),
             Text(
               title ?? 'Connected',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
             Text(message ?? 'You can go back to your dApp now'),
           ],

@@ -74,7 +74,7 @@ void main() {
       test('should collect request TVF data when calling request()', () async {
         // Arrange
         final id = 123;
-        final request = SessionRequestParams(
+        final request = const SessionRequestParams(
           method: 'eth_sendTransaction',
           params: [
             {
@@ -94,17 +94,17 @@ void main() {
           acknowledged: true,
           controller: 'test_controller',
           namespaces: {
-            'eip155': Namespace(
+            'eip155': const Namespace(
               accounts: ['eip155:1:0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'],
               methods: ['eth_sendTransaction'],
               events: ['chainChanged'],
             ),
           },
-          self: ConnectionMetadata(
+          self: const ConnectionMetadata(
             publicKey: 'test_self_key',
             metadata: RESPONDER,
           ),
-          peer: ConnectionMetadata(
+          peer: const ConnectionMetadata(
             publicKey: 'test_peer_key',
             metadata: PROPOSER,
           ),
@@ -138,7 +138,7 @@ void main() {
       test('should handle invalid contract data gracefully', () async {
         // Arrange
         final id = 126;
-        final request = SessionRequestParams(
+        final request = const SessionRequestParams(
           method: 'eth_sendTransaction',
           params: [
             {
@@ -158,17 +158,17 @@ void main() {
           acknowledged: true,
           controller: 'test_controller_4',
           namespaces: {
-            'eip155': Namespace(
+            'eip155': const Namespace(
               accounts: ['eip155:1:0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'],
               methods: ['eth_sendTransaction'],
               events: ['chainChanged'],
             ),
           },
-          self: ConnectionMetadata(
+          self: const ConnectionMetadata(
             publicKey: 'test_self_key_4',
             metadata: RESPONDER,
           ),
-          peer: ConnectionMetadata(
+          peer: const ConnectionMetadata(
             publicKey: 'test_peer_key_4',
             metadata: PROPOSER,
           ),
@@ -200,7 +200,7 @@ void main() {
         () async {
           // Arrange
           final id = 127;
-          final request = SessionRequestParams(
+          final request = const SessionRequestParams(
             method: 'eth_sendTransaction',
             params: [
               {
@@ -220,7 +220,7 @@ void main() {
             acknowledged: true,
             controller: 'test_controller_5',
             namespaces: {
-              'eip155': Namespace(
+              'eip155': const Namespace(
                 accounts: [
                   'eip155:1:0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
                 ],
@@ -228,11 +228,11 @@ void main() {
                 events: ['chainChanged'],
               ),
             },
-            self: ConnectionMetadata(
+            self: const ConnectionMetadata(
               publicKey: 'test_self_key_5',
               metadata: RESPONDER,
             ),
-            peer: ConnectionMetadata(
+            peer: const ConnectionMetadata(
               publicKey: 'test_peer_key_5',
               metadata: PROPOSER,
             ),
@@ -262,7 +262,7 @@ void main() {
             method: 'eth_sendTransaction',
             chainId: 'eip155:1',
             params: request.params,
-            verifyContext: VerifyContext(
+            verifyContext: const VerifyContext(
               origin: 'test_origin',
               verifyUrl: 'test_verify_url',
               validation: Validation.VALID,
@@ -294,7 +294,7 @@ void main() {
       test('should handle response with error gracefully', () async {
         // Arrange
         final id = 128;
-        final request = SessionRequestParams(
+        final request = const SessionRequestParams(
           method: 'eth_sendTransaction',
           params: [
             {
@@ -314,17 +314,17 @@ void main() {
           acknowledged: true,
           controller: 'test_controller_6',
           namespaces: {
-            'eip155': Namespace(
+            'eip155': const Namespace(
               accounts: ['eip155:1:0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'],
               methods: ['eth_sendTransaction'],
               events: ['chainChanged'],
             ),
           },
-          self: ConnectionMetadata(
+          self: const ConnectionMetadata(
             publicKey: 'test_self_key_6',
             metadata: RESPONDER,
           ),
-          peer: ConnectionMetadata(
+          peer: const ConnectionMetadata(
             publicKey: 'test_peer_key_6',
             metadata: PROPOSER,
           ),
@@ -354,7 +354,7 @@ void main() {
           method: 'eth_sendTransaction',
           chainId: 'eip155:1',
           params: request.params,
-          verifyContext: VerifyContext(
+          verifyContext: const VerifyContext(
             origin: 'test_origin',
             verifyUrl: 'test_verify_url',
             validation: Validation.VALID,
@@ -365,7 +365,7 @@ void main() {
         // Create response with error
         final response = JsonRpcResponse(
           id: id,
-          error: JsonRpcError(code: -32603, message: 'Internal error'),
+          error: const JsonRpcError(code: -32603, message: 'Internal error'),
         );
 
         // Act
@@ -387,7 +387,7 @@ void main() {
         () async {
           // Arrange
           final id = 129;
-          final request = SessionRequestParams(
+          final request = const SessionRequestParams(
             method: 'wallet_sendCalls',
             params: [
               {
@@ -407,7 +407,7 @@ void main() {
             acknowledged: true,
             controller: 'test_controller_7',
             namespaces: {
-              'eip155': Namespace(
+              'eip155': const Namespace(
                 accounts: [
                   'eip155:1:0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6',
                 ],
@@ -415,11 +415,11 @@ void main() {
                 events: ['chainChanged'],
               ),
             },
-            self: ConnectionMetadata(
+            self: const ConnectionMetadata(
               publicKey: 'test_self_key_7',
               metadata: RESPONDER,
             ),
-            peer: ConnectionMetadata(
+            peer: const ConnectionMetadata(
               publicKey: 'test_peer_key_7',
               metadata: PROPOSER,
             ),
@@ -449,7 +449,7 @@ void main() {
             method: 'wallet_sendCalls',
             chainId: 'eip155:1',
             params: request.params,
-            verifyContext: VerifyContext(
+            verifyContext: const VerifyContext(
               origin: 'test_origin',
               verifyUrl: 'test_verify_url',
               validation: Validation.VALID,
@@ -499,7 +499,7 @@ void main() {
       test('should collect simple EVM transaction hash correctly', () async {
         // Arrange
         final id = 130;
-        final request = SessionRequestParams(
+        final request = const SessionRequestParams(
           method: 'eth_sendTransaction',
           params: [
             {
@@ -519,17 +519,17 @@ void main() {
           acknowledged: true,
           controller: 'test_controller_8',
           namespaces: {
-            'eip155': Namespace(
+            'eip155': const Namespace(
               accounts: ['eip155:1:0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6'],
               methods: ['eth_sendTransaction'],
               events: ['chainChanged'],
             ),
           },
-          self: ConnectionMetadata(
+          self: const ConnectionMetadata(
             publicKey: 'test_self_key_8',
             metadata: RESPONDER,
           ),
-          peer: ConnectionMetadata(
+          peer: const ConnectionMetadata(
             publicKey: 'test_peer_key_8',
             metadata: PROPOSER,
           ),
@@ -559,7 +559,7 @@ void main() {
           method: 'eth_sendTransaction',
           chainId: 'eip155:1',
           params: request.params,
-          verifyContext: VerifyContext(
+          verifyContext: const VerifyContext(
             origin: 'test_origin',
             verifyUrl: 'test_verify_url',
             validation: Validation.VALID,
@@ -589,7 +589,7 @@ void main() {
         () async {
           // Arrange
           final id = 131;
-          final request = SessionRequestParams(
+          final request = const SessionRequestParams(
             method: 'ton_sendTransaction',
             params: [
               {
@@ -609,7 +609,7 @@ void main() {
             acknowledged: true,
             controller: 'test_controller_9',
             namespaces: {
-              'ton': Namespace(
+              'ton': const Namespace(
                 accounts: [
                   'ton:mainnet:EQD0vdSA_NedR9uv6d8Q8N8ukdWVtJ3Fylj80P4g5zg-Lh0',
                 ],
@@ -617,11 +617,11 @@ void main() {
                 events: ['chainChanged'],
               ),
             },
-            self: ConnectionMetadata(
+            self: const ConnectionMetadata(
               publicKey: 'test_self_key_9',
               metadata: RESPONDER,
             ),
-            peer: ConnectionMetadata(
+            peer: const ConnectionMetadata(
               publicKey: 'test_peer_key_9',
               metadata: PROPOSER,
             ),
@@ -651,7 +651,7 @@ void main() {
             method: 'ton_sendTransaction',
             chainId: 'ton:mainnet',
             params: request.params,
-            verifyContext: VerifyContext(
+            verifyContext: const VerifyContext(
               origin: 'test_origin',
               verifyUrl: 'test_verify_url',
               validation: Validation.VALID,
@@ -691,7 +691,7 @@ void main() {
       test('should collect basic request TVF data', () {
         // Arrange
         final id = 200;
-        final request = WcSessionRequestRequest(
+        final request = const WcSessionRequestRequest(
           chainId: 'eip155:1',
           request: SessionRequestParams(
             method: 'eth_sendTransaction',
@@ -724,7 +724,7 @@ void main() {
       test('should collect contract address for EVM contract calls', () {
         // Arrange
         final id = 201;
-        final request = WcSessionRequestRequest(
+        final request = const WcSessionRequestRequest(
           chainId: 'eip155:1',
           request: SessionRequestParams(
             method: 'eth_sendTransaction',
@@ -754,7 +754,7 @@ void main() {
       test('should handle different RPC methods', () {
         // Arrange
         final id = 202;
-        final request = WcSessionRequestRequest(
+        final request = const WcSessionRequestRequest(
           chainId: 'eip155:1',
           request: SessionRequestParams(
             method: 'personal_sign',
@@ -779,7 +779,7 @@ void main() {
       test('should handle non-EVM chains', () {
         // Arrange
         final id = 203;
-        final request = WcSessionRequestRequest(
+        final request = const WcSessionRequestRequest(
           chainId: 'solana:mainnet',
           request: SessionRequestParams(
             method: 'solana_signTransaction',
@@ -803,7 +803,7 @@ void main() {
       test('should handle TON chains', () {
         // Arrange
         final id = 204;
-        final request = WcSessionRequestRequest(
+        final request = const WcSessionRequestRequest(
           chainId: 'ton:mainnet',
           request: SessionRequestParams(
             method: 'ton_sendTransaction',
@@ -833,7 +833,7 @@ void main() {
       test('should collect response TVF data and remove from pending', () {
         // Arrange
         final id = 300;
-        final request = WcSessionRequestRequest(
+        final request = const WcSessionRequestRequest(
           chainId: 'eip155:1',
           request: SessionRequestParams(
             method: 'eth_sendTransaction',
@@ -874,7 +874,7 @@ void main() {
       test('should collect TON response TVF data correctly', () {
         // Arrange
         final id = 302;
-        final request = WcSessionRequestRequest(
+        final request = const WcSessionRequestRequest(
           chainId: 'ton:mainnet',
           request: SessionRequestParams(
             method: 'ton_sendTransaction',
@@ -923,7 +923,10 @@ void main() {
 
       test('should return null for non-existent request ID', () {
         // Arrange
-        final response = JsonRpcResponse(id: 999, result: '0x1234567890abcdef');
+        final response = const JsonRpcResponse(
+          id: 999,
+          result: '0x1234567890abcdef',
+        );
 
         // Act
         final tvfData = signEngine.collectResponseTVF(response);
@@ -935,7 +938,7 @@ void main() {
       test('should handle response with error', () {
         // Arrange
         final id = 301;
-        final request = WcSessionRequestRequest(
+        final request = const WcSessionRequestRequest(
           chainId: 'eip155:1',
           request: SessionRequestParams(
             method: 'eth_sendTransaction',
@@ -955,7 +958,7 @@ void main() {
         // Create response with error
         final response = JsonRpcResponse(
           id: id,
-          error: JsonRpcError(code: -32603, message: 'Internal error'),
+          error: const JsonRpcError(code: -32603, message: 'Internal error'),
         );
 
         // Act
@@ -971,7 +974,7 @@ void main() {
     group('Direct Method Testing - collectHashes', () {
       test('should collect EVM wallet_sendCalls 2.0.0 hashes correctly', () {
         // Arrange
-        final response = JsonRpcResponse(
+        final response = const JsonRpcResponse(
           id: 400,
           result: {
             'id': '0x1234567890abcdef',
@@ -1006,7 +1009,10 @@ void main() {
 
       test('should collect simple EVM transaction hash', () {
         // Arrange
-        final response = JsonRpcResponse(id: 401, result: '0x1234567890abcdef');
+        final response = const JsonRpcResponse(
+          id: 401,
+          result: '0x1234567890abcdef',
+        );
 
         // Act
         final hashes = signEngine.collectHashes('eip155', response);
@@ -1019,7 +1025,7 @@ void main() {
 
       test('should return null for EVM response with error', () {
         // Arrange
-        final response = JsonRpcResponse(
+        final response = const JsonRpcResponse(
           id: 402,
           error: JsonRpcError(code: -32603, message: 'Internal error'),
         );
@@ -1033,7 +1039,7 @@ void main() {
 
       test('should return null for EVM response with null result', () {
         // Arrange
-        final response = JsonRpcResponse(id: 403, result: null);
+        final response = const JsonRpcResponse(id: 403, result: null);
 
         // Act
         final hashes = signEngine.collectHashes('eip155', response);
@@ -1044,7 +1050,7 @@ void main() {
 
       test('should collect TON transaction hash correctly', () {
         // Arrange
-        final response = JsonRpcResponse(
+        final response = const JsonRpcResponse(
           id: 404,
           result:
               '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef',
@@ -1066,7 +1072,7 @@ void main() {
 
       test('should return null for TON response with error', () {
         // Arrange
-        final response = JsonRpcResponse(
+        final response = const JsonRpcResponse(
           id: 405,
           error: JsonRpcError(code: -32603, message: 'Internal error'),
         );
@@ -1080,7 +1086,7 @@ void main() {
 
       test('should return null for TON response with null result', () {
         // Arrange
-        final response = JsonRpcResponse(id: 406, result: null);
+        final response = const JsonRpcResponse(id: 406, result: null);
 
         // Act
         final hashes = signEngine.collectHashes('ton', response);
@@ -1091,7 +1097,7 @@ void main() {
 
       test('should return null for TON response with non-string result', () {
         // Arrange
-        final response = JsonRpcResponse(
+        final response = const JsonRpcResponse(
           id: 407,
           result: {'hash': '0x1234567890abcdef'},
         );

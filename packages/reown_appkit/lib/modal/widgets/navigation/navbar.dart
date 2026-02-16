@@ -63,7 +63,7 @@ class ModalNavbar extends StatelessWidget {
               child: ValueListenableBuilder(
                 valueListenable: _widgetStack.onRenderScreen,
                 builder: (context, render, _) {
-                  if (!render) return SizedBox.shrink();
+                  if (!render) return const SizedBox.shrink();
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

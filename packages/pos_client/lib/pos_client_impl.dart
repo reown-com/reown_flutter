@@ -234,7 +234,7 @@ class PosClient with PosRpcService, ValidatorService implements IPosClient {
     await _expirePreviousPairings();
     if (_connectResponse?.session.isCompleted == false) {
       _connectResponse!.session.completeError(
-        ReownCoreError(code: 5090, message: 'ABORTED'),
+        const ReownCoreError(code: 5090, message: 'ABORTED'),
       );
     }
     if (reinit) {
@@ -418,7 +418,7 @@ extension _PrivateMembers on PosClient {
     for (var session in reOwnSign!.sessions.getAll()) {
       await reOwnSign!.disconnectSession(
         topic: session.topic,
-        reason: ReownSignError(code: 6000, message: 'POS disconnected'),
+        reason: const ReownSignError(code: 6000, message: 'POS disconnected'),
       );
     }
     for (var pairing in reOwnSign!.pairings.getAll()) {
@@ -530,7 +530,7 @@ extension _PrivateMembers on PosClient {
     _reOwnCore!.logger.d('[$runtimeType] disconnecting session');
     await reOwnSign!.disconnectSession(
       topic: topic,
-      reason: ReownSignError(code: 6000, message: 'POS disconnected'),
+      reason: const ReownSignError(code: 6000, message: 'POS disconnected'),
     );
   }
 }

@@ -59,7 +59,7 @@ class _ToastWidgetState extends State<ToastWidget>
         child: FadeTransition(
           opacity: _opacityAnimation,
           child: Container(
-            constraints: BoxConstraints(minHeight: 40.0),
+            constraints: const BoxConstraints(minHeight: 40.0),
             decoration: BoxDecoration(
               color: themeColors.background175,
               borderRadius: BorderRadius.circular(radiuses.radiusM),

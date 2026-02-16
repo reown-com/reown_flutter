@@ -146,7 +146,7 @@ class _ExchangeAssetsSelectorPageState
                       color: themeColors.foreground200,
                     ),
                   ),
-                  Spacer(),
+                  const Spacer(),
                   _ShimmerWidget(
                     enabled: _loadingQuote,
                     child: Text(
@@ -157,7 +157,7 @@ class _ExchangeAssetsSelectorPageState
                 ],
               ),
             ),
-            SizedBox.square(dimension: kPadding12),
+            const SizedBox.square(dimension: kPadding12),
             Expanded(
               child: Container(
                 padding: const EdgeInsets.all(kPadding12),
@@ -184,7 +184,7 @@ class _ExchangeAssetsSelectorPageState
                         color: themeColors.foreground200,
                       ),
                     ),
-                    SizedBox.square(dimension: kPadding12),
+                    const SizedBox.square(dimension: kPadding12),
                     Expanded(
                       child: _AssetOptionsList(
                         exchangeAssets: exchangeAssets,
@@ -195,14 +195,14 @@ class _ExchangeAssetsSelectorPageState
                       ),
                     ),
                     //
-                    SizedBox.square(dimension: kPadding12),
+                    const SizedBox.square(dimension: kPadding12),
                     _PaymentDetails(
                       quoteResult: _quoteResult,
                       loadingQuote: _loadingQuote,
                     ),
-                    SizedBox.square(dimension: kPadding12),
+                    const SizedBox.square(dimension: kPadding12),
                     Divider(color: themeColors.grayGlass005, height: 0.0),
-                    SizedBox.square(dimension: kPadding12),
+                    const SizedBox.square(dimension: kPadding12),
                     Row(
                       children: [
                         Expanded(
@@ -260,7 +260,7 @@ class _AssetOptionsListState extends State<_AssetOptionsList> {
   void initState() {
     super.initState();
     _fetchPriceTimer ??= Timer.periodic(
-      Duration(seconds: 10),
+      const Duration(seconds: 10),
       _fetchTokenPrice,
     );
   }
@@ -303,7 +303,7 @@ class _AssetOptionsListState extends State<_AssetOptionsList> {
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
-                child: Center(
+                child: const Center(
                   child: Text('No assets supported for this network'),
                 ),
               ),
@@ -324,7 +324,9 @@ class _AssetOptionsListState extends State<_AssetOptionsList> {
                 builder: (context, snapshot) {
                   return AccountListItem(
                     padding: const EdgeInsets.all(0.0),
-                    backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+                    backgroundColor: const WidgetStatePropertyAll(
+                      Colors.transparent,
+                    ),
                     iconWidget: Padding(
                       padding: const EdgeInsets.only(left: kPadding6),
                       child: Stack(
@@ -341,7 +343,7 @@ class _AssetOptionsListState extends State<_AssetOptionsList> {
                             child: Container(
                               decoration: BoxDecoration(
                                 color: themeColors.background150,
-                                borderRadius: BorderRadius.all(
+                                borderRadius: const BorderRadius.all(
                                   Radius.circular(30.0),
                                 ),
                               ),
@@ -366,8 +368,8 @@ class _AssetOptionsListState extends State<_AssetOptionsList> {
                       visible:
                           widget.selectedExchangeAsset?.address ==
                           asset.address,
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: kPadding6),
+                      child: const Padding(
+                        padding: EdgeInsets.only(right: kPadding6),
                         child: Icon(Icons.check, color: Colors.green),
                       ),
                     ),
@@ -409,7 +411,7 @@ class _PaymentDetails extends StatelessWidget {
                   color: themeColors.foreground200,
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               _ShimmerWidget(
                 enabled: loadingQuote,
                 child: Text(
@@ -445,7 +447,7 @@ class _PaymentDetails extends StatelessWidget {
                         color: themeColors.foreground200,
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     _ShimmerWidget(
                       enabled: loadingQuote,
                       child: Text(
@@ -544,7 +546,7 @@ class __TitleButtonState extends State<_TitleButton> {
   void initState() {
     super.initState();
     _fetchPriceTimer ??= Timer.periodic(
-      Duration(seconds: 10),
+      const Duration(seconds: 10),
       _fetchTokenPrice,
     );
     _fetchTokenPrice(_fetchPriceTimer);
@@ -572,7 +574,7 @@ class __TitleButtonState extends State<_TitleButton> {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     final themeData = ReownAppKitModalTheme.getDataOf(context);
     if (_fungible == null) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     final networkInfo = ReownAppKitModalNetworks.getNetworkInfo(
       _fungible!.chainId!,

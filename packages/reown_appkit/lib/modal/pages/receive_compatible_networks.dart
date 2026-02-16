@@ -57,7 +57,7 @@ class ReceiveCompatibleNetworks extends StatelessWidget {
             return networks[index - 1];
           },
           separatorBuilder: (BuildContext context, int index) {
-            return SizedBox.square(dimension: kPadding6);
+            return const SizedBox.square(dimension: kPadding6);
           },
           itemCount: networks.length + 1,
         ),

@@ -299,7 +299,7 @@ class SyncTheme extends MessageData {
   @override
   String toString() {
     final mode = theme?.isDarkMode == true ? 'dark' : 'light';
-    final themeData = theme?.themeData ?? ReownAppKitModalThemeData();
+    final themeData = theme?.themeData ?? const ReownAppKitModalThemeData();
     late ReownAppKitModalColors colors;
     if (mode == 'dark') {
       colors = themeData.darkColors;

@@ -209,12 +209,12 @@ class AppDetailPageState extends State<AppDetailPage> {
                                 width: 1.0,
                                 color: Colors.black38,
                               ),
-                              borderRadius: BorderRadius.all(
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(40.0),
                               ),
                             ),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.all(
+                              borderRadius: const BorderRadius.all(
                                 Radius.circular(40.0),
                               ),
                               child: SvgPicture.network(imageUrl),
@@ -226,7 +226,7 @@ class AppDetailPageState extends State<AppDetailPage> {
                           radius: 40.0,
                         );
                       }
-                      return CircleAvatar(
+                      return const CircleAvatar(
                         radius: 40.0,
                         backgroundColor: Colors.black12,
                       );

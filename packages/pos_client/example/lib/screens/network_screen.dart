@@ -45,7 +45,7 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
           return AlertDialog(
             title: Text('${event.runtimeType}'),
             content: Text(event.message),
-            actions: [DtcRestartButton()],
+            actions: [const DtcRestartButton()],
           );
         },
       );
@@ -59,7 +59,7 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
     posInstance.createPaymentIntent(paymentIntents: [paymentInfo]);
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => PaymentScreen()),
+      MaterialPageRoute(builder: (context) => const PaymentScreen()),
     );
   }
 
@@ -165,7 +165,7 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
                                   trailing:
                                       network.chainId ==
                                           paymentInfo.token.network.chainId
-                                      ? Icon(Icons.check)
+                                      ? const Icon(Icons.check)
                                       : null,
                                 ),
                               ),
@@ -173,7 +173,7 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
                           },
                           itemCount: avaibleNetworks.length,
                           separatorBuilder: (BuildContext context, int index) {
-                            return SizedBox.square(dimension: 12.0);
+                            return const SizedBox.square(dimension: 12.0);
                           },
                         ),
                       ),
@@ -204,7 +204,7 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      SizedBox(
+                      const SizedBox(
                         width: double.infinity,
                         height: 56,
                         child: DtcRestartButton(),
@@ -217,7 +217,7 @@ class _NetworkScreenState extends ConsumerState<NetworkScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: DtcFooter(),
+      bottomNavigationBar: const DtcFooter(),
     );
   }
 }

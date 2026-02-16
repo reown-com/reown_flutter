@@ -243,9 +243,9 @@ class _ActivityListViewBuilderState extends State<ActivityListViewBuilder> {
       itemBuilder: (_, int index) {
         if (index == groupedActivities.length) {
           // Loading indicator
-          return Center(
+          return const Center(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.0),
               child: CircularProgressIndicator.adaptive(),
             ),
           );

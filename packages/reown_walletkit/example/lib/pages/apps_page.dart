@@ -73,7 +73,7 @@ class AppsPageState extends State<AppsPage> with WidgetsBindingObserver {
         toastification.show(
           title: Text(jsonObject.method, maxLines: 1),
           context: context,
-          autoCloseDuration: Duration(seconds: 2),
+          autoCloseDuration: const Duration(seconds: 2),
           alignment: Alignment.bottomCenter,
         );
       }

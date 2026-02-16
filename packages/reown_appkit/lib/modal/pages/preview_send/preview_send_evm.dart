@@ -197,7 +197,7 @@ class _PreviewSendEvmState extends State<PreviewSendEvm> {
 
       if (_isSendEnabled) {
         _gasEstimationTimer ??= Timer.periodic(
-          Duration(seconds: 10),
+          const Duration(seconds: 10),
           _reEstimateGas,
         );
       } else {

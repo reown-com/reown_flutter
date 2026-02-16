@@ -798,7 +798,7 @@ class ReownAppKitModal
 
   @override
   Future<void> openDepositView() {
-    return _showModalView(startWidget: ReownAppKitModalDepositScreen());
+    return _showModalView(startWidget: const ReownAppKitModalDepositScreen());
   }
 
   @override
@@ -916,13 +916,16 @@ class ReownAppKitModal
         barrierDismissible: false,
         useSafeArea: true,
         useRootNavigator: true,
-        anchorPoint: Offset(0, 0),
+        anchorPoint: const Offset(0, 0),
         context: _context!,
         builder: (_) {
           final radiuses = ReownAppKitModalTheme.radiusesOf(_context!);
           final maxRadius = min(radiuses.radiusM, 36.0);
           final borderRadius = BorderRadius.all(Radius.circular(maxRadius));
-          final constraints = BoxConstraints(maxWidth: 360, maxHeight: 600);
+          final constraints = const BoxConstraints(
+            maxWidth: 360,
+            maxHeight: 600,
+          );
           return Dialog(
             backgroundColor: ReownAppKitModalTheme.colorsOf(
               _context!,
@@ -1352,7 +1355,7 @@ class ReownAppKitModal
     }
     if (_currentSession?.sessionService.isMagic == true) {
       try {
-        await Future.delayed(Duration(milliseconds: 300));
+        await Future.delayed(const Duration(milliseconds: 300));
         await _magicService.disconnect();
       } catch (e) {
         _appKit.core.logger.d('[$runtimeType] disconnect magic $e');
@@ -1698,7 +1701,7 @@ class ReownAppKitModal
       GetIt.I.unregister<ISolflareService>();
       GetIt.I.unregister<ISiweService>();
       GetIt.I.unregister<IWidgetStack>();
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
       _notify();
     }
     _isDisposed = true;
@@ -1895,7 +1898,7 @@ class ReownAppKitModal
       if (_isUserRejectedError(e)) {
         // fallback to current chain if rejected by user
         await _setLocalEthChain(_selectedChainID!);
-        throw JsonRpcError(code: 5002, message: 'User rejected methods.');
+        throw const JsonRpcError(code: 5002, message: 'User rejected methods.');
       } else {
         try {
           // Otherwise it meas chain has to be added.
@@ -2001,7 +2004,7 @@ class ReownAppKitModal
     _notify();
 
     if (event) {
-      Future.delayed(Duration(milliseconds: 200), () {
+      Future.delayed(const Duration(milliseconds: 200), () {
         onModalDisconnect.broadcast(
           ModalDisconnect(
             topic: args?.topic ?? _currentSession?.topic,

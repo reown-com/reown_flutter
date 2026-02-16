@@ -109,7 +109,7 @@ class ActivityListItem extends StatelessWidget {
                 child: Container(
                   decoration: BoxDecoration(
                     color: themeColors.background150,
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                    borderRadius: const BorderRadius.all(Radius.circular(30.0)),
                   ),
                   padding: const EdgeInsets.all(1.0),
                   clipBehavior: Clip.antiAlias,
@@ -296,11 +296,11 @@ class ActivityListItemLoader extends StatelessWidget {
                           margin: const EdgeInsets.only(left: 4.0),
                           decoration: BoxDecoration(
                             color: themeColors.grayGlass010,
-                            borderRadius: BorderRadius.all(
+                            borderRadius: const BorderRadius.all(
                               Radius.circular(30.0),
                             ),
                           ),
-                          child: SizedBox(),
+                          child: const SizedBox(),
                         ),
                       ),
                     ],
@@ -311,9 +311,11 @@ class ActivityListItemLoader extends StatelessWidget {
                     margin: const EdgeInsets.only(top: 4.0),
                     decoration: BoxDecoration(
                       color: themeColors.grayGlass010,
-                      borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(30.0),
+                      ),
                     ),
-                    child: SizedBox(),
+                    child: const SizedBox(),
                   ),
                 ],
               ),
@@ -325,9 +327,9 @@ class ActivityListItemLoader extends StatelessWidget {
             margin: const EdgeInsets.only(left: 4.0),
             decoration: BoxDecoration(
               color: themeColors.grayGlass010,
-              borderRadius: BorderRadius.all(Radius.circular(30.0)),
+              borderRadius: const BorderRadius.all(Radius.circular(30.0)),
             ),
-            child: SizedBox(),
+            child: const SizedBox(),
           ),
           const SizedBox.square(dimension: 8.0),
         ],
@@ -365,16 +367,24 @@ class _HalfIconImage extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.only(
           topLeft: isLeft
-              ? (isNFT ? Radius.circular(8.0) : Radius.circular(100.0))
+              ? (isNFT
+                    ? const Radius.circular(8.0)
+                    : const Radius.circular(100.0))
               : Radius.zero,
           bottomLeft: isLeft
-              ? (isNFT ? Radius.circular(8.0) : Radius.circular(100.0))
+              ? (isNFT
+                    ? const Radius.circular(8.0)
+                    : const Radius.circular(100.0))
               : Radius.zero,
           topRight: !isLeft
-              ? (isNFT ? Radius.circular(8.0) : Radius.circular(100.0))
+              ? (isNFT
+                    ? const Radius.circular(8.0)
+                    : const Radius.circular(100.0))
               : Radius.zero,
           bottomRight: !isLeft
-              ? (isNFT ? Radius.circular(8.0) : Radius.circular(100.0))
+              ? (isNFT
+                    ? const Radius.circular(8.0)
+                    : const Radius.circular(100.0))
               : Radius.zero,
         ),
         child: CachedNetworkImage(

@@ -19,6 +19,6 @@ class GetBlocksWithLimit extends JsonRpcListTypeMethod<u64> {
   }) : super(
          'getBlocksWithLimit',
          values: [startSlot, limit],
-         config: config ?? GetBlocksWithLimitConfig(),
+         config: config ?? const GetBlocksWithLimitConfig(),
        );
 }

@@ -134,7 +134,7 @@ class DefaultLogo extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: TextStyle(
+      style: const TextStyle(
         color: Colors.white,
         fontSize: 32,
         fontWeight: FontWeight.bold,
@@ -243,13 +243,13 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
                   formatPayAmount(option.amount),
                   style: StyleConstants.wcpTextPrimaryStyle,
                 ),
-                Spacer(),
+                const Spacer(),
                 (widget.selectedOption.id == option.id)
                     ? Icon(
                         Icons.radio_button_on,
                         color: StyleConstants.accentPrimary,
                       )
-                    : SizedBox.shrink(),
+                    : const SizedBox.shrink(),
               ],
             ),
           ),
@@ -286,11 +286,11 @@ class _WCPPaymentOptionDropdownState extends State<WCPPaymentOptionDropdown> {
         color: StyleConstants.foregroundPrimary,
         borderRadius: BorderRadius.circular(20),
       ),
-      constraints: BoxConstraints(minHeight: 64.0),
+      constraints: const BoxConstraints(minHeight: 64.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (_isExpanded) SizedBox.square(dimension: 6),
+          if (_isExpanded) const SizedBox.square(dimension: 6),
           // Selected option header (always visible, highlighted)
           InkWell(
             onTap: hasMultipleOptions

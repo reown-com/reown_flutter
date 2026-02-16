@@ -77,7 +77,7 @@ class _AppKitModalQRCodePageState extends State<ReownAppKitModalQRCodePage> {
           direction: isPortrait ? Axis.vertical : Axis.horizontal,
           children: [
             Padding(
-              padding: EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(20.0),
               child:
                   _qrQodeWidget ??
                   AspectRatio(

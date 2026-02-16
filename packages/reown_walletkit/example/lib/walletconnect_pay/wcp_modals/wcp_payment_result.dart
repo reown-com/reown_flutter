@@ -91,7 +91,7 @@ class _WCPPaymentResultState extends State<WCPPaymentResult> {
                         height: 40.0,
                       ),
                       const SizedBox(height: StyleConstants.linear24),
-                      WCModalTitle(text: 'Payment failed'),
+                      const WCModalTitle(text: 'Payment failed'),
                     ],
                   );
                 default:

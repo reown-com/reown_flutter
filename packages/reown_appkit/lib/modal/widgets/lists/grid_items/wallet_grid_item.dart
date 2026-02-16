@@ -57,7 +57,9 @@ class WalletGridItem extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         color: themeColors.background150,
-                        borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(30.0),
+                        ),
                       ),
                       padding: const EdgeInsets.all(1.0),
                       clipBehavior: Clip.antiAlias,
@@ -82,7 +84,9 @@ class WalletGridItem extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         color: themeColors.background150,
-                        borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(30.0),
+                        ),
                       ),
                       clipBehavior: Clip.antiAlias,
                       child: SvgPicture.asset(

@@ -5,7 +5,7 @@ import 'package:reown_appkit/modal/services/transfers/models/quote_params.dart';
 void main() {
   group('GetQuoteParams', () {
     test('creates instance correctly', () {
-      final params = GetQuoteParams(
+      final params = const GetQuoteParams(
         sourceToken: ethereumETH,
         toToken: solanaSOL,
         recipient: '0x1234567890123456789012345678901234567890',
@@ -21,7 +21,7 @@ void main() {
     });
 
     test('creates instance without optional address', () {
-      final params = GetQuoteParams(
+      final params = const GetQuoteParams(
         sourceToken: ethereumETH,
         toToken: ethereumUSDC,
         recipient: '0x1234567890123456789012345678901234567890',
@@ -32,7 +32,7 @@ void main() {
     });
 
     test('serializes to JSON correctly', () {
-      final params = GetQuoteParams(
+      final params = const GetQuoteParams(
         sourceToken: ethereumETH,
         toToken: ethereumUSDC,
         recipient: '0x1234567890123456789012345678901234567890',
@@ -76,7 +76,7 @@ void main() {
 
   group('GetTransfersQuoteParams', () {
     test('creates instance correctly', () {
-      final params = GetTransfersQuoteParams(
+      final params = const GetTransfersQuoteParams(
         user: '0x1234567890123456789012345678901234567890',
         originChainId: '1',
         originCurrency: 'native',
@@ -99,7 +99,7 @@ void main() {
     });
 
     test('creates instance without optional user', () {
-      final params = GetTransfersQuoteParams(
+      final params = const GetTransfersQuoteParams(
         originChainId: '1',
         originCurrency: 'native',
         destinationChainId: '137',
@@ -112,7 +112,7 @@ void main() {
     });
 
     test('serializes to JSON correctly', () {
-      final params = GetTransfersQuoteParams(
+      final params = const GetTransfersQuoteParams(
         user: '0x1234567890123456789012345678901234567890',
         originChainId: '1',
         originCurrency: 'native',
@@ -136,7 +136,7 @@ void main() {
     });
 
     test('excludes null user from JSON', () {
-      final params = GetTransfersQuoteParams(
+      final params = const GetTransfersQuoteParams(
         originChainId: '1',
         originCurrency: 'native',
         destinationChainId: '137',
@@ -152,13 +152,17 @@ void main() {
 
   group('GetQuoteStatusParams', () {
     test('creates instance correctly', () {
-      final params = GetQuoteStatusParams(requestId: 'test-request-id-123');
+      final params = const GetQuoteStatusParams(
+        requestId: 'test-request-id-123',
+      );
 
       expect(params.requestId, 'test-request-id-123');
     });
 
     test('serializes to JSON correctly', () {
-      final params = GetQuoteStatusParams(requestId: 'test-request-id-123');
+      final params = const GetQuoteStatusParams(
+        requestId: 'test-request-id-123',
+      );
 
       final json = params.toJson();
       expect(json['requestId'], 'test-request-id-123');

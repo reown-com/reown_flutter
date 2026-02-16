@@ -30,7 +30,7 @@ Future<void> main() async {
       DeepLinkHandler.initListener();
 
       if (kDebugMode) {
-        runApp(MyApp());
+        runApp(const MyApp());
       } else {
         // Catch Flutter framework errors
         FlutterError.onError = (FlutterErrorDetails details) {
@@ -159,7 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
         return keyService;
       });
       GetIt.I.registerSingleton<IWalletKitService>(WalletKitService());
-      await GetIt.I.allReady(timeout: Duration(seconds: 1));
+      await GetIt.I.allReady(timeout: const Duration(seconds: 1));
 
       final walletKitService = GetIt.I<IWalletKitService>();
       await walletKitService.create();
@@ -190,7 +190,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _setPages() => setState(() {
         _pageDatas = [
           PageData(
-            page: BalancesPage(),
+            page: const BalancesPage(),
             title: 'Balances',
             icon: Icons.account_balance_wallet_outlined,
           ),

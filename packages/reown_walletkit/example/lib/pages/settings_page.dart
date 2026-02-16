@@ -35,7 +35,7 @@ class _SettingsPageState extends State<SettingsPage> {
     final walletKit = GetIt.I<IWalletKitService>().walletKit;
     await walletKit.core.storage.deleteAll();
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
+      const SnackBar(
         content: Text('Storage cleared'),
         duration: Duration(seconds: 1),
       ),
@@ -113,7 +113,7 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          content: Text(
+          content: const Text(
             'This will delete the current wallet and create a new one',
           ),
           actions: [
@@ -231,11 +231,11 @@ class _LinkModeButton extends StatelessWidget {
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(false),
-                        child: Text('Cancel'),
+                        child: const Text('Cancel'),
                       ),
                       TextButton(
                         onPressed: () => Navigator.of(context).pop(true),
-                        child: Text('Ok'),
+                        child: const Text('Ok'),
                       ),
                     ],
                   );
@@ -250,7 +250,7 @@ class _LinkModeButton extends StatelessWidget {
             },
           );
         }
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
       },
     );
   }
@@ -408,7 +408,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
                 height: 20.0,
                 errorWidget: (context, url, error) => const SizedBox.shrink(),
               ),
-              SizedBox.square(dimension: 8.0),
+              const SizedBox.square(dimension: 8.0),
               Expanded(
                 child: Text(
                   'EVM Accounts (${_currentPage + 1}/${chainKeys.length})',
@@ -474,7 +474,7 @@ class _EVMAccountsState extends State<_EVMAccounts> {
             child: SizedBox(
               width: 200.0,
               child: DropdownButton(
-                key: Key('evm_chains'),
+                key: const Key('evm_chains'),
                 isExpanded: true,
                 value: _selectedChain,
                 items: ChainsDataList.eip155Chains.map((ChainMetadata chain) {
@@ -632,7 +632,7 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
         const SizedBox(height: 20.0),
         const Divider(height: 1.0, color: Colors.black12),
         Padding(
-          padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 12.0),
+          padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 12.0),
           child: Row(
             children: [
               CachedNetworkImage(
@@ -641,8 +641,8 @@ class _SolanaAccountsState extends State<_SolanaAccounts> {
                 height: 20.0,
                 errorWidget: (context, url, error) => const SizedBox.shrink(),
               ),
-              SizedBox.square(dimension: 8.0),
-              Expanded(
+              const SizedBox.square(dimension: 8.0),
+              const Expanded(
                 child: Text(
                   'solana Accounts',
                   style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
@@ -702,7 +702,7 @@ class _ChainKeyViewState extends State<_ChainKeyView> {
         const SizedBox(height: 20.0),
         const Divider(height: 1.0, color: Colors.black12),
         Padding(
-          padding: EdgeInsets.only(left: 12.0, top: 12.0, right: 12.0),
+          padding: const EdgeInsets.only(left: 12.0, top: 12.0, right: 12.0),
           child: Row(
             children: [
               CachedNetworkImage(
@@ -716,11 +716,12 @@ class _ChainKeyViewState extends State<_ChainKeyView> {
                   );
                 },
               ),
-              SizedBox.square(dimension: 8.0),
+              const SizedBox.square(dimension: 8.0),
               Expanded(
                 child: Text(
                   '${widget.chain} account',
-                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+                  style: const TextStyle(
+                      fontSize: 16.0, fontWeight: FontWeight.w500),
                 ),
               ),
             ],
@@ -898,7 +899,7 @@ class _Buttons extends StatelessWidget {
               const SizedBox(height: 8.0),
               TextButton(
                 onPressed: onDeleteData,
-                child: Text(
+                child: const Text(
                   'Clear local storage',
                   style: TextStyle(color: Colors.black),
                 ),
@@ -1016,7 +1017,7 @@ class __DataContainerState extends State<_DataContainer> {
         (_) => toastification.show(
           title: Text('${widget.title} copied'),
           context: context,
-          autoCloseDuration: Duration(seconds: 2),
+          autoCloseDuration: const Duration(seconds: 2),
           alignment: Alignment.bottomCenter,
         ),
       ),

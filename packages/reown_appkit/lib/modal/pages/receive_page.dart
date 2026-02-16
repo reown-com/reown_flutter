@@ -158,7 +158,7 @@ class ReceivePage extends StatelessWidget {
                     color: themeColors.foreground200,
                   ),
                   onTap: () {
-                    _widgetStack.push(ReceiveCompatibleNetworks());
+                    _widgetStack.push(const ReceiveCompatibleNetworks());
                   },
                 ),
               ),

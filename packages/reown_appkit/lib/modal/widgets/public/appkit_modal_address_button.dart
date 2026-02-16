@@ -42,16 +42,16 @@ class _AppKitModalAddressButtonState extends State<AppKitModalAddressButton> {
   @override
   Widget build(BuildContext context) {
     if (widget.appKitModal.session == null) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     final chainId = widget.appKitModal.selectedChain?.chainId ?? '';
     if (chainId.isEmpty) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     final namespace = NamespaceUtils.getNamespaceFromChain(chainId);
     final address = widget.appKitModal.session!.getAddress(namespace);
     if ((address ?? '').isEmpty) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     final identityName =
         (widget.appKitModal.blockchainIdentity?.name ?? '').isNotEmpty
@@ -105,9 +105,9 @@ class _AppKitModalAddressButtonState extends State<AppKitModalAddressButton> {
           mainAxisSize: MainAxisSize.min,
           children: [
             widget.appKitModal.status.isLoading
-                ? Row(
+                ? const Row(
                     children: [
-                      const SizedBox.square(dimension: 4.0),
+                      SizedBox.square(dimension: 4.0),
                       CircularLoader(size: 16.0, strokeWidth: 1.5),
                     ],
                   )
@@ -128,7 +128,7 @@ class _AppKitModalAddressButtonState extends State<AppKitModalAddressButton> {
                   ),
             const SizedBox.square(dimension: 4.0),
             ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 140.0),
+              constraints: const BoxConstraints(maxWidth: 140.0),
               child: Text(
                 identityName ??
                     RenderUtils.truncate(

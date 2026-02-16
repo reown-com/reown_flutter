@@ -26,16 +26,16 @@ class StyleConstants {
         // letterSpacing: -0.6, // -3% of 20px = -0.6
       );
 
-  static Color get bgPrimary => Color(0xFFFFFFFF);
-  static Color get accentPrimary => Color(0xFF0988F0);
-  static Color get foregroundPrimary => Color(0xFFF3F3F3);
-  static Color get foregroundSecondary => Color(0xFFE9E9E9);
-  static Color get neutrals => Color(0xFFBBBBBB);
-  static Color get textPrimary => Color(0xFF202020);
-  static Color get textSecondary => Color(0xFF9A9A9A);
-  static Color get textTertiary => Color(0xFF6C6C6C);
-  static Color get textSuccess => Color(0xFF30A46B);
-  static Color get textError => Color(0xFFDF4A34);
+  static Color get bgPrimary => const Color(0xFFFFFFFF);
+  static Color get accentPrimary => const Color(0xFF0988F0);
+  static Color get foregroundPrimary => const Color(0xFFF3F3F3);
+  static Color get foregroundSecondary => const Color(0xFFE9E9E9);
+  static Color get neutrals => const Color(0xFFBBBBBB);
+  static Color get textPrimary => const Color(0xFF202020);
+  static Color get textSecondary => const Color(0xFF9A9A9A);
+  static Color get textTertiary => const Color(0xFF6C6C6C);
+  static Color get textSuccess => const Color(0xFF30A46B);
+  static Color get textError => const Color(0xFFDF4A34);
 
   // Linear
   static const double linear8 = 8;

@@ -300,7 +300,7 @@ class SolflareHelper {
       );
 
       final payload = <String, dynamic>{
-        ...JsonDecoder().convert(String.fromCharCodes(decryptedData!)),
+        ...const JsonDecoder().convert(String.fromCharCodes(decryptedData!)),
         if (solflareKey.isNotEmpty)
           'solflare_encryption_public_key': solflareKey,
         if (solflareRequest.isNotEmpty) 'solflareRequest': solflareRequest,

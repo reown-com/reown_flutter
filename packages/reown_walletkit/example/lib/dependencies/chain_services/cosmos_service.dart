@@ -309,8 +309,7 @@ class CosmosService {
       // Try to fetch from chain registry API
       final chainName = _getChainName();
       if (chainName != null) {
-        final url =
-            'https://chains.cosmos.directory/$chainName/assetlist';
+        final url = 'https://chains.cosmos.directory/$chainName/assetlist';
         final response = await http.get(Uri.parse(url));
 
         if (response.statusCode == 200) {

@@ -34,7 +34,7 @@ class DownloadWalletItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeColors = ReownAppKitModalTheme.colorsOf(context);
     if (_storeUrl.isEmpty) {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
     return WalletListItem(
       hideAvatar: true,

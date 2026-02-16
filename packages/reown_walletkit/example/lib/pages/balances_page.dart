@@ -439,7 +439,7 @@ class _BalancesPageState extends State<BalancesPage> {
               ),
               child: _isLoading
                   ? FutureBuilder(
-                      future: Future.delayed(Duration(milliseconds: 100)),
+                      future: Future.delayed(const Duration(milliseconds: 100)),
                       initialData: null,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
@@ -456,7 +456,7 @@ class _BalancesPageState extends State<BalancesPage> {
                             ),
                           );
                         }
-                        return SizedBox.shrink();
+                        return const SizedBox.shrink();
                       })
                   : SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),

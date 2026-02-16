@@ -61,7 +61,7 @@ class MethodDialogState extends State<MethodDialog> {
                       (_) => toastification.show(
                         title: const Text(StringConstants.copiedToClipboard),
                         context: context,
-                        autoCloseDuration: Duration(seconds: 2),
+                        autoCloseDuration: const Duration(seconds: 2),
                         alignment: Alignment.bottomCenter,
                       ),
                     );
@@ -78,7 +78,7 @@ class MethodDialogState extends State<MethodDialog> {
                       (_) => toastification.show(
                         title: const Text(StringConstants.copiedToClipboard),
                         context: context,
-                        autoCloseDuration: Duration(seconds: 2),
+                        autoCloseDuration: const Duration(seconds: 2),
                         alignment: Alignment.bottomCenter,
                       ),
                     );

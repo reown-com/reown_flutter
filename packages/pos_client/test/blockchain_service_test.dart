@@ -32,7 +32,7 @@ void main() {
       final testPosClient = TestPosClient(
         projectId: '123456789',
         deviceId: '987654321',
-        metadata: Metadata(
+        metadata: const Metadata(
           merchantName: 'Test',
           description: 'Test',
           url: 'url',
@@ -44,13 +44,13 @@ void main() {
       );
 
       final tokens = [
-        PosToken(
+        const PosToken(
           network: PosNetwork(name: 'Ethereum', chainId: 'eip155:1'),
           symbol: 'USDC',
           standard: 'erc20',
           address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
         ),
-        PosToken(
+        const PosToken(
           network: PosNetwork(
             name: 'Solana',
             chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
@@ -71,7 +71,7 @@ void main() {
       final testPosClient = TestPosClient(
         projectId: '123456789',
         deviceId: '987654321',
-        metadata: Metadata(
+        metadata: const Metadata(
           merchantName: 'Test',
           description: 'Test',
           url: 'url',
@@ -92,20 +92,20 @@ void main() {
       final response = JsonRpcResponse.fromJson({
         'id': 1,
         'result': {
-          "namespaces": [
+          'namespaces': [
             {
-              "assetNamespaces": ["token", "slip44"],
-              "capabilities": null,
-              "events": [],
-              "methods": ["solana_signAndSendTransaction"],
-              "name": "solana",
+              'assetNamespaces': ['token', 'slip44'],
+              'capabilities': null,
+              'events': [],
+              'methods': ['solana_signAndSendTransaction'],
+              'name': 'solana',
             },
             {
-              "assetNamespaces": ["trc20", "slip44"],
-              "capabilities": null,
-              "events": [],
-              "methods": ["tron_signTransaction"],
-              "name": "tron",
+              'assetNamespaces': ['trc20', 'slip44'],
+              'capabilities': null,
+              'events': [],
+              'methods': ['tron_signTransaction'],
+              'name': 'tron',
             },
           ],
         },
@@ -120,7 +120,7 @@ void main() {
       final testPosClient = TestPosClient(
         projectId: '123456789',
         deviceId: '987654321',
-        metadata: Metadata(
+        metadata: const Metadata(
           merchantName: 'Test',
           description: 'Test',
           url: 'url',
@@ -131,7 +131,7 @@ void main() {
         sign: mockSign,
       );
 
-      final queryParams = QueryParams(
+      final queryParams = const QueryParams(
         projectId: '123456789',
         deviceId: '987654321',
         st: 'test_st',

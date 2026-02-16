@@ -140,7 +140,7 @@ class _AppKitModalMainWalletsPageState
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: Column(
-                    children: [SocialLoginButtonsView(), _LoginDivider()],
+                    children: [const SocialLoginButtonsView(), _LoginDivider()],
                   ),
                 ),
               ),

@@ -19,7 +19,7 @@ class SimulateTransaction
   }) : super(
          'simulateTransaction',
          values: [signedTransaction],
-         config: config ?? SimulateTransactionConfig(),
+         config: config ?? const SimulateTransactionConfig(),
        );
 
   @override

@@ -112,7 +112,7 @@ class ResponsiveData extends InheritedWidget {
   }
 
   static Size gridItemSzieOf(BuildContext context) {
-    return Size(kGridItemWidth, kGridItemHeight);
+    return const Size(kGridItemWidth, kGridItemHeight);
   }
 
   @override

@@ -11,7 +11,7 @@ class DtcHeader extends StatelessWidget {
       children: [
         Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.black,
             fontSize: 32,
             fontWeight: FontWeight.bold,
@@ -21,7 +21,7 @@ class DtcHeader extends StatelessWidget {
         const SizedBox(height: 12),
         Text(
           description,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.black,
             fontSize: 18,
             fontWeight: FontWeight.normal,

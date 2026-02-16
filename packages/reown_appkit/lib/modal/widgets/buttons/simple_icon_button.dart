@@ -75,7 +75,7 @@ class SimpleIconButton extends StatelessWidget {
               })
             : null,
         padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
-          EdgeInsets.all(0.0),
+          const EdgeInsets.all(0.0),
         ),
       ),
       child: Row(

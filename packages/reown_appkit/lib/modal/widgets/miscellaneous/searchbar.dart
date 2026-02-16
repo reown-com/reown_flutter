@@ -74,7 +74,7 @@ class _ModalSearchBarState extends State<ModalSearchBar>
   final _debouncer = Debouncer(milliseconds: 300);
 
   late DecorationTween _decorationTween = DecorationTween(
-    begin: BoxDecoration(
+    begin: const BoxDecoration(
       boxShadow: [
         BoxShadow(
           color: Colors.transparent,
@@ -85,7 +85,7 @@ class _ModalSearchBarState extends State<ModalSearchBar>
         ),
       ],
     ),
-    end: BoxDecoration(
+    end: const BoxDecoration(
       boxShadow: [
         BoxShadow(
           color: Colors.transparent,
@@ -127,7 +127,7 @@ class _ModalSearchBarState extends State<ModalSearchBar>
                   ? BorderRadius.circular(widget.height)
                   : BorderRadius.circular(widget.height * 0.4)),
         boxShadow: [
-          BoxShadow(
+          const BoxShadow(
             color: Colors.transparent,
             offset: Offset.zero,
             blurRadius: 0.0,

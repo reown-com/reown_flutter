@@ -53,7 +53,7 @@ class TonService {
 
   Future<TonKeyPair> generateKeypair() async {
     if (DartDefines.tonSK.isNotEmpty && DartDefines.tonPK.isNotEmpty) {
-      return TonKeyPair(sk: DartDefines.tonSK, pk: DartDefines.tonPK);
+      return const TonKeyPair(sk: DartDefines.tonSK, pk: DartDefines.tonPK);
     }
     return await _tonClient.generateKeypair();
   }

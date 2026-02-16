@@ -59,7 +59,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _resendEnabledAt = DateTime.now().add(Duration(seconds: 30));
+    _resendEnabledAt = DateTime.now().add(const Duration(seconds: 30));
     _focusNodes.first.requestFocus();
     for (var fn in _focusNodes) {
       fn.addListener(_focusListener);
@@ -78,7 +78,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView>
     } else {
       final email = widget.currentEmail;
       widget.resendEmail(value: email);
-      _resendEnabledAt = DateTime.now().add(Duration(seconds: 30));
+      _resendEnabledAt = DateTime.now().add(const Duration(seconds: 30));
       GetIt.I<IToastService>().show(
         ToastMessage(type: ToastType.success, text: 'Code email resent'),
       );
@@ -224,7 +224,7 @@ class _VerifyOtpViewState extends State<VerifyOtpView>
       final clipboardHasData = await Clipboard.hasStrings();
       if (clipboardHasData) {
         final clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
-        await Clipboard.setData(ClipboardData(text: ''));
+        await Clipboard.setData(const ClipboardData(text: ''));
         final code = clipboardData?.text ?? '';
         if (code.isNotEmpty) {
           widget.verifyOtp(otp: code);

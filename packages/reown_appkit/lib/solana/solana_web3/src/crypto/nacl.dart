@@ -27,8 +27,8 @@ const NaClSign sign = NaClSign();
 @protected
 class NaClSign {
   const NaClSign();
-  final keypair = const NaClKeypair();
-  final detached = const NaClDetached();
+  NaClKeypair get keypair => const NaClKeypair();
+  NaClDetached get detached => const NaClDetached();
 }
 
 /// NaCl Keypair
